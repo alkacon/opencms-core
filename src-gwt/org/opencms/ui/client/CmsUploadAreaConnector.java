@@ -65,6 +65,7 @@ public class CmsUploadAreaConnector extends AbstractExtensionConnector {
      * Constructor.<p>
      */
     public CmsUploadAreaConnector() {
+
         m_rpc = getRpcProxy(I_CmsUploadRpc.class);
     }
 
@@ -120,57 +121,57 @@ public class CmsUploadAreaConnector extends AbstractExtensionConnector {
      * @param element the drop zone element
      */
     private native void initUploadZone(JavaScriptObject element)/*-{
-        // check for file api support
-        if ((typeof FileReader == 'function' || typeof FileReader == 'object')
-                && (typeof FormData == 'function' || typeof FormData == 'object')) {
-            var self = this;
+		// check for file api support
+		if ((typeof FileReader == 'function' || typeof FileReader == 'object')
+				&& (typeof FormData == 'function' || typeof FormData == 'object')) {
+			var self = this;
 
-            function isFileDrag(event) {
-                var result = true;
-                var dt = event.dataTransfer;
-                for (var i = 0; i < dt.types.length; i++) {
-                    // in case the types list contains text/html, we assume a DOM element is dragged, and no files
-                    if (dt.types[i] == "text/html") {
-                        result = false;
-                        break;
-                    }
-                }
-                return result;
-            }
+			function isFileDrag(event) {
+				var result = true;
+				var dt = event.dataTransfer;
+				for (var i = 0; i < dt.types.length; i++) {
+					// in case the types list contains text/html, we assume a DOM element is dragged, and no files
+					if (dt.types[i] == "text/html") {
+						result = false;
+						break;
+					}
+				}
+				return result;
+			}
 
-            function dragover(event) {
-                if (isFileDrag(event)) {
-                    event.stopPropagation();
-                    event.preventDefault();
-                    self.@org.opencms.ui.client.CmsUploadAreaConnector::dragOver()();
-                }
-            }
+			function dragover(event) {
+				if (isFileDrag(event)) {
+					event.stopPropagation();
+					event.preventDefault();
+					self.@org.opencms.ui.client.CmsUploadAreaConnector::dragOver()();
+				}
+			}
 
-            function dragleave(event) {
-                if (isFileDrag(event)) {
-                    event.stopPropagation();
-                    event.preventDefault();
-                    self.@org.opencms.ui.client.CmsUploadAreaConnector::dragOut()();
-                }
-            }
+			function dragleave(event) {
+				if (isFileDrag(event)) {
+					event.stopPropagation();
+					event.preventDefault();
+					self.@org.opencms.ui.client.CmsUploadAreaConnector::dragOut()();
+				}
+			}
 
-            function drop(event) {
-                if (isFileDrag(event)) {
-                    event.stopPropagation();
-                    event.preventDefault();
-                    self.@org.opencms.ui.client.CmsUploadAreaConnector::dragOut()();
-                    var dt = event.dataTransfer;
-                    var files = dt.files;
-                    self.@org.opencms.ui.client.CmsUploadAreaConnector::openUploadWithFiles(Lcom/google/gwt/core/client/JavaScriptObject;)(files);
-                }
-            }
+			function drop(event) {
+				if (isFileDrag(event)) {
+					event.stopPropagation();
+					event.preventDefault();
+					self.@org.opencms.ui.client.CmsUploadAreaConnector::dragOut()();
+					var dt = event.dataTransfer;
+					var files = dt.files;
+					self.@org.opencms.ui.client.CmsUploadAreaConnector::openUploadWithFiles(Lcom/google/gwt/core/client/JavaScriptObject;)(files);
+				}
+			}
 
-            element.addEventListener("dragover", dragover, false);
-            element.addEventListener("dragexit", dragleave, false);
-            element.addEventListener("dragleave", dragleave, false);
-            element.addEventListener("dragend", dragleave, false);
-            element.addEventListener("drop", drop, false);
-        }
+			element.addEventListener("dragover", dragover, false);
+			element.addEventListener("dragexit", dragleave, false);
+			element.addEventListener("dragleave", dragleave, false);
+			element.addEventListener("dragend", dragleave, false);
+			element.addEventListener("drop", drop, false);
+		}
     }-*/;
 
     /**
@@ -180,6 +181,9 @@ public class CmsUploadAreaConnector extends AbstractExtensionConnector {
      */
     private void openUploadWithFiles(JavaScriptObject files) {
 
+        if (getState().getTargetFolderRootPath() == null) {
+            return;
+        }
         JsArray<CmsFileInfo> cmsFiles = files.cast();
         List<CmsFileInfo> fileObjects = new ArrayList<CmsFileInfo>();
         for (int i = 0; i < cmsFiles.length(); ++i) {

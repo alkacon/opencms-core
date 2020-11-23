@@ -40,6 +40,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsCoreData.ModuleKey;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -116,7 +117,6 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         sb.append(super.export());
         sb.append(export(m_galleryMode));
         sb.append(exportCloseLink());
-        sb.append(exportModuleScriptTag(GWT_MODULE_NAME));
         return sb.toString();
     }
 
@@ -180,6 +180,16 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
     public boolean isWidgetMode() {
 
         return m_galleryMode == GalleryMode.widget;
+    }
+
+    /**
+     * @see org.opencms.gwt.CmsGwtActionElement#getModuleKey()
+     */
+    @Override
+    protected ModuleKey getModuleKey() {
+
+        // TODO Auto-generated method stub
+        return CmsCoreData.ModuleKey.galleries;
     }
 
     /**

@@ -30,6 +30,7 @@ package org.opencms.ade.galleries;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.galleries.CmsGalleryFilteredNavTreeBuilder.NavigationNode;
 import org.opencms.ade.galleries.preview.I_CmsPreviewProvider;
+import org.opencms.ade.galleries.shared.CmsGalleryActionInfo;
 import org.opencms.ade.galleries.shared.CmsGalleryConfiguration;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
@@ -662,6 +663,26 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     public List<CmsGalleryFolderBean> getGalleries(List<String> resourceTypes) {
 
         return buildGalleriesList(readGalleryInfosByTypeNames(resourceTypes));
+    }
+
+    public CmsGalleryActionInfo getGalleryActionInfo(String sitePath) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            try {
+                CmsResource folderRes = cms.readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION);
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(folderRes);
+                String action = type.getConfiguration().get("gallery.upload.action");
+                return new CmsGalleryActionInfo(folderRes.getStructureId(), action);
+            } catch (CmsVfsResourceNotFoundException e) {
+                LOG.info(e.getLocalizedMessage(), e);
+                return null;
+            }
+        } catch (Throwable e) {
+            error(e);
+            return null;
+        }
+
     }
 
     /**
@@ -1616,6 +1637,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 bean.setTitle(title);
                 // gallery type name
                 bean.setResourceType(tInfo.getResourceType().getTypeName());
+                bean.setUploadAction(tInfo.getResourceType().getConfiguration().get("gallery.upload.action"));
                 bean.setEditable(isEditable(getCmsObject(), res));
                 bean.setBigIconClasses(
                     CmsIconUtil.getIconClasses(CmsIconUtil.getDisplayType(getCmsObject(), res), sitePath, false));
@@ -2578,7 +2600,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 break;
             case ade:
                 throw new IllegalStateException("This code should never be called");
-                // ADE case is handled by container page service
+            // ADE case is handled by container page service
             default:
                 resourceTypes = Collections.<I_CmsResourceType> emptyList();
                 creatableTypes = Collections.<String> emptySet();
@@ -2812,13 +2834,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             title = navElement.getProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT);
         } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(
             navElement.getProperty(CmsPropertyDefinition.PROPERTY_TITLE))) {
-            title = navElement.getProperty(CmsPropertyDefinition.PROPERTY_TITLE);
-        } else {
-            title = navElement.getFileName();
-            if (title.contains("/")) {
-                title = title.substring(0, title.indexOf("/"));
+                title = navElement.getProperty(CmsPropertyDefinition.PROPERTY_TITLE);
+            } else {
+                title = navElement.getFileName();
+                if (title.contains("/")) {
+                    title = title.substring(0, title.indexOf("/"));
+                }
             }
-        }
         String childPath = navElement.getResource().getRootPath();
         boolean noChildren = true;
 

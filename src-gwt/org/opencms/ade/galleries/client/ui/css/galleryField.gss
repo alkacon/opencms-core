@@ -55,7 +55,7 @@ div.hasUpload > div.uploadButton{
 	right: 26px;
 }
 
-div.fieldBox > div.uploadButton > input{
+div.fieldBox > div.uploadButton  input {
 	height: auto;
 	width: auto;
 	font-size: 200px;

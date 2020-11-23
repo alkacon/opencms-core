@@ -269,7 +269,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     private Timer m_filterTimer;
 
     /** The last quick search value. */
-    private String m_lastQuickSearchValue;
+    private String m_lastQuickSearchValue = "";
 
     /** The quick search handler registration. */
     private HandlerRegistration m_quickSearchRegistration;
@@ -469,6 +469,30 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
         m_scrollList.clearList();
         onContentChange();
+    }
+
+    /**
+     * Generates a new custom upload button.<p>
+     *
+     * @param parentPath the folder site path
+     *
+     * @return the button widget
+     */
+    protected CmsPushButton createCustomUploadButton(final String nativeMethod, final String target) {
+
+        CmsPushButton uploadButton = new CmsPushButton(I_CmsButton.UPLOAD_SMALL);
+        uploadButton.setText(null);
+        uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, target));
+        uploadButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+        uploadButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                customUploadAction(nativeMethod, target); /** TODO: Callback */
+            }
+        });
+        return uploadButton;
+
     }
 
     /**
@@ -694,6 +718,13 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         return resultItem;
     }
 
+    native void customUploadAction(String nativeMethod, String target) /*-{
+
+		var uploadAction = $wnd[nativeMethod];
+		nativeMethod(target);
+
+    }-*/;
+
     /**
      * Creates the quick search/finder box.<p>
      */
@@ -757,6 +788,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
                     });
                 m_searchButton.setTitle(Messages.get().key(Messages.GUI_TAB_SEARCH_SEARCH_EXISTING_0));
             }
+
         }
     }
 

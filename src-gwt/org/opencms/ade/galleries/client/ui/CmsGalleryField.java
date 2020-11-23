@@ -28,10 +28,12 @@
 package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsGalleryConfigurationJSO;
+import org.opencms.ade.galleries.client.CmsGalleryController;
 import org.opencms.ade.galleries.client.I_CmsGalleryWidgetHandler;
 import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.preview.CmsCroppingParamBean;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.galleries.shared.CmsGalleryActionInfo;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
@@ -56,10 +58,12 @@ import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsEmbeddedDialogHandler;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -73,6 +77,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasFocusHandlers;
@@ -176,6 +181,10 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     @UiField
     protected FlowPanel m_resourceInfoPanel;
 
+    /** The special upload button. */
+    @UiField(provided = true)
+    protected CmsPushButton m_specialUploadButton;
+
     /** The textbox containing the currently selected path. */
     @UiField
     protected CmsSimpleTextBox m_textbox;
@@ -204,6 +213,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /** The previous field value. */
     private String m_previousValue;
+
+    /** The upload action. */
+    private String m_uploadAction;
 
     /**
      * Constructs a new gallery widget.<p>
@@ -242,6 +254,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         m_uploadButton.setSize(Size.small);
         m_uploadButton.removeStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_uploadButton.getElement().setTabIndex(-1);
+
+        m_specialUploadButton = createSpecialUploadButton();
+
         m_main = uibinder.createAndBindUi(this);
         initWidget(m_main);
         m_allowUploads = allowUploads;
@@ -524,6 +539,16 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     }
 
     /**
+     * Checks if drag/drop should be enabled.
+     *
+     * @return true if drag/drop should be enabled
+     */
+    protected boolean isDndEnabled() {
+
+        return m_uploadAction == null;
+    }
+
+    /**
      * Handles the focus event on the opener.<p>
      *
      * @param event  the focus event
@@ -640,21 +665,48 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      */
     protected void updateUploadTarget(String uploadTarget) {
 
+        m_uploadAction = null;
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(uploadTarget)) {
             m_uploadTarget = m_configuration.getUploadFolder();
         } else {
             m_uploadTarget = uploadTarget;
         }
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_uploadTarget)) {
+            setSpecialUpload(false);
             // disable the upload button as no target folder is available
             m_uploadButton.disable(
                 org.opencms.ade.upload.client.Messages.get().key(
                     org.opencms.ade.upload.client.Messages.GUI_UPLOAD_BUTTON_NO_TARGET_0));
         } else {
-            // make sure the upload button is available
-            m_uploadButton.enable();
-            ((CmsDialogUploadButtonHandler)m_uploadButton.getButtonHandler()).setTargetFolder(m_uploadTarget);
-            m_uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, m_uploadTarget));
+            CmsRpcAction<CmsGalleryActionInfo> action = new CmsRpcAction<CmsGalleryActionInfo>() {
+
+                @Override
+                public void execute() {
+
+                    start(0, false);
+                    CmsGalleryController.getGalleryService().getGalleryActionInfo(uploadTarget, this);
+
+                }
+
+                protected void onResponse(CmsGalleryActionInfo result) {
+
+                    stop(false);
+                    if ((result == null) || (result.getUploadAction() == null)) {
+                        setSpecialUpload(false);
+                        // make sure the upload button is available
+                        m_uploadButton.enable();
+                        ((CmsDialogUploadButtonHandler)m_uploadButton.getButtonHandler()).setTargetFolder(
+                            m_uploadTarget);
+                        m_uploadButton.setTitle(
+                            Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, m_uploadTarget));
+                    } else {
+                        m_uploadAction = result.getUploadAction();
+                        setSpecialUpload(true);
+                    }
+                };
+            };
+            action.execute();
+
         }
     }
 
@@ -839,6 +891,54 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     }
 
     /**
+     * Creates custom upload button for galleries which have an upload action configured.
+     *
+     * @return the special upload button
+     */
+    private CmsPushButton createSpecialUploadButton() {
+
+        CmsPushButton uploadButton = new CmsPushButton(I_CmsButton.UPLOAD_SMALL);
+        uploadButton.setText(null);
+        //uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, gallery.getPath()));
+        uploadButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+        uploadButton.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                CmsRpcAction<CmsUUID> action = new CmsRpcAction<CmsUUID>() {
+
+                    @Override
+                    public void execute() {
+
+                        start(0, true);
+                        CmsCoreProvider.getVfsService().getStructureId(m_uploadTarget, this);
+                    }
+
+                    protected void onResponse(CmsUUID result) {
+
+                        stop(false);
+                        if (result == null) {
+                            return;
+                        }
+                        List<CmsUUID> resultIds = new ArrayList<>();
+                        resultIds.add(result);
+                        Map<String, String> params = new HashMap<>();
+                        params.put("editor", "true");
+                        CmsEmbeddedDialogHandler.openDialog(
+                            m_uploadAction,
+                            resultIds,
+                            params,
+                            id -> updateValueFromId(id));
+                    };
+
+                };
+                action.execute();
+            }
+        });
+        return uploadButton;
+    }
+
+    /**
      * Initializes the upload drop zone event handlers.<p>
      *
      * @param element the drop zone element
@@ -849,20 +949,33 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 				&& (typeof FormData == 'function' || typeof FormData == 'object')) {
 			var self = this;
 
+			function isDndEnabled() {
+				return self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::isDndEnabled()();
+			}
+
 			function dragover(event) {
 				event.stopPropagation();
 				event.preventDefault();
+				if (!isDndEnabled()) {
+					return;
+				}
 				self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOver()();
 			}
 
 			function dragleave(event) {
 				event.stopPropagation();
 				event.preventDefault();
+				if (!isDndEnabled()) {
+					return;
+				}
 				self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
 			}
 
 			function drop(event) {
 				event.preventDefault();
+				if (!isDndEnabled()) {
+					return;
+				}
 				self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
 				if (self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::m_uploadTarget != null) {
 					var dt = event.dataTransfer;
@@ -892,5 +1005,35 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             fileObjects.add(cmsFiles.get(i));
         }
         ((CmsDialogUploadButtonHandler)m_uploadButton.getButtonHandler()).openDialogWithFiles(fileObjects);
+    }
+
+    private void setSpecialUpload(boolean specialUpload) {
+
+        m_specialUploadButton.setVisible(specialUpload);
+        m_uploadButton.setVisible(!specialUpload);
+
+    }
+
+    private void updateValueFromId(CmsUUID id) {
+
+        CmsRpcAction<String> action = new CmsRpcAction<String>() {
+
+            @Override
+            public void execute() {
+
+                start(0, false);
+                CmsCoreProvider.getVfsService().getSitePath(id, this);
+
+            }
+
+            protected void onResponse(String result) {
+
+                stop(false);
+                m_textbox.setValue(result, true);
+
+            };
+        };
+        action.execute();
+
     }
 }

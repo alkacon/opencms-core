@@ -33,6 +33,7 @@ import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -40,6 +41,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.i18n.client.NumberFormat;
@@ -136,6 +139,14 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
         setTitle(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_TITLE_0));
         setButtonStyle(ButtonStyle.TEXT, ButtonColor.BLUE);
         createFileInput();
+        // prevent click event from bubbling up to the surrounding widget
+        addDomHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                event.stopPropagation();
+            }
+        }, ClickEvent.getType());
     }
 
     /**

@@ -303,6 +303,14 @@ public interface I_CmsVfsServiceAsync {
     void getSitePath(CmsUUID structureId, AsyncCallback<String> callback);
 
     /**
+     * Gets the structure id for the given site path.
+     *
+     * @param vfsPath a site path
+     * @param callback the callback for the result
+     */
+    void getStructureId(String vfsPath, AsyncCallback<CmsUUID> callback);
+
+    /**
      * Loads the external link info.<p>
      *
      * @param structureId the external link structure id

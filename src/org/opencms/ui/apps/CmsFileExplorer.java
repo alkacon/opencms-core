@@ -582,6 +582,15 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
     /** The upload button. */
     private CmsUploadButton m_uploadButton;
 
+    /** Button for uploading to folders with special upload actions. */
+    private Button m_specialUploadButton;
+
+    /** Upload action for the current folder. */
+    private String m_uploadAction;
+
+    /** The current upload folder. */
+    private CmsResource m_uploadFolder;
+
     /**
      * Constructor.<p>
      */
@@ -1313,8 +1322,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             CmsAppWorkplaceUi.get().changeCurrentAppState(m_currentState);
         }
         m_locationCache.setFileExplorerLocation(cms.getRequestContext().getSiteRoot(), sitePath);
-        m_uploadButton.setTargetFolder(folder.getRootPath());
-        m_uploadArea.setTargetFolder(folder.getRootPath());
+        updateUploadButton(folder);
         if (!m_fileTree.isExpanded(folderId)) {
             expandCurrentFolder();
         }
@@ -1894,13 +1902,18 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         context.addToolbarButton(m_newButton);
 
         m_uploadButton = new CmsUploadButton(FontOpenCms.UPLOAD, "/");
+        m_specialUploadButton = new Button(FontOpenCms.UPLOAD);
         m_uploadButton.addStyleName(ValoTheme.BUTTON_BORDERLESS);
         m_uploadButton.addStyleName(OpenCmsTheme.TOOLBAR_BUTTON);
         if (CmsAppWorkplaceUi.isOnlineProject()) {
             m_uploadButton.setEnabled(false);
+            m_specialUploadButton.setEnabled(false);
             m_uploadButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_TOOLBAR_NOT_AVAILABLE_ONLINE_0));
+            m_specialUploadButton.setDescription(
+                CmsVaadinUtils.getMessageText(Messages.GUI_TOOLBAR_NOT_AVAILABLE_ONLINE_0));
         } else {
             m_uploadButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_UPLOAD_BUTTON_TITLE_0));
+            m_specialUploadButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_UPLOAD_BUTTON_TITLE_0));
         }
         m_uploadButton.addUploadListener(new I_UploadListener() {
 
@@ -1909,8 +1922,31 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
                 updateAll(true);
             }
         });
+        m_specialUploadButton.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+        m_specialUploadButton.addStyleName(OpenCmsTheme.TOOLBAR_BUTTON);
+        m_specialUploadButton.addClickListener(event -> {
+            try {
+                @SuppressWarnings("unchecked")
+                Class<I_CmsWorkplaceAction> actionClass = (Class<I_CmsWorkplaceAction>)getClass().getClassLoader().loadClass(
+                    m_uploadAction);
+                I_CmsWorkplaceAction action = actionClass.newInstance();
+                List<CmsResource> resources = new ArrayList<>();
+                resources.add(m_uploadFolder);
+                CmsExplorerDialogContext uploadContext = new CmsExplorerDialogContext(
+                    ContextType.fileTable,
+                    m_fileTable,
+                    this,
+                    resources);
+                action.executeAction(uploadContext);
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                CmsErrorDialog.showErrorDialog(e);
+            }
+
+        });
 
         context.addToolbarButton(m_uploadButton);
+        context.addToolbarButton(m_specialUploadButton);
     }
 
     /**
@@ -1967,14 +2003,47 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         m_publishButton.setEnabled(enabled);
         m_newButton.setEnabled(enabled);
         m_uploadButton.setEnabled(enabled);
+        m_specialUploadButton.setEnabled(enabled);
         if (enabled) {
             m_publishButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_PUBLISH_BUTTON_TITLE_0));
             m_newButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_NEW_RESOURCE_TITLE_0));
             m_uploadButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_UPLOAD_BUTTON_TITLE_0));
+            m_specialUploadButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_UPLOAD_BUTTON_TITLE_0));
         } else {
             m_publishButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_TOOLBAR_NOT_AVAILABLE_ONLINE_0));
             m_newButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_TOOLBAR_NOT_AVAILABLE_ONLINE_0));
             m_uploadButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_TOOLBAR_NOT_AVAILABLE_ONLINE_0));
+            m_specialUploadButton.setDescription(
+                CmsVaadinUtils.getMessageText(Messages.GUI_TOOLBAR_NOT_AVAILABLE_ONLINE_0));
+        }
+    }
+
+    /**
+     * Updates the upload button state based on the current folder.
+     *
+     * @param folder the current folder
+     */
+    private void updateUploadButton(CmsResource folder) {
+
+        String uploadAction = null;
+        m_uploadFolder = folder;
+        try {
+            uploadAction = OpenCms.getResourceManager().getResourceType(folder).getConfiguration().get(
+                "gallery.upload.action");
+        } catch (Exception e) {
+            // Resource type not found?
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        m_uploadAction = uploadAction;
+        if (uploadAction != null) {
+            m_uploadButton.setVisible(false);
+            m_specialUploadButton.setVisible(true);
+            m_uploadArea.setTargetFolder(null);
+        } else {
+            m_uploadButton.setVisible(true);
+            m_specialUploadButton.setVisible(false);
+            m_uploadButton.setTargetFolder(folder.getRootPath());
+            m_uploadArea.setTargetFolder(folder.getRootPath());
         }
     }
 }

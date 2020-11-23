@@ -101,6 +101,33 @@ public class CmsReportWrapper {
     }
 
     /**
+     * Print a message in default style without linebreak.
+     * @param message the message
+     * @param params the parameters
+     */
+    public void reportDefaultNoBreak(String message, Object... params) {
+
+        for (I_CmsReport r : m_reports) {
+            r.print(m_messages.container(message, params));
+        }
+
+    }
+
+    /**
+     * Report failed.
+     * @param withDots with dots or only the word.
+     */
+    public void reportFailed(boolean withDots) {
+
+        for (I_CmsReport r : m_reports) {
+            r.println(
+                DefaultReportMessages.get().container(
+                    withDots ? DefaultReportMessages.REPORT_FAILED_0 : DefaultReportMessages.REPORT_FAILED_NO_DOTS_0),
+                I_CmsReport.FORMAT_ERROR);
+        }
+    }
+
+    /**
      * Report failed.
      * @param message the message to print
      * @param params parameters of the message
@@ -115,7 +142,6 @@ public class CmsReportWrapper {
                 DefaultReportMessages.get().container(DefaultReportMessages.REPORT_FAILED_0),
                 I_CmsReport.FORMAT_ERROR);
         }
-
     }
 
     /**
@@ -128,7 +154,18 @@ public class CmsReportWrapper {
         for (I_CmsReport r : m_reports) {
             r.println(m_messages.container(message, params), I_CmsReport.FORMAT_HEADLINE);
         }
+    }
 
+    /**
+     * Print a message as headline.
+     * @param message the message
+     * @param params the parameters
+     */
+    public void reportHeadlineNoBreak(String message, Object... params) {
+
+        for (I_CmsReport r : m_reports) {
+            r.print(m_messages.container(message, params), I_CmsReport.FORMAT_HEADLINE);
+        }
     }
 
     /**
@@ -155,6 +192,33 @@ public class CmsReportWrapper {
     }
 
     /**
+     * Print a message as note without linebreak.
+     * @param message the message
+     * @param params the parameters
+     */
+    public void reportNoteNoBreak(String message, Object... params) {
+
+        for (I_CmsReport r : m_reports) {
+            r.print(m_messages.container(message, params), I_CmsReport.FORMAT_NOTE);
+        }
+
+    }
+
+    /**
+     * Report ok.
+     * @param withDots with dots or only the word.
+     */
+    public void reportOk(boolean withDots) {
+
+        for (I_CmsReport r : m_reports) {
+            r.println(
+                DefaultReportMessages.get().container(
+                    withDots ? DefaultReportMessages.REPORT_OK_0 : DefaultReportMessages.REPORT_OK_NO_DOTS_0),
+                I_CmsReport.FORMAT_OK);
+        }
+    }
+
+    /**
      * Report ok.
      * @param message the message to print
      * @param params parameters of the message
@@ -166,6 +230,20 @@ public class CmsReportWrapper {
                 r.print(m_messages.container(message, params), I_CmsReport.FORMAT_OK);
             }
             r.println(DefaultReportMessages.get().container(DefaultReportMessages.REPORT_OK_0), I_CmsReport.FORMAT_OK);
+        }
+    }
+
+    /**
+     * Report ok.
+     * @param withDots with dots or only the word.
+     */
+    public void reportSkipped(boolean withDots) {
+
+        for (I_CmsReport r : m_reports) {
+            r.println(
+                DefaultReportMessages.get().container(
+                    withDots ? DefaultReportMessages.REPORT_SKIPPED_0 : DefaultReportMessages.REPORT_SKIPPED_NO_DOTS_0),
+                I_CmsReport.FORMAT_WARNING);
         }
     }
 
@@ -197,6 +275,17 @@ public class CmsReportWrapper {
         for (I_CmsReport r : m_reports) {
             r.println(m_messages.container(message, params), I_CmsReport.FORMAT_WARNING);
         }
+    }
 
+    /**
+     * Print a message in warning style.
+     * @param message the message
+     * @param params the parameters
+     */
+    public void reportWarningNoBreak(String message, Object... params) {
+
+        for (I_CmsReport r : m_reports) {
+            r.println(m_messages.container(message, params), I_CmsReport.FORMAT_WARNING);
+        }
     }
 }

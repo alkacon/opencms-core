@@ -38,6 +38,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.actions.I_CmsWorkplaceAction;
+import org.opencms.ui.apps.CmsEditorConfiguration;
 import org.opencms.ui.apps.CmsPageEditorConfiguration;
 import org.opencms.ui.apps.CmsSitemapEditorConfiguration;
 import org.opencms.ui.apps.Messages;
@@ -143,6 +144,7 @@ public class CmsEmbeddedDialogsUI extends A_CmsUI {
                         resourceList = Collections.<CmsResource> emptyList();
                     }
                     String typeParam = request.getParameter("contextType");
+                    boolean isEditor = Boolean.parseBoolean(request.getParameter("editor"));
 
                     ContextType type;
                     String appId = "";
@@ -152,6 +154,8 @@ public class CmsEmbeddedDialogsUI extends A_CmsUI {
                             appId = CmsPageEditorConfiguration.APP_ID;
                         } else if (ContextType.sitemapToolbar.equals(type)) {
                             appId = CmsSitemapEditorConfiguration.APP_ID;
+                        } else if (isEditor) {
+                            appId = CmsEditorConfiguration.APP_ID;
                         }
                     } catch (Exception e) {
                         type = ContextType.appToolbar;

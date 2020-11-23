@@ -31,6 +31,7 @@ import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsCoreData.ModuleKey;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,9 +44,6 @@ public class CmsPublishActionElement extends CmsGwtActionElement {
 
     /** The OpenCms module name. */
     public static final String CMS_MODULE_NAME = "org.opencms.ade.publish";
-
-    /** The GWT module name. */
-    public static final String GWT_MODULE_NAME = CmsCoreData.ModuleKey.publish.name();
 
     /**
      * Constructor.<p>
@@ -82,7 +80,6 @@ public class CmsPublishActionElement extends CmsGwtActionElement {
             I_CmsPublishService.class.getMethod("getInitData", java.util.HashMap.class),
             initData);
         sb.append(prefetchedData);
-        sb.append(exportModuleScriptTag(GWT_MODULE_NAME));
         return sb.toString();
     }
 
@@ -94,6 +91,15 @@ public class CmsPublishActionElement extends CmsGwtActionElement {
     public String getTitle() {
 
         return "Publish";
+    }
+
+    /**
+     * @see org.opencms.gwt.CmsGwtActionElement#getModuleKey()
+     */
+    @Override
+    protected ModuleKey getModuleKey() {
+
+        return CmsCoreData.ModuleKey.publish;
     }
 
 }

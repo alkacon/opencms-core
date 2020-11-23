@@ -34,13 +34,19 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsGalleryTreeEntry;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
+import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
+import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.externallink.CmsEditExternalLinkDialog;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.gwt.client.util.CmsEmbeddedDialogHandler;
 import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -55,6 +61,8 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Label;
 
@@ -486,13 +494,61 @@ public class CmsGalleriesTab extends A_CmsListTab {
         }
 
         if (galleryInfo.isEditable()) {
-            if (CmsEditExternalLinkDialog.LINK_GALLERY_RESOURCE_TYPE_NAME.equals(galleryInfo.getType())) {
-                CmsPushButton createExternalLink = createNewExternalLinkButton(galleryInfo.getPath());
-                if (createExternalLink != null) {
-                    listItemWidget.addButton(createExternalLink);
-                }
+            String uploadAction = galleryInfo.getUploadAction();
+
+            if (null != uploadAction) {
+                CmsDebugLog.consoleLog(
+                    "Adding custom upload button for gallery "
+                        + galleryInfo.getPath()
+                        + " calling function "
+                        + uploadAction);
+                CmsPushButton uploadButton = new CmsPushButton(I_CmsButton.UPLOAD_SMALL);
+                uploadButton.setText(null);
+                uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, galleryInfo.getPath()));
+                uploadButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+                uploadButton.addClickHandler(new ClickHandler() {
+
+                    public void onClick(ClickEvent event) {
+
+                        // prevent event from bubbling up to surrounding widget
+                        event.stopPropagation();
+
+                        CmsRpcAction<CmsUUID> action = new CmsRpcAction<CmsUUID>() {
+
+                            @Override
+                            public void execute() {
+
+                                start(0, true);
+                                CmsCoreProvider.getVfsService().getStructureId(galleryInfo.getPath(), this);
+                            }
+
+                            protected void onResponse(CmsUUID result) {
+
+                                stop(false);
+                                List<CmsUUID> resultIds = new ArrayList<>();
+                                resultIds.add(result);
+                                CmsEmbeddedDialogHandler.openDialog(
+                                    uploadAction,
+                                    resultIds,
+                                    id -> getTabHandler().updateIndex());
+                            };
+
+                        };
+                        action.execute();
+
+                    }
+                });
+                listItemWidget.addButton(uploadButton);
+
             } else {
-                listItemWidget.addButton(createUploadButtonForTarget(galleryInfo.getPath(), false));
+                if (CmsEditExternalLinkDialog.LINK_GALLERY_RESOURCE_TYPE_NAME.equals(galleryInfo.getType())) {
+                    CmsPushButton createExternalLink = createNewExternalLinkButton(galleryInfo.getPath());
+                    if (createExternalLink != null) {
+                        listItemWidget.addButton(createExternalLink);
+                    }
+                } else {
+                    listItemWidget.addButton(createUploadButtonForTarget(galleryInfo.getPath(), false));
+                }
             }
         }
         listItemWidget.addButton(createSelectButton(selectionHandler));

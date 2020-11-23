@@ -38,10 +38,14 @@ import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.ade.upload.client.ui.CmsDialogUploadButtonHandler;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
@@ -51,11 +55,13 @@ import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsEmbeddedDialogHandler;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -276,9 +282,6 @@ public class CmsResultsTab extends A_CmsListTab {
     /** The context menu handler. */
     private CmsContextMenuHandler m_contextMenuHandler;
 
-    /** The button to create new external link resources. */
-    private CmsPushButton m_createNewButton;
-
     /** The optional dnd manager. */
     private CmsDNDHandler m_dndHandler;
 
@@ -290,6 +293,9 @@ public class CmsResultsTab extends A_CmsListTab {
 
     /** The view select box. */
     private CmsSelectBox m_selectView;
+
+    /** The button to create new external link resources. */
+    private CmsPushButton m_specialUploadButton;
 
     /** The reference to the handler of this tab. */
     private CmsResultsTabHandler m_tabHandler;
@@ -699,6 +705,56 @@ public class CmsResultsTab extends A_CmsListTab {
     }
 
     /**
+     * Creates special upload button (for external link galleries or galleries with custom upload actions).
+     *
+     * @param gallery the gallery bean
+     *
+     * @return the new button
+     */
+    private CmsPushButton createSpecialUploadButton(CmsGalleryFolderBean gallery) {
+
+        if (CmsEditExternalLinkDialog.LINK_GALLERY_RESOURCE_TYPE_NAME.equals(gallery.getType())) {
+            return createNewExternalLinkButton(gallery.getPath());
+        } else if (gallery.getUploadAction() != null) {
+            CmsPushButton uploadButton = new CmsPushButton(I_CmsButton.UPLOAD_SMALL);
+            uploadButton.setText(null);
+            uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, gallery.getPath()));
+            uploadButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+            uploadButton.addClickHandler(new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+
+                    CmsRpcAction<CmsUUID> action = new CmsRpcAction<CmsUUID>() {
+
+                        @Override
+                        public void execute() {
+
+                            start(0, true);
+                            CmsCoreProvider.getVfsService().getStructureId(gallery.getPath(), this);
+                        }
+
+                        protected void onResponse(CmsUUID result) {
+
+                            stop(false);
+                            List<CmsUUID> resultIds = new ArrayList<>();
+                            resultIds.add(result);
+                            CmsEmbeddedDialogHandler.openDialog(
+                                gallery.getUploadAction(),
+                                resultIds,
+                                id -> getTabHandler().updateIndex());
+                        };
+
+                    };
+                    action.execute();
+                }
+            });
+            return uploadButton;
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Displays the result count.<p>
      *
      * @param displayed the displayed result items
@@ -774,6 +830,19 @@ public class CmsResultsTab extends A_CmsListTab {
     }
 
     /**
+     * Check if we need a special upload button for the gallery.
+     *
+     * @param gallery a gallery bean
+     * @return true if we need a special upload button
+     */
+    private boolean needsSpecialButton(CmsGalleryFolderBean gallery) {
+
+        return (gallery.getUploadAction() != null)
+            || CmsEditExternalLinkDialog.LINK_GALLERY_RESOURCE_TYPE_NAME.equals(gallery.getType());
+
+    }
+
+    /**
      * Displays the selected search parameters in the result tab.<p>
      *
      * @param paramPanels the list of search parameter panels to show
@@ -801,6 +870,8 @@ public class CmsResultsTab extends A_CmsListTab {
      */
     private void showUpload(CmsGallerySearchBean searchObj) {
 
+        // TODO: Custom upload button!
+
         Set<String> targets = new HashSet<String>();
 
         if (searchObj.getGalleries() != null) {
@@ -809,9 +880,9 @@ public class CmsResultsTab extends A_CmsListTab {
         if (searchObj.getFolders() != null) {
             targets.addAll(searchObj.getFolders());
         }
-        if (m_createNewButton != null) {
-            m_createNewButton.removeFromParent();
-            m_createNewButton = null;
+        if (m_specialUploadButton != null) {
+            m_specialUploadButton.removeFromParent();
+            m_specialUploadButton = null;
         }
         if (m_uploadButton == null) {
             m_uploadButton = createUploadButtonForTarget("", false);
@@ -821,20 +892,21 @@ public class CmsResultsTab extends A_CmsListTab {
             m_uploadButton.getElement().getStyle().clearDisplay();
         }
         if (targets.size() == 1) {
+            //TODO: Make upload button generic
             CmsGalleryFolderBean galleryFolder = getTabHandler().getGalleryInfo(targets.iterator().next());
-            if ((galleryFolder != null)
-                && CmsEditExternalLinkDialog.LINK_GALLERY_RESOURCE_TYPE_NAME.equals(galleryFolder.getType())) {
-                m_createNewButton = createNewExternalLinkButton(targets.iterator().next());
-                if (m_createNewButton != null) {
-                    m_createNewButton.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().resultTabUpload());
-                    m_tab.insert(m_createNewButton, 0);
+
+            if ((galleryFolder != null) && needsSpecialButton(galleryFolder)) {
+
+                m_specialUploadButton = createSpecialUploadButton(galleryFolder);
+                if (m_specialUploadButton != null) {
+                    m_specialUploadButton.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().resultTabUpload());
+                    m_tab.insert(m_specialUploadButton, 0);
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(searchObj.getNoUploadReason())) {
-                        m_createNewButton.enable();
+                        m_specialUploadButton.enable();
                     } else {
-                        m_createNewButton.disable(searchObj.getNoUploadReason());
+                        m_specialUploadButton.disable(searchObj.getNoUploadReason());
                     }
                 }
-
                 m_uploadButton.getElement().getStyle().setDisplay(Display.NONE);
             } else {
                 String uploadTarget = targets.iterator().next();

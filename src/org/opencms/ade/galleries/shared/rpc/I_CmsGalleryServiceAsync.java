@@ -27,6 +27,7 @@
 
 package org.opencms.ade.galleries.shared.rpc;
 
+import org.opencms.ade.galleries.shared.CmsGalleryActionInfo;
 import org.opencms.ade.galleries.shared.CmsGalleryConfiguration;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
@@ -51,6 +52,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync
  */
 public interface I_CmsGalleryServiceAsync {
+
+    /**
+     * Gets  gallery upload information.
+     *
+     * @param sitePath the site path of a folder
+     * @param info the gallery upload information, or null if no folder with that path is found
+     */
+    public void getGalleryActionInfo(String sitePath, AsyncCallback<CmsGalleryActionInfo> info);
 
     /**
      * Deletes the given resource.<p>
