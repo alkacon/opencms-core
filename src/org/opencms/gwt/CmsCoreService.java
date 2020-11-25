@@ -74,11 +74,13 @@ import org.opencms.ui.actions.I_CmsADEAction;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
+import org.opencms.ui.contextmenu.CmsContextMenuTreeBuilder;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.dialogs.CmsEmbeddedDialogsUI;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsTreeNode;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceLoginHandler;
@@ -87,7 +89,6 @@ import org.opencms.xml.containerpage.CmsADESessionCache;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -338,75 +339,68 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                     // not supported
                 }
             };
-            Map<String, List<CmsContextMenuEntryBean>> submenus = new HashMap<String, List<CmsContextMenuEntryBean>>();
-            List<I_CmsContextMenuItem> items = new ArrayList<I_CmsContextMenuItem>(
+            CmsContextMenuTreeBuilder builder = new CmsContextMenuTreeBuilder(dcontext);
+            List<I_CmsContextMenuItem> items = new ArrayList<I_CmsContextMenuItem>();
+            CmsTreeNode<I_CmsContextMenuItem> root = builder.buildAll(
                 OpenCms.getWorkplaceAppManager().getMenuItemProvider().getMenuItems());
-            Collections.sort(items, new Comparator<I_CmsContextMenuItem>() {
-
-                public int compare(I_CmsContextMenuItem arg0, I_CmsContextMenuItem arg1) {
-
-                    return Float.compare(arg0.getOrder(), arg1.getOrder());
-                }
-            });
-
+            for (CmsTreeNode<I_CmsContextMenuItem> child : root.getChildren()) {
+                child.addDataInPreOrder(items);
+            }
+            Map<String, List<CmsContextMenuEntryBean>> submenus = new HashMap<String, List<CmsContextMenuEntryBean>>();
             for (I_CmsContextMenuItem item : items) {
-
                 if (!item.isLeafItem()) {
                     CmsMenuItemVisibilityMode visibility = item.getVisibility(dcontext);
-                    if (!visibility.isInVisible()) {
-                        entries.put(
-                            item.getId(),
-                            new CmsContextMenuEntryBean(
-                                visibility.isActive(),
-                                true,
-                                null,
-                                item.getTitle(locale),
-                                null,
-                                CmsStringUtil.isEmptyOrWhitespaceOnly(visibility.getMessageKey())
-                                ? null
-                                : OpenCms.getWorkplaceManager().getMessages(locale).getString(
-                                    visibility.getMessageKey()),
-                                false,
-                                new ArrayList<CmsContextMenuEntryBean>()));
-                    }
-                } else if ((item instanceof I_CmsADEAction) && ((I_CmsADEAction)item).isAdeSupported()) {
-                    CmsMenuItemVisibilityMode visibility = item.getVisibility(dcontext);
-                    if (!visibility.isInVisible()) {
-                        String jspPath = ((I_CmsADEAction)item).getJspPath();
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(jspPath)) {
-                            jspPath = OpenCms.getLinkManager().substituteLink(cms, jspPath);
-                        }
-                        CmsContextMenuEntryBean itemBean = new CmsContextMenuEntryBean(
+                    entries.put(
+                        item.getId(),
+                        new CmsContextMenuEntryBean(
                             visibility.isActive(),
                             true,
-                            jspPath,
+                            null,
                             item.getTitle(locale),
-                            ((I_CmsADEAction)item).getCommandClassName(),
+                            null,
                             CmsStringUtil.isEmptyOrWhitespaceOnly(visibility.getMessageKey())
                             ? null
                             : OpenCms.getWorkplaceManager().getMessages(locale).getString(visibility.getMessageKey()),
                             false,
-                            null);
-                        Map<String, String> params = ((I_CmsADEAction)item).getParams();
-                        if (params != null) {
-                            params = new HashMap<String, String>(params);
-                            for (Entry<String, String> param : params.entrySet()) {
-                                String value = CmsVfsService.prepareFileNameForEditor(cms, resource, param.getValue());
-                                param.setValue(value);
-                            }
-                            itemBean.setParams(params);
+                            new ArrayList<CmsContextMenuEntryBean>()));
+
+                } else if ((item instanceof I_CmsADEAction) && ((I_CmsADEAction)item).isAdeSupported()) {
+                    CmsMenuItemVisibilityMode visibility = item.getVisibility(dcontext);
+
+                    String jspPath = ((I_CmsADEAction)item).getJspPath();
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(jspPath)) {
+                        jspPath = OpenCms.getLinkManager().substituteLink(cms, jspPath);
+                    }
+                    CmsContextMenuEntryBean itemBean = new CmsContextMenuEntryBean(
+                        visibility.isActive(),
+                        true,
+                        jspPath,
+                        item.getTitle(locale),
+                        ((I_CmsADEAction)item).getCommandClassName(),
+                        CmsStringUtil.isEmptyOrWhitespaceOnly(visibility.getMessageKey())
+                        ? null
+                        : OpenCms.getWorkplaceManager().getMessages(locale).getString(visibility.getMessageKey()),
+                        false,
+                        null);
+                    Map<String, String> params = ((I_CmsADEAction)item).getParams();
+                    if (params != null) {
+                        params = new HashMap<String, String>(params);
+                        for (Entry<String, String> param : params.entrySet()) {
+                            String value = CmsVfsService.prepareFileNameForEditor(cms, resource, param.getValue());
+                            param.setValue(value);
                         }
-                        entries.put(item.getId(), itemBean);
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(item.getParentId())) {
-                            List<CmsContextMenuEntryBean> submenu;
-                            if (submenus.containsKey(item.getParentId())) {
-                                submenu = submenus.get(item.getParentId());
-                            } else {
-                                submenu = new ArrayList<CmsContextMenuEntryBean>();
-                                submenus.put(item.getParentId(), submenu);
-                            }
-                            submenu.add(itemBean);
+                        itemBean.setParams(params);
+                    }
+                    entries.put(item.getId(), itemBean);
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(item.getParentId())) {
+                        List<CmsContextMenuEntryBean> submenu;
+                        if (submenus.containsKey(item.getParentId())) {
+                            submenu = submenus.get(item.getParentId());
+                        } else {
+                            submenu = new ArrayList<CmsContextMenuEntryBean>();
+                            submenus.put(item.getParentId(), submenu);
                         }
+                        submenu.add(itemBean);
                     }
                 }
             }

@@ -56,6 +56,19 @@ public class CmsTreeNode<T> {
     }
 
     /**
+     * Adds the enclosed data of this node and its children to the given list, in preorder.
+     *
+     * @param result the list to add the data to
+     */
+    public void addDataInPreOrder(List<T> result) {
+
+        result.add(m_data);
+        for (CmsTreeNode<T> child : m_children) {
+            child.addDataInPreOrder(result);
+        }
+    }
+
+    /**
      * Gets the (mutable) list of child nodes.<p>
      *
      * @return the list of child nodes
