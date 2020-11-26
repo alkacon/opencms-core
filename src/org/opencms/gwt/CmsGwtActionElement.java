@@ -29,7 +29,6 @@ package org.opencms.gwt;
 
 import org.opencms.file.CmsObject;
 import org.opencms.gwt.shared.CmsCoreData;
-import org.opencms.gwt.shared.CmsCoreData.ModuleKey;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
@@ -42,7 +41,6 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
-import java.util.ServiceLoader;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,7 +56,7 @@ import com.google.gwt.user.server.rpc.RPC;
  *
  * @since 8.0.0
  */
-public abstract class CmsGwtActionElement extends CmsJspActionElement {
+public class CmsGwtActionElement extends CmsJspActionElement {
 
     /** The closing script tag. */
     protected static final String SCRIPT_TAG_CLOSE = "\n//-->\n</script>";
@@ -304,14 +302,6 @@ public abstract class CmsGwtActionElement extends CmsJspActionElement {
     public String export(boolean includeFontCss) throws Exception {
 
         StringBuffer buffer = new StringBuffer(exportCommon(getCmsObject(), getCoreData()));
-
-        ServiceLoader<I_CmsWorkplaceJsProvider> additionalJs = ServiceLoader.load(I_CmsWorkplaceJsProvider.class);
-        for (I_CmsWorkplaceJsProvider jsProvider : additionalJs) {
-            for (String scriptUrl : jsProvider.getJSUrls(getCmsObject(), getModuleKey())) {
-                buffer.append("<script type=\"text/javascript\" src=\"" + scriptUrl + "\"></script>\n");
-            }
-        }
-
         if (includeFontCss || !OpenCms.getWorkplaceAppManager().getWorkplaceCssUris().isEmpty()) {
             buffer.append("\n<style type=\"text/css\">\n");
             if (includeFontCss) {
@@ -322,7 +312,6 @@ public abstract class CmsGwtActionElement extends CmsJspActionElement {
             }
             buffer.append("</style>\n");
         }
-        buffer.append(exportModuleScriptTag());
         return buffer.toString();
     }
 
@@ -362,22 +351,18 @@ public abstract class CmsGwtActionElement extends CmsJspActionElement {
     }
 
     /**
-     * Returns the module key for the specific GWT module.
-     * @return the module key for the specific GWT module.
-     */
-    protected abstract ModuleKey getModuleKey();
-
-    /**
      * Exports script tag to the main OpenCms GWT no-cache js script tag.<p>
+     *
+     * @param moduleName the client module to start
      *
      * @return the HTML string
      */
-    private String exportModuleScriptTag() {
+    protected String exportModuleScriptTag(String moduleName) {
 
         String result = "<meta name=\""
             + CmsCoreData.META_PARAM_MODULE_KEY
             + "\" content=\""
-            + getModuleKey().name()
+            + moduleName
             + "\" >\n<script type=\"text/javascript\" src=\""
             + CmsWorkplace.getStaticResourceUri("gwt/opencms/opencms.nocache.js");
         result += "\"></script>\n";

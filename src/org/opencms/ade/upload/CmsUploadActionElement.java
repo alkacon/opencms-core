@@ -29,7 +29,6 @@ package org.opencms.ade.upload;
 
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.shared.CmsCoreData;
-import org.opencms.gwt.shared.CmsCoreData.ModuleKey;
 import org.opencms.gwt.shared.I_CmsUploadConstants;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsStringUtil;
@@ -76,6 +75,9 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
     /** The OpenCms module name. */
     public static final String CMS_MODULE_NAME = "org.opencms.ade.upload";
 
+    /** The GWT module name. */
+    public static final String GWT_MODULE_NAME = CmsCoreData.ModuleKey.upload.name();
+
     /**
      * Constructor.<p>
      *
@@ -107,6 +109,7 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
         sb.append(super.export());
         sb.append(exportTargetFolder());
         sb.append(exportCloseLink());
+        sb.append(exportModuleScriptTag(GWT_MODULE_NAME));
         return sb.toString();
     }
 
@@ -133,13 +136,6 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
     public String getTitle() {
 
         return Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_UPLOAD_TITLE_0);
-    }
-
-    @Override
-    protected ModuleKey getModuleKey() {
-
-        // TODO Auto-generated method stub
-        return CmsCoreData.ModuleKey.upload;
     }
 
     /**

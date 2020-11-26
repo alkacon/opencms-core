@@ -33,7 +33,6 @@ import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsRpcException;
-import org.opencms.gwt.shared.CmsCoreData.ModuleKey;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -57,6 +56,9 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
 
     /** The OpenCms module name. */
     public static final String CMS_MODULE_NAME = "org.opencms.ade.sitemap";
+
+    /** The GWT module name. */
+    public static final String GWT_MODULE_NAME = "sitemap";
 
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSitemapActionElement.class);
@@ -98,6 +100,7 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
                 CmsSitemapData.DICT_NAME,
                 I_CmsSitemapService.class.getMethod("prefetch", String.class),
                 getSitemapData()));
+        sb.append(exportModuleScriptTag(GWT_MODULE_NAME));
         String vaadinBootstrap = CmsStringUtil.joinPaths(
             OpenCms.getSystemInfo().getContextPath(),
             "VAADIN/vaadinBootstrap.js");
@@ -152,14 +155,5 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
             }
         }
         return Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_EDITOR_TITLE_1, folderTitle);
-    }
-
-    /**
-     * @see org.opencms.gwt.CmsGwtActionElement#getModuleKey()
-     */
-    @Override
-    protected ModuleKey getModuleKey() {
-
-        return ModuleKey.sitemap;
     }
 }
