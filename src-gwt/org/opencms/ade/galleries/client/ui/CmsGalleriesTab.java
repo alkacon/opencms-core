@@ -45,7 +45,6 @@ import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.externallink.CmsEditExternalLinkDialog;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsEmbeddedDialogHandler;
 import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
 import org.opencms.util.CmsStringUtil;
@@ -497,11 +496,6 @@ public class CmsGalleriesTab extends A_CmsListTab {
             String uploadAction = galleryInfo.getUploadAction();
 
             if (null != uploadAction) {
-                CmsDebugLog.consoleLog(
-                    "Adding custom upload button for gallery "
-                        + galleryInfo.getPath()
-                        + " calling function "
-                        + uploadAction);
                 CmsPushButton uploadButton = new CmsPushButton(I_CmsButton.UPLOAD_SMALL);
                 uploadButton.setText(null);
                 uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, galleryInfo.getPath()));
@@ -522,6 +516,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
                                 CmsCoreProvider.getVfsService().getStructureId(galleryInfo.getPath(), this);
                             }
 
+                            @Override
                             protected void onResponse(CmsUUID result) {
 
                                 stop(false);
@@ -531,7 +526,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
                                     uploadAction,
                                     resultIds,
                                     id -> getTabHandler().updateIndex());
-                            };
+                            }
 
                         };
                         action.execute();

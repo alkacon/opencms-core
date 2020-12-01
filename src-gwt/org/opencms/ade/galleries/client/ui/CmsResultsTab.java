@@ -733,6 +733,7 @@ public class CmsResultsTab extends A_CmsListTab {
                             CmsCoreProvider.getVfsService().getStructureId(gallery.getPath(), this);
                         }
 
+                        @Override
                         protected void onResponse(CmsUUID result) {
 
                             stop(false);
@@ -742,7 +743,7 @@ public class CmsResultsTab extends A_CmsListTab {
                                 gallery.getUploadAction(),
                                 resultIds,
                                 id -> getTabHandler().updateIndex());
-                        };
+                        }
 
                     };
                     action.execute();
@@ -870,8 +871,6 @@ public class CmsResultsTab extends A_CmsListTab {
      */
     private void showUpload(CmsGallerySearchBean searchObj) {
 
-        // TODO: Custom upload button!
-
         Set<String> targets = new HashSet<String>();
 
         if (searchObj.getGalleries() != null) {
@@ -892,7 +891,6 @@ public class CmsResultsTab extends A_CmsListTab {
             m_uploadButton.getElement().getStyle().clearDisplay();
         }
         if (targets.size() == 1) {
-            //TODO: Make upload button generic
             CmsGalleryFolderBean galleryFolder = getTabHandler().getGalleryInfo(targets.iterator().next());
 
             if ((galleryFolder != null) && needsSpecialButton(galleryFolder)) {
