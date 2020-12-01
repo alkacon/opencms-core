@@ -170,6 +170,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentWithVfs("testMacros"));
         suite.addTest(new TestCmsXmlContentWithVfs("testAddFileReference"));
         suite.addTest(new TestCmsXmlContentWithVfs("testXmlContentCreate"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testVarLinkPreservePercentEncodingForSpecialCharacters"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -2349,6 +2350,43 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertSame(
             CmsDefaultXmlContentHandler.class.getName(),
             value1.getContentDefinition().getContentHandler().getClass().getName());
+    }
+
+    /**
+     * Test special characters in varlink fields.
+     *
+     * @throws Exception in case something goes wrong
+     */
+    public void testVarLinkPreservePercentEncodingForSpecialCharacters() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing link CmsXmlVarLinkValue in an XML content");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String content;
+
+        // unmarshal content definition
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-VarLink-definition-1.xsd",
+            CmsEncoder.ENCODING_UTF_8);
+        String schemaId = "http://www.opencms.org/testVarLink1.xsd";
+        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, schemaId, resolver);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(schemaId, content.getBytes(CmsEncoder.ENCODING_UTF_8));
+
+        // now create the XML content
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-VarLink-1.xml", CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
+        I_CmsXmlContentValue value = xmlcontent.getValue("VarLink", Locale.ENGLISH);
+        String link = "http://www.alkacon.com/%C3%A4";
+        value.setStringValue(cms, "http://www.alkacon.com/%C3%A4");
+
+        String content2 = new String(xmlcontent.marshal(), "UTF-8");
+        CmsXmlContent xmlcontent2 = CmsXmlContentFactory.unmarshal(content2, CmsEncoder.ENCODING_UTF_8, resolver);
+        I_CmsXmlContentValue value2 = xmlcontent2.getValue("VarLink", Locale.ENGLISH);
+
+        assertEquals(link, value2.getStringValue(cms));
     }
 
     /**

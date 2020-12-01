@@ -96,7 +96,7 @@ public class CmsUriSplitter {
                 URI u = new URI(uri);
                 m_protocol = u.getScheme();
                 URI tempUri = new URI(u.getScheme(), u.getAuthority(), u.getPath(), null, null);
-                m_prefix = tempUri.toString();
+                m_prefix = tempUri.toASCIIString();
                 m_anchor = u.getRawFragment();
                 m_query = u.getRawQuery();
             } catch (Exception exc) {
