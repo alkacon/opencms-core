@@ -33,7 +33,7 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.report.CmsReportWidget;
 
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * Dialog for reports.<p>
@@ -52,11 +52,11 @@ public class CmsShowReportDialog extends CmsBasicDialog {
     public CmsShowReportDialog(A_CmsReportThread thread, Runnable close) {
 
         setHeight(CmsImportExportUserDialog.DIALOG_HEIGHT);
-        Panel panel = new Panel();
+        VerticalLayout panel = new VerticalLayout();
         panel.setSizeFull();
         CmsReportWidget widget = new CmsReportWidget(thread);
         widget.setSizeFull();
-        panel.setContent(widget);
+        panel.addComponent(widget);
         setContent(panel);
 
         Button closeButton = new Button(CmsVaadinUtils.messageClose());
