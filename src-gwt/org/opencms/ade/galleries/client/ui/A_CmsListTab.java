@@ -269,7 +269,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     private Timer m_filterTimer;
 
     /** The last quick search value. */
-    private String m_lastQuickSearchValue;
+    private String m_lastQuickSearchValue = "";
 
     /** The quick search handler registration. */
     private HandlerRegistration m_quickSearchRegistration;
@@ -719,11 +719,11 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     }
 
     native void customUploadAction(String nativeMethod, String target) /*-{
-                                                                       
-                                                                       var uploadAction = $wnd[nativeMethod];
-                                                                       nativeMethod(target);
-                                                                       
-                                                                       }-*/;
+
+		var uploadAction = $wnd[nativeMethod];
+		nativeMethod(target);
+
+    }-*/;
 
     /**
      * Creates the quick search/finder box.<p>
