@@ -977,6 +977,14 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Initializes the ADE manager.
+     */
+    public void initAdeManager() {
+
+        OpenCms.getADEManager();
+    }
+
+    /**
      * @see org.opencms.main.I_CmsShellCommands#initShellCmsObject(org.opencms.file.CmsObject, org.opencms.main.CmsShell)
      */
     public void initShellCmsObject(CmsObject cms, CmsShell shell) {
@@ -1636,6 +1644,27 @@ class CmsShellCommands implements I_CmsShellCommands {
         } catch (InterruptedException e) {
             // ignore
         }
+    }
+
+    /**
+     * Starts a benchmark timer.
+     *
+     * @param name the timer name
+     */
+    public void startBenchmark(String name) {
+
+        m_shell.getBenchmarkTable().start(name);
+    }
+
+    /**
+     * Stops a benchmark timer.
+     *
+     * @param name the timer name
+     */
+    public void stopBenchmark(String name) {
+
+        m_shell.getBenchmarkTable().stop(name);
+
     }
 
     /**

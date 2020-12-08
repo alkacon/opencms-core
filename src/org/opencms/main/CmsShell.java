@@ -37,6 +37,8 @@ import org.opencms.security.CmsRole;
 import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.benchmark.CmsBenchmarkTable;
+import org.opencms.util.benchmark.CmsFileBenchmarkReceiver;
 
 import java.awt.event.KeyEvent;
 import java.io.FileDescriptor;
@@ -389,6 +391,9 @@ public class CmsShell {
 
     /** Boolean variable to disable JLAN. */
     private static boolean JLAN_DISABLED;
+
+    /** The benchmark table. */
+    private CmsBenchmarkTable m_benchmarkTable;
 
     /** The OpenCms context object. */
     protected CmsObject m_cms;
@@ -919,6 +924,19 @@ public class CmsShell {
                 t.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Gets the benchmark table for the shell, lazily initializing it if it didn't exist yet.
+     *
+     * @return the benchmark table for the shell.
+     */
+    public CmsBenchmarkTable getBenchmarkTable() {
+
+        if (m_benchmarkTable == null) {
+            m_benchmarkTable = new CmsBenchmarkTable(new CmsFileBenchmarkReceiver());
+        }
+        return m_benchmarkTable;
     }
 
     /**
