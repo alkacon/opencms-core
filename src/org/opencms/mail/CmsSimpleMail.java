@@ -55,9 +55,22 @@ public class CmsSimpleMail extends SimpleEmail {
      */
     public CmsSimpleMail() {
 
+        this(OpenCms.getSystemInfo().getMailSettings().getDefaultMailHost());
+    }
+
+    /**
+     * Constructor of a CmsSimpleMail where the mail host is explicitly chosen.<p>
+     *
+     * The mail from address is set to the OpenCms
+     * default values of the configuration.<p>
+     *
+     * @param mailHost the mail host to use (a host configured in OpenCms).
+     */
+    public CmsSimpleMail(CmsMailHost mailHost) {
+
         // call super constructor
         super();
-        CmsMailUtil.configureMail(OpenCms.getSystemInfo().getMailSettings().getDefaultMailHost(), this);
+        CmsMailUtil.configureMail(mailHost, this);
     }
 
     /**

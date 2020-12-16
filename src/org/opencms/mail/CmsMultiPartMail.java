@@ -43,7 +43,7 @@ import org.apache.commons.mail.MultiPartEmail;
 public class CmsMultiPartMail extends MultiPartEmail {
 
     /**
-     * Default constructor of a CmsHtmlMail.<p>
+     * Default constructor of a CmsMultiPartMail.<p>
      *
      * The mail host name and the mail from address are set to the OpenCms
      * default values of the configuration.<p>
@@ -51,9 +51,23 @@ public class CmsMultiPartMail extends MultiPartEmail {
      */
     public CmsMultiPartMail() {
 
+        this(OpenCms.getSystemInfo().getMailSettings().getDefaultMailHost());
+    }
+
+    /**
+     * Default constructor of a CmsMultiPartMail.<p>
+     *
+     * The mail from address is set to the OpenCms
+     * default values of the configuration.<p>
+     *
+     * @param mailHost the mail host to use (a host configured in OpenCms).
+     *
+     */
+    public CmsMultiPartMail(CmsMailHost mailHost) {
+
         // call super constructor
         super();
-        CmsMailUtil.configureMail(OpenCms.getSystemInfo().getMailSettings().getDefaultMailHost(), this);
+        CmsMailUtil.configureMail(mailHost, this);
     }
 
 }
