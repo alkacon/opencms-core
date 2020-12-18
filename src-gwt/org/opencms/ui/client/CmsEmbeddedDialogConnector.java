@@ -73,10 +73,10 @@ public class CmsEmbeddedDialogConnector extends AbstractExtensionConnector imple
     }-*/;
 
     /**
-     * @see org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC#setPrincipal(java.lang.String)
+     * @see org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC#selectString(java.lang.String)
      */
-    public native void setPrincipal(String principal)/*-{
-        $wnd.connector.setPrincipal(principal);
+    public native void selectString(String principal)/*-{
+        $wnd.connector.selectString(principal);
     }-*/;
 
     /**

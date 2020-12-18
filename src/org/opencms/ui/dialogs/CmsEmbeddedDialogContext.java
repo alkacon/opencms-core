@@ -225,6 +225,16 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
     }
 
     /**
+     * Finishes the dialog and returns an arbitrary string to the opener.
+     *
+     * @param str the string to pass to the opener
+     */
+    public void finishWithString(String str) {
+        closeWindow(true);
+        getClientRPC().selectString(str);
+    }
+
+    /**
      * @see org.opencms.ui.I_CmsDialogContext#focus(org.opencms.util.CmsUUID)
      */
     public void focus(CmsUUID structureId) {
@@ -315,9 +325,9 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
      *
      * @param principalName the principal name
      */
-    public void setPrincipal(String principalName) {
+    public void selectString(String principalName) {
 
-        getClientRPC().setPrincipal(principalName);
+        getClientRPC().selectString(principalName);
     }
 
     /**

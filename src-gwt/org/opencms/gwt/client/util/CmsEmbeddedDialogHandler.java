@@ -31,7 +31,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.CmsIFrame;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsActionHandler;
-import org.opencms.gwt.client.ui.contextmenu.I_CmsPrincipalSelectHandler;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsStringSelectHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsStringUtil;
@@ -65,7 +65,7 @@ public class CmsEmbeddedDialogHandler implements I_CmsHasInit {
     private Command m_onCloseCommand;
 
     /** The principle select handler. */
-    private I_CmsPrincipalSelectHandler m_principleHandler;
+    private I_CmsStringSelectHandler m_stringSelectHandler;
 
     /**
      * Constructor.<p>
@@ -102,10 +102,10 @@ public class CmsEmbeddedDialogHandler implements I_CmsHasInit {
      * Exports native JS function cmsOpenEmbeddedDialog.
      */
     public static native void exportNativeFunctions() /*-{
-		$wnd.cmsOpenEmbeddedDialog = function(dialogId, callback, structureIds,
-				params) {
-			@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::openEmbeddedDialog(Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;Lcom/google/gwt/core/client/JsArrayString;Lcom/google/gwt/core/client/JavaScriptObject;)(dialogId, callback, structureIds, params);
-		};
+        $wnd.cmsOpenEmbeddedDialog = function(dialogId, callback, structureIds,
+                params) {
+            @org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::openEmbeddedDialog(Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;Lcom/google/gwt/core/client/JsArrayString;Lcom/google/gwt/core/client/JavaScriptObject;)(dialogId, callback, structureIds, params);
+        };
     }-*/;
 
     /**
@@ -219,6 +219,7 @@ public class CmsEmbeddedDialogHandler implements I_CmsHasInit {
         }
         handler.openDialog(dialogId, null, uuids, paramsMap);
     }
+
 
     /**
      * Called on dialog close.<p>
@@ -356,6 +357,25 @@ public class CmsEmbeddedDialogHandler implements I_CmsHasInit {
     }
 
     /**
+     * Calls the principle select handler and closes the dialog frame.<p>
+     *
+     * @param principle the principle to select
+     */
+    public void selectString(String principle) {
+
+        if (m_frame != null) {
+            m_frame.removeFromParent();
+            m_frame = null;
+        }
+        if (m_stringSelectHandler != null) {
+            m_stringSelectHandler.selectString(principle);
+        }
+        if (m_onCloseCommand != null) {
+            m_onCloseCommand.execute();
+        }
+    }
+
+    /**
      * Sets the on close command.<p>
      *
      * @param onCloseCommand the on close command
@@ -366,32 +386,13 @@ public class CmsEmbeddedDialogHandler implements I_CmsHasInit {
     }
 
     /**
-     * Calls the principle select handler and closes the dialog frame.<p>
-     *
-     * @param principle the principle to select
-     */
-    public void setPrinciple(String principle) {
-
-        if (m_frame != null) {
-            m_frame.removeFromParent();
-            m_frame = null;
-        }
-        if (m_principleHandler != null) {
-            m_principleHandler.selectPrincipal(principle);
-        }
-        if (m_onCloseCommand != null) {
-            m_onCloseCommand.execute();
-        }
-    }
-
-    /**
      * Sets the principle select handler.<p>
      *
-     * @param principleHandler the principle select handler
+     * @param selectHandler the principle select handler
      */
-    public void setPrincipleSelectHandler(I_CmsPrincipalSelectHandler principleHandler) {
+    public void setStringSelectHandler(I_CmsStringSelectHandler selectHandler) {
 
-        m_principleHandler = principleHandler;
+        m_stringSelectHandler = selectHandler;
     }
 
     /**
@@ -419,23 +420,23 @@ public class CmsEmbeddedDialogHandler implements I_CmsHasInit {
      * Initializes the iFrame element.<p>
      */
     private native void initIFrame()/*-{
-		var self = this;
-		$wnd.frames.embeddedDialogFrame.connector = {
-			reload : function() {
-				self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::reload()();
-			},
-			finish : function(resources) {
-				self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::finish(Ljava/lang/String;)(resources);
-			},
-			finishForProjectOrSiteChange : function(sitePath, serverLink) {
-				self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::onSiteOrProjectChange(Ljava/lang/String;Ljava/lang/String;)(sitePath,serverLink)
-			},
-			leavePage : function(targetUri) {
-				self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::leavePage(Ljava/lang/String;)(targetUri);
-			},
-			setPrincipal : function(principal) {
-				self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::setPrinciple(Ljava/lang/String;)(principal);
-			}
-		};
+        var self = this;
+        $wnd.frames.embeddedDialogFrame.connector = {
+            reload : function() {
+                self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::reload()();
+            },
+            finish : function(resources) {
+                self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::finish(Ljava/lang/String;)(resources);
+            },
+            finishForProjectOrSiteChange : function(sitePath, serverLink) {
+                self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::onSiteOrProjectChange(Ljava/lang/String;Ljava/lang/String;)(sitePath,serverLink)
+            },
+            leavePage : function(targetUri) {
+                self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::leavePage(Ljava/lang/String;)(targetUri);
+            },
+            selectString : function(value) {
+                self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::selectString(Ljava/lang/String;)(value);
+            }
+        };
     }-*/;
 }

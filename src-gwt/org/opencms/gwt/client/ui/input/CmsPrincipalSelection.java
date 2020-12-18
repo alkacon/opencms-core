@@ -29,7 +29,7 @@ package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
-import org.opencms.gwt.client.ui.contextmenu.I_CmsPrincipalSelectHandler;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsStringSelectHandler;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.client.util.CmsEmbeddedDialogHandler;
@@ -378,9 +378,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
         m_oldValue = m_selectionInput.m_textbox.getValue();
         CmsEmbeddedDialogHandler handler = new CmsEmbeddedDialogHandler();
-        handler.setPrincipleSelectHandler(new I_CmsPrincipalSelectHandler() {
+        handler.setStringSelectHandler(new I_CmsStringSelectHandler() {
 
-            public void selectPrincipal(String principal) {
+            public void selectString(String principal) {
 
                 if (!getFormValue().equals(principal)) {
                     setFormValueAsString(principal);

@@ -62,9 +62,9 @@ public interface I_CmsEmbeddedDialogClientRPC extends ClientRpc {
     void reloadParent();
 
     /**
-     * Sets the selected principle.<p>
+     * Sets the selected string.<p>
      *
-     * @param principle the principle
+     * @param str the string
      */
-    void setPrincipal(String principle);
+    void selectString(String str);
 }

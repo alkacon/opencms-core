@@ -359,7 +359,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
 
             public void onPrincipalSelect(String principalType, String principalName) {
 
-                dialogContext.setPrincipal(principalName);
+                dialogContext.selectString(principalName);
             }
         });
         window.setCaption(
