@@ -38,6 +38,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.commons.logging.Log;
@@ -81,14 +82,6 @@ public final class CmsLog {
 
     /** Set of names of channels that should not be managed via the GUI. */
     private static CopyOnWriteArraySet<String> NON_MANAGEABLE_CHANNELS = new CopyOnWriteArraySet<>();
-
-    /**
-     * Hides the public constructor.<p>
-     */
-    private CmsLog() {
-
-        // hides the public constructor
-    }
 
     /**
      * Initializes the OpenCms logger configuration.<p>
@@ -140,6 +133,32 @@ public final class CmsLog {
         } catch (Exception e) {
             // unexpected but nothing we can do about it, print stack trace and continue
             e.printStackTrace(System.err);
+        }
+    }
+
+    /**
+     * Hides the public constructor.<p>
+     */
+    private CmsLog() {
+
+        // hides the public constructor
+    }
+
+    /**
+     * Helper for safely evaluating lambda functions to produce log output and catch exceptions they might throw.
+     *
+     * @param log the logger to use for logging errors
+     * @param stringProvider the string provider (normally just given as a lambda function)
+     *
+     * @return the result of the function (or &lt;ERROR&gt; if an exception was thrown)
+     */
+    public static String eval(Log log, Callable<String> stringProvider) {
+
+        try {
+            return stringProvider.call();
+        } catch (Exception e) {
+            log.error(e.getLocalizedMessage(), e);
+            return "<ERROR>";
         }
     }
 

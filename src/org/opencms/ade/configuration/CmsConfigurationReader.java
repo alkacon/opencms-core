@@ -35,7 +35,6 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsIconUtil;
 import org.opencms.i18n.CmsLocaleManager;
@@ -894,29 +893,26 @@ public class CmsConfigurationReader {
 
         I_CmsXmlContentValueLocation pageLoc = node.getSubValue(N_PAGE);
         String typeName = getString(node.getSubValue(N_TYPE));
-        try {
-            String page = pageLoc.asString(m_cms);
-            CmsResource detailPageRes = m_cms.readResource(page);
-            CmsUUID id = detailPageRes.getStructureId();
-            String iconClasses;
-            if (typeName.startsWith(CmsDetailPageInfo.FUNCTION_PREFIX)) {
-                iconClasses = CmsIconUtil.getIconClasses(CmsXmlDynamicFunctionHandler.TYPE_FUNCTION, null, false);
-            } else {
-                iconClasses = CmsIconUtil.getIconClasses(typeName, null, false);
-            }
-
-            CmsDetailPageInfo detailPage = new CmsDetailPageInfo(id, page, typeName, iconClasses);
-            m_detailPageConfigs.add(detailPage);
-        } catch (CmsVfsResourceNotFoundException e) {
-            CmsUUID structureId = pageLoc.asId(m_cms);
-            CmsResource detailPageRes = m_cms.readResource(structureId);
-            CmsDetailPageInfo detailPage = new CmsDetailPageInfo(
-                structureId,
-                m_cms.getSitePath(detailPageRes),
-                typeName,
-                CmsIconUtil.getIconClasses(typeName, null, false));
-            m_detailPageConfigs.add(detailPage);
+        CmsXmlVfsFileValue detailPageValue = (CmsXmlVfsFileValue)pageLoc.getValue();
+        CmsLink uncheckedLink = detailPageValue.getUncheckedLink();
+        if (uncheckedLink == null) {
+            LOG.warn(
+                "Missing detail page link in " + CmsLog.eval(LOG, () -> node.getDocument().getFile().getRootPath()));
+            return;
         }
+        String page = uncheckedLink.getTarget();
+        CmsUUID structureId = uncheckedLink.getStructureId();
+
+        String iconClasses;
+        if (typeName.startsWith(CmsDetailPageInfo.FUNCTION_PREFIX)) {
+            iconClasses = CmsIconUtil.getIconClasses(CmsXmlDynamicFunctionHandler.TYPE_FUNCTION, null, false);
+        } else {
+            iconClasses = CmsIconUtil.getIconClasses(typeName, null, false);
+        }
+
+        CmsDetailPageInfo detailPage = new CmsDetailPageInfo(structureId, page, typeName, iconClasses);
+        m_detailPageConfigs.add(detailPage);
+
     }
 
     /**

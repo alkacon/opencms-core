@@ -222,6 +222,21 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     }
 
     /**
+     * Returns the raw data from the XML value as a CmsLink, without any consistency checks.
+     *
+     * @return the unchecked data from the XML as a CmsLink
+     */
+    public CmsLink getUncheckedLink() {
+
+        Element linkElement = m_element.element(CmsXmlPage.NODE_LINK);
+        if (linkElement == null) {
+            return null;
+        }
+        return new CmsLink(linkElement);
+
+    }
+
+    /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#isSearchable()
      */
     @Override
