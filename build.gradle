@@ -1605,6 +1605,11 @@ install {
     }
 }
 
+
+test { 
+    maxHeapSize="1500m"
+}
+
 // fixed issue with libraries containing both .java and .class files
 tasks.withType(JavaCompile) {
     options.sourcepath=files()
