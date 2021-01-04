@@ -29,6 +29,7 @@ package org.opencms.loader;
 
 import com.alkacon.simapi.RenderSettings;
 import com.alkacon.simapi.Simapi;
+import com.alkacon.simapi.CmykJpegReader.ByteArrayImageInputStream;
 import com.alkacon.simapi.filter.GrayscaleFilter;
 import com.alkacon.simapi.filter.ShadowFilter;
 
@@ -44,13 +45,17 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
@@ -204,10 +209,16 @@ public class CmsImageScaler {
 
         init();
         try {
-            // read the scaled image
-            BufferedImage image = Simapi.read(content);
-            m_height = image.getHeight();
-            m_width = image.getWidth();
+            Dimension dim = getImageDimensions(rootPath, content);
+            if (dim != null) {
+                m_width = dim.width;
+                m_height = dim.height;
+            } else {
+                //  read the scaled image
+                BufferedImage image = Simapi.read(content);
+                m_height = image.getHeight();
+                m_width = image.getWidth();
+            }
         } catch (Exception e) {
             // nothing we can do about this, keep the original properties
             if (LOG.isDebugEnabled()) {
@@ -338,6 +349,41 @@ public class CmsImageScaler {
         }
 
         return result;
+    }
+
+    /**
+     * Gets image dimensions for given file
+     * @param imgFile image file
+     * @return dimensions of image
+     * @throws IOException if the file is not a known image
+     */
+    public static Dimension getImageDimensions(String path, byte[] content) throws IOException {
+
+        String name = CmsResource.getName(path);
+        int pos = name.lastIndexOf(".");
+        if (pos == -1) {
+            LOG.warn("Couldn't determine image dimensions for " + path);
+            return null;
+        }
+        String suffix = name.substring(pos + 1);
+        Iterator<ImageReader> iter = ImageIO.getImageReadersBySuffix(suffix);
+        while (iter.hasNext()) {
+            ImageReader reader = iter.next();
+            try {
+                ByteArrayImageInputStream stream = new ByteArrayImageInputStream(content);
+                reader.setInput(stream);
+                int minIndex = reader.getMinIndex();
+                int width = reader.getWidth(minIndex);
+                int height = reader.getHeight(minIndex);
+                return new Dimension(width, height);
+            } catch (IOException e) {
+                LOG.warn("Problem determining image size for " + path + ": " + e.getLocalizedMessage(), e);
+            } finally {
+                reader.dispose();
+            }
+        }
+        LOG.warn("Couldn't determine image dimensions for " + path);
+        return null;
     }
 
     /**
@@ -1616,6 +1662,12 @@ public class CmsImageScaler {
             }
         }
         return result;
+    }
+
+    private Dimension getDimensionsWithSimapi(byte[] content) throws Exception {
+
+        BufferedImage image = Simapi.read(content);
+        return new Dimension(image.getWidth(), image.getHeight());
     }
 
     /**
