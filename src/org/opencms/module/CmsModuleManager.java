@@ -91,6 +91,9 @@ public class CmsModuleManager {
     /** The map of configured modules. */
     private Map<String, CmsModule> m_modules;
 
+    /** Whether incremental module updates are allowed (rather than deleting / reimporting the module). */
+    private boolean m_moduleUpdateEnabled = true;
+
     /**
      * Basic constructor.<p>
      *
@@ -916,7 +919,12 @@ public class CmsModuleManager {
         boolean hasModule = hasModule(module.getName());
         boolean usedNewUpdate = false;
         if (hasModule) {
-            Optional<CmsModuleUpdater> optModuleUpdater = CmsModuleUpdater.create(cms, importFile, report);
+            Optional<CmsModuleUpdater> optModuleUpdater;
+            if (m_moduleUpdateEnabled) {
+                optModuleUpdater = CmsModuleUpdater.create(cms, importFile, report);
+            } else {
+                optModuleUpdater = Optional.empty();
+            }
             if (optModuleUpdater.isPresent()) {
                 usedNewUpdate = true;
                 optModuleUpdater.get().run();
@@ -931,6 +939,16 @@ public class CmsModuleManager {
             OpenCms.getImportExportManager().importData(cms, report, params);
         }
         return new CmsReplaceModuleInfo(module, usedNewUpdate);
+    }
+
+    /**
+     * Enables / disables incremental module updates, for testing purposes.
+     *
+     * @param enabled if incremental module updating should be enabled
+     */
+    public void setModuleUpdateEnabled(boolean enabled) {
+
+        m_moduleUpdateEnabled = enabled;
     }
 
     /**

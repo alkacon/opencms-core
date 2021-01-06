@@ -539,6 +539,14 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Disable incremental module updates.
+     */
+    public void disableModuleUpdates() {
+
+        OpenCms.getModuleManager().setModuleUpdateEnabled(false);
+    }
+
+    /**
      * Turns the echo status for the shell on or off.<p>
      *
      * @param echo if "on", echo is turned on, otherwise echo is turned off
