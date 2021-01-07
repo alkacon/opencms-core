@@ -31,6 +31,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.loader.CmsLoaderException;
@@ -212,13 +213,20 @@ public final class CmsXmlContentFactory {
         String filename = cms.getSitePath(file);
 
         String encoding = null;
-        try {
-            encoding = cms.readPropertyObject(
-                filename,
-                CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
-                true).getValue();
-        } catch (@SuppressWarnings("unused") CmsException e) {
-            // encoding will be null
+        if (OpenCms.getResourceManager().hasResourceType(file.getTypeId())) {
+            if (OpenCms.getResourceManager().getResourceType(file) instanceof CmsResourceTypeXmlAdeConfiguration) {
+                encoding = "UTF-8";
+            }
+        }
+        if (encoding == null) {
+            try {
+                encoding = cms.readPropertyObject(
+                    file,
+                    CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
+                    true).getValue();
+            } catch (@SuppressWarnings("unused") CmsException e) {
+                // encoding will be null
+            }
         }
         if (encoding == null) {
             encoding = OpenCms.getSystemInfo().getDefaultEncoding();
@@ -244,7 +252,8 @@ public final class CmsXmlContentFactory {
                 } catch (UnsupportedEncodingException e) {
                     // this will not happen since the encodig has already been validated
                     throw new CmsXmlException(
-                        Messages.get().container(Messages.ERR_XMLCONTENT_INVALID_ENC_1, filename), e);
+                        Messages.get().container(Messages.ERR_XMLCONTENT_INVALID_ENC_1, filename),
+                        e);
                 }
             }
         } else {
