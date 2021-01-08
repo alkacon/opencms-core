@@ -289,7 +289,6 @@ public class CmsContentTypeVisitor {
     /** The widgets encountered by this visitor. */
     private List<I_CmsWidget> m_widgets = new ArrayList<I_CmsWidget>();
 
-
     /**
      * Constructor.<p>
      *
@@ -654,7 +653,7 @@ public class CmsContentTypeVisitor {
         DisplayType defaultType = DisplayType.none;
         EvaluationRule rule = EvaluationRule.none;
         try {
-            WidgetInfo widgetInfo = CmsWidgetUtil.collectWidgetInfo(m_rootContentDefinition, path);
+            WidgetInfo widgetInfo = CmsWidgetUtil.collectWidgetInfo(cms, m_rootContentDefinition, path);
             I_CmsWidget widget = widgetInfo.getWidget();
             I_CmsComplexWidget complexWidget = widgetInfo.getComplexWidget();
             configuredType = widgetInfo.getDisplayType();

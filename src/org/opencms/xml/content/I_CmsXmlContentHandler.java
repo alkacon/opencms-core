@@ -196,13 +196,13 @@ public interface I_CmsXmlContentHandler {
     List<CmsChangeHandlerConfig> getChangeHandlerConfigs();
 
     /**
-     * Gets the complex widget for the given schema type.<p>
+     * Gets the unconfigured complex widget defined for the given path.<p>
      *
-     * @param value the schema type for which we want the complex widget
-     *
-     * @return the complex widget instance for the schema type
+     * @param cms the CMS context
+     * @param path the value path
+     * @return the complex widget
      */
-    I_CmsComplexWidget getComplexWidget(I_CmsXmlSchemaType value);
+    I_CmsComplexWidget getComplexWidget(CmsObject cms, String path);
 
     /**
      * Returns the configuration String value for the widget used to edit the given XML content schema type.<p>
@@ -558,20 +558,13 @@ public interface I_CmsXmlContentHandler {
     String getTitleMapping(CmsObject cms, CmsXmlContent document, Locale locale);
 
     /**
-     * Gets the unconfigured complex widget defined for the given path.<p>
+     * Gets the widget for the given path and CMS context.
      *
-     * @param path the value path
-     * @return the complex widget
+     * @param cms the current CMS context
+     * @param path the XML value path
+     * @return the widget for the path
      */
-    I_CmsComplexWidget getUnconfiguredComplexWidget(String path);
-
-    /**
-     * Gets an unconfigured widget for a given sub-path, i.e. one without a configuration string.<p>
-     *
-     * @param path the sub-path
-     * @return the widget for the given path
-     */
-    I_CmsWidget getUnconfiguredWidget(String path);
+    I_CmsWidget getWidget(CmsObject cms, String path);
 
     /**
      * Returns the editor widget that should be used for the given XML content value.<p>

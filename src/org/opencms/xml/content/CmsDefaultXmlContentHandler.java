@@ -77,6 +77,7 @@ import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.util.I_CmsMacroResolver;
 import org.opencms.widgets.CmsCategoryWidget;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.I_CmsComplexWidget;
@@ -666,9 +667,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The set of allowed templates. */
     protected CmsDefaultSet<String> m_allowedTemplates = new CmsDefaultSet<String>();
 
-    /** A map from attribute name to complex widgets. */
-    protected Map<String, I_CmsComplexWidget> m_complexWidgets = new HashMap<String, I_CmsComplexWidget>();
-
     /** The configuration values for the element widgets (as defined in the annotations). */
     protected Map<String, String> m_configurationValues;
 
@@ -680,9 +678,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** The element mappings (as defined in the annotations). */
     protected Map<String, List<String>> m_elementMappings;
-
-    /** The widgets used for the elements (as defined in the annotations). */
-    protected Map<String, I_CmsWidget> m_elementWidgets;
 
     /** The formatter configuration. */
     protected CmsFormatterConfiguration m_formatterConfiguration;
@@ -783,6 +778,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The nice names for the fields. */
     private Map<String, String> m_fieldNiceNames = new HashMap<>();
 
+    /** Cached boolean indicating whether the content has category widgets. */
+    private volatile Boolean m_hasCategoryWidget;
+
     /** The JSON renderer settings. */
     private JsonRendererSettings m_jsonRendererSettings;
 
@@ -809,6 +807,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** The visibility configurations by element path. */
     private Map<String, VisibilityConfiguration> m_visibilityConfigurations = new HashMap<String, VisibilityConfiguration>();
+
+    /** The map of widget names by path. */
+    private Map<String, String> m_widgetNames = new HashMap<>();
 
     /**
      * Creates a new instance of the default XML content handler.<p>
@@ -923,25 +924,32 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getComplexWidget(org.opencms.xml.types.I_CmsXmlSchemaType)
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getComplexWidget(org.opencms.file.CmsObject, java.lang.String)
      */
-    public I_CmsComplexWidget getComplexWidget(I_CmsXmlSchemaType value) {
+    public I_CmsComplexWidget getComplexWidget(CmsObject cms, String path) {
 
-        I_CmsComplexWidget result = m_complexWidgets.get(value.getName());
-        if (result == null) {
-            if (value instanceof CmsXmlNestedContentDefinition) {
-                I_CmsXmlContentHandler contentHandler = ((CmsXmlNestedContentDefinition)value).getNestedContentDefinition().getContentHandler();
-                if (contentHandler.getDefaultComplexWidget() != null) {
-                    return contentHandler.getDefaultComplexWidget().configure(
-                        contentHandler.getDefaultComplexWidgetConfiguration());
-                }
-            }
+        String widgetName = m_widgetNames.get(path);
+        if (widgetName == null) {
             return null;
-        } else {
-            String configuration = getConfiguration(value);
-            result = result.configure(configuration);
-            return result;
         }
+        if (cms != null) {
+            CmsMacroResolver resolver = new CmsMacroResolver();
+            resolver.setCmsObject(cms);
+            widgetName = resolver.resolveMacros(widgetName);
+        }
+        if (CmsStringUtil.isValidJavaClassName(widgetName)) {
+            try {
+                Class<?> cls = Class.forName(widgetName, false, getClass().getClassLoader());
+                if (I_CmsComplexWidget.class.isAssignableFrom(cls)) {
+                    return (I_CmsComplexWidget)(cls.newInstance());
+                }
+            } catch (Exception e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+                return null;
+            }
+        }
+        return null;
+
     }
 
     /**
@@ -1492,19 +1500,39 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getUnconfiguredComplexWidget(java.lang.String)
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getWidget(org.opencms.file.CmsObject, java.lang.String)
      */
-    public I_CmsComplexWidget getUnconfiguredComplexWidget(String path) {
+    public I_CmsWidget getWidget(CmsObject cms, String path) {
 
-        return m_complexWidgets.get(path);
-    }
+        String widgetName = m_widgetNames.get(path);
+        if (widgetName == null) {
+            return null;
+        }
 
-    /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getUnconfiguredWidget(java.lang.String)
-     */
-    public I_CmsWidget getUnconfiguredWidget(String path) {
+        // First resolve macros, then try resulting string as widget alias, finally try interpreting it as a class name
+        if (cms != null) {
+            CmsMacroResolver resolver = new CmsMacroResolver();
+            resolver.setCmsObject(cms);
+            widgetName = resolver.resolveMacros(widgetName);
+        }
+        I_CmsWidget result = null;
+        result = OpenCms.getXmlContentTypeManager().getWidget(widgetName);
+        if (result != null) {
+            return result.newInstance();
+        }
+        if (CmsStringUtil.isValidJavaClassName(widgetName)) {
+            try {
+                Class<?> cls = Class.forName(widgetName, false, getClass().getClassLoader());
+                if (I_CmsWidget.class.isAssignableFrom(cls)) {
+                    return (I_CmsWidget)(cls.newInstance());
+                }
+            } catch (Exception e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+                return null;
+            }
+        }
+        return null;
 
-        return m_elementWidgets.get(path);
     }
 
     /**
@@ -1514,7 +1542,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     public I_CmsWidget getWidget(I_CmsXmlSchemaType value) {
 
         // try the specific widget settings first
-        I_CmsWidget result = m_elementWidgets.get(value.getName());
+        I_CmsWidget result = getWidget(null, value.getName());
         if (result == null) {
             // use default widget mappings
             result = OpenCms.getXmlContentTypeManager().getWidgetDefault(value.getTypeName());
@@ -2330,11 +2358,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
      *
      * @param contentDefinition the XML content definition this XML content handler belongs to
      * @param elementName the element name to map
-     * @param widgetClassOrAlias the widget to use as GUI for the element (registered alias or class name)
+     * @param name the widget to use as GUI for the element (registered alias or class name)
      *
      * @throws CmsXmlException in case an unknown element name is used
      */
-    protected void addWidget(CmsXmlContentDefinition contentDefinition, String elementName, String widgetClassOrAlias)
+    protected void addWidget(CmsXmlContentDefinition contentDefinition, String elementName, String name)
     throws CmsXmlException {
 
         if (!elementName.contains("/") && (contentDefinition.getSchemaType(elementName) == null)) {
@@ -2342,42 +2370,36 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 Messages.get().container(Messages.ERR_XMLCONTENT_INVALID_ELEM_LAYOUTWIDGET_1, elementName));
         }
 
-        // get the base widget from the XML content type manager
-        I_CmsWidget widget = OpenCms.getXmlContentTypeManager().getWidget(widgetClassOrAlias);
+        if (name.indexOf(I_CmsMacroResolver.MACRO_DELIMITER) == -1) {
+            // we can only validate this if we don't have macros
+            if (OpenCms.getXmlContentTypeManager().getWidget(name) == null) {
+                if (CmsStringUtil.isValidJavaClassName(name)) {
+                    try {
+                        Class<?> cls = Class.forName(name, false, getClass().getClassLoader());
+                        if (!I_CmsWidget.class.isAssignableFrom(cls)
+                            && !I_CmsComplexWidget.class.isAssignableFrom(cls)) {
+                            throw new CmsXmlException(
+                                Messages.get().container(
+                                    Messages.ERR_XMLCONTENT_INVALID_CUSTOM_CLASS_3,
+                                    name,
+                                    elementName,
+                                    contentDefinition.getSchemaLocation()));
 
-        if (widget == null) {
-            // no registered widget class found
-            if (CmsStringUtil.isValidJavaClassName(widgetClassOrAlias)) {
-                // java class name given, try to create new instance of the class and cast to widget
-                try {
-                    Class<?> specialWidgetClass = Class.forName(widgetClassOrAlias);
-                    if (I_CmsComplexWidget.class.isAssignableFrom(specialWidgetClass)) {
-                        m_complexWidgets.put(elementName, (I_CmsComplexWidget)(specialWidgetClass.newInstance()));
-                        return;
-                    } else {
-                        widget = (I_CmsWidget)specialWidgetClass.newInstance();
+                        }
+                    } catch (Exception e) {
+                        throw new CmsXmlException(
+                            Messages.get().container(
+                                Messages.ERR_XMLCONTENT_INVALID_CUSTOM_CLASS_3,
+                                name,
+                                elementName,
+                                contentDefinition.getSchemaLocation()),
+                            e);
                     }
-                } catch (Exception e) {
-                    throw new CmsXmlException(
-                        Messages.get().container(
-                            Messages.ERR_XMLCONTENT_INVALID_CUSTOM_CLASS_3,
-                            widgetClassOrAlias,
-                            elementName,
-                            contentDefinition.getSchemaLocation()),
-                        e);
                 }
             }
-            if (widget == null) {
-                // no valid widget found
-                throw new CmsXmlException(
-                    Messages.get().container(
-                        Messages.ERR_XMLCONTENT_INVALID_WIDGET_3,
-                        widgetClassOrAlias,
-                        elementName,
-                        contentDefinition.getSchemaLocation()));
-            }
+
         }
-        m_elementWidgets.put(elementName, widget);
+        m_widgetNames.put(elementName, name);
     }
 
     /**
@@ -2542,7 +2564,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     protected void init() {
 
         m_elementMappings = new HashMap<String, List<String>>();
-        m_elementWidgets = new HashMap<String, I_CmsWidget>();
         m_validationErrorRules = new HashMap<String, String>();
         m_validationErrorMessages = new HashMap<String, String>();
         m_validationWarningRules = new HashMap<String, String>();
@@ -3753,7 +3774,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         }
         I_CmsWidget widget = null;
 
-        widget = CmsWidgetUtil.collectWidgetInfo(value).getWidget();
+        widget = CmsWidgetUtil.collectWidgetInfo(cms, value).getWidget();
         if (!(widget instanceof CmsCategoryWidget)) {
             // do not validate widget that are not category widgets
             return errorHandler;
@@ -3897,7 +3918,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             return errorHandler;
         }
 
-        if (CmsWidgetUtil.collectWidgetInfo(value).getWidget() instanceof CmsDisplayWidget) {
+        if (CmsWidgetUtil.collectWidgetInfo(cms, value).getWidget() instanceof CmsDisplayWidget) {
             // display widgets should not be validated
             return errorHandler;
         }
@@ -4019,15 +4040,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             }
         }
         // check the presence of a category widget
-        boolean hasCategoryWidget = false;
-        Iterator<I_CmsWidget> it = m_elementWidgets.values().iterator();
-        while (it.hasNext()) {
-            Object widget = it.next();
-            if (widget instanceof CmsCategoryWidget) {
-                hasCategoryWidget = true;
-                break;
-            }
-        }
+        boolean hasCategoryWidget = hasCategoryWidget();
         if (!hasCategoryWidget) {
             // nothing to do if no category widget is present
             return file;
@@ -4053,7 +4066,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 // remove all previously set categories
                 boolean clearedCategories = false;
                 // iterate over all values checking for the category widget
-                CmsXmlContentWidgetVisitor widgetCollector = new CmsXmlContentWidgetVisitor(locale);
+                CmsXmlContentWidgetVisitor widgetCollector = new CmsXmlContentWidgetVisitor(cms, locale);
                 content.visitAllValuesWith(widgetCollector);
                 Iterator<Map.Entry<String, I_CmsXmlContentValue>> itWidgets = widgetCollector.getValues().entrySet().iterator();
                 while (itWidgets.hasNext()) {
@@ -4191,6 +4204,33 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             result = result.substring(0, result.length() - 1);
         }
         return result;
+    }
+
+    /**
+     * Checks whether a category widget is configured.
+     *
+     * @return true if a category widget is configured
+     */
+    private boolean hasCategoryWidget() {
+
+        if (m_hasCategoryWidget == null) {
+            boolean result = false;
+            for (Map.Entry<String, String> widgetEntry : m_widgetNames.entrySet()) {
+                try {
+                    result |= CmsCategoryWidget.class.isAssignableFrom(
+                        Class.forName(widgetEntry.getValue(), false, getClass().getClassLoader()));
+                    if (result) {
+                        break;
+                    }
+                } catch (Exception e) {
+                    LOG.debug(e.getLocalizedMessage(), e);
+                }
+            }
+            m_hasCategoryWidget = Boolean.valueOf(result);
+            return result;
+        }
+        return m_hasCategoryWidget.booleanValue();
+
     }
 
     /**

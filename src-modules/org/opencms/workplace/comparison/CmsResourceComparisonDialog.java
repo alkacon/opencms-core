@@ -124,7 +124,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 }
                 m_buffer.append("\n\n[").append(value.getPath()).append("]\n\n");
 
-                I_CmsWidget widget = CmsWidgetUtil.collectWidgetInfo(value).getWidget();
+                I_CmsWidget widget = CmsWidgetUtil.collectWidgetInfo(null, value).getWidget();
                 m_buffer.append(
                     widget.getWidgetStringValue(
                         getCms(),
@@ -724,7 +724,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                     result.append(value.getElement().attribute(0).getValue());
                     result.append("]\n\n");
 
-                    I_CmsWidget widget = CmsWidgetUtil.collectWidgetInfo(value).getWidget();
+                    I_CmsWidget widget = CmsWidgetUtil.collectWidgetInfo(null, value).getWidget();
                     result.append(
                         widget.getWidgetStringValue(
                             getCms(),

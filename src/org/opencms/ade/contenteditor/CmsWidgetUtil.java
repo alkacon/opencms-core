@@ -27,6 +27,7 @@
 
 package org.opencms.ade.contenteditor;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.widgets.I_CmsComplexWidget;
 import org.opencms.widgets.I_CmsWidget;
@@ -127,18 +128,23 @@ public final class CmsWidgetUtil {
      * Hidden default constructor.
      */
     private CmsWidgetUtil() {
+
         // hidden default constructor
     }
 
     /**
      * Collects widget information for a given content definition and content value path.<p>
      *
+     * @param cms the the CMS context to use
      * @param rootContentDefinition the content definition
      * @param path the path relative to the given content definition
      *
      * @return the widget information for the given path
      */
-    public static WidgetInfo collectWidgetInfo(CmsXmlContentDefinition rootContentDefinition, String path) {
+    public static WidgetInfo collectWidgetInfo(
+        CmsObject cms,
+        CmsXmlContentDefinition rootContentDefinition,
+        String path) {
 
         String widgetConfig = null;
         DisplayType configuredType = DisplayType.none;
@@ -159,14 +165,12 @@ public final class CmsWidgetUtil {
         rootContentDefinition.findSchemaTypesForPath(path, (nestedType, remainingPath) -> {
             remainingPath = CmsXmlUtils.concatXpath(nestedType.getName(), remainingPath);
             I_CmsXmlContentHandler handler = nestedType.getContentDefinition().getContentHandler();
-            CollectionUtils.addIgnoreNull(configuredWidgets, handler.getUnconfiguredWidget(remainingPath));
+            CollectionUtils.addIgnoreNull(configuredWidgets, handler.getWidget(cms, remainingPath));
             CollectionUtils.addIgnoreNull(configuredWidgetConfigs, handler.getConfiguration(remainingPath));
             CollectionUtils.addIgnoreNull(
                 configuredDisplayTypes,
                 handler.getConfiguredDisplayType(remainingPath, null));
-            CollectionUtils.addIgnoreNull(
-                configuredComplexWidgets,
-                handler.getUnconfiguredComplexWidget(remainingPath));
+            CollectionUtils.addIgnoreNull(configuredComplexWidgets, handler.getComplexWidget(cms, remainingPath));
 
         });
         if (!configuredWidgets.isEmpty()) {
@@ -206,16 +210,17 @@ public final class CmsWidgetUtil {
     /**
      * Collects widget information for a given content value.<p>
      *
+     * @param cms the current CMS context
      * @param value a content value
      *
      * @return the widget information for the given value
      */
 
-    public static WidgetInfo collectWidgetInfo(I_CmsXmlContentValue value) {
+    public static WidgetInfo collectWidgetInfo(CmsObject cms, I_CmsXmlContentValue value) {
 
         CmsXmlContentDefinition contentDef = value.getDocument().getContentDefinition();
         String path = value.getPath();
-        return collectWidgetInfo(contentDef, path);
+        return collectWidgetInfo(cms, contentDef, path);
     }
 
 }

@@ -28,6 +28,7 @@
 package org.opencms.workplace.editors;
 
 import org.opencms.ade.contenteditor.CmsWidgetUtil;
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsLog;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.widgets.Messages;
@@ -64,24 +65,32 @@ public class CmsXmlContentWidgetVisitor implements I_CmsXmlContentValueVisitor {
     /** The values corresponding to the found widgets. */
     private Map<String, I_CmsXmlContentValue> m_values;
 
+    /** The CMS context. */
+    private CmsObject m_cms;
+
     /** The widgets found in the XML content. */
     private Map<String, I_CmsWidget> m_widgets;
 
     /**
      * Creates a new widget collector node visitor.<p>
+     *
+     * @param cms the CMS context
      */
-    public CmsXmlContentWidgetVisitor() {
+    public CmsXmlContentWidgetVisitor(CmsObject cms) {
 
+        m_cms = cms;
         initialize(null);
     }
 
     /**
      * Creates a new widget collector node visitor.<p>
      *
+     * @param cms the CMS context
      * @param locale the Locale to get the widgets from
      */
-    public CmsXmlContentWidgetVisitor(Locale locale) {
+    public CmsXmlContentWidgetVisitor(CmsObject cms, Locale locale) {
 
+        m_cms = cms;
         initialize(locale);
     }
 
@@ -147,7 +156,7 @@ public class CmsXmlContentWidgetVisitor implements I_CmsXmlContentValueVisitor {
             if ((useLocale && (value.getLocale().equals(getLocale()))) || (!useLocale)) {
                 try {
                     // get widget for value
-                    I_CmsWidget widget = CmsWidgetUtil.collectWidgetInfo(value).getWidget();
+                    I_CmsWidget widget = CmsWidgetUtil.collectWidgetInfo(m_cms, value).getWidget();
                     if (!m_uniqueWidgets.contains(widget)) {
                         m_uniqueWidgets.add(widget);
                     }

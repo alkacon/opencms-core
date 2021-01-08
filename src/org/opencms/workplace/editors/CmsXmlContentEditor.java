@@ -956,7 +956,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
         if (m_widgetCollector == null) {
             // create an instance of the widget collector
-            m_widgetCollector = new CmsXmlContentWidgetVisitor(getElementLocale());
+            m_widgetCollector = new CmsXmlContentWidgetVisitor(null, getElementLocale());
             m_content.visitAllValuesWith(m_widgetCollector);
         }
         return m_widgetCollector;
