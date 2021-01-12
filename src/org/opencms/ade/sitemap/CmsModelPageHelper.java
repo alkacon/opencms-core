@@ -30,6 +30,7 @@ package org.opencms.ade.sitemap;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsConfigurationReader;
 import org.opencms.ade.configuration.CmsModelPageConfig;
+import org.opencms.ade.configuration.CmsModelPageConfigWithoutResource;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.sitemap.shared.CmsModelInfo;
 import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
@@ -131,12 +132,12 @@ public class CmsModelPageHelper {
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, sitemapConfigFile);
         CmsConfigurationReader reader = new CmsConfigurationReader(m_cms);
         reader.parseConfiguration(m_adeConfig.getBasePath(), content);
-        List<CmsModelPageConfig> modelPageConfigs = reader.getModelPageConfigs();
+        List<CmsModelPageConfigWithoutResource> modelPageConfigs = reader.getModelPageConfigs();
 
         int i = 0;
         boolean isDefault = false;
-        for (CmsModelPageConfig config : modelPageConfigs) {
-            if (config.getResource().getStructureId().equals(modelPage.getStructureId())) {
+        for (CmsModelPageConfigWithoutResource config : modelPageConfigs) {
+            if (config.getStructureId().equals(modelPage.getStructureId())) {
                 isDefault = config.isDefault();
                 break;
             }
@@ -248,11 +249,11 @@ public class CmsModelPageHelper {
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, sitemapConfigFile);
         CmsConfigurationReader reader = new CmsConfigurationReader(m_cms);
         reader.parseConfiguration(m_adeConfig.getBasePath(), content);
-        List<CmsModelPageConfig> modelPageConfigs = reader.getModelPageConfigs();
+        List<CmsModelPageConfigWithoutResource> modelPageConfigs = reader.getModelPageConfigs();
 
         int i = 0;
-        for (CmsModelPageConfig config : modelPageConfigs) {
-            if (config.getResource().getStructureId().equals(structureId)) {
+        for (CmsModelPageConfigWithoutResource config : modelPageConfigs) {
+            if (config.getStructureId().equals(structureId)) {
                 break;
             }
             i += 1;
@@ -391,11 +392,11 @@ public class CmsModelPageHelper {
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, sitemapConfigFile);
         CmsConfigurationReader reader = new CmsConfigurationReader(m_cms);
         reader.parseConfiguration(m_adeConfig.getBasePath(), content);
-        List<CmsModelPageConfig> modelPageConfigs = reader.getModelPageConfigs();
+        List<CmsModelPageConfigWithoutResource> modelPageConfigs = reader.getModelPageConfigs();
 
         int i = 0;
-        for (CmsModelPageConfig config : modelPageConfigs) {
-            if (config.getResource().getStructureId().equals(structureId)) {
+        for (CmsModelPageConfigWithoutResource config : modelPageConfigs) {
+            if (config.getStructureId().equals(structureId)) {
                 break;
             }
             i += 1;

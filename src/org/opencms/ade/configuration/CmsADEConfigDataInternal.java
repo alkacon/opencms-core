@@ -30,14 +30,19 @@ package org.opencms.ade.configuration;
 import org.opencms.ade.configuration.CmsConfigurationReader.DiscardPropertiesMode;
 import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.commons.logging.Log;
 
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
@@ -50,6 +55,9 @@ import com.google.common.collect.Lists;
  * related to sitemap configurations, is CmsADEConfigData.
  */
 public class CmsADEConfigDataInternal {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsADEConfigDataInternal.class);
 
     /** The "create contents locally" flag. */
     protected boolean m_createContentsLocally;
@@ -91,7 +99,9 @@ public class CmsADEConfigDataInternal {
     private List<CmsDetailPageInfo> m_ownDetailPages = Lists.newArrayList();
 
     /** The internal model page entries. */
-    private List<CmsModelPageConfig> m_ownModelPageConfig = Lists.newArrayList();
+    private volatile List<CmsModelPageConfig> m_ownModelPageConfig = null;
+
+    private List<CmsModelPageConfigWithoutResource> m_ownModelPageConfigRaw = new ArrayList<>();
 
     /** The internal property configuration. */
     private List<CmsPropertyConfig> m_ownPropertyConfigurations = Lists.newArrayList();
@@ -107,6 +117,8 @@ public class CmsADEConfigDataInternal {
 
     /** The resource from which the configuration data was read. */
     private CmsResource m_resource;
+
+    private CmsObject m_cms;
 
     /**
      * Creates a new configuration data instance.<p>
@@ -132,6 +144,87 @@ public class CmsADEConfigDataInternal {
      * @param functionIds the dynamic functions available
      */
     public CmsADEConfigDataInternal(
+        CmsObject cms,
+        CmsResource resource,
+        boolean isModuleConfig,
+        String basePath,
+        List<CmsUUID> masterConfigs,
+        List<CmsResourceTypeConfig> resourceTypeConfig,
+        boolean discardInheritedTypes,
+        List<CmsPropertyConfig> propertyConfig,
+        DiscardPropertiesMode discardPropertiesMode,
+        List<CmsDetailPageInfo> detailPageInfos,
+        List<CmsModelPageConfigWithoutResource> modelPages,
+        List<CmsFunctionReference> functionReferences,
+        boolean discardInheritedModelPages,
+        boolean createContentsLocally,
+        boolean preferDetailPagesForLocalContents,
+        boolean excludeExternalDetailContents,
+        boolean includeInSiteSelector,
+        CmsFormatterChangeSet formatterChangeSet,
+        boolean removeAllFunctions,
+        Set<CmsUUID> functionIds) {
+
+        m_cms = cms;
+        m_resource = resource;
+        m_basePath = basePath;
+        m_ownResourceTypes = resourceTypeConfig;
+        m_ownPropertyConfigurations = propertyConfig;
+        m_ownModelPageConfigRaw = modelPages;
+        m_ownDetailPages = detailPageInfos;
+        m_functionReferences = functionReferences;
+        m_isModuleConfig = isModuleConfig;
+        m_masterConfigs = masterConfigs;
+        if (m_masterConfigs == null) {
+            m_masterConfigs = Collections.emptyList();
+        }
+
+        m_discardInheritedTypes = discardInheritedTypes;
+        m_discardPropertiesMode = discardPropertiesMode;
+        m_discardInheritedModelPages = discardInheritedModelPages;
+        m_createContentsLocally = createContentsLocally;
+        m_preferDetailPagesForLocalContents = preferDetailPagesForLocalContents;
+        m_formatterChangeSet = formatterChangeSet;
+        m_dynamicFunctions = functionIds;
+        m_removeAllFunctions = removeAllFunctions;
+        m_excludeExternalDetailContents = excludeExternalDetailContents;
+        m_includeInSiteSelector = includeInSiteSelector;
+    }
+
+    /**
+     * Creates an empty configuration data object with a given base path.<p>
+     *
+     * @param basePath the base path
+     */
+    public CmsADEConfigDataInternal(String basePath) {
+
+        m_basePath = basePath;
+    }
+
+    /**
+     * Creates a new configuration data instance.<p>
+    
+     * @param resource the resource from which this configuration data was read
+     * @param isModuleConfig true if this is a module configuration
+     * @param basePath the base path
+     * @param masterConfigs structure ids of master configuration files
+     * @param resourceTypeConfig the resource type configuration
+     * @param discardInheritedTypes the "discard inherited types" flag
+     * @param propertyConfig the property configuration
+     * @param discardPropertiesMode the "discard inherited properties" mode
+     * @param detailPageInfos the detail page configuration
+     * @param modelPages the model page configuration
+     * @param functionReferences the function reference configuration
+     * @param discardInheritedModelPages the "discard  inherited model pages" flag
+     * @param createContentsLocally the "create contents locally" flag
+     * @param preferDetailPagesForLocalContents the "preferDetailPagesForLocalContents" flag
+     * @param excludeExternalDetailContents the "excludeExternalDetailContents" flag
+     * @param includeInSiteSelector the "includeInSiteSelector" flag
+     * @param formatterChangeSet the formatter changes
+     * @param removeAllFunctions flag indicating whether all functions should be removed
+     * @param functionIds the dynamic functions available
+     */
+    protected CmsADEConfigDataInternal(
         CmsResource resource,
         boolean isModuleConfig,
         String basePath,
@@ -175,16 +268,6 @@ public class CmsADEConfigDataInternal {
         m_removeAllFunctions = removeAllFunctions;
         m_excludeExternalDetailContents = excludeExternalDetailContents;
         m_includeInSiteSelector = includeInSiteSelector;
-    }
-
-    /**
-     * Creates an empty configuration data object with a given base path.<p>
-     *
-     * @param basePath the base path
-     */
-    public CmsADEConfigDataInternal(String basePath) {
-
-        m_basePath = basePath;
     }
 
     /**
@@ -280,7 +363,21 @@ public class CmsADEConfigDataInternal {
      */
     public List<CmsModelPageConfig> getOwnModelPageConfig() {
 
-        return m_ownModelPageConfig;
+        if (m_ownModelPageConfig == null) {
+            List<CmsModelPageConfig> result = new ArrayList<>();
+            for (CmsModelPageConfigWithoutResource modelPage : m_ownModelPageConfigRaw) {
+                try {
+                    CmsResource resource = m_cms.readResource(modelPage.getStructureId());
+                    result.add(new CmsModelPageConfig(resource, modelPage.isDefault(), modelPage.isDisabled()));
+                } catch (Exception e) {
+                    LOG.warn("can't read model page for base path " + m_basePath + ": " + e.getLocalizedMessage(), e);
+                }
+            }
+            m_ownModelPageConfig = result;
+            return result;
+        } else {
+            return m_ownModelPageConfig;
+        }
     }
 
     /**

@@ -299,7 +299,7 @@ public class CmsConfigurationReader {
     private List<CmsFunctionReference> m_functionReferences = new ArrayList<CmsFunctionReference>();
 
     /** The parsed model page configuration elements. */
-    private List<CmsModelPageConfig> m_modelPageConfigs = new ArrayList<CmsModelPageConfig>();
+    private List<CmsModelPageConfigWithoutResource> m_modelPageConfigs = new ArrayList<CmsModelPageConfigWithoutResource>();
 
     /** The parsed property configuration elements. */
     private List<CmsPropertyConfig> m_propertyConfigs = new ArrayList<CmsPropertyConfig>();
@@ -414,7 +414,7 @@ public class CmsConfigurationReader {
      *
      * @return the modelPageConfigs
      */
-    public List<CmsModelPageConfig> getModelPageConfigs() {
+    public List<CmsModelPageConfigWithoutResource> getModelPageConfigs() {
 
         return m_modelPageConfigs;
     }
@@ -540,6 +540,7 @@ public class CmsConfigurationReader {
         }
 
         CmsADEConfigDataInternal result = new CmsADEConfigDataInternal(
+            m_cms,
             content.getFile(),
             isModuleConfig,
             basePath,
@@ -634,12 +635,19 @@ public class CmsConfigurationReader {
      */
     public void parseModelPage(I_CmsXmlContentLocation node) throws CmsException {
 
-        String page = getString(node.getSubValue(N_PAGE));
+        CmsXmlVfsFileValue pageValue = (CmsXmlVfsFileValue)node.getSubValue(N_PAGE).getValue();
+        CmsLink link = pageValue.getUncheckedLink();
+        if ((link == null) || (link.getStructureId() == null)) {
+            return;
+        }
         I_CmsXmlContentValueLocation disabledLoc = node.getSubValue(N_DISABLED);
         boolean disabled = (disabledLoc != null) && Boolean.parseBoolean(disabledLoc.asString(m_cms));
         I_CmsXmlContentValueLocation defaultLoc = node.getSubValue(N_IS_DEFAULT);
         boolean isDefault = (defaultLoc != null) && Boolean.parseBoolean(defaultLoc.asString(m_cms));
-        CmsModelPageConfig modelPage = new CmsModelPageConfig(m_cms.readResource(page), isDefault, disabled);
+        CmsModelPageConfigWithoutResource modelPage = new CmsModelPageConfigWithoutResource(
+            link.getStructureId(),
+            isDefault,
+            disabled);
         m_modelPageConfigs.add(modelPage);
 
     }
