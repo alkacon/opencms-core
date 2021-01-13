@@ -203,7 +203,7 @@ public final class CmsLockManager {
 
         // check exclusive direct locks first
         CmsLock lock = getDirectLock(resource.getRootPath());
-        if ((lock == null) && includeSiblings) {
+        if ((lock == null) && includeSiblings && (resource.getSiblingCount() > 1)) {
             // check if siblings are exclusively locked
             List<CmsResource> siblings = internalReadSiblings(dbc, resource);
             lock = getSiblingsLock(siblings, resource.getRootPath());
