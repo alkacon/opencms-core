@@ -494,6 +494,7 @@ public class CmsContentTypeVisitor {
 
         List<CmsTabInfo> result = new ArrayList<CmsTabInfo>();
         CmsMacroResolver resolver = new CmsMacroResolver();
+        resolver.setCmsObject(m_cms);
         resolver.setMessages(m_messages);
         if (definition.getContentHandler().getTabs() != null) {
             for (CmsXmlContentTab xmlTab : definition.getContentHandler().getTabs()) {
@@ -536,6 +537,7 @@ public class CmsContentTypeVisitor {
             String help = defaultHandler.getFieldHelp().get(value.getName());
             if (help != null) {
                 CmsMacroResolver resolver = new CmsMacroResolver();
+                resolver.setCmsObject(m_cms);
                 resolver.setKeepEmptyMacros(true);
                 resolver.setMessages(m_messages);
                 return resolver.resolveMacros(help);
@@ -562,6 +564,7 @@ public class CmsContentTypeVisitor {
             String label = defaultHandler.getFieldLabels().get(value.getName());
             if (label != null) {
                 CmsMacroResolver resolver = new CmsMacroResolver();
+                resolver.setCmsObject(m_cms);
                 resolver.setKeepEmptyMacros(true);
                 resolver.setMessages(m_messages);
                 return resolver.resolveMacros(label);
