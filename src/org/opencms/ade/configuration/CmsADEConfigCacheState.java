@@ -50,6 +50,8 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -93,11 +95,8 @@ public class CmsADEConfigCacheState {
     /** Cache for detail page lists. */
     private Map<String, List<String>> m_detailPageCache;
 
-    /** Cache of structure ids of detail pages and their parent folders (in case the detail pages are configured as files) */
-    private volatile Set<CmsUUID> m_detailPageOrDetailPageFolderIds;
-
-    /** Lock for detail page id cache. */
-    private Object m_detailPageIdCacheLock = new Object();
+    /** Memoized supplier for the cached detail page ids. */
+    private Supplier<Set<CmsUUID>> m_detailPageIdCache;
 
     /**
      * Creates a new configuration cache state.<p>
@@ -136,6 +135,8 @@ public class CmsADEConfigCacheState {
             30,
             TimeUnit.SECONDS);
         m_detailPageCache = (Map<String, List<String>>)(detailPageCacheBuilder.build().asMap());
+        m_detailPageIdCache = Suppliers.memoize(this::collectDetailPageIds);
+
     }
 
     /**
@@ -470,42 +471,7 @@ public class CmsADEConfigCacheState {
                 return false;
             }
         }
-        if (m_detailPageOrDetailPageFolderIds != null) {
-            return m_detailPageOrDetailPageFolderIds.contains(resource.getStructureId());
-        }
-        synchronized (m_detailPageIdCacheLock) {
-            if (m_detailPageOrDetailPageFolderIds == null) { // it may have become non-null before we got the lock
-                List<CmsDetailPageInfo> allDetailPages = new ArrayList<CmsDetailPageInfo>();
-                // First collect all detail page infos
-                for (CmsADEConfigDataInternal configData : m_siteConfigurationsByPath.values()) {
-                    List<CmsDetailPageInfo> detailPageInfos = configData.getOwnDetailPages();
-                    allDetailPages.addAll(detailPageInfos);
-                }
-                Set<CmsUUID> detailPageOrDetailPageFolderIds = new HashSet<>();
-                for (CmsDetailPageInfo detailPageInfo : allDetailPages) {
-                    try {
-                        CmsResource detailPageRes = getCms().readResource(
-                            detailPageInfo.getId(),
-                            CmsResourceFilter.ALL);
-                        detailPageOrDetailPageFolderIds.add(detailPageInfo.getId());
-                        if (detailPageRes.isFile()) {
-                            CmsResource parent = getCms().readParentFolder(detailPageInfo.getId());
-                            detailPageOrDetailPageFolderIds.add(parent.getStructureId());
-                        } else {
-                            CmsResource defaultfile = getCms().readDefaultFile("" + detailPageInfo.getId());
-                            if (defaultfile != null) {
-                                detailPageOrDetailPageFolderIds.add(defaultfile.getStructureId());
-                            }
-                        }
-                    } catch (Exception e) {
-                        LOG.info(e.getLocalizedMessage(), e);
-                    }
-                }
-                m_detailPageOrDetailPageFolderIds = Collections.unmodifiableSet(detailPageOrDetailPageFolderIds);
-                return detailPageOrDetailPageFolderIds.contains(resource.getStructureId());
-            }
-        }
-        return m_detailPageOrDetailPageFolderIds.contains(resource.getStructureId());
+        return m_detailPageIdCache.get().contains(resource.getStructureId());
 
     }
 
@@ -527,6 +493,40 @@ public class CmsADEConfigCacheState {
         CmsADEConfigDataInternal result = configurations.get(configurations.size() - 1);
         result.processModuleOrdering();
         return result;
+    }
+
+    /**
+     * Internal method for collecting structure ids of all configured detail pages and their parent folders.
+     *
+     * @return the structure ids of configured detail pages and their parent folders
+     */
+    private Set<CmsUUID> collectDetailPageIds() {
+
+        List<CmsDetailPageInfo> allDetailPages = new ArrayList<CmsDetailPageInfo>();
+        // First collect all detail page infos
+        for (CmsADEConfigDataInternal configData : m_siteConfigurationsByPath.values()) {
+            List<CmsDetailPageInfo> detailPageInfos = configData.getOwnDetailPages();
+            allDetailPages.addAll(detailPageInfos);
+        }
+        Set<CmsUUID> detailPageOrDetailPageFolderIds = new HashSet<>();
+        for (CmsDetailPageInfo detailPageInfo : allDetailPages) {
+            try {
+                CmsResource detailPageRes = getCms().readResource(detailPageInfo.getId(), CmsResourceFilter.ALL);
+                detailPageOrDetailPageFolderIds.add(detailPageInfo.getId());
+                if (detailPageRes.isFile()) {
+                    CmsResource parent = getCms().readParentFolder(detailPageInfo.getId());
+                    detailPageOrDetailPageFolderIds.add(parent.getStructureId());
+                } else {
+                    CmsResource defaultfile = getCms().readDefaultFile("" + detailPageInfo.getId());
+                    if (defaultfile != null) {
+                        detailPageOrDetailPageFolderIds.add(defaultfile.getStructureId());
+                    }
+                }
+            } catch (Exception e) {
+                LOG.info(e.getLocalizedMessage(), e);
+            }
+        }
+        return Collections.unmodifiableSet(detailPageOrDetailPageFolderIds);
     }
 
     /**
