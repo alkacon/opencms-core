@@ -29,6 +29,7 @@
 package org.opencms.ade.configuration;
 
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCache;
+import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.CmsResourceState;
 import org.opencms.db.generic.Messages;
@@ -215,6 +216,16 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         CmsResource res = m_cms.readResource(structureId);
         m_pathCache.put(structureId, res.getRootPath());
         return res.getRootPath();
+    }
+
+    /**
+     * Gets the raw detail page information, with no existence checks or path corrections.
+     *
+     * @return the detail page information
+     */
+    public List<CmsDetailPageInfo> getRawDetailPages() {
+
+        return m_state.getRawDetailPages();
     }
 
     /**

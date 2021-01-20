@@ -101,6 +101,7 @@ public class CmsADEConfigDataInternal {
     /** The internal model page entries. */
     private volatile List<CmsModelPageConfig> m_ownModelPageConfig = null;
 
+    /** Model page data with no resources. */
     private List<CmsModelPageConfigWithoutResource> m_ownModelPageConfigRaw = new ArrayList<>();
 
     /** The internal property configuration. */
@@ -118,11 +119,12 @@ public class CmsADEConfigDataInternal {
     /** The resource from which the configuration data was read. */
     private CmsResource m_resource;
 
+    /** The CMS context. */
     private CmsObject m_cms;
 
     /**
      * Creates a new configuration data instance.<p>
-    
+     * @param cms the CMS context
      * @param resource the resource from which this configuration data was read
      * @param isModuleConfig true if this is a module configuration
      * @param basePath the base path

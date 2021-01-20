@@ -105,6 +105,7 @@ public class CmsResourceIcon extends Label {
      * To be used in declarative layouts. Make sure to call initContent later on.<p>
      */
     public CmsResourceIcon() {
+
         setPrimaryStyleName(OpenCmsTheme.RESOURCE_ICON);
         setContentMode(ContentMode.HTML);
     }
@@ -117,6 +118,7 @@ public class CmsResourceIcon extends Label {
      * @param showLocks <code>true</code> to show the resource locks
      */
     public CmsResourceIcon(CmsResourceUtil resUtil, CmsResourceState state, boolean showLocks) {
+
         this();
         initContent(resUtil, state, showLocks, true);
     }
@@ -170,7 +172,7 @@ public class CmsResourceIcon extends Label {
         String type = null;
         try {
             if (OpenCms.getADEManager().isDetailPage(cms, detailPage)) {
-                List<CmsDetailPageInfo> detailPages = OpenCms.getADEManager().getAllDetailPages(cms);
+                List<CmsDetailPageInfo> detailPages = OpenCms.getADEManager().getRawDetailPages(cms);
                 if (parentFolder == null) {
                     parentFolder = cms.readParentFolder(detailPage.getStructureId());
                 }

@@ -31,6 +31,7 @@ import org.opencms.ade.configuration.CmsADEConfigData.DetailInfo;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -91,6 +92,12 @@ public class CmsADEConfigCacheState {
 
     /** Cache for detail page lists. */
     private Map<String, List<String>> m_detailPageCache;
+
+    /** Cache of structure ids of detail pages and their parent folders (in case the detail pages are configured as files) */
+    private volatile Set<CmsUUID> m_detailPageOrDetailPageFolderIds;
+
+    /** Lock for detail page id cache. */
+    private Object m_detailPageIdCacheLock = new Object();
 
     /**
      * Creates a new configuration cache state.<p>
@@ -283,6 +290,20 @@ public class CmsADEConfigCacheState {
     }
 
     /**
+     * Gets the raw detail page information, with no existence checks or path corrections.
+     *
+     * @return the detail page information
+     */
+    public List<CmsDetailPageInfo> getRawDetailPages() {
+
+        List<CmsDetailPageInfo> result = new ArrayList<>();
+        for (CmsADEConfigDataInternal config : m_siteConfigurationsByPath.values()) {
+            result.addAll(config.getOwnDetailPages());
+        }
+        return result;
+    }
+
+    /**
      * Returns the root paths to all configured sites and sub sites.<p>
      *
      * @return the root paths to all configured sites and sub sites
@@ -444,54 +465,48 @@ public class CmsADEConfigCacheState {
      */
     protected boolean isDetailPage(CmsObject cms, CmsResource resource) {
 
-        CmsResource folder;
         if (resource.isFile()) {
             if (!CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
                 return false;
             }
-            try {
-                folder = getCms().readResource(CmsResource.getParentFolder(resource.getRootPath()));
-            } catch (CmsException e) {
-                LOG.debug(e.getLocalizedMessage(), e);
-                return false;
-            }
-        } else {
-            folder = resource;
         }
-        List<CmsDetailPageInfo> allDetailPages = new ArrayList<CmsDetailPageInfo>();
-        // First collect all detail page infos
-        for (CmsADEConfigDataInternal configData : m_siteConfigurationsByPath.values()) {
-            List<CmsDetailPageInfo> detailPageInfos = wrap(configData).getAllDetailPages();
-            allDetailPages.addAll(detailPageInfos);
+        if (m_detailPageOrDetailPageFolderIds != null) {
+            return m_detailPageOrDetailPageFolderIds.contains(resource.getStructureId());
         }
-        // First pass: check if the structure id or path directly match one of the configured detail pages.
-        for (CmsDetailPageInfo info : allDetailPages) {
-            if (folder.getStructureId().equals(info.getId())
-                || folder.getRootPath().equals(info.getUri())
-                || resource.getStructureId().equals(info.getId())
-                || resource.getRootPath().equals(info.getUri())) {
-                return true;
-            }
-        }
-        // Second pass: configured detail pages may be actual container pages rather than folders
-        String normalizedFolderRootPath = CmsStringUtil.joinPaths(folder.getRootPath(), "/");
-        for (CmsDetailPageInfo info : allDetailPages) {
-            String parentPath = CmsResource.getParentFolder(info.getUri());
-            if (parentPath != null) {
-                String normalizedParentPath = CmsStringUtil.joinPaths(parentPath, "/");
-                if (normalizedParentPath.equals(normalizedFolderRootPath)) {
+        synchronized (m_detailPageIdCacheLock) {
+            if (m_detailPageOrDetailPageFolderIds == null) { // it may have become non-null before we got the lock
+                List<CmsDetailPageInfo> allDetailPages = new ArrayList<CmsDetailPageInfo>();
+                // First collect all detail page infos
+                for (CmsADEConfigDataInternal configData : m_siteConfigurationsByPath.values()) {
+                    List<CmsDetailPageInfo> detailPageInfos = configData.getOwnDetailPages();
+                    allDetailPages.addAll(detailPageInfos);
+                }
+                Set<CmsUUID> detailPageOrDetailPageFolderIds = new HashSet<>();
+                for (CmsDetailPageInfo detailPageInfo : allDetailPages) {
                     try {
-                        CmsResource infoResource = getCms().readResource(info.getId());
-                        if (infoResource.isFile()) {
-                            return true;
+                        CmsResource detailPageRes = getCms().readResource(
+                            detailPageInfo.getId(),
+                            CmsResourceFilter.ALL);
+                        detailPageOrDetailPageFolderIds.add(detailPageInfo.getId());
+                        if (detailPageRes.isFile()) {
+                            CmsResource parent = getCms().readParentFolder(detailPageInfo.getId());
+                            detailPageOrDetailPageFolderIds.add(parent.getStructureId());
+                        } else {
+                            CmsResource defaultfile = getCms().readDefaultFile("" + detailPageInfo.getId());
+                            if (defaultfile != null) {
+                                detailPageOrDetailPageFolderIds.add(defaultfile.getStructureId());
+                            }
                         }
-                    } catch (CmsException e) {
-                        LOG.warn(e.getLocalizedMessage(), e);
+                    } catch (Exception e) {
+                        LOG.info(e.getLocalizedMessage(), e);
                     }
                 }
+                m_detailPageOrDetailPageFolderIds = Collections.unmodifiableSet(detailPageOrDetailPageFolderIds);
+                return detailPageOrDetailPageFolderIds.contains(resource.getStructureId());
             }
         }
-        return false;
+        return m_detailPageOrDetailPageFolderIds.contains(resource.getStructureId());
+
     }
 
     /**

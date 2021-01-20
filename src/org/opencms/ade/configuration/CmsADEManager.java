@@ -325,6 +325,17 @@ public class CmsADEManager {
     }
 
     /**
+     * Gets the raw configured detail page information, with no existence checks or path correction.
+     *
+     * @param cms the CMS context
+     * @return the list of raw detail page info beans
+     */
+    public List<CmsDetailPageInfo> getRawDetailPages(CmsObject cms) {
+
+        return getCache(cms.getRequestContext().getCurrentProject().isOnlineProject()).getRawDetailPages();
+    }
+
+    /**
      * Gets the containerpage cache instance.<p>
      *
      * @return the containerpage cache instance
