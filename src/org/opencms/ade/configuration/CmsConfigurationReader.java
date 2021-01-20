@@ -910,6 +910,9 @@ public class CmsConfigurationReader {
         }
         String page = uncheckedLink.getTarget();
         CmsUUID structureId = uncheckedLink.getStructureId();
+        if (structureId == null) {
+            return;
+        }
 
         String iconClasses;
         if (typeName.startsWith(CmsDetailPageInfo.FUNCTION_PREFIX)) {

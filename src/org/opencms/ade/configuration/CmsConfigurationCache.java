@@ -31,6 +31,7 @@ package org.opencms.ade.configuration;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCache;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.CmsResourceState;
+import org.opencms.db.generic.Messages;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -202,7 +203,12 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
      */
     public String getPathForStructureId(CmsUUID structureId) throws CmsException {
 
-        String rootPath = m_pathCache.get(structureId);
+        String rootPath;
+        if (structureId == null) {
+            throw new CmsVfsResourceNotFoundException(
+                Messages.get().container(Messages.ERR_READ_RESOURCE_WITH_ID_1, "null"));
+        }
+        rootPath = m_pathCache.get(structureId);
         if (rootPath != null) {
             return rootPath;
         }
