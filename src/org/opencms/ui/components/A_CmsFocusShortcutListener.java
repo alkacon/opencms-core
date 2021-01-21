@@ -32,7 +32,6 @@ import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
 import com.vaadin.event.ShortcutListener;
-import com.vaadin.v7.ui.TextField;
 
 /**
  * Shortcut listener that will only be active, while the given text field has the keyboard focus.<p>
@@ -43,7 +42,7 @@ public abstract class A_CmsFocusShortcutListener extends ShortcutListener implem
     private static final long serialVersionUID = -4768641299003694650L;
 
     /** The text field. */
-    private TextField m_field;
+    private com.vaadin.ui.TextField m_field;
 
     /**
      * Constructor.<p>
@@ -51,6 +50,7 @@ public abstract class A_CmsFocusShortcutListener extends ShortcutListener implem
      * @see com.vaadin.event.ShortcutAction#ShortcutAction(String, int, int...)
      */
     public A_CmsFocusShortcutListener(String caption, int keyCode, int[] modifierKeys) {
+
         super(caption, keyCode, modifierKeys);
     }
 
@@ -60,6 +60,7 @@ public abstract class A_CmsFocusShortcutListener extends ShortcutListener implem
     public void blur(BlurEvent event) {
 
         m_field.removeShortcutListener(this);
+
     }
 
     /**
@@ -68,6 +69,7 @@ public abstract class A_CmsFocusShortcutListener extends ShortcutListener implem
     public void focus(FocusEvent event) {
 
         m_field.addShortcutListener(this);
+
     }
 
     /**
@@ -75,11 +77,12 @@ public abstract class A_CmsFocusShortcutListener extends ShortcutListener implem
      *
      * @param field the txt field
      */
-    public void installOn(TextField field) {
+    public void installOn(com.vaadin.ui.TextField field) {
 
         m_field = field;
         m_field.addFocusListener(this);
         m_field.addBlurListener(this);
+        m_field.addShortcutListener(this);
     }
 
 }

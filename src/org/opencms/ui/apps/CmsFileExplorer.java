@@ -526,7 +526,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
     CmsFileTable m_fileTable;
 
     /** The info path. */
-    TextField m_infoPath;
+    com.vaadin.ui.TextField m_infoPath;
 
     /** The explorer shortcuts. */
     Map<Action, Runnable> m_shortcutActions;
@@ -740,7 +740,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         m_fileTree.setDragMode(TreeDragMode.NONE);
 
         m_siteSelector = createSiteSelect(A_CmsUI.getCmsObject());
-        m_infoPath = new TextField();
+        m_infoPath = new com.vaadin.ui.TextField();
         A_CmsFocusShortcutListener shortcutListener = new A_CmsFocusShortcutListener("Open path", KeyCode.ENTER, null) {
 
             private static final long serialVersionUID = 1L;
