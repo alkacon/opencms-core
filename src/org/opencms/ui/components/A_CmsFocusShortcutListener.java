@@ -82,7 +82,6 @@ public abstract class A_CmsFocusShortcutListener extends ShortcutListener implem
         m_field = field;
         m_field.addFocusListener(this);
         m_field.addBlurListener(this);
-        m_field.addShortcutListener(this);
     }
 
 }
