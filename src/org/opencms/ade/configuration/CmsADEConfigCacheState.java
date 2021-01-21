@@ -466,13 +466,30 @@ public class CmsADEConfigCacheState {
      */
     protected boolean isDetailPage(CmsObject cms, CmsResource resource) {
 
-        if (resource.isFile()) {
-            if (!CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
+        if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
+            Set<CmsUUID> detailPageIds = m_detailPageIdCache.get();
+            if (detailPageIds.contains(resource.getStructureId())) {
+                // page may have been created/replaced after the detail page id cache was generated,
+                // so we don't just return false if it doesn't contain the id.
+                // instead we check the parent folder too in the next step.
+                return true;
+            }
+
+            try {
+                CmsResource parent = getCms().readResource(
+                    CmsResource.getParentFolder(resource.getRootPath()),
+                    CmsResourceFilter.ALL);
+                return detailPageIds.contains(parent.getStructureId());
+
+            } catch (Exception e) {
+                LOG.info(e.getLocalizedMessage(), e);
                 return false;
             }
+        } else if (resource.isFolder()) {
+            return m_detailPageIdCache.get().contains(resource.getStructureId());
+        } else {
+            return false;
         }
-        return m_detailPageIdCache.get().contains(resource.getStructureId());
-
     }
 
     /**
