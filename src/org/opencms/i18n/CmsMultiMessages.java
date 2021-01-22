@@ -36,6 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 
@@ -78,6 +79,9 @@ public class CmsMultiMessages extends CmsMessages {
 
     /** The key fallback handler. */
     private I_KeyFallbackHandler m_keyFallbackHandler;
+
+    /** For successfully found message keys, indicates the position in the bundle list where they were last found. */
+    private Map<String, Integer> m_lastBundleIndexForKey = new ConcurrentHashMap<>();
 
     /** A cache for the messages to prevent multiple lookups in many bundles. */
     private Map<String, String> m_messageCache;
@@ -137,10 +141,11 @@ public class CmsMultiMessages extends CmsMessages {
                 messages = new CmsMessages(bundleName, getLocale());
             } else {
                 // multi bundles with wrong locales can't be added this way
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_MULTIMSG_LOCALE_DOES_NOT_MATCH_2,
-                    messages.getLocale(),
-                    getLocale()));
+                throw new CmsIllegalArgumentException(
+                    Messages.get().container(
+                        Messages.ERR_MULTIMSG_LOCALE_DOES_NOT_MATCH_2,
+                        messages.getLocale(),
+                        getLocale()));
             }
         }
         if (!m_messages.contains(messages)) {
@@ -242,11 +247,28 @@ public class CmsMultiMessages extends CmsMessages {
             return null;
         }
         boolean noCache = false;
+        Integer indexHint = m_lastBundleIndexForKey.get(keyName);
+        // Look at the position where the key was last found.
+        // This may not be successful, because VFS-based bundles are mutable and keys could have been removed.
+        if (indexHint != null) {
+            int i = indexHint.intValue();
+            if (i < m_messages.size()) {
+                try {
+                    result = m_messages.get(i).getString(keyName);
+                    noCache = true;
+                } catch (CmsMessageException e) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(e.getMessage(), e);
+                    }
+                }
+            }
+        }
         if (result == null) {
             // so far not in the cache
             for (int i = 0; (result == null) && (i < m_messages.size()); i++) {
                 try {
                     result = (m_messages.get(i)).getString(keyName);
+                    m_lastBundleIndexForKey.put(keyName, Integer.valueOf(i));
                     // if no exception is thrown here we have found the result
                     noCache |= m_messages.get(i).isUncacheable();
                 } catch (CmsMessageException e) {
