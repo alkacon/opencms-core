@@ -31,7 +31,7 @@
     <shareMapper>
 	<class>org.opencms.jlan.CmsJlanShareMapper</class>
     </shareMapper>
-    <JCEProvider>cryptix.jce.provider.CryptixCrypto</JCEProvider>
+    <JCEProvider>org.bouncycastle.jce.provider.BouncyCastleProvider</JCEProvider>
     <usersInterface>
     	<class>org.opencms.jlan.CmsJlanUsers</class>
     </usersInterface>

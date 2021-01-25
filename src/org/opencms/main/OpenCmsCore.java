@@ -159,8 +159,6 @@ import org.antlr.stringtemplate.StringTemplate;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
-import cryptix.jce.provider.CryptixCrypto;
-
 /**
  * The internal implementation of the core OpenCms "operating system" functions.<p>
  *
@@ -1400,7 +1398,11 @@ public final class OpenCmsCore {
             // security manager is active, but we will try other options before giving up
             LOG.debug("Security manager preventing access to file.encoding system property.", se);
         }
-        Security.addProvider(new CryptixCrypto());
+        try {
+            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+        } catch (Exception e) {
+            CmsLog.INIT.error(e.getLocalizedMessage(), e);
+        }
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_FILE_ENCODING_1, systemEncoding));
         }

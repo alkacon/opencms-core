@@ -109,7 +109,7 @@ dependencies {
     distribution group: 'commons-collections', name: 'commons-collections', version: '3.2.2'
     distribution group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
     distribution group: 'commons-io', name: 'commons-io', version: '2.7'
-    distribution group: 'cryptix.jce', name: 'crytix-jce-provider', version: '20050328'
+    //distribution group: 'cryptix.jce', name: 'crytix-jce-provider', version: '20050328'
     distribution group: 'de.malkusch.whois-server-list', name: 'public-suffix-list', version: '2.2.0'
     distribution group: 'io.dropwizard.metrics', name: 'metrics-core', version: '4.1.12.1'
     distribution group: 'io.dropwizard.metrics', name: 'metrics-jmx', version: '4.1.12.1'
