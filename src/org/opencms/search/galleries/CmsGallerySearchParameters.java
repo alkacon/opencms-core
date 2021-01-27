@@ -47,6 +47,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
 
@@ -428,7 +429,16 @@ public class CmsGallerySearchParameters {
 
         // set search locale
         if (null != m_locale) {
-            query.setLocales(CmsLocaleManager.getLocale(m_locale));
+            Locale l = CmsLocaleManager.getLocale(m_locale);
+            List<Locale> locales = new ArrayList<>(3);
+            locales.add(l);
+            if (!l.getVariant().isEmpty()) {
+                locales.add(new Locale(l.getLanguage(), l.getCountry()));
+            }
+            if (!l.getCountry().isEmpty()) {
+                locales.add(new Locale(l.getLanguage()));
+            }
+            query.setLocales(locales);
         }
 
         // set search words
