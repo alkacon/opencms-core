@@ -432,7 +432,8 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             }
 
         } else if (systemId.substring(0, systemId.lastIndexOf("/") + 1).equalsIgnoreCase(
-            CmsConfigurationManager.DEFAULT_DTD_PREFIX)) {
+            CmsConfigurationManager.DEFAULT_DTD_PREFIX)//
+        ) {
             // default DTD location in the org.opencms.configuration package
             String location = null;
             try {
@@ -447,8 +448,8 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_DTD_NOT_FOUND_1, location), t);
             }
         }
-        // use the default behaviour (i.e. resolve through external URL)
-        return null;
+        LOG.error("Entity reference not allowed: " + systemId, new IOException());
+        throw new IOException("Entity reference not allowed (see log for details)");
     }
 
     /**

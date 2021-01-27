@@ -45,6 +45,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.CmsXmlEntityResolver;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -608,6 +609,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
         try {
             double w = -1, h = -1;
             SAXReader reader = new SAXReader();
+            reader.setEntityResolver(new CmsXmlEntityResolver(null));
             Document doc = reader.read(new ByteArrayInputStream(content));
             Element node = (Element)(doc.selectSingleNode("/svg"));
             if (node != null) {
