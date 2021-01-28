@@ -886,8 +886,10 @@
 	/* explorer bread crumb path input styles */
 	.o-crumb-wrapper{
 		position: relative;
+		overflow-x: hidden; 
 
 		.o-crumbs {
+			white-space: nowrap;
 			position: absolute;
 			top:0;
 			left: ceil($v-unit-size/6 + 2);
