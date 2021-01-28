@@ -67,19 +67,19 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
-import com.vaadin.v7.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.v7.ui.HorizontalLayout;
-import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
+import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
+import com.vaadin.v7.event.FieldEvents.TextChangeListener;
+import com.vaadin.v7.ui.HorizontalLayout;
+import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.TextField;
 import com.vaadin.v7.ui.VerticalLayout;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * The permission dialog.<p>
@@ -646,7 +646,10 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
                         ownEntries.add(curEntry);
                     } else {
                         if (!bean.isDeleted()) {
-                            ownEntries.add(bean.toAccessControlEntry(m_cms, m_resource.getStructureId()));
+                            CmsAccessControlEntry entry = bean.toAccessControlEntry(m_cms, m_resource.getStructureId());
+                            if (entry != null) {
+                                ownEntries.add(entry);
+                            }
                         }
                         //No new entry -> remove from new list
                         newBeans.remove(bean);
@@ -655,7 +658,10 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
             }
             for (CmsPermissionBean newBean : newBeans) {
                 if (!newBean.isDeleted()) {
-                    ownEntries.add(newBean.toAccessControlEntry(m_cms, m_resource.getStructureId()));
+                    CmsAccessControlEntry entry = newBean.toAccessControlEntry(m_cms, m_resource.getStructureId());
+                    if (entry != null) {
+                        ownEntries.add(entry);
+                    }
                 }
             }
         } catch (CmsException e) {

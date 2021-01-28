@@ -304,6 +304,10 @@ public class CmsPermissionBean {
             }
         }
 
+        if (id == null) {
+            return null;
+        }
+
         if (m_permissionString == null) {
             return new CmsAccessControlEntry(resID, id, m_allowed, m_denied, m_flags);
         }
