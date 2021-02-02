@@ -17,7 +17,7 @@
     <xsd:complexType name="OpenCmsFunctionConfig">
         <xsd:sequence>
         	<xsd:element name="NiceName" type="OpenCmsString" />
-        	<xsd:element name="Key" type="OpenCmsString" />
+        	<xsd:element name="Key" type="OpenCmsString" minOccurs="0" />
     	    <xsd:element name="Jsp" type="OpenCmsVfsFile" />
     	    <xsd:element name="Description" type="OpenCmsString" minOccurs="0" />
         	<xsd:element name="Match" type="OpenCmsChoiceTypeWidth" minOccurs="0" />
