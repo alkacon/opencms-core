@@ -27,6 +27,8 @@
 
 package org.opencms.acacia.shared;
 
+import org.opencms.acacia.shared.CmsEntityChangeEvent.ChangeType;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,7 +60,8 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
          */
         public void onValueChange(ValueChangeEvent<CmsEntity> event) {
 
-            fireChange();
+            ChangeType type = ((CmsEntityChangeEvent)event).getChangeType();
+            fireChange(type);
         }
     }
 
@@ -236,7 +239,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
             m_entityAttributes.put(attributeName, values);
         }
         registerChangeHandler(value);
-        fireChange();
+        fireChange(ChangeType.add);
     }
 
     /**
@@ -257,7 +260,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
             values.add(value);
             m_simpleAttributes.put(attributeName, values);
         }
-        fireChange();
+        fireChange(ChangeType.add);
     }
 
     /**
@@ -496,7 +499,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
             setAttributeValue(attributeName, value);
         }
         registerChangeHandler(value);
-        fireChange();
+        fireChange(ChangeType.add);
     }
 
     /**
@@ -513,7 +516,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
         } else {
             setAttributeValue(attributeName, value);
         }
-        fireChange();
+        fireChange(ChangeType.add);
     }
 
     /**
@@ -524,7 +527,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
     public void removeAttribute(String attributeName) {
 
         removeAttributeSilent(attributeName);
-        fireChange();
+        fireChange(ChangeType.remove);
     }
 
     /**
@@ -571,7 +574,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
                 removeChildChangeHandler(child);
             }
         }
-        fireChange();
+        fireChange(ChangeType.remove);
     }
 
     /**
@@ -611,7 +614,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
                 removeChildChangeHandler(child);
             }
             m_entityAttributes.get(attributeName).add(index, value);
-            fireChange();
+            fireChange(ChangeType.change);
         }
     }
 
@@ -627,7 +630,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
         List<String> values = new ArrayList<String>();
         values.add(value);
         m_simpleAttributes.put(attributeName, values);
-        fireChange();
+        fireChange(ChangeType.change);
     }
 
     /**
@@ -653,7 +656,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
                 m_simpleAttributes.get(attributeName).remove(index);
             }
             m_simpleAttributes.get(attributeName).add(index, value);
-            fireChange();
+            fireChange(ChangeType.change);
         }
     }
 
@@ -721,10 +724,13 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
 
     /**
      * Fires the change event for this entity.<p>
+     * 
+     * @param type the change type 
      */
-    void fireChange() {
+    void fireChange(ChangeType type) {
 
-        ValueChangeEvent.fire(this, this);
+        CmsEntityChangeEvent event = new CmsEntityChangeEvent(this, type);
+        fireEvent(event);
     }
 
     /**

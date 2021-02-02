@@ -92,8 +92,21 @@ public final class CmsDebugLog {
      * @param message the message to log
      */
     public static native void consoleLog(String message) /*-{
-        if ($wnd.console && $wnd.console.log) {
-            $wnd.top.console.log(message);
+        var cns = $wnd.top.console;
+        if (cns && cns.log) {
+            cns.log(message);
+        }
+    }-*/;
+
+    /**
+     * Logs a message and includes the current stack trace.
+     * 
+     * @param message the message to log 
+     */
+    public static native void consoleTrace(String message) /*-{
+        var cns = $wnd.top.console;
+        if (cns && cns.trace) {
+            cns.trace(message);
         }
     }-*/;
 

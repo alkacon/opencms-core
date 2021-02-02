@@ -38,6 +38,8 @@ import org.opencms.acacia.client.I_CmsInlineFormParent;
 import org.opencms.acacia.client.entity.CmsEntityBackend;
 import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.acacia.shared.CmsEntityAttribute;
+import org.opencms.acacia.shared.CmsEntityChangeEvent;
+import org.opencms.acacia.shared.CmsEntityChangeEvent.ChangeType;
 import org.opencms.acacia.shared.CmsTabInfo;
 import org.opencms.acacia.shared.CmsType;
 import org.opencms.acacia.shared.CmsValidationResult;
@@ -146,6 +148,8 @@ public final class CmsContentEditor extends CmsEditorBase {
         /** The observed entity. */
         private CmsEntity m_observerdEntity;
 
+        private Set<String> m_changedScopes = new HashSet<>();
+
         /**
          * Constructor.<p>
          *
@@ -181,29 +185,32 @@ public final class CmsContentEditor extends CmsEditorBase {
         public void onValueChange(ValueChangeEvent<CmsEntity> event) {
 
             final CmsEntity entity = event.getValue();
-            m_needsValueChangeProcessing = true;
+            if (event instanceof CmsEntityChangeEvent) {
+
+                CmsEntityChangeEvent.ChangeType type = ((CmsEntityChangeEvent)event).getChangeType();
+                for (String scope : m_scopeValues.keySet()) {
+                    String scopeValue = CmsContentDefinition.getValueForPath(entity, scope);
+                    String previousValue = m_scopeValues.get(scope);
+                    if (((scopeValue != null) && !scopeValue.equals(previousValue))
+                        || ((scopeValue == null) && (previousValue != null))) {
+                        if (type == ChangeType.change) {
+                            m_changedScopes.add(scope);
+                        }
+                        m_scopeValues.put(scope, scopeValue);
+                    }
+                }
+
+            }
             Scheduler.get().scheduleFinally(new ScheduledCommand() {
 
                 public void execute() {
 
-                    if (m_needsValueChangeProcessing) {
-                        m_needsValueChangeProcessing = false;
-                        Set<String> changedScopes = new HashSet<String>();
-                        for (String scope : m_scopeValues.keySet()) {
-                            String scopeValue = CmsContentDefinition.getValueForPath(entity, scope);
-                            String previousValue = m_scopeValues.get(scope);
-                            if (((scopeValue != null) && !scopeValue.equals(previousValue))
-                                || ((scopeValue == null) && (previousValue != null))) {
-                                // the value within this scope has changed, notify all listeners
-
-                                changedScopes.add(scope);
-                                m_scopeValues.put(scope, scopeValue);
-                            }
+                    if (m_changedScopes.size() > 0) {
+                        Set<String> changedScopesCopy = new HashSet<>(m_changedScopes);
+                        m_changedScopes.clear();
+                        if (!changedScopesCopy.isEmpty()) {
+                            callEditorChangeHandlers(changedScopesCopy);
                         }
-                        if (!changedScopes.isEmpty()) {
-                            callEditorChangeHandlers(changedScopes);
-                        }
-
                     }
                 }
             });
@@ -248,9 +255,6 @@ public final class CmsContentEditor extends CmsEditorBase {
 
     /** Indicates if any settings attributes have been changed. */
     boolean m_hasChangedSettings;
-
-    /** Flag indicating that we need to collect changed values. */
-    boolean m_needsValueChangeProcessing;
 
     /** Value of the auto-unlock option from the configuration. */
     private boolean m_autoUnlock;
@@ -2549,12 +2553,12 @@ public final class CmsContentEditor extends CmsEditorBase {
                                         previousAttribute.getSimpleValues().get(i))
                                         && previousAttribute.getSimpleValues().get(i).equals(
                                             targetAttribute.getSimpleValues().get(i))) {
-                                        changeSimpleValue(
-                                            attributeName,
-                                            i,
-                                            updatedAttribute.getSimpleValues().get(i),
-                                            parentPathElements);
-                                    }
+                                                changeSimpleValue(
+                                                    attributeName,
+                                                    i,
+                                                    updatedAttribute.getSimpleValues().get(i),
+                                                    parentPathElements);
+                                            }
                                 }
                             } else {
                                 // values have been removed
@@ -2565,12 +2569,12 @@ public final class CmsContentEditor extends CmsEditorBase {
                                         previousAttribute.getSimpleValues().get(i))
                                         && previousAttribute.getSimpleValues().get(i).equals(
                                             targetAttribute.getSimpleValues().get(i))) {
-                                        changeSimpleValue(
-                                            attributeName,
-                                            i,
-                                            updatedAttribute.getSimpleValues().get(i),
-                                            parentPathElements);
-                                    }
+                                                changeSimpleValue(
+                                                    attributeName,
+                                                    i,
+                                                    updatedAttribute.getSimpleValues().get(i),
+                                                    parentPathElements);
+                                            }
                                 }
                             }
                         }
@@ -2622,7 +2626,8 @@ public final class CmsContentEditor extends CmsEditorBase {
 
             } else if (!previous.hasAttribute(attributeName)
                 && !target.hasAttribute(attributeName)
-                && updated.hasAttribute(attributeName)) {
+                && updated.hasAttribute(attributeName)) //
+            {
                 CmsEntityAttribute updatedAttribute = updated.getAttribute(attributeName);
                 for (int i = 0; i < updatedAttribute.getValueCount(); i++) {
                     if (updatedAttribute.isSimpleValue()) {
