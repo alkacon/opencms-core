@@ -17,6 +17,7 @@
     <xsd:complexType name="OpenCmsFunctionConfig">
         <xsd:sequence>
         	<xsd:element name="NiceName" type="OpenCmsString" />
+        	<xsd:element name="Key" type="OpenCmsString" />
     	    <xsd:element name="Jsp" type="OpenCmsVfsFile" />
     	    <xsd:element name="Description" type="OpenCmsString" minOccurs="0" />
         	<xsd:element name="Match" type="OpenCmsChoiceTypeWidth" minOccurs="0" />
@@ -43,6 +44,9 @@
 				<mapping element="NiceName" mapto="galleryName" />
                 <mapping element="Description" mapto="galleryDescription" />
 		</mappings>
+	    <validationrules>
+	       	<validationrule element="Key" regex="^[a-zA-Z0-9-\.]+$" message="%(key.formatterkey.validation)" />
+        </validationrules>
         <layouts>
         	<layout element="Jsp" widget="VfsFileWidget" configuration="searchtypes=jsp" />
         </layouts>

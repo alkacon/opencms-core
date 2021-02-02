@@ -27,6 +27,7 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.containerpage.CmsModelGroupHelper;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.file.CmsFile;
@@ -257,6 +258,16 @@ public class CmsXmlContainerPage extends CmsXmlContent {
     }
 
     /**
+     * Calls initDocument, but with a different CmsObject
+     *
+     * @param cms the CmsObject to use
+     */
+    public void initDocument(CmsObject cms) {
+
+        initDocument(cms, m_document, m_encoding, getContentDefinition());
+    }
+
+    /**
      * @see org.opencms.xml.content.CmsXmlContent#isAutoCorrectionEnabled()
      */
     @Override
@@ -354,6 +365,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
      */
     protected CmsContainerPageBean cleanupContainersContainers(CmsObject cms, CmsContainerPageBean cntPage) {
 
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, getFile().getRootPath());
         // get the used containers first
         Map<String, CmsContainerBean> currentContainers = cntPage.getContainers();
         List<CmsContainerBean> containers = new ArrayList<CmsContainerBean>();
@@ -410,11 +422,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                     String settingsKey = CmsFormatterConfig.getSettingsKeyForContainer(
                         parentContainers.get(element.getInstanceId()));
                     String formatterId = element.getIndividualSettings().get(settingsKey);
-                    if (CmsUUID.isValidUUID(formatterId)) {
-                        I_CmsFormatterBean formatterBean = OpenCms.getADEManager().getCachedFormatters(
-                            false).getFormatters().get(new CmsUUID(formatterId));
-                        remove = (formatterBean instanceof CmsFormatterBean)
-                            && ((CmsFormatterBean)formatterBean).isStrictContainers();
+                    I_CmsFormatterBean bean = config.findFormatter(formatterId);
+                    if (bean != null) {
+                        remove = (bean instanceof CmsFormatterBean) && ((CmsFormatterBean)bean).isStrictContainers();
                     }
                 }
                 if (remove) {
@@ -469,6 +479,10 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         m_locales = new HashSet<Locale>();
         m_cntPages = new LinkedHashMap<Locale, CmsContainerPageBean>();
         clearBookmarks();
+        CmsADEConfigData config = null;
+        if ((getFile() != null) && (cms != null)) {
+            config = OpenCms.getADEManager().lookupConfiguration(cms, getFile().getRootPath());
+        }
 
         // initialize the bookmarks
         for (Iterator<Element> itCntPages = CmsXmlGenericWrapper.elementIterator(
@@ -573,6 +587,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                             element,
                             elemPath,
                             elemDef);
+                        if ((config != null) && (getFile() != null)) {
+                            propertiesMap = fixNestedFormatterSettings(cms, config, propertiesMap);
+                        }
 
                         if (elementId != null) {
                             elements.add(new CmsContainerElementBean(elementId, formatterId, propertiesMap, createNew));
@@ -642,6 +659,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
         parent.clearContent();
 
+        CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(cms, getFile().getRootPath());
         // save containers in a defined order
         List<String> containerNames = new ArrayList<String>(cntPage.getNames());
         Collections.sort(containerNames);
@@ -675,11 +693,12 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                 }
                 // the properties
                 Map<String, String> properties = element.getIndividualSettings();
+                Map<String, String> processedSettings = processSettingsForSave(adeConfig, properties);
                 Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementSettings(
                     cms,
                     uriRes);
 
-                CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, properties, propertiesConf);
+                CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, processedSettings, propertiesConf);
             }
         }
     }
@@ -692,6 +711,62 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
         // just for visibility from the factory
         super.setFile(file);
+    }
+
+    /**
+     * Replaces formatter id prefixes for nested settings with corresponding formatter keys, if possible.
+     *
+     * @param cms the CMS Context
+     * @param config the sitemap configuration
+      *@param propertiesMap the map of setting s
+     * @return the modified settings
+     */
+    private Map<String, String> fixNestedFormatterSettings(
+        CmsObject cms,
+        CmsADEConfigData config,
+        Map<String, String> propertiesMap) {
+
+        Map<String, String> result = new HashMap<>();
+        for (Map.Entry<String, String> entry : propertiesMap.entrySet()) {
+            String key = entry.getKey();
+            if (key.length() > 37) {
+                String prefix = key.substring(0, 36);
+                if (CmsUUID.isValidUUID(prefix) && (key.charAt(36) == '_')) {
+                    I_CmsFormatterBean formatter = config.findFormatter(prefix);
+                    if (formatter != null) {
+                        key = formatter.getKeyOrId() + key.substring(36);
+                    }
+                }
+            }
+            result.put(key, entry.getValue());
+        }
+        return result;
+    }
+
+    /**
+     * Do some processing for the element settings before saving them.
+     *
+     * @param config the ADE configuration
+     * @param settings the element settings
+     * @return the modified element settings
+     */
+    private Map<String, String> processSettingsForSave(CmsADEConfigData config, Map<String, String> settings) {
+
+        Map<String, String> result = new LinkedHashMap<>();
+        for (Map.Entry<String, String> entry : settings.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            if (key.startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)) {
+                if (CmsUUID.isValidUUID(value)) {
+                    I_CmsFormatterBean dynamicFmt = config.findFormatter(value);
+                    if ((dynamicFmt != null) && (dynamicFmt.getKey() != null)) {
+                        value = dynamicFmt.getKey();
+                    }
+                }
+            }
+            result.put(key, value);
+        }
+        return result;
     }
 
 }

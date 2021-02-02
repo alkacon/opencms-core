@@ -41,7 +41,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -562,8 +561,6 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             cms,
             cms.getRequestContext().getRootUri());
         if ((containerPage != null) && (containerPage.getElements() != null)) {
-            Map<CmsUUID, I_CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(
-                standardContext.getIsOnlineProject()).getFormatters();
             List<CmsContainerBean> containers = new ArrayList<CmsContainerBean>(containerPage.getContainers().values());
             // add detail only containers if available
             if (standardContext.isDetailRequest()) {
@@ -602,8 +599,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                                             cms,
                                             config,
                                             subElement,
-                                            container,
-                                            formatters);
+                                            container);
                                         if (formatter != null) {
                                             headincludes.addAll(getHeadIncludes(formatter, includeType));
                                             String inlineIncludeData = getInlineData(formatter, includeType);
@@ -622,8 +618,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
                                     cms,
                                     config,
                                     element,
-                                    container,
-                                    formatters);
+                                    container);
                                 if (formatter != null) {
                                     headincludes.addAll(getHeadIncludes(formatter, includeType));
                                     String inlineIncludeData = getInlineData(formatter, includeType);
@@ -748,8 +743,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         CmsObject cms,
         CmsADEConfigData config,
         CmsContainerElementBean element,
-        CmsContainerBean container,
-        Map<CmsUUID, I_CmsFormatterBean> formatters) {
+        CmsContainerBean container) {
 
         int containerWidth = -1;
         if (container.getWidth() == null) {

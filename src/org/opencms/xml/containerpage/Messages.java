@@ -76,6 +76,15 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READING_FORMATTER_INFO_FROM_REQUEST_0 = "ERR_READING_FORMATTER_INFO_FROM_REQUEST_0";
 
+    /** Message constant for key in the resource bundle .*/
+    public static final String GUI_CANT_EDIT_FUNCTIONS_0 = "GUI_CANT_EDIT_FUNCTIONS_0";
+
+    /** Message constant for key in the resource bundle .*/
+    public static final String GUI_REDIRECT_SUBLEVEL_TITLE_0 = "GUI_REDIRECT_SUBLEVEL_TITLE_0";
+
+    /** Message constant for key in the resource bundle .*/
+    public static final String GUI_REDIRECT_TITLE_1 = "GUI_REDIRECT_TITLE_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2 = "LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2";
 
@@ -117,12 +126,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
-
-    /** Message constant for key in the resource bundle .*/
-    public static final String GUI_REDIRECT_TITLE_1 = "GUI_REDIRECT_TITLE_1";
-
-    /** Message constant for key in the resource bundle .*/
-    public static final String GUI_REDIRECT_SUBLEVEL_TITLE_0 = "GUI_REDIRECT_SUBLEVEL_TITLE_0";
 
     /**
      * Hides the public constructor for this utility class.<p>

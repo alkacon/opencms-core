@@ -19,6 +19,7 @@
         <xsd:sequence>
             <xsd:element name="NiceName" type="OpenCmsString" />
             <xsd:element name="Type" type="OpenCmsString" maxOccurs="unbounded" />
+            <xsd:element name="Key" type="OpenCmsString" minOccurs="0" />
             <xsd:element name="Description" type="OpenCmsString" minOccurs="0" />
             <xsd:element name="Rank" type="OpenCmsString"/>
             <xsd:element name="Match" type="OpenCmsChoiceTypeWidth" minOccurs="0" />

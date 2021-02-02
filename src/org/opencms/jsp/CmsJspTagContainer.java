@@ -205,12 +205,11 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
             containerWidth);
         String settingsKey = CmsFormatterConfig.getSettingsKeyForContainer(containerName);
         if (formatterBean != null) {
-            String formatterConfigId = formatterBean.getId();
-            if (formatterConfigId == null) {
-                formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID
-                    + formatterBean.getJspStructureId().toString();
+            String keyOrId = formatterBean.getKeyOrId();
+            if (keyOrId == null) {
+                keyOrId = CmsFormatterConfig.SCHEMA_FORMATTER_ID + formatterBean.getJspStructureId().toString();
             }
-            element.getSettings().put(settingsKey, formatterConfigId);
+            element.getSettings().put(settingsKey, keyOrId);
             element.setFormatterId(formatterBean.getJspStructureId());
         }
         return formatterBean;
@@ -257,19 +256,17 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 }
             } else {
                 String formatterConfigId = element.getSettings().get(settingsKey);
-                if (CmsUUID.isValidUUID(formatterConfigId)) {
-                    formatterBean = OpenCms.getADEManager().getCachedFormatters(
-                        cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
-                            new CmsUUID(formatterConfigId));
+                I_CmsFormatterBean dynamicFmt = adeConfig.findFormatter(formatterConfigId);
+                if (dynamicFmt != null) {
+                    formatterBean = dynamicFmt;
                 }
             }
         } else {
             if (element.getSettings().containsKey(settingsKey)) {
                 String formatterConfigId = element.getSettings().get(settingsKey);
-                if (CmsUUID.isValidUUID(formatterConfigId)) {
-                    formatterBean = OpenCms.getADEManager().getCachedFormatters(
-                        cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
-                            new CmsUUID(formatterConfigId));
+                I_CmsFormatterBean dynamicFmt = adeConfig.findFormatter(formatterConfigId);
+                if (dynamicFmt != null) {
+                    formatterBean = dynamicFmt;
                 }
             }
             if (formatterBean == null) {
@@ -1100,7 +1097,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
         if (detailContent != null) {
             // get the right formatter
 
-            CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+            CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(
                 cms,
                 cms.getRequestContext().getRootUri());
             CmsFormatterConfiguration formatters = config.getFormatters(cms, detailContent);
@@ -1125,16 +1122,12 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 String formatterKey = CmsFormatterConfig.getSettingsKeyForContainer(container.getName());
                 if (settings.containsKey(formatterKey)) {
                     String formatterConfigId = settings.get(formatterKey);
-                    if (CmsUUID.isValidUUID(formatterConfigId)) {
-                        I_CmsFormatterBean formatterBean = OpenCms.getADEManager().getCachedFormatters(
-                            cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
-                                new CmsUUID(formatterConfigId));
-                        if (formatterBean != null) {
-                            formatter = formatterBean;
-                        }
+                    I_CmsFormatterBean dynamicFmt = config.findFormatter(formatterConfigId);
+                    if (dynamicFmt != null) {
+                        formatter = dynamicFmt;
                     }
                 }
-                settings.put(formatterKey, formatter.getId());
+                settings.put(formatterKey, formatter.getKeyOrId());
                 settings.put(CmsContainerElement.ELEMENT_INSTANCE_ID, new CmsUUID().toString());
                 // create element bean
                 element = new CmsContainerElementBean(
@@ -1394,7 +1387,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
         ServletResponse res = pageContext.getResponse();
         String containerType = getType();
         int containerWidth = getContainerWidth();
-        CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
+        CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfigurationWithCache(
             cms,
             cms.getRequestContext().getRootUri());
         boolean isGroupContainer = element.isGroupContainer(cms);
@@ -1409,7 +1402,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 getName(),
                 containerType,
                 containerWidth);
-            element.initSettings(cms, formatterConfig, locale, request, m_settingPresets);
+            element.initSettings(cms, adeConfig, formatterConfig, locale, request, m_settingPresets);
         }
         // writing elements to the session cache to improve performance of the container-page editor in offline project
         if (m_editableRequest) {
@@ -1445,7 +1438,13 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                         getName(),
                         containerType,
                         containerWidth);
-                    subelement.initSettings(cms, subElementFormatterConfig, locale, request, m_settingPresets);
+                    subelement.initSettings(
+                        cms,
+                        adeConfig,
+                        subElementFormatterConfig,
+                        locale,
+                        request,
+                        m_settingPresets);
                     // writing elements to the session cache to improve performance of the container-page editor
                     if (m_editableRequest) {
                         getSessionCache(cms).setCacheContainerElement(subelement.editorHash(), subelement);

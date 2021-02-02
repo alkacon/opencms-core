@@ -109,6 +109,9 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     /** The UUID of the JSP resource for this formatter. */
     protected CmsUUID m_jspStructureId;
 
+    /** The formatter key. */
+    protected String m_key;
+
     /** The location this formatter was configured in. */
     protected String m_location;
 
@@ -148,11 +151,11 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     /** Indicates whether meta mappings should be applied for all elements. */
     protected boolean m_useMetaMappingsForNormalElements;
 
-    /** Flag indicating this formatter allows settings to be edited in the content editor. */
-    private boolean m_isAllowsSettingsInEditor;
-
     /** Map of attributes. */
     private Map<String, String> m_attributes = Collections.emptyMap();
+
+    /** Flag indicating this formatter allows settings to be edited in the content editor. */
+    private boolean m_isAllowsSettingsInEditor;
 
     /**
      * Constructor for creating a new formatter configuration with resource structure id.<p>
@@ -160,6 +163,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
      * @param containerTypes the formatter container types
      * @param jspRootPath the formatter JSP VFS root path
      * @param jspStructureId the structure id of the formatter JSP
+     * @param key the formatter key
      * @param minWidth the formatter min width
      * @param maxWidth the formatter max width
      * @param preview indicates if this formatter is to be used for the preview in the ADE gallery GUI
@@ -190,6 +194,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         Set<String> containerTypes,
         String jspRootPath,
         CmsUUID jspStructureId,
+        String key,
         int minWidth,
         int maxWidth,
         boolean preview,
@@ -218,6 +223,10 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
 
         m_jspRootPath = jspRootPath;
         m_jspStructureId = jspStructureId;
+        m_key = key;
+        if (m_key != null) {
+            m_key = m_key.trim();
+        }
         m_containerTypes = containerTypes;
         m_minWidth = minWidth;
         m_maxWidth = maxWidth;
@@ -274,6 +283,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             isWildcardType(containerType) ? Collections.<String> emptySet() : Collections.singleton(containerType),
             rootPath,
             structureId,
+            null,
             minWidth,
             maxWidth,
             preview,
@@ -370,6 +380,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             Collections.<String> emptySet(),
             jspRootPath,
             jspStructureId,
+            null,
             -1,
             Integer.MAX_VALUE,
             preview,
@@ -523,6 +534,14 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     public CmsUUID getJspStructureId() {
 
         return m_jspStructureId;
+    }
+
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getKey()
+     */
+    public String getKey() {
+
+        return m_key;
     }
 
     /**

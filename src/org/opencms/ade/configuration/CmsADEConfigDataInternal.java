@@ -124,6 +124,7 @@ public class CmsADEConfigDataInternal {
 
     /**
      * Creates a new configuration data instance.<p>
+     *
      * @param cms the CMS context
      * @param resource the resource from which this configuration data was read
      * @param isModuleConfig true if this is a module configuration
@@ -187,6 +188,7 @@ public class CmsADEConfigDataInternal {
         m_createContentsLocally = createContentsLocally;
         m_preferDetailPagesForLocalContents = preferDetailPagesForLocalContents;
         m_formatterChangeSet = formatterChangeSet;
+        m_formatterChangeSet.setDebugPath(m_basePath);
         m_dynamicFunctions = functionIds;
         m_removeAllFunctions = removeAllFunctions;
         m_excludeExternalDetailContents = excludeExternalDetailContents;

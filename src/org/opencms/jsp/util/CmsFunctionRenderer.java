@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.util;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -246,15 +247,14 @@ public class CmsFunctionRenderer {
      */
     private CmsFunctionFormatterBean getFormatterBean(CmsObject cms) {
 
-        Map<CmsUUID, I_CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(
-            m_cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters();
-
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+            cms,
+            cms.getRequestContext().getRootUri());
         // Using getId(), *not* getFormatterId() here , since the former is the id of the function formatter configuration,
         // and the latter is just the id of the internal JSP used to render it
-        I_CmsFormatterBean formatterConfig = formatters.get(m_element.getId());
+        I_CmsFormatterBean formatterConfig = config.findFormatter(m_element.getId());
         CmsFunctionFormatterBean function = (CmsFunctionFormatterBean)formatterConfig;
         return function;
-
     }
 
     /**

@@ -27,6 +27,7 @@
 
 package org.opencms.ade.containerpage.client;
 
+import org.opencms.ade.client.CmsRpcContext;
 import org.opencms.ade.containerpage.client.ui.CmsAddToFavoritesButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarAllGalleriesMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
@@ -58,6 +59,7 @@ import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommandInitializer;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsGwtConstants.QuickLaunch;
 import org.opencms.gwt.shared.CmsQuickLaunchParams;
 import org.opencms.util.CmsStringUtil;
@@ -291,6 +293,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     public void onModuleLoad() {
 
         super.onModuleLoad();
+        CmsRpcContext.get().put(CmsGwtConstants.RpcContext.PAGE_ID, "" + CmsCoreProvider.get().getStructureId());
         CmsBroadcastTimer.start();
         JavaScriptObject window = CmsDomUtil.getWindow();
         CmsDomUtil.setAttribute(window, "__hideEditorCloseButton", "true");
@@ -411,23 +414,23 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      * @param controller the controller
      */
     private native void exportMethods(CmsContainerpageController controller) /*-{
-                                                                             var contr = controller;
-                                                                             $wnd.opencms = {
-                                                                             openStacktraceDialog : function(event) {
-                                                                             event = (event) ? event : ((window.event) ? window.event : "");
-                                                                             var elem = (event.target) ? event.target : event.srcElement;
-                                                                             if (elem != null) {
-                                                                             var children = elem.getElementsByTagName("span");
-                                                                             if (children.length > 0) {
-                                                                             var title = children[0].getAttribute("title");
-                                                                             var content = children[0].innerHTML;
-                                                                             @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
-                                                                             }
-                                                                             }
-                                                                             },
-                                                                             reinitializeEditButtons : function() {
-                                                                             contr.@org.opencms.ade.containerpage.client.CmsContainerpageController::reinitializeButtons()();
-                                                                             }
-                                                                             }
-                                                                             }-*/;
+		var contr = controller;
+		$wnd.opencms = {
+			openStacktraceDialog : function(event) {
+				event = (event) ? event : ((window.event) ? window.event : "");
+				var elem = (event.target) ? event.target : event.srcElement;
+				if (elem != null) {
+					var children = elem.getElementsByTagName("span");
+					if (children.length > 0) {
+						var title = children[0].getAttribute("title");
+						var content = children[0].innerHTML;
+						@org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
+					}
+				}
+			},
+			reinitializeEditButtons : function() {
+				contr.@org.opencms.ade.containerpage.client.CmsContainerpageController::reinitializeButtons()();
+			}
+		}
+    }-*/;
 }

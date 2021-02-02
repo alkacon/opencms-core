@@ -34,6 +34,7 @@ import org.opencms.acacia.shared.CmsEntityHtml;
 import org.opencms.acacia.shared.CmsTabInfo;
 import org.opencms.acacia.shared.CmsType;
 import org.opencms.acacia.shared.CmsValidationResult;
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.CmsElementUtil;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
@@ -432,9 +433,13 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     throws CmsRpcException {
 
         CmsContentDefinition result = null;
+        CmsObject cms = getCmsObject();
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+            cms,
+            cms.getRequestContext().getRootUri());
         CmsUUID structureId = CmsContentDefinition.entityIdToUuid(editedLocaleEntity.getId());
         if (structureId != null) {
-            CmsObject cms = getCmsObject();
+
             CmsResource resource = null;
             Locale locale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
             try {
@@ -460,7 +465,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     false,
                     null,
                     editedLocaleEntity,
-                    Collections.emptyMap());
+                    Collections.emptyMap(),
+                    config);
             } catch (Exception e) {
                 error(e);
             }
@@ -518,6 +524,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadDefinition(java.lang.String, java.lang.String, org.opencms.acacia.shared.CmsEntity, java.util.Collection, java.util.Map)
      */
     public CmsContentDefinition loadDefinition(
+
         String entityId,
         String clientId,
         CmsEntity editedLocaleEntity,
@@ -529,6 +536,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         try {
             CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
             CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+                getCmsObject(),
+                getCmsObject().getRequestContext().getRootUri());
+
             Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(entityId));
             CmsFile file = getCmsObject().readFile(resource);
             CmsXmlContent content = getContentDocument(file, true);
@@ -544,7 +555,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 false,
                 null,
                 editedLocaleEntity,
-                settingPresets);
+                settingPresets,
+                config);
         } catch (Exception e) {
             error(e);
         }
@@ -555,6 +567,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadInitialDefinition(java.lang.String, java.lang.String, java.lang.String, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.opencms.ade.contenteditor.shared.CmsEditHandlerData, java.util.Map)
      */
     public CmsContentDefinition loadInitialDefinition(
+
         String entityId,
         String clientId,
         String newLink,
@@ -567,6 +580,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         Map<String, String> settingPresets)
     throws CmsRpcException {
 
+        CmsObject cms = getCmsObject();
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+            cms,
+            cms.getRequestContext().getRootUri());
         CmsContentDefinition result = null;
         getCmsObject().getRequestContext().setAttribute(CmsXmlContentEditor.ATTRIBUTE_EDITCONTEXT, editContext);
         try {
@@ -597,7 +614,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     false,
                     mainLocale != null ? CmsLocaleManager.getLocale(mainLocale) : null,
                     null,
-                    settingPresets);
+                    settingPresets,
+                    config);
             }
         } catch (Throwable t) {
             error(t);
@@ -609,6 +627,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadNewDefinition(java.lang.String, java.lang.String, org.opencms.acacia.shared.CmsEntity, java.util.Collection, java.util.Map)
      */
     public CmsContentDefinition loadNewDefinition(
+
         String entityId,
         String clientId,
         CmsEntity editedLocaleEntity,
@@ -616,6 +635,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         Map<String, String> settingPresets)
     throws CmsRpcException {
 
+        CmsObject cms = getCmsObject();
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+            cms,
+            cms.getRequestContext().getRootUri());
         CmsContentDefinition definition = null;
         try {
             CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
@@ -633,7 +656,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 true,
                 null,
                 editedLocaleEntity,
-                settingPresets);
+                settingPresets,
+                config);
         } catch (Exception e) {
             error(e);
         }
@@ -712,7 +736,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                             false,
                             null,
                             null,
-                            Collections.emptyMap());
+                            Collections.emptyMap(),
+                            null);
                     }
                     result.setDirectEdit(isDirectEdit);
                     return result;
@@ -743,6 +768,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         if ((structureId == null) && !deletedEntities.isEmpty()) {
             structureId = CmsContentDefinition.entityIdToUuid(deletedEntities.get(0));
         }
+        CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
+            getCmsObject(),
+            getCmsObject().getRequestContext().getRootUri());
         if (structureId != null) {
             CmsObject cms = getCmsObject();
             CmsResource resource = null;
@@ -768,7 +796,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 boolean hasChangedSettings = false;
                 if ((clientId != null) && (lastEditedEntity != null)) {
                     CmsContainerElementBean containerElement = getSessionCache().getCacheContainerElement(clientId);
-                    I_CmsFormatterBean formatter = getFormatterForElement(containerElement);
+                    I_CmsFormatterBean formatter = getFormatterForElement(configData, containerElement);
                     if ((formatter != null)
                         && formatter.isAllowsSettingsInEditor()
                         && (formatter.getSettings() != null)
@@ -776,6 +804,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         Locale locale = CmsLocaleManager.getLocale(lastEditedLocale);
                         Map<String, CmsXmlContentProperty> settingsConfig = OpenCms.getADEManager().getFormatterSettings(
                             cms,
+                            configData,
                             formatter,
                             containerElement.getResource(),
                             locale,
@@ -787,6 +816,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
                         List<I_CmsFormatterBean> nestedFormatters = OpenCms.getADEManager().getNestedFormatters(
                             cms,
+                            configData,
                             containerElement.getResource(),
                             locale,
                             getRequest());
@@ -961,8 +991,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             return new CmsValidationResult(null, null);
         }
         structureId = CmsContentDefinition.entityIdToUuid(changedEntity.getId());
+
         if (structureId != null) {
             CmsObject cms = getCmsObject();
+            CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+                cms,
+                cms.getRequestContext().getRootUri());
             Set<String> setFieldNames = Sets.newHashSet();
             try {
                 CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
@@ -981,13 +1015,14 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 if (clientIdAttr != null) {
                     String clientId = clientIdAttr.getSimpleValue();
                     CmsContainerElementBean containerElement = getSessionCache().getCacheContainerElement(clientId);
-                    I_CmsFormatterBean formatter = getFormatterForElement(containerElement);
+                    I_CmsFormatterBean formatter = getFormatterForElement(config, containerElement);
                     if ((formatter != null)
                         && formatter.isAllowsSettingsInEditor()
                         && (formatter.getSettings() != null)
                         && !formatter.getSettings().isEmpty()) {
                         Map<String, CmsXmlContentProperty> settingsConfig = OpenCms.getADEManager().getFormatterSettings(
                             cms,
+                            config,
                             formatter,
                             containerElement.getResource(),
                             contentLocale,
@@ -1846,7 +1881,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      *
      * @return the formatter configuration
      */
-    private I_CmsFormatterBean getFormatterForElement(CmsContainerElementBean containerElement) {
+    private I_CmsFormatterBean getFormatterForElement(
+        CmsADEConfigData config,
+        CmsContainerElementBean containerElement) {
 
         if ((containerElement != null)
             && (containerElement.getFormatterId() != null)
@@ -1857,12 +1894,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             for (Entry<String, String> settingEntry : containerElement.getIndividualSettings().entrySet()) {
                 if (settingEntry.getKey().startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)) {
                     String formatterConfigId = settingEntry.getValue();
-                    if (CmsUUID.isValidUUID(formatterConfigId)) {
-                        I_CmsFormatterBean formatter = OpenCms.getADEManager().getCachedFormatters(
-                            false).getFormatters().get(new CmsUUID(formatterConfigId));
-                        if ((formatter != null) && formatterId.equals(formatter.getJspStructureId())) {
-                            return formatter;
-                        }
+                    I_CmsFormatterBean dynamicFmt = config.findFormatter(formatterConfigId);
+                    if ((dynamicFmt != null) && dynamicFmt.getJspStructureId().equals(formatterId)) {
+                        return dynamicFmt;
                     }
                 }
             }
@@ -1999,6 +2033,21 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         return attributeName.startsWith("/" + SETTINGS_ATTRIBUTE_NAME_PREFIX);
     }
 
+    private CmsADEConfigData readConfig(CmsUUID pageId) {
+
+        if (pageId == null) {
+            return null;
+        }
+        try {
+            CmsResource resource = getCmsObject().readResource(pageId, CmsResourceFilter.IGNORE_EXPIRATION);
+            return OpenCms.getADEManager().lookupConfiguration(getCmsObject(), resource.getRootPath());
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return null;
+        }
+
+    }
+
     /**
      * Reads the content definition for the given resource and locale.<p>
      *
@@ -2025,7 +2074,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         boolean newLocale,
         Locale mainLocale,
         CmsEntity editedLocaleEntity,
-        Map<String, String> settingPresets)
+        Map<String, String> settingPresets,
+        CmsADEConfigData configData)
     throws CmsException {
 
         long timer = 0;
@@ -2033,6 +2083,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             timer = System.currentTimeMillis();
         }
         CmsObject cms = getCmsObject();
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+            cms,
+            cms.getRequestContext().getRootUri());
         List<Locale> availableLocalesList = OpenCms.getLocaleManager().getAvailableLocales(cms, file);
         if (!availableLocalesList.contains(locale)) {
             availableLocalesList.retainAll(content.getLocales());
@@ -2149,13 +2202,14 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
         if (clientId != null) {
             CmsContainerElementBean containerElement = getSessionCache().getCacheContainerElement(clientId);
-            I_CmsFormatterBean formatter = getFormatterForElement(containerElement);
+            I_CmsFormatterBean formatter = getFormatterForElement(configData, containerElement);
             if ((formatter != null)
                 && formatter.isAllowsSettingsInEditor()
                 && (formatter.getSettings() != null)
                 && !formatter.getSettings().isEmpty()) {
                 Map<String, CmsXmlContentProperty> settingsConfig = OpenCms.getADEManager().getFormatterSettings(
                     cms,
+                    config,
                     formatter,
                     containerElement.getResource(),
                     locale,
@@ -2177,7 +2231,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     settingsConfig);
                 CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(m_workplaceLocale);
                 List<I_CmsFormatterBean> nestedFormatters = formatter.hasNestedFormatterSettings()
-                ? OpenCms.getADEManager().getNestedFormatters(cms, containerElement.getResource(), locale, getRequest())
+                ? OpenCms.getADEManager().getNestedFormatters(
+                    cms,
+                    config,
+                    containerElement.getResource(),
+                    locale,
+                    getRequest())
                 : Collections.emptyList();
                 String firstContentAttributeName = types.get(
                     entity.getTypeName()).getAttributeNames().iterator().next();
@@ -2316,7 +2375,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             false,
             null,
             null,
-            settingPresets);
+            settingPresets,
+            null);
         contentDefinition.setDeleteOnCancel(true);
         return contentDefinition;
     }
@@ -2683,7 +2743,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                                     false,
                                     null,
                                     null,
-                                    Collections.emptyMap());
+                                    Collections.emptyMap(),
+                                    null);
                                 entity = definition.getEntity();
                             } catch (CmsException e) {
                                 LOG.error(e.getLocalizedMessage(), e);

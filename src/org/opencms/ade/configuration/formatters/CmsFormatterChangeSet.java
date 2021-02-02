@@ -30,6 +30,7 @@ package org.opencms.ade.configuration.formatters;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.containerpage.CmsFunctionFormatterBean;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
 import java.util.Collection;
@@ -60,6 +61,16 @@ public class CmsFormatterChangeSet {
     /** A flag, indicating if all formatters that are not explicitly added should be removed. */
     private boolean m_removeAllNonExplicitlyAdded;
 
+    /** True if functions are removed. */
+    private boolean m_removeFunctions;
+
+    /** The set of structure ids of added functions. */
+    private Set<CmsUUID> m_functions;
+
+    /** The debug path to identify the configuration where this is coming from. */
+    @SuppressWarnings("unused")
+    private String m_debugPath;
+
     /**
      * Creates an empty formatter change set.<p>
      */
@@ -75,15 +86,22 @@ public class CmsFormatterChangeSet {
      * @param toAdd the formatter keys to add
      * @param siteRoot the site root of the current config
      * @param removeAllNonExplicitlyAdded flag, indicating if all formatters that are not explicitly added should be removed
+     * @param removeFunctions if true, all functions are removed
+     * @param functions the set of functions to enable
      */
     public CmsFormatterChangeSet(
         Collection<String> toRemove,
         Collection<String> toAdd,
         String siteRoot,
-        boolean removeAllNonExplicitlyAdded) {
+        boolean removeAllNonExplicitlyAdded,
+        boolean removeFunctions,
+        Set<CmsUUID> functions) {
 
         this();
+        m_removeFunctions = removeFunctions;
+        m_functions = functions;
         initialize(toRemove, toAdd, siteRoot, removeAllNonExplicitlyAdded);
+
     }
 
     /**
@@ -108,7 +126,8 @@ public class CmsFormatterChangeSet {
         CmsFormatterConfigurationCacheState externalFormatters) {
 
         if (m_removeAllNonExplicitlyAdded) {
-            formatters.clear();
+
+            formatters.values().removeIf(formatter -> !(formatter instanceof CmsFunctionFormatterBean));
         }
         for (Map.Entry<CmsUUID, Boolean> updateEntry : m_updateSet.entrySet()) {
             CmsUUID key = updateEntry.getKey();
@@ -120,6 +139,17 @@ public class CmsFormatterChangeSet {
                 }
             } else {
                 formatters.remove(key);
+            }
+        }
+        if (m_removeFunctions) {
+            formatters.values().removeIf(formatter -> formatter instanceof CmsFunctionFormatterBean);
+        }
+        if (m_functions != null) {
+            for (CmsUUID id : m_functions) {
+                I_CmsFormatterBean function = externalFormatters.getFormatters().get(id);
+                if (function != null) {
+                    formatters.put(id, function);
+                }
             }
         }
         if (m_pathPattern != null) {
@@ -156,6 +186,16 @@ public class CmsFormatterChangeSet {
                 types.remove(typeName);
             }
         }
+    }
+
+    /**
+     * Sets the debug path.
+     *
+     * @param debugPath the debug path
+     */
+    public void setDebugPath(String debugPath) {
+
+        m_debugPath = debugPath;
     }
 
     /**

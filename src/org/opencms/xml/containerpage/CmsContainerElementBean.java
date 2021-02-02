@@ -27,6 +27,7 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElement.ModelGroupState;
@@ -590,6 +591,7 @@ public class CmsContainerElementBean implements Cloneable {
      */
     public void initSettings(
         CmsObject cms,
+        CmsADEConfigData config,
         I_CmsFormatterBean formatterBean,
         Locale locale,
         ServletRequest request,
@@ -599,6 +601,7 @@ public class CmsContainerElementBean implements Cloneable {
         if (formatterBean == null) {
             mergedSettings = CmsXmlContentPropertyHelper.mergeDefaults(
                 cms,
+                config,
                 m_resource,
                 getIndividualSettings(),
                 locale,
@@ -606,7 +609,13 @@ public class CmsContainerElementBean implements Cloneable {
         } else {
             mergedSettings = CmsXmlContentPropertyHelper.mergeDefaults(
                 cms,
-                OpenCms.getADEManager().getFormatterSettings(cms, formatterBean, getResource(), locale, request),
+                OpenCms.getADEManager().getFormatterSettings(
+                    cms,
+                    config,
+                    formatterBean,
+                    getResource(),
+                    locale,
+                    request),
                 getIndividualSettings());
         }
         if ((presets != null) && (presets.size() > 0)) {

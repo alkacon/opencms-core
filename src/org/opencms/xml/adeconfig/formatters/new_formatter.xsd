@@ -22,6 +22,7 @@
         <xsd:sequence>
             <xsd:element name="NiceName" type="OpenCmsString" />
             <xsd:element name="Type" type="OpenCmsString" maxOccurs="unbounded" />
+            <xsd:element name="Key" type="OpenCmsString" minOccurs="0" />
             <xsd:element name="Jsp" type="OpenCmsVfsFile" />
             <xsd:element name="Description" type="OpenCmsString" minOccurs="0" />
             <xsd:element name="Rank" type="OpenCmsString"/>
@@ -67,6 +68,9 @@
                 <relation element="HeadIncludeCss/CssLink" invalidate="false" />
                 <relation element="HeadIncludeJs/JavascriptLink" invalidate="false" />
             </relations>
+            <validationrules>
+            	<validationrule element="Key" regex="^[a-zA-Z0-9-\.]+$" message="%(key.formatterkey.validation)" />
+            </validationrules>
             <tabs>
                 <tab element="NiceName" name="TabBasic" collapse="false" />
                 <tab element="IncludeSettings" name="TabSettings" collapse="false" />

@@ -308,17 +308,18 @@ public final class CmsJspStandardContextBean {
         }
 
         /**
-         * @see org.opencms.xml.containerpage.CmsContainerElementBean#initSettings(org.opencms.file.CmsObject, org.opencms.xml.containerpage.I_CmsFormatterBean, java.util.Locale, javax.servlet.ServletRequest, java.util.Map)
+         * @see org.opencms.xml.containerpage.CmsContainerElementBean#initSettings(org.opencms.file.CmsObject, org.opencms.ade.configuration.CmsADEConfigData, org.opencms.xml.containerpage.I_CmsFormatterBean, java.util.Locale, javax.servlet.ServletRequest, java.util.Map)
          */
         @Override
         public void initSettings(
             CmsObject cms,
+            CmsADEConfigData config,
             I_CmsFormatterBean formatterBean,
             Locale locale,
             ServletRequest request,
             Map<String, String> settingPresets) {
 
-            m_wrappedElement.initSettings(cms, formatterBean, locale, request, settingPresets);
+            m_wrappedElement.initSettings(cms, config, formatterBean, locale, request, settingPresets);
         }
 
         /**
@@ -511,6 +512,7 @@ public final class CmsJspStandardContextBean {
                 if (m_formatterSettingsConfig == null) {
                     m_formatterSettingsConfig = OpenCms.getADEManager().getFormatterSettings(
                         m_cms,
+                        m_config,
                         m_formatter,
                         m_transformElement.getResource(),
                         getLocale(),
@@ -770,6 +772,9 @@ public final class CmsJspStandardContextBean {
     /** The VFS content access bean. */
     private CmsJspVfsAccessBean m_vfsBean;
 
+    /** The sitemap configuration. */
+    protected CmsADEConfigData m_config;
+
     /**
      * Creates an empty instance.<p>
      */
@@ -799,7 +804,9 @@ public final class CmsJspStandardContextBean {
                 Messages.get().container(Messages.ERR_MISSING_CMS_CONTROLLER_1, CmsJspBean.class.getName()));
         }
         updateCmsObject(cms);
-
+        if (m_cms != null) {
+            m_config = OpenCms.getADEManager().lookupConfiguration(m_cms, m_cms.getRequestContext().getRootUri());
+        }
         m_detailContentResource = CmsDetailPageResourceHandler.getDetailResource(req);
         m_detailFunctionPage = CmsDetailPageResourceHandler.getDetailFunctionPage(req);
     }
@@ -1404,7 +1411,7 @@ public final class CmsJspStandardContextBean {
                                     "",
                                     0);
                                 if (formatterConfig != null) {
-                                    element.initSettings(m_cms, formatterConfig, l, m_request, null);
+                                    element.initSettings(m_cms, adeConfig, formatterConfig, l, m_request, null);
                                 }
                             }
                         }
@@ -1888,6 +1895,7 @@ public final class CmsJspStandardContextBean {
             if (pageResource == null) {
                 pageResource = m_cms.readResource(requestUri);
             }
+            m_config = OpenCms.getADEManager().lookupConfiguration(m_cms, pageResource.getRootPath());
             m_page = getPage(pageResource);
             m_page = CmsTemplateMapper.get(m_request).transformContainerpageBean(
                 m_cms,
@@ -2090,9 +2098,9 @@ public final class CmsJspStandardContextBean {
             Map<String, String> settings = element.getSettings();
             if (settings != null) {
                 String formatterConfigId = settings.get(CmsFormatterConfig.getSettingsKeyForContainer(containerName));
-                if (CmsUUID.isValidUUID(formatterConfigId)) {
-                    formatter = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().get(
-                        new CmsUUID(formatterConfigId));
+                I_CmsFormatterBean dynamicFmt = m_config.findFormatter(formatterConfigId);
+                if (dynamicFmt != null) {
+                    formatter = dynamicFmt;
                 }
             }
             if (formatter == null) {
@@ -2315,11 +2323,7 @@ public final class CmsJspStandardContextBean {
                         ? element.getSettings().get(settingsKey)
                         : null;
                         I_CmsFormatterBean formatterBean = null;
-                        if (CmsUUID.isValidUUID(formatterConfigId)) {
-                            formatterBean = OpenCms.getADEManager().getCachedFormatters(
-                                m_cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
-                                    new CmsUUID(formatterConfigId));
-                        }
+                        formatterBean = m_config.findFormatter(formatterConfigId);
                         if ((formatterBean != null)
                             && formatterBean.useMetaMappingsForNormalElements()
                             && m_cms.existsResource(element.getId(), filter)) {

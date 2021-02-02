@@ -276,6 +276,10 @@ public final class CmsXmlContainerPageFactory {
 
         // set the file
         content.setFile(file);
+
+        // Need to call initDocument again because it needs the file set to fix the nested formatter settings
+        content.initDocument(cms);
+
         // call prepare for use content handler and return the result
         CmsXmlContainerPage xmlCntPage = (CmsXmlContainerPage)content.getHandler().prepareForUse(cms, content);
 

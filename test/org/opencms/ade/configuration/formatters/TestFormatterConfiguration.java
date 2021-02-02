@@ -170,7 +170,9 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             Collections.<String> emptyList(),
             Arrays.asList("" + CmsUUID.getConstantUUID("f2"), "" + CmsUUID.getConstantUUID("f3")),
             null,
-            false);
+            false,
+            false,
+            null);
         config2.setFormatterChangeSet(changeSet);
 
         CmsFormatterConfiguration formatterConfig = config2.getFormatters(getCmsObject(), m_exampleResourceA);
@@ -354,7 +356,9 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             Collections.EMPTY_LIST,
             Collections.EMPTY_LIST,
             null,
-            true);
+            true,
+            false,
+            null);
         config2.setFormatterChangeSet(changeSet);
 
         config2.registerSchemaFormatters(typeB, CmsFormatterConfiguration.create(getCmsObject(), Arrays.asList(s3)));
@@ -375,7 +379,9 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             Collections.EMPTY_LIST,
             Arrays.asList("" + CmsUUID.getConstantUUID("f1"), "type_" + TYPE_B),
             null,
-            true);
+            true,
+            false,
+            null);
         config2.setFormatterChangeSet(changeSet2);
         formatterConfigA = config2.getFormatters(getCmsObject(), m_exampleResourceA);
         formatterConfigB = config2.getFormatters(getCmsObject(), m_exampleResourceB);
@@ -412,7 +418,9 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             Arrays.asList("type_" + TYPE_A),
             Collections.EMPTY_LIST,
             null,
-            false);
+            false,
+            false,
+            null);
         config.setFormatterChangeSet(changeSet);
         CmsTestConfigData config2 = createConfig("/", f1);
         config2.setParent(config);
@@ -425,7 +433,9 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             Collections.EMPTY_LIST,
             Arrays.asList("type_" + TYPE_A),
             null,
-            false);
+            false,
+            false,
+            null);
         config2.setFormatterChangeSet(changeSet2);
 
         CmsFormatterConfiguration formatterConfig = config.getFormatters(cms, m_exampleResourceA);
@@ -471,7 +481,9 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             Arrays.asList("" + CmsUUID.getConstantUUID("f2"), "" + CmsUUID.getConstantUUID("f3")),
             Collections.<String> emptyList(),
             null,
-            false);
+            false,
+            false,
+            null);
         config2.setFormatterChangeSet(changeSet);
 
         CmsFormatterConfiguration formatterConfig = config2.getFormatters(getCmsObject(), m_exampleResourceA);
@@ -572,6 +584,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             containerTypes,
             jspRootPath,
             jspStructureId,
+            null,
             minWidth,
             maxWidth,
             preview,
@@ -690,6 +703,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             containerTypes,
             jspRootPath,
             jspStructureId,
+            null,
             minWidth,
             maxWidth,
             preview,
@@ -754,6 +768,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             containerTypes,
             jspRootPath,
             jspStructureId,
+            null,
             minWidth,
             maxWidth,
             preview,

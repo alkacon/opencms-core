@@ -131,7 +131,7 @@ public final class CmsFormatterConfiguration {
     /**
      * Predicate which checks whether a formatter matches the given container type or width.<p>
      */
-    private class MatchesTypeOrWidth implements Predicate<I_CmsFormatterBean> {
+    private static class MatchesTypeOrWidth implements Predicate<I_CmsFormatterBean> {
 
         /** The set of container types to match. */
         private Set<String> m_types = Sets.newHashSet();
@@ -257,6 +257,20 @@ public final class CmsFormatterConfiguration {
             return (width == MATCH_ALL_CONTAINER_WIDTH)
                 || ((formatter.getMinWidth() <= width) && (width <= formatter.getMaxWidth()));
         }
+    }
+
+    /**
+     * Checks whether the given formatter bean matches the container types, width and nested flag.<p>
+     *
+     * @param formatter the formatter bean
+     * @param types the container types
+     * @param width the container width
+     *
+     * @return <code>true</code> in case the formatter matches
+     */
+    public static boolean matchFormatter(I_CmsFormatterBean formatter, String types, int width) {
+
+        return new MatchesTypeOrWidth(types, width).apply(formatter);
     }
 
     /**
@@ -408,6 +422,27 @@ public final class CmsFormatterConfiguration {
             }
         }
         return result;
+    }
+
+    public Map<String, I_CmsFormatterBean> getFormatterSelectionByKeyOrId(String containerTypes, int containerWidth) {
+
+        Map<String, I_CmsFormatterBean> result = new LinkedHashMap<String, I_CmsFormatterBean>();
+        for (I_CmsFormatterBean formatter : Collections2.filter(
+            m_allFormatters,
+            new MatchesTypeOrWidth(containerTypes, containerWidth))) {
+            if (formatter.isFromFormatterConfigFile()) {
+                result.put(formatter.getId(), formatter);
+                if (formatter.getKey() != null) {
+                    result.put(formatter.getKey(), formatter);
+                }
+            } else {
+                result.put(
+                    CmsFormatterConfig.SCHEMA_FORMATTER_ID + formatter.getJspStructureId().toString(),
+                    formatter);
+            }
+        }
+        return result;
+
     }
 
     /**

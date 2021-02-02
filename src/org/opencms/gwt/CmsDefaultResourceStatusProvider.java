@@ -27,6 +27,7 @@
 
 package org.opencms.gwt;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.CmsDetailOnlyContainerUtil;
 import org.opencms.ade.containerpage.CmsRelationTargetListBean;
@@ -624,6 +625,9 @@ public class CmsDefaultResourceStatusProvider {
         CmsResource resource,
         Map<String, String> context) {
 
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+            cms,
+            cms.getRequestContext().getRootUri());
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         Map<String, String> additionalAttributes = new LinkedHashMap<String, String>();
         try {
@@ -659,14 +663,11 @@ public class CmsDefaultResourceStatusProvider {
                 for (Map.Entry<String, String> entry : elementBean.getSettings().entrySet()) {
                     if (entry.getKey().contains(containr)) {
                         String formatterId = entry.getValue();
-                        if (CmsUUID.isValidUUID(formatterId)) {
-                            I_CmsFormatterBean formatter = OpenCms.getADEManager().getCachedFormatters(
-                                false).getFormatters().get(new CmsUUID(formatterId));
-                            if (formatter != null) {
-                                String label = org.opencms.ade.containerpage.Messages.get().getBundle(locale).key(
-                                    org.opencms.ade.containerpage.Messages.GUI_ADDINFO_FORMATTER_0);
-                                additionalAttributes.put(label, formatter.getJspRootPath());
-                            }
+                        I_CmsFormatterBean formatter = config.findFormatter(formatterId);
+                        if (formatter != null) {
+                            String label = org.opencms.ade.containerpage.Messages.get().getBundle(locale).key(
+                                org.opencms.ade.containerpage.Messages.GUI_ADDINFO_FORMATTER_0);
+                            additionalAttributes.put(label, formatter.getJspRootPath());
                         }
                     }
                 }

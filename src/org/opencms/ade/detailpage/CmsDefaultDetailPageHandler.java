@@ -393,9 +393,11 @@ public class CmsDefaultDetailPageHandler implements I_CmsDetailPageHandler {
 
         DetailPageConfigData context = new DetailPageConfigData();
 
-        CmsADEConfigData configData = manager.lookupConfiguration(cms, cms.getRequestContext().addSiteRoot(originPath));
+        CmsADEConfigData configData = manager.lookupConfigurationWithCache(
+            cms,
+            cms.getRequestContext().addSiteRoot(originPath));
         context.setSourceConfig(configData);
-        CmsADEConfigData targetConfigData = manager.lookupConfiguration(cms, contentPath);
+        CmsADEConfigData targetConfigData = manager.lookupConfigurationWithCache(cms, contentPath);
         context.setTargetConfig(targetConfigData);
         boolean targetFirst = targetConfigData.isPreferDetailPagesForLocalContents();
         List<CmsADEConfigData> configs = targetFirst

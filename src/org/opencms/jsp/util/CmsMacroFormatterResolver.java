@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.util;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.formatters.CmsFormatterBeanParser;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCache;
 import org.opencms.file.CmsFile;
@@ -130,6 +131,7 @@ public class CmsMacroFormatterResolver {
      * @param res the response
      */
     public CmsMacroFormatterResolver(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
         m_context = context;
         m_request = req;
         m_response = res;
@@ -149,6 +151,7 @@ public class CmsMacroFormatterResolver {
      * @throws IOException in case writing to the page context output stream fails
      * @throws CmsException in case reading the macro settings fails
      */
+    @SuppressWarnings("resource")
     public void resolve() throws IOException, CmsException {
 
         initMacroContent();
@@ -261,6 +264,10 @@ public class CmsMacroFormatterResolver {
      */
     protected I_CmsFormatterBean getFormatterForMacro(String macro) {
 
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(
+            m_cms,
+            m_cms.getRequestContext().getRootUri());
+
         CmsUUID formatterId = null;
         if (m_formatterReferences.containsKey(macro)) {
             formatterId = m_formatterReferences.get(macro);
@@ -278,8 +285,7 @@ public class CmsMacroFormatterResolver {
             }
         }
         if (formatterId != null) {
-            return OpenCms.getADEManager().getCachedFormatters(
-                m_cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(formatterId);
+            return config.findFormatter(formatterId);
         }
         return null;
     }
@@ -325,6 +331,7 @@ public class CmsMacroFormatterResolver {
      *
      * @throws IOException in case writing to the page context output stream fails
      */
+    @SuppressWarnings("resource")
     protected void printMacroValue(String macro) throws IOException {
 
         if (macro.startsWith(KEY_CMS)) {
@@ -386,9 +393,10 @@ public class CmsMacroFormatterResolver {
      */
     private void initMacroContent() throws CmsException {
 
-        I_CmsFormatterBean formatterConfig = OpenCms.getADEManager().getCachedFormatters(
-            m_cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
-                m_element.getFormatterId());
+        CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfigurationWithCache(
+            m_cms,
+            m_cms.getRequestContext().getRootUri());
+        I_CmsFormatterBean formatterConfig = adeConfig.findFormatter(m_element.getFormatterId());
         if (formatterConfig instanceof CmsMacroFormatterBean) {
             CmsMacroFormatterBean config = (CmsMacroFormatterBean)formatterConfig;
             m_input = config.getMacroInput();
