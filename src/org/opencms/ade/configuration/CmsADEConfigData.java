@@ -1486,10 +1486,11 @@ public class CmsADEConfigData {
     private Multimap<String, I_CmsFormatterBean> getActiveFormattersByKey() {
 
         if (m_activeFormattersByKey == null) {
-            m_activeFormattersByKey = ArrayListMultimap.create();
+            ArrayListMultimap<String, I_CmsFormatterBean> activeFormattersByKey = ArrayListMultimap.create();
+            m_activeFormattersByKey = activeFormattersByKey;
             for (I_CmsFormatterBean formatter : getActiveFormatters().values()) {
                 if (formatter.getKey() != null) {
-                    m_activeFormattersByKey.put(formatter.getKey(), formatter);
+                    activeFormattersByKey.put(formatter.getKey(), formatter);
                 }
             }
         }
@@ -1504,9 +1505,10 @@ public class CmsADEConfigData {
     private Multimap<CmsUUID, I_CmsFormatterBean> getFormattersByJspId() {
 
         if (m_formattersByJspId == null) {
-            m_formattersByJspId = ArrayListMultimap.create();
+            ArrayListMultimap<CmsUUID, I_CmsFormatterBean> formattersByJspId = ArrayListMultimap.create();
+            m_formattersByJspId = formattersByJspId;
             for (I_CmsFormatterBean formatter : getCachedFormatters().getFormatters().values()) {
-                m_formattersByJspId.put(formatter.getJspStructureId(), formatter);
+                formattersByJspId.put(formatter.getJspStructureId(), formatter);
             }
         }
         return m_formattersByJspId;
@@ -1520,10 +1522,11 @@ public class CmsADEConfigData {
     private Multimap<String, I_CmsFormatterBean> getFormattersByKey() {
 
         if (m_formattersByKey == null) {
-            m_formattersByKey = ArrayListMultimap.create();
+            ArrayListMultimap<String, I_CmsFormatterBean> formattersByKey = ArrayListMultimap.create();
+            m_formattersByKey = formattersByKey;
             for (I_CmsFormatterBean formatter : getCachedFormatters().getFormatters().values()) {
                 if (formatter.getKey() != null) {
-                    m_formattersByKey.put(formatter.getKey(), formatter);
+                    formattersByKey.put(formatter.getKey(), formatter);
                 }
             }
         }
