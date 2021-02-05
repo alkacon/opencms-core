@@ -640,9 +640,6 @@ public class CmsElementUtil {
             LOG.error(e.getLocalizedMessage(), e);
         }
         CmsContainerElementData elementData = getBaseElementData(page, element);
-        if (elementData.getSettings().toString().contains("Phone")) {
-            System.out.println("phone");
-        }
 
         Map<String, String> settingUpdates = new HashMap<>();
         for (Map.Entry<String, String> entry : elementData.getSettings().entrySet()) {

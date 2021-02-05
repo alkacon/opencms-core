@@ -57,7 +57,7 @@ public class CmsFormatterConfigCollection implements Iterable<CmsFormatterConfig
      * @return the first formatter configuration with that key or id, or null if none were found
      */
     public CmsFormatterConfig get(String keyOrId) {
-
+        
         for (CmsFormatterConfig config : this) {
             if (keyOrId.equals(config.getKey()) || keyOrId.equals(config.getId())) {
                 return config;

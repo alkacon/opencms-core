@@ -173,7 +173,10 @@ public class CmsContainerElementData extends CmsContainerElement {
         CmsFormatterConfig formatterConfig = null;
         if (m_formatters != null) {
             String keyOrId = getSettings().get(CmsFormatterConfig.getSettingsKeyForContainer(containerName));
-            if (getFormatters().get(containerName).get(keyOrId) != null) {
+            if (keyOrId == null) {
+                keyOrId = getSettings().get(CmsFormatterConfig.getSettingsKeyForContainer(""));
+            }
+            if ((keyOrId != null) && (getFormatters().get(containerName).get(keyOrId) != null)) {
                 // if the settings contain the formatter id, use the matching config
                 formatterConfig = getFormatters().get(containerName).get(keyOrId);
             } else if (getFormatters().get(containerName).size() > 0) {

@@ -406,7 +406,9 @@ public final class CmsADESessionCache {
      */
     public void setCacheContainerElement(String key, CmsContainerElementBean containerElement) {
 
-        m_containerElements.put(key, containerElement);
+        if ((containerElement != null) && !containerElement.isDoNotCache()) {
+            m_containerElements.put(key, containerElement);
+        }
     }
 
     /**

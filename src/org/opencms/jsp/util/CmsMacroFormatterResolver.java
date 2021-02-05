@@ -360,13 +360,12 @@ public class CmsMacroFormatterResolver {
 
             I_CmsFormatterBean formatter = getFormatterForMacro(macro);
             if (formatter != null) {
+                CmsContainerElementBean copy = CmsContainerElementBean.cloneWithFormatter(
+                    m_element,
+                    formatter.getJspStructureId());
+                copy.setDoNotCache(true);
                 try {
-                    CmsJspTagDisplay.displayAction(
-                        CmsContainerElementBean.cloneWithFormatter(m_element, formatter.getJspStructureId()),
-                        formatter,
-                        m_context,
-                        m_request,
-                        m_response);
+                    CmsJspTagDisplay.displayAction(copy, formatter, m_context, m_request, m_response);
                 } catch (Exception e) {
                     LOG.error("Failed to display formatted content.", e);
                 }

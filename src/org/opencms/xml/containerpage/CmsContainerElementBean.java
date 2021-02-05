@@ -63,6 +63,9 @@ import javax.servlet.ServletRequest;
  */
 public class CmsContainerElementBean implements Cloneable {
 
+    /** Prevent caching in ADE session cache. */
+    private boolean m_doNotCache;
+
     /** Flag indicating if a new element should be created replacing the given one on first edit of a container-page. */
     private final boolean m_createNew;
 
@@ -649,6 +652,16 @@ public class CmsContainerElementBean implements Cloneable {
     }
 
     /**
+     * Checks if the element is uncacheable.
+     *
+     * @return true if the element is uncacheable
+     */
+    public boolean isDoNotCache() {
+
+        return m_doNotCache;
+    }
+
+    /**
      * Tests whether this element refers to a group container.<p>
      *
      * @param cms the CmsObject used for VFS operations
@@ -756,6 +769,16 @@ public class CmsContainerElementBean implements Cloneable {
         newSettings.remove(CmsContainerElement.ELEMENT_INSTANCE_ID);
         m_individualSettings = Collections.unmodifiableMap(newSettings);
         m_editorHash = m_elementId.toString() + getSettingsHash();
+    }
+
+    /**
+     * Enables / disables 'do not cache' status, which prevents the element from being cached in the session cache.
+     *
+     * @param doNotCache the new value
+     */
+    public void setDoNotCache(boolean doNotCache) {
+
+        m_doNotCache = doNotCache;
     }
 
     /**
