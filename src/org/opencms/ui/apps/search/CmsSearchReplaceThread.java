@@ -43,6 +43,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
+import org.opencms.report.I_CmsReportUpdateFormatter;
 import org.opencms.search.CmsSearchException;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
@@ -66,6 +67,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -87,6 +89,9 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
     /** The number of Solr search results to be processed at maximum. */
     private static final int MAX_PROCESSED_SOLR_RESULTS = 10000;
 
+    /** Time after which the search operation is cancelled if no report update is requested. */
+    public static final long ABANDON_TIMEOUT = TimeUnit.MINUTES.toMillis(5);
+
     /** Number of errors while searching. */
     private int m_errorSearch;
 
@@ -105,6 +110,12 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
     /** Settings. */
     private CmsSearchReplaceSettings m_settings;
 
+    /** True if this thread was started with a non-null session argument. */
+    private boolean m_hasSession;
+
+    /** Timestamp of last report update. */
+    private volatile long m_lastTimestamp = -1;
+
     /**
      * Creates a replace html tag Thread.<p>
      *
@@ -115,6 +126,7 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
     public CmsSearchReplaceThread(HttpSession session, CmsObject cms, CmsSearchReplaceSettings settings) {
 
         super(cms, "searchAndReplace");
+        m_hasSession = session != null;
         initHtmlReport(cms.getRequestContext().getLocale());
         m_settings = settings;
     }
@@ -166,7 +178,31 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
     @Override
     public String getReportUpdate() {
 
+        m_lastTimestamp = System.currentTimeMillis();
         return getReport().getReportUpdate();
+    }
+
+    /**
+     * @see org.opencms.report.A_CmsReportThread#getReportUpdate(org.opencms.report.I_CmsReportUpdateFormatter)
+     */
+    @Override
+    public String getReportUpdate(I_CmsReportUpdateFormatter formatter) {
+
+        m_lastTimestamp = System.currentTimeMillis();
+        return super.getReportUpdate(formatter);
+    }
+
+    /**
+     * Returns true if the last report update is too far back in time, so the user has probably closed the window/tab.
+     *
+     * @return true if the last report update is too far back
+     */
+    public boolean isAbandoned() {
+
+        boolean result = m_hasSession
+            && (m_lastTimestamp != -1)
+            && ((System.currentTimeMillis() - m_lastTimestamp) > ABANDON_TIMEOUT);
+        return result;
     }
 
     /**
@@ -313,6 +349,9 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
         I_CmsReport report = getReport();
         // iterate over the files in the selected path
         for (CmsResource resource : resources) {
+            if (isAbandoned() && !m_replace) { // if it's not a replace operation, it's safe to cancel
+                return;
+            }
 
             try {
 
@@ -396,14 +435,15 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
             && !lock.isOwnedInProjectBy(
                 cms.getRequestContext().getCurrentUser(),
                 cms.getRequestContext().getCurrentProject())) {
-            // prove is current lock from current user but not in current project
-            // file is locked by current user but not in current project
-            // change the lock
-            cms.changeLock(cms.getSitePath(cmsResource));
-        } else if ((lock != null) && lock.isUnlocked()) {
-            // lock resource from current user in current project
-            cms.lockResource(cms.getSitePath(cmsResource));
-        }
+                    // prove is current lock from current user but not in current project
+                    // file is locked by current user but not in current project
+                    // change the lock
+                    cms.changeLock(cms.getSitePath(cmsResource));
+                } else
+            if ((lock != null) && lock.isUnlocked()) {
+                // lock resource from current user in current project
+                cms.lockResource(cms.getSitePath(cmsResource));
+            }
         lock = cms.getLock(cms.getSitePath(cmsResource));
         if ((lock != null)
             && lock.isOwnedBy(cms.getRequestContext().getCurrentUser())
@@ -765,6 +805,9 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
 
         } else {
             for (CmsResource resource : resources) {
+                if (isAbandoned() && !m_replace) { // if it's not a replace operation, it's safe to cancel
+                    return;
+                }
                 Matcher matcher;
                 try {
                     CmsProperty prop = getCms().readPropertyObject(resource, m_settings.getProperty().getName(), false);
