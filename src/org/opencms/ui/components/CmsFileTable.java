@@ -75,7 +75,6 @@ import org.opencms.ui.util.I_CmsItemSorter;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -256,11 +255,15 @@ public class CmsFileTable extends CmsResourceTable {
                 } else if (((CmsResourceTableProperty)propertyId).getColumnType().equals(String.class)) {
                     String value1 = (String)item1.getItemProperty(propertyId).getValue();
                     String value2 = (String)item2.getItemProperty(propertyId).getValue();
-                    Collator collator = Collator.getInstance(
-                        OpenCms.getWorkplaceManager().getWorkplaceLocale(A_CmsUI.getCmsObject()));
-
+                    // Java collators obtained by java.text.Collator.getInstance(...) ignore spaces, and we don't want to ignore them, so we use
+                    // ICU collators instead
+                    com.ibm.icu.text.Collator collator = com.ibm.icu.text.Collator.getInstance(
+                        com.ibm.icu.util.ULocale.ROOT);
                     int result = collator.compare(value1, value2);
-                    return sortDirection ? result : -result;
+                    if (!sortDirection) {
+                        result = -result;
+                    }
+                    return result;
                 }
             return super.compareProperty(propertyId, sortDirection, item1, item2);
             //@formatter:on
