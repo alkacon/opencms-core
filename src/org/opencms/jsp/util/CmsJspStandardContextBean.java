@@ -804,9 +804,6 @@ public final class CmsJspStandardContextBean {
                 Messages.get().container(Messages.ERR_MISSING_CMS_CONTROLLER_1, CmsJspBean.class.getName()));
         }
         updateCmsObject(cms);
-        if (m_cms != null) {
-            m_config = OpenCms.getADEManager().lookupConfiguration(m_cms, m_cms.getRequestContext().getRootUri());
-        }
         m_detailContentResource = CmsDetailPageResourceHandler.getDetailResource(req);
         m_detailFunctionPage = CmsDetailPageResourceHandler.getDetailFunctionPage(req);
     }
@@ -2059,6 +2056,11 @@ public final class CmsJspStandardContextBean {
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
             m_cms = cms;
+        }
+        try {
+            m_config = OpenCms.getADEManager().lookupConfigurationWithCache(cms, cms.getRequestContext().getRootUri());
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 
