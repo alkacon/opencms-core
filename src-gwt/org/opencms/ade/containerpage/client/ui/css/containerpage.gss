@@ -32,7 +32,7 @@
 }
 
 
-.oc-drag-element div.oc-option-bar{
+.oc-edit-buttons-visible div.oc-option-bar{
 	border: 1px solid transparent;
 	position: absolute !important;
 	top: 2px;
