@@ -156,7 +156,7 @@ public class CmsMutableContainer {
      */
     public boolean matches(String name) {
 
-        return m_name.endsWith("-" + name);
+        return m_name.equals(name) || m_name.endsWith("-" + name);
     }
 
     /**
