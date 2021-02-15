@@ -1,13 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry excluding="org/opencms/gwt/client/super_src/|org/opencms/ui/client/super_src/" kind="src" path="src-gwt"/>
-	<classpathentry kind="src" path="src-modules"/>
-	<classpathentry kind="src" path="src-setup"/>
-	<classpathentry excluding="META-INF/|data/|ehcache.xml" kind="src" output="test-bin" path="test"/>
-	<classpathentry kind="src" path="test-gwt"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
-	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry excluding="data/**" kind="src" output="bin/test" path="src">
+		<attributes>
+			<attribute name="gradle_scope" value="test"/>
+			<attribute name="gradle_used_by_scope" value="test"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="**/super_src/**" kind="src" output="bin/testGwt" path="src-gwt">
+		<attributes>
+			<attribute name="gradle_scope" value="testGwt"/>
+			<attribute name="gradle_used_by_scope" value="testGwt"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry including="org/opencms/workplace/tools/workplace/*|org/opencms/workplace/tools/workplace/rfsfile/*|org/opencms/workplace/tools/workplace/broadcast/*|org/opencms/workplace/tools/workplace/logging/*" kind="src" output="bin/org.opencms.workplace.tools.workplace" path="src-modules">
+		<attributes>
+			<attribute name="gradle_scope" value="org.opencms.workplace.tools.workplace"/>
+			<attribute name="gradle_used_by_scope" value="org.opencms.workplace.tools.workplace"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="bin/setup" path="src-setup">
+		<attributes>
+			<attribute name="gradle_scope" value="setup"/>
+			<attribute name="gradle_used_by_scope" value="test,setup"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="data/**" kind="src" output="bin/test" path="test">
+		<attributes>
+			<attribute name="gradle_scope" value="test"/>
+			<attribute name="gradle_used_by_scope" value="test"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="**/super_src/**" kind="src" output="bin/testGwt" path="test-gwt">
+		<attributes>
+			<attribute name="gradle_scope" value="testGwt"/>
+			<attribute name="gradle_used_by_scope" value="testGwt"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7/"/>
+	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer"/>
+	<classpathentry kind="output" path="bin/default"/>
 </classpath>
