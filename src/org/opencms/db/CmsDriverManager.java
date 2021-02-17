@@ -5525,10 +5525,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(password)) {
             throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_USER_1, userName));
         }
+        String originalUserName = userName;
         CmsUser newUser;
         try {
             // read the user from the driver to avoid the cache
             newUser = getUserDriver(dbc).readUser(dbc, userName, password, remoteAddress);
+            userName = newUser.getName();
+
         } catch (CmsDbEntryNotFoundException e) {
             // this indicates that the username / password combination does not exist
             // any other exception indicates database issues, these are not catched here
@@ -5537,6 +5540,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsUser user = null;
             try {
                 user = readUser(dbc, userName);
+                userName = user.getName();
             } catch (CmsDataAccessException e2) {
                 // apparently this user does not exist in the database
             }
