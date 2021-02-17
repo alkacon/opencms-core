@@ -107,7 +107,7 @@ Alkacon OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> d
 						<tr>
 							<td>Setup Connection</td>
 							<td><input type="text" name="dbCreateUser" size="8" style="width:120px;" value='<%= Bean.getDbCreateUser() %>'></td>
-							<td><input type="text" name="dbCreatePwd" size="8" style="width:120px;" value='<%= Bean.getDbCreatePwd() %>'></td>
+							<td><input type="password" name="dbCreatePwd" size="8" style="width:120px;" value='<%= Bean.getDbCreatePwd() %>'></td>
 							<td><input type="text" name="templateDb" size="8" style="width:120px;" value='<%= Bean.getDbProperty(Bean.getDatabase() + ".templateDb") %>'></td>
 							<td><%= Bean.getHtmlHelpIcon("1", "../../") %></td>		
 						</tr>
@@ -123,7 +123,7 @@ Alkacon OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> d
 						<tr>
 							<td>OpenCms Connection</td>
 							<td><input type="text" name="dbWorkUser" size="8" style="width:120px;" value='<%= user %>'></td>
-							<td><input type="text" name="dbWorkPwd" size="8" style="width:120px;" value='<%= Bean.getDbWorkPwd() %>'></td>
+							<td><input type="password" name="dbWorkPwd" size="8" style="width:120px;" value='<%= Bean.getDbWorkPwd() %>'></td>
 							<td><%= Bean.getHtmlHelpIcon("2", "../../") %></td>
 							<td>&nbsp;</td>
 						</tr>
