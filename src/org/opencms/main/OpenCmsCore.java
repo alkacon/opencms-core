@@ -86,6 +86,7 @@ import org.opencms.lock.CmsLockManager;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.monitor.CmsMemoryMonitorConfiguration;
+import org.opencms.mx.CmsDiagnosticsMXBean;
 import org.opencms.publish.CmsPublishEngine;
 import org.opencms.publish.CmsPublishManager;
 import org.opencms.repository.CmsRepositoryManager;
@@ -2614,6 +2615,13 @@ public final class OpenCmsCore {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
+
+        try {
+            CmsDiagnosticsMXBean.register();
+        } catch (Throwable e) {
+            CmsLog.INIT.error(e.getLocalizedMessage(), e);
+        }
+
     }
 
     /**

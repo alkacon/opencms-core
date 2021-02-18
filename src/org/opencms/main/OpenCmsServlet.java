@@ -38,10 +38,12 @@ import org.opencms.staticexport.CmsStaticExportData;
 import org.opencms.staticexport.CmsStaticExportRequest;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -114,8 +116,69 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
         }
     }
 
+    /**
+     * Debugging information about currently running requests.
+     */
+    public static class RequestInfo {
+
+        /** Start time of the request. */
+        private long m_startTime;
+
+        /** URI of the request. */
+        private String m_uri;
+
+        /** Thread id of the thread handling the request. */
+        private long m_threadId;
+
+        /**
+         * Creates a new instance.
+         *
+         * @param uri the URI
+         * @param startTime the start time
+         */
+        public RequestInfo(String uri, long startTime) {
+
+            m_startTime = startTime;
+            m_uri = uri;
+            m_threadId = Thread.currentThread().getId();
+        }
+
+        /**
+         * Gets the request start time.
+         *
+         * @return the start time
+         */
+        public long getStartTime() {
+
+            return m_startTime;
+        }
+
+        /**
+         * Gets the thread id
+         *
+         * @return the thread id
+         */
+        public long getThreadId() {
+
+            return m_threadId;
+        }
+
+        /**
+         * Gets the URI of the request.
+         *
+         * @return the URI of the request
+         */
+        public String getUri() {
+
+            return m_uri;
+        }
+    }
+
     /** The current request in a threadlocal. */
     public static final ThreadLocal<HttpServletRequest> currentRequest = new ThreadLocal<HttpServletRequest>();
+
+    /** Map containing beans with information about currently running requests. */
+    public static final ConcurrentHashMap<CmsUUID, RequestInfo> activeRequests = new ConcurrentHashMap<>();
 
     /** The current thread context for the request. */
     private static final ThreadLocal<RequestCache> requestCache = new ThreadLocal<RequestCache>();
@@ -177,6 +240,14 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
         currentRequest.set(req);
         requestCache.set(new RequestCache());
+        final CmsUUID requestId = new CmsUUID();
+        if (req != null) {
+            activeRequests.put(
+                requestId,
+                new RequestInfo(
+                    req.getRequestURL().toString() + (req.getQueryString() != null ? "?" + req.getQueryString() : ""),
+                    System.currentTimeMillis()));
+        }
         try {
 
             // check to OpenCms runlevel
@@ -219,6 +290,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
         } finally {
             currentRequest.remove();
             requestCache.remove();
+            activeRequests.remove(requestId);
         }
     }
 
