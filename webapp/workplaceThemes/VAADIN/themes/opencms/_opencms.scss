@@ -968,6 +968,10 @@
 			opacity: 0.6;
 		}
 	}
+	
+	#login-app-overlays #VAADIN_COMBOBOX_OPTIONLIST { 
+		position: fixed !important;
+	}
 
 	/* fixes tooltip issues */
 	.v-tooltip {
