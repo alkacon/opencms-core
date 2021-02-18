@@ -27,7 +27,6 @@
 
 package org.opencms.ade.containerpage.client;
 
-import org.opencms.ade.client.CmsRpcContext;
 import org.opencms.ade.containerpage.client.ui.CmsAddToFavoritesButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarAllGalleriesMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
@@ -46,6 +45,7 @@ import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsBroadcastTimer;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.CmsRpcContext;
 import org.opencms.gwt.client.dnd.CmsCompositeDNDController;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.AnimationType;
