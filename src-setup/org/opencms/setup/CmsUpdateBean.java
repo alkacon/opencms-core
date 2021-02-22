@@ -86,6 +86,7 @@ import javax.servlet.jsp.JspWriter;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 /**
@@ -1029,22 +1030,28 @@ public class CmsUpdateBean extends CmsSetupBean {
                     String mysqlkey = propertyEntry.getKey().substring(0, propertyEntry.getKey().lastIndexOf("."));
                     String parameterKey = mysqlkey + ".jdbcUrl.params";
                     String currentParameter = properties.get(parameterKey);
-                    if (currentParameter == null) {
-                        currentParameter = "";
+                    String modifiedParameter = currentParameter;
+                    if (modifiedParameter == null) {
+                        modifiedParameter = "";
                     }
-                    if (!currentParameter.contains("serverTimezone")) {
+                    if (!modifiedParameter.contains("serverTimezone")) {
                         String parameterSeperator = "?";
-                        if (currentParameter.contains("?")) {
+                        if (modifiedParameter.contains("?")) {
                             parameterSeperator = "&";
                         }
-                        modifiedElements.put(
-                            parameterKey,
-                            currentParameter + parameterSeperator + "serverTimezone=UTC");
+                        modifiedParameter = currentParameter + parameterSeperator + "serverTimezone=UTC";
+                    }
+                    if (modifiedParameter.contains("useSSL=false")
+                        && !modifiedParameter.contains("allowPublicKeyRetrieval")) {
+                        modifiedParameter = currentParameter + "&" + "allowPublicKeyRetrieval=true";
+                    }
+                    if (!Objects.equal(modifiedParameter, currentParameter)) {
+                        modifiedElements.put(parameterKey, modifiedParameter);
                     }
                     parameterKey = mysqlkey + ".jdbcUrl";
                     currentParameter = properties.get(parameterKey);
                     if ((currentParameter != null) && currentParameter.startsWith("jdbc:mysql:")) {
-                        String modifiedParameter = "jdbc:mariadb:" + currentParameter.substring(11);
+                        modifiedParameter = "jdbc:mariadb:" + currentParameter.substring(11);
                         modifiedElements.put(parameterKey, modifiedParameter);
                     }
                 }
