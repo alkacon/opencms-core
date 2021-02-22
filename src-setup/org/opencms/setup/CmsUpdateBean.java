@@ -125,6 +125,9 @@ public class CmsUpdateBean extends CmsSetupBean {
     /** Old MySQL JDBC driver class name. */
     private static final String MYSQL_DRIVER_CLASS_OLD = "org.gjt.mm.mysql.Driver";
 
+    /** MariaDB MySQL JDBC driver class name (used from OpenCms 12 onwards). */
+    private static final String MYSQL_DRIVER_CLASS_MARIADB = "org.mariadb.jdbc.Driver";
+
     /** The obsolete modules that should be removed. */
     private static String[] OBSOLETE_MODULES = new String[] {
         "org.opencms.ade.config",
@@ -1009,15 +1012,19 @@ public class CmsUpdateBean extends CmsSetupBean {
         // replace MySQL JDBC driver class name
         CmsParameterConfiguration properties = getProperties();
         for (Entry<String, String> propertyEntry : properties.entrySet()) {
-            if (MYSQL_DRIVER_CLASS_OLD.equals(propertyEntry.getValue())) {
-                modifiedElements.put(propertyEntry.getKey(), MYSQL_DRIVER_CLASS_NEW);
+            if (MYSQL_DRIVER_CLASS_OLD.equals(propertyEntry.getValue())
+                || MYSQL_DRIVER_CLASS_NEW.equals(propertyEntry.getValue())) {
+                modifiedElements.put(propertyEntry.getKey(), MYSQL_DRIVER_CLASS_MARIADB);
             }
         }
 
-        if (properties.containsValue(MYSQL_DRIVER_CLASS_NEW) || properties.containsValue(MYSQL_DRIVER_CLASS_OLD)) {
+        if (properties.containsValue(MYSQL_DRIVER_CLASS_MARIADB)
+            || properties.containsValue(MYSQL_DRIVER_CLASS_NEW)
+            || properties.containsValue(MYSQL_DRIVER_CLASS_OLD)) {
             for (Entry<String, String> propertyEntry : properties.entrySet()) {
                 if (MYSQL_DRIVER_CLASS_OLD.equals(propertyEntry.getValue())
-                    || MYSQL_DRIVER_CLASS_NEW.equals(propertyEntry.getValue())) {
+                    || MYSQL_DRIVER_CLASS_NEW.equals(propertyEntry.getValue())
+                    || MYSQL_DRIVER_CLASS_MARIADB.equals(propertyEntry.getValue())) {
 
                     String mysqlkey = propertyEntry.getKey().substring(0, propertyEntry.getKey().lastIndexOf("."));
                     String parameterKey = mysqlkey + ".jdbcUrl.params";
@@ -1033,6 +1040,12 @@ public class CmsUpdateBean extends CmsSetupBean {
                         modifiedElements.put(
                             parameterKey,
                             currentParameter + parameterSeperator + "serverTimezone=UTC");
+                    }
+                    parameterKey = mysqlkey + ".jdbcUrl";
+                    currentParameter = properties.get(parameterKey);
+                    if ((currentParameter != null) && currentParameter.startsWith("jdbc:mysql:")) {
+                        String modifiedParameter = "jdbc:mariadb:" + currentParameter.substring(11);
+                        modifiedElements.put(parameterKey, modifiedParameter);
                     }
                 }
             }
