@@ -42,14 +42,14 @@ import org.opencms.util.CmsManyToOneMap;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
-
-import com.google.common.collect.Sets;
 
 /**
  * A cache which stores structure ids for URL names.<p>
@@ -69,10 +69,10 @@ public class CmsDetailNameCache implements I_CmsGlobalConfigurationCache {
     private CmsObject m_cms;
 
     /** The internal map from URL names to structure ids. */
-    private CmsManyToOneMap<String, CmsUUID> m_detailIdCache = new CmsManyToOneMap<String, CmsUUID>();
+    private volatile CmsManyToOneMap<String, CmsUUID> m_detailIdCache = new CmsManyToOneMap<String, CmsUUID>();
 
     /** The set of structure ids for which the URL names have to be updated. */
-    private Set<CmsUUID> m_updateSet = Sets.newHashSet();
+    private LinkedBlockingQueue<CmsUUID> m_changes = new LinkedBlockingQueue<>();
 
     /**
      * Creates a new instance.<p>
@@ -173,19 +173,18 @@ public class CmsDetailNameCache implements I_CmsGlobalConfigurationCache {
     /**
      * Checks if any updates are necessary and if so, performs them.<p>
      */
-    synchronized void checkForUpdates() {
+    void checkForUpdates() {
 
-        if (!m_updateSet.isEmpty()) {
-            Set<CmsUUID> copiedIds = Sets.newHashSet(m_updateSet);
-            m_updateSet.clear();
-
-            if (copiedIds.contains(CmsUUID.getNullUUID())) {
+        Set<CmsUUID> updateSet = new HashSet<>();
+        m_changes.drainTo(updateSet);
+        if (!updateSet.isEmpty()) {
+            if (updateSet.contains(CmsUUID.getNullUUID())) {
                 LOG.info("Updating detail name cache: reloading...");
                 reload();
             } else {
-                LOG.info("Updating detail name cache. Number of changed files: " + copiedIds.size());
+                LOG.info("Updating detail name cache. Number of changed files: " + updateSet.size());
                 CmsManyToOneMap<String, CmsUUID> cacheCopy = new CmsManyToOneMap<String, CmsUUID>(m_detailIdCache);
-                for (CmsUUID id : copiedIds) {
+                for (CmsUUID id : updateSet) {
                     Set<String> urlNames = getUrlNames(id);
                     cacheCopy.removeValue(id);
                     for (String urlName : urlNames) {
@@ -247,9 +246,9 @@ public class CmsDetailNameCache implements I_CmsGlobalConfigurationCache {
      *
      * @param id the structure id to update
      */
-    private synchronized void markForUpdate(CmsUUID id) {
+    private void markForUpdate(CmsUUID id) {
 
-        m_updateSet.add(id);
+        m_changes.add(id);
     }
 
     /**
