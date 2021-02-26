@@ -27,6 +27,7 @@
 
 package org.opencms.jsp;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -37,6 +38,7 @@ import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
@@ -96,6 +98,9 @@ public class CmsJspTagSimpleDisplay extends BodyTagSupport implements I_CmsJspTa
     /** Stores the formatter path. */
     private String m_formatterPath;
 
+    /** The formatter key. */
+    private String m_formatterKey;
+
     /**
      * Constructor.<p>
      */
@@ -141,16 +146,19 @@ public class CmsJspTagSimpleDisplay extends BodyTagSupport implements I_CmsJspTa
                     ? cms.readResource(m_value)
                     : cms.readResource(m_value, CmsResourceFilter.IGNORE_EXPIRATION);
                 }
-                CmsResource formatterResource = cms.readResource(m_formatterPath);
-                CmsFormatterConfigurationCacheState formatterCache = OpenCms.getADEManager().getCachedFormatters(
-                    cms.getRequestContext().getCurrentProject().isOnlineProject());
-                I_CmsFormatterBean formatter = formatterCache.getFormatters().get(formatterResource.getStructureId());
+                CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(
+                    cms,
+                    cms.getRequestContext().getRootUri());
+                I_CmsFormatterBean formatter = getFormatterBean(cms, config);
+
                 Map<String, String> settings = new HashMap<String, String>();
-                String formatterId = formatter.getId();
-                int prefixLength = formatterId.length() + 1;
                 for (Entry<String, String> entry : m_parameterMap.entrySet()) {
-                    if (entry.getKey().startsWith(formatterId)) {
-                        settings.put(entry.getKey().substring(prefixLength), entry.getValue());
+                    String settingKeySuffix = CmsJspTagDisplay.getSettingKeyForMatchingFormatterPrefix(
+                        config,
+                        formatter,
+                        entry.getKey());
+                    if (settingKeySuffix != null) {
+                        settings.put(settingKeySuffix, entry.getValue());
                     } else if (!settings.containsKey(entry.getKey())) {
                         settings.put(entry.getKey(), entry.getValue());
                     }
@@ -321,6 +329,16 @@ public class CmsJspTagSimpleDisplay extends BodyTagSupport implements I_CmsJspTa
     }
 
     /**
+     * Sets the formatter key.
+     *
+     * @param formatterKey the formatter key
+     */
+    public void setFormatterKey(String formatterKey) {
+
+        m_formatterKey = formatterKey;
+    }
+
+    /**
      * Sets the passSettings.<p>
      *
      * @param passSettings the passSettings to set
@@ -356,6 +374,34 @@ public class CmsJspTagSimpleDisplay extends BodyTagSupport implements I_CmsJspTa
     public void setValue(String value) {
 
         m_value = value;
+    }
+
+    /**
+     * Gets the formatter bean to use, using either the formatter key or formatter path given as attributes.<p>
+     *
+     * If both the formatter and formatterKey attributes are used, a formatter found for the key is prioritized over
+     * the one found for the formatter, if it exists.
+     *
+     * @param cms the CMS context
+     * @param config the active sitemap configuration
+     * @return the formatter to use
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private I_CmsFormatterBean getFormatterBean(CmsObject cms, CmsADEConfigData config) throws CmsException {
+
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_formatterKey)) {
+
+            I_CmsFormatterBean formatterForKey = config.findFormatter(m_formatterKey);
+            if (formatterForKey != null) {
+                return formatterForKey;
+            }
+        }
+        CmsResource formatterResource = cms.readResource(m_formatterPath);
+        CmsFormatterConfigurationCacheState formatterCache = OpenCms.getADEManager().getCachedFormatters(
+            cms.getRequestContext().getCurrentProject().isOnlineProject());
+        I_CmsFormatterBean formatter = formatterCache.getFormatters().get(formatterResource.getStructureId());
+        return formatter;
     }
 
 }

@@ -285,6 +285,41 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
     }
 
     /**
+     * If the setting key starts with the key or id of the given formatter, returns the remaining suffix, else null.
+     *
+     * @param config the current sitemap configuration
+     * @param formatter the formatter bean
+     * @param settingKey the setting key
+     *
+     * @return the remaining setting name suffix
+     */
+    public static String getSettingKeyForMatchingFormatterPrefix(
+        CmsADEConfigData config,
+        I_CmsFormatterBean formatter,
+        String settingKey) {
+
+        int underscoreIndex = settingKey.indexOf("_");
+        if (underscoreIndex < 0) {
+            return null;
+        }
+        String prefix = settingKey.substring(0, underscoreIndex);
+        String suffix = settingKey.substring(underscoreIndex + 1);
+        I_CmsFormatterBean dynamicFmt = config.findFormatter(prefix);
+        if (dynamicFmt == null) {
+            return null;
+        }
+        boolean keyMatch = (dynamicFmt.getKey() != null) && dynamicFmt.getKey().equals(formatter.getKey());
+        boolean idMatch = (dynamicFmt.getId() != null) && dynamicFmt.getId().equals(formatter.getId());
+        if (!keyMatch && !idMatch) {
+            return null;
+        }
+        if (!dynamicFmt.getSettings().containsKey(suffix)) {
+            return null;
+        }
+        return suffix;
+    }
+
+    /**
      * Adds a display formatter.<p>
      *
      * @param type the resource type
@@ -648,40 +683,5 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
             }
         }
         return result;
-    }
-
-    /**
-     * If the setting key starts with the key or id of the given formatter, returns the remaining suffix, else null.
-     *
-     * @param config the current sitemap configuration
-     * @param formatter the formatter bean
-     * @param settingKey the setting key
-     *
-     * @return the remaining setting name suffix
-     */
-    private String getSettingKeyForMatchingFormatterPrefix(
-        CmsADEConfigData config,
-        I_CmsFormatterBean formatter,
-        String settingKey) {
-
-        int underscoreIndex = settingKey.indexOf("_");
-        if (underscoreIndex < 0) {
-            return null;
-        }
-        String prefix = settingKey.substring(0, underscoreIndex);
-        String suffix = settingKey.substring(underscoreIndex + 1);
-        I_CmsFormatterBean dynamicFmt = config.findFormatter(prefix);
-        if (dynamicFmt == null) {
-            return null;
-        }
-        boolean keyMatch = (dynamicFmt.getKey() != null) && dynamicFmt.getKey().equals(formatter.getKey());
-        boolean idMatch = (dynamicFmt.getId() != null) && dynamicFmt.getId().equals(formatter.getId());
-        if (!keyMatch && !idMatch) {
-            return null;
-        }
-        if (!dynamicFmt.getSettings().containsKey(suffix)) {
-            return null;
-        }
-        return suffix;
     }
 }
