@@ -2390,7 +2390,7 @@
                 <p>Specifies a formatter key to determine the formatter used to render the content.</p>
             ]]></description>
             <name>formatterKey</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
