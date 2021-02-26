@@ -81,6 +81,9 @@ public class CmsLinkProcessor extends CmsHtmlParser {
     public static final String TAG_EMBED = "EMBED";
 
     /** Constant for the tag name. */
+    public static final String TAG_IFRAME = "IFRAME";
+
+    /** Constant for the tag name. */
     public static final String TAG_PARAM = "PARAM";
 
     /** List of attributes that may contain links for the embed tag. */
@@ -255,6 +258,8 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                 processEmbedTag(tag);
             } else if (TAG_AREA.equals(tag.getTagName())) {
                 processAreaTag(tag);
+            } else if (TAG_IFRAME.equals(tag.getTagName())) {
+                processLink(tag, ATTRIBUTE_SRC, CmsRelationType.HYPERLINK);
             }
         }
         // append text content of the tag (may have been changed by above methods)
