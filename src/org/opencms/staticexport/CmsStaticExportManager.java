@@ -1890,6 +1890,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     return false;
                 }
             }
+            if (vfsName.toLowerCase().endsWith(".jsp")
+                && !OpenCms.getResourceManager().matchResourceType(
+                    CmsResourceTypeJsp.getStaticTypeName(),
+                    exportRes.getTypeId())) {
+
+                return false;
+            }
             String exportValue = exportCms.readPropertyObject(
                 exportCms.getSitePath(exportRes),
                 CmsPropertyDefinition.PROPERTY_EXPORT,
