@@ -410,7 +410,8 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
      */
     protected void invokeHandler(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
 
-        String name = OpenCmsCore.getPathInfo(req).substring(HANDLE_PATH.length());
+        String pathInfo = OpenCmsCore.getPathInfo(req);
+        String name = pathInfo.substring(HANDLE_PATH.length());
         I_CmsRequestHandler handler = OpenCmsCore.getInstance().getRequestHandler(name);
         if ((handler == null) && name.contains("/")) {
             // if the name contains a '/', also check for handlers matching the first path fragment only
@@ -420,6 +421,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
         if (handler != null) {
             handler.handle(req, res, name);
         } else {
+            LOG.warn("Invalid request handler call: " + pathInfo);
             openErrorHandler(req, res, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
