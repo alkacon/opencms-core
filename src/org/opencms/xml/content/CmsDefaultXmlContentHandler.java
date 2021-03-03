@@ -94,6 +94,7 @@ import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsSchemaFormatterBeanWrapper;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
+import org.opencms.xml.types.CmsXmlCategoryValue;
 import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
 import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
@@ -4207,6 +4208,28 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
+     * Checks if any configured value type is an OpenCmsCategory.
+     *
+     * @return true if any configured value type is an OpenCmsCategory
+     */
+    private boolean hasCategoryType() {
+
+        try {
+            for (I_CmsXmlSchemaType typeEntry : m_contentDefinition.getTypeSequence()) {
+                String typeName = typeEntry.getTypeName();
+                I_CmsXmlSchemaType type = OpenCms.getXmlContentTypeManager().getContentType(typeName);
+                if (type instanceof CmsXmlCategoryValue) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            LOG.debug(e.getLocalizedMessage(), e);
+        }
+        return false;
+
+    }
+
+    /**
      * Checks whether a category widget is configured.
      *
      * @return true if a category widget is configured
@@ -4216,16 +4239,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         if (m_hasCategoryWidget == null) {
             boolean result = false;
             for (Map.Entry<String, String> widgetEntry : m_widgetNames.entrySet()) {
-                try {
-                    result |= CmsCategoryWidget.class.isAssignableFrom(
-                        Class.forName(widgetEntry.getValue(), false, getClass().getClassLoader()));
-                    if (result) {
-                        break;
-                    }
-                } catch (Exception e) {
-                    LOG.debug(e.getLocalizedMessage(), e);
+                String widgetName = widgetEntry.getValue();
+                I_CmsWidget widget = OpenCms.getXmlContentTypeManager().getWidget(widgetName);
+                if ((widget != null) && (widget instanceof CmsCategoryWidget)) {
+                    result = true;
+                    break;
                 }
             }
+            result = result || hasCategoryType();
             m_hasCategoryWidget = Boolean.valueOf(result);
             return result;
         }
