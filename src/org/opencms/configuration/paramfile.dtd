@@ -1,5 +1,5 @@
 <!-- DTD for parameter files used by org.opencms.configuration.CmsParameterStore. -->
-<!-- weight on individual param elements takes precendence over weight on params element. -->
+<!-- weight on individual param elements takes precedence over weight on params element. -->
 
 <!ELEMENT params (param*)>
 <!ATTLIST params
