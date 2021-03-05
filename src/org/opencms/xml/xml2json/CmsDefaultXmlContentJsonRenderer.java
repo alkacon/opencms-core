@@ -167,7 +167,7 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
      */
     public void initialize(CmsObject cms) throws CmsException {
 
-        m_cms = cms;
+        m_cms = OpenCms.initCmsObject(cms);
         m_rootCms = OpenCms.initCmsObject(m_cms);
         m_rootCms.getRequestContext().setSiteRoot("");
 
@@ -180,6 +180,8 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
     public Object render(CmsXmlContent content, Locale locale) throws JSONException {
 
         CmsXmlContentTree tree = new CmsXmlContentTree(content, locale);
+        m_cms.getRequestContext().setLocale(locale);
+        m_rootCms.getRequestContext().setLocale(locale);
         Node root = tree.getRoot();
         return renderNode(root);
 
