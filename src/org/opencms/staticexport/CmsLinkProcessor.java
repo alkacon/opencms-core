@@ -259,7 +259,12 @@ public class CmsLinkProcessor extends CmsHtmlParser {
             } else if (TAG_AREA.equals(tag.getTagName())) {
                 processAreaTag(tag);
             } else if (TAG_IFRAME.equals(tag.getTagName())) {
-                processLink(tag, ATTRIBUTE_SRC, CmsRelationType.HYPERLINK);
+                String src = tag.getAttribute(ATTRIBUTE_SRC);
+                if ((src != null) && !src.startsWith("//")) {
+                    // link processing does not work for protocol-relative URLs, which were once used in Youtube embed
+                    // codes.
+                    processLink(tag, ATTRIBUTE_SRC, CmsRelationType.HYPERLINK);
+                }
             }
         }
         // append text content of the tag (may have been changed by above methods)
