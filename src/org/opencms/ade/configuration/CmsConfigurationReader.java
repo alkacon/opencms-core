@@ -154,6 +154,9 @@ public class CmsConfigurationReader {
     /** The display name node name. */
     public static final String N_DISPLAY_NAME = "DisplayName";
 
+    /** Node name. */
+    public static final String N_USE_FORMATTER_KEYS = "UseFormatterKeys";
+
     /** The element view node name. */
     public static final String N_ELEMENT_VIEW = "ElementView";
 
@@ -533,6 +536,12 @@ public class CmsConfigurationReader {
         boolean exludeExternalDetailContents = getBoolean(root, N_EXCLUDE_EXTERNAL_DETAIL_CONTENTS);
         boolean includeInSiteSelector = getBoolean(root, N_INCLUDE_IN_SITE_SELECTOR);
 
+        I_CmsXmlContentValueLocation useFormatterKeysLoc = root.getSubValue(N_USE_FORMATTER_KEYS);
+        Boolean useFormatterKeys = null;
+        if (useFormatterKeysLoc != null) {
+            useFormatterKeys = Boolean.valueOf(useFormatterKeysLoc.getValue().getStringValue(m_cms));
+        }
+
         boolean isModuleConfig = OpenCms.getResourceManager().getResourceType(
             content.getFile().getTypeId()).getTypeName().equals(CmsADEManager.MODULE_CONFIG_TYPE);
 
@@ -564,7 +573,8 @@ public class CmsConfigurationReader {
             includeInSiteSelector,
             formatterChangeSet,
             removeFunctions,
-            functions);
+            functions,
+            useFormatterKeys);
         return result;
     }
 

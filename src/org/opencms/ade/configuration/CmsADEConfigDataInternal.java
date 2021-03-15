@@ -68,6 +68,9 @@ public class CmsADEConfigDataInternal {
     /** Should inherited types be discarded? */
     protected boolean m_discardInheritedTypes;
 
+    /** Mode for using formatter keys / the new container page format. */
+    protected Boolean m_useFormatterKeys;
+
     /** The 'discard properties' mode. */
     protected DiscardPropertiesMode m_discardPropertiesMode;
 
@@ -145,6 +148,7 @@ public class CmsADEConfigDataInternal {
      * @param formatterChangeSet the formatter changes
      * @param removeAllFunctions flag indicating whether all functions should be removed
      * @param functionIds the dynamic functions available
+     * @param useFormatterKeys mode for using formatter keys / the new container page format
      */
     public CmsADEConfigDataInternal(
         CmsObject cms,
@@ -166,7 +170,8 @@ public class CmsADEConfigDataInternal {
         boolean includeInSiteSelector,
         CmsFormatterChangeSet formatterChangeSet,
         boolean removeAllFunctions,
-        Set<CmsUUID> functionIds) {
+        Set<CmsUUID> functionIds,
+        Boolean useFormatterKeys) {
 
         m_cms = cms;
         m_resource = resource;
@@ -193,6 +198,7 @@ public class CmsADEConfigDataInternal {
         m_removeAllFunctions = removeAllFunctions;
         m_excludeExternalDetailContents = excludeExternalDetailContents;
         m_includeInSiteSelector = includeInSiteSelector;
+        m_useFormatterKeys = useFormatterKeys;
     }
 
     /**
@@ -412,6 +418,18 @@ public class CmsADEConfigDataInternal {
     public CmsResource getResource() {
 
         return m_resource;
+    }
+
+    /**
+     * Gets the 'use formatter keys' mode.<p>
+     *
+     * If true, container pages will be written in the new format, including using formatter keys when possible.
+     *
+     * @return the 'use formatter keys' mode
+     */
+    public Boolean getUseFormatterKeys() {
+
+        return m_useFormatterKeys;
     }
 
     /**

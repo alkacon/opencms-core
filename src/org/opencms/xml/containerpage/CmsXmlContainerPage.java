@@ -678,48 +678,12 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         parent.clearContent();
 
         CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(cms, getFile().getRootPath());
-        // save containers in a defined order
-        List<String> containerNames = new ArrayList<String>(cntPage.getNames());
-        Collections.sort(containerNames);
+        if (adeConfig.isUseFormatterKeys()) {
+            // saveContainerPageV2(cms, parent, cntPage, adeConfig);
+            throw new UnsupportedOperationException("not supported");
 
-        for (String containerName : containerNames) {
-            CmsContainerBean container = cntPage.getContainers().get(containerName);
-
-            // the container
-            Element cntElement = parent.addElement(XmlNode.Containers.name());
-            cntElement.addElement(XmlNode.Name.name()).addCDATA(container.getName());
-            cntElement.addElement(XmlNode.Type.name()).addCDATA(container.getType());
-            if (container.isNestedContainer()) {
-                cntElement.addElement(XmlNode.ParentInstanceId.name()).addCDATA(container.getParentInstanceId());
-            }
-            if (container.isRootContainer()) {
-                cntElement.addElement(XmlNode.IsRootContainer.name()).addText(Boolean.TRUE.toString());
-            }
-
-            // the elements
-            for (CmsContainerElementBean element : container.getElements()) {
-                Element elemElement = cntElement.addElement(XmlNode.Elements.name());
-
-                // the element
-                Element uriElem = elemElement.addElement(XmlNode.Uri.name());
-                CmsResource uriRes = fillResource(cms, uriElem, element.getId());
-                if (element.getFormatterId() != null) {
-                    Element formatterElem = elemElement.addElement(XmlNode.Formatter.name());
-                    fillResource(cms, formatterElem, element.getFormatterId());
-                }
-                if (element.isCreateNew()) {
-                    Element createNewElem = elemElement.addElement(XmlNode.CreateNew.name());
-                    createNewElem.addText(Boolean.TRUE.toString());
-                }
-                // the properties
-                Map<String, String> properties = element.getIndividualSettings();
-                Map<String, String> processedSettings = processSettingsForSave(adeConfig, properties);
-                Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementSettings(
-                    cms,
-                    uriRes);
-
-                CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, processedSettings, propertiesConf);
-            }
+        } else {
+            saveContainerPageV1(cms, parent, cntPage, adeConfig);
         }
     }
 
@@ -770,9 +734,50 @@ public class CmsXmlContainerPage extends CmsXmlContent {
      * @param settings the element settings
      * @return the modified element settings
      */
-    private Map<String, String> processSettingsForSave(CmsADEConfigData config, Map<String, String> settings) {
+    private Map<String, String> processSettingsForSaveV1(CmsADEConfigData config, Map<String, String> settings) {
 
         Map<String, String> result = new LinkedHashMap<>();
+        for (Map.Entry<String, String> entry : settings.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            if (key.startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)) {
+                if (!CmsUUID.isValidUUID(value)) {
+                    I_CmsFormatterBean dynamicFmt = config.findFormatter(value);
+                    if ((dynamicFmt != null) && (dynamicFmt.getId() != null)) {
+                        value = dynamicFmt.getId();
+                    }
+                }
+            } else {
+                // nested formatters
+                int underscorePos = key.indexOf("_");
+                if (underscorePos != -1) {
+                    String partBeforeUnderscore = key.substring(0, underscorePos);
+                    String partAfterUnderscore = key.substring(underscorePos + 1);
+                    I_CmsFormatterBean dynamicFmt = config.findFormatter(partBeforeUnderscore);
+                    if ((dynamicFmt != null) && dynamicFmt.getSettings().containsKey(partAfterUnderscore)) {
+                        String id = dynamicFmt.getId();
+                        if (id != null) {
+                            key = id + "_" + partAfterUnderscore;
+                        }
+                    }
+                }
+            }
+            result.put(key, value);
+        }
+        return result;
+    }
+
+    /**
+     * Do some processing for the element settings before saving them.
+     *
+     * @param config the ADE configuration
+     * @param settings the element settings
+     * @return the modified element settings
+     */
+    private Map<String, String> processSettingsForSaveV2(CmsADEConfigData config, Map<String, String> settings) {
+
+        Map<String, String> result = new LinkedHashMap<>();
+
         for (Map.Entry<String, String> entry : settings.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
@@ -786,7 +791,132 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             }
             result.put(key, value);
         }
+
         return result;
+    }
+
+    /**
+     * Adds the given container page to the given element.<p>
+     *
+     * @param cms the current CMS object
+     * @param parent the element to add it
+     * @param cntPage the container page to add
+     * @param adeConfig the current sitemap configuration
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private void saveContainerPageV1(
+        CmsObject cms,
+        Element parent,
+        CmsContainerPageBean cntPage,
+        CmsADEConfigData adeConfig)
+    throws CmsException {
+
+        // save containers in a defined order
+        List<String> containerNames = new ArrayList<String>(cntPage.getNames());
+        Collections.sort(containerNames);
+
+        for (String containerName : containerNames) {
+            CmsContainerBean container = cntPage.getContainers().get(containerName);
+
+            // the container
+            Element cntElement = parent.addElement(XmlNode.Containers.name());
+            cntElement.addElement(XmlNode.Name.name()).addCDATA(container.getName());
+            cntElement.addElement(XmlNode.Type.name()).addCDATA(container.getType());
+            if (container.isNestedContainer()) {
+                cntElement.addElement(XmlNode.ParentInstanceId.name()).addCDATA(container.getParentInstanceId());
+            }
+            if (container.isRootContainer()) {
+                cntElement.addElement(XmlNode.IsRootContainer.name()).addText(Boolean.TRUE.toString());
+            }
+
+            // the elements
+            for (CmsContainerElementBean element : container.getElements()) {
+                Element elemElement = cntElement.addElement(XmlNode.Elements.name());
+
+                // the element
+                Element uriElem = elemElement.addElement(XmlNode.Uri.name());
+                CmsResource uriRes = fillResource(cms, uriElem, element.getId());
+                if (element.getFormatterId() != null) {
+                    Element formatterElem = elemElement.addElement(XmlNode.Formatter.name());
+                    fillResource(cms, formatterElem, element.getFormatterId());
+                }
+                if (element.isCreateNew()) {
+                    Element createNewElem = elemElement.addElement(XmlNode.CreateNew.name());
+                    createNewElem.addText(Boolean.TRUE.toString());
+                }
+                // the properties
+                Map<String, String> properties = element.getIndividualSettings();
+                Map<String, String> processedSettings = processSettingsForSaveV1(adeConfig, properties);
+                Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementSettings(
+                    cms,
+                    uriRes);
+
+                CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, processedSettings, propertiesConf);
+            }
+        }
+    }
+
+    /**
+     * Adds the given container page to the given element.<p>
+     *
+     * @param cms the current CMS object
+     * @param parent the element to add it
+     * @param cntPage the container page to add
+     * @param adeConfig the current sitemap configuration
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private void saveContainerPageV2(
+        CmsObject cms,
+        Element parent,
+        CmsContainerPageBean cntPage,
+        CmsADEConfigData adeConfig)
+    throws CmsException {
+
+        // save containers in a defined order
+        List<String> containerNames = new ArrayList<String>(cntPage.getNames());
+        Collections.sort(containerNames);
+
+        for (String containerName : containerNames) {
+            CmsContainerBean container = cntPage.getContainers().get(containerName);
+
+            // the container
+            Element cntElement = parent.addElement(XmlNode.Containers.name());
+            cntElement.addElement(XmlNode.Name.name()).addCDATA(container.getName());
+            cntElement.addElement(XmlNode.Type.name()).addCDATA(container.getType());
+            if (container.isNestedContainer()) {
+                cntElement.addElement(XmlNode.ParentInstanceId.name()).addCDATA(container.getParentInstanceId());
+            }
+            if (container.isRootContainer()) {
+                cntElement.addElement(XmlNode.IsRootContainer.name()).addText(Boolean.TRUE.toString());
+            }
+
+            // the elements
+            for (CmsContainerElementBean element : container.getElements()) {
+                Element elemElement = cntElement.addElement(XmlNode.Elements.name());
+
+                // the element
+                Element uriElem = elemElement.addElement(XmlNode.Uri.name());
+                CmsResource uriRes = fillResource(cms, uriElem, element.getId());
+                if (element.getFormatterId() != null) {
+                    Element formatterElem = elemElement.addElement(XmlNode.Formatter.name());
+                    fillResource(cms, formatterElem, element.getFormatterId());
+                }
+                if (element.isCreateNew()) {
+                    Element createNewElem = elemElement.addElement(XmlNode.CreateNew.name());
+                    createNewElem.addText(Boolean.TRUE.toString());
+                }
+                // the properties
+                Map<String, String> properties = element.getIndividualSettings();
+                Map<String, String> processedSettings = processSettingsForSaveV2(adeConfig, properties);
+                Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementSettings(
+                    cms,
+                    uriRes);
+
+                CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, processedSettings, propertiesConf);
+            }
+        }
     }
 
 }

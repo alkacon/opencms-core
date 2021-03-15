@@ -1177,6 +1177,27 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Returns true if the new container page format, which uses formatter keys (but also is different in other ways from the new format
+     *
+     * @return true if formatter keys should be used
+     */
+    public boolean isUseFormatterKeys() {
+
+        Boolean result = m_data.getUseFormatterKeys();
+        if (result != null) {
+            LOG.debug("isUseFormatterKeys - found value " + result + " at " + getBasePath());
+            return result.booleanValue();
+        }
+        CmsADEConfigData parent = parent();
+        if (parent != null) {
+            return parent.isUseFormatterKeys();
+        }
+        boolean defaultValue = false;
+        LOG.debug("isUseFormatterKeys - using defaultValue " + defaultValue);
+        return defaultValue;
+    }
+
+    /**
      * Fetches the parent configuration of this configuration.<p>
      *
      * If this configuration is a sitemap configuration with no direct parent configuration,
@@ -1487,12 +1508,12 @@ public class CmsADEConfigData {
 
         if (m_activeFormattersByKey == null) {
             ArrayListMultimap<String, I_CmsFormatterBean> activeFormattersByKey = ArrayListMultimap.create();
-            m_activeFormattersByKey = activeFormattersByKey;
             for (I_CmsFormatterBean formatter : getActiveFormatters().values()) {
                 if (formatter.getKey() != null) {
                     activeFormattersByKey.put(formatter.getKey(), formatter);
                 }
             }
+            m_activeFormattersByKey = activeFormattersByKey;
         }
         return m_activeFormattersByKey;
     }
@@ -1506,10 +1527,10 @@ public class CmsADEConfigData {
 
         if (m_formattersByJspId == null) {
             ArrayListMultimap<CmsUUID, I_CmsFormatterBean> formattersByJspId = ArrayListMultimap.create();
-            m_formattersByJspId = formattersByJspId;
             for (I_CmsFormatterBean formatter : getCachedFormatters().getFormatters().values()) {
                 formattersByJspId.put(formatter.getJspStructureId(), formatter);
             }
+            m_formattersByJspId = formattersByJspId;
         }
         return m_formattersByJspId;
     }
@@ -1523,12 +1544,12 @@ public class CmsADEConfigData {
 
         if (m_formattersByKey == null) {
             ArrayListMultimap<String, I_CmsFormatterBean> formattersByKey = ArrayListMultimap.create();
-            m_formattersByKey = formattersByKey;
             for (I_CmsFormatterBean formatter : getCachedFormatters().getFormatters().values()) {
                 if (formatter.getKey() != null) {
                     formattersByKey.put(formatter.getKey(), formatter);
                 }
             }
+            m_formattersByKey = formattersByKey;
         }
         return m_formattersByKey;
     }
