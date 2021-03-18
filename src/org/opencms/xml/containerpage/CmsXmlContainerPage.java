@@ -28,6 +28,7 @@
 package org.opencms.xml.containerpage;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsFormatterUtils;
 import org.opencms.ade.containerpage.CmsModelGroupHelper;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.file.CmsFile;
@@ -561,9 +562,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                                 }
                                 elementId = link.getStructureId();
                             }
-                        } else {
-                            //TODO not implemented yet
                         }
+                        // uri may be null for dynamic functions, try find the element id from the settings later
+
                         Element createNewElement = element.element(XmlNode.CreateNew.name());
                         boolean createNew = (createNewElement != null)
                             && Boolean.parseBoolean(createNewElement.getStringValue());
@@ -596,6 +597,16 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                             elemDef);
                         if ((config != null) && (getFile() != null)) {
                             propertiesMap = fixNestedFormatterSettings(cms, config, propertiesMap);
+                        }
+
+                        if (config != null) {
+                            // in the new container page format, new dynamic functions are not stored with their URIs in the page
+                            String containerName = name.getText();
+                            String key = CmsFormatterUtils.getFormatterKey(containerName, propertiesMap);
+                            I_CmsFormatterBean dynFmt = config.findFormatter(key);
+                            if (dynFmt instanceof CmsFunctionFormatterBean) {
+                                elementId = new CmsUUID(dynFmt.getId());
+                            }
                         }
 
                         if (elementId != null) {

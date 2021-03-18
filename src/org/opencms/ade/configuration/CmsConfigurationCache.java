@@ -591,6 +591,11 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                     }
                     m_state = oldState.createUpdatedCopy(updateMap, moduleConfigs, elementViews);
                 }
+                try {
+                    OpenCms.getADEManager().getCache().flushContainerPages(false);
+                } catch (Exception e) {
+                    LOG.info(e.getLocalizedMessage(), e);
+                }
             }
 
         } catch (Exception e) {

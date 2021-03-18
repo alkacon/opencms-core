@@ -67,6 +67,19 @@ public class CmsFormatterUtils {
     public static String getFormatterKey(String containerName, CmsContainerElementBean element) {
 
         Map<String, String> settings = element.getSettings();
+        return getFormatterKey(containerName, settings);
+    }
+
+    /**
+     * Gets the formatter key for the given container name from an element's settings.
+     *
+     * @param containerName the container name
+     * @param element the element from which to get the formatter key
+     *
+     * @return the formatter key
+     */
+    public static String getFormatterKey(String containerName, Map<String, String> settings) {
+
         String key1 = settings.get(CmsFormatterConfig.FORMATTER_SETTINGS_KEY + containerName);
         String key2 = settings.get(CmsFormatterConfig.FORMATTER_SETTINGS_KEY);
         for (String key : new String[] {key1, key2}) {
