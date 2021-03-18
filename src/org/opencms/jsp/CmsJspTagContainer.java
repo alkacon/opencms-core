@@ -237,43 +237,45 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
 
         I_CmsFormatterBean formatterBean = null;
         String settingsKey = CmsFormatterConfig.getSettingsKeyForContainer(containerName);
-        if ((element.getFormatterId() != null) && !element.getFormatterId().isNullUUID()) {
-
-            if (!element.getSettings().containsKey(settingsKey)
-                || element.getSettings().get(settingsKey).startsWith(CmsFormatterConfig.SCHEMA_FORMATTER_ID)) {
-                for (I_CmsFormatterBean formatter : adeConfig.getFormatters(
-                    cms,
-                    element.getResource()).getAllMatchingFormatters(containerType, containerWidth)) {
-                    if (element.getFormatterId().equals(formatter.getJspStructureId())) {
-                        String formatterConfigId = formatter.getId();
-                        if (formatterConfigId == null) {
-                            formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID
-                                + element.getFormatterId().toString();
-                        }
-                        formatterBean = formatter;
-                        break;
-                    }
-                }
+        String formatterSetting = element.getSettings().get(settingsKey);
+        CmsFormatterConfiguration formatterConfig = null;
+        if (formatterSetting != null) {
+            formatterConfig = adeConfig.getFormatters(cms, element.getResource());
+            // getFormattersForKey also works for the schema_formaterXXXXXX setting values
+            List<I_CmsFormatterBean> candidates = formatterConfig.getFormattersForKey(formatterSetting);
+            if (candidates.size() > 0) {
+                formatterBean = candidates.get(0);
             } else {
-                String formatterConfigId = element.getSettings().get(settingsKey);
-                I_CmsFormatterBean dynamicFmt = adeConfig.findFormatter(formatterConfigId);
-                if (dynamicFmt != null) {
-                    formatterBean = dynamicFmt;
+                formatterBean = adeConfig.findFormatter(formatterSetting);
+            }
+        }
+
+        if ((formatterBean == null) && (element.getFormatterId() != null) && !element.getFormatterId().isNullUUID()) {
+            if (formatterConfig == null) {
+                formatterConfig = adeConfig.getFormatters(cms, element.getResource());
+            }
+
+            for (I_CmsFormatterBean formatter : adeConfig.getFormatters(
+                cms,
+                element.getResource()).getAllMatchingFormatters(containerType, containerWidth)) {
+
+                if (element.getFormatterId().equals(formatter.getJspStructureId())) {
+                    String formatterConfigId = formatter.getId();
+                    if (formatterConfigId == null) {
+                        formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID
+                            + element.getFormatterId().toString();
+                    }
+                    formatterBean = formatter;
+                    break;
                 }
             }
-        } else {
-            if (element.getSettings().containsKey(settingsKey)) {
-                String formatterConfigId = element.getSettings().get(settingsKey);
-                I_CmsFormatterBean dynamicFmt = adeConfig.findFormatter(formatterConfigId);
-                if (dynamicFmt != null) {
-                    formatterBean = dynamicFmt;
-                }
-            }
-            if (formatterBean == null) {
-                formatterBean = adeConfig.getFormatters(cms, element.getResource()).getDefaultFormatter(
-                    containerType,
-                    containerWidth);
-            }
+        }
+
+        if (formatterBean == null) {
+
+            formatterBean = adeConfig.getFormatters(cms, element.getResource()).getDefaultFormatter(
+                containerType,
+                containerWidth);
         }
         return formatterBean;
     }

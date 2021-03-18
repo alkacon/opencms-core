@@ -28,6 +28,7 @@
 package org.opencms.search.documents;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsFormatterUtils;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -41,17 +42,20 @@ import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
+import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
@@ -123,34 +127,45 @@ public class CmsDocumentContainerPage extends A_CmsVfsDocument {
             LinkedHashMap<String, String> items = new LinkedHashMap<String, String>();
 
             CmsContainerPageBean containerBean = containerPage.getContainerPage(cms);
-            for (CmsContainerElementBean element : containerBean.getElements()) {
-                // check all elements in this container
+            for (Map.Entry<String, CmsContainerBean> entry : containerBean.getContainers().entrySet()) {
+                for (CmsContainerElementBean element : entry.getValue().getElements()) {
+                    // check all elements in this container
 
-                // get the formatter configuration for this element
-                element.initResource(cms);
-                CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfigurationWithCache(
-                    cms,
-                    file.getRootPath());
-                CmsFormatterConfiguration formatters = adeConfig.getFormatters(cms, element.getResource());
-
-                if (formatters.isSearchContent(element.getFormatterId())
-                    || adeConfig.isSearchContentFormatter(element.getFormatterId())) {
-                    // the content of this element must be included for the container page
-
+                    // get the formatter configuration for this element
                     element.initResource(cms);
-                    CmsFile elementFile = readFile(cms, element.getResource());
-                    A_CmsXmlDocument elementContent = CmsXmlContentFactory.unmarshal(cms, elementFile);
-                    List<String> elementNames = elementContent.getNames(locale);
-                    for (String xpath : elementNames) {
-                        // xpath will have the form "Text[1]" or "Nested[1]/Text[1]"
-                        I_CmsXmlContentValue value = elementContent.getValue(xpath, locale);
-                        if (value.getContentDefinition().getContentHandler().isSearchable(value)) {
-                            // the content value is searchable
-                            String extracted = value.getPlainText(cms);
-                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
-                                items.put(elementFile.getRootPath() + "/" + xpath, extracted);
-                                content.append(extracted);
-                                content.append('\n');
+                    CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfigurationWithCache(
+                        cms,
+                        file.getRootPath());
+                    CmsFormatterConfiguration formatters = adeConfig.getFormatters(cms, element.getResource());
+
+                    boolean foundFormatterWithSearchContentByKey = false;
+                    String formatterKey = CmsFormatterUtils.getFormatterKey(entry.getValue().getName(), element);
+                    if (formatterKey != null) {
+                        I_CmsFormatterBean formatter = adeConfig.findFormatter(formatterKey);
+                        if (formatter != null) {
+                            foundFormatterWithSearchContentByKey = true;
+                        }
+                    }
+                    if (foundFormatterWithSearchContentByKey
+                        || formatters.isSearchContent(element.getFormatterId())
+                        || adeConfig.isSearchContentFormatter(element.getFormatterId())) {
+                        // the content of this element must be included for the container page
+
+                        element.initResource(cms);
+                        CmsFile elementFile = readFile(cms, element.getResource());
+                        A_CmsXmlDocument elementContent = CmsXmlContentFactory.unmarshal(cms, elementFile);
+                        List<String> elementNames = elementContent.getNames(locale);
+                        for (String xpath : elementNames) {
+                            // xpath will have the form "Text[1]" or "Nested[1]/Text[1]"
+                            I_CmsXmlContentValue value = elementContent.getValue(xpath, locale);
+                            if (value.getContentDefinition().getContentHandler().isSearchable(value)) {
+                                // the content value is searchable
+                                String extracted = value.getPlainText(cms);
+                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
+                                    items.put(elementFile.getRootPath() + "/" + xpath, extracted);
+                                    content.append(extracted);
+                                    content.append('\n');
+                                }
                             }
                         }
                     }

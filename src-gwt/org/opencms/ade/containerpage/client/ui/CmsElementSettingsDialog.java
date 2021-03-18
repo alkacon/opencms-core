@@ -264,8 +264,6 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
         String formatterPath;
         CmsFormatterConfig currentFormatterConfig = m_elementBean.getFormatterConfig(m_containerId);
         String setting = m_elementBean.getSettings().get(CmsFormatterConfig.getSettingsKeyForContainer(m_containerId));
-        CmsDebugLog.consoleLog("setting = " + setting);
-        CmsDebugLog.consoleLog("formatters = " + m_elementBean.getFormatters().get(m_containerId));
         if (currentFormatterConfig == null) {
             throw new NoFormatterException();
         }

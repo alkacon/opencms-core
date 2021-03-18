@@ -293,7 +293,7 @@ public class CmsContainerPageCopier {
             targetCms.getRequestContext().setSiteRoot(site.getSiteRoot());
         }
 
-        if ((originalElement.getFormatterId() == null) || (originalElement.getId() == null)) {
+        if (originalElement.getId() == null) {
             String rootPath = m_originalPage != null ? m_originalPage.getRootPath() : "???";
             LOG.warn("Skipping container element because of missing id in page: " + rootPath);
             return null;

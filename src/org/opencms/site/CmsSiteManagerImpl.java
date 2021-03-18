@@ -1033,6 +1033,9 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      */
     public CmsSite getSiteForSiteRoot(String siteRoot) {
 
+        if (siteRoot == null) {
+            return null;
+        }
         CmsSite result = m_siteRootSites.get(siteRoot);
         if (result != null) {
             return result;

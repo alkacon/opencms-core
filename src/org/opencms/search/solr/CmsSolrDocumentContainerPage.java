@@ -28,6 +28,7 @@
 package org.opencms.search.solr;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsFormatterUtils;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -39,11 +40,13 @@ import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.documents.Messages;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
+import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -119,38 +122,54 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
             List<I_CmsExtractionResult> all = new ArrayList<I_CmsExtractionResult>();
             CmsContainerPageBean containerBean = containerPage.getContainerPage(cms);
             if (containerBean != null) {
-                for (CmsContainerElementBean element : containerBean.getElements()) {
-                    // check all elements in this container
-                    // get the formatter configuration for this element
-                    try {
-                        element.initResource(cms);
-                        CmsResource elementResource = element.getResource();
-                        if (!(cms.readProject(index.getProject()).isOnlineProject()
-                            && elementResource.isExpired(System.currentTimeMillis()))) {
-                            CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfigurationWithCache(
-                                cms,
-                                file.getRootPath());
-                            CmsFormatterConfiguration formatters = adeConfig.getFormatters(cms, element.getResource());
-                            if ((formatters != null)
-                                && (element.getFormatterId() != null)
-                                && (formatters.isSearchContent(element.getFormatterId())
-                                    || adeConfig.isSearchContentFormatter(element.getFormatterId()))) {
-                                // the content of this element must be included for the container page
-                                all.add(
-                                    CmsSolrDocumentXmlContent.extractXmlContent(
-                                        cms,
-                                        elementResource,
-                                        index,
-                                        forceLocale));
+                for (Map.Entry<String, CmsContainerBean> entry : containerBean.getContainers().entrySet()) {
+                    String containerName = entry.getKey();
+                    for (CmsContainerElementBean element : entry.getValue().getElements()) {
+                        // check all elements in this container
+                        // get the formatter configuration for this element
+                        try {
+                            element.initResource(cms);
+                            CmsResource elementResource = element.getResource();
+                            if (!(cms.readProject(index.getProject()).isOnlineProject()
+                                && elementResource.isExpired(System.currentTimeMillis()))) {
+                                CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfigurationWithCache(
+                                    cms,
+                                    file.getRootPath());
+                                CmsFormatterConfiguration formatters = adeConfig.getFormatters(
+                                    cms,
+                                    element.getResource());
+                                boolean shouldExtractElement = false;
+                                if ((formatters != null)
+                                    && (element.getFormatterId() != null)
+                                    && (formatters.isSearchContent(element.getFormatterId())
+                                        || adeConfig.isSearchContentFormatter(element.getFormatterId()))) {
+                                    // the content of this element must be included for the container page
+                                    shouldExtractElement = true;
+                                } else if (formatters != null) {
+                                    String key = CmsFormatterUtils.getFormatterKey(containerName, element);
+                                    I_CmsFormatterBean formatter = adeConfig.findFormatter(key);
+                                    if (formatter != null) {
+                                        shouldExtractElement = formatter.isSearchContent();
+                                    }
+                                }
+                                if (shouldExtractElement) {
+                                    all.add(
+                                        CmsSolrDocumentXmlContent.extractXmlContent(
+                                            cms,
+                                            elementResource,
+                                            index,
+                                            forceLocale));
+                                }
+
                             }
+                        } catch (Exception e) {
+                            LOG.debug(
+                                Messages.get().getBundle().key(
+                                    Messages.LOG_SKIPPING_CONTAINERPAGE_ELEMENT_WITH_UNREADABLE_RESOURCE_2,
+                                    file.getRootPath(),
+                                    element.getId()),
+                                e);
                         }
-                    } catch (Exception e) {
-                        LOG.debug(
-                            Messages.get().getBundle().key(
-                                Messages.LOG_SKIPPING_CONTAINERPAGE_ELEMENT_WITH_UNREADABLE_RESOURCE_2,
-                                file.getRootPath(),
-                                element.getId()),
-                            e);
                     }
                 }
             }

@@ -446,6 +446,42 @@ public final class CmsFormatterConfiguration {
     }
 
     /**
+     * Gets the list of formatters for the given key or id (also supports schema_formatter ids).
+     *
+     * @param key a formatter key or id
+     * @return the list of formatters for the given key
+     */
+    public List<I_CmsFormatterBean> getFormattersForKey(String key) {
+
+        if (key == null) {
+            return new ArrayList<>();
+        }
+        List<I_CmsFormatterBean> result = new ArrayList<>();
+
+        if (key.startsWith(CmsFormatterConfig.SCHEMA_FORMATTER_ID)) {
+            String idStr = key.substring(CmsFormatterConfig.SCHEMA_FORMATTER_ID.length());
+            try {
+                CmsUUID id = new CmsUUID(idStr);
+                for (I_CmsFormatterBean formatter : m_allFormatters) {
+                    if (!formatter.isFromFormatterConfigFile() && formatter.getJspStructureId().equals(id)) {
+                        result.add(formatter);
+                    }
+                }
+            } catch (NumberFormatException e) {
+                // ignore
+            }
+        }
+        for (I_CmsFormatterBean formatter : m_allFormatters) {
+            if ((formatter.getKey() != null) && key.equals(formatter.getKey())) {
+                result.add(formatter);
+            } else if ((formatter.getId() != null) && key.equals(formatter.getId().toString())) {
+                result.add(formatter);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns the formatter from this configuration that is to be used for the preview in the ADE gallery GUI,
      * or <code>null</code> if there is no preview formatter configured.<p>
      *

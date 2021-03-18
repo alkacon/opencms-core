@@ -28,6 +28,7 @@
 package org.opencms.ade.containerpage;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsFormatterUtils;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElement.ModelGroupState;
@@ -923,7 +924,7 @@ public class CmsModelGroupHelper {
         boolean allowCopyModel) {
 
         boolean resetSettings = false;
-        if (!baseElement.isCopyModel() && !baseElement.getFormatterId().equals(element.getFormatterId())) {
+        if (!baseElement.isCopyModel() && hasIncompatibleFormatters(baseElement, element)) {
             I_CmsFormatterBean formatter = m_configData.findFormatter(element.getFormatterId());
             resetSettings = (formatter == null)
                 || !formatter.getResourceTypeNames().contains(
@@ -963,6 +964,22 @@ public class CmsModelGroupHelper {
             }
         }
         return CmsContainerElementBean.cloneWithSettings(baseElement, settings);
+    }
+
+    private boolean hasIncompatibleFormatters(CmsContainerElementBean baseElement, CmsContainerElementBean element) {
+
+        if ((baseElement == null) || (element == null)) {
+            return false;
+        }
+        if ((baseElement.getFormatterId() != null)
+            && (element.getFormatterId() != null)
+            && !baseElement.getFormatterId().equals(element.getFormatterId())) {
+            return true;
+        }
+        Set<String> baseFormatterKeys = CmsFormatterUtils.getAllFormatterKeys(m_configData, baseElement);
+        Set<String> elementFormatterKeys = CmsFormatterUtils.getAllFormatterKeys(m_configData, element);
+        boolean hasCommonKeys = baseFormatterKeys.stream().anyMatch(elementFormatterKeys::contains);
+        return !hasCommonKeys;
     }
 
     /**

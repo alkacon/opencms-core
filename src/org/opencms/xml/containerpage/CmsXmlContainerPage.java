@@ -547,18 +547,22 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
                         // uri
                         Element uri = element.element(XmlNode.Uri.name());
-                        addBookmarkForElement(uri, locale, element, elemPath, elemDef);
-                        Element uriLink = uri.element(CmsXmlPage.NODE_LINK);
                         CmsUUID elementId = null;
-                        if (uriLink == null) {
-                            // this can happen when adding the elements node to the xml content
-                            // it is not dangerous since the link has to be set before saving
-                        } else {
-                            CmsLink link = new CmsLink(uriLink);
-                            if (cms != null) {
-                                link.checkConsistency(cms);
+                        if (uri != null) {
+                            addBookmarkForElement(uri, locale, element, elemPath, elemDef);
+                            Element uriLink = uri.element(CmsXmlPage.NODE_LINK);
+                            if (uriLink == null) {
+                                // this can happen when adding the elements node to the xml content
+                                // it is not dangerous since the link has to be set before saving
+                            } else {
+                                CmsLink link = new CmsLink(uriLink);
+                                if (cms != null) {
+                                    link.checkConsistency(cms);
+                                }
+                                elementId = link.getStructureId();
                             }
-                            elementId = link.getStructureId();
+                        } else {
+                            //TODO not implemented yet
                         }
                         Element createNewElement = element.element(XmlNode.CreateNew.name());
                         boolean createNew = (createNewElement != null)
@@ -566,18 +570,21 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
                         // formatter
                         Element formatter = element.element(XmlNode.Formatter.name());
-                        addBookmarkForElement(formatter, locale, element, elemPath, elemDef);
-                        Element formatterLink = formatter.element(CmsXmlPage.NODE_LINK);
                         CmsUUID formatterId = null;
-                        if (formatterLink == null) {
-                            // this can happen when adding the elements node to the xml content
-                            // it is not dangerous since the link has to be set before saving
-                        } else {
-                            CmsLink link = new CmsLink(formatterLink);
-                            if (cms != null) {
-                                link.checkConsistency(cms);
+                        if (formatter != null) {
+                            addBookmarkForElement(formatter, locale, element, elemPath, elemDef);
+                            Element formatterLink = formatter.element(CmsXmlPage.NODE_LINK);
+
+                            if (formatterLink == null) {
+                                // this can happen when adding the elements node to the xml content
+                                // it is not dangerous since the link has to be set before saving
+                            } else {
+                                CmsLink link = new CmsLink(formatterLink);
+                                if (cms != null) {
+                                    link.checkConsistency(cms);
+                                }
+                                formatterId = link.getStructureId();
                             }
-                            formatterId = link.getStructureId();
                         }
 
                         // the properties
@@ -685,8 +692,10 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                 // the element
                 Element uriElem = elemElement.addElement(XmlNode.Uri.name());
                 CmsResource uriRes = fillResource(cms, uriElem, element.getId());
-                Element formatterElem = elemElement.addElement(XmlNode.Formatter.name());
-                fillResource(cms, formatterElem, element.getFormatterId());
+                if (element.getFormatterId() != null) {
+                    Element formatterElem = elemElement.addElement(XmlNode.Formatter.name());
+                    fillResource(cms, formatterElem, element.getFormatterId());
+                }
                 if (element.isCreateNew()) {
                     Element createNewElem = elemElement.addElement(XmlNode.CreateNew.name());
                     createNewElem.addText(Boolean.TRUE.toString());
