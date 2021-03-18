@@ -208,7 +208,7 @@ eclipse.classpath.file {
 eclipse.classpath.plusConfigurations = configurations.findAll { it.name.endsWith("Compile") }
 
 task setGradleVersion(type: Wrapper){
-    gradleVersion = '6.1.1'
+    gradleVersion = '6.4.1'
 }
 
 task copyDeps(type: Copy) {
