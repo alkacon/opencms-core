@@ -30,6 +30,7 @@ package org.opencms.ade.configuration;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -54,6 +55,26 @@ public class CmsFormatterUtils {
                 entry -> entry.getValue()).collect(Collectors.toSet());
         return result;
 
+    }
+
+    /**
+     * Gets the formatter key for the given container name from an element's settings.
+     *
+     * @param containerName the container name
+     * @param element the element from which to get the formatter key
+     *
+     * @return the formatter key
+     */
+    public static String removeFormatterKey(String containerName, Map<String, String> settings) {
+
+        for (String mapKey : Arrays.asList(
+            CmsFormatterConfig.FORMATTER_SETTINGS_KEY + containerName,
+            CmsFormatterConfig.FORMATTER_SETTINGS_KEY)) {
+            if (settings.get(mapKey) != null) {
+                return settings.remove(mapKey);
+            }
+        }
+        return null;
     }
 
     /**

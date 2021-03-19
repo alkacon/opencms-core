@@ -100,6 +100,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         Elements,
         /** Element formatter node name. */
         Formatter,
+
+        /** Formatter key node name.*/ 
+        FormatterKey,
         /** The is root container node name. */
         IsRootContainer,
         /** Container attribute key node name. */
@@ -512,6 +515,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
                     // name
                     Element name = container.element(XmlNode.Name.name());
+                    String containerName = name.getText();
                     addBookmarkForElement(name, locale, container, cntPath, cntDef);
 
                     // type
@@ -545,6 +549,12 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                         I_CmsXmlContentValue elemValue = elemSchemaType.createValue(this, element, locale);
                         addBookmark(elemPath, locale, true, elemValue);
                         CmsXmlContentDefinition elemDef = ((CmsXmlNestedContentDefinition)elemSchemaType).getNestedContentDefinition();
+
+                        Element formatterKeyElem = element.element(XmlNode.FormatterKey.name());
+                        String formatterKey = null;
+                        if (formatterKeyElem != null) {
+                            formatterKey = formatterKeyElem.getTextTrim();
+                        }
 
                         // uri
                         Element uri = element.element(XmlNode.Uri.name());
@@ -598,10 +608,12 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                         if ((config != null) && (getFile() != null)) {
                             propertiesMap = fixNestedFormatterSettings(cms, config, propertiesMap);
                         }
+                        if (formatterKey != null) {
+                            propertiesMap.put(CmsFormatterConfig.FORMATTER_SETTINGS_KEY + containerName, formatterKey);
+                        }
 
                         if (config != null) {
                             // in the new container page format, new dynamic functions are not stored with their URIs in the page
-                            String containerName = name.getText();
                             String key = CmsFormatterUtils.getFormatterKey(containerName, propertiesMap);
                             I_CmsFormatterBean dynFmt = config.findFormatter(key);
                             if (dynFmt instanceof CmsFunctionFormatterBean) {
@@ -679,9 +691,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
         CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(cms, getFile().getRootPath());
         if (adeConfig.isUseFormatterKeys()) {
-            // saveContainerPageV2(cms, parent, cntPage, adeConfig);
-            throw new UnsupportedOperationException("not supported");
-
+            saveContainerPageV2(cms, parent, cntPage, adeConfig);
         } else {
             saveContainerPageV1(cms, parent, cntPage, adeConfig);
         }
@@ -896,10 +906,17 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             for (CmsContainerElementBean element : container.getElements()) {
                 Element elemElement = cntElement.addElement(XmlNode.Elements.name());
 
+                Map<String, String> properties = new HashMap<>(element.getIndividualSettings());
+                String formatterKey = CmsFormatterUtils.removeFormatterKey(containerName, properties);
+                if (formatterKey != null) {
+                    Element formatterKeyElem = elemElement.addElement(XmlNode.FormatterKey.name());
+                    formatterKeyElem.addText(formatterKey);
+                }
+
                 // the element
                 Element uriElem = elemElement.addElement(XmlNode.Uri.name());
                 CmsResource uriRes = fillResource(cms, uriElem, element.getId());
-                if (element.getFormatterId() != null) {
+                if ((element.getFormatterId() != null) && (formatterKey == null)) {
                     Element formatterElem = elemElement.addElement(XmlNode.Formatter.name());
                     fillResource(cms, formatterElem, element.getFormatterId());
                 }
@@ -908,7 +925,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                     createNewElem.addText(Boolean.TRUE.toString());
                 }
                 // the properties
-                Map<String, String> properties = element.getIndividualSettings();
+
                 Map<String, String> processedSettings = processSettingsForSaveV2(adeConfig, properties);
                 Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementSettings(
                     cms,
