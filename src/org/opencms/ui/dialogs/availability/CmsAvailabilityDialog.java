@@ -47,6 +47,7 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsDateField;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
@@ -54,6 +55,7 @@ import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,6 +82,9 @@ import com.vaadin.v7.ui.VerticalLayout;
  * Availability dialog.<p>
  */
 public class CmsAvailabilityDialog extends CmsBasicDialog {
+
+    /** Preference key for the option to automatically include children. */
+    public static final String PREF_AVAILABILITY_INCLUDE_CHILDREN_DEFAULT = "availabilityIncludeChildrenDefault";
 
     /** Logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAvailabilityDialog.class);
@@ -231,7 +236,13 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
                 hasFolders = true;
             }
         }
+
+        CmsWorkplaceSettings wpSettings = A_CmsUI.get().getWorkplaceSettings();
+        boolean includeChildren = Boolean.parseBoolean(
+            wpSettings.getUserSettings().getAdditionalPreference(PREF_AVAILABILITY_INCLUDE_CHILDREN_DEFAULT, true));
         m_subresourceModificationField.setVisible(hasFolders);
+        m_subresourceModificationField.setValue(Boolean.valueOf(includeChildren));
+
         initResetCheckbox(m_resetReleased, m_releasedField);
         initResetCheckbox(m_resetExpired, m_expiredField);
         m_okButton.addClickListener(new ClickListener() {

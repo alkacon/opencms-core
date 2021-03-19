@@ -243,6 +243,7 @@
                 <preference name="timeWarp" value="0" nice-name="%(key.GUI_LABEL_TIMEWARP_0)" widget="datebox" />
             </preference-tab>
             <preference-tab name="hidden">
+                <preference name="availabilityIncludeChildrenDefault" value="false" />
                 <preference name="workplaceButtonStyle" value="textimage" />
                 <preference name="directEditButtonStyle" value="image" />
                 <preference name="editorButtonStyle" value="image" />
