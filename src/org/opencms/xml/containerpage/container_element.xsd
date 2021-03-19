@@ -13,6 +13,7 @@
 
 	<xsd:complexType name="OpenCmsAlkaconContainerElement">
 		<xsd:sequence>
+			<xsd:element name="ElementInstanceId" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
 			<xsd:element name="FormatterKey" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
 			<xsd:element name="Uri" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="1" />
 			<xsd:element name="Formatter" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="1" />

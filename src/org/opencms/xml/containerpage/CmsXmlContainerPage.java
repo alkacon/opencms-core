@@ -30,6 +30,7 @@ package org.opencms.xml.containerpage;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsFormatterUtils;
 import org.opencms.ade.containerpage.CmsModelGroupHelper;
+import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -96,12 +97,15 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         Containers,
         /** The create new element node name. */
         CreateNew,
+
+        /** Element instance id node name. */
+        ElementInstanceId,
         /** Container elements node name. */
         Elements,
         /** Element formatter node name. */
         Formatter,
 
-        /** Formatter key node name.*/ 
+        /** Formatter key node name.*/
         FormatterKey,
         /** The is root container node name. */
         IsRootContainer,
@@ -550,6 +554,12 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                         addBookmark(elemPath, locale, true, elemValue);
                         CmsXmlContentDefinition elemDef = ((CmsXmlNestedContentDefinition)elemSchemaType).getNestedContentDefinition();
 
+                        Element instanceIdElem = element.element(XmlNode.ElementInstanceId.name());
+                        String elementInstanceId = null;
+                        if (instanceIdElem != null) {
+                            elementInstanceId = instanceIdElem.getTextTrim();
+                        }
+
                         Element formatterKeyElem = element.element(XmlNode.FormatterKey.name());
                         String formatterKey = null;
                         if (formatterKeyElem != null) {
@@ -610,6 +620,10 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                         }
                         if (formatterKey != null) {
                             propertiesMap.put(CmsFormatterConfig.FORMATTER_SETTINGS_KEY + containerName, formatterKey);
+                        }
+
+                        if (elementInstanceId != null) {
+                            propertiesMap.put(CmsContainerElement.ELEMENT_INSTANCE_ID, elementInstanceId);
                         }
 
                         if (config != null) {
@@ -907,6 +921,13 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                 Element elemElement = cntElement.addElement(XmlNode.Elements.name());
 
                 Map<String, String> properties = new HashMap<>(element.getIndividualSettings());
+
+                String instanceId = properties.remove(CmsContainerElement.ELEMENT_INSTANCE_ID);
+                if (instanceId != null) {
+                    Element instanceIdElem = elemElement.addElement(XmlNode.ElementInstanceId.name());
+                    instanceIdElem.addText(instanceId);
+                }
+
                 String formatterKey = CmsFormatterUtils.removeFormatterKey(containerName, properties);
                 if (formatterKey != null) {
                     Element formatterKeyElem = elemElement.addElement(XmlNode.FormatterKey.name());
