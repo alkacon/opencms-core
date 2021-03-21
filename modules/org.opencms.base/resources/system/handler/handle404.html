@@ -3,10 +3,13 @@
     trimDirectiveWhitespaces="true"
     isErrorPage="true"
     contentType="text/html"
-    import="org.opencms.jsp.util.CmsJspStatusBean" %>
-<%  // initialize instance of status bean
+    import="org.opencms.jsp.util.CmsJspStatusBean" %><%
+
+    // initialize the error status bean
     CmsJspStatusBean cms = new CmsJspStatusBean(pageContext, request, response, exception);
-    boolean ani = true;
+    // select effect based on URI
+    // to disable effects, set ani = 0
+    int ani = 1 + (Math.abs(("".concat(cms.getRequestUri())).hashCode()) % 2);
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,6 +31,10 @@ main>div:first-child{font-weight:700}
 footer,main{margin-top:1rem}
 footer a{font-size:.7rem;color:#aaa;text-decoration:none;transition:color .5s}
 footer a:hover{color:#b31b34;transition:color .5s}
+<%
+if (ani == 1) {
+// "snow" animation CSS
+%>
 @-webkit-keyframes ecs-fall{
 0%{top:-10%}
 100%{top:100%}}
@@ -40,8 +47,10 @@ footer a:hover{color:#b31b34;transition:color .5s}
 @keyframes ecs-shake{
 0%{transform:translateX(0) rotate(0) scale(1)}
 50%{transform:translateX(50px) rotate(360deg) scale(2);opacity:.5}}
-.ecs>div{font-weight:700;color:#b31b34;font-size:1rem;position:fixed;top:-10%;z-index:100;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default;-webkit-animation-name:ecs-fall,ecs-shake;animation-name:ecs-fall,ecs-shake;-webkit-animation-duration:10s,3s;animation-duration:10s,3s;-webkit-animation-timing-function:linear,ease-in-out;animation-timing-function:linear,ease-in-out;-webkit-animation-iteration-count:infinite,infinite;animation-iteration-count:infinite,infinite;-webkit-animation-play-state:running,running;animation-play-state:running,running}
-.ecs>div:nth-child(odd){color:#144382;z-index:300}
+.ecs>span{position:fixed;top:-10%;z-index:100;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;cursor:default;-webkit-animation-name:ecs-fall,ecs-shake;animation-name:ecs-fall,ecs-shake;-webkit-animation-duration:10s,3s;animation-duration:10s,3s;-webkit-animation-timing-function:linear,ease-in-out;animation-timing-function:linear,ease-in-out;-webkit-animation-iteration-count:infinite,infinite;animation-iteration-count:infinite,infinite;-webkit-animation-play-state:running,running;animation-play-state:running,running}
+.ecs>span::after{content:"404";font-weight:700;color:#b31b34;font-size:1rem}
+.ecs>span:nth-child(odd){z-index:300}
+.ecs>span:nth-child(odd)::after{color:#144382}
 .ec0{left:1%;-webkit-animation-delay:0s,0s;animation-delay:0s,0s}
 .ec1{left:10%;-webkit-animation-delay:1s,1s;animation-delay:1s,1s}
 .ec2{left:20%;-webkit-animation-delay:6s,.5s;animation-delay:6s,.5s}
@@ -52,28 +61,36 @@ footer a:hover{color:#b31b34;transition:color .5s}
 .ec7{left:70%;-webkit-animation-delay:2.5s,1s;animation-delay:2.5s,1s}
 .ec8{left:80%;-webkit-animation-delay:1s,0s;animation-delay:1s,0s}
 .ec9{left:90%;-webkit-animation-delay:3s,1.5s;animation-delay:3s,1.5s}
+<%
+} else if (ani == 2) {
+// "spin" animation CSS
+%>
+@-webkit-keyframes spin{
+from{transform:rotateX(0)}
+to{transform:rotateX(720deg)}}
+@keyframes spin{
+from{transform:rotateX(0)}
+to{transform:rotateX(720deg)}}
+@-webkit-keyframes colorize{
+0%{color:#aaa}
+25%{color:#b31b34}
+75%{color:#144382}
+100%{color:#aaa}}
+@keyframes colorize{
+0%{color:#aaa}
+25%{color:#b31b34}
+75%{color:#144382}
+100%{color:#aaa}}
+.error>h1{display:inline-block;-webkit-animation-name:spin,colorize;animation-name:spin,colorize;-webkit-animation-timing-function:cubic-bezier(0.4,0,0.2,1);animation-timing-function:cubic-bezier(0.4,0,0.2,1);-webkit-animation-iteration-count:infinite;animation-iteration-count:infinite;-webkit-animation-duration:4s;animation-duration:4s}
+<% } %>
 @media only screen and (min-width:700.01px){
 .wrapper{margin-right:auto;margin-left:auto;min-width:670px;width:80%}
 .error>h2{display:inline-block;width:100%;position:absolute;text-align:right;left:0;font-size:2rem;bottom:49%;color:#444;border-top:none;border-bottom:1px solid #ddd;text-shadow:-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,1px 1px 0 #fff}}
 </style>
 </head>
-<% if (ani) { %>
-<div class="ecs" aria-hidden="true">
-<div class="ec0"><%= cms.getStatusCode() %></div>
-<div class="ec1"><%= cms.getStatusCode() %></div>
-<div class="ec2"><%= cms.getStatusCode() %></div>
-<div class="ec3"><%= cms.getStatusCode() %></div>
-<div class="ec4"><%= cms.getStatusCode() %></div>
-<div class="ec5"><%= cms.getStatusCode() %></div>
-<div class="ec6"><%= cms.getStatusCode() %></div>
-<div class="ec7"><%= cms.getStatusCode() %></div>
-<div class="ec8"><%= cms.getStatusCode() %></div>
-<div class="ec9"><%= cms.getStatusCode() %></div>
-</div>
-<% } %>
 <div class="wrapper">
 <header>
-<a href="http://www.opencms.org/" class="logo">OpenCms</a>
+<a href="http://www.opencms.org/" class="logo">Error</a>
 <div class="error">
 <h1><%= cms.getStatusCode() %></h1>
 <h2><%= cms.keyStatus("error_message") %></h1>
@@ -87,5 +104,24 @@ footer a:hover{color:#b31b34;transition:color .5s}
 <a href="http://www.opencms.org/">This server runs OpenCms - the open source content management system</a>
 </footer>
 </div>
+<%
+if (ani == 1) {
+// "snow" animation HTML
+%>
+<span class="ecs" aria-hidden="true">
+<span class="ec0"></span>
+<span class="ec1"></span>
+<span class="ec2"></span>
+<span class="ec3"></span>
+<span class="ec4"></span>
+<span class="ec5"></span>
+<span class="ec6"></span>
+<span class="ec7"></span>
+<span class="ec8"></span>
+<span class="ec9"></span>
+</span>
+<%
+}
+%>
 </body>
 </html>
