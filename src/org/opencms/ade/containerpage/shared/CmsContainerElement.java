@@ -42,6 +42,7 @@ public class CmsContainerElement implements IsSerializable, I_CmsHasIconClasses 
 
     /** The model group states. */
     public static enum ModelGroupState {
+
         /** Is model group state. */
         isModelGroup,
 
@@ -113,6 +114,9 @@ public class CmsContainerElement implements IsSerializable, I_CmsHasIconClasses 
 
     /** The is model group element setting key. */
     public static final String MODEL_GROUP_STATE = "model_group_state";
+
+    /** Key for the setting that replaces the CreateNew element. */ 
+    public static final String SETTING_CREATE_NEW = "SYSTEM::create_new";
 
     /** The use as copy model setting key. */
     public static final String USE_AS_COPY_MODEL = "use_as_copy_model";

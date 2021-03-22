@@ -626,6 +626,10 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                             propertiesMap.put(CmsContainerElement.ELEMENT_INSTANCE_ID, elementInstanceId);
                         }
 
+                        boolean createNewFromSetting = Boolean.parseBoolean(
+                            propertiesMap.remove(CmsContainerElement.SETTING_CREATE_NEW));
+                        createNew |= createNewFromSetting;
+
                         if (config != null) {
                             // in the new container page format, new dynamic functions are not stored with their URIs in the page
                             String key = CmsFormatterUtils.getFormatterKey(containerName, propertiesMap);
@@ -942,8 +946,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                     fillResource(cms, formatterElem, element.getFormatterId());
                 }
                 if (element.isCreateNew()) {
-                    Element createNewElem = elemElement.addElement(XmlNode.CreateNew.name());
-                    createNewElem.addText(Boolean.TRUE.toString());
+                    properties.put(CmsContainerElement.SETTING_CREATE_NEW, "true");
                 }
                 // the properties
 
