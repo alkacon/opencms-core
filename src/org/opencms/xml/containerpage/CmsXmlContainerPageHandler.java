@@ -27,9 +27,11 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.relations.CmsLink;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
@@ -43,12 +45,17 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import java.util.Iterator;
 import java.util.Locale;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Container page handler to validate consistency.<p>
  *
  * @since 7.6
  */
 public class CmsXmlContainerPageHandler extends CmsDefaultXmlContentHandler {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsXmlContainerPageHandler.class);
 
     /**
      * Creates a new instance.<p>
@@ -65,6 +72,25 @@ public class CmsXmlContainerPageHandler extends CmsDefaultXmlContentHandler {
     public boolean hasModifiableFormatters() {
 
         return false;
+    }
+
+    /**
+     * @see org.opencms.xml.content.CmsDefaultXmlContentHandler#prepareForWrite(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, org.opencms.file.CmsFile)
+     */
+    @Override
+    public CmsFile prepareForWrite(CmsObject cms, CmsXmlContent content, CmsFile file) throws CmsException {
+
+        Object attribute = cms.getRequestContext().getAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE);
+        boolean autoCorrectionEnabled = (attribute != null) && ((Boolean)attribute).booleanValue();
+        if (autoCorrectionEnabled) { // this is to ensure that 'touch' converts pages to the V12 format.
+            CmsXmlContainerPage page = (CmsXmlContainerPage)content;
+            try {
+                page.writeContainerPage(cms, page.getContainerPage(cms));
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return super.prepareForWrite(cms, content, file);
     }
 
     /**
