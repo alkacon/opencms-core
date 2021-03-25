@@ -337,20 +337,26 @@ public class CmsLoginController {
         }
         String loggedInUser = cms.getRequestContext().getCurrentUser().getName();
         UI.getCurrent().getSession().close();
-        String loginLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-            cms,
-            CmsWorkplaceLoginHandler.LOGIN_HANDLER,
-            false);
-        VaadinService.getCurrentRequest().getWrappedSession().invalidate();
-        Page.getCurrent().setLocation(loginLink);
-        // logout was successful
-        if (LOG.isInfoEnabled()) {
-            LOG.info(
-                org.opencms.jsp.Messages.get().getBundle().key(
-                    org.opencms.jsp.Messages.LOG_LOGOUT_SUCCESFUL_3,
-                    loggedInUser,
-                    "{workplace logout option}",
-                    cms.getRequestContext().getRemoteAddress()));
+        String logoutUri = OpenCms.getLoginManager().getLogoutUri();
+        if (logoutUri != null) {
+            String target = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, logoutUri, false);
+            Page.getCurrent().open(target, "_top", false);
+        } else {
+            String loginLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                cms,
+                CmsWorkplaceLoginHandler.LOGIN_HANDLER,
+                false);
+            VaadinService.getCurrentRequest().getWrappedSession().invalidate();
+            Page.getCurrent().setLocation(loginLink);
+            // logout was successful
+            if (LOG.isInfoEnabled()) {
+                LOG.info(
+                    org.opencms.jsp.Messages.get().getBundle().key(
+                        org.opencms.jsp.Messages.LOG_LOGOUT_SUCCESFUL_3,
+                        loggedInUser,
+                        "{workplace logout option}",
+                        cms.getRequestContext().getRemoteAddress()));
+            }
         }
     }
 
@@ -368,22 +374,27 @@ public class CmsLoginController {
 
         String loggedInUser = cms.getRequestContext().getCurrentUser().getName();
         HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-            /* we need this because a new session might be created after this method,
-             but before the session info is updated in OpenCmsCore.showResource. */
-            cms.getRequestContext().setUpdateSessionEnabled(false);
+        String logoutUri = OpenCms.getLoginManager().getLogoutUri();
+        if (logoutUri == null) {
+            if (session != null) {
+                session.invalidate();
+                /* we need this because a new session might be created after this method,
+                 but before the session info is updated in OpenCmsCore.showResource. */
+                cms.getRequestContext().setUpdateSessionEnabled(false);
+            }
+            // logout was successful
+            if (LOG.isInfoEnabled()) {
+                LOG.info(
+                    org.opencms.jsp.Messages.get().getBundle().key(
+                        org.opencms.jsp.Messages.LOG_LOGOUT_SUCCESFUL_3,
+                        loggedInUser,
+                        cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri()),
+                        cms.getRequestContext().getRemoteAddress()));
+            }
+            response.sendRedirect(getFormLink(cms));
+        } else {
+            response.sendRedirect(OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, logoutUri, false));
         }
-        // logout was successful
-        if (LOG.isInfoEnabled()) {
-            LOG.info(
-                org.opencms.jsp.Messages.get().getBundle().key(
-                    org.opencms.jsp.Messages.LOG_LOGOUT_SUCCESFUL_3,
-                    loggedInUser,
-                    cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri()),
-                    cms.getRequestContext().getRemoteAddress()));
-        }
-        response.sendRedirect(getFormLink(cms));
     }
 
     /**

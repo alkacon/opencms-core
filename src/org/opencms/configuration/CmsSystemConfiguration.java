@@ -531,6 +531,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** Node name for the user data check interval. */
     public static final String N_USER_DATA_CHECK_INTERVAL = "userDataCheckInterval";
 
+    /** Node name for the logout URI.*/
+    public static final String N_LOGOUT_URI = "logoutUri";
+
     /** The node name for the user-deletedresource node. */
     public static final String N_USER_DELETEDRESOURCE = "user-deletedresource";
 
@@ -993,7 +996,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_VALIDATIONHANDLER, 0, A_CLASS);
 
         // add login manager creation rules
-        digester.addCallMethod("*/" + N_LOGINMANAGER, "setLoginManager", 8);
+        digester.addCallMethod("*/" + N_LOGINMANAGER, "setLoginManager", 9);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_DISABLEMINUTES, 0);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_MAXBADATTEMPTS, 1);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_ENABLESCURITY, 2);
@@ -1002,6 +1005,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_PASSWORD_CHANGE_INTERVAL, 5);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_USER_DATA_CHECK_INTERVAL, 6);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_REQUIRE_ORGUNIT, 7);
+        digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_LOGOUT_URI, 8);
 
         digester.addCallMethod(
             "*/" + N_SYSTEM + "/" + N_SAX_IMPL_SYSTEM_PROPERTIES,
@@ -1445,6 +1449,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             }
             if (m_loginManager.isOrgUnitRequired()) {
                 managerElement.addElement(N_REQUIRE_ORGUNIT).addText("true");
+            }
+
+            if (m_loginManager.getLogoutUri() != null) {
+                managerElement.addElement(N_LOGOUT_URI).addText(m_loginManager.getLogoutUri());
             }
         }
 
@@ -1999,7 +2007,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 null,
                 null,
                 null,
-                false);
+                false,
+                null);
         }
         return m_loginManager;
     }
@@ -2514,6 +2523,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
      * @param maxInactive maximum time since last login before CmsLockInactiveAccountsJob locks an account
      * @param passwordChangeInterval the password change interval
      * @param userDataCheckInterval the user data check interval
+     * @param logoutUri the alternative logout handler URI (may be null)
      */
     public void setLoginManager(
         String disableMinutesStr,
@@ -2523,7 +2533,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         String maxInactive,
         String passwordChangeInterval,
         String userDataCheckInterval,
-        String requireOrgUnitStr) {
+        String requireOrgUnitStr,
+        String logoutUri) {
 
         int disableMinutes;
         try {
@@ -2547,7 +2558,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             maxInactive,
             passwordChangeInterval,
             userDataCheckInterval,
-            requireOrgUnit);
+            requireOrgUnit,
+            logoutUri);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(
                 Messages.get().getBundle().key(

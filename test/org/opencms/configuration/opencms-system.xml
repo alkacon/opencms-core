@@ -53,6 +53,7 @@
 			<maxBadAttempts>3</maxBadAttempts>
 			<enableSecurity>false</enableSecurity>
             <requireOrgUnit>true</requireOrgUnit>
+			<logoutUri>/foo/bar</logoutUri>
 		</loginmanager>	
 		<sax-impl-system-properties>true</sax-impl-system-properties>
 		<runtimeproperties>
@@ -112,7 +113,7 @@
 		<api-authorizations>
             <api-authorization>
                 <name>test</name>
-                <class>org.opencms.blah.Foo</class>
+                <class>org.opencms.configuration.CmsDummyApiAuthorization</class>
                 <param name="alpha">1</param>
                 <param name="beta">2</param>
             </api-authorization>

@@ -203,6 +203,9 @@ public class CmsLoginManager {
     /** Option which determines whether the login dialog should require an organizational unit. */
     private boolean m_requireOrgUnit;
 
+    /** The logout URI. */
+    private String m_logoutUri;
+
     /**
      * Creates a new storage for invalid logins.<p>
      *
@@ -214,6 +217,7 @@ public class CmsLoginManager {
      * @param passwordChangeInterval the password change interval
      * @param userDataCheckInterval the user data check interval
      * @param requireOrgUnit if true, should require organizational unit selection on login
+     * @param logoutUri the alternative logout handler URI
      */
     public CmsLoginManager(
         int disableMinutes,
@@ -223,7 +227,8 @@ public class CmsLoginManager {
         String maxInactive,
         String passwordChangeInterval,
         String userDataCheckInterval,
-        boolean requireOrgUnit) {
+        boolean requireOrgUnit,
+        String logoutUri) {
 
         m_maxBadAttempts = maxBadAttempts;
         if (TEMP_DISABLED_USER == null) {
@@ -242,6 +247,7 @@ public class CmsLoginManager {
         m_passwordChangeInterval = passwordChangeInterval;
         m_userDateCheckInterval = userDataCheckInterval;
         m_requireOrgUnit = requireOrgUnit;
+        m_logoutUri = logoutUri;
     }
 
     /**
@@ -397,6 +403,19 @@ public class CmsLoginManager {
     public CmsLoginMessage getLoginMessage() {
 
         return m_loginMessage;
+    }
+
+    /**
+     * Gets the logout URI.<p>
+     *
+     * If this is not null, users will be redirected to this JSP when logging out from the workplace
+     * or page editor. The JSP is responsible for invalidating the user's session.
+     *
+     * @return the logout URI
+     */
+    public String getLogoutUri() {
+
+        return m_logoutUri;
     }
 
     /**
