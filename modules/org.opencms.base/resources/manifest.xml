@@ -206,10 +206,7 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 				<param name="schema">/system/modules/org.opencms.ade.sitemap/schemas/redirect.xsd</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeFolderSubSitemap" name="subsitemap" id="23"/>
-			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="content_folder" id="24">
-				<copy-resources>
-					<copy-resource source="/system/modules/org.opencms.base/copyresources/sitemap.config" target="${resource.folder.path}/.config" type="new"/>
-				</copy-resources>
+			<type class="org.opencms.file.types.CmsResourceTypeSubsitemapContentFolder" name="content_folder" id="24">
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration" name="sitemap_config" id="14">
 				<properties>
@@ -1059,6 +1056,35 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 			<uuidstructure>c9949dfa-70d5-11e0-9709-91706a02fba1</uuidstructure>
 			<uuidresource>c9949dfb-70d5-11e0-9709-91706a02fba1</uuidresource>
 			<datecreated>Wed, 27 Apr 2011 13:53:53 GMT</datecreated>
+			<flags>512</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sitemap configuration file]]></value>
+				</property>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.base/copyresources/sitemap.config.nokeys</source>
+			<destination>system/modules/org.opencms.base/copyresources/sitemap.config.nokeys</destination>
+			<type>sitemap_config</type>
+			<uuidstructure>7245d584-44bb-4342-8666-5c075216f91d</uuidstructure>
+			<uuidresource>760c40ff-9a60-4c9a-9268-a418505f5f30</uuidresource>
+			<datecreated>Fri, 26 Mar 2021 13:53:53 GMT</datecreated>
 			<flags>512</flags>
 			<properties>
 				<property>

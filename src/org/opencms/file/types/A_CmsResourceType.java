@@ -1039,6 +1039,23 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
+     * Gets the actual copy resources to use when creating a resource.
+     *
+     * @param cms the CMS context
+     * @param resourcename the path of the resource to create
+     * @param resolver the macro resolver to use
+     *
+     * @return the copy resources to use
+     */
+    protected List<CmsConfigurationCopyResource> getCopyResources(
+        CmsObject cms,
+        String resourcename,
+        CmsMacroResolver resolver) {
+
+        return m_copyResources;
+    }
+
+    /**
      * Creates a macro resolver based on the current users OpenCms context and the provided resource name.<p>
      *
      * @param cms the current OpenCms user context
@@ -1089,7 +1106,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     protected void processCopyResources(CmsObject cms, String resourcename, CmsMacroResolver resolver) {
 
         Map<String, String> copiedResources = new HashMap<String, String>();
-        for (CmsConfigurationCopyResource oriCopyResource : m_copyResources) {
+        for (CmsConfigurationCopyResource oriCopyResource : getCopyResources(cms, resourcename, resolver)) {
 
             // store original copy target
             String oriTarget = oriCopyResource.getTarget();

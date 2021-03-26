@@ -343,5 +343,6 @@
 			</roots>
 		</tool-manager>
 		<additional-log-folders />
+		<use-formatter-keys-for-new-sites>true</use-formatter-keys-for-new-sites>
 	</workplace>
 </opencms>

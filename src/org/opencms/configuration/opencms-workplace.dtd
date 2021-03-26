@@ -44,7 +44,8 @@
 	keep-alive?,
 	gallery-default-scope?,
 	element-delete-mode?,
-	additional-log-folders?
+	additional-log-folders?,
+	use-formatter-keys-for-new-sites?
 	)>
 
 <!--
@@ -883,6 +884,11 @@
 # The element delete mode sets the behavior of the element remove dialog in the container page editor. Values allowed: [alwaysDelete|alwaysKeep|askDelete|askKeep]
 -->
 <!ELEMENT element-delete-mode (#PCDATA)>
+
+<!-- 
+# The value for the 'use formatter keys' option in sitemap configurations created by the sitemap editor.
+-->
+<!ELEMENT use-formatter-keys-for-new-sites (#PCDATA)>
 
 <!--
 # Include the explorer types DTD.
