@@ -141,6 +141,23 @@ public class CmsContainerBean {
     }
 
     /**
+     * Creates a copy of this bean, but with the element list replaced with something else.
+     *
+     * @param elements the new list of elements for the copy
+     * @return the copied container bean
+     */
+    public CmsContainerBean copyWithNewElements(List<CmsContainerElementBean> elements) {
+
+        return new CmsContainerBean(
+            getName(),
+            getType(),
+            getParentInstanceId(),
+            isRootContainer(),
+            getMaxElements(),
+            elements);
+    }
+
+    /**
      * Returns a lazy initialized map that describes if a certain element if part of this container.<p>
      *
      * @return a lazy initialized map that describes if a certain element if part of this container

@@ -287,6 +287,20 @@ public class CmsElementUtil {
         return !Sets.intersection(CmsContainer.splitType(containerType), groupContainer.getTypes()).isEmpty();
     }
 
+    public static CmsContainerBean clientToServerContainer(
+        CmsContainer container,
+        List<CmsContainerElementBean> elements) {
+
+        return new CmsContainerBean(
+            container.getName(),
+            container.getType(),
+            container.getParentInstanceId(),
+            container.isRootContainer(),
+            container.getMaxElements(),
+            elements);
+
+    }
+
     /**
      * Helper method to create a string template source for a given formatter and content.
      *
@@ -1115,12 +1129,8 @@ public class CmsElementUtil {
                 && m_standardContext.getPage().getContainers().containsKey(container.getName())) {
                 containerBean = m_standardContext.getPage().getContainers().get(container.getName());
             } else {
-                containerBean = new CmsContainerBean(
-                    container.getName(),
-                    container.getType(),
-                    container.getParentInstanceId(),
-                    container.isRootContainer(),
-                    container.getMaxElements(),
+                containerBean = CmsElementUtil.clientToServerContainer(
+                    container,
                     Collections.<CmsContainerElementBean> emptyList());
             }
             if (containerBean.getWidth() == null) {

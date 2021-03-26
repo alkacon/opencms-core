@@ -1348,12 +1348,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     new HashMap<String, String>(),
                     false);
                 newElems.add(0, newElement);
-                CmsContainerBean newCntBean = new CmsContainerBean(
-                    cntBean.getName(),
-                    cntBean.getType(),
-                    cntBean.getParentInstanceId(),
-                    cntBean.isRootContainer(),
-                    newElems);
+                CmsContainerBean newCntBean = cntBean.copyWithNewElements(newElems);
                 containerBeans.add(newCntBean);
             } else {
                 containerBeans.add(cntBean);
@@ -1753,13 +1748,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 }
             }
 
-            CmsContainerBean updatedContainer = new CmsContainerBean(
-                container.getName(),
-                container.getType(),
-                container.getParentInstanceId(),
-                container.isRootContainer(),
-                container.getMaxElements(),
-                updatedElements);
+            CmsContainerBean updatedContainer = container.copyWithNewElements(updatedElements);
             updatedContainers.add(updatedContainer);
         }
         if (needsChanges) {

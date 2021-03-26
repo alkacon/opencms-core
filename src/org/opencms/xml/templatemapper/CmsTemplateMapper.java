@@ -181,12 +181,7 @@ public final class CmsTemplateMapper {
                     newElements.add(newElement);
                 }
             }
-            CmsContainerBean newContainer = new CmsContainerBean(
-                container.getName(),
-                container.getType(),
-                container.getParentInstanceId(),
-                container.isRootContainer(),
-                newElements);
+            CmsContainerBean newContainer = container.copyWithNewElements(newElements);
             newContainers.add(newContainer);
         }
         CmsContainerPageBean result = new CmsContainerPageBean(newContainers);
@@ -322,11 +317,11 @@ public final class CmsTemplateMapper {
                     // ID for group-container.jsp
                     formatterId = new CmsUUID("e7029fa2-761e-11e0-bd7f-9ffeadaf4d46");
                     newElement.setFormatterId(formatterId);
-                } else if (OpenCms.getResourceManager().matchResourceType(
-                    "function",
-                    element.getResource().getTypeId())) {
-                    formatterId = new CmsUUID("087ba7c9-e7fc-4336-acb8-d3416a4eb1fd");
-                    newElement.setFormatterId(formatterId);
+                } else {
+                    if (OpenCms.getResourceManager().matchResourceType("function", element.getResource().getTypeId())) {
+                        formatterId = new CmsUUID("087ba7c9-e7fc-4336-acb8-d3416a4eb1fd");
+                        newElement.setFormatterId(formatterId);
+                    }
                 }
             } catch (CmsException e) {
                 LOG.warn(e.getLocalizedMessage(), e);

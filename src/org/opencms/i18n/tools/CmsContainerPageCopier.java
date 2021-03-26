@@ -444,12 +444,7 @@ public class CmsContainerPageCopier {
                     newElements.add(newBean);
                 }
             }
-            CmsContainerBean newContainer = new CmsContainerBean(
-                container.getName(),
-                container.getType(),
-                container.getParentInstanceId(),
-                container.isRootContainer(),
-                newElements);
+            CmsContainerBean newContainer = container.copyWithNewElements(newElements);
             newContainers.add(newContainer);
         }
         CmsContainerPageBean newPageBean = new CmsContainerPageBean(newContainers);

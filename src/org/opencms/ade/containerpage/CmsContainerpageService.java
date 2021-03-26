@@ -2181,12 +2181,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 }
             }
         }
-        CmsContainerBean result = new CmsContainerBean(
-            container.getName(),
-            container.getType(),
-            container.getParentInstanceId(),
-            container.isRootContainer(),
-            elements);
+        CmsContainerBean result = CmsElementUtil.clientToServerContainer(container, elements);
         return result;
     }
 

@@ -535,14 +535,7 @@ public class CmsModelGroupHelper {
                 }
             }
             if (hasModels) {
-                resultContainers.add(
-                    new CmsContainerBean(
-                        container.getName(),
-                        container.getType(),
-                        container.getParentInstanceId(),
-                        container.isRootContainer(),
-                        container.getMaxElements(),
-                        elements));
+                resultContainers.add(container.copyWithNewElements(elements));
             } else {
                 resultContainers.add(container);
             }
@@ -591,15 +584,7 @@ public class CmsModelGroupHelper {
                         elements.add(element);
                     }
                 }
-                containers.add(
-                    new CmsContainerBean(
-                        container.getName(),
-                        container.getType(),
-                        container.getParentInstanceId(),
-                        container.isRootContainer(),
-                        container.getMaxElements(),
-                        elements));
-
+                containers.add(container.copyWithNewElements(elements));
             }
         }
         return new CmsContainerPageBean(containers);
@@ -646,14 +631,7 @@ public class CmsModelGroupHelper {
                 }
             }
             if (hasChanges) {
-                containers.add(
-                    new CmsContainerBean(
-                        container.getName(),
-                        container.getType(),
-                        container.getParentInstanceId(),
-                        container.isRootContainer(),
-                        container.getMaxElements(),
-                        elements));
+                containers.add(container.copyWithNewElements(elements));
             } else {
                 containers.add(container);
             }
@@ -835,13 +813,7 @@ public class CmsModelGroupHelper {
                         updatedElements.add(element);
                     }
                 }
-                CmsContainerBean updatedContainer = new CmsContainerBean(
-                    container.getName(),
-                    container.getType(),
-                    container.getParentInstanceId(),
-                    container.isRootContainer(),
-                    container.getMaxElements(),
-                    updatedElements);
+                CmsContainerBean updatedContainer = container.copyWithNewElements(updatedElements);
                 updatedContainers.add(updatedContainer);
             }
             modelContainers = updatedContainers;
