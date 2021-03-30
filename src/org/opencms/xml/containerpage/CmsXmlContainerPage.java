@@ -77,6 +77,11 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.xml.sax.EntityResolver;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Ordering;
+
 /**
  * Implementation of a object used to access and manage the xml data of a container page.<p>
  *
@@ -903,8 +908,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
     throws CmsException {
 
         // save containers in a defined order
-        List<String> containerNames = new ArrayList<String>(cntPage.getNames());
-        Collections.sort(containerNames);
+        List<String> containerNames = sortContainerNames(cntPage);
 
         for (String containerName : containerNames) {
             CmsContainerBean container = cntPage.getContainers().get(containerName);
@@ -958,6 +962,80 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                 CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, processedSettings, propertiesConf);
             }
         }
+    }
+
+    /**
+     * Computes a container sort ordering for saving the containers of a container page bean.<p>
+     *
+     * @param page the container page bean
+     * @return the sorted list of container names
+     */
+    private List<String> sortContainerNames(CmsContainerPageBean page) {
+
+        Multimap<String, CmsContainerBean> containersByParentId = ArrayListMultimap.create();
+        Map<String, CmsContainerElementBean> elementsById = new HashMap<>();
+        List<CmsContainerBean> rootContainers = new ArrayList<>();
+
+        //  make table of container elements by instance id
+
+        for (CmsContainerBean container : page.getContainers().values()) {
+            for (CmsContainerElementBean element : container.getElements()) {
+                if (element.getInstanceId() != null) {
+                    elementsById.put(element.getInstanceId(), element);
+                }
+            }
+        }
+
+        // make table of containers by their parent instance id
+
+        for (CmsContainerBean container : page.getContainers().values()) {
+            String parentInstanceId = container.getParentInstanceId();
+            if (parentInstanceId != null) {
+                containersByParentId.put(parentInstanceId, container);
+            }
+            if ((parentInstanceId == null) || !elementsById.containsKey(parentInstanceId)) {
+                rootContainers.add(container);
+            }
+        }
+
+        // Visit all containers via depth-first traversal, using the previously constructed tables and a stack.
+        // Record their names in the order they were encountered.
+        // For children of the same container, they are ordered by name.
+
+        rootContainers.sort((a, b) -> b.getName().compareTo(a.getName())); // we put them on a stack, so the last element should be the smallest one
+        ArrayList<CmsContainerBean> stack = new ArrayList<>();
+        stack.addAll(rootContainers);
+        Map<String, Integer> order = new HashMap<>();
+        int counter = 0;
+        while (stack.size() > 0) {
+            CmsContainerBean container = stack.remove(stack.size() - 1);
+
+            // avoid already visited containers, in case there are cycles (possible in principle, if you change the container page manually)
+            if (order.containsKey(container.getName())) {
+                continue;
+            }
+            order.put(container.getName(), Integer.valueOf(counter));
+            counter += 1;
+
+            for (CmsContainerElementBean element : container.getElements()) {
+                String instanceId = element.getInstanceId();
+                if (instanceId != null) {
+                    List<CmsContainerBean> childContainers = new ArrayList<>(containersByParentId.get(instanceId));
+                    childContainers.sort((a, b) -> b.getName().compareTo(a.getName()));
+                    stack.addAll(childContainers);
+                }
+            }
+        }
+        List<String> result = new ArrayList<>(page.getContainers().keySet());
+
+        result.sort(
+            (
+                a,
+                b) -> ComparisonChain.start().compare(
+                    order.get(a),
+                    order.get(b),
+                    Ordering.natural().nullsLast()).compare(a, b).result());
+        return result;
     }
 
 }
