@@ -131,12 +131,18 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
     /** Name for old internal setting names that are not used with the SYSTEM:: prefix in code. */
     public static final Set<String> LEGACY_SYSTEM_SETTING_NAMES = Collections.unmodifiableSet(
-        new HashSet<>(Arrays.asList("use_as_copy_model", "model_group_id", "model_group_state", "use_as_copy_model")));
+        new HashSet<>(
+            Arrays.asList(
+                "use_as_copy_model",
+                "model_group_id",
+                "model_group_state",
+                "use_as_copy_model",
+                "source_containerpage_id")));
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlContainerPage.class);
 
-    /** Prefix for system element settings. */ 
+    /** Prefix for system element settings. */
     public static final String SYSTEM_SETTING_PREFIX = "SYSTEM::";
 
     /** The container page objects. */

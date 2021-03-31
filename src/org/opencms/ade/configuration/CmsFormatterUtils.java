@@ -30,6 +30,7 @@ package org.opencms.ade.configuration;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
@@ -65,26 +66,6 @@ public class CmsFormatterUtils {
      *
      * @return the formatter key
      */
-    public static String removeFormatterKey(String containerName, Map<String, String> settings) {
-
-        for (String mapKey : Arrays.asList(
-            CmsFormatterConfig.FORMATTER_SETTINGS_KEY + containerName,
-            CmsFormatterConfig.FORMATTER_SETTINGS_KEY)) {
-            if (settings.get(mapKey) != null) {
-                return settings.remove(mapKey);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Gets the formatter key for the given container name from an element's settings.
-     *
-     * @param containerName the container name
-     * @param element the element from which to get the formatter key
-     *
-     * @return the formatter key
-     */
     public static String getFormatterKey(String containerName, CmsContainerElementBean element) {
 
         Map<String, String> settings = element.getSettings();
@@ -109,6 +90,33 @@ public class CmsFormatterUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * Gets the formatter key for the given container name from an element's settings.
+     *
+     * @param containerName the container name
+     * @param settings the settings from which to remove the formatter key
+     *
+     * @return the formatter key
+     */
+    public static String removeFormatterKey(String containerName, Map<String, String> settings) {
+
+        String result = null;
+        for (String mapKey : Arrays.asList(
+            CmsFormatterConfig.FORMATTER_SETTINGS_KEY + containerName,
+            CmsFormatterConfig.FORMATTER_SETTINGS_KEY)) {
+            if (settings.get(mapKey) != null) {
+                result = settings.remove(mapKey);
+                break;
+            }
+        }
+        for (String mapKey : new ArrayList<>(settings.keySet())) {
+            if (mapKey.startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)) {
+                settings.remove(mapKey);
+            }
+        }
+        return result;
     }
 
 }
