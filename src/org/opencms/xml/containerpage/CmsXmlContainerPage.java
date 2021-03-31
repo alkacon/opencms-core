@@ -70,6 +70,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.apache.commons.logging.Log;
 
@@ -128,8 +129,15 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         Value;
     }
 
+    /** Name for old internal setting names that are not used with the SYSTEM:: prefix in code. */
+    public static final Set<String> LEGACY_SYSTEM_SETTING_NAMES = Collections.unmodifiableSet(
+        new HashSet<>(Arrays.asList("use_as_copy_model", "model_group_id", "model_group_state", "use_as_copy_model")));
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlContainerPage.class);
+
+    /** Prefix for system element settings. */ 
+    public static final String SYSTEM_SETTING_PREFIX = "SYSTEM::";
 
     /** The container page objects. */
     private Map<Locale, CmsContainerPageBean> m_cntPages;
@@ -620,6 +628,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                             element,
                             elemPath,
                             elemDef);
+                        propertiesMap = translateMapKeys(propertiesMap, this::translateSettingNameForLoad);
                         if ((config != null) && (getFile() != null)) {
                             propertiesMap = fixNestedFormatterSettings(cms, config, propertiesMap);
                         }
@@ -824,7 +833,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             }
             result.put(key, value);
         }
-
+        result = sortSettingsForSave(translateMapKeys(result, this::translateSettingNameForSave));
         return result;
     }
 
@@ -885,7 +894,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                     cms,
                     uriRes);
 
-                CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, processedSettings, propertiesConf);
+                CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, processedSettings, propertiesConf, true);
             }
         }
     }
@@ -958,8 +967,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                 Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementSettings(
                     cms,
                     uriRes);
-
-                CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, processedSettings, propertiesConf);
+                CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, processedSettings, propertiesConf, false);
             }
         }
     }
@@ -1036,6 +1044,74 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                     order.get(b),
                     Ordering.natural().nullsLast()).compare(a, b).result());
         return result;
+    }
+
+    /**
+     * Sort element settings such that system settings come first and normal element settings after that, with each group alphabetically sorted.
+     *
+     * @param settings the map of settings
+     * @return the sorted settings map
+     */
+    private LinkedHashMap<String, String> sortSettingsForSave(Map<String, String> settings) {
+
+        LinkedHashMap<String, String> result = new LinkedHashMap<>();
+        List<String> keys = new ArrayList<>(settings.keySet());
+        keys.sort(
+            (
+                a,
+                b) -> ComparisonChain.start().compareTrueFirst(
+                    a.startsWith(SYSTEM_SETTING_PREFIX),
+                    b.startsWith(SYSTEM_SETTING_PREFIX)).compare(a, b).result());
+        for (String key : keys) {
+            result.put(key, settings.get(key));
+        }
+        return result;
+    }
+
+    /**
+     * Converts a string map to a new map by applying a translation function to the map keys.
+     *
+     * @param settings the original map
+     * @param translation the translation function
+     * @return the new map with the translated keys
+     */
+    private Map<String, String> translateMapKeys(Map<String, String> settings, Function<String, String> translation) {
+
+        LinkedHashMap<String, String> result = new LinkedHashMap<>();
+        settings.entrySet().forEach(e -> result.put(translation.apply(e.getKey()), e.getValue()));
+        return result;
+
+    }
+
+    /**
+     * Translates new SYSTEM:: prefixed names for legacy system element settings to their non-prefixed form.
+     *
+     * @param name  the setting name
+     * @return the translated setting name
+     */
+    private String translateSettingNameForLoad(String name) {
+
+        if (name.startsWith(SYSTEM_SETTING_PREFIX)) {
+            String remainder = name.substring(SYSTEM_SETTING_PREFIX.length());
+            if (LEGACY_SYSTEM_SETTING_NAMES.contains(remainder)) {
+                return remainder;
+            }
+        }
+        return name;
+    }
+
+    /**
+     * Translates legacy non-prefixed system settings to the form prefixed with SYSTEM:: .
+     *
+     * @param name a setting name
+     * @return the translated setting name
+     */
+    private String translateSettingNameForSave(String name) {
+
+        if (LEGACY_SYSTEM_SETTING_NAMES.contains(name)) {
+            return SYSTEM_SETTING_PREFIX + name;
+        }
+        return name;
     }
 
 }

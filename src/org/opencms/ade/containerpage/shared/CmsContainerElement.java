@@ -112,10 +112,13 @@ public class CmsContainerElement implements IsSerializable, I_CmsHasIconClasses 
     /** The model group id setting key. */
     public static final String MODEL_GROUP_ID = "model_group_id";
 
+    /** Prefix for new system element settings. */
+    public static final String SYSTEM_SETTING_PREFIX = "SYSTEM::";
+
     /** The is model group element setting key. */
     public static final String MODEL_GROUP_STATE = "model_group_state";
 
-    /** Key for the setting that replaces the CreateNew element. */ 
+    /** Key for the setting that replaces the CreateNew element. */
     public static final String SETTING_CREATE_NEW = "SYSTEM::create_new";
 
     /** The use as copy model setting key. */

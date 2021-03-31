@@ -99,7 +99,8 @@ public class CmsContainerConfigurationWriter {
         String name,
         boolean newOrdering,
         CmsResource pageResource,
-        List<CmsContainerElementBean> elements) throws CmsException {
+        List<CmsContainerElementBean> elements)
+    throws CmsException {
 
         cms = OpenCms.initCmsObject(cms);
         cms.getRequestContext().setSiteRoot("");
@@ -184,7 +185,8 @@ public class CmsContainerConfigurationWriter {
         CmsObject cms,
         String name,
         CmsContainerConfiguration config,
-        Element parentElement) throws CmsException {
+        Element parentElement)
+    throws CmsException {
 
         List<String> visibles = new ArrayList<String>();
         List<String> invisibles = new ArrayList<String>();
@@ -229,7 +231,7 @@ public class CmsContainerConfigurationWriter {
             Element elementElement = newElementElement.addElement(N_ELEMENT);
             Element uriElement = elementElement.addElement(N_URI);
             CmsXmlVfsFileValue.fillEntry(uriElement, structureId, "", CmsRelationType.XML_STRONG);
-            CmsXmlContentPropertyHelper.saveProperties(cms, elementElement, settings, settingConfiguration);
+            CmsXmlContentPropertyHelper.saveProperties(cms, elementElement, settings, settingConfiguration, true);
         }
         return root;
     }
@@ -343,7 +345,8 @@ public class CmsContainerConfigurationWriter {
         CmsXmlContent content,
         Locale locale,
         String name,
-        CmsContainerConfiguration configuration) throws CmsException {
+        CmsContainerConfiguration configuration)
+    throws CmsException {
 
         if (content == null) {
             content = CmsXmlContentFactory.createDocument(

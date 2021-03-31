@@ -438,7 +438,7 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
             Map<String, String> properties = element.getIndividualSettings();
             Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementSettings(cms, res);
 
-            CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, properties, propertiesConf);
+            CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, properties, propertiesConf, true);
         }
     }
 

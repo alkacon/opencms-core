@@ -66,7 +66,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
 
@@ -725,12 +724,14 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
      * @param parentElement the parent xml element
      * @param properties the properties to save, if there is a list of resources, every entry can be a site path or a UUID
      * @param propertiesConf the configuration of the properties
+     * @param sort if true, properties will be sorted by map keys via string co
      */
     public static void saveProperties(
         CmsObject cms,
         Element parentElement,
         Map<String, String> properties,
-        Map<String, CmsXmlContentProperty> propertiesConf) {
+        Map<String, CmsXmlContentProperty> propertiesConf,
+        boolean sort) {
 
         // remove old entries
         for (Object propElement : parentElement.elements(CmsXmlContentProperty.XmlNode.Properties.name())) {
@@ -738,7 +739,12 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         }
 
         // use a sorted map to force a defined order
-        SortedMap<String, String> props = new TreeMap<String, String>(properties);
+        Map<String, String> props;
+        if (sort) {
+            props = new TreeMap<String, String>(properties);
+        } else {
+            props = properties;
+        }
 
         // create new entries
         for (Map.Entry<String, String> property : props.entrySet()) {
