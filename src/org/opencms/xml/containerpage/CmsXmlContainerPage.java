@@ -952,17 +952,24 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                 }
 
                 String formatterKey = CmsFormatterUtils.removeFormatterKey(containerName, properties);
+                I_CmsFormatterBean formatter = null;
                 if (formatterKey != null) {
                     Element formatterKeyElem = elemElement.addElement(XmlNode.FormatterKey.name());
                     formatterKeyElem.addText(formatterKey);
+                    formatter = adeConfig.findFormatter(formatterKey);
                 }
 
-                // the element
-                Element uriElem = elemElement.addElement(XmlNode.Uri.name());
-                CmsResource uriRes = fillResource(cms, uriElem, element.getId());
-                if ((element.getFormatterId() != null) && (formatterKey == null)) {
-                    Element formatterElem = elemElement.addElement(XmlNode.Formatter.name());
-                    fillResource(cms, formatterElem, element.getFormatterId());
+                CmsResource elementRes;
+                if (!(formatter instanceof CmsFunctionFormatterBean)) {
+                    // the element
+                    Element uriElem = elemElement.addElement(XmlNode.Uri.name());
+                    elementRes = fillResource(cms, uriElem, element.getId());
+                    if ((element.getFormatterId() != null) && (formatterKey == null)) {
+                        Element formatterElem = elemElement.addElement(XmlNode.Formatter.name());
+                        fillResource(cms, formatterElem, element.getFormatterId());
+                    }
+                } else {
+                    elementRes = cms.readResource(element.getId(), CmsResourceFilter.IGNORE_EXPIRATION);
                 }
                 if (element.isCreateNew()) {
                     properties.put(CmsContainerElement.SETTING_CREATE_NEW, "true");
@@ -972,7 +979,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                 Map<String, String> processedSettings = processSettingsForSaveV2(adeConfig, properties);
                 Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementSettings(
                     cms,
-                    uriRes);
+                    elementRes);
                 CmsXmlContentPropertyHelper.saveProperties(cms, elemElement, processedSettings, propertiesConf, false);
             }
         }
