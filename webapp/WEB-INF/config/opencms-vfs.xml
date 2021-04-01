@@ -97,6 +97,7 @@
                         <mapping suffix=".tif" />
                         <mapping suffix=".tiff" />
                         <mapping suffix=".svg" />
+                        <mapping suffix=".webp" />
                     </mappings>
                     <param name="gallery.type.names">imagegallery|downloadgallery</param>
                 </type>

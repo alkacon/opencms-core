@@ -50,8 +50,13 @@
         <defaultpropertyvalue>false</defaultpropertyvalue>
         <defaultsuffixes>
             <suffix key=".jpg" />
+            <suffix key=".jpeg" />
             <suffix key=".gif" />
             <suffix key=".png" />
+            <suffix key=".tif" />
+            <suffix key=".tiff" />
+            <suffix key=".svg" />
+            <suffix key=".webp" />
             <suffix key=".doc" />
             <suffix key=".xls" />
             <suffix key=".ppt" />
@@ -64,6 +69,30 @@
             <suffix key=".js" />
             <suffix key=".zip" />
             <suffix key=".swf" />
+            <suffix key=".mp4" />
+            <suffix key=".ogv" />
+            <suffix key=".webm" />
+            <suffix key=".rar" />
+            <suffix key=".odt" />
+            <suffix key=".odp" />
+            <suffix key=".mp3" />
+            <suffix key=".m4a" />
+            <suffix key=".aac" />
+            <suffix key=".oga" />
+            <suffix key=".ogg" />
+            <suffix key=".m4v" />
+            <suffix key=".wmv" />
+            <suffix key=".mpeg" />
+            <suffix key=".mpg" />
+            <suffix key=".mov" />
+            <suffix key=".qt" />
+            <suffix key=".avi" />
+            <suffix key=".woff" />
+            <suffix key=".woff2" />
+            <suffix key=".eot" />
+            <suffix key=".otf" />
+            <suffix key=".ttc" />
+            <suffix key=".ttf" />
         </defaultsuffixes>
         <rendersettings>
             <rfs-prefix>${CONTEXT_NAME}/export</rfs-prefix>
