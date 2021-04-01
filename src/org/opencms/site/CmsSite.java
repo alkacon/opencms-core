@@ -784,7 +784,9 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
             CmsAlternativeSiteRootMapping extConfig = optMapping.get();
             if (getLocalizationMode() == LocalizationMode.singleTree) {
                 Locale locale = CmsSingleTreeLocaleHandler.getLocaleFromPath(path);
-                path = path.substring(locale.toString().length() + 1);
+                if (locale != null) {
+                    path = path.substring(locale.toString().length() + 1);
+                }
             }
             for (CmsPath prefix : extConfig.getPrefixes()) {
                 if (prefix.isPrefixOfStr(path)) {

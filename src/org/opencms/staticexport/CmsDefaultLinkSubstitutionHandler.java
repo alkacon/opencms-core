@@ -466,6 +466,12 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
         if (isRootPath || (siteRoot == null)) {
             return CmsStringUtil.joinPaths("/", path);
         } else {
+            CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(siteRoot);
+            if (site != null) {
+                if (site.matchAlternativeSiteRoot(path)) {
+                    siteRoot = site.getAlternativeSiteRootMapping().get().getSiteRoot().asString();
+                }
+            }
             return cms.getRequestContext().addSiteRoot(siteRoot, path);
         }
     }
