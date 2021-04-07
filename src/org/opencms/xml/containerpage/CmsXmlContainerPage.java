@@ -955,8 +955,12 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                 I_CmsFormatterBean formatter = null;
                 if (formatterKey != null) {
                     Element formatterKeyElem = elemElement.addElement(XmlNode.FormatterKey.name());
-                    formatterKeyElem.addText(formatterKey);
+
                     formatter = adeConfig.findFormatter(formatterKey);
+                    if ((formatter != null) && (formatter.getKeyOrId() != null)) {
+                        formatterKey = formatter.getKeyOrId();
+                    }
+                    formatterKeyElem.addText(formatterKey);
                 }
 
                 CmsResource elementRes;
