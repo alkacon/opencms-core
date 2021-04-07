@@ -29,6 +29,7 @@ package org.opencms.xml.containerpage;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsFormatterUtils;
+import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.CmsModelGroupHelper;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
@@ -133,11 +134,11 @@ public class CmsXmlContainerPage extends CmsXmlContent {
     public static final Set<String> LEGACY_SYSTEM_SETTING_NAMES = Collections.unmodifiableSet(
         new HashSet<>(
             Arrays.asList(
-                "use_as_copy_model",
-                "model_group_id",
-                "model_group_state",
-                "use_as_copy_model",
-                "source_containerpage_id")));
+                CmsContainerElement.USE_AS_COPY_MODEL,
+                CmsContainerElement.MODEL_GROUP_ID,
+                CmsContainerElement.MODEL_GROUP_STATE,
+                CmsContainerElement.USE_AS_COPY_MODEL,
+                CmsContainerpageService.SOURCE_CONTAINERPAGE_ID_SETTING)));
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlContainerPage.class);
