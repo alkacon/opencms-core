@@ -353,7 +353,7 @@ public class CmsADEConfigData {
      * with that key is returned (so being active and having the same key is prioritized over an exact ID match).
      *
      * @param name a formatter name (key or ID)
-     * @return the best formatter for that name
+     * @return the best formatter for that name, or null if no formatter could be found
      */
     public I_CmsFormatterBean findFormatter(String name) {
 
