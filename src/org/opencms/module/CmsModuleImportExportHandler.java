@@ -214,6 +214,9 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
         try {
             File file = new File(importResource);
+            if (!file.exists()) {
+                throw new IOException("readModuleFromImport: Path '" + importResource + "' does not exist.");
+            }
             if (file.isFile()) {
                 importZip = new ZipFile(importResource);
                 ZipEntry entry = importZip.getEntry(CmsImportExportManager.EXPORT_MANIFEST);

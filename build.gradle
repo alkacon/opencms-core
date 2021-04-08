@@ -1052,6 +1052,7 @@ test {
     testClassesDirs = files(sourceSets.test.java.outputDir)
     systemProperties['test.data.path'] = "${projectDir}/test/data"
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
+    systemProperties['test.project.path'] = "${projectDir}"
     systemProperties['test.build.folder'] =sourceSets.test.output.resourcesDir
     maxHeapSize = max_heap_size
     jvmArgs '-XX:MaxPermSize=256m'

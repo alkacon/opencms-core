@@ -63,6 +63,9 @@ public final class OpenCmsTestProperties {
     /** Property / Environment name for "test.webapp.path". */
     public static final String PROP_TEST_WEBAPP_PATH = "test.webapp.path";
 
+    /** Configuration key for the project path. */
+    private static final String PROP_TEST_PROJECT_PATH = "test.project.path";
+
     /** The configuration from <code>opencms.properties</code>. */
     private static CmsParameterConfiguration m_configuration;
 
@@ -83,6 +86,9 @@ public final class OpenCmsTestProperties {
 
     /** The path to the webapp test folder. */
     private String m_testWebappPath;
+
+    /** Path of the project. */
+    private String m_testProjectPath;
 
     /**
      * Private default constructor.
@@ -240,6 +246,10 @@ public final class OpenCmsTestProperties {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_testSingleton.m_testBuildFolder)) {
             m_testSingleton.m_testBuildFolder = m_configuration.get(PROP_TEST_BUILD_FOLDER);
         }
+        m_testSingleton.m_testProjectPath = System.getProperty(PROP_TEST_PROJECT_PATH);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_testSingleton.m_testProjectPath)) {
+            m_testSingleton.m_testProjectPath = m_configuration.get(PROP_TEST_PROJECT_PATH);
+        }
         m_testSingleton.m_dbProduct = m_configuration.get(PROP_DB_PRODUCT);
     }
 
@@ -268,9 +278,14 @@ public final class OpenCmsTestProperties {
         return m_dbProduct;
     }
 
+    /**
+     * Returns the project path.
+     *
+     * @return the project path
+     */
     public String getProjectPath() {
 
-        return getConfiguration().getString("test.project.path", null);
+        return m_testProjectPath;
     }
 
     /**
