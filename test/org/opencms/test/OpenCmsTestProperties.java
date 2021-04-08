@@ -268,6 +268,11 @@ public final class OpenCmsTestProperties {
         return m_dbProduct;
     }
 
+    public String getProjectPath() {
+
+        return getConfiguration().getString("test.project.path", null);
+    }
+
     /**
      * Returns the path to the build folder of the test classes.
      *

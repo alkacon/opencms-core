@@ -26,41 +26,69 @@
                 <loader class="org.opencms.loader.CmsMacroFormatterLoader" />
             </resourceloaders>
             <resourcetypes>
-                <type class="org.opencms.file.types.CmsResourceTypeUnknownFolder"
-                    name="unknown_folder" id="-2" />
-                <type class="org.opencms.file.types.CmsResourceTypeUnknownFile"
-                    name="unknown_file" id="-1" />
-                <type class="org.opencms.file.types.CmsResourceTypeFolder"
-                    name="folder" id="0">
+                <type class="org.opencms.file.types.CmsResourceTypeUnknownFolder" name="unknown_folder" id="-2" />
+                <type class="org.opencms.file.types.CmsResourceTypeUnknownFile" name="unknown_file" id="-1" />
+                <type class="org.opencms.file.types.CmsResourceTypeFolder" name="folder" id="0">
                     <param name="restypes.indexpage">none|xmlpage|layoutpage</param>
                 </type>
-                <type class="org.opencms.file.types.CmsResourceTypePlain" name="plain"
-                    id="1">
+                <type class="org.opencms.file.types.CmsResourceTypePlain" name="plain" id="1">
                     <mappings>
                         <mapping suffix=".txt" />
                         <mapping suffix=".html" />
                         <mapping suffix=".htm" />
+                        <mapping suffix=".java" />
+                        <mapping suffix=".js" />
+                        <mapping suffix=".xhtml" />
+                        <mapping suffix=".txt" />
+                        <mapping suffix=".xml" />
+                        <mapping suffix=".xsd" />
+                        <mapping suffix=".css" />
+                        <mapping suffix=".map" />
+                        <mapping suffix=".woff" />
+                        <mapping suffix=".woff2" />
+                        <mapping suffix=".eot" />
+                        <mapping suffix=".otf" />
+                        <mapping suffix=".ttc" />
+                        <mapping suffix=".ttf" />
                     </mappings>
                     <param name="gallery.type.names">downloadgallery</param>
                 </type>
-                <type class="org.opencms.file.types.CmsResourceTypeBinary"
-                    name="binary" id="2">
+                <type class="org.opencms.file.types.CmsResourceTypeBinary" name="binary" id="2">
                     <mappings>
                         <mapping suffix=".pdf" />
                         <mapping suffix=".zip" />
                         <mapping suffix=".class" />
                         <mapping suffix=".ppt" />
                         <mapping suffix=".doc" />
+                        <mapping suffix=".docx" />
+                        <mapping suffix=".xlsx" />
+                        <mapping suffix=".pptx" />
                         <mapping suffix=".xls" />
                         <mapping suffix=".jar" />
                         <mapping suffix=".flv" />
                         <mapping suffix=".swf" />
+                        <mapping suffix=".mp4" />
+                        <mapping suffix=".ogv" />
+                        <mapping suffix=".webm" />
+                        <mapping suffix=".rar" />
+                        <mapping suffix=".odt" />
+                        <mapping suffix=".odp" />
+                        <mapping suffix=".mp3" />
+                        <mapping suffix=".m4a" />
+                        <mapping suffix=".aac" />
+                        <mapping suffix=".oga" />
+                        <mapping suffix=".ogg" />
+                        <mapping suffix=".m4v" />
+                        <mapping suffix=".wmv" />
+                        <mapping suffix=".mpeg" />
+                        <mapping suffix=".mpg" />
+                        <mapping suffix=".mov" />
+                        <mapping suffix=".qt" />
+                        <mapping suffix=".avi" />
                     </mappings>
-                    <param name="formatter_gallery_preview">/system/workplace/editors/ade/binary-preview-formatter.jsp</param>
                     <param name="gallery.type.names">downloadgallery</param>
                 </type>
-                <type class="org.opencms.file.types.CmsResourceTypeImage" name="image"
-                    id="3">
+                <type class="org.opencms.file.types.CmsResourceTypeImage" name="image" id="3">
                     <mappings>
                         <mapping suffix=".jpeg" />
                         <mapping suffix=".jpg" />
@@ -68,14 +96,11 @@
                         <mapping suffix=".png" />
                         <mapping suffix=".tif" />
                         <mapping suffix=".tiff" />
+                        <mapping suffix=".svg" />
                     </mappings>
-                    <param name="formatter_gallery_preview">/system/workplace/editors/ade/image-preview-formatter.jsp</param>
-                    <param name="formatter_gallery_list">/system/workplace/editors/ade/image-list-formatter.jsp</param>
-                    <param name="gallery.javascript.path">editors/ade/js/cms.imagepreviewhandler.js</param>
-                    <param name="gallery.type.names">imagegallery</param>
+                    <param name="gallery.type.names">imagegallery|downloadgallery</param>
                 </type>
-                <type class="org.opencms.file.types.CmsResourceTypeJsp" name="jsp"
-                    id="4">
+                <type class="org.opencms.file.types.CmsResourceTypeJsp" name="jsp" id="4">
                     <mappings>
                         <mapping suffix=".jsp" />
                     </mappings>
@@ -90,25 +115,21 @@
                         </property>
                     </properties>
                 </type>
-                <type class="org.opencms.file.types.CmsResourceTypePointer"
-                    name="pointer" id="5">
+                <type class="org.opencms.file.types.CmsResourceTypePointer" name="pointer" id="5">
                     <param name="gallery.type.names">linkgallery</param>
                 </type>
                 <type class="org.opencms.file.types.CmsResourceTypeXmlPage"
                     name="xmlpage" id="6">
                     <param name="gallery.type.names">downloadgallery</param>
                 </type>
-                <type class="org.opencms.file.types.CmsResourceTypeXmlContent"
-                    name="xmlcontent" id="7">
+                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="xmlcontent" id="7">
                     <param name="gallery.type.names">downloadgallery</param>
                 </type>
-                <type class="org.opencms.file.types.CmsResourceTypeFolderExtended"
-                    name="imagegallery" id="8">
+                <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="imagegallery" id="8">
                     <param name="folder.class">org.opencms.workplace.galleries.CmsAjaxImageGallery</param>
                     <param name="folder.class.params">w:120,h:90,c:D4D0C8,t:1,r:2</param>
                 </type>
-                <type class="org.opencms.file.types.CmsResourceTypeFolderExtended"
-                    name="downloadgallery" id="9">
+                <type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="downloadgallery" id="9">
                     <param name="folder.class">org.opencms.workplace.galleries.CmsAjaxDownloadGallery</param>
                 </type>
                 <type class="org.opencms.file.types.CmsResourceTypeFolderExtended"
@@ -124,599 +145,251 @@
                 </type>
             </resourcetypes>
             <collectors>
-                <collector
-                    class="org.opencms.file.collectors.CmsPriorityResourceCollector"
-                    order="100" />
-                <collector class="org.opencms.file.collectors.CmsDefaultResourceCollector"
-                    order="110" />
-                <collector class="org.opencms.file.collectors.CmsDateResourceCollector"
-                    order="120" />
-                <collector
-                    class="org.opencms.file.collectors.CmsTimeFrameCategoryCollector"
-                    order="130" />
-                <collector
-                    class="org.opencms.file.collectors.CmsCategoryResourceCollector"
-                    order="140" />
-                <collector class="org.opencms.file.collectors.CmsSubscriptionCollector"
-                    order="150" />
-                <collector class="org.opencms.file.collectors.CmsChangedResourceCollector"
-                    order="160" />
+                <collector class="org.opencms.file.collectors.CmsPriorityResourceCollector" order="100" />
+                <collector class="org.opencms.file.collectors.CmsDefaultResourceCollector" order="110" />
+                <collector class="org.opencms.file.collectors.CmsDateResourceCollector" order="120" />
+                <collector class="org.opencms.file.collectors.CmsTimeFrameCategoryCollector" order="130" />
+                <collector class="org.opencms.file.collectors.CmsCategoryResourceCollector" order="140" />
+                <collector class="org.opencms.file.collectors.CmsSubscriptionCollector" order="150" />
+                <collector class="org.opencms.file.collectors.CmsChangedResourceCollector" order="160" />
+                <collector class="org.opencms.file.collectors.CmsSolrCollector" order="170" />
             </collectors>
-            <namegenerator class="org.opencms.loader.CmsDefaultFileNameGenerator" />
+
             <mimetypes>
-                <mimetype extension=".ez" type="application/andrew-inset" />
-                <mimetype extension=".mme" type="application/base64" />
-                <mimetype extension=".boo" type="application/book" />
-                <mimetype extension=".book" type="application/book" />
-                <mimetype extension=".ccad" type="application/clariscad" />
-                <mimetype extension=".dp" type="application/commonground" />
-                <mimetype extension=".drw" type="application/drafting" />
-                <mimetype extension=".xl" type="application/excel" />
-                <mimetype extension=".frl" type="application/freeloader" />
-                <mimetype extension=".vew" type="application/groupwise" />
-                <mimetype extension=".hta" type="application/hta" />
-                <mimetype extension=".unv" type="application/i-deas" />
-                <mimetype extension=".inf" type="application/inf" />
-                <mimetype extension=".hqx" type="application/mac-binhex40" />
-                <mimetype extension=".cpt" type="application/mac-compactpro" />
-                <mimetype extension=".mrc" type="application/marc" />
-                <mimetype extension=".mbd" type="application/mbedlet" />
-                <mimetype extension=".aps" type="application/mime" />
-                <mimetype extension=".ppz" type="application/mspowerpoint" />
-                <mimetype extension=".doc" type="application/msword" />
-                <mimetype extension=".dot" type="application/msword" />
-                <mimetype extension=".w6w" type="application/msword" />
-                <mimetype extension=".wiz" type="application/msword" />
-                <mimetype extension=".word" type="application/msword" />
-                <mimetype extension=".mcp" type="application/netmc" />
-                <mimetype extension=".a" type="application/octet-stream" />
-                <mimetype extension=".arc" type="application/octet-stream" />
-                <mimetype extension=".arj" type="application/octet-stream" />
-                <mimetype extension=".bin" type="application/octet-stream" />
-                <mimetype extension=".class" type="application/octet-stream" />
-                <mimetype extension=".dll" type="application/octet-stream" />
-                <mimetype extension=".dms" type="application/octet-stream" />
-                <mimetype extension=".dump" type="application/octet-stream" />
-                <mimetype extension=".exe" type="application/octet-stream" />
-                <mimetype extension=".lha" type="application/octet-stream" />
-                <mimetype extension=".lhx" type="application/octet-stream" />
-                <mimetype extension=".lzh" type="application/octet-stream" />
-                <mimetype extension=".o" type="application/octet-stream" />
-                <mimetype extension=".psd" type="application/octet-stream" />
-                <mimetype extension=".saveme" type="application/octet-stream" />
-                <mimetype extension=".zoo" type="application/octet-stream" />
-                <mimetype extension=".oda" type="application/oda" />
-                <mimetype extension=".pdf" type="application/pdf" />
-                <mimetype extension=".p7s" type="application/pkcs7-signature" />
-                <mimetype extension=".crl" type="application/pkix-crl" />
-                <mimetype extension=".pls" type="application/pls" />
-                <mimetype extension=".ai" type="application/postscript" />
-                <mimetype extension=".eps" type="application/postscript" />
-                <mimetype extension=".ps" type="application/postscript" />
-                <mimetype extension=".part" type="application/pro_eng" />
-                <mimetype extension=".prt" type="application/pro_eng" />
-                <mimetype extension=".set" type="application/set" />
-                <mimetype extension=".smi" type="application/smil" />
-                <mimetype extension=".smil" type="application/smil" />
-                <mimetype extension=".sol" type="application/solids" />
-                <mimetype extension=".sdr" type="application/sounder" />
-                <mimetype extension=".step" type="application/step" />
-                <mimetype extension=".stp" type="application/step" />
-                <mimetype extension=".ssm" type="application/streamingmedia" />
-                <mimetype extension=".vda" type="application/vda" />
-                <mimetype extension=".kml" type="application/vnd.google-earth.kml+xml" />
-                <mimetype extension=".kmz" type="application/vnd.google-earth.kmz" />
-                <mimetype extension=".mif" type="application/vnd.mif" />
-                <mimetype extension=".xls" type="application/vnd.ms-excel" />
-                <mimetype extension=".msg" type="application/vnd.ms-outlook" />
-                <mimetype extension=".pot" type="application/vnd.ms-powerpoint" />
-                <mimetype extension=".ppt" type="application/vnd.ms-powerpoint" />
-                <mimetype extension=".mpp" type="application/vnd.ms-project" />
-                <mimetype extension=".odc"
-                    type="application/vnd.oasis.opendocument.chart" />
-                <mimetype extension=".odb"
-                    type="application/vnd.oasis.opendocument.database" />
-                <mimetype extension=".odf"
-                    type="application/vnd.oasis.opendocument.formula" />
-                <mimetype extension=".odg"
-                    type="application/vnd.oasis.opendocument.graphics" />
-                <mimetype extension=".otg"
-                    type="application/vnd.oasis.opendocument.graphics-template" />
-                <mimetype extension=".odi"
-                    type="application/vnd.oasis.opendocument.image" />
-                <mimetype extension=".odp"
-                    type="application/vnd.oasis.opendocument.presentation" />
-                <mimetype extension=".otp"
-                    type="application/vnd.oasis.opendocument.presentation-template" />
-                <mimetype extension=".ods"
-                    type="application/vnd.oasis.opendocument.spreadsheet" />
-                <mimetype extension=".ots"
-                    type="application/vnd.oasis.opendocument.spreadsheet-template" />
-                <mimetype extension=".odt"
-                    type="application/vnd.oasis.opendocument.text" />
-                <mimetype extension=".odm"
-                    type="application/vnd.oasis.opendocument.text-master" />
-                <mimetype extension=".ott"
-                    type="application/vnd.oasis.opendocument.text-template ott" />
-                <mimetype extension=".oth"
-                    type="application/vnd.oasis.opendocument.text-web" />
-                <mimetype extension=".sxc" type="application/vnd.sun.xml.calc" />
-                <mimetype extension=".stc" type="application/vnd.sun.xml.calc.template" />
-                <mimetype extension=".sxd" type="application/vnd.sun.xml.draw" />
-                <mimetype extension=".std" type="application/vnd.sun.xml.draw.template" />
-                <mimetype extension=".sxi" type="application/vnd.sun.xml.impress" />
-                <mimetype extension=".sti"
-                    type="application/vnd.sun.xml.impress.template" />
-                <mimetype extension=".sxm" type="application/vnd.sun.xml.math" />
-                <mimetype extension=".sxw" type="application/vnd.sun.xml.writer" />
-                <mimetype extension=".sxg" type="application/vnd.sun.xml.writer.global" />
-                <mimetype extension=".stw"
-                    type="application/vnd.sun.xml.writer.template" />
-                <mimetype extension=".fdf" type="application/vndfdf" />
-                <mimetype extension=".hgl" type="application/vndhp-hpgl" />
-                <mimetype extension=".hpg" type="application/vndhp-hpgl" />
-                <mimetype extension=".hpgl" type="application/vndhp-hpgl" />
-                <mimetype extension=".sst" type="application/vndms-pkicertstore" />
-                <mimetype extension=".pko" type="application/vndms-pkipko" />
-                <mimetype extension=".cat" type="application/vndms-pkiseccat" />
-                <mimetype extension=".ppa" type="application/vndms-powerpoint" />
-                <mimetype extension=".pps" type="application/vndms-powerpoint" />
-                <mimetype extension=".pwz" type="application/vndms-powerpoint" />
-                <mimetype extension=".ncm"
-                    type="application/vndnokiaconfiguration-message" />
-                <mimetype extension=".rng" type="application/vndnokiaringing-tone" />
-                <mimetype extension=".rnx" type="application/vndrn-realplayer" />
-                <mimetype extension=".wmlc" type="application/vndwapwmlc" />
-                <mimetype extension=".wmlsc" type="application/vndwapwmlscriptc" />
-                <mimetype extension=".web" type="application/vndxara" />
-                <mimetype extension=".vmd" type="application/vocaltec-media-desc" />
-                <mimetype extension=".vmf" type="application/vocaltec-media-file" />
-                <mimetype extension=".wp" type="application/wordperfect" />
-                <mimetype extension=".wp6" type="application/wordperfect" />
-                <mimetype extension=".w60" type="application/wordperfect60" />
-                <mimetype extension=".wp5" type="application/wordperfect60" />
-                <mimetype extension=".w61" type="application/wordperfect61" />
-                <mimetype extension=".wk1" type="application/x-123" />
-                <mimetype extension=".aim" type="application/x-aim" />
-                <mimetype extension=".aab" type="application/x-authorware-bin" />
-                <mimetype extension=".aam" type="application/x-authorware-map" />
-                <mimetype extension=".aas" type="application/x-authorware-seg" />
-                <mimetype extension=".bcpio" type="application/x-bcpio" />
-                <mimetype extension=".bsh" type="application/x-bsh" />
-                <mimetype extension=".pyc" type="application/x-bytecodepython" />
-                <mimetype extension=".bz" type="application/x-bzip" />
-                <mimetype extension=".boz" type="application/x-bzip2" />
-                <mimetype extension=".bz2" type="application/x-bzip2" />
-                <mimetype extension=".vcd" type="application/x-cdlink" />
-                <mimetype extension=".cha" type="application/x-chat" />
-                <mimetype extension=".chat" type="application/x-chat" />
-                <mimetype extension=".pgn" type="application/x-chess-pgn" />
-                <mimetype extension=".cco" type="application/x-cocoa" />
-                <mimetype extension=".tgz" type="application/x-compressed" />
-                <mimetype extension=".z" type="application/x-compressed" />
-                <mimetype extension=".nsc" type="application/x-conference" />
-                <mimetype extension=".cpio" type="application/x-cpio" />
-                <mimetype extension=".csh" type="application/x-csh" />
-                <mimetype extension=".deepv" type="application/x-deepv" />
-                <mimetype extension=".dcr" type="application/x-director" />
-                <mimetype extension=".dir" type="application/x-director" />
-                <mimetype extension=".dxr" type="application/x-director" />
-                <mimetype extension=".dvi" type="application/x-dvi" />
-                <mimetype extension=".elc" type="application/x-elc" />
-                <mimetype extension=".env" type="application/x-envoy" />
-                <mimetype extension=".evy" type="application/x-envoy" />
-                <mimetype extension=".es" type="application/x-esrehber" />
-                <mimetype extension=".xlb" type="application/x-excel" />
-                <mimetype extension=".xlc" type="application/x-excel" />
-                <mimetype extension=".xld" type="application/x-excel" />
-                <mimetype extension=".xlk" type="application/x-excel" />
-                <mimetype extension=".xll" type="application/x-excel" />
-                <mimetype extension=".xlm" type="application/x-excel" />
-                <mimetype extension=".xlt" type="application/x-excel" />
-                <mimetype extension=".xlv" type="application/x-excel" />
-                <mimetype extension=".pre" type="application/x-freelance" />
-                <mimetype extension=".spl" type="application/x-futuresplash" />
-                <mimetype extension=".gsp" type="application/x-gsp" />
-                <mimetype extension=".gss" type="application/x-gss" />
-                <mimetype extension=".gtar" type="application/x-gtar" />
-                <mimetype extension=".gz" type="application/x-gzip" />
-                <mimetype extension=".hdf" type="application/x-hdf" />
-                <mimetype extension=".help" type="application/x-helpfile" />
-                <mimetype extension=".imap" type="application/x-httpd-imap" />
-                <mimetype extension=".ima" type="application/x-ima" />
-                <mimetype extension=".ins" type="application/x-internett-signup" />
-                <mimetype extension=".iv" type="application/x-inventor" />
-                <mimetype extension=".ip" type="application/x-ip2" />
-                <mimetype extension=".jcm" type="application/x-java-commerce" />
-                <mimetype extension=".jnlp" type="application/x-java-jnlp-file" />
-                <mimetype extension=".js" type="application/x-javascript" />
-                <mimetype extension=".skd" type="application/x-koan" />
-                <mimetype extension=".skm" type="application/x-koan" />
-                <mimetype extension=".skp" type="application/x-koan" />
-                <mimetype extension=".skt" type="application/x-koan" />
-                <mimetype extension=".latex" type="application/x-latex" />
-                <mimetype extension=".ltx" type="application/x-latex" />
-                <mimetype extension=".ivy" type="application/x-livescreen" />
-                <mimetype extension=".wq1" type="application/x-lotus" />
-                <mimetype extension=".lzx" type="application/x-lzx" />
-                <mimetype extension=".mc$" type="application/x-magic-cap-package-10" />
-                <mimetype extension=".mcd" type="application/x-mathcad" />
-                <mimetype extension=".mm" type="application/x-meme" />
-                <mimetype extension=".nix" type="application/x-mix-transfer" />
-                <mimetype extension=".asx" type="application/x-mplayer2" />
-                <mimetype extension=".xla" type="application/x-msexcel" />
-                <mimetype extension=".xlw" type="application/x-msexcel" />
-                <mimetype extension=".ani" type="application/x-navi-animation" />
-                <mimetype extension=".nvd" type="application/x-navidoc" />
-                <mimetype extension=".map" type="application/x-navimap" />
-                <mimetype extension=".stl" type="application/x-navistyle" />
-                <mimetype extension=".cdf" type="application/x-netcdf" />
-                <mimetype extension=".nc" type="application/x-netcdf" />
-                <mimetype extension=".pkg" type="application/x-newton-compatible-pkg" />
-                <mimetype extension=".aos"
-                    type="application/x-nokia-9000-communicator-add-on-software" />
-                <mimetype extension=".msi" type="application/x-ole-storage" />
-                <mimetype extension=".omc" type="application/x-omc" />
-                <mimetype extension=".omcd" type="application/x-omcdatamaker" />
-                <mimetype extension=".omcr" type="application/x-omcregerator" />
-                <mimetype extension=".pm4" type="application/x-pagemaker" />
-                <mimetype extension=".pm5" type="application/x-pagemaker" />
-                <mimetype extension=".pcl" type="application/x-pcl" />
-                <mimetype extension=".plx" type="application/x-pixclscript" />
-                <mimetype extension=".p10" type="application/x-pkcs10" />
-                <mimetype extension=".p12" type="application/x-pkcs12" />
-                <mimetype extension=".p7r" type="application/x-pkcs7-certreqresp" />
-                <mimetype extension=".p7c" type="application/x-pkcs7-mime" />
-                <mimetype extension=".p7m" type="application/x-pkcs7-mime" />
-                <mimetype extension=".p7a" type="application/x-pkcs7-signature" />
-                <mimetype extension=".mpc" type="application/x-project" />
-                <mimetype extension=".mpt" type="application/x-project" />
-                <mimetype extension=".mpv" type="application/x-project" />
-                <mimetype extension=".mpx" type="application/x-project" />
-                <mimetype extension=".wb1" type="application/x-qpro" />
-                <mimetype extension=".sdp" type="application/x-sdp" />
-                <mimetype extension=".sea" type="application/x-sea" />
-                <mimetype extension=".sl" type="application/x-seelogo" />
-                <mimetype extension=".sh" type="application/x-sh" />
-                <mimetype extension=".shar" type="application/x-shar" />
-                <mimetype extension=".swf" type="application/x-shockwave-flash" />
-                <mimetype extension=".spr" type="application/x-sprite" />
-                <mimetype extension=".sprite" type="application/x-sprite" />
-                <mimetype extension=".sit" type="application/x-stuffit" />
-                <mimetype extension=".sv4cpio" type="application/x-sv4cpio" />
-                <mimetype extension=".sv4crc" type="application/x-sv4crc" />
-                <mimetype extension=".tar" type="application/x-tar" />
-                <mimetype extension=".sbk" type="application/x-tbook" />
-                <mimetype extension=".tbk" type="application/x-tbook" />
-                <mimetype extension=".tcl" type="application/x-tcl" />
-                <mimetype extension=".tex" type="application/x-tex" />
-                <mimetype extension=".texi" type="application/x-texinfo" />
-                <mimetype extension=".texinfo" type="application/x-texinfo" />
-                <mimetype extension=".roff" type="application/x-troff" />
-                <mimetype extension=".t" type="application/x-troff" />
-                <mimetype extension=".tr" type="application/x-troff" />
-                <mimetype extension=".man" type="application/x-troff-man" />
-                <mimetype extension=".me" type="application/x-troff-me" />
-                <mimetype extension=".ms" type="application/x-troff-ms" />
-                <mimetype extension=".ustar" type="application/x-ustar" />
-                <mimetype extension=".vsd" type="application/x-visio" />
-                <mimetype extension=".vst" type="application/x-visio" />
-                <mimetype extension=".vsw" type="application/x-visio" />
-                <mimetype extension=".mzz" type="application/x-vndaudioexplosionmzz" />
-                <mimetype extension=".xpix" type="application/x-vndls-xpix" />
-                <mimetype extension=".src" type="application/x-wais-source" />
-                <mimetype extension=".wsrc" type="application/x-wais-source" />
-                <mimetype extension=".hlp" type="application/x-winhelp" />
-                <mimetype extension=".wtk" type="application/x-wintalk" />
-                <mimetype extension=".wpd" type="application/x-wpwin" />
-                <mimetype extension=".wri" type="application/x-wri" />
-                <mimetype extension=".cer" type="application/x-x509-ca-cert" />
-                <mimetype extension=".der" type="application/x-x509-ca-cert" />
-                <mimetype extension=".crt" type="application/x-x509-user-cert" />
-                <mimetype extension=".dtd" type="application/xml-dtd" />
-                <mimetype extension=".zip" type="application/zip" />
-                <mimetype extension=".au" type="audio/basic" />
-                <mimetype extension=".snd" type="audio/basic" />
-                <mimetype extension=".it" type="audio/it" />
-                <mimetype extension=".funk" type="audio/make" />
-                <mimetype extension=".my" type="audio/make" />
-                <mimetype extension=".pfunk" type="audio/makemyfunk" />
-                <mimetype extension=".rmi" type="audio/mid" />
-                <mimetype extension=".kar" type="audio/midi" />
+
+                <!--
+                    # The basic list of mimetypes was taken from HTML 5 boilerplate project.
+                    # See https://github.com/h5bp/server-configs/.
+                    # Apparently the h5pb lists differ per server, this was taken from Nginx.
+                    # Extensions have been added for office formats and Microsoft related files.
+                -->
+
+                <!-- Data interchange -->
+                <mimetype extension=".atom" type="application/atom+xml" />
+                <mimetype extension=".json" type="application/json" />
+                <mimetype extension=".map" type="application/json" />
+                <mimetype extension=".topojson" type="application/json" />
+                <mimetype extension=".jsonld" type="application/ld+json" />
+                <mimetype extension=".rss" type="application/rss+xml" />
+                <mimetype extension=".geojson" type="application/vnd.geo+json" />
+                <mimetype extension=".rdf" type="application/xml" />
+                <mimetype extension=".xml" type="application/xml" />
+
+                <!-- JavaScript -->
+                <mimetype extension=".js" type="text/javascript" />
+                <mimetype extension=".mjs" type="text/javascript" />
+                <mimetype extension=".wasm" type="application/wasm" />
+
+                <!-- Manifest files -->
+                <mimetype extension=".webapp" type="application/x-web-app-manifest+json" />
+                <mimetype extension=".appcache" type="text/cache-manifest" />
+                <mimetype extension=".webmanifest" type="application/manifest+json" />
+
+                <!-- Media files -->
                 <mimetype extension=".mid" type="audio/midi" />
                 <mimetype extension=".midi" type="audio/midi" />
-                <mimetype extension=".m2a" type="audio/mpeg" />
-                <mimetype extension=".mp2" type="audio/mpeg" />
+                <mimetype extension=".kar" type="audio/midi" />
+                <mimetype extension=".aac" type="audio/mp4" />
+                <mimetype extension=".f4a" type="audio/mp4" />
+                <mimetype extension=".f4b" type="audio/mp4" />
+                <mimetype extension=".m4a" type="audio/mp4" />
                 <mimetype extension=".mp3" type="audio/mpeg" />
-                <mimetype extension=".mpga" type="audio/mpeg" />
-                <mimetype extension=".s3m" type="audio/s3m" />
-                <mimetype extension=".tsi" type="audio/tsp-audio" />
-                <mimetype extension=".tsp" type="audio/tsplayer" />
-                <mimetype extension=".qcp" type="audio/vndqcelp" />
-                <mimetype extension=".vox" type="audio/voxware" />
-                <mimetype extension=".aif" type="audio/x-aiff" />
-                <mimetype extension=".aifc" type="audio/x-aiff" />
-                <mimetype extension=".aiff" type="audio/x-aiff" />
-                <mimetype extension=".gsd" type="audio/x-gsm" />
-                <mimetype extension=".gsm" type="audio/x-gsm" />
-                <mimetype extension=".jam" type="audio/x-jam" />
-                <mimetype extension=".lam" type="audio/x-liveaudio" />
-                <mimetype extension=".mod" type="audio/x-mod" />
-                <mimetype extension=".m3u" type="audio/x-mpegurl" />
-                <mimetype extension=".wma" type="audio/x-ms-wma" />
-                <mimetype extension=".la" type="audio/x-nspaudio" />
-                <mimetype extension=".lma" type="audio/x-nspaudio" />
-                <mimetype extension=".ram" type="audio/x-pn-realaudio" />
-                <mimetype extension=".rm" type="audio/x-pn-realaudio" />
-                <mimetype extension=".rmm" type="audio/x-pn-realaudio" />
-                <mimetype extension=".rmp" type="audio/x-pn-realaudio-plugin" />
-                <mimetype extension=".rpm" type="audio/x-pn-realaudio-plugin" />
-                <mimetype extension=".sid" type="audio/x-psid" />
+                <mimetype extension=".oga" type="audio/ogg" />
+                <mimetype extension=".ogg" type="audio/ogg" />
+                <mimetype extension=".opus" type="audio/ogg" />
+                <mimetype extension=".weba" type="audio/webm" />
                 <mimetype extension=".ra" type="audio/x-realaudio" />
-                <mimetype extension=".vqf" type="audio/x-twinvq" />
-                <mimetype extension=".vqe" type="audio/x-twinvq-plugin" />
-                <mimetype extension=".vql" type="audio/x-twinvq-plugin" />
-                <mimetype extension=".mjf"
-                    type="audio/x-vndaudioexplosionmjuicemediafile" />
-                <mimetype extension=".voc" type="audio/x-voc" />
                 <mimetype extension=".wav" type="audio/x-wav" />
-                <mimetype extension=".xm" type="audio/xm" />
-                <mimetype extension=".pdb" type="chemical/x-pdb" />
-                <mimetype extension=".xyz" type="chemical/x-pdb" />
-                <mimetype extension=".ivr" type="i-world/i-vrml" />
-                <mimetype extension=".bm" type="image/bmp" />
+                <mimetype extension=".mka" type="audio/x-matroska" />
+
                 <mimetype extension=".bmp" type="image/bmp" />
-                <mimetype extension=".rast" type="image/cmu-raster" />
-                <mimetype extension=".fif" type="image/fif" />
-                <mimetype extension=".flo" type="image/florian" />
-                <mimetype extension=".turbot" type="image/florian" />
-                <mimetype extension=".g3" type="image/g3fax" />
                 <mimetype extension=".gif" type="image/gif" />
-                <mimetype extension=".ief" type="image/ief" />
-                <mimetype extension=".iefs" type="image/ief" />
-                <mimetype extension=".jfif-tbnl" type="image/jpeg" />
-                <mimetype extension=".jpe" type="image/jpeg" />
                 <mimetype extension=".jpeg" type="image/jpeg" />
                 <mimetype extension=".jpg" type="image/jpeg" />
-                <mimetype extension=".jut" type="image/jutvision" />
-                <mimetype extension=".nap" type="image/naplps" />
-                <mimetype extension=".naplps" type="image/naplps" />
-                <mimetype extension=".pic" type="image/pict" />
-                <mimetype extension=".pict" type="image/pict" />
-                <mimetype extension=".jfif" type="image/pjpeg" />
+                <mimetype extension=".jxr" type="image/jxr" />
+                <mimetype extension=".hdp" type="image/jxr" />
+                <mimetype extension=".wdp" type="image/jxr" />
                 <mimetype extension=".png" type="image/png" />
-                <mimetype extension=".x-png" type="image/png" />
                 <mimetype extension=".svg" type="image/svg+xml" />
+                <mimetype extension=".svgz" type="image/svg+xml" />
                 <mimetype extension=".tif" type="image/tiff" />
                 <mimetype extension=".tiff" type="image/tiff" />
                 <mimetype extension=".wbmp" type="image/vnd.wap.wbmp" />
-                <mimetype extension=".fpx" type="image/vndnet-fpx" />
-                <mimetype extension=".rf" type="image/vndrn-realflash" />
-                <mimetype extension=".rp" type="image/vndrn-realpix" />
-                <mimetype extension=".xif" type="image/vndxiff" />
-                <mimetype extension=".ras" type="image/x-cmu-raster" />
-                <mimetype extension=".dwg" type="image/x-dwg" />
-                <mimetype extension=".dxf" type="image/x-dwg" />
-                <mimetype extension=".svf" type="image/x-dwg" />
-                <mimetype extension=".ico" type="image/x-icon" />
-                <mimetype extension=".art" type="image/x-jg" />
-                <mimetype extension=".jps" type="image/x-jps" />
-                <mimetype extension=".nif" type="image/x-niff" />
-                <mimetype extension=".niff" type="image/x-niff" />
-                <mimetype extension=".pcx" type="image/x-pcx" />
-                <mimetype extension=".pct" type="image/x-pict" />
-                <mimetype extension=".pnm" type="image/x-portable-anymap" />
-                <mimetype extension=".pbm" type="image/x-portable-bitmap" />
-                <mimetype extension=".pgm" type="image/x-portable-graymap" />
-                <mimetype extension=".ppm" type="image/x-portable-pixmap" />
-                <mimetype extension=".qif" type="image/x-quicktime" />
-                <mimetype extension=".qti" type="image/x-quicktime" />
-                <mimetype extension=".qtif" type="image/x-quicktime" />
-                <mimetype extension=".rgb" type="image/x-rgb" />
-                <mimetype extension=".xbm" type="image/x-xbitmap" />
-                <mimetype extension=".xpm" type="image/x-xpixmap" />
-                <mimetype extension=".xwd" type="image/x-xwindowdump" />
-                <mimetype extension=".mht" type="message/rfc822" />
-                <mimetype extension=".mhtml" type="message/rfc822" />
-                <mimetype extension=".iges" type="model/iges" />
-                <mimetype extension=".igs" type="model/iges" />
-                <mimetype extension=".mesh" type="model/mesh" />
-                <mimetype extension=".msh" type="model/mesh" />
-                <mimetype extension=".silo" type="model/mesh" />
-                <mimetype extension=".dwf" type="model/vnddwf" />
-                <mimetype extension=".vrml" type="model/vrml" />
-                <mimetype extension=".wrl" type="model/vrml" />
-                <mimetype extension=".pov" type="model/x-pov" />
-                <mimetype extension=".gzip" type="multipart/x-gzip" />
-                <mimetype extension=".pvu" type="paleovu/x-pv" />
-                <mimetype extension=".asp" type="text/asp" />
-                <mimetype extension=".csv" type="text/comma-separated-values" />
-                <mimetype extension=".css" type="text/css" />
-                <mimetype extension=".acgi" type="text/html" />
-                <mimetype extension=".htm" type="text/html" />
-                <mimetype extension=".html" type="text/html" />
-                <mimetype extension=".htmls" type="text/html" />
-                <mimetype extension=".htx" type="text/html" />
-                <mimetype extension=".mcf" type="text/mcf" />
-                <mimetype extension=".pas" type="text/pascal" />
-                <mimetype extension=".asc" type="text/plain" />
-                <mimetype extension=".c++" type="text/plain" />
-                <mimetype extension=".com" type="text/plain" />
-                <mimetype extension=".conf" type="text/plain" />
-                <mimetype extension=".cxx" type="text/plain" />
-                <mimetype extension=".def" type="text/plain" />
-                <mimetype extension=".g" type="text/plain" />
-                <mimetype extension=".idc" type="text/plain" />
-                <mimetype extension=".list" type="text/plain" />
-                <mimetype extension=".log" type="text/plain" />
-                <mimetype extension=".lst" type="text/plain" />
-                <mimetype extension=".mar" type="text/plain" />
-                <mimetype extension=".sdml" type="text/plain" />
-                <mimetype extension=".text" type="text/plain" />
-                <mimetype extension=".txt" type="text/plain" />
-                <mimetype extension=".rtx" type="text/richtext" />
-                <mimetype extension=".rtf" type="text/rtf" />
-                <mimetype extension=".wsc" type="text/scriplet" />
-                <mimetype extension=".sgm" type="text/sgml" />
-                <mimetype extension=".sgml" type="text/sgml" />
-                <mimetype extension=".tsv" type="text/tab-separated-values" />
-                <mimetype extension=".uni" type="text/uri-list" />
-                <mimetype extension=".unis" type="text/uri-list" />
-                <mimetype extension=".uri" type="text/uri-list" />
-                <mimetype extension=".uris" type="text/uri-list" />
-                <mimetype extension=".wml" type="text/vnd.wap.wml" />
-                <mimetype extension=".abc" type="text/vndabc" />
-                <mimetype extension=".flx" type="text/vndfmiflexstor" />
-                <mimetype extension=".rt" type="text/vndrn-realtext" />
-                <mimetype extension=".wmls" type="text/vndwapwmlscript" />
-                <mimetype extension=".htt" type="text/webviewhtml" />
-                <mimetype extension=".asm" type="text/x-asm" />
-                <mimetype extension=".s" type="text/x-asm" />
-                <mimetype extension=".aip" type="text/x-audiosoft-intra" />
-                <mimetype extension=".c" type="text/x-c" />
-                <mimetype extension=".cc" type="text/x-c" />
-                <mimetype extension=".cpp" type="text/x-c" />
-                <mimetype extension=".htc" type="text/x-component" />
-                <mimetype extension=".f" type="text/x-fortran" />
-                <mimetype extension=".f77" type="text/x-fortran" />
-                <mimetype extension=".f90" type="text/x-fortran" />
-                <mimetype extension=".for" type="text/x-fortran" />
-                <mimetype extension=".h" type="text/x-h" />
-                <mimetype extension=".hh" type="text/x-h" />
-                <mimetype extension=".jav" type="text/x-java-source" />
-                <mimetype extension=".java" type="text/x-java-source" />
-                <mimetype extension=".lsx" type="text/x-la-asf" />
-                <mimetype extension=".m" type="text/x-m" />
-                <mimetype extension=".p" type="text/x-pascal" />
-                <mimetype extension=".hlb" type="text/x-script" />
-                <mimetype extension=".el" type="text/x-scriptelisp" />
-                <mimetype extension=".ksh" type="text/x-scriptksh" />
-                <mimetype extension=".lsp" type="text/x-scriptlisp" />
-                <mimetype extension=".pl" type="text/x-scriptperl" />
-                <mimetype extension=".pm" type="text/x-scriptperl-module" />
-                <mimetype extension=".py" type="text/x-scriptphyton" />
-                <mimetype extension=".rexx" type="text/x-scriptrexx" />
-                <mimetype extension=".tcsh" type="text/x-scripttcsh" />
-                <mimetype extension=".zsh" type="text/x-scriptzsh" />
-                <mimetype extension=".shtml" type="text/x-server-parsed-html" />
-                <mimetype extension=".ssi" type="text/x-server-parsed-html" />
-                <mimetype extension=".etx" type="text/x-setext" />
-                <mimetype extension=".spc" type="text/x-speech" />
-                <mimetype extension=".talk" type="text/x-speech" />
-                <mimetype extension=".uil" type="text/x-uil" />
-                <mimetype extension=".uu" type="text/x-uuencode" />
-                <mimetype extension=".uue" type="text/x-uuencode" />
-                <mimetype extension=".vcs" type="text/x-vcalendar" />
-                <mimetype extension=".xml" type="text/xml" />
-                <mimetype extension=".xsd" type="text/xml" />
-                <mimetype extension=".xsl" type="text/xml" />
-                <mimetype extension=".afl" type="video/animaflex" />
-                <mimetype extension=".avs" type="video/avs-video" />
-                <mimetype extension=".m1v" type="video/mpeg" />
-                <mimetype extension=".m2v" type="video/mpeg" />
-                <mimetype extension=".mpa" type="video/mpeg" />
-                <mimetype extension=".mpe" type="video/mpeg" />
+                <mimetype extension=".webp" type="image/webp" />
+                <mimetype extension=".jng" type="image/x-jng" />
+
+                <mimetype extension=".3gp" type="video/3gpp" />
+                <mimetype extension=".3gpp" type="video/3gpp" />
+                <mimetype extension=".mp4" type="video/mp4" />
+                <mimetype extension=".f4p" type="video/mp4" />
+                <mimetype extension=".f4v" type="video/mp4" />
+                <mimetype extension=".m4v" type="video/mp4" />
                 <mimetype extension=".mpeg" type="video/mpeg" />
                 <mimetype extension=".mpg" type="video/mpeg" />
-                <mimetype extension=".moov" type="video/quicktime" />
+                <mimetype extension=".ogv" type="video/ogg" />
                 <mimetype extension=".mov" type="video/quicktime" />
                 <mimetype extension=".qt" type="video/quicktime" />
-                <mimetype extension=".vdo" type="video/vdo" />
-                <mimetype extension=".rv" type="video/vndrn-realvideo" />
-                <mimetype extension=".viv" type="video/vndvivo" />
-                <mimetype extension=".vivo" type="video/vndvivo" />
-                <mimetype extension=".vos" type="video/vosaic" />
-                <mimetype extension=".xdr" type="video/x-amt-demorun" />
-                <mimetype extension=".xsr" type="video/x-amt-showrun" />
-                <mimetype extension=".fmf" type="video/x-atomic3d-feature" />
-                <mimetype extension=".dl" type="video/x-dl" />
-                <mimetype extension=".dif" type="video/x-dv" />
-                <mimetype extension=".dv" type="video/x-dv" />
-                <mimetype extension=".fli" type="video/x-fli" />
-                <mimetype extension=".gl" type="video/x-gl" />
-                <mimetype extension=".isu" type="video/x-isvideo" />
-                <mimetype extension=".mjpg" type="video/x-motion-jpeg" />
+                <mimetype extension=".webm" type="video/webm" />
+                <mimetype extension=".flv" type="video/x-flv" />
+                <mimetype extension=".mng" type="video/x-mng" />
                 <mimetype extension=".asf" type="video/x-ms-asf" />
+                <mimetype extension=".asx" type="video/x-ms-asf" />
                 <mimetype extension=".wmv" type="video/x-ms-wmv" />
                 <mimetype extension=".avi" type="video/x-msvideo" />
-                <mimetype extension=".qtc" type="video/x-qtc" />
-                <mimetype extension=".scm" type="video/x-scm" />
-                <mimetype extension=".movie" type="video/x-sgi-movie" />
-                <mimetype extension=".mv" type="video/x-sgi-movie" />
-                <mimetype extension=".wmf" type="windows/metafile" />
-                <mimetype extension=".mime" type="www/mime" />
-                <mimetype extension=".ice" type="x-conference/x-cooltalk" />
-                <mimetype extension=".3dm" type="x-world/x-3dmf" />
-                <mimetype extension=".3dmf" type="x-world/x-3dmf" />
-                <mimetype extension=".qd3" type="x-world/x-3dmf" />
-                <mimetype extension=".qd3d" type="x-world/x-3dmf" />
-                <mimetype extension=".svr" type="x-world/x-svr" />
-                <mimetype extension=".wrz" type="x-world/x-vrml" />
-                <mimetype extension=".vrt" type="x-world/x-vrt" />
-                <mimetype extension=".xgz" type="xgl/drawing" />
-                <mimetype extension=".xmz" type="xgl/movie" />
-                <mimetype extension=".rss" type="application/rss+xml" />
-                <mimetype extension=".jar" type="application/java-archive" />
-                <mimetype extension=".jad" type="text/vnd.sun.j2me.app-descriptor" />
-                <mimetype extension=".docx"
-                    type="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
-                <mimetype extension=".docm"
-                    type="application/vnd.ms-word.document.macroEnabled.12" />
-                <mimetype extension=".dotx"
-                    type="application/vnd.openxmlformats-officedocument.wordprocessingml.template" />
-                <mimetype extension=".dotm"
-                    type="application/vnd.ms-word.template.macroEnabled.12" />
-                <mimetype extension=".xlsx"
-                    type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
-                <mimetype extension=".xlsm"
-                    type="application/vnd.ms-excel.sheet.macroEnabled.12" />
-                <mimetype extension=".xltx"
-                    type="application/vnd.openxmlformats-officedocument.spreadsheetml.template" />
-                <mimetype extension=".xltm"
-                    type="application/vnd.ms-excel.template.macroEnabled.12" />
-                <mimetype extension=".xlsb"
-                    type="application/vnd.ms-excel.sheet.binary.macroEnabled.12" />
-                <mimetype extension=".xlam"
-                    type="application/vnd.ms-excel.addin.macroEnabled.12" />
-                <mimetype extension=".pptx"
-                    type="application/vnd.openxmlformats-officedocument.presentationml.presentation" />
-                <mimetype extension=".pptm"
-                    type="application/vnd.ms-powerpoint.presentation.macroEnabled.12" />
-                <mimetype extension=".ppsx"
-                    type="application/vnd.openxmlformats-officedocument.presentationml.slideshow" />
-                <mimetype extension=".ppsm"
-                    type="application/vnd.ms-powerpoint.slideshow.macroEnabled.12" />
-                <mimetype extension=".potx"
-                    type="application/vnd.openxmlformats-officedocument.presentationml.template" />
-                <mimetype extension=".potm"
-                    type="application/vnd.ms-powerpoint.template.macroEnabled.12" />
-                <mimetype extension=".ppam"
-                    type="application/vnd.ms-powerpoint.addin.macroEnabled.12" />
-                <mimetype extension=".sldx"
-                    type="application/vnd.openxmlformats-officedocument.presentationml.slide" />
-                <mimetype extension=".sldm"
-                    type="application/vnd.ms-powerpoint.slide.macroEnabled.12" />
-                <mimetype extension=".thmx" type="application/vnd.ms-officetheme" />
-                <mimetype extension=".onetoc" type="application/onenote" />
-                <mimetype extension=".onetoc2" type="application/onenote" />
-                <mimetype extension=".onetmp" type="application/onenote" />
-                <mimetype extension=".onepkg" type="application/onenote" />
+                <mimetype extension=".mkv" type="video/x-matroska" />
+                <mimetype extension=".mk3d" type="video/x-matroska" />
+
+                <!--
+                    # Serving `.ico` image files with a different media type
+                    # prevents Internet Explorer from displaying then as images.
+                -->
+                <mimetype extension=".cur" type="image/x-icon" />
+                <mimetype extension=".ico" type="image/x-icon" />
+
+                <!-- Web fonts -->
+                <mimetype extension=".woff" type="application/font-woff" />
+                <mimetype extension=".woff2" type="application/font-woff2" />
+                <mimetype extension=".eot" type="application/vnd.ms-fontobject" />
+                <mimetype extension=".ttf" type="font/ttf" />
+                <mimetype extension=".ttc" type="font/collection" />
+                <mimetype extension=".otf" type="font/opentype" />
+
+                <!-- Other -->
+                <mimetype extension=".jar" type="application/x-java-archive" />
+                <mimetype extension=".war" type="application/x-java-archive" />
+                <mimetype extension=".ear" type="application/x-java-archive" />
+                <mimetype extension=".hqx" type="application/mac-binhex40" />
+                <mimetype extension=".bin" type="application/octet-stream" />
+                <mimetype extension=".deb" type="application/octet-stream" />
+                <mimetype extension=".dll" type="application/octet-stream" />
+                <mimetype extension=".dmg" type="application/octet-stream" />
+                <mimetype extension=".exe" type="application/octet-stream" />
+                <mimetype extension=".pkg" type="application/octet-stream" />
+                <mimetype extension=".img" type="application/octet-stream" />
+                <mimetype extension=".iso" type="application/octet-stream" />
+                <mimetype extension=".msi" type="application/octet-stream" />
+                <mimetype extension=".msm" type="application/octet-stream" />
+                <mimetype extension=".msp" type="application/octet-stream" />
+                <mimetype extension=".safariextz" type="application/octet-stream" />
+                <mimetype extension=".pdf" type="application/pdf" />
+                <mimetype extension=".sig" type="application/pgp-signature" />
+                <mimetype extension=".ps" type="application/postscript" />
+                <mimetype extension=".ai" type="application/postscript" />
+                <mimetype extension=".eps" type="application/postscript" />
+                <mimetype extension=".rtf" type="application/rtf" />
+                <mimetype extension=".kml" type="application/vnd.google-earth.kml+xml" />
+                <mimetype extension=".kmz" type="application/vnd.google-earth.kmz" />
+                <mimetype extension=".wmlc" type="application/vnd.wap.wmlc" />
+                <mimetype extension=".7z" type="application/x-7z-compressed" />
+                <mimetype extension=".bbaw" type="application/x-bb-appworld" />
+                <mimetype extension=".torrent" type="application/x-bittorrent" />
+                <mimetype extension=".crx" type="application/x-chrome-extension" />
+                <mimetype extension=".cco" type="application/x-cocoa " />
+                <mimetype extension=".gz" type="application/gzip" />
+                <mimetype extension=".jardiff" type="application/x-java-archive-diff" />
+                <mimetype extension=".jnlp" type="application/x-java-jnlp-file" />
+                <mimetype extension=".run" type="application/x-makeself" />
+                <mimetype extension=".oex" type="application/x-opera-extension" />
+                <mimetype extension=".pl" type="application/x-perl" />
+                <mimetype extension=".pm" type="application/x-perl" />
+                <mimetype extension=".pdb" type="application/x-pilot" />
+                <mimetype extension=".prc" type="application/x-pilot" />
                 <mimetype extension=".rar" type="application/x-rar-compressed" />
-                <mimetype extension=".flv" type="video/x-flv" />
+                <mimetype extension=".rpm" type="application/x-redhat-package-manager" />
+                <mimetype extension=".sea" type="application/x-sea" />
+                <mimetype extension=".swf" type="application/x-shockwave-flash" />
+                <mimetype extension=".sit" type="application/x-stuffit" />
+                <mimetype extension=".tar" type="application/x-tar" />
+                <mimetype extension=".tcl" type="application/x-tcl " />
+                <mimetype extension=".tk" type="application/x-tcl " />
+                <mimetype extension=".tgz" type="application/x-tgz" />
+                <mimetype extension=".tar.gz" type="application/x-tgz" />
+                <mimetype extension=".crt" type="application/x-x509-ca-cert" />
+                <mimetype extension=".der" type="application/x-x509-ca-cert" />
+                <mimetype extension=".pem" type="application/x-x509-ca-cert" />
+                <mimetype extension=".xpi" type="application/x-xpinstall" />
+                <mimetype extension=".xhtml" type="application/xhtml+xml" />
+                <mimetype extension=".xsl" type="application/xslt+xml" />
+                <mimetype extension=".zip" type="application/zip" />
+                <mimetype extension=".ics" type="text/calendar" />
+                <mimetype extension=".css" type="text/css" />
+                <mimetype extension=".csv" type="text/csv" />
+                <mimetype extension=".htm" type="text/html" />
+                <mimetype extension=".html" type="text/html" />
+                <mimetype extension=".shtml" type="text/html" />
+                <mimetype extension=".md" type="text/markdown" />
+                <mimetype extension=".markdown" type="text/markdown" />
+                <mimetype extension=".mml" type="text/mathml" />
+                <mimetype extension=".text" type="text/plain" />
+                <mimetype extension=".txt" type="text/plain" />
+                <mimetype extension=".conf" type="text/plain" />
+                <mimetype extension=".log" type="text/plain" />
+                <mimetype extension=".properties" type="text/plain" />
+                <mimetype extension=".vcard" type="text/vcard" />
+                <mimetype extension=".vcf" type="text/vcard" />
+                <mimetype extension=".xloc" type="text/vnd.rim.location.xloc" />
+                <mimetype extension=".jad" type="text/vnd.sun.j2me.app-descriptor" />
+                <mimetype extension=".wml" type="text/vnd.wap.wml" />
+                <mimetype extension=".vtt" type="text/vtt" />
+                <mimetype extension=".htc" type="text/x-component" />
+
+                <!-- MS office and Windows related files -->
+                <mimetype extension=".doc" type="application/msword" />
+                <mimetype extension=".docx" type="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+                <mimetype extension=".xls" type="application/vnd.ms-excel" />
+                <mimetype extension=".xlsx" type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+                <mimetype extension=".ppt" type="application/vnd.ms-powerpoint" />
+                <mimetype extension=".pptx" type="application/vnd.openxmlformats-officedocument.presentationml.presentation" />
+
+                <mimetype extension=".docm" type="application/vnd.ms-word.document.macroEnabled.12" />
+                <mimetype extension=".dotx" type="application/vnd.openxmlformats-officedocument.wordprocessingml.template" />
+                <mimetype extension=".dotm" type="application/vnd.ms-word.template.macroEnabled.12" />
+                <mimetype extension=".xlsm" type="application/vnd.ms-excel.sheet.macroEnabled.12" />
+                <mimetype extension=".xltx" type="application/vnd.openxmlformats-officedocument.spreadsheetml.template" />
+                <mimetype extension=".xltm" type="application/vnd.ms-excel.template.macroEnabled.12" />
+                <mimetype extension=".xlsb" type="application/vnd.ms-excel.sheet.binary.macroEnabled.12" />
+                <mimetype extension=".xlam" type="application/vnd.ms-excel.addin.macroEnabled.12" />
+                <mimetype extension=".pptm" type="application/vnd.ms-powerpoint.presentation.macroEnabled.12" />
+                <mimetype extension=".ppsx" type="application/vnd.openxmlformats-officedocument.presentationml.slideshow" />
+                <mimetype extension=".ppsm" type="application/vnd.ms-powerpoint.slideshow.macroEnabled.12" />
+                <mimetype extension=".potx" type="application/vnd.openxmlformats-officedocument.presentationml.template" />
+                <mimetype extension=".potm" type="application/vnd.ms-powerpoint.template.macroEnabled.12" />
+                <mimetype extension=".ppam" type="application/vnd.ms-powerpoint.addin.macroEnabled.12" />
+                <mimetype extension=".sldx" type="application/vnd.openxmlformats-officedocument.presentationml.slide" />
+                <mimetype extension=".sldm" type="application/vnd.ms-powerpoint.slide.macroEnabled.12" />
+                <mimetype extension=".thmx" type="application/vnd.ms-officetheme" />
+
+                <mimetype extension=".chm" type="application/vnd.ms-htmlhelp" />
+                <mimetype extension=".msg" type="application/vnd.ms-outlook" />
+                <mimetype extension=".pot" type="application/vnd.ms-powerpoint" />
+                <mimetype extension=".mpp" type="application/vnd.ms-project" />
+                <mimetype extension=".wmf" type="windows/metafile" />
+
+                <!-- Open Document (OpenOffice, LibreOffice etc.) -->
+                <mimetype extension=".odt" type="application/vnd.oasis.opendocument.text" />
+                <mimetype extension=".ods" type="application/vnd.oasis.opendocument.spreadsheet" />
+                <mimetype extension=".odp" type="application/vnd.oasis.opendocument.presentation" />
+                <mimetype extension=".odg" type="application/vnd.oasis.opendocument.graphics" />
+                <mimetype extension=".odc" type="application/vnd.oasis.opendocument.chart" />
+                <mimetype extension=".odf" type="application/vnd.oasis.opendocument.formula" />
+                <mimetype extension=".odi" type="application/vnd.oasis.opendocument.image" />
+                <mimetype extension=".odm" type="application/vnd.oasis.opendocument.text-master" />
+                <mimetype extension=".ott" type="application/vnd.oasis.opendocument.text-template ott" />
+                <mimetype extension=".ots" type="application/vnd.oasis.opendocument.spreadsheet-template" />
+                <mimetype extension=".otp" type="application/vnd.oasis.opendocument.presentation-template" />
+                <mimetype extension=".otg" type="application/vnd.oasis.opendocument.graphics-template" />
+
             </mimetypes>
-            <relationtypes>
+             <relationtypes>
                 <relationtype name="TESTRELATION1" type="WEAK" />
                 <relationtype name="TESTRELATION2" type="STRONG" />
             </relationtypes>
+
             <html-converters>
-                <html-converter name="true"
-                    class="org.opencms.util.CmsHtmlConverterJTidy" />
-                <html-converter name="xhtml"
-                    class="org.opencms.util.CmsHtmlConverterJTidy" />
-                <html-converter name="cleanup"
-                    class="org.opencms.util.CmsHtmlConverterJTidy" />
-                <html-converter name="replace-paragraphs"
-                    class="org.opencms.util.CmsHtmlConverterJTidy" />
+                <html-converter name="true" class="org.opencms.util.CmsHtmlConverterJTidy" />
+                <html-converter name="xhtml" class="org.opencms.util.CmsHtmlConverterJTidy" />
+                <html-converter name="cleanup" class="org.opencms.util.CmsHtmlConverterJTidy" />
+                <html-converter name="replace-paragraphs" class="org.opencms.util.CmsHtmlConverterJTidy" />
             </html-converters>
         </resources>
         <defaultfiles>
@@ -725,61 +398,201 @@
         </defaultfiles>
         <translations>
             <filetranslations enabled="true">
-                <translation>s#[\s]+#_#g</translation>
+                <translation>s#[\s]+#-#g</translation>
                 <translation>s#\\#/#g</translation>
-                <translation>s#ä#ae#g</translation>
-                <translation>s#Ä#Ae#g</translation>
-                <translation>s#ö#oe#g</translation>
-                <translation>s#Ö#Oe#g</translation>
-                <translation>s#ü#ue#g</translation>
-                <translation>s#Ü#Ue#g</translation>
-                <translation>s#ß#ss#g</translation>
+                <translation>s#&#0228;#ae#g</translation>
+                <translation>s#&#0196;#Ae#g</translation>
+                <translation>s#&#0246;#oe#g</translation>
+                <translation>s#&#0214;#Oe#g</translation>
+                <translation>s#&#0252;#ue#g</translation>
+                <translation>s#&#0220;#Ue#g</translation>
+                <translation>s#&#0223;#ss#g</translation>
+                <translation>s#[&#x00e0;&#x00e1;&#x00e2;&#x00e3;&#x00e5;&#x0101;&#x0103;&#x0105;&#x01ce;&#x01df;&#x01e1;&#x01fb;&#x0201;&#x0203;&#x0227;&#x1e01;&#x1e9a;&#x1ea1;&#x1ea3;&#x1ea5;&#x1ea7;&#x1ea9;&#x1eab;&#x1ead;&#x1eaf;&#x1eb1;&#x1eb3;&#x1eb5;&#x1eb7;]#a#g</translation>
+                <translation>s#[&#x00c0;&#x00c1;&#x00c2;&#x00c3;&#x00c5;&#x0100;&#x0102;&#x0104;&#x01cd;&#x01de;&#x01e0;&#x01fa;&#x0200;&#x0202;&#x0226;&#x1e00;&#x1ea0;&#x1ea2;&#x1ea4;&#x1ea6;&#x1ea8;&#x1eaa;&#x1eac;&#x1eae;&#x1eb0;&#x1eb2;&#x1eb4;&#x1eb6;]#A#g</translation>
+                <translation>s#[&#x0180;&#x0253;&#x0183;&#x1e03;&#x1e05;&#x1e07;]#b#g</translation>
+                <translation>s#[&#x0181;&#x0182;&#x1e02;&#x1e04;&#x1e06;]#B#g</translation>
+                <translation>s#[&#x00e7;&#x0107;&#x0109;&#x010b;&#x010d;&#x0188;&#x0255;&#x1e09;]#c#g</translation>
+                <translation>s#[&#x00c7;&#x0106;&#x0108;&#x010a;&#x010c;&#x0187;&#x1e08;]#C#g</translation>
+                <translation>s#[&#x010f;&#x0111;&#x0257;&#x018c;&#x0221;&#x0256;&#x1e0b;&#x1e0d;&#x1e0f;&#x1e11;&#x1e13;]#d#g</translation>
+                <translation>s#[&#x010e;&#x0110;&#x018a;&#x018b;&#x01c5;&#x01f2;&#x1e0a;&#x1e0c;&#x1e0e;&#x1e10;&#x1e12;]#D#g</translation>
+                <translation>s#[&#x00e8;&#x00e9;&#x00ea;&#x00eb;&#x0113;&#x0115;&#x0117;&#x0119;&#x011b;&#x0205;&#x0207;&#x0229;&#x1e15;&#x1e17;&#x1e19;&#x1e1b;&#x1e1d;&#x1eb9;&#x1ebb;&#x1ebd;&#x1ebf;&#x1ec1;&#x1ec3;&#x1ec5;&#x1ec7;]#e#g</translation>
+                <translation>s#[&#x00c8;&#x00c9;&#x00ca;&#x00cb;&#x0112;&#x0114;&#x0116;&#x0118;&#x011a;&#x0204;&#x0206;&#x0228;&#x1e14;&#x1e16;&#x1e18;&#x1e1a;&#x1e1c;&#x1eb8;&#x1eba;&#x1ebc;&#x1ebe;&#x1ec0;&#x1ec2;&#x1ec4;&#x1ec6;]#E#g</translation>
+                <translation>s#[&#x0192;&#x1e1f;]#f#g</translation>
+                <translation>s#[&#x0191;&#x1e1e;]#F#g</translation>
+                <translation>s#[&#x011d;&#x011f;&#x0121;&#x0123;&#x0260;&#x01e5;&#x01e7;&#x01f5;&#x1e21;]#g#g</translation>
+                <translation>s#[&#x011c;&#x011e;&#x0120;&#x0122;&#x0193;&#x01e4;&#x01e6;&#x01f4;&#x1e20;]#G#g</translation>
+                <translation>s#[&#x0125;&#x0127;&#x021f;&#x0266;&#x1e23;&#x1e25;&#x1e27;&#x1e29;&#x1e2b;&#x1e96;]#h#g</translation>
+                <translation>s#[&#x0124;&#x0126;&#x021e;&#x1e22;&#x1e24;&#x1e26;&#x1e28;&#x1e2a;]#H#g</translation>
+                <translation>s#[&#x00ec;&#x00ed;&#x00ee;&#x00ef;&#x0129;&#x012b;&#x012d;&#x012f;&#x0268;&#x01d0;&#x0209;&#x020b;&#x1e2d;&#x1e2f;&#x1ec9;&#x1ecb;]#i#g</translation>
+                <translation>s#[&#x00cc;&#x00cd;&#x00ce;&#x00cf;&#x0128;&#x012a;&#x012c;&#x012e;&#x0130;&#x0197;&#x01cf;&#x0208;&#x020a;&#x1e2c;&#x1e2e;&#x1ec8;&#x1eca;]#I#g</translation>
+                <translation>s#[&#x0135;&#x01f0;&#x029d;]#j#g</translation>
+                <translation>s#[&#x0134;]#J#g</translation>
+                <translation>s#[&#x0137;&#x0199;&#x01e9;&#x1e31;&#x1e33;&#x1e35;]#k#g</translation>
+                <translation>s#[&#x0136;&#x0198;&#x01e8;&#x1e30;&#x1e32;&#x1e34;]#K#g</translation>
+                <translation>s#[&#x013a;&#x013c;&#x013e;&#x0140;&#x0142;&#x019a;&#x0234;&#x026b;&#x026c;&#x026d;&#x1e37;&#x1e39;&#x1e3b;&#x1e3d;]#l#g</translation>
+                <translation>s#[&#x0139;&#x013b;&#x013d;&#x013f;&#x0141;&#x01c8;&#x1e36;&#x1e38;&#x1e3a;&#x1e3c;]#L#g</translation>
+                <translation>s#[&#x0271;&#x1e3f;&#x1e41;&#x1e43;]#m#g</translation>
+                <translation>s#[&#x1e3e;&#x1e40;&#x1e42;]#M#g</translation>
+                <translation>s#[&#x00f1;&#x0144;&#x0146;&#x0148;&#x0272;&#x019e;&#x0220;&#x01f9;&#x0235;&#x0273;&#x1e45;&#x1e47;&#x1e49;&#x1e4b;]#n#g</translation>
+                <translation>s#[&#x00d1;&#x0143;&#x0145;&#x0147;&#x019d;&#x01cb;&#x01f8;&#x1e44;&#x1e46;&#x1e48;&#x1e4a;]#N#g</translation>
+                <translation>s#[&#x00f2;&#x00f3;&#x00f4;&#x00f5;&#x00f8;&#x014d;&#x014f;&#x0151;&#x01a1;&#x01d2;&#x01eb;&#x01ed;&#x01ff;&#x020d;&#x020f;&#x022b;&#x022d;&#x022f;&#x0231;&#x1e4d;&#x1e4e;&#x1e4f;&#x1e50;&#x1e51;&#x1e52;&#x1e53;&#x1ecd;&#x1ece;&#x1ecf;&#x1ed0;&#x1ed1;&#x1ed2;&#x1ed3;&#x1ed4;&#x1ed5;&#x1ed6;&#x1ed7;&#x1ed9;&#x1edb;&#x1edd;&#x1ede;&#x1edf;&#x1ee1;&#x1ee3;]#o#g</translation>
+                <translation>s#[&#x00d2;&#x00d3;&#x00d4;&#x00d5;&#x00d8;&#x014c;&#x014e;&#x0150;&#x019f;&#x01a0;&#x01d1;&#x01ea;&#x01ec;&#x01fe;&#x020c;&#x020e;&#x022a;&#x022c;&#x022e;&#x0230;&#x1e4c;&#x1ecc;&#x1ed8;&#x1eda;&#x1edc;&#x1ee0;&#x1ee2;]#O#g</translation>
+                <translation>s#[&#x01a5;&#x1e55;&#x1e57;]#p#g</translation>
+                <translation>s#[&#x01a4;&#x1e54;&#x1e56;]#P#g</translation>
+                <translation>s#[&#x02a0;]#q#g</translation>
+                <translation>s#[&#x0155;&#x0157;&#x0159;&#x0211;&#x0213;&#x027c;&#x027d;&#x027e;&#x1e59;&#x1e5b;&#x1e5d;&#x1e5f;]#r#g</translation>
+                <translation>s#[&#x0154;&#x0156;&#x0158;&#x0210;&#x0212;&#x1e58;&#x1e5a;&#x1e5c;&#x1e5e;]#R#g</translation>
+                <translation>s#[&#x015b;&#x015d;&#x015f;&#x0161;&#x0219;&#x0282;&#x1e61;&#x1e63;&#x1e64;&#x1e65;&#x1e66;&#x1e67;&#x1e69;]#s#g</translation>
+                <translation>s#[&#x015a;&#x015c;&#x015e;&#x0160;&#x0218;&#x1e60;&#x1e62;&#x1e68;]#S#g</translation>
+                <translation>s#[&#x0163;&#x0165;&#x0167;&#x01ab;&#x01ad;&#x0288;&#x021b;&#x0236;&#x1e6b;&#x1e6d;&#x1e6f;&#x1e71;&#x1e97;]#t#g</translation>
+                <translation>s#[&#x0162;&#x0164;&#x0166;&#x01ac;&#x01ae;&#x021a;&#x1e6a;&#x1e6c;&#x1e6e;&#x1e70;]#T#g</translation>
+                <translation>s#[&#x00f9;&#x00fa;&#x00fb;&#x0169;&#x016b;&#x016d;&#x016f;&#x0171;&#x0173;&#x01b0;&#x01d4;&#x01d6;&#x01d8;&#x01da;&#x01dc;&#x0215;&#x0217;&#x1e73;&#x1e75;&#x1e77;&#x1e79;&#x1e7a;&#x1e7b;&#x1ee5;&#x1ee6;&#x1ee7;&#x1ee9;&#x1eeb;&#x1eec;&#x1eed;&#x1eef;&#x1ef1;]#u#g</translation>
+                <translation>s#[&#x00d9;&#x00da;&#x00db;&#x0168;&#x016a;&#x016c;&#x016e;&#x0170;&#x0172;&#x01af;&#x01d3;&#x01d5;&#x01d7;&#x01d9;&#x01db;&#x0214;&#x0216;&#x1e72;&#x1e74;&#x1e76;&#x1e78;&#x1ee4;&#x1ee8;&#x1eea;&#x1eee;&#x1ef0;]#U#g</translation>
+                <translation>s#[&#x028b;&#x1e7d;&#x1e7f;]#v#g</translation>
+                <translation>s#[&#x01b2;&#x1e7c;&#x1e7e;]#V#g</translation>
+                <translation>s#[&#x0175;&#x1e81;&#x1e83;&#x1e85;&#x1e87;&#x1e89;&#x1e98;]#w#g</translation>
+                <translation>s#[&#x0174;&#x1e80;&#x1e82;&#x1e84;&#x1e86;&#x1e88;]#W#g</translation>
+                <translation>s#[&#x1e8b;&#x1e8d;]#x#g</translation>
+                <translation>s#[&#x1e8a;&#x1e8c;]#X#g</translation>
+                <translation>s#[&#x00fd;&#x00ff;&#x0177;&#x01b4;&#x0233;&#x1e8f;&#x1e99;&#x1ef3;&#x1ef5;&#x1ef6;&#x1ef7;&#x1ef9;]#y#g</translation>
+                <translation>s#[&#x00dd;&#x0178;&#x0176;&#x01b3;&#x0232;&#x1e8e;&#x1ef2;&#x1ef4;&#x1ef8;]#Y#g</translation>
+                <translation>s#[&#x017a;&#x017c;&#x017e;&#x01b6;&#x0225;&#x0290;&#x0291;&#x1e91;&#x1e93;&#x1e95;&#x1e95;]#z#g</translation>
+                <translation>s#[&#x0179;&#x017b;&#x017d;&#x01b5;&#x0224;&#x1e90;&#x1e92;&#x1e94;]#Z#g</translation>
                 <translation>s#[^0-9a-zA-Z_$~\.\-\/]#!#g</translation>
-                <translation>s#!+#x#g</translation>
+                <translation>s#!+##g</translation>
+                <translation>s#-+#-#g</translation>
+                <translation>s#^(.{250}).*$#$1#</translation>
             </filetranslations>
             <foldertranslations enabled="false" />
+            <!--
+                The xsd translations are only necessary if you have contents from older OpenCms versions deployed in the current OpenCms version and have not changed the
+                paths to the xsd in your contents manually.
+                If you do not need it, remove it or make it a comment.
+            -->
+            <xsdtranslations enabled="true">
+                <!-- In OpenCms 11 the folder /system/shared/ was moved to /system/config/, what makes the following translations necessary if you use the decorator. -->
+                <translation>s#opencms://system/shared/decoration/decorationconfiguration\.xsd#opencms://system/config/decoration/decorationconfiguration.xsd#</translation>
+                <translation>s#opencms://system/shared/decoration/decoration\.xsd#opencms://system/config/decoration/decoration.xsd#</translation>
+            </xsdtranslations>
         </translations>
         <xmlcontent>
             <widgets>
-                <widget class="org.opencms.widgets.CmsCalendarWidget" alias="DateTimeWidget" />
-                <widget class="org.opencms.widgets.CmsCategoryWidget" alias="CategoryWidget" />
-                <widget class="org.opencms.widgets.CmsCheckboxWidget" alias="BooleanWidget" />
-                <widget class="org.opencms.widgets.CmsColorpickerWidget"
-                    alias="ColorpickerWidget" />
-                <widget class="org.opencms.widgets.CmsComboWidget" alias="ComboWidget" />
-                <widget class="org.opencms.widgets.CmsDisplayWidget" alias="DisplayWidget" />
-                <widget class="org.opencms.widgets.CmsGroupWidget" alias="GroupWidget" />
-                <widget class="org.opencms.widgets.CmsHtmlWidget" alias="HtmlWidget" />
-                <widget class="org.opencms.widgets.CmsInputWidget" alias="StringWidget" />
-                <widget class="org.opencms.widgets.CmsInputWidgetPlaintext"
-                    alias="StringWidgetPlaintext" />
-                <widget class="org.opencms.widgets.CmsLinkGalleryWidget"
-                    alias="LinkGalleryWidget" />
-                <widget class="org.opencms.widgets.CmsLocalizationWidget"
-                    alias="LocalizationWidget" />
-                <widget class="org.opencms.widgets.CmsMultiSelectWidget"
-                    alias="MultiSelectWidget" />
-                <widget class="org.opencms.widgets.CmsMultiSelectGroupWidget"
-                    alias="GroupMultiSelectorWidget" />
-                <widget class="org.opencms.widgets.CmsOrgUnitWidget" alias="OrgUnitWidget" />
-                <widget class="org.opencms.widgets.CmsPrincipalWidget" alias="PrincipalWidget" />
-                <widget class="org.opencms.widgets.CmsRadioSelectWidget"
-                    alias="RadioSelectWidget" />
-                <widget class="org.opencms.widgets.CmsSelectGroupWidget"
-                    alias="GroupSelectorWidget" />
-                <widget class="org.opencms.widgets.CmsSelectWidget" alias="SelectorWidget" />
-                <widget class="org.opencms.widgets.CmsTextareaWidget" alias="TextareaWidget" />
-                <widget class="org.opencms.widgets.CmsTextareaWidgetPlaintext"
-                    alias="TextareaWidgetPlaintext" />
-                <widget class="org.opencms.widgets.CmsUserWidget" alias="UserWidget" />
-                <widget class="org.opencms.widgets.CmsVfsFileWidget" alias="VfsFileWidget" />
-                <widget class="org.opencms.widgets.CmsVfsImageWidget" alias="VfsImageWidget" />
-                <widget class="org.opencms.widgets.CmsAdeDownloadGalleryWidget"
-                    alias="DownloadGalleryWidget" />
-                <widget class="org.opencms.widgets.CmsAdeImageGalleryWidget"
-                    alias="ImageGalleryWidget" />
-                <widget class="org.opencms.widgets.CmsTypeComboWidget" alias="TypeComboWidget" />
-                <widget class="org.opencms.widgets.CmsLocationPickerWidget" alias="LocationPickerWidget" />
+                <widget class="org.opencms.widgets.CmsCalendarWidget">
+                    <widget-alias>DateTimeWidget</widget-alias>
+                    <widget-alias>datetime</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsCategoryWidget">
+                    <widget-alias>CategoryWidget</widget-alias>
+                    <widget-alias>category</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsCheckboxWidget">
+                    <widget-alias>BooleanWidget</widget-alias>
+                    <widget-alias>checkbox</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsColorpickerWidget">
+                    <widget-alias>ColorpickerWidget</widget-alias>
+                    <widget-alias>colorpicker</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsComboWidget">
+                    <widget-alias>ComboWidget</widget-alias>
+                    <widget-alias>combo</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsSelectComboWidget">
+                    <widget-alias>SelectComboWidget</widget-alias>
+                    <widget-alias>selectcombo</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsDisplayWidget">
+                    <widget-alias>DisplayWidget</widget-alias>
+                    <widget-alias>display</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsGroupWidget">
+                    <widget-alias>GroupWidget</widget-alias>
+                    <widget-alias>group</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsHtmlWidget">
+                    <widget-alias>HtmlWidget</widget-alias>
+                    <widget-alias>html</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsInputWidget">
+                    <widget-alias>StringWidget</widget-alias>
+                    <widget-alias>string</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsInputWidgetPlaintext">
+                    <widget-alias>StringWidgetPlaintext</widget-alias>
+                    <widget-alias>string-plaintext</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsLinkGalleryWidget">
+                    <widget-alias>LinkGalleryWidget</widget-alias>
+                    <widget-alias>linkgallery</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsLocalizationWidget">
+                    <widget-alias>LocalizationWidget</widget-alias>
+                    <widget-alias>localization</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsMultiSelectWidget">
+                    <widget-alias>MultiSelectWidget</widget-alias>
+                    <widget-alias>multiselect</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsMultiSelectGroupWidget">
+                    <widget-alias>GroupMultiSelectorWidget</widget-alias>
+                    <widget-alias>groupmultiselect</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsOrgUnitWidget">
+                    <widget-alias>OrgUnitWidget</widget-alias>
+                    <widget-alias>orgunit</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsPrincipalWidget">
+                    <widget-alias>PrincipalWidget</widget-alias>
+                    <widget-alias>principal</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsRadioSelectWidget">
+                    <widget-alias>RadioSelectWidget</widget-alias>
+                    <widget-alias>radio</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsSelectGroupWidget">
+                    <widget-alias>GroupSelectorWidget</widget-alias>
+                    <widget-alias>groupselect</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsSelectWidget">
+                    <widget-alias>SelectorWidget</widget-alias>
+                    <widget-alias>select</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsTextareaWidget">
+                    <widget-alias>TextareaWidget</widget-alias>
+                    <widget-alias>textarea</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsTextareaWidgetPlaintext">
+                    <widget-alias>TextareaWidgetPlaintext</widget-alias>
+                    <widget-alias>textarea-plaintext</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsUserWidget">
+                    <widget-alias>UserWidget</widget-alias>
+                    <widget-alias>user</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsVfsFileWidget">
+                    <widget-alias>VfsFileWidget</widget-alias>
+                    <widget-alias>file</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsVfsImageWidget">
+                    <widget-alias>VfsImageWidget</widget-alias>
+                    <widget-alias>image</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsAdeDownloadGalleryWidget">
+                    <widget-alias>DownloadGalleryWidget</widget-alias>
+                    <widget-alias>downloadgallery</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsAdeImageGalleryWidget">
+                    <widget-alias>ImageGalleryWidget</widget-alias>
+                    <widget-alias>imagegallery</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsTypeComboWidget">
+                    <widget-alias>TypeComboWidget</widget-alias>
+                    <widget-alias>typecombo</widget-alias>
+                </widget>
+                <widget class="org.opencms.widgets.CmsLocationPickerWidget">
+                    <widget-alias>LocationPickerWidget</widget-alias>
+                    <widget-alias>location</widget-alias>
+                </widget>
                 <widget class="org.opencms.widgets.CmsDependentSelectWidget">
                     <widget-alias>DependentSelectWidget</widget-alias>
                     <widget-alias>dependentselect</widget-alias>
@@ -788,35 +601,26 @@
                     <widget-alias>DisplayTypeSelectWidget</widget-alias>
                     <widget-alias>displaytype</widget-alias>
                 </widget>
-                <widget class="org.opencms.widgets.CmsSerialDateWidget" alias="SerialDateWidget" />
+                <widget class="org.opencms.widgets.CmsSerialDateWidget">
+                    <widget-alias>SerialDateWidget</widget-alias>
+                    <widget-alias>serialdate</widget-alias>
+                </widget>
             </widgets>
             <schematypes>
-                <schematype class="org.opencms.xml.types.CmsXmlBooleanValue"
-                    defaultwidget="org.opencms.widgets.CmsCheckboxWidget" />
-                <schematype class="org.opencms.xml.types.CmsXmlColorValue"
-                    defaultwidget="org.opencms.widgets.CmsColorpickerWidget" />
-                <schematype class="org.opencms.xml.types.CmsXmlDisplayFormatterValue"
-                    defaultwidget="org.opencms.widgets.CmsDisplayTypeSelectWidget" />
-                <schematype class="org.opencms.xml.types.CmsXmlDateTimeValue"
-                    defaultwidget="org.opencms.widgets.CmsCalendarWidget" />
-                <schematype class="org.opencms.xml.types.CmsXmlHtmlValue"
-                    defaultwidget="org.opencms.widgets.CmsHtmlWidget" />
-                <schematype class="org.opencms.xml.types.CmsXmlLocaleValue"
-                    defaultwidget="org.opencms.widgets.CmsInputWidget" />
-                <schematype class="org.opencms.xml.types.CmsXmlPlainTextStringValue"
-                    defaultwidget="org.opencms.widgets.CmsInputWidget" />
-                <schematype class="org.opencms.xml.types.CmsXmlStringValue"
-                    defaultwidget="org.opencms.widgets.CmsInputWidget" />
-                <schematype class="org.opencms.xml.types.CmsXmlVarLinkValue"
-                    defaultwidget="org.opencms.widgets.CmsVfsFileWidget" />
-                <schematype class="org.opencms.xml.types.CmsXmlVfsFileValue"
-                    defaultwidget="org.opencms.widgets.CmsVfsFileWidget" />
-                <schematype class="org.opencms.xml.types.CmsXmlVfsImageValue"
-                    defaultwidget="org.opencms.widgets.CmsVfsImageWidget" />
-                <schematype class="org.opencms.xml.types.CmsXmlCategoryValue"
-                    defaultwidget="org.opencms.widgets.CmsCategoryWidget" />
-                <schematype class="org.opencms.xml.types.CmsXmlSerialDateValue"
-                    defaultwidget="org.opencms.widgets.CmsSerialDateWidget" />
+                <schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.widgets.CmsCheckboxWidget" />
+                <schematype class="org.opencms.xml.types.CmsXmlColorValue" defaultwidget="org.opencms.widgets.CmsColorpickerWidget" />
+                <schematype class="org.opencms.xml.types.CmsXmlDisplayFormatterValue" defaultwidget="org.opencms.widgets.CmsDisplayTypeSelectWidget" />
+                <schematype class="org.opencms.xml.types.CmsXmlDateTimeValue" defaultwidget="org.opencms.widgets.CmsCalendarWidget" />
+                <schematype class="org.opencms.xml.types.CmsXmlHtmlValue" defaultwidget="org.opencms.widgets.CmsHtmlWidget" />
+                <schematype class="org.opencms.xml.types.CmsXmlLocaleValue" defaultwidget="org.opencms.widgets.CmsInputWidget" />
+                <schematype class="org.opencms.xml.types.CmsXmlPlainTextStringValue" defaultwidget="org.opencms.widgets.CmsInputWidget" />
+                <schematype class="org.opencms.xml.types.CmsXmlStringValue" defaultwidget="org.opencms.widgets.CmsInputWidget" />
+                <schematype class="org.opencms.xml.types.CmsXmlVarLinkValue" defaultwidget="org.opencms.widgets.CmsVfsFileWidget" />
+                <schematype class="org.opencms.xml.types.CmsXmlVfsFileValue" defaultwidget="org.opencms.widgets.CmsVfsFileWidget" />
+                <schematype class="org.opencms.xml.types.CmsXmlVfsImageValue" defaultwidget="org.opencms.widgets.CmsVfsImageWidget" />
+                <schematype class="org.opencms.xml.types.CmsXmlCategoryValue" defaultwidget="org.opencms.widgets.CmsCategoryWidget" />
+                <schematype class="org.opencms.xml.types.CmsXmlDynamicCategoryValue" defaultwidget="org.opencms.widgets.CmsCategoryWidget" />
+                <schematype class="org.opencms.xml.types.CmsXmlSerialDateValue" defaultwidget="org.opencms.widgets.CmsSerialDateWidget" />
             </schematypes>
         </xmlcontent>
     </vfs>

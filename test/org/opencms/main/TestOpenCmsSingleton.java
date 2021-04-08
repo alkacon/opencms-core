@@ -135,7 +135,7 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
             }
         }
 
-        assertEquals("ISO-8859-1", systemEncoding);
+        assertEquals("UTF-8", systemEncoding);
         assertEquals(systemEncoding, workplaceEncoding);
         assertEquals(systemEncoding, jspEncoding);
     }
@@ -228,6 +228,35 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
     }
 
     /**
+     * Test case for resource initialization.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    public void testInitResource() throws Exception {
+
+        echo("Testing access to initResource method");
+
+        CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+
+        cms.loginUser("Admin", "admin");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        cms.getRequestContext().setSiteRoot("/sites/default/");
+
+        HttpServletRequest req = new OpenCmsTestServletRequest();
+        HttpServletResponse res = new OpenCmsTestServletResponse();
+
+        CmsResource resource = OpenCms.initResource(cms, "/folder1/subfolder12/", req, res);
+        assertEquals("/sites/default/folder1/subfolder12/index.html", resource.getRootPath());
+
+        CmsProperty defaultFileProperty = new CmsProperty("default-file", "page1.html", null);
+        cms.lockResource("/folder1/subfolder12/");
+        cms.writePropertyObject("/folder1/subfolder12/", defaultFileProperty);
+
+        CmsResource resource2 = OpenCms.initResource(cms, "/folder1/subfolder12/", req, res);
+        assertEquals("/sites/default/folder1/subfolder12/page1.html", resource2.getRootPath());
+    }
+
+    /**
      * Test case for the logger.<p>
      *
      * @throws Exception if the test fails
@@ -261,34 +290,5 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
         if (noException) {
             fail("Writing to 'fatal' log level did not cause test to fail.");
         }
-    }
-
-    /**
-     * Test case for resource initialization.<p>
-     *
-     * @throws Exception if the test fails
-     */
-    public void testInitResource() throws Exception {
-
-        echo("Testing access to initResource method");
-
-        CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-
-        cms.loginUser("Admin", "admin");
-        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-        cms.getRequestContext().setSiteRoot("/sites/default/");
-
-        HttpServletRequest req = new OpenCmsTestServletRequest();
-        HttpServletResponse res = new OpenCmsTestServletResponse();
-
-        CmsResource resource = OpenCms.initResource(cms, "/folder1/subfolder12/", req, res);
-        assertEquals("/sites/default/folder1/subfolder12/index.html", resource.getRootPath());
-
-        CmsProperty defaultFileProperty = new CmsProperty("default-file", "page1.html", null);
-        cms.lockResource("/folder1/subfolder12/");
-        cms.writePropertyObject("/folder1/subfolder12/", defaultFileProperty);
-
-        CmsResource resource2 = OpenCms.initResource(cms, "/folder1/subfolder12/", req, res);
-        assertEquals("/sites/default/folder1/subfolder12/page1.html", resource2.getRootPath());
     }
 }

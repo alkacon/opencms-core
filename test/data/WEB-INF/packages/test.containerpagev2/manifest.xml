@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<infoproject>Offline</infoproject>
+		<export_version>10</export_version>
+	</info>
+	<module>
+		<name>test.containerpagev2</name>
+		<nicename/>
+		<class/>
+		<site>/sites/default</site>
+		<export-mode name="reduced"/>
+		<description/>
+		<version>0.1</version>
+		<authorname/>
+		<authoremail/>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints/>
+		<resources>
+			<resource uri="/system/modules/test.containerpagev2/"/>
+			<resource uri="/subsitemap/"/>
+		</resources>
+		<excluderesources/>
+		<parameters/>
+		<resourcetypes>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="testelement" id="37485">
+				<param name="schema">/system/modules/test.containerpagev2/schemas/testelement.xsd</param>
+			</type>
+		</resourcetypes>
+		<explorertypes>
+			<explorertype name="testelement" key="type.testelement.name" smalliconstyle="oc-icon-16-default" bigiconstyle="oc-icon-24-default" reference="xmlcontent">
+				<newresource creatable="true" order="10" autosetnavigation="false" autosettitle="false" info="type.testelement.description" key="type.testelement.title"/>
+			</explorertype>
+		</explorertypes>
+	</module>
+	<files>
+		<file>
+			<destination>subsitemap</destination>
+			<type>subsitemap</type>
+			<uuidstructure>107819c3-96e7-11eb-af02-75c0ff43030e</uuidstructure>
+			<datecreated>Tue, 06 Apr 2021 14:47:52 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/test.containerpagev2/elements/template.jsp]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>subsitemap/page1.html</source>
+			<destination>subsitemap/page1.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>4131bdf2-96e8-11eb-af02-75c0ff43030e</uuidstructure>
+			<uuidresource>4131bdf3-96e8-11eb-af02-75c0ff43030e</uuidresource>
+			<datecreated>Tue, 06 Apr 2021 14:56:23 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>subsitemap/page1.newformat.xml</source>
+			<destination>subsitemap/page1.newformat.xml</destination>
+			<type>plain</type>
+			<uuidstructure>b838e459-97ab-11eb-a517-75c0ff43030e</uuidstructure>
+			<uuidresource>b838e45a-97ab-11eb-a517-75c0ff43030e</uuidresource>
+			<datecreated>Wed, 07 Apr 2021 14:15:35 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>subsitemap/.content</destination>
+			<type>content_folder</type>
+			<uuidstructure>178efb26-96e7-11eb-af02-75c0ff43030e</uuidstructure>
+			<datecreated>Tue, 06 Apr 2021 14:48:04 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>subsitemap/.content/.config</source>
+			<destination>subsitemap/.content/.config</destination>
+			<type>sitemap_config</type>
+			<uuidstructure>179033a8-96e7-11eb-af02-75c0ff43030e</uuidstructure>
+			<uuidresource>179033a9-96e7-11eb-af02-75c0ff43030e</uuidresource>
+			<datecreated>Tue, 06 Apr 2021 14:48:04 GMT</datecreated>
+			<flags>512</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sitemap configuration file]]></value>
+				</property>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>subsitemap/.content/testelement</destination>
+			<type>folder</type>
+			<uuidstructure>746706d3-96e8-11eb-af02-75c0ff43030e</uuidstructure>
+			<datecreated>Tue, 06 Apr 2021 14:57:49 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>subsitemap/.content/testelement/testelement_00001.xml</source>
+			<destination>subsitemap/.content/testelement/testelement_00001.xml</destination>
+			<type>testelement</type>
+			<uuidstructure>746929b5-96e8-11eb-af02-75c0ff43030e</uuidstructure>
+			<uuidresource>746929b6-96e8-11eb-af02-75c0ff43030e</uuidresource>
+			<datecreated>Tue, 06 Apr 2021 14:57:49 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<properties/>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<properties/>
+		</file>
+		<file>
+			<destination>system/modules/test.containerpagev2</destination>
+			<type>folder</type>
+			<uuidstructure>530461e8-96e7-11eb-af02-75c0ff43030e</uuidstructure>
+			<datecreated>Tue, 06 Apr 2021 14:49:43 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/test.containerpagev2/.config</source>
+			<destination>system/modules/test.containerpagev2/.config</destination>
+			<type>module_config</type>
+			<uuidstructure>5306f9fa-96e7-11eb-af02-75c0ff43030e</uuidstructure>
+			<uuidresource>5306f9fb-96e7-11eb-af02-75c0ff43030e</uuidresource>
+			<datecreated>Tue, 06 Apr 2021 14:49:43 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/test.containerpagev2/elements</destination>
+			<type>folder</type>
+			<uuidstructure>cfce563a-96e7-11eb-af02-75c0ff43030e</uuidstructure>
+			<datecreated>Tue, 06 Apr 2021 14:53:13 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/test.containerpagev2/elements/template.jsp</source>
+			<destination>system/modules/test.containerpagev2/elements/template.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>d5b47fcd-96e7-11eb-af02-75c0ff43030e</uuidstructure>
+			<uuidresource>d5b47fce-96e7-11eb-af02-75c0ff43030e</uuidresource>
+			<datecreated>Tue, 06 Apr 2021 14:53:23 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/test.containerpagev2/formatters</destination>
+			<type>folder</type>
+			<uuidstructure>75f60017-96e7-11eb-af02-75c0ff43030e</uuidstructure>
+			<datecreated>Tue, 06 Apr 2021 14:50:42 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/test.containerpagev2/formatters/testelement.jsp</source>
+			<destination>system/modules/test.containerpagev2/formatters/testelement.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>75f7adc9-96e7-11eb-af02-75c0ff43030e</uuidstructure>
+			<uuidresource>75f7adca-96e7-11eb-af02-75c0ff43030e</uuidresource>
+			<datecreated>Tue, 06 Apr 2021 14:50:42 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample formatter for new resource types]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/test.containerpagev2/formatters/testelement.xml</source>
+			<destination>system/modules/test.containerpagev2/formatters/testelement.xml</destination>
+			<type>formatter_config</type>
+			<uuidstructure>75fd0500-96e7-11eb-af02-75c0ff43030e</uuidstructure>
+			<uuidresource>75fd0501-96e7-11eb-af02-75c0ff43030e</uuidresource>
+			<datecreated>Tue, 06 Apr 2021 14:50:42 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/test.containerpagev2/functions</destination>
+			<type>folder</type>
+			<uuidstructure>4cbac47f-979d-11eb-a517-75c0ff43030e</uuidstructure>
+			<datecreated>Wed, 07 Apr 2021 12:32:21 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/test.containerpagev2/functions/function.jsp</source>
+			<destination>system/modules/test.containerpagev2/functions/function.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>514073b2-979d-11eb-a517-75c0ff43030e</uuidstructure>
+			<uuidresource>514073b3-979d-11eb-a517-75c0ff43030e</uuidresource>
+			<datecreated>Wed, 07 Apr 2021 12:32:29 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/test.containerpagev2/functions/function.xml</source>
+			<destination>system/modules/test.containerpagev2/functions/function.xml</destination>
+			<type>function_config</type>
+			<uuidstructure>622c4506-979d-11eb-a517-75c0ff43030e</uuidstructure>
+			<uuidresource>622c4507-979d-11eb-a517-75c0ff43030e</uuidresource>
+			<datecreated>Wed, 07 Apr 2021 12:32:57 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/test.containerpagev2/i18n</destination>
+			<type>folder</type>
+			<uuidstructure>53091cdf-96e7-11eb-af02-75c0ff43030e</uuidstructure>
+			<datecreated>Tue, 06 Apr 2021 14:49:43 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/test.containerpagev2/i18n/test.containerpagev2.messages_en</source>
+			<destination>system/modules/test.containerpagev2/i18n/test.containerpagev2.messages_en</destination>
+			<type>propertyvfsbundle</type>
+			<uuidstructure>530a0741-96e7-11eb-af02-75c0ff43030e</uuidstructure>
+			<uuidresource>530a0742-96e7-11eb-af02-75c0ff43030e</uuidresource>
+			<datecreated>Tue, 06 Apr 2021 14:49:43 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/test.containerpagev2/schemas</destination>
+			<type>folder</type>
+			<uuidstructure>530b8de4-96e7-11eb-af02-75c0ff43030e</uuidstructure>
+			<datecreated>Tue, 06 Apr 2021 14:49:43 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/test.containerpagev2/schemas/testelement.xsd</source>
+			<destination>system/modules/test.containerpagev2/schemas/testelement.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>75fae21d-96e7-11eb-af02-75c0ff43030e</uuidstructure>
+			<uuidresource>75fae21e-96e7-11eb-af02-75c0ff43030e</uuidresource>
+			<datecreated>Tue, 06 Apr 2021 14:50:42 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample schema for new resource types]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

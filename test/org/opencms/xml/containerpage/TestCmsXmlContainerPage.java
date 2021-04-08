@@ -27,6 +27,7 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.ade.configuration.CmsConfigurationReader;
 import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
@@ -35,13 +36,16 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -53,7 +57,6 @@ import java.util.Map.Entry;
 
 import org.antlr.stringtemplate.StringTemplate;
 
-import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -133,29 +136,20 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
 
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsXmlContainerPage.class.getName());
+        return generateSetupTestWrapper(TestCmsXmlContainerPage.class, "adetest", "/sites/default/", "ade-setup");
+    }
 
-        suite.addTest(new TestCmsXmlContainerPage("testUnmarshal"));
-        suite.addTest(new TestCmsXmlContainerPage("testContainerBeanIsFromMasterLocaleIfAvailable"));
-        suite.addTest(new TestCmsXmlContainerPage("testGetContainerBeanFromDifferentLocaleIfMasterLocaleNotAvailable"));
-        suite.addTest(new TestCmsXmlContainerPage("testOverwriteExistingLocales"));
+    /**
+     * Surrounds a given string with an opening and closing XML element with a given name.
+     *
+     * @param name the name of the XML element
+     * @param content the content string to wrap
+     *
+     * @return the string surrounded by the XML element
+     */
+    public static final String tagWrap(String name, String content) {
 
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("ade-setup", "/");
-                importData("adetest", "/sites/default/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        return "<" + name + ">" + content + "</" + name + ">";
     }
 
     /**
@@ -395,4 +389,81 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
             }
         }
     }
+
+    /**
+     * Test that the new container page format is used if and only if the 'use formatter keys' sitemap config option is set,
+     * also compares the resulting XML to the expected XML.
+     *
+     * @throws Exception if something goes wrong
+     */
+    public void testWriteNewFormat() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        importCoreModule(cms, "org.opencms.base");
+        importModule(cms, "test.containerpagev2");
+        String origPage = "/subsitemap/page1.html";
+        setNewPageFormatEnabled(cms, "/subsitemap/.content/.config", false);
+        String copy1 = "/subsitemap/page1-copy.html";
+        cms.copyResource(origPage, copy1);
+        touch(cms, copy1);
+        assertEquals(read(cms, origPage), read(cms, copy1));
+        setNewPageFormatEnabled(cms, "/subsitemap/.content/.config", true);
+        String copy2 = "/subsitemap/page1-copy2.html";
+        cms.copyResource(origPage, copy2);
+        touch(cms, copy2);
+        assertEquals(read(cms, "/subsitemap/page1.newformat.xml"), read(cms, copy2));
+    }
+
+    /**
+     * Reads file content from VFS and returns it as a string using UTF-8 as encoding.
+     *
+     * @param cms the CMS context
+     * @param path the path  of the file
+     * @return the file content as a string
+     * @throws CmsException if something goes wrong
+     */
+    private String read(CmsObject cms, String path) throws CmsException {
+
+        return new String(cms.readFile(path).getContents(), StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Helper method for enabling/disabling the new container page format in a sitemap configuration.
+     * Only works if the option is already present in the sitemap configuration.
+     *
+     * @param cms the CMS context
+     * @param path the path of the sitemap configuration
+     * @param enabled true if the format should be enabled
+     * @throws Exception if something goes wrong
+     */
+    private void setNewPageFormatEnabled(CmsObject cms, String path, boolean enabled) throws Exception {
+
+        String content = read(cms, path);
+        content = content.replaceFirst(
+            tagWrap(CmsConfigurationReader.N_USE_FORMATTER_KEYS, ".*?"),
+            tagWrap(CmsConfigurationReader.N_USE_FORMATTER_KEYS, "" + enabled));
+        try (AutoCloseable cl = CmsLockUtil.withLockedResources(cms, cms.readResource(path))) {
+            CmsFile file = cms.readFile(path);
+            file.setContents(content.getBytes(StandardCharsets.UTF_8));
+            cms.writeFile(file);
+        }
+        OpenCms.getADEManager().waitForCacheUpdate(false);
+    }
+
+    /**
+     * Touches/rewrites a file in the VFS, with auto-correction enabled.
+     *
+     * @param cms the CMS context
+     * @param path the path of the file
+     * @throws Exception if something goes wrong
+     */
+    private void touch(CmsObject cms, String path) throws Exception {
+
+        try (AutoCloseable cl = CmsLockUtil.withLockedResources(cms, cms.readResource(path))) {
+            cms.getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);
+            CmsFile file = cms.readFile(path);
+            cms.writeFile(file);
+        }
+    }
+
 }

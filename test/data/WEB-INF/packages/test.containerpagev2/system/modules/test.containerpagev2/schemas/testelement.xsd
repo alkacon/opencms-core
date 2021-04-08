@@ -1,0 +1,55 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+
+	<xsd:element name="TestElementData" type="OpenCmsTestElementData"/>
+
+	<xsd:complexType name="OpenCmsTestElementData">
+		<xsd:sequence>
+			<xsd:element name="TestElement" type="OpenCmsTestElement" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsTestElement">
+		<xsd:sequence>
+			<xsd:element name="Title" type="OpenCmsString" />
+			<xsd:element name="Text" type="OpenCmsHtml" />
+			<xsd:element name="Image" type="OpenCmsVfsFile" />
+            <xsd:element name="LinkURI" type="OpenCmsVarLink" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+		    <resourcebundles>
+                <propertybundle name="test.containerpagev2.messages" />
+            </resourcebundles>
+			<FieldSettings>
+                <Setting>
+                    <PropertyName>Title</PropertyName>
+                    <Widget>StringWidget</Widget>
+                    <Default><![CDATA[%(key.type.testelement.title)]]></Default>
+                </Setting>
+                <Setting>
+                    <PropertyName>Text</PropertyName>
+                    <Widget>html</Widget>
+                    <WidgetConfig><![CDATA[height:400px,link,anchor,source,downloadgallery,formatselect]]></WidgetConfig>
+                </Setting>
+                <Setting>
+                    <PropertyName>Image</PropertyName>
+                    <Widget>imagegallery</Widget>
+                    <WidgetConfig>{useformat:true}</WidgetConfig>
+                    <Search>false</Search>
+                </Setting>
+                <Setting>
+                    <PropertyName>LinkURI</PropertyName>
+                    <Widget>file</Widget>
+                    <Search>false</Search>
+                    <Display>singleline</Display>
+                </Setting>
+            </FieldSettings>
+		</xsd:appinfo>
+	</xsd:annotation>
+
+</xsd:schema>

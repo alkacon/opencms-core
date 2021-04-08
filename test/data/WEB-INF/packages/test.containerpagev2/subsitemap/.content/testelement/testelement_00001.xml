@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TestElementData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/test.containerpagev2/schemas/testelement.xsd">
+  <TestElement language="en">
+    <Title><![CDATA[foo]]></Title>
+    <Text name="Text0">
+      <links/>
+      <content><![CDATA[<p>bar</p>]]></content>
+    </Text>
+    <Image/>
+    <LinkURI/>
+  </TestElement>
+</TestElementData>

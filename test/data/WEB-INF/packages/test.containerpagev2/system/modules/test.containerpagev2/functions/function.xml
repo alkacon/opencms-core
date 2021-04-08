@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<FunctionConfigs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/function-v2.xsd">
+  <FunctionConfig language="en">
+    <NiceName><![CDATA[Function]]></NiceName>
+    <Key><![CDATA[functionkey]]></Key>
+    <Jsp>
+      <link type="WEAK">
+        <target><![CDATA[/system/modules/test.containerpagev2/functions/function.jsp]]></target>
+        <uuid>514073b2-979d-11eb-a517-75c0ff43030e</uuid>
+      </link>
+    </Jsp>
+    <Match>
+      <Types>
+        <ContainerType><![CDATA[element]]></ContainerType>
+      </Types>
+    </Match>
+    <StrictContainers>true</StrictContainers>
+    <Setting>
+      <PropertyName><![CDATA[mysetting]]></PropertyName>
+      <Widget><![CDATA[string]]></Widget>
+    </Setting>
+  </FunctionConfig>
+</FunctionConfigs>

@@ -64,7 +64,7 @@
 			<group-users>Users</group-users>
 			<group-guests>Guests</group-guests>
 		</defaultusers>
-		<defaultcontentencoding>ISO-8859-1</defaultcontentencoding>
+		<defaultcontentencoding>UTF-8</defaultcontentencoding>
 		<memorymonitor class='org.opencms.monitor.CmsMemoryMonitor'>
 			<maxusagepercent>90</maxusagepercent>
 			<log-interval>2</log-interval>

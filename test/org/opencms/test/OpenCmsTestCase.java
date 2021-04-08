@@ -745,6 +745,33 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
+     * Imports a module from the modules subdirectory of the project path.
+     *
+     * <p>Only imports the module data, and does not build any JAR files.
+     *
+     * @param cms the CMS context
+     * @param coreModule the module name
+     * @throws CmsException if something goes wrong
+     */
+    public static void importCoreModule(CmsObject cms, String coreModule) throws CmsException {
+
+        try {
+            OpenCms.getSearchManager().pauseOfflineIndexing();
+            CmsShellReport report = new CmsShellReport(cms.getRequestContext().getLocale());
+            OpenCms.getModuleManager().replaceModule(
+                cms,
+                CmsStringUtil.joinPaths(
+                    OpenCmsTestProperties.getInstance().getProjectPath(),
+                    "modules",
+                    coreModule,
+                    "resources"),
+                report);
+        } finally {
+            OpenCms.getSearchManager().resumeOfflineIndexing();
+        }
+    }
+
+    /**
      * Does a database import from the given RFS folder to the given VFS folder.<p>
      *
      * @param importFolder the RFS folder to import from
@@ -854,6 +881,14 @@ public class OpenCmsTestCase extends TestCase {
             + moduleName
             + suffix
             + ".zip";
+        if (!new File(path).exists()) {
+            path = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+                "packages"
+                    + File.separator
+                    + ((null != subfolder) && !subfolder.isEmpty() ? (subfolder + File.separator) : ""))
+                + moduleName
+                + suffix;
+        }
         try {
             OpenCms.getSearchManager().pauseOfflineIndexing();
             CmsShellReport report = new CmsShellReport(cms.getRequestContext().getLocale());
