@@ -24,6 +24,7 @@
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
 			<relations>
 				<relation element="Containers/Elements/Uri" type="strong" invalidate="parent" />
+				<relation element="Containers/Elements/Formatter" type="strong" />
 			</relations>
 			<modelfolder uri="%(property.style.config)" /> 
 		</xsd:appinfo>
