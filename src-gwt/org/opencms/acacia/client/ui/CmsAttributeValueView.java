@@ -828,6 +828,10 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
      */
     public void toggleFocus(boolean focusOn) {
 
+        if (!isAttached()) {
+            // can happen if values get actively deleted
+            return;
+        }
         if (focusOn) {
             addStyleName(formCss().focused());
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_help) || m_hasError) {
