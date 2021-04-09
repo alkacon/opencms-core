@@ -28,6 +28,7 @@
 package org.opencms.jsp.search.controller;
 
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon;
 import org.opencms.jsp.search.state.CmsSearchStateCommon;
 import org.opencms.jsp.search.state.I_CmsSearchStateCommon;
@@ -115,7 +116,10 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
             if ((null != currentSiteRoot) && !currentSiteRoot.endsWith("/")) {
                 currentSiteRoot = currentSiteRoot + "/";
             }
-            Map<String, String[]> extraParamsMap = CmsRequestUtil.createParameterMap(m_config.getExtraSolrParams());
+            Map<String, String[]> extraParamsMap = CmsRequestUtil.createParameterMap(
+                m_config.getExtraSolrParams(),
+                true,
+                null);
             for (String key : extraParamsMap.keySet()) {
                 for (String value : Arrays.asList(extraParamsMap.get(key))) {
                     value = resolveMacro(value, MACRO_SITE_ROOT, currentSiteRoot);
@@ -137,8 +141,11 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
                 String additionalParamString = resolveMacro(
                     solrValue,
                     MACRO_VALUE,
-                    m_state.getAdditionalParameters().get(additionalParam));
-                Map<String, String[]> extraParamsMap = CmsRequestUtil.createParameterMap(additionalParamString);
+                    CmsEncoder.encode(m_state.getAdditionalParameters().get(additionalParam), null));
+                Map<String, String[]> extraParamsMap = CmsRequestUtil.createParameterMap(
+                    additionalParamString,
+                    true,
+                    null);
                 for (String key : extraParamsMap.keySet()) {
                     for (String value : Arrays.asList(extraParamsMap.get(key))) {
                         if (SET_VARIABLES.contains(key)) {
