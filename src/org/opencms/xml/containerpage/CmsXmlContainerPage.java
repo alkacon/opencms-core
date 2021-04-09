@@ -35,6 +35,8 @@ import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
@@ -727,11 +729,18 @@ public class CmsXmlContainerPage extends CmsXmlContent {
     protected void saveContainerPage(CmsObject cms, Element parent, CmsContainerPageBean cntPage) throws CmsException {
 
         parent.clearContent();
-
+        CmsProperty formatProp = cms.readPropertyObject(
+            getFile(),
+            CmsPropertyDefinition.PROPERTY_CONTAINERPAGE_FORMAT,
+            true);
         CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(cms, getFile().getRootPath());
-        if (adeConfig.isUseFormatterKeys()) {
+        String format = formatProp.getValue("1").trim();
+        if ("1".equals(format)) {
+            saveContainerPageV1(cms, parent, cntPage, adeConfig);
+        } else if ("2".equals(format)) {
             saveContainerPageV2(cms, parent, cntPage, adeConfig);
         } else {
+            LOG.error("Invalid container page format " + format + ", using default");
             saveContainerPageV1(cms, parent, cntPage, adeConfig);
         }
     }

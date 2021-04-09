@@ -28,6 +28,7 @@
 package org.opencms.ui.apps.sitemanager;
 
 import org.opencms.ade.configuration.CmsADEManager;
+import org.opencms.ade.sitemap.CmsSitemapUtil;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -337,6 +338,7 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
         String sitePath = cms.getSitePath(subSitemapFolder);
         String folderName = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONTENT_FOLDER_NAME + "/");
         String sitemapConfigName = CmsStringUtil.joinPaths(folderName, CmsADEManager.CONFIG_FILE_NAME);
+        CmsSitemapUtil.updatePageFormatProperty(cms, subSitemapFolder);
         if (!cms.existsResource(folderName)) {
             cms.createResource(
                 folderName,

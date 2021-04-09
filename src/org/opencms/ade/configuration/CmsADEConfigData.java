@@ -1177,27 +1177,6 @@ public class CmsADEConfigData {
     }
 
     /**
-     * Returns true if the new container page format, which uses formatter keys (but also is different in other ways from the new format
-     *
-     * @return true if formatter keys should be used
-     */
-    public boolean isUseFormatterKeys() {
-
-        Boolean result = m_data.getUseFormatterKeys();
-        if (result != null) {
-            LOG.debug("isUseFormatterKeys - found value " + result + " at " + getBasePath());
-            return result.booleanValue();
-        }
-        CmsADEConfigData parent = parent();
-        if (parent != null) {
-            return parent.isUseFormatterKeys();
-        }
-        boolean defaultValue = false;
-        LOG.debug("isUseFormatterKeys - using defaultValue " + defaultValue);
-        return defaultValue;
-    }
-
-    /**
      * Fetches the parent configuration of this configuration.<p>
      *
      * If this configuration is a sitemap configuration with no direct parent configuration,

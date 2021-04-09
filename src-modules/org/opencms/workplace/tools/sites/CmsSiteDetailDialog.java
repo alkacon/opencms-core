@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools.sites;
 
 import org.opencms.ade.configuration.CmsADEManager;
+import org.opencms.ade.sitemap.CmsSitemapUtil;
 import org.opencms.configuration.CmsSitesConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -733,6 +734,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
         String sitePath = cms.getSitePath(subSitemapFolder);
         String folderName = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONTENT_FOLDER_NAME + "/");
         String sitemapConfigName = CmsStringUtil.joinPaths(folderName, CmsADEManager.CONFIG_FILE_NAME);
+        CmsSitemapUtil.updatePageFormatProperty(cms, subSitemapFolder);
         if (!cms.existsResource(folderName)) {
             cms.createResource(
                 folderName,

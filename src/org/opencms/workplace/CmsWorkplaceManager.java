@@ -355,6 +355,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** A flag, indicating if the categories should be displayed separated by repository in the category selection dialog. */
     private boolean m_displayCategorySelectionCollapsed;
 
+    /** True if the new page format should be enabled for new sites. */
+    private boolean m_useFormatterKeysForNewSites;
+
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
      */
@@ -1787,6 +1790,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
+     * Return true if the new container page format should be used for new sites/subsites.
+     *
+     * @return true if the new container page format should be used for new sites/subsites.
+     */
+    public boolean isUseFormatterKeysForNewSites() {
+
+        return m_useFormatterKeysForNewSites;
+    }
+
+    /**
      * Returns if XML content is automatically corrected when opened with the editor.<p>
      *
      * @return <code>true</code> if XML content is automatically corrected when opened with the editor, otherwise <code>false</code>
@@ -2169,6 +2182,15 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public void setToolManager(CmsToolManager toolManager) {
 
         m_toolManager = toolManager;
+    }
+
+    /**
+     * Sets which page format to use for newly creates sites / subsites by default.
+     * @param useFormatterKeysForNewSites true if the new format shoul be used
+     */
+    public void setUseFormatterKeysForNewSites(String useFormatterKeysForNewSites) {
+
+        m_useFormatterKeysForNewSites = Boolean.parseBoolean(useFormatterKeysForNewSites);
     }
 
     /**
