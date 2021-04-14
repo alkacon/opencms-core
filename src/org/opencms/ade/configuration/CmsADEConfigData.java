@@ -48,6 +48,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider.SitemapDirectEditPermissions;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
@@ -206,6 +207,9 @@ public class CmsADEConfigData {
 
     /** Lazily initialized cache for formatters by JSP id. */
     private Multimap<CmsUUID, I_CmsFormatterBean> m_formattersByJspId;
+
+    /** Type names configured in this or ancestor sitemap configurations. */
+    private Set<String> m_typesInAncestors;
 
     /**
      * Creates a new configuration data object, based on an internal configuration data bean and a
@@ -609,6 +613,36 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Returns the direct edit permissions for e.g. list elements with the given type.
+     *
+     * @param type the resource type name
+     * @return the permissions
+     */
+    public SitemapDirectEditPermissions getDirectEditPermissions(String type) {
+
+        if (type == null) {
+            LOG.error("Null type in checkListEdit");
+            return SitemapDirectEditPermissions.all;
+        }
+
+        if (!getTypesInAncestors().contains(type)) {
+            // not configured anywhere for ADE
+            return SitemapDirectEditPermissions.all;
+        }
+
+        CmsResourceTypeConfig typeConfig = getResourceType(type);
+        if (typeConfig == null) {
+            return SitemapDirectEditPermissions.none;
+        }
+
+        if (typeConfig.isCreateDisabled() || typeConfig.isAddDisabled()) {
+            return SitemapDirectEditPermissions.editOnly;
+        }
+
+        return SitemapDirectEditPermissions.all;
+    }
+
+    /**
      * Returns all available display formatters.<p>
      *
      * @param cms the cms context
@@ -995,6 +1029,27 @@ public class CmsADEConfigData {
     public Collection<CmsResourceTypeConfig> getSearchableTypes(CmsObject cms) {
 
         return getResourceTypes();
+    }
+
+    /**
+     * Gets the set of names of types configured in this or any ancestor sitemap configurations.
+     *
+     * @return the set of type names from all ancestor configurations
+     */
+    public Set<String> getTypesInAncestors() {
+
+        Set<String> result = m_typesInAncestors;
+        if (result != null) {
+            return result;
+        } else {
+            Set<String> mutableResult = new HashSet<>();
+            for (CmsResourceTypeConfig typeConfig : internalGetResourceTypes(false)) {
+                mutableResult.add(typeConfig.getTypeName());
+            }
+            result = Collections.unmodifiableSet(mutableResult);
+            m_typesInAncestors = result;
+            return result;
+        }
     }
 
     /**

@@ -38,6 +38,7 @@ import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.I_CmsCollectorInfoFactory;
 import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
@@ -49,9 +50,9 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.Messages;
-import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 
+import java.util.Locale;
 import java.util.Random;
 
 import javax.servlet.jsp.JspException;
@@ -73,6 +74,59 @@ import com.google.web.bindery.autobean.vm.AutoBeanFactorySource;
  * @since 8.0.0
  */
 public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
+
+    /**
+     * Direct edit permissions according to the sitemap configuration.
+     */
+    public static enum SitemapDirectEditPermissions {
+
+        /** Everything allowed. */
+        all(true, true),
+
+        /** Can edit, but not add. */
+        editOnly(false, true),
+
+        /** Nothing allowed. */
+        none(false, false);
+
+        /** True if creating elements is allowed. */
+        private boolean m_create;
+
+        /** True if editing elements is allowed. */
+        private boolean m_edit;
+
+        /**
+         * Private constructor.
+         *
+         * @param create true if creation is allowed
+         * @param edit true if editing is allowed
+         */
+        SitemapDirectEditPermissions(boolean create, boolean edit) {
+
+            m_create = create;
+            m_edit = edit;
+        }
+
+        /**
+         * Returns true if element creation is allowed.
+         *
+         * @return true if element creation is allowed
+         */
+        public boolean canCreate() {
+
+            return m_create;
+        }
+
+        /**
+         * Returns true if editing elements is allowed.
+         *
+         * @return true if editing elements is allowed
+         */
+        public boolean canEdit() {
+
+            return m_edit;
+        }
+    };
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAdvancedDirectEditProvider.class);
@@ -330,6 +384,9 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         JSONObject editableData = new JSONObject();
         CmsResource resource = resourceInfo.getResource();
         boolean writable = false;
+        String uri = m_cms.getRequestContext().getUri();
+        uri = m_cms.getRequestContext().addSiteRoot(uri);
+        CmsADEConfigData configData = OpenCms.getADEManager().lookupConfigurationWithCache(m_cms, uri);
         if (resource != null) {
             try {
                 writable = m_cms.hasPermissions(
@@ -353,9 +410,6 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         editableData.put("elementname", params.getElement());
         editableData.put("newlink", editNewLink);
         editableData.put("hasResource", resource != null);
-        editableData.put("hasEdit", params.getButtonSelection().isShowEdit() && writable);
-        editableData.put("hasDelete", params.getButtonSelection().isShowDelete() && writable);
-        editableData.put("hasNew", params.getButtonSelection().isShowNew());
         editableData.put("newtitle", m_messages.key(Messages.GUI_EDITOR_TITLE_NEW_0));
         editableData.put(
             "unreleaseOrExpired",
@@ -366,16 +420,14 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         editableData.put(CmsEditorConstants.ATTR_POST_CREATE_HANDLER, params.getPostCreateHandler());
         CmsUUID viewId = CmsUUID.getNullUUID();
         boolean hasEditHandler = false;
+        String typeName = null;
         if ((resourceInfo.getResource() != null) && resourceInfo.getResource().isFile()) {
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resourceInfo.getResource());
             if (type instanceof CmsResourceTypeXmlContent) {
                 hasEditHandler = ((CmsResourceTypeXmlContent)type).getEditHandler(m_cms) != null;
             }
-            CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
-                m_cms,
-                resourceInfo.getResource().getRootPath());
-            CmsResourceTypeConfig typeConfig = configData.getResourceType(
-                OpenCms.getResourceManager().getResourceType(resourceInfo.getResource()).getTypeName());
+            typeName = OpenCms.getResourceManager().getResourceType(resourceInfo.getResource()).getTypeName();
+            CmsResourceTypeConfig typeConfig = configData.getResourceType(typeName);
             if (typeConfig != null) {
                 viewId = typeConfig.getElementView();
             }
@@ -383,29 +435,33 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
             String linkForNew = params.getLinkForNew();
             if (linkForNew != null) {
                 String[] components = linkForNew.split("\\|");
-                String typeName = components[components.length - 1];
-                String uri = m_cms.getRequestContext().getUri();
-                uri = m_cms.getRequestContext().addSiteRoot(uri);
-                CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(m_cms, uri);
+                typeName = components[components.length - 1];
                 CmsResourceTypeConfig typeConfig = configData.getResourceType(typeName);
                 if (typeConfig != null) {
                     viewId = typeConfig.getElementView();
                 }
             }
         }
+        SitemapDirectEditPermissions sitemapConfigPermissions = configData.getDirectEditPermissions(typeName);
+        editableData.put("hasEdit", params.getButtonSelection().isShowEdit());
+        editableData.put(
+            "hasDelete",
+            params.getButtonSelection().isShowDelete() && writable && sitemapConfigPermissions.canEdit());
+        editableData.put("hasNew", params.getButtonSelection().isShowNew() && sitemapConfigPermissions.canCreate());
+
         editableData.put(CmsEditorConstants.ATTR_ELEMENT_VIEW, viewId);
         editableData.put("hasEditHandler", hasEditHandler);
-        if (m_lastPermissionMode == 1) {
-
-            try {
-                String noEditReason = new CmsResourceUtil(m_cms, resourceInfo.getResource()).getNoEditReason(
-                    OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms),
-                    true);
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(noEditReason)) {
-                    editableData.put("noEditReason", noEditReason);
-                }
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
+        CmsMessages messages = Messages.get().getBundle(locale);
+        if ((m_lastPermissionMode == 1) || !writable || (!sitemapConfigPermissions.canEdit())) {
+            String noEditReason = null;
+            if (sitemapConfigPermissions.canCreate()) {
+                noEditReason = messages.key(Messages.GUI_DIRECTEDIT_CAN_ONLY_BE_CREATED_0);// "Can only be created but not edited";
+            } else {
+                noEditReason = messages.key(Messages.GUI_DIRECTEDIT_CANNOT_BE_CREATED_OR_EDITED_0); // "Cannot be created or edited";
+            }
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(noEditReason)) {
+                editableData.put("noEditReason", noEditReason);
             }
         }
         StringBuffer result = new StringBuffer(512);

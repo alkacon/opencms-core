@@ -194,6 +194,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DIALOG_COLOR_TITLE_0 = "GUI_DIALOG_COLOR_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIRECTEDIT_CAN_ONLY_BE_CREATED_0 = "GUI_DIRECTEDIT_CAN_ONLY_BE_CREATED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIRECTEDIT_CANNOT_BE_CREATED_OR_EDITED_0 = "GUI_DIRECTEDIT_CANNOT_BE_CREATED_OR_EDITED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DIRECTEDIT_TEXT_DELETE_0 = "GUI_DIRECTEDIT_TEXT_DELETE_0";
 
     /** Message constant for key in the resource bundle. */
