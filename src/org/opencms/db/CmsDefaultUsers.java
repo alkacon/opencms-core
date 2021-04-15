@@ -227,9 +227,9 @@ public class CmsDefaultUsers {
         isDefault = isDefault || m_groupGuests.equals(groupName);
         isDefault = isDefault || m_groupUsers.equals(groupName);
 
-        // now check with ou prefix
-        isDefault = isDefault || groupName.endsWith(CmsOrganizationalUnit.SEPARATOR + m_groupAdministrators);
-        isDefault = isDefault || groupName.endsWith(CmsOrganizationalUnit.SEPARATOR + m_groupGuests);
+        // Administrators and Guests groups have no special status in sub-OUs, but the Users group does
+        isDefault = isDefault || groupName.equals(CmsOrganizationalUnit.SEPARATOR + m_groupAdministrators);
+        isDefault = isDefault || groupName.equals(CmsOrganizationalUnit.SEPARATOR + m_groupGuests);
         isDefault = isDefault || groupName.endsWith(CmsOrganizationalUnit.SEPARATOR + m_groupUsers);
 
         return isDefault;
