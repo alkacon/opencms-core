@@ -47,6 +47,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ADDINFO_SCHEMA_0 = "GUI_ADDINFO_SCHEMA_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONTAINERPAGE_EDIT_DISABLED_BY_SITEMAP_CONFIG_0 = "GUI_CONTAINERPAGE_EDIT_DISABLED_BY_SITEMAP_CONFIG_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1 = "GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1";
 
     /** Message constant for key in the resource bundle. */

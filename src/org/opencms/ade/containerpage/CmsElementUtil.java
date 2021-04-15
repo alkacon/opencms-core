@@ -964,6 +964,11 @@ public class CmsElementUtil {
             }
             result.setElementView(elementView);
         }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(permissionInfo.getNoEditReason()) && (typeConfig == null)) {
+            String message = Messages.get().getBundle(wpLocale).key(
+                Messages.GUI_CONTAINERPAGE_EDIT_DISABLED_BY_SITEMAP_CONFIG_0);
+            permissionInfo.setNoEditReason(message);
+        }
         result.setHasSettings(hasSettings(m_cms, elementBean.getResource()));
         result.setPermissionInfo(permissionInfo);
         result.setReleasedAndNotExpired(elementBean.isReleasedAndNotExpired());
