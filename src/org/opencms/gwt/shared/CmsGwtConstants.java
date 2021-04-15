@@ -245,6 +245,9 @@ public final class CmsGwtConstants {
     /** Sub-path for the session update handler. */
     public static final String HANDLER_UPDATE_SESSION = "/updateSession";
 
+    /** Element data to enable / disable the favorite button. */
+    public static final String ATTR_FAVORITE = "fav";
+
     /**
      * Hide constructor.<p>
      */

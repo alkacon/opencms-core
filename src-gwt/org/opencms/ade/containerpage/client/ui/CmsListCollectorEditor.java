@@ -184,6 +184,7 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
         CmsCreateModeSelectionDialog.showDialog(referenceId, new AsyncCallback<String>() {
 
             public void onFailure(Throwable caught) {
+
                 // is never called
             }
 
@@ -212,7 +213,9 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
         Map<Integer, CmsPushButton> result = Maps.newHashMap();
         // only show add to favorites and info button, in case there actually is a resource and not in case of create new only
         if (m_editableData.hasResource()) {
-            result.put(Integer.valueOf(130), createFavButton());
+            if (m_editableData.canFavorite()) {
+                result.put(Integer.valueOf(130), createFavButton());
+            }
             result.put(Integer.valueOf(160), createInfoButton());
         }
         return result;

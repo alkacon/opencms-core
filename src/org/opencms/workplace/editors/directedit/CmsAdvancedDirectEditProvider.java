@@ -81,16 +81,22 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
     public static enum SitemapDirectEditPermissions {
 
         /** Everything allowed. */
-        all(true, true),
+        all(true, true, true),
 
         /** Can edit, but not add. */
-        editOnly(false, true),
+        editOnly(false, true, true),
 
         /** Nothing allowed. */
-        none(false, false);
+        none(false, false, false),
+
+        /** Not found in sitemap config. */
+        notInSitemapConfig(true, true, false);
 
         /** True if creating elements is allowed. */
         private boolean m_create;
+
+        /** Allow favoriting. */
+        private boolean m_favorite;
 
         /** True if editing elements is allowed. */
         private boolean m_edit;
@@ -100,11 +106,13 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
          *
          * @param create true if creation is allowed
          * @param edit true if editing is allowed
+         * @param favorite true if favoriting is allowed
          */
-        SitemapDirectEditPermissions(boolean create, boolean edit) {
+        SitemapDirectEditPermissions(boolean create, boolean edit, boolean favorite) {
 
             m_create = create;
             m_edit = edit;
+            m_favorite = favorite;
         }
 
         /**
@@ -126,7 +134,17 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
 
             return m_edit;
         }
-    };
+
+        /**
+         * Return true if favoriting is allowed.
+         *
+         * @return true if favoriting is allowed
+         */
+        public boolean canFavorite() {
+
+            return m_favorite;
+        }
+    }
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAdvancedDirectEditProvider.class);
@@ -451,6 +469,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
 
         editableData.put(CmsEditorConstants.ATTR_ELEMENT_VIEW, viewId);
         editableData.put("hasEditHandler", hasEditHandler);
+        boolean favorites = sitemapConfigPermissions.canFavorite();
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
         CmsMessages messages = Messages.get().getBundle(locale);
         if ((m_lastPermissionMode == 1) || !writable || (!sitemapConfigPermissions.canEdit())) {
@@ -464,6 +483,8 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
                 editableData.put("noEditReason", noEditReason);
             }
         }
+        editableData.put(CmsGwtConstants.ATTR_FAVORITE, Boolean.valueOf(favorites));
+
         StringBuffer result = new StringBuffer(512);
         if (m_useIds) {
             result.append(

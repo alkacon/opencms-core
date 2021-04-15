@@ -627,7 +627,7 @@ public class CmsADEConfigData {
 
         if (!getTypesInAncestors().contains(type)) {
             // not configured anywhere for ADE
-            return SitemapDirectEditPermissions.all;
+            return SitemapDirectEditPermissions.notInSitemapConfig;
         }
 
         CmsResourceTypeConfig typeConfig = getResourceType(type);

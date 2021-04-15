@@ -56,8 +56,18 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
      * @return the data object
      */
     public static native CmsEditableDataJSO parseEditableData(String jsonText) /*-{
-        return eval('(' + jsonText + ')');
+        return JSON.parse(jsonText);
     }-*/;
+
+    /**
+     * Returns true if the element can be favorited.
+     *
+     * @return true if the element can be favorited
+     */
+    public boolean canFavorite() {
+
+        return getBoolean(CmsGwtConstants.ATTR_FAVORITE);
+    }
 
     /**
      * @see org.opencms.gwt.client.I_CmsEditableData#getContextId()
@@ -213,6 +223,17 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
     public native void setSitePath(String sitePath) /*-{
 
         this.sitePath = sitePath;
+    }-*/;
+
+    /**
+     * Reads an attribute of the underlying Javascript object as a string.<p>
+     *
+     * @param attribute the name of the attribute
+     *
+     * @return the string contained in the given attribute
+     */
+    private native boolean getBoolean(String attribute) /*-{
+        return this[attribute];
     }-*/;
 
     /**
