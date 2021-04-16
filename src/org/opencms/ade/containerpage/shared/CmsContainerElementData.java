@@ -91,6 +91,9 @@ public class CmsContainerElementData extends CmsContainerElement {
     /** The supported container types of a group-container. */
     private Set<String> m_types;
 
+    /** True if the element's type is disabled in the sitemap configuration. */
+    private boolean m_typeDisabled;
+
     /**
      * Returns the contents.<p>
      *
@@ -187,6 +190,11 @@ public class CmsContainerElementData extends CmsContainerElement {
         return formatterConfig;
     }
 
+    /**
+     * Gets the formatter collections for the different containers.
+     *
+     * @return the formatter collections for the containers
+     */
     public Map<String, CmsFormatterConfigCollection> getFormatters() {
 
         return m_formatters;
@@ -379,6 +387,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
+     * Returns true if the element's type is disabled in the sitemap configuration.
+     *
+     * @return true if the type is disabled
+     */
+    public boolean isTypeDisabled() {
+
+        return m_typeDisabled;
+    }
+
+    /**
      * Sets the contents.<p>
      *
      * @param contents the contents to set
@@ -517,6 +535,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     public void setTitle(String title) {
 
         m_title = title;
+    }
+
+    /**
+     * Sets the 'is type disabled' flag (type is disabled in the sitemap configuration).
+     *
+     * @param typeDisabled the new value
+     */
+    public void setTypeDisabled(boolean typeDisabled) {
+
+        m_typeDisabled = typeDisabled;
     }
 
     /**

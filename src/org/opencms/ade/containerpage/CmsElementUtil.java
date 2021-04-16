@@ -491,7 +491,18 @@ public class CmsElementUtil {
         if (element.getResource().isFolder()) {
             return null;
         }
+        boolean typeDisabled = false;
+        if (page != null) {
+
+            CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(m_cms, page.getRootPath());
+            String typeName = OpenCms.getResourceManager().getResourceType(element.getResource()).getTypeName();
+            if (!config.getActiveTypeNames().contains(typeName)) {
+                typeDisabled = true;
+            }
+        }
+
         CmsContainerElementData elementData = getBaseElementData(page, element);
+        elementData.setTypeDisabled(typeDisabled);
         CmsFormatterConfiguration formatterConfiguraton = getFormatterConfiguration(element.getResource());
         Map<String, String> contents = new HashMap<String, String>();
         if (element.isGroupContainer(m_cms)) {

@@ -211,6 +211,9 @@ public class CmsADEConfigData {
     /** Type names configured in this or ancestor sitemap configurations. */
     private Set<String> m_typesInAncestors;
 
+    /** Set of names of active types.*/ 
+    private Set<String> m_typesActive;
+
     /**
      * Creates a new configuration data object, based on an internal configuration data bean and a
      * configuration cache state.<p>
@@ -625,7 +628,7 @@ public class CmsADEConfigData {
             return SitemapDirectEditPermissions.all;
         }
 
-        if (!getTypesInAncestors().contains(type)) {
+        if (!getAncestorTypeNames().contains(type)) {
             // not configured anywhere for ADE
             return SitemapDirectEditPermissions.notInSitemapConfig;
         }
@@ -1032,11 +1035,32 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Gets the set of names of types active in this sitemap configuration.
+     *
+     * @return the set of type names of active types
+     */
+    public Set<String> getActiveTypeNames() {
+
+        Set<String> result = m_typesActive;
+        if (result != null) {
+            return result;
+        } else {
+            Set<String> mutableResult = new HashSet<>();
+            for (CmsResourceTypeConfig typeConfig : internalGetResourceTypes(true)) {
+                mutableResult.add(typeConfig.getTypeName());
+            }
+            result = Collections.unmodifiableSet(mutableResult);
+            m_typesActive = result;
+            return result;
+        }
+    }
+
+    /**
      * Gets the set of names of types configured in this or any ancestor sitemap configurations.
      *
      * @return the set of type names from all ancestor configurations
      */
-    public Set<String> getTypesInAncestors() {
+    public Set<String> getAncestorTypeNames() {
 
         Set<String> result = m_typesInAncestors;
         if (result != null) {
