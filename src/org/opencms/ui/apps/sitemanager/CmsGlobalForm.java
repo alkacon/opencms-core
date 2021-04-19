@@ -27,7 +27,6 @@
 
 package org.opencms.ui.apps.sitemanager;
 
-import org.opencms.configuration.CmsSitesConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -39,6 +38,7 @@ import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.editablegroup.CmsEditableGroup;
 import org.opencms.ui.components.editablegroup.I_CmsEditableGroupRow;
 
@@ -212,7 +212,7 @@ public class CmsGlobalForm extends CmsBasicDialog {
     void submit() {
 
         try {
-            OpenCms.getSiteManager().updateGeneralSettings(
+            m_manager.updateGeneralSettings(
                 m_cms,
                 ((CmsSite)m_fieldDefaultURI.getValue()).getSiteRoot(),
                 getWebserverList(),
@@ -221,8 +221,9 @@ public class CmsGlobalForm extends CmsBasicDialog {
                 CmsEditSiteForm.FORBIDDEN_FOLDER_NAMES.set(1, (String)m_fieldSharedFolder.getValue());
             }
             // write the system configuration
-            OpenCms.writeConfiguration(CmsSitesConfiguration.class);
-        } catch (CmsException e) {
+            // OpenCms.writeConfiguration(CmsSitesConfiguration.class);
+        } catch (Exception e) {
+            CmsErrorDialog.showErrorDialog(e);
             //
         }
 

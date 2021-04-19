@@ -27,12 +27,14 @@
 
 package org.opencms.ui.apps.sitemanager;
 
+import org.opencms.configuration.CmsSitesConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.letsencrypt.CmsLetsEncryptConfiguration.Trigger;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSSLMode;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
@@ -45,6 +47,7 @@ import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.sitemanager.CmsSitesTable.TableProperty;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
+import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsInfoButton;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -334,6 +337,29 @@ public class CmsSiteManager extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Cm
 
         CmsWebServerConfigForm form = new CmsWebServerConfigForm(this);
         openDialog(form, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_WEBSERVERCONFIG_0));
+    }
+
+    /**
+     * Updates the general settings.<p>
+     *
+     * @param cms the cms to use
+     * @param defaultUri the default URI
+     * @param workplaceServers the workplace server URLs
+     * @param sharedFolder the shared folder URI
+     */
+    public void updateGeneralSettings(
+        CmsObject cms,
+        String defaultUri,
+        Map<String, CmsSSLMode> workplaceServers,
+        String sharedFolder) {
+
+        try {
+            OpenCms.getSiteManager().updateGeneralSettings(cms, defaultUri, workplaceServers, sharedFolder);
+            OpenCms.writeConfiguration(CmsSitesConfiguration.class);
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            CmsErrorDialog.showErrorDialog(e);
+        }
     }
 
     /**
