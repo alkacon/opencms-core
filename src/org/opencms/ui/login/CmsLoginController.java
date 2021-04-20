@@ -483,6 +483,9 @@ public class CmsLoginController {
                     return;
                 }
             }
+            CmsObject cloneCms = OpenCms.initCmsObject(currentCms);
+            cloneCms.loginUser(realUser, password);
+
             String messageToChange = "";
             if (OpenCms.getLoginManager().isPasswordReset(currentCms, userObj)) {
                 messageToChange = CmsVaadinUtils.getMessageText(Messages.GUI_PWCHANGE_RESET_0);
@@ -502,9 +505,6 @@ public class CmsLoginController {
                     passwordDialog);
                 return;
             }
-            // do a provisional login first, to check the login target
-            CmsObject cloneCms = OpenCms.initCmsObject(currentCms);
-            cloneCms.loginUser(realUser, password);
             CmsWorkplaceSettings settings = CmsLoginHelper.initSiteAndProject(cloneCms);
             final String loginTarget = getLoginTarget(cloneCms, settings, m_params.getRequestedResource());
 
