@@ -56,7 +56,7 @@ public class CmsPermissionDialogAction extends A_CmsWorkplaceAction {
      */
     public void executeAction(I_CmsDialogContext context) {
 
-        if (!hasBlockingLocks(context)) {
+        if (context.getCms().getRequestContext().getCurrentProject().isOnlineProject() || !hasBlockingLocks(context)) {
             openDialog(new CmsPermissionDialog(context), context);
         }
     }
