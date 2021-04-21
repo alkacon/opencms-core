@@ -45,7 +45,7 @@
                 <mapping element="Description" mapto="galleryDescription" />
 		</mappings>
 	    <validationrules>
-	       	<validationrule element="Key" regex="^[a-zA-Z0-9-\.]+$" message="%(key.formatterkey.validation)" />
+	       	<validationrule element="Key" regex="^[a-zA-Z0-9-\./]+$" message="%(key.formatterkey.validation)" />
         </validationrules>
         <layouts>
         	<layout element="Jsp" widget="VfsFileWidget" configuration="searchtypes=jsp" />

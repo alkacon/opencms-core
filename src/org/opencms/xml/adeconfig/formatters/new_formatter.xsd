@@ -69,7 +69,7 @@
                 <relation element="HeadIncludeJs/JavascriptLink" invalidate="false" />
             </relations>
             <validationrules>
-            	<validationrule element="Key" regex="^[a-zA-Z0-9-\.]+$" message="%(key.formatterkey.validation)" />
+            	<validationrule element="Key" regex="^[a-zA-Z0-9-\./]+$" message="%(key.formatterkey.validation)" />
             </validationrules>
             <tabs>
                 <tab element="NiceName" name="TabBasic" collapse="false" />
