@@ -44,6 +44,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessageContainer;
@@ -77,9 +78,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -100,7 +101,6 @@ import org.xml.sax.SAXException;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Multimap;
 
 /**
@@ -109,6 +109,20 @@ import com.google.common.collect.Multimap;
  * @since 7.0.4
  */
 public class CmsImportVersion10 implements I_CmsImport {
+
+    /**
+     * Categories of resources that need to be handled differently in the 'rewrite parseables' import step.
+     */
+    public static enum LinkParsableCategory {
+        /** ADE config (formatters, sitemap configs) */
+        config,
+
+        /** Container pages. */
+        page,
+
+        /** Other contents. */
+        other;
+    }
 
     /**
      * Data class to temporarily keep track of relation data for a resource to be imported.<p>
@@ -588,92 +602,95 @@ public class CmsImportVersion10 implements I_CmsImport {
 
         int i = 0;
 
-        sortParseableResources(parseables);
-        for (CmsResource parsableRes : parseables) {
-            String resName = cms.getSitePath(parsableRes);
+        // group parseables into categories that need to be handled differently.
+        //
+        //  - container pages need to be rewritten before contents (because the contents' gallery titles
+        //    may reference the container page they're in)
+        //
+        // - configurations need to be rewritten *and* loaded before container pages
+        //   (because how the container page is written may depend on a sitemap configuration
+        //   in the same import).
 
-            report.print(
-                org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    String.valueOf(i + 1),
-                    String.valueOf(parseables.size())),
-                I_CmsReport.FORMAT_NOTE);
-
-            LOG.info("Rewriting parsable resource: " + resName);
-            report.print(Messages.get().container(Messages.RPT_PARSE_LINKS_FOR_1, resName), I_CmsReport.FORMAT_NOTE);
-            report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
-
-            try {
-                CmsFile file = cms.readFile(resName);
-                // make sure the date last modified is kept...
-                file.setDateLastModified(file.getDateLastModified());
-                // make sure the file is locked
-                CmsLock lock = cms.getLock(file);
-                if (lock.isUnlocked()) {
-                    cms.lockResource(resName);
-                } else if (!lock.isDirectlyOwnedInProjectBy(cms)) {
-                    cms.changeLock(resName);
-                }
-                // rewrite the file
-                cms.getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);
-                try {
-                    cms.writeFile(file);
-                } finally {
-                    cms.getRequestContext().removeAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE);
-                }
-
-                report.println(
-                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                    I_CmsReport.FORMAT_OK);
-            } catch (Throwable e) {
-                report.addWarning(e);
-                report.println(
-                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
-                    I_CmsReport.FORMAT_ERROR);
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_REWRITING_1, resName));
-                    LOG.warn(e.getMessage(), e);
-                }
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(e.getLocalizedMessage(), e);
+        ArrayListMultimap<LinkParsableCategory, CmsResource> resourcesByCategory = ArrayListMultimap.create();
+        for (CmsResource resource : parseables) {
+            LinkParsableCategory category = LinkParsableCategory.other;
+            if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
+                category = LinkParsableCategory.page;
+            } else {
+                I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource);
+                if (resType instanceof CmsResourceTypeXmlAdeConfiguration) {
+                    category = LinkParsableCategory.config;
                 }
             }
-            i++;
+            resourcesByCategory.put(category, resource);
+        }
+
+        for (LinkParsableCategory category : Arrays.asList(
+            LinkParsableCategory.config,
+            LinkParsableCategory.page,
+            LinkParsableCategory.other)) {
+
+            List<CmsResource> resourcesInCurrentCategory = resourcesByCategory.get(category);
+            resourcesInCurrentCategory.sort((a, b) -> a.getRootPath().compareTo(b.getRootPath()));
+            for (CmsResource parsableRes : resourcesInCurrentCategory) {
+                String resName = cms.getSitePath(parsableRes);
+
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        String.valueOf(i + 1),
+                        String.valueOf(parseables.size())),
+                    I_CmsReport.FORMAT_NOTE);
+
+                LOG.info("Rewriting parsable resource: " + resName);
+                report.print(
+                    Messages.get().container(Messages.RPT_PARSE_LINKS_FOR_1, resName),
+                    I_CmsReport.FORMAT_NOTE);
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+
+                try {
+                    CmsFile file = cms.readFile(resName);
+                    // make sure the date last modified is kept...
+                    file.setDateLastModified(file.getDateLastModified());
+                    // make sure the file is locked
+                    CmsLock lock = cms.getLock(file);
+                    if (lock.isUnlocked()) {
+                        cms.lockResource(resName);
+                    } else if (!lock.isDirectlyOwnedInProjectBy(cms)) {
+                        cms.changeLock(resName);
+                    }
+                    // rewrite the file
+                    cms.getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);
+                    try {
+                        cms.writeFile(file);
+                    } finally {
+                        cms.getRequestContext().removeAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE);
+                    }
+
+                    report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                        I_CmsReport.FORMAT_OK);
+                } catch (Throwable e) {
+                    report.addWarning(e);
+                    report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
+                        I_CmsReport.FORMAT_ERROR);
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_REWRITING_1, resName));
+                        LOG.warn(e.getMessage(), e);
+                    }
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(e.getLocalizedMessage(), e);
+                    }
+                }
+                i++;
+            }
+            if ((category == LinkParsableCategory.config) && (resourcesInCurrentCategory.size() > 0)) {
+                OpenCms.getADEManager().waitForFormatterCache(false);
+                OpenCms.getADEManager().waitForCacheUpdate(false);
+            }
         }
         cms.getRequestContext().removeAttribute(CmsLogEntry.ATTR_LOG_ENTRY);
-    }
-
-    /**
-     * Sorts the parsealble resources before we actually parse the links.<p>
-     *
-     * This is needed because we may, for example, have resources A and B such that A has a link to B, and B requires
-     * the relation corresponding to that link to be present for some functionality (e.g. the page_title macro in gallery name
-     * mappings), so we need to parse the links for A first to create the relation before B is processed.
-     *
-     * @param parseables the list of parseable resources which should be sorted in place
-     *
-     */
-    protected static void sortParseableResources(List<CmsResource> parseables) {
-
-        Collections.sort(parseables, new Comparator<CmsResource>() {
-
-            public int compare(CmsResource a, CmsResource b) {
-
-                return ComparisonChain.start().compare(getRank(a), getRank(b)).compare(
-                    a.getRootPath(),
-                    b.getRootPath()).result();
-            }
-
-            int getRank(CmsResource res) {
-
-                if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
-                    return 0;
-                } else {
-                    return 1;
-                }
-            }
-        });
-
     }
 
     /**
