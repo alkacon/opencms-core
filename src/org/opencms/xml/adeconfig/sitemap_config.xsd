@@ -25,9 +25,8 @@
             <xsd:element name="PreferDetailPagesForLocalContents" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="ExcludeExternalDetailContents" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="IncludeInSiteSelector" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
-            <xsd:element name="UseFormatterKeys" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="ResourceType" type="OpenCmsADEType" minOccurs="0" maxOccurs="unbounded" />
-
+			<xsd:element name="UseFormatterKeys" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="RemoveAllFormatters" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="RemoveFormatters" type="OpenCmsRemoveFormattersBlock" minOccurs="0"/>
             <xsd:element name="AddFormatters"    type="OpenCmsAddFormattersBlock" minOccurs="0"/>
@@ -62,7 +61,7 @@
             </relations>
             <tabs>
                 <tab element="MasterConfig" name="TabResourceTypes" collapse="false" />
-                <tab element="RemoveAllFormatters" name="TabFormatters" collapse="false" />
+                <tab element="UseFormatterKeys" name="TabFormatters" collapse="false" />
                 <tab element="RemoveAllFunctions" name="TabFunctions" collapse="false" />
                 <tab element="DiscardProperties" name="TabPropertyConfiguration" collapse="false" />
                 <tab element="DiscardModelPages" name="TabPageModels" collapse="false" />
