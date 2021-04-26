@@ -2,6 +2,6 @@
 
 <SitemapConfigurations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd">
   <SitemapConfiguration language="en">
-    <UseFormatterKeys>true</UseFormatterKeys>
+    <UseFormatterKeys>false</UseFormatterKeys>
   </SitemapConfiguration>
 </SitemapConfigurations>

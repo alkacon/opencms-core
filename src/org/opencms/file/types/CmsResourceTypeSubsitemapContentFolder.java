@@ -47,6 +47,29 @@ public class CmsResourceTypeSubsitemapContentFolder extends CmsResourceTypeFolde
     /** The default value for the config file copy source. */
     public static final String DEFAULT_CONFIG_SOURCE = "/system/modules/org.opencms.base/copyresources/sitemap.config";
 
+    /** True if the 'use formatter keys' option should be enabled by default in newly created sitemap configurations. */
+    private static boolean m_enableNewPageFormatByDefault;
+
+    /**
+     * Checks if the 'use formatter keys' option should be enabled by default in generated sitemap configurations.
+     *
+     * @return true if the 'use formatter keys' option should be enabled by default
+     */
+    public static boolean isEnableNewPageFormatByDefault() {
+
+        return m_enableNewPageFormatByDefault;
+    }
+
+    /**
+     * Enables / disables the default value to use for 'use formatter keys' option in generated sitemap configurations.
+     *
+     * @param enabled the default value for the 'use formatter keys' option
+     */
+    public static void setEnableNewPageFormatByDefault(boolean enabled) {
+
+        m_enableNewPageFormatByDefault = enabled;
+    }
+
     /**
      * @see org.opencms.file.types.A_CmsResourceType#getCopyResources(org.opencms.file.CmsObject, java.lang.String, org.opencms.util.CmsMacroResolver)
      */
@@ -57,6 +80,9 @@ public class CmsResourceTypeSubsitemapContentFolder extends CmsResourceTypeFolde
         CmsMacroResolver resolver) {
 
         String source = DEFAULT_CONFIG_SOURCE;
+        if (!m_enableNewPageFormatByDefault) {
+            source = source + ".nokeys";
+        }
         CmsConfigurationCopyResource res = new CmsConfigurationCopyResource(
             source,
             "${resource.folder.path}/.config",

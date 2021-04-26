@@ -30,6 +30,7 @@ package org.opencms.configuration;
 import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementDeleteMode;
 import org.opencms.configuration.preferences.I_CmsPreference;
 import org.opencms.db.CmsExportPoint;
+import org.opencms.file.types.CmsResourceTypeSubsitemapContentFolder;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -585,8 +586,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The requiredOnUpload attribute. */
     private static final String A_REQUIRED_ON_UPLOAD = "requiredOnUpload";
-
-    /** Configuration node name for setting the default value for the 'use formatter keys' in sitemap configurations created with new subsitemap folders. */
+     
+    /** Configuration node name for setting the default value for the 'use formatter keys' in sitemap configurations created with new subsitemap folders. */ 
     private static final String N_USE_FORMATTER_KEYS_FOR_NEW_SITES = "use-formatter-keys-for-new-sites";
 
     /** The configured workplace manager. */
@@ -1020,10 +1021,14 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             CmsAdditionalLogFolderConfig.ADD_LOG_FOLDER_HELPER.getBasePath(),
             "setAdditionalLogFolderConfiguration");
 
-        digester.addCallMethod(
-            "*/" + N_WORKPLACE + "/" + N_USE_FORMATTER_KEYS_FOR_NEW_SITES,
-            "setUseFormatterKeysForNewSites",
-            0);
+        digester.addRule("*/" + N_WORKPLACE + "/" + N_USE_FORMATTER_KEYS_FOR_NEW_SITES, new Rule() {
+
+            @Override
+            public void body(String namespace, String name, String text) throws Exception {
+
+                CmsResourceTypeSubsitemapContentFolder.setEnableNewPageFormatByDefault(Boolean.parseBoolean(text));
+            }
+        });
     }
 
     /**
@@ -1327,7 +1332,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             workplaceElement,
             m_workplaceManager.getAdditionalLogFolderConfiguration());
 
-        boolean useKeysForNewSites = m_workplaceManager.isUseFormatterKeysForNewSites();
+        boolean useKeysForNewSites = CmsResourceTypeSubsitemapContentFolder.isEnableNewPageFormatByDefault();
         workplaceElement.addElement(N_USE_FORMATTER_KEYS_FOR_NEW_SITES).setText("" + useKeysForNewSites);
 
         // return the configured node

@@ -2089,7 +2089,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         String sitePath = cms.getSitePath(subSitemapFolder);
         String folderName = CmsStringUtil.joinPaths(sitePath, CmsADEManager.CONTENT_FOLDER_NAME + "/");
         String sitemapConfigName = CmsStringUtil.joinPaths(folderName, CmsADEManager.CONFIG_FILE_NAME);
-        CmsSitemapUtil.updatePageFormatProperty(cms, subSitemapFolder);
         if (!cms.existsResource(folderName)) {
             cms.createResource(
                 folderName,

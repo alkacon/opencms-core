@@ -27,13 +27,13 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.ade.configuration.CmsConfigurationReader;
 import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.lock.CmsLockUtil;
@@ -402,12 +402,12 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
         importCoreModule(cms, "org.opencms.base");
         importModule(cms, "test.containerpagev2");
         String origPage = "/subsitemap/page1.html";
-        setNewPageFormatEnabled(cms, "/subsitemap", false);
+        setNewPageFormatEnabled(cms, "/subsitemap/.content/.config", false);
         String copy1 = "/subsitemap/page1-copy.html";
         cms.copyResource(origPage, copy1);
         touch(cms, copy1);
         assertEquals(read(cms, origPage), read(cms, copy1));
-        setNewPageFormatEnabled(cms, "/subsitemap", true);
+        setNewPageFormatEnabled(cms, "/subsitemap/.content/.config", true);
         String copy2 = "/subsitemap/page1-copy2.html";
         cms.copyResource(origPage, copy2);
         touch(cms, copy2);
@@ -438,12 +438,16 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
      */
     private void setNewPageFormatEnabled(CmsObject cms, String path, boolean enabled) throws Exception {
 
-        cms.lockResourceTemporary(path);
-        String format = enabled ? "2" : "1";
-        cms.writePropertyObject(
-            path,
-            new CmsProperty(CmsPropertyDefinition.PROPERTY_CONTAINERPAGE_FORMAT, format, null));
-        cms.unlockResource(path);
+        String content = read(cms, path);
+        content = content.replaceFirst(
+            tagWrap(CmsConfigurationReader.N_USE_FORMATTER_KEYS, ".*?"),
+            tagWrap(CmsConfigurationReader.N_USE_FORMATTER_KEYS, "" + enabled));
+        try (AutoCloseable cl = CmsLockUtil.withLockedResources(cms, cms.readResource(path))) {
+            CmsFile file = cms.readFile(path);
+            file.setContents(content.getBytes(StandardCharsets.UTF_8));
+            cms.writeFile(file);
+        }
+        OpenCms.getADEManager().waitForCacheUpdate(false);
     }
 
     /**
