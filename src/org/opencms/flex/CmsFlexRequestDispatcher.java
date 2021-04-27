@@ -394,6 +394,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
             }
 
             if (entry == null) {
+                boolean ignore = (w_res.getCmsCacheKey() != null) && w_res.getCmsCacheKey().isIgnore();
                 // the target is not cached (or caching off), so load it with the internal resource loader
                 I_CmsResourceLoader loader = null;
 
@@ -466,7 +467,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                         entry.setDateExpires(controller.getDateExpires());
                     }
                     cache.put(w_res.getCmsCacheKey(), entry, variation, w_req.getCmsCacheKey());
-                } else {
+                } else if (!ignore) {
                     // result can not be cached, do not use "last modified" optimization
                     controller.updateDates(-1, controller.getDateExpires());
                 }

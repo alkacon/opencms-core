@@ -122,6 +122,9 @@ public class CmsFlexCacheKey {
     /** Flex cache keyword: container-element. */
     private static final String CACHE_21_CONTAINER_ELEMENT = "container-element";
 
+    /** Flex cache keyword: ignore. */
+    private static final String CACHE_22_IGNORE = "ignore";
+
     /** Flex cache key component for the __forceAbsoluteLinks parameter. */
     private static final String CACHE_FORCE_ABSOLUTE_LINKS = "force-abs";
 
@@ -149,7 +152,8 @@ public class CmsFlexCacheKey {
             CACHE_18_ATTRS,
             CACHE_19_NO_ATTRS,
             CACHE_20_DEVICE,
-            CACHE_21_CONTAINER_ELEMENT});
+            CACHE_21_CONTAINER_ELEMENT,
+            CACHE_22_IGNORE});
 
     /** Marker to identify use of certain String key members (uri, ip etc.). */
     private static final String IS_USED = "/ /";
@@ -219,6 +223,9 @@ public class CmsFlexCacheKey {
 
     /** Resource without online / offline suffix. */
     private String m_actualResource;
+
+    /** True if 'ignore' directive is set. */ 
+    private boolean m_ignore;
 
     /**
      * This constructor is used when building a cache key from set of cache directives.<p>
@@ -346,6 +353,18 @@ public class CmsFlexCacheKey {
         return m_parseError;
     }
 
+    /** 
+     * Returns true if 'ignore' directive is set.
+     * 
+     * <p>Mostly the same as 'never', but prevents the 'Cache-Control: public, max-age=0' header from being set
+     * 
+     *  @return true if 'ignore' is set 
+     */
+    public boolean isIgnore() {
+
+        return m_ignore;
+    }
+
     /**
      * Compares this key to the other key passed as parameter,
      * from comparing the two keys, a variation String is constructed.<p>
@@ -369,6 +388,11 @@ public class CmsFlexCacheKey {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHEKEY_KEYMATCH_CACHE_NEVER_0));
             }
+            return null;
+        }
+
+        if (m_ignore) {
+            LOG.debug("Not matching because 'ignore' directive is set.");
             return null;
         }
 
@@ -937,6 +961,9 @@ public class CmsFlexCacheKey {
                         break;
                     case 21: // container element
                         m_containerElement = IS_USED;
+                        break;
+                    case 22:
+                        m_ignore = true;
                         break;
                     default: // unknown directive, throw error
                         m_parseError = true;
