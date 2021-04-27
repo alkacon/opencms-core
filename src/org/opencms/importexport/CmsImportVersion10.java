@@ -88,6 +88,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.codec.binary.Base64;
@@ -399,6 +400,9 @@ public class CmsImportVersion10 implements I_CmsImport {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsImportVersion10.class);
 
+    /** Cumulative time spent waiting for config updates. */
+    private static final AtomicLong cumulativeConfigWaitTime = new AtomicLong(0l);
+
     /** The ACE flags value. */
     protected int m_aceFlags;
 
@@ -686,8 +690,14 @@ public class CmsImportVersion10 implements I_CmsImport {
                 i++;
             }
             if ((category == LinkParsableCategory.config) && (resourcesInCurrentCategory.size() > 0)) {
+                long start = System.currentTimeMillis();
                 OpenCms.getADEManager().waitForFormatterCache(false);
                 OpenCms.getADEManager().waitForCacheUpdate(false);
+                long end = System.currentTimeMillis();
+                long waitTime = end - start;
+                long cumulative = cumulativeConfigWaitTime.addAndGet(waitTime);
+                LOG.debug("Waited " + (waitTime / 1000.0) + "s for configuration in parseLinks, total = " + cumulative);
+
             }
         }
         cms.getRequestContext().removeAttribute(CmsLogEntry.ATTR_LOG_ENTRY);
