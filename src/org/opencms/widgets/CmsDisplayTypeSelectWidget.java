@@ -328,12 +328,13 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
         CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, resource.getRootPath());
 
         if (config != null) {
+            boolean useFormatterKeys = config.isUseFormatterKeys();
             Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
 
             for (I_CmsFormatterBean formatter : config.getDisplayFormatters(cms)) {
                 boolean inactive = (formatter.getId() == null)
                     || !config.getActiveFormatters().containsKey(new CmsUUID(formatter.getId()));
-                if (inactive) {
+                if (useFormatterKeys && inactive) {
                     continue;
                 }
                 if (!containerTypes.isEmpty()) {
@@ -348,7 +349,7 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
                         + ")";
                     options.add(
                         new FormatterOption(
-                            typeName + CmsXmlDisplayFormatterValue.SEPARATOR + formatter.getKeyOrId(),
+                            typeName + CmsXmlDisplayFormatterValue.SEPARATOR + (useFormatterKeys ? formatter.getKeyOrId() : formatter.getId()),
                             typeName,
                             getDisplayType(formatter),
                             label,

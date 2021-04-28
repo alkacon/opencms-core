@@ -55,18 +55,20 @@ public class CmsListConfigContentHandler extends CmsDefaultXmlContentHandler {
             CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(
                 cms,
                 content.getFile().getRootPath());
-            for (I_CmsXmlContentValue value : content.getValues(CmsListManager.N_DISPLAY_TYPE, Locale.ENGLISH)) {
-                String strValue = value.getStringValue(cms);
-                int colonPos = strValue.indexOf(":");
-                if (colonPos > -1) {
-                    String id = strValue.substring(colonPos + 1);
-                    if (CmsUUID.isValidUUID(id)) {
-                        I_CmsFormatterBean fmt = config.findFormatter(id);
-                        String newId = id;
-                        if ((fmt != null) && (fmt.getKeyOrId() != null)) {
-                            newId = fmt.getKeyOrId();
+            if (config.isUseFormatterKeys()) {
+                for (I_CmsXmlContentValue value : content.getValues(CmsListManager.N_DISPLAY_TYPE, Locale.ENGLISH)) {
+                    String strValue = value.getStringValue(cms);
+                    int colonPos = strValue.indexOf(":");
+                    if (colonPos > -1) {
+                        String id = strValue.substring(colonPos + 1);
+                        if (CmsUUID.isValidUUID(id)) {
+                            I_CmsFormatterBean fmt = config.findFormatter(id);
+                            String newId = id;
+                            if ((fmt != null) && (fmt.getKeyOrId() != null)) {
+                                newId = fmt.getKeyOrId();
+                            }
+                            value.setStringValue(cms, strValue.substring(0, colonPos) + ":" + newId);
                         }
-                        value.setStringValue(cms, strValue.substring(0, colonPos) + ":" + newId);
                     }
                 }
             }
