@@ -326,17 +326,6 @@ public class CmsADEManager {
     }
 
     /**
-     * Gets the raw configured detail page information, with no existence checks or path correction.
-     *
-     * @param cms the CMS context
-     * @return the list of raw detail page info beans
-     */
-    public List<CmsDetailPageInfo> getRawDetailPages(CmsObject cms) {
-
-        return getCache(cms.getRequestContext().getCurrentProject().isOnlineProject()).getRawDetailPages();
-    }
-
-    /**
      * Gets the containerpage cache instance.<p>
      *
      * @return the containerpage cache instance
@@ -737,7 +726,7 @@ public class CmsADEManager {
                 I_CmsXmlContentHandler handler = contentDefinition.getContentHandler();
                 if (handler.hasNestedFormatters()) {
                     result = new ArrayList<I_CmsFormatterBean>();
-                    for (CmsUUID formatterId : handler.getNestedFormatters(cms, res, locale, req)) {
+                    for (String formatterId : handler.getNestedFormatters(cms, res, locale, req)) {
                         I_CmsFormatterBean formatter = config.findFormatter(formatterId);
                         if (formatter != null) {
                             result.add(formatter);
@@ -860,6 +849,17 @@ public class CmsADEManager {
 
         }
         return new CmsPermissionInfo(hasView, hasWrite, noEdit);
+    }
+
+    /**
+     * Gets the raw configured detail page information, with no existence checks or path correction.
+     *
+     * @param cms the CMS context
+     * @return the list of raw detail page info beans
+     */
+    public List<CmsDetailPageInfo> getRawDetailPages(CmsObject cms) {
+
+        return getCache(cms.getRequestContext().getCurrentProject().isOnlineProject()).getRawDetailPages();
     }
 
     /**

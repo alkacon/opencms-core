@@ -1267,9 +1267,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getNestedFormatters(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.util.Locale, javax.servlet.ServletRequest)
      */
-    public List<CmsUUID> getNestedFormatters(CmsObject cms, CmsResource res, Locale locale, ServletRequest req) {
+    public List<String> getNestedFormatters(CmsObject cms, CmsResource res, Locale locale, ServletRequest req) {
 
-        List<CmsUUID> result = new ArrayList<CmsUUID>();
+        List<String> result = new ArrayList<String>();
         if (hasNestedFormatters()) {
             try {
                 CmsXmlContent content;
@@ -1287,21 +1287,21 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                         List<I_CmsXmlContentValue> values = content.getValues(elementPath, matchingLocale);
                         for (I_CmsXmlContentValue value : values) {
                             if (value instanceof CmsXmlDisplayFormatterValue) {
-                                CmsUUID formatterId = ((CmsXmlDisplayFormatterValue)value).getFormatterId();
-                                if ((formatterId != null) && !formatterId.isNullUUID()) {
+                                String formatterId = ((CmsXmlDisplayFormatterValue)value).getFormatterId();
+                                if ((formatterId != null) && !CmsUUID.getNullUUID().toString().equals(formatterId)) {
                                     result.add(formatterId);
                                 }
                             } else if (value instanceof CmsXmlVarLinkValue) {
                                 CmsLink link = ((CmsXmlVarLinkValue)value).getLink(cms);
                                 CmsUUID formatterId = link.getStructureId();
                                 if ((formatterId != null) && !formatterId.isNullUUID()) {
-                                    result.add(formatterId);
+                                    result.add(formatterId.toString());
                                 }
                             } else if (value instanceof CmsXmlVfsFileValue) {
                                 CmsLink link = ((CmsXmlVfsFileValue)value).getLink(cms);
                                 CmsUUID formatterId = link.getStructureId();
                                 if ((formatterId != null) && !formatterId.isNullUUID()) {
-                                    result.add(formatterId);
+                                    result.add(formatterId.toString());
                                 }
                             }
                         }

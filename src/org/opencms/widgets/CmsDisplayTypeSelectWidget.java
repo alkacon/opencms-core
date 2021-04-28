@@ -41,6 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
@@ -243,9 +244,7 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
             } else if (widgetDialog instanceof CmsDialog) {
                 String sitePath = ((CmsDialog)widgetDialog).getParamResource();
                 if (sitePath != null) {
-
                     resource = cms.readResource(sitePath);
-
                 }
             }
             for (FormatterOption option : getFormatterOptions(cms, resource)) {
@@ -330,7 +329,13 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
 
         if (config != null) {
             Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+
             for (I_CmsFormatterBean formatter : config.getDisplayFormatters(cms)) {
+                boolean inactive = (formatter.getId() == null)
+                    || !config.getActiveFormatters().containsKey(new CmsUUID(formatter.getId()));
+                if (inactive) {
+                    continue;
+                }
                 if (!containerTypes.isEmpty()) {
                     if (Sets.intersection(containerTypes, formatter.getContainerTypes()).isEmpty()) {
                         continue;
@@ -343,7 +348,7 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
                         + ")";
                     options.add(
                         new FormatterOption(
-                            typeName + CmsXmlDisplayFormatterValue.SEPARATOR + formatter.getId(),
+                            typeName + CmsXmlDisplayFormatterValue.SEPARATOR + formatter.getKeyOrId(),
                             typeName,
                             getDisplayType(formatter),
                             label,

@@ -28,7 +28,6 @@
 package org.opencms.xml.types;
 
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
 import org.opencms.xml.I_CmsXmlDocument;
 
 import java.util.Locale;
@@ -110,13 +109,13 @@ public class CmsXmlDisplayFormatterValue extends A_CmsXmlValueTextBase {
      *
      * @return the formatter config id
      */
-    public CmsUUID getFormatterId() {
+    public String getFormatterId() {
 
         String value = getStringValue(null);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
             String[] parts = value.split(SEPARATOR);
             if (parts.length == 2) {
-                return new CmsUUID(parts[1]);
+                return parts[1];
             }
         }
         return null;

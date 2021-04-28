@@ -91,7 +91,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
     private String m_creationSiteMap;
 
     /** The display formatter ids. */
-    private Map<String, CmsUUID> m_displayFormatterIds;
+    private Map<String, String> m_displayFormatterIds;
 
     /** The display formatter paths. */
     private Map<String, String> m_displayFormatterPaths;
@@ -122,9 +122,9 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
      */
     public CmsJspTagDisplay() {
 
-        m_parameterMap = new LinkedHashMap<String, String>();
-        m_displayFormatterPaths = new HashMap<String, String>();
-        m_displayFormatterIds = new HashMap<String, CmsUUID>();
+        m_parameterMap = new LinkedHashMap<>();
+        m_displayFormatterPaths = new HashMap<>();
+        m_displayFormatterIds = new HashMap<>();
     }
 
     /**
@@ -641,7 +641,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
         if (val instanceof CmsXmlDisplayFormatterValue) {
             CmsXmlDisplayFormatterValue value = (CmsXmlDisplayFormatterValue)val;
             String type = value.getDisplayType();
-            CmsUUID formatterId = value.getFormatterId();
+            String formatterId = value.getFormatterId();
             if (formatterId != null) {
                 m_displayFormatterIds.put(type, formatterId);
             }

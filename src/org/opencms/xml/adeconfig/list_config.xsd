@@ -35,6 +35,7 @@
 
     <xsd:annotation>
         <xsd:appinfo>
+        	<handler class="org.opencms.xml.containerpage.CmsListConfigContentHandler" />
             <resourcebundle name="org.opencms.xml.containerpage.messages" />
             <tabs>
                 <tab element="Title" collapse="false" name="TabGeneral" />

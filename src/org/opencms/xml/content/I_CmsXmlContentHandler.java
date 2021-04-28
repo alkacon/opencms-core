@@ -37,7 +37,6 @@ import org.opencms.main.CmsException;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsDefaultSet;
-import org.opencms.util.CmsUUID;
 import org.opencms.widgets.I_CmsComplexWidget;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.workplace.editors.directedit.I_CmsEditHandler;
@@ -425,7 +424,7 @@ public interface I_CmsXmlContentHandler {
      *
      * @return the nested formatter ids
      */
-    List<CmsUUID> getNestedFormatters(CmsObject cms, CmsResource res, Locale locale, ServletRequest req);
+    List<String> getNestedFormatters(CmsObject cms, CmsResource res, Locale locale, ServletRequest req);
 
     /**
     * Gets the parameter with the given name..<p>
