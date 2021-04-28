@@ -224,7 +224,7 @@ public class CmsFlexCacheKey {
     /** Resource without online / offline suffix. */
     private String m_actualResource;
 
-    /** True if 'ignore' directive is set. */ 
+    /** True if 'ignore' directive is set. */
     private boolean m_ignore;
 
     /**
@@ -353,12 +353,12 @@ public class CmsFlexCacheKey {
         return m_parseError;
     }
 
-    /** 
-     * Returns true if 'ignore' directive is set.
-     * 
-     * <p>Mostly the same as 'never', but prevents the 'Cache-Control: public, max-age=0' header from being set
-     * 
-     *  @return true if 'ignore' is set 
+    /**
+     * Returns true if 'ignore' directive is set.<p>
+     *
+     * Mostly the same as 'never', but prevents the 'Cache-Control: public, max-age=0' header from being set
+     *
+     *  @return true if 'ignore' is set
      */
     public boolean isIgnore() {
 
@@ -628,6 +628,11 @@ public class CmsFlexCacheKey {
                 str.append(";");
                 str.append(CACHE_11_PARSE_ERROR);
             }
+            return str.toString();
+        }
+        if (m_ignore) {
+            // return "ignore"
+            str.append(CACHE_22_IGNORE);
             return str.toString();
         }
         if (m_noparams != null) {
