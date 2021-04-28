@@ -63,6 +63,7 @@ import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.ui.apps.lists.CmsListManager;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsDateUtil;
@@ -622,7 +623,10 @@ public class CmsImportVersion10 implements I_CmsImport {
                 category = LinkParsableCategory.page;
             } else {
                 I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource);
-                if (resType instanceof CmsResourceTypeXmlAdeConfiguration) {
+                if ((resType instanceof CmsResourceTypeXmlAdeConfiguration)
+                    && !OpenCms.getResourceManager().matchResourceType(
+                        CmsListManager.RES_TYPE_LIST_CONFIG,
+                        resource.getTypeId())) {
                     category = LinkParsableCategory.config;
                 }
             }
