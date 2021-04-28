@@ -1704,6 +1704,16 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Gets the wrapper for the sitemap configuration.
+     *
+     * @return the wrapper object for the sitemap configuration
+     */
+    public CmsJspSitemapConfigWrapper getSitemapConfig() {
+
+        return new CmsJspSitemapConfigWrapper(this);
+    }
+
+    /**
      * Transforms root paths to site paths.
      *
      * @return lazy map from root paths to site paths.
@@ -2078,6 +2088,16 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Accessor for the CmsObject.
+     *
+     * @return the CmsObject
+     */
+    protected CmsObject getCmsObject() {
+
+        return m_cms;
+    }
+
+    /**
      * Returns the formatter configuration to the given element.<p>
      *
      * @param element the element
@@ -2193,6 +2213,16 @@ public final class CmsJspStandardContextBean {
             parent = m_elementInstances.get(cont.getParentInstanceId());
         }
         return parent;
+    }
+
+    /**
+     * Accessor for the sitemap configuration.
+     *
+     * @return the sitemap configuration
+     */
+    protected CmsADEConfigData getSitemapConfigInternal() {
+
+        return m_config;
     }
 
     /**

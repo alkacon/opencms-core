@@ -39,7 +39,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -55,6 +57,60 @@ import com.google.common.collect.Lists;
  * related to sitemap configurations, is CmsADEConfigData.
  */
 public class CmsADEConfigDataInternal {
+
+    /**
+     * Represents the value of an attribute, with additional information about where the value originated from.
+     */
+    public static class AttributeValue {
+
+        /** The value of the attribute. */
+        private String m_value;
+
+        /** The path of the configuration from which this attribute value originates. */
+        private String m_origin;
+
+        /**
+         * Creates a new instance.
+         *
+         * @param value the attribute value
+         * @param origin the origin path
+         */
+        public AttributeValue(String value, String origin) {
+
+            super();
+            m_value = value;
+            m_origin = origin;
+        }
+
+        /**
+         * Gets the origin path.
+         *
+         * @return the origin path
+         */
+        public String getOrigin() {
+
+            return m_origin;
+        }
+
+        /**
+         * Gets the attribute string value.
+         *
+         * @return the attribute value
+         */
+        public String getValue() {
+
+            return m_value;
+        }
+
+        /**
+         * @see java.lang.Object#toString()
+         */
+        @Override
+        public String toString() {
+
+            return "[" + m_value + " (from: " + m_origin + ")]";
+        }
+    }
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEConfigDataInternal.class);
@@ -94,6 +150,9 @@ public class CmsADEConfigDataInternal {
 
     /** True if detail contents outside the sitemap should not be used with detail pages in the sitemap. */
     private boolean m_excludeExternalDetailContents;
+
+    /** The map of attributes. */
+    private Map<String, AttributeValue> m_attributes = Collections.emptyMap();
 
     /** The list of configured function references. */
     private List<CmsFunctionReference> m_functionReferences = Lists.newArrayList();
@@ -149,6 +208,7 @@ public class CmsADEConfigDataInternal {
      * @param removeAllFunctions flag indicating whether all functions should be removed
      * @param functionIds the dynamic functions available
      * @param useFormatterKeys mode for using formatter keys / the new container page format
+     * @param attributes the map of attributes
      */
     public CmsADEConfigDataInternal(
         CmsObject cms,
@@ -171,7 +231,8 @@ public class CmsADEConfigDataInternal {
         CmsFormatterChangeSet formatterChangeSet,
         boolean removeAllFunctions,
         Set<CmsUUID> functionIds,
-        Boolean useFormatterKeys) {
+        Boolean useFormatterKeys,
+        Map<String, String> attributes) {
 
         m_cms = cms;
         m_resource = resource;
@@ -199,6 +260,16 @@ public class CmsADEConfigDataInternal {
         m_excludeExternalDetailContents = excludeExternalDetailContents;
         m_includeInSiteSelector = includeInSiteSelector;
         m_useFormatterKeys = useFormatterKeys;
+        Map<String, AttributeValue> attributeObjects = new HashMap<>();
+        String attributeOrigin = basePath;
+        if (resource != null) {
+            attributeOrigin = resource.getRootPath();
+        }
+        for (Map.Entry<String, String> entry : attributes.entrySet()) {
+            attributeObjects.put(entry.getKey(), new AttributeValue(entry.getValue(), attributeOrigin));
+        }
+        m_attributes = Collections.unmodifiableMap(new HashMap<>(attributeObjects));
+
     }
 
     /**
@@ -213,7 +284,7 @@ public class CmsADEConfigDataInternal {
 
     /**
      * Creates a new configuration data instance.<p>
-    
+
      * @param resource the resource from which this configuration data was read
      * @param isModuleConfig true if this is a module configuration
      * @param basePath the base path
@@ -290,6 +361,16 @@ public class CmsADEConfigDataInternal {
     public static CmsADEConfigDataInternal emptyConfiguration(String basePath) {
 
         return new CmsADEConfigDataInternal(basePath);
+    }
+
+    /**
+     * Gets the map of attributes for this sitemap configuration.
+     *
+     * @return the map of attributes
+     */
+    public Map<String, AttributeValue> getAttributes() {
+
+        return m_attributes;
     }
 
     /**

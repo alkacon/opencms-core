@@ -6,6 +6,7 @@
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/type.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/model_page.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/field.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/parameters.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/detailpage.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/add_formatters_block.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/remove_formatters_block.xsd" />
@@ -30,6 +31,7 @@
             <xsd:element name="Function" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="DiscardProperties" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Property" type="OpenCmsADEField" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="Attribute" type="OpenCmsParameter" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
@@ -54,6 +56,7 @@
                 <tab element="UseFormatterKeys" name="TabFormatters" collapse="false" />
                 <tab element="RemoveAllFunctions" name="TabFunctions" collapse="false" />
                 <tab element="DiscardProperties" name="TabPropertyConfiguration" collapse="false" />
+                <tab element="Attribute" name="TabAttributes" collapse="false" />
             </tabs>
             <messagekeyhandler class="org.opencms.i18n.CmsReplaceMessageKeyPrefix" configuration="label.SitemapMasterConfiguration:label.SitemapConfiguration" />
         </xsd:appinfo>

@@ -62,9 +62,11 @@ import org.opencms.xml.types.CmsXmlVfsFileValue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -189,6 +191,15 @@ public class CmsConfigurationReader {
 
     /** The is preview node name. */
     public static final String N_IS_PREVIEW = "IsPreview";
+
+    /** The Attribute node name. */
+    public static final String N_ATTRIBUTE = "Attribute";
+
+    /** The Key node name. */
+    public static final String N_KEY = "Key";
+
+    /** The Value node name. */
+    public static final String N_VALUE = "Value";
 
     /** The JSP node name. */
     public static final String N_JSP = "Jsp";
@@ -553,6 +564,13 @@ public class CmsConfigurationReader {
             }
         }
 
+        Map<String, String> attributes = new LinkedHashMap<>();
+        for (I_CmsXmlContentValueLocation mappingLoc : root.getSubValues(N_ATTRIBUTE)) {
+            String key = getString(mappingLoc.getSubValue(N_KEY)).trim();
+            String value = getString(mappingLoc.getSubValue(N_VALUE)).trim();
+            attributes.put(key, value);
+        }
+
         CmsADEConfigDataInternal result = new CmsADEConfigDataInternal(
             m_cms,
             content.getFile(),
@@ -574,7 +592,8 @@ public class CmsConfigurationReader {
             formatterChangeSet,
             removeFunctions,
             functions,
-            useFormatterKeys);
+            useFormatterKeys,
+            attributes);
         return result;
     }
 

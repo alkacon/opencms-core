@@ -27,6 +27,7 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.configuration.CmsADEConfigDataInternal.AttributeValue;
 import org.opencms.ade.configuration.formatters.CmsFormatterBeanParser;
 import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
@@ -211,8 +212,11 @@ public class CmsADEConfigData {
     /** Type names configured in this or ancestor sitemap configurations. */
     private Set<String> m_typesInAncestors;
 
-    /** Set of names of active types.*/ 
+    /** Set of names of active types.*/
     private Set<String> m_typesActive;
+
+    /** The sitemap attributes (may be null if not yet computed). */
+    private Map<String, AttributeValue> m_attributes;
 
     /**
      * Creates a new configuration data object, based on an internal configuration data bean and a
@@ -415,6 +419,27 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Gets the set of names of types active in this sitemap configuration.
+     *
+     * @return the set of type names of active types
+     */
+    public Set<String> getActiveTypeNames() {
+
+        Set<String> result = m_typesActive;
+        if (result != null) {
+            return result;
+        } else {
+            Set<String> mutableResult = new HashSet<>();
+            for (CmsResourceTypeConfig typeConfig : internalGetResourceTypes(true)) {
+                mutableResult.add(typeConfig.getTypeName());
+            }
+            result = Collections.unmodifiableSet(mutableResult);
+            m_typesActive = result;
+            return result;
+        }
+    }
+
+    /**
      * Gets the list of all detail pages.<p>
      *
      * @return the list of all detail pages
@@ -445,6 +470,70 @@ public class CmsADEConfigData {
             result = updateUris(result);
         }
         return result;
+    }
+
+    /**
+     * Gets the set of names of types configured in this or any ancestor sitemap configurations.
+     *
+     * @return the set of type names from all ancestor configurations
+     */
+    public Set<String> getAncestorTypeNames() {
+
+        Set<String> result = m_typesInAncestors;
+        if (result != null) {
+            return result;
+        } else {
+            Set<String> mutableResult = new HashSet<>();
+            for (CmsResourceTypeConfig typeConfig : internalGetResourceTypes(false)) {
+                mutableResult.add(typeConfig.getTypeName());
+            }
+            result = Collections.unmodifiableSet(mutableResult);
+            m_typesInAncestors = result;
+            return result;
+        }
+    }
+
+    /**
+     * Gets the value of an attribute, or a default value
+     *
+     * @param key the attribute key
+     * @param defaultValue the value to return if no attribute with the given name is found
+     *
+     * @return the attribute value
+     */
+    public String getAttribute(String key, String defaultValue) {
+
+        AttributeValue value = getAttributes().get(key);
+        if (value != null) {
+            return value.getValue();
+        } else {
+            return defaultValue;
+        }
+
+    }
+
+    /**
+     * Gets the map of attributes configured for this sitemap, including values inherited from parent sitemaps.
+     *
+     * @return the map of attributes
+     */
+    public Map<String, AttributeValue> getAttributes() {
+
+        if (m_attributes != null) {
+            return m_attributes;
+        }
+        CmsADEConfigData parentConfig = parent();
+        Map<String, AttributeValue> result = new HashMap<>();
+        if (parentConfig != null) {
+            result.putAll(parentConfig.getAttributes());
+        }
+
+        for (Map.Entry<String, AttributeValue> entry : m_data.getAttributes().entrySet()) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+        Map<String, AttributeValue> immutableResult = Collections.unmodifiableMap(result);
+        m_attributes = immutableResult;
+        return immutableResult;
     }
 
     /**
@@ -1032,48 +1121,6 @@ public class CmsADEConfigData {
     public Collection<CmsResourceTypeConfig> getSearchableTypes(CmsObject cms) {
 
         return getResourceTypes();
-    }
-
-    /**
-     * Gets the set of names of types active in this sitemap configuration.
-     *
-     * @return the set of type names of active types
-     */
-    public Set<String> getActiveTypeNames() {
-
-        Set<String> result = m_typesActive;
-        if (result != null) {
-            return result;
-        } else {
-            Set<String> mutableResult = new HashSet<>();
-            for (CmsResourceTypeConfig typeConfig : internalGetResourceTypes(true)) {
-                mutableResult.add(typeConfig.getTypeName());
-            }
-            result = Collections.unmodifiableSet(mutableResult);
-            m_typesActive = result;
-            return result;
-        }
-    }
-
-    /**
-     * Gets the set of names of types configured in this or any ancestor sitemap configurations.
-     *
-     * @return the set of type names from all ancestor configurations
-     */
-    public Set<String> getAncestorTypeNames() {
-
-        Set<String> result = m_typesInAncestors;
-        if (result != null) {
-            return result;
-        } else {
-            Set<String> mutableResult = new HashSet<>();
-            for (CmsResourceTypeConfig typeConfig : internalGetResourceTypes(false)) {
-                mutableResult.add(typeConfig.getTypeName());
-            }
-            result = Collections.unmodifiableSet(mutableResult);
-            m_typesInAncestors = result;
-            return result;
-        }
     }
 
     /**
