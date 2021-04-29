@@ -55,7 +55,7 @@ public class CmsJspSitemapConfigWrapper {
      *
      * @return the lazy map
      */
-    public Map<String, Object> getAttribute() {
+    public Map<String, CmsJspObjectValueWrapper> getAttribute() {
 
         return CmsCollectionsGenericWrapper.createLazyMap(key -> {
             Map<String, AttributeValue> attrs = m_context.getSitemapConfigInternal().getAttributes();
