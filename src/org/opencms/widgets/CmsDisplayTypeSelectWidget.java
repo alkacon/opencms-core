@@ -119,6 +119,9 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
         }
     }
 
+    /** Name of the sitemap attribute to control whether the old or new way of collecting formatter options should be used. */
+    public static final String ATTR_USE_CONFIG_FORMATTERS = "list.use.configured.formatters";
+
     /** The match display types key. */
     public static final String MATCH_TYPES_KEY = "matchTypes";
 
@@ -328,18 +331,24 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
         CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, resource.getRootPath());
 
         if (config != null) {
+            boolean useConfiguredFormatters = Boolean.parseBoolean(
+                config.getAttribute(ATTR_USE_CONFIG_FORMATTERS, "false"));
             boolean useFormatterKeys = config.isUseFormatterKeys();
             Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
 
             for (I_CmsFormatterBean formatter : config.getDisplayFormatters(cms)) {
-                boolean inactive = (formatter.getId() == null)
-                    || !config.getActiveFormatters().containsKey(new CmsUUID(formatter.getId()));
-                if (useFormatterKeys && inactive) {
-                    continue;
-                }
-                if (!containerTypes.isEmpty()) {
-                    if (Sets.intersection(containerTypes, formatter.getContainerTypes()).isEmpty()) {
+
+                if (useConfiguredFormatters) {
+                    boolean inactive = (formatter.getId() == null)
+                        || !config.getActiveFormatters().containsKey(new CmsUUID(formatter.getId()));
+                    if (inactive) {
                         continue;
+                    }
+                } else {
+                    if (!containerTypes.isEmpty()) {
+                        if (Sets.intersection(containerTypes, formatter.getContainerTypes()).isEmpty()) {
+                            continue;
+                        }
                     }
                 }
                 for (String typeName : formatter.getResourceTypeNames()) {
@@ -349,7 +358,9 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
                         + ")";
                     options.add(
                         new FormatterOption(
-                            typeName + CmsXmlDisplayFormatterValue.SEPARATOR + (useFormatterKeys ? formatter.getKeyOrId() : formatter.getId()),
+                            typeName
+                                + CmsXmlDisplayFormatterValue.SEPARATOR
+                                + (useFormatterKeys ? formatter.getKeyOrId() : formatter.getId()),
                             typeName,
                             getDisplayType(formatter),
                             label,
