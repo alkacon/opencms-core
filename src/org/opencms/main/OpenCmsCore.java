@@ -1091,9 +1091,25 @@ public final class OpenCmsCore {
      */
     protected CmsObject initCmsObject(CmsObject cms) throws CmsException {
 
-        CmsContextInfo contextInfo = new CmsContextInfo(cms.getRequestContext());
-        contextInfo.setRequestTime(CmsContextInfo.CURRENT_TIME);
-        return initCmsObject(contextInfo);
+        CmsRequestContext requestContext = cms.getRequestContext();
+        CmsRequestContext context = new CmsRequestContext(
+            requestContext.getCurrentUser().clone(),
+            (CmsProject)(requestContext.getCurrentProject().clone()),
+            requestContext.getUri(),
+            requestContext.getRequestMatcher(),
+            requestContext.getSiteRoot(),
+            requestContext.isSecureRequest(),
+            requestContext.getLocale(),
+            requestContext.getEncoding(),
+            requestContext.getRemoteAddress(),
+            System.currentTimeMillis(),
+            m_resourceManager.getFolderTranslator(),
+            m_resourceManager.getFileTranslator(),
+            requestContext.getOuFqn(),
+            requestContext.isForceAbsoluteLinks());
+        context.setDetailResource(requestContext.getDetailResource());
+        CmsObject result = new CmsObject(m_securityManager, context);
+        return result;
     }
 
     /**
