@@ -147,11 +147,15 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
         CmsSolrIndex solrOffline = OpenCms.getSearchManager().getIndexSolr(CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE);
         Set<CmsResource> result = new HashSet<CmsResource>();
         try {
+            Map<String, String[]> searchParams = CmsRequestUtil.createParameterMap(
+                info.getCollectorParams(),
+                true,
+                null);
             // use "complicated" constructor to allow more than 50 results -> set ignoreMaxResults to true
             // adjust the CmsObject to prevent unintended filtering of resources
             CmsSolrResultList offlineResults = solrOffline.search(
                 CmsPublishListHelper.adjustCmsObject(cms, false),
-                new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(info.getCollectorParams())),
+                new CmsSolrQuery(null, searchParams),
                 true);
             Set<String> offlineIds = new HashSet<String>(offlineResults.size());
             for (CmsSearchResource offlineResult : offlineResults) {
@@ -165,7 +169,7 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
             }
             CmsSolrResultList onlineResults = solrOnline.search(
                 CmsPublishListHelper.adjustCmsObject(cms, true),
-                new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(info.getCollectorParams())),
+                new CmsSolrQuery(null, searchParams),
                 true);
             Set<String> deletedIds = new HashSet<String>(onlineResults.size());
             for (CmsSearchResource onlineResult : onlineResults) {
@@ -374,7 +378,17 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
             query.setFacet(false);
             CmsContentLoadCollectorInfo info = new CmsContentLoadCollectorInfo();
             info.setCollectorClass(this.getClass().getName());
-            info.setCollectorParams(query.getQuery());
+            // Somehow the normal toString() does add '+' for spaces, but keeps "real" '+'
+            // so we cannot reconstruct the correct query again.
+            // Using toQueryString() puts '+' for spaces as well, but escapes the "real" '+'
+            // so we can "repair" the query.
+            // The method adds '?' as first character, what we do not need.
+            String queryString = query.toQueryString();
+            if (queryString.length() > 0) {
+                // Cut the leading '?' and put correct spaces in place
+                queryString = queryString.substring(1).replace('+', ' ');
+            }
+            info.setCollectorParams(queryString);
             info.setId((new CmsUUID()).getStringValue());
             if (CmsJspTagEditable.getDirectEditProvider(pageContext) != null) {
                 try {
