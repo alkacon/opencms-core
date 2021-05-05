@@ -34,10 +34,7 @@ import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.relations.CmsLink;
 import org.opencms.xml.content.CmsXmlContent;
-import org.opencms.xml.types.CmsXmlVarLinkValue;
-import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.xml2json.CmsXmlContentTree.Field;
 import org.opencms.xml.xml2json.CmsXmlContentTree.Node;
@@ -168,8 +165,14 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
     public void initialize(CmsObject cms) throws CmsException {
 
         m_cms = OpenCms.initCmsObject(cms);
+        Object context = cms.getRequestContext().getAttribute(CmsJsonResourceHandler.ATTR_CONTEXT);
         m_rootCms = OpenCms.initCmsObject(m_cms);
         m_rootCms.getRequestContext().setSiteRoot("");
+        if (context != null) {
+            for (CmsObject currentCms : new CmsObject[] {m_cms, m_rootCms}) {
+                currentCms.getRequestContext().setAttribute(CmsJsonResourceHandler.ATTR_CONTEXT, context);
+            }
+        }
 
     }
 
@@ -291,32 +294,6 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
         I_CmsXmlContentValue value = node.getValue();
         if (value instanceof I_CmsJsonFormattableValue) {
             return ((I_CmsJsonFormattableValue)value).toJson(m_cms);
-        } else if (value instanceof CmsXmlVfsFileValue) {
-            CmsXmlVfsFileValue fileValue = (CmsXmlVfsFileValue)value;
-            String link = null;
-            CmsLink linkObj = fileValue.getLink(m_cms);
-            if (linkObj != null) {
-                link = linkObj.getLink(m_cms);
-            }
-            String path = fileValue.getStringValue(m_rootCms);
-            return linkAndPath(link, path);
-        } else if (value instanceof CmsXmlVarLinkValue) {
-            CmsXmlVarLinkValue linkValue = (CmsXmlVarLinkValue)value;
-            // Use the CmsObject with current site for the link, so that the resulting link
-            // works in the context (i.e. domain) of the original JSON handler request,
-            // but CmsObject with site set to root site so we get the root path, which
-            // can then be used to construct further JSON handler URLs.
-            CmsLink linkObj = linkValue.getLink(m_cms);
-            String link = null;
-            if (linkObj != null) {
-                link = linkObj.getLink(m_cms);
-            }
-            String path = linkValue.getStringValue(m_rootCms);
-            if (path.startsWith("http")) {
-                // external link
-                path = null;
-            }
-            return linkAndPath(link, path);
         } else {
             return node.getValue().getStringValue(m_cms);
         }

@@ -28,7 +28,10 @@
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
+import org.opencms.json.JSONException;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
@@ -38,8 +41,12 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.page.CmsXmlPage;
+import org.opencms.xml.xml2json.CmsDefaultXmlContentJsonRenderer;
+import org.opencms.xml.xml2json.I_CmsJsonFormattableValue;
 
 import java.util.Locale;
+
+import org.apache.commons.logging.Log;
 
 import org.dom4j.Attribute;
 import org.dom4j.Element;
@@ -51,7 +58,10 @@ import org.dom4j.Element;
  *
  * @since 7.0.0
  */
-public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
+public class CmsXmlVarLinkValue extends A_CmsXmlContentValue implements I_CmsJsonFormattableValue {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsXmlVarLinkValue.class);
 
     /** Value to mark that no link is defined, "none". */
     public static final String NO_LINK = "none";
@@ -292,6 +302,38 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
         CmsLinkUpdateUtil.updateXmlForHtmlValue(link, null, m_element.addElement(CmsXmlPage.NODE_LINK));
         // store the calculated link
         m_linkValue = link;
+    }
+
+    /**
+     * @see org.opencms.xml.xml2json.I_CmsJsonFormattableValue#toJson(org.opencms.file.CmsObject)
+     */
+    public Object toJson(CmsObject cms) {
+
+        try {
+            CmsXmlVarLinkValue linkValue = this;
+            // Use the CmsObject with current site for the link, so that the resulting link
+            // works in the context (i.e. domain) of the original JSON handler request,
+            // but CmsObject with site set to root site so we get the root path, which
+            // can then be used to construct further JSON handler URLs.
+            CmsLink linkObj = linkValue.getLink(cms);
+            String link = null;
+            if (linkObj != null) {
+                link = linkObj.getLink(cms);
+            }
+            CmsObject rootCms = OpenCms.initCmsObject(cms);
+            String path = linkValue.getStringValue(rootCms);
+            if (path.startsWith("http")) {
+                // external link
+                path = null;
+            }
+            return CmsDefaultXmlContentJsonRenderer.linkAndPath(link, path);
+        } catch (JSONException e) {
+            return null;
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return null;
+        }
+
     }
 
     /**

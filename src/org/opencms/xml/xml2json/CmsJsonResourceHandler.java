@@ -258,6 +258,7 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsNeedsAdmi
                     singleParams,
                     m_config,
                     accessPolicy);
+                cms.getRequestContext().setAttribute(ATTR_CONTEXT, context);
                 String encoding = "UTF-8";
                 res.setContentType("application/json; charset=" + encoding);
                 if (!accessPolicy.checkAccess(context.getCms(), context.getPath())) {

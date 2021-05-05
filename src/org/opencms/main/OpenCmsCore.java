@@ -1089,7 +1089,7 @@ public final class OpenCmsCore {
      * @see OpenCms#initCmsObject(CmsObject, CmsContextInfo)
      * @see OpenCms#initCmsObject(String)
      */
-    protected CmsObject initCmsObject(CmsObject cms) throws CmsException {
+    protected CmsObject initCmsObject(CmsObject cms) {
 
         CmsRequestContext requestContext = cms.getRequestContext();
         CmsRequestContext context = new CmsRequestContext(

@@ -41,6 +41,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.page.CmsXmlPage;
+import org.opencms.xml.xml2json.I_CmsJsonFormattableValue;
 
 import java.util.Iterator;
 import java.util.Locale;
@@ -56,7 +57,7 @@ import org.htmlparser.util.ParserException;
  *
  * @since 6.0.0
  */
-public class CmsXmlHtmlValue extends A_CmsXmlContentValue {
+public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsJsonFormattableValue {
 
     /** The name of this type as used in the XML schema. */
     public static final String TYPE_NAME = "OpenCmsHtml";
@@ -299,6 +300,14 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue {
 
         // ensure the String value is re-calculated next time
         m_stringValue = null;
+    }
+
+    /**
+     * @see org.opencms.xml.xml2json.I_CmsJsonFormattableValue#toJson(org.opencms.file.CmsObject)
+     */
+    public Object toJson(CmsObject cms) {
+
+        return getStringValue(cms);
     }
 
     /**

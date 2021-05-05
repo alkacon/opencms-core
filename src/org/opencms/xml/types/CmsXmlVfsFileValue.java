@@ -28,7 +28,10 @@
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
+import org.opencms.json.JSONException;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
@@ -39,8 +42,12 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.page.CmsXmlPage;
+import org.opencms.xml.xml2json.CmsDefaultXmlContentJsonRenderer;
+import org.opencms.xml.xml2json.I_CmsJsonFormattableValue;
 
 import java.util.Locale;
+
+import org.apache.commons.logging.Log;
 
 import org.dom4j.Attribute;
 import org.dom4j.Element;
@@ -52,7 +59,7 @@ import org.dom4j.Element;
  *
  * @since 7.0.0
  */
-public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
+public class CmsXmlVfsFileValue extends A_CmsXmlContentValue implements I_CmsJsonFormattableValue {
 
     /** Value to mark that no link is defined, "none". */
     public static final String NO_LINK = "none";
@@ -62,6 +69,9 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
 
     /** The vfs link type constant. */
     public static final String TYPE_VFS_LINK = "vfsLink";
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsXmlVfsFileValue.class);
 
     /** The schema definition String is located in a text for easier editing. */
     private static String m_schemaDefinition;
@@ -335,6 +345,28 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
         link.checkConsistency(cms);
         // update xml node
         CmsLinkUpdateUtil.updateXmlForVfsFile(link, m_element.addElement(CmsXmlPage.NODE_LINK));
+    }
+
+    /**
+     * @see org.opencms.xml.xml2json.I_CmsJsonFormattableValue#toJson(org.opencms.file.CmsObject)
+     */
+    public Object toJson(CmsObject cms) {
+
+        try {
+            String link = null;
+            CmsLink linkObj = getLink(cms);
+            if (linkObj != null) {
+                link = linkObj.getLink(cms);
+            }
+            CmsObject rootCms = OpenCms.initCmsObject(cms);
+            String path = getStringValue(rootCms);
+            return CmsDefaultXmlContentJsonRenderer.linkAndPath(link, path);
+        } catch (JSONException e) {
+            return null;
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return null;
+        }
     }
 
     /**
