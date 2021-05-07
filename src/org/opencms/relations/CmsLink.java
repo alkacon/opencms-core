@@ -94,6 +94,9 @@ public class CmsLink {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLink.class);
 
+    /** request context attribute to pass in a custom link renderer. */
+    public static final String CUSTOM_LINK_HANDLER = "CmsLink.customLinkHandler";
+
     /** The anchor of the URI, if any. */
     private String m_anchor;
 
@@ -126,6 +129,9 @@ public class CmsLink {
 
     /** The raw uri. */
     private String m_uri;
+
+    /** The resource the link points to. */
+    private CmsResource m_resource;
 
     /**
      * Reconstructs a link object from the given XML node.<p>
@@ -237,6 +243,7 @@ public class CmsLink {
             CmsResource res;
             try {
                 res = cms.readResource(m_structureId, CmsResourceFilter.ALL);
+                m_resource = res;
                 rootPath = res.getRootPath();
                 if (!res.getRootPath().equals(m_target)) {
                     // update path if needed
@@ -279,6 +286,7 @@ public class CmsLink {
                 cms.getRequestContext().setSiteRoot("");
                 // now look for the resource with the given path
                 CmsResource res = cms.readResource(m_target, CmsResourceFilter.ALL);
+                m_resource = res;
                 if (!res.getStructureId().equals(m_structureId)) {
                     // update structure id if needed
                     if (LOG.isDebugEnabled()) {
@@ -360,9 +368,17 @@ public class CmsLink {
             }
 
             checkConsistency(cms);
-            //String target = replaceTargetWithDetailPageIfNecessary(cms, m_resource, m_target);
             String target = m_target;
             String uri = computeUri(target, m_query, m_anchor);
+
+            I_CmsCustomLinkRenderer handler = (I_CmsCustomLinkRenderer)cms.getRequestContext().getAttribute(
+                CmsLink.CUSTOM_LINK_HANDLER);
+            if (handler != null) {
+                String handlerResult = handler.getLink(cms, this);
+                if (handlerResult != null) {
+                    return handlerResult;
+                }
+            }
 
             CmsObjectWrapper wrapper = (CmsObjectWrapper)cms.getRequestContext().getAttribute(
                 CmsObjectWrapper.ATTRIBUTE_NAME);
@@ -494,6 +510,18 @@ public class CmsLink {
     public String getQuery() {
 
         return m_query;
+    }
+
+    /**
+     * Returns the resource this link points to, if it is an internal link and has already been initialized via checkConsistency.
+     *
+     * <p>Returns null otherwise.
+     *
+     * @return the resource this link points to
+     */
+    public CmsResource getResource() {
+
+        return m_resource;
     }
 
     /**
