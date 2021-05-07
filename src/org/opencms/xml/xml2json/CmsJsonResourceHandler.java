@@ -40,6 +40,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsResourceInitException;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.I_CmsCustomLinkRenderer;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -75,6 +76,9 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsNeedsAdmi
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJsonResourceHandler.class);
 
+    /** Parameter to reference the link rewriting strategy defined elsewhere. */
+    public static final Object PARAM_LINKREWRITE_REFID = "linkrewrite.refid";
+
     /** The Admin CMS context. */
     private CmsObject m_adminCms;
 
@@ -91,6 +95,47 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsNeedsAdmi
     public CmsJsonResourceHandler() {
 
         CmsFlexController.registerUncacheableAttribute(ATTR_CONTEXT);
+    }
+
+    /**
+     * Gets the link renderer for the current CMS context.
+     *
+     * @param cms the current CMS context
+     * @return the link renderer for the context, or null if there is none
+     */
+    public static I_CmsCustomLinkRenderer getLinkRenderer(CmsObject cms) {
+
+        Object context = cms.getRequestContext().getAttribute(ATTR_CONTEXT);
+        if (context instanceof CmsJsonHandlerContext) {
+            String linkRewriterKey = ((CmsJsonHandlerContext)context).getHandlerConfig().get(
+                CmsJsonResourceHandler.PARAM_LINKREWRITE_REFID);
+            if (linkRewriterKey != null) {
+                Object linkRewriterObj = OpenCms.getRuntimeProperty(linkRewriterKey);
+                if (linkRewriterObj instanceof I_CmsCustomLinkRenderer) {
+                    return (I_CmsCustomLinkRenderer)linkRewriterObj;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Produces a link to the given resource, using the link renderer from the current CMS context if it is set.
+     *
+     * @param cms the CMS context
+     * @param res the resource to link to
+     * @return the link to the resource
+     */
+    public static String link(CmsObject cms, CmsResource res) {
+
+        I_CmsCustomLinkRenderer linkRenderer = getLinkRenderer(cms);
+        if (linkRenderer != null) {
+            String result = linkRenderer.getLink(cms, res);
+            if (result != null) {
+                return result;
+            }
+        }
+        return OpenCms.getLinkManager().substituteLink(cms, res);
     }
 
     /**

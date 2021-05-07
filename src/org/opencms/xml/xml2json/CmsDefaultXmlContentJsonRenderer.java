@@ -34,6 +34,8 @@ import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsLink;
+import org.opencms.relations.I_CmsCustomLinkRenderer;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.xml2json.CmsXmlContentTree.Field;
@@ -173,7 +175,10 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
                 currentCms.getRequestContext().setAttribute(CmsJsonResourceHandler.ATTR_CONTEXT, context);
             }
         }
-
+        I_CmsCustomLinkRenderer linkRenderer = CmsJsonResourceHandler.getLinkRenderer(cms);
+        if (linkRenderer != null) {
+            m_cms.getRequestContext().setAttribute(CmsLink.CUSTOM_LINK_HANDLER, linkRenderer);
+        }
     }
 
     /**

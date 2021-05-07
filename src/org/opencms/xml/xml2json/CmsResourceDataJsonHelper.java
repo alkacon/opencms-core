@@ -76,8 +76,7 @@ public class CmsResourceDataJsonHelper {
     public void addPathAndLink(JSONObject json) throws JSONException {
 
         json.put("path", m_resource.getRootPath());
-        json.put("link", OpenCms.getLinkManager().substituteLinkForUnknownTarget(m_cms, m_cms.getSitePath(m_resource)));
-
+        json.put("link", CmsJsonResourceHandler.link(m_cms, m_resource));
     }
 
     /**
