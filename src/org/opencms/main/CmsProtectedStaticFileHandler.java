@@ -101,8 +101,18 @@ implements I_CmsResourceInit, I_CmsConfigurationParameterHandler, I_CmsNeedsAdmi
     /** Regex for matching types. */
     private Pattern m_typeFilter;
 
+    /** The link rewrite prefix. */
     private String m_linkRewritePrefix;
 
+    /**
+     * Merges a link prefix with additional link components.
+     *
+     * @param prefix the prefix
+     * @param path the path
+     * @param query the query
+     *
+     * @return the combined link
+     */
     public static String mergeLinkPrefix(String prefix, String path, String query) {
 
         try {
