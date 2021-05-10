@@ -80,6 +80,20 @@ public class CmsResourceDataJsonHelper {
     }
 
     /**
+     * Adds property data to the result object.
+     *
+     * @param result the result object
+     *
+     * @throws CmsException if something goes wrong
+     * @throws JSONException if something goes wrong with the JSON
+     */
+    public void addProperties(JSONObject result) throws CmsException, JSONException {
+
+        result.put("properties", properties(true));
+        result.put("own_properties", properties(false));
+    }
+
+    /**
      * Creates a JSON object with the attributes of the resource.
      *
      * @return the JSON for the attributes
@@ -96,13 +110,15 @@ public class CmsResourceDataJsonHelper {
     /**
      * Creates a JSON object with the properties of the resource.
      *
+     * @param inherited true if inherited properties should be loaded
+     *
      * @return the JSON object
      * @throws CmsException if something goes wrong
      * @throws JSONException if something goes wrong
      */
-    public JSONObject properties() throws CmsException, JSONException {
+    public JSONObject properties(boolean inherited) throws CmsException, JSONException {
 
-        List<CmsProperty> props = m_cms.readPropertyObjects(m_resource, false);
+        List<CmsProperty> props = m_cms.readPropertyObjects(m_resource, inherited);
         JSONObject propJson = new JSONObject(true);
         for (CmsProperty prop : props) {
             if ((m_propertyFilter == null) || m_propertyFilter.test(prop.getName())) {

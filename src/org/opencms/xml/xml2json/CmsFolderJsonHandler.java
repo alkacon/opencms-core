@@ -162,7 +162,7 @@ public class CmsFolderJsonHandler implements I_CmsJsonHandler {
         }
         result.put("attributes", helper.attributes());
         result.put("isXmlContent", Boolean.valueOf(isContent));
-        result.put("properties", helper.properties());
+        helper.addProperties(result);
         return result;
     }
 }

@@ -324,7 +324,7 @@ public class CmsContainerPageJsonRenderer {
             try {
                 CmsResourceDataJsonHelper helper = new CmsResourceDataJsonHelper(m_cms, resource, m_propFilter);
                 result.put("attributes", helper.attributes());
-                result.put("properties", helper.properties());
+                helper.addProperties(result);
                 helper.addPathAndLink(result);
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
