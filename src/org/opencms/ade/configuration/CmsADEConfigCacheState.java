@@ -547,6 +547,50 @@ public class CmsADEConfigCacheState {
     }
 
     /**
+     * For a given master configuration, lists all directly and indirectly referenced master configurations, in sitemap config inheritance order (i.e. referenced master configurations preceding the
+     * configurations from which they are referenced).
+     *
+     * @param startMasterConfig the master configuration to start with
+     *
+     * @return the expanded list of master configurations
+     */
+    private List<CmsADEConfigDataInternal> fillInReferencedMasterConfigurations(
+        CmsADEConfigDataInternal startMasterConfig) {
+
+        // depth-first traversal of master configurations using a stack
+
+        ArrayList<CmsADEConfigDataInternal> stack = new ArrayList<>();
+        ArrayList<CmsADEConfigDataInternal> result = new ArrayList<>();
+        Set<CmsUUID> alreadySeen = new HashSet<>();
+        stack.add(startMasterConfig);
+        while (!stack.isEmpty()) {
+            CmsADEConfigDataInternal current = stack.remove(stack.size() - 1);
+            if (alreadySeen.contains(current.getResource().getStructureId())) {
+                LOG.error(
+                    "Circular master configuration references detected for " + current.getResource().getRootPath());
+            } else {
+                alreadySeen.add(current.getResource().getStructureId());
+                result.add(current);
+                for (CmsUUID referencedId : current.getMasterConfigs()) {
+                    CmsADEConfigDataInternal referencedMasterConfig = m_siteConfigurations.get(referencedId);
+                    if (referencedMasterConfig != null) {
+                        stack.add(referencedMasterConfig);
+                    } else {
+                        LOG.warn(
+                            "Master configuration with id "
+                                + referencedId
+                                + " not found, referenced by "
+                                + current.getResource().getRootPath());
+                    }
+
+                }
+            }
+        }
+        return Lists.reverse(result);
+
+    }
+
+    /**
      * Wraps the internal config data into a bean which manages the lookup of inherited configurations.<p>
      *
      * @param data the config data to wrap
@@ -566,7 +610,9 @@ public class CmsADEConfigCacheState {
                 for (CmsUUID id : masterConfigs) {
                     CmsADEConfigDataInternal masterConfig = m_siteConfigurations.get(id);
                     if (masterConfig != null) {
-                        configList.add(masterConfig);
+                        List<CmsADEConfigDataInternal> masterConfigWithDependencies = fillInReferencedMasterConfigurations(
+                            masterConfig);
+                        configList.addAll(masterConfigWithDependencies);
                     } else {
                         LOG.warn(
                             "Master configuration "

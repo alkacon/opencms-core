@@ -563,6 +563,17 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Gets an (immutable) list of paths of configuration files in inheritance order.
+     *
+     * @return the list of configuration files
+     */
+    public List<String> getConfigPaths() {
+
+        return m_configSequence.getConfigPaths();
+
+    }
+
+    /**
      * Returns the names of the bundles configured as workplace bundles in any module configuration.<p>
      *
      * @return the names of the bundles configured as workplace bundles in any module configuration.

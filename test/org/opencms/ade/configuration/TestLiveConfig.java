@@ -386,6 +386,66 @@ public class TestLiveConfig extends OpenCmsTestCase {
     }
 
     /**
+     * Tests the master configuration chaining feature.<p>
+     *
+     * @throws Exception -
+     */
+    public void testMasterConfigurationChaining() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        I_CmsResourceType folderType = OpenCms.getResourceManager().getResourceType("folder");
+        cms.createResource("/system/chaintest", folderType);
+
+        I_CmsResourceType configType = OpenCms.getResourceManager().getResourceType("sitemap_config");
+        I_CmsResourceType masterConfigType = OpenCms.getResourceManager().getResourceType("sitemap_master_config");
+
+        cms.createResource("/system/chaintest/.content", folderType);
+        Map<String, String> types1 = Maps.newHashMap();
+
+        String config2 = generateSitemapConfigWithTypes(types1, null);
+        CmsResource masterConfigResource = cms.createResource(
+            "/system/.chainmaster",
+            masterConfigType,
+            config2.getBytes("UTF-8"),
+            Collections.<CmsProperty> emptyList());
+
+        String config3 = generateSitemapConfigWithTypes(types1, null);
+        CmsResource masterConfigResource2 = cms.createResource(
+            "/system/.chainmaster2",
+            masterConfigType,
+            config3.getBytes("UTF-8"),
+            Collections.<CmsProperty> emptyList());
+
+        String config4 = generateSitemapConfigWithTypes(
+            types1,
+            Arrays.asList("" + masterConfigResource.getStructureId(), "" + masterConfigResource2.getStructureId()));
+        CmsResource masterConfigResource3 = cms.createResource(
+            "/system/.chainmaster3",
+            masterConfigType,
+            config4.getBytes("UTF-8"),
+            Collections.<CmsProperty> emptyList());
+
+        String config1 = generateSitemapConfigWithTypes(
+            types1,
+            Arrays.asList("" + masterConfigResource3.getStructureId()));
+        cms.createResource(
+            "/system/chaintest/.content/.config",
+            configType,
+            config1.getBytes("UTF-8"),
+            Collections.<CmsProperty> emptyList());
+
+        OpenCms.getADEManager().waitForCacheUpdate(false);
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, "/system/chaintest");
+        assertEquals(
+            Arrays.asList(
+                "/system/.chainmaster",
+                "/system/.chainmaster2",
+                "/system/.chainmaster3",
+                "/system/chaintest/.content/.config").toString(),
+            config.getConfigPaths().toString());
+    }
+
+    /**
      * Tests the master configuration feature.<p>
      *
      * @throws Exception -
@@ -439,6 +499,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
             String config4 = generateSitemapConfigWithTypes(
                 types4,
                 Arrays.asList("" + masterConfigResource.getStructureId(), "" + masterConfigResource2.getStructureId()));
+
             cms.createResource(
                 "/system/mastertest/subfolder/.content/.config",
                 configType,

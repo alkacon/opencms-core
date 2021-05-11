@@ -20,6 +20,7 @@
 
     <xsd:complexType name="OpenCmsSitemapMasterConfiguration">
         <xsd:sequence>
+            <xsd:element name="MasterConfig" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="DiscardTypes" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="PreferDetailPagesForLocalContents" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="ResourceType" type="OpenCmsADEType" minOccurs="0" maxOccurs="unbounded" />
@@ -50,9 +51,10 @@
                 <relation element="RemoveFormatters/RemoveFormatter" invalidate="false" />
                 <relation element="ResourceType/Folder/Path" invalidate="false" />
                 <relation element="Function" invalidate="false" />
+                <relation element="MasterConfig" invalidate="false" />
             </relations>
             <tabs>
-                <tab element="DiscardTypes" name="TabResourceTypes" collapse="false" />
+                <tab element="MasterConfig" name="TabResourceTypes" collapse="false" />
                 <tab element="UseFormatterKeys" name="TabFormatters" collapse="false" />
                 <tab element="RemoveAllFunctions" name="TabFunctions" collapse="false" />
                 <tab element="DiscardProperties" name="TabPropertyConfiguration" collapse="false" />

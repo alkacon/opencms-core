@@ -27,6 +27,10 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.file.CmsResource;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.common.base.Optional;
@@ -63,7 +67,7 @@ public class CmsADEConfigurationSequence {
      */
     protected CmsADEConfigurationSequence(List<CmsADEConfigDataInternal> configDatas, int index) {
 
-        assert(0 <= index) && (index < configDatas.size());
+        assert (0 <= index) && (index < configDatas.size());
         m_configDatas = configDatas;
         m_configIndex = index;
 
@@ -77,6 +81,23 @@ public class CmsADEConfigurationSequence {
     public CmsADEConfigDataInternal getConfig() {
 
         return m_configDatas.get(m_configIndex);
+    }
+
+    /**
+     * Gets the list of configuration file paths in inheritance order, not including the module configuration.
+     *
+     * @return the list of configuration file paths
+     */
+    public List<String> getConfigPaths() {
+
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i <= m_configIndex; i++) {
+            CmsResource res = m_configDatas.get(i).getResource();
+            if (res != null) {
+                result.add(res.getRootPath());
+            }
+        }
+        return Collections.unmodifiableList(result);
     }
 
     /**
