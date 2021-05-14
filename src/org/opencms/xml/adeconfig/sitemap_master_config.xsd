@@ -42,6 +42,7 @@
             <resourcebundle name="org.opencms.xml.containerpage.messages" />
             <layouts>
                 <layout element="Function" widget="VfsFileWidget" configuration="searchtypes=function,function_config" />
+                <layout element="Attribute/Value" widget="TextareaWidget" />
                 <layout element="AddFormatters/AddFormatter" widget="VfsFileWidget" configuration="searchtypes=formatter_config,flex_formatter,macro_formatter|selectabletypes=formatter_config,flex_formatter,macro_formatter" />
                 <layout element="RemoveFormatters/RemoveFormatter" widget="VfsFileWidget" configuration="searchtypes=formatter_config,flex_formatter,macro_formatter|selectabletypes=formatter_config,flex_formatter,macro_formatter" />
                                 <layout element="DiscardProperties" widget="SelectorWidget" configuration="false:%(key.discardprops.false)|true:%(key.discardprops.true)|top:%(key.discardprops.top)" />

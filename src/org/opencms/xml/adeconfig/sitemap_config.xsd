@@ -48,6 +48,7 @@
             <resourcebundle name="org.opencms.xml.containerpage.messages" />
             <layouts>
                 <layout element="Function" widget="VfsFileWidget" configuration="searchtypes=function,function_config"  />
+                <layout element="Attribute/Value" widget="TextareaWidget" />
                 <layout element="DiscardProperties" widget="SelectorWidget" configuration="false:%(key.discardprops.false)|true:%(key.discardprops.true)|top:%(key.discardprops.top)" />
             </layouts>
             <relations>
