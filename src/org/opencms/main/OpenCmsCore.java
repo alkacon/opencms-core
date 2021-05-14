@@ -2062,6 +2062,7 @@ public final class OpenCmsCore {
             }
             if (page != null) {
                 cms.getRequestContext().setUri(cms.getSitePath(page));
+                cms.getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_ADE_CONTEXT_PATH, page.getRootPath());
             }
 
             // set runtime variables

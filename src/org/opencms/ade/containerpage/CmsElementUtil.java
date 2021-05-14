@@ -47,6 +47,7 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
@@ -190,6 +191,10 @@ public class CmsElementUtil {
     throws CmsException {
 
         m_cms = OpenCms.initCmsObject(cms);
+        String contextPath = (String)cms.getRequestContext().getAttribute(CmsRequestContext.ATTRIBUTE_ADE_CONTEXT_PATH);
+        if (contextPath != null) {
+            m_cms.getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_ADE_CONTEXT_PATH, contextPath);
+        }
         m_req = req;
         m_res = res;
         m_currentPageUri = currentPageUri;

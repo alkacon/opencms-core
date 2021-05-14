@@ -35,6 +35,7 @@ import org.opencms.ade.contenteditor.shared.CmsComplexWidgetData;
 import org.opencms.ade.contenteditor.shared.CmsExternalWidgetConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.main.CmsLog;
@@ -689,6 +690,12 @@ public class CmsContentTypeVisitor {
                     I_CmsADEWidget adeWidget = (I_CmsADEWidget)widget;
                     defaultType = adeWidget.getDefaultDisplayType();
                     widgetName = adeWidget.getWidgetName();
+                    if ((cms.getRequestContext().getAttribute(CmsRequestContext.ATTRIBUTE_ADE_CONTEXT_PATH) == null)
+                        && (m_file != null)) {
+                        cms.getRequestContext().setAttribute(
+                            CmsRequestContext.ATTRIBUTE_ADE_CONTEXT_PATH,
+                            m_file.getRootPath());
+                    }
                     widgetConfig = adeWidget.getConfiguration(cms, schemaType, m_messages, m_file, m_locale);
                     if (!adeWidget.isInternal() && !m_widgetConfigurations.containsKey(widgetName)) {
                         CmsExternalWidgetConfiguration externalConfiguration = new CmsExternalWidgetConfiguration(

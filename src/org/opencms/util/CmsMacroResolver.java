@@ -27,12 +27,14 @@
 
 package org.opencms.util;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.configuration.CmsParameterStore;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeBinary;
@@ -186,6 +188,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /** Key used to specify the validation value as macro value. */
     public static final String KEY_VALIDATION_VALUE = "validation.value";
+
+    /** Key for accessing sitemap attributes. */
+    public static final String KEY_SITEMAP_ATTRIBUTE = "attribute:";
 
     /** Identified for "magic" parameter commands. */
     static final String[] VALUE_NAMES_ARRAY = {
@@ -986,6 +991,32 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                 }
                 if (val == null) {
                     LOG.warn("Parameter not defined: " + remaining);
+                }
+                return val;
+
+            }
+
+            if (macro.startsWith(KEY_SITEMAP_ATTRIBUTE)) {
+                String remaining = macro.substring(KEY_SITEMAP_ATTRIBUTE.length());
+                int colPos = remaining.indexOf(":");
+                String defaultValue = null;
+                String key = null;
+                if (colPos > -1) {
+                    defaultValue = remaining.substring(colPos + 1);
+                    key = remaining.substring(0, colPos);
+                } else {
+                    key = remaining;
+                }
+                String adeContext = (String)m_cms.getRequestContext().getAttribute(
+                    CmsRequestContext.ATTRIBUTE_ADE_CONTEXT_PATH);
+                if (adeContext == null) {
+                    adeContext = m_cms.getRequestContext().getRootUri();
+                }
+                System.out.println("ADEContext = " + adeContext);
+                CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(m_cms, adeContext);
+                String val = config.getAttribute(key, defaultValue);
+                if (val == null) {
+                    LOG.warn("Sitemap attribute not defined: " + key);
                 }
                 return val;
 
