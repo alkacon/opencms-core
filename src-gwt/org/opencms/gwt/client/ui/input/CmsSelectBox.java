@@ -62,8 +62,11 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
     /** The widget type identifier. */
     public static final String WIDGET_TYPE = "select";
 
+    /** Suffix for select/selectcombo widget names to prevent creation of 'no selection' value. */
+    public static final String NOTNULL_SUFFIX = "_notnull";
+
     /** Widget type identifier (no null value). */
-    public static final String WIDGET_TYPE_NOTNULL = "select_notnull";
+    public static final String WIDGET_TYPE_NOTNULL = WIDGET_TYPE + NOTNULL_SUFFIX;
 
     /** The ghost value. */
     protected String m_ghostValue;

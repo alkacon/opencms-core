@@ -45,6 +45,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsMultiCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.ui.input.CmsSelectComboBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
@@ -465,9 +466,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
         Map<String, String> widgetParams,
         Optional<String> defaultValue) {
 
-        if (CmsSelectBox.WIDGET_TYPE.equals(key)) {
+        if (CmsSelectBox.WIDGET_TYPE.equals(key) || CmsSelectComboBox.WIDGET_TYPE.equals(key)) {
             if ((defaultValue != null) && defaultValue.isPresent() && widgetParams.containsKey(defaultValue.get())) {
-                key = CmsSelectBox.WIDGET_TYPE_NOTNULL;
+                key = key + CmsSelectBox.NOTNULL_SUFFIX;
             }
         }
 

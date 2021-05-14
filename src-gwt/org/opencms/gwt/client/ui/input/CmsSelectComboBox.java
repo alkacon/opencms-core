@@ -88,11 +88,12 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsH
      *
      * @param options the widget options
      * @param forProperties if true, use the special widget versions for the property dialog
+     * @param nullOption true if null option should be added
      */
-    public CmsSelectComboBox(Map<String, String> options, boolean forProperties) {
+    public CmsSelectComboBox(Map<String, String> options, boolean forProperties, boolean nullOption) {
 
         m_options = options;
-        m_selectBox = forProperties ? new CmsPropertySelectBox(options) : new CmsSelectBox(options, false);
+        m_selectBox = forProperties ? new CmsPropertySelectBox(options) : new CmsSelectBox(options, nullOption);
         m_comboBox = forProperties ? new CmsPropertyComboBox(m_options) : new CmsComboBox(m_options);
         m_panel.add(m_selectBox);
         CmsPushButton comboButton = new CmsPushButton();
@@ -123,9 +124,21 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsH
              */
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams, Optional<String> defaultValue) {
 
-                return new CmsSelectComboBox(widgetParams, false);
+                return new CmsSelectComboBox(widgetParams, false, true);
             }
         });
+        CmsWidgetFactoryRegistry.instance().registerFactory(
+            WIDGET_TYPE + CmsSelectBox.NOTNULL_SUFFIX,
+            new I_CmsFormWidgetFactory() {
+
+                /**
+                 * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory#createWidget(java.util.Map, com.google.common.base.Optional)
+                 */
+                public I_CmsFormWidget createWidget(Map<String, String> widgetParams, Optional<String> defaultValue) {
+
+                    return new CmsSelectComboBox(widgetParams, false, false);
+                }
+            });
         CmsWidgetFactoryRegistry.instance().registerFactory(WIDGET_TYPE_PROP, new I_CmsFormWidgetFactory() {
 
             /**
@@ -133,7 +146,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsH
              */
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams, Optional<String> defaultValue) {
 
-                return new CmsSelectComboBox(widgetParams, true);
+                return new CmsSelectComboBox(widgetParams, true, false);
             }
         });
 
@@ -238,6 +251,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsH
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#setAutoHideParent(org.opencms.gwt.client.ui.I_CmsAutoHider)
      */
     public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
+
         // do nothing
     }
 

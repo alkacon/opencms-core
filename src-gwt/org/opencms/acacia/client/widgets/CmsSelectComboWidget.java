@@ -212,7 +212,7 @@ public class CmsSelectComboWidget extends Composite implements I_CmsEditWidget, 
     private void parseConfiguration(String config) {
 
         CmsSelectConfigurationParser parser = new CmsSelectConfigurationParser(config);
-        m_comboBox = new CmsSelectComboBox(parser.getOptions(), false);
+        m_comboBox = new CmsSelectComboBox(parser.getOptions(), false, false);
         if (parser.getDefaultValue() != null) {
             //set the declared value selected.
             m_comboBox.setFormValueAsString(parser.getDefaultValue());
