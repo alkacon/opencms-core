@@ -156,6 +156,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
+import org.apache.logging.log4j.CloseableThreadContext;
 
 import org.antlr.stringtemplate.StringTemplate;
 
@@ -2124,63 +2125,71 @@ public final class OpenCmsCore {
         CmsObject cms = null;
         try {
             cms = initCmsObject(req, res);
-            if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
-                String uri = cms.getRequestContext().getUri();
-                if (uri.startsWith(CmsWorkplace.VFS_PATH_SITES)) {
-                    // resources within the sites folder may only be called with their site relative path
-                    // this should prevent showing pages from other sites with their root path
-                    throw new CmsVfsResourceNotFoundException(
-                        org.opencms.main.Messages.get().container(org.opencms.main.Messages.ERR_PATH_NOT_FOUND_1, uri));
+            Map<String, String> logInfo = new HashMap<>();
+            logInfo.put("cms_siteroot", cms.getRequestContext().getSiteRoot());
+            logInfo.put("cms_project", cms.getRequestContext().getCurrentProject().getName());
+            try (CloseableThreadContext.Instance threadContext = CloseableThreadContext.putAll(logInfo)) {
+                LOG.info("Updating log context: " + logInfo);
+                if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+                    String uri = cms.getRequestContext().getUri();
+                    if (uri.startsWith(CmsWorkplace.VFS_PATH_SITES)) {
+                        // resources within the sites folder may only be called with their site relative path
+                        // this should prevent showing pages from other sites with their root path
+                        throw new CmsVfsResourceNotFoundException(
+                            org.opencms.main.Messages.get().container(
+                                org.opencms.main.Messages.ERR_PATH_NOT_FOUND_1,
+                                uri));
+                    }
+                    if (OpenCms.getStaticExportManager().isExportLink(cms, uri)) {
+                        // if we used the request's query string for getRfsName, clients could cause an unlimited number
+                        // of files to be exported just by varying the request parameters!
+                        String url = m_linkManager.getOnlineLink(cms, uri);
+                        res.sendRedirect(url);
+                        return;
+                    }
                 }
-                if (OpenCms.getStaticExportManager().isExportLink(cms, uri)) {
-                    // if we used the request's query string for getRfsName, clients could cause an unlimited number
-                    // of files to be exported just by varying the request parameters!
-                    String url = m_linkManager.getOnlineLink(cms, uri);
-                    res.sendRedirect(url);
-                    return;
+                List<CmsSiteMatcher> currentSiteAliase = m_siteManager.getCurrentSite(cms).getAliases();
+                CmsSiteMatcher currentSiteMatcher = cms.getRequestContext().getRequestMatcher();
+                if (currentSiteAliase.contains(currentSiteMatcher.forDifferentScheme("http"))
+                    || currentSiteAliase.contains(currentSiteMatcher.forDifferentScheme("https"))) {
+                    int pos = currentSiteAliase.indexOf(currentSiteMatcher.forDifferentScheme("http"));
+                    if (pos == -1) {
+                        pos = currentSiteAliase.indexOf(currentSiteMatcher.forDifferentScheme("https"));
+                    }
+                    if (currentSiteAliase.get(pos).isRedirect()) {
+                        res.sendRedirect(
+                            m_siteManager.getCurrentSite(cms).getUrl() + req.getContextPath() + req.getPathInfo());
+                        return;
+                    }
                 }
-            }
-            List<CmsSiteMatcher> currentSiteAliase = m_siteManager.getCurrentSite(cms).getAliases();
-            CmsSiteMatcher currentSiteMatcher = cms.getRequestContext().getRequestMatcher();
-            if (currentSiteAliase.contains(currentSiteMatcher.forDifferentScheme("http"))
-                || currentSiteAliase.contains(currentSiteMatcher.forDifferentScheme("https"))) {
-                int pos = currentSiteAliase.indexOf(currentSiteMatcher.forDifferentScheme("http"));
-                if (pos == -1) {
-                    pos = currentSiteAliase.indexOf(currentSiteMatcher.forDifferentScheme("https"));
+
+                // user is initialized, now deliver the requested resource
+                CmsResource resource = initResource(cms, cms.getRequestContext().getUri(), req, res);
+
+                // a resource init handler may use its own authentication, but return a resource to be loaded instead of handling the complete request processing by itself.
+                // For this case, a request context attribute is used to pass  the CmsObject that should be used for loading the resource.
+
+                Object alternativeCmsObject = cms.getRequestContext().removeAttribute(
+                    I_CmsResourceInit.ATTR_ALTERNATIVE_CMS_OBJECT);
+                CmsObject cmsForLoad = cms;
+                if (alternativeCmsObject instanceof CmsObject) {
+                    // we know it's not null at this point
+                    cmsForLoad = (CmsObject)alternativeCmsObject;
                 }
-                if (currentSiteAliase.get(pos).isRedirect()) {
-                    res.sendRedirect(
-                        m_siteManager.getCurrentSite(cms).getUrl() + req.getContextPath() + req.getPathInfo());
-                    return;
-                }
-            }
+                if (resource != null) {
+                    boolean forceAbsoluteLinks = checkForceAbsoluteLinks(req, cms, resource);
+                    cms.getRequestContext().setForceAbsoluteLinks(forceAbsoluteLinks);
 
-            // user is initialized, now deliver the requested resource
-            CmsResource resource = initResource(cms, cms.getRequestContext().getUri(), req, res);
-
-            // a resource init handler may use its own authentication, but return a resource to be loaded instead of handling the complete request processing by itself.
-            // For this case, a request context attribute is used to pass  the CmsObject that should be used for loading the resource.
-
-            Object alternativeCmsObject = cms.getRequestContext().removeAttribute(
-                I_CmsResourceInit.ATTR_ALTERNATIVE_CMS_OBJECT);
-            CmsObject cmsForLoad = cms;
-            if (alternativeCmsObject instanceof CmsObject) {
-                // we know it's not null at this point
-                cmsForLoad = (CmsObject)alternativeCmsObject;
-            }
-            if (resource != null) {
-                boolean forceAbsoluteLinks = checkForceAbsoluteLinks(req, cms, resource);
-                cms.getRequestContext().setForceAbsoluteLinks(forceAbsoluteLinks);
-
-                // a file was read, go on process it
-                m_resourceManager.loadResource(cmsForLoad, resource, req, res);
-                if (cmsForLoad == cms) {
-                    // if we used a different CmsObject, we don't want to update the session with either
-                    // CmsObject - it's not necessary to do it for the original CmsObject, and using the alternative CmsObject
-                    // if there is already a session would switch the session user to the one of that CmsObject. We don't
-                    // want that, since the primary use case for the alternative CmsObject mechanism is 'stateless' authentication
-                    // for resource init handlers.
-                    m_sessionManager.updateSessionInfo(cms, req);
+                    // a file was read, go on process it
+                    m_resourceManager.loadResource(cmsForLoad, resource, req, res);
+                    if (cmsForLoad == cms) {
+                        // if we used a different CmsObject, we don't want to update the session with either
+                        // CmsObject - it's not necessary to do it for the original CmsObject, and using the alternative CmsObject
+                        // if there is already a session would switch the session user to the one of that CmsObject. We don't
+                        // want that, since the primary use case for the alternative CmsObject mechanism is 'stateless' authentication
+                        // for resource init handlers.
+                        m_sessionManager.updateSessionInfo(cms, req);
+                    }
                 }
             }
 

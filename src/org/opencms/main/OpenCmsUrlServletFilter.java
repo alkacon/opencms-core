@@ -27,7 +27,11 @@
 
 package org.opencms.main;
 
+import org.opencms.util.CmsStringUtil;
+
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -37,7 +41,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.logging.Log;
+import org.apache.logging.log4j.CloseableThreadContext;
 
 /**
  * Implements a servlet filter for URL rewriting.
@@ -118,18 +124,31 @@ public class OpenCmsUrlServletFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
     throws IOException, ServletException {
 
-        if (m_isInitialized || tryToInitialize()) {
-            if (request instanceof HttpServletRequest) {
-                HttpServletRequest req = (HttpServletRequest)request;
-                String uri = req.getRequestURI();
-                if (!uri.matches(m_regex)) {
-                    String adjustedUri = uri.replaceFirst(m_contextPath + "/", m_servletPath);
-                    req.getRequestDispatcher(adjustedUri).forward(request, response);
-                    return;
+        Map<String, String> loggingInfo = new HashMap<>();
+        loggingInfo.put("request_id", RandomStringUtils.randomAlphanumeric(6));
+        if (request instanceof HttpServletRequest) {
+            String url = ((HttpServletRequest)request).getRequestURL().toString();
+            String query = ((HttpServletRequest)request).getQueryString();
+            if (!CmsStringUtil.isEmpty(query)) {
+                url = url + "?" + query;
+            }
+            loggingInfo.put("request_url", url);
+        }
+        try (CloseableThreadContext.Instance threadContext = CloseableThreadContext.putAll(loggingInfo)) {
+            LOG.info("Updating log context: " + loggingInfo);
+            if (m_isInitialized || tryToInitialize()) {
+                if (request instanceof HttpServletRequest) {
+                    HttpServletRequest req = (HttpServletRequest)request;
+                    String uri = req.getRequestURI();
+                    if (!uri.matches(m_regex)) {
+                        String adjustedUri = uri.replaceFirst(m_contextPath + "/", m_servletPath);
+                        req.getRequestDispatcher(adjustedUri).forward(request, response);
+                        return;
+                    }
                 }
             }
+            chain.doFilter(request, response);
         }
-        chain.doFilter(request, response);
     }
 
     /**
