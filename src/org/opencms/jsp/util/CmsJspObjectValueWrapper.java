@@ -242,20 +242,4 @@ public final class CmsJspObjectValueWrapper extends A_CmsJspValueWrapper {
             return m_object.toString();
         }
     }
-
-    /**
-     * Returns a value wrapper for the provided default in case this value is empty.<p>
-     *
-     * @param defaultValue the string to generate the default value from
-     *
-     * @return  a value wrapper for the provided default in case this value is empty.
-     */
-    @Override
-    public A_CmsJspValueWrapper useDefault(Object defaultValue) {
-
-        if (getIsEmptyOrWhitespaceOnly()) {
-            return new CmsJspObjectValueWrapper(m_cms, defaultValue);
-        }
-        return this;
-    }
 }

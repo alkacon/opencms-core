@@ -39,6 +39,7 @@ import org.opencms.util.CmsStringUtil;
 import java.util.AbstractCollection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -400,7 +401,7 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
 
         if (m_double == null) {
             try {
-                m_double = new Double(Double.parseDouble(getToString()));
+                m_double = Double.valueOf(Double.parseDouble(getToString()));
             } catch (NumberFormatException e) {
                 LOG.info(e.getLocalizedMessage());
             }
@@ -515,7 +516,7 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
 
         if (m_long == null) {
             try {
-                m_long = new Long(Long.parseLong(getToString()));
+                m_long = Long.valueOf(Long.parseLong(getToString()));
             } catch (NumberFormatException e) {
                 LOG.info(e.getLocalizedMessage());
             }
@@ -593,6 +594,23 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
     public boolean isEmpty() {
 
         return getIsEmptyOrWhitespaceOnly();
+    }
+
+    /**
+     * Compares this value against a list of Strings and returns <code>true</code> in case the list contains the
+     * toString representation of this value, or a <code>false</code> otherwise.<p>
+     *
+     * @param allowedValues the list of allowed String values
+     *
+     * @return returns <code>true</code> in case the list contains the
+     *         toString representation of this value, or a <code>false</code> otherwise
+     *
+     * @see #validate(List)
+     * @see #validate(List, Object)
+     */
+    public boolean isValid(List<String> allowedValues) {
+
+        return validate(allowedValues) == this;
     }
 
     /**
@@ -706,9 +724,58 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
     /**
      * Returns a value wrapper for the provided default in case this value is empty.<p>
      *
-     * @param defaultValue the string to generate the default value from
+     * If this value is empty, the object returned will be of type {@link CmsJspObjectValueWrapper}.
+     * This means you can only use simple "get me the value as type X" operations on the result safely.<p>
      *
-     * @return a value wrapper for the provided default in case this value is empty.
+     * @param defaultValue the object to generate the default value from
+     *
+     * @return  a value wrapper for the provided default in case this value is empty.
+     *
+     * @see CmsJspObjectValueWrapper#createWrapper(CmsObject, Object)
      */
-    public abstract A_CmsJspValueWrapper useDefault(Object defaultValue);
+    public A_CmsJspValueWrapper useDefault(Object defaultValue) {
+
+        if (getIsEmptyOrWhitespaceOnly()) {
+            return CmsJspObjectValueWrapper.createWrapper(getCmsObject(), defaultValue);
+        }
+        return this;
+    }
+
+    /**
+     * Compares this value against a list of Strings and returns this value in case the list contains the
+     * toString representation of this value, or a {@link CmsJspObjectValueWrapper#NULL_VALUE_WRAPPER} otherwise.<p>
+     *
+     * @param allowedValues the list of allowed String values
+     *
+     * @return returns this value in case the list contains the toString representation of this value,
+     *         or a {@link CmsJspObjectValueWrapper#NULL_VALUE_WRAPPER} otherwise
+     *
+     * @see #validate(List, Object)
+     * @see #isValid(List)
+     */
+    public A_CmsJspValueWrapper validate(List<String> allowedValues) {
+
+        return (allowedValues != null) && !getIsEmptyOrWhitespaceOnly() && allowedValues.contains(toString())
+        ? this
+        : CmsJspObjectValueWrapper.NULL_VALUE_WRAPPER;
+    }
+
+    /**
+     * Checks this value against a list of Strings and returns this value in case the list contains the
+     * toString representation of this value, or a {@link CmsJspObjectValueWrapper} based on the given default object otherwise.<p>
+     *
+     * @param allowedValues the list of allowed String values
+     * @param defaultValue the object to generate the default value from
+     *
+     * @return returns this value in case the list contains the toString representation of this value,
+     *         or a {@link CmsJspObjectValueWrapper} based on the given default object otherwise
+     *
+     * @see #validate(List)
+     * @see #isValid(List)
+     * @see #useDefault(Object)
+     */
+    public A_CmsJspValueWrapper validate(List<String> allowedValues, Object defaultValue) {
+
+        return isValid(allowedValues) ? this : CmsJspObjectValueWrapper.createWrapper(getCmsObject(), defaultValue);
+    }
 }
