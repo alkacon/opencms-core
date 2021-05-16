@@ -610,7 +610,7 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
      */
     public boolean isValid(List<String> allowedValues) {
 
-        return validate(allowedValues) == this;
+        return (allowedValues != null) && !getIsEmptyOrWhitespaceOnly() && allowedValues.contains(toString());
     }
 
     /**
@@ -755,9 +755,7 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
      */
     public A_CmsJspValueWrapper validate(List<String> allowedValues) {
 
-        return (allowedValues != null) && !getIsEmptyOrWhitespaceOnly() && allowedValues.contains(toString())
-        ? this
-        : CmsJspObjectValueWrapper.NULL_VALUE_WRAPPER;
+        return isValid(allowedValues) ? this : CmsJspObjectValueWrapper.NULL_VALUE_WRAPPER;
     }
 
     /**
