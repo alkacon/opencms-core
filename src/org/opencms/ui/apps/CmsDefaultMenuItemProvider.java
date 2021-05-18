@@ -47,6 +47,7 @@ import org.opencms.ui.actions.CmsEditPropertyAction;
 import org.opencms.ui.actions.CmsEditSmallElementsAction;
 import org.opencms.ui.actions.CmsFormEditDialogAction;
 import org.opencms.ui.actions.CmsGalleryDialogAction;
+import org.opencms.ui.actions.CmsGalleryOptimizeDialogAction;
 import org.opencms.ui.actions.CmsHistoryDialogAction;
 import org.opencms.ui.actions.CmsLinkLocaleVariantAction;
 import org.opencms.ui.actions.CmsLockAction;
@@ -110,7 +111,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
     private static final List<I_CmsContextMenuItem> MENU_ITEMS;
 
     static {
-        CmsSubmenu advanced = new CmsSubmenu(ADVANCED_MENU_ID, null, "%(key.GUI_EXPLORER_CONTEXT_ADVANCED_0)", 2400, 0);
+        CmsSubmenu advanced = new CmsSubmenu(ADVANCED_MENU_ID, null, "%(key.GUI_EXPLORER_CONTEXT_ADVANCED_0)", 2410, 0);
         // the entries in this list will be sorted by there order property
         // for better readability please place additional entries  according to this sort order
         List<I_CmsContextMenuItem> items = Arrays.<I_CmsContextMenuItem> asList(
@@ -119,6 +120,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsEditDialogAction(), null, 50, 0),
             new CmsContextMenuActionItem(new CmsEditPointerAction(), null, 50, 0),
             new CmsContextMenuActionItem(new CmsGalleryDialogAction(), null, 50, 0),
+            new CmsContextMenuActionItem(new CmsGalleryOptimizeDialogAction(), null, 51, 0),
             new CmsContextMenuActionItem(new CmsViewOnlineAction(), null, 75, 0),
             new CmsContextMenuActionItem(new CmsEditContentAction(), null, 75, 0),
             new CmsContextMenuActionItem(new CmsPreviewAction(), null, 75, 0),

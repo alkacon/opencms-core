@@ -69,6 +69,51 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_DIALOG_0 = "GUI_DIALOG_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_DIRECTLY_USED_0 = "GUI_GALLERY_DIRECTLY_USED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_CREATED_LASTMODIFIED_BY_4 = "GUI_GALLERY_OPTIMIZE_CREATED_LASTMODIFIED_BY_4";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_CONFIRM_CANCEL_TITLE_0 = "GUI_GALLERY_OPTIMIZE_CONFIRM_CANCEL_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_CONFIRM_CANCEL_0 = "GUI_GALLERY_OPTIMIZE_CONFIRM_CANCEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_INPUT_DESCRIPTION_0 = "GUI_GALLERY_OPTIMIZE_INPUT_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_INPUT_DELETE_UNUSED_0 = "GUI_GALLERY_OPTIMIZE_INPUT_DELETE_UNUSED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_LABEL_IN_USE_0 = "GUI_GALLERY_OPTIMIZE_LABEL_IN_USE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_LABEL_NOT_IN_USE_0 = "GUI_GALLERY_OPTIMIZE_LABEL_NOT_IN_USE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_SORT_DATE_MODIFIED_ASCENDING_0 = "GUI_GALLERY_OPTIMIZE_SORT_DATE_MODIFIED_ASCENDING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_SORT_DATE_MODIFIED_DESCENDING_0 = "GUI_GALLERY_OPTIMIZE_SORT_DATE_MODIFIED_DESCENDING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_SORT_PATH_ASCENDING_0 = "GUI_GALLERY_OPTIMIZE_SORT_PATH_ASCENDING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_SORT_PATH_DESCENDING_0 = "GUI_GALLERY_OPTIMIZE_SORT_PATH_DESCENDING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_SORT_TITLE_ASCENDING_0 = "GUI_GALLERY_OPTIMIZE_SORT_TITLE_ASCENDING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_SORT_TITLE_DESCENDING_0 = "GUI_GALLERY_OPTIMIZE_SORT_TITLE_DESCENDING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_SORT_UNUSED_FIRST_0 = "GUI_GALLERY_OPTIMIZE_SORT_UNUSED_FIRST_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USER_DATA_ADDRESS_0 = "GUI_USER_DATA_ADDRESS_0";
 
     /** Message constant for key in the resource bundle. */
@@ -111,14 +156,6 @@ public class Messages extends A_CmsMessageBundle {
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
-     * Hides the public constructor for this utility class.<p>
-     */
-    private Messages() {
-
-        // hide the constructor
-    }
-
-    /**
      * Returns an instance of this localized message accessor.<p>
      *
      * @return an instance of this localized message accessor
@@ -126,6 +163,14 @@ public class Messages extends A_CmsMessageBundle {
     public static I_CmsMessageBundle get() {
 
         return INSTANCE;
+    }
+
+    /**
+     * Hides the public constructor for this utility class.<p>
+     */
+    private Messages() {
+
+        // hide the constructor
     }
 
     /**

@@ -102,20 +102,6 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
     /** The disk cache to use for saving scaled image versions. */
     protected static CmsVfsNameBasedDiskCache m_vfsDiskCache;
 
-    /** The name of the configured image cache repository. */
-    protected String m_imageRepositoryFolder;
-
-    /** The maximum image size (width or height) to allow when up scaling an image using request parameters. */
-    protected int m_maxScaleSize = CmsImageScaler.SCALE_DEFAULT_MAX_SIZE;
-
-    /**
-     * Creates a new image loader.<p>
-     */
-    public CmsImageLoader() {
-
-        super();
-    }
-
     /**
      * Returns the image down scale parameters,
      * which is set with the {@link #CONFIGURATION_DOWNSCALE} configuration option.<p>
@@ -171,6 +157,20 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
     public static boolean isEnabled() {
 
         return m_enabled;
+    }
+
+    /** The name of the configured image cache repository. */
+    protected String m_imageRepositoryFolder;
+
+    /** The maximum image size (width or height) to allow when up scaling an image using request parameters. */
+    protected int m_maxScaleSize = CmsImageScaler.SCALE_DEFAULT_MAX_SIZE;
+
+    /**
+     * Creates a new image loader.<p>
+     */
+    public CmsImageLoader() {
+
+        super();
     }
 
     /**
@@ -273,6 +273,60 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
     }
 
     /**
+     * Returns a scaled version of the given OpenCms VFS image resource.<p>
+     *
+     * All results are cached in disk.
+     * If the scaled version does not exist in the cache, it is created.
+     * Unscaled versions of the images are also stored in the cache.<p>
+     *
+     * @param cms the current users OpenCms context
+     * @param resource the base VFS resource for the image
+     * @param scaler the configured image scaler
+     *
+     * @return a scaled version of the given OpenCms VFS image resource
+     *
+     * @throws IOException in case of errors accessing the disk based cache
+     * @throws CmsException in case of errors accessing the OpenCms VFS
+     */
+    protected synchronized CmsFile getScaledImage(CmsObject cms, CmsResource resource, CmsImageScaler scaler)
+    throws IOException, CmsException {
+
+        String cacheParam = scaler.isValid() ? scaler.toString() : null;
+        String cacheName = m_vfsDiskCache.getCacheName(resource, cacheParam);
+        byte[] content = m_vfsDiskCache.getCacheContent(cacheName);
+
+        CmsFile file;
+        if (content != null) {
+            if (resource instanceof CmsFile) {
+                // the original file content must be modified (required e.g. for static export)
+                file = (CmsFile)resource;
+            } else {
+                // this is no file, but we don't want to use "upgrade" since we don't need to read the content from the VFS
+                file = new CmsFile(resource);
+            }
+            // save the content in the file
+            file.setContents(content);
+        } else {
+            // we must read the content from the VFS (if this has not been done yet)
+            file = cms.readFile(resource);
+            // upgrade the file (load the content)
+            if (scaler.isValid()) {
+                if (scaler.getType() == 8) {
+                    // only need the focal point for mode 8
+                    scaler.setFocalPoint(CmsPreviewService.readFocalPoint(cms, resource));
+                }
+                // valid scaling parameters found, scale the content
+                content = scaler.scaleImage(file);
+                // exchange the content of the file with the scaled version
+                file.setContents(content);
+            }
+            // save the file content in the cache
+            m_vfsDiskCache.saveCacheFile(cacheName, file.getContents());
+        }
+        return file;
+    }
+
+    /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
      */
     @Override
@@ -321,59 +375,5 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
             // scaling is disabled
             super.load(cms, resource, req, res);
         }
-    }
-
-    /**
-     * Returns a scaled version of the given OpenCms VFS image resource.<p>
-     *
-     * All results are cached in disk.
-     * If the scaled version does not exist in the cache, it is created.
-     * Unscaled versions of the images are also stored in the cache.<p>
-     *
-     * @param cms the current users OpenCms context
-     * @param resource the base VFS resource for the image
-     * @param scaler the configured image scaler
-     *
-     * @return a scaled version of the given OpenCms VFS image resource
-     *
-     * @throws IOException in case of errors accessing the disk based cache
-     * @throws CmsException in case of errors accessing the OpenCms VFS
-     */
-    protected CmsFile getScaledImage(CmsObject cms, CmsResource resource, CmsImageScaler scaler)
-    throws IOException, CmsException {
-
-        String cacheParam = scaler.isValid() ? scaler.toString() : null;
-        String cacheName = m_vfsDiskCache.getCacheName(resource, cacheParam);
-        byte[] content = m_vfsDiskCache.getCacheContent(cacheName);
-
-        CmsFile file;
-        if (content != null) {
-            if (resource instanceof CmsFile) {
-                // the original file content must be modified (required e.g. for static export)
-                file = (CmsFile)resource;
-            } else {
-                // this is no file, but we don't want to use "upgrade" since we don't need to read the content from the VFS
-                file = new CmsFile(resource);
-            }
-            // save the content in the file
-            file.setContents(content);
-        } else {
-            // we must read the content from the VFS (if this has not been done yet)
-            file = cms.readFile(resource);
-            // upgrade the file (load the content)
-            if (scaler.isValid()) {
-                if (scaler.getType() == 8) {
-                    // only need the focal point for mode 8
-                    scaler.setFocalPoint(CmsPreviewService.readFocalPoint(cms, resource));
-                }
-                // valid scaling parameters found, scale the content
-                content = scaler.scaleImage(file);
-                // exchange the content of the file with the scaled version
-                file.setContents(content);
-            }
-            // save the file content in the cache
-            m_vfsDiskCache.saveCacheFile(cacheName, file.getContents());
-        }
-        return file;
     }
 }

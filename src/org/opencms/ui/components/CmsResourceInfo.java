@@ -64,6 +64,53 @@ public class CmsResourceInfo extends CustomLayout {
     /** The serial version id. */
     private static final long serialVersionUID = -1715926038770100307L;
 
+    /**
+     * Creates a resource info widget for a resource that looks like the sitemap entry for that resource.<p>
+     *
+     * @param resource the resource
+     * @param baseSite the base site
+     *
+     * @return the resource info widget
+     */
+    public static CmsResourceInfo createSitemapResourceInfo(CmsResource resource, CmsSite baseSite) {
+
+        String title = resource.getName();
+        String path = resource.getRootPath();
+
+        CmsResourceInfo info = new CmsResourceInfo();
+        CmsResourceUtil resUtil = new CmsResourceUtil(A_CmsUI.getCmsObject(), resource);
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        try {
+            Map<String, CmsProperty> props = CmsProperty.toObjectMap(cms.readPropertyObjects(resource, false));
+            CmsProperty navtextProp = props.get(CmsPropertyDefinition.PROPERTY_NAVTEXT);
+            CmsProperty titleProp = props.get(CmsPropertyDefinition.PROPERTY_TITLE);
+
+            if ((navtextProp != null) && (navtextProp.getValue() != null)) {
+                title = navtextProp.getValue();
+            } else if ((titleProp != null) && (titleProp.getValue() != null)) {
+                title = titleProp.getValue();
+            }
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        info.getTopLine().setValue(title);
+        if (baseSite != null) {
+            String siteRoot = baseSite.getSiteRoot();
+            if (path.startsWith(siteRoot)) {
+                path = path.substring(siteRoot.length());
+                path = CmsStringUtil.joinPaths("/", path);
+            }
+        }
+        info.getBottomLine().setValue(path);
+        Resource icon = CmsResourceIcon.getSitemapResourceIcon(
+            A_CmsUI.getCmsObject(),
+            resUtil.getResource(),
+            IconMode.localeCompare);
+        info.getResourceIcon().initContent(resUtil, icon, null, true, false);
+        return info;
+    }
+
     /** The sub title label. */
     private Label m_bottomText = new Label();
 
@@ -154,53 +201,6 @@ public class CmsResourceInfo extends CustomLayout {
     }
 
     /**
-     * Creates a resource info widget for a resource that looks like the sitemap entry for that resource.<p>
-     *
-     * @param resource the resource
-     * @param baseSite the base site
-     *
-     * @return the resource info widget
-     */
-    public static CmsResourceInfo createSitemapResourceInfo(CmsResource resource, CmsSite baseSite) {
-
-        String title = resource.getName();
-        String path = resource.getRootPath();
-
-        CmsResourceInfo info = new CmsResourceInfo();
-        CmsResourceUtil resUtil = new CmsResourceUtil(A_CmsUI.getCmsObject(), resource);
-
-        CmsObject cms = A_CmsUI.getCmsObject();
-        try {
-            Map<String, CmsProperty> props = CmsProperty.toObjectMap(cms.readPropertyObjects(resource, false));
-            CmsProperty navtextProp = props.get(CmsPropertyDefinition.PROPERTY_NAVTEXT);
-            CmsProperty titleProp = props.get(CmsPropertyDefinition.PROPERTY_TITLE);
-
-            if ((navtextProp != null) && (navtextProp.getValue() != null)) {
-                title = navtextProp.getValue();
-            } else if ((titleProp != null) && (titleProp.getValue() != null)) {
-                title = titleProp.getValue();
-            }
-        } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-        info.getTopLine().setValue(title);
-        if (baseSite != null) {
-            String siteRoot = baseSite.getSiteRoot();
-            if (path.startsWith(siteRoot)) {
-                path = path.substring(siteRoot.length());
-                path = CmsStringUtil.joinPaths("/", path);
-            }
-        }
-        info.getBottomLine().setValue(path);
-        Resource icon = CmsResourceIcon.getSitemapResourceIcon(
-            A_CmsUI.getCmsObject(),
-            resUtil.getResource(),
-            IconMode.localeCompare);
-        info.getResourceIcon().initContent(resUtil, icon, null, true, false);
-        return info;
-    }
-
-    /**
      * Gets the bottom label.<p>
      *
      * @return the bottom label
@@ -248,6 +248,16 @@ public class CmsResourceInfo extends CustomLayout {
     public void setButtonWidget(Component button) {
 
         addComponent(button, BUTTON_CONTAINER);
+    }
+
+    /**
+     * Replaces the text of the top label.
+     *
+     * @param text the text
+     */
+    public void setTopLineText(String text) {
+
+        m_topText.setValue(text);
     }
 
 }

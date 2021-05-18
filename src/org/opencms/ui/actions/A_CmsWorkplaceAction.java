@@ -68,30 +68,6 @@ public abstract class A_CmsWorkplaceAction implements I_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle(java.util.Locale)
-     */
-    public String getTitle(Locale locale) {
-
-        return OpenCms.getWorkplaceManager().getMessages(locale).key(getTitleKey());
-    }
-
-    /**
-     * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.ui.I_CmsDialogContext)
-     */
-    public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
-
-        return getVisibility(context.getCms(), context.getResources());
-    }
-
-    /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#isActive(org.opencms.ui.I_CmsDialogContext)
-     */
-    public boolean isActive(I_CmsDialogContext context) {
-
-        return getVisibility(context).isActive();
-    }
-
-    /**
      * Returns the workplace message bundle key of the action dialog title.<p>
      *
      * @return the dialog title message bundle key
@@ -102,11 +78,27 @@ public abstract class A_CmsWorkplaceAction implements I_CmsWorkplaceAction {
     }
 
     /**
+     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle(java.util.Locale)
+     */
+    public String getTitle(Locale locale) {
+
+        return OpenCms.getWorkplaceManager().getMessages(locale).key(getTitleKey());
+    }
+
+    /**
      * Returns the workplace message bundle key of the action title.<p>
      *
      * @return the title message bundle key
      */
     protected abstract String getTitleKey();
+
+    /**
+     * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.ui.I_CmsDialogContext)
+     */
+    public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
+
+        return getVisibility(context.getCms(), context.getResources());
+    }
 
     /**
      * Returns if there are any blocking locks within the context resources.<p>
@@ -154,6 +146,14 @@ public abstract class A_CmsWorkplaceAction implements I_CmsWorkplaceAction {
     }
 
     /**
+     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#isActive(org.opencms.ui.I_CmsDialogContext)
+     */
+    public boolean isActive(I_CmsDialogContext context) {
+
+        return getVisibility(context).isActive();
+    }
+
+    /**
      * Opens the given dialog in a new overlay window.<p>
      *
      * @param dialog the dialog
@@ -162,5 +162,20 @@ public abstract class A_CmsWorkplaceAction implements I_CmsWorkplaceAction {
     protected void openDialog(CmsBasicDialog dialog, I_CmsDialogContext context) {
 
         context.start(getDialogTitle(), dialog);
+    }
+
+    /**
+     * Opens the given dialog in a new overlay window.<p>
+     *
+     * @param dialog the dialog
+     * @param context the dialog context
+     * @param dialogWidth The dialog width
+     */
+    protected void openDialog(
+        CmsBasicDialog dialog,
+        I_CmsDialogContext context,
+        CmsBasicDialog.DialogWidth dialogWidth) {
+
+        context.start(getDialogTitle(), dialog, dialogWidth);
     }
 }
