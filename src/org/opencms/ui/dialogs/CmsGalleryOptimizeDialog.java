@@ -33,7 +33,6 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeImage;
-import org.opencms.loader.CmsImageScaler;
 import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
@@ -59,7 +58,9 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -68,11 +69,14 @@ import com.vaadin.data.ValidationException;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Page;
 import com.vaadin.server.Page.Styles;
+import com.vaadin.server.VaadinService;
+import com.vaadin.server.WrappedSession;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -108,9 +112,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
         /** The description of this editable gallery image. */
         private String m_description;
-
-        /** Date when this editable gallery image was created. */
-        private Long m_dateCreated;
 
         /** Date when this editable gallery image was last modified. */
         private Long m_dateLastModified;
@@ -156,7 +157,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                     resource,
                     CmsPropertyDefinition.PROPERTY_DESCRIPTION,
                     false).getValue();
-                m_dateCreated = Long.valueOf(resource.getDateCreated());
                 m_dateLastModified = Long.valueOf(resource.getDateLastModified());
                 m_isUsed = Boolean.valueOf(!((relations == null) || relations.isEmpty()));
             } catch (CmsException e) {
@@ -193,16 +193,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         public String getCopyright() {
 
             return m_copyright;
-        }
-
-        /**
-         * Returns the date when this editable gallery image was created.<p>
-         *
-         * @return the date
-         */
-        public Long getDateCreated() {
-
-            return m_dateCreated;
         }
 
         /**
@@ -388,6 +378,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             setHeightFull();
             setMargin(false);
             setSpacing(true);
+            addStyleName("o-gallery-optimize-row");
             VerticalLayout verticalLayout = new VerticalLayout();
             verticalLayout.setMargin(false);
             verticalLayout.setSpacing(false);
@@ -459,14 +450,10 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
          */
         private Label createResourceAttributes() {
 
-            String dateCreated = formatDate(m_dataItem.getDateCreated().longValue());
-            String createdBy = m_dataItem.getResourceUtil().getUserCreated();
-            String lastModified = formatDate(m_dataItem.getDateLastModified().longValue());
+            String lastModified = formatDateTime(m_dataItem.getDateLastModified().longValue());
             String lastModifiedBy = m_dataItem.getResourceUtil().getUserLastModified();
             String message = CmsVaadinUtils.getMessageText(
-                Messages.GUI_GALLERY_OPTIMIZE_CREATED_LASTMODIFIED_BY_4,
-                dateCreated,
-                createdBy,
+                Messages.GUI_GALLERY_OPTIMIZE_LASTMODIFIED_BY_2,
                 lastModified,
                 lastModifiedBy);
             Label label = new Label(message);
@@ -492,9 +479,9 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
          * @param date the date to format
          * @return the formatted date
          */
-        private String formatDate(long date) {
+        private String formatDateTime(long date) {
 
-            return CmsDateUtil.getDate(
+            return CmsDateUtil.getDateTime(
                 new Date(date),
                 DateFormat.MEDIUM,
                 OpenCms.getWorkplaceManager().getWorkplaceLocale(getCms()));
@@ -519,11 +506,11 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         /** The panel width. */
         private static final String PANEL_WIDTH = "206px";
 
-        /** The panel height. */
-        private static final String PANEL_HEIGHT = "166px";
+        /** Reduced panel width. */
+        private static final String PANEL_WIDTH_2 = "166px";
 
-        /** The image scaler of this image loader. */
-        private CmsImageScaler m_imageScaler = new CmsImageScaler(SCALE_PARAMETERS);
+        /** The panel height. */
+        private static final String PANEL_HEIGHT = "176px";
 
         /** The data item of this image composite. */
         private DataItem m_dataItem;
@@ -546,24 +533,21 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             m_panel.addStyleName("v-panel");
             m_panel.addComponent(createClickableVaadinImage(), "left: 2px; top: 2px;");
             addComponent(m_panel);
-            VerticalLayout verticalLayout = new VerticalLayout();
-            verticalLayout.setWidth(PANEL_WIDTH);
-            verticalLayout.setHeight(PANEL_HEIGHT);
-            verticalLayout.setMargin(false);
-            verticalLayout.setSpacing(false);
-            verticalLayout.addComponent(createLabelInUseInfo());
+            CssLayout cssLayout = new CssLayout();
+            cssLayout.setWidth(PANEL_WIDTH_2);
+            cssLayout.setHeight(PANEL_HEIGHT);
             if (!m_dataItem.getIsUsed().booleanValue()) {
-                CheckBox checkBoxDeleteFlag = createFieldDeleteFlag();
-                verticalLayout.addComponent(checkBoxDeleteFlag);
-                verticalLayout.setComponentAlignment(checkBoxDeleteFlag, Alignment.BOTTOM_LEFT);
+                Label labelInUse = createLabelInUseInfo();
+                CheckBox fieldDeleteFlag = createFieldDeleteFlag();
+                cssLayout.addComponent(labelInUse);
+                cssLayout.addComponent(fieldDeleteFlag);
             }
-            addComponent(verticalLayout);
+            addComponent(cssLayout);
         }
 
         /**
          * Utility function to create a clickable Vaadin image.<p>
          *
-         * @param resource The CMS resource
          * @return the clickable Vaadin image
          */
         private Link createClickableVaadinImage() {
@@ -575,6 +559,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             link.setHeight(PANEL_HEIGHT);
             link.setIcon(externalResource);
             link.setTargetName("_blank");
+            link.setStyleName("o-gallery-optimize-image-preview");
             return link;
         }
 
@@ -599,13 +584,8 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
          */
         private Label createLabelInUseInfo() {
 
-            String inUse = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_LABEL_IN_USE_0);
             String notInUse = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_LABEL_NOT_IN_USE_0);
-            if (m_dataItem.getIsUsed().booleanValue()) {
-                return new Label(inUse);
-            } else {
-                return new Label(notInUse);
-            }
+            return new Label(notInUse);
         }
 
         /**
@@ -632,12 +612,154 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
          */
         private String getScaleUri(CmsResource resource) {
 
-            return getPermanentUri(resource) + SCALE_QUERY_STRING + "&date=" + new Date();
+            String paramTimestamp = "&timestamp=" + System.currentTimeMillis();
+            return getPermanentUri(resource) + SCALE_QUERY_STRING + paramTimestamp;
+        }
+    }
+
+    /**
+     * Utility class to handle dialog save actions. Keeps track of the changes the
+     * user has made since opening the dialog on the one hand and the changes since
+     * the last save action on the other.
+     */
+    private class SaveHandler {
+
+        /** Data items marked deleted since opening the dialog. */
+        Set<DataItem> m_deleted = new HashSet<DataItem>();
+
+        /** Data items marked deleted since the last save action. */
+        Set<DataItem> m_deletedCurrent = new HashSet<DataItem>();
+
+        /** Resources deleted since the last save action. */
+        Set<CmsResource> m_deletedCurrentResource = new HashSet<CmsResource>();
+
+        /** Data items modified or marked deleted since opening the dialog. */
+        Set<DataItem> m_changed = new HashSet<DataItem>();
+
+        /** Data items modified or marked deleted since the last save action. */
+        Set<DataItem> m_changedCurrent = new HashSet<DataItem>();
+
+        /** IDs of the resources modified or marked as deleted since opening the dialog. */
+        Set<CmsUUID> m_changedIds = new HashSet<CmsUUID>();
+
+        /** Resource IDs modified or marked as deleted since the last save action. */
+        Set<CmsUUID> m_changedIdsCurrent = new HashSet<CmsUUID>();
+
+        /** Whether the user has cancelled the last save action. */
+        boolean m_flagCancelSave = false;
+
+        /**
+         * Creates a new save handler.<p>
+         */
+        public SaveHandler() {}
+
+        /**
+         * Secures and resets the current changes.
+         */
+        private void flush() {
+
+            m_deleted.addAll(m_deletedCurrent);
+            m_changed.addAll(m_changedCurrent);
+            m_changedIds.addAll(m_changedIdsCurrent);
+            m_deletedCurrent.clear();
+            m_changedCurrent.clear();
+            m_changedIdsCurrent.clear();
+            m_deletedCurrentResource.clear();
+        }
+
+        /**
+         * Returns the data items modified or marked deleted since the last save action.<p>
+         *
+         * @return the data items
+         */
+        Set<DataItem> getChangedCurrent() {
+
+            return m_changedCurrent;
+        }
+
+        /**
+         * Returns the IDs of the resources modified or marked as deleted since opening the dialog.
+         *
+         * @return the resource IDs
+         */
+        List<CmsUUID> getChangedIds() {
+
+            return new ArrayList<CmsUUID>(m_changedIds);
+        }
+
+        /**
+         * Returns the data items marked deleted since the last save action.<p>
+         *
+         * @return the data items
+         */
+        Set<DataItem> getDeletedCurrent() {
+
+            return m_deletedCurrent;
+        }
+
+        /**
+         * Returns the resources marked deleted since the last save action.<p>
+         *
+         * @return the resources
+         */
+        List<CmsResource> getDeletedCurrentResource() {
+
+            return new ArrayList<CmsResource>(m_deletedCurrentResource);
+        }
+
+        /**
+         * Whether data items have been marked as deleted since the last save action.<p>
+         *
+         * @return whether data items have been marked as deleted or not
+         */
+        boolean hasDeletedCurrent() {
+
+            return m_deletedCurrent.size() > 0;
+        }
+
+        /**
+         * Handles a save action for a given list of data items.<p>
+         *
+         * @param dataList the data item list
+         */
+        void save(List<DataItem> dataList) {
+
+            if (!m_flagCancelSave) {
+                flush();
+            }
+            for (DataItem dataItem : dataList) {
+                boolean dataItemHasChanges = dataItem.getBinder().hasChanges();
+                if (dataItemHasChanges) {
+                    try {
+                        dataItem.getBinder().writeBean(dataItem);
+                        m_changedCurrent.add(dataItem);
+                        if (dataItem.getDeleteFlag().booleanValue()) {
+                            m_deletedCurrent.add(dataItem);
+                            m_deletedCurrentResource.add(dataItem.getResource());
+                        }
+                    } catch (ValidationException e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                    }
+                }
+            }
+        }
+
+        /**
+         * Marks the last save action as cancelled.<p>
+         *
+         * @param flagCancelSave Whether to mark as cancelled
+         */
+        public void setFlagCancelSave(boolean flagCancelSave) {
+
+            m_flagCancelSave = flagCancelSave;
         }
     }
 
     /** Logger instance for this class. */
     static final Log LOG = CmsLog.getLog(CmsGalleryOptimizeDialog.class);
+
+    /** The sort order session attribute. */
+    static final String GALLERY_OPTIMIZE_ATTR_SORT_ORDER = "GALLERY_OPTIMIZE_ATTR_SORT_ORDER";
 
     /** The default serial version UID. */
     private static final long serialVersionUID = 1L;
@@ -646,10 +768,13 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     private static final String IMAGE_WIDTH = "200";
 
     /** The height of the preview images. */
-    private static final String IMAGE_HEIGHT = "160";
+    private static final String IMAGE_HEIGHT = "170";
 
-    /** The cancel button. */
-    private Button m_cancelButton;
+    /** The save button. */
+    private Button m_buttonSave;
+
+    /** The save and exit button. */
+    private Button m_buttonSaveAndExit;
 
     /** The dialog context. */
     private I_CmsDialogContext m_context;
@@ -687,8 +812,8 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     /** Localized message. */
     private String m_messageSortUnusedFirst;
 
-    /** The OK button. */
-    private Button m_okButton;
+    /** The save handler. */
+    private SaveHandler m_saveHandler = new SaveHandler();
 
     /**
      * Creates a new instance of the gallery optimize dialog.<p>
@@ -703,9 +828,47 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         initStyles();
         initLock();
         initEvents();
-        loadData();
+        dataListLoad();
         displayDataListHeaderView();
-        displayDataListView();
+        displayDataListViewSorted(getSessionSortOrder());
+    }
+
+    /**
+     * Whether one of the editable gallery images has been modified by the user.<p>
+     *
+     * @return Whether has changes
+     */
+    private boolean dataListHasChanges() {
+
+        boolean hasChanges = false;
+        for (DataItem dataItem : m_dataList) {
+            if (dataItem.getBinder().hasChanges()) {
+                hasChanges = true;
+            }
+        }
+        return hasChanges;
+    }
+
+    /**
+     * Loads the gallery image list.<p>
+     */
+    private void dataListLoad() {
+
+        m_dataList = new ArrayList<DataItem>();
+        CmsResource root = m_context.getResources().get(0);
+        CmsObject cms = A_CmsUI.getCmsObject();
+        try {
+            m_context.getResources().get(0);
+            CmsResourceFilter resourceFilter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(
+                new CmsResourceTypeImage());
+            List<CmsResource> resources = cms.readResources(cms.getSitePath(root), resourceFilter);
+            for (CmsResource resource : resources) {
+                DataItem dataItem = new DataItem(resource);
+                m_dataList.add(dataItem);
+            }
+        } catch (CmsException exception) {
+            m_context.error(exception);
+        }
     }
 
     /**
@@ -716,33 +879,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         m_dataListHeaderView.setHeightUndefined();
         m_dataListHeaderView.setWidthFull();
         m_dataListHeaderView.setMargin(false);
-        try {
-            CmsResource resource = m_context.getResources().get(0);
-            List<CmsRelation> relations = getCms().getRelationsForResource(resource, CmsRelationFilter.SOURCES);
-            if ((relations != null) && !relations.isEmpty()) {
-                Panel panel = new Panel();
-                panel.setWidthFull();
-                panel.setHeightUndefined();
-                HorizontalLayout horizontalLayout = new HorizontalLayout();
-                horizontalLayout.setWidthUndefined();
-                horizontalLayout.addStyleName("o-error-dialog");
-                Label icon = new Label();
-                icon.setContentMode(ContentMode.HTML);
-                icon.setValue(FontOpenCms.WARNING.getHtml());
-                icon.setWidthUndefined();
-                icon.setStyleName("o-warning-icon");
-                Label message = new Label(CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_DIRECTLY_USED_0));
-                message.setWidthUndefined();
-                horizontalLayout.addComponent(icon);
-                horizontalLayout.addComponent(message);
-                horizontalLayout.setExpandRatio(message, 1.0f);
-                horizontalLayout.setComponentAlignment(message, Alignment.MIDDLE_LEFT);
-                panel.setContent(horizontalLayout);
-                setAbove(panel);
-            }
-        } catch (CmsException e) {
-            //no-op
-        }
         HorizontalLayout horizontalLayout = new HorizontalLayout();
         horizontalLayout.setHeightUndefined();
         horizontalLayout.setWidthFull();
@@ -760,8 +896,40 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                 displayDataListViewSorted(event.getValue());
             }
         });
-        selectSort.setValue(m_messageSortPathAscending);
+        selectSort.setValue(getSessionSortOrder());
         horizontalLayout.addComponent(selectSort);
+        try {
+            CmsResource resource = m_context.getResources().get(0);
+            List<CmsRelation> relations = getCms().getRelationsForResource(resource, CmsRelationFilter.SOURCES);
+            if ((relations != null) && !relations.isEmpty()) {
+                HorizontalLayout layout = new HorizontalLayout();
+                layout.setWidthFull();
+                layout.addStyleNames("v-panel", "o-error-dialog");
+                Label icon = new Label();
+                icon.setContentMode(ContentMode.HTML);
+                icon.setValue(FontOpenCms.WARNING.getHtml());
+                icon.setWidthUndefined();
+                icon.setStyleName("o-warning-icon");
+                String galleryTitle = getCms().readPropertyObject(
+                    resource,
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    false).getValue();
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(galleryTitle)) {
+                    galleryTitle = resource.getName();
+                }
+                Label message = new Label(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_DIRECTLY_USED_1, galleryTitle));
+                message.setWidthUndefined();
+                message.setContentMode(ContentMode.HTML);
+                layout.addComponent(icon);
+                layout.addComponent(message);
+                layout.setExpandRatio(message, 1.0f);
+                layout.setComponentAlignment(message, Alignment.MIDDLE_LEFT);
+                m_dataListHeaderView.addComponent(layout);
+            }
+        } catch (CmsException e) {
+            //no-op
+        }
         m_dataListHeaderView.addComponent(horizontalLayout);
     }
 
@@ -786,12 +954,12 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /**
-     * Sorts the gallery image list according to a given sort order and rerenders the
+     * Sorts the gallery image list according to a given sort order and re-renders the
      * gallery image list view.
      *
-     * @param sort the sort order
+     * @param sortOrder the sort order
      */
-    private void displayDataListViewSorted(String sort) {
+    private void displayDataListViewSorted(String sortOrder) {
 
         Comparator<DataItem> titleAscending = Comparator.comparing(
             DataItem::getTitle,
@@ -814,23 +982,24 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         Comparator<DataItem> unusedFirst = Comparator.comparing(
             DataItem::getIsUsed,
             Comparator.nullsLast(Comparator.naturalOrder()));
-        if ((sort == null) || (sort == m_messageSortTitleAscending)) {
+        if ((sortOrder == null) || (sortOrder == m_messageSortTitleAscending)) {
             m_dataList.sort(titleAscending);
-        } else if (sort == m_messageSortTitleDescending) {
+        } else if (sortOrder == m_messageSortTitleDescending) {
             m_dataList.sort(titleDescending);
-        } else if (sort == m_messageSortDateLastModifiedAscending) {
+        } else if (sortOrder == m_messageSortDateLastModifiedAscending) {
             m_dataList.sort(dateAscending);
-        } else if (sort == m_messageSortDateLastModifiedDescending) {
+        } else if (sortOrder == m_messageSortDateLastModifiedDescending) {
             m_dataList.sort(dateDescending);
-        } else if (sort == m_messageSortPathAscending) {
+        } else if (sortOrder == m_messageSortPathAscending) {
             m_dataList.sort(pathAscending);
-        } else if (sort == m_messageSortPathDescending) {
+        } else if (sortOrder == m_messageSortPathDescending) {
             m_dataList.sort(pathDescending);
-        } else if (sort == m_messageSortUnusedFirst) {
+        } else if (sortOrder == m_messageSortUnusedFirst) {
             m_dataList.sort(unusedFirst);
         } else {
             m_dataList.sort(titleAscending);
         }
+        setSessionSortOrder(sortOrder);
         displayDataListView();
     }
 
@@ -855,6 +1024,21 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /**
+     * Returns the current sort order saved in the user session with lazy initialization.<p>
+     *
+     * @return the sort order
+     */
+    private String getSessionSortOrder() {
+
+        WrappedSession wrappedSession = VaadinService.getCurrentRequest().getWrappedSession();
+        String currentSortOrder = (String)wrappedSession.getAttribute(GALLERY_OPTIMIZE_ATTR_SORT_ORDER);
+        if (currentSortOrder == null) {
+            wrappedSession.setAttribute(GALLERY_OPTIMIZE_ATTR_SORT_ORDER, m_messageSortPathAscending);
+        }
+        return (String)wrappedSession.getAttribute(GALLERY_OPTIMIZE_ATTR_SORT_ORDER);
+    }
+
+    /**
      * Event handler handling the dialog attach event.
      */
     void handleDialogAttach() {
@@ -869,7 +1053,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
      */
     void handleDialogCancel() {
 
-        if (hasChanges()) {
+        if (dataListHasChanges()) {
             String title = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_CONFIRM_CANCEL_TITLE_0);
             String message = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_CONFIRM_CANCEL_0);
             CmsConfirmationDialog.show(title, message, new Runnable() {
@@ -894,54 +1078,51 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /**
-     * Event handler that deletes all gallery images who have set the delete
-     * flag images, persists all edited form data as CMS properties and closes
-     * the dialog.<p>
+     * Event handler that saves all changes. If there are data items marked as deleted
+     * the user is asked for confirmation beforehand.
      */
-    void handleDialogSubmit() {
+    void handleDialogSave() {
 
-        List<CmsUUID> changedIds = new ArrayList<CmsUUID>();
-        for (DataItem dataItem : m_dataList) {
-            CmsResource resource = dataItem.getResource();
-            boolean dataItemHasChanges = dataItem.getBinder().hasChanges();
-            try {
-                dataItem.getBinder().writeBean(dataItem);
-            } catch (ValidationException e) {
-                LOG.warn(e.getLocalizedMessage(), e);
-            }
-            boolean dataItemHasDeleteFlag = dataItem.getDeleteFlag().booleanValue();
-            if (dataItemHasChanges || dataItemHasDeleteFlag) {
-                try {
-                    if (dataItemHasChanges) {
-                        getCms().writePropertyObjects(resource, dataItem.getPropertyList());
-                        getCms().writeResource(resource);
-                    }
-                    if (dataItemHasDeleteFlag) {
-                        getCms().deleteResource(getCms().getSitePath(resource), CmsResource.DELETE_PRESERVE_SIBLINGS);
-                    }
-                    changedIds.add(resource.getStructureId());
-                } catch (CmsException e) {
-                    LOG.warn(e.getLocalizedMessage(), e);
+        m_saveHandler.save(m_dataList);
+        if (m_saveHandler.hasDeletedCurrent()) {
+            String title = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_CONFIRM_DELETE_TITLE_0);
+            String message = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_CONFIRM_DELETE_0);
+            CmsConfirmationDialog confirmationDialog = CmsConfirmationDialog.show(title, message, new Runnable() {
+
+                @SuppressWarnings("synthetic-access")
+                @Override
+                public void run() {
+
+                    saveAndDelete();
+                    m_saveHandler.setFlagCancelSave(false);
                 }
-            }
+            }, new Runnable() {
+
+                @SuppressWarnings("synthetic-access")
+                @Override
+                public void run() {
+
+                    m_saveHandler.setFlagCancelSave(true);
+                }
+
+            });
+            String caption = CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_SELECTED_0);
+            Panel resourceListPanel = confirmationDialog.createResourceListPanel(
+                caption,
+                m_saveHandler.getDeletedCurrentResource());
+            confirmationDialog.addMainPanelComponent(resourceListPanel);
+        } else {
+            saveAndDelete();
         }
-        finishDialog(changedIds);
     }
 
     /**
-     * Whether one of the editable gallery images has been modified by the user.<p>
-     *
-     * @return Whether has changes
+     * Same as {@link #handleDialogSave()} and additionally closes the dialog.<p>
      */
-    private boolean hasChanges() {
+    void handleDialogSaveAndExit() {
 
-        boolean hasChanges = false;
-        for (DataItem dataItem : m_dataList) {
-            if (dataItem.getBinder().hasChanges()) {
-                hasChanges = true;
-            }
-        }
-        return hasChanges;
+        handleDialogSave();
+        finishDialog(m_saveHandler.getChangedIds());
     }
 
     /**
@@ -951,6 +1132,11 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         displayResourceInfo(m_context.getResources(), "");
+        Button buttonCancel = createButtonCancel();
+        buttonCancel.addClickListener(event -> {
+            CmsGalleryOptimizeDialog.this.handleDialogCancel();
+        });
+        addButton(buttonCancel, false);
     }
 
     /**
@@ -958,11 +1144,11 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
      */
     private void initEvents() {
 
-        m_cancelButton.addClickListener(event -> {
-            CmsGalleryOptimizeDialog.this.handleDialogCancel();
+        m_buttonSave.addClickListener(event -> {
+            CmsGalleryOptimizeDialog.this.handleDialogSave();
         });
-        m_okButton.addClickListener(event -> {
-            CmsGalleryOptimizeDialog.this.handleDialogSubmit();
+        m_buttonSaveAndExit.addClickListener(event -> {
+            CmsGalleryOptimizeDialog.this.handleDialogSaveAndExit();
         });
         setActionHandler(new CmsOkCancelActionHandler() {
 
@@ -977,7 +1163,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             @Override
             protected void ok() {
 
-                CmsGalleryOptimizeDialog.this.handleDialogSubmit();
+                CmsGalleryOptimizeDialog.this.handleDialogSaveAndExit();
             }
         });
         addAttachListener(event -> {
@@ -1025,29 +1211,62 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     private void initStyles() {
 
         Styles styles = Page.getCurrent().getStyles();
-        styles.add(".o-gallery-optimize-row-odd {background-color: #E0E0E2;}");
+        styles.add(".o-gallery-optimize-row-odd { background-color: #E0E0E2; }");
+        styles.add(
+            ".o-gallery-optimize-image-preview {"
+                + "background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAI0AAABkCAMAAACMy0PdAAAAS1BMVEXm5ua5ubn09PTw8PDy8vLp6ens7Oz29vbu7u7IyMjNzc2+vr7ExMTBwcHKysrPz8/R0dHc3NzY2NjT09Ph4eHl5eXj4+Pe3t7V1dW2TkV8AAADjklEQVRo3u2X7XajIBBAyXZxC/ItoO//pGuSSawIo+eIrT3HO3+iglyHAVpycXFxcXFxcXFxcXGxD3t7w8iP4yYbQX4Sb0fMZCNtjkC+BdfetqAJcKzWJIPSvi30mD7uPDkEGExM5P0cAbq3oDA2HGEjPZnwMmcjCNAntlINvq4NJ1/RtxyvIYPMPhbahkNs+LJqBGPDy4YlD7FE1bcRxvqQ7k04yu+x0eWZ4j1JCHp9HcodNslp8GUqWE8yeLPqs2uFczfxZaIGUsAPuE+7w6aA7NFzFoNVt5FJKcaQHLQI3W4bXCYq2Y43Tb8pO/1+G/yFw2uR+WknKBIq2aQF7JmFhS1eFToEuKNqLymyUoZW3lqfzgwnQPtNNj0Y3MeTkAs1uUa8dGRdGzU7ztXi9G49mhxV18bOD8huUbYaO+5vrqqNeM6NS+x8m262Pm8Tq9poWEXpzHSL5AikiGvZ2EWNygB+yfe7420gE2ZZmC7dkEK2f1UbWNJsdg/SlW46Mld2VW1EZiCX/gHPptpKMQfYhDb9fyrqpTLL9PdVbVhqAzvO0CaNCosqHJobWEF+NjIv25Aj6kYku4vK7bfycBsZ04PAL4/ICNtz/mPq7zduNite5BJgMzac4NBikPa2DJiFKOH6bhfMbdaGETBe9h97UyQw2hzwdQYu1X09yXYGlA3P9I4EhSJkbUSkd6J4Xvbjb5s0gZfKTG+KgiauzeLoA/e80oRS4mYNDH3g26wNQQNBZmHQp4PLAL9fGHiu5RJBUXCbPA4eGxjBw9Dzp72QS3R9GxbhuRNvAaKT8aLIfsgOG1FAU8Bz8cBQSh4/uX29UIscfs2mKQYVJRx9NBjpDXtYEEqUUIG+6EQWOnZEAs9NEfvle7x1zvX3yaFvnMhDGzw3DYJgpWC2wYhM5Ps1OATLHENwtCnOsGMFeEPRQHPDMEws9PLIJzQ4uA2KcrnO1CpWxO+1wX08navQyBkC2WOj1tGD9ZHQu1TwhnOF0lSywemaqBWY7LL5bMrBN6Kp39auaT6xwHPDNxJ7volhPTcIhm+i7/XGhp8rEPThoDfgeqO3Qddt6kC968wan+s2H1XiSRN6h9rgb6mWG3B6QqMdugxjCxzycRgN8W4mY1e7VLHBpYIFqfiBg9hUZpy99aFGmzNBPv6eKE6Wm79n4rL5PTZ/ThTkz5m4bH6Pzb8Txcly8+9MXDZl/gM9XrODdIfTogAAAABJRU5ErkJggg==) -0px -0px  no-repeat;\n"
+                + "background-position: center;\n"
+                + "width: "
+                + IMAGE_WIDTH
+                + "px;\n"
+                + "height: "
+                + IMAGE_HEIGHT
+                + "px;\n"
+                + "}");
+        styles.add(
+            ".o-gallery-optimize-row .v-formlayout-contentcell, .o-gallery-optimize-row .v-formlayout-captioncell {"
+                + " padding-top: 4px;\n"
+                + " }");
     }
 
     /**
-     * Loads the gallery image list.<p>
+     * Persists all data changes that have not been saved yet.
      */
-    private void loadData() {
+    private void saveAndDelete() {
 
-        m_dataList = new ArrayList<DataItem>();
-        CmsResource root = m_context.getResources().get(0);
-        CmsObject cms = A_CmsUI.getCmsObject();
-        try {
-            m_context.getResources().get(0);
-            CmsResourceFilter resourceFilter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(
-                new CmsResourceTypeImage());
-            List<CmsResource> resources = cms.readResources(cms.getSitePath(root), resourceFilter);
-            for (CmsResource resource : resources) {
-                DataItem dataItem = new DataItem(resource);
-                m_dataList.add(dataItem);
+        for (DataItem dataItem : m_saveHandler.getChangedCurrent()) {
+            CmsResource resource = dataItem.getResource();
+            try {
+                getCms().writePropertyObjects(resource, dataItem.getPropertyList());
+                getCms().writeResource(resource);
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
             }
-        } catch (CmsException exception) {
-            m_context.error(exception);
+
         }
+        for (DataItem dataItem : m_saveHandler.getDeletedCurrent()) {
+            CmsResource resource = dataItem.getResource();
+            try {
+                getCms().deleteResource(getCms().getSitePath(resource), CmsResource.DELETE_PRESERVE_SIBLINGS);
+                m_dataList.remove(dataItem);
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+        }
+        if (m_saveHandler.hasDeletedCurrent()) {
+            displayDataListView();
+        }
+    }
+
+    /**
+     * Saves the selected sort order in the user session.<p>
+     *
+     * @param sortOrder the sort order
+     */
+    private void setSessionSortOrder(String sortOrder) {
+
+        WrappedSession wrappedSession = VaadinService.getCurrentRequest().getWrappedSession();
+        wrappedSession.setAttribute(GALLERY_OPTIMIZE_ATTR_SORT_ORDER, sortOrder);
     }
 
     /**
@@ -1056,10 +1275,9 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     private void unlock() {
 
         if (m_lockActionRecord != null) {
-            CmsObject cms = getCms();
             CmsResource resource = m_context.getResources().get(0);
             try {
-                cms.unlockResource(resource);
+                getCms().unlockResource(resource);
             } catch (CmsException e) {
                 LOG.warn(e.getLocalizedMessage(), e);
             }

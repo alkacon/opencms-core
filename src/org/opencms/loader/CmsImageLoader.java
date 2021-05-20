@@ -288,7 +288,7 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
      * @throws IOException in case of errors accessing the disk based cache
      * @throws CmsException in case of errors accessing the OpenCms VFS
      */
-    protected synchronized CmsFile getScaledImage(CmsObject cms, CmsResource resource, CmsImageScaler scaler)
+    protected CmsFile getScaledImage(CmsObject cms, CmsResource resource, CmsImageScaler scaler)
     throws IOException, CmsException {
 
         String cacheParam = scaler.isValid() ? scaler.toString() : null;

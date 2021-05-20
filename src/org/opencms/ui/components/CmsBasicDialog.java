@@ -81,6 +81,61 @@ public class CmsBasicDialog extends VerticalLayout {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Initializes the dialog window.<p>
+     *
+     * @return the window to be used by dialogs
+     */
+    public static Window prepareWindow() {
+
+        return prepareWindow(DialogWidth.narrow);
+    }
+
+    /**
+     * Initializes the dialog window.<p>
+     *
+     * @param width the dialog width
+     *
+     * @return the window to be used by dialogs
+     */
+    public static Window prepareWindow(DialogWidth width) {
+
+        Window window = new Window();
+        window.setModal(true);
+        window.setClosable(true);
+        int pageWidth = Page.getCurrent().getBrowserWindowWidth();
+        if (((width == DialogWidth.wide) && (pageWidth < 810))
+            || ((width == DialogWidth.narrow) && (pageWidth < 610))) {
+            // in case the available page width does not allow the desired width, use max
+            width = DialogWidth.max;
+        }
+        if (width == DialogWidth.max) {
+            // in case max width would result in a width very close to wide or narrow, use their static width instead of relative width
+            if ((pageWidth >= 610) && (pageWidth < 670)) {
+                width = DialogWidth.narrow;
+            } else if ((pageWidth >= 810) && (pageWidth < 890)) {
+                width = DialogWidth.wide;
+            }
+        }
+        switch (width) {
+            case content:
+                // do nothing
+                break;
+            case wide:
+                window.setWidth("800px");
+                break;
+            case max:
+                window.setWidth("90%");
+                break;
+            case narrow:
+            default:
+                window.setWidth("600px");
+                break;
+        }
+        window.center();
+        return window;
+    }
+
     /** The window resize listener registration. */
     Registration m_resizeListenerRegistration;
 
@@ -159,61 +214,6 @@ public class CmsBasicDialog extends VerticalLayout {
     }
 
     /**
-     * Initializes the dialog window.<p>
-     *
-     * @return the window to be used by dialogs
-     */
-    public static Window prepareWindow() {
-
-        return prepareWindow(DialogWidth.narrow);
-    }
-
-    /**
-     * Initializes the dialog window.<p>
-     *
-     * @param width the dialog width
-     *
-     * @return the window to be used by dialogs
-     */
-    public static Window prepareWindow(DialogWidth width) {
-
-        Window window = new Window();
-        window.setModal(true);
-        window.setClosable(true);
-        int pageWidth = Page.getCurrent().getBrowserWindowWidth();
-        if (((width == DialogWidth.wide) && (pageWidth < 810))
-            || ((width == DialogWidth.narrow) && (pageWidth < 610))) {
-            // in case the available page width does not allow the desired width, use max
-            width = DialogWidth.max;
-        }
-        if (width == DialogWidth.max) {
-            // in case max width would result in a width very close to wide or narrow, use their static width instead of relative width
-            if ((pageWidth >= 610) && (pageWidth < 670)) {
-                width = DialogWidth.narrow;
-            } else if ((pageWidth >= 810) && (pageWidth < 890)) {
-                width = DialogWidth.wide;
-            }
-        }
-        switch (width) {
-            case content:
-                // do nothing
-                break;
-            case wide:
-                window.setWidth("800px");
-                break;
-            case max:
-                window.setWidth("90%");
-                break;
-            case narrow:
-            default:
-                window.setWidth("600px");
-                break;
-        }
-        window.center();
-        return window;
-    }
-
-    /**
      * Adds a button to the button bar.<p>
      *
      * @param button the button to add
@@ -236,6 +236,34 @@ public class CmsBasicDialog extends VerticalLayout {
         } else {
             m_buttonPanelLeft.addComponent(button);
             m_buttonPanelLeft.setVisible(true);
+        }
+    }
+
+    public void addMainPanelComponent(Component component) {
+
+        m_mainPanel.addComponent(component);
+    }
+
+    /**
+     * Calculates max dialog height given the window height.<p>
+     *
+     * @param windowHeight the window height
+     * @return the maximal dialog height
+     */
+    private int calculateMaxHeight(int windowHeight) {
+
+        return (int)((0.95 * windowHeight) - 40);
+    }
+
+    /**
+     * Removes the action handler.<p>
+     *
+     * @param window the window the action handler is attached to
+     */
+    void clearActionHandler(Window window) {
+
+        if (m_actionHandler != null) {
+            window.removeActionHandler(m_actionHandler);
         }
     }
 
@@ -267,6 +295,60 @@ public class CmsBasicDialog extends VerticalLayout {
     public Button createButtonOK() {
 
         return new Button(CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_OK_0));
+    }
+
+    /**
+     * Creates a resource list panel.<p>
+     *
+     * @param caption the caption to use
+     * @param resources the resources
+     *
+     * @return the panel
+     */
+    public Panel createResourceListPanel(String caption, List<CmsResource> resources) {
+
+        Panel result = null;
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(caption)) {
+            result = new Panel();
+        } else {
+            result = new Panel(caption);
+        }
+        result.addStyleName("v-scrollable");
+        result.setSizeFull();
+        VerticalLayout resourcePanel = new VerticalLayout();
+        result.setContent(resourcePanel);
+        resourcePanel.addStyleName(OpenCmsTheme.REDUCED_MARGIN);
+        resourcePanel.addStyleName(OpenCmsTheme.REDUCED_SPACING);
+        resourcePanel.setSpacing(true);
+        resourcePanel.setMargin(true);
+        for (CmsResource resource : resources) {
+            resourcePanel.addComponent(new CmsResourceInfo(resource));
+        }
+        return result;
+    }
+
+    /**
+     * Creates a resource list panel.<p>
+     *
+     * @param caption the caption to use
+     * @param resourceInfo the resource-infos
+     * @return the panel
+     */
+    public Panel createResourceListPanelDirectly(String caption, List<CmsResourceInfo> resourceInfo) {
+
+        Panel result = new Panel(caption);
+        result.addStyleName("v-scrollable");
+        result.setSizeFull();
+        VerticalLayout resourcePanel = new VerticalLayout();
+        result.setContent(resourcePanel);
+        resourcePanel.addStyleName(OpenCmsTheme.REDUCED_MARGIN);
+        resourcePanel.addStyleName(OpenCmsTheme.REDUCED_SPACING);
+        resourcePanel.setSpacing(true);
+        resourcePanel.setMargin(true);
+        for (CmsResourceInfo resource : resourceInfo) {
+            resourcePanel.addComponent(resource);
+        }
+        return result;
     }
 
     /**
@@ -342,6 +424,59 @@ public class CmsBasicDialog extends VerticalLayout {
             }
 
         }
+    }
+
+    /**
+     * Adds the max height extension to the dialog panel.<p>
+     */
+    protected void enableMaxHeight() {
+
+        // use the window height minus an offset for the window header and some spacing
+        int maxHeight = calculateMaxHeight(A_CmsUI.get().getPage().getBrowserWindowHeight());
+        m_maxHeightExtension = new CmsMaxHeightExtension(this, maxHeight);
+        // only center window for height changes that exceed the maximum height since the last window resize
+        // (window resize handler resets this)
+        m_maxHeightExtension.addHeightChangeHandler(new CmsMaxHeightExtension.I_HeightChangeHandler() {
+
+            @SuppressWarnings("synthetic-access")
+            public void onChangeHeight(int height) {
+
+                boolean center = height > m_maxRecordedHeight;
+                m_maxRecordedHeight = Math.max(m_maxRecordedHeight, height);
+                Window wnd = CmsVaadinUtils.getWindow(CmsBasicDialog.this);
+                if ((wnd != null) && center) {
+                    wnd.center();
+                }
+            }
+        });
+
+        addDetachListener(new DetachListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void detach(DetachEvent event) {
+
+                if (m_resizeListenerRegistration != null) {
+                    m_resizeListenerRegistration.remove();
+                    m_resizeListenerRegistration = null;
+                }
+            }
+        });
+
+        m_windowResizeListener = new BrowserWindowResizeListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            @SuppressWarnings("synthetic-access")
+            public void browserWindowResized(BrowserWindowResizeEvent event) {
+
+                m_maxRecordedHeight = Integer.MIN_VALUE;
+                int newHeight = event.getHeight();
+                m_maxHeightExtension.updateMaxHeight(calculateMaxHeight(newHeight));
+            }
+        };
+        m_resizeListenerRegistration = A_CmsUI.get().getPage().addBrowserWindowResizeListener(m_windowResizeListener);
+
     }
 
     /**
@@ -501,135 +636,5 @@ public class CmsBasicDialog extends VerticalLayout {
         setHeight("100%");
         setContentMinHeight(minHeight);
         window.center();
-    }
-
-    /**
-     * Creates a resource list panel.<p>
-     *
-     * @param caption the caption to use
-     * @param resources the resources
-     *
-     * @return the panel
-     */
-    protected Panel createResourceListPanel(String caption, List<CmsResource> resources) {
-
-        Panel result = null;
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(caption)) {
-            result = new Panel();
-        } else {
-            result = new Panel(caption);
-        }
-        result.addStyleName("v-scrollable");
-        result.setSizeFull();
-        VerticalLayout resourcePanel = new VerticalLayout();
-        result.setContent(resourcePanel);
-        resourcePanel.addStyleName(OpenCmsTheme.REDUCED_MARGIN);
-        resourcePanel.addStyleName(OpenCmsTheme.REDUCED_SPACING);
-        resourcePanel.setSpacing(true);
-        resourcePanel.setMargin(true);
-        for (CmsResource resource : resources) {
-            resourcePanel.addComponent(new CmsResourceInfo(resource));
-        }
-        return result;
-    }
-
-    /**
-     * Creates a resource list panel.<p>
-     *
-     * @param caption the caption to use
-     * @param resourceInfo the resource-infos
-     * @return the panel
-     */
-    protected Panel createResourceListPanelDirectly(String caption, List<CmsResourceInfo> resourceInfo) {
-
-        Panel result = new Panel(caption);
-        result.addStyleName("v-scrollable");
-        result.setSizeFull();
-        VerticalLayout resourcePanel = new VerticalLayout();
-        result.setContent(resourcePanel);
-        resourcePanel.addStyleName(OpenCmsTheme.REDUCED_MARGIN);
-        resourcePanel.addStyleName(OpenCmsTheme.REDUCED_SPACING);
-        resourcePanel.setSpacing(true);
-        resourcePanel.setMargin(true);
-        for (CmsResourceInfo resource : resourceInfo) {
-            resourcePanel.addComponent(resource);
-        }
-        return result;
-    }
-
-    /**
-     * Adds the max height extension to the dialog panel.<p>
-     */
-    protected void enableMaxHeight() {
-
-        // use the window height minus an offset for the window header and some spacing
-        int maxHeight = calculateMaxHeight(A_CmsUI.get().getPage().getBrowserWindowHeight());
-        m_maxHeightExtension = new CmsMaxHeightExtension(this, maxHeight);
-        // only center window for height changes that exceed the maximum height since the last window resize
-        // (window resize handler resets this)
-        m_maxHeightExtension.addHeightChangeHandler(new CmsMaxHeightExtension.I_HeightChangeHandler() {
-
-            @SuppressWarnings("synthetic-access")
-            public void onChangeHeight(int height) {
-
-                boolean center = height > m_maxRecordedHeight;
-                m_maxRecordedHeight = Math.max(m_maxRecordedHeight, height);
-                Window wnd = CmsVaadinUtils.getWindow(CmsBasicDialog.this);
-                if ((wnd != null) && center) {
-                    wnd.center();
-                }
-            }
-        });
-
-        addDetachListener(new DetachListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void detach(DetachEvent event) {
-
-                if (m_resizeListenerRegistration != null) {
-                    m_resizeListenerRegistration.remove();
-                    m_resizeListenerRegistration = null;
-                }
-            }
-        });
-
-        m_windowResizeListener = new BrowserWindowResizeListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            @SuppressWarnings("synthetic-access")
-            public void browserWindowResized(BrowserWindowResizeEvent event) {
-
-                m_maxRecordedHeight = Integer.MIN_VALUE;
-                int newHeight = event.getHeight();
-                m_maxHeightExtension.updateMaxHeight(calculateMaxHeight(newHeight));
-            }
-        };
-        m_resizeListenerRegistration = A_CmsUI.get().getPage().addBrowserWindowResizeListener(m_windowResizeListener);
-
-    }
-
-    /**
-     * Removes the action handler.<p>
-     *
-     * @param window the window the action handler is attached to
-     */
-    void clearActionHandler(Window window) {
-
-        if (m_actionHandler != null) {
-            window.removeActionHandler(m_actionHandler);
-        }
-    }
-
-    /**
-     * Calculates max dialog height given the window height.<p>
-     *
-     * @param windowHeight the window height
-     * @return the maximal dialog height
-     */
-    private int calculateMaxHeight(int windowHeight) {
-
-        return (int)((0.95 * windowHeight) - 40);
     }
 }

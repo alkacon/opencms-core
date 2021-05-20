@@ -68,6 +68,7 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
      * @param resources the list of resources
      */
     protected A_CmsDialogContext(String appId, ContextType contextType, List<CmsResource> resources) {
+
         m_appId = appId;
         m_resources = resources != null ? resources : Collections.<CmsResource> emptyList();
         m_contextType = contextType;
@@ -150,6 +151,16 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
     public List<CmsResource> getResources() {
 
         return m_resources;
+    }
+
+    /**
+     * Returns the window.
+     *
+     * @return the window
+     */
+    public Window getWindow() {
+
+        return m_window;
     }
 
     /**
