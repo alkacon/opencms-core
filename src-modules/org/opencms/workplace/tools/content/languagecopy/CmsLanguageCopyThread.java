@@ -38,6 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.CmsHtmlReport;
 import org.opencms.report.CmsLogReport;
+import org.opencms.report.CmsMultiplexReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;

@@ -57,6 +57,8 @@ import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.module.CmsModuleImportExportHandler;
 import org.opencms.module.CmsModuleManager;
+import org.opencms.report.CmsMultiplexReport;
+import org.opencms.report.CmsPrintStreamReport;
 import org.opencms.report.CmsShellLogReport;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
@@ -78,11 +80,17 @@ import org.opencms.ui.favorites.CmsFavoriteEntry.Type;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.CmsXmlFileTransformer;
 import org.opencms.xml.content.CmsXmlContent;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -1734,6 +1742,38 @@ class CmsShellCommands implements I_CmsShellCommands {
         } finally {
             if (action.getChange() == LockChange.locked) {
                 m_cms.unlockResource(resource);
+            }
+        }
+    }
+
+    /**
+     * Transforms configuration resources in the VFS using an XSL transformation.
+     *
+     * @param path the path for which to transform the XML contents
+     * @param typeName the name of the type to transform
+     * @param transform the RFS path to the XSL transformation
+     * @throws Exception if something goes wrong
+     */
+    public void transformXmlContents(String path, String typeName, String transform) throws Exception {
+
+        String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(System.currentTimeMillis()));
+        String additionalLogName = "xml_transform_" + timestamp + ".log";
+        String additionalLogPath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            "logs/" + additionalLogName);
+        transform = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(transform);
+        try (FileOutputStream additionalLog = new FileOutputStream(additionalLogPath)) {
+            CmsMultiplexReport report = new CmsMultiplexReport();
+            report.addReport(new CmsPrintStreamReport(m_shell.getOut(), Locale.ENGLISH, false));
+            report.addReport(new CmsPrintStreamReport(new PrintStream(additionalLog), Locale.ENGLISH, false));
+            try (FileInputStream stream = new FileInputStream(transform)) {
+                CmsXmlFileTransformer fileTransformer = new CmsXmlFileTransformer(
+                    m_cms,
+                    path,
+                    typeName,
+                    transform,
+                    stream,
+                    report);
+                fileTransformer.run();
             }
         }
     }

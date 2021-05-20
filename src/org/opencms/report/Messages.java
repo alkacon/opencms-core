@@ -59,6 +59,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_FAILED_0 = "RPT_FAILED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_GENERIC_1 = "RPT_GENERIC_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_IGNORED_0 = "RPT_IGNORED_0";
 
     /** Message constant for key in the resource bundle. */

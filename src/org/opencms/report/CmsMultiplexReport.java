@@ -25,14 +25,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.tools.content.languagecopy;
+package org.opencms.report;
 
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.report.A_CmsReport;
-import org.opencms.report.I_CmsReport;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Report proxy that multiplexes to all contained <code>{@link I_CmsReport}</code> instances.<p>
@@ -72,6 +71,18 @@ public class CmsMultiplexReport extends A_CmsReport {
             return 0;
         }
         return m_delegates.get(0).getLastEntryTime();
+    }
+
+    /**
+     * @see org.opencms.report.A_CmsReport#getLocale()
+     */
+    @Override
+    public Locale getLocale() {
+
+        if (m_delegates.size() > 0) {
+            return m_delegates.get(0).getLocale();
+        }
+        return Locale.ENGLISH;
     }
 
     /**
