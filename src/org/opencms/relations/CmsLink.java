@@ -367,10 +367,6 @@ public class CmsLink {
                 return m_uri;
             }
 
-            checkConsistency(cms);
-            String target = m_target;
-            String uri = computeUri(target, m_query, m_anchor);
-
             I_CmsCustomLinkRenderer handler = (I_CmsCustomLinkRenderer)cms.getRequestContext().getAttribute(
                 CmsLink.CUSTOM_LINK_HANDLER);
             if (handler != null) {
@@ -379,6 +375,9 @@ public class CmsLink {
                     return handlerResult;
                 }
             }
+            checkConsistency(cms);
+            String target = m_target;
+            String uri = computeUri(target, m_query, m_anchor);
 
             CmsObjectWrapper wrapper = (CmsObjectWrapper)cms.getRequestContext().getAttribute(
                 CmsObjectWrapper.ATTRIBUTE_NAME);
