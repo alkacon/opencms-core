@@ -211,10 +211,19 @@ implements I_CmsResourceInit, I_CmsConfigurationParameterHandler, I_CmsNeedsAdmi
      */
     public String getLink(CmsObject cms, CmsLink link) {
 
-        if (checkResourceAccessible(link.getResource())) {
-            return mergeLinkPrefix(m_linkRewritePrefix, link.getResource().getRootPath(), link.getQuery());
+        try {
+            CmsObject adminCms = OpenCms.initCmsObject(m_adminCms);
+            adminCms.getRequestContext().setCurrentProject(cms.getRequestContext().getCurrentProject());
+            link.checkConsistency(adminCms);
+
+            if (checkResourceAccessible(link.getResource())) {
+                return mergeLinkPrefix(m_linkRewritePrefix, link.getResource().getRootPath(), link.getQuery());
+            }
+            return null;
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return null;
         }
-        return null;
     }
 
     /**
