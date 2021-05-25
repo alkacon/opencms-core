@@ -558,7 +558,14 @@ public class CmsExport {
             fileElement.addElement(CmsImportVersion10.N_DESTINATION).addText(fileName);
             // <type>
             Element typeElem = fileElement.addElement(CmsImportVersion10.N_TYPE);
-            typeElem.addText(OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName());
+            String typeName = null;
+            try {
+                typeName = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+                typeName = "unknown_" + resource.getTypeId();
+            }
+            typeElem.addText(typeName);
 
             if (!isMinimalMetaData) {
                 //  <uuidstructure>
