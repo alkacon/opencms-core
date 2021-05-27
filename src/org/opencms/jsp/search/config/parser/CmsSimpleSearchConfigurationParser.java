@@ -29,6 +29,7 @@ package org.opencms.jsp.search.config.parser;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONException;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetRange;
@@ -498,7 +499,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
             blacklistStrings.add("\"" + id.toString() + "\"");
         }
         if (!blacklistStrings.isEmpty()) {
-            result = "&fq=-id:(" + CmsStringUtil.listAsString(blacklistStrings, " OR ") + ")";
+            result = "&fq=" + CmsEncoder.encode("-id:(" + CmsStringUtil.listAsString(blacklistStrings, " OR ") + ")");
         }
         return result;
     }
@@ -559,7 +560,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         if (result.isEmpty()) {
             result = defaultPart;
         }
-        return "fq=" + result;
+        return "fq=" + CmsEncoder.encode(result);
     }
 
     /**
@@ -606,16 +607,17 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
             result = "&" + result;
         }
         if (!result.contains(CommonParams.FL + "=")) {
-            result += "&" + CommonParams.FL + "=" + getDefaultReturnFields();
+            result += "&" + CommonParams.FL + "=" + CmsEncoder.encode(getDefaultReturnFields());
         }
         I_CmsListDateRestriction dateRestriction = m_config.getDateRestriction();
         if (dateRestriction != null) {
             result += "&fq="
-                + CmsSearchField.FIELD_INSTANCEDATE_CURRENT_TILL
-                + "_"
-                + getSearchLocale().toString()
-                + "_dt:"
-                + dateRestriction.getRange();
+                + CmsEncoder.encode(
+                    CmsSearchField.FIELD_INSTANCEDATE_CURRENT_TILL
+                        + "_"
+                        + getSearchLocale().toString()
+                        + "_dt:"
+                        + dateRestriction.getRange());
 
         }
         return result;
@@ -661,7 +663,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
             }
         }
         if (!typeVals.isEmpty()) {
-            result = "&fq=type:(" + CmsStringUtil.listAsString(typeVals, " OR ") + ")";
+            result = "&fq=" + CmsEncoder.encode("type:(" + CmsStringUtil.listAsString(typeVals, " OR ") + ")");
         }
         return result;
     }
