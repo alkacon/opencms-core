@@ -3849,7 +3849,17 @@ public final class CmsSecurityManager {
                 }
                 dbc.getRequestContext().removeAttribute(I_CmsVfsDriver.REQ_ATTR_CHECK_PERMISSIONS);
             }
-            moveResource(dbc, source, destination);
+            Set<CmsResource> allMovedResources = new HashSet<>();
+            moveResource(dbc, source, destination, allMovedResources);
+            if (!dbc.currentProject().isOnlineProject()) {
+                for (CmsResource movedResource : allMovedResources) {
+                    m_driverManager.repairCategories(
+                        dbc,
+                        dbc.getRequestContext().getCurrentProject().getUuid(),
+                        movedResource);
+                }
+            }
+
         } catch (Exception e) {
             dbc.report(
                 null,
@@ -7483,10 +7493,16 @@ public final class CmsSecurityManager {
      * @param dbc the db context
      * @param source the source resource
      * @param destination the destination path
+     * @param allMovedResources a set used to collect all moved resources
      *
      * @throws CmsException if something goes wrong
      */
-    protected void moveResource(CmsDbContext dbc, CmsResource source, String destination) throws CmsException {
+    protected void moveResource(
+        CmsDbContext dbc,
+        CmsResource source,
+        String destination,
+        Set<CmsResource> allMovedResources)
+    throws CmsException {
 
         List<CmsResource> resources = null;
 
@@ -7520,23 +7536,20 @@ public final class CmsSecurityManager {
                 CmsResource childResource = resources.get(i);
                 String childDestination = destination.concat(childResource.getName());
                 // recurse with child resource
-                moveResource(dbc, childResource, childDestination);
+                moveResource(dbc, childResource, childDestination, allMovedResources);
             }
         }
-        CmsProject currentProject = dbc.getRequestContext().getCurrentProject();
-        if (!currentProject.isOnlineProject()) {
-            List<CmsResource> movedResources = m_driverManager.readChildResources(
-                dbc,
-                destinationResource,
-                CmsResourceFilter.ALL,
-                true,
-                true,
-                false);
-            movedResources.add(destinationResource);
-            for (CmsResource res : movedResources) {
-                m_driverManager.repairCategories(dbc, dbc.getRequestContext().getCurrentProject().getUuid(), res);
-            }
-        }
+
+        List<CmsResource> movedResources = m_driverManager.readChildResources(
+            dbc,
+            destinationResource,
+            CmsResourceFilter.ALL,
+            true,
+            true,
+            false);
+        allMovedResources.add(destinationResource);
+        allMovedResources.addAll(movedResources);
+
     }
 
     /**
