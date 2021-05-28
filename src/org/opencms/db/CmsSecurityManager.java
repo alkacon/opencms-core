@@ -7531,6 +7531,10 @@ public final class CmsSecurityManager {
         }
 
         if (resources != null) {
+            // Ensure consistent order that is not database-dependent, since readChildResources doesn't specify an ordering.
+            // this is necessary to make test cases more useful.
+            Collections.sort(resources, (r1, r2) -> r1.getRootPath().compareTo(r2.getRootPath()));
+
             // now walk through all sub-resources in the folder
             for (int i = 0; i < resources.size(); i++) {
                 CmsResource childResource = resources.get(i);
