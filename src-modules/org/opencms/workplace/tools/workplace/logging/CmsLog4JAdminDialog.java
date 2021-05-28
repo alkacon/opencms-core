@@ -247,15 +247,6 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
     }
 
     /**
-     * @param logchannnelName
-     * @return
-     */
-    private Logger getLoggerImpl(String logchannnelName) {
-
-        return (Logger)LogManager.getLogger(logchannnelName);
-    }
-
-    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
     @Override
@@ -301,7 +292,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
             // the button was active
             if (isloggingactivated(logchannel)) {
                 // remove the private Appender from logger
-                logchannel.getAppenders().clear();;
+                logchannel.getAppenders().clear();
                 // activate the heredity so the logger get the appender from parent logger
                 logchannel.setAdditive(true);
 
@@ -355,12 +346,8 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
                 FileAppender fapp = null;
                 try {
                     // create new FileAppender for separate log file
-                    fapp = ((FileAppender.Builder) FileAppender.newBuilder()
-                            .withLayout(layout)
-                            .withFileName(logfilename)
-                            .withAppend(true)
-                            .withName(logchannnelName))
-                            .build();
+                    fapp = ((FileAppender.Builder)FileAppender.newBuilder().withLayout(layout).withFileName(
+                        logfilename).withAppend(true).withName(logchannnelName)).build();
 
                 } catch (Exception e) {
                     LOG.error(Messages.get().container(Messages.LOG_CREATING_APPENDER_0), e);
@@ -906,6 +893,15 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
     }
 
     /**
+     * @param logchannnelName
+     * @return
+     */
+    private Logger getLoggerImpl(String logchannnelName) {
+
+        return (Logger)LogManager.getLogger(logchannnelName);
+    }
+
+    /**
      * Help function to get all loggers from LogManager.<p>
      *
      * @return List of Logger
@@ -916,7 +912,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         List<Logger> definedLoggers = new ArrayList<Logger>();
         // list of all parent loggers
         List<Logger> packageLoggers = new ArrayList<Logger>();
-        LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
+        LoggerContext logContext = (LoggerContext)LogManager.getContext(false);
         Iterator<Logger> it_curentlogger = logContext.getLoggers().iterator();
         // get all current loggers
         while (it_curentlogger.hasNext()) {

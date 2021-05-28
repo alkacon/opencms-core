@@ -703,7 +703,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                         m_uploadAction = result.getUploadAction();
                         setSpecialUpload(true);
                     }
-                };
+                }
             };
             action.execute();
 
@@ -929,7 +929,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                             resultIds,
                             params,
                             id -> updateValueFromId(id));
-                    };
+                    }
 
                 };
                 action.execute();
@@ -1031,7 +1031,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                 stop(false);
                 m_textbox.setValue(result, true);
 
-            };
+            }
         };
         action.execute();
 
