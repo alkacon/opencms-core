@@ -110,6 +110,7 @@ public class TestCategories extends OpenCmsTestCase {
         // TODO: some more test cases, copyInvalid, moveValid, moveInvalid
         suite.addTest(new TestCategories("testPublishMovedResourceWithCategories1"));
         suite.addTest(new TestCategories("testPublishMovedResourceWithCategories2"));
+        suite.addTest(new TestCategories("testMoveParentFolder"));
 
         suite.addTest(new TestCategories("testAdditionalRepository"));
 
@@ -1030,6 +1031,37 @@ public class TestCategories extends OpenCmsTestCase {
         cats = CmsCategoryService.getInstance().readResourceCategories(cms, "/folder2/index2.html");
         assertEquals(1, cats.size());
         assertEquals(d2.getRootPath(), cats.get(0).getRootPath());
+    }
+
+    /**
+     * Tests the case where a moved resource is published, but its category has been deleted and re-created in a different repository.<p>
+     *
+     * @throws Exception in case the test fails
+     */
+    @SuppressWarnings("deprecation")
+    public void testMoveParentFolder() throws Exception {
+
+        CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+        int typePlain = CmsResourceTypePlain.getStaticTypeId();
+        int typeFolder = CmsResourceTypeFolder.getStaticTypeId();
+        cms.createResource("/moveParentFolder", typeFolder);
+        cms.createResource("/moveParentFolder/.categories", typeFolder);
+        cms.createResource("/moveParentFolder/.categories/foo", typeFolder);
+        cms.createResource("/moveParentFolder/.before", typePlain);
+        cms.createResource("/moveParentFolder/after", typePlain);
+        CmsCategoryService service = CmsCategoryService.getInstance();
+        service.addResourceToCategory(cms, "/moveParentFolder/.before", "/foo");
+        service.addResourceToCategory(cms, "/moveParentFolder/after", "/foo");
+        cms.moveResource("/moveParentFolder", "/moveParentFolderMoved");
+        List<CmsCategory> categories = service.readResourceCategories(
+            cms,
+            cms.readResource("/moveParentFolderMoved/.before"));
+        assertEquals(1, categories.size());
+        assertEquals("foo/", categories.get(0).getPath());
+        categories = service.readResourceCategories(cms, cms.readResource("/moveParentFolderMoved/after"));
+        assertEquals(1, categories.size());
+        assertEquals("foo/", categories.get(0).getPath());
+
     }
 
     /**
