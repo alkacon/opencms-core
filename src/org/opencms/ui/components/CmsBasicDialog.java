@@ -239,11 +239,6 @@ public class CmsBasicDialog extends VerticalLayout {
         }
     }
 
-    public void addMainPanelComponent(Component component) {
-
-        m_mainPanel.addComponent(component);
-    }
-
     /**
      * Calculates max dialog height given the window height.<p>
      *

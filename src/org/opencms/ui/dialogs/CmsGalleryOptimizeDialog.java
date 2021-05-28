@@ -56,33 +56,44 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
+import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.data.provider.Query;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Page;
 import com.vaadin.server.Page.Styles;
+import com.vaadin.server.SerializableComparator;
+import com.vaadin.server.SerializablePredicate;
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.WrappedSession;
+import com.vaadin.shared.Position;
 import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.ItemCaptionGenerator;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.NativeSelect;
-import com.vaadin.ui.Panel;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -98,29 +109,38 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
      */
     private class DataItem {
 
+        /** The data binder of this editable gallery image. */
+        private Binder<DataItem> m_binder = new Binder<DataItem>();
+
+        /** The form composite of this editable gallery image. */
+        private FormComposite m_compositeForm;
+
+        /** The image composite of this editable gallery image. */
+        private ImageComposite m_compositeImage;
+
+        /** The image delete composite of this editable gallery image. */
+        private ImageDeleteComposite m_compositeImageDelete;
+
+        /** The copyright information of this editable gallery image. */
+        private String m_copyright;
+
+        /** Date when this editable gallery image was last modified. */
+        private Long m_dateLastModified;
+
+        /** Whether this editable gallery image shall be deleted. */
+        private Boolean m_deleteFlag = Boolean.valueOf(false);
+
+        /** The description of this editable gallery image. */
+        private String m_description;
+
+        /** Whether this editable gallery image is used. */
+        private Boolean m_isUsed;
+
         /** The file name of this editable gallery image. */
         private String m_name;
 
         /** The full path of this editable gallery image. */
         private String m_path;
-
-        /** The title of this editable gallery image. */
-        private String m_title;
-
-        /** The copyright information of this editable gallery image. */
-        private String m_copyright;
-
-        /** The description of this editable gallery image. */
-        private String m_description;
-
-        /** Date when this editable gallery image was last modified. */
-        private Long m_dateLastModified;
-
-        /** Whether this editable gallery image is used. */
-        private Boolean m_isUsed;
-
-        /** Whether this editable gallery image shall be deleted. */
-        private Boolean m_deleteFlag = Boolean.valueOf(false);
 
         /** The CMS resource of this editable gallery image. */
         private CmsResource m_resource;
@@ -128,11 +148,8 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         /** The CMS resource utility of this editable gallery image. */
         private CmsResourceUtil m_resourceUtil;
 
-        /** The main UI component of this editable gallery image. */
-        private HorizontalLayout m_component;
-
-        /** The data binder of this editable gallery image. */
-        private Binder<DataItem> m_binder = new Binder<DataItem>();
+        /** The title of this editable gallery image. */
+        private String m_title;
 
         /**
          * Creates a new editable gallery image for a given CMS resource.<p>
@@ -142,26 +159,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         public DataItem(CmsResource resource) {
 
             m_resource = resource;
-            m_resourceUtil = new CmsResourceUtil(A_CmsUI.getCmsObject(), m_resource);
-            List<CmsRelation> relations = null;
-            try {
-                relations = getCms().getRelationsForResource(resource, CmsRelationFilter.SOURCES);
-                m_name = resource.getName();
-                m_path = resource.getRootPath();
-                m_title = getCms().readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-                m_copyright = getCms().readPropertyObject(
-                    resource,
-                    CmsPropertyDefinition.PROPERTY_COPYRIGHT,
-                    false).getValue();
-                m_description = getCms().readPropertyObject(
-                    resource,
-                    CmsPropertyDefinition.PROPERTY_DESCRIPTION,
-                    false).getValue();
-                m_dateLastModified = Long.valueOf(resource.getDateLastModified());
-                m_isUsed = Boolean.valueOf(!((relations == null) || relations.isEmpty()));
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
+            initData();
             initComponent();
         }
 
@@ -176,13 +174,33 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Returns the main UI component of this editable gallery image.<p>
+         * Returns the form composite of this editable gallery image.<p>
          *
-         * @return the main UI component
+         * @return the form composite
          */
-        public HorizontalLayout getComponent() {
+        public FormComposite getCompositeForm() {
 
-            return m_component;
+            return m_compositeForm;
+        }
+
+        /**
+         * Returns the image composite of this editable gallery image.<p>
+         *
+         * @return the image composite
+         */
+        public ImageComposite getCompositeImage() {
+
+            return m_compositeImage;
+        }
+
+        /**
+         * Returns the image delete composite of this editable gallery image.<p>
+         *
+         * @return the image delete composite
+         */
+        public ImageDeleteComposite getCompositeImageDelete() {
+
+            return m_compositeImageDelete;
         }
 
         /**
@@ -300,19 +318,29 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Initializes all UI components of this editable gallery image and initializes all data fields.<p>
+         * Returns whether this editable gallery image has value changes compared
+         * to the property values actually persisted.<p>
+         *
+         * @return whether changes or not
          */
-        public void initComponent() {
+        public boolean hasChanges() {
 
-            m_component = new HorizontalLayout();
-            m_component.setWidthFull();
-            m_component.setMargin(true);
-            ImageComposite imageComposite = new ImageComposite(this);
-            m_component.addComponent(imageComposite);
-            FormComposite formComposite = new FormComposite(this);
-            m_component.addComponent(formComposite);
-            m_component.setExpandRatio(formComposite, 1.0f);
-            m_binder.readBean(this);
+            boolean hasChanges = false;
+            try {
+                if (!hasChanges) {
+                    hasChanges = !m_title.equals(readPropertyTitle());
+                }
+                if (!hasChanges) {
+                    hasChanges = !m_copyright.equals(readPropertyCopyright());
+                }
+                if (!hasChanges) {
+                    hasChanges = !m_description.equals(readPropertyDescription());
+                }
+            } catch (CmsException e) {
+                hasChanges = true;
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+            return hasChanges;
         }
 
         /**
@@ -346,6 +374,18 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
+         * Sets the CMS resource if this editable gallery image and re-initializes all data and components.<p>
+         *
+         * @param resource the CMS resource
+         */
+        public void setResource(CmsResource resource) {
+
+            m_resource = resource;
+            initData();
+            initComponent();
+        }
+
+        /**
          * Sets the title of this editable gallery image.<p>
          *
          * @param title the title
@@ -354,12 +394,287 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
             m_title = title;
         }
+
+        /**
+         * Initializes all UI components of this editable gallery image and initializes all data fields.<p>
+         */
+        private void initComponent() {
+
+            m_compositeImage = new ImageComposite(this);
+            m_compositeImageDelete = new ImageDeleteComposite(this);
+            m_compositeForm = new FormComposite(this);
+            m_binder.readBean(this);
+        }
+
+        /**
+         * Initializes all data of this editable gallery image.<p>
+         */
+        private void initData() {
+
+            m_resourceUtil = new CmsResourceUtil(A_CmsUI.getCmsObject(), m_resource);
+            try {
+                List<CmsRelation> relations = getCms().getRelationsForResource(m_resource, CmsRelationFilter.SOURCES);
+                m_name = m_resource.getName();
+                m_path = m_resource.getRootPath();
+                m_title = readPropertyTitle();
+                m_copyright = readPropertyCopyright();
+                m_description = readPropertyDescription();
+                m_dateLastModified = Long.valueOf(m_resource.getDateLastModified());
+                m_isUsed = Boolean.valueOf(!((relations == null) || relations.isEmpty()));
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+
+        /**
+         * Reads the persisted copyright property value.<p>
+         *
+         * @return the copyright property value
+         * @throws CmsException thrown if the property read fails
+         */
+        private String readPropertyCopyright() throws CmsException {
+
+            String value = getCms().readPropertyObject(
+                m_resource,
+                CmsPropertyDefinition.PROPERTY_COPYRIGHT,
+                false).getValue();
+            return value == null ? "" : value;
+        }
+
+        /**
+         * Reads the persisted description property value.<p>
+         *
+         * @return the description property value
+         * @throws CmsException thrown if the property read fails
+         */
+        private String readPropertyDescription() throws CmsException {
+
+            String value = getCms().readPropertyObject(
+                m_resource,
+                CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+                false).getValue();
+            return value == null ? "" : value;
+        }
+
+        /**
+         * Reads the persisted title property value.<p>
+         *
+         * @return the title property value
+         * @throws CmsException thrown if the property read fails
+         */
+        private String readPropertyTitle() throws CmsException {
+
+            String value = getCms().readPropertyObject(
+                m_resource,
+                CmsPropertyDefinition.PROPERTY_TITLE,
+                false).getValue();
+            return value == null ? "" : value;
+        }
+    }
+
+    /**
+     * Class representing the data list header view for sorting and paging the data item list.
+     */
+    private class DataListHeaderComposite extends HorizontalLayout {
+
+        /** The default serial version UID. */
+        private static final long serialVersionUID = 1L;
+
+        /** Page info label. */
+        private Label m_labelPageInfo;
+
+        /** The select box for page selection. */
+        private NativeSelect<Integer> m_selectPage;
+
+        /** The select box for sort order selection. */
+        private NativeSelect<String> m_selectSortOrder;
+
+        /**
+         * Creates a new data list header composite.
+         */
+        public DataListHeaderComposite() {
+
+            setHeightUndefined();
+            setWidthFull();
+            m_selectSortOrder = createSelectSortOrder();
+            m_selectPage = createSelectPage();
+            m_labelPageInfo = createLabelPageInfo();
+            addComponent(m_selectSortOrder);
+            addComponent(m_selectPage);
+            addComponent(m_labelPageInfo);
+            setComponentAlignment(m_selectSortOrder, Alignment.MIDDLE_LEFT);
+            setComponentAlignment(m_selectPage, Alignment.MIDDLE_CENTER);
+            setComponentAlignment(m_labelPageInfo, Alignment.MIDDLE_RIGHT);
+        }
+
+        /**
+         * Refreshes this component.<p>
+         */
+        public void refresh() {
+
+            removeComponent(m_selectPage);
+            removeComponent(m_labelPageInfo);
+            m_selectPage = createSelectPage();
+            m_labelPageInfo = createLabelPageInfo();
+            addComponent(m_selectPage);
+            addComponent(m_labelPageInfo);
+            setComponentAlignment(m_selectSortOrder, Alignment.MIDDLE_LEFT);
+            setComponentAlignment(m_selectPage, Alignment.MIDDLE_CENTER);
+            setComponentAlignment(m_labelPageInfo, Alignment.MIDDLE_RIGHT);
+        }
+
+        /**
+         * Programmatically selects a page according to a given index.<p>
+         *
+         * @param index the page index
+         */
+        public void selectPage(int index) {
+
+            m_selectPage.setValue(null);
+            handlePageChange(index, false);
+        }
+
+        /**
+         * Creates a page info label.<p>
+         *
+         * @return the page info label
+         */
+        @SuppressWarnings("synthetic-access")
+        private Label createLabelPageInfo() {
+
+            String text = "";
+            if (m_pageHandler.hasPages()) {
+                text = CmsVaadinUtils.getMessageText(
+                    Messages.GUI_GALLERY_OPTIMIZE_LABEL_PAGE_INFO_3,
+                    String.valueOf(m_pageHandler.getNumFirstItem()),
+                    String.valueOf(m_pageHandler.getNumLastItem()),
+                    String.valueOf(getSize()));
+            } else {
+                text = CmsVaadinUtils.getMessageText(
+                    Messages.GUI_GALLERY_OPTIMIZE_LABEL_PAGE_INFO_1,
+                    String.valueOf(getSize()));
+            }
+            Label label = new Label(text);
+            label.setWidthUndefined();
+            return label;
+        }
+
+        /**
+         * Creates a new select box for page select.<p>
+         *
+         * @return the page select box
+         */
+        @SuppressWarnings("synthetic-access")
+        private NativeSelect<Integer> createSelectPage() {
+
+            NativeSelect<Integer> selectPage = new NativeSelect<Integer>();
+            selectPage.setWidthUndefined();
+            int numPages = getNumPages();
+            selectPage.setItemCaptionGenerator(new ItemCaptionGenerator<Integer>() {
+
+                private static final long serialVersionUID = 1L;
+
+                public String apply(Integer item) {
+
+                    return CmsVaadinUtils.getMessageText(
+                        Messages.GUI_GALLERY_OPTIMIZE_SELECTED_PAGE_2,
+                        String.valueOf(item.intValue() + 1),
+                        String.valueOf(numPages));
+                }
+
+            });
+            Integer firstItem = Integer.valueOf(0);
+            List<Integer> items = new ArrayList<Integer>();
+            for (int i = 0; i < numPages; i++) {
+                if (i > 0) {
+                    items.add(Integer.valueOf(i));
+                }
+            }
+            selectPage.setEmptySelectionCaption(selectPage.getItemCaptionGenerator().apply(firstItem));
+            selectPage.setItems(items);
+            selectPage.addValueChangeListener(event -> {
+                if (event.isUserOriginated()) {
+                    int index = event.getValue() != null ? event.getValue().intValue() : 0;
+                    handlePageChange(index, true);
+                }
+            });
+            selectPage.setVisible(m_pageHandler.hasPages());
+            return selectPage;
+        }
+
+        /**
+         * Creates a new select box for sort order select.<p>
+         *
+         * @return the sort order select box
+         */
+        @SuppressWarnings("synthetic-access")
+        private NativeSelect<String> createSelectSortOrder() {
+
+            NativeSelect<String> selectSortOrder = new NativeSelect<String>();
+            selectSortOrder.setWidthUndefined();
+            selectSortOrder.setEmptySelectionCaption(m_messageSortTitleAscending);
+            selectSortOrder.setItems(
+                m_messageSortTitleDescending,
+                m_messageSortDateLastModifiedAscending,
+                m_messageSortDateLastModifiedDescending,
+                m_messageSortPathAscending,
+                m_messageSortPathDescending,
+                m_messageSortUnusedFirst);
+            selectSortOrder.addValueChangeListener(event -> {
+                if (event.isUserOriginated()) {
+                    selectPage(0);
+                    m_provider.refreshAll();
+                    displayDataListViewSorted(event.getValue());
+                }
+            });
+            selectSortOrder.setValue(getSessionSortOrder());
+            return selectSortOrder;
+        }
+
+        /**
+         * Returns the number of available pages.<p>
+         *
+         * @return the number of available pages
+         */
+        private int getNumPages() {
+
+            return (int)Math.ceil((double)getSize() / PageHandler.LIMIT);
+        }
+
+        /**
+         * Utility function that returns the size of the data list.
+         *
+         * @return the data list size
+         */
+        @SuppressWarnings("synthetic-access")
+        private int getSize() {
+
+            return m_provider.getItems().size();
+        }
+
+        /**
+         * Page change event handler. Updates the page info label.<p>
+         *
+         * @param index the index of the page to select
+         * @param display whether to re-render the data item list
+         */
+        @SuppressWarnings("synthetic-access")
+        private void handlePageChange(int index, boolean display) {
+
+            m_pageHandler.setCurrentPage(index);
+            Label label = createLabelPageInfo();
+            replaceComponent(m_labelPageInfo, label);
+            m_labelPageInfo = label;
+            if (display) {
+                displayDataListView(true);
+            }
+        }
     }
 
     /**
      * Class representing a form composite to edit gallery image data.<p>
      */
-    private class FormComposite extends VerticalLayout {
+    private class FormComposite extends AbsoluteLayout {
 
         /** The default serial version UID. */
         private static final long serialVersionUID = 1L;
@@ -375,29 +690,48 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         public FormComposite(DataItem dataItem) {
 
             m_dataItem = dataItem;
-            setHeightFull();
-            setMargin(false);
-            setSpacing(true);
-            addStyleName("o-gallery-optimize-row");
-            VerticalLayout verticalLayout = new VerticalLayout();
-            verticalLayout.setMargin(false);
-            verticalLayout.setSpacing(false);
-            verticalLayout.setWidthFull();
-            verticalLayout.setHeightUndefined();
-            verticalLayout.addComponent(createResourceInfo());
-            verticalLayout.addComponent(createResourceAttributes());
+            setSizeFull();
+            setStyleName("o-gallery-composite-form");
+            addComponent(createDisplayResourceInfo(), "top: 0px;");
+            addComponent(createDisplayResourceDate(), "top: 42px;");
             FormLayout formLayout = new FormLayout();
             formLayout.setMargin(false);
             formLayout.setSpacing(false);
-            formLayout.setWidthFull();
-            formLayout.setHeightUndefined();
+            formLayout.addStyleName("o-gallery-formlayout");
             formLayout.addComponent(createFieldTitle());
             formLayout.addComponent(createFieldCopyright());
             formLayout.addComponent(createFieldDescription());
-            addComponent(verticalLayout);
-            addComponent(formLayout);
-            setExpandRatio(formLayout, 1.0f);
-            this.setComponentAlignment(formLayout, Alignment.BOTTOM_LEFT);
+            addComponent(formLayout, "bottom: 0px;");
+        }
+
+        /**
+         * Returns a component to display resource date information.<p>
+         *
+         * @return the component
+         */
+        private Label createDisplayResourceDate() {
+
+            String lastModified = formatDateTime(m_dataItem.getDateLastModified().longValue());
+            String lastModifiedBy = m_dataItem.getResourceUtil().getUserLastModified();
+            String message = CmsVaadinUtils.getMessageText(
+                Messages.GUI_GALLERY_OPTIMIZE_LASTMODIFIED_BY_2,
+                lastModified,
+                lastModifiedBy);
+            Label label = new Label(message);
+            label.addStyleNames(ValoTheme.LABEL_LIGHT, ValoTheme.LABEL_TINY);
+            return label;
+        }
+
+        /**
+         * Returns a component to display resource information.<p>
+         *
+         * @return the component
+         */
+        private CmsResourceInfo createDisplayResourceInfo() {
+
+            CmsResourceInfo resourceInfo = new CmsResourceInfo(m_dataItem.getResource());
+            resourceInfo.setTopLineText(m_dataItem.getName());
+            return resourceInfo;
         }
 
         /**
@@ -411,6 +745,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                 org.opencms.workplace.explorer.Messages.GUI_INPUT_COPYRIGHT_0);
             TextField field = new TextField(caption);
             field.setWidthFull();
+            field.setEnabled(!CmsGalleryOptimizeDialog.this.isReadOnly());
             m_dataItem.getBinder().bind(field, DataItem::getCopyright, DataItem::setCopyright);
             return field;
         }
@@ -425,6 +760,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             String caption = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_INPUT_DESCRIPTION_0);
             TextField field = new TextField(caption);
             field.setWidthFull();
+            field.setEnabled(!CmsGalleryOptimizeDialog.this.isReadOnly());
             m_dataItem.getBinder().bind(field, DataItem::getDescription, DataItem::setDescription);
             return field;
         }
@@ -439,38 +775,9 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             String caption = CmsVaadinUtils.getMessageText(org.opencms.workplace.explorer.Messages.GUI_INPUT_TITLE_0);
             TextField field = new TextField(caption);
             field.setWidthFull();
+            field.setEnabled(!CmsGalleryOptimizeDialog.this.isReadOnly());
             m_dataItem.getBinder().bind(field, DataItem::getTitle, DataItem::setTitle);
             return field;
-        }
-
-        /**
-         * Creates a label for author information.<p>
-         *
-         * @return the author information label.
-         */
-        private Label createResourceAttributes() {
-
-            String lastModified = formatDateTime(m_dataItem.getDateLastModified().longValue());
-            String lastModifiedBy = m_dataItem.getResourceUtil().getUserLastModified();
-            String message = CmsVaadinUtils.getMessageText(
-                Messages.GUI_GALLERY_OPTIMIZE_LASTMODIFIED_BY_2,
-                lastModified,
-                lastModifiedBy);
-            Label label = new Label(message);
-            label.addStyleNames(ValoTheme.LABEL_LIGHT, ValoTheme.LABEL_TINY);
-            return label;
-        }
-
-        /**
-         * Creates a resource info box for an editable gallery image.<p>
-         *
-         * @return the resource info box
-         */
-        private CmsResourceInfo createResourceInfo() {
-
-            CmsResourceInfo resourceInfo = new CmsResourceInfo(m_dataItem.getResource());
-            resourceInfo.setTopLineText(m_dataItem.getName());
-            return resourceInfo;
         }
 
         /**
@@ -483,34 +790,30 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
             return CmsDateUtil.getDateTime(
                 new Date(date),
-                DateFormat.MEDIUM,
+                DateFormat.SHORT,
                 OpenCms.getWorkplaceManager().getWorkplaceLocale(getCms()));
         }
     }
 
     /**
-     * Class representing an image composite offering an image preview and a check box
-     * to mark an image as deleted.<p>
+     * Class representing an image composite offering an image preview.<p>
      */
     private class ImageComposite extends HorizontalLayout {
 
-        /** The default serial version UID. */
-        private static final long serialVersionUID = 1L;
-
-        /** Image scale parameters for preview images as used by the image scaler. */
-        private static final String SCALE_PARAMETERS = "t:2,w:" + IMAGE_WIDTH + ",h:" + IMAGE_HEIGHT;
-
-        /** Request query string to load a scaled preview image. */
-        private static final String SCALE_QUERY_STRING = "?__scale=" + SCALE_PARAMETERS;
+        /** The panel height. */
+        private static final String PANEL_HEIGHT = "176px";
 
         /** The panel width. */
         private static final String PANEL_WIDTH = "206px";
 
-        /** Reduced panel width. */
-        private static final String PANEL_WIDTH_2 = "166px";
+        /** Image scale parameters for preview images as used by the image scaler. */
+        private static final String SCALE_PARAMETERS = "t:1,c:ffffff,w:" + IMAGE_WIDTH + ",h:" + IMAGE_HEIGHT;
 
-        /** The panel height. */
-        private static final String PANEL_HEIGHT = "176px";
+        /** Request query string to load a scaled preview image. */
+        private static final String SCALE_QUERY_STRING = "?__scale=" + SCALE_PARAMETERS;
+
+        /** The default serial version UID. */
+        private static final long serialVersionUID = 1L;
 
         /** The data item of this image composite. */
         private DataItem m_dataItem;
@@ -527,22 +830,13 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
             m_dataItem = dataItem;
             setSizeUndefined();
+            setMargin(true);
             m_panel = new AbsoluteLayout();
             m_panel.setWidth(PANEL_WIDTH);
             m_panel.setHeight(PANEL_HEIGHT);
             m_panel.addStyleName("v-panel");
             m_panel.addComponent(createClickableVaadinImage(), "left: 2px; top: 2px;");
             addComponent(m_panel);
-            CssLayout cssLayout = new CssLayout();
-            cssLayout.setWidth(PANEL_WIDTH_2);
-            cssLayout.setHeight(PANEL_HEIGHT);
-            if (!m_dataItem.getIsUsed().booleanValue()) {
-                Label labelInUse = createLabelInUseInfo();
-                CheckBox fieldDeleteFlag = createFieldDeleteFlag();
-                cssLayout.addComponent(labelInUse);
-                cssLayout.addComponent(fieldDeleteFlag);
-            }
-            addComponent(cssLayout);
         }
 
         /**
@@ -561,31 +855,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             link.setTargetName("_blank");
             link.setStyleName("o-gallery-optimize-image-preview");
             return link;
-        }
-
-        /**
-         * Creates a check box to mark an image as deleted.<p>
-         *
-         * @return the check box
-         */
-        private CheckBox createFieldDeleteFlag() {
-
-            String caption = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_INPUT_DELETE_UNUSED_0);
-            CheckBox field = new CheckBox(caption);
-            field.setWidthFull();
-            m_dataItem.getBinder().bind(field, DataItem::getDeleteFlag, DataItem::setDeleteFlag);
-            return field;
-        }
-
-        /**
-         * Creates a label informing about whether this editable gallery image is used.<p>
-         *
-         * @return the label
-         */
-        private Label createLabelInUseInfo() {
-
-            String notInUse = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_LABEL_NOT_IN_USE_0);
-            return new Label(notInUse);
         }
 
         /**
@@ -618,20 +887,311 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /**
+     * Class representing a image delete composite with a check box to mark an image as deleted.<p>
+     */
+    private class ImageDeleteComposite extends VerticalLayout {
+
+        /** The default serial version UID. */
+        private static final long serialVersionUID = 1L;
+
+        /** The component width. */
+        private static final String WIDTH = "206px";
+
+        /** The data item of this image composite. */
+        private DataItem m_dataItem;
+
+        /**
+         * Creates a new image delete composite for a given data item.<p>
+         *
+         * @param dataItem the data item
+         */
+        public ImageDeleteComposite(DataItem dataItem) {
+
+            m_dataItem = dataItem;
+            setMargin(new MarginInfo(true, true, true, false));
+            setSpacing(false);
+            setWidth(WIDTH);
+            setHeightFull();
+            Label dimension = createDisplayDimension();
+            Label fileSize = createDisplayFileSize();
+            addComponent(dimension);
+            addComponent(fileSize);
+            if (!m_dataItem.getIsUsed().booleanValue()) {
+                CssLayout layout = new CssLayout();
+                Label labelInUse = createDisplayInUseInfo();
+                CheckBox fieldDeleteFlag = createFieldDeleteFlag();
+                layout.addComponent(labelInUse);
+                layout.addComponent(fieldDeleteFlag);
+                addComponent(layout);
+                setExpandRatio(layout, 1.0f);
+                setComponentAlignment(layout, Alignment.BOTTOM_LEFT);
+            } else {
+                setExpandRatio(fileSize, 1.0f);
+            }
+        }
+
+        /**
+         * Creates a component displaying the dimension of this editable gallery image.<p>
+         *
+         * @return the display component
+         */
+        private Label createDisplayDimension() {
+
+            return new Label(getFormattedDimension());
+        }
+
+        /**
+         * Creates a component displaying the size of this editable gallery image.<p>
+         *
+         * @return the display component
+         */
+        private Label createDisplayFileSize() {
+
+            return new Label(getFormattedFileSize());
+        }
+
+        /**
+         * Creates a component displaying whether this editable gallery image is used.<p>
+         *
+         * @return the display component
+         */
+        private Label createDisplayInUseInfo() {
+
+            String notInUse = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_LABEL_NOT_IN_USE_0);
+            return new Label(notInUse);
+        }
+
+        /**
+         * Creates a check box to mark an image as deleted.<p>
+         *
+         * @return the check box
+         */
+        private CheckBox createFieldDeleteFlag() {
+
+            String caption = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_INPUT_DELETE_UNUSED_0);
+            CheckBox field = new CheckBox(caption);
+            field.setCaptionAsHtml(true);
+            field.setWidthFull();
+            field.setEnabled(!CmsGalleryOptimizeDialog.this.isReadOnly());
+            m_dataItem.getBinder().bind(field, DataItem::getDeleteFlag, DataItem::setDeleteFlag);
+            return field;
+        }
+
+        /**
+         * Returns the dimension of this editable gallery image in a formatted way.<p>
+         *
+         * @return the formatted dimension
+         */
+        private String getFormattedDimension() {
+
+            String imageSize = null;
+            try {
+                imageSize = getCms().readPropertyObject(
+                    m_dataItem.getResource(),
+                    CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
+                    false).getValue();
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+            String dimension = "? x ?";
+            if (imageSize != null) {
+                String[] tokens = imageSize.split(",");
+                if ((tokens.length == 2) && (tokens[0].length() > 2) && (tokens[1].length() > 2)) {
+                    dimension = tokens[0].substring(2) + " x " + tokens[1].substring(2);
+                }
+            }
+            return dimension;
+        }
+
+        /**
+         * Returns the size of this editable gallery image in a formatted way.<p>
+         *
+         * @return the formatted file size
+         */
+        private String getFormattedFileSize() {
+
+            return (m_dataItem.getResource().getLength() / 1024) + " kb";
+        }
+    }
+
+    /**
+     * Page handler. Keeps track of the page currently selected by the user.
+     */
+    private class PageHandler {
+
+        /** The maximum number of items per page. */
+        public static final int LIMIT = 50;
+
+        /** The index of the page currently selected by the user. */
+        private int m_currentPage = 0;
+
+        /**
+         * Creates a new page handler.<p>
+         */
+        public PageHandler() {}
+
+        /**
+         * Returns the maximum number of items per page.<p>
+         *
+         * @return the maximum number of items per page
+         */
+        public int getLimit() {
+
+            return LIMIT;
+        }
+
+        /**
+         * Returns the number of the first item on the page currently selected.
+         * The first item on the first page has number 1.<p>
+         *
+         * @return the number of the first item currently selected
+         */
+        public int getNumFirstItem() {
+
+            return (LIMIT * m_currentPage) + 1;
+        }
+
+        /**
+         * Returns the number of the last item on the page currently selected.
+         * The number of the last item on the last page is equal to the total number of items.
+         *
+         * @return the number of the last item currently selected
+         */
+        public int getNumLastItem() {
+
+            int lastItem = ((LIMIT * m_currentPage) + LIMIT);
+            if (lastItem > getSizeItem()) {
+                lastItem = getSizeItem();
+            }
+            return lastItem;
+        }
+
+        /**
+         * Returns the index of the first item on the page currently selected.
+         * The index of the first item on the first page is 0.<p>
+         *
+         * @return the index of the first item ob the page currently selected
+         */
+        public int getOffset() {
+
+            return LIMIT * m_currentPage;
+        }
+
+        /**
+         * Returns the total number of items.<p>
+         *
+         * @return the total number of items
+         */
+        @SuppressWarnings("synthetic-access")
+        public int getSizeItem() {
+
+            return m_provider.getItems().size();
+        }
+
+        /**
+         * Returns whether the current data list has pages.
+         *
+         * @return whether has pages
+         */
+        public boolean hasPages() {
+
+            return getSizeItem() > LIMIT;
+        }
+
+        /**
+         * Sets the current page index to a given value.
+         * The index of the first page is 0.<p>
+         *
+         * @param index the page index to set
+         */
+        public void setCurrentPage(int index) {
+
+            m_currentPage = index;
+        }
+    }
+
+    /**
+     * Class representing a data provider for sorting and paging the in-memory data list.
+     */
+    private class Provider extends ListDataProvider<DataItem> {
+
+        /** The default serial version UID. */
+        private static final long serialVersionUID = 1L;
+
+        /** Comparator. */
+        final SerializableComparator<DataItem> SORT_DATE_ASCENDING = Comparator.comparing(
+            DataItem::getDateLastModified)::compare;
+
+        /** Comparator. */
+        final SerializableComparator<DataItem> SORT_DATE_DESCENDING = Comparator.comparing(
+            DataItem::getDateLastModified).reversed()::compare;
+
+        /** Comparator. */
+        final SerializableComparator<DataItem> SORT_PATH_ASCENDING = Comparator.comparing(
+            DataItem::getPath,
+            String.CASE_INSENSITIVE_ORDER)::compare;
+
+        /** Comparator. */
+        final SerializableComparator<DataItem> SORT_PATH_DESCENDING = Comparator.comparing(
+            DataItem::getPath,
+            String.CASE_INSENSITIVE_ORDER).reversed()::compare;
+
+        /** Comparator. */
+        final SerializableComparator<DataItem> SORT_TITLE_ASCENDING = Comparator.comparing(
+            DataItem::getTitle,
+            String.CASE_INSENSITIVE_ORDER)::compare;
+
+        /** Comparator. */
+        final SerializableComparator<DataItem> SORT_TITLE_DESCENDING = Comparator.comparing(
+            DataItem::getTitle,
+            String.CASE_INSENSITIVE_ORDER).reversed()::compare;
+
+        /** Comparator. */
+        final SerializableComparator<DataItem> SORT_UNUSED_FIRST = Comparator.comparing(DataItem::getIsUsed)::compare;
+
+        /**
+         * Create a new provider for a given data item list.
+         *
+         * @param dataItemList the data item list
+         */
+        public Provider(List<DataItem> dataItemList) {
+
+            super(dataItemList);
+        }
+
+        /**
+         * Fetches one page of the sorted in-memory data item list.<p>
+         *
+         * @param pageHandler the page handler containing offset and limit information
+         * @return the sorted data item page
+         */
+        public List<DataItem> fetch(PageHandler pageHandler) {
+
+            Query<DataItem, SerializablePredicate<DataItem>> query = new Query<DataItem, SerializablePredicate<DataItem>>(
+                pageHandler.getOffset(),
+                pageHandler.getLimit(),
+                Collections.emptyList(),
+                getSortComparator(),
+                null);
+            return super.fetch(query).collect(Collectors.toList());
+        }
+
+        /**
+         * @see com.vaadin.data.provider.ListDataProvider#getItems()
+         */
+        @Override
+        public List<DataItem> getItems() {
+
+            return (List<DataItem>)super.getItems();
+        }
+    }
+
+    /**
      * Utility class to handle dialog save actions. Keeps track of the changes the
      * user has made since opening the dialog on the one hand and the changes since
      * the last save action on the other.
      */
     private class SaveHandler {
-
-        /** Data items marked deleted since opening the dialog. */
-        Set<DataItem> m_deleted = new HashSet<DataItem>();
-
-        /** Data items marked deleted since the last save action. */
-        Set<DataItem> m_deletedCurrent = new HashSet<DataItem>();
-
-        /** Resources deleted since the last save action. */
-        Set<CmsResource> m_deletedCurrentResource = new HashSet<CmsResource>();
 
         /** Data items modified or marked deleted since opening the dialog. */
         Set<DataItem> m_changed = new HashSet<DataItem>();
@@ -645,6 +1205,15 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         /** Resource IDs modified or marked as deleted since the last save action. */
         Set<CmsUUID> m_changedIdsCurrent = new HashSet<CmsUUID>();
 
+        /** Data items marked deleted since opening the dialog. */
+        Set<DataItem> m_deleted = new HashSet<DataItem>();
+
+        /** Data items marked deleted since the last save action. */
+        Set<DataItem> m_deletedCurrent = new HashSet<DataItem>();
+
+        /** Resources deleted since the last save action. */
+        Set<CmsResource> m_deletedCurrentResource = new HashSet<CmsResource>();
+
         /** Whether the user has cancelled the last save action. */
         boolean m_flagCancelSave = false;
 
@@ -654,17 +1223,13 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         public SaveHandler() {}
 
         /**
-         * Secures and resets the current changes.
+         * Marks the last save action as cancelled.<p>
+         *
+         * @param flagCancelSave Whether to mark as cancelled
          */
-        private void flush() {
+        public void setFlagCancelSave(boolean flagCancelSave) {
 
-            m_deleted.addAll(m_deletedCurrent);
-            m_changed.addAll(m_changedCurrent);
-            m_changedIds.addAll(m_changedIdsCurrent);
-            m_deletedCurrent.clear();
-            m_changedCurrent.clear();
-            m_changedIdsCurrent.clear();
-            m_deletedCurrentResource.clear();
+            m_flagCancelSave = flagCancelSave;
         }
 
         /**
@@ -736,7 +1301,11 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                         if (dataItem.getDeleteFlag().booleanValue()) {
                             m_deletedCurrent.add(dataItem);
                             m_deletedCurrentResource.add(dataItem.getResource());
-                        }
+                        } else if ((dataItem.getDeleteFlag().booleanValue() == false)
+                            && m_deletedCurrent.contains(dataItem)) {
+                                m_deletedCurrent.remove(dataItem);
+                                m_deletedCurrentResource.remove(dataItem.getResource());
+                            }
                     } catch (ValidationException e) {
                         LOG.warn(e.getLocalizedMessage(), e);
                     }
@@ -745,30 +1314,34 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Marks the last save action as cancelled.<p>
-         *
-         * @param flagCancelSave Whether to mark as cancelled
+         * Secures and resets the current changes.
          */
-        public void setFlagCancelSave(boolean flagCancelSave) {
+        private void flush() {
 
-            m_flagCancelSave = flagCancelSave;
+            m_deleted.addAll(m_deletedCurrent);
+            m_changed.addAll(m_changedCurrent);
+            m_changedIds.addAll(m_changedIdsCurrent);
+            m_deletedCurrent.clear();
+            m_changedCurrent.clear();
+            m_changedIdsCurrent.clear();
+            m_deletedCurrentResource.clear();
         }
     }
-
-    /** Logger instance for this class. */
-    static final Log LOG = CmsLog.getLog(CmsGalleryOptimizeDialog.class);
 
     /** The sort order session attribute. */
     static final String GALLERY_OPTIMIZE_ATTR_SORT_ORDER = "GALLERY_OPTIMIZE_ATTR_SORT_ORDER";
 
-    /** The default serial version UID. */
-    private static final long serialVersionUID = 1L;
+    /** Logger instance for this class. */
+    static final Log LOG = CmsLog.getLog(CmsGalleryOptimizeDialog.class);
+
+    /** The height of the preview images. */
+    private static final String IMAGE_HEIGHT = "170";
 
     /** The width of the preview images. */
     private static final String IMAGE_WIDTH = "200";
 
-    /** The height of the preview images. */
-    private static final String IMAGE_HEIGHT = "170";
+    /** The default serial version UID. */
+    private static final long serialVersionUID = 1L;
 
     /** The save button. */
     private Button m_buttonSave;
@@ -779,14 +1352,14 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     /** The dialog context. */
     private I_CmsDialogContext m_context;
 
-    /** The list of editable gallery images. */
-    private List<DataItem> m_dataList;
+    /** The UI composite representing the gallery image list header view. */
+    private Object m_compositeDataListHeader;
 
     /** The UI component representing the gallery image list header view. */
     private VerticalLayout m_dataListHeaderView;
 
     /** The UI component representing the gallery image list view. */
-    private VerticalLayout m_dataListView;
+    private GridLayout m_dataListView;
 
     /** The lock action record for the gallery image folder. */
     private CmsLockActionRecord m_lockActionRecord;
@@ -812,6 +1385,12 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     /** Localized message. */
     private String m_messageSortUnusedFirst;
 
+    /** The page handler. */
+    private PageHandler m_pageHandler = new PageHandler();
+
+    /** The data provider. */
+    private Provider m_provider;
+
     /** The save handler. */
     private SaveHandler m_saveHandler = new SaveHandler();
 
@@ -834,173 +1413,24 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /**
-     * Whether one of the editable gallery images has been modified by the user.<p>
+     * Returns the CMS object of this dialog.<p>
      *
-     * @return Whether has changes
+     * @return the CMS object
      */
-    private boolean dataListHasChanges() {
+    public CmsObject getCms() {
 
-        boolean hasChanges = false;
-        for (DataItem dataItem : m_dataList) {
-            if (dataItem.getBinder().hasChanges()) {
-                hasChanges = true;
-            }
-        }
-        return hasChanges;
+        return m_context.getCms();
     }
 
     /**
-     * Loads the gallery image list.<p>
-     */
-    private void dataListLoad() {
-
-        m_dataList = new ArrayList<DataItem>();
-        CmsResource root = m_context.getResources().get(0);
-        CmsObject cms = A_CmsUI.getCmsObject();
-        try {
-            m_context.getResources().get(0);
-            CmsResourceFilter resourceFilter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(
-                new CmsResourceTypeImage());
-            List<CmsResource> resources = cms.readResources(cms.getSitePath(root), resourceFilter);
-            for (CmsResource resource : resources) {
-                DataItem dataItem = new DataItem(resource);
-                m_dataList.add(dataItem);
-            }
-        } catch (CmsException exception) {
-            m_context.error(exception);
-        }
-    }
-
-    /**
-     * Displays the UI component representing the dialog header view.<p>
-     */
-    private void displayDataListHeaderView() {
-
-        m_dataListHeaderView.setHeightUndefined();
-        m_dataListHeaderView.setWidthFull();
-        m_dataListHeaderView.setMargin(false);
-        HorizontalLayout horizontalLayout = new HorizontalLayout();
-        horizontalLayout.setHeightUndefined();
-        horizontalLayout.setWidthFull();
-        NativeSelect<String> selectSort = new NativeSelect<String>();
-        selectSort.setEmptySelectionCaption(m_messageSortTitleAscending);
-        selectSort.setItems(
-            m_messageSortTitleDescending,
-            m_messageSortDateLastModifiedAscending,
-            m_messageSortDateLastModifiedDescending,
-            m_messageSortPathAscending,
-            m_messageSortPathDescending,
-            m_messageSortUnusedFirst);
-        selectSort.addValueChangeListener(event -> {
-            if (event.isUserOriginated()) {
-                displayDataListViewSorted(event.getValue());
-            }
-        });
-        selectSort.setValue(getSessionSortOrder());
-        horizontalLayout.addComponent(selectSort);
-        try {
-            CmsResource resource = m_context.getResources().get(0);
-            List<CmsRelation> relations = getCms().getRelationsForResource(resource, CmsRelationFilter.SOURCES);
-            if ((relations != null) && !relations.isEmpty()) {
-                HorizontalLayout layout = new HorizontalLayout();
-                layout.setWidthFull();
-                layout.addStyleNames("v-panel", "o-error-dialog");
-                Label icon = new Label();
-                icon.setContentMode(ContentMode.HTML);
-                icon.setValue(FontOpenCms.WARNING.getHtml());
-                icon.setWidthUndefined();
-                icon.setStyleName("o-warning-icon");
-                String galleryTitle = getCms().readPropertyObject(
-                    resource,
-                    CmsPropertyDefinition.PROPERTY_TITLE,
-                    false).getValue();
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(galleryTitle)) {
-                    galleryTitle = resource.getName();
-                }
-                Label message = new Label(
-                    CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_DIRECTLY_USED_1, galleryTitle));
-                message.setWidthUndefined();
-                message.setContentMode(ContentMode.HTML);
-                layout.addComponent(icon);
-                layout.addComponent(message);
-                layout.setExpandRatio(message, 1.0f);
-                layout.setComponentAlignment(message, Alignment.MIDDLE_LEFT);
-                m_dataListHeaderView.addComponent(layout);
-            }
-        } catch (CmsException e) {
-            //no-op
-        }
-        m_dataListHeaderView.addComponent(horizontalLayout);
-    }
-
-    /**
-     * Displays the UI component representing the gallery image list view.<p>
-     */
-    private void displayDataListView() {
-
-        m_dataListView.setHeightUndefined();
-        m_dataListView.setWidthFull();
-        m_dataListView.setMargin(false);
-        m_dataListView.setSpacing(false);
-        m_dataListView.removeAllComponents();
-        for (int i = 0; i < m_dataList.size(); i++) {
-            DataItem dataItem = m_dataList.get(i);
-            dataItem.getComponent().removeStyleName("o-gallery-optimize-row-odd");
-            if ((i % 2) > 0) {
-                dataItem.getComponent().setStyleName("o-gallery-optimize-row-odd");
-            }
-            m_dataListView.addComponent(dataItem.getComponent());
-        }
-    }
-
-    /**
-     * Sorts the gallery image list according to a given sort order and re-renders the
-     * gallery image list view.
+     * Whether this dialog was opened from a read-only context.
      *
-     * @param sortOrder the sort order
+     * @see com.vaadin.ui.AbstractComponent#isReadOnly()
      */
-    private void displayDataListViewSorted(String sortOrder) {
+    @Override
+    protected boolean isReadOnly() {
 
-        Comparator<DataItem> titleAscending = Comparator.comparing(
-            DataItem::getTitle,
-            Comparator.nullsLast(Comparator.naturalOrder()));
-        Comparator<DataItem> titleDescending = Comparator.comparing(
-            DataItem::getTitle,
-            Comparator.nullsFirst(Comparator.naturalOrder())).reversed();
-        Comparator<DataItem> dateAscending = Comparator.comparing(
-            DataItem::getDateLastModified,
-            Comparator.nullsLast(Comparator.naturalOrder()));
-        Comparator<DataItem> dateDescending = Comparator.comparing(
-            DataItem::getDateLastModified,
-            Comparator.nullsFirst(Comparator.naturalOrder())).reversed();
-        Comparator<DataItem> pathAscending = Comparator.comparing(
-            DataItem::getPath,
-            Comparator.nullsLast(Comparator.naturalOrder()));
-        Comparator<DataItem> pathDescending = Comparator.comparing(
-            DataItem::getPath,
-            Comparator.nullsFirst(Comparator.naturalOrder())).reversed();
-        Comparator<DataItem> unusedFirst = Comparator.comparing(
-            DataItem::getIsUsed,
-            Comparator.nullsLast(Comparator.naturalOrder()));
-        if ((sortOrder == null) || (sortOrder == m_messageSortTitleAscending)) {
-            m_dataList.sort(titleAscending);
-        } else if (sortOrder == m_messageSortTitleDescending) {
-            m_dataList.sort(titleDescending);
-        } else if (sortOrder == m_messageSortDateLastModifiedAscending) {
-            m_dataList.sort(dateAscending);
-        } else if (sortOrder == m_messageSortDateLastModifiedDescending) {
-            m_dataList.sort(dateDescending);
-        } else if (sortOrder == m_messageSortPathAscending) {
-            m_dataList.sort(pathAscending);
-        } else if (sortOrder == m_messageSortPathDescending) {
-            m_dataList.sort(pathDescending);
-        } else if (sortOrder == m_messageSortUnusedFirst) {
-            m_dataList.sort(unusedFirst);
-        } else {
-            m_dataList.sort(titleAscending);
-        }
-        setSessionSortOrder(sortOrder);
-        displayDataListView();
+        return m_context.getCms().getRequestContext().getCurrentProject().isOnlineProject();
     }
 
     /**
@@ -1014,28 +1444,29 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /**
-     * Returns the CMS object of this dialog.<p>
+     * Refreshes the UI state after a list of data items has been successfully deleted.<p>
      *
-     * @return the CMS object
+     * @param dataItemList the list of deleted data items
      */
-    public CmsObject getCms() {
+    void handleDataItemDelete(List<DataItem> dataItemList) {
 
-        return m_context.getCms();
+        m_provider.getItems().removeAll(dataItemList);
+        ((DataListHeaderComposite)m_compositeDataListHeader).refresh();
     }
 
     /**
-     * Returns the current sort order saved in the user session with lazy initialization.<p>
+     * Refreshes the UI state after a list of data items has been successfully updated.<p>
      *
-     * @return the sort order
+     * @param dataItemList the list of updated data items
+     * @throws CmsException thrown if reading a persisted CMS resource fails
      */
-    private String getSessionSortOrder() {
+    void handleDataItemUpdate(List<DataItem> dataItemList) throws CmsException {
 
-        WrappedSession wrappedSession = VaadinService.getCurrentRequest().getWrappedSession();
-        String currentSortOrder = (String)wrappedSession.getAttribute(GALLERY_OPTIMIZE_ATTR_SORT_ORDER);
-        if (currentSortOrder == null) {
-            wrappedSession.setAttribute(GALLERY_OPTIMIZE_ATTR_SORT_ORDER, m_messageSortPathAscending);
+        for (DataItem dataItem : dataItemList) {
+            CmsResource reload = getCms().readResource(dataItem.getResource().getStructureId());
+            dataItem.setResource(reload);
         }
-        return (String)wrappedSession.getAttribute(GALLERY_OPTIMIZE_ATTR_SORT_ORDER);
+        displayDataListView(false);
     }
 
     /**
@@ -1078,12 +1509,14 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /**
-     * Event handler that saves all changes. If there are data items marked as deleted
-     * the user is asked for confirmation beforehand.
+     * Event handler that saves all changes and optionally closes the dialog. If there are data items
+     * marked as deleted the user is asked for confirmation beforehand.
+     *
+     * @param exit whether to exit the dialog
      */
-    void handleDialogSave() {
+    void handleDialogSave(boolean exit) {
 
-        m_saveHandler.save(m_dataList);
+        m_saveHandler.save(m_provider.getItems());
         if (m_saveHandler.hasDeletedCurrent()) {
             String title = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_CONFIRM_DELETE_TITLE_0);
             String message = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_CONFIRM_DELETE_0);
@@ -1095,6 +1528,9 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
                     saveAndDelete();
                     m_saveHandler.setFlagCancelSave(false);
+                    if (exit) {
+                        finishDialog(m_saveHandler.getChangedIds());
+                    }
                 }
             }, new Runnable() {
 
@@ -1106,23 +1542,242 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                 }
 
             });
-            String caption = CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_SELECTED_0);
-            Panel resourceListPanel = confirmationDialog.createResourceListPanel(
-                caption,
-                m_saveHandler.getDeletedCurrentResource());
-            confirmationDialog.addMainPanelComponent(resourceListPanel);
+            confirmationDialog.displayResourceInfo(
+                m_saveHandler.getDeletedCurrentResource(),
+                org.opencms.ui.Messages.GUI_SELECTED_0);
         } else {
             saveAndDelete();
+            if (exit) {
+                finishDialog(m_saveHandler.getChangedIds());
+            }
         }
     }
 
     /**
-     * Same as {@link #handleDialogSave()} and additionally closes the dialog.<p>
+     * For a given gallery folder resource, creates a panel with information whether
+     * this gallery is in use.<p>
+     *
+     * @return the gallery in use panel
+     * @throws CmsException the CMS exception
      */
-    void handleDialogSaveAndExit() {
+    private HorizontalLayout createDisplayGalleryInUse() throws CmsException {
 
-        handleDialogSave();
-        finishDialog(m_saveHandler.getChangedIds());
+        CmsResource resource = m_context.getResources().get(0);
+        HorizontalLayout layout1 = new HorizontalLayout();
+        layout1.setWidthFull();
+        layout1.addStyleNames("v-panel", "o-error-dialog", "o-gallery-in-use");
+        HorizontalLayout layout2 = new HorizontalLayout();
+        layout2.setWidthUndefined();
+        Label icon = new Label(FontOpenCms.WARNING.getHtml());
+        icon.setContentMode(ContentMode.HTML);
+        icon.setWidthUndefined();
+        icon.setStyleName("o-warning-icon");
+        String galleryTitle = getGalleryTitle(resource);
+        Label message = new Label(CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_DIRECTLY_USED_1, galleryTitle));
+        message.setContentMode(ContentMode.HTML);
+        message.setWidthUndefined();
+        layout2.addComponent(icon);
+        layout2.addComponent(message);
+        layout2.setComponentAlignment(message, Alignment.MIDDLE_LEFT);
+        layout1.addComponent(layout2);
+        layout1.setComponentAlignment(layout2, Alignment.MIDDLE_CENTER);
+        return layout1;
+    }
+
+    /**
+     * Creates a component showing a warning if this dialog was opened from the online project context.<p>
+     *
+     * @return the component
+     */
+    private HorizontalLayout createDisplayInOnlineProject() {
+
+        HorizontalLayout layout = new HorizontalLayout();
+        layout.setWidthFull();
+        layout.addStyleNames("v-panel", "o-error-dialog");
+        Label icon = new Label(FontOpenCms.WARNING.getHtml());
+        icon.setContentMode(ContentMode.HTML);
+        icon.setWidthUndefined();
+        icon.setStyleName("o-warning-icon");
+        Label message = new Label(
+            CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_LABEL_IN_ONLINE_PROJECT_0));
+        message.setContentMode(ContentMode.HTML);
+        message.setWidthUndefined();
+        layout.addComponent(icon);
+        layout.addComponent(message);
+        layout.setComponentAlignment(message, Alignment.MIDDLE_LEFT);
+        layout.setExpandRatio(message, 1.0f);
+        return layout;
+    }
+
+    /**
+     * Whether one of the editable gallery images has been modified by the user.<p>
+     *
+     * @return whether has changes
+     */
+    private boolean dataListHasChanges() {
+
+        boolean hasChanges = false;
+        for (DataItem dataItem : m_provider.getItems()) {
+            if (dataItem.getBinder().hasChanges()) {
+                hasChanges = true;
+            }
+        }
+        return hasChanges;
+    }
+
+    /**
+     * Loads the gallery image list.<p>
+     */
+    private void dataListLoad() {
+
+        List<DataItem> dataList = new ArrayList<DataItem>();
+        CmsResource root = m_context.getResources().get(0);
+        CmsObject cms = A_CmsUI.getCmsObject();
+        try {
+            m_context.getResources().get(0);
+            CmsResourceFilter resourceFilter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(
+                new CmsResourceTypeImage());
+            List<CmsResource> resources = cms.readResources(cms.getSitePath(root), resourceFilter);
+            for (CmsResource resource : resources) {
+                DataItem dataItem = new DataItem(resource);
+                dataList.add(dataItem);
+            }
+        } catch (CmsException exception) {
+            m_context.error(exception);
+        }
+        m_provider = new Provider(dataList);
+    }
+
+    /**
+     * Displays the UI component representing the dialog header view.<p>
+     */
+    private void displayDataListHeaderView() {
+
+        m_dataListHeaderView.setHeightUndefined();
+        m_dataListHeaderView.setWidthFull();
+        m_dataListHeaderView.setMargin(false);
+        if (isReadOnly()) {
+            m_dataListHeaderView.addComponent(createDisplayInOnlineProject());
+        } else {
+            try {
+                CmsResource resource = m_context.getResources().get(0);
+                List<CmsRelation> relations = getCms().getRelationsForResource(resource, CmsRelationFilter.SOURCES);
+                if ((relations != null) && !relations.isEmpty()) {
+                    m_dataListHeaderView.addComponent(createDisplayGalleryInUse());
+                }
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+        }
+        m_compositeDataListHeader = new DataListHeaderComposite();
+        m_dataListHeaderView.addComponent((Component)m_compositeDataListHeader);
+    }
+
+    /**
+     * Displays the UI component representing the scrollable gallery image list.<p>
+     *
+     * @param scrollToTop whether to scroll to top after displaying gallery image list
+     */
+    private void displayDataListView(boolean scrollToTop) {
+
+        m_dataListView.setHeightUndefined();
+        m_dataListView.setWidthFull();
+        m_dataListView.setMargin(false);
+        m_dataListView.setSpacing(false);
+        m_dataListView.removeAllComponents();
+        List<DataItem> dataItemList = m_provider.fetch(m_pageHandler);
+        m_dataListView.setColumns(3);
+        m_dataListView.setRows(dataItemList.size() + 1);
+        m_dataListView.setColumnExpandRatio(2, 1.0f);
+        int i = 1;
+        Label dummy = new Label(" ");
+        dummy.setId("scrollToTop");
+        dummy.setHeight("0px");
+        m_dataListView.addComponent(dummy, 0, 0);
+        for (DataItem dataItem : dataItemList) {
+            dataItem.getCompositeImage().removeStyleName("o-gallery-optimize-row-odd");
+            dataItem.getCompositeImageDelete().removeStyleName("o-gallery-optimize-row-odd");
+            dataItem.getCompositeForm().removeStyleName("o-gallery-optimize-row-odd");
+            if ((i % 2) == 0) {
+                dataItem.getCompositeImage().addStyleName("o-gallery-optimize-row-odd");
+                dataItem.getCompositeImageDelete().addStyleName("o-gallery-optimize-row-odd");
+                dataItem.getCompositeForm().addStyleName("o-gallery-optimize-row-odd");
+            }
+            m_dataListView.addComponent(dataItem.getCompositeImage(), 0, i);
+            m_dataListView.addComponent(dataItem.getCompositeImageDelete(), 1, i);
+            m_dataListView.addComponent(dataItem.getCompositeForm(), 2, i);
+            i++;
+        }
+        if (scrollToTop) {
+            A_CmsUI.get().getPage().getJavaScript().execute(
+                "document.getElementById('scrollToTop').scrollIntoView(true);");
+        }
+    }
+
+    /**
+     * Sorts the gallery image list according to a given sort order and re-renders the
+     * gallery image list view.
+     *
+     * @param sortOrder the sort order
+     */
+    private void displayDataListViewSorted(String sortOrder) {
+
+        SerializableComparator<DataItem> defaultSortOrder = m_provider.SORT_PATH_ASCENDING;
+        if (sortOrder == null) {
+            m_provider.setSortComparator(m_provider.SORT_TITLE_ASCENDING);
+        } else if (sortOrder == m_messageSortTitleAscending) {
+            m_provider.setSortComparator(m_provider.SORT_TITLE_ASCENDING);
+        } else if (sortOrder == m_messageSortTitleDescending) {
+            m_provider.setSortComparator(m_provider.SORT_TITLE_DESCENDING);
+        } else if (sortOrder == m_messageSortDateLastModifiedAscending) {
+            m_provider.setSortComparator(m_provider.SORT_DATE_ASCENDING);
+        } else if (sortOrder == m_messageSortDateLastModifiedDescending) {
+            m_provider.setSortComparator(m_provider.SORT_DATE_DESCENDING);
+        } else if (sortOrder == m_messageSortPathAscending) {
+            m_provider.setSortComparator(m_provider.SORT_PATH_ASCENDING);
+        } else if (sortOrder == m_messageSortPathDescending) {
+            m_provider.setSortComparator(m_provider.SORT_PATH_DESCENDING);
+        } else if (sortOrder == m_messageSortUnusedFirst) {
+            m_provider.setSortComparator(m_provider.SORT_UNUSED_FIRST);
+        } else {
+            m_provider.setSortComparator(defaultSortOrder);
+        }
+        setSessionSortOrder(sortOrder);
+        displayDataListView(true);
+    }
+
+    /**
+     * Returns the gallery title for a given gallery folder resource.<p>
+     *
+     * @param resource the gallery folder resource
+     * @return the title
+     * @throws CmsException the CMS exception
+     */
+    private String getGalleryTitle(CmsResource resource) throws CmsException {
+
+        String galleryTitle = getCms().readPropertyObject(
+            resource,
+            CmsPropertyDefinition.PROPERTY_TITLE,
+            false).getValue();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(galleryTitle)) {
+            galleryTitle = resource.getName();
+        }
+        return galleryTitle;
+    }
+
+    /**
+     * Returns the current sort order saved in the user session with lazy initialization.<p>
+     *
+     * @return the sort order
+     */
+    private String getSessionSortOrder() {
+
+        WrappedSession wrappedSession = VaadinService.getCurrentRequest().getWrappedSession();
+        String currentSortOrder = (String)wrappedSession.getAttribute(GALLERY_OPTIMIZE_ATTR_SORT_ORDER);
+        if (currentSortOrder == null) {
+            wrappedSession.setAttribute(GALLERY_OPTIMIZE_ATTR_SORT_ORDER, m_messageSortPathAscending);
+        }
+        return (String)wrappedSession.getAttribute(GALLERY_OPTIMIZE_ATTR_SORT_ORDER);
     }
 
     /**
@@ -1137,6 +1792,8 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             CmsGalleryOptimizeDialog.this.handleDialogCancel();
         });
         addButton(buttonCancel, false);
+        m_buttonSave.setEnabled(!isReadOnly());
+        m_buttonSaveAndExit.setEnabled(!isReadOnly());
     }
 
     /**
@@ -1145,10 +1802,10 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     private void initEvents() {
 
         m_buttonSave.addClickListener(event -> {
-            CmsGalleryOptimizeDialog.this.handleDialogSave();
+            CmsGalleryOptimizeDialog.this.handleDialogSave(false);
         });
         m_buttonSaveAndExit.addClickListener(event -> {
-            CmsGalleryOptimizeDialog.this.handleDialogSaveAndExit();
+            CmsGalleryOptimizeDialog.this.handleDialogSave(true);
         });
         setActionHandler(new CmsOkCancelActionHandler() {
 
@@ -1163,7 +1820,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             @Override
             protected void ok() {
 
-                CmsGalleryOptimizeDialog.this.handleDialogSaveAndExit();
+                CmsGalleryOptimizeDialog.this.handleDialogSave(true);
             }
         });
         addAttachListener(event -> {
@@ -1224,37 +1881,73 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                 + "px;\n"
                 + "}");
         styles.add(
-            ".o-gallery-optimize-row .v-formlayout-contentcell, .o-gallery-optimize-row .v-formlayout-captioncell {"
+            ".o-gallery-formlayout .v-formlayout-contentcell, .o-gallery-formlayout .v-formlayout-captioncell {"
                 + " padding-top: 4px;\n"
                 + " }");
+        styles.add(".o-gallery-composite-form { padding: 8px; }");
+        styles.add(
+            "div.v-horizontallayout-o-gallery-in-use {\n"
+                + " color: white !important;\n"
+                + " background-color: #b31b34 !important;\n"
+                + " background-image: linear-gradient(to bottom,#b31b34 0%, #b31b34 100%) !important;\n"
+                + "}");
     }
 
     /**
-     * Persists all data changes that have not been saved yet.
+     * Persists all data changes that have not been saved yet. Refreshes the UI.
+     * Informs the user about failed updates and failed deletes.
      */
     private void saveAndDelete() {
 
+        StringBuilder errorMessageList = new StringBuilder();
+        List<DataItem> saved = new ArrayList<DataItem>();
         for (DataItem dataItem : m_saveHandler.getChangedCurrent()) {
-            CmsResource resource = dataItem.getResource();
-            try {
-                getCms().writePropertyObjects(resource, dataItem.getPropertyList());
-                getCms().writeResource(resource);
-            } catch (CmsException e) {
-                LOG.warn(e.getLocalizedMessage(), e);
+            if (dataItem.hasChanges()) {
+                CmsResource resource = dataItem.getResource();
+                try {
+                    getCms().writePropertyObjects(resource, dataItem.getPropertyList());
+                    getCms().writeResource(resource);
+                    saved.add(dataItem);
+                } catch (CmsException e) {
+                    errorMessageList.append("<div>" + e.getLocalizedMessage() + "</div>");
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
             }
-
         }
+        try {
+            handleDataItemUpdate(saved);
+        } catch (CmsException e) {
+            errorMessageList.append("<div>" + e.getLocalizedMessage() + "</div>");
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+        List<DataItem> deleted = new ArrayList<DataItem>();
         for (DataItem dataItem : m_saveHandler.getDeletedCurrent()) {
             CmsResource resource = dataItem.getResource();
             try {
                 getCms().deleteResource(getCms().getSitePath(resource), CmsResource.DELETE_PRESERVE_SIBLINGS);
-                m_dataList.remove(dataItem);
+                deleted.add(dataItem);
             } catch (CmsException e) {
+                errorMessageList.append("<div>" + e.getLocalizedMessage() + "</div>");
                 LOG.warn(e.getLocalizedMessage(), e);
             }
         }
+        handleDataItemDelete(deleted);
         if (m_saveHandler.hasDeletedCurrent()) {
-            displayDataListView();
+            displayDataListView(true);
+        }
+        if (errorMessageList.length() == 0) {
+            String message = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_LABEL_SUCCESSFULLY_SAVED_0);
+            Notification notification = new Notification(message, "", Notification.Type.HUMANIZED_MESSAGE);
+            notification.setPosition(Position.TOP_CENTER);
+            notification.show(Page.getCurrent());
+        } else {
+            Notification notification = new Notification(
+                "",
+                errorMessageList.toString(),
+                Notification.Type.ERROR_MESSAGE);
+            notification.setHtmlContentAllowed(true);
+            notification.setPosition(Position.TOP_CENTER);
+            notification.show(Page.getCurrent());
         }
     }
 
