@@ -65,9 +65,13 @@ echo "Reading command line arguments ..."
 #read commandline arguments
 while [ "$1" != "" ]; do
 	case $1 in
-		-m | --modules )       	shift
+		-m | --modules )		shift
 								modulesToExport=$1
 								echo " * Read modules to export: \"$modulesToExport\"."
+								;;
+		-mo )					shift
+								modulesExportVar=$1
+								echo " * Read modules to export from variable \"$modulesExportVar\"."
 								;;
 		--no-exclude-libs )		excludeLibs=0;
 								echo " * Read no-exclude-libs option."
@@ -91,7 +95,7 @@ while [ "$1" != "" ]; do
 		--no-copy-and-unzip )   copyAndUnzip=0
 								echo " * Read no-copy-and-unzip option."
 								;;
-		* )             		configfile=$1
+		* ) 				 	configfile=$1
 								echo " * Read config file: \"$configfile\"."
 	esac
 	shift
@@ -107,6 +111,10 @@ fi
 source $configfile
 echo " * Read file \"$configfile\":"
 cat $configfile | awk '$0="   * "$0'
+
+if [[ ! -z "$modulesExportVar" ]]; then
+	MODULES_TO_EXPORT=${!modulesExportVar}
+fi
 
 # see http://wiki.bash-hackers.org/syntax/pe#use_a_default_value
 MODULES_TO_EXPORT=${MODULES_TO_EXPORT:-$DEFAULT_MODULES_TO_EXPORT}
