@@ -62,6 +62,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
@@ -90,6 +91,7 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.ItemCaptionGenerator;
+import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.NativeSelect;
@@ -835,7 +837,9 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             m_panel.setWidth(PANEL_WIDTH);
             m_panel.setHeight(PANEL_HEIGHT);
             m_panel.addStyleName("v-panel");
-            m_panel.addComponent(createClickableVaadinImage(), "left: 2px; top: 2px;");
+            Link link = createClickableImage();
+            optimizeForSvg(link);
+            m_panel.addComponent(link, "left: 2px; top: 2px;");
             addComponent(m_panel);
         }
 
@@ -844,11 +848,12 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
          *
          * @return the clickable Vaadin image
          */
-        private Link createClickableVaadinImage() {
+        private Link createClickableImage() {
 
             CmsResource resource = m_dataItem.getResource();
             ExternalResource externalResource = new ExternalResource(getScaleUri(resource));
             Link link = new Link(null, new ExternalResource(getPermanentUri(resource)));
+            link.setId("image_" + UUID.randomUUID());
             link.setWidth(PANEL_WIDTH);
             link.setHeight(PANEL_HEIGHT);
             link.setIcon(externalResource);
@@ -883,6 +888,25 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
             String paramTimestamp = "&timestamp=" + System.currentTimeMillis();
             return getPermanentUri(resource) + SCALE_QUERY_STRING + paramTimestamp;
+        }
+
+        private void optimizeForSvg(Link link) {
+
+            if (m_dataItem.getPath().toLowerCase().endsWith(".svg")) {
+                JavaScript.getCurrent().execute(
+                    "var link = document.getElementById('"
+                        + link.getId()
+                        + "');"
+                        + "var image = link.querySelector('img');"
+                        + "image.width = "
+                        + IMAGE_WIDTH
+                        + ";"
+                        + "image.height = "
+                        + IMAGE_HEIGHT
+                        + ";"
+                        + "image.style = 'background-color: white';");
+
+            }
         }
     }
 
@@ -1709,8 +1733,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             i++;
         }
         if (scrollToTop) {
-            A_CmsUI.get().getPage().getJavaScript().execute(
-                "document.getElementById('scrollToTop').scrollIntoView(true);");
+            JavaScript.getCurrent().execute("document.getElementById('scrollToTop').scrollIntoView(true);");
         }
     }
 
