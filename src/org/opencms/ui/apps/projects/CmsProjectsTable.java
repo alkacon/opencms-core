@@ -529,7 +529,7 @@ public class CmsProjectsTable extends Table {
                         cms.readGroup(project.getManagerGroupId()).getSimpleName());
                     item.getItemProperty(PROP_USER).setValue(cms.readGroup(project.getGroupId()).getSimpleName());
                 } catch (CmsException e) {
-                    LOG.error("Error reading project properties for " + project + "." + e.getLocalizedMessage(), e);
+                    LOG.error("Error reading project properties for " + project + ". " + e.getLocalizedMessage(), e);
                 }
                 item.getItemProperty(PROP_DATE_CREATED).setValue(new Date(project.getDateCreated()));
 
