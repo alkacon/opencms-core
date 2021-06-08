@@ -30,27 +30,34 @@ package org.opencms.ui.apps.projects;
 import org.opencms.file.CmsObject;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.apps.projects.CmsProjectsTable.ProjectResources;
 import org.opencms.util.CmsUUID;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.logging.Log;
+
+import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.UI;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
-import com.vaadin.v7.shared.ui.label.ContentMode;
-import com.vaadin.v7.ui.Label;
+import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.v7.ui.Table;
-import com.vaadin.ui.UI;
 
 /**
  * The project history table.<p>
  */
 public class CmsProjectHistoryTable extends Table {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsProjectHistoryTable.class);
 
     /** The serial version id. */
     private static final long serialVersionUID = 7343623156086839992L;
@@ -71,6 +78,7 @@ public class CmsProjectHistoryTable extends Table {
      * Constructor.<p>
      */
     public CmsProjectHistoryTable() {
+
         setSizeFull();
         m_container = new IndexedContainer();
         m_container.addContainerProperty(CmsProjectsTable.PROP_ID, CmsUUID.class, null);
@@ -83,7 +91,7 @@ public class CmsProjectHistoryTable extends Table {
         m_container.addContainerProperty(CmsProjectsTable.PROP_MANAGER, String.class, "");
         m_container.addContainerProperty(CmsProjectsTable.PROP_USER, String.class, "");
         m_container.addContainerProperty(CmsProjectsTable.PROP_DATE_CREATED, Date.class, "");
-        m_container.addContainerProperty(CmsProjectsTable.PROP_RESOURCES, Label.class, "");
+        m_container.addContainerProperty(CmsProjectsTable.PROP_RESOURCES, CmsProjectsTable.ProjectResources.class, "");
 
         setContainerDataSource(m_container);
         setColumnHeader(CmsProjectsTable.PROP_NAME, CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_NAME_0));
@@ -109,6 +117,7 @@ public class CmsProjectHistoryTable extends Table {
 
         setSelectable(true);
         setMultiSelect(true);
+        addItemClickListener(event -> handleItemClick(event));
         loadProjects();
     }
 
@@ -174,27 +183,33 @@ public class CmsProjectHistoryTable extends Table {
                         item.getItemProperty(CmsProjectsTable.PROP_USER).setValue(
                             cms.readGroup(project.getGroupId()).getSimpleName());
                     } catch (CmsException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        LOG.warn(e.getLocalizedMessage(), e);
                     }
                     item.getItemProperty(CmsProjectsTable.PROP_DATE_CREATED).setValue(
                         new Date(project.getDateCreated()));
 
                     StringBuffer html = new StringBuffer(512);
-                    for (String resource : cms.readProjectResources(project)) {
-                        html.append(resource);
-                        html.append("<br />");
-                    }
-                    Label resLabel = new Label();
-                    resLabel.setContentMode(ContentMode.HTML);
-                    resLabel.setValue(html.toString());
-                    item.getItemProperty(CmsProjectsTable.PROP_RESOURCES).setValue(resLabel);
+                    ProjectResources resourceList = new ProjectResources(cms.readProjectResources(project));
+                    item.getItemProperty(CmsProjectsTable.PROP_RESOURCES).setValue(resourceList);
                 }
             }
             m_container.sort(new Object[] {PROP_PUBLISH_DATE}, new boolean[] {false});
         } catch (CmsException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    /**
+     * Handles item clicks.
+     *
+     * @param event the click event
+     */
+    private void handleItemClick(ItemClickEvent event) {
+
+        if (event.getButton().equals(MouseButton.LEFT)
+            && CmsProjectsTable.PROP_RESOURCES.equals(event.getPropertyId())) {
+            CmsProjectsTable.showProjectResources(event.getItem());
+
         }
     }
 }
