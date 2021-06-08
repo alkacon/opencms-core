@@ -59,25 +59,40 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.server.Resource;
+import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.data.util.filter.Or;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.v7.event.ItemClickEvent;
 import com.vaadin.v7.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.server.Resource;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
-import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.Table;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * The projects table.<p>
  */
 public class CmsProjectsTable extends Table {
+
+    public static class ProjectResources extends ArrayList<String> {
+
+        public ProjectResources(List<String> origin) {
+
+            super(origin);
+        }
+
+        @Override
+        public String toString() {
+
+            return CmsStringUtil.listAsString(this, ", ");
+        }
+
+    }
 
     /**
      * The delete project context menu entry.<p>
@@ -401,6 +416,7 @@ public class CmsProjectsTable extends Table {
      * @param manager the project manager
      */
     public CmsProjectsTable(CmsProjectManager manager) {
+
         m_manager = manager;
 
         m_container = new IndexedContainer();
@@ -413,7 +429,7 @@ public class CmsProjectsTable extends Table {
         m_container.addContainerProperty(PROP_MANAGER, String.class, "");
         m_container.addContainerProperty(PROP_USER, String.class, "");
         m_container.addContainerProperty(PROP_DATE_CREATED, Date.class, null);
-        m_container.addContainerProperty(PROP_RESOURCES, Label.class, null);
+        m_container.addContainerProperty(PROP_RESOURCES, ProjectResources.class, null);
 
         setContainerDataSource(m_container);
         setItemIconPropertyId(PROP_ICON);
@@ -455,6 +471,34 @@ public class CmsProjectsTable extends Table {
                 return null;
             }
         });
+    }
+
+    /**
+     * Displays project resources in a popup dialog.
+     *
+     * @param item the item from which to take the project resources
+     */
+    public static void showProjectResources(Item item) {
+
+        VerticalLayout layout = new VerticalLayout();
+        ProjectResources pr = (ProjectResources)(item.getItemProperty(PROP_RESOURCES).getValue());
+        for (String path : pr) {
+            layout.addComponent(new Label(path));
+        }
+        layout.setSpacing(false);
+        CmsBasicDialog dialog = new CmsBasicDialog();
+
+        dialog.setContent(layout);
+        Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+        String ou = "" + item.getItemProperty(PROP_ORG_UNIT).getValue();
+        String project = "" + item.getItemProperty(PROP_NAME).getValue();
+        String caption = CmsVaadinUtils.getMessageText(
+            org.opencms.ui.apps.Messages.GUI_PROJECTS_RESOURCES_POPUP_CAPTION_2,
+            project,
+            ou);
+        window.setCaption(caption);
+        window.setContent(dialog);
+        CmsAppWorkplaceUi.get().addWindow(window);
     }
 
     /**
@@ -535,17 +579,11 @@ public class CmsProjectsTable extends Table {
 
                 StringBuffer html = new StringBuffer(512);
                 try {
-                    for (String resource : cms.readProjectResources(project)) {
-                        html.append(resource);
-                        html.append("<br />");
-                    }
+                    item.getItemProperty(PROP_RESOURCES).setValue(
+                        new ProjectResources(cms.readProjectResources(project)));
                 } catch (CmsException e) {
                     LOG.error("Error reading project resources for " + project.getSimpleName());
                 }
-                Label resLabel = new Label();
-                resLabel.setContentMode(ContentMode.HTML);
-                resLabel.setValue(html.toString());
-                item.getItemProperty(PROP_RESOURCES).setValue(resLabel);
 
             }
         } catch (CmsException e) {
@@ -615,6 +653,9 @@ public class CmsProjectsTable extends Table {
                 m_manager.openSubView(
                     A_CmsWorkplaceApp.addParamToState(CmsProjectManager.PATH_NAME_FILES, "projectId", id.toString()),
                     true);
+            } else if (event.getButton().equals(MouseButton.LEFT) && PROP_RESOURCES.equals(event.getPropertyId())) {
+                Item item = event.getItem();
+                showProjectResources(item);
             }
         }
     }

@@ -948,6 +948,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_0 = "GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_HELP_0 = "GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_HELP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_PARAM_DISPLAY_TYPE_0 = "GUI_LISTMANAGER_PARAM_DISPLAY_TYPE_0";
     /** Message constant for key in the resource bundle. */
@@ -1065,7 +1066,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_FILEPATH_HELP_0 = "GUI_LOGFILE_FILEPATH_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_FILEVIEW_0 = "GUI_LOGFILE_FILEVIEW_0";
 
@@ -1869,6 +1869,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_RESOURCES_0 = "GUI_PROJECTS_RESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_RESOURCES_POPUP_CAPTION_2 = "GUI_PROJECTS_RESOURCES_POPUP_CAPTION_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_SHOW_FILES_0 = "GUI_PROJECTS_SHOW_FILES_0";
