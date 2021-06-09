@@ -158,6 +158,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SOLR_SERVER_NOT_CREATED_3 = "ERR_SOLR_SERVER_NOT_CREATED_3";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_SOLR_SERVER_CANNOT_CREATE_DIR_2 = "ERR_SOLR_SERVER_CANNOT_CREATE_DIR_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_HELP_BUTTON_BACK_0 = "GUI_HELP_BUTTON_BACK_0";
 
     /** Message constant for key in the resource bundle. */
@@ -353,6 +356,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_PARSE_EXCERPT_LENGTH_FAILED_2 = "LOG_PARSE_EXCERPT_LENGTH_FAILED_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_PARSE_DIRECTORY_IGNORED_3 = "LOG_PARSE_DIRECTORY_IGNORED_3";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_PARSE_EXTRACTION_CACHE_AGE_FAILED_2 = "LOG_PARSE_EXTRACTION_CACHE_AGE_FAILED_2";
 
     /** Message constant for key in the resource bundle. */
@@ -407,6 +413,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SEARCHINDEX_DISABLED_1 = "LOG_SEARCHINDEX_DISABLED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SEARCH_SET_DIRECTORY_FROM_SYSPROP_1 = "LOG_SEARCH_SET_DIRECTORY_FROM_SYSPROP_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SEARCHING_FAILED_0 = "LOG_SEARCHING_FAILED_0";
