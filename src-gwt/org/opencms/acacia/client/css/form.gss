@@ -497,6 +497,10 @@ div.helpBubble a, div.helpBubble a:hover, div.helpBubble a:focus{
 	margin-bottom: 0px;
 }
 
+.helpBubble ul, .helpBubble ol {
+	padding-left: 23px;
+}
+
 .entity .attributeValue > div, .dragHelper.attributeValue > div{
 	border-radius: value("constants.css.borderRadius");
 }
