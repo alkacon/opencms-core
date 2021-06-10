@@ -145,9 +145,9 @@ public abstract class A_CmsFrameEditor implements I_CmsEditor, ViewChangeListene
     }
 
     /**
-     * @see org.opencms.ui.editors.I_CmsEditor#matchesResource(org.opencms.file.CmsResource, boolean)
+     * @see org.opencms.ui.editors.I_CmsEditor#matchesResource(org.opencms.file.CmsObject, org.opencms.file.CmsResource, boolean)
      */
-    public boolean matchesResource(CmsResource resource, boolean plainText) {
+    public boolean matchesResource(CmsObject cms, CmsResource resource, boolean plainText) {
 
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
         return matchesType(type, plainText);

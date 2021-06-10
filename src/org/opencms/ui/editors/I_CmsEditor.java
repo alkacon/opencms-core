@@ -27,6 +27,7 @@
 
 package org.opencms.ui.editors;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.ui.apps.I_CmsAppUIContext;
@@ -61,12 +62,13 @@ public interface I_CmsEditor {
     /**
      * Checks whether the editor is available for the given resource.<p>
      *
+     * @param cms the CMS context
      * @param resource the resource to edit
      * @param plainText if plain text editing is required
      *
      * @return <code>true</code> if the editor is available for the given resource
      */
-    boolean matchesResource(CmsResource resource, boolean plainText);
+    boolean matchesResource(CmsObject cms, CmsResource resource, boolean plainText);
 
     /**
      * Checks whether the editor is available for the given resource type.<p>

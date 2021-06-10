@@ -458,17 +458,18 @@ public class CmsWorkplaceAppManager {
     /**
      * Returns the editor for the given resource.<p>
      *
+     * @param cms the CMS context 
      * @param resource the resource to edit
      * @param plainText if plain text editing is required
      *
      * @return the editor
      */
-    public I_CmsEditor getEditorForResource(CmsResource resource, boolean plainText) {
+    public I_CmsEditor getEditorForResource(CmsObject cms, CmsResource resource, boolean plainText) {
 
         List<I_CmsEditor> editors = new ArrayList<I_CmsEditor>();
         for (int i = 0; i < EDITORS.length; i++) {
             try {
-                if (EDITORS[i].matchesResource(resource, plainText)) {
+                if (EDITORS[i].matchesResource(cms, resource, plainText)) {
                     editors.add(EDITORS[i]);
                 }
             } catch (Exception e) {

@@ -272,7 +272,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
 
                 // make sure the user has the required role
                 OpenCms.getRoleManager().checkRoleForResource(cms, CmsRole.ELEMENT_AUTHOR, cms.getSitePath(resource));
-                editor = OpenCms.getWorkplaceAppManager().getEditorForResource(resource, isPlainText(state));
+                editor = OpenCms.getWorkplaceAppManager().getEditorForResource(cms, resource, isPlainText(state));
             } else {
                 String typeName = CmsJspTagEdit.getTypeFromNewLink(newLink);
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(typeName);

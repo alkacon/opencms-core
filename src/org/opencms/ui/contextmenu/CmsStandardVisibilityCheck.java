@@ -450,7 +450,8 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
 
             }
 
-            if (flag(haseditor) && (OpenCms.getWorkplaceAppManager().getEditorForResource(resource, false) == null)) {
+            if (flag(haseditor)
+                && (OpenCms.getWorkplaceAppManager().getEditorForResource(cms, resource, false) == null)) {
                 return VISIBILITY_INVISIBLE;
             }
 
