@@ -29,6 +29,7 @@ package org.opencms.ade.sitemap;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsADEManager;
+import org.opencms.ade.configuration.CmsFunctionAvailability;
 import org.opencms.ade.configuration.CmsFunctionReference;
 import org.opencms.ade.configuration.CmsModelPageConfig;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
@@ -155,7 +156,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -907,7 +907,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         getCmsObject(),
                         configData.getResourceTypes(),
                         configData.getFunctionReferences(),
-                        configData.getDynamicFunctions(),
+                        configData.getDynamicFunctionAvailability(),
                         modelResource,
                         getWorkplaceLocale());
                     try {
@@ -2556,7 +2556,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsObject cms,
         List<CmsResourceTypeConfig> resourceTypeConfigs,
         List<CmsFunctionReference> functionReferences,
-        Set<CmsUUID> dynamicFunctionRestriction,
+        CmsFunctionAvailability dynamicFunctionAvailability,
         CmsResource modelResource,
         Locale locale) {
 
@@ -2599,8 +2599,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             }
         }
         for (CmsFunctionReference functionRef : functionReferences) {
-            if ((dynamicFunctionRestriction != null) && (dynamicFunctionRestriction.size() > 0)) {
-                if (!dynamicFunctionRestriction.contains(functionRef.getStructureId())) {
+            if (dynamicFunctionAvailability.isDefined()) {
+                if (!dynamicFunctionAvailability.checkAvailable(functionRef.getStructureId())) {
                     continue;
                 }
             }

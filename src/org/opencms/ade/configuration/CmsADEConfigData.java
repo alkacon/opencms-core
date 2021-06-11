@@ -764,42 +764,35 @@ public class CmsADEConfigData {
     }
 
     /**
-     * Returns the restricted dynamic functions or <code>null</code> if there are no restrictions.<p>
+     * Gets the bean that represents the dynamic function availability.
      *
-     * @return the dynamic functions
+     * @return the dynamic function availability
      */
-    public Set<CmsUUID> getDynamicFunctions() {
+    public CmsFunctionAvailability getDynamicFunctionAvailability() {
 
         CmsADEConfigData parentData = parent();
-
-        // null means no restrictions, while a set of structure ids means that the only allowed
-        // functions are those with the given ids.
-        Set<CmsUUID> restrictedFunctions = null;
-
-        // First, get the result of getDynamicFunctions for the parent. If there is no parent, there are no restrictions.
-        if (parentData != null) {
-            restrictedFunctions = parentData.getDynamicFunctions();
+        CmsFunctionAvailability result;
+        if (parentData == null) {
+            result = new CmsFunctionAvailability();
+        } else {
+            result = parentData.getDynamicFunctionAvailability();
         }
-
-        // Then, if 'remove all functions' is selected, set the restricted functions to the empty set.
+        Collection<CmsUUID> enabledIds = m_data.getDynamicFunctions();
+        Collection<CmsUUID> disabledIds = m_data.getFunctionsToRemove();
         if (m_data.isRemoveAllFunctions()) {
-            restrictedFunctions = new HashSet<>();
+            result.removeAll();
         }
-
-        // If we are restricted, add ids of all functions configured here to restricted function set
-        // (since the restricted function set, if it's coming from the parent, is unmodifiable, we need to copy it.)
-        if (restrictedFunctions != null) {
-            restrictedFunctions = new HashSet<>(restrictedFunctions);
-            for (CmsUUID id : m_data.getDynamicFunctions()) {
-                restrictedFunctions.add(id);
+        if (enabledIds != null) {
+            for (CmsUUID id : enabledIds) {
+                result.add(id);
             }
         }
-        // If we are restricted, wrap the result in an unmodifiable set
-        if (restrictedFunctions != null) {
-            return Collections.unmodifiableSet(restrictedFunctions);
-        } else {
-            return null;
+        if (disabledIds != null) {
+            for (CmsUUID id : disabledIds) {
+                result.remove(id);
+            }
         }
+        return result;
     }
 
     /**

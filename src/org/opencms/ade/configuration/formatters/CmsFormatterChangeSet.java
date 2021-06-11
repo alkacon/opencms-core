@@ -35,6 +35,7 @@ import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -67,6 +68,9 @@ public class CmsFormatterChangeSet {
     /** The set of structure ids of added functions. */
     private Set<CmsUUID> m_functions;
 
+    /** Ids of functions to remove. */
+    private Set<CmsUUID> m_functionsToRemove = new HashSet<>();
+
     /** The debug path to identify the configuration where this is coming from. */
     @SuppressWarnings("unused")
     private String m_debugPath;
@@ -88,6 +92,7 @@ public class CmsFormatterChangeSet {
      * @param removeAllNonExplicitlyAdded flag, indicating if all formatters that are not explicitly added should be removed
      * @param removeFunctions if true, all functions are removed
      * @param functions the set of functions to enable
+     * @param functionsToRemove the set of functions to remove
      */
     public CmsFormatterChangeSet(
         Collection<String> toRemove,
@@ -95,11 +100,14 @@ public class CmsFormatterChangeSet {
         String siteRoot,
         boolean removeAllNonExplicitlyAdded,
         boolean removeFunctions,
-        Set<CmsUUID> functions) {
+        Set<CmsUUID> functions,
+        Set<CmsUUID> functionsToRemove) {
 
         this();
         m_removeFunctions = removeFunctions;
         m_functions = functions;
+        m_functionsToRemove = functionsToRemove != null ? functionsToRemove : new HashSet<>();
+
         initialize(toRemove, toAdd, siteRoot, removeAllNonExplicitlyAdded);
 
     }
@@ -151,6 +159,9 @@ public class CmsFormatterChangeSet {
                     formatters.put(id, function);
                 }
             }
+        }
+        for (CmsUUID id : m_functionsToRemove) {
+            formatters.remove(id);
         }
         if (m_pathPattern != null) {
             // remove all formatters where the location path does not match the path pattern, this prevents cross site formatter use

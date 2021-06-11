@@ -172,6 +172,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             null,
             false,
             false,
+            null,
             null);
         config2.setFormatterChangeSet(changeSet);
 
@@ -358,6 +359,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             null,
             true,
             false,
+            null,
             null);
         config2.setFormatterChangeSet(changeSet);
 
@@ -381,6 +383,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             null,
             true,
             false,
+            null,
             null);
         config2.setFormatterChangeSet(changeSet2);
         formatterConfigA = config2.getFormatters(getCmsObject(), m_exampleResourceA);
@@ -420,6 +423,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             null,
             false,
             false,
+            null,
             null);
         config.setFormatterChangeSet(changeSet);
         CmsTestConfigData config2 = createConfig("/", f1);
@@ -435,6 +439,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             null,
             false,
             false,
+            null,
             null);
         config2.setFormatterChangeSet(changeSet2);
 
@@ -483,6 +488,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             null,
             false,
             false,
+            null,
             null);
         config2.setFormatterChangeSet(changeSet);
 

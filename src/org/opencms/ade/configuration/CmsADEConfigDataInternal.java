@@ -148,6 +148,9 @@ public class CmsADEConfigDataInternal {
     /** the dynamic functions available. */
     private Set<CmsUUID> m_dynamicFunctions;
 
+    /** The functions to remove. */
+    private Set<CmsUUID> m_functionsToRemove;
+
     /** True if detail contents outside the sitemap should not be used with detail pages in the sitemap. */
     private boolean m_excludeExternalDetailContents;
 
@@ -207,6 +210,7 @@ public class CmsADEConfigDataInternal {
      * @param formatterChangeSet the formatter changes
      * @param removeAllFunctions flag indicating whether all functions should be removed
      * @param functionIds the dynamic functions available
+     * @param functionsToRemove the function ids to remove
      * @param useFormatterKeys mode for using formatter keys / the new container page format
      * @param attributes the map of attributes
      */
@@ -231,6 +235,7 @@ public class CmsADEConfigDataInternal {
         CmsFormatterChangeSet formatterChangeSet,
         boolean removeAllFunctions,
         Set<CmsUUID> functionIds,
+        Set<CmsUUID> functionsToRemove,
         Boolean useFormatterKeys,
         Map<String, String> attributes) {
 
@@ -256,6 +261,7 @@ public class CmsADEConfigDataInternal {
         m_formatterChangeSet = formatterChangeSet;
         m_formatterChangeSet.setDebugPath(m_basePath);
         m_dynamicFunctions = functionIds;
+        m_functionsToRemove = functionsToRemove;
         m_removeAllFunctions = removeAllFunctions;
         m_excludeExternalDetailContents = excludeExternalDetailContents;
         m_includeInSiteSelector = includeInSiteSelector;
@@ -425,6 +431,16 @@ public class CmsADEConfigDataInternal {
     public List<CmsFunctionReference> getFunctionReferences() {
 
         return m_functionReferences;
+    }
+
+    /**
+     * Gets the ids of dynamic functions to remove.
+     *
+     * @return the ids of dynamic functions to remove
+     */
+    public Collection<CmsUUID> getFunctionsToRemove() {
+
+        return m_functionsToRemove;
     }
 
     /**

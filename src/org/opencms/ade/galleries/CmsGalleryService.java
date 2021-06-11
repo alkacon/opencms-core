@@ -2781,8 +2781,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
                     cms,
                     cms.getRequestContext().addSiteRoot(searchData.getReferencePath()));
-                // in case a restricted set of functions is configured, remove all other functions
-                params.setAllowedFunctions(config.getDynamicFunctions());
+                params.setFunctionAvailability(config.getDynamicFunctionAvailability());
             }
         }
 

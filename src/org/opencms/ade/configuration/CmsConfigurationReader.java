@@ -177,6 +177,9 @@ public class CmsConfigurationReader {
     /** The function node name. */
     public static final String N_FUNCTION = "Function";
 
+    /** The remove function node name. */
+    public static final String N_REMOVE_FUNCTION = "RemoveFunction";
+
     /** The function node name. */
     public static final String N_FUNCTION_DEFAULT_PAGE = "FunctionDefaultPage";
 
@@ -517,13 +520,26 @@ public class CmsConfigurationReader {
             }
         }
 
+        Set<CmsUUID> functionsToRemove = new LinkedHashSet<>();
+        for (I_CmsXmlContentValueLocation node : root.getSubValues(N_REMOVE_FUNCTION)) {
+            CmsXmlVfsFileValue value = (CmsXmlVfsFileValue)node.getValue();
+            CmsLink link = value.getLink(m_cms);
+            if (link != null) {
+                CmsUUID structureId = link.getStructureId();
+                if (structureId != null) {
+                    functionsToRemove.add(link.getStructureId());
+                }
+            }
+        }
+
         boolean removeAllFormatters = getBoolean(root, N_REMOVE_ALL_FORMATTERS);
         CmsFormatterChangeSet formatterChangeSet = parseFormatterChangeSet(
             basePath,
             root,
             removeAllFormatters,
             removeFunctions,
-            functions);
+            functions,
+            functionsToRemove);
         boolean discardInheritedTypes = getBoolean(root, N_DISCARD_TYPES);
         // boolean discardInheritedProperties = getBoolean(root, N_DISCARD_PROPERTIES);
         I_CmsXmlContentValueLocation discardPropertiesLoc = root.getSubValue(N_DISCARD_PROPERTIES);
@@ -592,6 +608,7 @@ public class CmsConfigurationReader {
             formatterChangeSet,
             removeFunctions,
             functions,
+            functionsToRemove,
             useFormatterKeys,
             attributes);
         return result;
@@ -968,6 +985,8 @@ public class CmsConfigurationReader {
      * @param removeAllFormatters flag, indicating if all formatters that are not explicitly added should be removed
      * @param removeFunctions if true, remove functions
      * @param functions the functions to add
+     * @param functionsToRemove the functions to remove
+     *
      * @return the formatter change set
      */
     protected CmsFormatterChangeSet parseFormatterChangeSet(
@@ -975,7 +994,8 @@ public class CmsConfigurationReader {
         I_CmsXmlContentLocation node,
         boolean removeAllFormatters,
         boolean removeFunctions,
-        Set<CmsUUID> functions) {
+        Set<CmsUUID> functions,
+        Set<CmsUUID> functionsToRemove) {
 
         Set<String> addFormatters = parseAddFormatters(node);
         addFormatters.addAll(readLocalFormatters(node));
@@ -990,7 +1010,8 @@ public class CmsConfigurationReader {
             siteRoot,
             removeAllFormatters,
             removeFunctions,
-            functions);
+            functions,
+            functionsToRemove);
         return result;
     }
 

@@ -27,6 +27,7 @@
 
 package org.opencms.search.galleries;
 
+import org.opencms.ade.configuration.CmsFunctionAvailability;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -45,9 +46,9 @@ import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
 
@@ -190,9 +191,6 @@ public class CmsGallerySearchParameters {
         }
     }
 
-    /** The allowed dynamic function ids. */
-    private Collection<CmsUUID> m_allowedFunctions;
-
     /** The categories to search in. */
     private List<String> m_categories;
 
@@ -243,6 +241,9 @@ public class CmsGallerySearchParameters {
 
     /** Search words to search for. */
     private String m_words;
+
+    /** Function availability. */
+    private CmsFunctionAvailability m_functionAvailability;
 
     /**
      * Default constructor.<p>
@@ -459,21 +460,29 @@ public class CmsGallerySearchParameters {
 
         query.setFields(CmsGallerySearchResult.getRequiredSolrFields());
 
-        if ((m_allowedFunctions != null) && !m_allowedFunctions.isEmpty()) {
-            String functionFilter = "((-type:("
+        if ((m_functionAvailability != null) && m_functionAvailability.isDefined()) {
+            String notFunction = "(-type:("
                 + CmsXmlDynamicFunctionHandler.TYPE_FUNCTION
                 + " OR "
                 + CmsResourceTypeFunctionConfig.TYPE_NAME
-                + ")) OR (id:(";
-            Iterator<CmsUUID> it = m_allowedFunctions.iterator();
-            while (it.hasNext()) {
-                CmsUUID id = it.next();
-                functionFilter += id.toString();
-                if (it.hasNext()) {
-                    functionFilter += " OR ";
-                }
+                + "))";
+            Collection<CmsUUID> whitelist = m_functionAvailability.getWhitelist();
+            Collection<CmsUUID> blacklist = new ArrayList<>(m_functionAvailability.getBlacklist());
+            CmsUUID dummyId = CmsUUID.getNullUUID();
+            blacklist.add(dummyId);
+            String idClause;
+            if (whitelist != null) {
+                whitelist = new ArrayList<>(whitelist);
+                whitelist.add(dummyId);
+                String whitelistIdCondition = whitelist.stream().map(id -> id.toString()).collect(
+                    Collectors.joining(" OR "));
+                idClause = "id:(" + whitelistIdCondition + ")";
+            } else {
+                idClause = "*:* AND -id:("
+                    + blacklist.stream().map(id -> id.toString()).collect(Collectors.joining(" OR "))
+                    + ") ";
             }
-            functionFilter += ")))";
+            String functionFilter = "(" + notFunction + " OR (" + idClause + "))";
             query.addFilterQuery(functionFilter);
         }
 
@@ -584,16 +593,6 @@ public class CmsGallerySearchParameters {
     }
 
     /**
-     * Sets the allowed dynamic function ids.<p>
-     *
-     * @param allowedFunctions the allowed dynamic function ids
-     */
-    public void setAllowedFunctions(Collection<CmsUUID> allowedFunctions) {
-
-        m_allowedFunctions = allowedFunctions;
-    }
-
-    /**
      * Sets the categories for the search.<p>
      *
      * Results are found only if they are contained in at least one of the given categories.
@@ -652,6 +651,16 @@ public class CmsGallerySearchParameters {
     public void setFolders(List<String> folders) {
 
         m_folders = folders;
+    }
+
+    /**
+     * Sets the dynamic function availability.
+     *
+     * @param dynamicFunctionAvailability the dynamic function availability
+     */
+    public void setFunctionAvailability(CmsFunctionAvailability dynamicFunctionAvailability) {
+
+        m_functionAvailability = dynamicFunctionAvailability;
     }
 
     /**
