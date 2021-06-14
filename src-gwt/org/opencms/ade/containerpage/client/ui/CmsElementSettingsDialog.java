@@ -262,19 +262,14 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
         infoBean.setBigIconClasses(elementBean.getBigIconClasses());
         m_settings = elementBean.getSettings();
         A_CmsFormFieldPanel formFieldPanel = null;
-        String formatterPath;
         CmsFormatterConfig currentFormatterConfig = m_elementBean.getFormatterConfig(m_containerId);
-        String setting = m_elementBean.getSettings().get(CmsFormatterConfig.getSettingsKeyForContainer(m_containerId));
         if (currentFormatterConfig == null) {
             throw new NoFormatterException();
         }
-        formatterPath = currentFormatterConfig.getJspRootPath();
-
         for (CmsAdditionalInfoBean addInfo : settingsConfig.getAdditionalInfo()) {
             infoBean.addAdditionalInfo(addInfo.getName(), addInfo.getValue(), addInfo.getStyle());
         }
-        infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_ADDINFO_FORMATTER_PATH_0), formatterPath);
-
+        // infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_ADDINFO_FORMATTER_PATH_0), formatterPath);
         I_CmsDropContainer dropContainer = elementWidget.getParentTarget();
         if (dropContainer instanceof CmsContainerPageContainer) {
             CmsContainerPageContainer cpc = (CmsContainerPageContainer)dropContainer;

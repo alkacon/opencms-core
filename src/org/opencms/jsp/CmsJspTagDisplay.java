@@ -75,11 +75,17 @@ import org.apache.commons.logging.Log;
  */
 public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParamParent {
 
+    /** Setting used to store the display formatter key. */
+    public static final String DISPLAY_FORMATTER_SETTING = "SYSTEM::DISPLAY_FORMATTER";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagDisplay.class);
 
     /** The serial version id. */
     private static final long serialVersionUID = 2285680951218629093L;
+
+    /** The base URI. */
+    private String m_baseUri;
 
     /** Flag, indicating if the create option should be displayed. */
     private boolean m_canCreate;
@@ -95,9 +101,6 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
 
     /** The display formatter paths. */
     private Map<String, String> m_displayFormatterPaths;
-
-    /** The base URI. */
-    private String m_baseUri;
 
     /** The editable flag. */
     private boolean m_editable;
@@ -168,6 +171,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                 if (formatter != null) {
                     element.initResource(cms);
                     element.initSettings(cms, adeConfig, formatter, locale, request, null);
+                    element.getSettings().put(DISPLAY_FORMATTER_SETTING, formatter.getKeyOrId());
                     boolean openedEditable = false;
                     contextBean.setElement(element);
                     if (editable && contextBean.getIsEditMode()) {

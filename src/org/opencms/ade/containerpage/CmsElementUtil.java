@@ -53,6 +53,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.gwt.CmsDefaultResourceStatusProvider;
 import org.opencms.gwt.CmsIconUtil;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.gwt.shared.CmsPermissionInfo;
@@ -715,6 +716,8 @@ public class CmsElementUtil {
                 return null;
             }
         });
+        I_CmsFormatterBean foundFormatter = null;
+
         if (!element.isGroupContainer(m_cms) && !element.isInheritedContainer(m_cms)) {
             CmsFormatterConfiguration formatterConfiguraton = getFormatterConfiguration(element.getResource());
             Map<String, CmsFormatterConfigCollection> formatters = new HashMap<String, CmsFormatterConfigCollection>();
@@ -723,6 +726,11 @@ public class CmsElementUtil {
                     CmsFormatterConfigCollection containerFormatters = new CmsFormatterConfigCollection();
                     boolean missesFormatterSetting = !elementData.getSettings().containsKey(
                         CmsFormatterConfig.getSettingsKeyForContainer(cnt.getName()));
+                    if (!missesFormatterSetting) {
+                        foundFormatter = adeConfig.findFormatter(
+                            elementData.getSettings().get(
+                                CmsFormatterConfig.getSettingsKeyForContainer(cnt.getName())));
+                    }
                     Map<String, I_CmsFormatterBean> formatterSelection = formatterConfiguraton.getFormatterSelection(
                         cnt.getType(),
                         cnt.getWidth());
@@ -840,6 +848,14 @@ public class CmsElementUtil {
             }
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
+        }
+        if (foundFormatter != null) {
+            Map<String, String> formatterInfo = CmsDefaultResourceStatusProvider.getFormatterInfo(
+                m_cms,
+                foundFormatter);
+            for (Map.Entry<String, String> entry : formatterInfo.entrySet()) {
+                infos.add(new CmsAdditionalInfoBean(entry.getKey(), entry.getValue(), null));
+            }
         }
 
         CmsResourceState state = element.getResource().getState();

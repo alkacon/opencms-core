@@ -44,6 +44,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ADDINFO_FORMATTER_0 = "GUI_ADDINFO_FORMATTER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADDINFO_FORMATTER_KEY_0 = "GUI_ADDINFO_FORMATTER_KEY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADDINFO_FORMATTER_LOCATION_0 = "GUI_ADDINFO_FORMATTER_LOCATION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ADDINFO_SCHEMA_0 = "GUI_ADDINFO_SCHEMA_0";
 
     /** Message constant for key in the resource bundle. */
