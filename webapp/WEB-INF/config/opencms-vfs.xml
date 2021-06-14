@@ -317,6 +317,7 @@
                 <mimetype extension=".wml" type="text/vnd.wap.wml" />
                 <mimetype extension=".vtt" type="text/vtt" />
                 <mimetype extension=".htc" type="text/x-component" />
+                <mimetype extension=".gpx" type="application/gpx+xml" />
 
                 <!-- MS office and Windows related files -->
                 <mimetype extension=".doc" type="application/msword" />
