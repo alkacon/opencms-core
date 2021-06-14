@@ -27,8 +27,15 @@
 
 package org.opencms.xml.types;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.I_CmsXmlDocument;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
+import org.opencms.xml.content.CmsXmlContent;
 
 import java.util.Locale;
 
@@ -130,6 +137,42 @@ public class CmsXmlDisplayFormatterValue extends A_CmsXmlValueTextBase {
     }
 
     /**
+     * @see org.opencms.xml.types.A_CmsXmlValueTextBase#getStringValue(org.opencms.file.CmsObject)
+     */
+    @Override
+    public String getStringValue(CmsObject cms) throws CmsRuntimeException {
+
+        // always try to return the value with the formatter key (rather than id) if possible
+        // (this matches the handling of options in the display formatter widget)
+
+        I_CmsXmlDocument doc = getDocument();
+        if ((doc != null) && (doc instanceof CmsXmlContent)) {
+            CmsXmlContent content = (CmsXmlContent)doc;
+            if (content.getFile() != null) {
+                CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(
+                    cms,
+                    content.getFile().getRootPath());
+                String internalValue = super.getStringValue(cms);
+                if (internalValue == null) {
+                    return null;
+                }
+                int colonPos = internalValue.indexOf(':');
+                if (colonPos == -1) {
+                    return internalValue;
+                }
+                String keyOrId = internalValue.substring(colonPos + 1);
+                if (CmsUUID.isValidUUID(keyOrId)) {
+                    I_CmsFormatterBean formatter = config.findFormatter(new CmsUUID(keyOrId));
+                    if (formatter != null) {
+                        return internalValue.substring(0, colonPos + 1) + formatter.getKeyOrId();
+                    }
+                }
+            }
+        }
+        return super.getStringValue(cms);
+    }
+
+    /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#getTypeName()
      */
     public String getTypeName() {
@@ -143,6 +186,35 @@ public class CmsXmlDisplayFormatterValue extends A_CmsXmlValueTextBase {
     public I_CmsXmlSchemaType newInstance(String name, String minOccurs, String maxOccurs) {
 
         return new CmsXmlDisplayFormatterValue(name, minOccurs, maxOccurs);
+    }
+
+    /**
+     * @see org.opencms.xml.types.A_CmsXmlValueTextBase#setStringValue(org.opencms.file.CmsObject, java.lang.String)
+     */
+    @Override
+    public void setStringValue(CmsObject cms, String value) {
+
+        I_CmsXmlDocument doc = getDocument();
+        if (!CmsStringUtil.isEmpty(value)) {
+            if ((doc != null) && (doc instanceof CmsXmlContent)) {
+                CmsXmlContent content = (CmsXmlContent)doc;
+                if (content.getFile() != null) {
+                    CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(
+                        cms,
+                        content.getFile().getRootPath());
+                    int colonPos = value.indexOf(":");
+                    if (colonPos > -1) {
+                        String keyOrId = value.substring(colonPos + 1);
+                        I_CmsFormatterBean formatter = config.findFormatter(keyOrId);
+                        if (formatter != null) {
+                            String newId = config.isUseFormatterKeys() ? formatter.getKeyOrId() : formatter.getId();
+                            value = value.substring(0, colonPos) + ":" + newId;
+                        }
+                    }
+                }
+            }
+        }
+        super.setStringValue(cms, value);
     }
 
 }

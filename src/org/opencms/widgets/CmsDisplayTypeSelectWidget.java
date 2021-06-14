@@ -333,7 +333,6 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
         if (config != null) {
             boolean useConfiguredFormatters = Boolean.parseBoolean(
                 config.getAttribute(ATTR_USE_CONFIG_FORMATTERS, "false"));
-            boolean useFormatterKeys = config.isUseFormatterKeys();
             Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
 
             for (I_CmsFormatterBean formatter : config.getDisplayFormatters(cms)) {
@@ -358,9 +357,7 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
                         + ")";
                     options.add(
                         new FormatterOption(
-                            typeName
-                                + CmsXmlDisplayFormatterValue.SEPARATOR
-                                + (useFormatterKeys ? formatter.getKeyOrId() : formatter.getId()),
+                            typeName + CmsXmlDisplayFormatterValue.SEPARATOR + formatter.getKeyOrId(),
                             typeName,
                             getDisplayType(formatter),
                             label,

@@ -27,18 +27,11 @@
 
 package org.opencms.xml.containerpage;
 
-import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
-import org.opencms.ui.apps.lists.CmsListManager;
-import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 import org.opencms.xml.content.CmsXmlContent;
-import org.opencms.xml.types.I_CmsXmlContentValue;
-
-import java.util.Locale;
 
 /**
  * Special handler for list configurations that rewrites the TypesToCollect field using formatter keys if possible, rather than IDs.
@@ -51,28 +44,6 @@ public class CmsListConfigContentHandler extends CmsDefaultXmlContentHandler {
     @Override
     public CmsFile prepareForWrite(CmsObject cms, CmsXmlContent content, CmsFile file) throws CmsException {
 
-        if (content.getFile() != null) {
-            CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(
-                cms,
-                content.getFile().getRootPath());
-            if (config.isUseFormatterKeys()) {
-                for (I_CmsXmlContentValue value : content.getValues(CmsListManager.N_DISPLAY_TYPE, Locale.ENGLISH)) {
-                    String strValue = value.getStringValue(cms);
-                    int colonPos = strValue.indexOf(":");
-                    if (colonPos > -1) {
-                        String id = strValue.substring(colonPos + 1);
-                        if (CmsUUID.isValidUUID(id)) {
-                            I_CmsFormatterBean fmt = config.findFormatter(id);
-                            String newId = id;
-                            if ((fmt != null) && (fmt.getKeyOrId() != null)) {
-                                newId = fmt.getKeyOrId();
-                            }
-                            value.setStringValue(cms, strValue.substring(0, colonPos) + ":" + newId);
-                        }
-                    }
-                }
-            }
-        }
         return super.prepareForWrite(cms, content, file);
 
     }
