@@ -253,7 +253,7 @@ public class CmsConfigurationReader {
     public static final String N_REMOVE_FORMATTERS = "RemoveFormatters";
 
     /** The remove function node name. */
-    public static final String N_REMOVE_FUNCTION = "RemoveFunction";
+    public static final String N_REMOVE_FUNCTIONS = "RemoveFunctions";
 
     /** The resource type node name. */
     public static final String N_RESOURCE_TYPE = "ResourceType";
@@ -524,13 +524,15 @@ public class CmsConfigurationReader {
         }
 
         Set<CmsUUID> functionsToRemove = new LinkedHashSet<>();
-        for (I_CmsXmlContentValueLocation node : root.getSubValues(N_REMOVE_FUNCTION)) {
-            CmsXmlVfsFileValue value = (CmsXmlVfsFileValue)node.getValue();
-            CmsLink link = value.getLink(m_cms);
-            if (link != null) {
-                CmsUUID structureId = link.getStructureId();
-                if (structureId != null) {
-                    functionsToRemove.add(link.getStructureId());
+        for (I_CmsXmlContentValueLocation parent : root.getSubValues(N_REMOVE_FUNCTIONS)) {
+            for (I_CmsXmlContentValueLocation node : parent.getSubValues(N_FUNCTION)) {
+                CmsXmlVfsFileValue value = (CmsXmlVfsFileValue)node.getValue();
+                CmsLink link = value.getLink(m_cms);
+                if (link != null) {
+                    CmsUUID structureId = link.getStructureId();
+                    if (structureId != null) {
+                        functionsToRemove.add(link.getStructureId());
+                    }
                 }
             }
         }
