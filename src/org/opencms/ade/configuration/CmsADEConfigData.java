@@ -1128,6 +1128,29 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Gets the type ordering mode.
+     *
+     * @return the type ordering mode
+     */
+    public CmsTypeOrderingMode getTypeOrderingMode() {
+
+        CmsTypeOrderingMode ownOrderingMode = m_data.getTypeOrderingMode();
+        if (ownOrderingMode != null) {
+            return ownOrderingMode;
+        } else {
+            CmsADEConfigData parentConfig = parent();
+            CmsTypeOrderingMode parentMode = null;
+            if (parentConfig == null) {
+                parentMode = CmsTypeOrderingMode.latestOnTop;
+            } else {
+                parentMode = parentConfig.getTypeOrderingMode();
+            }
+            return parentMode;
+        }
+
+    }
+
+    /**
      * Gets the set of resource type names for which schema formatters can be enabled or disabled and which are not disabled in this sub-sitemap.<p>
      *
      * @return the set of types for which schema formatters are active
@@ -1562,6 +1585,9 @@ public class CmsADEConfigData {
                     iter.remove();
                 }
             }
+        }
+        if (getTypeOrderingMode() == CmsTypeOrderingMode.byDisplayOrder) {
+            Collections.sort(result, (a, b) -> Integer.compare(a.getOrder(), b.getOrder()));
         }
         return result;
     }

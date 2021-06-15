@@ -126,6 +126,9 @@ public class CmsConfigurationReader {
     /** Node name for the nested content with the added formatters. */
     public static final String N_ADD_FORMATTERS = "AddFormatters";
 
+    /** The Attribute node name. */
+    public static final String N_ATTRIBUTE = "Attribute";
+
     /** The create content locally node name. */
     public static final String N_CREATE_CONTENTS_LOCALLY = "CreateContentsLocally";
 
@@ -156,9 +159,6 @@ public class CmsConfigurationReader {
     /** The display name node name. */
     public static final String N_DISPLAY_NAME = "DisplayName";
 
-    /** Node name. */
-    public static final String N_USE_FORMATTER_KEYS = "UseFormatterKeys";
-
     /** The element view node name. */
     public static final String N_ELEMENT_VIEW = "ElementView";
 
@@ -177,9 +177,6 @@ public class CmsConfigurationReader {
     /** The function node name. */
     public static final String N_FUNCTION = "Function";
 
-    /** The remove function node name. */
-    public static final String N_REMOVE_FUNCTION = "RemoveFunction";
-
     /** The function node name. */
     public static final String N_FUNCTION_DEFAULT_PAGE = "FunctionDefaultPage";
 
@@ -195,17 +192,11 @@ public class CmsConfigurationReader {
     /** The is preview node name. */
     public static final String N_IS_PREVIEW = "IsPreview";
 
-    /** The Attribute node name. */
-    public static final String N_ATTRIBUTE = "Attribute";
+    /** The JSP node name. */
+    public static final String N_JSP = "Jsp";
 
     /** The Key node name. */
     public static final String N_KEY = "Key";
-
-    /** The Value node name. */
-    public static final String N_VALUE = "Value";
-
-    /** The JSP node name. */
-    public static final String N_JSP = "Jsp";
 
     /** The localization node name. */
     public static final String N_LOCALIZATION = "Localization";
@@ -261,6 +252,9 @@ public class CmsConfigurationReader {
     /** Node name for the nested content with the removed formatters. */
     public static final String N_REMOVE_FORMATTERS = "RemoveFormatters";
 
+    /** The remove function node name. */
+    public static final String N_REMOVE_FUNCTION = "RemoveFunction";
+
     /** The resource type node name. */
     public static final String N_RESOURCE_TYPE = "ResourceType";
 
@@ -275,6 +269,15 @@ public class CmsConfigurationReader {
 
     /** The type name node name. */
     public static final String N_TYPE_NAME = "TypeName";
+
+    /** The node name for the type ordering mode. */
+    public static final String N_TYPE_ORDERING_MODE = "TypeOrderingMode";
+
+    /** Node name. */
+    public static final String N_USE_FORMATTER_KEYS = "UseFormatterKeys";
+
+    /** The Value node name. */
+    public static final String N_VALUE = "Value";
 
     /** The widget node name. */
     public static final String N_VISIBILITY = "Visibility";
@@ -563,6 +566,13 @@ public class CmsConfigurationReader {
         boolean exludeExternalDetailContents = getBoolean(root, N_EXCLUDE_EXTERNAL_DETAIL_CONTENTS);
         boolean includeInSiteSelector = getBoolean(root, N_INCLUDE_IN_SITE_SELECTOR);
 
+        I_CmsXmlContentValueLocation typeOrderingLoc = root.getSubValue(N_TYPE_ORDERING_MODE);
+        CmsTypeOrderingMode typeOrderingMode = null;
+        if (typeOrderingLoc != null) {
+            boolean byDisplayOrder = Boolean.parseBoolean(typeOrderingLoc.getValue().getStringValue(m_cms));
+            typeOrderingMode = byDisplayOrder ? CmsTypeOrderingMode.byDisplayOrder : CmsTypeOrderingMode.latestOnTop;
+        }
+
         I_CmsXmlContentValueLocation useFormatterKeysLoc = root.getSubValue(N_USE_FORMATTER_KEYS);
         Boolean useFormatterKeys = null;
         if (useFormatterKeysLoc != null) {
@@ -610,6 +620,7 @@ public class CmsConfigurationReader {
             functions,
             functionsToRemove,
             useFormatterKeys,
+            typeOrderingMode,
             attributes);
         return result;
     }
@@ -763,12 +774,12 @@ public class CmsConfigurationReader {
             detailPagesDisabled = Boolean.parseBoolean(detailPagesDisabledStr);
         }
 
-        int order = I_CmsConfigurationObject.DEFAULT_ORDER;
+        Integer order = null;
         I_CmsXmlContentValueLocation orderLoc = node.getSubValue(N_ORDER);
         if (orderLoc != null) {
             try {
                 String orderStr = orderLoc.asString(m_cms);
-                order = Integer.parseInt(orderStr);
+                order = Integer.valueOf(orderStr);
             } catch (NumberFormatException e) {
                 // noop
             }

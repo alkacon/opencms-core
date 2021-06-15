@@ -127,7 +127,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     private String m_namePattern;
 
     /** The number used for sorting the resource type configurations. */
-    private int m_order;
+    private Integer m_order;
 
     /** Flag which controls whether this type should be shown in the 'add' menu in the default view. */
     private Boolean m_showInDefaultView;
@@ -157,7 +157,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             null,
             null,
             null,
-            I_CmsConfigurationObject.DEFAULT_ORDER,
+            Integer.valueOf(I_CmsConfigurationObject.DEFAULT_ORDER),
             null);
     }
 
@@ -175,9 +175,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * @param localization the base name of the bundle to add as workplace bundle for the resource type
      * @param showInDefaultView if true, the element type should be shown in the default element view even if it doesn't belong to it
      * @param copyInModels if elements of this type when used in models should be copied instead of reused
+     * @param order the display order
      * @param elementDeleteMode the element delete mode
      *
-     * @param order the number used for sorting resource types from modules
      */
     public CmsResourceTypeConfig(
         String typeName,
@@ -191,7 +191,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         String localization,
         Boolean showInDefaultView,
         Boolean copyInModels,
-        int order,
+        Integer order,
         ElementDeleteMode elementDeleteMode) {
 
         m_typeName = typeName;
@@ -524,7 +524,11 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      */
     public int getOrder() {
 
-        return m_order;
+        if (m_order == null) {
+            return I_CmsConfigurationObject.DEFAULT_ORDER;
+        }
+
+        return m_order.intValue();
     }
 
     /**
@@ -648,6 +652,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         ElementDeleteMode deleteMode = childConfig.m_elementDeleteMode != null
         ? childConfig.m_elementDeleteMode
         : m_elementDeleteMode;
+        Integer order = childConfig.m_order != null ? childConfig.m_order : m_order;
 
         CmsResourceTypeConfig result = new CmsResourceTypeConfig(
             m_typeName,
@@ -662,7 +667,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             m_localization,
             showInDefaultView,
             copyInModels,
-            m_order,
+            order,
             deleteMode);
         if (childConfig.isDisabled()) {
             result.m_disabled = true;

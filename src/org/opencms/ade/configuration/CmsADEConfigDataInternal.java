@@ -187,6 +187,9 @@ public class CmsADEConfigDataInternal {
     /** The CMS context. */
     private CmsObject m_cms;
 
+    /** The type ordering mode. */
+    private CmsTypeOrderingMode m_typeOrderingMode;
+
     /**
      * Creates a new configuration data instance.<p>
      *
@@ -212,6 +215,7 @@ public class CmsADEConfigDataInternal {
      * @param functionIds the dynamic functions available
      * @param functionsToRemove the function ids to remove
      * @param useFormatterKeys mode for using formatter keys / the new container page format
+     * @param orderingMode the mode used to order the resource types
      * @param attributes the map of attributes
      */
     public CmsADEConfigDataInternal(
@@ -237,6 +241,7 @@ public class CmsADEConfigDataInternal {
         Set<CmsUUID> functionIds,
         Set<CmsUUID> functionsToRemove,
         Boolean useFormatterKeys,
+        CmsTypeOrderingMode orderingMode,
         Map<String, String> attributes) {
 
         m_cms = cms;
@@ -275,6 +280,8 @@ public class CmsADEConfigDataInternal {
             attributeObjects.put(entry.getKey(), new AttributeValue(entry.getValue(), attributeOrigin));
         }
         m_attributes = Collections.unmodifiableMap(new HashMap<>(attributeObjects));
+
+        m_typeOrderingMode = orderingMode;
 
     }
 
@@ -515,6 +522,16 @@ public class CmsADEConfigDataInternal {
     public CmsResource getResource() {
 
         return m_resource;
+    }
+
+    /**
+     * Gets the type ordering mode.
+     *
+     * @return the type ordering mode
+     */
+    public CmsTypeOrderingMode getTypeOrderingMode() {
+
+        return m_typeOrderingMode;
     }
 
     /**
