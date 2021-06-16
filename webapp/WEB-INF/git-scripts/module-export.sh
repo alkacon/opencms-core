@@ -55,6 +55,9 @@ setOptions() {
 		fi
 	fi
 
+	#set config file default name
+	configfile="module-export.conf"
+
 	#read commandline arguments
 	while [ "$1" != "" ]; do
 		case $1 in
@@ -166,6 +169,9 @@ echo
 
 if [[ -z "$configfile" ]]; then
 	echoError "No config file provided!" 3
+fi
+if [[ ! -f "$configfile" ]]; then
+    echoError "Config file '${configfile}' does not exit!" 3
 fi
 
 source $configfile
