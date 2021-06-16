@@ -39,6 +39,7 @@
                 <layout element="ElementView" widget="org.opencms.widgets.CmsElementViewSelectWidget" configuration=""/>
                 <layout element="Localization" widget="VfsFileWidget" configuration="startsite=/|startfolder=/|showsiteselector|selectabletypes=xmlvfsbundle,propertyvfsbundle|searchtypes=xmlvfsbundle,propertyvfsbundle" />
                 <layout element="ElementDeleteMode" widget="SelectorWidget" configuration="alwaysKeep:%(key.deletemode.alwaysKeep)|alwaysDelete:%(key.deletemode.alwaysDelete)|askKeep*:%(key.deletemode.askKeep)|askDelete:%(key.deletemode.askDelete)" display="singleline"/>
+                <layout element="Order" widget="string" display="singleline" />
             </layouts>
             <defaults>
                 <default element="Disabled" value="false" />
