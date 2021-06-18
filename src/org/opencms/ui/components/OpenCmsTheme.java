@@ -168,6 +168,18 @@ public final class OpenCmsTheme {
     public static final String FULL_WIDTH_PADDING = "o-full-width-padding";
 
     /** CSS style name. */
+    public static final String GALLERY_ALERT_IN_USE = "o-gallery-alert-in-use";
+
+    /** CSS style name. */
+    public static final String GALLERY_FORM = "o-gallery-form";
+
+    /** CSS style name. */
+    public static final String GALLERY_GRID_ROW_ODD = "o-gallery-grid-row-odd";
+
+    /** CSS style name. */
+    public static final String GALLERY_PREVIEW_IMAGE = "o-gallery-preview-image";
+
+    /** CSS style name. */
     public static final String HIDDEN = "hidden";
 
     /** CSS style name. */
@@ -286,6 +298,7 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String LOCK_USER = "o-lock-user";
+
     /** CSS style name. */
     public static final String MAIN = "o-main";
 
@@ -466,6 +479,7 @@ public final class OpenCmsTheme {
      * Hidden default constructor.
      */
     private OpenCmsTheme() {
+
         // hidden default constructor, do nothing
     }
 

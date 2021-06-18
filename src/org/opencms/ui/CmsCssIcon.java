@@ -182,6 +182,16 @@ public class CmsCssIcon implements FontIcon {
     }
 
     /**
+     * Returns the style name of this icon.<p>
+     *
+     * @return the style name
+     */
+    public String getStyleName() {
+
+        return m_styleName;
+    }
+
+    /**
      * Returns whether this icon has the additional button style set.<p>
      *
      * @return <code>true</code> in case the additional style is set

@@ -42,6 +42,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
@@ -49,6 +50,7 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.CmsResourceInfo;
+import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -62,7 +64,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
@@ -73,7 +74,6 @@ import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.data.provider.Query;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Page;
-import com.vaadin.server.Page.Styles;
 import com.vaadin.server.SerializableComparator;
 import com.vaadin.server.SerializablePredicate;
 import com.vaadin.server.VaadinService;
@@ -102,59 +102,59 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
- * Class representing a dialog for optimizing image galleries.<p>
+ * Class representing a dialog for optimizing galleries.<p>
  */
 public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
     /**
-     * Class representing an editable gallery image.<p>
+     * Class representing an editable gallery item.<p>
      */
     private class DataItem {
 
-        /** The data binder of this editable gallery image. */
+        /** The data binder of this editable gallery item. */
         private Binder<DataItem> m_binder = new Binder<DataItem>();
 
-        /** The form composite of this editable gallery image. */
+        /** The form composite of this editable gallery item. */
         private FormComposite m_compositeForm;
 
-        /** The image composite of this editable gallery image. */
-        private ImageComposite m_compositeImage;
+        /** The file composite of this editable gallery item. */
+        private FileComposite m_compositeFile;
 
-        /** The image delete composite of this editable gallery image. */
-        private ImageDeleteComposite m_compositeImageDelete;
+        /** The file delete composite of this editable gallery item. */
+        private FileDeleteComposite m_compositeFileDelete;
 
-        /** The copyright information of this editable gallery image. */
+        /** The copyright information of this editable gallery item. */
         private String m_copyright;
 
-        /** Date when this editable gallery image was last modified. */
+        /** Date when this editable gallery item was last modified. */
         private Long m_dateLastModified;
 
-        /** Whether this editable gallery image shall be deleted. */
+        /** Whether this editable gallery item shall be deleted. */
         private Boolean m_deleteFlag = Boolean.valueOf(false);
 
-        /** The description of this editable gallery image. */
+        /** The description of this editable gallery item. */
         private String m_description;
 
-        /** Whether this editable gallery image is used. */
+        /** Whether this editable gallery item is used. */
         private Boolean m_isUsed;
 
-        /** The file name of this editable gallery image. */
+        /** The file name of this editable gallery item. */
         private String m_name;
 
-        /** The full path of this editable gallery image. */
+        /** The full path of this editable gallery item. */
         private String m_path;
 
-        /** The CMS resource of this editable gallery image. */
+        /** The CMS resource of this editable gallery item. */
         private CmsResource m_resource;
 
-        /** The CMS resource utility of this editable gallery image. */
+        /** The CMS resource utility of this editable gallery item. */
         private CmsResourceUtil m_resourceUtil;
 
-        /** The title of this editable gallery image. */
+        /** The title of this editable gallery item. */
         private String m_title;
 
         /**
-         * Creates a new editable gallery image for a given CMS resource.<p>
+         * Creates a new editable gallery item for a given CMS resource.<p>
          *
          * @param resource the CMS resource
          */
@@ -166,7 +166,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Returns the binder of this editable gallery image.<p>
+         * Returns the binder of this editable gallery item.<p>
          *
          * @return the binder
          */
@@ -176,7 +176,27 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Returns the form composite of this editable gallery image.<p>
+         * Returns the file composite of this editable gallery item.<p>
+         *
+         * @return the file composite
+         */
+        public FileComposite getCompositeFile() {
+
+            return m_compositeFile;
+        }
+
+        /**
+         * Returns the file delete composite of this editable gallery item.<p>
+         *
+         * @return the file delete composite
+         */
+        public FileDeleteComposite getCompositeFileDelete() {
+
+            return m_compositeFileDelete;
+        }
+
+        /**
+         * Returns the form composite of this editable gallery item.<p>
          *
          * @return the form composite
          */
@@ -186,27 +206,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Returns the image composite of this editable gallery image.<p>
-         *
-         * @return the image composite
-         */
-        public ImageComposite getCompositeImage() {
-
-            return m_compositeImage;
-        }
-
-        /**
-         * Returns the image delete composite of this editable gallery image.<p>
-         *
-         * @return the image delete composite
-         */
-        public ImageDeleteComposite getCompositeImageDelete() {
-
-            return m_compositeImageDelete;
-        }
-
-        /**
-         * Returns the copyright information of this editable gallery image.<p>
+         * Returns the copyright information of this editable gallery item.<p>
          *
          * @return the copyright information
          */
@@ -216,7 +216,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Returns the date when this editable gallery image was last modified.<p>
+         * Returns the date when this editable gallery item was last modified.<p>
          *
          * @return the date
          */
@@ -226,7 +226,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Returns whether this editable gallery image shall be deleted.<p>
+         * Returns whether this editable gallery item shall be deleted.<p>
          *
          * @return whether delete or not
          */
@@ -236,7 +236,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Returns the description of this editable gallery image.<p>
+         * Returns the description of this editable gallery item.<p>
          *
          * @return the description
          */
@@ -246,7 +246,17 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Returns whether this editable gallery image is used.<p>
+         * Returns the filter text.<p>
+         *
+         * @return the filter text
+         */
+        public String getFilterText() {
+
+            return (m_name + " " + m_title + " " + m_copyright + " " + m_description).toLowerCase();
+        }
+
+        /**
+         * Returns whether this editable gallery item is used.<p>
          *
          * @return whether used or not
          */
@@ -256,7 +266,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Returns the name of this editable gallery image.<p>
+         * Returns the name of this editable gallery item.<p>
          *
          * @return the name
          */
@@ -266,7 +276,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Returns the full path of this editable gallery image.<p>
+         * Returns the full path of this editable gallery item.<p>
          *
          * @return the full path
          */
@@ -276,7 +286,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Converts the form data of this editable gallery image into a list of CMS properties.<p>
+         * Converts the form data of this editable gallery item into a list of CMS properties.<p>
          *
          * @return the CMS property list
          */
@@ -290,7 +300,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Returns the CMS resource this editable gallery image was created from.<p>
+         * Returns the CMS resource this editable gallery item was created from.<p>
          *
          * @return the CMS resource
          */
@@ -300,7 +310,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Returns the CMS resource utility class for this editable gallery image.<p>
+         * Returns the CMS resource utility class for this editable gallery item.<p>
          *
          * @return the CMS resource utility class
          */
@@ -310,7 +320,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Returns the title of this editable gallery image.<p>
+         * Returns the title of this editable gallery item.<p>
          *
          * @return the title
          */
@@ -320,7 +330,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Returns whether this editable gallery image has value changes compared
+         * Returns whether this editable gallery item has value changes compared
          * to the property values actually persisted.<p>
          *
          * @return whether changes or not
@@ -346,7 +356,34 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Sets the copyright information of this editable gallery image.<p>
+         * Returns whether this editable gallery item is renamed compared to
+         * the resource actually persisted.<p>
+         *
+         * @return whether renamed or not
+         */
+        public boolean isRenamed() {
+
+            boolean isRenamed = false;
+            try {
+                isRenamed = !m_name.equals(readName());
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+            return isRenamed;
+        }
+
+        /**
+         * Returns whether this editable gallery item is an image.<p>
+         *
+         * @return whether an image or not
+         */
+        public boolean isTypeImage() {
+
+            return OpenCms.getResourceManager().getResourceType(m_resource) instanceof CmsResourceTypeImage;
+        }
+
+        /**
+         * Sets the copyright information of this editable gallery item.<p>
          *
          * @param copyright the copyright information
          */
@@ -356,7 +393,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Sets the flag that states whether this editable gallery image shall be deleted.<p>
+         * Sets the flag that states whether this editable gallery item shall be deleted.<p>
          *
          * @param deleteFlag the flag
          */
@@ -366,7 +403,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Sets the description of this editable gallery image.<p>
+         * Sets the description of this editable gallery item.<p>
          *
          * @param description the description
          */
@@ -376,7 +413,17 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Sets the CMS resource if this editable gallery image and re-initializes all data and components.<p>
+         * Sets the name of this editable gallery item.<p>
+         *
+         * @param name the name
+         */
+        public void setName(String name) {
+
+            m_name = name;
+        }
+
+        /**
+         * Sets the CMS resource of this editable gallery item and re-initializes all data and components.<p>
          *
          * @param resource the CMS resource
          */
@@ -388,7 +435,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Sets the title of this editable gallery image.<p>
+         * Sets the title of this editable gallery item.<p>
          *
          * @param title the title
          */
@@ -398,18 +445,18 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Initializes all UI components of this editable gallery image and initializes all data fields.<p>
+         * Initializes all UI components of this editable gallery item and initializes all data fields.<p>
          */
         private void initComponent() {
 
-            m_compositeImage = new ImageComposite(this);
-            m_compositeImageDelete = new ImageDeleteComposite(this);
+            m_compositeFile = new FileComposite(this);
+            m_compositeFileDelete = new FileDeleteComposite(this);
             m_compositeForm = new FormComposite(this);
             m_binder.readBean(this);
         }
 
         /**
-         * Initializes all data of this editable gallery image.<p>
+         * Initializes all data of this editable gallery item.<p>
          */
         private void initData() {
 
@@ -426,6 +473,17 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
+        }
+
+        /**
+         * Reads the persisted resource name.<p>
+         *
+         * @return the resource name
+         * @throws CmsException thrown if reading the resource fails
+         */
+        private String readName() throws CmsException {
+
+            return getCms().readResource(m_resource.getStructureId()).getName();
         }
 
         /**
@@ -475,15 +533,19 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /**
-     * Class representing the data list header view for sorting and paging the data item list.
+     * Class representing the data list header view with components for
+     * sorting and paging the gallery item list.<p>
      */
     private class DataListHeaderComposite extends HorizontalLayout {
 
         /** The default serial version UID. */
         private static final long serialVersionUID = 1L;
 
-        /** Page info label. */
+        /** The page info label. */
         private Label m_labelPageInfo;
+
+        /** The center controls. */
+        private HorizontalLayout m_layoutCenterControls;
 
         /** The select box for page selection. */
         private NativeSelect<Integer> m_selectPage;
@@ -491,22 +553,31 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         /** The select box for sort order selection. */
         private NativeSelect<String> m_selectSortOrder;
 
+        /** The text field for filtering. */
+        private TextField m_textFieldFilter;
+
         /**
-         * Creates a new data list header composite.
+         * Creates a new data list header composite.<p>
          */
         public DataListHeaderComposite() {
 
             setHeightUndefined();
             setWidthFull();
             m_selectSortOrder = createSelectSortOrder();
+            m_layoutCenterControls = new HorizontalLayout();
             m_selectPage = createSelectPage();
             m_labelPageInfo = createLabelPageInfo();
+            m_layoutCenterControls.addComponent(m_labelPageInfo);
+            m_layoutCenterControls.addComponent(m_selectPage);
+            m_layoutCenterControls.setComponentAlignment(m_labelPageInfo, Alignment.MIDDLE_LEFT);
+            m_layoutCenterControls.setComponentAlignment(m_selectPage, Alignment.MIDDLE_RIGHT);
+            m_textFieldFilter = createTextFieldFilter();
             addComponent(m_selectSortOrder);
-            addComponent(m_selectPage);
-            addComponent(m_labelPageInfo);
+            addComponent(m_layoutCenterControls);
+            addComponent(m_textFieldFilter);
             setComponentAlignment(m_selectSortOrder, Alignment.MIDDLE_LEFT);
-            setComponentAlignment(m_selectPage, Alignment.MIDDLE_CENTER);
-            setComponentAlignment(m_labelPageInfo, Alignment.MIDDLE_RIGHT);
+            setComponentAlignment(m_layoutCenterControls, Alignment.MIDDLE_CENTER);
+            setComponentAlignment(m_textFieldFilter, Alignment.MIDDLE_RIGHT);
         }
 
         /**
@@ -514,15 +585,13 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
          */
         public void refresh() {
 
-            removeComponent(m_selectPage);
-            removeComponent(m_labelPageInfo);
-            m_selectPage = createSelectPage();
+            m_layoutCenterControls.removeAllComponents();
             m_labelPageInfo = createLabelPageInfo();
-            addComponent(m_selectPage);
-            addComponent(m_labelPageInfo);
-            setComponentAlignment(m_selectSortOrder, Alignment.MIDDLE_LEFT);
-            setComponentAlignment(m_selectPage, Alignment.MIDDLE_CENTER);
-            setComponentAlignment(m_labelPageInfo, Alignment.MIDDLE_RIGHT);
+            m_selectPage = createSelectPage();
+            m_layoutCenterControls.addComponent(m_labelPageInfo);
+            m_layoutCenterControls.addComponent(m_selectPage);
+            m_layoutCenterControls.setComponentAlignment(m_labelPageInfo, Alignment.MIDDLE_LEFT);
+            m_layoutCenterControls.setComponentAlignment(m_selectPage, Alignment.MIDDLE_RIGHT);
         }
 
         /**
@@ -550,11 +619,11 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                     Messages.GUI_GALLERY_OPTIMIZE_LABEL_PAGE_INFO_3,
                     String.valueOf(m_pageHandler.getNumFirstItem()),
                     String.valueOf(m_pageHandler.getNumLastItem()),
-                    String.valueOf(getSize()));
+                    String.valueOf(m_pageHandler.getSizeItem()));
             } else {
                 text = CmsVaadinUtils.getMessageText(
                     Messages.GUI_GALLERY_OPTIMIZE_LABEL_PAGE_INFO_1,
-                    String.valueOf(getSize()));
+                    String.valueOf(m_pageHandler.getSizeItem()));
             }
             Label label = new Label(text);
             label.setWidthUndefined();
@@ -562,7 +631,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Creates a new select box for page select.<p>
+         * Creates a select box for page select.<p>
          *
          * @return the page select box
          */
@@ -571,7 +640,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
             NativeSelect<Integer> selectPage = new NativeSelect<Integer>();
             selectPage.setWidthUndefined();
-            int numPages = getNumPages();
+            int numPages = m_pageHandler.getNumPages();
             selectPage.setItemCaptionGenerator(new ItemCaptionGenerator<Integer>() {
 
                 private static final long serialVersionUID = 1L;
@@ -605,7 +674,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Creates a new select box for sort order select.<p>
+         * Creates a select box for sort order select.<p>
          *
          * @return the sort order select box
          */
@@ -634,24 +703,36 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Returns the number of available pages.<p>
+         * Creates a text field for filtering.<p>
          *
-         * @return the number of available pages
+         * @return the filter text field
          */
-        private int getNumPages() {
+        private TextField createTextFieldFilter() {
 
-            return (int)Math.ceil((double)getSize() / PageHandler.LIMIT);
+            TextField textField = new TextField();
+            textField.setPlaceholder(CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_EXPLORER_FILTER_0));
+            textField.setWidth("200px");
+            textField.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+            textField.setIcon(FontOpenCms.FILTER);
+            textField.addValueChangeListener(event -> {
+                handleFilterChange(event.getValue());
+            });
+            return textField;
         }
 
         /**
-         * Utility function that returns the size of the data list.
+         * Filter change event handler. Updates the page info label and the gallery list.<p>
          *
-         * @return the data list size
+         * @param query the filter query string
          */
         @SuppressWarnings("synthetic-access")
-        private int getSize() {
+        private void handleFilterChange(String query) {
 
-            return m_provider.getItems().size();
+            String clean = query.trim();
+            m_filterHandler.setQuery(clean);
+            m_pageHandler.setCurrentPage(0);
+            refresh();
+            displayDataListView(true);
         }
 
         /**
@@ -665,7 +746,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
             m_pageHandler.setCurrentPage(index);
             Label label = createLabelPageInfo();
-            replaceComponent(m_labelPageInfo, label);
+            m_layoutCenterControls.replaceComponent(m_labelPageInfo, label);
             m_labelPageInfo = label;
             if (display) {
                 displayDataListView(true);
@@ -674,9 +755,317 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /**
-     * Class representing a form composite to edit gallery image data.<p>
+     * Class representing a file composite offering a file preview.<p>
      */
-    private class FormComposite extends AbsoluteLayout {
+    private class FileComposite extends HorizontalLayout {
+
+        /** The panel height. */
+        private static final String PANEL_HEIGHT = "176px";
+
+        /** The panel width. */
+        private static final String PANEL_WIDTH = "206px";
+
+        /** Image scale parameters for preview images as used by the image scaler. */
+        private static final String SCALE_PARAMETERS = "t:1,c:ffffff,w:" + IMAGE_WIDTH + ",h:" + IMAGE_HEIGHT;
+
+        /** Request query string to load a scaled preview image. */
+        private static final String SCALE_QUERY_STRING = "?__scale=" + SCALE_PARAMETERS;
+
+        /** The default serial version UID. */
+        private static final long serialVersionUID = 1L;
+
+        /** The data item of this file composite. */
+        private DataItem m_dataItem;
+
+        /** The main panel of this file composite. */
+        private AbsoluteLayout m_panel;
+
+        /**
+         * Creates a new file composite for a given data item.<p>
+         *
+         * @param dataItem the data item
+         */
+        public FileComposite(DataItem dataItem) {
+
+            m_dataItem = dataItem;
+            setSizeUndefined();
+            setMargin(true);
+            m_panel = new AbsoluteLayout();
+            m_panel.setWidth(PANEL_WIDTH);
+            m_panel.setHeight(PANEL_HEIGHT);
+            m_panel.addStyleName("v-panel");
+            Component link = createClickableFile();
+            m_panel.addComponent(link, "left: 2px; top: 2px;");
+            addComponent(m_panel);
+        }
+
+        /**
+         * Creates a clickable file preview.<p>
+         *
+         * @return the clickable file preview
+         */
+        private Component createClickableFile() {
+
+            Component link = m_dataItem.isTypeImage() ? createClickableImage() : createClickableOther();
+            link.setWidth(IMAGE_WIDTH + "px");
+            link.setHeight(IMAGE_HEIGHT + "px");
+            return link;
+        }
+
+        /**
+         * Utility function to create a clickable image.<p>
+         *
+         * @return the clickable image
+         */
+        private Label createClickableImage() {
+
+            CmsResource resource = m_dataItem.getResource();
+            String image = "<img width=\""
+                + IMAGE_WIDTH
+                + "px\" height=\""
+                + IMAGE_HEIGHT
+                + "px\" src=\""
+                + getScaleUri(resource)
+                + "\" style=\"background: white;\">";
+            String a = "<a target=\"_blank\" href=\"" + getPermanentUri(resource) + "\">" + image + "</a>";
+            String div = "<div class=\""
+                + OpenCmsTheme.GALLERY_PREVIEW_IMAGE
+                + "\" style=\"width:"
+                + IMAGE_WIDTH
+                + "px;height:"
+                + IMAGE_HEIGHT
+                + "px;\">"
+                + a
+                + "</div>";
+            Label label = new Label(div);
+            label.setContentMode(ContentMode.HTML);
+            return label;
+        }
+
+        /**
+         * Utility function to create a clickable preview for files that are not images.
+         *
+         * @return the clickable preview
+         */
+        private Link createClickableOther() {
+
+            CmsResource resource = m_dataItem.getResource();
+            CmsCssIcon cssIcon = (CmsCssIcon)m_dataItem.getResourceUtil().getSmallIconResource();
+            String caption = "<div style=\"width:"
+                + IMAGE_WIDTH
+                + "px;height:"
+                + IMAGE_HEIGHT
+                + "px;display: flex; justify-content: center; align-items: center;\"><span class=\""
+                + cssIcon.getStyleName()
+                + "\" style=\"transform: scale(4);\"></span></div>";
+            Link link = new Link(caption, new ExternalResource(getPermanentUri(resource)));
+            link.setCaptionAsHtml(true);
+            link.setTargetName("_blank");
+            return link;
+        }
+
+        /**
+         * Utility function to create a permanent URI for a file preview.<p>
+         *
+         * @param resource the CMS resource
+         * @return the permanent URI
+         */
+        private String getPermanentUri(CmsResource resource) {
+
+            String structureId = resource.getStructureId().toString();
+            String permalink = CmsStringUtil.joinPaths(
+                OpenCms.getSystemInfo().getOpenCmsContext(),
+                CmsPermalinkResourceHandler.PERMALINK_HANDLER,
+                structureId);
+            return permalink;
+        }
+
+        /**
+         * Utility function to create a permanent URI for a scaled preview image.<p>
+         *
+         * @param resource the CMS resource
+         * @return the scale URI
+         */
+        private String getScaleUri(CmsResource resource) {
+
+            String paramTimestamp = "&timestamp=" + System.currentTimeMillis();
+            return getPermanentUri(resource) + SCALE_QUERY_STRING + paramTimestamp;
+        }
+    }
+
+    /**
+     * Class representing a file delete composite with a check box to mark a file as deleted.<p>
+     */
+    private class FileDeleteComposite extends VerticalLayout {
+
+        /** The default serial version UID. */
+        private static final long serialVersionUID = 1L;
+
+        /** The component width. */
+        private static final String WIDTH = "206px";
+
+        /** The data item of this file delete composite. */
+        private DataItem m_dataItem;
+
+        /**
+         * Creates a new file delete composite for a given data item.<p>
+         *
+         * @param dataItem the data item
+         */
+        public FileDeleteComposite(DataItem dataItem) {
+
+            m_dataItem = dataItem;
+            setMargin(new MarginInfo(true, true, true, false));
+            setSpacing(false);
+            setWidth(WIDTH);
+            setHeightFull();
+            Label fileSize = createDisplayFileSize();
+            addComponent(fileSize);
+            Label dimension = createDisplayDimension();
+            if (m_dataItem.isTypeImage()) {
+                addComponent(dimension);
+            }
+            if (!m_dataItem.getIsUsed().booleanValue()) {
+                CssLayout layout = new CssLayout();
+                Label labelInUse = createDisplayInUseInfo();
+                CheckBox fieldDeleteFlag = createFieldDeleteFlag();
+                layout.addComponent(labelInUse);
+                layout.addComponent(fieldDeleteFlag);
+                addComponent(layout);
+                setExpandRatio(layout, 1.0f);
+                setComponentAlignment(layout, Alignment.BOTTOM_LEFT);
+            } else if (m_dataItem.isTypeImage()) {
+                setExpandRatio(dimension, 1.0f);
+            } else {
+                setExpandRatio(fileSize, 1.0f);
+            }
+        }
+
+        /**
+         * Creates a component displaying the dimension of this editable gallery item.<p>
+         *
+         * @return the display component
+         */
+        private Label createDisplayDimension() {
+
+            return new Label(getFormattedDimension());
+        }
+
+        /**
+         * Creates a component displaying the size of this editable gallery item.<p>
+         *
+         * @return the display component
+         */
+        private Label createDisplayFileSize() {
+
+            return new Label(getFormattedFileSize());
+        }
+
+        /**
+         * Creates a component displaying whether this editable gallery item is used.<p>
+         *
+         * @return the display component
+         */
+        private Label createDisplayInUseInfo() {
+
+            String notInUse = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_LABEL_NOT_IN_USE_0);
+            return new Label(notInUse);
+        }
+
+        /**
+         * Creates a check box to mark an item as deleted.<p>
+         *
+         * @return the check box
+         */
+        private CheckBox createFieldDeleteFlag() {
+
+            String caption = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_INPUT_DELETE_UNUSED_0);
+            CheckBox field = new CheckBox(caption);
+            field.setCaptionAsHtml(true);
+            field.setWidthFull();
+            field.setEnabled(!CmsGalleryOptimizeDialog.this.isReadOnly());
+            m_dataItem.getBinder().bind(field, DataItem::getDeleteFlag, DataItem::setDeleteFlag);
+            return field;
+        }
+
+        /**
+         * Returns the dimension of this file in the case the file is an image.<p>
+         *
+         * @return the formatted dimension
+         */
+        private String getFormattedDimension() {
+
+            String imageSize = null;
+            try {
+                imageSize = getCms().readPropertyObject(
+                    m_dataItem.getResource(),
+                    CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
+                    false).getValue();
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+            String dimension = "? x ?";
+            if (imageSize != null) {
+                String[] tokens = imageSize.split(",");
+                if ((tokens.length == 2) && (tokens[0].length() > 2) && (tokens[1].length() > 2)) {
+                    dimension = tokens[0].substring(2) + " x " + tokens[1].substring(2);
+                }
+            }
+            return dimension;
+        }
+
+        /**
+         * Returns the size of this editable gallery item in a formatted way.<p>
+         *
+         * @return the formatted file size
+         */
+        private String getFormattedFileSize() {
+
+            return (m_dataItem.getResource().getLength() / 1024) + " kb";
+        }
+    }
+
+    /**
+     * Filter handler. Keeps track of the query string with which the user
+     * currently filters the gallery.
+     */
+    private class FilterHandler {
+
+        /** The filter query string. */
+        private String m_query;
+
+        /**
+         * Creates a new filter handler.<p>
+         */
+        public FilterHandler() {
+
+        }
+
+        /**
+         * Returns the filter query string.<p>
+         *
+         * @return the filter query string
+         */
+        public String getQuery() {
+
+            return m_query != null ? m_query.toLowerCase() : null;
+        }
+
+        /**
+         * Sets the filter query string.<p>
+         *
+         * @param query the filter query string
+         */
+        public void setQuery(String query) {
+
+            m_query = query;
+        }
+    }
+
+    /**
+     * Class representing a form composite to edit gallery item data.<p>
+     */
+    private class FormComposite extends VerticalLayout {
 
         /** The default serial version UID. */
         private static final long serialVersionUID = 1L;
@@ -693,17 +1082,35 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
             m_dataItem = dataItem;
             setSizeFull();
-            setStyleName("o-gallery-composite-form");
-            addComponent(createDisplayResourceInfo(), "top: 0px;");
-            addComponent(createDisplayResourceDate(), "top: 42px;");
+            setMargin(true);
+            setSpacing(false);
+            addComponent(createCompositeResourceInfo());
+            addComponent(createDisplayResourceDate());
             FormLayout formLayout = new FormLayout();
             formLayout.setMargin(false);
             formLayout.setSpacing(false);
-            formLayout.addStyleName("o-gallery-formlayout");
+            formLayout.addStyleName(OpenCmsTheme.GALLERY_FORM);
             formLayout.addComponent(createFieldTitle());
             formLayout.addComponent(createFieldCopyright());
             formLayout.addComponent(createFieldDescription());
-            addComponent(formLayout, "bottom: 0px;");
+            addComponent(formLayout);
+            setComponentAlignment(formLayout, Alignment.BOTTOM_LEFT);
+            setExpandRatio(formLayout, 1.0f);
+        }
+
+        /**
+         * Returns a composite to display and edit resource information.<p>
+         *
+         * @return the component
+         */
+        private CmsResourceInfo createCompositeResourceInfo() {
+
+            CmsResourceInfo resourceInfo = new CmsResourceInfo(m_dataItem.getResource());
+            resourceInfo.setTopLineText(m_dataItem.getName());
+            resourceInfo.decorateTopInput();
+            TextField field = resourceInfo.getTopInput();
+            m_dataItem.getBinder().bind(field, DataItem::getName, DataItem::setName);
+            return resourceInfo;
         }
 
         /**
@@ -722,18 +1129,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             Label label = new Label(message);
             label.addStyleNames(ValoTheme.LABEL_LIGHT, ValoTheme.LABEL_TINY);
             return label;
-        }
-
-        /**
-         * Returns a component to display resource information.<p>
-         *
-         * @return the component
-         */
-        private CmsResourceInfo createDisplayResourceInfo() {
-
-            CmsResourceInfo resourceInfo = new CmsResourceInfo(m_dataItem.getResource());
-            resourceInfo.setTopLineText(m_dataItem.getName());
-            return resourceInfo;
         }
 
         /**
@@ -798,247 +1193,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /**
-     * Class representing an image composite offering an image preview.<p>
-     */
-    private class ImageComposite extends HorizontalLayout {
-
-        /** The panel height. */
-        private static final String PANEL_HEIGHT = "176px";
-
-        /** The panel width. */
-        private static final String PANEL_WIDTH = "206px";
-
-        /** Image scale parameters for preview images as used by the image scaler. */
-        private static final String SCALE_PARAMETERS = "t:1,c:ffffff,w:" + IMAGE_WIDTH + ",h:" + IMAGE_HEIGHT;
-
-        /** Request query string to load a scaled preview image. */
-        private static final String SCALE_QUERY_STRING = "?__scale=" + SCALE_PARAMETERS;
-
-        /** The default serial version UID. */
-        private static final long serialVersionUID = 1L;
-
-        /** The data item of this image composite. */
-        private DataItem m_dataItem;
-
-        /** The main panel of this image composite. */
-        private AbsoluteLayout m_panel;
-
-        /**
-         * Creates a new image composite for a given data item.<p>
-         *
-         * @param dataItem the data item
-         */
-        public ImageComposite(DataItem dataItem) {
-
-            m_dataItem = dataItem;
-            setSizeUndefined();
-            setMargin(true);
-            m_panel = new AbsoluteLayout();
-            m_panel.setWidth(PANEL_WIDTH);
-            m_panel.setHeight(PANEL_HEIGHT);
-            m_panel.addStyleName("v-panel");
-            Link link = createClickableImage();
-            optimizeForSvg(link);
-            m_panel.addComponent(link, "left: 2px; top: 2px;");
-            addComponent(m_panel);
-        }
-
-        /**
-         * Utility function to create a clickable Vaadin image.<p>
-         *
-         * @return the clickable Vaadin image
-         */
-        private Link createClickableImage() {
-
-            CmsResource resource = m_dataItem.getResource();
-            ExternalResource externalResource = new ExternalResource(getScaleUri(resource));
-            Link link = new Link(null, new ExternalResource(getPermanentUri(resource)));
-            link.setId("image_" + UUID.randomUUID());
-            link.setWidth(PANEL_WIDTH);
-            link.setHeight(PANEL_HEIGHT);
-            link.setIcon(externalResource);
-            link.setTargetName("_blank");
-            link.setStyleName("o-gallery-optimize-image-preview");
-            return link;
-        }
-
-        /**
-         * Utility function to create a permanent URI for a preview image.<p>
-         *
-         * @param resource the CMS resource
-         * @return the permanent URI
-         */
-        private String getPermanentUri(CmsResource resource) {
-
-            String structureId = resource.getStructureId().toString();
-            String permalink = CmsStringUtil.joinPaths(
-                OpenCms.getSystemInfo().getOpenCmsContext(),
-                CmsPermalinkResourceHandler.PERMALINK_HANDLER,
-                structureId);
-            return permalink;
-        }
-
-        /**
-         * Utility function to create a permanent URI for a scaled preview image.<p>
-         *
-         * @param resource the CMS resource
-         * @return the scale URI
-         */
-        private String getScaleUri(CmsResource resource) {
-
-            String paramTimestamp = "&timestamp=" + System.currentTimeMillis();
-            return getPermanentUri(resource) + SCALE_QUERY_STRING + paramTimestamp;
-        }
-
-        private void optimizeForSvg(Link link) {
-
-            if (m_dataItem.getPath().toLowerCase().endsWith(".svg")) {
-                JavaScript.getCurrent().execute(
-                    "var link = document.getElementById('"
-                        + link.getId()
-                        + "');"
-                        + "var image = link.querySelector('img');"
-                        + "image.width = "
-                        + IMAGE_WIDTH
-                        + ";"
-                        + "image.height = "
-                        + IMAGE_HEIGHT
-                        + ";"
-                        + "image.style = 'background-color: white';");
-
-            }
-        }
-    }
-
-    /**
-     * Class representing a image delete composite with a check box to mark an image as deleted.<p>
-     */
-    private class ImageDeleteComposite extends VerticalLayout {
-
-        /** The default serial version UID. */
-        private static final long serialVersionUID = 1L;
-
-        /** The component width. */
-        private static final String WIDTH = "206px";
-
-        /** The data item of this image composite. */
-        private DataItem m_dataItem;
-
-        /**
-         * Creates a new image delete composite for a given data item.<p>
-         *
-         * @param dataItem the data item
-         */
-        public ImageDeleteComposite(DataItem dataItem) {
-
-            m_dataItem = dataItem;
-            setMargin(new MarginInfo(true, true, true, false));
-            setSpacing(false);
-            setWidth(WIDTH);
-            setHeightFull();
-            Label dimension = createDisplayDimension();
-            Label fileSize = createDisplayFileSize();
-            addComponent(dimension);
-            addComponent(fileSize);
-            if (!m_dataItem.getIsUsed().booleanValue()) {
-                CssLayout layout = new CssLayout();
-                Label labelInUse = createDisplayInUseInfo();
-                CheckBox fieldDeleteFlag = createFieldDeleteFlag();
-                layout.addComponent(labelInUse);
-                layout.addComponent(fieldDeleteFlag);
-                addComponent(layout);
-                setExpandRatio(layout, 1.0f);
-                setComponentAlignment(layout, Alignment.BOTTOM_LEFT);
-            } else {
-                setExpandRatio(fileSize, 1.0f);
-            }
-        }
-
-        /**
-         * Creates a component displaying the dimension of this editable gallery image.<p>
-         *
-         * @return the display component
-         */
-        private Label createDisplayDimension() {
-
-            return new Label(getFormattedDimension());
-        }
-
-        /**
-         * Creates a component displaying the size of this editable gallery image.<p>
-         *
-         * @return the display component
-         */
-        private Label createDisplayFileSize() {
-
-            return new Label(getFormattedFileSize());
-        }
-
-        /**
-         * Creates a component displaying whether this editable gallery image is used.<p>
-         *
-         * @return the display component
-         */
-        private Label createDisplayInUseInfo() {
-
-            String notInUse = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_LABEL_NOT_IN_USE_0);
-            return new Label(notInUse);
-        }
-
-        /**
-         * Creates a check box to mark an image as deleted.<p>
-         *
-         * @return the check box
-         */
-        private CheckBox createFieldDeleteFlag() {
-
-            String caption = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_INPUT_DELETE_UNUSED_0);
-            CheckBox field = new CheckBox(caption);
-            field.setCaptionAsHtml(true);
-            field.setWidthFull();
-            field.setEnabled(!CmsGalleryOptimizeDialog.this.isReadOnly());
-            m_dataItem.getBinder().bind(field, DataItem::getDeleteFlag, DataItem::setDeleteFlag);
-            return field;
-        }
-
-        /**
-         * Returns the dimension of this editable gallery image in a formatted way.<p>
-         *
-         * @return the formatted dimension
-         */
-        private String getFormattedDimension() {
-
-            String imageSize = null;
-            try {
-                imageSize = getCms().readPropertyObject(
-                    m_dataItem.getResource(),
-                    CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
-                    false).getValue();
-            } catch (CmsException e) {
-                LOG.warn(e.getLocalizedMessage(), e);
-            }
-            String dimension = "? x ?";
-            if (imageSize != null) {
-                String[] tokens = imageSize.split(",");
-                if ((tokens.length == 2) && (tokens[0].length() > 2) && (tokens[1].length() > 2)) {
-                    dimension = tokens[0].substring(2) + " x " + tokens[1].substring(2);
-                }
-            }
-            return dimension;
-        }
-
-        /**
-         * Returns the size of this editable gallery image in a formatted way.<p>
-         *
-         * @return the formatted file size
-         */
-        private String getFormattedFileSize() {
-
-            return (m_dataItem.getResource().getLength() / 1024) + " kb";
-        }
-    }
-
-    /**
      * Page handler. Keeps track of the page currently selected by the user.
      */
     private class PageHandler {
@@ -1084,10 +1238,21 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         public int getNumLastItem() {
 
             int lastItem = ((LIMIT * m_currentPage) + LIMIT);
-            if (lastItem > getSizeItem()) {
-                lastItem = getSizeItem();
+            int sizeItem = getSizeItem();
+            if (lastItem > sizeItem) {
+                lastItem = sizeItem;
             }
             return lastItem;
+        }
+
+        /**
+         * Returns the number of available pages.<p>
+         *
+         * @return the number of available pages
+         */
+        public int getNumPages() {
+
+            return (int)Math.ceil((double)getSizeItem() / PageHandler.LIMIT);
         }
 
         /**
@@ -1109,7 +1274,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         @SuppressWarnings("synthetic-access")
         public int getSizeItem() {
 
-            return m_provider.getItems().size();
+            return m_provider.size(m_filterHandler);
         }
 
         /**
@@ -1184,19 +1349,25 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
-         * Fetches one page of the sorted in-memory data item list.<p>
+         * Fetches one page of the sorted, filtered in-memory data item list.<p>
          *
          * @param pageHandler the page handler containing offset and limit information
+         * @param filterHandler the filter handler containing the actual filter query string
          * @return the sorted data item page
          */
-        public List<DataItem> fetch(PageHandler pageHandler) {
+        public List<DataItem> fetch(PageHandler pageHandler, FilterHandler filterHandler) {
 
+            SerializablePredicate<DataItem> filter = null;
+            Query<DataItem, SerializablePredicate<DataItem>> filterQuery = composeFilterQuery(filterHandler);
+            if (filterQuery != null) {
+                filter = filterQuery.getFilter().orElse(null);
+            }
             Query<DataItem, SerializablePredicate<DataItem>> query = new Query<DataItem, SerializablePredicate<DataItem>>(
                 pageHandler.getOffset(),
                 pageHandler.getLimit(),
                 Collections.emptyList(),
                 getSortComparator(),
-                null);
+                filter);
             return super.fetch(query).collect(Collectors.toList());
         }
 
@@ -1207,6 +1378,34 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         public List<DataItem> getItems() {
 
             return (List<DataItem>)super.getItems();
+        }
+
+        /**
+         * Returns the size of the list respecting the current filter.
+         *
+         * @param filterHandler the filter handler
+         * @return the size
+         */
+        public int size(FilterHandler filterHandler) {
+
+            Query<DataItem, SerializablePredicate<DataItem>> filterQuery = composeFilterQuery(filterHandler);
+            return filterQuery == null ? getItems().size() : super.size(filterQuery);
+        }
+
+        /**
+         * Composes a provider query for a given filter handler.<p>
+         *
+         * @param filterHandler the given filter handler
+         * @return the provider query
+         */
+        private Query<DataItem, SerializablePredicate<DataItem>> composeFilterQuery(FilterHandler filterHandler) {
+
+            Query<DataItem, SerializablePredicate<DataItem>> filterQuery = null;
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(filterHandler.getQuery())) {
+                filterQuery = new Query<DataItem, SerializablePredicate<DataItem>>(
+                    dataItem -> dataItem.getFilterText().contains(filterHandler.getQuery()));
+            }
+            return filterQuery;
         }
     }
 
@@ -1376,16 +1575,16 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     /** The dialog context. */
     private I_CmsDialogContext m_context;
 
-    /** The UI composite representing the gallery image list header view. */
+    /** The UI composite representing the gallery item list header view. */
     private Object m_compositeDataListHeader;
 
-    /** The UI component representing the gallery image list header view. */
+    /** The UI component representing the gallery item list header view. */
     private VerticalLayout m_dataListHeaderView;
 
-    /** The UI component representing the gallery image list view. */
+    /** The UI component representing the gallery item list view. */
     private GridLayout m_dataListView;
 
-    /** The lock action record for the gallery image folder. */
+    /** The lock action record for the gallery folder. */
     private CmsLockActionRecord m_lockActionRecord;
 
     /** Localized message. */
@@ -1409,6 +1608,9 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     /** Localized message. */
     private String m_messageSortUnusedFirst;
 
+    /** The filter handler. */
+    private FilterHandler m_filterHandler = new FilterHandler();
+
     /** The page handler. */
     private PageHandler m_pageHandler = new PageHandler();
 
@@ -1428,7 +1630,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         m_context = context;
         initMessages();
         initDialog();
-        initStyles();
         initLock();
         initEvents();
         dataListLoad();
@@ -1472,7 +1673,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
      *
      * @param dataItemList the list of deleted data items
      */
-    void handleDataItemDelete(List<DataItem> dataItemList) {
+    void handleDataListDelete(List<DataItem> dataItemList) {
 
         m_provider.getItems().removeAll(dataItemList);
         ((DataListHeaderComposite)m_compositeDataListHeader).refresh();
@@ -1484,7 +1685,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
      * @param dataItemList the list of updated data items
      * @throws CmsException thrown if reading a persisted CMS resource fails
      */
-    void handleDataItemUpdate(List<DataItem> dataItemList) throws CmsException {
+    void handleDataListUpdate(List<DataItem> dataItemList) throws CmsException {
 
         for (DataItem dataItem : dataItemList) {
             CmsResource reload = getCms().readResource(dataItem.getResource().getStructureId());
@@ -1500,6 +1701,10 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
         Window window = CmsVaadinUtils.getWindow(CmsGalleryOptimizeDialog.this);
         window.removeAllCloseShortcuts(); // this is because Vaadin by default adds an ESC shortcut to every window
+        // this is because the grid view unintentionally catches the focus whenever the height of the grid view
+        // gets larger / smaller than it's containing layout, i.e., whenever the scroll-bar appears or disappears
+        Page.getCurrent().getStyles().add(".o-gallery-grid-force-scroll { min-height: 1000px; }");
+        m_dataListView.addStyleName("o-gallery-grid-force-scroll");
     }
 
     /**
@@ -1550,7 +1755,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                 @Override
                 public void run() {
 
-                    saveAndDelete();
+                    persist();
                     m_saveHandler.setFlagCancelSave(false);
                     if (exit) {
                         finishDialog(m_saveHandler.getChangedIds());
@@ -1570,7 +1775,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                 m_saveHandler.getDeletedCurrentResource(),
                 org.opencms.ui.Messages.GUI_SELECTED_0);
         } else {
-            saveAndDelete();
+            persist();
             if (exit) {
                 finishDialog(m_saveHandler.getChangedIds());
             }
@@ -1589,7 +1794,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         CmsResource resource = m_context.getResources().get(0);
         HorizontalLayout layout1 = new HorizontalLayout();
         layout1.setWidthFull();
-        layout1.addStyleNames("v-panel", "o-error-dialog", "o-gallery-in-use");
+        layout1.addStyleNames("v-panel", "o-error-dialog", OpenCmsTheme.GALLERY_ALERT_IN_USE);
         HorizontalLayout layout2 = new HorizontalLayout();
         layout2.setWidthUndefined();
         Label icon = new Label(FontOpenCms.WARNING.getHtml());
@@ -1634,7 +1839,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /**
-     * Whether one of the editable gallery images has been modified by the user.<p>
+     * Whether one of the editable gallery items has been modified by the user.<p>
      *
      * @return whether has changes
      */
@@ -1650,7 +1855,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /**
-     * Loads the gallery image list.<p>
+     * Loads the gallery item list.<p>
      */
     private void dataListLoad() {
 
@@ -1659,8 +1864,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         CmsObject cms = A_CmsUI.getCmsObject();
         try {
             m_context.getResources().get(0);
-            CmsResourceFilter resourceFilter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(
-                new CmsResourceTypeImage());
+            CmsResourceFilter resourceFilter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireFile();
             List<CmsResource> resources = cms.readResources(cms.getSitePath(root), resourceFilter);
             for (CmsResource resource : resources) {
                 DataItem dataItem = new DataItem(resource);
@@ -1677,9 +1881,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
      */
     private void displayDataListHeaderView() {
 
-        m_dataListHeaderView.setHeightUndefined();
-        m_dataListHeaderView.setWidthFull();
-        m_dataListHeaderView.setMargin(false);
         if (isReadOnly()) {
             m_dataListHeaderView.addComponent(createDisplayInOnlineProject());
         } else {
@@ -1698,20 +1899,16 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /**
-     * Displays the UI component representing the scrollable gallery image list.<p>
+     * Displays the UI component representing the scrollable gallery item list.<p>
      *
-     * @param scrollToTop whether to scroll to top after displaying gallery image list
+     * @param scrollToTop whether to scroll to top after displaying the gallery item list
      */
     private void displayDataListView(boolean scrollToTop) {
 
-        m_dataListView.setHeightUndefined();
-        m_dataListView.setWidthFull();
-        m_dataListView.setMargin(false);
-        m_dataListView.setSpacing(false);
         m_dataListView.removeAllComponents();
-        List<DataItem> dataItemList = m_provider.fetch(m_pageHandler);
+        List<DataItem> dataItemList = m_provider.fetch(m_pageHandler, m_filterHandler);
         m_dataListView.setColumns(3);
-        m_dataListView.setRows(dataItemList.size() + 1);
+        m_dataListView.setRows(dataItemList.size() + 2);
         m_dataListView.setColumnExpandRatio(2, 1.0f);
         int i = 1;
         Label dummy = new Label(" ");
@@ -1719,16 +1916,16 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         dummy.setHeight("0px");
         m_dataListView.addComponent(dummy, 0, 0);
         for (DataItem dataItem : dataItemList) {
-            dataItem.getCompositeImage().removeStyleName("o-gallery-optimize-row-odd");
-            dataItem.getCompositeImageDelete().removeStyleName("o-gallery-optimize-row-odd");
-            dataItem.getCompositeForm().removeStyleName("o-gallery-optimize-row-odd");
+            dataItem.getCompositeFile().removeStyleName(OpenCmsTheme.GALLERY_GRID_ROW_ODD);
+            dataItem.getCompositeFileDelete().removeStyleName(OpenCmsTheme.GALLERY_GRID_ROW_ODD);
+            dataItem.getCompositeForm().removeStyleName(OpenCmsTheme.GALLERY_GRID_ROW_ODD);
             if ((i % 2) == 0) {
-                dataItem.getCompositeImage().addStyleName("o-gallery-optimize-row-odd");
-                dataItem.getCompositeImageDelete().addStyleName("o-gallery-optimize-row-odd");
-                dataItem.getCompositeForm().addStyleName("o-gallery-optimize-row-odd");
+                dataItem.getCompositeFile().addStyleName(OpenCmsTheme.GALLERY_GRID_ROW_ODD);
+                dataItem.getCompositeFileDelete().addStyleName(OpenCmsTheme.GALLERY_GRID_ROW_ODD);
+                dataItem.getCompositeForm().addStyleName(OpenCmsTheme.GALLERY_GRID_ROW_ODD);
             }
-            m_dataListView.addComponent(dataItem.getCompositeImage(), 0, i);
-            m_dataListView.addComponent(dataItem.getCompositeImageDelete(), 1, i);
+            m_dataListView.addComponent(dataItem.getCompositeFile(), 0, i);
+            m_dataListView.addComponent(dataItem.getCompositeFileDelete(), 1, i);
             m_dataListView.addComponent(dataItem.getCompositeForm(), 2, i);
             i++;
         }
@@ -1738,8 +1935,8 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /**
-     * Sorts the gallery image list according to a given sort order and re-renders the
-     * gallery image list view.
+     * Sorts the gallery item list according to a given sort order and re-renders the
+     * gallery item list view.<p>
      *
      * @param sortOrder the sort order
      */
@@ -1820,7 +2017,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /**
-     * Initializes the events of this dialog.
+     * Initializes the events of this dialog.<p>
      */
     private void initEvents() {
 
@@ -1855,7 +2052,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /**
-     * Locks the gallery folder.
+     * Locks the gallery folder.<p>
      */
     private void initLock() {
 
@@ -1867,7 +2064,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /**
-     * Initializes the localized messages of this dialog.
+     * Initializes the localized messages of this dialog.<p>
      */
     private void initMessages() {
 
@@ -1886,78 +2083,14 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /**
-     * Initializes some styles for this dialog.<p>
-     */
-    private void initStyles() {
-
-        Styles styles = Page.getCurrent().getStyles();
-        styles.add(".o-gallery-optimize-row-odd { background-color: #E0E0E2; }");
-        styles.add(
-            ".o-gallery-optimize-image-preview {"
-                + "background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAI0AAABkCAMAAACMy0PdAAAAS1BMVEXm5ua5ubn09PTw8PDy8vLp6ens7Oz29vbu7u7IyMjNzc2+vr7ExMTBwcHKysrPz8/R0dHc3NzY2NjT09Ph4eHl5eXj4+Pe3t7V1dW2TkV8AAADjklEQVRo3u2X7XajIBBAyXZxC/ItoO//pGuSSawIo+eIrT3HO3+iglyHAVpycXFxcXFxcXFxcXGxD3t7w8iP4yYbQX4Sb0fMZCNtjkC+BdfetqAJcKzWJIPSvi30mD7uPDkEGExM5P0cAbq3oDA2HGEjPZnwMmcjCNAntlINvq4NJ1/RtxyvIYPMPhbahkNs+LJqBGPDy4YlD7FE1bcRxvqQ7k04yu+x0eWZ4j1JCHp9HcodNslp8GUqWE8yeLPqs2uFczfxZaIGUsAPuE+7w6aA7NFzFoNVt5FJKcaQHLQI3W4bXCYq2Y43Tb8pO/1+G/yFw2uR+WknKBIq2aQF7JmFhS1eFToEuKNqLymyUoZW3lqfzgwnQPtNNj0Y3MeTkAs1uUa8dGRdGzU7ztXi9G49mhxV18bOD8huUbYaO+5vrqqNeM6NS+x8m262Pm8Tq9poWEXpzHSL5AikiGvZ2EWNygB+yfe7420gE2ZZmC7dkEK2f1UbWNJsdg/SlW46Mld2VW1EZiCX/gHPptpKMQfYhDb9fyrqpTLL9PdVbVhqAzvO0CaNCosqHJobWEF+NjIv25Aj6kYku4vK7bfycBsZ04PAL4/ICNtz/mPq7zduNite5BJgMzac4NBikPa2DJiFKOH6bhfMbdaGETBe9h97UyQw2hzwdQYu1X09yXYGlA3P9I4EhSJkbUSkd6J4Xvbjb5s0gZfKTG+KgiauzeLoA/e80oRS4mYNDH3g26wNQQNBZmHQp4PLAL9fGHiu5RJBUXCbPA4eGxjBw9Dzp72QS3R9GxbhuRNvAaKT8aLIfsgOG1FAU8Bz8cBQSh4/uX29UIscfs2mKQYVJRx9NBjpDXtYEEqUUIG+6EQWOnZEAs9NEfvle7x1zvX3yaFvnMhDGzw3DYJgpWC2wYhM5Ps1OATLHENwtCnOsGMFeEPRQHPDMEws9PLIJzQ4uA2KcrnO1CpWxO+1wX08navQyBkC2WOj1tGD9ZHQu1TwhnOF0lSywemaqBWY7LL5bMrBN6Kp39auaT6xwHPDNxJ7volhPTcIhm+i7/XGhp8rEPThoDfgeqO3Qddt6kC968wan+s2H1XiSRN6h9rgb6mWG3B6QqMdugxjCxzycRgN8W4mY1e7VLHBpYIFqfiBg9hUZpy99aFGmzNBPv6eKE6Wm79n4rL5PTZ/ThTkz5m4bH6Pzb8Txcly8+9MXDZl/gM9XrODdIfTogAAAABJRU5ErkJggg==) -0px -0px  no-repeat;\n"
-                + "background-position: center;\n"
-                + "width: "
-                + IMAGE_WIDTH
-                + "px;\n"
-                + "height: "
-                + IMAGE_HEIGHT
-                + "px;\n"
-                + "}");
-        styles.add(
-            ".o-gallery-formlayout .v-formlayout-contentcell, .o-gallery-formlayout .v-formlayout-captioncell {"
-                + " padding-top: 4px;\n"
-                + " }");
-        styles.add(".o-gallery-composite-form { padding: 8px; }");
-        styles.add(
-            "div.v-horizontallayout-o-gallery-in-use {\n"
-                + " color: white !important;\n"
-                + " background-color: #b31b34 !important;\n"
-                + " background-image: linear-gradient(to bottom,#b31b34 0%, #b31b34 100%) !important;\n"
-                + "}");
-    }
-
-    /**
      * Persists all data changes that have not been saved yet. Refreshes the UI.
-     * Informs the user about failed updates and failed deletes.
+     * Informs the user about failed updates, failed renames and failed deletes.<p>
      */
-    private void saveAndDelete() {
+    private void persist() {
 
         StringBuilder errorMessageList = new StringBuilder();
-        List<DataItem> saved = new ArrayList<DataItem>();
-        for (DataItem dataItem : m_saveHandler.getChangedCurrent()) {
-            if (dataItem.hasChanges()) {
-                CmsResource resource = dataItem.getResource();
-                try {
-                    getCms().writePropertyObjects(resource, dataItem.getPropertyList());
-                    getCms().writeResource(resource);
-                    saved.add(dataItem);
-                } catch (CmsException e) {
-                    errorMessageList.append("<div>" + e.getLocalizedMessage() + "</div>");
-                    LOG.warn(e.getLocalizedMessage(), e);
-                }
-            }
-        }
-        try {
-            handleDataItemUpdate(saved);
-        } catch (CmsException e) {
-            errorMessageList.append("<div>" + e.getLocalizedMessage() + "</div>");
-            LOG.warn(e.getLocalizedMessage(), e);
-        }
-        List<DataItem> deleted = new ArrayList<DataItem>();
-        for (DataItem dataItem : m_saveHandler.getDeletedCurrent()) {
-            CmsResource resource = dataItem.getResource();
-            try {
-                getCms().deleteResource(getCms().getSitePath(resource), CmsResource.DELETE_PRESERVE_SIBLINGS);
-                deleted.add(dataItem);
-            } catch (CmsException e) {
-                errorMessageList.append("<div>" + e.getLocalizedMessage() + "</div>");
-                LOG.warn(e.getLocalizedMessage(), e);
-            }
-        }
-        handleDataItemDelete(deleted);
-        if (m_saveHandler.hasDeletedCurrent()) {
-            displayDataListView(true);
-        }
+        persistUpdateAndRename(errorMessageList);
+        persistDelete(errorMessageList);
         if (errorMessageList.length() == 0) {
             String message = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_LABEL_SUCCESSFULLY_SAVED_0);
             Notification notification = new Notification(message, "", Notification.Type.HUMANIZED_MESSAGE);
@@ -1975,6 +2108,72 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /**
+     * Persists all deleted gallery items.<p>
+     *
+     * @param errorMessageList string builder to append error messages
+     */
+    private void persistDelete(StringBuilder errorMessageList) {
+
+        List<DataItem> deleted = new ArrayList<DataItem>();
+        for (DataItem dataItem : m_saveHandler.getDeletedCurrent()) {
+            CmsResource resource = dataItem.getResource();
+            try {
+                getCms().deleteResource(getCms().getSitePath(resource), CmsResource.DELETE_PRESERVE_SIBLINGS);
+                deleted.add(dataItem);
+            } catch (CmsException e) {
+                errorMessageList.append("<div>" + e.getLocalizedMessage() + "</div>");
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+        }
+        handleDataListDelete(deleted);
+        if (m_saveHandler.hasDeletedCurrent()) {
+            displayDataListView(true);
+        }
+    }
+
+    /**
+     * Persists all updated and renamed gallery items.<p>
+     *
+     * @param errorMessageList string builder to append error messages
+     */
+    private void persistUpdateAndRename(StringBuilder errorMessageList) {
+
+        List<DataItem> updated = new ArrayList<DataItem>();
+        for (DataItem dataItem : m_saveHandler.getChangedCurrent()) {
+            CmsResource resource = dataItem.getResource();
+            if (dataItem.hasChanges()) {
+                try {
+                    getCms().writePropertyObjects(resource, dataItem.getPropertyList());
+                    getCms().writeResource(resource);
+                    updated.add(dataItem);
+                } catch (CmsException e) {
+                    errorMessageList.append("<div>" + e.getLocalizedMessage() + "</div>");
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
+            }
+            if (dataItem.isRenamed()) {
+                String source = getCms().getSitePath(resource);
+                String destination = CmsStringUtil.joinPaths(CmsResource.getParentFolder(source), dataItem.getName());
+                try {
+                    getCms().renameResource(source, destination);
+                    if (!updated.contains(dataItem)) {
+                        updated.add(dataItem);
+                    }
+                } catch (CmsException e) {
+                    errorMessageList.append("<div>" + e.getLocalizedMessage() + "</div>");
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+        try {
+            handleDataListUpdate(updated);
+        } catch (CmsException e) {
+            errorMessageList.append("<div>" + e.getLocalizedMessage() + "</div>");
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+    }
+
+    /**
      * Saves the selected sort order in the user session.<p>
      *
      * @param sortOrder the sort order
@@ -1986,7 +2185,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /**
-     * Unlocks the gallery folder.
+     * Unlocks the gallery folder.<p>
      */
     private void unlock() {
 

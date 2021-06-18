@@ -48,10 +48,11 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomLayout;
+import com.vaadin.ui.TextField;
 import com.vaadin.v7.ui.Label;
 
 /**
- * Resource info box.<p>
+ * Class representing a resource info box.<p>
  */
 public class CmsResourceInfo extends CustomLayout {
 
@@ -63,6 +64,103 @@ public class CmsResourceInfo extends CustomLayout {
 
     /** The serial version id. */
     private static final long serialVersionUID = -1715926038770100307L;
+
+    /** The sub title label. */
+    private Label m_bottomText = new Label();
+
+    /** The button label. */
+    private Label m_buttonLabel = new Label();
+
+    /** The resource icon. */
+    private CmsResourceIcon m_icon = new CmsResourceIcon();
+
+    /** The label on top. */
+    private Label m_topText = new Label();
+
+    /** The input on top. */
+    private TextField m_topInput = new TextField();
+
+    /**
+     * Constructor.<p>
+     */
+    public CmsResourceInfo() {
+
+        super();
+        try {
+            initTemplateContentsFromInputStream(
+                CmsVaadinUtils.readCustomLayout(CmsResourceInfo.class, "resourceinfo.html"));
+            addComponent(m_topText, "topLabel");
+            addComponent(m_bottomText, "bottomLabel");
+            addComponent(m_icon, "icon");
+            addComponent(m_buttonLabel, "buttonContainer");
+            addComponent(m_topInput, "topInput");
+            m_topInput.setVisible(false);
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    /**
+     * Constructor.<p>
+     *
+     * @param resource the resource
+     */
+    public CmsResourceInfo(CmsResource resource) {
+
+        this(resource, true);
+    }
+
+    /**
+     * Constructor.<p>
+     *
+     * @param resource the resource
+     * @param useState true if the resource state should be displayed
+     */
+    public CmsResourceInfo(CmsResource resource, boolean useState) {
+
+        this();
+        Locale locale = A_CmsUI.get().getLocale();
+        CmsResourceUtil resourceUtil = new CmsResourceUtil(A_CmsUI.getCmsObject(), resource);
+        resourceUtil.setAbbrevLength(100);
+        String galleryTitle = resourceUtil.getGalleryTitle(locale);
+        m_topText.setValue(galleryTitle);
+        m_topInput.setValue(galleryTitle);
+        m_bottomText.setValue(resourceUtil.getPath());
+        m_icon.initContent(resourceUtil, useState ? resource.getState() : null, true, true);
+
+    }
+
+    /**
+     * Constructor.<p>
+     *
+     * @param top the title
+     * @param bottom the sub title
+     * @param iconResource the icon resource path
+     */
+    public CmsResourceInfo(String top, String bottom, Resource iconResource) {
+
+        this();
+        m_topText.setValue(top);
+        m_topInput.setValue(top);
+        m_bottomText.setValue(bottom);
+        m_icon.initContent(null, iconResource, null, false, true);
+    }
+
+    /**
+     * Constructor.<p>
+     *
+     * @param top the title
+     * @param bottom the sub title
+     * @param iconPath the icon resource path
+     */
+    public CmsResourceInfo(String top, String bottom, String iconPath) {
+
+        this();
+        m_topText.setValue(top);
+        m_topInput.setValue(top);
+        m_bottomText.setValue(bottom);
+        m_icon.initContent(null, new ExternalResource(iconPath), null, false, true);
+    }
 
     /**
      * Creates a resource info widget for a resource that looks like the sitemap entry for that resource.<p>
@@ -111,93 +209,22 @@ public class CmsResourceInfo extends CustomLayout {
         return info;
     }
 
-    /** The sub title label. */
-    private Label m_bottomText = new Label();
-
-    /** The button label. */
-    private Label m_buttonLabel = new Label();
-
-    /** The resource icon. */
-    private CmsResourceIcon m_icon = new CmsResourceIcon();
-
-    /** The title label. */
-    private Label m_topText = new Label();
-
     /**
-     * Constructor.<p>
+     *
      */
-    public CmsResourceInfo() {
+    public void decorateTopInput() {
 
-        super();
-        try {
-            initTemplateContentsFromInputStream(
-                CmsVaadinUtils.readCustomLayout(CmsResourceInfo.class, "resourceinfo.html"));
-            addComponent(m_topText, "topLabel");
-            addComponent(m_bottomText, "bottomLabel");
-            addComponent(m_icon, "icon");
-            addComponent(m_buttonLabel, "buttonContainer");
-        } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
+        m_topText.setVisible(false);
+        m_topInput.setVisible(true);
     }
 
     /**
-     * Constructor.<p>
      *
-     * @param resource the resource
      */
-    public CmsResourceInfo(CmsResource resource) {
+    public void decorateTopLabel() {
 
-        this(resource, true);
-    }
-
-    /**
-     * Constructor.<p>
-     *
-     * @param resource the resource
-     * @param useState true if the resource state should be displayed
-     */
-    public CmsResourceInfo(CmsResource resource, boolean useState) {
-
-        this();
-        Locale locale = A_CmsUI.get().getLocale();
-        CmsResourceUtil resUtil = new CmsResourceUtil(A_CmsUI.getCmsObject(), resource);
-        resUtil.setAbbrevLength(100);
-        m_topText.setValue(resUtil.getGalleryTitle(locale));
-        m_bottomText.setValue(resUtil.getPath());
-
-        m_icon.initContent(resUtil, useState ? resource.getState() : null, true, true);
-
-    }
-
-    /**
-     * Constructor.<p>
-     *
-     * @param top the title
-     * @param bottom the sub title
-     * @param iconResource the icon resource path
-     */
-    public CmsResourceInfo(String top, String bottom, Resource iconResource) {
-
-        this();
-        m_topText.setValue(top);
-        m_bottomText.setValue(bottom);
-        m_icon.initContent(null, iconResource, null, false, true);
-    }
-
-    /**
-     * Constructor.<p>
-     *
-     * @param top the title
-     * @param bottom the sub title
-     * @param iconPath the icon resource path
-     */
-    public CmsResourceInfo(String top, String bottom, String iconPath) {
-
-        this();
-        m_topText.setValue(top);
-        m_bottomText.setValue(bottom);
-        m_icon.initContent(null, new ExternalResource(iconPath), null, false, true);
+        m_topText.setVisible(true);
+        m_topInput.setVisible(false);
     }
 
     /**
@@ -231,6 +258,16 @@ public class CmsResourceInfo extends CustomLayout {
     }
 
     /**
+     * Returns the editable text on top.<p>
+     *
+     * @return the editable text on top
+     */
+    public TextField getTopInput() {
+
+        return m_topInput;
+    }
+
+    /**
      * Gets the top label.<p>
      *
      * @return the top label
@@ -251,13 +288,14 @@ public class CmsResourceInfo extends CustomLayout {
     }
 
     /**
-     * Replaces the text of the top label.
+     * Replaces the text of the top label and top input.
      *
      * @param text the text
      */
     public void setTopLineText(String text) {
 
         m_topText.setValue(text);
+        m_topInput.setValue(text);
     }
 
 }

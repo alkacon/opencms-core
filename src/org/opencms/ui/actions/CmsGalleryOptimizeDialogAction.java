@@ -46,10 +46,10 @@ import java.util.List;
 public class CmsGalleryOptimizeDialogAction extends A_CmsWorkplaceAction {
 
     /** The action id. */
-    public static final String ACTION_ID = "image";
+    public static final String ACTION_ID = "galleryoptimize";
 
     /** The folder types this action is available for. */
-    private static final String[] GALLERY_TYPES = new String[] {"imagegallery"};
+    private static final String[] GALLERY_TYPES = new String[] {"imagegallery", "downloadgallery"};
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
@@ -71,15 +71,6 @@ public class CmsGalleryOptimizeDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
-     */
-    @Override
-    protected String getTitleKey() {
-
-        return Messages.GUI_EXPLORER_CONTEXT_OPTIMIZEGALLERY_0;
-    }
-
-    /**
      * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
@@ -94,6 +85,15 @@ public class CmsGalleryOptimizeDialogAction extends A_CmsWorkplaceAction {
             }
         }
         return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getTitleKey()
+     */
+    @Override
+    protected String getTitleKey() {
+
+        return Messages.GUI_EXPLORER_CONTEXT_OPTIMIZEGALLERY_0;
     }
 
 }
