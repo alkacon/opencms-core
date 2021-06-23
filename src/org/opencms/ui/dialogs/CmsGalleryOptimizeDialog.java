@@ -91,11 +91,11 @@ import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.ItemCaptionGenerator;
-import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -534,18 +534,15 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
     /**
      * Class representing the data list header view with components for
-     * sorting and paging the gallery item list.<p>
+     * sorting, paging, and filtering the gallery item list.<p>
      */
-    private class DataListHeaderComposite extends HorizontalLayout {
+    private class DataListHeaderComposite extends AbsoluteLayout {
 
         /** The default serial version UID. */
         private static final long serialVersionUID = 1L;
 
         /** The page info label. */
         private Label m_labelPageInfo;
-
-        /** The center controls. */
-        private HorizontalLayout m_layoutCenterControls;
 
         /** The select box for page selection. */
         private NativeSelect<Integer> m_selectPage;
@@ -561,23 +558,13 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
          */
         public DataListHeaderComposite() {
 
-            setHeightUndefined();
+            setHeight("34px");
             setWidthFull();
             m_selectSortOrder = createSelectSortOrder();
-            m_layoutCenterControls = new HorizontalLayout();
-            m_selectPage = createSelectPage();
-            m_labelPageInfo = createLabelPageInfo();
-            m_layoutCenterControls.addComponent(m_labelPageInfo);
-            m_layoutCenterControls.addComponent(m_selectPage);
-            m_layoutCenterControls.setComponentAlignment(m_labelPageInfo, Alignment.MIDDLE_LEFT);
-            m_layoutCenterControls.setComponentAlignment(m_selectPage, Alignment.MIDDLE_RIGHT);
             m_textFieldFilter = createTextFieldFilter();
-            addComponent(m_selectSortOrder);
-            addComponent(m_layoutCenterControls);
-            addComponent(m_textFieldFilter);
-            setComponentAlignment(m_selectSortOrder, Alignment.MIDDLE_LEFT);
-            setComponentAlignment(m_layoutCenterControls, Alignment.MIDDLE_CENTER);
-            setComponentAlignment(m_textFieldFilter, Alignment.MIDDLE_RIGHT);
+            addComponent(m_selectSortOrder, "left: 2px; top: 2px;");
+            addComponent(m_textFieldFilter, "right: 2px; top: 2px;");
+            refresh();
         }
 
         /**
@@ -585,13 +572,22 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
          */
         public void refresh() {
 
-            m_layoutCenterControls.removeAllComponents();
-            m_labelPageInfo = createLabelPageInfo();
-            m_selectPage = createSelectPage();
-            m_layoutCenterControls.addComponent(m_labelPageInfo);
-            m_layoutCenterControls.addComponent(m_selectPage);
-            m_layoutCenterControls.setComponentAlignment(m_labelPageInfo, Alignment.MIDDLE_LEFT);
-            m_layoutCenterControls.setComponentAlignment(m_selectPage, Alignment.MIDDLE_RIGHT);
+            NativeSelect<Integer> selectPage = createSelectPage();
+            Label pageInfo = createLabelPageInfo();
+            if (m_selectPage == null) {
+                m_selectPage = selectPage;
+                addComponent(m_selectPage, "left: 436px; top: 2px;");
+            } else {
+                replaceComponent(m_selectPage, selectPage);
+                m_selectPage = selectPage;
+            }
+            if (m_labelPageInfo == null) {
+                m_labelPageInfo = pageInfo;
+                addComponent(m_labelPageInfo, "right: 228px; top: 6px;");
+            } else {
+                replaceComponent(m_labelPageInfo, pageInfo);
+                m_labelPageInfo = pageInfo;
+            }
         }
 
         /**
@@ -746,7 +742,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
             m_pageHandler.setCurrentPage(index);
             Label label = createLabelPageInfo();
-            m_layoutCenterControls.replaceComponent(m_labelPageInfo, label);
+            replaceComponent(m_labelPageInfo, label);
             m_labelPageInfo = label;
             if (display) {
                 displayDataListView(true);
@@ -1581,6 +1577,9 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     /** The UI component representing the gallery item list header view. */
     private VerticalLayout m_dataListHeaderView;
 
+    /** The UI component representing the scrollable wrapper around the gallery item list view. */
+    private Panel m_dataListViewScrollable;
+
     /** The UI component representing the gallery item list view. */
     private GridLayout m_dataListView;
 
@@ -1929,9 +1928,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             m_dataListView.addComponent(dataItem.getCompositeForm(), 2, i);
             i++;
         }
-        if (scrollToTop) {
-            JavaScript.getCurrent().execute("document.getElementById('scrollToTop').scrollIntoView(true);");
-        }
+        m_dataListViewScrollable.setScrollTop(0);
     }
 
     /**
