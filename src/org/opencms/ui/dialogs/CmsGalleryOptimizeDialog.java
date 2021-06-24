@@ -618,7 +618,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                     String.valueOf(m_pageHandler.getSizeItem()));
             } else if (m_pageHandler.getSizeItem() == 1) {
                 text = CmsVaadinUtils.getMessageText(
-                    Messages.GUI_GALLERY_OPTIMIZE_LABEL_PAGE_INFO_ONE,
+                    Messages.GUI_GALLERY_OPTIMIZE_LABEL_PAGE_INFO_ONE_0,
                     String.valueOf(m_pageHandler.getSizeItem()));
             } else {
                 text = CmsVaadinUtils.getMessageText(

@@ -111,7 +111,7 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_GALLERY_OPTIMIZE_LABEL_PAGE_INFO_3 = "GUI_GALLERY_OPTIMIZE_LABEL_PAGE_INFO_3";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_GALLERY_OPTIMIZE_LABEL_PAGE_INFO_ONE = "GUI_GALLERY_OPTIMIZE_LABEL_PAGE_INFO_ONE";
+    public static final String GUI_GALLERY_OPTIMIZE_LABEL_PAGE_INFO_ONE_0 = "GUI_GALLERY_OPTIMIZE_LABEL_PAGE_INFO_ONE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_OPTIMIZE_SORT_DATE_MODIFIED_ASCENDING_0 = "GUI_GALLERY_OPTIMIZE_SORT_DATE_MODIFIED_ASCENDING_0";
