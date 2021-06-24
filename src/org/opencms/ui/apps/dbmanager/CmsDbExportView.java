@@ -33,6 +33,7 @@ import org.opencms.importexport.CmsVfsImportExportHandler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
@@ -157,6 +158,9 @@ public class CmsDbExportView extends VerticalLayout {
 
     /**vaadin component.*/
     private CheckBox m_includeUnchanged;
+
+    /**Vaadin component. */
+    private CheckBox m_reducedMetadata;
 
     /**vaadin component.*/
     private CheckBox m_modified;
@@ -431,6 +435,8 @@ public class CmsDbExportView extends VerticalLayout {
         m_exportParams.setPath(exportFileName);
         m_exportParams.setRecursive(m_recursive.getValue().booleanValue());
         m_exportParams.setResources(getResources());
+        ExportMode exportMode = m_reducedMetadata.getValue().booleanValue() ? ExportMode.REDUCED : ExportMode.DEFAULT;
+        m_exportParams.setExportMode(exportMode);
         if (m_changedSince.getValue() != null) {
             m_exportParams.setContentAge(m_changedSince.getDate().getTime());
         } else {
