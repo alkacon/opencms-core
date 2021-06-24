@@ -27,20 +27,16 @@
 
 package org.opencms.ui.actions;
 
-import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
-import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.Messages;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -48,7 +44,7 @@ import com.google.common.collect.Lists;
 /**
  * The gallery dialog action.<p>
  */
-public class CmsGalleryDialogAction extends A_CmsWorkplaceAction {
+public class CmsGalleryDialogAction extends A_CmsGalleryDialogAction {
 
     /** The action id. */
     public static final String ACTION_ID = "gallery";
@@ -64,6 +60,7 @@ public class CmsGalleryDialogAction extends A_CmsWorkplaceAction {
      */
     public void executeAction(final I_CmsDialogContext context) {
 
+        CmsResource gallery = getGallery(context);
         try {
             CmsGwtDialogExtension dialogExtension = new CmsGwtDialogExtension(
                 A_CmsUI.get(),
@@ -78,7 +75,7 @@ public class CmsGalleryDialogAction extends A_CmsWorkplaceAction {
                         context.finish(updatedIds);
                     }
                 });
-            dialogExtension.openGalleryDialog(context.getResources().get(0));
+            dialogExtension.openGalleryDialog(gallery);
         } catch (Exception e) {
             context.error(e);
         }
@@ -93,20 +90,12 @@ public class CmsGalleryDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
+     * @see org.opencms.ui.actions.A_CmsGalleryDialogAction#getSupportedGalleryTypes()
      */
-    public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
+    @Override
+    protected String[] getSupportedGalleryTypes() {
 
-        if (resources.size() == 1) {
-            CmsResource res = resources.get(0);
-            if (res.isFolder()) {
-                String type = OpenCms.getResourceManager().getResourceType(res).getTypeName();
-                if (Arrays.asList(GALLERY_TYPES).contains(type)) {
-                    return VISIBILITY.getVisibility(cms, resources);
-                }
-            }
-        }
-        return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+        return GALLERY_TYPES;
     }
 
     /**

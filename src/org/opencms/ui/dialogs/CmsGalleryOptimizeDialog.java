@@ -616,6 +616,10 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                     String.valueOf(m_pageHandler.getNumFirstItem()),
                     String.valueOf(m_pageHandler.getNumLastItem()),
                     String.valueOf(m_pageHandler.getSizeItem()));
+            } else if (m_pageHandler.getSizeItem() == 1) {
+                text = CmsVaadinUtils.getMessageText(
+                    Messages.GUI_GALLERY_OPTIMIZE_LABEL_PAGE_INFO_ONE,
+                    String.valueOf(m_pageHandler.getSizeItem()));
             } else {
                 text = CmsVaadinUtils.getMessageText(
                     Messages.GUI_GALLERY_OPTIMIZE_LABEL_PAGE_INFO_1,
@@ -1583,6 +1587,9 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     /** The UI component representing the gallery item list view. */
     private GridLayout m_dataListView;
 
+    /** The gallery */
+    private CmsResource m_gallery;
+
     /** The lock action record for the gallery folder. */
     private CmsLockActionRecord m_lockActionRecord;
 
@@ -1620,13 +1627,15 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     private SaveHandler m_saveHandler = new SaveHandler();
 
     /**
-     * Creates a new instance of the gallery optimize dialog.<p>
+     * Creates a new instance of a gallery optimize dialog.<p>
      *
      * @param context the dialog context
+     * @param gallery the gallery folder to optimize
      */
-    public CmsGalleryOptimizeDialog(I_CmsDialogContext context) {
+    public CmsGalleryOptimizeDialog(I_CmsDialogContext context, CmsResource gallery) {
 
         m_context = context;
+        m_gallery = gallery;
         initMessages();
         initDialog();
         initLock();
@@ -1790,7 +1799,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
      */
     private HorizontalLayout createDisplayGalleryInUse() throws CmsException {
 
-        CmsResource resource = m_context.getResources().get(0);
         HorizontalLayout layout1 = new HorizontalLayout();
         layout1.setWidthFull();
         layout1.addStyleNames("v-panel", "o-error-dialog", OpenCmsTheme.GALLERY_ALERT_IN_USE);
@@ -1800,7 +1808,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         icon.setContentMode(ContentMode.HTML);
         icon.setWidthUndefined();
         icon.setStyleName("o-warning-icon");
-        String galleryTitle = getGalleryTitle(resource);
+        String galleryTitle = getGalleryTitle();
         Label message = new Label(CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_DIRECTLY_USED_1, galleryTitle));
         message.setContentMode(ContentMode.HTML);
         message.setWidthUndefined();
@@ -1859,12 +1867,10 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     private void dataListLoad() {
 
         List<DataItem> dataList = new ArrayList<DataItem>();
-        CmsResource root = m_context.getResources().get(0);
         CmsObject cms = A_CmsUI.getCmsObject();
         try {
-            m_context.getResources().get(0);
             CmsResourceFilter resourceFilter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireFile();
-            List<CmsResource> resources = cms.readResources(cms.getSitePath(root), resourceFilter);
+            List<CmsResource> resources = cms.readResources(cms.getSitePath(m_gallery), resourceFilter);
             for (CmsResource resource : resources) {
                 DataItem dataItem = new DataItem(resource);
                 dataList.add(dataItem);
@@ -1884,8 +1890,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             m_dataListHeaderView.addComponent(createDisplayInOnlineProject());
         } else {
             try {
-                CmsResource resource = m_context.getResources().get(0);
-                List<CmsRelation> relations = getCms().getRelationsForResource(resource, CmsRelationFilter.SOURCES);
+                List<CmsRelation> relations = getCms().getRelationsForResource(m_gallery, CmsRelationFilter.SOURCES);
                 if ((relations != null) && !relations.isEmpty()) {
                     m_dataListHeaderView.addComponent(createDisplayGalleryInUse());
                 }
@@ -1928,7 +1933,9 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             m_dataListView.addComponent(dataItem.getCompositeForm(), 2, i);
             i++;
         }
-        m_dataListViewScrollable.setScrollTop(0);
+        if (scrollToTop) {
+            m_dataListViewScrollable.setScrollTop(0);
+        }
     }
 
     /**
@@ -1966,18 +1973,17 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     /**
      * Returns the gallery title for a given gallery folder resource.<p>
      *
-     * @param resource the gallery folder resource
      * @return the title
      * @throws CmsException the CMS exception
      */
-    private String getGalleryTitle(CmsResource resource) throws CmsException {
+    private String getGalleryTitle() throws CmsException {
 
         String galleryTitle = getCms().readPropertyObject(
-            resource,
+            m_gallery,
             CmsPropertyDefinition.PROPERTY_TITLE,
             false).getValue();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(galleryTitle)) {
-            galleryTitle = resource.getName();
+            galleryTitle = m_gallery.getName();
         }
         return galleryTitle;
     }
@@ -2003,7 +2009,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     private void initDialog() {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-        displayResourceInfo(m_context.getResources(), "");
+        displayResourceInfo(m_gallery);
         Button buttonCancel = createButtonCancel();
         buttonCancel.addClickListener(event -> {
             CmsGalleryOptimizeDialog.this.handleDialogCancel();
@@ -2054,7 +2060,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     private void initLock() {
 
         try {
-            m_lockActionRecord = CmsLockUtil.ensureLock(getCms(), m_context.getResources().get(0));
+            m_lockActionRecord = CmsLockUtil.ensureLock(getCms(), m_gallery);
         } catch (CmsException e) {
             LOG.warn(e.getLocalizedMessage(), e);
         }
@@ -2187,9 +2193,8 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     private void unlock() {
 
         if (m_lockActionRecord != null) {
-            CmsResource resource = m_context.getResources().get(0);
             try {
-                getCms().unlockResource(resource);
+                getCms().unlockResource(m_gallery);
             } catch (CmsException e) {
                 LOG.warn(e.getLocalizedMessage(), e);
             }

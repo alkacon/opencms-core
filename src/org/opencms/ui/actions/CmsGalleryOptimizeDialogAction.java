@@ -27,23 +27,16 @@
 
 package org.opencms.ui.actions;
 
-import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.main.OpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
-import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
-import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.dialogs.CmsGalleryOptimizeDialog;
 import org.opencms.workplace.explorer.Messages;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * The gallery optimize dialog action.<p>
  */
-public class CmsGalleryOptimizeDialogAction extends A_CmsWorkplaceAction {
+public class CmsGalleryOptimizeDialogAction extends A_CmsGalleryDialogAction {
 
     /** The action id. */
     public static final String ACTION_ID = "galleryoptimize";
@@ -57,9 +50,11 @@ public class CmsGalleryOptimizeDialogAction extends A_CmsWorkplaceAction {
     public void executeAction(I_CmsDialogContext context) {
 
         if (!hasBlockingLocks(context)) {
-            CmsGalleryOptimizeDialog galleryOptimizeDialog = new CmsGalleryOptimizeDialog(context);
+            CmsResource gallery = getGallery(context);
+            CmsGalleryOptimizeDialog galleryOptimizeDialog = new CmsGalleryOptimizeDialog(context, gallery);
             openDialog(galleryOptimizeDialog, context, CmsBasicDialog.DialogWidth.max);
         }
+
     }
 
     /**
@@ -71,20 +66,12 @@ public class CmsGalleryOptimizeDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
-     * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
+     * @see org.opencms.ui.actions.A_CmsGalleryDialogAction#getSupportedGalleryTypes()
      */
-    public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
+    @Override
+    protected String[] getSupportedGalleryTypes() {
 
-        if (resources.size() == 1) {
-            CmsResource resource = resources.get(0);
-            if (resource.isFolder()) {
-                String type = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
-                if (Arrays.asList(GALLERY_TYPES).contains(type)) {
-                    return CmsStandardVisibilityCheck.VISIBLE.getVisibility(cms, resources);
-                }
-            }
-        }
-        return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+        return GALLERY_TYPES;
     }
 
     /**
