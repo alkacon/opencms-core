@@ -31,8 +31,11 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.dom4j.Element;
 
@@ -43,6 +46,9 @@ import org.dom4j.Element;
  */
 public class CmsExportParameters {
 
+    /** The additional resource list. */
+    private String m_additionalResourceList = null;
+
     /** Only resources modified after this time stamp will be exported. */
     private long m_contentAge;
 
@@ -51,6 +57,9 @@ public class CmsExportParameters {
 
     /** Indicates if the resources are exported in one export .ZIP file (the default) or as individual files. */
     private boolean m_exportAsFiles;
+
+    /** The export mode that should be used for the export. */
+    private ExportMode m_exportMode = ExportMode.DEFAULT;
 
     /** If the project data should be exported. */
     private boolean m_exportProjectData;
@@ -63,12 +72,14 @@ public class CmsExportParameters {
 
     /** If unchanged files should be included in the export.*/
     private boolean m_includeUnchangedResources = true;
-
     /** If set, only resources belonging to the current project will be exported. */
     private boolean m_inProject;
 
     /** The module informations if to export a module. */
     private Element m_moduleInfo;
+
+    /** The site root that should override the site root from the request context. */
+    private String m_overrideSiteRoot;
 
     /** The file path, should be a zip file. */
     private String m_path;
@@ -79,11 +90,11 @@ public class CmsExportParameters {
     /** The resources to export.*/
     private List<String> m_resources;
 
+    /** Don't write parent folders to manifest. */
+    private boolean m_skipParentFolders;
+
     /** If set, the manifest.xml file will be generated with dtd info. */
     private boolean m_xmlValidation;
-
-    /** The export mode that should be used for the export. */
-    private ExportMode m_exportMode = ExportMode.DEFAULT;
 
     /** Resources for with meta data should be exported, even if not in the resources to export.
      * That are super-folders of exported resources, where meta data should be kept in the export.
@@ -191,6 +202,35 @@ public class CmsExportParameters {
         setExportAsFiles(false);
         setExportMode(exportMode);
         setAdditionalResourcesToExportWithMetaData(additionalResourcesToExportWithMetaData);
+    }
+
+    /**
+     * Adds the resources from the additional resource list to the actual export resources.
+     */
+    public void addAdditionalResources() {
+
+        if (m_additionalResourceList != null) {
+            Set<String> resources = new HashSet<>();
+            resources.addAll(getResources());
+            for (String line : m_additionalResourceList.split("\n")) {
+                line = line.trim();
+                if (line.length() > 0) {
+                    resources.add(line);
+                }
+            }
+            setResources(new ArrayList<>(resources));
+            m_additionalResourceList = null;
+        }
+    }
+
+    /**
+     * Gets the additional resource list.
+     *
+     * @return the additional resource list
+     */
+    public String getAdditionalResourceList() {
+
+        return m_additionalResourceList;
     }
 
     /**
@@ -344,6 +384,16 @@ public class CmsExportParameters {
     }
 
     /**
+     * If true, parent folders are not written to the manifest.
+     *
+     * @return true if parent folders should be skipped
+     */
+    public boolean isSkipParentFolders() {
+
+        return m_skipParentFolders;
+    }
+
+    /**
      * Checks if the manifest.xml file will be generated with dtd info.<p>
      *
      * @return the xml validation flag
@@ -354,8 +404,18 @@ public class CmsExportParameters {
     }
 
     /**
-     * The resources (folders) that should be exported with some metadata, even if not listed in the resources to export.
-     * If a folder is listed, the folder and all resources in the folder is exported with meta data.
+     * Sets the additional resources for the export.
+     *
+     * @param additionalResourceList the additional resource paths to export, separated by newlines
+     */
+    public void setAdditionalResourceList(String additionalResourceList) {
+
+        m_additionalResourceList = additionalResourceList;
+
+    }
+
+    /**
+     * Checks if the manifest.xml file will be generated with dtd info.<p>
      *
      * @param resourcesToExportWithMetaData the vfs paths of the resources.
      */
@@ -501,6 +561,16 @@ public class CmsExportParameters {
     public void setResources(List<String> resources) {
 
         m_resources = resources;
+    }
+
+    /**
+     * Enables / disables skipping of parent folders in the manifest.
+     *
+     * @param skipSuperFolders true if parent folders should not be written to the manifest
+     */
+    public void setSkipParentFolders(boolean skipSuperFolders) {
+
+        m_skipParentFolders = skipSuperFolders;
     }
 
     /**

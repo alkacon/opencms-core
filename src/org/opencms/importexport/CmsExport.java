@@ -193,6 +193,7 @@ public class CmsExport {
 
             // export resource data only if selected
             if (m_parameters.isExportResourceData()) {
+                m_parameters.addAdditionalResources();
                 exportAllResources(exportNode, m_parameters.getResources());
             }
 
@@ -507,6 +508,9 @@ public class CmsExport {
     protected void appendResourceToManifest(CmsResource resource, boolean source, boolean isSuperFolder)
     throws CmsImportExportException, SAXException {
 
+        if (isSuperFolder && m_parameters.isSkipParentFolders()) {
+            return;
+        }
         try {
             // only write <source> if resource is a file
             String fileName = trimResourceName(getCms().getSitePath(resource));
