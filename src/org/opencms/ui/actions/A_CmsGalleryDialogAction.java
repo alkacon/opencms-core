@@ -42,12 +42,13 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 
+/**
+ * Class representing an abstract gallery dialog action.<p>
+ */
 public abstract class A_CmsGalleryDialogAction extends A_CmsWorkplaceAction {
 
     /** Logger instance for this class. */
     static final Log LOG = CmsLog.getLog(A_CmsGalleryDialogAction.class);
-
-    private CmsResource m_parentGallery;
 
     /**
      * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
@@ -103,13 +104,12 @@ public abstract class A_CmsGalleryDialogAction extends A_CmsWorkplaceAction {
 
         String parentFolder = CmsResource.getParentFolder(resource.getRootPath());
         parentFolder = cms.getRequestContext().removeSiteRoot(parentFolder);
-        if (m_parentGallery == null) {
-            try {
-                m_parentGallery = cms.readResource(parentFolder);
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
+        CmsResource parentGallery = null;
+        try {
+            parentGallery = cms.readResource(parentFolder);
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
         }
-        return m_parentGallery;
+        return parentGallery;
     }
 }
