@@ -13,7 +13,8 @@
 			<vaadin7-vertical-layout>
 				<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
 					<vaadin7-combo-box _id="m_site" immediate="true"  width="100%" caption="%(key.GUI_DATABASEAPP_SITE_0)" description="%(key.GUI_DATABASEAPP_SITE_HELP_0)"/>
-					<vaadin7-combo-box _id="m_project" immediate="true"  width="100%" caption="%(key.GUI_PQUEUE_PROJECT_0)"/>					
+					<vaadin7-combo-box _id="m_project" immediate="true"  width="100%" caption="%(key.GUI_PQUEUE_PROJECT_0)"/>
+					<v-button _id="m_addResources">%(key.GUI_DATABASEAPP_OPEN_ADD_RESOURCES_DIALOG_0)</v-button>					
 				</v-form-layout>
 				<vaadin7-vertical-layout _id="m_resources" margin spacing style-name="o-formlayout-workplace-main">
 				</vaadin7-vertical-layout>	
@@ -36,6 +37,7 @@
 		</v-panel>
 		<v-panel caption="%(key.GUI_DATABASEAPP_EXPORT_FILE_BLOCK_0)">	
 			<v-form-layout _id="m_tabSimple" margin spacing style-name="o-formlayout-workplace-main">
+			
 				<vaadin7-combo-box _id="m_target" immediate="true"  width="100%" caption="%(key.GUI_DATABASEAPP_EXPORT_PATH_0)" description="%(key.GUI_DATABASEAPP_EXPORT_PATH_HELP_0)"/>
 			</v-form-layout>
 		</v-panel>

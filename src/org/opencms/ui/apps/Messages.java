@@ -395,6 +395,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DATABASEAPP_EXPORT_PATH_HELP_0 = "GUI_DATABASEAPP_EXPORT_PATH_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_EXPORT_PATHLIST_0 = "GUI_DATABASEAPP_EXPORT_PATHLIST_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_EXPORT_PROJECTDATA_0 = "GUI_DATABASEAPP_EXPORT_PROJECTDATA_0";
 
     /** Message constant for key in the resource bundle. */
@@ -483,6 +486,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_IMPORTSERVER_ADMIN_TOOL_NAME_SHORT_0 = "GUI_DATABASEAPP_IMPORTSERVER_ADMIN_TOOL_NAME_SHORT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_OPEN_ADD_RESOURCES_DIALOG_0 = "GUI_DATABASEAPP_OPEN_ADD_RESOURCES_DIALOG_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_PROPERTY_CONFIRM_0 = "GUI_DATABASEAPP_PROPERTY_CONFIRM_0";
@@ -966,10 +972,8 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_0 = "GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_HELP_0 = "GUI_LISTMANAGER_PARAM_DISPLAY_OPTIONS_HELP_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_PARAM_DISPLAY_TYPE_0 = "GUI_LISTMANAGER_PARAM_DISPLAY_TYPE_0";
     /** Message constant for key in the resource bundle. */
@@ -1082,8 +1086,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOGFILE_ENABLED_HELP_0 = "GUI_LOGFILE_ENABLED_HELP_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_FILEPATH_0 = "GUI_LOGFILE_FILEPATH_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_FILEPATH_HELP_0 = "GUI_LOGFILE_FILEPATH_HELP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGFILE_FILEVIEW_0 = "GUI_LOGFILE_FILEVIEW_0";
 

@@ -28,6 +28,7 @@
 package org.opencms.ui.apps.dbmanager;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.importexport.CmsExportParameters;
 import org.opencms.importexport.CmsVfsImportExportHandler;
 import org.opencms.main.CmsException;
@@ -44,12 +45,15 @@ import org.opencms.ui.components.CmsDateField;
 import org.opencms.ui.components.editablegroup.CmsEditableGroup;
 import org.opencms.ui.components.editablegroup.I_CmsEditableGroupRow;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.threads.CmsExportThread;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 
@@ -127,13 +131,16 @@ public class CmsDbExportView extends VerticalLayout {
     }
 
     /** The logger for this class. */
-    static Log LOG = CmsLog.getLog(CmsDbExportView.class.getName());
+    private static final Log LOG = CmsLog.getLog(CmsDbExportView.class.getName());
 
     /**vaadin serial id.*/
     private static final long serialVersionUID = -2571459807662862053L;
 
     /**Copy of current CmsObject.*/
     protected CmsObject m_cms;
+
+    /** Button to add a list of resources through a text area. */
+    private Button m_addResources;
 
     /**vaadin component.*/
     private CheckBox m_asFiles;
@@ -159,17 +166,19 @@ public class CmsDbExportView extends VerticalLayout {
     /**vaadin component.*/
     private CheckBox m_includeUnchanged;
 
-    /**Vaadin component. */
-    private CheckBox m_reducedMetadata;
-
     /**vaadin component.*/
     private CheckBox m_modified;
 
     /**vaadin component.*/
     private Button m_ok;
 
+    private ComboBox m_project;
+
     /**vaadin component.*/
     private CheckBox m_recursive;
+
+    /**Vaadin component. */
+    private CheckBox m_reducedMetadata;
 
     /**vaadin component.*/
     private VerticalLayout m_resources;
@@ -181,8 +190,6 @@ public class CmsDbExportView extends VerticalLayout {
 
     /**vaadin component.*/
     private ComboBox m_target;
-
-    private ComboBox m_project;
 
     /**
      * public constructor.<p>
@@ -226,6 +233,7 @@ public class CmsDbExportView extends VerticalLayout {
                 }
             }
         });
+        m_addResources.addClickListener(e -> openAddResourcesDialog());
     }
 
     protected void addResourceIfEmpty() {
@@ -264,6 +272,9 @@ public class CmsDbExportView extends VerticalLayout {
 
         FormLayout res = new FormLayout();
         CmsPathSelectField field = new CmsPathSelectField();
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
+            field.setValue(path);
+        }
         field.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_EXPORT_RESOURCES_0));
         field.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_EXPORT_RESOURCES_HELP_0));
         field.setCmsObject(m_cms);
@@ -364,6 +375,17 @@ public class CmsDbExportView extends VerticalLayout {
     }
 
     /**
+     * Opens the dialog for adding new resources via a text area.
+     */
+    private void openAddResourcesDialog() {
+
+        Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+        window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_OPEN_ADD_RESOURCES_DIALOG_0));
+        window.setContent(new CmsAddExportResourcesDialog(result -> updateExportResources(result)));
+        A_CmsUI.get().addWindow(window);
+    }
+
+    /**
      * Sets the init values for check boxes.<p>
      */
     private void setupCheckBoxes() {
@@ -442,6 +464,41 @@ public class CmsDbExportView extends VerticalLayout {
         } else {
             m_exportParams.setContentAge(0);
         }
+    }
+
+    /**
+     * Updates the export resource fields from a newline-separated list of paths.
+     *
+     * @param resourceListing a newline-separated list of paths
+     */
+    private void updateExportResources(String resourceListing) {
+
+        List<String> exResources = getResources();
+        List<String> lines = Arrays.stream(resourceListing.trim().split("\n")).filter(
+            r -> !CmsStringUtil.isEmptyOrWhitespaceOnly(r)).map(r -> r.trim()).collect(Collectors.toList());
+
+        if ((exResources.size() == 0) && (lines.size() > 0)) {
+            // We have paths to add from the resource listing, but only empty fields in the form,
+            // so remove the existing form fields first, because they aren't needed anymore and would
+            // cause validation errors when clicking OK because they're empty.
+
+            m_resourcesGroup.init();
+        }
+
+        for (String line : lines) {
+            if (!exResources.contains(line)) {
+                // folders may have been entered without trailing slashes,
+                // but to correct that, we have to read the resources
+                try {
+                    CmsResource res = m_cms.readResource(line);
+                    line = m_cms.getSitePath(res);
+                } catch (CmsException e) {
+                    LOG.debug(e.getLocalizedMessage(), e);
+                }
+                m_resourcesGroup.addRow(getResourceRow(line));
+            }
+        }
+
     }
 
 }
