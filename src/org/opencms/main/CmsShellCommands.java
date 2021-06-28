@@ -1832,6 +1832,14 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Tries to trigger offline index update and wait until it's finished if possible.
+     */
+    public void updateOfflineIndexes() {
+
+        OpenCms.getSearchManager().updateOfflineIndexes();
+    }
+
+    /**
      * Loads a file from the "real" file system to the VFS.<p>
      *
      * @param localfile the file upload
