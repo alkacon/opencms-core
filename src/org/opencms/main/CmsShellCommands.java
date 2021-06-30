@@ -695,6 +695,27 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void exportResources(String exportFile, String pathList, boolean isReducedExportMode) throws Exception {
 
+        exportResources(exportFile, pathList, isReducedExportMode, false);
+    }
+
+    /**
+     * Exports a list of resources from the current site root to a ZIP file.<p>
+     *
+     * The resource names in the list must be separated with a ";".<p>
+     *
+     * @param exportFile the name (absolute path) of the ZIP file to export to
+     * @param pathList the list of resource to export, separated with a ";"
+     * @param isReducedExportMode flag, indicating if the reduced export mode should be used
+     * @param skipParentFolders true if parent folders should not be written to the export
+     * @throws Exception if something goes wrong
+     */
+    public void exportResources(
+        String exportFile,
+        String pathList,
+        boolean isReducedExportMode,
+        boolean skipParentFolders)
+    throws Exception {
+
         StringTokenizer tok = new StringTokenizer(pathList, ";");
         List<String> exportPaths = new ArrayList<String>();
         while (tok.hasMoreTokens()) {
@@ -720,6 +741,7 @@ class CmsShellCommands implements I_CmsShellCommands {
             true,
             false,
             isReducedExportMode ? ExportMode.REDUCED : ExportMode.DEFAULT);
+        params.setSkipParentFolders(skipParentFolders);
         vfsExportHandler.setExportParams(params);
 
         OpenCms.getImportExportManager().exportData(
@@ -755,6 +777,27 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void exportResourcesAndUserdata(String exportFile, String pathList, boolean isReducedExportMode)
     throws Exception {
 
+        exportResourcesAndUserdata(exportFile, pathList, isReducedExportMode, false);
+    }
+
+    /**
+     * Exports a list of resources from the current site root and the user data to a ZIP file.<p>
+     *
+     * The resource names in the list must be separated with a ";".<p>
+     *
+     * @param exportFile the name (absolute path) of the ZIP file to export to
+     * @param pathList the list of resource to export, separated with a ";"
+     * @param isReducedExportMode flag, indicating if the reduced export mode should be used
+     * @param skipParentFolders true if parent folders should not be written to the export
+     * @throws Exception if something goes wrong
+     */
+    public void exportResourcesAndUserdata(
+        String exportFile,
+        String pathList,
+        boolean isReducedExportMode,
+        boolean skipParentFolders)
+    throws Exception {
+
         StringTokenizer tok = new StringTokenizer(pathList, ";");
         List<String> exportPaths = new ArrayList<String>();
         while (tok.hasMoreTokens()) {
@@ -780,6 +823,7 @@ class CmsShellCommands implements I_CmsShellCommands {
             true,
             false,
             isReducedExportMode ? ExportMode.REDUCED : ExportMode.DEFAULT);
+        params.setSkipParentFolders(skipParentFolders);
         vfsExportHandler.setExportParams(params);
 
         OpenCms.getImportExportManager().exportData(
