@@ -43,9 +43,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_USER_NOT_SELF_MANAGED_1 = "ERR_USER_NOT_SELF_MANAGED_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ACTION_DISPLAY_0 = "GUI_ACTION_DISPLAY_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ACTION_EDIT_CONTENT_0 = "GUI_ACTION_EDIT_CONTENT_0";
 
@@ -69,6 +69,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_CLOSE_DIALOG_0 = "GUI_BUTTON_CLOSE_DIALOG_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_DOWNLOAD_0 = "GUI_BUTTON_DOWNLOAD_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CANT_PERFORM_OPERATION_BECAUSE_OF_LOCKED_RESOURCES_0 = "GUI_CANT_PERFORM_OPERATION_BECAUSE_OF_LOCKED_RESOURCES_0";

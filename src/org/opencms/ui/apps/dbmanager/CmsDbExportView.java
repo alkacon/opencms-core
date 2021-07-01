@@ -329,7 +329,7 @@ public class CmsDbExportView extends VerticalLayout {
         A_CmsReportThread exportThread = new CmsExportThread(m_cms, handler, false);
 
         Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
-        window.setContent(new CmsExportThreadDialog(exportThread, window));
+        window.setContent(new CmsExportThreadDialog(handler, exportThread, window));
         A_CmsUI.get().addWindow(window);
         exportThread.start();
     }

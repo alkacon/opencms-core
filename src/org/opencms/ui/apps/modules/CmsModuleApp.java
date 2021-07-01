@@ -353,6 +353,10 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
             final CmsObject cms = A_CmsUI.getCmsObject();
             final String moduleName = context.iterator().next();
             final String handlerDesc = CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_REPORT_EXPORT_1, moduleName);
+            final CmsModuleImportExportHandler handler = CmsModuleImportExportHandler.getExportHandler(
+                cms,
+                OpenCms.getModuleManager().getModule(moduleName),
+                handlerDesc);
 
             final A_CmsReportThread thread = new A_CmsReportThread(cms, "Export module " + moduleName) {
 
@@ -371,10 +375,6 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
 
                     initHtmlReport(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
                     try {
-                        CmsModuleImportExportHandler handler = CmsModuleImportExportHandler.getExportHandler(
-                            cms,
-                            OpenCms.getModuleManager().getModule(moduleName),
-                            handlerDesc);
                         OpenCms.getImportExportManager().exportData(cms, handler, getReport());
                     } catch (Exception e) {
                         getReport().println(e);
@@ -400,7 +400,7 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
                         cms.getRequestContext().setSiteRoot(site);
                         Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
                         window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_REPORT_EXPORT_1, context));
-                        CmsModuleExportDialog dialog = new CmsModuleExportDialog(thread, window);
+                        CmsModuleExportDialog dialog = new CmsModuleExportDialog(handler, thread, window);
                         window.setContent(dialog);
                         A_CmsUI.get().addWindow(window);
                         //                        openReport(
@@ -414,7 +414,7 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
                 Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
                 window.setHeight("500px");
                 window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_REPORT_EXPORT_1, context));
-                CmsModuleExportDialog dialog = new CmsModuleExportDialog(thread, window);
+                CmsModuleExportDialog dialog = new CmsModuleExportDialog(handler, thread, window);
                 window.setContent(dialog);
                 A_CmsUI.get().addWindow(window);
                 //                openReport(
@@ -741,19 +741,19 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
         } else if (state.equals(States.IMPORT_REPORT)
             || state.equals(States.DELETE_REPORT)
             || state.equals(States.EXPORT_REPORT)) {
-            String label = getReportLabel(state);
-            CmsBasicReportPage reportForm = new CmsBasicReportPage(label, m_reports.get(state), new Runnable() {
+                String label = getReportLabel(state);
+                CmsBasicReportPage reportForm = new CmsBasicReportPage(label, m_reports.get(state), new Runnable() {
 
-                public void run() {
+                    public void run() {
 
-                    openSubView("", true);
-                }
-            });
-            reportForm.setHeight("100%");
-            return reportForm;
-        } else {
-            return getModuleTable();
-        }
+                        openSubView("", true);
+                    }
+                });
+                reportForm.setHeight("100%");
+                return reportForm;
+            } else {
+                return getModuleTable();
+            }
     }
 
     /**
