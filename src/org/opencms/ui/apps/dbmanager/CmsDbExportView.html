@@ -23,16 +23,16 @@
 
 		<v-panel caption="%(key.GUI_DATABASEAPP_EXPORT_SETTINGS_BLOCK_0)">
 			<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
+				<vaadin7-check-box _id="m_reducedMetadata" caption="%(key.GUI_MODULES_LABEL_REDUCED_EXPORT_MODE_0)" description="%(key.GUI_MODULES_HELP_REDUCED_EXPORT_MODE_0)" />
+				<vaadin7-check-box _id="m_recursive" caption="%(key.GUI_DATABASEAPP_EXPORT_RECURSIVE_0)" description="%(key.GUI_DATABASEAPP_EXPORT_RECURSIVE_HELP_0)" />
 				<vaadin7-check-box _id="m_includeResource" caption="%(key.GUI_DATABASEAPP_EXPORT_RESOURCEDATA_0)" description="%(key.GUI_DATABASEAPP_EXPORT_RESOURCEDATA_HELP_0)" />
-				<vaadin7-check-box _id="m_includeAccount" caption="%(key.GUI_DATABASEAPP_EXPORT_ACCOUNT_0)" description="%(key.GUI_DATABASEAPP_EXPORT_ACCOUNT_HELP_0)" />
-				<vaadin7-check-box _id="m_includeProject" caption="%(key.GUI_DATABASEAPP_EXPORT_PROJECTDATA_0)" description="%(key.GUI_DATABASEAPP_EXPORT_PROJECTDATA_HELP_0)" />		
 				<vaadin7-check-box _id="m_includeUnchanged" caption="%(key.GUI_DATABASEAPP_EXPORT_INCLUDEUNCHANGED_0)" description="%(key.GUI_DATABASEAPP_EXPORT_INCLUDEUNCHANGED_HELP_0)" />
 				<vaadin7-check-box _id="m_includeSystem" caption="%(key.GUI_DATABASEAPP_EXPORT_INCLUDESYSTEM_0)" description="%(key.GUI_DATABASEAPP_EXPORT_INCLUDESYSTEM_HELP_0)" />
-				<o-cms-date-field _id="m_changedSince" caption="%(key.GUI_DATABASEAPP_EXPORT_CONTENT_AGE_0)" description="%(key.GUI_DATABASEAPP_EXPORT_CONTENT_AGE_HELP_0)" />
-				<vaadin7-check-box _id="m_recursive" caption="%(key.GUI_DATABASEAPP_EXPORT_RECURSIVE_0)" description="%(key.GUI_DATABASEAPP_EXPORT_RECURSIVE_HELP_0)" />		
+				<vaadin7-check-box _id="m_includeAccount" caption="%(key.GUI_DATABASEAPP_EXPORT_ACCOUNT_0)" description="%(key.GUI_DATABASEAPP_EXPORT_ACCOUNT_HELP_0)" />
+				<vaadin7-check-box _id="m_includeProject" caption="%(key.GUI_DATABASEAPP_EXPORT_PROJECTDATA_0)" description="%(key.GUI_DATABASEAPP_EXPORT_PROJECTDATA_HELP_0)" />		
 				<vaadin7-check-box _id="m_modified" caption="%(key.GUI_DATABASEAPP_EXPORT_INPROJECT_0)" description="%(key.GUI_DATABASEAPP_EXPORT_INPROJECT_HELP_0)" />
 				<vaadin7-check-box _id="m_asFiles" caption="%(key.GUI_DATABASEAPP_EXPORT_ASFILES_0)" description="%(key.GUI_DATABASEAPP_EXPORT_ASFILES_HELP_0)" />		
-				<vaadin7-check-box _id="m_reducedMetadata" caption="%(key.GUI_MODULES_LABEL_REDUCED_EXPORT_MODE_0)" description="%(key.GUI_MODULES_HELP_REDUCED_EXPORT_MODE_0)" />
+				<o-cms-date-field _id="m_changedSince" caption="%(key.GUI_DATABASEAPP_EXPORT_CONTENT_AGE_0)" description="%(key.GUI_DATABASEAPP_EXPORT_CONTENT_AGE_HELP_0)" />
 			</v-form-layout>
 		</v-panel>
 		<v-panel caption="%(key.GUI_DATABASEAPP_EXPORT_FILE_BLOCK_0)">	
