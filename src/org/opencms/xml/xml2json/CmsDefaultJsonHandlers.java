@@ -52,6 +52,9 @@ public class CmsDefaultJsonHandlers {
     /** The container page handler instance. */
     private static CmsContainerPageJsonHandler m_containerPageHandler = new CmsContainerPageJsonHandler();
 
+    /** The list config handler instance. */
+    private static CmsListConfigJsonHandler m_listConfigJsonHandler = new CmsListConfigJsonHandler();
+
     /**
      * Gets the default JSON handlers.
      *
@@ -60,7 +63,12 @@ public class CmsDefaultJsonHandlers {
     public static List<I_CmsJsonHandler> getHandlers() {
 
         return new ArrayList<>(
-            Arrays.asList(m_folderHandler, m_xmlContentHandler, m_jspHandler, m_containerPageHandler));
+            Arrays.asList(
+                m_folderHandler,
+                m_xmlContentHandler,
+                m_jspHandler,
+                m_containerPageHandler,
+                m_listConfigJsonHandler));
     }
 
 }

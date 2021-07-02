@@ -758,14 +758,16 @@ public final class CmsResourceUtil {
             CmsPermissionSet.ACCESS_WRITE,
             false,
             ignoreExpiration ? CmsResourceFilter.IGNORE_EXPIRATION : CmsResourceFilter.DEFAULT) || !isEditable()) {
-            reason = Messages.get().getBundle(locale).key(Messages.GUI_NO_EDIT_REASON_PERMISSION_0);
-        } else if (!getLock().isLockableBy(m_cms.getRequestContext().getCurrentUser())) {
-            if (getLock().getSystemLock().isPublish()) {
-                reason = Messages.get().getBundle(locale).key(Messages.GUI_PUBLISH_TOOLTIP_0);
-            } else {
-                reason = Messages.get().getBundle(locale).key(Messages.GUI_NO_EDIT_REASON_LOCK_1, getLockedByName());
+                reason = Messages.get().getBundle(locale).key(Messages.GUI_NO_EDIT_REASON_PERMISSION_0);
+            } else if (!getLock().isLockableBy(m_cms.getRequestContext().getCurrentUser())) {
+                if (getLock().getSystemLock().isPublish()) {
+                    reason = Messages.get().getBundle(locale).key(Messages.GUI_PUBLISH_TOOLTIP_0);
+                } else {
+                    reason = Messages.get().getBundle(locale).key(
+                        Messages.GUI_NO_EDIT_REASON_LOCK_1,
+                        getLockedByName());
+                }
             }
-        }
         return reason;
     }
 

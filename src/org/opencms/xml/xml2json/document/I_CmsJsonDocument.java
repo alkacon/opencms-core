@@ -25,46 +25,28 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.xml2json;
+package org.opencms.xml.xml2json.document;
 
-import org.opencms.configuration.I_CmsConfigurationParameterHandler;
-import org.opencms.file.CmsObject;
 import org.opencms.json.JSONException;
 import org.opencms.main.CmsException;
-import org.opencms.xml.content.CmsXmlContent;
-
-import java.util.Locale;
+import org.opencms.xml.xml2json.CmsJsonHandlerException;
+import org.opencms.xml.xml2json.CmsXmlContentJsonHandler.PathNotFoundException;
 
 /**
- * Renders a single-locale content tree as JSON.
+ * Interface representing a JSON document.<p>
  */
-public interface I_CmsXmlContentJsonRenderer extends I_CmsConfigurationParameterHandler {
+public interface I_CmsJsonDocument {
 
     /**
-     * Initializes the context for the renderer.
+     * Returns the JSON document.<p>
      *
-     * @param context the context to set
-     * @throws CmsException if something goes wrong
+     * @return the JSON document
+     * @throws JSONException if rendering the JSON document fails
+     * @throws CmsException if reading a resource or evaluating a SOLR search fails
+     * @throws CmsJsonHandlerException if the request is not valid according to the specification
+     * @throws PathNotFoundException if the selected path does not exist
+     * @throws Exception if something else goes wrong
      */
-    void initialize(CmsJsonHandlerContext context) throws CmsException;
-
-    /**
-     * Initializes the context for the renderer.
-     *
-     * @param cms the CMS object to set
-     * @throws CmsException if something goes wrong
-     */
-    void initialize(CmsObject cms) throws CmsException;
-
-    /**
-     * Converts the XML content for a single locale to a JSON object
-     *
-     * @param content the content
-     * @param locale the locale
-     * @return the JSON object
-     *
-     * @throws JSONException if something goes wrong
-     */
-    Object render(CmsXmlContent content, Locale locale) throws JSONException;
-
+    public Object getJson()
+    throws JSONException, CmsException, CmsJsonHandlerException, PathNotFoundException, Exception;
 }

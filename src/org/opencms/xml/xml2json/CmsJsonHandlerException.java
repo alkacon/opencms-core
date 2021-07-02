@@ -27,44 +27,43 @@
 
 package org.opencms.xml.xml2json;
 
-import org.opencms.configuration.I_CmsConfigurationParameterHandler;
-import org.opencms.file.CmsObject;
-import org.opencms.json.JSONException;
-import org.opencms.main.CmsException;
-import org.opencms.xml.content.CmsXmlContent;
+public class CmsJsonHandlerException extends Exception {
 
-import java.util.Locale;
+    /** The serial version id. */
+    private static final long serialVersionUID = 5155325235329055833L;
 
-/**
- * Renders a single-locale content tree as JSON.
- */
-public interface I_CmsXmlContentJsonRenderer extends I_CmsConfigurationParameterHandler {
+    /** The cause. */
+    private Throwable m_cause;
 
     /**
-     * Initializes the context for the renderer.
+     * Constructs a JSONException with an explanatory message.<p>
      *
-     * @param context the context to set
-     * @throws CmsException if something goes wrong
+     * @param message details about the reason for the exception
      */
-    void initialize(CmsJsonHandlerContext context) throws CmsException;
+    public CmsJsonHandlerException(String message) {
+
+        super(message);
+    }
 
     /**
-     * Initializes the context for the renderer.
+     * Constructs a JSONException with an explanatory message.<p>
      *
-     * @param cms the CMS object to set
-     * @throws CmsException if something goes wrong
+     * @param t the throwable that was thrown
      */
-    void initialize(CmsObject cms) throws CmsException;
+    public CmsJsonHandlerException(Throwable t) {
+
+        super(t.getMessage());
+        m_cause = t;
+    }
 
     /**
-     * Converts the XML content for a single locale to a JSON object
+     * Returns the cause of the exception.<p>
      *
-     * @param content the content
-     * @param locale the locale
-     * @return the JSON object
-     *
-     * @throws JSONException if something goes wrong
+     *  @return the cause
      */
-    Object render(CmsXmlContent content, Locale locale) throws JSONException;
+    @Override
+    public Throwable getCause() {
 
+        return m_cause;
+    }
 }

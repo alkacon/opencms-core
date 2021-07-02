@@ -27,64 +27,66 @@
 
 package org.opencms.xml.xml2json;
 
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.json.JSONException;
 import org.opencms.main.CmsLog;
-import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.xml2json.document.CmsJsonDocumentFolder;
+import org.opencms.main.OpenCms;
+import org.opencms.xml.xml2json.document.CmsJsonDocumentList;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
 /**
- * Produces directory listings in JSON format.
+ * JSON handler for rendering a list.
  */
-public class CmsFolderJsonHandler implements I_CmsJsonHandler {
+public class CmsListConfigJsonHandler extends CmsXmlContentJsonHandler {
 
-    /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFolderJsonHandler.class);
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsListConfigJsonHandler.class);
+
+    /** The list configuration type name. */
+    private final static String TYPE_LIST_CONFIG = "listconfig";
 
     /**
      * @see org.opencms.xml.xml2json.I_CmsJsonHandler#getOrder()
      */
+    @Override
     public double getOrder() {
 
-        return 200;
+        return 50;
     }
 
     /**
      * @see org.opencms.xml.xml2json.I_CmsJsonHandler#matches(org.opencms.xml.xml2json.CmsJsonHandlerContext)
      */
+    @Override
     public boolean matches(CmsJsonHandlerContext context) {
 
-        return (context.getResource() != null) && context.getResource().isFolder();
+        String typeName = OpenCms.getResourceManager().getResourceType(context.getResource()).getTypeName();
+        return typeName.equals(TYPE_LIST_CONFIG);
     }
 
     /**
      * @see org.opencms.xml.xml2json.I_CmsJsonHandler#renderJson(org.opencms.xml.xml2json.CmsJsonHandlerContext)
      */
+    @Override
     public CmsJsonResult renderJson(CmsJsonHandlerContext context) {
 
         try {
-            try {
-                CmsResource indexJson = context.getRootCms().readResource(
-                    CmsStringUtil.joinPaths(context.getPath(), "index.json"));
-
-                return new CmsJsonResult(indexJson);
-
-            } catch (CmsVfsResourceNotFoundException e) {
-                CmsJsonRequest jsonRequest = new CmsJsonRequest(context, this);
-                jsonRequest.validate();
-                if (jsonRequest.hasErrors()) {
-                    return new CmsJsonResult(jsonRequest.getErrorsAsJson(), HttpServletResponse.SC_BAD_REQUEST);
-                }
-                CmsJsonDocumentFolder jsonDocument = new CmsJsonDocumentFolder(jsonRequest);
-                return new CmsJsonResult(jsonDocument.getJson(), HttpServletResponse.SC_OK);
+            CmsJsonRequest jsonRequest = new CmsJsonRequest(context, this);
+            jsonRequest.validate();
+            if (jsonRequest.hasErrors()) {
+                return new CmsJsonResult(jsonRequest.getErrorsAsJson(), HttpServletResponse.SC_BAD_REQUEST);
             }
+            CmsJsonDocumentList jsonDocument = new CmsJsonDocumentList(jsonRequest, context.getContent());
+            return new CmsJsonResult(jsonDocument.getJson(), HttpServletResponse.SC_OK);
+        } catch (JSONException e) {
+            LOG.info(e.getLocalizedMessage(), e);
+            return new CmsJsonResult(e.getLocalizedMessage(), HttpServletResponse.SC_NOT_FOUND);
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
             return new CmsJsonResult(e.getLocalizedMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
+
 }

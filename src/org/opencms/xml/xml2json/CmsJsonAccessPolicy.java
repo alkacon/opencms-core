@@ -39,6 +39,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
@@ -62,6 +64,15 @@ public class CmsJsonAccessPolicy {
 
     /** Exclude path patterns. */
     private List<Pattern> m_exclude;
+
+    /** HTTP response header Access-Control-Allow-Origin */
+    private String m_corsAllowOrigin;
+
+    /** HTTP response header Access-Control-Allow-Methods */
+    private String m_corsAllowMethods;
+
+    /** HTTP response header Access-Control-Allow-Headers */
+    private String m_corsAllowHeaders;
 
     /** Include path patterns. */
     private List<Pattern> m_include;
@@ -88,13 +99,19 @@ public class CmsJsonAccessPolicy {
      * @param accessGroup the access group (may be null)
      * @param includePatterns the include regexes
      * @param excludePatterns the exclude regexes
-     * @param propertyFilterRegex the regular expresion to filter property names with
+     * @param propertyFilterRegex the regular expression to filter property names with
+     * @param corsAllowOrigin the HTTP response header Access-Control-Allow-Origin
+     * @param corsAllowMethods the HTTP response header Access-Control-Allow-Methods
+     * @param corsAllowHeaders the HTTP response header Access-Control-Allow-Headers
      */
     public CmsJsonAccessPolicy(
         String accessGroup,
         List<String> includePatterns,
         List<String> excludePatterns,
-        String propertyFilterRegex) {
+        String propertyFilterRegex,
+        String corsAllowOrigin,
+        String corsAllowMethods,
+        String corsAllowHeaders) {
 
         m_accessGroup = accessGroup;
         m_include = includePatterns.stream().map(Pattern::compile).collect(Collectors.toList());
@@ -102,6 +119,9 @@ public class CmsJsonAccessPolicy {
         if (propertyFilterRegex != null) {
             m_propertyFilter = Pattern.compile(propertyFilterRegex);
         }
+        m_corsAllowOrigin = corsAllowOrigin;
+        m_corsAllowMethods = corsAllowMethods;
+        m_corsAllowHeaders = corsAllowHeaders;
     }
 
     /**
@@ -149,7 +169,23 @@ public class CmsJsonAccessPolicy {
             Collectors.toList());
         List<String> excludes = root.elements("exclude").stream().map(elem -> elem.getTextTrim()).collect(
             Collectors.toList());
-        return new CmsJsonAccessPolicy(groupName, includes, excludes, propertyFilterRegex);
+        Element elementCors = root.element("cors");
+        String corsAllowOrigin = null;
+        String corsAllowMethods = null;
+        String corsAllowHeaders = null;
+        if (elementCors != null) {
+            corsAllowOrigin = elementCors.elementTextTrim("allow-origin");
+            corsAllowMethods = elementCors.elementTextTrim("allow-methods");
+            corsAllowHeaders = elementCors.elementTextTrim("allow-headers");
+        }
+        return new CmsJsonAccessPolicy(
+            groupName,
+            includes,
+            excludes,
+            propertyFilterRegex,
+            corsAllowOrigin,
+            corsAllowMethods,
+            corsAllowHeaders);
     }
 
     /**
@@ -201,6 +237,24 @@ public class CmsJsonAccessPolicy {
             LOG.info("Filtered property " + property + " because it does not match the JSON property filter.");
         }
         return result;
+    }
+
+    /**
+     * Sets the configured CORS headers for a given HTTP servlet response.<p>
+     *
+     * @param response the given HTTP servlet response
+     */
+    public void setCorsHeaders(HttpServletResponse response) {
+
+        if (m_corsAllowOrigin != null) {
+            response.setHeader("Access-Control-Allow-Origin", m_corsAllowOrigin);
+        }
+        if (m_corsAllowMethods != null) {
+            response.setHeader("Access-Control-Allow-Methods", m_corsAllowMethods);
+        }
+        if (m_corsAllowHeaders != null) {
+            response.setHeader("Access-Control-Allow-Headers", m_corsAllowHeaders);
+        }
     }
 
 }

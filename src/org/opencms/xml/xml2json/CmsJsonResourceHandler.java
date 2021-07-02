@@ -272,6 +272,7 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsNeedsAdmi
 
         int status = HttpServletResponse.SC_OK;
         String output = "";
+        CmsJsonAccessPolicy accessPolicy = null;
         try {
             if (cms == null) {
                 status = HttpServletResponse.SC_UNAUTHORIZED;
@@ -294,7 +295,7 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsNeedsAdmi
                     // ignore
                 }
 
-                CmsJsonAccessPolicy accessPolicy = getAccessPolicy(rootCms);
+                accessPolicy = getAccessPolicy(rootCms);
                 CmsJsonHandlerContext context = new CmsJsonHandlerContext(
                     cms,
                     rootCms,
@@ -354,6 +355,9 @@ public class CmsJsonResourceHandler implements I_CmsResourceInit, I_CmsNeedsAdmi
             output = JSONObject.quote(e.getLocalizedMessage());
         }
         res.setStatus(status);
+        if (accessPolicy != null) {
+            accessPolicy.setCorsHeaders(res);
+        }
         try {
             PrintWriter writer = res.getWriter();
             writer.write(output);

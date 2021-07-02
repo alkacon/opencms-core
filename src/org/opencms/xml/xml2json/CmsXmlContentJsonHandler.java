@@ -29,24 +29,13 @@ package org.opencms.xml.xml2json;
 
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
-import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.content.CmsXmlContent;
-import org.opencms.xml.content.I_CmsXmlContentHandler;
-import org.opencms.xml.content.I_CmsXmlContentHandler.JsonRendererSettings;
-
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Map;
+import org.opencms.xml.xml2json.document.CmsJsonDocumentXmlContent;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 
 /**
@@ -62,6 +51,11 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
         /** Serial version id. */
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Creates a new exception for a given message.<p>
+         *
+         * @param string the message
+         */
         public PathNotFoundException(String string) {
 
             super(string);
@@ -92,34 +86,6 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
     }
 
     /**
-     * Looks up sub-object in the given JSON object.
-     *
-     * @param current the initial object
-     * @param path the path to look up
-     * @return the sub-object
-     *
-     * @throws JSONException if something goes wrong
-     * @throws PathNotFoundException if the path can not be found in the JSON object
-     */
-    public static Object lookupPath(Object current, String path) throws JSONException, PathNotFoundException {
-
-        String[] tokens = path.split("[/\\[\\]]");
-        for (String token : tokens) {
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(token)) {
-                continue;
-            }
-            if (StringUtils.isNumeric(token) && (current instanceof JSONArray)) {
-                current = ((JSONArray)current).get(Integer.parseInt(token));
-            } else if (current instanceof JSONObject) {
-                current = ((JSONObject)current).get(token);
-            } else {
-                throw new PathNotFoundException("Path not found");
-            }
-        }
-        return current;
-    }
-
-    /**
      * @see org.opencms.xml.xml2json.I_CmsJsonHandler#getOrder()
      */
     public double getOrder() {
@@ -142,85 +108,36 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
      */
     public CmsJsonResult renderJson(CmsJsonHandlerContext context) {
 
+        return renderJson(context, true);
+    }
+
+    /**
+     * Renders a JSON representation of an XML content.<p>
+     *
+     * @param context the handler context
+     * @param throwError whether to throw an error if a locale or path selection fails
+     * @return the XML content as JSON
+     */
+    public CmsJsonResult renderJson(CmsJsonHandlerContext context, boolean throwError) {
+
         try {
-            CmsXmlContent content = context.getContent();
-            I_CmsXmlContentJsonRenderer renderer = createContentRenderer(context);
-
-            Object json = null;
-            String localeParam = context.getParameters().get(PARAM_LOCALE);
-            String pathParam = context.getParameters().get(PARAM_PATH);
-            if ((localeParam == null) && (pathParam == null)) {
-                JSONObject json1 = CmsDefaultXmlContentJsonRenderer.renderAllLocales(content, renderer);
-
-                CmsResourceDataJsonHelper helper = new CmsResourceDataJsonHelper(
-                    context.getCms(),
-                    context.getResource(),
-                    context.getAccessPolicy()::checkPropertyAccess);
-                helper.addProperties(json1);
-                json1.put("attributes", helper.attributes());
-                JSONArray locales = new JSONArray();
-                for (Locale locale : context.getContent().getLocales()) {
-                    locales.put(locale.toString());
-                }
-                json1.put("locales", locales);
-                helper.addPathAndLink(json1);
-                json = json1;
-            } else if (localeParam != null) {
-                Locale locale = CmsLocaleManager.getLocale(localeParam);
-                Locale selectedLocale = OpenCms.getLocaleManager().getBestMatchingLocale(
-                    locale,
-                    Collections.emptyList(),
-                    context.getContent().getLocales());
-                if ((selectedLocale == null) || !context.getContent().hasLocale(selectedLocale)) {
-                    throw new PathNotFoundException("Locale not found");
-                }
-                json = renderer.render(context.getContent(), selectedLocale);
-                if (pathParam != null) {
-                    Object result = lookupPath(json, pathParam);
-                    json = result;
-                }
-            } else {
-                return new CmsJsonResult(
-                    "Can not use path parameter without locale parameter.",
-                    HttpServletResponse.SC_BAD_REQUEST);
+            CmsJsonRequest jsonRequest = new CmsJsonRequest(context, this);
+            jsonRequest.validate();
+            if (jsonRequest.hasErrors()) {
+                return new CmsJsonResult(jsonRequest.getErrorsAsJson(), HttpServletResponse.SC_BAD_REQUEST);
             }
-            CmsJsonResult res = new CmsJsonResult(json, HttpServletResponse.SC_OK);
-            return res;
-
+            CmsJsonDocumentXmlContent jsonDocument = new CmsJsonDocumentXmlContent(jsonRequest, context.getContent());
+            return new CmsJsonResult(jsonDocument.getJson(), HttpServletResponse.SC_OK);
         } catch (JSONException | PathNotFoundException e) {
             LOG.info(e.getLocalizedMessage(), e);
             return new CmsJsonResult(e.getLocalizedMessage(), HttpServletResponse.SC_NOT_FOUND);
+        } catch (CmsJsonHandlerException e) {
+            LOG.debug(e.getLocalizedMessage(), e);
+            return new CmsJsonResult(e.getLocalizedMessage(), HttpServletResponse.SC_BAD_REQUEST);
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
             return new CmsJsonResult(e.getLocalizedMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
-    }
-
-    /**
-     * Creates the content renderer instance.
-     *
-     * @param context the JSON handler context
-     *
-     * @return the content renderer instance
-     *
-     * @throws Exception if something goes wrong
-     */
-    protected I_CmsXmlContentJsonRenderer createContentRenderer(CmsJsonHandlerContext context) throws Exception {
-
-        I_CmsXmlContentHandler handler = context.getContent().getContentDefinition().getContentHandler();
-        JsonRendererSettings settings = handler.getJsonRendererSettings();
-        I_CmsXmlContentJsonRenderer renderer = null;
-        if (settings == null) {
-            renderer = new CmsDefaultXmlContentJsonRenderer();
-        } else {
-            renderer = (I_CmsXmlContentJsonRenderer)Class.forName(settings.getClassName()).newInstance();
-            for (Map.Entry<String, String> entry : settings.getParameters().entrySet()) {
-                renderer.addConfigurationParameter(entry.getKey(), entry.getValue());
-            }
-            renderer.initConfiguration();
-        }
-        renderer.initialize(context);
-        return renderer;
     }
 
 }
