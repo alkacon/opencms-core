@@ -54,6 +54,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SERVER_URL_NOT_EMPTY_0 = "ERR_SERVER_URL_NOT_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASEAPP_EXPORT_SKIP_PARENT_FOLDERS_0 = "GUI_DATABASEAPP_EXPORT_SKIP_PARENT_FOLDERS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_SQLCONSOLE_NO_PERMISSIONS_EXEC_SENTENCE_1 = "ERR_SQLCONSOLE_NO_PERMISSIONS_EXEC_SENTENCE_1";
 
     /** Message constant for key in the resource bundle. */

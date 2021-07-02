@@ -189,6 +189,9 @@ public class CmsDbExportView extends VerticalLayout {
     private ComboBox m_site;
 
     /**vaadin component.*/
+    private CheckBox m_skipParentFolders;
+
+    /**vaadin component.*/
     private ComboBox m_target;
 
     /**
@@ -452,6 +455,7 @@ public class CmsDbExportView extends VerticalLayout {
         m_exportParams.setInProject(m_modified.getValue().booleanValue());
         m_exportParams.setIncludeSystemFolder(m_includeSystem.getValue().booleanValue());
         m_exportParams.setIncludeUnchangedResources(m_includeUnchanged.getValue().booleanValue());
+        m_exportParams.setSkipParentFolders(m_skipParentFolders.getValue().booleanValue());
         String exportFileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
             OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + (String)m_target.getValue());
         m_exportParams.setPath(exportFileName);
