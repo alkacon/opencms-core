@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -93,6 +94,29 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
         /** Cache for sitemap configurations. */
         private Map<String, CmsADEConfigData> m_configCache = new HashMap<>();
 
+        /** Buffer for log messages to write at the end of the request. */
+        private CmsDuplicateRemovingLogBuffer m_logBuffer = new CmsDuplicateRemovingLogBuffer();
+
+        /**
+         * Adds a log message to the log buffer.
+         *
+         * @param channel the channel
+         * @param level the log level
+         * @param message the message
+         */
+        public void addLog(String channel, String level, String message) {
+
+            m_logBuffer.add(channel, level, message);
+        }
+
+        /**
+         * Called at the end of the request.
+         */
+        public void close() {
+
+            m_logBuffer.flush();
+        }
+
         /**
          * Gets the cached sitemap configuration data.
          *
@@ -114,6 +138,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
             m_configCache.put(key, config);
         }
+
     }
 
     /**
@@ -231,6 +256,19 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     }
 
     /**
+     * Helper method used to conveniently access the request cache, does nothing if the request cache isn't set.
+     *
+     * @param handler the handler to pass the request cache to
+     */
+    public static void withRequestCache(Consumer<RequestCache> handler) {
+
+        RequestCache cache = getRequestCache();
+        if (cache != null) {
+            handler.accept(cache);
+        }
+    }
+
+    /**
      * OpenCms servlet main request handling method.<p>
      *
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -289,6 +327,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             }
         } finally {
             currentRequest.remove();
+            requestCache.get().close();
             requestCache.remove();
             activeRequests.remove(requestId);
         }

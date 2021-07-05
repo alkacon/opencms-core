@@ -47,6 +47,7 @@ import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.main.OpenCmsServlet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider.SitemapDirectEditPermissions;
@@ -181,6 +182,10 @@ public class CmsADEConfigData {
             return ReflectionToStringBuilder.toString(this);
         }
     }
+
+    public static final String REQ_LOG_PREFIX = "[CmsADEConfigData] ";
+
+    public static final String REQUEST_LOG_CHANNEL = "org.opencms.ade.configuration.CmsADEConfigData.request";
 
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEConfigData.class);
@@ -342,15 +347,28 @@ public class CmsADEConfigData {
             Collection<I_CmsFormatterBean> activeFormattersForKey = getActiveFormattersByKey().get(key);
             if (activeFormattersForKey.size() > 0) {
                 if (activeFormattersForKey.size() > 1) {
-                    if (LOG.isWarnEnabled()) {
-                        List<String> ids = activeFormattersForKey.stream().map(formatter -> formatter.getId()).collect(
-                            Collectors.toList());
-                        LOG.warn("Ambiguous formatter key " + key + " at '" + getBasePath() + "': found " + ids);
-                    }
+                    String labels = ""
+                        + activeFormattersForKey.stream().map(this::getFormatterLabel).collect(Collectors.toList());
+                    String message = "Ambiguous formatter for key '"
+                        + key
+                        + "' at '"
+                        + getBasePath()
+                        + "': found "
+                        + labels;
+                    LOG.warn(message);
+                    OpenCmsServlet.withRequestCache(
+                        reqCache -> reqCache.addLog(REQUEST_LOG_CHANNEL, "warn", REQ_LOG_PREFIX + message));
                 }
+                I_CmsFormatterBean original = result;
                 result = activeFormattersForKey.iterator().next();
-                LOG.debug(
-                    "Using substitute formatter " + result.getId() + " instead of " + id + " because of matching key.");
+                String message = "Using substitute formatter "
+                    + getFormatterLabel(result)
+                    + " instead of "
+                    + getFormatterLabel(original)
+                    + " because of matching key.";
+                LOG.debug(message);
+                OpenCmsServlet.withRequestCache(
+                    reqCache -> reqCache.addLog(REQUEST_LOG_CHANNEL, "debug", REQ_LOG_PREFIX + message));
             }
         }
         return result;
@@ -383,19 +401,38 @@ public class CmsADEConfigData {
         Collection<I_CmsFormatterBean> activeForKey = getActiveFormattersByKey().get(name);
         if (activeForKey.size() > 0) {
             if (activeForKey.size() > 1) {
-                List<String> ids = activeForKey.stream().map(formatter -> formatter.getId()).collect(
-                    Collectors.toList());
-                LOG.warn("Ambiguous formatter for key '" + name + "' at " + getBasePath() + ", found " + ids);
+                String labels = "" + activeForKey.stream().map(this::getFormatterLabel).collect(Collectors.toList());
+                String message = "Ambiguous formatter for key '"
+                    + name
+                    + "' at '"
+                    + getBasePath()
+                    + "': found "
+                    + labels;
+                LOG.warn(message);
+                OpenCmsServlet.withRequestCache(rc -> rc.addLog(REQUEST_LOG_CHANNEL, "warn", REQ_LOG_PREFIX + message));
             }
             return activeForKey.iterator().next();
         } else {
-            LOG.warn("No local formatter found for key '" + name + "' at " + getBasePath() + ", trying all formatters");
+            String message1 = "No local formatter found for key '"
+                + name
+                + "' at "
+                + getBasePath()
+                + ", trying all formatters";
+            LOG.warn(message1);
+            OpenCmsServlet.withRequestCache(rc -> rc.addLog(REQUEST_LOG_CHANNEL, "warn", REQ_LOG_PREFIX + message1));
             Collection<I_CmsFormatterBean> allForKey = getFormattersByKey().get(name);
             if (allForKey.size() > 0) {
                 if (allForKey.size() > 1) {
-                    List<String> ids = allForKey.stream().map(formatter -> formatter.getId()).collect(
-                        Collectors.toList());
-                    LOG.warn("Ambiguous formatter for key '" + name + "' at " + getBasePath() + ", found " + ids);
+                    String labels = "" + allForKey.stream().map(this::getFormatterLabel).collect(Collectors.toList());
+                    String message = "Ambiguous formatter for key '"
+                        + name
+                        + "' at '"
+                        + getBasePath()
+                        + "': found "
+                        + labels;
+                    LOG.warn(message);
+                    OpenCmsServlet.withRequestCache(
+                        rc -> rc.addLog(REQUEST_LOG_CHANNEL, "warn", REQ_LOG_PREFIX + message));
                 }
                 return allForKey.iterator().next();
             }
@@ -1672,6 +1709,11 @@ public class CmsADEConfigData {
             m_activeFormattersByKey = activeFormattersByKey;
         }
         return m_activeFormattersByKey;
+    }
+
+    private String getFormatterLabel(I_CmsFormatterBean formatter) {
+
+        return formatter.getLocation() != null ? formatter.getLocation() : formatter.getId();
     }
 
     /**

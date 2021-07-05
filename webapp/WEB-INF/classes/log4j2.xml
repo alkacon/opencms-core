@@ -57,6 +57,8 @@
 	    <Logger level="info" name="org.opencms.jsp.CmsJspLoginBean"/>
 	    <Logger level="info" name="org.opencms.monitor"/>
 	    <Logger level="info" name="org.opencms.scheduler"/>
+	    <Logger level="warn" name="org.opencms.ade.configuration.CmsADEConfigData.request" />
+	    
 	    <Logger level="warn" name="org.opencms.search" additivity="false">
 	        <AppenderRef ref="OCSearch"/>
 	    </Logger>
