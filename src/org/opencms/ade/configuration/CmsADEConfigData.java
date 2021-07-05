@@ -415,9 +415,9 @@ public class CmsADEConfigData {
         } else {
             String message1 = "No local formatter found for key '"
                 + name
-                + "' at "
+                + "' at '"
                 + getBasePath()
-                + ", trying all formatters";
+                + "', trying inactive formatters";
             LOG.warn(message1);
             OpenCmsServlet.withRequestCache(rc -> rc.addLog(REQUEST_LOG_CHANNEL, "warn", REQ_LOG_PREFIX + message1));
             Collection<I_CmsFormatterBean> allForKey = getFormattersByKey().get(name);
@@ -437,6 +437,11 @@ public class CmsADEConfigData {
                 return allForKey.iterator().next();
             }
         }
+        OpenCmsServlet.withRequestCache(
+            rc -> rc.addLog(
+                REQUEST_LOG_CHANNEL,
+                "warn",
+                REQ_LOG_PREFIX + "No formatter found for key '" + name + "' at '" + getBasePath() + "'"));
         return null;
     }
 
