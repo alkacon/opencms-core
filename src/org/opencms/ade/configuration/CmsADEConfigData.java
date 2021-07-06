@@ -193,35 +193,35 @@ public class CmsADEConfigData {
     /** The wrapped configuration bean containing the actual data. */
     protected CmsADEConfigDataInternal m_data;
 
-    /** The cache state to which the wrapped configuration bean belongs. */
-    private CmsADEConfigCacheState m_cache;
-
-    /** The configuration sequence (contains the list of all sitemap configuration data beans to be used for inheritance). */
-    private CmsADEConfigurationSequence m_configSequence;
-
-    /** Current formatter configuration. */
-    private CmsFormatterConfigurationCacheState m_cachedFormatters;
-
     /** Lazily initialized map of formatters. */
     private Map<CmsUUID, I_CmsFormatterBean> m_activeFormatters;
 
     /** Lazily initialized cache for active formatters by formatter key. */
     private Multimap<String, I_CmsFormatterBean> m_activeFormattersByKey;
 
-    /** Lazily initialized cache for formatters by formatter key. */
-    private Multimap<String, I_CmsFormatterBean> m_formattersByKey;
+    /** The sitemap attributes (may be null if not yet computed). */
+    private Map<String, AttributeValue> m_attributes;
+
+    /** The cache state to which the wrapped configuration bean belongs. */
+    private CmsADEConfigCacheState m_cache;
+
+    /** Current formatter configuration. */
+    private CmsFormatterConfigurationCacheState m_cachedFormatters;
+
+    /** The configuration sequence (contains the list of all sitemap configuration data beans to be used for inheritance). */
+    private CmsADEConfigurationSequence m_configSequence;
 
     /** Lazily initialized cache for formatters by JSP id. */
     private Multimap<CmsUUID, I_CmsFormatterBean> m_formattersByJspId;
 
-    /** Type names configured in this or ancestor sitemap configurations. */
-    private Set<String> m_typesInAncestors;
+    /** Lazily initialized cache for formatters by formatter key. */
+    private Multimap<String, I_CmsFormatterBean> m_formattersByKey;
 
     /** Set of names of active types.*/
     private Set<String> m_typesActive;
 
-    /** The sitemap attributes (may be null if not yet computed). */
-    private Map<String, AttributeValue> m_attributes;
+    /** Type names configured in this or ancestor sitemap configurations. */
+    private Set<String> m_typesInAncestors;
 
     /**
      * Creates a new configuration data object, based on an internal configuration data bean and a
@@ -810,14 +810,14 @@ public class CmsADEConfigData {
      *
      * @return the dynamic function availability
      */
-    public CmsFunctionAvailability getDynamicFunctionAvailability() {
+    public CmsFunctionAvailability getDynamicFunctionAvailability(CmsFormatterConfigurationCacheState formatterConfig) {
 
         CmsADEConfigData parentData = parent();
         CmsFunctionAvailability result;
         if (parentData == null) {
-            result = new CmsFunctionAvailability();
+            result = new CmsFunctionAvailability(formatterConfig);
         } else {
-            result = parentData.getDynamicFunctionAvailability();
+            result = parentData.getDynamicFunctionAvailability(formatterConfig);
         }
         Collection<CmsUUID> enabledIds = m_data.getDynamicFunctions();
         Collection<CmsUUID> disabledIds = m_data.getFunctionsToRemove();
@@ -825,9 +825,7 @@ public class CmsADEConfigData {
             result.removeAll();
         }
         if (enabledIds != null) {
-            for (CmsUUID id : enabledIds) {
-                result.add(id);
-            }
+            result.addAll(enabledIds);
         }
         if (disabledIds != null) {
             for (CmsUUID id : disabledIds) {

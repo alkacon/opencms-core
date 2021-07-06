@@ -503,6 +503,43 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
     }
 
     /**
+     * Tests that formatters with the same key override formatters inherited from parent sitemap configurations.
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void testReplaceFormatterWithSameKey() throws CmsException {
+
+        I_CmsFormatterBean f1 = createFormatterWithKey(TYPE_A, "f1", 1000, true, "alpha");
+        I_CmsFormatterBean f2 = createFormatterWithKey(TYPE_A, "f2", 1000, true, "beta");
+        I_CmsFormatterBean f3 = createFormatterWithKey(TYPE_A, "f3", 1000, true, (String)null);
+        I_CmsFormatterBean f4 = createFormatterWithKey(TYPE_A, "f4", 1000, false, "beta");
+        I_CmsFormatterBean f5 = createFormatterWithKey(TYPE_A, "f5", 1000, false, (String)null);
+
+        CmsTestConfigData config = createConfig("/", f1, f2, f3, f4, f5);
+        CmsTestConfigData config2 = createConfig("/invalid-name", f1, f2, f3, f4, f5);
+        config2.setParent(config);
+        CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet(
+            Collections.<String> emptyList(),
+            Arrays.asList("" + CmsUUID.getConstantUUID("f4"), "" + CmsUUID.getConstantUUID("f5")),
+            null,
+            false,
+            false,
+            null,
+            null);
+        config2.setFormatterChangeSet(changeSet);
+
+        CmsFormatterConfiguration formatterConfig = config2.getFormatters(getCmsObject(), m_exampleResourceA);
+
+        Set<String> actualNames = new HashSet<String>();
+        Set<String> expectedNames = new HashSet<String>(Arrays.asList("f1", "f3", "f4", "f5")); // not f2, because it should have overwritten
+        for (I_CmsFormatterBean formatter : formatterConfig.getAllFormatters()) {
+            actualNames.add(formatter.getNiceName(java.util.Locale.ENGLISH));
+        }
+        assertEquals("Formatter names don't match the active formatters for this type", expectedNames, actualNames);
+
+    }
+
+    /**
      * Tests whether schema formatters are available.
      *
      * @throws CmsException
@@ -668,6 +705,80 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             + "</NewFormatters>\n"
             + "";
         return xml;
+    }
+
+    /**
+     * Creates a formatter bean with the given resource type, name, rank, and auto-enabled status.
+     *
+     * @param resType
+     * @param name
+     * @param rank1
+     * @param enabled
+     * @return the formatter bean
+     */
+    private CmsFormatterBean createFormatterWithKey(
+        String resType,
+        String name,
+        int rank1,
+        boolean enabled,
+        String key) {
+
+        Set<String> containerTypes = new HashSet<String>();
+        containerTypes.add("foo");
+        String jspRootPath = "/system/f1.jsp";
+        CmsUUID jspStructureId = null;
+        int minWidth = -1;
+        int maxWidth = 9999;
+        boolean preview = true;
+        boolean searchContent = true;
+        String location = "/system/";
+
+        List<String> cssHeadIncludes = Lists.newArrayList();
+        String inlineCss = "";
+        List<String> javascriptHeadIncludes = Lists.newArrayList();
+        String inlineJavascript = "";
+        String niceName = name;
+        String resourceTypeName = resType;
+        int rank = rank1;
+        String id = "" + CmsUUID.getConstantUUID(name);
+        Map<String, CmsXmlContentProperty> settings = Maps.newHashMap();
+        boolean isFromConfigFile = true;
+        boolean isAutoEnabled = enabled;
+        boolean isDetail = true;
+        CmsFormatterBean result = new CmsFormatterBean(
+            containerTypes,
+            jspRootPath,
+            jspStructureId,
+            key,
+            minWidth,
+            maxWidth,
+            preview,
+            searchContent,
+            location,
+
+            cssHeadIncludes,
+            inlineCss,
+            javascriptHeadIncludes,
+            inlineJavascript,
+            niceName,
+            null,
+            Collections.singleton(resourceTypeName),
+            rank,
+            id,
+            settings,
+            isFromConfigFile,
+            isAutoEnabled,
+            isDetail,
+            null,
+            false,
+            false,
+            false,
+            null,
+            Collections.emptyMap(),
+            false);
+
+        return result;
+
     }
 
     /**

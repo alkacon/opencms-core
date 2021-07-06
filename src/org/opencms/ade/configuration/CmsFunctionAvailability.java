@@ -27,12 +27,15 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +47,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  */
 public class CmsFunctionAvailability {
 
+    /** The formatter configuration state. */
+    private CmsFormatterConfigurationCacheState m_formatterConfig;
+
     /** The map of states for dynamic functions - true for explicitly added functions, false for explicitly removed functions (unless there is a whitelist and they are not in it. */
     private Map<CmsUUID, Boolean> m_functionStates = new HashMap<>();
 
@@ -52,9 +58,12 @@ public class CmsFunctionAvailability {
 
     /**
      * Create a new instance.
+     *
+     * @param formatterConfig the formatter configuration state
      */
-    public CmsFunctionAvailability() {
+    public CmsFunctionAvailability(CmsFormatterConfigurationCacheState formatterConfig) {
 
+        m_formatterConfig = formatterConfig;
     }
 
     /**
@@ -64,8 +73,38 @@ public class CmsFunctionAvailability {
      */
     public void add(CmsUUID functionId) {
 
+        if (m_hasWhitelist) {
+            // If we have a whitelist, and we explicitly add a function,
+            // remove all whitelisted functions with the same key.
+            I_CmsFormatterBean functionFormatter = m_formatterConfig.getFormatters().get(functionId);
+            if ((functionFormatter != null) && (functionFormatter.getKey() != null)) {
+                String key = functionFormatter.getKey();
+                Iterator<Map.Entry<CmsUUID, Boolean>> iter = m_functionStates.entrySet().iterator();
+                while (iter.hasNext()) {
+                    Map.Entry<CmsUUID, Boolean> entry = iter.next();
+                    CmsUUID id = entry.getKey();
+                    I_CmsFormatterBean existingBean = m_formatterConfig.getFormatters().get(id);
+                    if ((existingBean != null) && key.equals(existingBean.getKey())) {
+                        iter.remove();
+                    }
+                }
+
+            }
+        }
         m_hasWhitelist = true;
         m_functionStates.put(functionId, Boolean.TRUE);
+    }
+
+    /**
+     * Adds all ids from the given collection.
+     *
+     * @param enabledIds the ids to add
+     */
+    public void addAll(Collection<CmsUUID> enabledIds) {
+
+        for (CmsUUID id : enabledIds) {
+            add(id);
+        }
     }
 
     /**

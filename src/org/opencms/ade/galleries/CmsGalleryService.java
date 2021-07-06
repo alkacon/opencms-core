@@ -28,6 +28,7 @@
 package org.opencms.ade.galleries;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
 import org.opencms.ade.galleries.CmsGalleryFilteredNavTreeBuilder.NavigationNode;
 import org.opencms.ade.galleries.preview.I_CmsPreviewProvider;
 import org.opencms.ade.galleries.shared.CmsGalleryActionInfo;
@@ -306,6 +307,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /** Key for additional info gallery result view type. */
     public static final String RESULT_VIEW_TYPE_ADD_INFO_KEY = "gallery_result_view_type";
 
+    /** The dynamic function resource type names. */
+    private static final Set<String> FUNCTION_TYPES = new HashSet<>(
+        Arrays.asList(
+            new String[] {CmsXmlDynamicFunctionHandler.TYPE_FUNCTION, CmsResourceTypeFunctionConfig.TYPE_NAME}));
+
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGalleryService.class);
 
@@ -328,11 +334,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             return o1Path.compareTo(o2Path);
         }
     };
-
-    /** The dynamic function resource type names. */
-    private static final Set<String> FUNCTION_TYPES = new HashSet<>(
-        Arrays.asList(
-            new String[] {CmsXmlDynamicFunctionHandler.TYPE_FUNCTION, CmsResourceTypeFunctionConfig.TYPE_NAME}));
 
     /** The instance of the resource manager. */
     CmsResourceManager m_resourceManager;
@@ -2781,7 +2782,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
                     cms,
                     cms.getRequestContext().addSiteRoot(searchData.getReferencePath()));
-                params.setFunctionAvailability(config.getDynamicFunctionAvailability());
+                CmsFormatterConfigurationCacheState formatterState = OpenCms.getADEManager().getCachedFormatters(
+                    cms.getRequestContext().getCurrentProject().isOnlineProject());
+                params.setFunctionAvailability(config.getDynamicFunctionAvailability(formatterState));
             }
         }
 

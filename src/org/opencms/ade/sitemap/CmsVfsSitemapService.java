@@ -33,6 +33,7 @@ import org.opencms.ade.configuration.CmsFunctionAvailability;
 import org.opencms.ade.configuration.CmsFunctionReference;
 import org.opencms.ade.configuration.CmsModelPageConfig;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
+import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
 import org.opencms.ade.detailpage.CmsDetailPageConfigurationWriter;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
@@ -220,15 +221,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         }
     }
 
-    /** Properties to remove from the copied template when creating a new sitemap entry. */
-    public static final List<String> FILTER_PROPERTIES = Arrays.asList(
-        new String[] {
-            CmsPropertyDefinition.PROPERTY_TITLE,
-            CmsPropertyDefinition.PROPERTY_DESCRIPTION,
-            CmsPropertyDefinition.PROPERTY_DESCRIPTION_HTML,
-            CmsPropertyDefinition.PROPERTY_NAVTEXT,
-            CmsPropertyDefinition.PROPERTY_NAVINFO});
-
     /** The path of the JSP used to download aliases. */
     public static final String ALIAS_DOWNLOAD_PATH = "/system/workplace/commons/download-aliases.jsp";
 
@@ -237,6 +229,15 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
     /** The show model edit confirm dialog attribute name. */
     public static final String ATTR_SHOW_MODEL_EDIT_CONFIRM = "showModelEditConfirm";
+
+    /** Properties to remove from the copied template when creating a new sitemap entry. */
+    public static final List<String> FILTER_PROPERTIES = Arrays.asList(
+        new String[] {
+            CmsPropertyDefinition.PROPERTY_TITLE,
+            CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+            CmsPropertyDefinition.PROPERTY_DESCRIPTION_HTML,
+            CmsPropertyDefinition.PROPERTY_NAVTEXT,
+            CmsPropertyDefinition.PROPERTY_NAVINFO});
 
     /** The galleries folder name. */
     public static final String GALLERIES_FOLDER_NAME = ".galleries";
@@ -902,12 +903,14 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         LOG.warn(e.getLocalizedMessage(), e);
                     }
                 }
+                CmsFormatterConfigurationCacheState formatterState = OpenCms.getADEManager().getCachedFormatters(
+                    cms.getRequestContext().getCurrentProject().isOnlineProject());
                 if (modelResource != null) {
                     resourceTypeInfos = getResourceTypeInfos(
                         getCmsObject(),
                         configData.getResourceTypes(),
                         configData.getFunctionReferences(),
-                        configData.getDynamicFunctionAvailability(),
+                        configData.getDynamicFunctionAvailability(formatterState),
                         modelResource,
                         getWorkplaceLocale());
                     try {

@@ -39,8 +39,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 /**
  * This class represents the changes which can be made to formatters in a sitemap configuration file.<p>
@@ -50,20 +54,9 @@ public class CmsFormatterChangeSet {
     /** The prefix used for types in the Add/RemoveFormatter fields in the configuration. */
     public static final String PREFIX_TYPE = "type_";
 
-    /** The path pattern to match formatters accessible from the current site. */
-    private Pattern m_pathPattern;
-
-    /** A map which indicates whether schema formatters for a type (which is the key) should be added (value=true) or removed (value=False). */
-    private Map<String, Boolean> m_typeUpdateSet = new HashMap<String, Boolean>();
-
-    /** A map which indicates whether a formatter (whose id is the key) should be added (value=true) or removed (value= false). */
-    private Map<CmsUUID, Boolean> m_updateSet = new HashMap<CmsUUID, Boolean>();
-
-    /** A flag, indicating if all formatters that are not explicitly added should be removed. */
-    private boolean m_removeAllNonExplicitlyAdded;
-
-    /** True if functions are removed. */
-    private boolean m_removeFunctions;
+    /** The debug path to identify the configuration where this is coming from. */
+    @SuppressWarnings("unused")
+    private String m_debugPath;
 
     /** The set of structure ids of added functions. */
     private Set<CmsUUID> m_functions;
@@ -71,9 +64,20 @@ public class CmsFormatterChangeSet {
     /** Ids of functions to remove. */
     private Set<CmsUUID> m_functionsToRemove = new HashSet<>();
 
-    /** The debug path to identify the configuration where this is coming from. */
-    @SuppressWarnings("unused")
-    private String m_debugPath;
+    /** The path pattern to match formatters accessible from the current site. */
+    private Pattern m_pathPattern;
+
+    /** A flag, indicating if all formatters that are not explicitly added should be removed. */
+    private boolean m_removeAllNonExplicitlyAdded;
+
+    /** True if functions are removed. */
+    private boolean m_removeFunctions;
+
+    /** A map which indicates whether schema formatters for a type (which is the key) should be added (value=true) or removed (value=False). */
+    private Map<String, Boolean> m_typeUpdateSet = new HashMap<String, Boolean>();
+
+    /** A map which indicates whether a formatter (whose id is the key) should be added (value=true) or removed (value= false). */
+    private Map<CmsUUID, Boolean> m_updateSet = new HashMap<CmsUUID, Boolean>();
 
     /**
      * Creates an empty formatter change set.<p>
@@ -133,36 +137,63 @@ public class CmsFormatterChangeSet {
         Map<CmsUUID, I_CmsFormatterBean> formatters,
         CmsFormatterConfigurationCacheState externalFormatters) {
 
-        if (m_removeAllNonExplicitlyAdded) {
+        formatters.values().removeIf(
+            formatter -> formatter instanceof CmsFunctionFormatterBean
+            ? m_removeFunctions
+            : m_removeAllNonExplicitlyAdded);
 
-            formatters.values().removeIf(formatter -> !(formatter instanceof CmsFunctionFormatterBean));
+        Map<CmsUUID, Boolean> updateSetWithFunctions = new HashMap<>(m_updateSet);
+        for (CmsUUID id : m_functionsToRemove) {
+            updateSetWithFunctions.put(id, Boolean.FALSE);
         }
-        for (Map.Entry<CmsUUID, Boolean> updateEntry : m_updateSet.entrySet()) {
-            CmsUUID key = updateEntry.getKey();
-            Boolean value = updateEntry.getValue();
-            if (value.booleanValue()) {
-                I_CmsFormatterBean addedFormatter = externalFormatters.getFormatters().get(key);
-                if (addedFormatter != null) {
-                    formatters.put(key, addedFormatter);
-                }
-            } else {
-                formatters.remove(key);
-            }
-        }
-        if (m_removeFunctions) {
-            formatters.values().removeIf(formatter -> formatter instanceof CmsFunctionFormatterBean);
-        }
+
         if (m_functions != null) {
             for (CmsUUID id : m_functions) {
-                I_CmsFormatterBean function = externalFormatters.getFormatters().get(id);
-                if (function != null) {
-                    formatters.put(id, function);
-                }
+                updateSetWithFunctions.put(id, Boolean.TRUE);
             }
         }
-        for (CmsUUID id : m_functionsToRemove) {
-            formatters.remove(id);
+
+        Multimap<String, I_CmsFormatterBean> formattersByKey = ArrayListMultimap.create();
+        for (I_CmsFormatterBean formatter : formatters.values()) {
+            if (formatter.getKey() != null) {
+                formattersByKey.put(formatter.getKey(), formatter);
+            }
         }
+
+        for (Map.Entry<CmsUUID, Boolean> updateEntry : updateSetWithFunctions.entrySet()) {
+            CmsUUID id = updateEntry.getKey();
+            Boolean value = updateEntry.getValue();
+            if (value.booleanValue()) {
+                I_CmsFormatterBean addedFormatter = externalFormatters.getFormatters().get(id);
+                if (addedFormatter != null) {
+                    String key = addedFormatter.getKey();
+                    if (key != null) {
+                        Collection<I_CmsFormatterBean> formattersWithSameKey = formattersByKey.get(key);
+                        for (I_CmsFormatterBean formatterToRemove : formattersWithSameKey) {
+                            String idStrToRemove = formatterToRemove.getId();
+                            if (CmsUUID.isValidUUID(idStrToRemove)) {
+                                CmsUUID idToRemove = new CmsUUID(idStrToRemove);
+                                formatters.remove(idToRemove);
+                            }
+                        }
+                        formattersByKey.removeAll(key);
+                    }
+                    formatters.put(id, addedFormatter);
+                    formattersByKey.put(key, addedFormatter);
+                }
+            } else {
+                I_CmsFormatterBean removedFormatter = formatters.remove(id);
+                if ((removedFormatter != null)
+                    && (removedFormatter.getId() != null)
+                    && (removedFormatter.getKey() != null)) {
+                    String key = removedFormatter.getKey();
+                    formattersByKey.get(key).removeIf(fmt -> Objects.equals(fmt.getId(), "" + id));
+
+                }
+
+            }
+        }
+
         if (m_pathPattern != null) {
             // remove all formatters where the location path does not match the path pattern, this prevents cross site formatter use
             Iterator<Entry<CmsUUID, I_CmsFormatterBean>> formattersIt = formatters.entrySet().iterator();
