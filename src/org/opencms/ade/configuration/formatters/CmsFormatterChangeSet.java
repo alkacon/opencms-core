@@ -177,9 +177,10 @@ public class CmsFormatterChangeSet {
                             }
                         }
                         formattersByKey.removeAll(key);
+                        formattersByKey.put(key, addedFormatter);
                     }
                     formatters.put(id, addedFormatter);
-                    formattersByKey.put(key, addedFormatter);
+
                 }
             } else {
                 I_CmsFormatterBean removedFormatter = formatters.remove(id);
