@@ -94,10 +94,12 @@ import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsSchemaFormatterBeanWrapper;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
+import org.opencms.xml.content.CmsMappingResolutionContext.AttributeType;
 import org.opencms.xml.types.CmsXmlCategoryValue;
 import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
 import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
+import org.opencms.xml.types.CmsXmlStringValue;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -108,6 +110,7 @@ import org.opencms.xml.types.I_CmsXmlValidateWithMessage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -265,6 +268,86 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
          * @throws CmsXmlException for XML errors
          */
         void accept(Element elem) throws CmsXmlException;
+    }
+
+    /**
+     * Bean for holding information about a single mapping.
+     */
+    private class MappingInfo {
+
+        /** The mapping source. */
+        private String m_source;
+
+        /** The mapping target. */
+        private String m_target;
+
+        /**
+         * Creates a new instance.
+         *
+         * @param source the mapping source
+         * @param target the mapping target
+         */
+        public MappingInfo(String source, String target) {
+
+            super();
+            m_source = source;
+            m_target = target;
+        }
+
+        /**
+         * Checks if the mapping can be used for reverse mapping of availability data.
+         *
+         * @return true if the mapping can be used for reverse availability mapping
+         */
+        public boolean canBeUsedForReverseAvailabilityMapping() {
+
+            return exists() && !isMappingUsingDefault(m_source, m_target) && checkIndexesNotSetOrOne(m_source);
+        }
+
+        /**
+         * Checks if the mapping actually exists.
+         *
+         * @return true if the mapping exists
+         */
+        public boolean exists() {
+
+            return (m_source != null) && (m_target != null);
+        }
+
+        /**
+         * Gets the mapping source.
+         *
+         * @return the mapping source
+         */
+        public String getSource() {
+
+            return m_source;
+        }
+
+        /**
+         * Gets the mapping target.
+         *
+         * @return the mapping target
+         */
+        public String getTarget() {
+
+            return m_target;
+        }
+
+        /**
+         * Checks that the components of an xpath have no indexes or index [1].
+         *
+         * @param xpath the xpath to check
+         *
+         * @return true if all indexes are either [1] or not set
+         */
+        private boolean checkIndexesNotSetOrOne(String xpath) {
+
+            return CmsXmlUtils.splitXpath(xpath).stream().allMatch(
+                component -> indexesNotSetOrOne.contains(CmsXmlUtils.getXpathIndex(component)));
+
+        }
+
     }
 
     /** Attribute name for configuration string. */
@@ -489,6 +572,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** Constant for the "resourcebundles" appinfo element name. */
     public static final String APPINFO_RESOURCEBUNDLES = "resourcebundles";
 
+    /** Constant for the reverse-mapping-enabled appinfo element name. */
+    public static final String APPINFO_REVERSE_MAPPING_ENABLED = "reverse-mapping-enabled";
+
     /** Constant for the "rule" appinfo element name. */
     public static final String APPINFO_RULE = "rule";
 
@@ -596,6 +682,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         + Messages.GUI_EDITOR_XMLCONTENT_VALIDATION_WARNING_2
         + "|${validation.value}|[${validation.regex}]}";
 
+    /** Set of xpath indexes that allow reverse availability mappings. */
+    static Set<String> indexesNotSetOrOne = new HashSet<>(Arrays.asList("", "[1]"));
+
     /** The attribute name for the "prefer folder" option for properties. */
     private static final String APPINFO_ATTR_PREFERFOLDER = "PreferFolder";
 
@@ -630,40 +719,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The title property shared mapping key. */
     private static final String TITLE_PROPERTY_SHARED_MAPPING = MAPTO_PROPERTY_SHARED
         + CmsPropertyDefinition.PROPERTY_TITLE;
-
-    /**
-     * Static initializer for caching the default appinfo validation schema.<p>
-     */
-    static {
-
-        // the schema definition is located in 2 separates file for easier editing
-        // 2 files are required in case an extended schema want to use the default definitions,
-        // but with an extended "appinfo" node
-        byte[] appinfoSchemaTypes;
-        try {
-            // first read the default types
-            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE_TYPES),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
-        byte[] appinfoSchema;
-        try {
-            // now read the default base schema
-            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
-        } catch (Exception e) {
-            throw new CmsRuntimeException(
-                Messages.get().container(
-                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
-                    APPINFO_SCHEMA_FILE),
-                e);
-        }
-        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
-    }
 
     /** The set of allowed templates. */
     protected CmsDefaultSet<String> m_allowedTemplates = new CmsDefaultSet<String>();
@@ -806,6 +861,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The parameters. */
     private CmsParameterConfiguration m_parameters = new CmsParameterConfiguration();
 
+    /** Option to disable reverse mapping for this content type. */
+    private boolean m_reverseMappingEnabled = true;
+
     /** The visibility configurations by element path. */
     private Map<String, VisibilityConfiguration> m_visibilityConfigurations = new HashMap<String, VisibilityConfiguration>();
 
@@ -818,6 +876,40 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     public CmsDefaultXmlContentHandler() {
 
         init();
+    }
+
+    /**
+     * Static initializer for caching the default appinfo validation schema.<p>
+     */
+    static {
+
+        // the schema definition is located in 2 separates file for easier editing
+        // 2 files are required in case an extended schema want to use the default definitions,
+        // but with an extended "appinfo" node
+        byte[] appinfoSchemaTypes;
+        try {
+            // first read the default types
+            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE_TYPES),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
+        byte[] appinfoSchema;
+        try {
+            // now read the default base schema
+            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
     }
 
     /**
@@ -885,6 +977,104 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         }
         String normalizedKey = CmsStringUtil.listAsString(normalizedKeyParts, "/");
         return normalizedKey;
+
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#applyReverseAvailabilityMapping(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, org.opencms.xml.content.CmsMappingResolutionContext.AttributeType, java.util.List, long)
+     */
+    public boolean applyReverseAvailabilityMapping(
+        CmsObject cms,
+        CmsXmlContent content,
+        AttributeType attr,
+        List<Locale> resourceLocales,
+        long valueToSet) {
+
+        MappingInfo info = getAttributeMapping(attr);
+        if (!info.canBeUsedForReverseAvailabilityMapping()) {
+            return false;
+        }
+
+        long defaultValue = -1;
+        switch (attr) {
+            case expiration:
+                defaultValue = CmsResource.DATE_EXPIRED_DEFAULT;
+                break;
+            case release:
+                defaultValue = CmsResource.DATE_RELEASED_DEFAULT;
+                break;
+            default:
+                return false;
+        }
+        String mappedElement = info.getSource();
+
+        I_CmsXmlSchemaType type = m_contentDefinition.getSchemaType(mappedElement);
+        // change value in the first locale from the list of resource locales that we have in the content
+        List<Locale> localesToProcess = Collections.emptyList();
+        for (Locale locale : resourceLocales) {
+            if (content.hasLocale(locale)) {
+                localesToProcess = Collections.singletonList(locale);
+                break;
+            }
+        }
+        if (localesToProcess.size() > 0) {
+            Locale locale = localesToProcess.get(0);
+            if (content.hasValue(mappedElement, locale)) {
+                I_CmsXmlContentValue value = content.getValue(mappedElement, locale);
+                String stringValue = value.getStringValue(cms);
+                if (stringValue.contains("%")) {
+                    LOG.debug(
+                        content.getFile().getRootPath()
+                            + ": Didn't apply reverse availability mapping because of macro value "
+                            + stringValue);
+                    return false;
+                }
+                if (valueToSet == defaultValue) {
+                    if (type.getMinOccurs() == 0) {
+                        content.removeValue(mappedElement, locale, 0);
+                    } else if (type instanceof CmsXmlStringValue) {
+                        content.getValue(mappedElement, locale).setStringValue(cms, "");
+                    } else {
+                        LOG.warn(
+                            content.getFile().getRootPath()
+                                + ": Could not apply reverse availability mapping because the field "
+                                + mappedElement
+                                + " is neither optional nor of type OpenCmsString.");
+                    }
+                } else {
+                    content.getValue(mappedElement, locale).setStringValue(cms, "" + valueToSet);
+                }
+            } else if (valueToSet != defaultValue) {
+                Set<String> parentSet = new HashSet<>();
+                String currentPath = mappedElement;
+                while (!parentSet.contains(currentPath)) {
+                    parentSet.add(currentPath);
+                    currentPath = CmsXmlUtils.removeLastXpathElement(currentPath);
+                }
+                List<String> sortedParents = new ArrayList<>(parentSet);
+                Collections.sort(sortedParents);
+                for (String parent : sortedParents) {
+                    if (!content.hasValue(parent, locale)) {
+                        content.addValue(cms, parent, locale, 0);
+                    }
+                }
+                content.getValue(mappedElement, locale).setStringValue(cms, "" + valueToSet);
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#canUseReverseAvailabilityMapping(org.opencms.xml.content.CmsMappingResolutionContext.AttributeType)
+     */
+    public boolean canUseReverseAvailabilityMapping(AttributeType attr) {
+
+        if (!m_reverseMappingEnabled) {
+            return false;
+        }
+
+        MappingInfo info = getAttributeMapping(attr);
+        return info.canBeUsedForReverseAvailabilityMapping();
 
     }
 
@@ -1205,6 +1395,18 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     public JsonRendererSettings getJsonRendererSettings() {
 
         return m_jsonRendererSettings;
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getMappings()
+     */
+    public Map<String, List<String>> getMappings() {
+
+        Map<String, List<String>> result = new HashMap<>();
+        for (Map.Entry<String, List<String>> entry : m_elementMappings.entrySet()) {
+            result.put(entry.getKey(), Collections.unmodifiableList(entry.getValue()));
+        }
+        return result;
     }
 
     /**
@@ -1662,6 +1864,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     initFields(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_JSON_RENDERER)) {
                     initJsonRenderer(element);
+                } else if (nodeName.equals(APPINFO_REVERSE_MAPPING_ENABLED)) {
+                    m_reverseMappingEnabled = Boolean.parseBoolean(element.getTextTrim());
                 }
 
             }
@@ -2423,6 +2627,35 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         }
         VisibilityConfiguration result = new VisibilityConfiguration(handler, params);
         return result;
+    }
+
+    /**
+     * Returns information about the availability mapping for the given availability attribute.
+     *
+     * @param attr the availability attribute
+     * @return the information about the mapping
+     */
+    protected MappingInfo getAttributeMapping(AttributeType attr) {
+
+        String target = null;
+        String source = null;
+        switch (attr) {
+            case expiration:
+                target = MAPTO_ATTRIBUTE + ATTRIBUTE_DATEEXPIRED;
+                break;
+
+            case release:
+                target = MAPTO_ATTRIBUTE + ATTRIBUTE_DATERELEASED;
+                break;
+
+            default:
+                break;
+        }
+        if (target != null) {
+            source = getMappingSource(target);
+        }
+
+        return new MappingInfo(source, target);
     }
 
     /**
@@ -4185,6 +4418,22 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             fieldMapping.setDefaultValue(element.attributeValue(APPINFO_ATTR_DEFAULT));
         }
         return fieldMapping;
+    }
+
+    /**
+     * Gets the xpath mapped to a given target, if the mapping exists, and null otherwise.
+     *
+     * @param target the mapping target
+     * @return the xpath mapped to the target
+     */
+    private String getMappingSource(String target) {
+
+        for (Map.Entry<String, List<String>> entry : m_elementMappings.entrySet()) {
+            if (entry.getValue().contains(target)) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     /**

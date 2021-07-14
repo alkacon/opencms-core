@@ -63,6 +63,13 @@ import com.google.common.collect.Sets;
 public class CmsMappingResolutionContext {
 
     /**
+     * The attribute type.
+     */
+    public enum AttributeType {
+        expiration, release;
+    }
+
+    /**
      * Internal bean used to keep track of URL name mappings.<p>
      */
     class InternalUrlNameMappingEntry {
@@ -120,13 +127,6 @@ public class CmsMappingResolutionContext {
             return m_structureId;
         }
 
-    }
-
-    /**
-     * The attribute type.
-     */
-    private enum AttributeType {
-        expiration, release;
     }
 
     /** The log instance for this class. */

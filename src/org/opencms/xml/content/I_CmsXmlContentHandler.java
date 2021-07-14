@@ -181,6 +181,33 @@ public interface I_CmsXmlContentHandler {
     String MAPTO_URLNAME = "urlName";
 
     /**
+     * Writes an availability date back to the content, if a mapping is defined for it.
+     *
+     * @param cms the CMS context
+     * @param content the content to write to
+     * @param attr the attribute to write
+     * @param locales the locales of the resource
+     * @param value the value to write
+     *
+     * @throws CmsException if something goes wrong
+     */
+    boolean applyReverseAvailabilityMapping(
+        CmsObject cms,
+        CmsXmlContent content,
+        CmsMappingResolutionContext.AttributeType attr,
+        List<Locale> locales,
+        long value)
+    throws CmsException;
+
+    /**
+     * Checks if an availability attribute should be written back to the content if the availability is changed through the availability dialog.
+     *
+     * @param attr the attribute to check
+     * @return true if the attribute should be written to the content
+     */
+    boolean canUseReverseAvailabilityMapping(CmsMappingResolutionContext.AttributeType attr);
+
+    /**
      * Gets the list of allowed template context names.<p>
      *
      * @return the list of allowed template context names
@@ -374,6 +401,13 @@ public interface I_CmsXmlContentHandler {
      * @return the JSON renderer settings
      */
     JsonRendererSettings getJsonRendererSettings();
+
+    /**
+     * Gets the mappings defined in the schema.
+     *
+     * @return the mappings
+     */
+    Map<String, List<String>> getMappings();
 
     /**
      * Returns the all mappings defined for the given element xpath.<p>
@@ -750,4 +784,5 @@ public interface I_CmsXmlContentHandler {
         CmsObject cms,
         I_CmsXmlContentValue value,
         CmsXmlContentErrorHandler errorHandler);
+
 }

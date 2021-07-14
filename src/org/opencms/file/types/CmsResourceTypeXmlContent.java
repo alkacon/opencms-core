@@ -59,6 +59,7 @@ import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
+import org.opencms.xml.content.CmsMappingResolutionContext;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
@@ -87,17 +88,20 @@ import com.google.common.collect.Lists;
  */
 public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
+    /** Request context attribute used to enable reverse availability mapping. */
+    public static final String ATTR_REVERSE_AVAILABILITY_MAPPING = "REVERSE_AVAILABILITY_MAPPING";
+
     /** Configuration key for the (optional) schema. */
     public static final String CONFIGURATION_SCHEMA = "schema";
 
     /** The name for the choose model file form action. */
     public static final String DIALOG_CHOOSEMODEL = "choosemodel";
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlContent.class);
-
     /** The name of this resource type. */
     public static final String RESOURCE_TYPE_NAME = "xmlcontent";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlContent.class);
 
     /** The serial version id. */
     private static final long serialVersionUID = 2271469830431937731L;
@@ -410,6 +414,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
                 if (cms.existsResource(m_schema)) {
                     CmsXmlContentDefinition.unmarshal(cms, m_schema);
                 } else {
+                    System.out.println("Schema not found");
                     LOG.debug(
                         Messages.get().getBundle().key(
                             Messages.LOG_WARN_SCHEMA_RESOURCE_DOES_NOT_EXIST_2,
@@ -417,6 +422,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
                             getTypeName()));
                 }
             } catch (Throwable e) {
+                System.out.println("Schema not found");
                 // unable to unmarshal the XML schema configured
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_BAD_XML_SCHEMA_2, m_schema, getTypeName()), e);
             }
@@ -579,6 +585,54 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     }
 
     /**
+     * @see org.opencms.file.types.A_CmsResourceType#setDateExpired(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, long, boolean)
+     */
+    @Override
+    public void setDateExpired(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        long dateExpired,
+        boolean recursive)
+    throws CmsException {
+
+        try {
+            applyReverseAvailabilityMapping(
+                cms,
+                resource,
+                CmsMappingResolutionContext.AttributeType.expiration,
+                dateExpired);
+        } catch (Exception e) {
+            LOG.error("Reverse availability mapping failed: " + e.getLocalizedMessage(), e);
+        }
+        super.setDateExpired(cms, securityManager, resource, dateExpired, recursive);
+    }
+
+    /**
+     * @see org.opencms.file.types.A_CmsResourceType#setDateReleased(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, long, boolean)
+     */
+    @Override
+    public void setDateReleased(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        long dateReleased,
+        boolean recursive)
+    throws CmsException {
+
+        try {
+            applyReverseAvailabilityMapping(
+                cms,
+                resource,
+                CmsMappingResolutionContext.AttributeType.release,
+                dateReleased);
+        } catch (Exception e) {
+            LOG.error("Reverse availability mapping failed: " + e.getLocalizedMessage(), e);
+        }
+        super.setDateReleased(cms, securityManager, resource, dateReleased, recursive);
+    }
+
+    /**
      * @see org.opencms.file.types.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, CmsSecurityManager, CmsFile)
      */
     @Override
@@ -681,6 +735,48 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     }
 
     /**
+     * Writes the availability data to the content if possible.
+     *
+     * @param cms the CMS context
+     * @param resource the resource
+     * @param attr the attribute that should be written
+     * @param date the date to be written
+     *
+     * @return true if the availability could be written to the content
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private boolean applyReverseAvailabilityMapping(
+        CmsObject cms,
+        CmsResource resource,
+        CmsMappingResolutionContext.AttributeType attr,
+        long date)
+    throws CmsException {
+
+        Object obj = cms.getRequestContext().getAttribute(ATTR_REVERSE_AVAILABILITY_MAPPING);
+        if ((obj == null) || !Boolean.TRUE.equals(obj)) {
+            return false;
+        }
+        CmsXmlContentDefinition contentDef = CmsXmlContentDefinition.getContentDefinitionForResource(cms, resource);
+        I_CmsXmlContentHandler handler = contentDef.getContentHandler();
+        if (handler.canUseReverseAvailabilityMapping(attr)) {
+
+            CmsFile file = cms.readFile(resource);
+            CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+            List<Locale> locales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
+            handler.applyReverseAvailabilityMapping(cms, content, attr, locales, date);
+
+            CmsObject writeCms = OpenCms.initCmsObject(cms); // clone CmsObject  to get rid of the request attribute triggering the reverse mapping
+            file.setContents(content.marshal());
+            writeCms.writeFile(file);
+            return true;
+        } else {
+            LOG.debug("No reverse availability mapping.");
+        }
+        return false;
+    }
+
+    /**
      * Reads the detail container resources which are connected by relations to the given resource.
      *
      * @param cms the current CMS context
@@ -705,4 +801,5 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         }
         return result;
     }
+
 }

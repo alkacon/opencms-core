@@ -32,6 +32,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.shared.CmsPrincipalBean;
 import org.opencms.loader.CmsLoaderException;
@@ -47,7 +48,6 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsDateField;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
@@ -496,6 +496,9 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
         CmsObject cms = m_dialogContext.getCms();
         CmsLockActionRecord lockActionRecord = CmsLockUtil.ensureLock(cms, resource);
         try {
+            cms.getRequestContext().setAttribute(
+                CmsResourceTypeXmlContent.ATTR_REVERSE_AVAILABILITY_MAPPING,
+                Boolean.TRUE);
             long newDateReleased;
             if (resetReleased || (released != null)) {
                 newDateReleased = released != null ? released.getTime() : CmsResource.DATE_RELEASED_DEFAULT;
@@ -507,6 +510,7 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
                 cms.setDateExpired(resource, newDateExpired, modifySubresources);
             }
         } finally {
+            cms.getRequestContext().removeAttribute(CmsResourceTypeXmlContent.ATTR_REVERSE_AVAILABILITY_MAPPING);
             if (lockActionRecord.getChange() == LockChange.locked) {
                 try {
                     cms.unlockResource(resource);
