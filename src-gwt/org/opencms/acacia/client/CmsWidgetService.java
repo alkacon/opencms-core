@@ -198,11 +198,16 @@ public class CmsWidgetService implements I_CmsWidgetService {
      */
     public I_CmsEntityRenderer getRendererForAttribute(String attributeName) {
 
+        int openCmsIndex = attributeName.indexOf("opencms://");
+        if (openCmsIndex != -1) {
+            attributeName = attributeName.substring(openCmsIndex);
+        }
         I_CmsEntityRenderer result = m_rendererByAttribute.get(attributeName);
         if (result == null) {
             return m_defaultRenderer;
+        } else {
+            return result;
         }
-        return result;
     }
 
     /**
@@ -320,9 +325,9 @@ public class CmsWidgetService implements I_CmsWidgetService {
      * @param message the message to log
      */
     private native void log(String message) /*-{
-                                            if ($wnd.console) {
-                                            $wnd.console.log(message);
-                                            }
-                                            }-*/;
+        if ($wnd.console) {
+            $wnd.console.log(message);
+        }
+    }-*/;
 
 }
