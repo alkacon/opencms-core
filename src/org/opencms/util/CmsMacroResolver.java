@@ -1012,7 +1012,6 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                 if (adeContext == null) {
                     adeContext = m_cms.getRequestContext().getRootUri();
                 }
-                System.out.println("ADEContext = " + adeContext);
                 CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(m_cms, adeContext);
                 String val = config.getAttribute(key, defaultValue);
                 if (val == null) {

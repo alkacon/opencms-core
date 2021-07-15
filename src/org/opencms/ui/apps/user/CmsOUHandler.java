@@ -140,7 +140,6 @@ public class CmsOUHandler {
         }
 
         if (OpenCms.getRoleManager().hasRole(m_cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(""))) {
-            System.out.println("easy");
             return true;
         }
 

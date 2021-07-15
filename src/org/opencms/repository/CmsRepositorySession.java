@@ -571,7 +571,7 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
             needUnlock = true;
         }
         try {
-            System.out.println("Writing properties: " + propsToWrite);
+            LOG.debug("Writing properties: " + propsToWrite);
             m_cms.writeProperties(path, propsToWrite);
         } finally {
             if (needUnlock) {
