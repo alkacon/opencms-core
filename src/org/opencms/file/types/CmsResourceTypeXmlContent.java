@@ -414,7 +414,6 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
                 if (cms.existsResource(m_schema)) {
                     CmsXmlContentDefinition.unmarshal(cms, m_schema);
                 } else {
-                    System.out.println("Schema not found");
                     LOG.debug(
                         Messages.get().getBundle().key(
                             Messages.LOG_WARN_SCHEMA_RESOURCE_DOES_NOT_EXIST_2,
@@ -422,7 +421,6 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
                             getTypeName()));
                 }
             } catch (Throwable e) {
-                System.out.println("Schema not found");
                 // unable to unmarshal the XML schema configured
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_BAD_XML_SCHEMA_2, m_schema, getTypeName()), e);
             }
