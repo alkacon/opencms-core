@@ -51,14 +51,14 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.vaadin.v7.data.Property.ValueChangeEvent;
-import com.vaadin.v7.data.Property.ValueChangeListener;
-import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.ui.CheckBox;
 import com.vaadin.v7.ui.HorizontalLayout;
 import com.vaadin.v7.ui.Label;
@@ -89,9 +89,6 @@ public class CmsRestoreDeletedDialog extends CmsBasicDialog {
     /** The OK button. */
     private Button m_okButton;
 
-    /** The resource. */
-    private CmsResource m_resource;
-
     /** Check box to select all resources. */
     private CheckBox m_selectAllField;
 
@@ -106,12 +103,11 @@ public class CmsRestoreDeletedDialog extends CmsBasicDialog {
      */
     public CmsRestoreDeletedDialog(I_CmsDialogContext context)
     throws CmsException {
+
         m_dialogContext = context;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-        m_resource = context.getResources().get(0);
         CmsObject cms = context.getCms();
-        List<I_CmsHistoryResource> deletedResources = cms.readDeletedResources(
-            cms.getSitePath(m_resource),
+        List<I_CmsHistoryResource> deletedResources = readDeletedResources(
             m_includeSubfoldersField.getValue().booleanValue());
         initDeletedResources(cms, deletedResources);
         m_cancelButton.addClickListener(new ClickListener() {
@@ -220,7 +216,7 @@ public class CmsRestoreDeletedDialog extends CmsBasicDialog {
         List<I_CmsHistoryResource> historyResources;
         try {
             CmsObject cms = m_dialogContext.getCms();
-            historyResources = cms.readDeletedResources(cms.getSitePath(m_resource), value.booleanValue());
+            historyResources = readDeletedResources(value.booleanValue());
             initDeletedResources(cms, historyResources);
         } catch (CmsException e) {
             m_dialogContext.error(e);
@@ -305,7 +301,24 @@ public class CmsRestoreDeletedDialog extends CmsBasicDialog {
                 m_selectionContainer.getItem(deleted.getStructureId()).getItemProperty(PROP_SELECTED));
             m_deletedResourceContainer.addComponent(hl);
         }
+    }
 
+    /**
+     * Reads the deleted resources in the folders selected for the dialog.
+     *
+     * @param includeSubFolders true if deleted resources in subfolders should be included
+     * @return the list of deleted resources
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private List<I_CmsHistoryResource> readDeletedResources(boolean includeSubFolders) throws CmsException {
+
+        CmsObject cms = m_dialogContext.getCms();
+        List<I_CmsHistoryResource> result = new ArrayList<>();
+        for (CmsResource res : m_dialogContext.getResources()) {
+            result.addAll(cms.readDeletedResources(cms.getSitePath(res), includeSubFolders));
+        }
+        return result;
     }
 
 }
