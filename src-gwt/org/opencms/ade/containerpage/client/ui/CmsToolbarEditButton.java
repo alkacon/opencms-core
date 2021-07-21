@@ -34,6 +34,11 @@ import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsShowPage;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import com.google.common.base.Joiner;
 import com.google.gwt.event.dom.client.ClickEvent;
 
 /**
@@ -42,6 +47,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * @since 8.0.0
  */
 public class CmsToolbarEditButton extends A_CmsToolbarOptionButton {
+    /** List of function types. */ 
+    private static final List<String> functionTypes = Arrays.asList("function", "function_config");
 
     /**
      * Constructor.<p>
@@ -62,14 +69,19 @@ public class CmsToolbarEditButton extends A_CmsToolbarOptionButton {
         CmsElementOptionButton button = super.createOptionForElement(element);
         button.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(element.getNoEditReason())) {
+
             if (element.hasWritePermission()
                 && !((element instanceof CmsGroupContainerElementPanel)
                     && ((CmsGroupContainerElementPanel)element).isInheritContainer())) {
-                // if the user has write permissions, the lock report dialog will be accessible through this button
-                button.setImageClass(
-                    I_CmsButton.ButtonData.SELECTION.getIconClass()
-                        + " "
-                        + I_CmsLayoutBundle.INSTANCE.containerpageCss().lockedElement());
+
+                List<String> cssClasses = new ArrayList<>();
+                cssClasses.add(I_CmsButton.ButtonData.SELECTION.getIconClass());
+                cssClasses.add(I_CmsLayoutBundle.INSTANCE.containerpageCss().lockedElement());
+
+                if (functionTypes.contains(element.getResourceType())) {
+                    cssClasses.add(I_CmsLayoutBundle.INSTANCE.containerpageCss().functionElement());
+                }
+                button.setImageClass(Joiner.on(" ").join(cssClasses));
                 button.setTitle(element.getNoEditReason());
             } else {
                 button.disable(element.getNoEditReason());

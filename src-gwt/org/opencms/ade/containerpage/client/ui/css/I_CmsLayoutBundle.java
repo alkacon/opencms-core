@@ -79,6 +79,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          */
         String expiredOverlay();
 
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String functionElement();
+
         /** Access method.<p>
          *
          * @return the CSS class name
