@@ -544,7 +544,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         try {
             ensureSession();
             List<CmsContainerElementBean> list = OpenCms.getADEManager().getFavoriteList(getCmsObject());
-            CmsResource containerPage = getCmsObject().readResource(context.getPageStructureId());
+            CmsResource containerPage = getCmsObject().readResource(
+                context.getPageStructureId(),
+                CmsResourceFilter.ignoreExpirationOffline(getCmsObject()));
             updateFavoriteRecentList(containerPage, clientId, list);
             OpenCms.getADEManager().saveFavoriteList(getCmsObject(), list);
         } catch (Throwable e) {
@@ -560,7 +562,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         try {
             ensureSession();
             List<CmsContainerElementBean> list = OpenCms.getADEManager().getRecentList(getCmsObject());
-            CmsResource containerPage = getCmsObject().readResource(context.getPageStructureId());
+            CmsResource containerPage = getCmsObject().readResource(
+                context.getPageStructureId(),
+                CmsResourceFilter.ignoreExpirationOffline(getCmsObject()));
             updateFavoriteRecentList(containerPage, clientId, list);
             OpenCms.getADEManager().saveRecentList(getCmsObject(), list);
         } catch (Throwable e) {
@@ -588,7 +592,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     CmsObject cms = getCmsObject();
                     CmsResource detailContentRes = cms.readResource(detailContentId, CmsResourceFilter.ALL);
                     OpenCms.getLocaleManager();
-                    CmsResource page = cms.readResource(structureId);
+                    CmsResource page = cms.readResource(structureId, CmsResourceFilter.ignoreExpirationOffline(cms));
                     Optional<CmsResource> detailOnlyRes = CmsDetailOnlyContainerUtil.getDetailOnlyResource(
                         cms,
                         contentLocale,
@@ -632,7 +636,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsObject cms = getCmsObject();
         CmsCreateElementData result = new CmsCreateElementData();
         try {
-            CmsResource currentPage = cms.readResource(pageStructureId);
+            CmsResource currentPage = cms.readResource(pageStructureId, CmsResourceFilter.ignoreExpirationOffline(cms));
 
             List<CmsResource> modelResources = CmsResourceTypeXmlContent.getModelFiles(
                 getCmsObject(),
@@ -753,7 +757,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         try {
             ensureSession();
             CmsObject cms = getCmsObject();
-            CmsResource pageResource = cms.readResource(pageStructureId);
+            CmsResource pageResource = cms.readResource(
+                pageStructureId,
+                CmsResourceFilter.ignoreExpirationOffline(cms));
             CmsADEConfigData configData = getConfigData(pageResource.getRootPath());
             CmsResourceTypeConfig typeConfig = configData.getResourceType(resourceType);
             CmsObject cloneCms = OpenCms.initCmsObject(cms);
@@ -843,7 +849,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     throws CmsRpcException {
 
         try {
-            CmsResource pageResource = getCmsObject().readResource(pageId);
+            CmsResource pageResource = getCmsObject().readResource(
+                pageId,
+                CmsResourceFilter.ignoreExpirationOffline(getCmsObject()));
             CmsContainerElementBean element = getCachedElement(clientId, pageResource.getRootPath());
             element.initResource(getCmsObject());
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
@@ -877,7 +885,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     throws CmsRpcException {
 
         try {
-            CmsResource pageResource = getCmsObject().readResource(pageId);
+            CmsResource pageResource = getCmsObject().readResource(
+                pageId,
+                CmsResourceFilter.ignoreExpirationOffline(getCmsObject()));
             CmsContainerElementBean element = getCachedElement(clientId, pageResource.getRootPath());
             element.initResource(getCmsObject());
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
@@ -930,7 +940,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         Map<String, CmsContainerElementData> result = null;
         try {
             ensureSession();
-            CmsResource pageResource = getCmsObject().readResource(context.getPageStructureId());
+            CmsResource pageResource = getCmsObject().readResource(
+                context.getPageStructureId(),
+                CmsResourceFilter.ignoreExpirationOffline(getCmsObject()));
             CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
                 getCmsObject(),
                 pageResource.getRootPath());
@@ -967,7 +979,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         try {
             ensureSession();
             CmsObject cms = getCmsObject();
-            CmsResource pageResource = cms.readResource(context.getPageStructureId());
+            CmsResource pageResource = cms.readResource(
+                context.getPageStructureId(),
+                CmsResourceFilter.ignoreExpirationOffline(cms));
             initRequestFromRpcContext(context);
             String containerpageUri = cms.getSitePath(pageResource);
 
@@ -1016,7 +1030,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         try {
             ensureSession();
             CmsObject cms = getCmsObject();
-            CmsResource pageResource = cms.readResource(context.getPageStructureId());
+            CmsResource pageResource = cms.readResource(
+                context.getPageStructureId(),
+                CmsResourceFilter.ignoreExpirationOffline(cms));
             initRequestFromRpcContext(context);
             String containerpageUri = cms.getSitePath(pageResource);
             Locale contentLocale = CmsLocaleManager.getLocale(locale);
@@ -1065,7 +1081,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         List<CmsContainerElementData> result = null;
         try {
             ensureSession();
-            CmsResource containerpage = getCmsObject().readResource(pageStructureId);
+            CmsResource containerpage = getCmsObject().readResource(
+                pageStructureId,
+                CmsResourceFilter.ignoreExpirationOffline(getCmsObject()));
             String containerpageUri = getCmsObject().getSitePath(containerpage);
             result = getListElementsData(
                 OpenCms.getADEManager().getFavoriteList(getCmsObject()),
@@ -1172,7 +1190,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsContainerElementData result = null;
         try {
             ensureSession();
-            CmsResource pageResource = getCmsObject().readResource(context.getPageStructureId());
+            CmsResource pageResource = getCmsObject().readResource(
+                context.getPageStructureId(),
+                CmsResourceFilter.ignoreExpirationOffline(getCmsObject()));
             initRequestFromRpcContext(context);
             String containerpageUri = getCmsObject().getSitePath(pageResource);
             Locale locale = CmsLocaleManager.getLocale(localeName);
@@ -1195,7 +1215,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     throws CmsRpcException {
 
         try {
-            CmsResource pageResource = getCmsObject().readResource(pageStructureId);
+            CmsResource pageResource = getCmsObject().readResource(
+                pageStructureId,
+                CmsResourceFilter.ignoreExpirationOffline(getCmsObject()));
             CmsContainerElementBean element = getCachedElement(clientId, pageResource.getRootPath());
             element.initResource(getCmsObject());
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
@@ -1232,7 +1254,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         List<CmsContainerElementData> result = null;
         try {
             ensureSession();
-            CmsResource containerpage = getCmsObject().readResource(pageStructureId);
+            CmsResource containerpage = getCmsObject().readResource(
+                pageStructureId,
+                CmsResourceFilter.ignoreExpirationOffline(getCmsObject()));
             String containerpageUri = getCmsObject().getSitePath(containerpage);
             result = getListElementsData(
                 OpenCms.getADEManager().getRecentList(getCmsObject()),
@@ -1270,7 +1294,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     throws CmsRpcException {
 
         try {
-            CmsResource pageResource = getCmsObject().readResource(pageId);
+            CmsResource pageResource = getCmsObject().readResource(
+                pageId,
+                CmsResourceFilter.ignoreExpirationOffline(getCmsObject()));
             CmsContainerElementBean element = getCachedElement(clientId, pageResource.getRootPath());
             element.initResource(getCmsObject());
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
@@ -1551,7 +1577,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     throws CmsRpcException {
 
         try {
-            CmsResource pageResource = getCmsObject().readResource(pageId);
+            CmsResource pageResource = getCmsObject().readResource(
+                pageId,
+                CmsResourceFilter.ignoreExpirationOffline(getCmsObject()));
             CmsContainerElementBean element = getCachedElement(clientId, pageResource.getRootPath());
             element.initResource(getCmsObject());
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(element.getResource());
@@ -1586,7 +1614,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         try {
             ensureSession();
             CmsObject cms = getCmsObject();
-            CmsResource pageResource = cms.readResource(context.getPageStructureId());
+            CmsResource pageResource = cms.readResource(
+                context.getPageStructureId(),
+                CmsResourceFilter.ignoreExpirationOffline(cms));
             initRequestFromRpcContext(context);
             String containerpageUri = cms.getSitePath(pageResource);
             Locale contentLocale = CmsLocaleManager.getLocale(locale);
@@ -1632,7 +1662,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsObject cms = getCmsObject();
         try {
             ensureSession();
-            CmsResource containerpage = cms.readResource(pageStructureId);
+            CmsResource containerpage = cms.readResource(
+                pageStructureId,
+                CmsResourceFilter.ignoreExpirationOffline(getCmsObject()));
             ensureLock(containerpage);
             String containerpageUri = cms.getSitePath(containerpage);
             saveContainers(cms, containerpage, containerpageUri, containers);
@@ -1682,7 +1714,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         try {
             ensureSession();
             CmsObject cms = getCmsObject();
-            CmsResource pageResource = cms.readResource(context.getPageStructureId());
+            CmsResource pageResource = cms.readResource(
+                context.getPageStructureId(),
+                CmsResourceFilter.ignoreExpirationOffline(cms));
             initRequestFromRpcContext(context);
             Locale contentLocale = CmsLocaleManager.getLocale(locale);
             CmsContainerElementBean elementBean = getCachedElement(clientId, pageResource.getRootPath());
@@ -1826,7 +1860,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsADEConfigData rpcConfig = OpenCms.getADEManager().lookupConfiguration(
                 cms,
                 cms.getRequestContext().getRootUri());
-            CmsResource containerPage = cms.readResource(pageStructureId);
+            CmsResource containerPage = cms.readResource(
+                pageStructureId,
+                CmsResourceFilter.ignoreExpirationOffline(getCmsObject()));
             String sitePath = cms.getSitePath(containerPage);
             Locale requestedLocale = CmsLocaleManager.getLocale(locale);
             CmsResource referenceResource = null;
@@ -2294,7 +2330,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     private CmsResource getContainerpage(CmsObject cms) throws CmsException {
 
         String currentUri = cms.getRequestContext().getUri();
-        CmsResource containerPage = cms.readResource(currentUri);
+        CmsResource containerPage = cms.readResource(currentUri, CmsResourceFilter.ignoreExpirationOffline(cms));
         if (!CmsResourceTypeXmlContainerPage.isContainerPage(containerPage)) {
             // container page is used as template
             String cntPagePath = cms.readPropertyObject(
@@ -2302,7 +2338,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
                 true).getValue("");
             try {
-                containerPage = cms.readResource(cntPagePath);
+                containerPage = cms.readResource(cntPagePath, CmsResourceFilter.ignoreExpirationOffline(cms));
             } catch (CmsException e) {
                 if (!LOG.isDebugEnabled()) {
                     LOG.warn(e.getLocalizedMessage());
@@ -2740,7 +2776,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     private String getNoEditReason(CmsObject cms, CmsResource containerPage) throws CmsException {
 
         return new CmsResourceUtil(cms, containerPage).getNoEditReason(
-            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms),
+            !cms.getRequestContext().getCurrentProject().isOnlineProject());
     }
 
     /**
@@ -2944,7 +2981,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         } else {
             page = modelHelper.removeModelGroupContainers(page);
         }
-        CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(cms, cms.readFile(containerpageUri));
+        CmsXmlContainerPage xmlCnt = CmsXmlContainerPageFactory.unmarshal(
+            cms,
+            cms.readFile(containerpageUri, CmsResourceFilter.ignoreExpirationOffline(cms)));
         xmlCnt.save(cms, page);
     }
 

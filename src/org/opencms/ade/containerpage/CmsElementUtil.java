@@ -209,7 +209,7 @@ public class CmsElementUtil {
             req.setAttribute(CmsDetailPageResourceHandler.ATTR_DETAIL_CONTENT_RESOURCE, detailRes);
         }
         m_standardContext = CmsJspStandardContextBean.getInstance(req);
-        m_page = m_cms.readResource(currentPageUri);
+        m_page = m_cms.readResource(currentPageUri, CmsResourceFilter.ignoreExpirationOffline(cms));
         m_standardContext.setPage(containerPage);
         m_standardContext.setDragMode(isDragMode);
     }

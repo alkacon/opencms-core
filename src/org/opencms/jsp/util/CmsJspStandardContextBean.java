@@ -1438,7 +1438,9 @@ public final class CmsJspStandardContextBean {
                 if (m_pageResource == null) {
                     m_pageResource = CmsJspResourceWrapper.wrap(
                         m_cms,
-                        m_cms.readResource(m_cms.getRequestContext().getUri()));
+                        m_cms.readResource(
+                            m_cms.getRequestContext().getUri(),
+                            CmsResourceFilter.ignoreExpirationOffline(m_cms)));
                 }
             }
         } catch (CmsException e) {
@@ -1900,7 +1902,7 @@ public final class CmsJspStandardContextBean {
             // get the container page itself, checking the history first
             CmsResource pageResource = (CmsResource)CmsHistoryResourceHandler.getHistoryResource(m_request);
             if (pageResource == null) {
-                pageResource = m_cms.readResource(requestUri);
+                pageResource = m_cms.readResource(requestUri, CmsResourceFilter.ignoreExpirationOffline(m_cms));
             }
             m_config = OpenCms.getADEManager().lookupConfiguration(m_cms, pageResource.getRootPath());
             m_page = getPage(pageResource);

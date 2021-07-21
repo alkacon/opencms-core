@@ -310,7 +310,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
         try {
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(m_typeName);
-            CmsResource referenceResource = cms.readResource(referenceUri);
+            CmsResource referenceResource = cms.readResource(
+                referenceUri,
+                CmsResourceFilter.ignoreExpirationOffline(cms));
             if (settings == null) {
                 // no explorer type
                 return false;

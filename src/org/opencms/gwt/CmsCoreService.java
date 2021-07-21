@@ -1135,7 +1135,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsUUID structureId = null;
 
         try {
-            CmsResource requestedResource = cms.readResource(cms.getRequestContext().getUri());
+            CmsResource requestedResource = cms.readResource(
+                cms.getRequestContext().getUri(),
+                CmsResourceFilter.ignoreExpirationOffline(cms));
             structureId = requestedResource.getStructureId();
         } catch (CmsException e) {
             // may happen in case of VAADIN UI

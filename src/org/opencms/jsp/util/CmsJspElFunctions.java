@@ -29,10 +29,10 @@ package org.opencms.jsp.util;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeFolderSubSitemap;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.json.JSONTokener;
@@ -64,6 +64,7 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
+
 import com.google.common.collect.Maps;
 
 /**
@@ -308,23 +309,24 @@ public final class CmsJspElFunctions {
     public static CmsResource convertRawResource(CmsObject cms, Object input) throws CmsException {
 
         CmsResource result;
+        CmsResourceFilter filter = CmsResourceFilter.ignoreExpirationOffline(cms);
         if (input instanceof CmsResource) {
             // input is already a resource
             result = (CmsResource)input;
         } else if (input instanceof String) {
             if (CmsUUID.isValidUUID((String)input)) {
                 // input is a UUID as String
-                result = cms.readResource(CmsUUID.valueOf((String)input));
+                result = cms.readResource(CmsUUID.valueOf((String)input), filter);
             } else {
                 // input is a path as String
-                result = cms.readResource(cms.getRequestContext().removeSiteRoot((String)input));
+                result = cms.readResource(cms.getRequestContext().removeSiteRoot((String)input), filter);
             }
         } else if (input instanceof CmsUUID) {
             // input is a UUID
-            result = cms.readResource((CmsUUID)input);
+            result = cms.readResource((CmsUUID)input, filter);
         } else {
             // input seems not really to make sense, try to use it like a String
-            result = cms.readResource(String.valueOf(input));
+            result = cms.readResource(String.valueOf(input), filter);
         }
         return result;
     }

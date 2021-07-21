@@ -1945,7 +1945,7 @@ public final class OpenCmsCore {
 
         try {
             // try to read the requested resource
-            resource = cms.readDefaultFile(resourceName);
+            resource = cms.readDefaultFile(resourceName, CmsResourceFilter.ignoreExpirationOffline(cms));
         } catch (CmsException e) {
             // file or folder with given name does not exist, store exception
             tmpException = e;
