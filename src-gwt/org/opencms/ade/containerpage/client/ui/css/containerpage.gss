@@ -182,13 +182,13 @@ div.groupcontainerPlaceholder{
 	display: inline-block;
 }
 
-.oc-option-bar .opencms-icon span.lockedElement.opencms-icon-edit-point:before{
+.oc-option-bar .opencms-icon span.lockedElement.opencms-icon-edit-point:not(.functionElement)::before {
 	content: "\e90e";
 	opacity: 1;
 	background: transparent;
 }
 
-.oc-option-bar .opencms-icon span.lockedElement.functionElement.opencms-icon-edit-point:before{
+.oc-option-bar.cmsHovering .opencms-icon span.lockedElement.functionElement.opencms-icon-edit-point:before{
 	content: "\e920";
 	opacity: 1;
 	background: transparent;
