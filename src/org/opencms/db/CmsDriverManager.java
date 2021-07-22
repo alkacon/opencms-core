@@ -8610,7 +8610,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsResourceFilter.IGNORE_EXPIRATION);
 
         // check the name
-        String path = CmsResource.getParentFolder(histRes.getRootPath()); // path
+        String path = parent.getRootPath();
         String resName = CmsResource.getName(histRes.getRootPath()); // name
         String ext = "";
         if (resName.charAt(resName.length() - 1) == '/') {
