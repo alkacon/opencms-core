@@ -33,6 +33,7 @@ import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
+import org.opencms.publish.CmsPublishManager;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
@@ -98,6 +99,7 @@ public class TestHistory extends OpenCmsTestCase {
         suite.addTest(new TestHistory("testVersioningLimit"));
         suite.addTest(new TestHistory("testSiblingsV7HistoryIssue"));
         suite.addTest(new TestHistory("testHistoryRemoveDeleted"));
+        suite.addTest(new TestHistory("testRestoreFileInRenamedFolder"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -919,13 +921,13 @@ public class TestHistory extends OpenCmsTestCase {
         assertHistory(cms, sibName, 6);
 
         /*
-
+        
          restore res version 2
          assert res version == 6 (res = 4, str = 2)
          assert sib version == 6 (res = 4, sib = 2)
-
+        
          move
-
+        
          */
     }
 
@@ -1211,6 +1213,36 @@ public class TestHistory extends OpenCmsTestCase {
         cms.restoreDeletedResource(((I_CmsHistoryResource)deleted.get(0)).getStructureId());
         cms.readResource(((I_CmsHistoryResource)deleted.get(0)).getStructureId());
         cms.readResource(cms.getRequestContext().removeSiteRoot(((I_CmsHistoryResource)deleted.get(0)).getRootPath()));
+    }
+
+    /**
+     * Test restoring a deleted file in a renamed folder.
+     *
+     * @throws Exception if something goes wrong
+     */
+    public void testRestoreFileInRenamedFolder() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        String base = "/testRestoreInRenamedFolder";
+        cms.createResource(base, 0);
+        cms.createResource(base + "/a", 0);
+        CmsResource fileToDelete = cms.createResource(base + "/a/1.txt", 1);
+        CmsPublishManager pm = OpenCms.getPublishManager();
+        pm.publishProject(cms);
+        pm.waitWhileRunning();
+
+        cms.lockResourceTemporary(base + "/a/1.txt");
+        cms.deleteResource(base + "/a/1.txt", CmsResource.DELETE_PRESERVE_SIBLINGS);
+        pm.publishProject(cms);
+        pm.waitWhileRunning();
+
+        cms.lockResourceTemporary(base + "/a");
+        cms.moveResource(base + "/a", base + "/b");
+        pm.publishProject(cms);
+        pm.waitWhileRunning();
+
+        cms.restoreDeletedResource(fileToDelete.getStructureId());
+        assertEquals(fileToDelete.getStructureId(), cms.readResource(base + "/b/1.txt").getStructureId());
     }
 
     /**
