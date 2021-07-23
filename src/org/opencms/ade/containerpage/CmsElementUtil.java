@@ -399,6 +399,23 @@ public class CmsElementUtil {
         return formatter;
     }
 
+    /** 
+     * Checks if the given setting name is a system setting. 
+     * 
+     * @param name the setting name 
+     * @return true if the name corresponds to a system setting 
+     */
+    public static final boolean isSystemSetting(String name) {
+
+        if (CmsXmlContainerPage.LEGACY_SYSTEM_SETTING_NAMES.contains(name)
+            || CmsContainerElement.ELEMENT_INSTANCE_ID.equals(name)
+            || name.startsWith(CmsXmlContainerPage.SYSTEM_SETTING_PREFIX)
+            || name.startsWith(CmsFormatterConfig.FORMATTER_SETTINGS_KEY)) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Returns the start formatter for a newly dropped element.<p>
      * This will be either the least recently used matching formatter or the default formatter.<p>
@@ -675,7 +692,7 @@ public class CmsElementUtil {
         Map<String, String> settingUpdates = new HashMap<>();
         for (Map.Entry<String, String> entry : elementData.getSettings().entrySet()) {
             int underscorePos = entry.getKey().indexOf("_");
-            if (underscorePos >= 0) {
+            if ((underscorePos >= 0) && !isSystemSetting(entry.getKey())) {
                 String prefix = entry.getKey().substring(0, underscorePos);
                 I_CmsFormatterBean dynamicFmt = adeConfig.findFormatter(prefix);
 
