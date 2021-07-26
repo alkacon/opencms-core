@@ -79,14 +79,14 @@ import com.google.common.collect.Maps;
  */
 public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
 
-    /** The logger instance for the class. */
-    private static final Log LOG = CmsLog.getLog(CmsGalleryNameMacroResolver.class);
-
     /** Macro prefix. */
-    public static final String PREFIX_VALUE = "value:";
+    public static final String NO_PREFIX = "no_prefix";
+
+    /** Pattern used to match the no_prefix macro. */
+    public static final Pattern NO_PREFIX_PATTERN = Pattern.compile("%\\(" + NO_PREFIX + ":(.*?)\\)");
 
     /** Macro name. */
-    public static final String PAGE_TITLE = "page_title";
+    public static final String PAGE_NAV = "page_nav";
 
     /** Macro name. */
     public static final String PAGE_ROOTPATH = "page_rootpath";
@@ -95,22 +95,22 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
     public static final String PAGE_SITEPATH = "page_sitepath";
 
     /** Macro name. */
-    public static final String PAGE_NAV = "page_nav";
+    public static final String PAGE_TITLE = "page_title";
 
-    /** Macro prefix. */
-    public static final String NO_PREFIX = "no_prefix";
-
-    /** Pattern used to match the no_prefix macro. */
-    public static final Pattern NO_PREFIX_PATTERN = Pattern.compile("%\\(" + NO_PREFIX + ":(.*?)\\)");
+    /** Prefix for the isDetailPage? macro. */
+    public static final String PREFIX_ISDETAILPAGE = "isDetailPage?";
 
     /** Prefix for the stringtemplate macro. */
     public static final String PREFIX_STRINGTEMPLATE = "stringtemplate:";
 
+    /** Macro prefix. */
+    public static final String PREFIX_VALUE = "value:";
+
+    /** The logger instance for the class. */
+    private static final Log LOG = CmsLog.getLog(CmsGalleryNameMacroResolver.class);
+
     /** The XML content to use for the gallery name mapping. */
     private A_CmsXmlDocument m_content;
-
-    /** Collection of pages the content is placed on. */
-    private Collection<CmsResource> m_pages;
 
     /** The locale in the XML content. */
     private Locale m_contentLocale;
@@ -120,8 +120,14 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
         return m_content.getHandler().getParameter(s);
     };
 
+    /** Collection of pages the content is placed on. */
+    private Collection<CmsResource> m_pages;
+
     /** The current string template source. */
     private Function<String, String> m_stringTemplateSource = m_defaultStringTemplateSource;
+
+    /** Cached detail page status. */
+    private Boolean m_isOnDetailPage;
 
     /**
      * Creates a new instance.<p>
@@ -168,6 +174,8 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
             return getContainerPagePath(true);
         } else if (macro.startsWith(PREFIX_STRINGTEMPLATE)) {
             return resolveStringTemplate(macro.substring(PREFIX_STRINGTEMPLATE.length()));
+        } else if (macro.startsWith(PREFIX_ISDETAILPAGE)) {
+            return resolveIsDetailPage(macro.substring(PREFIX_ISDETAILPAGE.length()));
         } else if (macro.startsWith(NO_PREFIX)) {
             return "%(" + macro + ")";
             // this is just to prevent the %(no_prefix:...) macro from being expanded to an empty string. We could call setKeepEmptyMacros(true) instead,
@@ -320,6 +328,51 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
     }
 
     /**
+     * Checks if we are on a detail page (using the path from the CmsObject).
+     *
+     * @return true if we are on a detail page
+     */
+    private boolean isOnDetailPage() {
+
+        if (m_isOnDetailPage != null) {
+            return m_isOnDetailPage.booleanValue();
+        }
+        try {
+            String uri = m_cms.getRequestContext().getUri();
+            CmsResource page = m_cms.readResource(uri);
+            boolean result = OpenCms.getADEManager().isDetailPage(m_cms, page);
+            m_isOnDetailPage = Boolean.valueOf(result);
+            return result;
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return false;
+        }
+    }
+
+    /**
+     * Evaluates the content of the isDetailPage? macro.
+     *
+     * <p>
+     * The macro has the form %(isDetailPage?foo:bar), and in the case the current page (according to the URI of the CmsObject)
+     * is a detail page, the macro should evaluate to 'foo', and otherwise to 'bar'.
+     *
+     * @param content the macro content
+     * @return the macro value
+     */
+    private String resolveIsDetailPage(String content) {
+
+        int colonPos = content.indexOf(":");
+        if (colonPos != -1) {
+            String beforeColon = content.substring(0, colonPos);
+            String afterColon = content.substring(colonPos + 1);
+            return isOnDetailPage() ? beforeColon : afterColon;
+        } else {
+            LOG.error("Invalid body for isDetailPage? macro: " + content);
+            return content;
+        }
+    }
+
+    /**
      * Evaluates the contents of a %(stringtemplate:...) macro by evaluating them as StringTemplate code.<p>
      *
      * @param stMacro the contents of the macro after the stringtemplate: prefix
@@ -347,6 +400,8 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
                 return getContainerPageProperty(CmsPropertyDefinition.PROPERTY_TITLE);
             }
         });
+
+        params.put("isDetailPage", Boolean.valueOf(isOnDetailPage()));
 
         params.put(PAGE_NAV, new Object() {
 
