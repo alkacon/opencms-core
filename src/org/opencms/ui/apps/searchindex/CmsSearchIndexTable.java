@@ -353,12 +353,14 @@ public class CmsSearchIndexTable extends Table {
         List<I_CmsSearchIndex> indexes = m_manager.getAllElements();
 
         for (I_CmsSearchIndex index : indexes) {
-            Item item = m_container.addItem(index);
-            item.getItemProperty(TableProperty.Name).setValue(index.getName());
-            item.getItemProperty(TableProperty.FieldConfig).setValue(index.getFieldConfiguration().getName());
-            item.getItemProperty(TableProperty.Locale).setValue(index.getLocale().getDisplayName());
-            item.getItemProperty(TableProperty.Project).setValue(index.getProject());
-            item.getItemProperty(TableProperty.Rebuild).setValue(index.getRebuildMode());
+            if (index.isEnabled()) {
+                Item item = m_container.addItem(index);
+                item.getItemProperty(TableProperty.Name).setValue(index.getName());
+                item.getItemProperty(TableProperty.FieldConfig).setValue(index.getFieldConfiguration().getName());
+                item.getItemProperty(TableProperty.Locale).setValue(index.getLocale().getDisplayName());
+                item.getItemProperty(TableProperty.Project).setValue(index.getProject());
+                item.getItemProperty(TableProperty.Rebuild).setValue(index.getRebuildMode());
+            }
         }
     }
 
