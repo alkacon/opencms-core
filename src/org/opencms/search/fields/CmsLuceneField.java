@@ -27,12 +27,13 @@
 
 package org.opencms.search.fields;
 
+import org.opencms.search.CmsSearchManager;
+import org.opencms.util.CmsStringUtil;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
 import org.apache.lucene.index.IndexOptions;
-import org.opencms.search.CmsSearchManager;
-import org.opencms.util.CmsStringUtil;
 
 /**
  * An individual field configuration in a Lucene search index.<p>
@@ -63,7 +64,7 @@ public class CmsLuceneField extends CmsSearchField {
     private static final long serialVersionUID = -4946013624087640706L;
 
     /** The special analyzer to use for this field. */
-    private Analyzer m_analyzer;
+    private transient Analyzer m_analyzer;
 
     /** Indicates if the content of this field is compressed. */
     private boolean m_compressed;
@@ -163,6 +164,16 @@ public class CmsLuceneField extends CmsSearchField {
         String defaultValue) {
 
         this(name, displayName, isStored, false, isIndexed, isTokenized, isInExcerpt, null, defaultValue);
+    }
+
+    /**
+     * Closes the analyzer.<p>
+     */
+    public void closeAnalyzer() {
+
+        if (m_analyzer != null) {
+            m_analyzer.close();
+        }
     }
 
     /**
@@ -348,16 +359,6 @@ public class CmsLuceneField extends CmsSearchField {
     public boolean isTokenizedAndIndexed() {
 
         return m_tokenized && isIndexed();
-    }
-
-    /**
-     * Closes the analyzer.<p>
-     */
-    public void closeAnalyzer() {
-
-        if (m_analyzer != null) {
-            m_analyzer.close();
-        }
     }
 
     /**
