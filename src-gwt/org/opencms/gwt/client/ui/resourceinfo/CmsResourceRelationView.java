@@ -359,8 +359,15 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
 
         switch (m_mode) {
             case sources:
+                if (m_statusBean.getSourcesError() != null) {
+                    return m_statusBean.getSourcesError();
+                }
                 return org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_USAGE_EMPTY_0);
             case targets:
+                if (m_statusBean.getTargetsError() != null) {
+                    return m_statusBean.getTargetsError();
+                }
+                //$FALL-THROUGH$
             default:
                 return org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_TARGETS_EMPTY_0);
         }

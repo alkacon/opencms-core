@@ -99,11 +99,31 @@ import com.google.common.collect.Sets;
  */
 public class CmsDefaultResourceStatusProvider {
 
+    /**
+     * Exception class for signalling that there are too many relations to process.
+     */
+    static class TooManyRelationsException extends Exception {
+
+        /** Serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Creates a new instance.
+         */
+        public TooManyRelationsException() {
+
+            super();
+        }
+    }
+
     /** The detail container path pattern. */
     private static final String DETAIL_CONTAINER_PATTERN = ".*\\/\\.detailContainers\\/.*";
 
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDefaultResourceStatusProvider.class);
+
+    /** Maximum relation count that is still displayed. */
+    public static final long MAX_RELATIONS = 500;
 
     /**
      * Gets the relation targets for a resource.<p>
@@ -116,13 +136,14 @@ public class CmsDefaultResourceStatusProvider {
      * @return a bean containing a list of relation targets
      *
      * @throws CmsException if something goes wrong
+     * @throws TooManyRelationsException if too many relations are found
      */
     public static CmsRelationTargetListBean getContainerpageRelationTargets(
         CmsObject cms,
         CmsUUID source,
         List<CmsUUID> additionalIds,
         boolean cancelIfChanged)
-    throws CmsException {
+    throws CmsException, TooManyRelationsException {
 
         CmsRelationTargetListBean result = new CmsRelationTargetListBean();
         CmsResource content = cms.readResource(source, CmsResourceFilter.ALL);
@@ -141,23 +162,28 @@ public class CmsDefaultResourceStatusProvider {
             }
         }
         List<CmsRelation> relations = cms.readRelations(CmsRelationFilter.relationsFromStructureId(source));
-        for (CmsRelation relation : relations) {
-            if (relation.getType() == CmsRelationType.XSD) {
-                continue;
-            }
-            try {
-                CmsResource target = relation.getTarget(cms, CmsResourceFilter.ALL);
-                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(target);
-                if (isContainerPage && (type instanceof CmsResourceTypeJsp)) {
-                    // ignore formatters for container pages, as the normal user probably doesn't want to deal with them
+        if (relations.size() > MAX_RELATIONS) {
+            throw new TooManyRelationsException();
+
+        } else {
+            for (CmsRelation relation : relations) {
+                if (relation.getType() == CmsRelationType.XSD) {
                     continue;
                 }
-                result.add(target);
-                if (target.getState().isChanged() && cancelIfChanged) {
-                    return result;
+                try {
+                    CmsResource target = relation.getTarget(cms, CmsResourceFilter.ALL);
+                    I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(target);
+                    if (isContainerPage && (type instanceof CmsResourceTypeJsp)) {
+                        // ignore formatters for container pages, as the normal user probably doesn't want to deal with them
+                        continue;
+                    }
+                    result.add(target);
+                    if (target.getState().isChanged() && cancelIfChanged) {
+                        return result;
+                    }
+                } catch (CmsException e) {
+                    LOG.debug(e.getLocalizedMessage(), e);
                 }
-            } catch (CmsException e) {
-                LOG.debug(e.getLocalizedMessage(), e);
             }
         }
         return result;
@@ -339,89 +365,103 @@ public class CmsDefaultResourceStatusProvider {
             }
         }
 
-        // find all distinct relation sources
-        for (CmsRelation relation : relations) {
-            try {
-                CmsResource currentSource = relation.getSource(cms, CmsResourceFilter.ALL);
-                relationSources.put(currentSource.getStructureId(), currentSource);
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-        }
-
-        for (CmsResource relationResource : relationSources.values()) {
-            try {
-                CmsPermissionInfo permissionInfo = OpenCms.getADEManager().getPermissionInfo(
-                    cms,
-                    relationResource,
-                    resource.getRootPath());
-                if (permissionInfo.hasViewPermission()) {
-                    CmsResourceStatusRelationBean relationBean = createRelationBean(
-                        cms,
-                        contentLocale,
-                        relationResource,
-                        permissionInfo);
-                    CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(relationResource.getRootPath());
-                    if ((site != null)
-                        && !CmsStringUtil.isPrefixPath(
-                            cms.getRequestContext().getSiteRoot(),
-                            relationResource.getRootPath())) {
-                        String siteTitle = site.getTitle();
-                        if (siteTitle == null) {
-                            siteTitle = site.getUrl();
-                        } else {
-                            siteTitle = CmsWorkplace.substituteSiteTitleStatic(
-                                siteTitle,
-                                OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
-                        }
-                        relationBean.setSiteRoot(site.getSiteRoot());
-                        result.getOtherSiteRelationSources().add(relationBean);
-                        relationBean.getInfoBean().setTitle(
-                            "[" + siteTitle + "] " + relationBean.getInfoBean().getTitle());
-                    } else {
-                        result.getRelationSources().add(relationBean);
-                    }
-
-                }
-            } catch (CmsVfsResourceNotFoundException notfound) {
-                LOG.error(notfound.getLocalizedMessage(), notfound);
-                continue;
-            }
-        }
-        sortRelations(cms, result);
-        if (includeTargets) {
-            result.getRelationTargets().addAll(getTargets(cms, contentLocale, resource, additionalStructureIds));
-            if ((detailContentId != null) && (realLocale != null)) {
-                // try to add detail only contents
+        if (relations.size() > MAX_RELATIONS) {
+            String errorMessage = Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
+                Messages.GUI_TOO_MANY_RELATIONS_1,
+                "" + MAX_RELATIONS);
+            result.setSourcesError(errorMessage);
+        } else {
+            // find all distinct relation sources
+            for (CmsRelation relation : relations) {
                 try {
-                    CmsResource detailContent = cms.readResource(detailContentId, CmsResourceFilter.ALL);
-                    Optional<CmsResource> detailOnlyPage = CmsDetailOnlyContainerUtil.getDetailOnlyResource(
-                        cms,
-                        realLocale.toString(),
-                        detailContent,
-                        resource);
-                    if (detailOnlyPage.isPresent()) {
-                        result.getRelationTargets().addAll(
-                            getTargets(
-                                cms,
-                                contentLocale,
-                                detailOnlyPage.get(),
-                                Arrays.asList(detailOnlyPage.get().getStructureId())));
-                    }
-
+                    CmsResource currentSource = relation.getSource(cms, CmsResourceFilter.ALL);
+                    relationSources.put(currentSource.getStructureId(), currentSource);
                 } catch (CmsException e) {
                     LOG.error(e.getLocalizedMessage(), e);
                 }
             }
-            Iterator<CmsResourceStatusRelationBean> iter = result.getRelationTargets().iterator();
-            // Remove duplicates
-            Set<CmsUUID> visitedIds = Sets.newHashSet();
-            while (iter.hasNext()) {
-                CmsResourceStatusRelationBean bean = iter.next();
-                if (visitedIds.contains(bean.getStructureId())) {
-                    iter.remove();
+
+            for (CmsResource relationResource : relationSources.values()) {
+                try {
+                    CmsPermissionInfo permissionInfo = OpenCms.getADEManager().getPermissionInfo(
+                        cms,
+                        relationResource,
+                        resource.getRootPath());
+                    if (permissionInfo.hasViewPermission()) {
+                        CmsResourceStatusRelationBean relationBean = createRelationBean(
+                            cms,
+                            contentLocale,
+                            relationResource,
+                            permissionInfo);
+                        CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(relationResource.getRootPath());
+                        if ((site != null)
+                            && !CmsStringUtil.isPrefixPath(
+                                cms.getRequestContext().getSiteRoot(),
+                                relationResource.getRootPath())) {
+                            String siteTitle = site.getTitle();
+                            if (siteTitle == null) {
+                                siteTitle = site.getUrl();
+                            } else {
+                                siteTitle = CmsWorkplace.substituteSiteTitleStatic(
+                                    siteTitle,
+                                    OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+                            }
+                            relationBean.setSiteRoot(site.getSiteRoot());
+                            result.getOtherSiteRelationSources().add(relationBean);
+                            relationBean.getInfoBean().setTitle(
+                                "[" + siteTitle + "] " + relationBean.getInfoBean().getTitle());
+                        } else {
+                            result.getRelationSources().add(relationBean);
+                        }
+
+                    }
+                } catch (CmsVfsResourceNotFoundException notfound) {
+                    LOG.error(notfound.getLocalizedMessage(), notfound);
+                    continue;
                 }
-                visitedIds.add(bean.getStructureId());
+            }
+            sortRelations(cms, result);
+        }
+        if (includeTargets) {
+            try {
+                result.getRelationTargets().addAll(getTargets(cms, contentLocale, resource, additionalStructureIds));
+                if ((detailContentId != null) && (realLocale != null)) {
+                    // try to add detail only contents
+                    try {
+                        CmsResource detailContent = cms.readResource(detailContentId, CmsResourceFilter.ALL);
+                        Optional<CmsResource> detailOnlyPage = CmsDetailOnlyContainerUtil.getDetailOnlyResource(
+                            cms,
+                            realLocale.toString(),
+                            detailContent,
+                            resource);
+                        if (detailOnlyPage.isPresent()) {
+                            result.getRelationTargets().addAll(
+                                getTargets(
+                                    cms,
+                                    contentLocale,
+                                    detailOnlyPage.get(),
+                                    Arrays.asList(detailOnlyPage.get().getStructureId())));
+                        }
+
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+                Iterator<CmsResourceStatusRelationBean> iter = result.getRelationTargets().iterator();
+                // Remove duplicates
+                Set<CmsUUID> visitedIds = Sets.newHashSet();
+                while (iter.hasNext()) {
+                    CmsResourceStatusRelationBean bean = iter.next();
+                    if (visitedIds.contains(bean.getStructureId())) {
+                        iter.remove();
+                    }
+                    visitedIds.add(bean.getStructureId());
+                }
+            } catch (TooManyRelationsException e) {
+                result.setTargetsError(
+                    Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
+                        Messages.GUI_TOO_MANY_RELATIONS_1,
+                        "" + MAX_RELATIONS));
             }
         }
         result.getSiblings().addAll(getSiblings(cms, contentLocale, resource));
@@ -557,13 +597,14 @@ public class CmsDefaultResourceStatusProvider {
      * @return the list of relation beans for the relation targets
      *
      * @throws CmsException if something goes wrong
+     * @throws TooManyRelationsException if too many relations are found
      */
     protected List<CmsResourceStatusRelationBean> getTargets(
         CmsObject cms,
         String locale,
         CmsResource resource,
         List<CmsUUID> additionalStructureIds)
-    throws CmsException {
+    throws CmsException, TooManyRelationsException {
 
         CmsRelationTargetListBean listBean = getContainerpageRelationTargets(
             cms,

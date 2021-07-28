@@ -115,6 +115,12 @@ public class CmsResourceStatusBean implements IsSerializable {
     /** Last modifier. */
     private String m_userLastModified;
 
+    /** Custom error message to display in the relation sources tab. */
+    private String m_sourcesError;
+
+    /** Custom error message to display in the relation targets tab. */
+    private String m_targetsError;
+
     /**
      * Returns the additional resource attributes to display.<p>
      * @return the additional resource attributes
@@ -285,6 +291,16 @@ public class CmsResourceStatusBean implements IsSerializable {
     }
 
     /**
+     * Gets the custom error message for the relation sources tab.
+     *
+     * @return the custom error message for the relation sources tab
+     */
+    public String getSourcesError() {
+
+        return m_sourcesError;
+    }
+
+    /**
      * Gets the start tab.<p>
      *
      * @return the start tab
@@ -322,6 +338,16 @@ public class CmsResourceStatusBean implements IsSerializable {
     public LinkedHashMap<CmsResourceStatusTabId, String> getTabs() {
 
         return m_tabs;
+    }
+
+    /**
+     * Gets the custom error message for the relation targets tab.
+     *
+     * @return the custom error message for the relation target tab
+     */
+    public String getTargetsError() {
+
+        return m_targetsError;
     }
 
     /**
@@ -485,6 +511,16 @@ public class CmsResourceStatusBean implements IsSerializable {
     }
 
     /**
+     * Sets the custom error message for the relation sources tab.
+     *
+     * @param sourcesError the custom error message
+     */
+    public void setSourcesError(String sourcesError) {
+
+        m_sourcesError = sourcesError;
+    }
+
+    /**
      * Sets the start tab.<p>
      *
      * @param startTab the start tab id
@@ -522,6 +558,16 @@ public class CmsResourceStatusBean implements IsSerializable {
     public void setTabs(LinkedHashMap<CmsResourceStatusTabId, String> tabs) {
 
         m_tabs = tabs;
+    }
+
+    /**
+     * Sets the custom error message for the relation target tab.
+     *
+     * @param targetsError the custom error message
+     */
+    public void setTargetsError(String targetsError) {
+
+        m_targetsError = targetsError;
     }
 
     /**
