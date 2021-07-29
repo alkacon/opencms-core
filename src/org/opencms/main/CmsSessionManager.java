@@ -884,7 +884,7 @@ public class CmsSessionManager {
      */
     protected void sessionCreated(HttpSessionEvent event) {
 
-        HttpServletRequest request = OpenCmsServlet.currentRequest.get();
+        HttpServletRequest request = OpenCmsServlet.currentRequestStack.top();
         String tid = "[" + Thread.currentThread().getId() + "] ";
         synchronized (m_lockSessionCount) {
             m_sessionCountCurrent = (m_sessionCountCurrent <= 0) ? 1 : (m_sessionCountCurrent + 1);

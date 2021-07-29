@@ -38,6 +38,7 @@ import org.opencms.staticexport.CmsStaticExportData;
 import org.opencms.staticexport.CmsStaticExportRequest;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsThreadLocalStack;
 import org.opencms.util.CmsUUID;
 
 import java.io.IOException;
@@ -200,13 +201,13 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     }
 
     /** The current request in a threadlocal. */
-    public static final ThreadLocal<HttpServletRequest> currentRequest = new ThreadLocal<HttpServletRequest>();
+    public static final CmsThreadLocalStack<HttpServletRequest> currentRequestStack = new CmsThreadLocalStack<HttpServletRequest>();
 
     /** Map containing beans with information about currently running requests. */
     public static final ConcurrentHashMap<CmsUUID, RequestInfo> activeRequests = new ConcurrentHashMap<>();
 
     /** The current thread context for the request. */
-    private static final ThreadLocal<RequestCache> requestCache = new ThreadLocal<RequestCache>();
+    private static final CmsThreadLocalStack<RequestCache> requestCacheStack = new CmsThreadLocalStack<RequestCache>();
 
     /** GWT RPC services suffix. */
     public static final String HANDLE_GWT = ".gwt";
@@ -251,7 +252,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
      */
     public static RequestCache getRequestCache() {
 
-        RequestCache result = requestCache.get();
+        RequestCache result = requestCacheStack.top();
         return result;
     }
 
@@ -276,16 +277,14 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
 
-        currentRequest.set(req);
-        requestCache.set(new RequestCache());
+        // we are using stacks for these because the doGet method may be called reentrantly, e.g. when using servlet forwarding.
+        currentRequestStack.push(req);
+        requestCacheStack.push(new RequestCache());
         final CmsUUID requestId = new CmsUUID();
-        if (req != null) {
-            activeRequests.put(
-                requestId,
-                new RequestInfo(
-                    req.getRequestURL().toString() + (req.getQueryString() != null ? "?" + req.getQueryString() : ""),
-                    System.currentTimeMillis()));
-        }
+        RequestInfo reqInfo = new RequestInfo(
+            req.getRequestURL().toString() + (req.getQueryString() != null ? "?" + req.getQueryString() : ""),
+            System.currentTimeMillis());
+        activeRequests.put(requestId, reqInfo);
         try {
 
             // check to OpenCms runlevel
@@ -326,9 +325,8 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 OpenCmsCore.getInstance().showResource(req, res);
             }
         } finally {
-            currentRequest.remove();
-            requestCache.get().close();
-            requestCache.remove();
+            currentRequestStack.pop();
+            requestCacheStack.pop().close();
             activeRequests.remove(requestId);
         }
     }
