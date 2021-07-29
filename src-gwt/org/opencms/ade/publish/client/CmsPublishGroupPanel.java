@@ -183,7 +183,7 @@ public class CmsPublishGroupPanel extends Composite {
         }
 
         HTML label = new HTML();
-        label.setHTML(title);
+        label.setText(title);
         label.addStyleName(CSS.groupHeader());
         m_header.add(label);
 
