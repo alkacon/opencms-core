@@ -136,9 +136,68 @@ public class CmsDefaultResourceStatusProvider {
      * @return a bean containing a list of relation targets
      *
      * @throws CmsException if something goes wrong
-     * @throws TooManyRelationsException if too many relations are found
      */
     public static CmsRelationTargetListBean getContainerpageRelationTargets(
+        CmsObject cms,
+        CmsUUID source,
+        List<CmsUUID> additionalIds,
+        boolean cancelIfChanged)
+    throws CmsException {
+
+        CmsRelationTargetListBean result = new CmsRelationTargetListBean();
+        CmsResource content = cms.readResource(source, CmsResourceFilter.ALL);
+        boolean isContainerPage = CmsResourceTypeXmlContainerPage.isContainerPage(content);
+        if (additionalIds != null) {
+            for (CmsUUID structureId : additionalIds) {
+                try {
+                    CmsResource res = cms.readResource(structureId, CmsResourceFilter.ALL);
+                    result.add(res);
+                    if (res.getState().isChanged() && cancelIfChanged) {
+                        return result;
+                    }
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+        List<CmsRelation> relations = cms.readRelations(CmsRelationFilter.relationsFromStructureId(source));
+        for (CmsRelation relation : relations) {
+            if (relation.getType() == CmsRelationType.XSD) {
+                continue;
+            }
+            try {
+                CmsResource target = relation.getTarget(cms, CmsResourceFilter.ALL);
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(target);
+                if (isContainerPage && (type instanceof CmsResourceTypeJsp)) {
+                    // ignore formatters for container pages, as the normal user probably doesn't want to deal with them
+                    continue;
+                }
+                result.add(target);
+                if (target.getState().isChanged() && cancelIfChanged) {
+                    return result;
+                }
+            } catch (CmsException e) {
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Gets the relation targets for a resource.<p>
+     *
+     * @param cms the current CMS context
+     * @param source the structure id of the resource for which we want the relation targets
+     * @param additionalIds the structure ids of additional resources to include with the relation targets
+     * @param cancelIfChanged if this is true, this method will stop immediately if it finds a changed resource among the relation targets
+     *
+     * @return a bean containing a list of relation targets
+     *
+     * @throws CmsException if something goes wrong
+     * @throws TooManyRelationsException if too many relations are found
+     */
+    public static CmsRelationTargetListBean getContainerpageRelationTargetsLimited(
         CmsObject cms,
         CmsUUID source,
         List<CmsUUID> additionalIds,
@@ -606,7 +665,7 @@ public class CmsDefaultResourceStatusProvider {
         List<CmsUUID> additionalStructureIds)
     throws CmsException, TooManyRelationsException {
 
-        CmsRelationTargetListBean listBean = getContainerpageRelationTargets(
+        CmsRelationTargetListBean listBean = getContainerpageRelationTargetsLimited(
             cms,
             resource.getStructureId(),
             additionalStructureIds,
