@@ -139,7 +139,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
                 m_valueLabel.setHTML(CmsDomUtil.Entity.nbsp.html());
             } else {
-                m_valueLabel.setHTML(value);
+                m_valueLabel.setText(value);
             }
             m_valueLabel.addStyleName(style.itemAdditionalValue());
             if (additionalStyle != null) {
