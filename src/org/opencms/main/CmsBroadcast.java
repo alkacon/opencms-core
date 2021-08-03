@@ -29,6 +29,7 @@ package org.opencms.main;
 
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.ui.components.CmsRichTextArea;
 
 /**
  * A single broadcast message, send from one OpenCms user to another.<p>
@@ -196,14 +197,17 @@ public class CmsBroadcast implements Cloneable {
      */
     public String getMessage() {
 
+        String result;
         switch (m_contentMode) {
             case html:
-                return m_message;
+                result = m_message;
+                break;
             case plain:
             default:
-                return htmlForPlain(m_message);
-
+                result = htmlForPlain(m_message);
         }
+        result = CmsRichTextArea.cleanHtml(result, true);
+        return result;
     }
 
     /**
