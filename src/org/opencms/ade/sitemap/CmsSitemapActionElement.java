@@ -37,6 +37,7 @@ import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -93,6 +94,7 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
     @Override
     public String exportAll() throws Exception {
 
+        CmsRequestUtil.disableCrossSiteFrameEmbedding(getResponse());
         StringBuffer sb = new StringBuffer();
         sb.append(export(false));
         sb.append(

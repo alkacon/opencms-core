@@ -33,6 +33,7 @@ import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.CmsEditor;
 
@@ -81,6 +82,7 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
     @Override
     public String exportAll() throws Exception {
 
+        CmsRequestUtil.disableCrossSiteFrameEmbedding(getResponse());
         StringBuffer sb = new StringBuffer();
         sb.append(super.export());
         sb.append(exportModuleScriptTag(GWT_MODULE_NAME));

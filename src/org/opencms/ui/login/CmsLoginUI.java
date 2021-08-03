@@ -49,6 +49,7 @@ import org.opencms.ui.login.CmsLoginHelper.LoginParameters;
 import org.opencms.ui.shared.CmsVaadinConstants;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
@@ -230,6 +231,7 @@ public class CmsLoginUI extends A_CmsUI {
                     org.opencms.jsp.Messages.ERR_MISSING_CMS_CONTROLLER_1,
                     CmsLoginUI.class.getName()));
         }
+        CmsRequestUtil.disableCrossSiteFrameEmbedding(response);
         CmsObject cms = controller.getCmsObject();
         if ((OpenCms.getSiteManager().getSites().size() > 1) && !OpenCms.getSiteManager().isWorkplaceRequest(request)) {
             // do not send any redirects to the workplace site for security reasons

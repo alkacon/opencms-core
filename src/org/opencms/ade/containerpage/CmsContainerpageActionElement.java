@@ -33,6 +33,7 @@ import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsRequestUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -81,8 +82,10 @@ public class CmsContainerpageActionElement extends CmsGwtActionElement {
     @Override
     public String exportAll() throws Exception {
 
+        CmsRequestUtil.disableCrossSiteFrameEmbedding(getResponse());
         StringBuffer sb = new StringBuffer();
         sb.append(super.export());
+
         String prefetchedData = exportDictionary(
             CmsCntPageData.DICT_NAME,
             I_CmsContainerpageService.class.getMethod("prefetch"),

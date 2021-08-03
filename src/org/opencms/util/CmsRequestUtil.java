@@ -379,6 +379,17 @@ public final class CmsRequestUtil {
     }
 
     /**
+     * Sets HTTP response headers to disable embedding in iframes on different domains.
+     *
+     * @param response the response on which to set the HTTP headers
+     */
+    public static void disableCrossSiteFrameEmbedding(HttpServletResponse response) {
+
+        response.addHeader("Content-Security-Policy", "frame-ancestors 'self';");
+        response.addHeader("X-Frame-Options", "SAMEORIGIN");
+    }
+
+    /**
      * Returns all parameters of the given request
      * as a request parameter URL String, that is in the form <code>key1=value1&key2=value2</code> etc.
      *
