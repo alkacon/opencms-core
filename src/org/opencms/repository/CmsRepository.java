@@ -36,6 +36,7 @@ import org.opencms.file.wrapper.I_CmsResourceWrapper;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.security.MessageDigest;
@@ -156,6 +157,12 @@ public class CmsRepository extends A_CmsRepository {
         CmsObject origCms = m_cmsObjectCache.get(cacheKey);
         String configuredProject = getConfiguration().getString("project", null);
         String configuredSite = getConfiguration().getString("root", null);
+        String roleStr = getConfiguration().getString("role", CmsRole.WORKPLACE_USER.getRoleName());
+
+        CmsRole requiredRole = null;
+        if (!"any".equals(roleStr)) {
+            requiredRole = CmsRole.valueOfRoleName(roleStr);
+        }
         String project = configuredProject;
         String site = configuredSite;
         if (origCms != null) {
@@ -163,6 +170,9 @@ public class CmsRepository extends A_CmsRepository {
         } else {
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
             cms.loginUser(userName, password);
+            if (requiredRole != null) {
+                OpenCms.getRoleManager().checkRole(cms, requiredRole);
+            }
             if ((site == null) || (project == null)) {
                 CmsUserSettings settings = new CmsUserSettings(cms);
                 if (site == null) {
