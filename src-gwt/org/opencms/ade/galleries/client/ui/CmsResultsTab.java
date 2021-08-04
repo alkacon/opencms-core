@@ -871,6 +871,7 @@ public class CmsResultsTab extends A_CmsListTab {
      */
     private void showUpload(CmsGallerySearchBean searchObj) {
 
+        boolean uploadDisabled = CmsCoreProvider.get().isUploadDisabled();
         Set<String> targets = new HashSet<String>();
 
         if (searchObj.getGalleries() != null) {
@@ -923,6 +924,16 @@ public class CmsResultsTab extends A_CmsListTab {
             }
         } else {
             m_uploadButton.disable(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TARGET_UNSPECIFIC_0));
+        }
+        if (uploadDisabled) {
+
+            for (Widget button : new Widget[] {m_uploadButton, m_specialUploadButton}) {
+                if (button != null) {
+                    button.removeFromParent();
+                }
+            }
+            m_uploadButton = null;
+            m_specialUploadButton = null;
         }
 
     }

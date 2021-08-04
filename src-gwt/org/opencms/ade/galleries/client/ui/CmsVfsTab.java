@@ -35,6 +35,7 @@ import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.file.CmsResource;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
@@ -313,7 +314,9 @@ public class CmsVfsTab extends A_CmsListTab {
         }
         dataValue.setUnselectable();
         if (vfsEntry.isEditable()) {
-            dataValue.addButton(createUploadButtonForTarget(vfsEntry.getRootPath(), true));
+            if (!CmsCoreProvider.get().isUploadDisabled()) {
+                dataValue.addButton(createUploadButtonForTarget(vfsEntry.getRootPath(), true));
+            }
         }
         CmsLazyTreeItem result;
         SelectionHandler selectionHandler;

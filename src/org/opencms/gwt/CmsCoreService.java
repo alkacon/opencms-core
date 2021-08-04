@@ -1160,6 +1160,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             getCmsObject(),
             "/system/workplace/commons/about.jsp");
         String tinyMCE = CmsWorkplace.getStaticResourceUri("/editors/tinymce/jscripts/tinymce/tinymce.min.js");
+        boolean uploadDisabled = !OpenCms.getRoleManager().hasRole(cms, CmsRole.EDITOR);
+
         CmsCoreData data = new CmsCoreData(
             EDITOR_URI,
             EDITOR_BACKLINK_URI,
@@ -1185,6 +1187,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             userInfo,
             OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCmsObject()),
             OpenCms.getWorkplaceManager().isKeepAlive(),
+            uploadDisabled,
             OpenCms.getADEManager().getParameters(getCmsObject()));
         CmsTinyMCEData tinyMCEData = new CmsTinyMCEData();
         tinyMCEData.setLink(tinyMCE);

@@ -166,6 +166,57 @@ public class CmsGalleriesTab extends A_CmsListTab {
     }
 
     /**
+     * A class which generates tree items incrementally to fill the galleries tab.<p>
+     */
+    protected class TreeItemGenerator implements Iterator<CmsTreeItem> {
+
+        /** The internal iterator over the gallery beans. <p> */
+        protected Iterator<CmsGalleryTreeEntry> m_beanIterator;
+
+        /**
+         * Creates a new instance.<p>
+         *
+         * @param folders the folders from which to generate list items
+         */
+        public TreeItemGenerator(List<CmsGalleryTreeEntry> folders) {
+
+            if (folders == null) {
+                folders = new ArrayList<CmsGalleryTreeEntry>();
+            }
+
+            m_beanIterator = folders.iterator();
+        }
+
+        /**
+         * @see java.util.Iterator#hasNext()
+         */
+        public boolean hasNext() {
+
+            return m_beanIterator.hasNext();
+        }
+
+        /**
+         * @see java.util.Iterator#next()
+         */
+        public CmsTreeItem next() {
+
+            CmsGalleryTreeEntry gallery = m_beanIterator.next();
+            CmsTreeItem treeItem = createTreeItem(gallery, m_selectedGalleries, true);
+            addChildren(treeItem, gallery.getChildren(), m_selectedGalleries);
+            treeItem.setOpen(true);
+            return treeItem;
+        }
+
+        /**
+         * @see java.util.Iterator#remove()
+         */
+        public void remove() {
+
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    /**
      * Handles the change of the item selection.<p>
      */
     private class SelectionHandler extends A_SelectionHandler {
@@ -219,57 +270,6 @@ public class CmsGalleriesTab extends A_CmsListTab {
         }
     }
 
-    /**
-     * A class which generates tree items incrementally to fill the galleries tab.<p>
-     */
-    protected class TreeItemGenerator implements Iterator<CmsTreeItem> {
-
-        /** The internal iterator over the gallery beans. <p> */
-        protected Iterator<CmsGalleryTreeEntry> m_beanIterator;
-
-        /**
-         * Creates a new instance.<p>
-         *
-         * @param folders the folders from which to generate list items
-         */
-        public TreeItemGenerator(List<CmsGalleryTreeEntry> folders) {
-
-            if (folders == null) {
-                folders = new ArrayList<CmsGalleryTreeEntry>();
-            }
-
-            m_beanIterator = folders.iterator();
-        }
-
-        /**
-         * @see java.util.Iterator#hasNext()
-         */
-        public boolean hasNext() {
-
-            return m_beanIterator.hasNext();
-        }
-
-        /**
-         * @see java.util.Iterator#next()
-         */
-        public CmsTreeItem next() {
-
-            CmsGalleryTreeEntry gallery = m_beanIterator.next();
-            CmsTreeItem treeItem = createTreeItem(gallery, m_selectedGalleries, true);
-            addChildren(treeItem, gallery.getChildren(), m_selectedGalleries);
-            treeItem.setOpen(true);
-            return treeItem;
-        }
-
-        /**
-         * @see java.util.Iterator#remove()
-         */
-        public void remove() {
-
-            throw new UnsupportedOperationException();
-        }
-    }
-
     /** The batch size for adding new elements to the tab.<p> */
     protected static final int LOAD_BATCH_SIZE = 50;
 
@@ -311,6 +311,138 @@ public class CmsGalleriesTab extends A_CmsListTab {
         m_tabHandler = tabHandler;
         m_galleries = new HashMap<String, CmsGalleryFolderBean>();
         init();
+    }
+
+    /**
+     * Fill the content of the galleries tab panel.<p>
+     *
+     * @param galleryInfos the gallery info beans
+     * @param selectedGalleries the list of galleries to select
+     */
+    public void fillContent(List<CmsGalleryFolderBean> galleryInfos, List<String> selectedGalleries) {
+
+        clearList();
+        m_selectedGalleries = selectedGalleries;
+        if (!galleryInfos.isEmpty()) {
+            for (CmsGalleryFolderBean galleryInfo : galleryInfos) {
+                m_galleries.put(galleryInfo.getPath(), galleryInfo);
+            }
+
+            m_itemIterator = new ListItemGenerator(galleryInfos);
+            loadMoreItems();
+        } else {
+            showIsEmptyLabel();
+        }
+        onContentChange();
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanels(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
+     */
+    @Override
+    public List<CmsSearchParamPanel> getParamPanels(CmsGallerySearchBean searchObj) {
+
+        List<CmsSearchParamPanel> result = new ArrayList<CmsSearchParamPanel>();
+        for (String galleryPath : searchObj.getGalleries()) {
+            CmsGalleryFolderBean galleryBean = m_galleries.get(galleryPath);
+            if (galleryBean != null) {
+                String title = galleryBean.getTitle();
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+                    title = galleryBean.getPath();
+                }
+                CmsSearchParamPanel panel = new CmsSearchParamPanel(
+                    Messages.get().key(Messages.GUI_PARAMS_LABEL_GALLERIES_0),
+                    this);
+                panel.setContent(title, galleryPath);
+                result.add(panel);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns the value of the "loading" flag, which indicates whether new elements are currently being added into the galleries tab.<p>
+     *
+     * @return the "loading" flag
+     */
+    public boolean isLoading() {
+
+        return m_loading;
+
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onSelection()
+     */
+    @Override
+    public void onSelection() {
+
+        super.onSelection();
+        Timer timer = new Timer() {
+
+            @Override
+            public void run() {
+
+                m_quickSearch.setFocus(true);
+            }
+        };
+        timer.schedule(20);
+    }
+
+    /**
+     * Sets the "loading" flag.<p>
+     *
+     * @param loading the new value of the loading flag
+     */
+    public void setLoading(boolean loading) {
+
+        m_loading = loading;
+    }
+
+    /**
+    * De-selects the galleries in the galleries list.<p>
+    *
+    * @param galleries the galleries to deselect
+    */
+    public void uncheckGalleries(List<String> galleries) {
+
+        for (String gallery : galleries) {
+            CmsListItem item = searchTreeItem(m_scrollList, gallery);
+            if (item != null) {
+                item.getCheckBox().setChecked(false);
+            }
+        }
+    }
+
+    /**
+     * Update the galleries list.<p>
+     *
+     * @param galleries the new gallery list
+     * @param selectedGalleries the list of galleries to select
+     */
+    public void updateListContent(List<CmsGalleryFolderBean> galleries, List<String> selectedGalleries) {
+
+        clearList();
+        fillContent(galleries, selectedGalleries);
+    }
+
+    /**
+     * Update the galleries tree.<p>
+     *
+     * @param galleryTreeEntries the new gallery tree list
+     * @param selectedGalleries the list of galleries to select
+     */
+    public void updateTreeContent(List<CmsGalleryTreeEntry> galleryTreeEntries, List<String> selectedGalleries) {
+
+        clearList();
+        m_selectedGalleries = selectedGalleries;
+        if (!galleryTreeEntries.isEmpty()) {
+            m_itemIterator = new TreeItemGenerator(galleryTreeEntries);
+            loadMoreItems();
+        } else {
+            showIsEmptyLabel();
+        }
+        onContentChange();
     }
 
     /**
@@ -410,7 +542,9 @@ public class CmsGalleriesTab extends A_CmsListTab {
                         listItemWidget.addButton(createExternalLink);
                     }
                 } else {
-                    listItemWidget.addButton(createUploadButtonForTarget(galleryInfo.getPath(), false));
+                    if (!CmsCoreProvider.get().isUploadDisabled()) {
+                        listItemWidget.addButton(createUploadButtonForTarget(galleryInfo.getPath(), false));
+                    }
                 }
             }
         }
@@ -427,53 +561,6 @@ public class CmsGalleriesTab extends A_CmsListTab {
         CmsTreeItem treeItem = new CmsTreeItem(forTree, checkBox, listItemWidget);
         treeItem.setId(galleryInfo.getPath());
         return treeItem;
-    }
-
-    /**
-     * Fill the content of the galleries tab panel.<p>
-     *
-     * @param galleryInfos the gallery info beans
-     * @param selectedGalleries the list of galleries to select
-     */
-    public void fillContent(List<CmsGalleryFolderBean> galleryInfos, List<String> selectedGalleries) {
-
-        clearList();
-        m_selectedGalleries = selectedGalleries;
-        if (!galleryInfos.isEmpty()) {
-            for (CmsGalleryFolderBean galleryInfo : galleryInfos) {
-                m_galleries.put(galleryInfo.getPath(), galleryInfo);
-            }
-
-            m_itemIterator = new ListItemGenerator(galleryInfos);
-            loadMoreItems();
-        } else {
-            showIsEmptyLabel();
-        }
-        onContentChange();
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getParamPanels(org.opencms.ade.galleries.shared.CmsGallerySearchBean)
-     */
-    @Override
-    public List<CmsSearchParamPanel> getParamPanels(CmsGallerySearchBean searchObj) {
-
-        List<CmsSearchParamPanel> result = new ArrayList<CmsSearchParamPanel>();
-        for (String galleryPath : searchObj.getGalleries()) {
-            CmsGalleryFolderBean galleryBean = m_galleries.get(galleryPath);
-            if (galleryBean != null) {
-                String title = galleryBean.getTitle();
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                    title = galleryBean.getPath();
-                }
-                CmsSearchParamPanel panel = new CmsSearchParamPanel(
-                    Messages.get().key(Messages.GUI_PARAMS_LABEL_GALLERIES_0),
-                    this);
-                panel.setContent(title, galleryPath);
-                result.add(panel);
-            }
-        }
-        return result;
     }
 
     /**
@@ -511,17 +598,6 @@ public class CmsGalleriesTab extends A_CmsListTab {
     }
 
     /**
-     * Returns the value of the "loading" flag, which indicates whether new elements are currently being added into the galleries tab.<p>
-     *
-     * @return the "loading" flag
-     */
-    public boolean isLoading() {
-
-        return m_loading;
-
-    }
-
-    /**
      * Adds more gallery list items to display in the tab, if available.<p>
      */
     protected void loadMoreItems() {
@@ -529,24 +605,6 @@ public class CmsGalleriesTab extends A_CmsListTab {
         setLoading(true);
         MoreItemsCommand cmd = new MoreItemsCommand(30);
         Scheduler.get().scheduleFixedDelay(cmd, 1);
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onSelection()
-     */
-    @Override
-    public void onSelection() {
-
-        super.onSelection();
-        Timer timer = new Timer() {
-
-            @Override
-            public void run() {
-
-                m_quickSearch.setFocus(true);
-            }
-        };
-        timer.schedule(20);
     }
 
     /**
@@ -563,16 +621,6 @@ public class CmsGalleriesTab extends A_CmsListTab {
     }
 
     /**
-     * Sets the "loading" flag.<p>
-     *
-     * @param loading the new value of the loading flag
-     */
-    public void setLoading(boolean loading) {
-
-        m_loading = loading;
-    }
-
-    /**
      * Shows the tab list is empty label.<p>
      */
     private void showIsEmptyLabel() {
@@ -581,51 +629,5 @@ public class CmsGalleriesTab extends A_CmsListTab {
         Label isEmptyLabel = new Label(Messages.get().key(Messages.GUI_TAB_GALLERIES_IS_EMPTY_0));
         item.add(isEmptyLabel);
         m_scrollList.add(item);
-    }
-
-    /**
-    * De-selects the galleries in the galleries list.<p>
-    *
-    * @param galleries the galleries to deselect
-    */
-    public void uncheckGalleries(List<String> galleries) {
-
-        for (String gallery : galleries) {
-            CmsListItem item = searchTreeItem(m_scrollList, gallery);
-            if (item != null) {
-                item.getCheckBox().setChecked(false);
-            }
-        }
-    }
-
-    /**
-     * Update the galleries list.<p>
-     *
-     * @param galleries the new gallery list
-     * @param selectedGalleries the list of galleries to select
-     */
-    public void updateListContent(List<CmsGalleryFolderBean> galleries, List<String> selectedGalleries) {
-
-        clearList();
-        fillContent(galleries, selectedGalleries);
-    }
-
-    /**
-     * Update the galleries tree.<p>
-     *
-     * @param galleryTreeEntries the new gallery tree list
-     * @param selectedGalleries the list of galleries to select
-     */
-    public void updateTreeContent(List<CmsGalleryTreeEntry> galleryTreeEntries, List<String> selectedGalleries) {
-
-        clearList();
-        m_selectedGalleries = selectedGalleries;
-        if (!galleryTreeEntries.isEmpty()) {
-            m_itemIterator = new TreeItemGenerator(galleryTreeEntries);
-            loadMoreItems();
-        } else {
-            showIsEmptyLabel();
-        }
-        onContentChange();
     }
 }

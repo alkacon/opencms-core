@@ -43,23 +43,23 @@ public class CmsCoreData implements IsSerializable {
     /** A enumeration for the ADE context. */
     public enum AdeContext {
 
-    /** Context for classic direct edit provider. */
-    editprovider,
+        /** Context for classic direct edit provider. */
+        editprovider,
 
-    /** Context for gallery dialog. */
-    gallery,
+        /** Context for gallery dialog. */
+        gallery,
 
-    /** Context for container page. */
-    pageeditor,
+        /** Context for container page. */
+        pageeditor,
 
-    /** Context for publish dialog. */
-    publish,
+        /** Context for publish dialog. */
+        publish,
 
-    /** Context for resource info dialog. */
-    resourceinfo,
+        /** Context for resource info dialog. */
+        resourceinfo,
 
-    /** Context for sitemap. */
-    sitemapeditor
+        /** Context for sitemap. */
+        sitemapeditor
     }
 
     /** The available client modules. */
@@ -320,6 +320,9 @@ public class CmsCoreData implements IsSerializable {
     /** The current workplace locale. */
     private String m_wpLocale;
 
+    /** Flag indicating whether upload buttons should be disabled. */
+    private boolean m_uploadDisabled;
+
     /**
      * Constructor.<p>
      */
@@ -360,6 +363,7 @@ public class CmsCoreData implements IsSerializable {
             clone.getUserInfo(),
             clone.getUploadFileSizeLimit(),
             clone.isKeepAlive(),
+            clone.isUploadDisabled(),
             clone.m_adeParameters);
         setTinymce(clone.getTinymce());
     }
@@ -391,6 +395,7 @@ public class CmsCoreData implements IsSerializable {
      * @param userInfo information about the current user
      * @param uploadFileSizeLimit the file upload size limit
      * @param isKeepAlive the keep-alive mode
+     * @param uploadDisabled true if upload buttons should be disabled
      * @param adeParameters the map of ADE configuration parameters
      */
     public CmsCoreData(
@@ -418,6 +423,7 @@ public class CmsCoreData implements IsSerializable {
         UserInfo userInfo,
         long uploadFileSizeLimit,
         boolean isKeepAlive,
+        boolean uploadDisabled,
         Map<String, String> adeParameters) {
 
         m_contentEditorUrl = contentEditorUrl;
@@ -445,6 +451,7 @@ public class CmsCoreData implements IsSerializable {
         m_keepAlive = isKeepAlive;
         m_adeParameters = adeParameters;
         m_fileExplorerLink = fileExplorerLink;
+        m_uploadDisabled = uploadDisabled;
     }
 
     /**
@@ -696,6 +703,17 @@ public class CmsCoreData implements IsSerializable {
     public boolean isToolbarVisible() {
 
         return m_toolbarVisible;
+    }
+
+    /**
+     * Checks if uploads are disabled.
+     *
+     * @return true if uploads are disabled
+     */
+    public boolean isUploadDisabled() {
+
+        return m_uploadDisabled;
+
     }
 
     /**
