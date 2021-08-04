@@ -28,6 +28,7 @@
 package org.opencms.widgets;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
@@ -52,33 +53,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Sets;
 
 /**
  * Widget to select a type and formatter combination.<p>
  */
 public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
-
-    /**
-     * Formatter option comparator, sorting by type name and rank.<p>
-     */
-    class FormatterComparator implements Comparator<FormatterOption> {
-
-        /**
-         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-         */
-        public int compare(FormatterOption o1, FormatterOption o2) {
-
-            return o1.m_typeName.equals(o2.m_typeName) ? o2.m_rank - o1.m_rank : o1.m_typeName.compareTo(o2.m_typeName);
-        }
-    }
 
     /**
      * Formatter select option.<p>
@@ -97,6 +87,9 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
         /** The formatter rank. */
         int m_rank;
 
+        /** Position of resource type in the sitemap config. */
+        Integer m_typePosition;
+
         /** The type name. */
         String m_typeName;
 
@@ -108,14 +101,26 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
          * @param displayType the display type
          * @param label the option label
          * @param rank the formatter rank
+         * @param typePos the position of the type in the sitemap config
          */
-        FormatterOption(String key, String typeName, String displayType, String label, int rank) {
+        FormatterOption(String key, String typeName, String displayType, String label, int rank, Integer typePos) {
 
             m_key = key;
             m_typeName = typeName;
             m_displayType = displayType;
             m_label = label;
             m_rank = rank;
+            m_typePosition = typePos;
+        }
+
+        /**
+         * Gets the position of the type in the sitemap configuration.
+         *
+         * @return the position of the type in the sitemap configuration
+         */
+        public Integer getTypePosition() {
+
+            return m_typePosition;
         }
     }
 
@@ -331,6 +336,13 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
         CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, resource.getRootPath());
 
         if (config != null) {
+            List<CmsResourceTypeConfig> typeConfigs = config.getResourceTypes();
+            Map<String, Integer> typePositions = new HashMap<>();
+            int index = 0;
+            for (CmsResourceTypeConfig type : typeConfigs) {
+                typePositions.put(type.getTypeName(), Integer.valueOf(index));
+                index += 1;
+            }
             boolean useConfiguredFormatters = Boolean.parseBoolean(
                 config.getAttribute(ATTR_USE_CONFIG_FORMATTERS, "false"));
             Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
@@ -361,11 +373,26 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
                             typeName,
                             getDisplayType(formatter),
                             label,
-                            formatter.getRank()));
+                            formatter.getRank(),
+                            typePositions.get(typeName)));
                 }
             }
         }
-        Collections.sort(options, new FormatterComparator());
+
+        // Formatters for types in sitemap config come first, in the order defined there, then sorted by formatter rank.
+        // After that, formatters for types not in the sitemap config, ordered by type, then rank.
+        Collections.sort(
+            options,
+            (
+                f1,
+                f2) -> ComparisonChain.start().compare(
+                    f1.getTypePosition(),
+                    f2.getTypePosition(),
+                    Comparator.nullsLast(Comparator.naturalOrder())).compare(f1.m_typeName, f2.m_typeName).compare(
+                        f1.m_rank,
+                        f2.m_rank).compare(f1.m_label, f2.m_label).result()
+
+        );
         return options;
     }
 }
