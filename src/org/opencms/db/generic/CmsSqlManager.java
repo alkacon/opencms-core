@@ -141,7 +141,11 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      */
     public void closeAll(CmsDbContext dbc, Connection con, Statement stmnt, ResultSet res) {
 
-        // NOTE: we have to close Connections/Statements that way, because a dbcp PoolablePreparedStatement
+        // NOTE: The following note is outdated, since we are now using HikariCP as a connection pool,
+        // which doesn't have prepared statement pooling. Closing the connection in a finally block or using
+        // the try-with-resources syntax is sufficient.
+
+        // NOTE: (outdated) we have to close Connections/Statements that way, because a dbcp PoolablePreparedStatement
         // is not a DelegatedStatement; for that reason its not removed from the trace of the connection when it is closed.
         // So, the connection tries to close it again when the connection is closed itself;
         // as a result there is an error that forces the connection to be destroyed and not pooled
