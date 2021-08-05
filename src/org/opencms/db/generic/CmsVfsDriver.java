@@ -695,11 +695,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 newState = CmsResource.STATE_CHANGED;
 
                 // remove the existing file and it's properties
-                List<CmsResource> modifiedResources = m_driverManager.getVfsDriver(dbc).readSiblings(
-                    dbc,
-                    projectId,
-                    existingResource,
-                    false);
+                List<CmsResource> modifiedResources = m_driverManager.getVfsDriver(
+                    dbc).readSiblings(dbc, projectId, existingResource, false);
                 int propertyDeleteOption = (existingResource.getSiblingCount() > 1)
                 ? CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_VALUES
                 : CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES;
@@ -1472,11 +1469,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         if (!projectId.equals(CmsProject.ONLINE_PROJECT_ID)) {
             // check online resource
             try {
-                CmsResource onlineResource = m_driverManager.getVfsDriver(dbc).readResource(
-                    dbc,
-                    CmsProject.ONLINE_PROJECT_ID,
-                    destinationPath,
-                    true);
+                CmsResource onlineResource = m_driverManager.getVfsDriver(
+                    dbc).readResource(dbc, CmsProject.ONLINE_PROJECT_ID, destinationPath, true);
 
                 if (!onlineResource.getStructureId().equals(source.getStructureId())) {
                     // source resource has been moved and it is not the
@@ -1646,6 +1640,17 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 e);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+
+        try (Connection conn2 = m_sqlManager.getConnection(dbc)) {
+            stmt = m_sqlManager.getPreparedStatement(conn2, onlineProject, "C_RELATIONS_REPAIR_BROKEN");
+            stmt.setString(1, offlineResource.getStructureId().toString());
+            stmt.setString(2, offlineResource.getRootPath());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(
+                Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
+                e);
         }
     }
 
@@ -3086,11 +3091,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         // copy offline to online relations
         CmsUUID dbcProjectId = dbc.getProjectId();
         dbc.setProjectId(CmsUUID.getNullUUID());
-        Iterator<CmsRelation> itRelations = m_driverManager.getVfsDriver(dbc).readRelations(
-            dbc,
-            projectId,
-            offlineResource,
-            CmsRelationFilter.TARGETS).iterator();
+        Iterator<CmsRelation> itRelations = m_driverManager.getVfsDriver(
+            dbc).readRelations(dbc, projectId, offlineResource, CmsRelationFilter.TARGETS).iterator();
         dbc.setProjectId(dbcProjectId);
         while (itRelations.hasNext()) {
             vfsDriver.createRelation(dbc, onlineProject.getUuid(), itRelations.next());
