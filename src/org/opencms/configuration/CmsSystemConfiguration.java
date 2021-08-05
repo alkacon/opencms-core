@@ -29,6 +29,8 @@ package org.opencms.configuration;
 
 import org.opencms.ade.detailpage.CmsDefaultDetailPageHandler;
 import org.opencms.ade.detailpage.I_CmsDetailPageHandler;
+import org.opencms.crypto.CmsAESTextEncryption;
+import org.opencms.crypto.I_CmsTextEncryption;
 import org.opencms.db.CmsCacheSettings;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsLoginManager;
@@ -76,6 +78,7 @@ import java.util.Map;
 
 import org.apache.commons.digester3.Digester;
 import org.apache.commons.digester3.Rule;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 
@@ -94,11 +97,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
      */
     public static class ApiAuthorizationConfig {
 
-        /** The name. */
-        private String m_name;
-
         /** The class name. */
         private String m_class;
+
+        /** The name. */
+        private String m_name;
 
         /** The parameters. */
         private CmsParameterConfiguration m_params = new CmsParameterConfiguration();
@@ -190,41 +193,35 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         standard
     }
 
-    /** Node name for a single API authorization handler. */
-    public static final String N_API_AUTHORIZATION = "api-authorization";
-
-    /** Node name for the group of API authorization handlers. */
-    public static final String N_API_AUTHORIZATIONS = "api-authorizations";
-
     /** The attribute name for the deleted node. */
     public static final String A_DELETED = "deleted";
 
     /** The "error" attribute. */
     public static final String A_ERROR = "error";
+
     /** The "errorPage" attribute. */
     public static final String A_ERROR_PAGE = "errorPage";
+
     /** The "exclusive" attribute. */
     public static final String A_EXCLUSIVE = "exclusive";
 
     /** The attribute name for the localization mode. */
     public static final String A_LOCALIZATION_MODE = "localizationMode";
+
     /** The "maxvisited" attribute. */
     public static final String A_MAXVISITED = "maxvisited";
+
     /** The "offline" attribute. */
     public static final String A_OFFLINE = "offline";
-
     /** The "online" attribute. */
     public static final String A_ONLINE = "online";
-
     /** The "poolname" attribute. */
     public static final String A_POOLNAME = "poolname";
 
     /** The "security" attribute. */
     public static final String A_SECURITY = "security";
-
     /** The name of the DTD for this configuration. */
     public static final String CONFIGURATION_DTD_NAME = "opencms-system.dtd";
-
     /** The default user session mode. */
     public static final UserSessionMode DEFAULT_USER_SESSION_MODE = UserSessionMode.standard;
 
@@ -236,6 +233,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The ade-cache node name. */
     public static final String N_ADE_CACHE = "ade-cache";
+
+    /** Node name for a single API authorization handler. */
+    public static final String N_API_AUTHORIZATION = "api-authorization";
+
+    /** Node name for the group of API authorization handlers. */
+    public static final String N_API_AUTHORIZATIONS = "api-authorizations";
 
     /** The node name for the authorization handler. */
     public static final String N_AUTHORIZATIONHANDLER = "authorizationhandler";
@@ -297,6 +300,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the login security option enabled flag. */
     public static final String N_ENABLESCURITY = "enableSecurity";
 
+    /** Node name for the encryption section. */
+    public static final String N_ENCRYPTION = "encryption";
+
     /** The node name for the request handler classes. */
     public static final String N_EVENTMANAGER = "eventmanager";
 
@@ -353,6 +359,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the login manager. */
     public static final String N_LOGINMANAGER = "loginmanager";
+
+    /** Node name for the logout URI.*/
+    public static final String N_LOGOUT_URI = "logoutUri";
 
     /** The node name for the mail configuration. */
     public static final String N_MAIL = "mail";
@@ -519,6 +528,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The main system configuration node name. */
     public static final String N_SYSTEM = "system";
 
+    /** Node name for declaring a single text encryption. */
+    public static final String N_TEXT_ENCRYPTION = "text-encryption";
+
     /** The node name for the time zone configuration. */
     public static final String N_TIMEZONE = "timezone";
 
@@ -530,9 +542,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** Node name for the user data check interval. */
     public static final String N_USER_DATA_CHECK_INTERVAL = "userDataCheckInterval";
-
-    /** Node name for the logout URI.*/
-    public static final String N_LOGOUT_URI = "logoutUri";
 
     /** The node name for the user-deletedresource node. */
     public static final String N_USER_DELETEDRESOURCE = "user-deletedresource";
@@ -582,6 +591,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** Node name for the user max inactive time. */
     private static final String N_MAX_INACTIVE_TIME = "maxInactiveTime";
 
+    /** Node name for the 'require org unit' option. */
+    private static final String N_REQUIRE_ORGUNIT = "requireOrgUnit";
+
     /** Node name for the element reuse mode. */
     private static final String N_REUSE_ELEMENTS = "reuse-elements";
 
@@ -591,9 +603,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** Node name for the user session mode. */
     private static final String N_USER_SESSION_MODE = "user-session-mode";
 
-    /** Node name for the 'require org unit' option. */
-    private static final String N_REQUIRE_ORGUNIT = "requireOrgUnit";
-
     /** The ADE cache settings. */
     private CmsADECacheSettings m_adeCacheSettings;
 
@@ -602,6 +611,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The ADE configuration parameters. */
     private Map<String, String> m_adeParameters = new LinkedHashMap<String, String>();
+
+    private Map<String, I_CmsApiAuthorizationHandler> m_apiAuthorizationMap = new HashMap<>();
+
+    private List<ApiAuthorizationConfig> m_apiAuthorizations = new ArrayList<>();
 
     /** The authorization handler. */
     private String m_authorizationHandler;
@@ -707,6 +720,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The temporary file project id. */
     private int m_tempFileProjectId;
 
+    private Map<String, I_CmsTextEncryption> m_textEncryptions = new LinkedHashMap<>();
+
     private CmsUserDataRequestManager m_userDataRequestManager;
 
     /** The user session mode. */
@@ -717,10 +732,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The configured workflow manager. */
     private I_CmsWorkflowManager m_workflowManager;
-
-    private List<ApiAuthorizationConfig> m_apiAuthorizations = new ArrayList<>();
-
-    private Map<String, I_CmsApiAuthorizationHandler> m_apiAuthorizationMap = new HashMap<>();
 
     /**
      * Adds an ADE configuration parameter.<p>
@@ -1281,6 +1292,43 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         CmsLetsEncryptConfiguration.CONFIG_HELPER.addRules(digester);
         digester.addSetNext(CmsLetsEncryptConfiguration.CONFIG_HELPER.getBasePath(), "setLetsEncryptConfig");
 
+        digester.addRule("*/" + N_SYSTEM + "/" + N_ENCRYPTION + "/" + N_TEXT_ENCRYPTION, new Rule() {
+
+            @Override
+            public void begin(String namespace, String name, Attributes attributes) throws Exception {
+
+                String className = attributes.getValue(A_CLASS);
+                String instanceName = attributes.getValue(A_NAME);
+                I_CmsTextEncryption encrypter = (I_CmsTextEncryption)Class.forName(className).newInstance();
+                encrypter.setName(instanceName);
+                digester.push(encrypter);
+            }
+
+            @Override
+            public void end(String namespace, String name) throws Exception {
+
+                I_CmsTextEncryption encrypter = (I_CmsTextEncryption)digester.pop();
+                m_textEncryptions.put(encrypter.getName(), encrypter);
+            }
+        });
+
+        // make sure that a 'default' text encryption exists, but attach the rule to the system element
+        // because the <encryption> element doesn't necessarily exist,
+        digester.addRule("*/" + N_SYSTEM, new Rule() {
+
+            public void end(String namespace, String name) throws Exception {
+
+                if (m_textEncryptions.get("default") == null) {
+                    CmsAESTextEncryption defaultEncryption = new CmsAESTextEncryption();
+                    defaultEncryption.setName("default");
+                    defaultEncryption.addConfigurationParameter(
+                        CmsAESTextEncryption.PARAM_SECRET,
+                        RandomStringUtils.randomAlphanumeric(24));
+                    m_textEncryptions.put("default", defaultEncryption);
+                }
+            };
+        });
+
         String userSessionPath = "*/" + N_SYSTEM + "/" + N_USER_SESSION_MODE;
         digester.addCallMethod(userSessionPath, "setUserSessionMode", 0);
 
@@ -1615,6 +1663,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             Element authsElement = systemElement.addElement(N_API_AUTHORIZATIONS);
             for (ApiAuthorizationConfig apiAuth : m_apiAuthorizations) {
                 apiAuth.fillXml(authsElement.addElement(N_API_AUTHORIZATION));
+            }
+        }
+
+        Element encryptionElement = systemElement.addElement(N_ENCRYPTION);
+        for (I_CmsTextEncryption encrypter : m_textEncryptions.values()) {
+            Element textEncryption = encryptionElement.addElement(N_TEXT_ENCRYPTION);
+            textEncryption.addAttribute(A_CLASS, encrypter.getClass().getName());
+            textEncryption.addAttribute(A_NAME, encrypter.getName());
+            CmsParameterConfiguration config = encrypter.getConfiguration();
+            for (Map.Entry<String, String> entry : config.entrySet()) {
+                textEncryption.addElement(N_PARAM).addAttribute(A_NAME, entry.getKey()).addText(entry.getValue());
             }
         }
 
@@ -2211,6 +2270,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public int getTempFileProjectId() {
 
         return m_tempFileProjectId;
+    }
+
+    public Map<String, I_CmsTextEncryption> getTextEncryptions() {
+
+        return Collections.unmodifiableMap(m_textEncryptions);
     }
 
     public CmsUserDataRequestManager getUserDataRequestManager() {

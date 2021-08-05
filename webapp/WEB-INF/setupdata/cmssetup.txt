@@ -69,4 +69,6 @@ rebuildAllIndexes
 setIndexRebuildMode "Solr Online" "auto"
 setIndexRebuildMode "Solr Offline" "offline"
 
+updateConfiguration
+
 exit

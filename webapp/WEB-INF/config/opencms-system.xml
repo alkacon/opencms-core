@@ -102,6 +102,7 @@
             <notification-project>Offline</notification-project>
         </content-notification>
         <authorizationhandler class="org.opencms.security.CmsDefaultAuthorizationHandler" />
+        <encryption/>
         <publishmanager>
             <history-size>100</history-size>
             <queue-persistance>true</queue-persistance>

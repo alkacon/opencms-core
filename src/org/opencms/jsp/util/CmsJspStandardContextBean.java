@@ -700,6 +700,9 @@ public final class CmsJspStandardContextBean {
     /** OpenCms user context. */
     protected CmsObject m_cms;
 
+    /** The sitemap configuration. */
+    protected CmsADEConfigData m_config;
+
     /** The meta mapping configuration. */
     Map<String, MetaMapping> m_metaMappings;
 
@@ -771,9 +774,6 @@ public final class CmsJspStandardContextBean {
 
     /** The VFS content access bean. */
     private CmsJspVfsAccessBean m_vfsBean;
-
-    /** The sitemap configuration. */
-    protected CmsADEConfigData m_config;
 
     /**
      * Creates an empty instance.<p>
@@ -899,6 +899,22 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Uses the default text encryption method to decrypt an encrypted string.
+     *
+     * @param text the encrypted stirng
+     * @return the decrypted string
+     */
+    public String decrypt(String text) {
+
+        try {
+            return OpenCms.getTextEncryptions().get("default").decrypt(text);
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
+
+    /**
      * Returns a caching hash specific to the element, it's properties and the current container width.<p>
      *
      * @return the caching hash
@@ -918,6 +934,21 @@ public final class CmsJspStandardContextBean {
             }
         }
         return result;
+    }
+
+    /**
+     * Uses the default text encryption to encrypt an input text.
+     *
+     * @param text the input text
+     * @return the encrypted text
+     */
+    public String encrypt(String text) {
+
+        try {
+            return OpenCms.getTextEncryptions().get("default").encrypt(text);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**

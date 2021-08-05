@@ -42,6 +42,7 @@ import org.opencms.configuration.CmsVariablesConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsNeedsAdminCmsObject;
+import org.opencms.crypto.I_CmsTextEncryption;
 import org.opencms.db.CmsAliasManager;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDefaultUsers;
@@ -140,6 +141,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -208,6 +210,9 @@ public final class OpenCmsCore {
 
     /** The manager for page aliases. */
     private CmsAliasManager m_aliasManager;
+
+    /** Map of API authorization handlers, with their names as keys. */
+    private Map<String, I_CmsApiAuthorizationHandler> m_apiAuthorizations;
 
     /** The configured authorization handler. */
     private I_CmsAuthorizationHandler m_authorizationHandler;
@@ -329,8 +334,13 @@ public final class OpenCmsCore {
     /** The template context manager. */
     private CmsTemplateContextManager m_templateContextManager;
 
+    private LinkedHashMap m_textEncryptions;
+
     /** The thread store. */
     private CmsThreadStore m_threadStore;
+
+    /** The user data request manager. */
+    private CmsUserDataRequestManager m_userDataRequestManager;
 
     /** The runtime validation handler. */
     private I_CmsValidationHandler m_validationHandler;
@@ -349,12 +359,6 @@ public final class OpenCmsCore {
 
     /** The XML content type manager that contains the initialized XML content types. */
     private CmsXmlContentTypeManager m_xmlContentTypeManager;
-
-    /** The user data request manager. */
-    private CmsUserDataRequestManager m_userDataRequestManager;
-
-    /** Map of API authorization handlers, with their names as keys. */
-    private Map<String, I_CmsApiAuthorizationHandler> m_apiAuthorizations;
 
     /**
      * Protected constructor that will initialize the singleton OpenCms instance
@@ -963,6 +967,11 @@ public final class OpenCmsCore {
 
         return m_templateContextManager;
 
+    }
+
+    protected Map<String, I_CmsTextEncryption> getTextEncryptions() {
+
+        return m_textEncryptions;
     }
 
     /**
@@ -1800,6 +1809,12 @@ public final class OpenCmsCore {
                 if (requestHandler instanceof I_CmsNeedsAdminCmsObject) {
                     ((I_CmsNeedsAdminCmsObject)requestHandler).setAdminCmsObject(adminCms);
                 }
+            }
+
+            m_textEncryptions = new LinkedHashMap<>();
+            for (I_CmsTextEncryption encryption : systemConfiguration.getTextEncryptions().values()) {
+                encryption.initialize(OpenCms.initCmsObject(adminCms));
+                m_textEncryptions.put(encryption.getName(), encryption);
             }
 
         } catch (CmsException e) {

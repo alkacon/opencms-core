@@ -118,6 +118,11 @@
                 <param name="beta">2</param>
             </api-authorization>
         </api-authorizations>
+        <encryption>
+        	<text-encryption class="org.opencms.crypto.CmsAESTextEncryption" name="default">
+        		<param name="secret">the quick brown fox jumps over the lazy dog</param>
+        	</text-encryption> 
+        </encryption>
 		<publishmanager>
 			<history-size>100</history-size>
 			<queue-persistance>false</queue-persistance>

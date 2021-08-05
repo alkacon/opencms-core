@@ -28,6 +28,7 @@
 package org.opencms.main;
 
 import org.opencms.ade.configuration.CmsADEManager;
+import org.opencms.crypto.I_CmsTextEncryption;
 import org.opencms.db.CmsAliasManager;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsExportPoint;
@@ -248,6 +249,16 @@ public final class OpenCms {
     public static List<String> getDefaultFiles() {
 
         return OpenCmsCore.getInstance().getDefaultFiles();
+    }
+
+    /**
+     * Gets the default text encryption.
+     *
+     * @return the default text encryption
+     */
+    public static I_CmsTextEncryption getDefaultTextEncryption() {
+
+        return getTextEncryptions().get("default");
     }
 
     /**
@@ -608,6 +619,16 @@ public final class OpenCms {
     }
 
     /**
+     * Gets the map of text encryption methods, with their names as keys.
+     *
+     * @return the map of text encryption methods
+     */
+    public static Map<String, I_CmsTextEncryption> getTextEncryptions() {
+
+        return OpenCmsCore.getInstance().getTextEncryptions();
+    }
+
+    /**
      * Returns the OpenCms Thread store.<p>
      *
      * @return the OpenCms Thread store
@@ -618,6 +639,7 @@ public final class OpenCms {
     }
 
     public static CmsUserDataRequestManager getUserDataRequestManager() {
+
         return OpenCmsCore.getInstance().getUserDataRequestManager();
     }
 

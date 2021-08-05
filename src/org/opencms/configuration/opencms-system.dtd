@@ -31,6 +31,7 @@
 	content-notification?,
 	authorizationhandler?,
 	api-authorizations?,
+	encryption?,
 	publishmanager?,
 	session-storageprovider?,
 	permissionhandler?,
@@ -108,6 +109,12 @@
 <!ELEMENT resourceinit (resourceinithandler*)>
 <!ELEMENT resourceinithandler (param*)>
 <!ATTLIST resourceinithandler class CDATA #REQUIRED>
+
+<!ELEMENT encryption (text-encryption*)>
+<!ELEMENT text-encryption (param*)>
+<!ATTLIST text-encryption
+	name CDATA #REQUIRED
+	class CDATA #REQUIRED>
 
 <!--
 # Request handlers:

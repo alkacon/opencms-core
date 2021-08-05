@@ -209,6 +209,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
     /** A CmsObject to execute shell commands. */
     protected CmsObject m_cms;
 
+    /** Contains all defined components. */
+    protected CmsIdentifiableObjectContainer<CmsSetupComponent> m_components;
+
     /** A list with the package names of the modules to be installed .*/
     protected List<String> m_installModules;
 
@@ -243,9 +246,6 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /** Signals whether the setup is executed in the auto mode or in the wizard mode. */
     private boolean m_autoMode;
-
-    /** Contains all defined components. */
-    protected CmsIdentifiableObjectContainer<CmsSetupComponent> m_components;
 
     /** The absolute path to the config sub directory of the OpenCms web application. */
     private String m_configRfsPath;
@@ -2016,19 +2016,19 @@ public class CmsSetupBean implements I_CmsShellCommands {
                     || provider.equals(DB2_PROVIDER)
                     || provider.equals(MSSQL_PROVIDER)
                     || provider.equals(POSTGRESQL_PROVIDER)) {
-                    if (!conStr.endsWith("/")) {
-                        conStr += "/";
+                        if (!conStr.endsWith("/")) {
+                            conStr += "/";
+                        }
+                        conStr += database;
+                    } else if (provider.equals(AS400_PROVIDER)) {
+                        if (conStr.endsWith("/")) {
+                            conStr = conStr.substring(0, conStr.length() - 1);
+                        }
+                        if (!conStr.endsWith(";")) {
+                            conStr += ";";
+                        }
+                        conStr += "libraries='" + database + "'";
                     }
-                    conStr += database;
-                } else if (provider.equals(AS400_PROVIDER)) {
-                    if (conStr.endsWith("/")) {
-                        conStr = conStr.substring(0, conStr.length() - 1);
-                    }
-                    if (!conStr.endsWith(";")) {
-                        conStr += ";";
-                    }
-                    conStr += "libraries='" + database + "'";
-                }
                 setDbWorkConStr(conStr);
                 if (provider.equals(POSTGRESQL_PROVIDER)) {
                     setDb(database);
@@ -2321,6 +2321,15 @@ public class CmsSetupBean implements I_CmsShellCommands {
             ret.add(module.getName());
         }
         return ret;
+    }
+
+    /**
+     * Writes configuration changes back to the XML configuration.
+     */
+    public void updateConfiguration() {
+
+        // currently we only need the system configuration
+        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
     }
 
     /**
