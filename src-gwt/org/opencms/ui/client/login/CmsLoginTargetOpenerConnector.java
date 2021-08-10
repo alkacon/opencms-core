@@ -65,35 +65,36 @@ public class CmsLoginTargetOpenerConnector extends AbstractExtensionConnector {
 
             private static final long serialVersionUID = 1L;
 
-            public void openTarget(String target, boolean isPublicPC) {
+            public void openTargetForPrivatePc(String target) {
 
-                if (isPublicPC) {
-                    // in this case we do not want to trigger the browsers password manager, just call the login target
-                    Window.Location.assign(target);
-                } else {
-                    // Post a hidden form with user name and password fields,
-                    // to hopefully trigger the browser's password manager
-                    Document doc = Document.get();
-                    FormElement formEl = (FormElement)doc.getElementById("opencms-login-form");
+                // Post a hidden form with user name and password fields,
+                // to hopefully trigger the browser's password manager
+                Document doc = Document.get();
+                FormElement formEl = (FormElement)doc.getElementById("opencms-login-form");
 
-                    // make sure user name and password are children of the form
-                    Element user = doc.getElementById("hidden-username");
-                    Element password = doc.getElementById("hidden-password");
+                // make sure user name and password are children of the form
+                Element user = doc.getElementById("hidden-username");
+                Element password = doc.getElementById("hidden-password");
 
-                    if ((user != null) && !formEl.isOrHasChild(user)) {
-                        formEl.appendChild(user);
-                    }
-                    if ((password != null) && !formEl.isOrHasChild(password)) {
-                        formEl.appendChild(password);
-                    }
-
-                    InputElement requestedResourceField = doc.createTextInputElement();
-                    requestedResourceField.setName(CmsGwtConstants.PARAM_LOGIN_REDIRECT);
-                    requestedResourceField.setValue(target);
-
-                    formEl.appendChild(requestedResourceField);
-                    formEl.submit();
+                if ((user != null) && !formEl.isOrHasChild(user)) {
+                    formEl.appendChild(user);
                 }
+                if ((password != null) && !formEl.isOrHasChild(password)) {
+                    formEl.appendChild(password);
+                }
+
+                InputElement requestedResourceField = doc.createTextInputElement();
+                requestedResourceField.setName(CmsGwtConstants.PARAM_LOGIN_REDIRECT);
+                requestedResourceField.setValue(target);
+
+                formEl.appendChild(requestedResourceField);
+                formEl.submit();
+            }
+
+            public void openTargetForPublicPc(String target) {
+
+                // in this case we do not want to trigger the browsers password manager, just call the login target
+                Window.Location.assign(target);
             }
         });
     }

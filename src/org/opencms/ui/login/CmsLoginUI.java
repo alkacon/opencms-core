@@ -27,6 +27,7 @@
 
 package org.opencms.ui.login;
 
+import org.opencms.crypto.CmsEncryptionException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexController;
@@ -245,14 +246,21 @@ public class CmsLoginUI extends A_CmsUI {
         }
 
         if (!cms.getRequestContext().getCurrentUser().isGuestUser()) {
-            String target = request.getParameter(CmsGwtConstants.PARAM_LOGIN_REDIRECT);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(target)) {
+            String encryptedTarget = request.getParameter(CmsGwtConstants.PARAM_LOGIN_REDIRECT);
+            String target = null;
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(encryptedTarget)) {
                 target = CmsLoginController.getLoginTarget(cms, getWorkplaceSettings(cms, request.getSession()), null);
+            } else {
+                try {
+                    target = OpenCms.getDefaultTextEncryption().decrypt(encryptedTarget);
+                } catch (CmsEncryptionException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    return null;
+                }
             }
             response.sendRedirect(target);
             return null;
         }
-
         CmsLoginHelper.LoginParameters params = CmsLoginHelper.getLoginParameters(cms, request, false);
         request.getSession().setAttribute(CmsLoginUI.INIT_DATA_SESSION_ATTR, params);
         try {

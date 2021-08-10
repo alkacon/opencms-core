@@ -27,7 +27,12 @@
 
 package org.opencms.ui.login;
 
+import org.opencms.crypto.CmsEncryptionException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.ui.shared.login.I_CmsLoginTargetRpc;
+
+import org.apache.commons.logging.Log;
 
 import com.vaadin.server.AbstractExtension;
 import com.vaadin.ui.UI;
@@ -40,12 +45,16 @@ public class CmsLoginTargetOpener extends AbstractExtension {
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** Log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLoginTargetOpener.class);
+
     /**
      * Creates a new instance.<p>
      *
      * @param ui the UI to extend
      */
     public CmsLoginTargetOpener(UI ui) {
+
         extend(ui);
     }
 
@@ -57,7 +66,19 @@ public class CmsLoginTargetOpener extends AbstractExtension {
      */
     public void openTarget(String target, boolean isPublicPC) {
 
-        getRpcProxy(I_CmsLoginTargetRpc.class).openTarget(target, isPublicPC);
+        if (isPublicPC) {
+            getRpcProxy(I_CmsLoginTargetRpc.class).openTargetForPublicPc(target);
+        } else {
+            String encryptedTarget;
+            // for private PCs, another form submission step is used on the client to trigger the browser password manager.
+            // the form used to a contain a field with the plain redirect URI, but we now encrypt it beforehand.
+            try {
+                encryptedTarget = OpenCms.getDefaultTextEncryption().encrypt(target);
+                getRpcProxy(I_CmsLoginTargetRpc.class).openTargetForPrivatePc(encryptedTarget);
+            } catch (CmsEncryptionException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+                getRpcProxy(I_CmsLoginTargetRpc.class).openTargetForPublicPc(target);
+            }
+        }
     }
-
 }

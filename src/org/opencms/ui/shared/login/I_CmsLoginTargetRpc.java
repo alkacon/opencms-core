@@ -35,11 +35,17 @@ import com.vaadin.shared.communication.ClientRpc;
 public interface I_CmsLoginTargetRpc extends ClientRpc {
 
     /**
-     * Opens a login target.<p>
+     * Opens a login target (private PC case).
+     *
+     * @param encryptedTarget the login target, encrypted with the default text encryption
+     */
+    void openTargetForPrivatePc(String encryptedTarget);
+
+    /**
+     * Opens a login target (public PC case).<p>
      *
      * @param target the login target
-     * @param isPublicPC the public PC flag
      */
-    void openTarget(String target, boolean isPublicPC);
+    void openTargetForPublicPc(String target);
 
 }
