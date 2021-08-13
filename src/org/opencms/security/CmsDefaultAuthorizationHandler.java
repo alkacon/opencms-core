@@ -27,7 +27,9 @@
 
 package org.opencms.security;
 
+import org.opencms.crypto.CmsEncryptionException;
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.A_CmsAuthorizationHandler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsHttpAuthenticationSettings;
@@ -36,11 +38,16 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
+
+import com.google.common.base.Joiner;
 
 /**
  * Defines default authorization methods.<p>
@@ -53,6 +60,10 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
     public static final String AUTHORIZATION_BASIC_PREFIX = "BASIC ";
     /** Authorization header constant. */
     public static final String HEADER_AUTHORIZATION = "Authorization";
+
+    /** Parameter for passing the encrypted version of the requested resource. */
+    public static final String PARAM_ENCRYPTED_REQUESTED_RESOURCE = "encryptedRequestedResource";
+
     /** Credentials separator constant. */
     public static final String SEPARATOR_CREDENTIALS = ":";
 
@@ -70,11 +81,24 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
                 fullURL.append("=");
                 fullURL.append(callbackURL);
             }
+            List<String> paramList;
             if (params != null) {
-                fullURL.append((callbackURL != null) ? "&" : "?");
-                fullURL.append(params);
+                paramList = new ArrayList<>(Arrays.asList(params.split("&")));
+            } else {
+                paramList = new ArrayList<>();
             }
-
+            if (callbackURL != null) {
+                try {
+                    paramList.add(
+                        PARAM_ENCRYPTED_REQUESTED_RESOURCE
+                            + "="
+                            + OpenCms.getDefaultTextEncryption().encrypt(CmsEncoder.decode(callbackURL)));
+                } catch (CmsEncryptionException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            fullURL.append((callbackURL != null) ? "&" : "?");
+            fullURL.append(Joiner.on("&").join(paramList));
             return fullURL.toString();
         }
 

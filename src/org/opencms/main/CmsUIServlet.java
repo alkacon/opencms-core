@@ -27,10 +27,12 @@
 
 package org.opencms.main;
 
+import org.opencms.crypto.CmsEncryptionException;
 import org.opencms.file.CmsObject;
 import org.opencms.gwt.CmsCoreService;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.security.CmsDefaultAuthorizationHandler;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.ui.Messages;
 import org.opencms.ui.login.CmsLoginUI;
@@ -174,9 +176,18 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
                     CmsWorkplaceLoginHandler.LOGIN_FORM);
                 String requestedUri = ((HttpServletRequest)request).getRequestURI();
                 if (!requestedUri.endsWith(OpenCms.getSystemInfo().getWorkplaceContext())) {
-                    link += "?"
-                        + CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE
-                        + URLEncoder.encode(requestedUri, "UTF-8");
+                    try {
+                        link += "?"
+                            + CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE
+                            + "="
+                            + URLEncoder.encode(requestedUri, "UTF-8")
+                            + "&"
+                            + CmsDefaultAuthorizationHandler.PARAM_ENCRYPTED_REQUESTED_RESOURCE
+                            + "="
+                            + OpenCms.getDefaultTextEncryption().encrypt(requestedUri);
+                    } catch (CmsEncryptionException e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                    }
                 }
                 OpenCms.getAuthorizationHandler().requestAuthorization(
                     (HttpServletRequest)request,

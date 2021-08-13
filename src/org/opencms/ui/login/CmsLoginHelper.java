@@ -27,6 +27,7 @@
 
 package org.opencms.ui.login;
 
+import org.opencms.crypto.CmsEncryptionException;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -38,6 +39,7 @@ import org.opencms.jsp.CmsJspLoginBean;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsDefaultAuthorizationHandler;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.apps.CmsAppHierarchyConfiguration;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
@@ -291,25 +293,6 @@ public class CmsLoginHelper extends CmsJspLoginBean {
     private static final Log LOG = CmsLog.getLog(CmsLoginHelper.class);
 
     /**
-     * Returns the cookie with the given name, if not cookie is found a new one is created.<p>
-     *
-     * @param request the current request
-     * @param name the name of the cookie
-     *
-     * @return the cookie
-     */
-    protected static Cookie getCookie(HttpServletRequest request, String name) {
-
-        Cookie[] cookies = request.getCookies();
-        for (int i = 0; (cookies != null) && (i < cookies.length); i++) {
-            if (name.equalsIgnoreCase(cookies[i].getName())) {
-                return cookies[i];
-            }
-        }
-        return new Cookie(name, "");
-    }
-
-    /**
      * Gets the copyright information HTML.<p>
      *
      * @param locale the locale for which to get the copyright info
@@ -372,28 +355,6 @@ public class CmsLoginHelper extends CmsJspLoginBean {
     }
 
     /**
-     * Returns the locale for the given request.<p>
-     *
-     * @param req the request
-     *
-     * @return the locale
-     */
-    private static Locale getLocaleForRequest(HttpServletRequest req) {
-
-        CmsAcceptLanguageHeaderParser parser = new CmsAcceptLanguageHeaderParser(
-            req,
-            OpenCms.getWorkplaceManager().getDefaultLocale());
-        List<Locale> acceptedLocales = parser.getAcceptedLocales();
-        List<Locale> workplaceLocales = OpenCms.getWorkplaceManager().getLocales();
-        Locale locale = OpenCms.getLocaleManager().getFirstMatchingLocale(acceptedLocales, workplaceLocales);
-        if (locale == null) {
-            // no match found - use OpenCms default locale
-            locale = OpenCms.getWorkplaceManager().getDefaultLocale();
-        }
-        return locale;
-    }
-
-    /**
      * Returns the login parameters for the current request.<p>
      *
      * @param cms the cms context
@@ -449,6 +410,22 @@ public class CmsLoginHelper extends CmsJspLoginBean {
         String requestedResource = CmsRequestUtil.getNotEmptyParameter(
             request,
             CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE);
+        boolean validRequestedResource = false;
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(requestedResource)) {
+            String encryptedRequestedResource = request.getParameter(
+                CmsDefaultAuthorizationHandler.PARAM_ENCRYPTED_REQUESTED_RESOURCE);
+            try {
+                String decryptedResource = OpenCms.getDefaultTextEncryption().decrypt(encryptedRequestedResource);
+                if (requestedResource.equals(decryptedResource)) {
+                    validRequestedResource = true;
+                }
+            } catch (CmsEncryptionException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+            if (!validRequestedResource) {
+                requestedResource = null;
+            }
+        }
         Locale locale = getLocaleForRequest(request);
         String resetStr = request.getParameter(PARAM_RESET_PASSWORD);
         boolean reset = (resetStr != null);
@@ -485,55 +462,6 @@ public class CmsLoginHelper extends CmsJspLoginBean {
         }
         return result;
 
-    }
-
-    /**
-     * Returns the pc type of the current request.<p>
-     *
-     * @param request the request
-     *
-     * @return the pc type
-     */
-    private static String getPcType(HttpServletRequest request) {
-
-        String pcType = null;
-        if (!OpenCms.getLoginManager().isEnableSecurity()) {
-            // if security option is disabled, just set PC type to "private" to get common login dialog
-            pcType = PCTYPE_PRIVATE;
-        } else {
-            // security option is enabled, try to get PC type from request parameter
-            pcType = CmsRequestUtil.getNotEmptyParameter(request, PARAM_PCTYPE);
-            if (pcType == null) {
-                Cookie pcTypeCookie = getCookie(request, COOKIE_PCTYPE);
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(pcTypeCookie.getValue())
-                    && !"null".equals(pcTypeCookie.getValue())) {
-                    pcType = pcTypeCookie.getValue();
-                }
-            }
-
-        }
-        return pcType;
-    }
-
-    /**
-     * Returns the pre defined ou fqn.<p>
-     *
-     * @param cms the cms context
-     * @param request the request
-     * @param logout in case of a logout
-     *
-     * @return the ou fqn
-     */
-    private static String getPreDefOuFqn(CmsObject cms, HttpServletRequest request, boolean logout) {
-
-        if (logout && (request.getAttribute(PARAM_PREDEF_OUFQN) == null)) {
-            String oufqn = cms.getRequestContext().getOuFqn();
-            if (!oufqn.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
-                oufqn = CmsOrganizationalUnit.SEPARATOR + oufqn;
-            }
-            request.setAttribute(CmsLoginHelper.PARAM_PREDEF_OUFQN, oufqn);
-        }
-        return (String)request.getAttribute(PARAM_PREDEF_OUFQN);
     }
 
     /**
@@ -610,41 +538,6 @@ public class CmsLoginHelper extends CmsJspLoginBean {
     }
 
     /**
-     * Sets the cookie in the response.<p>
-     *
-     * @param cookie the cookie to set
-     * @param delete flag to determine if the cookir should be deleted
-     * @param request the current request
-     * @param response the current response
-     */
-    protected static void setCookie(
-        Cookie cookie,
-        boolean delete,
-        HttpServletRequest request,
-        HttpServletResponse response) {
-
-        if (request.getAttribute(PARAM_PREDEF_OUFQN) != null) {
-            // prevent the use of cookies if using a direct ou login url
-            return;
-        }
-        int maxAge = 0;
-        if (!delete) {
-            // set the expiration date of the cookie to six months from today
-            GregorianCalendar cal = new GregorianCalendar();
-            cal.add(Calendar.MONTH, 6);
-            maxAge = (int)((cal.getTimeInMillis() - System.currentTimeMillis()) / 1000);
-        }
-        cookie.setMaxAge(maxAge);
-        // set the path
-        cookie.setPath(
-            CmsStringUtil.joinPaths(
-                OpenCms.getStaticExportManager().getVfsPrefix(),
-                CmsWorkplaceLoginHandler.LOGIN_HANDLER));
-        // set the cookie
-        response.addCookie(cookie);
-    }
-
-    /**
      * Sets the cookie data.<p>
      *
      * @param pcType the pctype value
@@ -714,5 +607,130 @@ public class CmsLoginHelper extends CmsJspLoginBean {
             return Messages.get().container(Messages.GUI_LOGIN_NO_PASSWORD_0);
         }
         return null;
+    }
+
+    /**
+     * Returns the cookie with the given name, if not cookie is found a new one is created.<p>
+     *
+     * @param request the current request
+     * @param name the name of the cookie
+     *
+     * @return the cookie
+     */
+    protected static Cookie getCookie(HttpServletRequest request, String name) {
+
+        Cookie[] cookies = request.getCookies();
+        for (int i = 0; (cookies != null) && (i < cookies.length); i++) {
+            if (name.equalsIgnoreCase(cookies[i].getName())) {
+                return cookies[i];
+            }
+        }
+        return new Cookie(name, "");
+    }
+
+    /**
+     * Sets the cookie in the response.<p>
+     *
+     * @param cookie the cookie to set
+     * @param delete flag to determine if the cookir should be deleted
+     * @param request the current request
+     * @param response the current response
+     */
+    protected static void setCookie(
+        Cookie cookie,
+        boolean delete,
+        HttpServletRequest request,
+        HttpServletResponse response) {
+
+        if (request.getAttribute(PARAM_PREDEF_OUFQN) != null) {
+            // prevent the use of cookies if using a direct ou login url
+            return;
+        }
+        int maxAge = 0;
+        if (!delete) {
+            // set the expiration date of the cookie to six months from today
+            GregorianCalendar cal = new GregorianCalendar();
+            cal.add(Calendar.MONTH, 6);
+            maxAge = (int)((cal.getTimeInMillis() - System.currentTimeMillis()) / 1000);
+        }
+        cookie.setMaxAge(maxAge);
+        // set the path
+        cookie.setPath(
+            CmsStringUtil.joinPaths(
+                OpenCms.getStaticExportManager().getVfsPrefix(),
+                CmsWorkplaceLoginHandler.LOGIN_HANDLER));
+        // set the cookie
+        response.addCookie(cookie);
+    }
+
+    /**
+     * Returns the locale for the given request.<p>
+     *
+     * @param req the request
+     *
+     * @return the locale
+     */
+    private static Locale getLocaleForRequest(HttpServletRequest req) {
+
+        CmsAcceptLanguageHeaderParser parser = new CmsAcceptLanguageHeaderParser(
+            req,
+            OpenCms.getWorkplaceManager().getDefaultLocale());
+        List<Locale> acceptedLocales = parser.getAcceptedLocales();
+        List<Locale> workplaceLocales = OpenCms.getWorkplaceManager().getLocales();
+        Locale locale = OpenCms.getLocaleManager().getFirstMatchingLocale(acceptedLocales, workplaceLocales);
+        if (locale == null) {
+            // no match found - use OpenCms default locale
+            locale = OpenCms.getWorkplaceManager().getDefaultLocale();
+        }
+        return locale;
+    }
+
+    /**
+     * Returns the pc type of the current request.<p>
+     *
+     * @param request the request
+     *
+     * @return the pc type
+     */
+    private static String getPcType(HttpServletRequest request) {
+
+        String pcType = null;
+        if (!OpenCms.getLoginManager().isEnableSecurity()) {
+            // if security option is disabled, just set PC type to "private" to get common login dialog
+            pcType = PCTYPE_PRIVATE;
+        } else {
+            // security option is enabled, try to get PC type from request parameter
+            pcType = CmsRequestUtil.getNotEmptyParameter(request, PARAM_PCTYPE);
+            if (pcType == null) {
+                Cookie pcTypeCookie = getCookie(request, COOKIE_PCTYPE);
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(pcTypeCookie.getValue())
+                    && !"null".equals(pcTypeCookie.getValue())) {
+                    pcType = pcTypeCookie.getValue();
+                }
+            }
+
+        }
+        return pcType;
+    }
+
+    /**
+     * Returns the pre defined ou fqn.<p>
+     *
+     * @param cms the cms context
+     * @param request the request
+     * @param logout in case of a logout
+     *
+     * @return the ou fqn
+     */
+    private static String getPreDefOuFqn(CmsObject cms, HttpServletRequest request, boolean logout) {
+
+        if (logout && (request.getAttribute(PARAM_PREDEF_OUFQN) == null)) {
+            String oufqn = cms.getRequestContext().getOuFqn();
+            if (!oufqn.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
+                oufqn = CmsOrganizationalUnit.SEPARATOR + oufqn;
+            }
+            request.setAttribute(CmsLoginHelper.PARAM_PREDEF_OUFQN, oufqn);
+        }
+        return (String)request.getAttribute(PARAM_PREDEF_OUFQN);
     }
 }
