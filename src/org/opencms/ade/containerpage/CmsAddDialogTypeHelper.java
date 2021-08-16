@@ -36,6 +36,7 @@ import org.opencms.ade.galleries.CmsGalleryService;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean.Origin;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
@@ -343,7 +344,7 @@ public class CmsAddDialogTypeHelper {
             CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
             CmsPermissionSet permissions = explorerType.getAccess().getPermissions(
                 cms,
-                cms.readResource(checkViewableReferenceUri));
+                cms.readResource(checkViewableReferenceUri, CmsResourceFilter.IGNORE_EXPIRATION));
             if (permissions.requiresControlPermission() && permissions.requiresViewPermission()) {
                 resourceTypes.add(addType);
                 creatableTypes.add(addType.getTypeName());
