@@ -44,6 +44,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.editors.I_CmsEditor;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -60,6 +61,8 @@ import org.apache.commons.logging.Log;
 import com.vaadin.event.Action;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Page;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinServletRequest;
 
 /**
  * The editor app. Will open the appropriate editor for a resource.<p>
@@ -185,6 +188,12 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
 
         try {
             backlink = URLDecoder.decode(backlink, "UTF-8");
+            if (!CmsRequestUtil.checkBacklink(
+                backlink,
+                ((VaadinServletRequest)VaadinRequest.getCurrent()))) {
+                backlink = CmsVaadinUtils.getWorkplaceLink();
+            }
+
             String current = Page.getCurrent().getLocation().toString();
             if (current.contains("#")) {
                 current = current.substring(0, current.indexOf("#"));

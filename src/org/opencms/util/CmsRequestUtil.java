@@ -36,6 +36,7 @@ import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSiteMatcher;
 
 import java.io.File;
 import java.io.IOException;
@@ -157,6 +158,9 @@ public final class CmsRequestUtil {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsRequestUtil.class);
 
+    /** Flag to enable / disable backlink checks. */
+    public static boolean backlinkCheckEnabled = true;
+
     /**
      * Default constructor (empty), private because this class has only
      * static methods.<p>
@@ -259,6 +263,52 @@ public final class CmsRequestUtil {
             }
         }
         return result.toString();
+    }
+
+    /**
+     * Checks that the given link is a valid backlink for editors.
+     *
+     * <p>This means that the link is either just a path, or starts with a scheme/domain/port that is either registered in the
+     * site configuration, or is the same as that of the current request.
+     *
+     * @param backlink the link to check
+     * @param optionalRequest the current request - may be null if no check against the current request is desired
+     * @return true if the link is a valid backlink
+     */
+    public static boolean checkBacklink(String backlink, HttpServletRequest optionalRequest) {
+
+        if (!backlinkCheckEnabled) {
+            return true;
+        }
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(backlink)) {
+            return true;
+        }
+
+        if (backlink.startsWith("javascript")) {
+            return false;
+        }
+
+        if (backlink.startsWith("/")) {
+            return true;
+        }
+        CmsSiteMatcher matcher = new CmsSiteMatcher(backlink, 0);
+        if (OpenCms.getSiteManager().isMatching(matcher)) {
+            return true;
+        }
+
+        if (optionalRequest != null) {
+            CmsSiteMatcher currentRequestMatcher = new CmsSiteMatcher(
+                optionalRequest.getScheme(),
+                optionalRequest.getServerName(),
+                optionalRequest.getServerPort());
+            if (currentRequestMatcher.equals(matcher)) {
+                return true;
+            }
+        }
+
+        return false;
+
     }
 
     /**

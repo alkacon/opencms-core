@@ -134,12 +134,13 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
         CmsContentDefinition definition = CmsContentService.prefetch(getRequest());
         StringBuffer sb = new StringBuffer();
         String backlink = getRequest().getParameter(CmsEditor.PARAM_BACKLINK);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(backlink)) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(backlink) || !CmsRequestUtil.checkBacklink(backlink, getRequest())) {
             backlink = CmsVaadinUtils.getWorkplaceLink();
         } else {
             backlink = link(backlink);
         }
-        sb.append(wrapScript(I_CmsContentService.PARAM_BACKLINK, "='", backlink, "';\n"));
+        sb.append(
+            wrapScript(I_CmsContentService.PARAM_BACKLINK, "='", CmsStringUtil.escapeJavaScript(backlink) + "';\n"));
         String prefetchedData = exportDictionary(
             I_CmsContentService.DICT_CONTENT_DEFINITION,
             I_CmsContentService.class.getMethod("prefetch"),
