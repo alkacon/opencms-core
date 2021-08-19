@@ -298,23 +298,8 @@ public final class CmsRequestUtil {
         }
 
         if (optionalRequest != null) {
-
-            // allow backlinks to current host/port.
-            //
-            // this is mostly for the case where the default site configuration with localhost is used
-            // and only one site is configured, but the server is accessed using a different hostname/port.
-            //
-            // we try both http and https because the scheme is not part of the host header.
-
-            for (String scheme : new String[] {"http", "https"}) {
-                CmsSiteMatcher currentRequestMatcher = new CmsSiteMatcher(
-                    scheme,
-                    optionalRequest.getServerName(),
-                    optionalRequest.getServerPort());
-
-                if (currentRequestMatcher.equals(matcher)) {
-                    return true;
-                }
+            if (optionalRequest.getServerName().equals(matcher.getServerName())) {
+                return true;
             }
         }
         return false;
