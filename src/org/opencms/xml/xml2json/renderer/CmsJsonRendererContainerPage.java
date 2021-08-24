@@ -25,9 +25,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.xml2json;
+package org.opencms.xml.xml2json.renderer;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsFormatterUtils;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -61,7 +62,7 @@ import org.apache.commons.logging.Log;
 /**
  * Used for rendering container pages as a JSON structure.
  */
-public class CmsContainerPageJsonRenderer {
+public class CmsJsonRendererContainerPage {
 
     /**
      * Tree node wrapper for a container.
@@ -124,6 +125,45 @@ public class CmsContainerPageJsonRenderer {
             return m_container.getName();
         }
 
+        /**
+         * Returns the container type.
+         *
+         * @return the container type
+         */
+        public String getType() {
+
+            return m_container.getType();
+        }
+
+        /**
+         * Returns whether this container is a detail only container.
+         *
+         * @return whether a detail only container or not
+         */
+        public boolean isDetailOnlyContainer() {
+
+            return m_container.isDetailOnly();
+        }
+
+        /**
+         * Returns whether this container is a nested container.
+         *
+         * @return whether a nested container or not
+         */
+        public boolean isNestedContainer() {
+
+            return m_container.isNestedContainer();
+        }
+
+        /**
+         * Returns whether this container is a root container.
+         *
+         * @return whether a root container or not
+         */
+        public boolean isRootContainer() {
+
+            return m_container.isRootContainer();
+        }
     }
 
     /**
@@ -137,14 +177,19 @@ public class CmsContainerPageJsonRenderer {
         /** The element. */
         private CmsContainerElementBean m_element;
 
+        /** The parent container. */
+        private ContainerNode m_parentContainerNode;
+
         /**
          * Creates a new element node.
          *
          * @param elementBean the container element bean
+         * @param parentContainerNode the parent container node
          */
-        public ElementNode(CmsContainerElementBean elementBean) {
+        public ElementNode(CmsContainerElementBean elementBean, ContainerNode parentContainerNode) {
 
             m_element = elementBean;
+            m_parentContainerNode = parentContainerNode;
         }
 
         /**
@@ -177,10 +222,20 @@ public class CmsContainerPageJsonRenderer {
             return m_element;
         }
 
+        /**
+         * Returns the parent container node.
+         *
+         * @return the parent container node
+         */
+        public ContainerNode getParentContainerNode() {
+
+            return m_parentContainerNode;
+        }
+
     }
 
     /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsContainerPageJsonRenderer.class);
+    private static final Log LOG = CmsLog.getLog(CmsJsonRendererContainerPage.class);
 
     /** The CMS context used for VFS operations. */
     private CmsObject m_cms;
@@ -198,7 +253,7 @@ public class CmsContainerPageJsonRenderer {
      * @param page the container page to render
      * @param propertyFilter the property filter
      */
-    public CmsContainerPageJsonRenderer(CmsObject cms, CmsResource page, Predicate<String> propertyFilter) {
+    public CmsJsonRendererContainerPage(CmsObject cms, CmsResource page, Predicate<String> propertyFilter) {
 
         m_cms = cms;
         m_page = page;
@@ -215,10 +270,8 @@ public class CmsContainerPageJsonRenderer {
      * @param page the container page bean
      * @param rootPath the root path of the container page
      * @return the dummy root element node
-     *
-     * @throws CmsException if something goes wrong
      */
-    public ElementNode buildTree(CmsContainerPageBean page, String rootPath) throws CmsException {
+    public ElementNode buildTree(CmsContainerPageBean page, String rootPath) {
 
         Map<String, ElementNode> elementsByInstanceId = new HashMap<>();
         List<ContainerNode> containerNodes = new ArrayList<>();
@@ -236,7 +289,7 @@ public class CmsContainerPageJsonRenderer {
                     LOG.warn(e.getLocalizedMessage(), e);
                     continue;
                 }
-                ElementNode elemNode = new ElementNode(elementBean);
+                ElementNode elemNode = new ElementNode(elementBean, containerNode);
                 if (elementBean.getInstanceId() != null) {
                     elementsByInstanceId.put(elementBean.getInstanceId(), elemNode);
                 }
@@ -246,7 +299,7 @@ public class CmsContainerPageJsonRenderer {
             }
         }
 
-        ElementNode rootElement = new ElementNode(null); // Dummy element containing all the top-level containers
+        ElementNode rootElement = new ElementNode(null, null); // Dummy element containing all the top-level containers
         for (ContainerNode containerNode : containerNodes) {
             CmsContainerBean container = containerNode.getContainer();
             String parentId = container.getParentInstanceId();
@@ -288,6 +341,10 @@ public class CmsContainerPageJsonRenderer {
 
         JSONObject result = new JSONObject();
         result.put("name", containerNode.getName());
+        result.put("type", containerNode.getType());
+        result.put("isDetailOnlyContainer", containerNode.isDetailOnlyContainer());
+        result.put("isNestedContainer", containerNode.isNestedContainer());
+        result.put("isRootContainer", containerNode.isRootContainer());
         JSONArray elemJson = new JSONArray();
         for (ElementNode elemNode : containerNode.getElements()) {
             elemJson.put(elementToJson(elemNode));
@@ -306,40 +363,29 @@ public class CmsContainerPageJsonRenderer {
     JSONObject elementToJson(ElementNode elementNode) throws JSONException {
 
         JSONObject result = new JSONObject();
-        CmsResource resource = null;
         if (elementNode.getElement() != null) {
             result.put("path", elementNode.getElement().getResource().getRootPath());
-
+            // new container page format has property formatterKey
+            String formatterKey = CmsFormatterUtils.getFormatterKey(
+                elementNode.getParentContainerNode().getName(),
+                elementNode.getElement());
+            result.put("formatterKey", formatterKey);
             JSONObject settings = new JSONObject();
             for (Map.Entry<String, String> entry : elementNode.getElement().getSettings().entrySet()) {
+                // formatterSettings and element_instance_id setting have become obsolete in the new container page format
+                if (entry.getKey().startsWith("formatterSettings") || entry.getKey().equals("element_instance_id")) {
+                    continue;
+                }
                 settings.put(entry.getKey(), entry.getValue());
             }
             result.put("settings", settings);
-            resource = elementNode.getElement().getResource();
-        } else {
-            resource = m_page;
         }
-
-        if (resource != null) {
-            try {
-                CmsResourceDataJsonHelper helper = new CmsResourceDataJsonHelper(m_cms, resource, m_propFilter);
-                result.put("attributes", helper.attributes());
-                helper.addProperties(result);
-                helper.addPathAndLink(result);
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-
-            }
-        }
-
-        JSONObject containers = new JSONObject();
-        for (Map.Entry<String, ContainerNode> entry : elementNode.getContainers().entrySet()) {
-            containers.put(entry.getKey(), containerToJson(entry.getValue()));
+        JSONArray containers = new JSONArray();
+        for (ContainerNode containerNode : elementNode.getContainers().values()) {
+            containers.put(containerToJson(containerNode));
         }
         result.put("containers", containers);
-
         return result;
-
     }
 
     /**

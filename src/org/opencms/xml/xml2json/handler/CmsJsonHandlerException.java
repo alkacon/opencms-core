@@ -25,37 +25,45 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.xml2json.document;
+package org.opencms.xml.xml2json.handler;
 
-import org.opencms.json.JSONObject;
-import org.opencms.xml.xml2json.CmsJsonRequest;
-import org.opencms.xml.xml2json.handler.CmsJsonHandlerContext;
+public class CmsJsonHandlerException extends Exception {
 
-/**
- * Abstract class representing a JSON document.
- */
-public abstract class A_CmsJsonDocument {
+    /** The serial version id. */
+    private static final long serialVersionUID = 5155325235329055833L;
 
-    /** The related contents property */
-    protected static final String FIELD_LINKED_CONTENTS = "linkedContents";
-
-    /** The handler context. */
-    protected CmsJsonHandlerContext m_context;
-
-    /** The JSON document. */
-    protected JSONObject m_json = new JSONObject(true);
-
-    /** The JSON request. */
-    protected CmsJsonRequest m_jsonRequest;
+    /** The cause. */
+    private Throwable m_cause;
 
     /**
-     * Creates a new JSON document.<p>
+     * Constructs a JSONException with an explanatory message.<p>
      *
-     * @param jsonRequest the JSON request
+     * @param message details about the reason for the exception
      */
-    protected A_CmsJsonDocument(CmsJsonRequest jsonRequest) {
+    public CmsJsonHandlerException(String message) {
 
-        m_jsonRequest = jsonRequest;
-        m_context = jsonRequest.getContext();
+        super(message);
+    }
+
+    /**
+     * Constructs a JSONException with an explanatory message.<p>
+     *
+     * @param t the throwable that was thrown
+     */
+    public CmsJsonHandlerException(Throwable t) {
+
+        super(t.getMessage());
+        m_cause = t;
+    }
+
+    /**
+     * Returns the cause of the exception.<p>
+     *
+     *  @return the cause
+     */
+    @Override
+    public Throwable getCause() {
+
+        return m_cause;
     }
 }

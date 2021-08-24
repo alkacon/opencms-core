@@ -50,7 +50,7 @@ import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.page.CmsXmlPageFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
-import org.opencms.xml.xml2json.CmsDefaultXmlContentJsonRenderer;
+import org.opencms.xml.xml2json.renderer.CmsJsonRendererXmlContent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -854,9 +854,9 @@ public class CmsJspContentAccessBean {
                     locale = CmsLocaleManager.getLocale("" + key);
                 }
                 if (content.hasLocale(locale)) {
-                    CmsDefaultXmlContentJsonRenderer renderer;
+                    CmsJsonRendererXmlContent renderer;
                     try {
-                        renderer = new CmsDefaultXmlContentJsonRenderer(m_cms);
+                        renderer = new CmsJsonRendererXmlContent(m_cms);
                         Object jsonObj = renderer.render(content, locale);
                         return new CmsJspJsonWrapper(jsonObj);
                     } catch (Exception e) {

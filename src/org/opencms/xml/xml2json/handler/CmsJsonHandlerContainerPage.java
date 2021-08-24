@@ -25,11 +25,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.xml2json;
+package org.opencms.xml.xml2json.handler;
 
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
+import org.opencms.xml.xml2json.CmsJsonRequest;
+import org.opencms.xml.xml2json.CmsJsonResult;
+import org.opencms.xml.xml2json.document.CmsJsonDocumentContainerPage;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -38,13 +41,13 @@ import org.apache.commons.logging.Log;
 /**
  * JSON handler for rendering a container page as JSON.
  */
-public class CmsContainerPageJsonHandler implements I_CmsJsonHandler {
+public class CmsJsonHandlerContainerPage implements I_CmsJsonHandler {
 
     /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsContainerPageJsonHandler.class);
+    private static final Log LOG = CmsLog.getLog(CmsJsonHandlerContainerPage.class);
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#getOrder()
+     * @see org.opencms.xml.xml2json.handler.I_CmsJsonHandler#getOrder()
      */
     public double getOrder() {
 
@@ -52,7 +55,7 @@ public class CmsContainerPageJsonHandler implements I_CmsJsonHandler {
     }
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#matches(org.opencms.xml.xml2json.CmsJsonHandlerContext)
+     * @see org.opencms.xml.xml2json.handler.I_CmsJsonHandler#matches(org.opencms.xml.xml2json.handler.CmsJsonHandlerContext)
      */
     public boolean matches(CmsJsonHandlerContext context) {
 
@@ -60,16 +63,20 @@ public class CmsContainerPageJsonHandler implements I_CmsJsonHandler {
     }
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#renderJson(org.opencms.xml.xml2json.CmsJsonHandlerContext)
+     * @see org.opencms.xml.xml2json.handler.I_CmsJsonHandler#renderJson(org.opencms.xml.xml2json.handler.CmsJsonHandlerContext)
      */
     public CmsJsonResult renderJson(CmsJsonHandlerContext context) {
 
         try {
-            CmsContainerPageJsonRenderer renderer = new CmsContainerPageJsonRenderer(
-                context.getCms(),
-                context.getResource(),
-                context.getAccessPolicy()::checkPropertyAccess);
-            return new CmsJsonResult(renderer.renderJson(), 200);
+            CmsJsonRequest jsonRequest = new CmsJsonRequest(context, this);
+            jsonRequest.validate();
+            if (jsonRequest.hasErrors()) {
+                return new CmsJsonResult(jsonRequest.getErrorsAsJson(), HttpServletResponse.SC_BAD_REQUEST);
+            }
+            CmsJsonDocumentContainerPage jsonDocument = new CmsJsonDocumentContainerPage(
+                jsonRequest,
+                context.getContent());
+            return new CmsJsonResult(jsonDocument.getJson(), HttpServletResponse.SC_OK);
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
             return new CmsJsonResult(

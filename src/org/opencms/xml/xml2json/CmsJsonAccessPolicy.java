@@ -56,6 +56,9 @@ public class CmsJsonAccessPolicy {
     /** Default property filter: Property name must not contain secret, api, password or key. */
     public static final Pattern DEFAULT_PROP_FILTER = Pattern.compile("(?i)^(?!.*(?:secret|api|password|key)).*$");
 
+    /** Default CORS filter. */
+    public static final String DEFAULT_CORS_FILTER = "*";
+
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJsonAccessPolicy.class);
 
@@ -66,13 +69,13 @@ public class CmsJsonAccessPolicy {
     private List<Pattern> m_exclude;
 
     /** HTTP response header Access-Control-Allow-Origin */
-    private String m_corsAllowOrigin;
+    private String m_corsAllowOrigin = DEFAULT_CORS_FILTER;
 
     /** HTTP response header Access-Control-Allow-Methods */
-    private String m_corsAllowMethods;
+    private String m_corsAllowMethods = DEFAULT_CORS_FILTER;
 
     /** HTTP response header Access-Control-Allow-Headers */
-    private String m_corsAllowHeaders;
+    private String m_corsAllowHeaders = DEFAULT_CORS_FILTER;
 
     /** Include path patterns. */
     private List<Pattern> m_include;
@@ -148,7 +151,7 @@ public class CmsJsonAccessPolicy {
      * @return the access policy
      *
      * @throws DocumentException if parsing fails
-
+    
      */
     public static CmsJsonAccessPolicy parse(InputStream stream) throws DocumentException {
 
@@ -170,9 +173,9 @@ public class CmsJsonAccessPolicy {
         List<String> excludes = root.elements("exclude").stream().map(elem -> elem.getTextTrim()).collect(
             Collectors.toList());
         Element elementCors = root.element("cors");
-        String corsAllowOrigin = null;
-        String corsAllowMethods = null;
-        String corsAllowHeaders = null;
+        String corsAllowOrigin = DEFAULT_CORS_FILTER;
+        String corsAllowMethods = DEFAULT_CORS_FILTER;
+        String corsAllowHeaders = DEFAULT_CORS_FILTER;
         if (elementCors != null) {
             corsAllowOrigin = elementCors.elementTextTrim("allow-origin");
             corsAllowMethods = elementCors.elementTextTrim("allow-methods");

@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.xml2json;
+package org.opencms.xml.xml2json.renderer;
 
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
@@ -38,8 +38,12 @@ import org.opencms.relations.CmsLink;
 import org.opencms.relations.I_CmsCustomLinkRenderer;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.types.I_CmsXmlContentValue;
+import org.opencms.xml.xml2json.CmsJsonResourceHandler;
+import org.opencms.xml.xml2json.CmsXmlContentTree;
 import org.opencms.xml.xml2json.CmsXmlContentTree.Field;
 import org.opencms.xml.xml2json.CmsXmlContentTree.Node;
+import org.opencms.xml.xml2json.I_CmsJsonFormattableValue;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerContext;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
@@ -51,7 +55,7 @@ import java.util.Locale;
  * <p>This specific renderer class does not need to be initialized with a CmsJsonHandlerContext, you can
  * just initialize it with a CmsObject.
  */
-public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRenderer {
+public class CmsJsonRendererXmlContent implements I_CmsJsonRendererXmlContent {
 
     /** The CMS context. */
     private CmsObject m_cms;
@@ -64,7 +68,7 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
      *
      * If this constructor is used, you still have to call one of the initialize() methods before rendering XML content to JSON.
      */
-    public CmsDefaultXmlContentJsonRenderer() {
+    public CmsJsonRendererXmlContent() {
 
         // do nothing
     }
@@ -75,7 +79,7 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
      * @param cms the CMS context to use
      * @throws CmsException if something goes wrong
      */
-    public CmsDefaultXmlContentJsonRenderer(CmsObject cms)
+    public CmsJsonRendererXmlContent(CmsObject cms)
     throws CmsException {
 
         initialize(cms);
@@ -91,7 +95,7 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
      * @return the link-and-path object
      * @throws JSONException if something goes wrong
      */
-    public static JSONObject linkAndPath(String link, String path) throws JSONException {
+    public static JSONObject linkAndPath(String link, String path, CmsObject cms) throws JSONException {
 
         JSONObject result = new JSONObject();
         result.put("link", link);
@@ -100,6 +104,7 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
             if (paramPos != -1) {
                 path = path.substring(0, paramPos);
             }
+            path = OpenCms.getLinkManager().getRootPath(cms, path);
             result.put("path", path);
         }
         return result;
@@ -113,7 +118,7 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
      * @return the result JSON
      * @throws JSONException if something goes wrong
      */
-    public static JSONObject renderAllLocales(CmsXmlContent content, I_CmsXmlContentJsonRenderer renderer)
+    public static JSONObject renderAllLocales(CmsXmlContent content, I_CmsJsonRendererXmlContent renderer)
     throws JSONException {
 
         List<Locale> locales = content.getLocales();
@@ -150,7 +155,7 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
     }
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsXmlContentJsonRenderer#initialize(org.opencms.xml.xml2json.CmsJsonHandlerContext)
+     * @see org.opencms.xml.xml2json.renderer.I_CmsJsonRendererXmlContent#initialize(org.opencms.xml.xml2json.handler.CmsJsonHandlerContext)
      */
     public void initialize(CmsJsonHandlerContext context) throws CmsException {
 
@@ -182,7 +187,7 @@ public class CmsDefaultXmlContentJsonRenderer implements I_CmsXmlContentJsonRend
     }
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsXmlContentJsonRenderer#render(org.opencms.xml.content.CmsXmlContent, java.util.Locale)
+     * @see org.opencms.xml.xml2json.renderer.I_CmsJsonRendererXmlContent#render(org.opencms.xml.content.CmsXmlContent, java.util.Locale)
      */
     @Override
     public Object render(CmsXmlContent content, Locale locale) throws JSONException {

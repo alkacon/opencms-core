@@ -32,10 +32,10 @@ import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
-import org.opencms.xml.xml2json.CmsJsonHandlerException;
 import org.opencms.xml.xml2json.CmsJsonRequest;
 import org.opencms.xml.xml2json.CmsResourceDataJsonHelper;
-import org.opencms.xml.xml2json.CmsXmlContentJsonHandler.PathNotFoundException;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerException;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerXmlContent.PathNotFoundException;
 
 /**
  * Class representing a JSON document for a CMS resource.<p>
@@ -54,7 +54,7 @@ public class CmsJsonDocumentResource extends A_CmsJsonDocument implements I_CmsJ
      * @param jsonRequest the JSON request
      * @param resource the resource
      */
-    protected CmsJsonDocumentResource(CmsJsonRequest jsonRequest, CmsResource resource) {
+    public CmsJsonDocumentResource(CmsJsonRequest jsonRequest, CmsResource resource) {
 
         super(jsonRequest);
         m_resource = resource;
@@ -67,14 +67,7 @@ public class CmsJsonDocumentResource extends A_CmsJsonDocument implements I_CmsJ
     public Object getJson()
     throws JSONException, CmsException, CmsJsonHandlerException, PathNotFoundException, Exception {
 
-        boolean showWrapper = true;
-        Boolean paramWrapper = m_jsonRequest.getParamWrapper();
-        if ((paramWrapper != null) && (paramWrapper.booleanValue() == false)) {
-            showWrapper = false;
-        }
-        if (showWrapper) {
-            insertJsonResource();
-        }
+        insertJsonResource();
         return m_json;
     }
 
@@ -125,7 +118,7 @@ public class CmsJsonDocumentResource extends A_CmsJsonDocument implements I_CmsJ
         for (String key : m_context.getParameters().keySet()) {
             json.put(key, m_context.getParameters().get(key));
         }
-        m_json.put("params", json);
+        m_json.put("requestParams", json);
     }
 
     /**

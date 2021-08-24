@@ -39,11 +39,11 @@ import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
-import org.opencms.xml.xml2json.CmsDefaultXmlContentJsonRenderer;
 import org.opencms.xml.xml2json.CmsJsonAccessPolicy;
-import org.opencms.xml.xml2json.CmsJsonHandlerContext;
 import org.opencms.xml.xml2json.CmsJsonResult;
-import org.opencms.xml.xml2json.CmsXmlContentJsonHandler;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerContext;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerXmlContent;
+import org.opencms.xml.xml2json.renderer.CmsJsonRendererXmlContent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -176,7 +176,7 @@ public class TestXml2Json extends OpenCmsTestCase {
             new ArrayList<>());
         String expected = new String(data.get("output").trim());
 
-        CmsXmlContentJsonHandler handler = new CmsXmlContentJsonHandler();
+        CmsJsonHandlerXmlContent handler = new CmsJsonHandlerXmlContent();
         CmsObject rootCms = OpenCms.initCmsObject(cms);
         Map<String, String> params = new HashMap<>();
         params.put("locale", "en");
@@ -295,7 +295,7 @@ public class TestXml2Json extends OpenCmsTestCase {
         String testFile = folder + "/test.xml";
         cms.createResource(testFile, contentType, data.get("input").trim().getBytes("UTF-8"), new ArrayList<>());
         String expected = new String(data.get("output").trim());
-        CmsDefaultXmlContentJsonRenderer renderer = new CmsDefaultXmlContentJsonRenderer(cms);
+        CmsJsonRendererXmlContent renderer = new CmsJsonRendererXmlContent(cms);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(testFile));
         Object jsonObj = renderer.render(content, Locale.ENGLISH);
 

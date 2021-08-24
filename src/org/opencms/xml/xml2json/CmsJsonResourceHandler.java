@@ -44,6 +44,9 @@ import org.opencms.relations.I_CmsCustomLinkRenderer;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.xml2json.handler.CmsExceptionSafeHandlerWrapper;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerContext;
+import org.opencms.xml.xml2json.handler.I_CmsJsonHandler;
 
 import java.io.IOException;
 import java.io.PrintWriter;

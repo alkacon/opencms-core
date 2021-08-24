@@ -41,8 +41,8 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.page.CmsXmlPage;
-import org.opencms.xml.xml2json.CmsDefaultXmlContentJsonRenderer;
 import org.opencms.xml.xml2json.I_CmsJsonFormattableValue;
+import org.opencms.xml.xml2json.renderer.CmsJsonRendererXmlContent;
 
 import java.util.Locale;
 
@@ -326,7 +326,7 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue implements I_CmsJso
                 // external link
                 path = null;
             }
-            return CmsDefaultXmlContentJsonRenderer.linkAndPath(link, path);
+            return CmsJsonRendererXmlContent.linkAndPath(link, path, cms);
         } catch (JSONException e) {
             return null;
         } catch (CmsException e) {

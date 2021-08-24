@@ -25,11 +25,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.xml2json;
+package org.opencms.xml.xml2json.handler;
 
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.xml.xml2json.CmsJsonResult;
 
 import java.util.concurrent.ExecutionException;
 
@@ -44,10 +45,10 @@ import com.google.common.cache.LoadingCache;
 /**
  * Wrapper for JSON handlers that caches online project requests.
  */
-public class CmsOnlineCachingHandlerWrapper implements I_CmsJsonHandler {
+public class CmsJsonHandlerOnlineCachingWrapper implements I_CmsJsonHandler {
 
     /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsOnlineCachingHandlerWrapper.class);
+    private static final Log LOG = CmsLog.getLog(CmsJsonHandlerOnlineCachingWrapper.class);
 
     /** The wrapped handler. */
     private I_CmsJsonHandler m_handler;
@@ -61,7 +62,7 @@ public class CmsOnlineCachingHandlerWrapper implements I_CmsJsonHandler {
      * @param handler the handler to wrap
      * @param spec the CacheBuilder specification to use for the cache
      */
-    public CmsOnlineCachingHandlerWrapper(I_CmsJsonHandler handler, String spec) {
+    public CmsJsonHandlerOnlineCachingWrapper(I_CmsJsonHandler handler, String spec) {
 
         m_handler = handler;
         CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.from(spec);
@@ -83,7 +84,7 @@ public class CmsOnlineCachingHandlerWrapper implements I_CmsJsonHandler {
     }
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#getOrder()
+     * @see org.opencms.xml.xml2json.handler.I_CmsJsonHandler#getOrder()
      */
     public double getOrder() {
 
@@ -91,7 +92,7 @@ public class CmsOnlineCachingHandlerWrapper implements I_CmsJsonHandler {
     }
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#matches(org.opencms.xml.xml2json.CmsJsonHandlerContext)
+     * @see org.opencms.xml.xml2json.handler.I_CmsJsonHandler#matches(org.opencms.xml.xml2json.handler.CmsJsonHandlerContext)
      */
     public boolean matches(CmsJsonHandlerContext context) {
 
@@ -99,7 +100,7 @@ public class CmsOnlineCachingHandlerWrapper implements I_CmsJsonHandler {
     }
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#renderJson(org.opencms.xml.xml2json.CmsJsonHandlerContext)
+     * @see org.opencms.xml.xml2json.handler.I_CmsJsonHandler#renderJson(org.opencms.xml.xml2json.handler.CmsJsonHandlerContext)
      */
     public CmsJsonResult renderJson(CmsJsonHandlerContext context) {
 

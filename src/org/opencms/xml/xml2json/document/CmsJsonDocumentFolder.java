@@ -37,9 +37,9 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
-import org.opencms.xml.xml2json.CmsJsonHandlerException;
 import org.opencms.xml.xml2json.CmsJsonRequest;
-import org.opencms.xml.xml2json.CmsXmlContentJsonHandler.PathNotFoundException;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerException;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerXmlContent.PathNotFoundException;
 
 import java.util.List;
 
@@ -113,14 +113,19 @@ public class CmsJsonDocumentFolder extends A_CmsJsonDocument implements I_CmsJso
             isContent = CmsResourceTypeXmlContent.isXmlContent(resource);
         }
         Boolean paramContent = m_jsonRequest.getParamContent();
-        if (isContent && (paramContent != null)) {
+        Boolean paramWrapper = m_jsonRequest.getParamWrapper(true);
+        if (isContent && paramContent.booleanValue()) {
             CmsFile file = m_context.getCms().readFile(resource);
             CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(m_context.getCms(), file);
-            CmsJsonDocumentXmlContent jsonDocumentXmlContent = new CmsJsonDocumentXmlContent(m_jsonRequest, xmlContent);
+            CmsJsonDocumentEmbeddedXmlContent jsonDocumentXmlContent = new CmsJsonDocumentEmbeddedXmlContent(
+                m_jsonRequest,
+                xmlContent);
             return (JSONObject)jsonDocumentXmlContent.getJson();
-        } else {
+        } else if (paramWrapper.booleanValue()) {
             CmsJsonDocumentResource jsonDocumentResource = new CmsJsonDocumentResource(m_jsonRequest, resource);
             return (JSONObject)jsonDocumentResource.getJson();
+        } else {
+            return new JSONObject();
         }
     }
 

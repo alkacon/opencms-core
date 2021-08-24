@@ -28,8 +28,8 @@
 package org.opencms.xml2json;
 
 import org.opencms.json.JSONException;
-import org.opencms.xml.xml2json.CmsDefaultXmlContentJsonRenderer;
 import org.opencms.xml.xml2json.CmsXmlContentTree.Field;
+import org.opencms.xml.xml2json.renderer.CmsJsonRendererXmlContent;
 
 import java.util.AbstractMap.SimpleEntry;
 
@@ -38,10 +38,10 @@ import java.util.AbstractMap.SimpleEntry;
  *
  * Throws out everything except 'Text' field.
  */
-public class CmsDummyContentRenderer extends CmsDefaultXmlContentJsonRenderer {
+public class CmsDummyContentRenderer extends CmsJsonRendererXmlContent {
 
     /**
-     * @see org.opencms.xml.xml2json.CmsDefaultXmlContentJsonRenderer#renderField(org.opencms.xml.xml2json.CmsXmlContentTree.Field)
+     * @see org.opencms.xml.xml2json.renderer.CmsJsonRendererXmlContent#renderField(org.opencms.xml.xml2json.CmsXmlContentTree.Field)
      */
     @Override
     protected SimpleEntry<String, Object> renderField(Field field) throws JSONException {

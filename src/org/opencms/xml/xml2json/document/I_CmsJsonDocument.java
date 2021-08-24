@@ -29,8 +29,8 @@ package org.opencms.xml.xml2json.document;
 
 import org.opencms.json.JSONException;
 import org.opencms.main.CmsException;
-import org.opencms.xml.xml2json.CmsJsonHandlerException;
-import org.opencms.xml.xml2json.CmsXmlContentJsonHandler.PathNotFoundException;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerException;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerXmlContent.PathNotFoundException;
 
 /**
  * Interface representing a JSON document.<p>

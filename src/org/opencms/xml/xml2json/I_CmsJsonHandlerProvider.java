@@ -27,6 +27,8 @@
 
 package org.opencms.xml.xml2json;
 
+import org.opencms.xml.xml2json.handler.I_CmsJsonHandler;
+
 import java.util.List;
 
 /**

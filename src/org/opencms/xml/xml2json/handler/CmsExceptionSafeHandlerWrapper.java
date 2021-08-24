@@ -25,9 +25,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.xml2json;
+package org.opencms.xml.xml2json.handler;
 
 import org.opencms.main.CmsLog;
+import org.opencms.xml.xml2json.CmsJsonResult;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -57,7 +58,7 @@ public class CmsExceptionSafeHandlerWrapper implements I_CmsJsonHandler {
     }
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#getOrder()
+     * @see org.opencms.xml.xml2json.handler.I_CmsJsonHandler#getOrder()
      */
     public double getOrder() {
 
@@ -65,7 +66,7 @@ public class CmsExceptionSafeHandlerWrapper implements I_CmsJsonHandler {
     }
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#matches(org.opencms.xml.xml2json.CmsJsonHandlerContext)
+     * @see org.opencms.xml.xml2json.handler.I_CmsJsonHandler#matches(org.opencms.xml.xml2json.handler.CmsJsonHandlerContext)
      */
     public boolean matches(CmsJsonHandlerContext context) {
 
@@ -78,7 +79,7 @@ public class CmsExceptionSafeHandlerWrapper implements I_CmsJsonHandler {
     }
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#renderJson(org.opencms.xml.xml2json.CmsJsonHandlerContext)
+     * @see org.opencms.xml.xml2json.handler.I_CmsJsonHandler#renderJson(org.opencms.xml.xml2json.handler.CmsJsonHandlerContext)
      */
     public CmsJsonResult renderJson(CmsJsonHandlerContext context) {
 

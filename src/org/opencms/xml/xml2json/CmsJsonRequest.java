@@ -30,6 +30,13 @@ package org.opencms.xml.xml2json;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.jsp.search.config.parser.CmsSimpleSearchConfigurationParser.SortOption;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerContainerPage;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerContext;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerFolder;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerList;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerResource;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerXmlContent;
+import org.opencms.xml.xml2json.handler.I_CmsJsonHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -117,14 +124,40 @@ public class CmsJsonRequest {
     }
 
     /**
+     * Returns the boolean parameter value for a given string.<p>
+     *
+     * @param bool the string
+     * @return the boolean
+     */
+    public Boolean getParamBoolean(String bool) {
+
+        if ((bool == null) || bool.equals("false")) {
+            return Boolean.valueOf(false);
+        } else {
+            return Boolean.valueOf(true);
+        }
+    }
+
+    /**
      * Returns the content parameter as boolean.<p>
      *
      * @return the content parameter as boolean
      */
     public Boolean getParamContent() {
 
-        String paramContent = m_context.getParameters().get("content");
-        return paramContent != null ? Boolean.valueOf(paramContent) : null;
+        String paramContent = m_context.getParameters().get(PARAM_CONTENT);
+        return getParamBoolean(paramContent);
+    }
+
+    /**
+     * Returns the fallback locale parameter as boolean.<p>
+     *
+     * @return the fallback locale parameter as boolean
+     */
+    public Boolean getParamFallbackLocale() {
+
+        String paramFallbackLocale = m_context.getParameters().get(PARAM_FALLBACK_LOCALE);
+        return getParamBoolean(paramFallbackLocale);
     }
 
     /**
@@ -134,7 +167,7 @@ public class CmsJsonRequest {
      */
     public Integer getParamLevels() {
 
-        String paramLevels = m_context.getParameters().get("levels");
+        String paramLevels = m_context.getParameters().get(PARAM_LEVELS);
         return paramLevels != null ? Integer.valueOf(paramLevels) : null;
     }
 
@@ -151,13 +184,35 @@ public class CmsJsonRequest {
     }
 
     /**
+     * Returns the locale parameter as string.<p>
+     *
+     * @return the levels parameter as integer
+     */
+    public String getParamLocale() {
+
+        String paramLocale = m_context.getParameters().get(PARAM_LOCALE);
+        return paramLocale;
+    }
+
+    /**
+     * Returns the path parameter as string.<p>
+     *
+     * @return the path parameter as string
+     */
+    public String getParamPath() {
+
+        String paramPath = m_context.getParameters().get(PARAM_PATH);
+        return paramPath;
+    }
+
+    /**
      * Returns the rows parameter as integer.<p>
      *
      * @return the rows parameter as integer
      */
     public Integer getParamRows() {
 
-        String paramRows = m_context.getParameters().get("rows");
+        String paramRows = m_context.getParameters().get(PARAM_ROWS);
         return paramRows != null ? Integer.valueOf(paramRows) : null;
     }
 
@@ -180,7 +235,7 @@ public class CmsJsonRequest {
      */
     public String getParamSort() {
 
-        return m_context.getParameters().get("sort");
+        return m_context.getParameters().get(PARAM_SORT);
     }
 
     /**
@@ -202,7 +257,7 @@ public class CmsJsonRequest {
      */
     public Integer getParamStart() {
 
-        String paramStart = m_context.getParameters().get("start");
+        String paramStart = m_context.getParameters().get(PARAM_START);
         return paramStart != null ? Integer.valueOf(paramStart) : null;
     }
 
@@ -225,8 +280,8 @@ public class CmsJsonRequest {
      */
     public Boolean getParamWrapper() {
 
-        String paramWrapper = m_context.getParameters().get("wrapper");
-        return paramWrapper != null ? Boolean.valueOf(paramWrapper) : null;
+        String paramWrapper = m_context.getParameters().get(PARAM_WRAPPER);
+        return getParamBoolean(paramWrapper);
     }
 
     /**
@@ -237,8 +292,11 @@ public class CmsJsonRequest {
      */
     public Boolean getParamWrapper(boolean defaultWrapper) {
 
-        Boolean wrapper = getParamWrapper();
-        return wrapper != null ? wrapper : Boolean.valueOf(defaultWrapper);
+        String paramRaw = m_context.getParameters().get(PARAM_WRAPPER);
+        if (paramRaw == null) {
+            return Boolean.valueOf(defaultWrapper);
+        }
+        return getParamWrapper();
     }
 
     /**
@@ -388,7 +446,7 @@ public class CmsJsonRequest {
         for (String paramName : m_context.getParameters().keySet()) {
             if (!paramList.contains(paramName)) {
                 errors.add(
-                    "<"
+                    "Parameter <"
                         + paramName
                         + "> is not supported for this request type. One of <"
                         + String.join(",", supported)
@@ -402,13 +460,26 @@ public class CmsJsonRequest {
      */
     private void validateRequest() {
 
-        if (m_handler instanceof CmsFolderJsonHandler) {
+        if (m_handler instanceof CmsJsonHandlerFolder) {
             validateRequestFolder();
-        } else if (m_handler instanceof CmsListConfigJsonHandler) {
+        } else if (m_handler instanceof CmsJsonHandlerContainerPage) {
+            validateRequestContainerPage();
+        } else if (m_handler instanceof CmsJsonHandlerList) {
             validateRequestList();
-        } else if (m_handler instanceof CmsXmlContentJsonHandler) {
+        } else if (m_handler instanceof CmsJsonHandlerXmlContent) {
             validateRequestXmlContent();
+        } else if (m_handler instanceof CmsJsonHandlerResource) {
+            validateRequestResource();
         }
+    }
+
+    /**
+     * Validates the container page request type.<p>
+     */
+    private void validateRequestContainerPage() {
+
+        String[] supported = {PARAM_CONTENT, PARAM_WRAPPER, PARAM_LOCALE, PARAM_FALLBACK_LOCALE};
+        validateParamsSupported(supported);
     }
 
     /**
@@ -416,7 +487,7 @@ public class CmsJsonRequest {
      */
     private void validateRequestFolder() {
 
-        String[] supported = {"levels", "content", "wrapper", "locale", "fallbackLocale"};
+        String[] supported = {PARAM_LEVELS, PARAM_CONTENT, PARAM_WRAPPER, PARAM_LOCALE, PARAM_FALLBACK_LOCALE};
         validateParamsSupported(supported);
     }
 
@@ -425,7 +496,23 @@ public class CmsJsonRequest {
      */
     private void validateRequestList() {
 
-        String[] supported = {"content", "wrapper", "locale", "fallbackLocale", "start", "rows", "sort"};
+        String[] supported = {
+            PARAM_CONTENT,
+            PARAM_WRAPPER,
+            PARAM_LOCALE,
+            PARAM_FALLBACK_LOCALE,
+            PARAM_START,
+            PARAM_ROWS,
+            PARAM_SORT};
+        validateParamsSupported(supported);
+    }
+
+    /**
+     * Validates the resource request type.<p>
+     */
+    private void validateRequestResource() {
+
+        String[] supported = {};
         validateParamsSupported(supported);
     }
 
@@ -434,7 +521,7 @@ public class CmsJsonRequest {
      */
     private void validateRequestXmlContent() {
 
-        String[] supported = {"content", "wrapper", "locale", "fallbackLocale", "path"};
+        String[] supported = {PARAM_CONTENT, PARAM_WRAPPER, PARAM_LOCALE, PARAM_FALLBACK_LOCALE, PARAM_PATH};
         validateParamsSupported(supported);
     }
 }

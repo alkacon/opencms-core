@@ -25,11 +25,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.xml2json;
+package org.opencms.xml.xml2json.handler;
 
 import org.opencms.json.JSONException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.xml.xml2json.CmsJsonRequest;
+import org.opencms.xml.xml2json.CmsJsonResult;
 import org.opencms.xml.xml2json.document.CmsJsonDocumentList;
 
 import javax.servlet.http.HttpServletResponse;
@@ -39,16 +41,16 @@ import org.apache.commons.logging.Log;
 /**
  * JSON handler for rendering a list.
  */
-public class CmsListConfigJsonHandler extends CmsXmlContentJsonHandler {
+public class CmsJsonHandlerList extends CmsJsonHandlerXmlContent {
 
     /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsListConfigJsonHandler.class);
+    private static final Log LOG = CmsLog.getLog(CmsJsonHandlerList.class);
 
     /** The list configuration type name. */
     private final static String TYPE_LIST_CONFIG = "listconfig";
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#getOrder()
+     * @see org.opencms.xml.xml2json.handler.I_CmsJsonHandler#getOrder()
      */
     @Override
     public double getOrder() {
@@ -57,7 +59,7 @@ public class CmsListConfigJsonHandler extends CmsXmlContentJsonHandler {
     }
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#matches(org.opencms.xml.xml2json.CmsJsonHandlerContext)
+     * @see org.opencms.xml.xml2json.handler.I_CmsJsonHandler#matches(org.opencms.xml.xml2json.handler.CmsJsonHandlerContext)
      */
     @Override
     public boolean matches(CmsJsonHandlerContext context) {
@@ -67,7 +69,7 @@ public class CmsListConfigJsonHandler extends CmsXmlContentJsonHandler {
     }
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#renderJson(org.opencms.xml.xml2json.CmsJsonHandlerContext)
+     * @see org.opencms.xml.xml2json.handler.I_CmsJsonHandler#renderJson(org.opencms.xml.xml2json.handler.CmsJsonHandlerContext)
      */
     @Override
     public CmsJsonResult renderJson(CmsJsonHandlerContext context) {

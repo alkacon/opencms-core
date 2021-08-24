@@ -27,6 +27,15 @@
 
 package org.opencms.xml.xml2json;
 
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerContainerPage;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerFolder;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerJsp;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerList;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerResource;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerXmlContent;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerOnlineCachingWrapper;
+import org.opencms.xml.xml2json.handler.I_CmsJsonHandler;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,21 +48,24 @@ import java.util.List;
 public class CmsDefaultJsonHandlers {
 
     /** The folder handler instance. */
-    private static CmsFolderJsonHandler m_folderHandler = new CmsFolderJsonHandler();
+    private static CmsJsonHandlerFolder m_folderHandler = new CmsJsonHandlerFolder();
 
     /** The XML handler instance. */
-    private static I_CmsJsonHandler m_xmlContentHandler = new CmsOnlineCachingHandlerWrapper(
-        new CmsXmlContentJsonHandler(),
+    private static I_CmsJsonHandler m_xmlContentHandler = new CmsJsonHandlerOnlineCachingWrapper(
+        new CmsJsonHandlerXmlContent(),
         "concurrencyLevel=4,maximumSize=10000");
 
     /** The JSP handler instance. */
-    private static CmsJspJsonHandler m_jspHandler = new CmsJspJsonHandler();
+    private static CmsJsonHandlerJsp m_jspHandler = new CmsJsonHandlerJsp();
 
     /** The container page handler instance. */
-    private static CmsContainerPageJsonHandler m_containerPageHandler = new CmsContainerPageJsonHandler();
+    private static CmsJsonHandlerContainerPage m_containerPageHandler = new CmsJsonHandlerContainerPage();
 
-    /** The list config handler instance. */
-    private static CmsListConfigJsonHandler m_listConfigJsonHandler = new CmsListConfigJsonHandler();
+    /** The list handler instance. */
+    private static CmsJsonHandlerList m_listJsonHandler = new CmsJsonHandlerList();
+
+    /** The resource handler instance. */
+    private static CmsJsonHandlerResource m_resourceJsonHandler = new CmsJsonHandlerResource();
 
     /**
      * Gets the default JSON handlers.
@@ -68,7 +80,8 @@ public class CmsDefaultJsonHandlers {
                 m_xmlContentHandler,
                 m_jspHandler,
                 m_containerPageHandler,
-                m_listConfigJsonHandler));
+                m_listJsonHandler,
+                m_resourceJsonHandler));
     }
 
 }

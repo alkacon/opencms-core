@@ -25,37 +25,43 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.xml2json;
+package org.opencms.xml.xml2json.handler;
 
-import org.opencms.file.types.CmsResourceTypeJsp;
+import org.opencms.xml.xml2json.CmsJsonResult;
 
 /**
- * JSON handler used to load JSPs referenced directly by path.
+ * Interface for individual JSON handlers.
+ *
+ * <p>The CmsJsonResourceHandler delegates the actual work of producing the JSON to a number of sub-handlers,
+ * e.g. one for XML contents, one for folders, etc. This is the base interface for these sub-handlers. Handlers are explicitly
+ * sorted by their order, and then the first matching handler is selected.
+ *
  */
-public class CmsJspJsonHandler implements I_CmsJsonHandler {
+public interface I_CmsJsonHandler {
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#getOrder()
+     * Gets the sort order for this handler.<p>
+     *
+     * Handlers are sorted by ascending order, and the first matching handler is selected.
+     *
+     * @return the sort order
      */
-    public double getOrder() {
-
-        return 300;
-    }
+    double getOrder();
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#matches(org.opencms.xml.xml2json.CmsJsonHandlerContext)
+     * Returns true if the handler matches the given context.
+     *
+     * @param context the context
+     * @return true if the handler matches
      */
-    public boolean matches(CmsJsonHandlerContext context) {
-
-        return CmsResourceTypeJsp.isJsp(context.getResource());
-    }
+    boolean matches(CmsJsonHandlerContext context);
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#renderJson(org.opencms.xml.xml2json.CmsJsonHandlerContext)
+     * Renders the JSON.
+     *
+     * @param context the context (provides information about the path and resource)
+     * @return the JSON result
      */
-    public CmsJsonResult renderJson(CmsJsonHandlerContext context) {
-
-        return new CmsJsonResult(context.getResource());
-    }
+    CmsJsonResult renderJson(CmsJsonHandlerContext context);
 
 }

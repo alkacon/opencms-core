@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.xml2json;
+package org.opencms.xml.xml2json.handler;
 
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsFile;
@@ -35,6 +35,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.xml2json.CmsJsonAccessPolicy;
 
 import java.lang.ref.WeakReference;
 import java.util.Collections;

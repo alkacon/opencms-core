@@ -25,12 +25,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.xml2json;
+package org.opencms.xml.xml2json.handler;
 
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.xml2json.CmsJsonRequest;
+import org.opencms.xml.xml2json.CmsJsonResult;
 import org.opencms.xml.xml2json.document.CmsJsonDocumentFolder;
 
 import javax.servlet.http.HttpServletResponse;
@@ -40,13 +42,13 @@ import org.apache.commons.logging.Log;
 /**
  * Produces directory listings in JSON format.
  */
-public class CmsFolderJsonHandler implements I_CmsJsonHandler {
+public class CmsJsonHandlerFolder implements I_CmsJsonHandler {
 
     /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFolderJsonHandler.class);
+    private static final Log LOG = CmsLog.getLog(CmsJsonHandlerFolder.class);
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#getOrder()
+     * @see org.opencms.xml.xml2json.handler.I_CmsJsonHandler#getOrder()
      */
     public double getOrder() {
 
@@ -54,7 +56,7 @@ public class CmsFolderJsonHandler implements I_CmsJsonHandler {
     }
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#matches(org.opencms.xml.xml2json.CmsJsonHandlerContext)
+     * @see org.opencms.xml.xml2json.handler.I_CmsJsonHandler#matches(org.opencms.xml.xml2json.handler.CmsJsonHandlerContext)
      */
     public boolean matches(CmsJsonHandlerContext context) {
 
@@ -62,7 +64,7 @@ public class CmsFolderJsonHandler implements I_CmsJsonHandler {
     }
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#renderJson(org.opencms.xml.xml2json.CmsJsonHandlerContext)
+     * @see org.opencms.xml.xml2json.handler.I_CmsJsonHandler#renderJson(org.opencms.xml.xml2json.handler.CmsJsonHandlerContext)
      */
     public CmsJsonResult renderJson(CmsJsonHandlerContext context) {
 

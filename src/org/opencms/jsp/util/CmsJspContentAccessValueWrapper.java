@@ -41,8 +41,8 @@ import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.types.I_CmsXmlContentValue;
-import org.opencms.xml.xml2json.CmsDefaultXmlContentJsonRenderer;
 import org.opencms.xml.xml2json.CmsXmlContentTree;
+import org.opencms.xml.xml2json.renderer.CmsJsonRendererXmlContent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -655,7 +655,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
         if (node == null) {
             return new CmsJspJsonWrapper(null);
         }
-        CmsDefaultXmlContentJsonRenderer renderer = new CmsDefaultXmlContentJsonRenderer(getCmsObject());
+        CmsJsonRendererXmlContent renderer = new CmsJsonRendererXmlContent(getCmsObject());
         try {
             Object jsonObj = renderer.renderNode(node);
             return new CmsJspJsonWrapper(jsonObj);

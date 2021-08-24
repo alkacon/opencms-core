@@ -25,13 +25,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.xml2json;
+package org.opencms.xml.xml2json.handler;
 
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
+import org.opencms.xml.xml2json.CmsJsonRequest;
+import org.opencms.xml.xml2json.CmsJsonResult;
 import org.opencms.xml.xml2json.document.CmsJsonDocumentXmlContent;
 
 import javax.servlet.http.HttpServletResponse;
@@ -41,7 +43,7 @@ import org.apache.commons.logging.Log;
 /**
  * Sub-handler for converting XML contents to JSON, either as a whole or just specific locales or paths.
  */
-public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
+public class CmsJsonHandlerXmlContent implements I_CmsJsonHandler {
 
     /**
      * Exception thrown when path lookup fails.
@@ -69,7 +71,7 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
     public static final String PARAM_PATH = "path";
 
     /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsXmlContentJsonHandler.class);
+    private static final Log LOG = CmsLog.getLog(CmsJsonHandlerXmlContent.class);
 
     /**
      * Creates an empty JSON object.
@@ -86,7 +88,7 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
     }
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#getOrder()
+     * @see org.opencms.xml.xml2json.handler.I_CmsJsonHandler#getOrder()
      */
     public double getOrder() {
 
@@ -95,7 +97,7 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
     }
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#matches(org.opencms.xml.xml2json.CmsJsonHandlerContext)
+     * @see org.opencms.xml.xml2json.handler.I_CmsJsonHandler#matches(org.opencms.xml.xml2json.handler.CmsJsonHandlerContext)
      */
     public boolean matches(CmsJsonHandlerContext context) {
 
@@ -104,7 +106,7 @@ public class CmsXmlContentJsonHandler implements I_CmsJsonHandler {
     }
 
     /**
-     * @see org.opencms.xml.xml2json.I_CmsJsonHandler#renderJson(org.opencms.xml.xml2json.CmsJsonHandlerContext)
+     * @see org.opencms.xml.xml2json.handler.I_CmsJsonHandler#renderJson(org.opencms.xml.xml2json.handler.CmsJsonHandlerContext)
      */
     public CmsJsonResult renderJson(CmsJsonHandlerContext context) {
 

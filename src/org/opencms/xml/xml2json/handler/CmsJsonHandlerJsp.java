@@ -25,45 +25,38 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.xml2json;
+package org.opencms.xml.xml2json.handler;
 
-public class CmsJsonHandlerException extends Exception {
+import org.opencms.file.types.CmsResourceTypeJsp;
+import org.opencms.xml.xml2json.CmsJsonResult;
 
-    /** The serial version id. */
-    private static final long serialVersionUID = 5155325235329055833L;
-
-    /** The cause. */
-    private Throwable m_cause;
+/**
+ * JSON handler used to load JSPs referenced directly by path.
+ */
+public class CmsJsonHandlerJsp implements I_CmsJsonHandler {
 
     /**
-     * Constructs a JSONException with an explanatory message.<p>
-     *
-     * @param message details about the reason for the exception
+     * @see org.opencms.xml.xml2json.handler.I_CmsJsonHandler#getOrder()
      */
-    public CmsJsonHandlerException(String message) {
+    public double getOrder() {
 
-        super(message);
+        return 300;
     }
 
     /**
-     * Constructs a JSONException with an explanatory message.<p>
-     *
-     * @param t the throwable that was thrown
+     * @see org.opencms.xml.xml2json.handler.I_CmsJsonHandler#matches(org.opencms.xml.xml2json.handler.CmsJsonHandlerContext)
      */
-    public CmsJsonHandlerException(Throwable t) {
+    public boolean matches(CmsJsonHandlerContext context) {
 
-        super(t.getMessage());
-        m_cause = t;
+        return CmsResourceTypeJsp.isJsp(context.getResource());
     }
 
     /**
-     * Returns the cause of the exception.<p>
-     *
-     *  @return the cause
+     * @see org.opencms.xml.xml2json.handler.I_CmsJsonHandler#renderJson(org.opencms.xml.xml2json.handler.CmsJsonHandlerContext)
      */
-    @Override
-    public Throwable getCause() {
+    public CmsJsonResult renderJson(CmsJsonHandlerContext context) {
 
-        return m_cause;
+        return new CmsJsonResult(context.getResource());
     }
+
 }

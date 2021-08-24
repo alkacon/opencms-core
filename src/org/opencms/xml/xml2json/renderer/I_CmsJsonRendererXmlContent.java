@@ -25,20 +25,21 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.xml2json;
+package org.opencms.xml.xml2json.renderer;
 
 import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.json.JSONException;
 import org.opencms.main.CmsException;
 import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.xml2json.handler.CmsJsonHandlerContext;
 
 import java.util.Locale;
 
 /**
  * Renders a single-locale content tree as JSON.
  */
-public interface I_CmsXmlContentJsonRenderer extends I_CmsConfigurationParameterHandler {
+public interface I_CmsJsonRendererXmlContent extends I_CmsConfigurationParameterHandler {
 
     /**
      * Initializes the context for the renderer.
