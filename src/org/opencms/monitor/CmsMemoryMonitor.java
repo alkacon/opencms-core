@@ -33,6 +33,8 @@ import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.db.CmsCacheSettings;
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsDriverManager.ResourceOUCacheKey;
+import org.opencms.db.CmsDriverManager.ResourceOUMap;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
@@ -80,6 +82,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import javax.mail.internet.InternetAddress;
 
@@ -89,6 +92,8 @@ import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 /**
  * Monitors OpenCms memory consumption.<p>
@@ -273,6 +278,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     /** Memory percentage to reach to go to warning level. */
     private int m_maxUsagePercent;
 
+    /** Cache for resource OU data. */
+    private LoadingCache<ResourceOUCacheKey, ResourceOUMap> m_resourceOuCache;
+
     /** The average memory status. */
     private CmsMemoryStatus m_memoryAverage;
 
@@ -300,6 +308,19 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     public CmsMemoryMonitor() {
 
         m_monitoredObjects = new HashMap<String, Object>();
+        LoadingCache<ResourceOUCacheKey, ResourceOUMap> resourceOUCache = CacheBuilder.newBuilder().expireAfterWrite(
+            60,
+            TimeUnit.SECONDS).build(new CacheLoader<ResourceOUCacheKey, ResourceOUMap>() {
+
+                @Override
+                public ResourceOUMap load(ResourceOUCacheKey key) throws Exception {
+
+                    ResourceOUMap result = new CmsDriverManager.ResourceOUMap();
+                    result.init(key.getDriverManager(), key.getDbContext());
+                    return result;
+                }
+            });
+        m_resourceOuCache = resourceOUCache;
     }
 
     /**
@@ -1076,6 +1097,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                     break;
                 case ROLE_LIST:
                     m_cacheRoleLists.clear();
+                    m_resourceOuCache.invalidateAll();
                     break;
                 case USER:
                     m_cacheUser.clear();
@@ -1773,6 +1795,16 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
         m_memoryCurrent.update();
         return m_memoryCurrent;
+    }
+
+    /** 
+     * Gets the cache for OU / resource associations. 
+     * 
+     * @return the cache 
+     */
+    public LoadingCache<ResourceOUCacheKey, ResourceOUMap> getResourceOuCache() {
+
+        return m_resourceOuCache;
     }
 
     /**

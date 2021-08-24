@@ -119,6 +119,7 @@ import org.opencms.security.I_CmsPermissionHandler.LockCheck;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsPath;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.PrintfFormat;
@@ -142,6 +143,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -151,6 +153,7 @@ import org.apache.commons.logging.Log;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 
 /**
  * The OpenCms driver manager.<p>
@@ -158,6 +161,165 @@ import com.google.common.collect.Maps;
  * @since 6.0.0
  */
 public final class CmsDriverManager implements I_CmsEventListener {
+
+    /**
+     * Special key class for caching the resource OU data with a Guava LoadingCache.<p>
+     *
+     * In principle, the actual cache key is just the current project, but because of how cache loaders work,
+     * the key must contain everything that varies between calls and is required to load the value. So we also store the DB context
+     * for use by the cache loader. The project (offline/online) must still be stored, because the DB context gets invalidated
+     * eventually, i.e. its project id gets nulled.
+     */
+    public static class ResourceOUCacheKey {
+
+        /** The DB context. */
+        private CmsDbContext m_dbc;
+
+        /** The actual cache key. */
+        private String m_actualKey;
+
+        /** The driver manager to use. */
+        private CmsDriverManager m_driverManager;
+
+        /**
+         * Creates a new instance.
+         *
+         * @param driverManager the driver manager to use
+         * @param dbc the current DB context
+         */
+        public ResourceOUCacheKey(CmsDriverManager driverManager, CmsDbContext dbc) {
+
+            m_dbc = dbc;
+            m_driverManager = driverManager;
+            m_actualKey = CmsProject.ONLINE_PROJECT_ID.equals(dbc.currentProject().getId()) ? "ONLINE" : "OFFLINE";
+        }
+
+        /**
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
+        @Override
+        public boolean equals(Object obj) {
+
+            return (obj instanceof ResourceOUCacheKey)
+                && ((ResourceOUCacheKey)obj).getActualKey().equals(getActualKey());
+        }
+
+        /**
+         * Gets the stored DB context.<p>
+         *
+         * Note that the DB contex returned by this may have been invalidated!
+         *
+         * @return the stored DB context
+         */
+        public CmsDbContext getDbContext() {
+
+            return m_dbc;
+        }
+
+        /**
+         * Gets the current driver manager.
+         *
+         * @return the driver manager to use
+         **/
+        public CmsDriverManager getDriverManager() {
+
+            return m_driverManager;
+        }
+
+        /**
+         * @see java.lang.Object#hashCode()
+         */
+        @Override
+        public int hashCode() {
+
+            return getActualKey().hashCode();
+        }
+
+        /**
+         * Gets the actual key data.
+         *
+         * @return the actual key data
+         */
+        private String getActualKey() {
+
+            return m_actualKey;
+        }
+
+    }
+
+    /**
+     * Helper class used to store information about resources assigned to OUs in a cache.
+     */
+    public static class ResourceOUMap {
+
+        /** The organizational units, with their UUIDs as keys. */
+        private Map<CmsUUID, CmsOrganizationalUnit> m_ousById = new HashMap<>();
+
+        /** Multimap from the paths of resources to the OUs to which they are assigned as OU resources. */
+        private Multimap<CmsPath, CmsOrganizationalUnit> m_ousByAssignedResourcePaths = ArrayListMultimap.create();
+
+        /**
+         * Gets the list of organizational units to which a given root path belongs, according to the cached
+         * OU resource assignments.
+         *
+         * @param rootPath the root path
+         * @return the organizational units to which the path belongs
+         */
+        public List<CmsOrganizationalUnit> getResourceOrgUnits(String rootPath) {
+
+            Set<CmsOrganizationalUnit> result = new HashSet<>();
+            String currentPath = rootPath;
+            while (currentPath != null) {
+                result.addAll(m_ousByAssignedResourcePaths.get(new CmsPath(currentPath)));
+                currentPath = CmsResource.getParentFolder(currentPath);
+            }
+            return new ArrayList<>(result);
+        }
+
+        /**
+         * Reads the OU resource data from the VFS and initializes this instance with it.
+         *
+         * @param driverManager the driver manager to use
+         * @param dbc the current DB context
+         * @throws CmsException if something goes wrong
+         */
+        public void init(CmsDriverManager driverManager, CmsDbContext dbc) throws CmsException {
+
+            List<CmsRelation> relations = driverManager.getRelationsForResource(
+                dbc,
+                null,
+                CmsRelationFilter.ALL.filterType(CmsRelationType.OU_RESOURCE));
+            CmsOrganizationalUnit root = driverManager.readOrganizationalUnit(dbc, "");
+            List<CmsOrganizationalUnit> children = driverManager.getOrganizationalUnits(dbc, root, true);
+
+            Set<CmsOrganizationalUnit> ous = new HashSet<>();
+            ous.add(root);
+            ous.addAll(children);
+            init(relations, ous);
+
+        }
+
+        /**
+         * Initializes the OU resource data.
+         *
+         * @param ouRelations the current list of OU relations
+         * @param ous the current list of OUs
+         */
+        public void init(Collection<CmsRelation> ouRelations, Collection<CmsOrganizationalUnit> ous) {
+
+            m_ousById.clear();
+            m_ousByAssignedResourcePaths.clear();
+            for (CmsOrganizationalUnit ou : ous) {
+                m_ousById.put(ou.getId(), ou);
+            }
+            for (CmsRelation rel : ouRelations) {
+                CmsOrganizationalUnit ou = m_ousById.get(rel.getSourceId());
+                if (ou != null) {
+                    m_ousByAssignedResourcePaths.put(new CmsPath(rel.getTargetPath()), ou);
+                }
+            }
+        }
+    }
 
     /**
      * The comparator used for comparing url name mapping entries by date.<p>
@@ -341,6 +503,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
     /** Constant mode parameter to read all files and folders in the {@link #readChangedResourcesInsideProject(CmsDbContext, CmsUUID, CmsReadChangedProjectResourceMode)}} method. */
     private static final CmsReadChangedProjectResourceMode RCPRM_FOLDERS_ONLY_MODE = new CmsReadChangedProjectResourceMode();
+
+    /** Flag that can be used to disable the resource OU caching if necessary. */
+    public static boolean resourceOrgUnitCachingEnabled = true;
 
     /** The history driver. */
     private I_CmsHistoryDriver m_historyDriver;
@@ -4547,6 +4712,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List<CmsOrganizationalUnit> getResourceOrgUnits(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
+        boolean nullDbcProjectId = (dbc.getProjectId() == null) || dbc.getProjectId().isNullUUID();
+        if (nullDbcProjectId && resourceOrgUnitCachingEnabled) {
+            try {
+                return m_monitor.getResourceOuCache().get(new ResourceOUCacheKey(this, dbc)).getResourceOrgUnits(
+                    resource.getRootPath());
+            } catch (ExecutionException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
         List<CmsOrganizationalUnit> result = getVfsDriver(dbc).getResourceOus(
             dbc,
             dbc.currentProject().getUuid(),
