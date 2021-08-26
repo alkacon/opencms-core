@@ -32,6 +32,7 @@ import org.opencms.ade.configuration.formatters.CmsFormatterBeanParser;
 import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
 import org.opencms.ade.containerpage.shared.CmsContainer;
+import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsObject;
@@ -59,6 +60,7 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -189,6 +191,10 @@ public class CmsADEConfigData {
 
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEConfigData.class);
+
+    /** Prefixes for internal settings which might be passed as formatter keys to findFormatter(). */
+    private static final HashSet<String> systemSettingPrefixes = new HashSet<>(
+        Arrays.asList("element", "model", "source", "use", "cms", "is"));
 
     /** The wrapped configuration bean containing the actual data. */
     protected CmsADEConfigDataInternal m_data;
@@ -387,6 +393,13 @@ public class CmsADEConfigData {
     public I_CmsFormatterBean findFormatter(String name) {
 
         if (name == null) {
+            return null;
+        }
+
+        if (systemSettingPrefixes.contains(name) || name.startsWith(CmsContainerElement.SYSTEM_SETTING_PREFIX)) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("System setting prefix used: " + name, new Exception());
+            }
             return null;
         }
 
