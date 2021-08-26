@@ -31,6 +31,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsFunctionFormatterBean;
+import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
 import java.util.Collection;
@@ -218,7 +219,7 @@ public class CmsFormatterChangeSet {
     public void applyToTypes(Set<String> types) {
 
         if (m_removeAllNonExplicitlyAdded) {
-            types.clear();
+            types.removeIf(type -> !CmsXmlDynamicFunctionHandler.TYPE_FUNCTION.equals(type));
         }
         for (Map.Entry<String, Boolean> typeUpdateEntry : m_typeUpdateSet.entrySet()) {
             String typeName = typeUpdateEntry.getKey();
