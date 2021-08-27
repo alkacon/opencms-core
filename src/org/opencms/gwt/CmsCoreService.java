@@ -231,7 +231,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         Map<String, CmsContextMenuEntryBean> entries = new LinkedHashMap<String, CmsContextMenuEntryBean>();
         try {
             final List<CmsResource> resources;
-            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.ALL.addRequireVisible());
             // in case of sitemap editor check visibility with empty list
             if (context.equals(AdeContext.sitemapeditor)) {
                 resources = Collections.emptyList();

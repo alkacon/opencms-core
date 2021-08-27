@@ -100,7 +100,9 @@ public class CmsPreviewAction extends A_CmsWorkplaceAction implements I_CmsADEAc
     @Override
     public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
 
-        boolean visible = AdeContext.publish.name().equals(context.getAppId());
+        boolean visible = AdeContext.publish.name().equals(context.getAppId())
+            && (context.getResources().size() == 1)
+            && !context.getResources().get(0).getState().isDeleted();
         return visible ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
     }
 

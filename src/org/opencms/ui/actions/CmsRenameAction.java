@@ -103,6 +103,8 @@ public class CmsRenameAction extends A_CmsWorkplaceAction implements I_CmsADEAct
         boolean visible = AdeContext.publish.name().equals(context.getAppId())
             || AdeContext.gallery.name().equals(context.getAppId())
             || AdeContext.resourceinfo.name().equals(context.getAppId());
+
+        visible &= (context.getResources().size() == 1) && !(context.getResources().get(0).getState().isDeleted());
         return visible ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
     }
 
