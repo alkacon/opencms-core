@@ -1387,53 +1387,59 @@ public class CmsUserSettings {
                     + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
                     + CmsWorkplaceConfiguration.N_LOCALE);
         }
-        // start project
-        if (!getStartProject().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject())) {
-            try {
-                // be sure the project is valid
-                if (cms != null) {
-                    cms.readProject(getStartProject());
+        if (getStartProject() != null) {
+            // start project
+            if (!getStartProject().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject())) {
+                try {
+                    // be sure the project is valid
+                    if (cms != null) {
+                        cms.readProject(getStartProject());
+                    }
+                    m_user.setAdditionalInfo(
+                        PREFERENCES
+                            + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
+                            + CmsWorkplaceConfiguration.N_PROJECT,
+                        getStartProject());
+                } catch (Exception e) {
+                    if (cms != null) {
+                        m_user.deleteAdditionalInfo(
+                            PREFERENCES
+                                + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
+                                + CmsWorkplaceConfiguration.N_PROJECT);
+                    }
                 }
+            } else if (cms != null) {
+                m_user.deleteAdditionalInfo(
+                    PREFERENCES
+                        + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
+                        + CmsWorkplaceConfiguration.N_PROJECT);
+            }
+        }
+        // view
+        if (getStartView() != null) {
+            if (!getStartView().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartView())) {
                 m_user.setAdditionalInfo(
                     PREFERENCES
                         + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-                        + CmsWorkplaceConfiguration.N_PROJECT,
-                    getStartProject());
-            } catch (Exception e) {
-                if (cms != null) {
-                    m_user.deleteAdditionalInfo(
-                        PREFERENCES
-                            + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-                            + CmsWorkplaceConfiguration.N_PROJECT);
-                }
+                        + CmsWorkplaceConfiguration.N_WORKPLACEVIEW,
+                    getStartView());
+            } else if (cms != null) {
+                m_user.deleteAdditionalInfo(
+                    PREFERENCES
+                        + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
+                        + CmsWorkplaceConfiguration.N_WORKPLACEVIEW);
             }
-        } else if (cms != null) {
-            m_user.deleteAdditionalInfo(
-                PREFERENCES
-                    + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-                    + CmsWorkplaceConfiguration.N_PROJECT);
         }
-        // view
-        if (!getStartView().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartView())) {
-            m_user.setAdditionalInfo(
-                PREFERENCES
-                    + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-                    + CmsWorkplaceConfiguration.N_WORKPLACEVIEW,
-                getStartView());
-        } else if (cms != null) {
-            m_user.deleteAdditionalInfo(
-                PREFERENCES
-                    + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-                    + CmsWorkplaceConfiguration.N_WORKPLACEVIEW);
-        }
-        // start site
-        if (!getStartSite().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite())) {
-            m_user.setAdditionalInfo(
-                PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + I_CmsXmlConfiguration.N_SITE,
-                getStartSite());
-        } else if (cms != null) {
-            m_user.deleteAdditionalInfo(
-                PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + I_CmsXmlConfiguration.N_SITE);
+        if (getStartSite() != null) {
+            // start site
+            if (!getStartSite().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite())) {
+                m_user.setAdditionalInfo(
+                    PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + I_CmsXmlConfiguration.N_SITE,
+                    getStartSite());
+            } else if (cms != null) {
+                m_user.deleteAdditionalInfo(
+                    PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + I_CmsXmlConfiguration.N_SITE);
+            }
         }
         // start folder
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getStartFolder())
