@@ -947,7 +947,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         try {
             String resourceRootFolder = structureId != null
             ? CmsResource.getFolderPath(
-                cms.readResource(structureId, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED).getRootPath())
+                cms.readResource(structureId, CmsResourceFilter.ALL.addRequireVisible()).getRootPath())
             : cms.getRequestContext().getSiteRoot();
             result = getVaadinWorkplaceLink(cms, resourceRootFolder);
         } catch (Throwable e) {
