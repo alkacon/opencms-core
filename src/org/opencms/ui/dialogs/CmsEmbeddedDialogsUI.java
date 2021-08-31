@@ -134,9 +134,7 @@ public class CmsEmbeddedDialogsUI extends A_CmsUI {
                         for (int i = 0; i < resIds.length; i++) {
                             if (CmsUUID.isValidUUID(resIds[i])) {
                                 resourceList.add(
-                                    getCmsObject().readResource(
-                                        new CmsUUID(resIds[i]),
-                                        CmsResourceFilter.IGNORE_EXPIRATION));
+                                    getCmsObject().readResource(new CmsUUID(resIds[i]), CmsResourceFilter.ALL));
                             }
 
                         }
