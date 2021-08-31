@@ -432,6 +432,14 @@ public class CmsPublishDialog extends CmsPopup {
     }
 
     /**
+     * Gets the context menu handler.
+     */
+    public CmsContextMenuHandler getMenuHandler() {
+
+        return m_menuHandler;
+    }
+
+    /**
      * Returns the current publish options.<p>
      *
      * @return a publish options bean

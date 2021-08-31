@@ -33,8 +33,10 @@ import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -69,6 +71,17 @@ public class CmsBrokenLinksPanel extends Composite {
     /** The UiBinder instance for this widget. */
     private static final I_CmsBrokenLinksPanelUiBinder UI_BINDER = GWT.create(I_CmsBrokenLinksPanelUiBinder.class);
 
+    /** Button slot mapping for showing broken links. */
+    public static int[] SLOT_MAPPING;
+
+    static {
+        SLOT_MAPPING = new int[4];
+        SLOT_MAPPING[CmsPublishGroupPanel.SLOT_WARNING] = 0;
+        SLOT_MAPPING[CmsPublishGroupPanel.SLOT_EDIT] = -1;
+        SLOT_MAPPING[CmsPublishGroupPanel.SLOT_REMOVE] = -1;
+        SLOT_MAPPING[CmsPublishGroupPanel.SLOT_MENU] = 1;
+    }
+
     /** The button which makes the publish dialog go back to the "resource selection" state. */
     @UiField
     protected CmsPushButton m_backButton;
@@ -98,9 +111,6 @@ public class CmsBrokenLinksPanel extends Composite {
     /** The publish dialog containing this widget. */
     private CmsPublishDialog m_publishDialog;
 
-    /** Button slot mapping for showing broken links. */
-    public static int[] SLOT_MAPPING;
-
     /**
      * Creates a new instance.<p>
      *
@@ -119,14 +129,6 @@ public class CmsBrokenLinksPanel extends Composite {
         m_actionButtons = new ArrayList<CmsPushButton>();
     }
 
-    static {
-        SLOT_MAPPING = new int[4];
-        SLOT_MAPPING[CmsPublishGroupPanel.SLOT_WARNING] = 0;
-        SLOT_MAPPING[CmsPublishGroupPanel.SLOT_EDIT] = -1;
-        SLOT_MAPPING[CmsPublishGroupPanel.SLOT_REMOVE] = -1;
-        SLOT_MAPPING[CmsPublishGroupPanel.SLOT_MENU] = -1;
-    }
-
     /**
       * Adds a resource bean to be displayed.<p>
       *
@@ -137,11 +139,13 @@ public class CmsBrokenLinksPanel extends Composite {
 
         final CmsListItemWidget itemWidget = CmsPublishGroupPanel.createListItemWidget(res, SLOT_MAPPING);
         CmsTreeItem item = new CmsTreeItem(false, itemWidget);
+        addContextMenu(item, res);
 
         item.setOpen(true);
         for (CmsPublishResource subRes : res.getRelated()) {
             final CmsListItemWidget subWidget = CmsPublishGroupPanel.createListItemWidget(subRes, SLOT_MAPPING);
             CmsTreeItem subItem = new CmsTreeItem(false, subWidget);
+            addContextMenu(subItem, subRes);
             item.addChild(subItem);
         }
         m_list.addItem(item);
@@ -249,6 +253,27 @@ public class CmsBrokenLinksPanel extends Composite {
     protected void executeAction(CmsWorkflowAction action) {
 
         m_publishDialog.executeAction(action);
+    }
+
+    /**
+     * Adds a context menu button to the resource box, unless the structure id is null (this can happen with already broken relations).
+     *
+     * @param item the item to add the button to
+     * @param res the publish resource data
+     */
+    private void addContextMenu(CmsTreeItem item, CmsPublishResource res) {
+
+        if (!res.getId().isNullUUID()) {
+            CmsContextMenuButton button = new CmsContextMenuButton(
+                res.getId(),
+                m_publishDialog.getContextMenuHandler(),
+                AdeContext.resourceinfo);
+            CmsPublishGroupPanel.fillButtonSlot(
+                item.getListItemWidget(),
+                CmsPublishGroupPanel.SLOT_MENU,
+                button,
+                SLOT_MAPPING);
+        }
     }
 
     /**
