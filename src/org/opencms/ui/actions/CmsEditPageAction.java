@@ -94,7 +94,9 @@ public class CmsEditPageAction extends CmsDisplayAction implements I_CmsADEActio
     @Override
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
-        if ((resources.size() == 1) && CmsResourceTypeXmlContainerPage.isContainerPage(resources.get(0))) {
+        if ((resources.size() == 1)
+            && CmsResourceTypeXmlContainerPage.isContainerPage(resources.get(0))
+            && !resources.get(0).getState().isDeleted()) {
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         } else {
             return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
