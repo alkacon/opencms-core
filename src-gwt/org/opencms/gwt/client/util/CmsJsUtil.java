@@ -116,9 +116,32 @@ public final class CmsJsUtil {
      */
     public static native void fillStringMapFromJsObject(JavaScriptObject jso, Map<String, String> map) /*-{
         var k;
-        for (k in jso) { 
+        for (k in jso) {
             var v = jso[k];
             map.@java.util.Map::put(Ljava/lang/Object;Ljava/lang/Object;)(k, String(v));
+        }
+    }-*/;
+
+    /**
+     * Opens the given URI in the current browser window, ensuring that a request to the server is triggered.
+     *
+     * @param uri the URI to open
+     */
+    public static native void forceLoadUri(String uri) /*-{
+        try {
+            var target = new URL(uri, $wnd.location.href);
+            var source = $wnd.location;
+            if (target.hostname === source.hostname
+                    && target.port === source.port
+                    && target.pathname === source.pathname
+                    && target.search === source.search) {
+                $wnd.location.hash = target.hash;
+                $wnd.location.reload();
+            } else {
+                $wnd.location.href = uri;
+            }
+        } catch (e) {
+            $wnd.location.href = uri;
         }
     }-*/;
 

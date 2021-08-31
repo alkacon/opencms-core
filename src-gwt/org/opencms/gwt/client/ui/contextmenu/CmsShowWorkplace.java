@@ -29,10 +29,9 @@ package org.opencms.gwt.client.ui.contextmenu;
 
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.util.CmsJsUtil;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.util.CmsUUID;
-
-import com.google.gwt.user.client.Window;
 
 /**
  * Provides a method to open the workplace.<p>
@@ -106,7 +105,7 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
             protected void onResponse(String result) {
 
                 stop(false);
-                Window.Location.assign(result);
+                CmsJsUtil.forceLoadUri(result);
             }
         };
         callback.execute();
