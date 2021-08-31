@@ -29,6 +29,7 @@ package org.opencms.gwt.client.ui.contextmenu;
 
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsPreviewInfo;
 import org.opencms.util.CmsUUID;
@@ -68,7 +69,12 @@ public class CmsShowPage implements I_CmsHasContextMenuCommand, I_CmsContextMenu
             protected void onResponse(CmsPreviewInfo result) {
 
                 stop(false);
-                Window.Location.assign(result.getPreviewUrl());
+                if (result.getPreviewUrl() != null) {
+                    Window.Location.assign(result.getPreviewUrl());
+                } else {
+                    CmsNotification.get().sendAlert(CmsNotification.Type.ERROR, result.getPreviewContent());
+                }
+
             }
         };
         previewAction.execute();
