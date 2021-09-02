@@ -121,6 +121,7 @@ import org.opencms.site.CmsSite;
 import org.opencms.ui.apps.CmsQuickLaunchLocationCache;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceManager;
@@ -142,6 +143,7 @@ import org.opencms.xml.containerpage.mutable.CmsMutableContainer;
 import org.opencms.xml.containerpage.mutable.CmsMutableContainerPage;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.text.DateFormat;
@@ -835,6 +837,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 cms.getRequestContext().addSiteRoot(openPath));
             Map<String, CmsXmlContentProperty> propertyConfig = new LinkedHashMap<String, CmsXmlContentProperty>(
                 configData.getPropertyConfigurationAsMap());
+            propertyConfig = CmsXmlContentPropertyHelper.resolveMacrosInProperties(
+                propertyConfig,
+                CmsMacroResolver.newWorkplaceLocaleResolver(getCmsObject()));
 
             Map<String, CmsClientProperty> parentProperties = generateParentProperties(configData.getBasePath());
             String siteRoot = cms.getRequestContext().getSiteRoot();
