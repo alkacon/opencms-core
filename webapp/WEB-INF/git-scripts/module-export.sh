@@ -171,7 +171,7 @@ if [[ -z "$configfile" ]]; then
 	echoError "No config file provided!" 3
 fi
 if [[ ! -f "$configfile" ]]; then
-    echoError "Config file '${configfile}' does not exit!" 3
+	echoError "Config file '${configfile}' does not exit!" 3
 fi
 
 source $configfile
@@ -183,6 +183,9 @@ fi
 
 if [[ ! -z "$modulesExportVar" ]]; then
 	MODULES_TO_EXPORT=${!modulesExportVar}
+	if [[ -z "$MODULES_TO_EXPORT" ]]; then
+		echoError "No modules defined by variable \"$modulesExportVar\"!" 3
+	fi
 fi
 
 # see http://wiki.bash-hackers.org/syntax/pe#use_a_default_value
