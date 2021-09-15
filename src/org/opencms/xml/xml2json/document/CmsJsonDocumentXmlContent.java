@@ -310,13 +310,11 @@ public class CmsJsonDocumentXmlContent extends CmsJsonDocumentResource {
      */
     private void insertJsonContent() throws CmsJsonHandlerException, JSONException, PathNotFoundException {
 
-        String paramLocale = m_jsonRequest.getParamLocale();
-        String paramPath = m_jsonRequest.getParamPath();
-        if ((paramLocale == null) && (paramPath == null)) {
+        if (isLocaleAllRequest()) {
             insertJsonContentAllLocales();
-        } else if ((paramLocale != null) && (paramPath == null)) {
+        } else if (isLocaleRequest()) {
             insertJsonContentLocale();
-        } else if ((paramLocale != null) && (paramPath != null)) {
+        } else if (isLocalePathRequest()) {
             insertJsonContentLocalePath();
         } else {
             throw new CmsJsonHandlerException("Can not use path parameter without locale parameter.");

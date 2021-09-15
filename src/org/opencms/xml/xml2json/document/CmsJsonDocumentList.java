@@ -35,7 +35,6 @@ import org.opencms.json.JSONObject;
 import org.opencms.jsp.search.config.CmsSearchConfiguration;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon;
 import org.opencms.jsp.search.config.parser.CmsSimpleSearchConfigurationParser;
-import org.opencms.jsp.search.config.parser.CmsSimpleSearchConfigurationParser.SortOption;
 import org.opencms.jsp.search.controller.CmsSearchController;
 import org.opencms.jsp.search.result.CmsSearchResultWrapper;
 import org.opencms.jsp.search.result.I_CmsSearchResourceBean;
@@ -92,12 +91,48 @@ public class CmsJsonDocumentList extends CmsJsonDocumentXmlContent {
     }
 
     /**
+     * @see org.opencms.xml.xml2json.document.CmsJsonDocumentXmlContent#isLocaleAllRequest()
+     */
+    @Override
+    protected boolean isLocaleAllRequest() {
+
+        return false;
+    }
+
+    /**
+     * @see org.opencms.xml.xml2json.document.CmsJsonDocumentXmlContent#isLocalePathRequest()
+     */
+    @Override
+    protected boolean isLocalePathRequest() {
+
+        return false;
+    }
+
+    /**
+     * @see org.opencms.xml.xml2json.document.CmsJsonDocumentXmlContent#isLocaleRequest()
+     */
+    @Override
+    protected boolean isLocaleRequest() {
+
+        return true;
+    }
+
+    /**
      * @see org.opencms.xml.xml2json.document.CmsJsonDocumentXmlContent#isShowFallbackLocaleRequest()
      */
     @Override
     protected boolean isShowFallbackLocaleRequest() {
 
         return true;
+    }
+
+    /**
+     * @see org.opencms.xml.xml2json.document.CmsJsonDocumentXmlContent#isShowWrapperRequest()
+     */
+    @Override
+    protected boolean isShowWrapperRequest() {
+
+        return false;
     }
 
     /**
@@ -114,7 +149,6 @@ public class CmsJsonDocumentList extends CmsJsonDocumentXmlContent {
         ListConfigurationBean listConfigurationBean = CmsListManager.parseListConfiguration(
             context.getCms(),
             context.getResource());
-        listConfigurationBean.setParameterValue(CmsListManager.N_SORT_ORDER, SortOption.TITLE_ASC.toString());
         CmsSimpleSearchConfigurationParser searchConfigurationParser = new CmsSimpleSearchConfigurationParser(
             context.getCms(),
             listConfigurationBean,
@@ -125,8 +159,11 @@ public class CmsJsonDocumentList extends CmsJsonDocumentXmlContent {
             Collections.emptyList(),
             m_xmlContent.getLocales());
         searchConfigurationParser.setSearchLocale(selectedLocale);
-        String paramSort = m_jsonRequest.getParamSort(SortOption.DATE_DESC.toString());
-        searchConfigurationParser.setSortOption(paramSort);
+        String paramSort = m_jsonRequest.getParamSort();
+        if (paramSort != null) {
+            searchConfigurationParser.setSortOption(paramSort);
+        }
+
         CmsSolrQuery query = searchConfigurationParser.getInitialQuery();
         Integer paramStart = m_jsonRequest.getParamStart();
         Integer paramRows = m_jsonRequest.getParamRows();
