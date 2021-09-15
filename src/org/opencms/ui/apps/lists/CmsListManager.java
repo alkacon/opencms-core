@@ -395,7 +395,12 @@ I_CmsCachableApp {
          */
         public Integer getMaximallyReturnedResults() {
 
-            String resString = m_additionalParameters.get(ADDITIONAL_PARAM_MAX_RETURNED_RESULTS);
+            String resString = m_parameterFields.get(N_MAX_RESULTS);
+            // Fallback, we first added the restriction as additional parameter. To make it more obvious, we integrated it as extra field.
+            // Only if the extra field is not set, we use the additional parameter to be backward compatible.
+            if (null == resString) {
+                m_additionalParameters.get(ADDITIONAL_PARAM_MAX_RETURNED_RESULTS);
+            }
             if (null != resString) {
                 try {
                     return Integer.valueOf(resString);
@@ -834,13 +839,17 @@ I_CmsCachableApp {
     /** List configuration node name and field key. */
     public static final String PARAM_LOCALE = "locale";
 
+    /** List configuration node name and field key. */
+    public static final String N_MAX_RESULTS = "MaxResults";
+
     /** The parameter fields. */
     public static final String[] PARAMETER_FIELDS = new String[] {
         N_TITLE,
         N_CATEGORY,
         N_FILTER_QUERY,
         N_SORT_ORDER,
-        N_SHOW_EXPIRED};
+        N_SHOW_EXPIRED,
+        N_MAX_RESULTS};
 
     /** The view content list path name. */
     public static final String PATH_NAME_VIEW = "view";

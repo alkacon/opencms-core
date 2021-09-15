@@ -25,6 +25,7 @@
         <xsd:element name="SortOrder" type="OpenCmsString" />
         <xsd:element name="CategoryFolderFilter" type="OpenCmsListCategoryFolderFilter" minOccurs="0" maxOccurs="unbounded" />
         <xsd:element name="FilterQuery" type="OpenCmsString" minOccurs="0" />
+        <xsd:element name="MaxResults" type="OpenCmsString" minOccurs="0" />
         <xsd:element name="DateRestriction" type="OpenCmsListDateRestriction" minOccurs="0" />
         <xsd:element name="ShowExpired" type="OpenCmsBoolean" minOccurs="0" />
         <xsd:element name="Parameter" type="OpenCmsParameter" minOccurs="0" maxOccurs="unbounded" />
@@ -65,6 +66,7 @@
             </layouts>
             <validationrules>
                 <validationrule element="TypesToCollect" regex=".+" type="error" message="%(key.err.typestocollect.notempty)" />
+                <validationrule element="MaxResults" regex="([1-9]\d*)|(-1)" type="error" message="%(key.err.maxresults.number)" />
             </validationrules>
             <nestedformatters>
                 <nestedformatter element="TypesToCollect"/>
