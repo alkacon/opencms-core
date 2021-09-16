@@ -36,10 +36,14 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.OpenCmsTheme;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
@@ -75,14 +79,40 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
         void onPrincipalSelect(String principalType, String principalName);
     }
 
+    /** Type of principal. */
+    public static enum PrincipalType {
+        /** Groups. */
+        group,
+
+        /** Users. */
+        user,
+
+        /** Roles. */
+        role;
+    }
+
     /** The widget types. */
     public static enum WidgetType {
+
         /** Select groups only. */
-        groupwidget,
+        groupwidget(PrincipalType.group),
         /** Select any principal. */
-        principalwidget,
+        principalwidget(PrincipalType.group, PrincipalType.user, PrincipalType.role),
         /** Select users only. */
-        userwidget
+        userwidget(PrincipalType.user);
+
+        private Set<PrincipalType> m_principalTypes;
+
+        private WidgetType(PrincipalType... principalTypes) {
+
+            m_principalTypes = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(principalTypes)));
+        }
+
+        public Set<PrincipalType> getPrincipalTypes() {
+
+            return m_principalTypes;
+        }
+
     }
 
     /** The serial version id. */
@@ -124,6 +154,9 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     /** Is ou change enabled?*/
     private boolean m_ouChangeEnabled = true;
 
+    /** True if role selection should be allowed. */
+    private boolean m_roleSelectionAllowed;
+
     /**
      * Constructor.<p>
      */
@@ -136,8 +169,8 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
 
         m_widgetType = WidgetType.principalwidget;
 
-        m_principalTypeSelect = new ComboBox();
-        m_principalTypeSelect.setWidth("150px");
+        ComboBox principalTypeSelect = new ComboBox();
+        principalTypeSelect.setWidth("150px");
         Map<String, String> principalTypes = new LinkedHashMap<String, String>();
         principalTypes.put(
             I_CmsPrincipal.PRINCIPAL_USER,
@@ -145,12 +178,13 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
         principalTypes.put(
             I_CmsPrincipal.PRINCIPAL_GROUP,
             CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_LABEL_GROUP_0));
-        CmsVaadinUtils.prepareComboBox(m_principalTypeSelect, principalTypes);
+        CmsVaadinUtils.prepareComboBox(principalTypeSelect, principalTypes);
 
-        m_principalTypeSelect.setNewItemsAllowed(false);
-        m_principalTypeSelect.setNullSelectionAllowed(false);
-        m_principalTypeSelect.select(I_CmsPrincipal.PRINCIPAL_USER);
-        m_main.addComponent(m_principalTypeSelect);
+        principalTypeSelect.setNewItemsAllowed(false);
+        principalTypeSelect.setNullSelectionAllowed(false);
+        principalTypeSelect.select(I_CmsPrincipal.PRINCIPAL_USER);
+        m_main.addComponent(principalTypeSelect);
+        m_principalTypeSelect = principalTypeSelect;
 
         m_principalName = new TextField();
         m_principalName.setWidth("100%");
@@ -506,6 +540,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
             String roleText = CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_LABEL_ROLE_0);
             item.getItemProperty(CmsVaadinUtils.PROPERTY_LABEL).setValue(roleText);
         }
+        m_roleSelectionAllowed = editRoles;
         m_principalTypeSelect.setNewItemsAllowed(!editRoles);
 
     }
@@ -627,9 +662,11 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
         CmsPrincipalSelectDialog dialog;
 
         m_window = CmsBasicDialog.prepareWindow(DialogWidth.max);
-        WidgetType defaultType = WidgetType.groupwidget;
+        CmsPrincipalSelect.PrincipalType defaultType = CmsPrincipalSelect.PrincipalType.group;
         if (m_principalTypeSelect.getValue().equals(I_CmsPrincipal.PRINCIPAL_USER)) {
-            defaultType = WidgetType.userwidget;
+            defaultType = CmsPrincipalSelect.PrincipalType.user;
+        } else if (m_principalTypeSelect.getValue().equals(CmsRole.PRINCIPAL_ROLE)) {
+            defaultType = CmsPrincipalSelect.PrincipalType.role;
         }
 
         dialog = new CmsPrincipalSelectDialog(
@@ -639,7 +676,8 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
             m_widgetType,
             m_realOnly,
             defaultType,
-            m_includeWebOus);
+            m_includeWebOus,
+            m_roleSelectionAllowed);
 
         dialog.setOuComboBoxEnabled(m_ouChangeEnabled);
 

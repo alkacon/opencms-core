@@ -56,6 +56,7 @@ import org.opencms.ui.components.CmsInfoButton;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.WidgetType;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelectDialog;
 import org.opencms.ui.dialogs.permissions.I_CmsPrincipalSelect;
@@ -818,7 +819,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
      * @param type the tree type
      * @param cmsAccountsApp the app instance
      * @param buttonPressed true if toggle button for users is active
-    
+
      * @return the user table
      */
     protected I_CmsFilterableTable createUserTable(
@@ -1144,7 +1145,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
             window,
             WidgetType.userwidget,
             true,
-            WidgetType.userwidget);
+            CmsPrincipalSelect.PrincipalType.user);
 
         try {
             dialog.setOuComboBoxEnabled(

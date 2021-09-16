@@ -200,7 +200,9 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPr
         if (principal == null) {
             return null;
         }
-        if (principal.isGroup()) {
+        if (principal instanceof CmsRoleAsPrincipal) {
+            return CmsRole.PRINCIPAL_ROLE;
+        } else if (principal.isGroup()) {
             return I_CmsPrincipal.PRINCIPAL_GROUP;
         } else {
             return I_CmsPrincipal.PRINCIPAL_USER;

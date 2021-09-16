@@ -35,6 +35,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleAsPrincipal;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
@@ -45,11 +46,13 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.dialogs.CmsEmbeddedDialogContext;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.I_PrincipalSelectHandler;
+import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.PrincipalType;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.WidgetType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 
@@ -78,16 +81,16 @@ import com.vaadin.v7.ui.VerticalLayout;
 public class CmsPrincipalSelectDialog extends CmsBasicDialog {
 
     /** Parameter key OU. */
-    public static String PARAM_OU = "ou";
+    public static final String PARAM_OU = "ou";
 
     /** Parameter key widget type. */
-    public static String PARAM_TYPE = "type";
+    public static final String PARAM_TYPE = "type";
 
     /** Parameter key start view type. */
-    public static String PARAM_START_TYPE = "starttype";
+    public static final String PARAM_START_TYPE = "starttype";
 
     /** Parameter key real groups only. */
-    public static String PARAM_REAL_ONLY = "realonly";
+    public static final String PARAM_REAL_ONLY = "realonly";
 
     /** The dialog id. */
     public static final String DIALOG_ID = "principalselect";
@@ -159,9 +162,9 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
         final Window window,
         WidgetType widgetType,
         boolean realOnly,
-        WidgetType defaultView) {
+        CmsPrincipalSelect.PrincipalType defaultView) {
 
-        this(cmsPrincipalSelect, ou, window, widgetType, realOnly, defaultView, true);
+        this(cmsPrincipalSelect, ou, window, widgetType, realOnly, defaultView, true, false);
 
     }
 
@@ -174,7 +177,8 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
      * @param widgetType type of principal to be shown
      * @param realOnly true, only show real principals
      * @param defaultView default mode to open
-     * @param includeWebOus boolean
+     * @param includeWebOus if web OUs should be included
+     * @param roleSelectionAllowed if true, selecting roles should be allowed (if the widget type allows for roles)
      */
     public CmsPrincipalSelectDialog(
         I_CmsPrincipalSelect cmsPrincipalSelect,
@@ -182,8 +186,9 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
         final Window window,
         WidgetType widgetType,
         boolean realOnly,
-        WidgetType defaultView,
-        boolean includeWebOus) {
+        CmsPrincipalSelect.PrincipalType defaultView,
+        boolean includeWebOus,
+        boolean roleSelectionAllowed) {
 
         m_ou = ou;
         m_type = widgetType;
@@ -270,7 +275,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
 
             public void valueChange(ValueChangeEvent event) {
 
-                initTable((WidgetType)m_typeCombo.getValue());
+                initTable((CmsPrincipalSelect.PrincipalType)m_typeCombo.getValue());
 
             }
         });
@@ -280,11 +285,13 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
 
             public void valueChange(ValueChangeEvent event) {
 
-                initTable((WidgetType)m_typeCombo.getValue());
+                CmsPrincipalSelect.PrincipalType principalType = (CmsPrincipalSelect.PrincipalType)m_typeCombo.getValue();
+                initTable(principalType);
+                m_ouCombo.setVisible(principalType != PrincipalType.role);
             }
 
         });
-        initTypeCombo(defaultView);
+        initTypeCombo(defaultView, roleSelectionAllowed);
     }
 
     /**
@@ -333,17 +340,19 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
                 // ignore
             }
         }
-        WidgetType startType = null;
+        CmsPrincipalSelect.PrincipalType startType = null;
         param = params.get(PARAM_START_TYPE);
         if ((param != null) && (param.length >= 1)) {
             try {
-                startType = WidgetType.valueOf(param[0]);
+                startType = CmsPrincipalSelect.PrincipalType.valueOf(param[0]);
             } catch (Exception e) {
                 // ignore
             }
         }
         if (startType == null) {
-            startType = type != WidgetType.principalwidget ? type : WidgetType.groupwidget;
+            startType = type != WidgetType.principalwidget
+            ? CmsPrincipalSelect.PrincipalType.user
+            : CmsPrincipalSelect.PrincipalType.group;
         }
         Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
         dialogContext.setWindow(window);
@@ -354,7 +363,8 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
             type,
             realOnly,
             startType,
-            includeWebOus);
+            includeWebOus,
+            false);
         dialog.setSelectHandler(new I_PrincipalSelectHandler() {
 
             public void onPrincipalSelect(String principalType, String principalName) {
@@ -411,7 +421,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
      * Init table.<p>
      * @param type WidgetType to initialize
      */
-    void initTable(WidgetType type) {
+    void initTable(CmsPrincipalSelect.PrincipalType type) {
 
         IndexedContainer data;
         try {
@@ -432,12 +442,13 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
      * @return indexed container
      * @throws CmsException exception
      */
-    private IndexedContainer getContainerForType(WidgetType type, boolean realOnly, String ou) throws CmsException {
+    private IndexedContainer getContainerForType(CmsPrincipalSelect.PrincipalType type, boolean realOnly, String ou)
+    throws CmsException {
 
         IndexedContainer res = null;
-        List<FontIcon> icon = new ArrayList<FontIcon>();
+        List<FontIcon> icons = new ArrayList<FontIcon>();
 
-        if (type.equals(WidgetType.groupwidget) | type.equals(WidgetType.principalwidget)) {
+        if (type == PrincipalType.group) {
             List<CmsGroup> groups = OpenCms.getRoleManager().getManageableGroups(m_cms, ou, false);
             if (!realOnly) {
                 groups.add(
@@ -449,7 +460,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
                         CmsVaadinUtils.getMessageText(
                             org.opencms.workplace.commons.Messages.GUI_DESCRIPTION_ALLOTHERS_0),
                         0));
-                icon.add(new CmsCssIcon(OpenCmsTheme.ICON_PRINCIPAL_ALL));
+                icons.add(new CmsCssIcon(OpenCmsTheme.ICON_PRINCIPAL_ALL));
                 if (OpenCms.getRoleManager().hasRole(m_cms, CmsRole.VFS_MANAGER)) {
                     groups.add(
                         0,
@@ -461,7 +472,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
                             CmsVaadinUtils.getMessageText(
                                 org.opencms.workplace.commons.Messages.GUI_DESCRIPTION_OVERWRITEALL_0),
                             0));
-                    icon.add(0, new CmsCssIcon(OpenCmsTheme.ICON_PRINCIPAL_OVERWRITE));
+                    icons.add(0, new CmsCssIcon(OpenCmsTheme.ICON_PRINCIPAL_OVERWRITE));
                 }
             }
 
@@ -473,9 +484,9 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
                 ID_ICON,
                 ID_OU,
                 OpenCmsTheme.ICON_GROUP,
-                icon);
+                icons);
         }
-        if (type.equals(WidgetType.userwidget)) {
+        if (type == PrincipalType.user) {
             List<CmsUser> users = OpenCms.getRoleManager().getManageableUsers(m_cms, ou, false, true);
             if (!realOnly) {
                 CmsUser user = new CmsUser(
@@ -492,7 +503,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
                 user.setDescription(
                     CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_DESCRIPTION_ALLOTHERS_0));
                 users.add(0, user);
-                icon.add(new CmsCssIcon(OpenCmsTheme.ICON_PRINCIPAL_ALL));
+                icons.add(new CmsCssIcon(OpenCmsTheme.ICON_PRINCIPAL_ALL));
                 if (OpenCms.getRoleManager().hasRole(m_cms, CmsRole.VFS_MANAGER)) {
                     user = new CmsUser(
                         CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID,
@@ -509,7 +520,7 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
                         CmsVaadinUtils.getMessageText(
                             org.opencms.workplace.commons.Messages.GUI_DESCRIPTION_OVERWRITEALL_0));
                     users.add(0, user);
-                    icon.add(0, new CmsCssIcon(OpenCmsTheme.ICON_PRINCIPAL_OVERWRITE));
+                    icons.add(0, new CmsCssIcon(OpenCmsTheme.ICON_PRINCIPAL_OVERWRITE));
                 }
             }
             res = CmsVaadinUtils.getPrincipalContainer(
@@ -520,7 +531,23 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
                 ID_ICON,
                 ID_OU,
                 OpenCmsTheme.ICON_USER,
-                icon);
+                icons);
+        }
+
+        if (type == PrincipalType.role) {
+
+            List<CmsRole> roles = CmsRole.getSystemRoles();
+            List<CmsRoleAsPrincipal> roleWrappers = roles.stream().map(role -> new CmsRoleAsPrincipal(role)).collect(
+                Collectors.toList());
+            res = CmsVaadinUtils.getPrincipalContainer(
+                A_CmsUI.getCmsObject(),
+                roleWrappers,
+                ID_CAPTION,
+                ID_DESC,
+                ID_ICON,
+                ID_OU,
+                OpenCmsTheme.ICON_ROLE,
+                icons);
         }
 
         return res;
@@ -530,21 +557,28 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
      * Init ComboBox for choosing type of principal.<p>
      * @param defaultType Default mode to open
      */
-    private void initTypeCombo(WidgetType defaultType) {
+    private void initTypeCombo(CmsPrincipalSelect.PrincipalType defaultType, boolean roleSelectionAllowed) {
 
         IndexedContainer container = new IndexedContainer();
 
         container.addContainerProperty("caption", String.class, "");
 
-        Item item = container.addItem(WidgetType.groupwidget);
+        Item item = container.addItem(CmsPrincipalSelect.PrincipalType.group);
         item.getItemProperty("caption").setValue(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_0));
 
-        item = container.addItem(WidgetType.userwidget);
+        item = container.addItem(CmsPrincipalSelect.PrincipalType.user);
         item.getItemProperty("caption").setValue(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_0));
+        if (roleSelectionAllowed) {
+            if ((m_type == null) || m_type.getPrincipalTypes().contains(CmsPrincipalSelect.PrincipalType.role)) {
+                item = container.addItem(CmsPrincipalSelect.PrincipalType.role);
+                String message = CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_ROLE_0);
+                item.getItemProperty("caption").setValue(message);
+            }
+        }
 
         m_typeCombo.setContainerDataSource(container);
         m_typeCombo.select(defaultType);
-        m_typeCombo.setEnabled(m_type.equals(WidgetType.principalwidget) | (m_type == null));
+        m_typeCombo.setEnabled((m_type == null) || (m_type.getPrincipalTypes().size() > 1));
         m_typeCombo.setItemCaptionPropertyId("caption");
         m_typeCombo.setNullSelectionAllowed(false);
         m_typeCombo.setNewItemsAllowed(false);
