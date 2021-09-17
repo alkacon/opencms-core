@@ -848,8 +848,8 @@ public class CmsGallerySearchParameters {
     private CmsPair<String, org.apache.solr.client.solrj.SolrQuery.ORDER> getSort() {
 
         final String sortTitle = CmsSearchFieldConfiguration.getLocaleExtendedName(
-            CmsSearchField.FIELD_TITLE_UNSTORED,
-            getLocale()) + "_s";
+            CmsSearchField.FIELD_DISPTITLE,
+            getLocale()) + "_sort";
 
         switch (getSortOrder()) {
             case dateCreated_asc:
