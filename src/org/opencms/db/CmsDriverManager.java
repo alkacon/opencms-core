@@ -8696,7 +8696,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             CmsUser user = null;
 
-            validatePassword(newPassword);
+            if (dbc.getRequestContext().getAttribute(CmsUserDriver.REQ_ATTR_DONT_DIGEST_PASSWORD) == null) {
+                validatePassword(newPassword);
+            }
 
             // read the user as a system user to verify that the specified old password is correct
             try {
@@ -9218,7 +9220,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void setPassword(CmsDbContext dbc, String username, String newPassword)
     throws CmsException, CmsIllegalArgumentException {
 
-        validatePassword(newPassword);
+        if (dbc.getRequestContext().getAttribute(CmsUserDriver.REQ_ATTR_DONT_DIGEST_PASSWORD) == null) {
+            validatePassword(newPassword);
+        }
 
         // read the user as a system user to verify that the specified old password is correct
         CmsUser user = getUserDriver(dbc).readUser(dbc, username);
