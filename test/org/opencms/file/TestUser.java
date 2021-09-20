@@ -38,11 +38,14 @@ import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
@@ -85,6 +88,7 @@ public class TestUser extends OpenCmsTestCase {
         suite.addTest(new TestUser("testUserExport"));
         suite.addTest(new TestUser("testUserSelfManagement"));
         suite.addTest(new TestUser("testSearchByEmail"));
+        suite.addTest(new TestUser("testSearchByAnyGroups"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -105,11 +109,39 @@ public class TestUser extends OpenCmsTestCase {
     }
 
     /**
+     * Tests the 'any groups' filter for user search.
+     *
+     * @throws Throwable
+     */
+    public void testSearchByAnyGroups() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        CmsUserSearchParameters params = new CmsUserSearchParameters();
+        CmsGroup searchGroup1 = cms.createGroup("searchGroup1", "test", 0, null);
+        CmsGroup searchGroup2 = cms.createGroup("searchGroup2", "test", 0, null);
+        CmsUser user1 = cms.createUser("ytest1", "password", "test", new HashMap<>());
+        CmsUser user2 = cms.createUser("ytest2", "password", "test", new HashMap<>());
+        CmsUser user3 = cms.createUser("ytest3", "password", "test", new HashMap<>());
+        cms.addUserToGroup("ytest1", "searchGroup1");
+        cms.addUserToGroup("ytest2", "searchGroup2");
+        cms.addUserToGroup("ytest3", "searchGroup1");
+        cms.addUserToGroup("ytest3", "searchGroup2");
+        params.setAnyGroups(Arrays.asList(searchGroup1, searchGroup2));
+        params.setPaging(9999, 1);
+        List<CmsUser> users = OpenCms.getOrgUnitManager().searchUsers(cms, params);
+        assertEquals("Wrong result set size", 3, users.size());
+        Set<String> userNames = users.stream().map(u -> u.getName()).collect(Collectors.toSet());
+        assertEquals(new HashSet<>(Arrays.asList("ytest1", "ytest2", "ytest3")), userNames);
+
+    }
+
+    /**
      * Tests searching for user by email address.
      *
      * @throws Throwable if something goes wrong
      */
     public void testSearchByEmail() throws Throwable {
+
         CmsObject cms = getCmsObject();
         CmsUserSearchParameters params = new CmsUserSearchParameters();
         String email1 = "foo@foo.org";
@@ -120,18 +152,20 @@ public class TestUser extends OpenCmsTestCase {
         createUserWithEmail(cms, "xtest4", email2);
         createUserWithEmail(cms, "xtest5", email1);
         params.setFilterEmail(email1);
-        params.setPaging(9999,  1);
+        params.setPaging(9999, 1);
         List<CmsUser> users1 = OpenCms.getOrgUnitManager().searchUsers(cms, params);
         params.setFilterEmail(email2);
         List<CmsUser> users2 = OpenCms.getOrgUnitManager().searchUsers(cms, params);
         params.setFilterEmail("xyzzy@xyzzy.org");
         List<CmsUser> users3 = OpenCms.getOrgUnitManager().searchUsers(cms, params);
 
-        assertEquals(Sets.newHashSet("xtest1", "xtest3", "xtest5"), users1.stream().map(user -> user.getName()).collect(Collectors.toSet()));
-        assertEquals(Sets.newHashSet("xtest2", "xtest4"), users2.stream().map(user -> user.getName()).collect(Collectors.toSet()));
+        assertEquals(
+            Sets.newHashSet("xtest1", "xtest3", "xtest5"),
+            users1.stream().map(user -> user.getName()).collect(Collectors.toSet()));
+        assertEquals(
+            Sets.newHashSet("xtest2", "xtest4"),
+            users2.stream().map(user -> user.getName()).collect(Collectors.toSet()));
         assertEquals(0, users3.size());
-
-
     }
 
     /**
@@ -282,6 +316,7 @@ public class TestUser extends OpenCmsTestCase {
      * @throws CmsException if something goes wrong
      */
     private CmsUser createUserWithEmail(CmsObject cms, String name, String email) throws CmsException {
+
         CmsUser user = cms.createUser(name, "password1!", "", null);
         user.setEmail(email);
         cms.writeUser(user);

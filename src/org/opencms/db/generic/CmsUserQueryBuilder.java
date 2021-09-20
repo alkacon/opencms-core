@@ -222,6 +222,8 @@ public class CmsUserQueryBuilder {
         if ((anyGroups != null) && !anyGroups.isEmpty()) {
             CmsCompositeQueryFragment groupClause = new CmsCompositeQueryFragment();
             groupClause.setSeparator(" OR ");
+            groupClause.setPrefix("(");
+            groupClause.setSuffix(")");
             for (CmsGroup grp : anyGroups) {
                 groupClause.add(
                     new CmsSimpleQueryFragment("GU." + colGroupUserGroupId() + " = ?", grp.getId().toString()));
