@@ -292,9 +292,20 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     value);
                 controller.getCurrentRequest().addParameterMap(parameters);
             }
-            controller.getCurrentRequest().addAttributeMap(CmsRequestUtil.getAtrributeMap(req));
+            Map<String, Object> attrs = controller.getCurrentRequest().addAttributeMap(
+                CmsRequestUtil.getAtrributeMap(req));
             // dispatch to the JSP
             result = dispatchJsp(controller);
+
+            // the standard context bean still references the nested request, we need to reset it to the old request
+            // (using the nested request is bad because it references the flex controller that is going to be nulled out by removeController(), so operations
+            // which use the flex controller might fail).
+
+            CmsJspStandardContextBean standardContext = (CmsJspStandardContextBean)attrs.get(
+                CmsJspStandardContextBean.ATTRIBUTE_NAME);
+            if ((standardContext != null) && (req instanceof CmsFlexRequest)) {
+                standardContext.updateRequestData((CmsFlexRequest)req);
+            }
             // remove temporary controller
             CmsFlexController.removeController(req);
         } finally {
