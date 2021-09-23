@@ -293,10 +293,12 @@ public class CmsPublishRelationFinder {
             if (!currentResource.getState().isDeleted()) {
                 Set<CmsResource> directlyRelatedResources = getDirectlyRelatedResources(currentResource);
                 for (CmsResource target : directlyRelatedResources) {
-                    if (!processedResources.contains(target)) {
-                        resourcesToProcess.add(target);
+                    if (m_cms.existsResource(target.getStructureId(), CmsResourceFilter.ALL.addRequireVisible())) {
+                        if (!processedResources.contains(target)) {
+                            resourcesToProcess.add(target);
+                        }
+                        relatedResources.get(currentResource).add(target);
                     }
-                    relatedResources.get(currentResource).add(target);
                 }
             }
         }
