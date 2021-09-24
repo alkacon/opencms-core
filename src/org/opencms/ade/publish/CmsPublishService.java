@@ -244,6 +244,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         if (!pathList.isEmpty()) {
             params.put(CmsPublishOptions.PARAM_FILES, CmsStringUtil.listAsString(pathList, "|"));
         }
+
         boolean useCurrentPageAsDefault = params.containsKey(CmsPublishOptions.PARAM_START_WITH_CURRENT_PAGE);
         CmsPublishOptions options = getCachedOptions();
         List<CmsProjectBean> projects = OpenCms.getWorkflowManager().getManageableProjects(cms, params);
@@ -259,7 +260,19 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         boolean foundProject = false;
         CmsUUID selectedProject = null;
         if (!pathList.isEmpty()) {
-            params.put(CmsPublishOptions.PARAM_ENABLE_INCLUDE_CONTENTS, Boolean.TRUE.toString());
+            int enableIncludeContents = 0;
+            if (pathList.size() > 1) {
+                enableIncludeContents = 2;
+            } else {
+                try {
+                    if (cms.readResource(pathList.get(0), CmsResourceFilter.ALL).isFolder()) {
+                        enableIncludeContents = 1;
+                    }
+                } catch (CmsException e) {
+                    LOG.info(e.getLocalizedMessage(), e);
+                }
+            }
+            params.put(CmsPublishOptions.PARAM_ENABLE_INCLUDE_CONTENTS, "" + enableIncludeContents);
             params.put(CmsPublishOptions.PARAM_INCLUDE_CONTENTS, Boolean.TRUE.toString());
             selectedProject = CmsDirectPublishProject.ID;
             foundProject = true;

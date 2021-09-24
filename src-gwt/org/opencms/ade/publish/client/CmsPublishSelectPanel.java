@@ -357,11 +357,13 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         m_actions = workflows.get(selectedWorkflowId).getActions();
         m_actionButtons = new ArrayList<CmsPushButton>();
         initWidget(UI_BINDER.createAndBindUi(this));
+        String enableAddContentsStr = null;
         boolean enableAddContents = false;
         boolean addContent = false;
         try {
-            enableAddContents = Boolean.parseBoolean(
-                publishOptions.getParameters().get(CmsPublishOptions.PARAM_ENABLE_INCLUDE_CONTENTS));
+            enableAddContentsStr = publishOptions.getParameters().get(CmsPublishOptions.PARAM_ENABLE_INCLUDE_CONTENTS);
+            enableAddContents = (null != enableAddContentsStr)
+                && !(CmsPublishOptions.INCLUDE_CONTENTS_CHECKBOX_DISABLE.equals(enableAddContentsStr));
             addContent = Boolean.parseBoolean(
                 publishOptions.getParameters().get(CmsPublishOptions.PARAM_INCLUDE_CONTENTS));
         } catch (Exception e) {
@@ -373,6 +375,9 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
             m_directPublishId = publishOptions.getProjectId();
         }
         String addContentsText = Messages.get().key(Messages.GUI_CHECKBOX_ADD_CONTENT_0);
+        if (CmsPublishOptions.INCLUDE_CONTENTS_CHECKBOX_SINGULAR.equals(enableAddContentsStr)) {
+            addContentsText = Messages.get().key(Messages.GUI_CHECKBOX_ADD_CONTENT_SINGULAR_0);
+        }
         m_checkboxAddContents.setText(addContentsText);
         m_selectAll = new CmsTriStateCheckBox("");
         m_selectAll.getElement().getStyle().setMarginLeft(4, Style.Unit.PX);

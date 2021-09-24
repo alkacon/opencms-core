@@ -38,6 +38,14 @@ import java.util.Map;
  * @since 7.6
  */
 public class CmsPublishOptions implements Serializable {
+    /** Value to indicate that the 'resources in folders' checkbox should be disabled. */ 
+    public static final String INCLUDE_CONTENTS_CHECKBOX_DISABLE = "0";
+    
+    /** Value to indicate that the 'resources in folders' checkbox should be enabled, but labeled 'resources in folder' instead. */
+    public static final String INCLUDE_CONTENTS_CHECKBOX_SINGULAR = "1";
+    
+    /** Value to indicate that the 'resources in folders' checkbox should be enabled. */ 
+    public static final String INCLUDE_CONTENTS_CHECKBOX_PLURAL = "2";
 
     /** Parameter name for the collector items. */
     public static final String PARAM_COLLECTOR_ITEMS = "collectorItems";
