@@ -34,13 +34,14 @@ import org.opencms.ui.CmsVaadinUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.vaadin.ui.FormLayout;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.data.util.BeanItemContainer;
 import com.vaadin.v7.ui.AbstractSelect.NewItemHandler;
 import com.vaadin.v7.ui.ComboBox;
-import com.vaadin.ui.FormLayout;
 
 /**
  * Layout for workplace server configuration.<p>
@@ -78,7 +79,9 @@ public class CmsWorkplaceServerWidget extends FormLayout {
         m_encryption.setNewItemsAllowed(false);
         m_encryption.select(CmsSSLMode.NO);
 
-        m_serverContainer = setUpWorkplaceComboBox(sites, m_server, false, server, sslMode);
+        List<CmsSite> sitesWithUrl = sites.stream().filter(site -> site.getSiteMatcher() != null).collect(
+            Collectors.toList());
+        m_serverContainer = setUpWorkplaceComboBox(sitesWithUrl, m_server, false, server, sslMode);
 
         m_encryption.select(sslMode);
         m_encryption.addValueChangeListener(new ValueChangeListener() {
