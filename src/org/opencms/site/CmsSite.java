@@ -677,6 +677,9 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite>, Serializab
      */
     public String getUrl() {
 
+        if (m_siteMatcher == null) {
+            return null;
+        }
         return m_siteMatcher.getUrl();
     }
 
