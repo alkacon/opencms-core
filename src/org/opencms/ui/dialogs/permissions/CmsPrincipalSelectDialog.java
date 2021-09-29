@@ -350,9 +350,11 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
             }
         }
         if (startType == null) {
-            startType = type != WidgetType.principalwidget
-            ? CmsPrincipalSelect.PrincipalType.user
-            : CmsPrincipalSelect.PrincipalType.group;
+            if ((type == WidgetType.principalwidget) || (type == WidgetType.groupwidget)) {
+                startType = CmsPrincipalSelect.PrincipalType.group;
+            } else if (type == WidgetType.userwidget) {
+                startType = CmsPrincipalSelect.PrincipalType.user;
+            }
         }
         Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
         dialogContext.setWindow(window);
