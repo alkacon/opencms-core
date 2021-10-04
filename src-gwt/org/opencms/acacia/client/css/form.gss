@@ -196,7 +196,7 @@ div.attributeValue.secondColumn{
 	border: 1px solid transparent;
 	border-radius: value("constants.css.borderRadius");
 	padding: 1px;
-	margin: -1px;
+	margin-bottom: -1px;
 	display: none;
 	position: relative;
 }

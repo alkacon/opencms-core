@@ -111,6 +111,13 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
         String shadowBottom();
 
         /**
+         * Returns the singleChoice CSS class name.<p>
+         *
+         * @return the singleChoice CSS class
+         */
+        String singleChoice();
+
+        /**
          * Returns the submenu CSS class name.<p>
          *
          * @return the submenu CSS class name

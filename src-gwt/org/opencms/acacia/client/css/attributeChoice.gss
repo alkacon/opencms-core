@@ -7,6 +7,7 @@ div.attributeChoice{
 	border-radius: value("constants.css.borderRadius");
 	padding: 1px;
 	margin: -1px;
+	margin-top: -2px;
 	position: relative;
 }
 
@@ -111,9 +112,27 @@ div.frame{
 	z-index:-1; 
 }
 
+.singleChoice > .frame > .shadow {
+	border-bottom-right-radius: 0px;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px; 
+}
+
+*:not(.multiButtonBar) > .singleChoice > .frame {
+	border-bottom-right-radius: 0px; 
+}
+
 .multiButtonBar .frame .shadow{
 	display: none;
 }
+
+*:not(.multiButtonBar) > .singleChoice > .frame > .bridge { 
+	height: 23px;
+	z-index: 20; 
+	right: -3px;
+	border-bottom: 1px solid #c6c6c6;
+}
+
 
 .frame .bridge{
 	position: absolute;
