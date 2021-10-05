@@ -2635,8 +2635,19 @@ public final class CmsContainerpageController {
             public void run() {
 
                 Window.Location.assign(m_originalUrl);
+                Timer timer2 = new Timer() {
+
+                    @Override
+                    public void run() {
+
+                        Window.Location.reload();
+                    }
+
+                };
+                timer2.schedule(100);
             }
         };
+
         timer.schedule(150);
 
     }
@@ -4108,7 +4119,7 @@ public final class CmsContainerpageController {
      * @param data the data to send
      */
     private native void sendBeacon(String url, String data) /*-{
-		$wnd.navigator.sendBeacon(url, data);
+        $wnd.navigator.sendBeacon(url, data);
     }-*/;
 
     /**
