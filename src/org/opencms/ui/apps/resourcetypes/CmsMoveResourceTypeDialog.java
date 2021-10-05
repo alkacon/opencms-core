@@ -118,7 +118,11 @@ public class CmsMoveResourceTypeDialog extends CmsBasicDialog {
 
         init(null);
         m_missingSchemaLayout.setVisible(false);
-        m_ok.addClickListener(e -> dialog.setModule(getModuleName(), CmsMoveResourceTypeDialog.this));
+        m_ok.addClickListener(e -> {
+            if (getModuleName() != null) {
+                dialog.setModule(getModuleName(), CmsMoveResourceTypeDialog.this);
+            }
+        });
         m_cancel.addClickListener(e -> CmsVaadinUtils.getWindow(CmsMoveResourceTypeDialog.this).close());
     }
 
@@ -191,6 +195,9 @@ public class CmsMoveResourceTypeDialog extends CmsBasicDialog {
      */
     protected String getModuleName() {
 
+        if (m_table.getValue() == null) {
+            return null;
+        }
         return ((CmsModuleRow)m_table.getValue()).getName();
     }
 
