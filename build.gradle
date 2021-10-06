@@ -10,6 +10,7 @@ buildscript {
         classpath group: "com.liferay", name: "com.liferay.gradle.plugins.tlddoc.builder", version: "1.3.0"
     }
     repositories {
+        mavenLocal()
         mavenCentral()
     }
 }
@@ -164,18 +165,26 @@ sourceSets{
             exclude 'data/**'
         }
         resources {
-            srcDirs=['test','src','src-modules','src-setup']
+            srcDirs=['test']//,'src','src-modules','src-setup'
+            compileClasspath += sourceSets.modules.output
+            compileClasspath += sourceSets.setup.output
+            runtimeClasspath += sourceSets.modules.output
+            runtimeClasspath += sourceSets.setup.output
             exclude 'data/**'
         }
     }
 
     testGwt {
         java {
-            srcDirs=['src-gwt','test-gwt']
+            srcDirs=['test-gwt']//'src-gwt',
+            compileClasspath += sourceSets.gwt.output
+            runtimeClasspath += sourceSets.gwt.output
             exclude '**/super_src/**'
         }
         resources {
-            srcDirs=['src-gwt','test-gwt']
+            srcDirs=['test-gwt']//'src-gwt',
+            compileClasspath += sourceSets.gwt.output
+            runtimeClasspath += sourceSets.gwt.output
             exclude '**/super_src/**'
         }
     }
@@ -1615,6 +1624,7 @@ test {
 tasks.withType(JavaCompile) {
     options.sourcepath=files()
     options.encoding='UTF-8'
+    options.incremental = true
 }
 tasks.withType(Javadoc) {
     options.addStringOption("sourcepath", "")
