@@ -606,9 +606,19 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
      *
      * @param passSettings the passSettings to set
      */
-    public void setPassSettings(Boolean passSettings) {
+    public void setPassSettings(boolean passSettings) {
 
-        m_passSettings = passSettings.booleanValue();
+        m_passSettings = passSettings;
+    }
+
+    /**
+     * Sets the passSettings.<p>
+     *
+     * @param passSettings the passSettings to set
+     */
+    public void setPassSettings(String passSettings) {
+
+        m_passSettings = Boolean.valueOf(passSettings).booleanValue();
     }
 
     /** Setter for the "postCreateHandler" attribute of the tag.
