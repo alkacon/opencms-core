@@ -26,6 +26,10 @@
             <layouts>
                 <layout element="Type" widget="org.opencms.widgets.CmsTypeComboWidget" />
             </layouts>
+            <validationrules>
+                <rule element="Type" regex=".+" type="error" message="%(key.err.generic.notempty)"/>
+                <rule element="Page" regex=".+" type="error" message="%(key.err.generic.notempty)"/>
+            </validationrules>
         </xsd:appinfo>
     </xsd:annotation>
 
