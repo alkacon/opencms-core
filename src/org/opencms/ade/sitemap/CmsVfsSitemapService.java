@@ -2987,7 +2987,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         destinationPath = destinationPath.substring(0, destinationPath.length() - 1);
                     }
                     // only if the site-path has really changed
-                    if (!cms.getSitePath(entryFolder).equals(destinationPath)) {
+                    if (!CmsFileUtil.removeTrailingSeparator(cms.getSitePath(entryFolder)).equals(
+                        CmsFileUtil.removeTrailingSeparator(destinationPath))) {
                         cms.moveResource(cms.getSitePath(entryFolder), destinationPath);
                     }
                     entryFolder = cms.readResource(
