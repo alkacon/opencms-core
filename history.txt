@@ -64,6 +64,7 @@ OpenCms 12.0.0 - October 12, 2021
 - Components: Updated HikariCP libraries to version to 4.0.2.
 - Components: Updated Xerces libraries to version to 2.12.0.
 - Components: Updated Gradle version to 6.4.1.
+* Fixed a number of security issues.
 * Fixed issue #706 wrong list item indentation in editor tooltip.
 * Fixed issue #709 so the publish dialog does not list resources invisible to a user.
 * Fixed issue #711 where using <cms:display> before the first <cms:container> tag caused an NPE in the Offline project.
