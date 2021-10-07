@@ -19,5 +19,6 @@
       <transform config="opencms-workplace.xml" xslt="updateStartViewPref.xslt" />
       <transform config="opencms-workplace.xml" xslt="removeOldWorkplaceEntries.xslt" />
       <transform config="opencms-importexport.xml" xslt="replaceImportVersions.xslt" />
+      <transform config="opencms-importexport.xml" xslt="updateRepositories.xslt" />
 
 </transforms>
