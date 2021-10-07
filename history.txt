@@ -15,6 +15,64 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 12.0.0 - October 12, 2021
+! Headless API: Access XML contents as JSON objects.
+! Headless API: List all resources in a folder tree as JSON.
+! Headless API: Load the results of a user defined list as JSON.
+! Headless API: Load structure and settings of a container page as JSON.
+! Headless API: React demo applications showcase the use of the new features.
+! Template Variants: Introducing a new container page format (the old format can still be read).
+! Template Variants: Store "formatter keys" instead of UUIDs of confifuration files in new container pages.
+! Template Variants: Sitemap attributes allow to display different element settings per variant.
+! Template Variants: Add and remove content types, formatters and / or functions per master configuration.
+! Template Variants: Master configurations can be chained to allow variant specific adjustments of a base variant.
+! Workplace: New "Optimize gallery" dialog for image and download galleries.
+! Workplace: It's now possible to change properties of a folder without locking all resources in the folder.
+! Workplace: "Optimize gallery" dialog allows to find and delete unused images / documents.
+! Workplace: "Optimize gallery" dialog allows editing the properties of several images / documents.
+! Workplace: Changing the availability date released / expired in the explorer will now also update an XML content that contains a mapping to these properties.
+! Workplace: Added a "show password" button on the login dialog.
+! Workplace: Combined the "Versoning" workplace apps into a single app.
+! Workplace: Added an option to clean up the publish history in the "Versioning" app.
+! Workplace: Added "Advanced > Reindex" option in the Explorer context menu to update selected parts of the search index.
+! Workplace: Added support for custom gallery upload actions in the explorer.
+! Editor: Added editing and other content menu actions on the publish dialog "broken links" panel.
+! Editor: Added support for custom gallery upload actions to the gallery dialog and the form editor.
+! Editor: Improved "edit point" icon and menu for functions.
+! Editor: Disabled editing of elements on a page for types disabled in the sitemap configuration.
+! Editor: Preventing session timeout in page editor preview mode.
+! Template API: Added support for external URLs in headinclude links.
+! Template API: Added support for request parameters in headinclude links.
+! Template API: Added "ignore" flex cache directive for dynamic function JSPs.
+! Template API: Extended the XSD widget configuration to allow macros in widget names.
+! Template API: Added tag "cms:setBundle" as substitute for "fmt:setBundle" with additional support for the OpenCms bundle loader mechanism.
+! Template API: Added "isDetailPage?" macro for choosing different element settings depending on whether an element is displayed on a detail page or not.
+! Search: Added a list configuration option to limit the maximal number of search results.
+! Search: Extended the document factory configuration for indexing, allowing to use different document factories for different search indexes.
+! Search: Added an option to configure external SOLR servers per index.
+! General: Greatly improved WebDAV implementation, allowing to mount the OpenCms virtual file system from any WebDAV client.
+! General: Added new 404/500 error handler page with "spin" and "snow" CSS animations.
+! General: Added "sort by display order" option to the sitemap configuration.
+- General: Expanded the list of default static export suffixes and mime types.
+- General: Added .webp as suffix to detect uploaded files as image resources.
+- General: Enabled XML content correction during import.-
+- General: Use mariadb client instead of mysql connector for MariaDB / MySQL by default.
+- General: Using the default table engine for MariaDB / MySQL instead of forcing MyIsam.
+- Components: Updated GWT libraries to version to 2.9.0.
+- Components: Updated Vaadin libraries to version to 8.11.2.
+- Components: Updated SOLR libraries to version to 8.6.2.
+- Components: Updated HikariCP libraries to version to 4.0.2.
+- Components: Updated Xerces libraries to version to 2.12.0.
+- Components: Updated Gradle version to 6.4.1.
+* Fixed issue #706 wrong list item indentation in editor tooltip.
+* Fixed issue #709 so the publish dialog does not list resources invisible to a user.
+* Fixed issue #711 where using <cms:display> before the first <cms:container> tag caused an NPE in the Offline project.
+* Fixed issue #712 with illegal reflexive operation from GWT-Servlet 2.8.2.
+* Fixed issue #713 where import module disables new content editing.
+* Fixed issue #714 with sorting by title in the gallery dialog.
+* Fixed issue #716 with problems displaying offline content with a future release date.
+* Fixed issue #719 with anyGroups filter in user search API.
+
 OpenCms 11.0.2 - August 18, 2020
 - Extended import/export so that unknown resource types are kept.
 ! Extended list type by combined category and folder restrictions.
