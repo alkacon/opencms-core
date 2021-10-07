@@ -2201,6 +2201,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SEARCHINDEX_REBUILD_CONFIRM_1 = "GUI_SEARCHINDEX_REBUILD_CONFIRM_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SESSIONS_SESSION_INFO_0 = "GUI_SESSIONS_SESSION_INFO_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SHELL_SCRIPT_APP_INI_COMMENT_0 = "GUI_SHELL_SCRIPT_APP_INI_COMMENT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -2781,6 +2784,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SOURCESEARCH_SERACH_TYPE_XMLCONTENT_0 = "GUI_SOURCESEARCH_SERACH_TYPE_XMLCONTENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SOURCESEARCH_SITE_0 = "GUI_SOURCESEARCH_SITE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SOURCESEARCH_SOLR_QUERY_0 = "GUI_SOURCESEARCH_SOLR_QUERY_0";

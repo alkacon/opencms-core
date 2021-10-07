@@ -2574,21 +2574,21 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             defaultPageInfo = new CmsNewResourceInfo(
                 modelResource.getTypeId(),
                 CmsADEManager.DEFAULT_DETAILPAGE_TYPE,
-                "Default",
-                "The default detail page will be used to display detail contents or functions.",
+                Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_DEFAULT_DETAIL_PAGE_TITLE_0),
+                Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_DEFAULT_DETAIL_PAGE_DESCRIPTION_0),
                 modelResource.getStructureId(),
                 false,
-                "The default detail page will be used to display detail contents or functions.");
+                Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_DEFAULT_DETAIL_PAGE_DESCRIPTION_0));
 
         } else {
             defaultPageInfo = new CmsNewResourceInfo(
                 CmsResourceTypeXmlContainerPage.getContainerPageTypeIdSafely(),
                 CmsADEManager.DEFAULT_DETAILPAGE_TYPE,
-                "Default",
-                "The default detail page will be used to display detail contents or functions.",
+                Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_DEFAULT_DETAIL_PAGE_TITLE_0),
+                Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_DEFAULT_DETAIL_PAGE_DESCRIPTION_0),
                 null,
                 false,
-                "The default detail page will be used to display detail contents or functions.");
+                Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_DEFAULT_DETAIL_PAGE_DESCRIPTION_0));
         }
 
         defaultPageInfo.setBigIconClasses(

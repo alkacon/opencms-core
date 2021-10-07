@@ -94,6 +94,7 @@ public class CmsUserInfoDialog extends CmsBasicDialog {
      * private empty constructor.<p>
      */
     private CmsUserInfoDialog() {
+
         //
     }
 
@@ -224,7 +225,7 @@ public class CmsUserInfoDialog extends CmsBasicDialog {
         if (!neverActive) {
             if (currentSession != null) {
                 res.add("");
-                res.add("<p>Session info:</p>");
+                res.add("<p>" + CmsVaadinUtils.getMessageText(Messages.GUI_SESSIONS_SESSION_INFO_0) + "</p>");
                 res.add(
                     CmsVaadinUtils.getMessageText(
                         Messages.GUI_MESSAGES_LAST_ACTIVITY_2,
