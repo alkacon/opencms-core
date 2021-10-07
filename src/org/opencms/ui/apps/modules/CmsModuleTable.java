@@ -175,9 +175,9 @@ public class CmsModuleTable<T> extends Table {
             }
         });
         buttons.add(importButton);
-        m_counter = new CmsInfoButton(Collections.singletonMap("Test", "Test"));
-        m_counter.setWindowCaption("Module statistics");
-        m_counter.setDescription("Module statistics");
+        m_counter = new CmsInfoButton();
+        m_counter.setWindowCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_STATISTICS_0));
+        m_counter.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_STATISTICS_0));
         buttons.add(m_counter);
         attributes.put(CmsModuleApp.Attributes.BUTTONS, buttons);
         setData(attributes);
