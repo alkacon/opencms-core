@@ -20,7 +20,7 @@
         <userinstalled />
         <dateinstalled />
         <dependencies>
-        	<dependency name="org.opencms.legacy.tools" version="11.0.0" />
+        	<dependency name="org.opencms.legacy.tools" version="12.0.0" />
         </dependencies>
         <exportpoints />
         <resources>

@@ -21,7 +21,7 @@
         <userinstalled />
         <dateinstalled />
         <dependencies>
-            <dependency name="org.opencms.base" version="11.0.0" />
+            <dependency name="org.opencms.base" version="12.0.0" />
         </dependencies>
         <exportpoints />
         <resources>
