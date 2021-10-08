@@ -22,7 +22,7 @@ OpenCms 12.0.0 - October 12, 2021
 ! Headless API: Load structure and settings of a container page as JSON.
 ! Headless API: React demo applications showcase the use of the new features.
 ! Template Variants: Introducing a new container page format (the old format can still be read).
-! Template Variants: Store "formatter keys" instead of UUIDs of confifuration files in new container pages.
+! Template Variants: Store "formatter keys" instead of UUIDs of configuration files in new container pages.
 ! Template Variants: Sitemap attributes allow to display different element settings per variant.
 ! Template Variants: Add and remove content types, formatters and / or functions per master configuration.
 ! Template Variants: Master configurations can be chained to allow variant specific adjustments of a base variant.
@@ -32,11 +32,11 @@ OpenCms 12.0.0 - October 12, 2021
 ! Workplace: "Optimize gallery" dialog allows editing the properties of several images / documents.
 ! Workplace: Changing the availability date released / expired in the explorer will now also update an XML content that contains a mapping to these properties.
 ! Workplace: Added a "show password" button on the login dialog.
-! Workplace: Combined the "Versoning" workplace apps into a single app.
+! Workplace: Combined the "Versioning" workplace apps into a single app.
 ! Workplace: Added an option to clean up the publish history in the "Versioning" app.
 ! Workplace: Added "Advanced > Reindex" option in the Explorer context menu to update selected parts of the search index.
 ! Workplace: Added support for custom gallery upload actions in the explorer.
-! Editor: Added editing and other content menu actions on the publish dialog "broken links" panel.
+! Editor: Added editing and other context menu actions on the publish dialog "broken links" panel.
 ! Editor: Added support for custom gallery upload actions to the gallery dialog and the form editor.
 ! Editor: Improved "edit point" icon and menu for functions.
 ! Editor: Disabled editing of elements on a page for types disabled in the sitemap configuration.
@@ -58,11 +58,11 @@ OpenCms 12.0.0 - October 12, 2021
 - General: Enabled XML content correction during import.-
 - General: Use mariadb client instead of mysql connector for MariaDB / MySQL by default.
 - General: Using the default table engine for MariaDB / MySQL instead of forcing MyIsam.
-- Components: Updated GWT libraries to version to 2.9.0.
-- Components: Updated Vaadin libraries to version to 8.11.2.
-- Components: Updated SOLR libraries to version to 8.6.2.
-- Components: Updated HikariCP libraries to version to 4.0.2.
-- Components: Updated Xerces libraries to version to 2.12.0.
+- Components: Updated GWT libraries version to 2.9.0.
+- Components: Updated Vaadin libraries version to 8.11.2.
+- Components: Updated SOLR libraries version to 8.6.2.
+- Components: Updated HikariCP libraries version to 4.0.2.
+- Components: Updated Xerces libraries version to 2.12.0.
 - Components: Updated Gradle version to 6.4.1.
 * Fixed a number of security issues.
 * Fixed issue #706 wrong list item indentation in editor tooltip.
