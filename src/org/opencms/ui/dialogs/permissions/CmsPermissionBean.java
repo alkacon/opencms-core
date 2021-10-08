@@ -29,19 +29,24 @@ package org.opencms.ui.dialogs.permissions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 
 import java.util.Set;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.logging.Log;
 
 /**
  * Bean for permissions which have changed.<p>
  */
 public class CmsPermissionBean {
+    /** Logger for this class. */ 
+    private static final Log LOG = CmsLog.getLog(CmsPermissionBean.class);
 
     /**Principal Type. */
     private String m_principalType;
@@ -290,9 +295,13 @@ public class CmsPermissionBean {
                 }
             } else {
                 try {
-                    id = CmsPrincipal.readPrincipal(cms, m_principalName).getId();
+                    if (I_CmsPrincipal.PRINCIPAL_GROUP.equals(m_principalType)) {
+                        id = cms.readGroup(m_principalName).getId();
+                    } else if (I_CmsPrincipal.PRINCIPAL_USER.equals(m_principalType)) {
+                        id = cms.readUser(m_principalName).getId();
+                    }
                 } catch (CmsException e) {
-                    //
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
             }
         } else {
