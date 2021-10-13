@@ -35,6 +35,7 @@ import java.util.TreeMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 
 /**
  * Utilities for dealing with log4j loggers.<p>
@@ -91,4 +92,23 @@ public final class CmsLog4jUtil {
 
     }
 
+    /**
+     * Returns the parent of this Logger. If it doesn't already exist return a new created Logger.<p>
+     *
+     * This is a version of {@link Logger#getParent()} method that skips the check of {@code MessageFactory} that the
+     * former performs, avoiding a warning if both currentLogger and parent logger doesn't share the same {@code
+     * MessageFactory}.
+     *
+     * @return The parent Logger.
+     */
+    public static Logger getParentLogger(Logger currentLogger) {
+        final LoggerConfig loggerConfig = currentLogger.get();
+        final LoggerConfig lc = loggerConfig.getName().equals(currentLogger.getName()) ? loggerConfig
+                .getParent() : loggerConfig;
+        if (lc == null) {
+            return null;
+        }
+        final String lcName = lc.getName();
+        return (Logger) LogManager.getLogger(lcName);
+    }
 }

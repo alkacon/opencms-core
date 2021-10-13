@@ -38,6 +38,7 @@ import org.opencms.ui.contextmenu.CmsContextMenu;
 import org.opencms.ui.contextmenu.CmsContextMenu.ContextMenuItem;
 import org.opencms.ui.contextmenu.CmsContextMenu.ContextMenuItemClickEvent;
 import org.opencms.ui.contextmenu.CmsContextMenu.ContextMenuItemClickListener;
+import org.opencms.util.CmsLog4jUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -379,7 +380,7 @@ public class CmsLogChannelTable extends Table {
         Item item = m_container.addItem(logger);
         if (item != null) {
             item.getItemProperty(TableColumn.Channel).setValue(logger.getName());
-            Logger parent = logger.getParent();
+            Logger parent = CmsLog4jUtil.getParentLogger(logger);
             item.getItemProperty(TableColumn.ParentChannel).setValue(parent != null ? parent.getName() : "none");
             item.getItemProperty(TableColumn.File).setValue(m_app.getLogFile(logger));
             item.getItemProperty(TableColumn.Level).setValue(LoggerLevel.fromLogger(logger));

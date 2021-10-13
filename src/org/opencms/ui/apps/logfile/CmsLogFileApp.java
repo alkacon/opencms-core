@@ -458,7 +458,7 @@ public class CmsLogFileApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Log
         //iterate all parent loggers until a logger with appender was found
         while (!logger.equals(LogManager.getRootLogger())) {
 
-            logger = logger.getParent();
+            logger = CmsLog4jUtil.getParentLogger(logger);
             // if no Appender found from logger, select the Appender from parent logger
             if (count == 0) {
                 for (Appender appender : logger.getAppenders().values()) {
