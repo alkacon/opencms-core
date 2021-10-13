@@ -584,6 +584,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
         String labelField();
 
         /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String previewBackground();
+
+        /** Access method.<p>
          *
          * @return the CSS class name
          */
