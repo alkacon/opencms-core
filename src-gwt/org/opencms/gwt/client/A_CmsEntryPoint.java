@@ -69,6 +69,7 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
     public void onModuleLoad() {
 
         enableRemoteExceptionHandler();
+        CmsMediaQueryRuleManager.initialize();
         I_CmsLayoutBundle bundle = I_CmsLayoutBundle.INSTANCE;
         bundle.toolbarCss().ensureInjected();
         bundle.buttonCss().ensureInjected();
