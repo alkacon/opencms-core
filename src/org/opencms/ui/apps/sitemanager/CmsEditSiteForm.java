@@ -1990,8 +1990,12 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         });
         m_simpleFieldParentFolderName.setVisible(false);
         m_simpleFieldFolderName.setVisible(false);
+        String title = m_site.getTitle();
+        if (title == null) {
+            title = "";
+        }
         CmsResourceInfo resourceInfo = new CmsResourceInfo(
-            m_site.getTitle(),
+            title,
             m_site.getSiteRoot(),
             m_manager.getFavIcon(m_site.getSiteRoot()));
         resourceInfo.addStyleName("o-res-site-info");
@@ -2015,7 +2019,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         m_alreadyUsedURL.remove(m_site.getSiteMatcher().forDifferentScheme("https")); //Remove current url to avoid validation problem
         m_alreadyUsedURL.remove(m_site.getSiteMatcher().forDifferentScheme("http"));
 
-        setFieldTitle(m_site.getTitle());
+        setFieldTitle(title);
         setFieldFolder(getFolderNameFromSiteRoot(m_site.getSiteRoot()));
         m_subsiteSelectionEnabled.setValue(Boolean.valueOf(m_site.isSubsiteSelectionEnabled()));
         m_simpleFieldFolderName.setEnabled(false);
