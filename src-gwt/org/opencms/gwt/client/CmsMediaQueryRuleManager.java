@@ -46,9 +46,15 @@ public class CmsMediaQueryRuleManager {
      */
     protected CmsMediaQueryRuleManager() {
 
-        addRule("oc-screensize-small", "(max-width: 767px)");
-        addRule("oc-screensize-medium", "(min-width: 768px) and (max-width: 1023px)");
-        addRule("oc-screensize-large", "(min-width: 1024px)");
+        addRule("oc-screensize-small", "(max-width: " + CmsWidthConstants.smallHigh() + ")");
+        addRule(
+            "oc-screensize-medium",
+            "(min-width: "
+                + CmsWidthConstants.mediumLow()
+                + ") and (max-width: "
+                + CmsWidthConstants.mediumHigh()
+                + ")");
+        addRule("oc-screensize-large", "(min-width: " + CmsWidthConstants.largeLow() + ")");
     }
 
     /**

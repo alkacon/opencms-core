@@ -641,6 +641,34 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          *
          * @return the CSS constant value
          */
+        String widthLargeLow();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
+        String widthMediumHigh();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
+        String widthMediumLow();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
+        String widthSmallHigh();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
         int zIndexDND();
 
         /**
