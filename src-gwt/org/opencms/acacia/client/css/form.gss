@@ -1,5 +1,5 @@
 @external tox, tox-tinymce, tox-toolbar, tox-editor-container, tox-statusbar__branding, tox-edit-area, tox-statusbar, tox-fullscreen, tox-tinymce-inline,
-	gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, tabDescriptionPanel;
+	gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, tabDescriptionPanel, oc-screensize-medium;
 
 @def SECOND_COLUMN_WIDTH 448;
  
@@ -12,6 +12,10 @@ div.formParent{
 	margin: 10px auto;
 	border: 2px solid value("constants.css.borderColor");
 	border-radius: value("constants.css.borderRadius");
+}
+
+body.oc-screensize-medium div.formParent { 
+	width: value("constants.css.widthMediumLow");
 }
 
 div.gwt-TabLayoutPanel div.formParent{
