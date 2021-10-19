@@ -47,6 +47,7 @@ import java.util.function.Consumer;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -220,7 +221,6 @@ public class CmsEmbeddedDialogHandler implements I_CmsHasInit {
         handler.openDialog(dialogId, null, uuids, paramsMap);
     }
 
-
     /**
      * Called on dialog close.<p>
      *
@@ -267,7 +267,16 @@ public class CmsEmbeddedDialogHandler implements I_CmsHasInit {
         if (m_handler != null) {
             m_handler.leavePage(targetUri);
         } else {
-            Window.Location.assign(targetUri);
+            // the timer is a workaround for weird Safari behavior, just calling Location.assign doesn't work there
+            Timer timer = new Timer() {
+
+                @Override
+                public void run() {
+
+                    Window.Location.assign(targetUri);
+                }
+            };
+            timer.schedule(10);
         }
     }
 
