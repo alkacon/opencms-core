@@ -33,6 +33,7 @@ import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
+import org.opencms.gwt.client.util.CmsMediaQuery;
 import org.opencms.gwt.client.util.CmsUniqueActiveItemContainer;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsCoreData;
@@ -47,6 +48,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -65,6 +67,9 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /** Path to system folder. */
     public static final String VFS_PATH_SYSTEM = "/system/";
+
+    /** Media query do detect device with no hover capability. */
+    private static final CmsMediaQuery TOUCH_ONLY = CmsMediaQuery.parse("(hover: none)");
 
     /** Internal instance. */
     private static CmsCoreProvider INSTANCE;
@@ -170,6 +175,18 @@ public final class CmsCoreProvider extends CmsCoreData {
             ((ServiceDefTarget)VFS_SERVICE).setServiceEntryPoint(serviceUrl);
         }
         return VFS_SERVICE;
+    }
+
+    /**
+     * Checks if the client is touch-only.
+     *
+     * <p>This uses media queries, but the touch-only status can also be forcibly turned on with the request parameter __touchOnly=1.
+     *
+     * @return true if the client is touch-only
+     */
+    public static boolean isTouchOnly() {
+
+        return TOUCH_ONLY.matches() || "1".equals(Location.getParameter("__touchOnly"));
     }
 
     /**
