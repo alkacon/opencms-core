@@ -47,7 +47,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * @since 8.0.0
  */
 public class CmsToolbarEditButton extends A_CmsToolbarOptionButton {
-    /** List of function types. */ 
+
+    /** List of function types. */
     private static final List<String> functionTypes = Arrays.asList("function", "function_config");
 
     /**

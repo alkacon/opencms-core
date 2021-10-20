@@ -28,6 +28,7 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
+import org.opencms.ade.containerpage.client.CmsPageEditorTouchHandler;
 import org.opencms.gwt.client.ui.A_CmsToolbarButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 
@@ -51,9 +52,12 @@ public abstract class A_CmsToolbarOptionButton extends A_CmsToolbarButton<CmsCon
         public void onClick(ClickEvent event) {
 
             CmsElementOptionButton source = (CmsElementOptionButton)event.getSource();
-            source.getToolbarButton().onElementClick(event, source.getContainerElement());
-            source.getContainerElement().getElementOptionBar().removeHighlighting();
-            source.clearHoverState();
+            if (!(source.getToolbarButton() instanceof CmsToolbarEditButton)
+                || !CmsPageEditorTouchHandler.get().eatClick(source.getContainerElement().getElementOptionBar())) {
+                source.getToolbarButton().onElementClick(event, source.getContainerElement());
+                source.getContainerElement().getElementOptionBar().removeHighlighting();
+                source.clearHoverState();
+            }
         }
     };
 
