@@ -153,10 +153,6 @@
  **/
 @def overlayOpacity 0.8;
 
-@def widthSmallHigh eval("org.opencms.gwt.client.CmsWidthConstants.smallHigh()");
-@def widthMediumLow eval("org.opencms.gwt.client.CmsWidthConstants.mediumLow()");
-@def widthMediumHigh eval("org.opencms.gwt.client.CmsWidthConstants.mediumHigh()");
-@def widthLargeLow eval("org.opencms.gwt.client.CmsWidthConstants.largeLow()");
 
 /**
  * Background gradients.

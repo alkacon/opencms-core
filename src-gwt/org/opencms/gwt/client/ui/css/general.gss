@@ -1,4 +1,4 @@
-@external multiLineLabel, oc-spinner, oc-spinner-circle, oc-spinner-dots, oc-spinner-bg, oc-spin-center, opencms; 
+@external multiLineLabel, oc-spinner, oc-spinner-circle, oc-spinner-dots, oc-spinner-bg, oc-spin-center, opencms, oc-screensize-medium; 
 
 .truncatingLabel{
 	overflow: hidden;
@@ -62,6 +62,10 @@ div.header{
 	padding: 10px 0px;
 	margin: 0px auto 10px;
 	position: relative;
+}
+
+body.oc-screensize-medium div.header { 
+	width: eval("org.opencms.gwt.client.CmsWidthConstants.mediumLow()");
 }
 
 /** joined vendor prefix style, for better fall back behavior */

@@ -15,7 +15,7 @@ div.formParent{
 }
 
 body.oc-screensize-medium div.formParent { 
-	width: value("constants.css.widthMediumLow");
+	width: eval("org.opencms.gwt.client.CmsWidthConstants.mediumLow()");
 }
 
 div.gwt-TabLayoutPanel div.formParent{
