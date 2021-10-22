@@ -25,10 +25,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.containerpage.client;
+package org.opencms.gwt.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
-import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.core.client.JavaScriptObject;

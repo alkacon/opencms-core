@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.containerpage.client;
+package org.opencms.gwt.client;
 
 /**
  * Common interface for enabling/disabling different types of toolbars when using the touch-only mode of the page editor.

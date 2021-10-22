@@ -27,10 +27,10 @@
 
 package org.opencms.gwt.client.ui;
 
-import org.opencms.ade.containerpage.client.CmsPageEditorTouchHandler;
-import org.opencms.ade.containerpage.client.I_CmsElementToolbarContext;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsEditableDataJSO;
+import org.opencms.gwt.client.CmsPageEditorTouchHandler;
+import org.opencms.gwt.client.I_CmsElementToolbarContext;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
@@ -278,7 +278,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem, I_C
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.I_CmsElementToolbarContext#activateToolbarContext()
+     * @see org.opencms.gwt.client.I_CmsElementToolbarContext#activateToolbarContext()
      */
     public void activateToolbarContext() {
 
@@ -326,7 +326,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem, I_C
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.I_CmsElementToolbarContext#deactivateToolbarContext()
+     * @see org.opencms.gwt.client.I_CmsElementToolbarContext#deactivateToolbarContext()
      */
     public void deactivateToolbarContext() {
 

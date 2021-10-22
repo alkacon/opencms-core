@@ -27,9 +27,9 @@
 
 package org.opencms.ade.containerpage.client.ui;
 
-import org.opencms.ade.containerpage.client.CmsPageEditorTouchHandler;
-import org.opencms.ade.containerpage.client.I_CmsElementToolbarContext;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.CmsPageEditorTouchHandler;
+import org.opencms.gwt.client.I_CmsElementToolbarContext;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.A_CmsHoverHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -162,7 +162,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem, I_C
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.I_CmsElementToolbarContext#activateToolbarContext()
+     * @see org.opencms.gwt.client.I_CmsElementToolbarContext#activateToolbarContext()
      */
     public void activateToolbarContext() {
 
@@ -206,7 +206,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem, I_C
     }
 
     /**
-     * @see org.opencms.ade.containerpage.client.I_CmsElementToolbarContext#deactivateToolbarContext()
+     * @see org.opencms.gwt.client.I_CmsElementToolbarContext#deactivateToolbarContext()
      */
     public void deactivateToolbarContext() {
 
