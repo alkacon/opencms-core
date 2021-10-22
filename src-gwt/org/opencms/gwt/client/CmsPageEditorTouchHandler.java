@@ -27,7 +27,6 @@
 
 package org.opencms.gwt.client;
 
-import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -67,7 +66,9 @@ public class CmsPageEditorTouchHandler {
                             JavaScriptObject target = nativeEvent.getEventTarget();
                             if (Element.is(target)) {
                                 Element element = Element.as(nativeEvent.getEventTarget());
-                                Element optionBar = CmsDomUtil.getAncestor(element, CmsElementOptionBar.CSS_CLASS);
+                                Element optionBar = CmsDomUtil.getAncestor(
+                                    element,
+                                    I_CmsElementToolbarContext.ELEMENT_OPTION_BAR_CSS_CLASS);
                                 if (optionBar == null) {
                                     deactivateContext();
                                 }

@@ -33,6 +33,7 @@ import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.ade.contenteditor.client.CmsContentEditor;
+import org.opencms.gwt.client.I_CmsElementToolbarContext;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
@@ -352,7 +353,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
         for (String overlayClass : Arrays.asList(
             I_CmsLayoutBundle.INSTANCE.containerpageCss().expiredOverlay(),
-            CmsElementOptionBar.CSS_CLASS)) {
+            I_CmsElementToolbarContext.ELEMENT_OPTION_BAR_CSS_CLASS)) {
             if (element.hasClassName(overlayClass)) {
                 return true;
             }

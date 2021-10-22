@@ -101,9 +101,6 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem, I_C
     /** The timer used for hiding the option bar. */
     /*default */static Timer timer;
 
-    /** The CSS class to be assigned to each option bar. */
-    public static final String CSS_CLASS = org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().optionBar();
-
     /** The calculated panel width. */
     private int m_calculatedWidth;
 
@@ -126,7 +123,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem, I_C
         HoverHandler handler = new HoverHandler();
         addMouseOverHandler(handler);
         addMouseOutHandler(handler);
-        setStyleName(CSS_CLASS);
+        setStyleName(I_CmsElementToolbarContext.ELEMENT_OPTION_BAR_CSS_CLASS);
         addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().opencms());
     }
 

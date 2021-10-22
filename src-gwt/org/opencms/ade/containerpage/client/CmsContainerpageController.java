@@ -31,7 +31,6 @@ import org.opencms.ade.containerpage.client.CmsContainerpageEvent.EventType;
 import org.opencms.ade.containerpage.client.ui.CmsConfirmRemoveDialog;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
-import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsRemovedElementDeletionDialog;
 import org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler;
@@ -59,6 +58,7 @@ import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
 import org.opencms.ade.contenteditor.client.CmsContentEditor;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.I_CmsElementToolbarContext;
 import org.opencms.gwt.client.dnd.CmsCompositeDNDController;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
@@ -3992,7 +3992,8 @@ public final class CmsContainerpageController {
                 message = Messages.get().key(Messages.GUI_SWITCH_EDIT_LEVEL_1, Integer.valueOf(m_currentEditLevel));
             }
             reinitializeButtons();
-            hasEditables = !CmsDomUtil.getElementsByClass(CmsElementOptionBar.CSS_CLASS).isEmpty();
+            hasEditables = !CmsDomUtil.getElementsByClass(
+                I_CmsElementToolbarContext.ELEMENT_OPTION_BAR_CSS_CLASS).isEmpty();
         }
         if (previousLevel != m_currentEditLevel) {
             CmsNotification.get().send(Type.NORMAL, message);
