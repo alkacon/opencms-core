@@ -33,7 +33,7 @@ package org.opencms.gwt.client;
 public interface I_CmsElementToolbarContext {
 
     /** The CSS class to be assigned to each option bar. */
-    public static final String ELEMENT_OPTION_BAR_CSS_CLASS = org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().optionBar();
+    public static final String ELEMENT_OPTION_BAR_CSS_CLASS = org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.directEditCss().optionBar();
 
     /**
      * Show the toolbar.
