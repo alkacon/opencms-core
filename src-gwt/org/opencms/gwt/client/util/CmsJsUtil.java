@@ -167,6 +167,10 @@ public final class CmsJsUtil {
         return jso[attr];
     }-*/;
 
+    public static native String getLocalStorage(String key) /*-{
+        return $wnd.localStorage[key];
+    }-*/;
+
     /**
      * Gets the current window as a Javascript object.<p>
      *

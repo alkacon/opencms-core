@@ -29,9 +29,13 @@ package org.opencms.acacia.client;
 
 import org.opencms.acacia.client.css.I_CmsLayoutBundle;
 import org.opencms.acacia.client.ui.CmsAttributeChoiceWidget;
+import org.opencms.acacia.client.ui.CmsAttributeValueView;
 import org.opencms.acacia.client.ui.CmsChoiceMenuEntryWidget;
 import org.opencms.acacia.client.ui.CmsChoiceSubmenu;
 import org.opencms.acacia.client.ui.CmsInlineEntityWidget;
+import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.shared.CmsGwtLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +50,7 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
@@ -54,6 +59,9 @@ import com.google.gwt.user.client.ui.Widget;
  * Helper class for controlling visibility of button hover bars of attribute value views.<p>
  */
 public final class CmsButtonBarHandler implements MouseOverHandler, MouseOutHandler {
+
+    /** CSS class used for identifying widgets which normally react to hover events in touch-only mode. */
+    public static final String HOVERABLE_MARKER = "oc-editor-hoverable-marker";
 
     /** Global instance of the button bar handler. */
     public static final CmsButtonBarHandler INSTANCE = new CmsButtonBarHandler();
@@ -89,12 +97,17 @@ public final class CmsButtonBarHandler implements MouseOverHandler, MouseOutHand
             public void onPreviewNativeEvent(NativePreviewEvent event) {
 
                 NativeEvent nativeEvent = event.getNativeEvent();
-                if (event.getTypeInt() != Event.ONMOUSEDOWN) {
+                if ((event.getTypeInt() != Event.ONMOUSEDOWN) && (event.getTypeInt() != Event.ONCLICK)) {
                     return;
                 }
                 if (nativeEvent == null) {
                     return;
                 }
+
+                if (handleSimulatedHoverForTouchOnlyDevices(event)) {
+                    return;
+                }
+
                 if (m_buttonBar == null) {
                     return;
                 }
@@ -108,6 +121,29 @@ public final class CmsButtonBarHandler implements MouseOverHandler, MouseOutHand
 
                     }
                 }
+            }
+
+            private boolean handleSimulatedHoverForTouchOnlyDevices(NativePreviewEvent previewEvent) {
+
+                NativeEvent nativeEvent = previewEvent.getNativeEvent();
+                boolean isMouseDown = previewEvent.getTypeInt() == Event.ONMOUSEDOWN;
+
+                if (!CmsCoreProvider.isTouchOnly()) {
+                    return false;
+                }
+
+                EventTarget target = nativeEvent.getEventTarget();
+                if (Element.is(target)) {
+                    Element element = Element.as(target);
+                    Element widgetElement = CmsDomUtil.getAncestor(element, HOVERABLE_MARKER);
+                    if (widgetElement != null) {
+                        EventListener widget = com.google.gwt.user.client.DOM.getEventListener(widgetElement);
+                        if (useClickAsFakeHover(widget, isMouseDown)) {
+                            previewEvent.cancel();
+                        }
+                    }
+                }
+                return false;
             }
         });
         m_choiceTimer = new Timer() {
@@ -145,6 +181,10 @@ public final class CmsButtonBarHandler implements MouseOverHandler, MouseOutHand
      */
     public void onMouseOut(MouseOutEvent event) {
 
+        if (CmsCoreProvider.isTouchOnly()) {
+            return;
+        }
+
         Object source = event.getSource();
         if ((source instanceof CmsAttributeChoiceWidget) || (source instanceof CmsChoiceMenuEntryWidget)) {
             rescheduleChoiceTimer();
@@ -158,6 +198,9 @@ public final class CmsButtonBarHandler implements MouseOverHandler, MouseOutHand
      */
     public void onMouseOver(MouseOverEvent event) {
 
+        if (CmsCoreProvider.isTouchOnly()) {
+            return;
+        }
         cancelButtonBarTimer();
         Object source = event.getSource();
         if (source instanceof CmsAttributeChoiceWidget) {
@@ -246,6 +289,44 @@ public final class CmsButtonBarHandler implements MouseOverHandler, MouseOutHand
     protected void setWidgetService(I_CmsWidgetService widgetService) {
 
         m_widgetService = widgetService;
+    }
+
+    /**
+     * In touch-only mode, this is used to process some clicks to trigger actions that would be normally triggered by hovering over the same
+     * GUI element.
+     *
+     * @param source the event source
+     * @param isMouseDown true if the event is a mousedown event
+     *
+     * @return true if the event should be cancelled
+     */
+    protected boolean useClickAsFakeHover(EventListener source, boolean isMouseDown) {
+
+        boolean cancel = false;
+        if (source instanceof CmsAttributeChoiceWidget) {
+            if (isMouseDown) {
+                return false;
+            }
+            cancel = source != m_choice;
+            overAttributeChoice((CmsAttributeChoiceWidget)source);
+        } else if (source instanceof CmsChoiceMenuEntryWidget) {
+            if (isMouseDown) {
+                return false;
+            }
+            overChoiceEntry((CmsChoiceMenuEntryWidget)source);
+        } else {
+            if (m_buttonBar != source) {
+                // We either have a real menu bar or just a single button.
+                // In the first case we have to show the menu bar and cancel the click event, in the second case we don't.
+                // We distinguish between the two cases with a special attribute.
+                String hasHoverStr = ((Widget)source).getElement().getAttribute(CmsAttributeValueView.ATTR_HAS_HOVER);
+                if (Boolean.parseBoolean(hasHoverStr)) {
+                    overButtonBar((Widget)source);
+                    cancel = true;
+                }
+            }
+        }
+        return cancel;
     }
 
     /**

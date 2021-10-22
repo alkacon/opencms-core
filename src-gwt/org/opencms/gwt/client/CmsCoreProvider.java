@@ -33,6 +33,7 @@ import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
+import org.opencms.gwt.client.util.CmsJsUtil;
 import org.opencms.gwt.client.util.CmsMediaQuery;
 import org.opencms.gwt.client.util.CmsUniqueActiveItemContainer;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
@@ -186,7 +187,9 @@ public final class CmsCoreProvider extends CmsCoreData {
      */
     public static boolean isTouchOnly() {
 
-        return TOUCH_ONLY.matches() || "1".equals(Location.getParameter("__touchOnly"));
+        return TOUCH_ONLY.matches()
+            || "1".equals(Location.getParameter("__touchOnly"))
+            || "1".equals(CmsJsUtil.getLocalStorage("__touchOnly"));
     }
 
     /**

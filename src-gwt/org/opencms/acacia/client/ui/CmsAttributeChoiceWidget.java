@@ -66,7 +66,7 @@ public class CmsAttributeChoiceWidget extends Composite implements HasMouseOverH
     /** The UI binder instance. */
     private static I_AttributeChoiceWidgetUiBinder uiBinder = GWT.create(I_AttributeChoiceWidgetUiBinder.class);
 
-    /** Counts the number of choices added. */ 
+    /** Counts the number of choices added. */
     private int m_choiceCount = 0;
 
     /** The button icon element. */
@@ -85,6 +85,7 @@ public class CmsAttributeChoiceWidget extends Composite implements HasMouseOverH
         initWidget(uiBinder.createAndBindUi(this));
         addMouseOutHandler(CmsButtonBarHandler.INSTANCE);
         addMouseOverHandler(CmsButtonBarHandler.INSTANCE);
+        addStyleName(CmsButtonBarHandler.HOVERABLE_MARKER);
     }
 
     /**
@@ -116,7 +117,6 @@ public class CmsAttributeChoiceWidget extends Composite implements HasMouseOverH
      */
     public void addChoice(Widget choice) {
 
-        choice.setStyleName(I_CmsLayoutBundle.INSTANCE.attributeChoice().choice());
         m_choices.add(choice);
         m_choiceCount += 1;
         if (m_choiceCount == 1) {

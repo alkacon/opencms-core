@@ -77,6 +77,7 @@ public class CmsChoiceMenuEntryWidget extends Composite {
         HTML baseWidget = new HTML(label);
         initWidget(baseWidget);
         setStyleName(I_CmsLayoutBundle.INSTANCE.attributeChoice().choice());
+        addStyleName(CmsButtonBarHandler.HOVERABLE_MARKER);
         m_entryBean = menuEntry;
         m_selectCallback = selectHandler;
         m_submenu = submenu;
