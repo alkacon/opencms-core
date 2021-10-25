@@ -27,6 +27,7 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.lock.CmsLock;
@@ -162,16 +163,23 @@ public class CmsListEditResourceAction extends CmsListDirectAction {
      */
     private String getResourceName() {
 
-        String resource = getItem().get(m_resColumnPathId).toString();
-        if (!getWp().getCms().existsResource(resource, CmsResourceFilter.DEFAULT)) {
-            String siteRoot = OpenCms.getSiteManager().getSiteRoot(resource);
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot)) {
-                resource = resource.substring(siteRoot.length());
-            }
+        CmsResourceUtil resUtil = getResourceUtil();
+        if (resUtil != null) {
+            CmsObject cms = resUtil.getCms();
+            String resource = cms.getSitePath(resUtil.getResource());
+            return resource;
+        } else {
+            String resource = getItem().get(m_resColumnPathId).toString();
             if (!getWp().getCms().existsResource(resource, CmsResourceFilter.DEFAULT)) {
-                resource = null;
+                String siteRoot = OpenCms.getSiteManager().getSiteRoot(resource);
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot)) {
+                    resource = resource.substring(siteRoot.length());
+                }
+                if (!getWp().getCms().existsResource(resource, CmsResourceFilter.DEFAULT)) {
+                    resource = null;
+                }
             }
+            return resource;
         }
-        return resource;
     }
 }

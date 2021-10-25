@@ -685,6 +685,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         Locale locale = null;
         CmsObject cms = getCmsObject();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramResource)) {
+
+            // not necessary in most cases, but some old dialogs pass the path in encoded form
+            paramResource = CmsEncoder.decode(paramResource);
+
             try {
                 CmsResource resource = cms.readResource(paramResource, CmsResourceFilter.IGNORE_EXPIRATION);
                 if (CmsResourceTypeXmlContent.isXmlContent(resource) || createNew) {
