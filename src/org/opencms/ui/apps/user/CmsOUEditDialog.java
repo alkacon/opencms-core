@@ -300,8 +300,8 @@ public class CmsOUEditDialog extends CmsBasicDialog {
         field.setCmsObject(m_cms);
         try {
             field.setValue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou).get(0).getRootPath());
-        } catch (CmsException e) {
-            //
+        } catch (Throwable e) {
+            // We simply do not set the field's value if something goes wrong.
         }
         m_ouResources.addRow(field);
     }
