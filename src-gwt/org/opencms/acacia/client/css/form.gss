@@ -1,5 +1,5 @@
 @external tox, tox-tinymce, tox-toolbar, tox-editor-container, tox-statusbar__branding, tox-edit-area, tox-statusbar, tox-fullscreen, tox-tinymce-inline,
-	gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, tabDescriptionPanel, oc-screensize-medium;
+	gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, tabDescriptionPanel, oc-screensize-medium, oc-touch-only;
 
 @def SECOND_COLUMN_WIDTH 448;
  
@@ -125,6 +125,10 @@ div.attributeValue.secondColumn{
 	width: 630px;
 }
 
+body.oc-touch-only .attributeValue.singleLine > .widgetHolder > div > .widget {
+	margin-right: 30px;
+}
+
 /* clear both after the widget holder */
 .attributeValue > div.widgetHolder:after{
 	content: ".";
@@ -165,8 +169,17 @@ div.attributeValue.secondColumn{
 
 .attributeValue .buttonBar{
 	top: 5px;
-	right: 2px;
+	right: 0px;
+	transform-origin: center right;
 }
+
+body.oc-touch-only .attributeValue .buttonBar { 
+	transform: scale(1.5) translateX(2px);
+	/* Need to set the Z index because otherwise the button bar's menu might show up *under* the form widgets that follow. */
+	z-index: 1;
+}
+
+
 .attributeValue div.buttonBar, div.buttonBar{
 	position: absolute;
 	border-radius: value("constants.css.borderRadius");
@@ -215,6 +228,10 @@ div.attributeValue.secondColumn{
 /** Editing widget styles. */
 .widgetHolder .widget{
 	margin: 0 25px 4px 2px;
+}
+
+body.oc-touch-only .widgetHolder .widget { 
+	margin-right: 30px;
 }
 
 
