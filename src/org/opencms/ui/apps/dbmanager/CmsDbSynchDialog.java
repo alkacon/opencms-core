@@ -33,9 +33,9 @@ import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.report.CmsReportWidget;
 
-import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.HorizontalLayout;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.VerticalLayout;
@@ -72,6 +72,7 @@ public class CmsDbSynchDialog extends CmsBasicDialog {
      * @param closeRunnable gets called on cancel
      */
     public CmsDbSynchDialog(Runnable closeRunnable) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         m_report.setVisible(false);
@@ -114,7 +115,7 @@ public class CmsDbSynchDialog extends CmsBasicDialog {
         CmsSynchronizeThread thread = new CmsSynchronizeThread(A_CmsUI.getCmsObject());
         thread.start();
         CmsReportWidget widget = new CmsReportWidget(thread);
-        widget.setHeight("500px");
+        widget.setHeight("100%");
         widget.setWidth("100%");
         m_report.addComponent(widget);
         m_okButton.setEnabled(false);
