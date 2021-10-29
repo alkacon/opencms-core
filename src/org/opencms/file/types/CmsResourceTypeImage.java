@@ -27,6 +27,8 @@
 
 package org.opencms.file.types;
 
+import com.alkacon.simapi.Simapi;
+
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
@@ -47,7 +49,10 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlEntityResolver;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,6 +65,12 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.exif.ExifDirectoryBase;
+import com.drew.metadata.exif.ExifIFD0Directory;
+
 /**
  * Resource type descriptor for the type "image".<p>
  *
@@ -71,6 +82,9 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
      * A data container for image size and scale operations.<p>
      */
     protected static class CmsImageAdjuster {
+
+        /** Value for EXIF Orientation tag that says that the image is oriented as-is (requires no rotation/mirroring). */
+        public static final int DEFAULT_ORIENTATION = 1;
 
         /** The image byte content. */
         private byte[] m_content;
@@ -114,7 +128,39 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
          */
         public void adjust() {
 
-            CmsImageScaler scaler = new CmsImageScaler(getContent(), getRootPath());
+            int orientation = DEFAULT_ORIENTATION;
+            BufferedImage orientedCopy = null;
+            if (Simapi.TYPE_JPEG.equals(Simapi.getImageType(m_rootPath))) {
+
+                // For JPEGs, detect if non-standard orientation is set, and if so, preprocess
+                // image so that it's image data matches the orientation. Later, we create a new JPEG
+                // with this oriented image data and no EXIF orientation to be saved in the VFS.
+
+                try (InputStream stream = new ByteArrayInputStream(getContent())) {
+                    Metadata meta = ImageMetadataReader.readMetadata(stream);
+                    Directory ifd0 = meta.getFirstDirectoryOfType(ExifIFD0Directory.class);
+                    if ((ifd0 != null) && ifd0.containsTag(ExifDirectoryBase.TAG_ORIENTATION)) {
+                        orientation = ifd0.getInt(ExifDirectoryBase.TAG_ORIENTATION);
+                    }
+                } catch (Exception e) {
+                    LOG.info(e.getLocalizedMessage(), e);
+                }
+
+                if (orientation != DEFAULT_ORIENTATION) {
+                    try {
+                        BufferedImage image = Simapi.read(getContent());
+                        orientedCopy = createOrientedCopy(image, orientation);
+                    } catch (IOException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+            }
+            CmsImageScaler scaler = null;
+            if (orientedCopy != null) {
+                scaler = new CmsImageScaler(orientedCopy.getWidth(), orientedCopy.getHeight());
+            } else {
+                scaler = new CmsImageScaler(getContent(), getRootPath());
+            }
             if (!scaler.isValid()) {
                 // error calculating image dimensions - this image can't be scaled or resized
                 return;
@@ -125,10 +171,17 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
                 // image is to big, perform rescale operation
                 CmsImageScaler downScaler = scaler.getDownScaler(m_imageDownScaler);
                 // perform the rescale using the adjusted size
-                m_content = downScaler.scaleImage(m_content, m_rootPath);
+                m_content = downScaler.scaleImage(m_content, orientedCopy, m_rootPath);
                 // image size has been changed, adjust the scaler for later setting of properties
                 scaler.setHeight(downScaler.getHeight());
                 scaler.setWidth(downScaler.getWidth());
+            } else if (orientedCopy != null) {
+                Simapi simapi = new Simapi();
+                try {
+                    m_content = simapi.getBytes(orientedCopy, Simapi.getImageType(m_rootPath));
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
             }
 
             CmsProperty p = new CmsProperty(CmsPropertyDefinition.PROPERTY_IMAGE_SIZE, null, scaler.toString());
@@ -172,6 +225,74 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
         public String getRootPath() {
 
             return m_rootPath;
+        }
+
+        /**
+         * Applies the given EXIF orientation to an image.
+         *
+         * <p>Given a JPEG with the image data 'image' and the orientation 'exifOrientation', this results in an image that,
+         * when written to a JPEG with an EXIF orientation of 1, will look the same as the original image when viewed in an image viewer
+         * that supports EXIF orientation.
+         *
+         * <p>This returns a transformed copy and does not modify the original image.
+         *
+         * @param image the original image
+         * @param exifOrientation the orientation to apply
+         * @return the transformed image
+         */
+        private BufferedImage createOrientedCopy(BufferedImage image, int exifOrientation) {
+
+            BufferedImage target;
+            boolean flipDimensions = exifOrientation > 4;
+            int w = image.getWidth();
+            int h = image.getHeight();
+            target = new BufferedImage(flipDimensions ? h : w, flipDimensions ? w : h, image.getType());
+            // for each pixel, copy it to different coordinates (tx, ty) in the target depending on orientation
+            for (int x = 0; x < w; x++) {
+                for (int y = 0; y < h; y++) {
+                    int tx, ty;
+                    switch (exifOrientation) {
+                        case 1:
+                            tx = x;
+                            ty = y;
+                            break;
+                        case 2:
+                            tx = w - 1 - x;
+                            ty = y;
+                            break;
+                        case 3:
+                            tx = w - 1 - x;
+                            ty = h - 1 - y;
+                            break;
+                        case 4:
+                            tx = x;
+                            ty = h - 1 - y;
+                            break;
+                        case 5:
+                            tx = y;
+                            ty = x;
+                            break;
+                        case 6:
+                            tx = h - 1 - y;
+                            ty = x;
+                            break;
+                        case 7:
+                            tx = h - 1 - y;
+                            ty = w - 1 - x;
+                            break;
+                        case 8:
+                            tx = y;
+                            ty = w - 1 - x;
+                            break;
+                        default:
+                            tx = x;
+                            ty = y;
+                            break;
+                    }
+                    target.setRGB(tx, ty, image.getRGB(x, y));
+                }
+            }
+            return target;
         }
     }
 

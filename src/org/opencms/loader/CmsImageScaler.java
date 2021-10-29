@@ -312,6 +312,19 @@ public class CmsImageScaler {
     }
 
     /**
+     * Creates an image scaler with manually set width and height.
+     *
+     * @param width the width
+     * @param height the height
+     */
+    public CmsImageScaler(int width, int height) {
+
+        init();
+        m_width = width;
+        m_height = height;
+    }
+
+    /**
      * Creates a new image scaler based on the given parameter String.<p>
      *
      * @param parameters the scale parameters to use
@@ -1127,11 +1140,12 @@ public class CmsImageScaler {
      * Returns a scaled version of the given image byte content according this image scalers parameters.<p>
      *
      * @param content the image byte content to scale
+     * @param image if this is set, this image will be used as base for the scaling rather than a new image read from the content byte array
      * @param rootPath the root path of the image file in the VFS
      *
      * @return a scaled version of the given image byte content according to the provided scaler parameters
      */
-    public byte[] scaleImage(byte[] content, String rootPath) {
+    public byte[] scaleImage(byte[] content, BufferedImage image, String rootPath) {
 
         byte[] result = content;
         // flag for processed image
@@ -1173,7 +1187,9 @@ public class CmsImageScaler {
             return result;
         }
         try {
-            BufferedImage image = Simapi.read(content);
+            if (image == null) {
+                image = Simapi.read(content);
+            }
 
             if (isCropping()) {
                 // check if the crop width / height are not larger then the source image
@@ -1325,6 +1341,19 @@ public class CmsImageScaler {
             }
         }
         return result;
+    }
+
+    /**
+     * Returns a scaled version of the given image byte content according this image scalers parameters.<p>
+     *
+     * @param content the image byte content to scale
+     * @param rootPath the root path of the image file in the VFS
+     *
+     * @return a scaled version of the given image byte content according to the provided scaler parameters
+     */
+    public byte[] scaleImage(byte[] content, String rootPath) {
+
+        return scaleImage(content, (BufferedImage)null, rootPath);
     }
 
     /**
