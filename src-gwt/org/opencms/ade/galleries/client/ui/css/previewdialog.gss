@@ -49,18 +49,18 @@ div.previewDialog div.previewTitle{
 }
 
 .previewHolder .previewPanel img{
-	vertical-align: middle;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	-webkit-user-select: none;
 	-o-user-select: none;
 	user-select: none;
+	display: block; 
 }
 
 .imagePanel {
-	text-align: center;
-	line-height: inherit;
-	vertical-align: middle;
+	display: flex; 
+	align-items: center; 
+	justify-content: center;
 	position: relative;
 	overflow: hidden;
 	width: 100%;

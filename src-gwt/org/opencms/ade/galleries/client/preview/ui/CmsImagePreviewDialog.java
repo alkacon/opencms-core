@@ -144,6 +144,8 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
         ? infoBean.getViewLink()
         : CmsCoreProvider.get().link(infoBean.getResourcePath());
         urlScaled.append(src);
+        m_previewPanel.setWidget(panel); // Need to already attach it here so we can measure the dimensions
+        m_handler.setImageContainerSize(panel.getOffsetWidth(), panel.getOffsetHeight());
         String scalingParams = m_handler.getPreviewScaleParam(infoBean.getHeight(), infoBean.getWidth());
         urlScaled.append("?").append(scalingParams);
         // add time stamp to override image caching
@@ -151,7 +153,6 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
         m_previewImage.setUrl(urlScaled.toString());
         getHandler().getFocalPointController().updateImage(panel, m_previewImage);
         panel.add(m_previewImage);
-        m_previewPanel.setWidget(panel);
     }
 
     /**
