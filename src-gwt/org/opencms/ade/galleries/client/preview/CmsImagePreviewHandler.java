@@ -247,15 +247,39 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
 
         int maxHeight = m_containerHeight;
         int maxWidth = m_containerWidth;
-        if (m_croppingParam != null) {
+
+        if ((m_croppingParam != null) && (m_croppingParam.isCropped() || m_croppingParam.isScaled())) {
+            // NOTE: getREstrictedSizeScaleParam does not work correctly if there isn't actually any cropping/scaling, so we explicitly don't use it in this case
             return m_croppingParam.getRestrictedSizeScaleParam(maxHeight, maxWidth);
         }
         if ((imageHeight <= maxHeight) && (imageWidth <= maxWidth)) {
             return ""; // dummy parameter, doesn't actually do anything
         }
         CmsCroppingParamBean restricted = new CmsCroppingParamBean();
-        restricted.setTargetHeight(imageHeight > maxHeight ? maxHeight : imageHeight);
-        restricted.setTargetWidth(imageWidth > maxWidth ? maxWidth : imageWidth);
+
+        boolean tooHigh = imageHeight > maxHeight;
+        boolean tooWide = imageWidth > maxWidth;
+        double shrinkX = (1.0 * imageWidth) / maxWidth;
+        double shrinkY = (1.0 * imageHeight) / maxHeight;
+        double aspectRatio = (1.0 * imageWidth) / imageHeight;
+        if (tooHigh && tooWide) {
+            if (shrinkX > shrinkY) {
+                restricted.setTargetWidth(maxWidth);
+                restricted.setTargetHeight((int)(maxWidth / aspectRatio));
+            } else {
+                restricted.setTargetHeight(maxHeight);
+                restricted.setTargetWidth((int)(maxHeight * aspectRatio));
+            }
+        } else if (tooWide) {
+            restricted.setTargetWidth(maxWidth);
+            restricted.setTargetHeight((int)(maxWidth / aspectRatio));
+        } else if (tooHigh) {
+            restricted.setTargetHeight(maxHeight);
+            restricted.setTargetWidth((int)(maxHeight * aspectRatio));
+        } else {
+            restricted.setTargetWidth(imageWidth);
+            restricted.setTargetHeight(imageHeight);
+        }
         return restricted.toString();
     }
 

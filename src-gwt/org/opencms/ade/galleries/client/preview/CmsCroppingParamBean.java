@@ -355,6 +355,8 @@ public class CmsCroppingParamBean {
     /**
      * Returns the scale parameter to this bean for a restricted maximum target size.<p>
      *
+     * TODO: This does not work correctly if there isn't any cropping/scaling defined.
+     *
      * @param maxHeight the max height
      * @param maxWidth the max width
      *
@@ -364,6 +366,7 @@ public class CmsCroppingParamBean {
 
         String result = toString();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result)) {
+
             return getRestrictedSizeParam(maxHeight, maxWidth).toString();
         }
         if ((getOrgWidth() < maxWidth) && (getOrgHeight() < maxHeight)) {
