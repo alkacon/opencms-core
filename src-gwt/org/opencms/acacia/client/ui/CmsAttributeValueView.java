@@ -52,7 +52,6 @@ import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
-import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
@@ -1034,7 +1033,6 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
     @UiHandler("m_removeButton")
     protected void removeAttributeValue(ClickEvent event) {
 
-        CmsGwtLog.log("clicked remove");
         m_handler.removeAttributeValue(this);
         onResize();
     }
