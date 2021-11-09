@@ -1108,13 +1108,12 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
             if (formatter != null) {
                 // use structure id as the instance id to enable use of nested containers
                 Map<String, String> settings = new HashMap<String, String>();
-                if (!container.getElements().isEmpty()) {
-                    // in case the first element in the container is of the same type as the detail content, transfer it's settings
-                    CmsContainerElementBean el = container.getElements().get(0);
+                for (CmsContainerElementBean el : container.getElements()) {
                     try {
                         el.initResource(cms);
                         if (el.getResource().getTypeId() == detailContent.getTypeId()) {
                             settings.putAll(el.getIndividualSettings());
+                            break;
                         }
                     } catch (CmsException e) {
                         LOG.error(e.getLocalizedMessage(), e);
