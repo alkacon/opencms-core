@@ -29,6 +29,7 @@
 package org.opencms.ade.configuration;
 
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCache;
+import org.opencms.ade.configuration.plugins.CmsTemplatePluginGroup;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.CmsResourceState;
@@ -48,6 +49,7 @@ import org.opencms.util.CmsWaitHandle;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -89,20 +91,22 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     /** ID which is used to signal that the module configuration should be updated. */
     public static final CmsUUID ID_UPDATE_MODULES = CmsUUID.getNullUUID();
 
-    /** The sitemap master config resource type name. */
-    public static final String TYPE_SITEMAP_MASTER_CONFIG = "sitemap_master_config";
+    public static final CmsUUID ID_UPDATE_SITE_PLUGINS = CmsUUID.getConstantUUID("site_plugins");
 
     /** The interval at which the tasks which checks for configuration updates runs, in milliseconds. */
     public static final int TASK_DELAY_MILLIS = 3 * 1000;
+
+    /** Site plugin type name. */
+    public static final String TYPE_SITE_PLUGIN = "site_plugin";
+
+    /** The sitemap master config resource type name. */
+    public static final String TYPE_SITEMAP_MASTER_CONFIG = "sitemap_master_config";
 
     /** Debug flag. */
     protected static boolean DEBUG;
 
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsConfigurationCache.class);
-
-    /** The work queue to keep of track of what needs to be done during the next cache update. */
-    private LinkedBlockingQueue<Object> m_workQueue = new LinkedBlockingQueue<>();
 
     /** The resource type for sitemap configurations. */
     protected I_CmsResourceType m_configType;
@@ -146,6 +150,9 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
 
     /** Scheduled future which is used to cancel the scheduled task. */
     private ScheduledFuture<?> m_taskFuture;
+
+    /** The work queue to keep of track of what needs to be done during the next cache update. */
+    private LinkedBlockingQueue<Object> m_workQueue = new LinkedBlockingQueue<>();
 
     /**
      * Creates a new cache instance.<p>
@@ -358,11 +365,13 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                 + (m_cms.getRequestContext().getCurrentProject().isOnlineProject() ? "online" : "offline")
                 + " element views.");
         Map<CmsUUID, CmsElementView> elementViews = loadElementViews();
+        Map<CmsUUID, CmsTemplatePluginGroup> sitePlugins = loadSitePlugins();
         CmsADEConfigCacheState result = new CmsADEConfigCacheState(
             m_cms,
             siteConfigurations,
             moduleConfigs,
-            elementViews);
+            elementViews,
+            sitePlugins);
         long endTime = System.currentTimeMillis();
         if (LOG.isDebugEnabled()) {
             LOG.debug("readCompleteConfiguration took " + (endTime - beginTime) + "ms");
@@ -574,6 +583,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                 } else {
                     boolean updateModules = updateIds.remove(ID_UPDATE_MODULES);
                     boolean updateElementViews = updateIds.remove(ID_UPDATE_ELEMENT_VIEWS);
+                    boolean updateSitePlugins = updateIds.remove(ID_UPDATE_SITE_PLUGINS);
                     updateIds.remove(ID_UPDATE_FOLDERTYPES); // folder types are always updated when the update set is not empty, so at this point we don't care whether the id for folder type updates actually is in the update set
                     Map<CmsUUID, CmsADEConfigDataInternal> updateMap = Maps.newHashMap();
                     for (CmsUUID structureId : updateIds) {
@@ -589,7 +599,11 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                     if (updateElementViews) {
                         elementViews = loadElementViews();
                     }
-                    m_state = oldState.createUpdatedCopy(updateMap, moduleConfigs, elementViews);
+                    Map<CmsUUID, CmsTemplatePluginGroup> sitePlugins = null;
+                    if (updateSitePlugins) {
+                        sitePlugins = loadSitePlugins();
+                    }
+                    m_state = oldState.createUpdatedCopy(updateMap, moduleConfigs, elementViews, sitePlugins);
                 }
                 try {
                     OpenCms.getADEManager().getCache().flushContainerPages(false);
@@ -626,6 +640,8 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
             m_workQueue.add(ID_UPDATE_MODULES);
         } else if (isElementView(type)) {
             m_workQueue.add(ID_UPDATE_ELEMENT_VIEWS);
+        } else if (OpenCms.getResourceManager().matchResourceType(TYPE_SITE_PLUGIN, type)) {
+            m_workQueue.add(ID_UPDATE_SITE_PLUGINS);
         } else if (m_state.getFolderTypes().containsKey(rootPath)) {
             m_workQueue.add(ID_UPDATE_FOLDERTYPES);
         }
@@ -652,6 +668,8 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
             m_workQueue.add(ID_UPDATE_MODULES);
         } else if (isElementView(type)) {
             m_workQueue.add(ID_UPDATE_ELEMENT_VIEWS);
+        } else if (OpenCms.getResourceManager().matchResourceType(TYPE_SITE_PLUGIN, type)) {
+            m_workQueue.add(ID_UPDATE_SITE_PLUGINS);
         } else if (m_state.getFolderTypes().containsKey(rootPath)) {
             m_workQueue.add(ID_UPDATE_FOLDERTYPES);
         } else if (isMacroOrFlexFormatter(type, rootPath)) {
@@ -714,6 +732,38 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     private boolean isElementView(int type) {
 
         return type == m_elementViewType.getTypeId();
+    }
+
+    /**
+     * Loads the site plugins from the VFS.
+     *
+     * @return the map of site plugins, with their structure ids as keys
+     */
+    private Map<CmsUUID, CmsTemplatePluginGroup> loadSitePlugins() {
+
+        System.out.println("loadSitePlugins " + System.currentTimeMillis());
+
+        Map<CmsUUID, CmsTemplatePluginGroup> result = new HashMap<>();
+        if (m_cms.existsResource("/")) {
+            try {
+                @SuppressWarnings("deprecation")
+                CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(
+                    OpenCms.getResourceManager().getResourceType(TYPE_SITE_PLUGIN).getTypeId());
+                List<CmsResource> pluginResources = m_cms.readResources("/", filter);
+                for (CmsResource res : pluginResources) {
+                    try {
+                        CmsTemplatePluginGroup sitePlugin = CmsTemplatePluginGroup.read(m_cms, res);
+                        result.put(res.getStructureId(), sitePlugin);
+                    } catch (Exception e) {
+                        LOG.error(e.getMessage(), e);
+                    }
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return Collections.unmodifiableMap(result);
+
     }
 
 }

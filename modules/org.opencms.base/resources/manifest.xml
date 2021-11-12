@@ -451,6 +451,21 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="jsp-search" id="311">
 				<param name="schema">/system/modules/org.opencms.jsp.search/schemas/jsp-search.xsd</param>
 			</type>
+            <type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration" name="site_plugin" id="323">
+                <properties>
+                    <property>
+                        <name>locale-available</name>
+                        <value><![CDATA[en]]></value>
+                    </property>
+                    <property>
+                        <name>locale</name>
+                        <value><![CDATA[en]]></value>
+                    </property>
+                </properties>
+                <param name="resource.flag.internal">true</param>
+                <param name="schema">/system/modules/org.opencms.ade.config/schemas/site_plugin.xsd</param>
+            </type>
+			
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="subsitemap" key="fileicon.subsitemap" smalliconstyle="oc-icon-16-subsitemap" bigiconstyle="oc-icon-24-subsitemap" reference="folder">
@@ -649,6 +664,14 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 			<explorertype name="jsp-search" key="fileicon.jsp-search" smalliconstyle="oc-icon-16-jsp_search" bigiconstyle="oc-icon-24-jsp_search" reference="xmlcontent">
 				<newresource order="10" autosetnavigation="false" autosettitle="false" info="desc.jsp-search" key="title.jsp-search"/>
 			</explorertype>
+			
+     		<explorertype name="site_plugin" key="fileicon.site_plugin" smalliconstyle="oc-icon-16-module_config" bigiconstyle="oc-icon-24-module_config"  reference="xmlcontent">
+				<newresource order="23" autosetnavigation="false" autosettitle="false" info="desc.site_plugin"/>
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			
 		</explorertypes>
 	</module>
 	<files>

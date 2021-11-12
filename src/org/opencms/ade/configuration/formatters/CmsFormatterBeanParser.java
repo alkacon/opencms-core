@@ -30,6 +30,7 @@ package org.opencms.ade.configuration.formatters;
 import org.opencms.ade.configuration.CmsConfigurationReader;
 import org.opencms.ade.configuration.CmsPropertyConfig;
 import org.opencms.ade.configuration.plugins.CmsTemplatePlugin;
+import org.opencms.ade.configuration.plugins.CmsTemplatePluginGroup;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -662,6 +663,25 @@ public class CmsFormatterBeanParser {
         }
 
         return formatterBean;
+    }
+
+    /**
+     * Reads a list of plugins from the given XML content.
+     *
+     * @param content the XML content object
+     * @return the template plugin group
+     * @throws CmsException if something goes wrong
+     */
+    public CmsTemplatePluginGroup readSitePlugin(CmsXmlContent content) throws CmsException {
+
+        CmsXmlContentRootLocation root = new CmsXmlContentRootLocation(content, Locale.ENGLISH);
+        List<CmsTemplatePlugin> plugins = parsePlugins(root, N_PLUGIN);
+        CmsTemplatePluginGroup result = new CmsTemplatePluginGroup(
+            content.getFile().getStructureId(),
+            plugins,
+            content.getFile().getRootPath());
+        return result;
+
     }
 
     /**

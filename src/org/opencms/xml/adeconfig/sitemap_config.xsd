@@ -9,6 +9,7 @@
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/parameters.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/detailpage.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/function_list.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/plugin_list.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/add_formatters_block.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/remove_formatters_block.xsd" />
     <xsd:element name="SitemapConfigurations" type="OpenCmsSitemapConfigurations" />
@@ -36,6 +37,9 @@
             <xsd:element name="RemoveAllFunctions" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="RemoveFunctions" type="OpenCmsFunctionList" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Function" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="RemoveAllPlugins" type="OpenCmsBoolean" minOccurs="0" />
+            <xsd:element name="RemovePlugins" type="OpenCmsPluginList" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="AddPlugins" type="OpenCmsPluginList" minOccurs="0" maxOccurs="1" />
             <xsd:element name="DiscardProperties" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Property" type="OpenCmsADEField" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="DiscardModelPages" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />

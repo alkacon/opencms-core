@@ -31,6 +31,7 @@ import org.opencms.ade.configuration.CmsADEConfigDataInternal.AttributeValue;
 import org.opencms.ade.configuration.formatters.CmsFormatterBeanParser;
 import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
+import org.opencms.ade.configuration.plugins.CmsTemplatePluginGroup;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
@@ -1178,6 +1179,44 @@ public class CmsADEConfigData {
     public Collection<CmsResourceTypeConfig> getSearchableTypes(CmsObject cms) {
 
         return getResourceTypes();
+    }
+
+    /**
+     * Gets the ids of site plugins which are active in this sitemap configuration.
+     *
+     * @return the ids of active site plugins
+     */
+    public Set<CmsUUID> getSitePluginIds() {
+
+        CmsADEConfigData parent = parent();
+        Set<CmsUUID> result;
+        if ((parent == null) || m_data.isRemoveAllPlugins()) {
+            result = new HashSet<>();
+        } else {
+            result = parent.getSitePluginIds();
+            result.removeAll(m_data.getRemovedPlugins());
+            result.addAll(m_data.getAddedPlugins());
+        }
+        return result;
+    }
+
+    /**
+     * Gets the list of site plugins active in this sitemap configuration.
+     *
+     * @return the list of active site plugins
+     */
+    public List<CmsTemplatePluginGroup> getSitePlugins() {
+
+        Set<CmsUUID> pluginIds = getSitePluginIds();
+        List<CmsTemplatePluginGroup> result = new ArrayList<>();
+        Map<CmsUUID, CmsTemplatePluginGroup> plugins = m_cache.getSitePlugins();
+        for (CmsUUID id : pluginIds) {
+            CmsTemplatePluginGroup sitePlugin = plugins.get(id);
+            if (sitePlugin != null) {
+                result.add(sitePlugin);
+            }
+        }
+        return result;
     }
 
     /**

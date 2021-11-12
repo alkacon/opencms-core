@@ -138,6 +138,9 @@ public class CmsConfigurationReader {
     /** The description node name. */
     public static final String N_DESCRIPTION = "Description";
 
+    /** The RemoveAllPlugins node name. */
+    public static final String N_REMOVE_ALL_PLUGINS = "RemoveAllPlugins";
+
     /** The detail page node name. */
     public static final String N_DETAIL_PAGE = "DetailPage";
 
@@ -173,6 +176,12 @@ public class CmsConfigurationReader {
 
     /** The formatter node name. */
     public static final String N_FORMATTER = "Formatter";
+
+    /** The AddPlugin node name. */
+    public static final String N_ADD_PLUGIN = "AddPlugin";
+
+    /** The RemovePlugin node name. */
+    public static final String N_REMOVE_PLUGIN = "RemovePlugin";
 
     /** The function node name. */
     public static final String N_FUNCTION = "Function";
@@ -308,6 +317,12 @@ public class CmsConfigurationReader {
 
     /** The ShowInDefaultView node name. */
     private static final String N_SHOW_IN_DEFAULT_VIEW = "ShowInDefaultView";
+
+    public static final String N_PLUGIN = "Plugin";
+
+    public static final String N_ADD_PLUGINS = "AddPlugins";
+
+    public static final String N_REMOVE_PLUGINS = "RemovePlugins";
 
     /** The CMS context used for reading the configuration data. */
     private CmsObject m_cms;
@@ -537,6 +552,10 @@ public class CmsConfigurationReader {
             }
         }
 
+        boolean removeAllPlugins = getBoolean(root, N_REMOVE_ALL_PLUGINS);
+        Set<CmsUUID> pluginsToRemove = readInternalLinkListTargetIds(root, N_REMOVE_PLUGINS, N_PLUGIN);
+        Set<CmsUUID> pluginsToAdd = readInternalLinkListTargetIds(root, N_ADD_PLUGINS, N_PLUGIN);
+
         boolean removeAllFormatters = getBoolean(root, N_REMOVE_ALL_FORMATTERS);
         CmsFormatterChangeSet formatterChangeSet = parseFormatterChangeSet(
             basePath,
@@ -621,6 +640,9 @@ public class CmsConfigurationReader {
             removeFunctions,
             functions,
             functionsToRemove,
+            removeAllPlugins,
+            pluginsToAdd,
+            pluginsToRemove,
             useFormatterKeys,
             typeOrderingMode,
             attributes);
@@ -1068,6 +1090,36 @@ public class CmsConfigurationReader {
             propConfig = propConfig.cloneWithTop(true);
         }
         m_propertyConfigs.add(propConfig);
+    }
+
+    /**
+     * Helper method for reading the target ids from a list of internal links two levels nested.
+     *
+     * @param root the parent location
+     * @param childName the node name for the children
+     * @param grandchildName the node name for the grandchildren
+     *
+     * @return the set of target ids collected from the grandchildren
+     */
+    private Set<CmsUUID> readInternalLinkListTargetIds(
+        I_CmsXmlContentLocation root,
+        String childName,
+        String grandchildName) {
+
+        Set<CmsUUID> result = new LinkedHashSet<>();
+        for (I_CmsXmlContentValueLocation parent : root.getSubValues(childName)) {
+            for (I_CmsXmlContentValueLocation node : parent.getSubValues(grandchildName)) {
+                CmsXmlVfsFileValue value = (CmsXmlVfsFileValue)node.getValue();
+                CmsLink link = value.getLink(m_cms);
+                if (link != null) {
+                    CmsUUID structureId = link.getStructureId();
+                    if (structureId != null) {
+                        result.add(link.getStructureId());
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     /**

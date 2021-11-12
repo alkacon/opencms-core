@@ -349,6 +349,18 @@ public class CmsADEManager {
     }
 
     /**
+     * Gets the current ADE configuration cache state.<p>
+     *
+     * @param online true if you want the online state, false for the offline state
+     *
+     * @return the configuration cache state
+     */
+    public CmsADEConfigCacheState getCacheState(boolean online) {
+
+        return (online ? m_onlineCache : m_offlineCache).getState();
+    }
+
+    /**
      * Gets the configuration file type.<p>
      *
      * @return the configuration file type
@@ -1438,18 +1450,6 @@ public class CmsADEManager {
     protected CmsConfigurationCache getCache(boolean online) {
 
         return online ? m_onlineCache : m_offlineCache;
-    }
-
-    /**
-     * Gets the current ADE configuration cache state.<p>
-     *
-     * @param online true if you want the online state, false for the offline state
-     *
-     * @return the configuration cache state
-     */
-    protected CmsADEConfigCacheState getCacheState(boolean online) {
-
-        return (online ? m_onlineCache : m_offlineCache).getState();
     }
 
     /**

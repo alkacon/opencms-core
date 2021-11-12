@@ -190,6 +190,15 @@ public class CmsADEConfigDataInternal {
     /** The type ordering mode. */
     private CmsTypeOrderingMode m_typeOrderingMode;
 
+    /** The set of ids of site plugins to add. */
+    private Set<CmsUUID> m_addedPlugins;
+
+    /** The set of ids of site plugins to remove. */
+    private Set<CmsUUID> m_removedPlugins;
+
+    /** If true, all site plugins inherited from parent sitemaps should be removed. */
+    private boolean m_removeAllPlugins;
+
     /**
      * Creates a new configuration data instance.<p>
      *
@@ -214,6 +223,9 @@ public class CmsADEConfigDataInternal {
      * @param removeAllFunctions flag indicating whether all functions should be removed
      * @param functionIds the dynamic functions available
      * @param functionsToRemove the function ids to remove
+     * @param removeAllPlugins true all site plugins should be removed
+     * @param removedPlugins the ids of site plugins to remove
+     * @param addedPlugins the ids of site plugins to add
      * @param useFormatterKeys mode for using formatter keys / the new container page format
      * @param orderingMode the mode used to order the resource types
      * @param attributes the map of attributes
@@ -240,6 +252,9 @@ public class CmsADEConfigDataInternal {
         boolean removeAllFunctions,
         Set<CmsUUID> functionIds,
         Set<CmsUUID> functionsToRemove,
+        boolean removeAllPlugins,
+        Set<CmsUUID> addedPlugins,
+        Set<CmsUUID> removedPlugins,
         Boolean useFormatterKeys,
         CmsTypeOrderingMode orderingMode,
         Map<String, String> attributes) {
@@ -271,6 +286,9 @@ public class CmsADEConfigDataInternal {
         m_excludeExternalDetailContents = excludeExternalDetailContents;
         m_includeInSiteSelector = includeInSiteSelector;
         m_useFormatterKeys = useFormatterKeys;
+        m_removeAllPlugins = removeAllPlugins;
+        m_addedPlugins = Collections.unmodifiableSet(addedPlugins);
+        m_removedPlugins = Collections.unmodifiableSet(removedPlugins);
         Map<String, AttributeValue> attributeObjects = new HashMap<>();
         String attributeOrigin = basePath;
         if (resource != null) {
@@ -282,7 +300,6 @@ public class CmsADEConfigDataInternal {
         m_attributes = Collections.unmodifiableMap(new HashMap<>(attributeObjects));
 
         m_typeOrderingMode = orderingMode;
-
     }
 
     /**
@@ -297,7 +314,7 @@ public class CmsADEConfigDataInternal {
 
     /**
      * Creates a new configuration data instance.<p>
-
+    
      * @param resource the resource from which this configuration data was read
      * @param isModuleConfig true if this is a module configuration
      * @param basePath the base path
@@ -374,6 +391,16 @@ public class CmsADEConfigDataInternal {
     public static CmsADEConfigDataInternal emptyConfiguration(String basePath) {
 
         return new CmsADEConfigDataInternal(basePath);
+    }
+
+    /**
+     * Gets the set of ids of added site plugins.
+     *
+     * @return the set of ids of added site plugins
+     */
+    public Set<CmsUUID> getAddedPlugins() {
+
+        return m_addedPlugins;
     }
 
     /**
@@ -515,6 +542,16 @@ public class CmsADEConfigDataInternal {
     }
 
     /**
+     * Gets the set of ids of removed site plugins.
+     *
+     * @return the set of ids of removed site plugins
+     */
+    public Set<CmsUUID> getRemovedPlugins() {
+
+        return m_removedPlugins;
+    }
+
+    /**
      * Returns the resource.<p>
      *
      * @return the resource
@@ -634,6 +671,16 @@ public class CmsADEConfigDataInternal {
     public boolean isRemoveAllFunctions() {
 
         return m_removeAllFunctions;
+    }
+
+    /**
+     * Returns true if all site plugins inherited from parent sitemaps should be removed.
+     *
+     * @return true if all site plugins should be removed
+     */
+    public boolean isRemoveAllPlugins() {
+
+        return m_removeAllPlugins;
     }
 
     /**
