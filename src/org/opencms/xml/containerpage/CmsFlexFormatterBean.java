@@ -120,6 +120,7 @@ public class CmsFlexFormatterBean extends CmsFormatterBean {
             "",
             Collections.<String> emptyList(),
             "",
+            Collections.emptyList(),
             niceName,
             description,
             resourceTypeNames,

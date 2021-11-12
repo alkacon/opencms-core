@@ -27,6 +27,7 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.ade.configuration.plugins.CmsTemplatePlugin;
 import org.opencms.file.types.CmsResourceTypeFunctionConfig;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -59,6 +60,7 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
      * @param containerTypes the formatter container types
      * @param jspRootPath the formatter JSP VFS root path
      * @param jspStructureId the structure id of the formatter JSP
+     * @param key the key
      * @param functionFormatterId the standard function formatter structure id
      * @param minWidth the formatter min width
      * @param maxWidth the formatter max width
@@ -67,6 +69,7 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
      * @param inlineCss the in-line CSS
      * @param javascriptHeadIncludes the JavaScript headincludes
      * @param inlineJavascript the in-line JavaScript
+     * @param plugins the template plugins
      * @param niceName the configuration display name
      * @param description the description text for the formatter
      * @param id the configuration id
@@ -88,6 +91,7 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
         String inlineCss,
         List<String> javascriptHeadIncludes,
         String inlineJavascript,
+        List<CmsTemplatePlugin> plugins,
         String niceName,
         String description,
         String id,
@@ -110,6 +114,7 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
             inlineCss,
             javascriptHeadIncludes,
             inlineJavascript,
+            plugins,
             niceName,
             description,
             Arrays.asList(CmsResourceTypeFunctionConfig.TYPE_NAME),

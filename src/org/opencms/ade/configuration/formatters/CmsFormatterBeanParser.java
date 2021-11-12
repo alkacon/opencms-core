@@ -29,6 +29,7 @@ package org.opencms.ade.configuration.formatters;
 
 import org.opencms.ade.configuration.CmsConfigurationReader;
 import org.opencms.ade.configuration.CmsPropertyConfig;
+import org.opencms.ade.configuration.plugins.CmsTemplatePlugin;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -154,6 +155,9 @@ public class CmsFormatterBeanParser {
     public static final String N_FORMATTERS = "Formatters";
 
     /** Content value node name. */
+    public static final String N_GROUP = "Group";
+
+    /** Content value node name. */
     public static final String N_HEAD_INCLUDE_CSS = "HeadIncludeCss";
 
     /** Content value node name. */
@@ -208,6 +212,9 @@ public class CmsFormatterBeanParser {
     public static final String N_PLACEHOLDER_STRING_TEMPLATE = "PlaceholderStringTemplate";
 
     /** Content value node name. */
+    public static final String N_PLUGIN = "Plugin";
+
+    /** Content value node name. */
     public static final String N_PREVIEW = "Preview";
 
     /** Content value node name. */
@@ -224,6 +231,9 @@ public class CmsFormatterBeanParser {
 
     /** Node name. */
     public static final String N_STRING_TEMPLATE = "StringTemplate";
+
+    /** XML node name. */
+    public static final String N_TARGET = "Target";
 
     /** Content value node name. */
     public static final String N_TYPE = "Type";
@@ -463,6 +473,8 @@ public class CmsFormatterBeanParser {
         String useMetaMappinsForNormalElementsStr = getString(root, N_USE_META_MAPPINGS_FOR_NORMAL_ELEMENTS, "false");
         boolean useMetaMappingsForNormalElements = Boolean.parseBoolean(useMetaMappinsForNormalElementsStr);
 
+        List<CmsTemplatePlugin> plugins = parsePlugins(root, N_PLUGIN);
+
         // Functions which just have been created don't have any matching rules, but should fit anywhere
         boolean strictMode = !isFunction;
         parseMatch(root, strictMode);
@@ -606,6 +618,7 @@ public class CmsFormatterBeanParser {
                     m_inlineCss.toString(),
                     m_jsPaths,
                     m_inlineJs.toString(),
+                    plugins,
                     m_niceName,
                     description,
                     id,
@@ -628,6 +641,7 @@ public class CmsFormatterBeanParser {
                     m_inlineCss.toString(),
                     m_jsPaths,
                     m_inlineJs.toString(),
+                    plugins,
                     m_niceName,
                     description,
                     m_resourceType,
@@ -847,6 +861,55 @@ public class CmsFormatterBeanParser {
         }
         return result;
 
+    }
+
+    /**
+     * Parses a template plugin from the XML content.
+     *
+     * @param pluginLocation the location representing the template plugin
+     *
+     * @return the parsed template plugin
+     */
+    private CmsTemplatePlugin parsePlugin(I_CmsXmlContentValueLocation pluginLocation) {
+
+        String groupStr = pluginLocation.getSubValue(N_GROUP).getValue().getStringValue(m_cms).trim();
+        String origin = pluginLocation.getValue().getDocument().getFile().getRootPath();
+        I_CmsXmlContentValueLocation orderLoc = pluginLocation.getSubValue(N_ORDER);
+        int order = 0;
+        if (orderLoc != null) {
+            order = Integer.parseInt(orderLoc.getValue().getStringValue(m_cms).trim());
+        }
+        CmsXmlVarLinkValue target = (CmsXmlVarLinkValue)(pluginLocation.getSubValue(N_TARGET).getValue());
+        CmsLink link = target.getLink(m_cms);
+        CmsTemplatePlugin plugin = new CmsTemplatePlugin(link.toLinkInfo(), groupStr, order, origin);
+        return plugin;
+    }
+
+    /**
+     * Parses the template plugins.
+     *
+     * @param parent the parent location under which the template plugins are located
+     * @param subName the node name for the template plugins
+     *
+     * @return the list of parsed template plugins
+     */
+    private List<CmsTemplatePlugin> parsePlugins(I_CmsXmlContentLocation parent, String subName) {
+
+        List<CmsTemplatePlugin> result = new ArrayList<>();
+        for (I_CmsXmlContentValueLocation pluginLoc : parent.getSubValues(subName)) {
+            try {
+                CmsTemplatePlugin plugin = parsePlugin(pluginLoc);
+                result.add(plugin);
+            } catch (Exception e) {
+                LOG.error(
+                    "Error reading plugin in "
+                        + parent.getDocument().getFile().getRootPath()
+                        + ": "
+                        + e.getLocalizedMessage(),
+                    e);
+            }
+        }
+        return result;
     }
 
     /**

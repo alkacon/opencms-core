@@ -27,6 +27,7 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.ade.configuration.plugins.CmsTemplatePlugin;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
@@ -216,6 +217,13 @@ public interface I_CmsFormatterBean {
      * @return the defined settings
      */
     Map<String, CmsXmlContentProperty> getSettings();
+
+    /**
+     * Gets the template plugins.
+     *
+     * @return the template plugins
+     */
+    List<CmsTemplatePlugin> getTemplatePlugins();
 
     /**
      * Returns if nested formatter settings should be displayed.<p>

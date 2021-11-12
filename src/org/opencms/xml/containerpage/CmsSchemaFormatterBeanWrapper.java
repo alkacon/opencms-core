@@ -27,6 +27,7 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.ade.configuration.plugins.CmsTemplatePlugin;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
@@ -260,6 +261,11 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
     public Map<String, CmsXmlContentProperty> getSettings() {
 
         return m_contentHandler.getSettings(m_cms, m_elementResource);
+    }
+
+    public List<CmsTemplatePlugin> getTemplatePlugins() {
+
+        return Collections.emptyList();
     }
 
     /**

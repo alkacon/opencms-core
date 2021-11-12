@@ -6,6 +6,8 @@
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/choice_type_width.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/meta_mapping.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.containerpage/schemas/parameter.xsd"  />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/plugin.xsd" />
+    
     <xsd:element name="FunctionConfigs" type="OpenCmsFunctionConfigs" />
 
     <xsd:complexType name="OpenCmsFunctionConfigs">
@@ -26,6 +28,7 @@
             
 	       	<xsd:element name="HeadIncludeCss" type="OpenCmsHeadIncludeCss" minOccurs="0" maxOccurs="1"/>
         	<xsd:element name="HeadIncludeJs" type="OpenCmsHeadIncludeJavascript" minOccurs="0" maxOccurs="1" />
+        	<xsd:element name="Plugin" type="OpenCmsPlugin" minOccurs="0" maxOccurs="unbounded" />
         	<xsd:element name="IncludeSettings" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
         	<xsd:element name="Setting" type="OpenCmsFormatterSetting" minOccurs="0" maxOccurs="unbounded" />
   	        <xsd:element name="Parameter" type="OpenCmsDynamicFunctionParameter" minOccurs="0" maxOccurs="unbounded" />

@@ -27,6 +27,7 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.ade.configuration.plugins.CmsTemplatePlugin;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -133,6 +134,9 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     /** The nice name. */
     protected String m_niceName;
 
+    /** The referenced plugins. */
+    protected List<CmsTemplatePlugin> m_plugins = Collections.emptyList();
+
     /** The rank. */
     protected int m_rank;
 
@@ -173,6 +177,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
      * @param inlineCss the in-line CSS
      * @param javascriptHeadIncludes the JavaScript headincludes
      * @param inlineJavascript the in-line JavaScript
+     * @param plugins the template plugins
      * @param niceName the configuration display name
      * @param description the description text for the formatter
      * @param resourceTypeNames the resource type names
@@ -204,6 +209,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         String inlineCss,
         List<String> javascriptHeadIncludes,
         String inlineJavascript,
+        List<CmsTemplatePlugin> plugins,
         String niceName,
         String description,
         Collection<String> resourceTypeNames,
@@ -244,6 +250,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         m_inlineJavascript = inlineJavascript;
         m_javascriptHeadIncludes.addAll(javascriptHeadIncludes);
         m_cssHeadIncludes.addAll(cssHeadIncludes);
+        m_plugins = new ArrayList<>(plugins);
         m_settings.putAll(settings);
         m_isFromFormatterConfigFile = isFromConfigFile;
         m_isAutoEnabled = isAutoEnabled;
@@ -293,6 +300,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             "",
             Collections.<String> emptyList(),
             "",
+            new ArrayList<CmsTemplatePlugin>(),
             null,
             rootPath,
             Collections.<String> emptySet(),
@@ -390,6 +398,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             "",
             Collections.<String> emptyList(),
             "",
+            new ArrayList<>(),
             null,
             jspRootPath,
             Collections.<String> emptySet(),
@@ -618,6 +627,14 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     public Map<String, CmsXmlContentProperty> getSettings() {
 
         return Collections.unmodifiableMap(m_settings);
+    }
+
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getTemplatePlugins()
+     */
+    public List<CmsTemplatePlugin> getTemplatePlugins() {
+
+        return Collections.unmodifiableList(m_plugins);
     }
 
     /**

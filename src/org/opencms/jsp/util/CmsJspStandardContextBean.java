@@ -30,6 +30,8 @@ package org.opencms.jsp.util;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.configuration.CmsFunctionReference;
+import org.opencms.ade.configuration.plugins.CmsTemplatePlugin;
+import org.opencms.ade.configuration.plugins.CmsTemplatePluginFinder;
 import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.CmsDetailOnlyContainerUtil;
 import org.opencms.ade.containerpage.CmsModelGroupHelper;
@@ -95,6 +97,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -102,6 +105,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.Multimap;
 
 /**
  * Allows convenient access to the most important OpenCms functions on a JSP page,
@@ -768,6 +773,9 @@ public final class CmsJspStandardContextBean {
 
     /** Map from root paths to site relative paths. */
     private Map<String, String> m_sitePaths;
+
+    /** The template plugins. */
+    private Map<String, List<CmsTemplatePluginWrapper>> m_templatePlugins;
 
     /** The lazy initialized map for the detail pages. */
     private Map<String, String> m_typeDetailPage;
@@ -1518,6 +1526,39 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Gets the set of plugin group names.
+     *
+     * @return the set of plugin group names
+     */
+    public Set<String> getPluginGroups() {
+
+        return getPlugins().keySet();
+    }
+
+    /**
+     * Gets the map of plugins by group.
+     *
+     * @return the map of active plugins by group
+     */
+    public Map<String, List<CmsTemplatePluginWrapper>> getPlugins() {
+
+        if (m_templatePlugins == null) {
+            final Multimap<String, CmsTemplatePlugin> templatePluginsMultimap = new CmsTemplatePluginFinder(
+                this).getTemplatePlugins();
+            Map<String, List<CmsTemplatePluginWrapper>> templatePlugins = new HashMap<>();
+            for (String key : templatePluginsMultimap.keySet()) {
+                List<CmsTemplatePluginWrapper> wrappers = new ArrayList<>();
+                for (CmsTemplatePlugin plugin : templatePluginsMultimap.get(key)) {
+                    wrappers.add(new CmsTemplatePluginWrapper(m_cms, plugin));
+                }
+                templatePlugins.put(key, Collections.unmodifiableList(wrappers));
+            }
+            m_templatePlugins = templatePlugins;
+        }
+        return m_templatePlugins;
+    }
+
+    /**
      * JSP EL accessor method for retrieving the preview formatters.<p>
      *
      * @return a lazy map for accessing preview formatters
@@ -1714,6 +1755,16 @@ public final class CmsJspStandardContextBean {
         } else {
             return CmsGwtConstants.FORMATTER_RELOAD_MARKER;
         }
+    }
+
+    /**
+     * Gets the stored request.
+     *
+     * @return the stored request
+     */
+    public ServletRequest getRequest() {
+
+        return m_request;
     }
 
     /**

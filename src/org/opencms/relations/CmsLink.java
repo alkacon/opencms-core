@@ -134,6 +134,23 @@ public class CmsLink {
     private CmsResource m_resource;
 
     /**
+     * Creates a new link from the given link info bean.
+     *
+     * @param linkInfo the link info bean
+     */
+    public CmsLink(CmsLinkInfo linkInfo) {
+
+        m_name = DEFAULT_NAME;
+        m_type = linkInfo.getType();
+        m_internal = linkInfo.isInternal();
+        m_structureId = linkInfo.getStructureId();
+        m_target = linkInfo.getTarget();
+        m_anchor = linkInfo.getAnchor();
+        m_query = linkInfo.getQuery();
+        setUri();
+    }
+
+    /**
      * Reconstructs a link object from the given XML node.<p>
      *
      * @param element the XML node containing the link information
@@ -649,6 +666,11 @@ public class CmsLink {
     public boolean isInternal() {
 
         return m_internal;
+    }
+
+    public CmsLinkInfo toLinkInfo() {
+
+        return new CmsLinkInfo(m_structureId, m_target, m_query, m_anchor, m_type, m_internal);
     }
 
     /**

@@ -132,6 +132,7 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
             "",
             Collections.<String> emptyList(),
             "",
+            Collections.emptyList(),
             niceName,
             description,
             resourceTypeNames,
