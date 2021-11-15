@@ -88,6 +88,22 @@ public class CmsTemplatePluginWrapper {
         return m_plugin.getOrder();
     }
 
+    /** 
+     * Returns the path of the resource, if this is an internal link, and null otherwise. 
+     * 
+     * @return the path of the link target 
+     */
+    public String getPath() {
+
+        CmsLinkInfo target = m_plugin.getTarget();
+        if (!target.isInternal()) {
+            return null;
+        }
+        CmsLink targetLink = target.toLink();
+        targetLink.checkConsistency(m_cms);
+        return m_cms.getRequestContext().removeSiteRoot(targetLink.getTarget());
+    }
+
     /**
      * @see java.lang.Object#toString()
      */
