@@ -1194,9 +1194,9 @@ public class CmsADEConfigData {
             result = new HashSet<>();
         } else {
             result = parent.getSitePluginIds();
-            result.removeAll(m_data.getRemovedPlugins());
-            result.addAll(m_data.getAddedPlugins());
         }
+        result.removeAll(m_data.getRemovedPlugins());
+        result.addAll(m_data.getAddedPlugins());
         return result;
     }
 
