@@ -182,7 +182,7 @@ public class CmsTemplatePluginFinder {
                     e);
             }
         }
-        for (CmsTemplatePluginGroup sitePlugin : config.getSitePlugins()) {
+        for (CmsSitePlugin sitePlugin : config.getSitePlugins()) {
             plugins.addAll(sitePlugin.getPlugins());
         }
         return plugins;

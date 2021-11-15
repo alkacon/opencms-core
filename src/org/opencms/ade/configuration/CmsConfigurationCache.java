@@ -29,7 +29,7 @@
 package org.opencms.ade.configuration;
 
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCache;
-import org.opencms.ade.configuration.plugins.CmsTemplatePluginGroup;
+import org.opencms.ade.configuration.plugins.CmsSitePlugin;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.CmsResourceState;
@@ -365,7 +365,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                 + (m_cms.getRequestContext().getCurrentProject().isOnlineProject() ? "online" : "offline")
                 + " element views.");
         Map<CmsUUID, CmsElementView> elementViews = loadElementViews();
-        Map<CmsUUID, CmsTemplatePluginGroup> sitePlugins = loadSitePlugins();
+        Map<CmsUUID, CmsSitePlugin> sitePlugins = loadSitePlugins();
         CmsADEConfigCacheState result = new CmsADEConfigCacheState(
             m_cms,
             siteConfigurations,
@@ -599,7 +599,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                     if (updateElementViews) {
                         elementViews = loadElementViews();
                     }
-                    Map<CmsUUID, CmsTemplatePluginGroup> sitePlugins = null;
+                    Map<CmsUUID, CmsSitePlugin> sitePlugins = null;
                     if (updateSitePlugins) {
                         sitePlugins = loadSitePlugins();
                     }
@@ -739,9 +739,9 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
      *
      * @return the map of site plugins, with their structure ids as keys
      */
-    private Map<CmsUUID, CmsTemplatePluginGroup> loadSitePlugins() {
+    private Map<CmsUUID, CmsSitePlugin> loadSitePlugins() {
 
-        Map<CmsUUID, CmsTemplatePluginGroup> result = new HashMap<>();
+        Map<CmsUUID, CmsSitePlugin> result = new HashMap<>();
         if (m_cms.existsResource("/")) {
             try {
                 @SuppressWarnings("deprecation")
@@ -750,7 +750,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                 List<CmsResource> pluginResources = m_cms.readResources("/", filter);
                 for (CmsResource res : pluginResources) {
                     try {
-                        CmsTemplatePluginGroup sitePlugin = CmsTemplatePluginGroup.read(m_cms, res);
+                        CmsSitePlugin sitePlugin = CmsSitePlugin.read(m_cms, res);
                         result.put(res.getStructureId(), sitePlugin);
                     } catch (Exception e) {
                         LOG.error(e.getMessage(), e);

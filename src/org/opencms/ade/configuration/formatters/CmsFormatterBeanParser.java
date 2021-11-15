@@ -29,8 +29,8 @@ package org.opencms.ade.configuration.formatters;
 
 import org.opencms.ade.configuration.CmsConfigurationReader;
 import org.opencms.ade.configuration.CmsPropertyConfig;
+import org.opencms.ade.configuration.plugins.CmsSitePlugin;
 import org.opencms.ade.configuration.plugins.CmsTemplatePlugin;
-import org.opencms.ade.configuration.plugins.CmsTemplatePluginGroup;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -672,13 +672,13 @@ public class CmsFormatterBeanParser {
      * @return the template plugin group
      * @throws CmsException if something goes wrong
      */
-    public CmsTemplatePluginGroup readSitePlugin(CmsXmlContent content) throws CmsException {
+    public CmsSitePlugin readSitePlugin(CmsXmlContent content) throws CmsException {
 
         CmsXmlContentRootLocation root = new CmsXmlContentRootLocation(content, Locale.ENGLISH);
         String niceName = root.getSubValue(N_NICE_NAME).getValue().getStringValue(m_cms).trim();
         String description = root.getSubValue(N_DESCRIPTION).getValue().getStringValue(m_cms).trim();
         List<CmsTemplatePlugin> plugins = parsePlugins(root, N_PLUGIN);
-        CmsTemplatePluginGroup result = new CmsTemplatePluginGroup(
+        CmsSitePlugin result = new CmsSitePlugin(
             content.getFile().getStructureId(),
             niceName,
             description,
@@ -905,8 +905,13 @@ public class CmsFormatterBeanParser {
         }
         CmsXmlVarLinkValue target = (CmsXmlVarLinkValue)(pluginLocation.getSubValue(N_TARGET).getValue());
         CmsLink link = target.getLink(m_cms);
-        CmsTemplatePlugin plugin = new CmsTemplatePlugin(link.toLinkInfo(), groupStr, order, origin);
-        return plugin;
+        if (link != null) {
+            CmsTemplatePlugin plugin = new CmsTemplatePlugin(link.toLinkInfo(), groupStr, order, origin);
+            return plugin;
+        } else {
+            LOG.error("Plugin definition has null link in " + pluginLocation.getDocument().getFile().getRootPath());
+            return null;
+        }
     }
 
     /**
@@ -923,7 +928,9 @@ public class CmsFormatterBeanParser {
         for (I_CmsXmlContentValueLocation pluginLoc : parent.getSubValues(subName)) {
             try {
                 CmsTemplatePlugin plugin = parsePlugin(pluginLoc);
-                result.add(plugin);
+                if (plugin != null) {
+                    result.add(plugin);
+                }
             } catch (Exception e) {
                 LOG.error(
                     "Error reading plugin in "

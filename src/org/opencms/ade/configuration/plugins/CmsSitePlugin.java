@@ -46,7 +46,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 /**
  * Immutable collection of template plugins, normally read from a file of type site-plugin.
  */
-public class CmsTemplatePluginGroup {
+public class CmsSitePlugin {
 
     /** The nice name. */
     private String m_niceName;
@@ -72,7 +72,7 @@ public class CmsTemplatePluginGroup {
      * @param plugins the list of plugins
      * @param origin the origin (for debugging purposes)
      */
-    public CmsTemplatePluginGroup(
+    public CmsSitePlugin(
         CmsUUID id,
         String niceName,
         String description,
@@ -94,7 +94,7 @@ public class CmsTemplatePluginGroup {
      * @return the site plugin read from the file
      * @throws CmsException if something goes wrong
      */
-    public static CmsTemplatePluginGroup read(CmsObject cms, CmsResource res) throws CmsException {
+    public static CmsSitePlugin read(CmsObject cms, CmsResource res) throws CmsException {
 
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(res));
         CmsFormatterBeanParser parser = new CmsFormatterBeanParser(cms, new HashMap<>());

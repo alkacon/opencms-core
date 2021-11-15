@@ -28,7 +28,7 @@
 package org.opencms.ade.configuration;
 
 import org.opencms.ade.configuration.CmsADEConfigData.DetailInfo;
-import org.opencms.ade.configuration.plugins.CmsTemplatePluginGroup;
+import org.opencms.ade.configuration.plugins.CmsSitePlugin;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -100,7 +100,7 @@ public class CmsADEConfigCacheState {
     private Supplier<Set<CmsUUID>> m_detailPageIdCache;
 
     /** Site plugins. */
-    private Map<CmsUUID, CmsTemplatePluginGroup> m_sitePlugins;
+    private Map<CmsUUID, CmsSitePlugin> m_sitePlugins;
 
     /**
      * Creates a new configuration cache state.<p>
@@ -116,7 +116,7 @@ public class CmsADEConfigCacheState {
         Map<CmsUUID, CmsADEConfigDataInternal> siteConfigurations,
         List<CmsADEConfigDataInternal> moduleConfigs,
         Map<CmsUUID, CmsElementView> elementViews,
-        Map<CmsUUID, CmsTemplatePluginGroup> sitePlugins) {
+        Map<CmsUUID, CmsSitePlugin> sitePlugins) {
 
         m_cms = cms;
         m_siteConfigurations = siteConfigurations;
@@ -200,7 +200,7 @@ public class CmsADEConfigCacheState {
         Map<CmsUUID, CmsADEConfigDataInternal> sitemapUpdates,
         List<CmsADEConfigDataInternal> moduleUpdates,
         Map<CmsUUID, CmsElementView> elementViewUpdates,
-        Map<CmsUUID, CmsTemplatePluginGroup> sitePluginUpdates) {
+        Map<CmsUUID, CmsSitePlugin> sitePluginUpdates) {
 
         Map<CmsUUID, CmsADEConfigDataInternal> newSitemapConfigs = Maps.newHashMap(m_siteConfigurations);
         if (sitemapUpdates != null) {
@@ -223,7 +223,7 @@ public class CmsADEConfigCacheState {
             newElementViews = elementViewUpdates;
         }
 
-        Map<CmsUUID, CmsTemplatePluginGroup> newSitePlugins = m_sitePlugins;
+        Map<CmsUUID, CmsSitePlugin> newSitePlugins = m_sitePlugins;
         if (sitePluginUpdates != null) {
             newSitePlugins = sitePluginUpdates;
         }
@@ -329,7 +329,7 @@ public class CmsADEConfigCacheState {
         return m_siteConfigurationsByPath.keySet();
     }
 
-    public Map<CmsUUID, CmsTemplatePluginGroup> getSitePlugins() {
+    public Map<CmsUUID, CmsSitePlugin> getSitePlugins() {
 
         return m_sitePlugins;
     }

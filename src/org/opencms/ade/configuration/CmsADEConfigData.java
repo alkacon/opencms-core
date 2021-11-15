@@ -31,7 +31,7 @@ import org.opencms.ade.configuration.CmsADEConfigDataInternal.AttributeValue;
 import org.opencms.ade.configuration.formatters.CmsFormatterBeanParser;
 import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
-import org.opencms.ade.configuration.plugins.CmsTemplatePluginGroup;
+import org.opencms.ade.configuration.plugins.CmsSitePlugin;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
@@ -1205,13 +1205,13 @@ public class CmsADEConfigData {
      *
      * @return the list of active site plugins
      */
-    public List<CmsTemplatePluginGroup> getSitePlugins() {
+    public List<CmsSitePlugin> getSitePlugins() {
 
         Set<CmsUUID> pluginIds = getSitePluginIds();
-        List<CmsTemplatePluginGroup> result = new ArrayList<>();
-        Map<CmsUUID, CmsTemplatePluginGroup> plugins = m_cache.getSitePlugins();
+        List<CmsSitePlugin> result = new ArrayList<>();
+        Map<CmsUUID, CmsSitePlugin> plugins = m_cache.getSitePlugins();
         for (CmsUUID id : pluginIds) {
-            CmsTemplatePluginGroup sitePlugin = plugins.get(id);
+            CmsSitePlugin sitePlugin = plugins.get(id);
             if (sitePlugin != null) {
                 result.add(sitePlugin);
             }
