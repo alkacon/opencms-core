@@ -741,8 +741,6 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
      */
     private Map<CmsUUID, CmsTemplatePluginGroup> loadSitePlugins() {
 
-        System.out.println("loadSitePlugins " + System.currentTimeMillis());
-
         Map<CmsUUID, CmsTemplatePluginGroup> result = new HashMap<>();
         if (m_cms.existsResource("/")) {
             try {
