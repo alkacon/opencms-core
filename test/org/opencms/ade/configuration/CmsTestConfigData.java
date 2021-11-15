@@ -33,12 +33,15 @@ import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheSt
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A configuration data class whose parent can be set directly for test purposes.<p>
@@ -56,6 +59,16 @@ public class CmsTestConfigData extends CmsADEConfigData {
 
     /** The schema formatters can be set directly for the test configuration data. */
     private Map<Integer, CmsFormatterConfiguration> m_schemaFormatterConfiguration = new HashMap<Integer, CmsFormatterConfiguration>();
+
+    /**
+     * Creates a new instance.
+     *
+     * @param internalData the internal data
+     */
+    public CmsTestConfigData(CmsADEConfigDataInternal internalData) {
+
+        super(internalData, null, null);
+    }
 
     /**
      * Creates a new configuration data object.<p>
@@ -96,6 +109,46 @@ public class CmsTestConfigData extends CmsADEConfigData {
                 null),
             null,
             null);
+    }
+
+    public static CmsTestConfigData buildTestDataForPlugins(
+        CmsObject cms,
+        String basePath,
+        boolean removeAllPlugins,
+        Set<CmsUUID> pluginsToAdd,
+        Set<CmsUUID> pluginsToRemove) {
+
+        CmsADEConfigDataInternal internal;
+        internal = new CmsADEConfigDataInternal(
+            /*CmsObject*/ cms,
+            /*CmsResource*/ null,
+            /* boolean isModuleConfig*/false,
+            /*String basePath*/basePath,
+            /*List<CmsUUID> masterConfigs*/new ArrayList<>(),
+            /*List<CmsResourceTypeConfig> resourceTypeConfig*/new ArrayList<>(),
+            /*boolean discardInheritedTypes*/false,
+            /*List<CmsPropertyConfig> propertyConfig*/new ArrayList<>(),
+            /*DiscardPropertiesMode discardPropertiesMode*/null,
+            /*List<CmsDetailPageInfo> detailPageInfos*/new ArrayList<>(),
+            /*List<CmsModelPageConfigWithoutResource> modelPages*/new ArrayList<>(),
+            /*List<CmsFunctionReference> functionReferences*/new ArrayList<>(),
+            /*boolean discardInheritedModelPages*/false,
+            /*boolean createContentsLocally*/true,
+            /*boolean preferDetailPagesForLocalContents*/false,
+            /*boolean excludeExternalDetailContents*/false,
+            /*boolean includeInSiteSelector*/true,
+            /*CmsFormatterChangeSet formatterChangeSet*/new CmsFormatterChangeSet(),
+            /*boolean removeAllFunctions*/false,
+            /*Set<CmsUUID> functionIds*/new HashSet<>(),
+            /*Set<CmsUUID> functionsToRemove*/new HashSet<>(),
+            /*boolean removeAllPlugins*/removeAllPlugins,
+            /*Set<CmsUUID> addedPlugins*/pluginsToAdd,
+            /*Set<CmsUUID> removedPlugins*/pluginsToRemove,
+            /*Boolean useFormatterKeys*/null,
+            /*CmsTypeOrderingMode orderingMode*/CmsTypeOrderingMode.byDisplayOrder,
+            /*Map<String, String> attributes*/new HashMap<>());
+        return new CmsTestConfigData(internal);
+
     }
 
     /**
