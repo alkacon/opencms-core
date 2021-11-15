@@ -742,7 +742,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     private Map<CmsUUID, CmsSitePlugin> loadSitePlugins() {
 
         Map<CmsUUID, CmsSitePlugin> result = new HashMap<>();
-        if (m_cms.existsResource("/")) {
+        if (OpenCms.getResourceManager().hasResourceType(TYPE_SITE_PLUGIN) && m_cms.existsResource("/")) {
             try {
                 @SuppressWarnings("deprecation")
                 CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(
