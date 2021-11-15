@@ -48,6 +48,12 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  */
 public class CmsTemplatePluginGroup {
 
+    /** The nice name. */
+    private String m_niceName;
+
+    /** The description. */
+    private String m_description;
+
     /** The origin, for debugging. */
     private String m_origin;
 
@@ -61,13 +67,22 @@ public class CmsTemplatePluginGroup {
      * Creates a new instance.
      *
      * @param id the id of the plugin group
+     * @param niceName the nice name
+     * @param description the description
      * @param plugins the list of plugins
      * @param origin the origin (for debugging purposes)
      */
-    public CmsTemplatePluginGroup(CmsUUID id, List<CmsTemplatePlugin> plugins, String origin) {
+    public CmsTemplatePluginGroup(
+        CmsUUID id,
+        String niceName,
+        String description,
+        List<CmsTemplatePlugin> plugins,
+        String origin) {
 
         m_id = id;
         m_plugins = Collections.unmodifiableList(new ArrayList<>(plugins));
+        m_niceName = niceName;
+        m_description = description;
         m_origin = origin;
     }
 
@@ -88,6 +103,16 @@ public class CmsTemplatePluginGroup {
     }
 
     /**
+     * Gets the description.
+     *
+     * @return the description
+     */
+    public String getDescription() {
+
+        return m_description;
+    }
+
+    /**
      * Gets the id.
      *
      * <p>Normally, this is the structure id of the file from which this group was read.
@@ -97,6 +122,16 @@ public class CmsTemplatePluginGroup {
     public CmsUUID getId() {
 
         return m_id;
+    }
+
+    /**
+     * Gets the nice name.
+     *
+     * @return the nice name
+     */
+    public String getNiceName() {
+
+        return m_niceName;
     }
 
     /**

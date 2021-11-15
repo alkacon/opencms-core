@@ -675,9 +675,13 @@ public class CmsFormatterBeanParser {
     public CmsTemplatePluginGroup readSitePlugin(CmsXmlContent content) throws CmsException {
 
         CmsXmlContentRootLocation root = new CmsXmlContentRootLocation(content, Locale.ENGLISH);
+        String niceName = root.getSubValue(N_NICE_NAME).getValue().getStringValue(m_cms).trim();
+        String description = root.getSubValue(N_DESCRIPTION).getValue().getStringValue(m_cms).trim();
         List<CmsTemplatePlugin> plugins = parsePlugins(root, N_PLUGIN);
         CmsTemplatePluginGroup result = new CmsTemplatePluginGroup(
             content.getFile().getStructureId(),
+            niceName,
+            description,
             plugins,
             content.getFile().getRootPath());
         return result;

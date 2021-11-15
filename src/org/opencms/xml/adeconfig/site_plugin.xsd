@@ -14,6 +14,8 @@
 
     <xsd:complexType name="OpenCmsSitePlugin">
         <xsd:sequence>
+        	<xsd:element name="NiceName" type="OpenCmsString" />
+        	<xsd:element name="Description" type="OpenCmsString" />
             <xsd:element name="Plugin" type="OpenCmsPlugin" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
@@ -22,6 +24,9 @@
     <xsd:annotation>
         <xsd:appinfo>
             <resourcebundle name="org.opencms.xml.containerpage.messages" />
+            <mappings>
+                <mapping element="NiceName" mapto="galleryName" />
+            </mappings>
             <messagekeyhandler class="org.opencms.i18n.CmsReplaceMessageKeyPrefix" configuration="label.SitemapMasterConfiguration:label.SitemapConfiguration" />
         </xsd:appinfo>
     </xsd:annotation>
