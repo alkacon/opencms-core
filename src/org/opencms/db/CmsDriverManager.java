@@ -91,6 +91,7 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.monitor.CmsMemoryMonitor;
+import org.opencms.monitor.CmsMemoryMonitor.CacheType;
 import org.opencms.publish.CmsPublishEngine;
 import org.opencms.publish.CmsPublishJobInfoBean;
 import org.opencms.publish.CmsPublishReport;
@@ -1196,8 +1197,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 m_monitor.clearCache();
                 break;
             case I_CmsEventListener.EVENT_CLEAR_PRINCIPAL_CACHES:
-            case I_CmsEventListener.EVENT_USER_MODIFIED:
                 m_monitor.clearPrincipalsCache();
+                break;
+            case I_CmsEventListener.EVENT_USER_MODIFIED:
+                String action = (String)event.getData().get(I_CmsEventListener.KEY_USER_ACTION);
+                m_monitor.flushCache(
+                    CacheType.USER,
+                    CacheType.GROUP,
+                    CacheType.ORG_UNIT,
+                    CacheType.ACL,
+                    CacheType.PERMISSION,
+                    CacheType.USER_LIST);
+                if (I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_ADD_USER_TO_GROUP.equals(action)
+                    || I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_REMOVE_USER_FROM_GROUP.equals(action)
+                    || I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_SET_OU.equals(action)) {
+
+                    m_monitor.flushCache(CacheType.USERGROUPS, CacheType.HAS_ROLE, CacheType.ROLE_LIST);
+                }
                 break;
             default:
                 // noop
@@ -5826,7 +5842,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsMemoryMonitor.CacheType.ACL,
             CmsMemoryMonitor.CacheType.GROUP,
             CmsMemoryMonitor.CacheType.ORG_UNIT,
-            CmsMemoryMonitor.CacheType.USERGROUPS,
             CmsMemoryMonitor.CacheType.USER_LIST,
             CmsMemoryMonitor.CacheType.PERMISSION,
             CmsMemoryMonitor.CacheType.RESOURCE_LIST);
@@ -10481,7 +10496,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsUser oldUser = readUser(dbc, user.getId());
         m_monitor.clearUserCache(oldUser);
         getUserDriver(dbc).writeUser(dbc, user);
-        m_monitor.flushCache(CmsMemoryMonitor.CacheType.USERGROUPS, CmsMemoryMonitor.CacheType.USER_LIST);
+        m_monitor.flushCache(CmsMemoryMonitor.CacheType.USER_LIST);
 
         if (!dbc.getProjectId().isNullUUID()) {
             // user modified event is not needed
