@@ -668,6 +668,11 @@ public class CmsLink {
         return m_internal;
     }
 
+    /**
+     * Converts this link to a link info object.
+     *
+     * @return the link info object
+     */
     public CmsLinkInfo toLinkInfo() {
 
         return new CmsLinkInfo(m_structureId, m_target, m_query, m_anchor, m_type, m_internal);
