@@ -159,7 +159,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /** The concurrency level for the guava caches. */
-    private static final int CONCURRENCY_LEVEL = 8;
+    static final int CONCURRENCY_LEVEL = 8;
 
     /** Set interval for clearing the caches to 10 minutes. */
     private static final int INTERVAL_CLEAR = 1000 * 60 * 10;
@@ -228,7 +228,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     private Map<String, CmsUser> m_cacheUser;
 
     /** Cache for user groups. */
-    private Map<String, List<CmsGroup>> m_cacheUserGroups;
+    private CmsGroupListCache m_cacheUserGroups;
 
     /** Cache for user lists. */
     private Map<String, List<CmsUser>> m_cacheUserList;
@@ -854,16 +854,17 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given list of user groups under the given cache key.<p>
-     *
+     * 
+     * @param userId the id of the user
      * @param key the cache key
      * @param userGroups the list of user groups to cache
      */
-    public void cacheUserGroups(String key, List<CmsGroup> userGroups) {
+    public void cacheUserGroups(CmsUUID userId, String key, List<CmsGroup> userGroups) {
 
         if (m_disabled.get(CacheType.USERGROUPS) != null) {
             return;
         }
-        m_cacheUserGroups.put(key, userGroups);
+        m_cacheUserGroups.put(userId, key, userGroups);
     }
 
     /**
@@ -1345,6 +1346,16 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         flushCache(CacheType.USER_LIST);
     }
 
+    /** 
+     * Flushes the user group cache for the user with the given id.
+     *
+     * @param id the user id 
+     **/
+    public void flushUserGroups(CmsUUID id) {
+
+        m_cacheUserGroups.clearUser(id);
+    }
+
     /**
      * Flushes the users cache.<p>
      *
@@ -1692,14 +1703,15 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the user groups list cached with the given cache key or <code>null</code> if not found.<p>
-     *
+     * 
+     * @param userId the user id 
      * @param key the cache key to look for
      *
      * @return the user groups list cached with the given cache key
      */
-    public List<CmsGroup> getCachedUserGroups(String key) {
+    public List<CmsGroup> getCachedUserGroups(CmsUUID userId, String key) {
 
-        return m_cacheUserGroups.get(key);
+        return m_cacheUserGroups.get(userId, key);
     }
 
     /**
@@ -1797,10 +1809,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         return m_memoryCurrent;
     }
 
-    /** 
-     * Gets the cache for OU / resource associations. 
-     * 
-     * @return the cache 
+    /**
+     * Gets the cache for OU / resource associations.
+     *
+     * @return the cache
      */
     public LoadingCache<ResourceOUCacheKey, ResourceOUMap> getResourceOuCache() {
 
@@ -1913,7 +1925,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         register(CmsDriverManager.class.getName() + ".orgUnitCache", m_cacheOrgUnit);
 
         // user groups list cache
-        m_cacheUserGroups = createLRUCacheMap(cacheSettings.getUserGroupsCacheSize());
+        m_cacheUserGroups = new CmsGroupListCache(cacheSettings.getUserGroupsCacheSize());
         register(CmsDriverManager.class.getName() + ".userGroupsCache", m_cacheUserGroups);
 
         // project cache
@@ -2388,6 +2400,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         }
         if (obj instanceof Map) {
             return Integer.toString(((Map<?, ?>)obj).size());
+        }
+        if (obj instanceof CmsGroupListCache) {
+            return "" + ((CmsGroupListCache)obj).size();
         }
         return "-";
     }

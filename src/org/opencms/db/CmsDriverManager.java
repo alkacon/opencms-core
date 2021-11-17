@@ -889,7 +889,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (readRoles) {
             m_monitor.flushCache(CmsMemoryMonitor.CacheType.HAS_ROLE, CmsMemoryMonitor.CacheType.ROLE_LIST);
         }
-        m_monitor.flushCache(CmsMemoryMonitor.CacheType.USERGROUPS, CmsMemoryMonitor.CacheType.USER_LIST);
+        m_monitor.flushUserGroups(user.getId());
+        m_monitor.flushCache(CmsMemoryMonitor.CacheType.USER_LIST);
 
         if (!dbc.getProjectId().isNullUUID() && !CmsProject.ONLINE_PROJECT_ID.equals(dbc.getProjectId())) {
             // user modified event is not needed
@@ -1212,7 +1213,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     || I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_REMOVE_USER_FROM_GROUP.equals(action)
                     || I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_SET_OU.equals(action)) {
 
-                    m_monitor.flushCache(CacheType.USERGROUPS, CacheType.HAS_ROLE, CacheType.ROLE_LIST);
+                    String userId = (String)(event.getData().get(I_CmsEventListener.KEY_USER_ID));
+                    if (userId != null) {
+                        m_monitor.flushUserGroups(new CmsUUID(userId));
+                    } else {
+                        m_monitor.flushCache(CacheType.USERGROUPS);
+                    }
+                    m_monitor.flushCache(CacheType.HAS_ROLE, CacheType.ROLE_LIST);
                 }
                 break;
             default:
@@ -4119,7 +4126,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsUser user = readUser(dbc, username);
         String prefix = ouFqn + "_" + includeChildOus + "_" + directGroupsOnly + "_" + readRoles + "_" + remoteAddress;
         String cacheKey = m_keyGenerator.getCacheKeyForUserGroups(prefix, dbc, user);
-        List<CmsGroup> groups = m_monitor.getCachedUserGroups(cacheKey);
+        List<CmsGroup> groups = m_monitor.getCachedUserGroups(user.getId(), cacheKey);
         if (groups == null) {
             // get all groups of the user
             List<CmsGroup> directGroups = getUserDriver(dbc).readGroupsOfUser(
@@ -4230,7 +4237,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // make group list unmodifiable for caching
             groups = Collections.unmodifiableList(new ArrayList<CmsGroup>(allGroups));
             if (dbc.getProjectId().isNullUUID()) {
-                m_monitor.cacheUserGroups(cacheKey, groups);
+                m_monitor.cacheUserGroups(user.getId(), cacheKey, groups);
             }
         }
 
@@ -8585,7 +8592,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (readRoles) {
             m_monitor.flushCache(CmsMemoryMonitor.CacheType.HAS_ROLE, CmsMemoryMonitor.CacheType.ROLE_LIST);
         }
-        m_monitor.flushCache(CmsMemoryMonitor.CacheType.USERGROUPS, CmsMemoryMonitor.CacheType.USER_LIST);
+        m_monitor.flushUserGroups(user.getId());
+        m_monitor.flushCache(CmsMemoryMonitor.CacheType.USER_LIST);
 
         if (!dbc.getProjectId().isNullUUID()) {
             // user modified event is not needed
@@ -9660,7 +9668,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsMemoryMonitor.CacheType.ACL,
             CmsMemoryMonitor.CacheType.GROUP,
             CmsMemoryMonitor.CacheType.ORG_UNIT,
-            CmsMemoryMonitor.CacheType.USERGROUPS,
             CmsMemoryMonitor.CacheType.USER_LIST,
             CmsMemoryMonitor.CacheType.PERMISSION,
             CmsMemoryMonitor.CacheType.RESOURCE_LIST);

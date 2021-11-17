@@ -85,23 +85,18 @@ public class CmsPersistentLoginAuthorizationHandler extends CmsDefaultAuthorizat
             if (user != null) {
                 // clean up some caches to ensure group changes in the LDAP directory take effect
                 OpenCms.getMemoryMonitor().uncacheUser(user);
-                OpenCms.getMemoryMonitor().flushCache(
-                    CacheType.HAS_ROLE,
-                    CacheType.USERGROUPS,
-                    CacheType.PERMISSION,
-                    CacheType.ROLE_LIST);
+                OpenCms.getMemoryMonitor().flushUserGroups(user.getId());
+                OpenCms.getMemoryMonitor().flushCache(CacheType.HAS_ROLE, CacheType.PERMISSION, CacheType.ROLE_LIST);
                 loginAction.getCmsObject().getRequestContext().setAttribute("__FORCE_UPDATE_MEMBERSHIP", Boolean.TRUE);
                 cms = loginAction.doLogin(request, user.getName());
-                OpenCms.getMemoryMonitor().flushCache(
-                    CacheType.HAS_ROLE,
-                    CacheType.USERGROUPS,
-                    CacheType.PERMISSION,
-                    CacheType.ROLE_LIST);
+                OpenCms.getMemoryMonitor().flushUserGroups(user.getId());
+                OpenCms.getMemoryMonitor().flushCache(CacheType.HAS_ROLE, CacheType.PERMISSION, CacheType.ROLE_LIST);
 
                 cms = registerSession(request, cms);
-                LOG.info("Successfully authenticated user '"
-                    + cms.getRequestContext().getCurrentUser().getName()
-                    + "' using a login token.");
+                LOG.info(
+                    "Successfully authenticated user '"
+                        + cms.getRequestContext().getCurrentUser().getName()
+                        + "' using a login token.");
             }
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
