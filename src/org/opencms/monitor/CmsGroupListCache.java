@@ -78,6 +78,14 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
      */
     public void clear() {
 
+        if (LOG.isInfoEnabled()) {
+            if (LOG.isDebugEnabled()) {
+                // when DEBUG level is enabled, log a dummy exception to generate a stack trace
+                LOG.debug("CmsGroupListCache.clear() called", new Exception("dummy exception"));
+            } else {
+                LOG.info("CmsGroupListCache.clear() called");
+            }
+        }
         m_internalCache.invalidateAll();
     }
 
