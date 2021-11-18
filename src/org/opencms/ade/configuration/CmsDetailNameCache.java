@@ -38,13 +38,13 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsManyToOneMap;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -53,6 +53,9 @@ import org.apache.commons.logging.Log;
 
 /**
  * A cache which stores structure ids for URL names.<p>
+ *
+ * <p>Note that this cache may in some cases contain outdated structure ids for URL names, if an URL name has been removed for a content but
+ * is not yet mapped to a different content.
  */
 public class CmsDetailNameCache implements I_CmsGlobalConfigurationCache {
 
@@ -69,7 +72,7 @@ public class CmsDetailNameCache implements I_CmsGlobalConfigurationCache {
     private CmsObject m_cms;
 
     /** The internal map from URL names to structure ids. */
-    private volatile CmsManyToOneMap<String, CmsUUID> m_detailIdCache = new CmsManyToOneMap<String, CmsUUID>();
+    private volatile ConcurrentHashMap<String, CmsUUID> m_detailIdCache = new ConcurrentHashMap<>();
 
     /** The set of structure ids for which the URL names have to be updated. */
     private LinkedBlockingQueue<CmsUUID> m_changes = new LinkedBlockingQueue<>();
@@ -183,15 +186,12 @@ public class CmsDetailNameCache implements I_CmsGlobalConfigurationCache {
                 reload();
             } else {
                 LOG.info("Updating detail name cache. Number of changed files: " + updateSet.size());
-                CmsManyToOneMap<String, CmsUUID> cacheCopy = new CmsManyToOneMap<String, CmsUUID>(m_detailIdCache);
                 for (CmsUUID id : updateSet) {
                     Set<String> urlNames = getUrlNames(id);
-                    cacheCopy.removeValue(id);
                     for (String urlName : urlNames) {
-                        cacheCopy.put(urlName, id);
+                        m_detailIdCache.put(urlName, id);
                     }
                 }
-                m_detailIdCache = cacheCopy;
             }
         }
         synchronized (m_updateLock) {
@@ -256,7 +256,7 @@ public class CmsDetailNameCache implements I_CmsGlobalConfigurationCache {
      */
     private void reload() {
 
-        CmsManyToOneMap<String, CmsUUID> newMap = new CmsManyToOneMap<String, CmsUUID>();
+        ConcurrentHashMap<String, CmsUUID> newMap = new ConcurrentHashMap<String, CmsUUID>();
         try {
             List<CmsUrlNameMappingEntry> mappings = m_cms.readUrlNameMappings(CmsUrlNameMappingFilter.ALL);
             LOG.info("Initializing detail name cache with " + mappings.size() + " entries");
