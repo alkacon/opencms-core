@@ -1190,7 +1190,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 CmsUUID publishHistoryId = new CmsUUID((String)event.getData().get(I_CmsEventListener.KEY_PUBLISHID));
                 report = (I_CmsReport)event.getData().get(I_CmsEventListener.KEY_REPORT);
                 dbc = (CmsDbContext)event.getData().get(I_CmsEventListener.KEY_DBCONTEXT);
-                m_monitor.clearCache();
+                m_monitor.clearCacheForPublishing();
                 writeExportPoints(dbc, report, publishHistoryId);
                 break;
 
@@ -6324,7 +6324,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsProject onlineProject = readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
 
             // clear the cache
-            m_monitor.clearCache();
+            m_monitor.clearCacheForPublishing();
 
             int publishTag = getNextPublishTag(dbc);
             getProjectDriver(dbc).publishProject(dbc, report, onlineProject, publishList, publishTag);
@@ -6355,7 +6355,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
         } finally {
             // clear the cache again
-            m_monitor.clearCache();
+            m_monitor.clearCacheForPublishing();
         }
     }
 

@@ -854,7 +854,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Caches the given list of user groups under the given cache key.<p>
-     * 
+     *
      * @param userId the id of the user
      * @param key the cache key
      * @param userGroups the list of user groups to cache
@@ -947,6 +947,29 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         flushCache(CacheType.PROPERTY_LIST);
         flushCache(CacheType.PROJECT_RESOURCES);
         flushCache(CacheType.PUBLISHED_RESOURCES);
+    }
+
+    /**
+     * Clears the caches for publishing.
+     */
+    public void clearCacheForPublishing() {
+
+        flushCache(CacheType.USER);
+        flushCache(CacheType.GROUP);
+        flushCache(CacheType.ORG_UNIT);
+        flushCache(CacheType.ACL);
+        flushCache(CacheType.PERMISSION);
+        flushCache(CacheType.HAS_ROLE);
+        flushCache(CacheType.ROLE_LIST);
+        flushCache(CacheType.USER_LIST);
+        flushCache(CacheType.PROJECT);
+        flushCache(CacheType.RESOURCE);
+        flushCache(CacheType.RESOURCE_LIST);
+        flushCache(CacheType.PROPERTY);
+        flushCache(CacheType.PROPERTY_LIST);
+        flushCache(CacheType.PROJECT_RESOURCES);
+        flushCache(CacheType.PUBLISHED_RESOURCES);
+
     }
 
     /**
@@ -1346,10 +1369,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         flushCache(CacheType.USER_LIST);
     }
 
-    /** 
+    /**
      * Flushes the user group cache for the user with the given id.
      *
-     * @param id the user id 
+     * @param id the user id
      **/
     public void flushUserGroups(CmsUUID id) {
 
@@ -1703,8 +1726,8 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the user groups list cached with the given cache key or <code>null</code> if not found.<p>
-     * 
-     * @param userId the user id 
+     *
+     * @param userId the user id
      * @param key the cache key to look for
      *
      * @return the user groups list cached with the given cache key
