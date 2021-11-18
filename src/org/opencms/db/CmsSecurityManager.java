@@ -3069,8 +3069,8 @@ public final class CmsSecurityManager {
     public boolean hasRole(CmsDbContext dbc, CmsUser user, CmsRole role) {
 
         // try to read from cache
-        String key = user.getName().toString() + role.getGroupName() + role.getOuFqn();
-        Boolean result = OpenCms.getMemoryMonitor().getCachedRole(key);
+        String key = role.getGroupName() + "," + role.getOuFqn();
+        Boolean result = OpenCms.getMemoryMonitor().getGroupListCache().getHasRole(user.getId(), key);
         if (result != null) {
             return result.booleanValue();
         }
@@ -3120,7 +3120,7 @@ public final class CmsSecurityManager {
         }
 
         result = Boolean.valueOf(hasRole);
-        OpenCms.getMemoryMonitor().cacheRole(key, result.booleanValue());
+        OpenCms.getMemoryMonitor().getGroupListCache().setHasRole(user.getId(), key, result);
         return result.booleanValue();
     }
 
@@ -3166,6 +3166,10 @@ public final class CmsSecurityManager {
         }
 
         // try to read from cache
+
+        // ***
+        // NOTE: We do intentionally *not* use the new group list cache here, as we have no good way to limit it at the moment, and this might generate a large amount of entries
+        // ***
         String key = user.getId().toString() + role.getGroupName() + resource.getRootPath();
         Boolean result = OpenCms.getMemoryMonitor().getCachedRole(key);
         if (result != null) {

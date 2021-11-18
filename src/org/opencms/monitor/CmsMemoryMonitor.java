@@ -1734,7 +1734,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public List<CmsGroup> getCachedUserGroups(CmsUUID userId, String key) {
 
-        return m_cacheUserGroups.get(userId, key);
+        return m_cacheUserGroups.getGroups(userId, key);
     }
 
     /**
@@ -1809,6 +1809,16 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 return null;
             }
         }
+    }
+
+    /**
+     * Gets the group list cache.
+     *
+     * @return the group list cache
+     */
+    public CmsGroupListCache getGroupListCache() {
+
+        return m_cacheUserGroups;
     }
 
     /**

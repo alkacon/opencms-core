@@ -34,7 +34,6 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
@@ -49,11 +48,52 @@ import com.google.common.cache.LoadingCache;
  */
 public class CmsGroupListCache implements I_CmsMemoryMonitorable {
 
+    /**
+     * Internal entry which stores the cached data for a specific user id.
+     */
+    class Entry implements I_CmsMemoryMonitorable {
+
+        /** Cache for group lists. */
+        private ConcurrentHashMap<String, List<CmsGroup>> m_groupCache = new ConcurrentHashMap<>();
+
+        /** Cache for role memberships. */
+        private ConcurrentHashMap<String, Boolean> m_hasRoleCache = new ConcurrentHashMap<>();
+
+        /**
+         * Gets the group list cache map.
+         *
+         * @return the group list cache
+         */
+        public ConcurrentHashMap<String, List<CmsGroup>> getGroupCache() {
+
+            return m_groupCache;
+        }
+
+        /**
+         * Gets the 'hasRole' cache map.
+         *
+         * @return the 'hasRole' cache
+         */
+        public ConcurrentHashMap<String, Boolean> getHasRoleCache() {
+
+            return m_hasRoleCache;
+        }
+
+        /**
+         * @see org.opencms.monitor.I_CmsMemoryMonitorable#getMemorySize()
+         */
+        public int getMemorySize() {
+
+            return (int)(CmsMemoryMonitor.getValueSize(m_groupCache) + CmsMemoryMonitor.getValueSize(m_hasRoleCache));
+        }
+
+    }
+
     /** Log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGroupListCache.class);
 
     /** The internal cache used. */
-    private LoadingCache<CmsUUID, Map<String, List<CmsGroup>>> m_internalCache;
+    private LoadingCache<CmsUUID, Entry> m_internalCache;
 
     /**
      * Creates a new cache instance.
@@ -63,12 +103,12 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
     public CmsGroupListCache(int size) {
 
         m_internalCache = CacheBuilder.newBuilder().concurrencyLevel(CmsMemoryMonitor.CONCURRENCY_LEVEL).maximumSize(
-            size).build(new CacheLoader<CmsUUID, Map<String, List<CmsGroup>>>() {
+            size).build(new CacheLoader<CmsUUID, Entry>() {
 
                 @Override
-                public Map<String, List<CmsGroup>> load(CmsUUID key) throws Exception {
+                public Entry load(CmsUUID key) throws Exception {
 
-                    return new ConcurrentHashMap<>();
+                    return new Entry();
                 }
             });
     }
@@ -109,18 +149,35 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
      *
      * @return the groups for the given combination of keys
      */
-    public List<CmsGroup> get(CmsUUID userId, String subKey) {
+    public List<CmsGroup> getGroups(CmsUUID userId, String subKey) {
 
-        Map<String, List<CmsGroup>> entriesForUser = m_internalCache.getIfPresent(userId);
-        if (entriesForUser == null) {
+        Entry userEntry = m_internalCache.getIfPresent(userId);
+        if (userEntry == null) {
             return null;
         }
-        List<CmsGroup> result = entriesForUser.get(subKey);
+        List<CmsGroup> result = userEntry.getGroupCache().get(subKey);
         if (result != null) {
             result = Collections.unmodifiableList(result);
         }
         return result;
 
+    }
+
+    /**
+     * Gets the cached role membership for the given role key, or null if nothing is cached.
+     *
+     * @param userId the user id
+     * @param roleKey the role key
+     *
+     * @return the cached role membership
+     */
+    public Boolean getHasRole(CmsUUID userId, String roleKey) {
+
+        Entry userEntry = m_internalCache.getIfPresent(userId);
+        if (userEntry == null) {
+            return null;
+        }
+        return userEntry.getHasRoleCache().get(roleKey);
     }
 
     /**
@@ -140,7 +197,19 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
      */
     public void put(CmsUUID userId, String subKey, List<CmsGroup> groups) {
 
-        m_internalCache.getUnchecked(userId).put(subKey, new ArrayList<>(groups));
+        m_internalCache.getUnchecked(userId).getGroupCache().put(subKey, new ArrayList<>(groups));
+    }
+
+    /**
+     * Caches the role membership for the given user id and role key.
+     *
+     * @param userId the user id
+     * @param roleKey the role key
+     * @param value the role membership value
+     */
+    public void setHasRole(CmsUUID userId, String roleKey, Boolean value) {
+
+        m_internalCache.getUnchecked(userId).getHasRoleCache().put(roleKey, value);
     }
 
     /**
