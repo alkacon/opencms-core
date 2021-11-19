@@ -1213,9 +1213,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     || I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_REMOVE_USER_FROM_GROUP.equals(action)
                     || I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_SET_OU.equals(action)) {
 
-                    String userId = (String)(event.getData().get(I_CmsEventListener.KEY_USER_ID));
-                    if (userId != null) {
-                        m_monitor.flushUserGroups(new CmsUUID(userId));
+                    Object userIdObj = event.getData().get(I_CmsEventListener.KEY_USER_ID);
+                    if (userIdObj != null) {
+                        CmsUUID userId = null;
+                        if (userIdObj instanceof CmsUUID) {
+                            userId = (CmsUUID)userIdObj;
+                        } else if (userIdObj instanceof String) {
+                            try {
+                                userId = new CmsUUID(userIdObj.toString());
+                            } catch (Exception e) {
+                                LOG.error(e.getLocalizedMessage(), e);
+                            }
+                        }
+                        if (userId != null) {
+                            m_monitor.flushUserGroups(userId);
+                        }
                     } else {
                         m_monitor.flushCache(CacheType.USERGROUPS);
                     }
