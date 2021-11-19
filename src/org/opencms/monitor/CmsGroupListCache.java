@@ -35,7 +35,7 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
@@ -61,10 +61,10 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
         private volatile List<CmsRole> m_bareRoles;
 
         /** Cache for group lists. */
-        private ConcurrentHashMap<String, List<CmsGroup>> m_groupCache = new ConcurrentHashMap<>();
+        private Map<String, List<CmsGroup>> m_groupCache = createLRUCacheMap(GROUP_LISTS_PER_USER);
 
         /** Cache for role memberships. */
-        private ConcurrentHashMap<String, Boolean> m_hasRoleCache = new ConcurrentHashMap<>();
+        private Map<String, Boolean> m_hasRoleCache = createLRUCacheMap(ROLE_CHECKS_PER_USER);
 
         /**
          * Gets the cached bare roles (with no OU information).
@@ -81,7 +81,7 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
          *
          * @return the group list cache
          */
-        public ConcurrentHashMap<String, List<CmsGroup>> getGroupCache() {
+        public Map<String, List<CmsGroup>> getGroupCache() {
 
             return m_groupCache;
         }
@@ -91,7 +91,7 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
          *
          * @return the 'hasRole' cache
          */
-        public ConcurrentHashMap<String, Boolean> getHasRoleCache() {
+        public Map<String, Boolean> getHasRoleCache() {
 
             return m_hasRoleCache;
         }
@@ -118,6 +118,12 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
 
     }
 
+    /** Max cached group lists per user. Non-final, so can be adjusted at runtime. */
+    public static volatile int GROUP_LISTS_PER_USER = 32;
+
+    /** Max cached role checks per user. Non-final, so can be adjusted at runtime. */
+    public static volatile int ROLE_CHECKS_PER_USER = 256;
+
     /** Log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGroupListCache.class);
 
@@ -140,6 +146,20 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
                     return new Entry();
                 }
             });
+    }
+
+    /**
+     * Creates a thread safe LRU cache map based on the guava cache builder.<p>
+     *
+     * @param capacity the cache capacity
+     *
+     * @return the cache map
+     */
+    @SuppressWarnings("unchecked")
+    static <T, V> Map<T, V> createLRUCacheMap(int capacity) {
+
+        CacheBuilder<?, ?> builder = CacheBuilder.newBuilder().concurrencyLevel(4).maximumSize(capacity);
+        return (Map<T, V>)(builder.build().asMap());
     }
 
     /**
@@ -235,18 +255,6 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
     }
 
     /**
-     * Caches a new value for the given combination of keys.
-     *
-     * @param userId the user id
-     * @param subKey a string that consists of the parameters/flags for the group reading operation
-     * @param groups the value to cache
-     */
-    public void setGroups(CmsUUID userId, String subKey, List<CmsGroup> groups) {
-
-        m_internalCache.getUnchecked(userId).getGroupCache().put(subKey, new ArrayList<>(groups));
-    }
-
-    /**
      * Sets the bare roles for a user (with no OU information).
      *
      * @param userId the user id
@@ -255,6 +263,19 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
     public void setBareRoles(CmsUUID userId, List<CmsRole> bareRoles) {
 
         m_internalCache.getUnchecked(userId).setBareRoles(bareRoles);
+    }
+
+    /**
+     * Caches a new value for the given combination of keys.
+     *
+     * @param userId the user id
+     * @param subKey a string that consists of the parameters/flags for the group reading operation
+     * @param groups the value to cache
+     */
+    public void setGroups(CmsUUID userId, String subKey, List<CmsGroup> groups) {
+
+        Map<String, List<CmsGroup>> groupCache = m_internalCache.getUnchecked(userId).getGroupCache();
+        groupCache.put(subKey, new ArrayList<>(groups));
     }
 
     /**
