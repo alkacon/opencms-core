@@ -864,7 +864,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         if (m_disabled.get(CacheType.USERGROUPS) != null) {
             return;
         }
-        m_cacheUserGroups.put(userId, key, userGroups);
+        m_cacheUserGroups.setGroups(userId, key, userGroups);
     }
 
     /**

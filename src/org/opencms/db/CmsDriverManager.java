@@ -4993,8 +4993,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // try to read from cache
-        String key = user.getId().toString();
-        List<CmsRole> result = m_monitor.getCachedRoleList(key);
+        List<CmsRole> result = m_monitor.getGroupListCache().getBareRoles(user.getId());
         if (result != null) {
             return result;
         }
@@ -5015,7 +5014,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
         }
         result = Collections.unmodifiableList(result);
-        m_monitor.cacheRoleList(key, result);
+        m_monitor.getGroupListCache().setBareRoles(user.getId(), result);
         return result;
     }
 

@@ -29,6 +29,7 @@ package org.opencms.monitor;
 
 import org.opencms.file.CmsGroup;
 import org.opencms.main.CmsLog;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -43,21 +44,37 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 /**
- * Two-level cache for lists of user groups that doesn't just use a flat key string, but instead a pair of two keys: first, the user id, and second,
- * other parameters for identifying the cache entry. This allows us to specifically flush the cache for only one user.
+ * Cache for users' groups and data derived from those groups, like role membership.
+ *
+ * <p>The cache can be either flushed completeley, or just for a single user id.
+ * The data for a user must be flushed when their group membership changes.
+ *
  */
 public class CmsGroupListCache implements I_CmsMemoryMonitorable {
 
     /**
-     * Internal entry which stores the cached data for a specific user id.
+     * Internal entry which stores the cached data for a specific user id.<p>
      */
     class Entry implements I_CmsMemoryMonitorable {
+
+        /** Bare roles, with no OU information. */
+        private volatile List<CmsRole> m_bareRoles;
 
         /** Cache for group lists. */
         private ConcurrentHashMap<String, List<CmsGroup>> m_groupCache = new ConcurrentHashMap<>();
 
         /** Cache for role memberships. */
         private ConcurrentHashMap<String, Boolean> m_hasRoleCache = new ConcurrentHashMap<>();
+
+        /**
+         * Gets the cached bare roles (with no OU information).
+         *
+         * @return the cached bare roles
+         */
+        public List<CmsRole> getBareRoles() {
+
+            return m_bareRoles;
+        }
 
         /**
          * Gets the group list cache map.
@@ -84,7 +101,19 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
          */
         public int getMemorySize() {
 
-            return (int)(CmsMemoryMonitor.getValueSize(m_groupCache) + CmsMemoryMonitor.getValueSize(m_hasRoleCache));
+            return (int)(CmsMemoryMonitor.getValueSize(m_groupCache)
+                + CmsMemoryMonitor.getValueSize(m_hasRoleCache)
+                + CmsMemoryMonitor.getValueSize(m_bareRoles));
+        }
+
+        /**
+         * Sets the cached bare roles (with no associated OU information).
+         *
+         * @param bareRoles the bare roles
+         */
+        public void setBareRoles(List<CmsRole> bareRoles) {
+
+            m_bareRoles = bareRoles;
         }
 
     }
@@ -121,7 +150,7 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
         if (LOG.isInfoEnabled()) {
             if (LOG.isDebugEnabled()) {
                 // when DEBUG level is enabled, log a dummy exception to generate a stack trace
-                LOG.debug("CmsGroupListCache.clear() called", new Exception("dummy exception"));
+                LOG.debug("CmsGroupListCache.clear() called", new Exception("(dummy exception)"));
             } else {
                 LOG.info("CmsGroupListCache.clear() called");
             }
@@ -142,10 +171,27 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
     }
 
     /**
+     * Gets the cached bare roles for the given user id, or null if none are cached.
+     *
+     * <p>These are just the roles of the user, but with no OU information.
+
+     * @param userId the user id
+     * @return the bare roles for the user
+     */
+    public List<CmsRole> getBareRoles(CmsUUID userId) {
+
+        Entry entry = m_internalCache.getIfPresent(userId);
+        if (entry == null) {
+            return null;
+        }
+        return entry.getBareRoles();
+    }
+
+    /**
      * Gets the cached user groups for the given combination of keys, or null if nothing is cached.
      *
      * @param userId the user id
-     * @param subKey the subkey
+     * @param subKey a string that consists of the parameters/flags for the group reading operation
      *
      * @return the groups for the given combination of keys
      */
@@ -192,12 +238,23 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
      * Caches a new value for the given combination of keys.
      *
      * @param userId the user id
-     * @param subKey the sub-key
+     * @param subKey a string that consists of the parameters/flags for the group reading operation
      * @param groups the value to cache
      */
-    public void put(CmsUUID userId, String subKey, List<CmsGroup> groups) {
+    public void setGroups(CmsUUID userId, String subKey, List<CmsGroup> groups) {
 
         m_internalCache.getUnchecked(userId).getGroupCache().put(subKey, new ArrayList<>(groups));
+    }
+
+    /**
+     * Sets the bare roles for a user (with no OU information).
+     *
+     * @param userId the user id
+     * @param bareRoles the list of bare roles
+     */
+    public void setBareRoles(CmsUUID userId, List<CmsRole> bareRoles) {
+
+        m_internalCache.getUnchecked(userId).setBareRoles(bareRoles);
     }
 
     /**
