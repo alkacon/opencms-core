@@ -3120,7 +3120,7 @@ public final class CmsSecurityManager {
         }
 
         result = Boolean.valueOf(hasRole);
-        OpenCms.getMemoryMonitor().getGroupListCache().setHasRole(user.getId(), key, result);
+        OpenCms.getMemoryMonitor().getGroupListCache().setHasRole(user, key, result);
         return result.booleanValue();
     }
 

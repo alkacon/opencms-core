@@ -28,6 +28,7 @@
 package org.opencms.monitor;
 
 import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsUser;
 import org.opencms.main.CmsLog;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsUUID;
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 
@@ -64,7 +66,7 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
         private Map<String, List<CmsGroup>> m_groupCache = createLRUCacheMap(GROUP_LISTS_PER_USER);
 
         /** Cache for role memberships. */
-        private Map<String, Boolean> m_hasRoleCache = createLRUCacheMap(ROLE_CHECKS_PER_USER);
+        private Map<String, Boolean> m_hasRoleCache = new ConcurrentHashMap<>();
 
         /**
          * Gets the cached bare roles (with no OU information).
@@ -120,9 +122,6 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
 
     /** Max cached group lists per user. Non-final, so can be adjusted at runtime. */
     public static volatile int GROUP_LISTS_PER_USER = 32;
-
-    /** Max cached role checks per user. Non-final, so can be adjusted at runtime. */
-    public static volatile int ROLE_CHECKS_PER_USER = 256;
 
     /** Log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGroupListCache.class);
@@ -194,7 +193,7 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
      * Gets the cached bare roles for the given user id, or null if none are cached.
      *
      * <p>These are just the roles of the user, but with no OU information.
-
+    
      * @param userId the user id
      * @return the bare roles for the user
      */
@@ -257,37 +256,46 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
     /**
      * Sets the bare roles for a user (with no OU information).
      *
-     * @param userId the user id
+     * @param user the user
      * @param bareRoles the list of bare roles
      */
-    public void setBareRoles(CmsUUID userId, List<CmsRole> bareRoles) {
+    public void setBareRoles(CmsUser user, List<CmsRole> bareRoles) {
 
-        m_internalCache.getUnchecked(userId).setBareRoles(bareRoles);
+        if (!user.isWebuser()) { // web users take away space from normal workplace users/editors
+            CmsUUID userId = user.getId();
+            m_internalCache.getUnchecked(userId).setBareRoles(bareRoles);
+        }
     }
 
     /**
      * Caches a new value for the given combination of keys.
      *
-     * @param userId the user id
+     * @param user the user
      * @param subKey a string that consists of the parameters/flags for the group reading operation
      * @param groups the value to cache
      */
-    public void setGroups(CmsUUID userId, String subKey, List<CmsGroup> groups) {
+    public void setGroups(CmsUser user, String subKey, List<CmsGroup> groups) {
 
-        Map<String, List<CmsGroup>> groupCache = m_internalCache.getUnchecked(userId).getGroupCache();
-        groupCache.put(subKey, new ArrayList<>(groups));
+        if (!user.isWebuser()) { // web users take away space from normal workplace users/editors
+            CmsUUID userId = user.getId();
+            Map<String, List<CmsGroup>> groupCache = m_internalCache.getUnchecked(userId).getGroupCache();
+            groupCache.put(subKey, new ArrayList<>(groups));
+        }
     }
 
     /**
      * Caches the role membership for the given user id and role key.
      *
-     * @param userId the user id
+     * @param user the user
      * @param roleKey the role key
      * @param value the role membership value
      */
-    public void setHasRole(CmsUUID userId, String roleKey, Boolean value) {
+    public void setHasRole(CmsUser user, String roleKey, Boolean value) {
 
-        m_internalCache.getUnchecked(userId).getHasRoleCache().put(roleKey, value);
+        if (!user.isWebuser()) { // web users take away space from normal workplace users/editors
+            CmsUUID userId = user.getId();
+            m_internalCache.getUnchecked(userId).getHasRoleCache().put(roleKey, value);
+        }
     }
 
     /**

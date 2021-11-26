@@ -853,21 +853,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
-     * Caches the given list of user groups under the given cache key.<p>
-     *
-     * @param userId the id of the user
-     * @param key the cache key
-     * @param userGroups the list of user groups to cache
-     */
-    public void cacheUserGroups(CmsUUID userId, String key, List<CmsGroup> userGroups) {
-
-        if (m_disabled.get(CacheType.USERGROUPS) != null) {
-            return;
-        }
-        m_cacheUserGroups.setGroups(userId, key, userGroups);
-    }
-
-    /**
      * Caches the given list of users under the given cache key.<p>
      *
      * @param key the cache key

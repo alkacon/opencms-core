@@ -4249,7 +4249,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // make group list unmodifiable for caching
             groups = Collections.unmodifiableList(new ArrayList<CmsGroup>(allGroups));
             if (dbc.getProjectId().isNullUUID()) {
-                m_monitor.cacheUserGroups(user.getId(), cacheKey, groups);
+                m_monitor.getGroupListCache().setGroups(user, cacheKey, groups);
             }
         }
 
@@ -5014,7 +5014,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
         }
         result = Collections.unmodifiableList(result);
-        m_monitor.getGroupListCache().setBareRoles(user.getId(), result);
+        m_monitor.getGroupListCache().setBareRoles(user, result);
         return result;
     }
 
