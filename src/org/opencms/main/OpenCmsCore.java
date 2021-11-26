@@ -1974,7 +1974,7 @@ public final class OpenCmsCore {
             // set the request uri to the right file
             cms.getRequestContext().setUri(cms.getSitePath(resource));
             // test if this file is only available for internal access operations
-            if (resource.isInternal()) {
+            if (resource.isInternalOrInInternalFolder()) {
                 throw new CmsException(
                     Messages.get().container(Messages.ERR_READ_INTERNAL_RESOURCE_1, cms.getRequestContext().getUri()));
             }
@@ -2164,8 +2164,9 @@ public final class OpenCmsCore {
             logInfo.put("cms_project", cms.getRequestContext().getCurrentProject().getName());
             try (CloseableThreadContext.Instance threadContext = CloseableThreadContext.putAll(logInfo)) {
                 LOG.info("Updating log context: " + logInfo);
+                String uri = cms.getRequestContext().getUri();
                 if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
-                    String uri = cms.getRequestContext().getUri();
+
                     if (uri.startsWith(CmsWorkplace.VFS_PATH_SITES)) {
                         // resources within the sites folder may only be called with their site relative path
                         // this should prevent showing pages from other sites with their root path

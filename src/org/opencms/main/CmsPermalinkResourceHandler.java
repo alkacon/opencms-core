@@ -91,7 +91,8 @@ public class CmsPermalinkResourceHandler implements I_CmsResourceInit {
         CmsResource resource,
         CmsObject cms,
         HttpServletRequest req,
-        HttpServletResponse res) throws CmsResourceInitException, CmsPermissionViolationException {
+        HttpServletResponse res)
+    throws CmsResourceInitException, CmsPermissionViolationException {
 
         // only do something if the resource was not found
         if (resource == null) {
@@ -170,6 +171,9 @@ public class CmsPermalinkResourceHandler implements I_CmsResourceInit {
                 }
                 return null;
             }
+        }
+        if ((resource != null) && resource.isInternalOrInInternalFolder()) {
+            return null;
         }
         return resource;
     }

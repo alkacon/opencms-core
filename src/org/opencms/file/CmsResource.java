@@ -31,11 +31,14 @@ import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.util.A_CmsModeIntEnumeration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Base class for all OpenCms VFS resources like <code>{@link CmsFile}</code> or <code>{@link CmsFolder}</code>.<p>
@@ -269,6 +272,10 @@ public class CmsResource implements I_CmsResource, Cloneable, Serializable, Comp
             return String.valueOf(getMode());
         }
     }
+
+    /** Special folders below which resources should be treated the same as if they were marked as internal. */
+    private static List<String> internalFolders = Arrays.asList(
+        CmsStringUtil.joinPaths(CmsUserIconHelper.USER_IMAGE_FOLDER, "temp"));
 
     /** Copy mode for copy resources as new resource. */
     public static final CmsResourceCopyMode COPY_AS_NEW = CmsResourceCopyMode.MODE_COPY_AS_NEW;
@@ -1138,6 +1145,24 @@ public class CmsResource implements I_CmsResource, Cloneable, Serializable, Comp
     public boolean isInternal() {
 
         return ((m_flags & FLAG_INTERNAL) > 0);
+    }
+
+    /**
+     * Checks if either the resource's 'internal' flag is set, or if it's below a list of forbidden folders.
+     *
+     * @return true if the resource should be treated as internal
+     */
+    public boolean isInternalOrInInternalFolder() {
+
+        if (isInternal()) {
+            return true;
+        }
+        for (String forbiddenFolder : internalFolders) {
+            if (CmsStringUtil.isPrefixPath(forbiddenFolder, getRootPath())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
