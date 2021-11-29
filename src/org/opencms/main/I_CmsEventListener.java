@@ -490,6 +490,9 @@ public interface I_CmsEventListener {
     /** Value for the "user modified" action. */
     String VALUE_USER_MODIFIED_ACTION_WRITE_USER = "writeUser";
 
+    /** Value to mark modification events from sibling creation. */
+    String VALUE_CREATE_SIBLING = "createSibling";
+
     /**
      * Acknowledge the occurrence of the specified event, implement this
      * method to check for CmsEvents in your class.

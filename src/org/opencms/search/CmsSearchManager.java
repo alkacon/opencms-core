@@ -195,12 +195,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         @SuppressWarnings("unchecked")
         public void cmsEvent(CmsEvent event) {
 
+            Object change = event.getData().get(I_CmsEventListener.KEY_CHANGE);
             switch (event.getType()) {
                 case I_CmsEventListener.EVENT_PROPERTY_MODIFIED:
                 case I_CmsEventListener.EVENT_RESOURCE_CREATED:
                 case I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED:
                 case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
-                    Object change = event.getData().get(I_CmsEventListener.KEY_CHANGE);
                     if ((change != null) && change.equals(new Integer(CmsDriverManager.NOTHING_CHANGED))) {
                         // skip lock & unlock
                         return;
@@ -230,9 +230,22 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     reIndexResources(resourcesToDelete);
                     break;
                 case I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED:
+                    if (I_CmsEventListener.VALUE_CREATE_SIBLING.equals(change)) {
+                        List<CmsResource> resList = (List<CmsResource>)event.getData().get(
+                            I_CmsEventListener.KEY_RESOURCES);
+                        if ((resList != null) && (resList.size() >= 3)) {
+                            System.out.println("Sibling creation case, resource = " + resList.get(1).getRootPath());
+                            reIndexResources(Collections.singletonList(resList.get(1)));
+
+                        }
+                    } else {
+                        reIndexResources((List<CmsResource>)event.getData().get(I_CmsEventListener.KEY_RESOURCES));
+                    }
+                    break;
                 case I_CmsEventListener.EVENT_RESOURCE_MOVED:
                 case I_CmsEventListener.EVENT_RESOURCE_COPIED:
                 case I_CmsEventListener.EVENT_RESOURCES_MODIFIED:
+
                     // a list of resources has been modified - offline indexes require (re)indexing
                     reIndexResources((List<CmsResource>)event.getData().get(I_CmsEventListener.KEY_RESOURCES));
                     break;

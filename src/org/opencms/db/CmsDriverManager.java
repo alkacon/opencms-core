@@ -2331,10 +2331,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         modifiedResources.add(source);
         modifiedResources.add(newResource);
         modifiedResources.add(destinationFolder);
-        OpenCms.fireCmsEvent(
-            new CmsEvent(
-                I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED,
-                Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCES, modifiedResources)));
+        Map<String, Object> eventData = new HashMap<>();
+        eventData.put(I_CmsEventListener.KEY_RESOURCES, modifiedResources);
+        eventData.put(I_CmsEventListener.KEY_CHANGE, I_CmsEventListener.VALUE_CREATE_SIBLING);
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED, eventData));
 
         return newResource;
     }
