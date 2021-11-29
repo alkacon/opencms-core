@@ -43,6 +43,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.loader.CmsLoaderException;
+import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsBroadcast.ContentMode;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -669,6 +670,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /** The log object for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsSearchManager.class);
+
+    /** List of resource types which represent groups of elements. */
+    private static final String[] groupTypes = {
+        CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME,
+        CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME,
+        CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_TYPE_NAME};
 
     /** The administrator OpenCms user context to access OpenCms VFS resources. */
     protected CmsObject m_adminCms;
@@ -2586,16 +2593,19 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         CmsObject adminCms,
         List<CmsPublishedResource> updateResources) {
 
-        Set<CmsPublishedResource> updateResourceSet = new HashSet<>(updateResources);
-        Collection<CmsPublishedResource> resourcesToCheck = updateResourceSet;
-        Collection<CmsPublishedResource> additionalResources = Collections.emptySet();
-        do {
-            additionalResources = findRelatedContainerPages(adminCms, updateResourceSet, resourcesToCheck);
-            additionalResources.addAll(addIndexContentRelatedResources(adminCms, updateResourceSet, resourcesToCheck));
-            updateResources.addAll(additionalResources);
-            updateResourceSet.addAll(additionalResources);
-            resourcesToCheck = additionalResources;
-        } while (resourcesToCheck.size() > 0);
+        if (updateResources.size() > 0) {
+            Set<CmsPublishedResource> updateResourceSet = new HashSet<>(updateResources);
+            Collection<CmsPublishedResource> resourcesToCheck = updateResourceSet;
+            Collection<CmsPublishedResource> additionalResources = Collections.emptySet();
+            do {
+                additionalResources = findRelatedContainerPages(adminCms, updateResourceSet, resourcesToCheck);
+                additionalResources.addAll(
+                    addIndexContentRelatedResources(adminCms, updateResourceSet, resourcesToCheck));
+                updateResources.addAll(additionalResources);
+                updateResourceSet.addAll(additionalResources);
+                resourcesToCheck = additionalResources;
+            } while (resourcesToCheck.size() > 0);
+        }
         return updateResources;
     }
 
@@ -2656,9 +2666,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         Collection<CmsPublishedResource> updateResources,
         Collection<CmsPublishedResource> updateResourcesToCheck) {
 
+        CmsResourceManager resMan = OpenCms.getResourceManager();
         Collection<CmsPublishedResource> additionalUpdateResources = new HashSet<>();
 
-        Set<CmsResource> elementGroups = new HashSet<CmsResource>();
         Set<CmsResource> containerPages = new HashSet<CmsResource>();
         int containerPageTypeId = -1;
         try {
@@ -2670,25 +2680,22 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         if (containerPageTypeId != -1) {
             for (CmsPublishedResource pubRes : updateResourcesToCheck) {
                 try {
-                    if (OpenCms.getResourceManager().getResourceType(
-                        pubRes.getType()) instanceof CmsResourceTypeXmlContent) {
-                        CmsRelationFilter filter = CmsRelationFilter.relationsToStructureId(pubRes.getStructureId());
-                        filter.filterStrong();
-                        List<CmsRelation> relations = adminCms.readRelations(filter);
-                        for (CmsRelation relation : relations) {
-                            CmsResource res = relation.getSource(adminCms, CmsResourceFilter.ALL);
-                            if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
-                                containerPages.add(res);
-                                if (CmsDetailOnlyContainerUtil.isDetailContainersPage(
-                                    adminCms,
-                                    adminCms.getSitePath(res))) {
-                                    addDetailContent(adminCms, containerPages, adminCms.getSitePath(res));
-                                }
-                            } else
-                                if (OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName().equals(
-                                    CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME)) {
-                                        elementGroups.add(res);
+                    if (resMan.getResourceType(pubRes.getType()) instanceof CmsResourceTypeXmlContent) {
+                        if (!isGroup(pubRes.getType())) {
+                            CmsRelationFilter filter = CmsRelationFilter.relationsToStructureId(
+                                pubRes.getStructureId()).filterStrong();
+                            List<CmsRelation> relations = adminCms.readRelations(filter);
+                            for (CmsRelation relation : relations) {
+                                CmsResource res = relation.getSource(adminCms, CmsResourceFilter.ALL);
+                                if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
+                                    containerPages.add(res);
+                                    if (CmsDetailOnlyContainerUtil.isDetailContainersPage(
+                                        adminCms,
+                                        adminCms.getSitePath(res))) {
+                                        addDetailContent(adminCms, containerPages, adminCms.getSitePath(res));
                                     }
+                                }
+                            }
                         }
                     }
                     if (containerPageTypeId == pubRes.getType()) {
@@ -2696,26 +2703,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                             adminCms,
                             containerPages,
                             adminCms.getRequestContext().removeSiteRoot(pubRes.getRootPath()));
-                    }
-                } catch (CmsException e) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-            }
-            for (CmsResource pubRes : elementGroups) {
-                try {
-                    CmsRelationFilter filter = CmsRelationFilter.relationsToStructureId(pubRes.getStructureId());
-                    filter.filterStrong();
-                    List<CmsRelation> relations = adminCms.readRelations(filter);
-                    for (CmsRelation relation : relations) {
-                        CmsResource res = relation.getSource(adminCms, CmsResourceFilter.ALL);
-                        if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
-                            containerPages.add(res);
-                            if (CmsDetailOnlyContainerUtil.isDetailContainersPage(
-                                adminCms,
-                                adminCms.getSitePath(res))) {
-                                addDetailContent(adminCms, containerPages, adminCms.getSitePath(res));
-                            }
-                        }
                     }
                 } catch (CmsException e) {
                     LOG.error(e.getLocalizedMessage(), e);
@@ -3524,6 +3511,23 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
         result.retainAll(deletedSet);
         return result;
+    }
+
+    /**
+     * Checks if the given type id belongs to a group type.
+     *
+     * @param type the type id to check
+     * @return true if the type is a group type
+     */
+    private boolean isGroup(int type) {
+
+        for (String groupType : groupTypes) {
+            if (OpenCms.getResourceManager().matchResourceType(groupType, type)) {
+                return true;
+            }
+        }
+        return false;
+
     }
 
     /**
