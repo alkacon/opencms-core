@@ -44,6 +44,8 @@ import org.apache.commons.logging.Log;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Interners;
 
 /**
  * Cache for users' groups and data derived from those groups, like role membership.
@@ -129,6 +131,9 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
     /** The internal cache used. */
     private LoadingCache<CmsUUID, Entry> m_internalCache;
 
+    /** Interner for canonicalizing the role membership cache keys. */
+    private Interner<String> m_interner = Interners.newBuilder().concurrencyLevel(8).build();
+
     /**
      * Creates a new cache instance.
      *
@@ -193,7 +198,7 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
      * Gets the cached bare roles for the given user id, or null if none are cached.
      *
      * <p>These are just the roles of the user, but with no OU information.
-    
+
      * @param userId the user id
      * @return the bare roles for the user
      */
@@ -293,6 +298,7 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
     public void setHasRole(CmsUser user, String roleKey, Boolean value) {
 
         if (!user.isWebuser()) { // web users take away space from normal workplace users/editors
+            roleKey = m_interner.intern(roleKey);
             CmsUUID userId = user.getId();
             m_internalCache.getUnchecked(userId).getHasRoleCache().put(roleKey, value);
         }
