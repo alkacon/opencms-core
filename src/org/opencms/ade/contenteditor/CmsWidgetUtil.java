@@ -165,12 +165,17 @@ public final class CmsWidgetUtil {
         rootContentDefinition.findSchemaTypesForPath(path, (nestedType, remainingPath) -> {
             remainingPath = CmsXmlUtils.concatXpath(nestedType.getName(), remainingPath);
             I_CmsXmlContentHandler handler = nestedType.getContentDefinition().getContentHandler();
-            CollectionUtils.addIgnoreNull(configuredWidgets, handler.getWidget(cms, remainingPath));
+            I_CmsWidget widgetForPath = handler.getWidget(cms, remainingPath);
+            CollectionUtils.addIgnoreNull(configuredWidgets, widgetForPath);
             CollectionUtils.addIgnoreNull(configuredWidgetConfigs, handler.getConfiguration(remainingPath));
             CollectionUtils.addIgnoreNull(
                 configuredDisplayTypes,
                 handler.getConfiguredDisplayType(remainingPath, null));
-            CollectionUtils.addIgnoreNull(configuredComplexWidgets, handler.getComplexWidget(cms, remainingPath));
+            if (widgetForPath == null) {
+                // If we already have a normal widget, trying to find a complex widget for the same path is unnecessary,
+                // and would also cost performance (because of failing Class.forName calls in getComplexWidget).
+                CollectionUtils.addIgnoreNull(configuredComplexWidgets, handler.getComplexWidget(cms, remainingPath));
+            }
 
         });
         if (!configuredWidgets.isEmpty()) {
