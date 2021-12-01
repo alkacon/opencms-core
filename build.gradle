@@ -1028,6 +1028,7 @@ task updater (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type:
         localeModules.each{ localeModule ->
             exclude "$localeModule-*.zip"
         }
+        exclude "*mercury*.zip"
     }
 
     fileTree('webapp/WEB-INF/setupdata/database'){ include '**/*.jar'}.each {File driverJar ->
