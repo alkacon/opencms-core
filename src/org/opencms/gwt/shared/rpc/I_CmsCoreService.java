@@ -216,6 +216,15 @@ public interface I_CmsCoreService extends RemoteService {
     String getWorkplaceLink(CmsUUID structureId) throws CmsRpcException;
 
     /**
+     * Gets the workplace link for the given path.
+     *
+     * @param path the path
+     * @return the workplace link for the path
+     * @throws CmsRpcException if something goes wrong
+     */
+    String getWorkplaceLinkForPath(String path) throws CmsRpcException;
+
+    /**
      * Loads the user settings for the current user.<p>
      *
      * @return the user settings for the current user

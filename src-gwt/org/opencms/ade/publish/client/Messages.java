@@ -40,6 +40,9 @@ public final class Messages {
     public static final String ERR_CANT_PUBLISH_RESOURCE_TITLE_0 = "ERR_CANT_PUBLISH_RESOURCE_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_BROKEN_LINK_SHOW_IN_EXPLORER_0 = "GUI_BROKEN_LINK_SHOW_IN_EXPLORER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_PUBLISH_CANT_PUBLISH_DELETED_RESOURCE_2 = "ERR_PUBLISH_CANT_PUBLISH_DELETED_RESOURCE_2";
 
     /** Message constant for key in the resource bundle. */

@@ -53,6 +53,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_ALIAS_IS_VFS_0 = "ERR_ALIAS_IS_VFS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_COULD_NOT_FIND_PARENT_FOLDER_1 = "ERR_COULD_NOT_FIND_PARENT_FOLDER_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_EXPLORER_TYPE_SETTINGS_FOR_RESOURCE_TYPE_NOT_FOUND_3 = "ERR_EXPLORER_TYPE_SETTINGS_FOR_RESOURCE_TYPE_NOT_FOUND_3";
 
     /** Message constant for key in the resource bundle. */

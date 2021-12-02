@@ -950,10 +950,36 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 cms.readResource(structureId, CmsResourceFilter.ALL.addRequireVisible()).getRootPath())
             : cms.getRequestContext().getSiteRoot();
             result = getVaadinWorkplaceLink(cms, resourceRootFolder);
-        } catch (Throwable e) {
+        } catch (Exception e) {
             error(e);
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getWorkplaceLinkForPath(java.lang.String)
+     */
+    public String getWorkplaceLinkForPath(String path) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        try {
+            CmsObject workCms = cms;
+            if (path.startsWith("/sites/")) {
+                workCms = OpenCms.initCmsObject(cms);
+                workCms.getRequestContext().setSiteRoot("");
+            }
+            String currentPath = CmsResource.getParentFolder(path);
+            CmsResource folder = null;
+            try {
+                folder = workCms.readResource(currentPath, CmsResourceFilter.IGNORE_EXPIRATION.addRequireVisible());
+            } catch (CmsVfsResourceNotFoundException | CmsSecurityException e) {
+                throw new CmsException(Messages.get().container(Messages.ERR_COULD_NOT_FIND_PARENT_FOLDER_1, path), e);
+            }
+            return getVaadinWorkplaceLink(cms, folder.getRootPath());
+        } catch (Exception e) {
+            error(e);
+            return null;
+        }
     }
 
     /**

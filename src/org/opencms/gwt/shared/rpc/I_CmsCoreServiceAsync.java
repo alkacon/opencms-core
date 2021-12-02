@@ -192,6 +192,14 @@ public interface I_CmsCoreServiceAsync {
     void getWorkplaceLink(CmsUUID structureId, AsyncCallback<String> callback);
 
     /**
+     * Gets the workplace link for the given path.
+     *
+     * @param path the path
+     * @param action the callback for the result
+     */
+    void getWorkplaceLinkForPath(String path, AsyncCallback<String> action);
+
+    /**
      * Loads the user settings for the current user.<p>
      *
      * @param callback the callback to call with the result
