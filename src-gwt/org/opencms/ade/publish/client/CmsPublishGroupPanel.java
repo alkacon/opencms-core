@@ -240,7 +240,6 @@ public class CmsPublishGroupPanel extends Composite {
             warningImage.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
             fillButtonSlot(itemWidget, SLOT_WARNING, warningImage, slotMapping);
         }
-        itemWidget.setUnselectable();
         return itemWidget;
     }
 
