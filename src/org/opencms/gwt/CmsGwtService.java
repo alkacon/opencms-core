@@ -36,6 +36,7 @@ import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsThrowable;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
@@ -44,6 +45,7 @@ import org.opencms.util.CmsUUID;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -113,7 +115,21 @@ public class CmsGwtService extends RemoteServiceServlet {
     public void error(Throwable t) throws CmsRpcException {
 
         logError(t);
-        throw new CmsRpcException(t);
+        CmsRpcException e = new CmsRpcException(t);
+        // The CmsRpcException constructor can't do the localization, because it's a shared class
+        CmsObject cms = getCmsObject();
+        if (cms != null) {
+            Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
+            if (t instanceof I_CmsThrowable) {
+                String message = ((I_CmsThrowable)t).getLocalizedMessage(locale);
+                e.setOriginalMessage(message);
+            }
+            if (t.getCause() instanceof I_CmsThrowable) {
+                String message = ((I_CmsThrowable)t.getCause()).getLocalizedMessage(locale);
+                e.setOriginalCauseMessage(message);
+            }
+        }
+        throw e;
     }
 
     /**
