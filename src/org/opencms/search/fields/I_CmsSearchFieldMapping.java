@@ -38,6 +38,7 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Describes a mapping of a piece of content from an OpenCms VFS
@@ -95,6 +96,20 @@ public interface I_CmsSearchFieldMapping extends Serializable {
      * @param defaultValue the default value to set
      */
     void setDefaultValue(String defaultValue);
+
+    /**
+     * Sets the locale, the mapping can examine when extracting the content.
+     *
+     * NOTE: This method is called by {@link org.opencms.xml.content.CmsDefaultXmlContentHandler}
+     *  when dynamic search field mappings are created.
+     *  Overwrite this default implementation if you need to map locale specific in your dynamic mapping.
+     *
+     * @param locale the locale of the index field that is filled by the mapping.
+     */
+    default void setLocale(Locale locale) {
+
+        return;
+    }
 
     /**
      * Sets the mapping parameter.<p>

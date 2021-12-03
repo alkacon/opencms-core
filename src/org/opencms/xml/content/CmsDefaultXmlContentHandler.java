@@ -4400,6 +4400,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                         fieldMapping = (I_CmsSearchFieldMapping)Class.forName(mappingClass).newInstance();
                         fieldMapping.setType(CmsSearchFieldMappingType.DYNAMIC);
                         fieldMapping.setParam(element.getStringValue());
+                        fieldMapping.setLocale(locale);
                     } catch (Exception e) {
                         throw new CmsXmlException(
                             Messages.get().container(
