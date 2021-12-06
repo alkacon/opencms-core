@@ -28,11 +28,15 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
+import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsUUID;
 
 import java.util.List;
 import java.util.Map;
@@ -41,6 +45,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -69,6 +74,16 @@ public class CmsLinkWarningPanel extends Composite {
     /** The panel containing the links that will be broken. */
     @UiField
     protected CmsList<CmsTreeItem> m_linkPanel;
+
+    /** Handler for context menus. */
+    private final CmsContextMenuHandler m_menuHandler = new CmsContextMenuHandler() {
+
+        @Override
+        public void refreshResource(CmsUUID structureId) {
+
+            Window.Location.reload();
+        }
+    };
 
     /**
      * Default constructor.<p>
@@ -124,6 +139,13 @@ public class CmsLinkWarningPanel extends Composite {
                 }
             }
         });
+        CmsUUID structureId = brokenLinkBean.getStructureId();
+        if ((structureId != null) && !structureId.isNullUUID()) {
+
+            CmsContextMenuButton button = new CmsContextMenuButton(structureId, m_menuHandler, AdeContext.resourceinfo);
+
+            widget.addButton(button);
+        }
         return widget;
     }
 

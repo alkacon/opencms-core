@@ -150,6 +150,16 @@ public class CmsBrokenLinkBean implements IsSerializable {
     }
 
     /**
+     * Gets the structure id.
+     *
+     * @return the structure id
+     */
+    public CmsUUID getStructureId() {
+
+        return m_structureId;
+    }
+
+    /**
      * Returns the sub-title of the bean.<p>
      *
      * @return the sub-title
