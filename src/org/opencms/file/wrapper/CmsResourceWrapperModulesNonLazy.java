@@ -435,9 +435,13 @@ public class CmsResourceWrapperModulesNonLazy extends A_CmsResourceWrapper {
 
         List<CmsResource> virtualResources = Lists.newArrayList();
         for (CmsModule module : OpenCms.getModuleManager().getAllInstalledModules()) {
-            String path = CmsStringUtil.joinPaths(LOG_PATH, module.getName() + ".log");
-            CmsResource res = readResource(cms, path, CmsResourceFilter.ALL);
-            virtualResources.add(res);
+            try {
+                String path = CmsStringUtil.joinPaths(LOG_PATH, module.getName() + ".log");
+                CmsResource res = readResource(cms, path, CmsResourceFilter.ALL);
+                virtualResources.add(res);
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
         return virtualResources;
     }
@@ -467,9 +471,13 @@ public class CmsResourceWrapperModulesNonLazy extends A_CmsResourceWrapper {
 
         List<CmsResource> virtualResources = Lists.newArrayList();
         for (String name : OpenCms.getModuleManager().getImportExportRepository().getModuleFileNames()) {
-            String path = CmsStringUtil.joinPaths(EXPORT_PATH, name);
-            CmsResource res = readResource(cms, path, CmsResourceFilter.ALL);
-            virtualResources.add(res);
+            try {
+                String path = CmsStringUtil.joinPaths(EXPORT_PATH, name);
+                CmsResource res = readResource(cms, path, CmsResourceFilter.ALL);
+                virtualResources.add(res);
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
         return virtualResources;
 
