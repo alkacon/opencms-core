@@ -231,6 +231,10 @@ public class CmsExport {
             }
 
             throw new CmsImportExportException(message, ioe);
+        } finally {
+            if (m_exportWriter != null) {
+                m_exportWriter.ensureZipStreamClosed();
+            }
         }
     }
 

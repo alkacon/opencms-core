@@ -88,9 +88,11 @@ public class CmsDefaultLogDownloadProvider implements I_CmsLogDownloadProvider {
      */
     public InputStream readAllLogs() {
 
+        FileOutputStream fos = null;
+        ZipGenerator zipGen = null;
         try {
-            FileOutputStream fos = new FileOutputStream(ZIP_PATH);
-            ZipGenerator zipGen = new ZipGenerator(fos);
+            fos = new FileOutputStream(ZIP_PATH);
+            zipGen = new ZipGenerator(fos);
             for (File file : CmsLogFileOptionProvider.getLogFiles()) {
                 if (!file.isDirectory() & !ZIP_PATH.equals(file.getAbsolutePath())) {
                     zipGen.addToZip(new File(CmsLogFileApp.LOG_FOLDER), file);
@@ -103,6 +105,21 @@ public class CmsDefaultLogDownloadProvider implements I_CmsLogDownloadProvider {
         } catch (IOException e) {
             LOG.error("unable to build zip file", e);
             return null;
+        } finally {
+            if (zipGen != null) {
+                try {
+                    zipGen.close();
+                } catch (Exception e) {
+                    LOG.info(e.getLocalizedMessage(), e);
+                }
+            }
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (Exception e) {
+                    LOG.info(e.getLocalizedMessage(), e);
+                }
+            }
         }
     }
 

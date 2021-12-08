@@ -189,30 +189,31 @@ public final class CmsSpellcheckDictionaryIndexer {
                     final CmsFile cmsFile = cms.readFile(resource);
 
                     // Read zip file content
-                    final ZipInputStream zipStream = new ZipInputStream(
-                        new ByteArrayInputStream(cmsFile.getContents()));
+                    try (
+                    ZipInputStream zipStream = new ZipInputStream(new ByteArrayInputStream(cmsFile.getContents()))) {
 
-                    // Holds several entries (files) of the zipfile
-                    ZipEntry entry = zipStream.getNextEntry();
+                        // Holds several entries (files) of the zipfile
+                        ZipEntry entry = zipStream.getNextEntry();
 
-                    // Iterate over each files in the zip file
-                    while (null != entry) {
-                        // Extract name to check if name matches the regex and to guess the
-                        // language from the filename
-                        final String name = entry.getName();
+                        // Iterate over each files in the zip file
+                        while (null != entry) {
+                            // Extract name to check if name matches the regex and to guess the
+                            // language from the filename
+                            final String name = entry.getName();
 
-                        if (name.matches(DICTIONARY_NAME_REGEX)) {
+                            if (name.matches(DICTIONARY_NAME_REGEX)) {
 
-                            // The (matching) filename reveals the language
-                            final String lang = name.substring(5, 7);
+                                // The (matching) filename reveals the language
+                                final String lang = name.substring(5, 7);
 
-                            // Parse and add documents
-                            readAndAddDocumentsFromStream(client, lang, zipStream, documents, false);
+                                // Parse and add documents
+                                readAndAddDocumentsFromStream(client, lang, zipStream, documents, false);
 
-                            // Get the next file in the zip
-                            entry = zipStream.getNextEntry();
+                                // Get the next file in the zip
+                                entry = zipStream.getNextEntry();
+                            }
+
                         }
-
                     }
                 }
             }

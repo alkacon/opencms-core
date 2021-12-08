@@ -29,6 +29,7 @@ package org.opencms.importexport;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.file.CmsFile;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsXmlSaxWriter;
@@ -42,6 +43,8 @@ import java.io.Writer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.logging.Log;
+
 import org.dom4j.io.SAXWriter;
 import org.xml.sax.SAXException;
 
@@ -54,6 +57,8 @@ public class CmsExportHelper {
 
     /** Length that can be safely written to ZIP output. */
     private static final int SUB_LENGTH = 4096;
+
+    private static final Log LOG = CmsLog.getLog(CmsExportHelper.class);
 
     /** The main export path. */
     private String m_exportPath;
@@ -121,6 +126,20 @@ public class CmsExportHelper {
         }
         // initialize the dom4j writer object
         m_saxWriter = new SAXWriter(saxHandler, saxHandler);
+    }
+
+    /**
+     * Ensures the zip stream is closed (if there is one).
+     */
+    public void ensureZipStreamClosed() {
+
+        if (m_exportZipStream != null) {
+            try {
+                m_exportZipStream.close();
+            } catch (Exception e) {
+                LOG.info(e.getLocalizedMessage(), e);
+            }
+        }
     }
 
     /**

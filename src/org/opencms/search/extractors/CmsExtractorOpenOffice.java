@@ -73,24 +73,20 @@ public final class CmsExtractorOpenOffice extends A_CmsTextExtractor {
     @Override
     public I_CmsExtractionResult extractText(InputStream in, String encoding) throws Exception {
 
-        ZipInputStream zin = new ZipInputStream(in);
-        ZipEntry ze;
-        boolean FOUND_CONTENT = false;
-        String result = "";
-        while (!FOUND_CONTENT) {
-            ze = zin.getNextEntry();
-            FOUND_CONTENT = ze.getName().equalsIgnoreCase("content.xml");
-            if (FOUND_CONTENT) {
-                result = readContent(zin);
-                try {
-                    zin.close();
-                } catch (Exception e) {
-                    e.printStackTrace(System.err);
+        try (ZipInputStream zin = new ZipInputStream(in)) {
+            ZipEntry ze;
+            boolean FOUND_CONTENT = false;
+            String result = "";
+            while (!FOUND_CONTENT) {
+                ze = zin.getNextEntry();
+                FOUND_CONTENT = ze.getName().equalsIgnoreCase("content.xml");
+                if (FOUND_CONTENT) {
+                    result = readContent(zin);
                 }
             }
+            result = removeControlChars(result);
+            return new CmsExtractionResult(result);
         }
-        result = removeControlChars(result);
-        return new CmsExtractionResult(result);
     }
 
     /**

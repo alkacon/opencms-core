@@ -37,6 +37,7 @@ import org.opencms.file.CmsVfsException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsFileUtil;
@@ -51,12 +52,17 @@ import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Allows to import resources from the filesystem or a ZIP file into the OpenCms VFS.<p>
  *
  * @since 6.0.0
  */
 public class CmsImportFolder {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsImportFolder.class);
 
     /** The OpenCms context object that provides the permissions. */
     private CmsObject m_cms;
@@ -159,6 +165,14 @@ public class CmsImportFolder {
             throw new CmsVfsException(
                 Messages.get().container(Messages.ERR_IMPORT_FOLDER_2, importFolderName, importPath),
                 e);
+        } finally {
+            if (m_zipStreamIn != null) {
+                try {
+                    m_zipStreamIn.close();
+                } catch (Exception e) {
+                    LOG.info(e.getLocalizedMessage(), e);
+                }
+            }
         }
 
     }
@@ -186,6 +200,14 @@ public class CmsImportFolder {
             importZipResource(m_zipStreamIn, m_importPath, noSubFolder);
         } catch (Exception e) {
             throw new CmsVfsException(Messages.get().container(Messages.ERR_IMPORT_FOLDER_1, importPath), e);
+        } finally {
+            if (m_zipStreamIn != null) {
+                try {
+                    m_zipStreamIn.close();
+                } catch (Exception e) {
+                    LOG.info(e.getLocalizedMessage());
+                }
+            }
         }
 
     }
