@@ -1,4 +1,6 @@
-<%@page import="java.util.*,java.text.*,org.opencms.main.*,org.opencms.i18n.*"%><%@
+<%@page import="org.opencms.security.CmsRole"%>
+<%@page import="org.opencms.jsp.CmsJspActionElement"%>
+<%@page import="java.util.*,java.text.*,org.opencms.main.*,org.opencms.i18n.*,org.opencms.file.*"%><%@
     taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%><!DOCTYPE html>
 <html>
 <head>
@@ -29,7 +31,7 @@
         <p><a href="http://alkacon.com" target="_blank" rel="noopener">&copy; Alkacon Software GmbH &amp; Co. KG - All rights reserved</a></p>
         <h2>Version and Build Information</h2>
     </div>
-
+	<% CmsObject cms = new CmsJspActionElement(pageContext, request, response).getCmsObject(); %>
     <table>
     <tr><td>Version:</td><td><%= OpenCms.getSystemInfo().getVersionNumber() %></td></tr>
 <%
@@ -49,14 +51,17 @@
     mailBody += "Startup time: " + (new SimpleDateFormat("yyyy.MM.dd HH:mm:ss z")).format(Long.valueOf(OpenCms.getSystemInfo().getStartupTime())) + "\r\n";
     mailBody += "Uptime: " + (new SimpleDateFormat("HH:mm:ss")).format(Long.valueOf(OpenCms.getSystemInfo().getRuntime())) + "\r\n";
     mailBody += "Default Locale: " + CmsLocaleManager.getDefaultLocale() + "\r\n";
-    mailBody += "Java Runtime: " + System.getProperty("java.runtime.version") + "\r\n";
+    if (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR)) {
+    	mailBody += "Java Runtime: " + System.getProperty("java.runtime.version") + "\r\n";
+    }
 
     mailBody = CmsEncoder.escapeWBlanks(mailBody, "US_ASCII");
     String mailSubject = "OpenCms Version information for server: " + OpenCms.getSystemInfo().getServerName();
     mailSubject = CmsEncoder.escapeWBlanks(mailSubject, "US_ASCII");
-%>
+    if (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR)) { %>
     <tr><td>Java Runtime:</td><td><%= System.getProperty("java.runtime.version") %></td></tr>
     <tr><td>Server:</td><td><%= application.getServerInfo() %> - Servlet/<%= application.getMajorVersion() %>.<%= application.getMinorVersion() %> - JSP/<%=JspFactory.getDefaultFactory().getEngineInfo().getSpecificationVersion() %></td></tr>
+    <% } %>
     </table>
 
     <div class="center">
