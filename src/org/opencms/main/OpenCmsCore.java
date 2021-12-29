@@ -161,7 +161,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.logging.log4j.CloseableThreadContext;
-import org.apache.xerces.parsers.SecureProcessingConfiguration;
 
 import org.antlr.stringtemplate.StringTemplate;
 
@@ -210,14 +209,8 @@ public final class OpenCmsCore {
     private static OpenCmsCore m_instance;
 
     static {
-        // Use an XML parser configuration which limits entity expansion, to prevent potential denial-of-service
-        // attacks which use that mechanism.
-        System.setProperty(
-            "org.apache.xerces.xni.parser.XMLParserConfiguration",
-            SecureProcessingConfiguration.class.getName());
         final String keyEntityExpansionLimit = "jdk.xml.entityExpansionLimit";
         if (System.getProperty(keyEntityExpansionLimit) == null) {
-            // this is the same as the default value, but you have to actually set one of the limits to enable the checks
             System.setProperty(keyEntityExpansionLimit, "64000");
         }
     }
