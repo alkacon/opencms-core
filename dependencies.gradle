@@ -221,7 +221,7 @@ dependencies {
     distribution group: 'org.htmlparser', name: 'htmlparser', version: '2.1'
     distribution group: 'org.htmlparser', name: 'htmllexer', version: '2.1'
     distribution group: 'org.jpedal.jpedal-lgpl', name: 'jpedal-lgpl', version: '4.92b23'
-    distribution group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
+    distribution group: 'org.jsoup', name: 'jsoup', version: '1.14.2'
     distribution group: 'org.jvnet.mimepull', name: 'mimepull', version: '1.9.13'
     distribution group: 'org.locationtech.spatial4j', name: 'spatial4j', version: '0.6'
     distribution group: 'org.ow2.asm', name: 'asm', version: '7.2'
