@@ -37,8 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.ArrayListMultimap;
-
 /**
  * A data structure for managing the detail page ordering for different types in a given sitemap.<p>
  *
@@ -49,8 +47,10 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
     /** A type indicating the status of a page. */
     public static enum Status {
         /** default detail page. */
-        firstDetailPage, /** no detail page. */
-        noDetailPage, /** non-default detail page. */
+        firstDetailPage,
+        /** no detail page. */
+        noDetailPage,
+        /** non-default detail page. */
         otherDetailPage
     }
 
@@ -61,7 +61,7 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
     private Map<CmsUUID, CmsDetailPageInfo> m_infoById = new HashMap<CmsUUID, CmsDetailPageInfo>();
 
     /** The detail page info beans, indexed by type. */
-    private ArrayListMultimap<String, CmsDetailPageInfo> m_map = ArrayListMultimap.create();
+    private Map<String, List<CmsDetailPageInfo>> m_map = new HashMap<>();
 
     /**
      * Creates a detail page table from a list of detail page info bean.<p>
@@ -71,7 +71,7 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
     public CmsDetailPageTable(List<CmsDetailPageInfo> infos) {
 
         for (CmsDetailPageInfo info : infos) {
-            m_map.put(info.getType(), info);
+            m_map.compute(info.getType(), (k, vs) -> vs == null ? new ArrayList<>() : vs).add(info);
             m_infoById.put(info.getId(), info);
         }
     }
@@ -91,7 +91,7 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
      */
     public void add(CmsDetailPageInfo info) {
 
-        m_map.put(info.getType(), info);
+        m_map.compute(info.getType(), (k, vs) -> vs == null ? new ArrayList<>() : vs).add(info);
         m_infoById.put(info.getId(), info);
     }
 
@@ -109,7 +109,7 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
             throw new IllegalArgumentException();
         }
         String type = info.getType();
-        List<CmsDetailPageInfo> infos = m_map.get(type);
+        List<CmsDetailPageInfo> infos = m_map.compute(type, (k, v) -> v != null ? v : new ArrayList<>());
         int oldPos = infos.indexOf(info);
         infos.remove(oldPos);
         infos.add(0, info);
@@ -171,7 +171,7 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
      */
     public CmsDetailPageInfo getBestDetailPage(String type) {
 
-        List<CmsDetailPageInfo> infos = m_map.get(type);
+        List<CmsDetailPageInfo> infos = m_map.compute(type, (k, v) -> v != null ? v : new ArrayList<>());
         if ((infos == null) || infos.isEmpty()) {
             return null;
         }
@@ -205,7 +205,7 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
      */
     public List<CmsDetailPageInfo> getInfosForType(String type) {
 
-        return new ArrayList<CmsDetailPageInfo>(m_map.get(type));
+        return new ArrayList<CmsDetailPageInfo>(m_map.compute(type, (k, v) -> v != null ? v : new ArrayList<>()));
     }
 
     /**
@@ -222,7 +222,7 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
             return Status.noDetailPage;
         }
         String type = info.getType();
-        int index = m_map.get(type).indexOf(info);
+        int index = m_map.compute(type, (k, v) -> v != null ? v : new ArrayList<>()).indexOf(info);
         if (index == 0) {
             return Status.firstDetailPage;
         }
