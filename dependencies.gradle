@@ -158,7 +158,7 @@ dependencies {
     distribution group: 'org.apache.geronimo.specs', name: 'geronimo-jms_1.1_spec', version: '1.1.1'
     distribution group: 'org.apache.geronimo.specs', name: 'geronimo-jta_1.1_spec', version: '1.1.1'
     distribution group: 'org.apache.geronimo.specs', name: 'geronimo-validation_1.0_spec', version: '1.1'
-    distribution group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.12'
+    distribution group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
     distribution group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.13'
     distribution group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.12'
     distribution group: 'org.apache.jackrabbit', name: 'jackrabbit-webdav', version: '2.21.3'
