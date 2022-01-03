@@ -21,6 +21,16 @@ disporder(name) ::= <<
 
 >>
 
+dispcoords(name) ::= <<
+
+<searchsettings>
+	<searchsetting element="$name$">
+		<solrfield targetfield="dispcoords" sourcefield="*_loc" />
+	</searchsetting>
+</searchsettings>
+
+>>
+
 instancedate(name) ::= <<
 
 <searchsettings>
@@ -34,4 +44,5 @@ instancedate(name) ::= <<
 
 listtitle(name) ::= <<$disptitle(name)$>>
 listorder(name) ::= <<$disporder(name)$>>
+listcoords(name) ::= <<$dispcoords(name)$>>
 listdate(name) ::= <<$instancedate(name)$>>
