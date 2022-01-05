@@ -35,7 +35,7 @@ instancedate(name) ::= <<
 geocoords(name) ::= <<
 
 <searchsettings>
-	<searchsetting element="$name$">
+	<searchsetting element="$name$" searchcontent="false">
 		<solrfield targetfield="geocoords" sourcefield="*_loc" default="0.000000,0.000000" locale="">
 		    <mapping type="dynamic" class="org.opencms.search.fields.CmsSearchFieldMappingGeoCoords">$name$</mapping>
 		</solrfield>

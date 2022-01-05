@@ -37,11 +37,12 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
 /**
- * Class extracting the longitude and the latitude value from a content field.
+ * Class extracting the Geo coordinates from a content field.
  */
 public class CmsSearchFieldMappingGeoCoords implements I_CmsSearchFieldMapping {
 
@@ -52,7 +53,7 @@ public class CmsSearchFieldMappingGeoCoords implements I_CmsSearchFieldMapping {
     private static final long serialVersionUID = 3016384419639743033L;
 
     /** Default latitude longitude value. */
-    private String m_defaultValue = "0.000000,0.000000";
+    private String m_defaultValue;
 
     /** The search setting parameters. */
     private String m_param;
@@ -87,15 +88,13 @@ public class CmsSearchFieldMappingGeoCoords implements I_CmsSearchFieldMapping {
         List<CmsProperty> propertiesSearched) {
 
         String coordinates = m_defaultValue;
-        if ((extractionResult != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParam())) {
-            String value = extractionResult.getContentItems().get(getParam() + "[1]");
-            JSONObject locationPickerValue = parseLocationPickerValue(value);
-            if (locationPickerValue != null) {
-
-            } else {
-                if (validateCoordinates(value)) {
-                    coordinates = value;
-                }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParam())) {
+            String value = findFirstCoordinatesValue(extractionResult);
+            String locationPickerCoordinates = parseLocationPickerCoordinates(value);
+            if (locationPickerCoordinates != null) {
+                coordinates = locationPickerCoordinates;
+            } else if (validateCoordinates(value)) {
+                coordinates = value;
             }
         }
         return coordinates;
@@ -142,14 +141,39 @@ public class CmsSearchFieldMappingGeoCoords implements I_CmsSearchFieldMapping {
     }
 
     /**
-     * Parses a location picker JSON value.
-     * @return the location picker JSON value or null if it is not
+     * If the best matching locale has no coordinates value available, searches for a coordinates
+     * value in other locales. In the case of a multi-valued field, only the first coordinates
+     * value is returned. Further values are ignored.
+     * @param extractionResult the extraction result
+     * @return the coordinates value
      */
-    private JSONObject parseLocationPickerValue(String value) {
+    private String findFirstCoordinatesValue(I_CmsExtractionResult extractionResult) {
+
+        String value = extractionResult.getContentItems().get(getParam() + "[1]");
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+            for (Locale locale : extractionResult.getLocales()) {
+                String val = extractionResult.getContentItems(locale).get(getParam() + "[1]");
+                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(val)) {
+                    return val;
+                }
+            }
+        }
+        return value;
+    }
+
+    /**
+     * Parses a location picker JSON value and returns the coordinates contained therein.
+     * @param jsonValue the JSON value
+     * @return the coordinates string or null if there are no valid location picker coordinates
+     */
+    private String parseLocationPickerCoordinates(String jsonValue) {
 
         try {
-            JSONObject json = new JSONObject(value);
-            return json;
+            JSONObject json = new JSONObject(jsonValue);
+            if (!validateLocationPickerCoordinates(json)) {
+                return null;
+            }
+            return json.getString("lat") + "," + json.getString("lng");
         } catch (JSONException e) {
             return null;
         }
@@ -162,7 +186,7 @@ public class CmsSearchFieldMappingGeoCoords implements I_CmsSearchFieldMapping {
      */
     private boolean validateCoordinates(String coordinates) {
 
-        if ((coordinates == null) || CmsStringUtil.isEmptyOrWhitespaceOnly(coordinates)) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(coordinates)) {
             return false;
         }
         if (!coordinates.contains(",")) {
@@ -188,6 +212,25 @@ public class CmsSearchFieldMappingGeoCoords implements I_CmsSearchFieldMapping {
             double value = Double.parseDouble(latitude);
             return (value <= 90) && (value >= -90);
         } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Validates the coordinates contained in a given location picker JSON value.
+     * @param jsonObject the JSON value
+     * @return whether JSON contains valid coordinates (true) or not (false)
+     */
+    private boolean validateLocationPickerCoordinates(JSONObject jsonObject) {
+
+        try {
+            String latitude = jsonObject.getString("lat");
+            String longitude = jsonObject.getString("lng");
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(latitude) || CmsStringUtil.isEmptyOrWhitespaceOnly(longitude)) {
+                return false;
+            }
+            return validateLatitude(latitude) && validateLongitude(longitude);
+        } catch (JSONException e) {
             return false;
         }
     }
