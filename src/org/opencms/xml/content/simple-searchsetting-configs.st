@@ -21,16 +21,6 @@ disporder(name) ::= <<
 
 >>
 
-dispcoords(name) ::= <<
-
-<searchsettings>
-	<searchsetting element="$name$">
-		<solrfield targetfield="dispcoords" sourcefield="*_loc" />
-	</searchsetting>
-</searchsettings>
-
->>
-
 instancedate(name) ::= <<
 
 <searchsettings>
@@ -42,7 +32,19 @@ instancedate(name) ::= <<
 
 >>
 
+geocoords(name) ::= <<
+
+<searchsettings>
+	<searchsetting element="$name$">
+		<solrfield targetfield="geocoords" sourcefield="*_loc" default="0.000000,0.000000" locale="">
+		    <mapping type="dynamic" class="org.opencms.search.fields.CmsSearchFieldMappingGeoCoords">$name$</mapping>
+		</solrfield>
+	</searchsetting>
+</searchsettings>
+
+>>
+
 listtitle(name) ::= <<$disptitle(name)$>>
 listorder(name) ::= <<$disporder(name)$>>
-listcoords(name) ::= <<$dispcoords(name)$>>
 listdate(name) ::= <<$instancedate(name)$>>
+listgeocoords(name) ::= <<$geocoords(name)$>>

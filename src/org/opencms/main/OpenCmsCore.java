@@ -208,6 +208,13 @@ public final class OpenCmsCore {
     /** One instance to rule them all, one instance to find them... */
     private static OpenCmsCore m_instance;
 
+    static {
+        final String keyEntityExpansionLimit = "jdk.xml.entityExpansionLimit";
+        if (System.getProperty(keyEntityExpansionLimit) == null) {
+            System.setProperty(keyEntityExpansionLimit, "64000");
+        }
+    }
+
     /** The ADE manager instance. */
     private CmsADEManager m_adeManager;
 

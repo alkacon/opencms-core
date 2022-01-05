@@ -44,11 +44,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.commons.logging.Log;
+import org.apache.solr.core.ConfigSetService.ConfigResource;
 import org.apache.solr.core.SolrConfig;
 import org.apache.solr.core.SolrResourceLoader;
 import org.apache.solr.schema.IndexSchema;
-
-import org.xml.sax.InputSource;
+import org.apache.solr.schema.IndexSchemaFactory;
 
 /**
  * The Solr configuration class.<p>
@@ -86,6 +86,9 @@ public class CmsSolrConfiguration {
 
     /** The Solr schema name. */
     public static final String SOLR_SCHEMA_NAME = "OpenCms SOLR schema";
+
+    /** The Solr configuration name. */
+    public static final String SOLR_CONFIG_NAME = "OpenCms SOLR configuration";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSolrConfiguration.class);
@@ -270,10 +273,14 @@ public class CmsSolrConfiguration {
 
         if (m_schema == null) {
             try (FileInputStream fis = new FileInputStream(getSolrSchemaFile())) {
-                InputSource solrSchema = new InputSource(fis);
+                ConfigResource configRes = IndexSchemaFactory.getConfigResource(
+                    null /* only used if it's a CloudConfigSetService */,
+                    fis,
+                    getSolrConfig().getResourceLoader(),
+                    SOLR_CONFIG_NAME);
                 m_schema = new IndexSchema(
                     SOLR_SCHEMA_NAME,
-                    solrSchema,
+                    configRes,
                     getSolrConfig().luceneMatchVersion,
                     getSolrConfig().getResourceLoader(),
                     getSolrConfig().getSubstituteProperties());

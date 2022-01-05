@@ -53,6 +53,7 @@ import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.publishpermissio
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.replacable;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.roleeditor;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.rolerootadmin;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.rolevfsmanager;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.rolewpuser;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.unlocked;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.writepermisssion;
@@ -144,7 +145,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
     public static final CmsStandardVisibilityCheck EDIT_CODE = new CmsStandardVisibilityCheck(
         file,
         hassourcecodeeditor,
-        roleeditor,
+        rolevfsmanager,
         notonline,
         notdeleted,
         writepermisssion,
@@ -294,6 +295,12 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
                 && !OpenCms.getRoleManager().hasRoleForResource(cms, CmsRole.WORKPLACE_USER, resource)) {
                 return VISIBILITY_INVISIBLE;
             }
+            if (flag(rolevfsmanager)) {
+                if (!OpenCms.getRoleManager().hasRoleForResource(cms, CmsRole.VFS_MANAGER, resource)) {
+                    return VISIBILITY_INVISIBLE;
+                }
+            }
+
             if (flag(rolerootadmin)
                 && !OpenCms.getRoleManager().hasRoleForResource(cms, CmsRole.ROOT_ADMIN, resource)) {
                 return VISIBILITY_INVISIBLE;
