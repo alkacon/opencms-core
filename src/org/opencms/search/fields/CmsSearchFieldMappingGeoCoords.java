@@ -141,9 +141,9 @@ public class CmsSearchFieldMappingGeoCoords implements I_CmsSearchFieldMapping {
     }
 
     /**
-     * If the best matching locale has no coordinates value available, searches for a coordinates
-     * value in other locales. In the case of a multi-valued field, only the first coordinates
-     * value is returned. Further values are ignored.
+     * At first, we search for a coordinates value in the best matching locale of the extraction
+     * result. If not available, search for a coordinates value in other locales. In the case of
+     * a multi-valued field, only the first coordinates value is returned. Further values are ignored.
      * @param extractionResult the extraction result
      * @return the coordinates value
      */
@@ -163,7 +163,7 @@ public class CmsSearchFieldMappingGeoCoords implements I_CmsSearchFieldMapping {
 
     /**
      * Parses a location picker JSON value and returns the coordinates contained therein.
-     * @param jsonValue the JSON value
+     * @param jsonValue the JSON value as string
      * @return the coordinates string or null if there are no valid location picker coordinates
      */
     private String parseLocationPickerCoordinates(String jsonValue) {

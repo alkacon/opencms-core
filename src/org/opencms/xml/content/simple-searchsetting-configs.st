@@ -3,9 +3,9 @@ group searchsetting_configs;
 disptitle(name) ::= <<
 
 <searchsettings>
-	<searchsetting element="$name$">
-		<solrfield targetfield="disptitle" sourcefield="*_sort" />
-	</searchsetting>
+    <searchsetting element="$name$">
+        <solrfield targetfield="disptitle" sourcefield="*_sort" />
+    </searchsetting>
 </searchsettings>
 
 
@@ -14,9 +14,9 @@ disptitle(name) ::= <<
 disporder(name) ::= <<
 
 <searchsettings>
-	<searchsetting element="$name$" searchcontent="false">
-		<solrfield targetfield="disporder" sourcefield="*_i" default="0" />
-	</searchsetting>
+    <searchsetting element="$name$" searchcontent="false">
+        <solrfield targetfield="disporder" sourcefield="*_i" default="0" />
+    </searchsetting>
 </searchsettings>
 
 >>
@@ -24,9 +24,9 @@ disporder(name) ::= <<
 instancedate(name) ::= <<
 
 <searchsettings>
-	<searchsetting element="$name$" searchcontent="false">
-		<solrfield targetfield="instancedate" sourcefield="*_dt" />
-		<solrfield targetfield="instancedatecurrenttill" sourcefield="*_dt" />
+    <searchsetting element="$name$" searchcontent="false">
+        <solrfield targetfield="instancedate" sourcefield="*_dt" />
+        <solrfield targetfield="instancedatecurrenttill" sourcefield="*_dt" />
     </searchsetting>
 </searchsettings>
 
@@ -35,11 +35,11 @@ instancedate(name) ::= <<
 geocoords(name) ::= <<
 
 <searchsettings>
-	<searchsetting element="$name$" searchcontent="false">
-		<solrfield targetfield="geocoords" sourcefield="*_loc" default="0.000000,0.000000" locale="">
-		    <mapping type="dynamic" class="org.opencms.search.fields.CmsSearchFieldMappingGeoCoords">$name$</mapping>
-		</solrfield>
-	</searchsetting>
+    <searchsetting element="$name$" searchcontent="false">
+        <solrfield targetfield="geocoords" sourcefield="*_loc" default="0.000000,0.000000" locale="">
+            <mapping type="dynamic" class="org.opencms.search.fields.CmsSearchFieldMappingGeoCoords">$name$</mapping>
+        </solrfield>
+    </searchsetting>
 </searchsettings>
 
 >>
