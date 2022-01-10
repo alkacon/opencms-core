@@ -93,7 +93,7 @@ public class CmsSearchFieldMappingGeoCoords implements I_CmsSearchFieldMapping {
             String locationPickerCoordinates = parseLocationPickerCoordinates(value);
             if (locationPickerCoordinates != null) {
                 coordinates = locationPickerCoordinates;
-            } else if (validateCoordinates(value)) {
+            } else if (CmsGeoCoordinateUtil.validateCoordinates(value)) {
                 coordinates = value;
             }
         }
@@ -170,83 +170,12 @@ public class CmsSearchFieldMappingGeoCoords implements I_CmsSearchFieldMapping {
 
         try {
             JSONObject json = new JSONObject(jsonValue);
-            if (!validateLocationPickerCoordinates(json)) {
+            if (!CmsGeoCoordinateUtil.validateLocationPickerCoordinates(json)) {
                 return null;
             }
             return json.getString("lat") + "," + json.getString("lng");
         } catch (JSONException e) {
             return null;
-        }
-    }
-
-    /**
-     * Validates a coordinates string and returns the validation result.
-     * @param coordinates the coordinates string to validate
-     * @return whether the coordinates are valid (true) or invalid (false)
-     */
-    private boolean validateCoordinates(String coordinates) {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(coordinates)) {
-            return false;
-        }
-        if (!coordinates.contains(",")) {
-            return false;
-        }
-        String[] tokens = coordinates.split(",");
-        String latitude = tokens[0];
-        String longitude = tokens[1];
-        if (validateLatitude(latitude) && validateLongitude(longitude)) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Validates a latitude string.
-     * @param latitude the latitude string to validate
-     * @return whether the string is a valid latitude value (true) or not (false)
-     */
-    private boolean validateLatitude(String latitude) {
-
-        try {
-            double value = Double.parseDouble(latitude);
-            return (value <= 90) && (value >= -90);
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    /**
-     * Validates the coordinates contained in a given location picker JSON value.
-     * @param jsonObject the JSON value
-     * @return whether JSON contains valid coordinates (true) or not (false)
-     */
-    private boolean validateLocationPickerCoordinates(JSONObject jsonObject) {
-
-        try {
-            String latitude = jsonObject.getString("lat");
-            String longitude = jsonObject.getString("lng");
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(latitude) || CmsStringUtil.isEmptyOrWhitespaceOnly(longitude)) {
-                return false;
-            }
-            return validateLatitude(latitude) && validateLongitude(longitude);
-        } catch (JSONException e) {
-            return false;
-        }
-    }
-
-    /**
-     * Validates a longitude string.
-     * @param longitude the longitude string to validate
-     * @return whether the string is a valid longitude value (true) or not (false)
-     */
-    private boolean validateLongitude(String longitude) {
-
-        try {
-            double value = Double.parseDouble(longitude);
-            return (value <= 180) && (value >= -180);
-        } catch (NumberFormatException e) {
-            return false;
         }
     }
 }
