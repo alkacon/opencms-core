@@ -34,6 +34,7 @@
 			<xsd:element name="FieldSettings" type="OpenCmsDefaultAppinfoFields" minOccurs="0"/>      
             <xsd:element name="jsonrenderer" type="OpenCmsJsonRenderer" minOccurs="0"  />
             <xsd:element name="reverse-mapping-enabled" type="xsd:string" minOccurs="0" />
+            <xsd:element name="geomapping" type="OpenCmsDefaultAppinfoGeoMapping" minOccurs="0" />
 			
 		</xsd:all>
 	</xsd:complexType>

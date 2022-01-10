@@ -62,6 +62,7 @@ import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldMapping;
+import org.opencms.search.fields.CmsSearchFieldMappingGeoCoordsLinked;
 import org.opencms.search.fields.CmsSearchFieldMappingType;
 import org.opencms.search.fields.I_CmsSearchFieldMapping;
 import org.opencms.search.galleries.CmsGalleryNameMacroResolver;
@@ -94,6 +95,8 @@ import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsSchemaFormatterBeanWrapper;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
+import org.opencms.xml.content.CmsGeoMappingConfiguration.Entry;
+import org.opencms.xml.content.CmsGeoMappingConfiguration.EntryType;
 import org.opencms.xml.content.CmsMappingResolutionContext.AttributeType;
 import org.opencms.xml.types.CmsXmlCategoryValue;
 import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
@@ -515,6 +518,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** Constant for the "formatters" appinfo element name. */
     public static final String APPINFO_FORMATTERS = "formatters";
 
+    /** Constant for the 'geomapping' node. */
+    public static final String APPINFO_GEOMAPPING = "geomapping";
+
     /** Constant for the "headinclude" appinfo element name. */
     public static final String APPINFO_HEAD_INCLUDE = "headinclude";
 
@@ -661,6 +667,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** Constant for head include type attribute: java-script. */
     public static final String ATTRIBUTE_INCLUDE_TYPE_JAVASCRIPT = "javascript";
 
+    /** Field for mapping geo-coordinates. */
+    public static final String GEOMAPPING_FIELD = "geocoords_loc";
+
     /** Macro for resolving the preview URI. */
     public static final String MACRO_PREVIEW_TEMPFILE = "previewtempfile";
 
@@ -741,6 +750,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The list of formatters from the XSD. */
     protected List<CmsFormatterBean> m_formatters;
 
+    /** The configured geo-coordinate mapping configuration entries. */
+    protected List<CmsGeoMappingConfiguration.Entry> m_geomappingEntries = new ArrayList<>();
+
     /** Relation actions. */
     protected Map<String, InvalidRelationAction> m_invalidRelationActions = new HashMap<>();
 
@@ -755,6 +767,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** The preview location (as defined in the annotations). */
     protected String m_previewLocation;
+
+    /** Name of the field used for geo-coordinate mapping. */
+    protected String m_primaryGeomappingField;
 
     /** The relation check rules. */
     protected Map<String, Boolean> m_relationChecks;
@@ -1365,6 +1380,24 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
+     * Gets the geo mapping configuration.
+     *
+     * @return the geo mapping configuration
+     */
+    public CmsGeoMappingConfiguration getGeoMappingConfiguration() {
+
+        if ((m_primaryGeomappingField == null) && (m_geomappingEntries.size() == 0)) {
+            return null;
+        }
+        List<CmsGeoMappingConfiguration.Entry> configEntries = new ArrayList<>();
+        if (m_primaryGeomappingField != null) {
+            configEntries.add(new CmsGeoMappingConfiguration.Entry(EntryType.field, m_primaryGeomappingField));
+        }
+        configEntries.addAll(m_geomappingEntries);
+        return new CmsGeoMappingConfiguration(configEntries);
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getInvalidRelationAction(java.lang.String)
      */
     public InvalidRelationAction getInvalidRelationAction(String name) {
@@ -1866,11 +1899,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     initJsonRenderer(element);
                 } else if (nodeName.equals(APPINFO_REVERSE_MAPPING_ENABLED)) {
                     m_reverseMappingEnabled = Boolean.parseBoolean(element.getTextTrim());
+                } else if (nodeName.equals(APPINFO_GEOMAPPING)) {
+                    initGeoMappingEntries(element);
                 }
 
             }
         }
         m_contentDefinition = contentDefinition;
+        addGeoMappingField();
 
         // at the end, add default check rules for optional file references
         addDefaultCheckRules(contentDefinition, null, null);
@@ -2371,6 +2407,25 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
+     * Finally adds the field used for geo-coordinate mapping by combining the configuration
+     * from the geomapping section and the field settings.
+     */
+    protected void addGeoMappingField() {
+
+        CmsGeoMappingConfiguration mappingConfig = getGeoMappingConfiguration();
+        if (mappingConfig != null) {
+            CmsSolrField field = new CmsSolrField(
+                GEOMAPPING_FIELD,
+                Collections.emptyList(),
+                CmsLocaleManager.getDefaultLocale(),
+                "0.000000,0.000000");
+            I_CmsSearchFieldMapping mapping = new CmsSearchFieldMappingGeoCoordsLinked(getGeoMappingConfiguration());
+            field.addMapping(mapping);
+            m_searchFields.put("__geocoord__", field);
+        }
+    }
+
+    /**
      * Adds an element mapping.<p>
      *
      * @param contentDefinition the XML content definition this XML content handler belongs to
@@ -2507,15 +2562,19 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         if (null != searchContentType) {
             addSearchSetting(contentDef, name, searchContentType);
         } else {
-            StringTemplate template = m_searchTemplateGroup.getInstanceOf(value);
-            if ((template != null) && (template.getFormalArgument("name") != null)) {
-                template.setAttribute("name", CmsEncoder.escapeXml(name));
-                String xml = template.toString();
-                try {
-                    Document doc = DocumentHelper.parseText(xml);
-                    initSearchSettings(doc.getRootElement(), contentDef);
-                } catch (DocumentException e) {
-                    LOG.error(e.getLocalizedMessage(), e);
+            if ("geocoords".equals(value) || "listgeocoords".equals(value)) {
+                m_primaryGeomappingField = name;
+            } else {
+                StringTemplate template = m_searchTemplateGroup.getInstanceOf(value);
+                if ((template != null) && (template.getFormalArgument("name") != null)) {
+                    template.setAttribute("name", CmsEncoder.escapeXml(name));
+                    String xml = template.toString();
+                    try {
+                        Document doc = DocumentHelper.parseText(xml);
+                        initSearchSettings(doc.getRootElement(), contentDef);
+                    } catch (DocumentException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
                 }
             }
         }
@@ -4502,6 +4561,25 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         }
         return m_hasCategoryWidget.booleanValue();
 
+    }
+
+    /**
+     * Initializes the geo-mapping configuration.
+     *
+     * @param element the configuration node
+     */
+    private void initGeoMappingEntries(Element element) {
+
+        try {
+            for (Element child : element.elements()) {
+                EntryType type = EntryType.valueOf(child.getName());
+                String value = child.getText();
+                Entry entry = new Entry(type, value.trim());
+                m_geomappingEntries.add(entry);
+            }
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
     }
 
     /**

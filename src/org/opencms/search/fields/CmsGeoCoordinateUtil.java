@@ -37,6 +37,24 @@ import org.opencms.util.CmsStringUtil;
 public final class CmsGeoCoordinateUtil {
 
     /**
+     * Parses a location picker JSON value and returns the coordinates contained therein.
+     * @param jsonValue the JSON value as string
+     * @return the coordinates string or null if there are no valid location picker coordinates
+     */
+    public static String parseLocationPickerCoordinates(String jsonValue) {
+
+        try {
+            JSONObject json = new JSONObject(jsonValue);
+            if (!CmsGeoCoordinateUtil.validateLocationPickerCoordinates(json)) {
+                return null;
+            }
+            return json.getString("lat") + "," + json.getString("lng");
+        } catch (JSONException e) {
+            return null;
+        }
+    }
+
+    /**
      * Validates a coordinates string and returns the validation result.
      * @param coordinates the coordinates string to validate
      * @return whether the coordinates are valid (true) or invalid (false)

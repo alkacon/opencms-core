@@ -295,7 +295,7 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
             }
         } catch (Exception e) {
             // nothing to do just log
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
         return document;
     }

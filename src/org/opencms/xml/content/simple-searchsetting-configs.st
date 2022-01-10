@@ -32,19 +32,6 @@ instancedate(name) ::= <<
 
 >>
 
-geocoords(name) ::= <<
-
-<searchsettings>
-    <searchsetting element="$name$" searchcontent="false">
-        <solrfield targetfield="geocoords" sourcefield="*_loc" default="0.000000,0.000000" locale="">
-            <mapping type="dynamic" class="org.opencms.search.fields.CmsSearchFieldMappingGeoCoords">$name$</mapping>
-        </solrfield>
-    </searchsetting>
-</searchsettings>
-
->>
-
 listtitle(name) ::= <<$disptitle(name)$>>
 listorder(name) ::= <<$disporder(name)$>>
 listdate(name) ::= <<$instancedate(name)$>>
-listgeocoords(name) ::= <<$geocoords(name)$>>
