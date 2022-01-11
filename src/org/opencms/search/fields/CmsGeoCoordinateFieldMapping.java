@@ -65,9 +65,6 @@ public class CmsGeoCoordinateFieldMapping implements I_CmsSearchFieldMapping {
     /** Maximum recursion depth for following links. */
     public static final int MAX_DEPTH = 2;
 
-    /** Default latitude longitude value. */
-    private String m_defaultValue;
-
     /** The geo-mapping configuration. */
     private CmsGeoMappingConfiguration m_config;
 
@@ -86,7 +83,7 @@ public class CmsGeoCoordinateFieldMapping implements I_CmsSearchFieldMapping {
      */
     public String getDefaultValue() {
 
-        return m_defaultValue;
+        return "0.000000,0.000000";
     }
 
     /**
@@ -216,7 +213,7 @@ public class CmsGeoCoordinateFieldMapping implements I_CmsSearchFieldMapping {
      */
     public void setDefaultValue(String defaultValue) {
 
-        m_defaultValue = defaultValue;
+        // not used
     }
 
     /**
