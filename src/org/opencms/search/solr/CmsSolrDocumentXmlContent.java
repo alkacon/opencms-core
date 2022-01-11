@@ -80,6 +80,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import org.apache.commons.logging.Log;
 
@@ -396,6 +397,39 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
         Set<CmsUUID> alreadyExtracted)
     throws CmsException {
 
+        return extractXmlContent(
+            cms,
+            resource,
+            index,
+            forceLocale,
+            alreadyExtracted,
+            content -> {/*do nothing with the content*/});
+
+    }
+
+    /**
+     * Extracts the content of a single XML content resource.<p>
+     *
+     * @param cms the cms context
+     * @param resource the resource
+     * @param index the used index
+     * @param forceLocale if set, only the content values for the given locale will be extracted
+     * @param alreadyExtracted keeps track of ids of contents which have already been extracted
+     * @param contentConsumer gets called with the unmarshalled content object
+     *
+     * @return the extraction result
+     *
+     * @throws CmsException in case reading or unmarshalling the content fails
+     */
+    public static CmsExtractionResult extractXmlContent(
+        CmsObject cms,
+        CmsResource resource,
+        I_CmsSearchIndex index,
+        Locale forceLocale,
+        Set<CmsUUID> alreadyExtracted,
+        Consumer<A_CmsXmlDocument> contentConsumer)
+    throws CmsException {
+
         if (null == alreadyExtracted) {
             alreadyExtracted = Collections.emptySet();
         }
@@ -406,6 +440,9 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
                 Messages.get().container(Messages.ERR_NO_CONTENT_1, resource.getRootPath()));
         }
         A_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
+        if (contentConsumer != null) {
+            contentConsumer.accept(xmlContent);
+        }
 
         // initialize some variables
         Map<Locale, LinkedHashMap<String, String>> items = new HashMap<Locale, LinkedHashMap<String, String>>();

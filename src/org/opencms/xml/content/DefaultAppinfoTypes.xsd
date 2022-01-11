@@ -430,5 +430,10 @@
         </xsd:simpleContent>
     </xsd:complexType>
     
+    <xsd:complexType name="OpenCmsDefaultAppinfoGeoMapping">
+    	<xsd:choice minOccurs="0" maxOccurs="unbounded">
+    		<xsd:element name="link" type="xsd:string" />
+    	</xsd:choice>
+    </xsd:complexType>
 	
 </xsd:schema>

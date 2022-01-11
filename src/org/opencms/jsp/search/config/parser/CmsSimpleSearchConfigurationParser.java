@@ -589,6 +589,8 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         fields.append(CmsSearchField.FIELD_DISPTITLE).append('_').append(getSearchLocale().toString()).append("_sort");
         fields.append(',');
         fields.append(CmsSearchField.FIELD_LINK);
+        fields.append(',');
+        fields.append(CmsSearchField.FIELD_GEOCOORDS);
         return fields.toString();
     }
 

@@ -366,6 +366,13 @@ public interface I_CmsXmlContentHandler {
     CmsFormatterConfiguration getFormatterConfiguration(CmsObject cms, CmsResource res);
 
     /**
+     * Gets the geo-coordinate mapping configuration.
+     *
+     * @return the geo-coordinate mapping configuration
+     */
+    CmsGeoMappingConfiguration getGeoMappingConfiguration();
+
+    /**
      * Gets the action to perform if the given name refers to a link field which refers to a VFS file that no longer exists.
      *
      * @param name the field name
