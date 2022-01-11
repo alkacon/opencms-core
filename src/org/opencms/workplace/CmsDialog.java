@@ -1729,7 +1729,7 @@ public class CmsDialog extends CmsToolDialog {
         } catch (CmsException e) {
             // should usually never happen
             if (LOG.isInfoEnabled()) {
-                LOG.info(e);
+                LOG.info(e.getLocalizedMessage(), e);
             }
         }
 
@@ -1756,7 +1756,7 @@ public class CmsDialog extends CmsToolDialog {
             } catch (CmsException e) {
                 // can usually be ignored
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(e);
+                    LOG.info(e.getLocalizedMessage(), e);
                 }
                 currentFolder = "/";
             }

@@ -184,7 +184,7 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
                 }
             } catch (Exception e) {
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(e);
+                    LOG.info(e.getLocalizedMessage(), e);
                 }
                 res.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
             }

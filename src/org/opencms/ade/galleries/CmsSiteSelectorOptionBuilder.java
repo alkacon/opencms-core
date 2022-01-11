@@ -170,7 +170,7 @@ public class CmsSiteSelectorOptionBuilder {
                 }
             }
         } catch (CmsException e) {
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 

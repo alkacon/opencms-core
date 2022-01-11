@@ -1291,11 +1291,11 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                         links = linkParseable.parseLinks(cms, cms.readFile(undoneResource2));
                     } catch (CmsException e) {
                         if (LOG.isWarnEnabled()) {
-                            LOG.warn(e);
+                            LOG.warn(e.getLocalizedMessage(), e);
                         }
                     } catch (CmsRuntimeException e) {
                         if (LOG.isWarnEnabled()) {
-                            LOG.warn(e);
+                            LOG.warn(e.getLocalizedMessage(), e);
                         }
                     }
                 }

@@ -162,7 +162,7 @@ public class CmsLoginUserAgreement extends CmsDialog {
             // write the changed user
             getCms().writeUser(user);
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 
@@ -492,7 +492,7 @@ public class CmsLoginUserAgreement extends CmsDialog {
                 m_acceptedVersion = jsonData.getDouble(KEY_ACCEPTED_VERSION);
                 m_acceptedCount = jsonData.getInt(KEY_ACCEPTED_COUNT);
             } catch (JSONException e) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
     }

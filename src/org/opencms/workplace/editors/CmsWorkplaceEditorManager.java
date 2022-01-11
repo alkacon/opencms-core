@@ -123,7 +123,7 @@ public class CmsWorkplaceEditorManager {
             } catch (CmsException e) {
                 // no configuration file present, ignore this folder
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(e);
+                    LOG.info(e.getLocalizedMessage(), e);
                 }
                 continue;
             }

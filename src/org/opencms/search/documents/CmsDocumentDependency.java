@@ -538,7 +538,7 @@ public final class CmsDocumentDependency {
                         }
                         addAttachment(att);
                     } catch (Exception e) {
-                        LOG.error(e);
+                        LOG.error(e.getLocalizedMessage(), e);
                     }
                 }
             }

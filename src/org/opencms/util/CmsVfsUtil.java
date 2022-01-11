@@ -92,7 +92,7 @@ public final class CmsVfsUtil {
                 } catch (CmsException e) {
                     // may happen if parent folder is locked also
                     if (LOG.isInfoEnabled()) {
-                        LOG.info(e);
+                        LOG.info(e.getLocalizedMessage(), e);
                     }
                 }
             } catch (CmsVfsResourceAlreadyExistsException e) {

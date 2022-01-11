@@ -142,7 +142,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
             } catch (Exception e) {
                 // should usually never happen
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(e);
+                    LOG.info(e.getLocalizedMessage(), e);
                 }
             }
             setAction(ACTION_EXIT);

@@ -890,7 +890,7 @@ public final class CmsStringUtil {
                     return loc;
                 }
             } catch (LangDetectException e) {
-                LOG.debug(e);
+                LOG.debug(e.getLocalizedMessage(), e);
             }
         }
         return null;

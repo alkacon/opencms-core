@@ -712,7 +712,7 @@ public final class CmsResourceUtil {
             } catch (Exception e1) {
                 // should usually never happen
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(e);
+                    LOG.info(e.getLocalizedMessage(), e);
                 }
             } finally {
                 getCms().getRequestContext().setSiteRoot(storedSiteRoot);
@@ -1253,7 +1253,7 @@ public final class CmsResourceUtil {
             } catch (Exception e1) {
                 // should usually never happen
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(e);
+                    LOG.info(e.getLocalizedMessage(), e);
                 }
             } finally {
                 getCms().getRequestContext().setSiteRoot(storedSiteRoot);

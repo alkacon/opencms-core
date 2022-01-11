@@ -1508,7 +1508,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                     printElementWrapperTagEnd(false);
                 } catch (Exception e) {
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(e);
+                        LOG.error(e.getLocalizedMessage(), e);
                     }
                 }
             }

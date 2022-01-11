@@ -187,7 +187,7 @@ public class CmsAdvancedLinkSubstitutionHandler extends CmsDefaultLinkSubstituti
             }
 
         } catch (CmsException e) {
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
 
         return linkExcludes;

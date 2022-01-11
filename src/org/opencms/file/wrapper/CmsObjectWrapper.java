@@ -958,7 +958,7 @@ public class CmsObjectWrapper {
                     result = true;
                 }
             } catch (CmsLoaderException e) {
-                LOG.debug(e);
+                LOG.debug(e.getLocalizedMessage(), e);
             }
         }
         return result;
@@ -985,7 +985,7 @@ public class CmsObjectWrapper {
                 }
             }
         } catch (CmsException e) {
-            LOG.debug(e);
+            LOG.debug(e.getLocalizedMessage(), e);
         }
         return result;
     }

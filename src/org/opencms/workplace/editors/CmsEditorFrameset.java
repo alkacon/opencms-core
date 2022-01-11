@@ -87,7 +87,7 @@ public class CmsEditorFrameset extends CmsEditor {
             } catch (CmsException e) {
                 // should usually never happen
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(e);
+                    LOG.info(e.getLocalizedMessage(), e);
                 }
             }
         }
@@ -171,7 +171,7 @@ public class CmsEditorFrameset extends CmsEditor {
                 } catch (Exception e) {
                     // should usually never happen
                     if (LOG.isInfoEnabled()) {
-                        LOG.info(e);
+                        LOG.info(e.getLocalizedMessage(), e);
                     }
                 }
             }

@@ -344,7 +344,7 @@ public class CmsTemplateContextManager {
                 return cms.readPropertyObject(templatePath, propertyName, false).getValue(fallbackValue);
             }
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
             return fallbackValue;
         }
     }

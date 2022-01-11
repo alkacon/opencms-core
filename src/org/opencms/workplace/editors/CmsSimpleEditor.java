@@ -91,7 +91,7 @@ public class CmsSimpleEditor extends CmsEditor {
             } catch (CmsException e) {
                 // should usually never happen
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(e);
+                    LOG.info(e.getLocalizedMessage(), e);
                 }
             }
         }

@@ -95,7 +95,7 @@ public class CmsUserTrackingResourceHandler implements I_CmsResourceInit {
                         cms.getRequestContext().getCurrentUser());
                 } catch (CmsException e) {
                     // error marking resource
-                    LOG.error(e);
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
             }
         }

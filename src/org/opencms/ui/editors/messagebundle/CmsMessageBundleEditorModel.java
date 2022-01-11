@@ -794,7 +794,7 @@ public class CmsMessageBundleEditorModel {
         try {
             lockOnChange(propertyId);
         } catch (CmsException e) {
-            LOG.debug(e);
+            LOG.debug(e.getLocalizedMessage(), e);
         }
         if (isDescriptorProperty(propertyId)) {
             m_descriptorHasChanges = true;

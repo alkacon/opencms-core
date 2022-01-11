@@ -908,7 +908,7 @@ public abstract class CmsEditor extends CmsEditorBase {
         } catch (CmsException e) {
             // should usually never happen
             if (LOG.isInfoEnabled()) {
-                LOG.info(e);
+                LOG.info(e.getLocalizedMessage(), e);
             }
         } finally {
             try {
@@ -917,7 +917,7 @@ public abstract class CmsEditor extends CmsEditorBase {
             } catch (CmsException e) {
                 // should usually never happen
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(e);
+                    LOG.info(e.getLocalizedMessage(), e);
                 }
             }
         }

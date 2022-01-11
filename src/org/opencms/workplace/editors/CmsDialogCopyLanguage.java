@@ -222,7 +222,7 @@ public class CmsDialogCopyLanguage extends CmsDialog {
         } catch (Throwable e) {
             // should usually never happen
             if (LOG.isInfoEnabled()) {
-                LOG.info(e);
+                LOG.info(e.getLocalizedMessage(), e);
             }
             return "";
         }

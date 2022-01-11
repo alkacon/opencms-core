@@ -1349,7 +1349,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             // initialization is done, set the frozen flag to true
             m_frozen = true;
         } catch (CmsException e) {
-            LOG.warn(e);
+            LOG.warn(e.getLocalizedMessage(), e);
         }
         if (!m_isListenerSet) {
             OpenCms.addCmsEventListener(this, new int[] {I_CmsEventListener.EVENT_PUBLISH_PROJECT});

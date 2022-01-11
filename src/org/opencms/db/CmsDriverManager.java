@@ -6035,7 +6035,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             resources.add(readFolder(dbc, CmsResource.getParentFolder(source.getRootPath()), CmsResourceFilter.ALL));
         } catch (Exception e) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(e);
+                LOG.debug(e.getLocalizedMessage(), e);
             }
         }
         // destination
@@ -8132,7 +8132,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     result.addAll(getUsersOfGroup(dbc, principal.getName(), true, false, false));
                 } catch (CmsException e) {
                     if (LOG.isInfoEnabled()) {
-                        LOG.info(e);
+                        LOG.info(e.getLocalizedMessage(), e);
                     }
                 }
             } else {

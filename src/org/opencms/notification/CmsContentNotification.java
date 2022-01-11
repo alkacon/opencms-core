@@ -249,7 +249,7 @@ public class CmsContentNotification extends A_CmsNotification {
             buf.append("</a>]");
         } catch (CmsException e) {
             if (LOG.isInfoEnabled()) {
-                LOG.info(e);
+                LOG.info(e.getLocalizedMessage(), e);
             }
         }
         buf.append("</td>");
@@ -285,7 +285,7 @@ public class CmsContentNotification extends A_CmsNotification {
                 buf.append("</a>]");
             } catch (CmsException e) {
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(e);
+                    LOG.info(e.getLocalizedMessage(), e);
                 }
             }
         }
@@ -323,7 +323,7 @@ public class CmsContentNotification extends A_CmsNotification {
             buf.append("</a>]");
         } catch (CmsException e) {
             if (LOG.isInfoEnabled()) {
-                LOG.info(e);
+                LOG.info(e.getLocalizedMessage(), e);
             }
         }
         buf.append("</td>");

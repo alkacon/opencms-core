@@ -1804,7 +1804,7 @@ public abstract class CmsWorkplace {
                 m_cms.getRequestContext().setCurrentProject(getCms().readProject(new CmsUUID(project)));
             } catch (Exception e) {
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(e);
+                    LOG.info(e.getLocalizedMessage(), e);
                 }
             }
             settings.setProject(new CmsUUID(project));

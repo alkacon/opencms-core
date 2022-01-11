@@ -175,13 +175,13 @@ public class CmsEditorDisplayOptions {
                         } catch (CmsException e) {
                             // set configuration to not available
                             if (LOG.isInfoEnabled()) {
-                                LOG.info(e);
+                                LOG.info(e.getLocalizedMessage(), e);
                             }
                             mappedConfigFile = NO_MAPPING_FOR_USER;
                         } catch (IOException e) {
                             // set configuration to not available
                             if (LOG.isInfoEnabled()) {
-                                LOG.info(e);
+                                LOG.info(e.getLocalizedMessage(), e);
                             }
                             mappedConfigFile = NO_MAPPING_FOR_USER;
                             displayOptions = null;

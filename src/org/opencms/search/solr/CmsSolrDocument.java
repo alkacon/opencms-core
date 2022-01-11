@@ -347,7 +347,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
                 return CmsSearchUtil.parseDate(o.toString());
             } catch (ParseException e) {
                 // ignore: not a valid date format
-                LOG.debug(e);
+                LOG.debug(e.getLocalizedMessage(), e);
             }
         }
         return null;

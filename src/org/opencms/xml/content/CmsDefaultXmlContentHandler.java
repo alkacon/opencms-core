@@ -2929,7 +2929,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         try {
             m_defaultWidgetInstance = (I_CmsComplexWidget)(Class.forName(m_defaultWidget).newInstance());
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 
@@ -4803,7 +4803,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                                     rootCms.chacc(filename, type, name, permissions);
                                 } catch (CmsException e) {
                                     // setting permission did not work
-                                    LOG.error(e);
+                                    LOG.error(e.getLocalizedMessage(), e);
                                 }
                             }
                         }

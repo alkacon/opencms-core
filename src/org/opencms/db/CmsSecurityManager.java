@@ -7530,7 +7530,7 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             // could happen with with shared locks on single files
             if (LOG.isWarnEnabled()) {
-                LOG.warn(e);
+                LOG.warn(e.getLocalizedMessage(), e);
             }
         }
 
