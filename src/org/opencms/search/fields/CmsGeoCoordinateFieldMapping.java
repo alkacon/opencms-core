@@ -54,10 +54,10 @@ import org.apache.commons.logging.Log;
 /**
  * Class extracting the Geo coordinates from a content field.
  */
-public class CmsSearchFieldMappingGeoCoordsLinked implements I_CmsSearchFieldMapping {
+public class CmsGeoCoordinateFieldMapping implements I_CmsSearchFieldMapping {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSearchFieldMappingGeoCoordsLinked.class);
+    private static final Log LOG = CmsLog.getLog(CmsGeoCoordinateFieldMapping.class);
 
     /** Serial version UID. */
     private static final long serialVersionUID = 1;
@@ -76,7 +76,7 @@ public class CmsSearchFieldMappingGeoCoordsLinked implements I_CmsSearchFieldMap
      *
      * @param config the configuration to use
      */
-    public CmsSearchFieldMappingGeoCoordsLinked(CmsGeoMappingConfiguration config) {
+    public CmsGeoCoordinateFieldMapping(CmsGeoMappingConfiguration config) {
 
         m_config = config;
     }

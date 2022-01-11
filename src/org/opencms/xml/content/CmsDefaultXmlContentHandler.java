@@ -62,7 +62,7 @@ import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldMapping;
-import org.opencms.search.fields.CmsSearchFieldMappingGeoCoordsLinked;
+import org.opencms.search.fields.CmsGeoCoordinateFieldMapping;
 import org.opencms.search.fields.CmsSearchFieldMappingType;
 import org.opencms.search.fields.I_CmsSearchFieldMapping;
 import org.opencms.search.galleries.CmsGalleryNameMacroResolver;
@@ -2419,7 +2419,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 Collections.emptyList(),
                 CmsLocaleManager.getDefaultLocale(),
                 "0.000000,0.000000");
-            I_CmsSearchFieldMapping mapping = new CmsSearchFieldMappingGeoCoordsLinked(getGeoMappingConfiguration());
+            I_CmsSearchFieldMapping mapping = new CmsGeoCoordinateFieldMapping(getGeoMappingConfiguration());
             field.addMapping(mapping);
             m_searchFields.put("__geocoord__", field);
         }
