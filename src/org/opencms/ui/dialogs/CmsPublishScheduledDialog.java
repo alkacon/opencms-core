@@ -61,6 +61,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 
@@ -200,8 +201,9 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
                 cms.getRequestContext().setCurrentProject(tmpProject);
 
                 Set<CmsUUID> changeIds = new HashSet<CmsUUID>();
+                Set<CmsResource> needToUnlockLater = new HashSet<>();
                 for (CmsResource resource : m_context.getResources()) {
-                    addToTempProject(adminCms, cms, resource, tmpProject);
+                    addToTempProject(adminCms, cms, resource, tmpProject, needToUnlockLater);
                     if (resource.isFolder() && m_includeSubResources.getValue().booleanValue()) {
                         List<CmsResource> subResources = cms.readResources(
                             resource,
@@ -214,7 +216,7 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
                                 CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
                                 false,
                                 CmsResourceFilter.ALL)) {
-                                addToTempProject(adminCms, cms, sub, tmpProject);
+                                addToTempProject(adminCms, cms, sub, tmpProject, needToUnlockLater);
                             }
                         }
                     }
@@ -263,6 +265,9 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
                 params.put(CmsPublishScheduledJob.PARAM_JOBNAME, jobName);
                 // the link check
                 params.put(CmsPublishScheduledJob.PARAM_LINKCHECK, "true");
+                String unlockIdList = needToUnlockLater.stream().map(res -> res.getStructureId().toString()).collect(
+                    Collectors.joining(","));
+                params.put(CmsPublishScheduledJob.PARAM_UNLOCK_LIST, unlockIdList);
                 // add the job schedule parameter
                 job.setParameters(params);
                 // add the context info to the scheduled job
@@ -287,9 +292,16 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
      * @param userCms the user cms context
      * @param resource the resource
      * @param tmpProject the temporary project
+     * @param needToUnlockLater a set to which this method adds resources that should be explicitly unlocked later
+     *
      * @throws CmsException in case something goes wrong
      */
-    private void addToTempProject(CmsObject adminCms, CmsObject userCms, CmsResource resource, CmsProject tmpProject)
+    private void addToTempProject(
+        CmsObject adminCms,
+        CmsObject userCms,
+        CmsResource resource,
+        CmsProject tmpProject,
+        Set<CmsResource> needToUnlockLater)
     throws CmsException {
 
         // copy the resource to the project
@@ -309,6 +321,9 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
         }
         // lock resource from current user in current project
         userCms.lockResource(resource);
+        if (resource.getState().isUnchanged()) {
+            needToUnlockLater.add(resource);
+        }
         // get current lock
         lock = userCms.getLock(resource);
     }

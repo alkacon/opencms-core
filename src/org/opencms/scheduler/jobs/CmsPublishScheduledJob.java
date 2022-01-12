@@ -29,6 +29,8 @@ package org.opencms.scheduler.jobs;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -38,6 +40,7 @@ import org.opencms.notification.CmsPublishNotification;
 import org.opencms.report.CmsWorkplaceReport;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.scheduler.I_CmsScheduledJob;
+import org.opencms.util.CmsUUID;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -74,6 +77,9 @@ public class CmsPublishScheduledJob implements I_CmsScheduledJob {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPublishScheduledJob.class);
+
+    /** Optional parameter containing comma-separated list of structure ids of resources to explicitly unlock at the end of the job (only necessary for resources that don't get published). */
+    public static final String PARAM_UNLOCK_LIST = "unlock-list";
 
     /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(org.opencms.file.CmsObject, java.util.Map)
@@ -120,6 +126,24 @@ public class CmsPublishScheduledJob implements I_CmsScheduledJob {
             OpenCms.getPublishManager().publishProject(cms, report);
             OpenCms.getPublishManager().waitWhileRunning();
             finishMessage = Messages.get().getBundle().key(Messages.LOG_PUBLISH_FINISHED_1, project.getName());
+
+            // resources that have not been themselves published, but have been locked by the scheduled publish dialog
+            String unlockList = parameters.get(PARAM_UNLOCK_LIST);
+            if (unlockList != null) {
+                for (String idStr : unlockList.split(",")) {
+                    try {
+                        CmsResource resource = cms.readResource(
+                            new CmsUUID(idStr),
+                            CmsResourceFilter.IGNORE_EXPIRATION);
+                        CmsLock lock = cms.getLock(resource);
+                        if (!lock.isUnlocked()) {
+                            cms.unlockResource(resource);
+                        }
+                    } catch (Exception e) {
+                        LOG.debug(e.getLocalizedMessage(), e);
+                    }
+                }
+            }
         } catch (CmsException e) {
             // there was an error, so create an output for the logfile
             finishMessage = Messages.get().getBundle().key(
