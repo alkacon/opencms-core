@@ -193,7 +193,7 @@ public class CmsNewResourceXmlPage {
                 } catch (CmsException e) {
                     // property not available, will be null
                     if (LOG.isInfoEnabled()) {
-                        LOG.info(e);
+                        LOG.info(e.getLocalizedMessage(), e);
                     }
                 }
 

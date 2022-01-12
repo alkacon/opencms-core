@@ -154,7 +154,7 @@ public class CmsMove extends CmsMultiDialog {
                         }
                     } catch (Exception e) {
                         if (LOG.isInfoEnabled()) {
-                            LOG.info(e);
+                            LOG.info(e.getLocalizedMessage(), e);
                         }
                     }
                     getJsp().getRequest().setAttribute(REQUEST_ATTRIBUTE_RELOADTREE, folderList);

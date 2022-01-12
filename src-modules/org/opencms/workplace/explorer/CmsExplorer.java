@@ -719,7 +719,7 @@ public class CmsExplorer extends CmsWorkplace {
         } catch (CmsException e) {
             // should usually never happen
             if (LOG.isInfoEnabled()) {
-                LOG.info(e);
+                LOG.info(e.getLocalizedMessage(), e);
             }
             return "/";
         }
@@ -764,7 +764,7 @@ public class CmsExplorer extends CmsWorkplace {
             } catch (NumberFormatException e) {
                 // default is 1
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(e);
+                    LOG.info(e.getLocalizedMessage(), e);
                 }
             }
             settings.setExplorerPage(page);
@@ -839,7 +839,7 @@ public class CmsExplorer extends CmsWorkplace {
                     return collector.getResults(getCms());
                 } catch (CmsException e) {
                     if (LOG.isInfoEnabled()) {
-                        LOG.info(e);
+                        LOG.info(e.getLocalizedMessage(), e);
                     }
                 }
             }
@@ -855,7 +855,7 @@ public class CmsExplorer extends CmsWorkplace {
             } catch (CmsException e) {
                 // should usually never happen
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(e);
+                    LOG.info(e.getLocalizedMessage(), e);
                 }
                 return Collections.emptyList();
             }

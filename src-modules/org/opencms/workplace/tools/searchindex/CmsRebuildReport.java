@@ -123,7 +123,7 @@ public class CmsRebuildReport extends A_CmsListReport {
             try {
                 getToolManager().jspForwardTool(this, "/searchindex", null);
             } catch (Exception e) {
-                LOG.error(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
 
             throw ex;

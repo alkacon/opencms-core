@@ -232,7 +232,7 @@ public class CmsTree extends CmsWorkplace {
                 getCms().readFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
             } catch (CmsException e) {
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(e);
+                    LOG.info(e.getLocalizedMessage(), e);
                 }
                 folder = "/";
             }
@@ -352,7 +352,7 @@ public class CmsTree extends CmsWorkplace {
                     } catch (CmsException e) {
                         // target folder not found, set it to "/"
                         if (LOG.isInfoEnabled()) {
-                            LOG.info(e);
+                            LOG.info(e.getLocalizedMessage(), e);
                         }
                         currentTargetFolder = "/";
                     }
@@ -435,7 +435,7 @@ public class CmsTree extends CmsWorkplace {
                 } catch (CmsException e) {
                     // use an empty list (all resources are "outside")
                     if (LOG.isInfoEnabled()) {
-                        LOG.info(e);
+                        LOG.info(e.getLocalizedMessage(), e);
                     }
                 }
             }
@@ -753,7 +753,7 @@ public class CmsTree extends CmsWorkplace {
         } catch (CmsException e) {
             // should usually never happen
             if (LOG.isInfoEnabled()) {
-                LOG.info(e);
+                LOG.info(e.getLocalizedMessage(), e);
             }
         }
         return "";

@@ -246,7 +246,7 @@ public class CmsLogin extends CmsJspLoginBean {
                     return cloneCms.getSitePath(targetRes);
                 }
             } catch (Exception e) {
-                LOG.debug(e);
+                LOG.debug(e.getLocalizedMessage(), e);
             }
         }
         return null;

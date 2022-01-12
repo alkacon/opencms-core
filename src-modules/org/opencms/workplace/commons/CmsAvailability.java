@@ -368,7 +368,7 @@ public class CmsAvailability extends CmsMultiDialog {
             }
         } catch (CmsException e) {
             if (LOG.isInfoEnabled()) {
-                LOG.info(e);
+                LOG.info(e.getLocalizedMessage(), e);
             }
         }
         return result.toString();

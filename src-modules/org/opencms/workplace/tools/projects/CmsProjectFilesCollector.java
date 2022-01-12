@@ -109,7 +109,7 @@ public class CmsProjectFilesCollector extends A_CmsListResourceCollector {
             projectId = new CmsUUID((String)params.get(PARAM_PROJECT));
         } catch (Throwable e) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(e);
+                LOG.debug(e.getLocalizedMessage(), e);
             }
         }
         CmsResourceState state = CmsResource.STATE_KEEP;
@@ -117,7 +117,7 @@ public class CmsProjectFilesCollector extends A_CmsListResourceCollector {
             state = CmsResourceState.valueOf(Integer.parseInt((String)params.get(PARAM_STATE)));
         } catch (Throwable e) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(e);
+                LOG.debug(e.getLocalizedMessage(), e);
             }
         }
 
