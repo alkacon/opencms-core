@@ -52,9 +52,9 @@ import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
 import com.vaadin.server.AbstractErrorMessage.ContentMode;
 import com.vaadin.server.UserError;
+import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
 import com.vaadin.v7.ui.TextField;
 
 /**
@@ -96,6 +96,7 @@ public class CmsContextMenuEditHandler implements I_CmsFilePropertyEditHandler {
         CmsResourceTableProperty editProperty,
         CmsFileTable fileTable,
         I_CmsDialogContext context) {
+
         m_editId = editId;
         m_editProperty = editProperty;
         m_fileTable = fileTable;
@@ -112,7 +113,7 @@ public class CmsContextMenuEditHandler implements I_CmsFilePropertyEditHandler {
         if (m_lockActionRecord.getChange() == LockChange.locked) {
             CmsObject cms = A_CmsUI.getCmsObject();
             try {
-                CmsResource res = cms.readResource(m_editId);
+                CmsResource res = cms.readResource(m_editId, CmsResourceFilter.IGNORE_EXPIRATION);
                 cms.unlockResource(res);
             } catch (CmsException e) {
                 LOG.warn("Failed to unlock resource " + m_editId.toString(), e);
@@ -128,7 +129,7 @@ public class CmsContextMenuEditHandler implements I_CmsFilePropertyEditHandler {
 
         try {
             CmsObject cms = A_CmsUI.getCmsObject();
-            CmsResource res = cms.readResource(m_editId);
+            CmsResource res = cms.readResource(m_editId, CmsResourceFilter.IGNORE_EXPIRATION);
             try {
                 if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME.equals(m_editProperty)) {
                     String sourcePath = cms.getSitePath(res);
@@ -167,7 +168,7 @@ public class CmsContextMenuEditHandler implements I_CmsFilePropertyEditHandler {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         try {
-            CmsResource res = cms.readResource(m_editId);
+            CmsResource res = cms.readResource(m_editId, CmsResourceFilter.IGNORE_EXPIRATION);
             m_lockActionRecord = CmsLockUtil.ensureLock(cms, res);
             CmsAppWorkplaceUi.get().disableGlobalShortcuts();
             m_fileTable.startEdit(m_editId, m_editProperty, this);
@@ -201,10 +202,12 @@ public class CmsContextMenuEditHandler implements I_CmsFilePropertyEditHandler {
                 String newName = (String)value;
                 CmsResource.checkResourceName(newName);
                 CmsObject cms = A_CmsUI.getCmsObject();
-                CmsResource res = cms.readResource(m_editId);
+                CmsResource res = cms.readResource(m_editId, CmsResourceFilter.IGNORE_EXPIRATION);
                 if (!res.getName().equals(newName)) {
                     String sourcePath = cms.getSitePath(res);
-                    if (cms.existsResource(CmsStringUtil.joinPaths(CmsResource.getParentFolder(sourcePath), newName))) {
+                    if (cms.existsResource(
+                        CmsStringUtil.joinPaths(CmsResource.getParentFolder(sourcePath), newName),
+                        CmsResourceFilter.IGNORE_EXPIRATION)) {
                         throw new InvalidValueException("The selected filename already exists.");
                     }
                 }
