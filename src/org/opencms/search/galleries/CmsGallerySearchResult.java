@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeFunctionConfig;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsLocaleManager;
@@ -605,13 +606,16 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         }
 
         try {
-            CmsResource res = cms.readResource(structureId);
+            CmsResource res = cms.readResource(structureId, CmsResourceFilter.ALL);
             if (m_description == null) {
                 CmsProperty descProp = cms.readPropertyObject(
                     res,
                     CmsPropertyDefinition.PROPERTY_DESCRIPTION,
                     CmsResourceTypeXmlContainerPage.isContainerPage(res));
                 m_description = descProp.getValue();
+                if (m_description == null) {
+                    m_description = "";
+                }
             }
 
             if (m_title == null) {
