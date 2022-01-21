@@ -29,6 +29,7 @@ package org.opencms.xml.types;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.file.CmsObject;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -161,8 +162,9 @@ public class CmsXmlDisplayFormatterValue extends A_CmsXmlValueTextBase {
                     return internalValue;
                 }
                 String keyOrId = internalValue.substring(colonPos + 1);
-                if (CmsUUID.isValidUUID(keyOrId)) {
-                    I_CmsFormatterBean formatter = config.findFormatter(new CmsUUID(keyOrId));
+                if (CmsUUID.isValidUUID(keyOrId)
+                    || (keyOrId.indexOf(CmsGwtConstants.FORMATTER_SUBKEY_SEPARATOR) >= 0)) {
+                    I_CmsFormatterBean formatter = config.findFormatter(keyOrId);
                     if (formatter != null) {
                         return internalValue.substring(0, colonPos + 1) + formatter.getKeyOrId();
                     }

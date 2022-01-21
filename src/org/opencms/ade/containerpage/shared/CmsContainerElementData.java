@@ -28,6 +28,7 @@
 package org.opencms.ade.containerpage.shared;
 
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -88,11 +89,11 @@ public class CmsContainerElementData extends CmsContainerElement {
     /** The title. */
     private String m_title;
 
-    /** The supported container types of a group-container. */
-    private Set<String> m_types;
-
     /** True if the element's type is disabled in the sitemap configuration. */
     private boolean m_typeDisabled;
+
+    /** The supported container types of a group-container. */
+    private Set<String> m_types;
 
     /**
      * Returns the contents.<p>
@@ -179,11 +180,18 @@ public class CmsContainerElementData extends CmsContainerElement {
             if (keyOrId == null) {
                 keyOrId = getSettings().get(CmsFormatterConfig.getSettingsKeyForContainer(""));
             }
-            if ((keyOrId != null) && (getFormatters().get(containerName).get(keyOrId) != null)) {
-                // if the settings contain the formatter id, use the matching config
-                formatterConfig = getFormatters().get(containerName).get(keyOrId);
-            } else if (getFormatters().get(containerName).size() > 0) {
-                // otherwise use the first entry for the given container
+            CmsFormatterConfigCollection formattersForContainer = getFormatters().get(containerName);
+            if (keyOrId != null) {
+                formatterConfig = formattersForContainer.get(keyOrId);
+                if (formatterConfig == null) {
+                    int separatorPos = keyOrId.lastIndexOf(CmsGwtConstants.FORMATTER_SUBKEY_SEPARATOR);
+                    if (separatorPos != -1) {
+                        String parentKey = keyOrId.substring(0, separatorPos);
+                        formatterConfig = formattersForContainer.get(parentKey);
+                    }
+                }
+            }
+            if (formatterConfig == null) {
                 formatterConfig = getFormatters().get(containerName).getFirstFormatter();
             }
         }

@@ -61,7 +61,6 @@ import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetMultiFactory;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
@@ -304,12 +303,10 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
                 CmsFormatterConfigCollection formattersForContainer = m_elementBean.getFormatters().get(m_containerId);
                 for (CmsFormatterConfig formatter : formattersForContainer) {
                     formatters.put(formatter.getKeyOrId(), formatter.getLabel());
-                    CmsDebugLog.consoleLog("Item: " + formatter.getId() + " => " + formatter.getLabel());
                     m_formatterSelect.setTitle(formatter.getKeyOrId(), formatter.getJspRootPath());
                 }
                 m_formatterSelect.setItems(formatters);
                 String currentFormatterValue = m_elementBean.getFormatterConfig(m_containerId).getKeyOrId();
-                CmsDebugLog.consoleLog("Initial value: " + currentFormatterValue);
                 m_formatter = currentFormatterValue;
                 m_formatterSelect.selectValue(currentFormatterValue);
                 m_formatterSelect.addValueChangeHandler(new ValueChangeHandler<String>() {

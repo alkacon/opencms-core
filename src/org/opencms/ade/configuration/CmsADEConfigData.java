@@ -44,6 +44,7 @@ import org.opencms.file.types.CmsResourceTypeFunctionConfig;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsIconUtil;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.jsp.util.CmsFunctionRenderer;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
@@ -186,8 +187,10 @@ public class CmsADEConfigData {
         }
     }
 
+    /** Prefix for logging special request log messages. */
     public static final String REQ_LOG_PREFIX = "[CmsADEConfigData] ";
 
+    /** Channel for logging special request log messages. */
     public static final String REQUEST_LOG_CHANNEL = "org.opencms.ade.configuration.CmsADEConfigData.request";
 
     /** The log instance for this class. */
@@ -317,6 +320,37 @@ public class CmsADEConfigData {
     }
 
     /**
+     * If the given formatter key has a sub-formatter suffix, returns the part before it,
+     * otherwise returns null.
+     *
+     * @param key the formatter key
+     * @return the parent formatter key
+     */
+    public static final String getParentFormatterKey(String key) {
+
+        if (key == null) {
+            return null;
+        }
+        int separatorPos = key.lastIndexOf(CmsGwtConstants.FORMATTER_SUBKEY_SEPARATOR);
+        if (separatorPos == -1) {
+            return null;
+        }
+        return key.substring(0, separatorPos);
+
+    }
+
+    private static List<String> getFormatterKeyAndFallbacks(String key) {
+
+        String fallback = getParentFormatterKey(key);
+        List<String> result = new ArrayList<>();
+        result.add(key);
+        if (fallback != null) {
+            result.add(fallback);
+        }
+        return result;
+    }
+
+    /**
      * Applies the formatter change sets of this and all parent configurations to a map of external (non-schema) formatters.<p>
      *
      * @param formatters the external formatter map which will be modified
@@ -348,35 +382,33 @@ public class CmsADEConfigData {
         }
 
         CmsFormatterConfigurationCacheState formatterState = getCachedFormatters();
-        I_CmsFormatterBean result = formatterState.getFormatters().get(id);
+        I_CmsFormatterBean originalResult = formatterState.getFormatters().get(id);
+        I_CmsFormatterBean result = originalResult;
         if ((result != null) && (result.getKey() != null)) {
             String key = result.getKey();
-            Collection<I_CmsFormatterBean> activeFormattersForKey = getActiveFormattersByKey().get(key);
-            if (activeFormattersForKey.size() > 0) {
-                if (activeFormattersForKey.size() > 1) {
-                    String labels = ""
-                        + activeFormattersForKey.stream().map(this::getFormatterLabel).collect(Collectors.toList());
-                    String message = "Ambiguous formatter for key '"
-                        + key
-                        + "' at '"
-                        + getBasePath()
-                        + "': found "
-                        + labels;
-                    LOG.warn(message);
-                    OpenCmsServlet.withRequestCache(
-                        reqCache -> reqCache.addLog(REQUEST_LOG_CHANNEL, "warn", REQ_LOG_PREFIX + message));
+            I_CmsFormatterBean resultForKey = getFormatterAndWarnIfAmbiguous(getActiveFormattersByKey(), key);
+            if (resultForKey != null) {
+                result = resultForKey;
+            } else {
+                String parentKey = getParentFormatterKey(key);
+                if (parentKey != null) {
+                    resultForKey = getFormatterAndWarnIfAmbiguous(getActiveFormattersByKey(), parentKey);
+                    if (resultForKey != null) {
+                        result = resultForKey;
+                    }
                 }
-                I_CmsFormatterBean original = result;
-                result = activeFormattersForKey.iterator().next();
-                String message = "Using substitute formatter "
-                    + getFormatterLabel(result)
-                    + " instead of "
-                    + getFormatterLabel(original)
-                    + " because of matching key.";
-                LOG.debug(message);
-                OpenCmsServlet.withRequestCache(
-                    reqCache -> reqCache.addLog(REQUEST_LOG_CHANNEL, "debug", REQ_LOG_PREFIX + message));
             }
+        }
+
+        if (result != originalResult) {
+            String message = "Using substitute formatter "
+                + getFormatterLabel(result)
+                + " instead of "
+                + getFormatterLabel(originalResult)
+                + " because of matching key.";
+            LOG.debug(message);
+            OpenCmsServlet.withRequestCache(
+                reqCache -> reqCache.addLog(REQUEST_LOG_CHANNEL, "debug", REQ_LOG_PREFIX + message));
         }
         return result;
     }
@@ -412,45 +444,41 @@ public class CmsADEConfigData {
             return null;
         }
 
-        Collection<I_CmsFormatterBean> activeForKey = getActiveFormattersByKey().get(name);
-        if (activeForKey.size() > 0) {
-            if (activeForKey.size() > 1) {
-                String labels = "" + activeForKey.stream().map(this::getFormatterLabel).collect(Collectors.toList());
-                String message = "Ambiguous formatter for key '"
-                    + name
-                    + "' at '"
-                    + getBasePath()
-                    + "': found "
-                    + labels;
-                LOG.warn(message);
-                OpenCmsServlet.withRequestCache(rc -> rc.addLog(REQUEST_LOG_CHANNEL, "warn", REQ_LOG_PREFIX + message));
-            }
-            return activeForKey.iterator().next();
-        } else {
-            String message1 = "No local formatter found for key '"
-                + name
-                + "' at '"
-                + getBasePath()
-                + "', trying inactive formatters";
-            LOG.warn(message1);
-            OpenCmsServlet.withRequestCache(rc -> rc.addLog(REQUEST_LOG_CHANNEL, "warn", REQ_LOG_PREFIX + message1));
-            Collection<I_CmsFormatterBean> allForKey = getFormattersByKey().get(name);
-            if (allForKey.size() > 0) {
-                if (allForKey.size() > 1) {
-                    String labels = "" + allForKey.stream().map(this::getFormatterLabel).collect(Collectors.toList());
-                    String message = "Ambiguous formatter for key '"
-                        + name
-                        + "' at '"
-                        + getBasePath()
-                        + "': found "
-                        + labels;
-                    LOG.warn(message);
-                    OpenCmsServlet.withRequestCache(
-                        rc -> rc.addLog(REQUEST_LOG_CHANNEL, "warn", REQ_LOG_PREFIX + message));
-                }
-                return allForKey.iterator().next();
+        Multimap<String, I_CmsFormatterBean> active = getActiveFormattersByKey();
+        I_CmsFormatterBean result = getFormatterAndWarnIfAmbiguous(active, name);
+        if (result != null) {
+            return result;
+        }
+
+        String parentName = getParentFormatterKey(name);
+        if (parentName != null) {
+            result = getFormatterAndWarnIfAmbiguous(active, parentName);
+            if (result != null) {
+                return result;
             }
         }
+
+        String message1 = "No local formatter found for key '"
+            + name
+            + "' at '"
+            + getBasePath()
+            + "', trying inactive formatters";
+        LOG.warn(message1);
+        OpenCmsServlet.withRequestCache(rc -> rc.addLog(REQUEST_LOG_CHANNEL, "warn", REQ_LOG_PREFIX + message1));
+
+        Multimap<String, I_CmsFormatterBean> all = getFormattersByKey();
+        result = getFormatterAndWarnIfAmbiguous(all, name);
+        if (result != null) {
+            return result;
+        }
+
+        if (parentName != null) {
+            result = getFormatterAndWarnIfAmbiguous(all, parentName);
+            if (result != null) {
+                return result;
+            }
+        }
+
         OpenCmsServlet.withRequestCache(
             rc -> rc.addLog(
                 REQUEST_LOG_CHANNEL,
@@ -821,6 +849,8 @@ public class CmsADEConfigData {
 
     /**
      * Gets the bean that represents the dynamic function availability.
+     *
+     * @param formatterConfig the formatter configuration state
      *
      * @return the dynamic function availability
      */
@@ -1766,6 +1796,44 @@ public class CmsADEConfigData {
         return m_activeFormattersByKey;
     }
 
+    /**
+     * Gets a formatter with the given key from a multimap, and warns if there are multiple values
+     * for the key.
+     *
+     * @param formatterMap the formatter multimap
+     * @param name the formatter key
+     * @return the formatter for the key (null if none are found, the first one if multiple are found)
+     */
+    private I_CmsFormatterBean getFormatterAndWarnIfAmbiguous(
+        Multimap<String, I_CmsFormatterBean> formatterMap,
+        String name) {
+
+        I_CmsFormatterBean result;
+        result = null;
+        Collection<I_CmsFormatterBean> activeForKey = formatterMap.get(name);
+        if (activeForKey.size() > 0) {
+            if (activeForKey.size() > 1) {
+                String labels = "" + activeForKey.stream().map(this::getFormatterLabel).collect(Collectors.toList());
+                String message = "Ambiguous formatter for key '"
+                    + name
+                    + "' at '"
+                    + getBasePath()
+                    + "': found "
+                    + labels;
+                LOG.warn(message);
+                OpenCmsServlet.withRequestCache(rc -> rc.addLog(REQUEST_LOG_CHANNEL, "warn", REQ_LOG_PREFIX + message));
+            }
+            result = activeForKey.iterator().next();
+        }
+        return result;
+    }
+
+    /**
+     * Gets a user-friendly formatter label to use for logging.
+     *
+     * @param formatter a formatter bean
+     * @return the formatter label for the log
+     */
     private String getFormatterLabel(I_CmsFormatterBean formatter) {
 
         return formatter.getLocation() != null ? formatter.getLocation() : formatter.getId();

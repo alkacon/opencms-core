@@ -84,8 +84,6 @@ public final class CmsGwtConstants {
         public static final String PAGE_ID = "pageId";
     }
 
-    public static final String EDITOR_PAGE_ID = "pageId";
-
     /** Context menu action id. */
     public static final String ACTION_EDITSMALLELEMENTS = "editsmallelements";
 
@@ -128,6 +126,9 @@ public final class CmsGwtConstants {
     /** Key for the element id attribute. */
     public static final String ATTR_ELEMENT_ID = "ATTR_ELEMENT_ID";
 
+    /** Element data to enable / disable the favorite button. */
+    public static final String ATTR_FAVORITE = "fav";
+
     /** Key for the page root path attribute. */
     public static final String ATTR_PAGE_ROOT_PATH = "ATTR_PAGE_ROOT_PATH";
 
@@ -139,6 +140,9 @@ public final class CmsGwtConstants {
 
     /** The CSS class name used for the DOM elements containing collector information. */
     public static final String CLASS_COLLECTOR_INFO = "oc-collector-info";
+
+    /** CSS class for containers inflated due to an element dragged into them that is of lower height than the empty container HTML. */
+    public static final String CLASS_CONTAINER_INFLATED = "oc-container-inflated";
 
     /** CSS class for elements in detail containers which are used to transfer their settings to the detail eleemnt. */
     public static final String CLASS_DETAIL_PREVIEW = "oc-detail-preview";
@@ -170,8 +174,19 @@ public final class CmsGwtConstants {
     /** The context type sitemap toolbar. */
     public static final String CONTEXT_TYPE_SITEMAP_TOOLBAR = "sitemapToolbar";
 
+    public static final String EDITOR_PAGE_ID = "pageId";
+
     /** A HTML comment that will cause the container page editor to reload the page if it is contained in HTML which is reloaded after the element or its settings have been edited. */
     public static final String FORMATTER_RELOAD_MARKER = "<!--FORMATTER_RELOAD_g3jf9o0n-->";
+
+    /** Separator for separating the main part of a formatter key from the sub-key (the part in front of the separator will be used as a key if there is no formatter for the full key). */
+    public static final String FORMATTER_SUBKEY_SEPARATOR = "#";
+
+    /** Sub-path for the page unlock service. */
+    public static final String HANDLER_UNLOCK_PAGE = "/unlockPage";
+
+    /** Sub-path for the session update handler. */
+    public static final String HANDLER_UPDATE_SESSION = "/updateSession";
 
     /** Element id for locale comparison view. */
     public static final String ID_LOCALE_COMPARISON = "cmsLocaleComparison";
@@ -235,18 +250,6 @@ public final class CmsGwtConstants {
 
     /** Name of Javascript variable used to hold the structure id of the currently selected locale's root folder in the sitemap editor's locale comparison mode. */
     public static final String VAR_LOCALE_ROOT = "cmsLocaleCompareRoot";
-
-    /** CSS class for containers inflated due to an element dragged into them that is of lower height than the empty container HTML. */
-    public static final String CLASS_CONTAINER_INFLATED = "oc-container-inflated";
-
-    /** Sub-path for the page unlock service. */
-    public static final String HANDLER_UNLOCK_PAGE = "/unlockPage";
-
-    /** Sub-path for the session update handler. */
-    public static final String HANDLER_UPDATE_SESSION = "/updateSession";
-
-    /** Element data to enable / disable the favorite button. */
-    public static final String ATTR_FAVORITE = "fav";
 
     /**
      * Hide constructor.<p>

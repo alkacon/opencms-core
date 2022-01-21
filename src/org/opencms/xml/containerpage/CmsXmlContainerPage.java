@@ -37,6 +37,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
@@ -140,11 +141,11 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                 CmsContainerElement.USE_AS_COPY_MODEL,
                 CmsContainerpageService.SOURCE_CONTAINERPAGE_ID_SETTING)));
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsXmlContainerPage.class);
-
     /** Prefix for system element settings. */
     public static final String SYSTEM_SETTING_PREFIX = "SYSTEM::";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsXmlContainerPage.class);
 
     /** The container page objects. */
     private Map<Locale, CmsContainerPageBean> m_cntPages;
@@ -762,12 +763,32 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         Map<String, String> result = new HashMap<>();
         for (Map.Entry<String, String> entry : propertiesMap.entrySet()) {
             String key = entry.getKey();
+            boolean replaced = false;
+
+            // replace ID with key
             if (key.length() > 37) {
                 String prefix = key.substring(0, 36);
                 if (CmsUUID.isValidUUID(prefix) && (key.charAt(36) == '_')) {
                     I_CmsFormatterBean formatter = config.findFormatter(prefix);
                     if (formatter != null) {
                         key = formatter.getKeyOrId() + key.substring(36);
+                        replaced = true;
+                    }
+                }
+            }
+
+            // if formatter is not available and has a fallback formatter, use the fallback's key
+            if (!replaced) {
+                int underscorePos = key.indexOf("_");
+                if (underscorePos >= 0) {
+                    String prefix = key.substring(0, underscorePos);
+                    int separatorPos = prefix.indexOf(CmsGwtConstants.FORMATTER_SUBKEY_SEPARATOR);
+                    if (separatorPos >= 0) {
+                        I_CmsFormatterBean formatter = config.findFormatter(prefix);
+                        if (formatter != null) {
+                            key = formatter.getKeyOrId() + key.substring(underscorePos);
+                            replaced = true;
+                        }
                     }
                 }
             }
