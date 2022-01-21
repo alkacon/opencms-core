@@ -1021,6 +1021,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LISTMANAGER_PARAM_TITLE_0 = "GUI_LISTMANAGER_PARAM_TITLE_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_PARAM_TITLE_HELP_0 = "GUI_LISTMANAGER_PARAM_TITLE_HELP_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LISTMANAGER_REMOVE_FROM_BLACKLIST_MENU_ENTRY_0 = "GUI_LISTMANAGER_REMOVE_FROM_BLACKLIST_MENU_ENTRY_0";
     /** Message constant for key in the resource bundle. */

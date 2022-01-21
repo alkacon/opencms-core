@@ -6,6 +6,7 @@
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/parameters.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/date_restriction.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/list_category_folder_filter.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/list_geo_filter.xsd" />
 
     <xsd:element name="ListConfigs" type="OpenCmsListConfigs" />
 
@@ -27,6 +28,7 @@
         <xsd:element name="FilterQuery" type="OpenCmsString" minOccurs="0" />
         <xsd:element name="MaxResults" type="OpenCmsString" minOccurs="0" />
         <xsd:element name="DateRestriction" type="OpenCmsListDateRestriction" minOccurs="0" />
+        <xsd:element name="GeoFilter" type="OpenCmsListGeoFilter" minOccurs="0" />
         <xsd:element name="ShowExpired" type="OpenCmsBoolean" minOccurs="0" />
         <xsd:element name="Parameter" type="OpenCmsParameter" minOccurs="0" maxOccurs="unbounded" />
         <xsd:element name="Blacklist" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />

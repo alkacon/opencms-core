@@ -49,6 +49,11 @@ public interface I_CmsSearchConfiguration {
      */
     I_CmsSearchConfigurationCommon getGeneralConfig();
 
+    /** Returns the Geo filter configuration.
+     * @return The Geo filter configuration.
+     */
+    I_CmsSearchConfigurationGeoFilter getGeoFilterConfig();
+
     /** Returns the configuration for highlighting.
      * @return The configuration for highlighting.
      */

@@ -36,6 +36,7 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationDidYouMean;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetRange;
+import org.opencms.jsp.search.config.I_CmsSearchConfigurationGeoFilter;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSortOption;
@@ -148,6 +149,31 @@ public class ConfigurationTester {
             assertEquals(expectedAdditionalParams.get(key), actualAdditionalParams.get(key));
         }
 
+    }
+
+    /**
+     * Tests if expected and actual configuration are identical.
+     *
+     * @param expectedConfig the expected configuration
+     * @param actualConfig the actual configuration
+     */
+    static void testGeoFilterConfiguration(
+        I_CmsSearchConfigurationGeoFilter expectedConfig,
+        I_CmsSearchConfigurationGeoFilter actualConfig) {
+
+        if (null == expectedConfig) {
+            assertNull(actualConfig);
+            return;
+        }
+        assertNotNull(actualConfig);
+
+        assertEquals(expectedConfig.getCoordinates(), actualConfig.getCoordinates());
+        assertEquals(expectedConfig.getCoordinatesParam(), actualConfig.getCoordinatesParam());
+        assertEquals(expectedConfig.getFieldName(), actualConfig.getFieldName());
+        assertEquals(expectedConfig.getRadius(), actualConfig.getRadius());
+        assertEquals(expectedConfig.getRadiusParam(), actualConfig.getRadiusParam());
+        assertEquals(expectedConfig.getUnits(), actualConfig.getUnits());
+        assertEquals(expectedConfig.getUnitsParam(), actualConfig.getUnitsParam());
     }
 
     /**

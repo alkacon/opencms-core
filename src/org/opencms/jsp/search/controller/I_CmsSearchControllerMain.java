@@ -47,6 +47,12 @@ public interface I_CmsSearchControllerMain extends I_CmsSearchController {
      */
     I_CmsSearchControllerFacetsField getFieldFacets();
 
+    /**
+     * Returns the controller for the Geo filter.
+     * @return the controller for the Geo filter
+     */
+    I_CmsSearchControllerGeoFilter getGeoFilter();
+
     /** Returns the controller for highlighting.
          * @return The controller for highlighting.
          */

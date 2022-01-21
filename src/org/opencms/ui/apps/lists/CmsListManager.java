@@ -90,6 +90,7 @@ import org.opencms.ui.apps.I_CmsCachableApp;
 import org.opencms.ui.apps.I_CmsContextProvider;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.apps.lists.CmsListManager.ListConfigurationBean.ListCategoryFolderRestrictionBean;
+import org.opencms.ui.apps.lists.CmsListManager.ListConfigurationBean.ListGeoFilterBean;
 import org.opencms.ui.apps.lists.CmsOptionDialog.I_OptionHandler;
 import org.opencms.ui.apps.lists.daterestrictions.CmsDateRestrictionParser;
 import org.opencms.ui.apps.lists.daterestrictions.I_CmsListDateRestriction;
@@ -109,6 +110,7 @@ import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.CmsResourceContextMenuBuilder;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
+import org.opencms.util.CmsGeoUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.directedit.CmsDateSeriesEditHandler;
@@ -251,6 +253,47 @@ I_CmsCachableApp {
             }
         }
 
+        /**
+         * Bean representing a Geo filter.
+         */
+        public static class ListGeoFilterBean {
+
+            /** The center point coordinates. */
+            private String m_coordinates;
+
+            /** The search radius. */
+            private String m_radius;
+
+            /**
+             * Creates a new Geo filter bean.
+             * @param coordinates the coordinates
+             * @param radius the radius
+             */
+            public ListGeoFilterBean(String coordinates, String radius) {
+
+                m_coordinates = coordinates;
+                m_radius = radius;
+            }
+
+            /**
+             * Returns the center point coordinates.
+             * @return the center point coordinates
+             */
+            public String getCoordinates() {
+
+                return m_coordinates;
+            }
+
+            /**
+             * Returns the search radius.
+             * @return the search radius
+             */
+            public String getRadius() {
+
+                return m_radius;
+            }
+        }
+
         /** Special parameter to configure the maximally returned results. */
         private static final String ADDITIONAL_PARAM_MAX_RETURNED_RESULTS = "maxresults";
 
@@ -271,6 +314,9 @@ I_CmsCachableApp {
 
         /** The display types. */
         private List<String> m_dislayTypes;
+
+        /** The Geo filter */
+        private ListGeoFilterBean m_geoFilter;
 
         /** The folders. */
         private List<String> m_folders;
@@ -387,6 +433,16 @@ I_CmsCachableApp {
         public List<String> getFolders() {
 
             return m_folders;
+        }
+
+        /**
+         * Returns the Geo filter.<p>
+         *
+         * @return the Geo filter
+         */
+        public ListGeoFilterBean getGeoFilter() {
+
+            return m_geoFilter;
         }
 
         /**
@@ -546,6 +602,16 @@ I_CmsCachableApp {
         public void setFolders(List<String> folders) {
 
             m_folders = folders;
+        }
+
+        /**
+         * Sets the Geo filter.<p>
+         *
+         * @param geoFilter the Geo filter
+         */
+        public void setGeoFilter(ListGeoFilterBean geoFilter) {
+
+            m_geoFilter = geoFilter;
         }
 
         /**
@@ -801,6 +867,9 @@ I_CmsCachableApp {
     private static final String N_CATEGORY_FOLDER_RESTRICTION = "CategoryFolderFilter";
 
     /** List configuration node name and field key. */
+    private static final String N_COORDINATES = "Coordinates";
+
+    /** List configuration node name and field key. */
     private static final String N_FOLDER = "Folder";
 
     /** List configuration node name for the category mode. */
@@ -816,10 +885,16 @@ I_CmsCachableApp {
     public static final String N_FILTER_QUERY = "FilterQuery";
 
     /** List configuration node name and field key. */
+    public static final String N_GEO_FILTER = "GeoFilter";
+
+    /** List configuration node name and field key. */
     public static final String N_KEY = "Key";
 
     /** List configuration node name and field key. */
     public static final String N_PARAMETER = "Parameter";
+
+    /** List configuration node name and field key. */
+    public static final String N_RADIUS = "Radius";
 
     /** List configuration node name and field key. */
     public static final String N_SEARCH_FOLDER = "SearchFolder";
@@ -1057,6 +1132,33 @@ I_CmsCachableApp {
                             + cms.getRequestContext().getCurrentProject().isOnlineProject());
                 }
                 result.setDateRestriction(restriction);
+            }
+
+            I_CmsXmlContentValue geoFilterValue = content.getValue(N_GEO_FILTER, locale);
+            if (geoFilterValue != null) {
+                String coordinatesPath = geoFilterValue.getPath() + "/" + N_COORDINATES;
+                String radiusPath = geoFilterValue.getPath() + "/" + N_RADIUS;
+                I_CmsXmlContentValue coordinatesValue = content.getValue(coordinatesPath, locale);
+                I_CmsXmlContentValue radiusValue = content.getValue(radiusPath, locale);
+                String coordinates = CmsGeoUtil.parseCoordinates(coordinatesValue.getStringValue(cms));
+                String radius = radiusValue.getStringValue(cms);
+                boolean radiusValid = false;
+                try {
+                    Float.parseFloat(radius);
+                    radiusValid = true;
+                } catch (NumberFormatException e) {
+                    radiusValid = false;
+                }
+                if ((coordinates != null) && radiusValid) {
+                    ListGeoFilterBean listGeoFilterBean = new ListGeoFilterBean(coordinates, radius);
+                    result.setGeoFilter(listGeoFilterBean);
+                } else {
+                    LOG.warn(
+                        "Improper Geo filter in content "
+                            + content.getFile().getRootPath()
+                            + ", online="
+                            + cms.getRequestContext().getCurrentProject().isOnlineProject());
+                }
             }
 
             I_CmsXmlContentValue categoryModeVal = content.getValue(N_CATEGORY_MODE, locale);

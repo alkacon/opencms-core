@@ -35,6 +35,7 @@ import org.opencms.jsp.search.config.CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetQuery;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetQuery.CmsFacetQueryItem;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetRange;
+import org.opencms.jsp.search.config.CmsSearchConfigurationGeoFilter;
 import org.opencms.jsp.search.config.CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.CmsSearchConfigurationSortOption;
@@ -47,6 +48,7 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery.I_CmsFacetQueryItem;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetRange;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetRange.Other;
+import org.opencms.jsp.search.config.I_CmsSearchConfigurationGeoFilter;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSortOption;
@@ -362,6 +364,16 @@ public class TestJSONSearchConfigurationParser extends OpenCmsTestCase {
             Boolean.FALSE,
             Integer.valueOf(7));
         ConfigurationTester.testDidYouMeanConfiguration(didYouMeanConfig, config.getDidYouMeanConfig());
-    }
 
+        // Test Geo filter configuration
+        I_CmsSearchConfigurationGeoFilter geoFilterConfig = new CmsSearchConfigurationGeoFilter(
+            "0.000000,0.000000",
+            "coordinates",
+            "geocoords_loc",
+            "1.23456",
+            "radius",
+            "km",
+            "units");
+        ConfigurationTester.testGeoFilterConfiguration(geoFilterConfig, config.getGeoFilterConfig());
+    }
 }

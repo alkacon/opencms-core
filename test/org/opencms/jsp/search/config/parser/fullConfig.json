@@ -62,5 +62,14 @@
         "didYouMeanQueryParam" : "dymparam",
         "didYouMeanCollate" : false,
         "didYouMeanCount" : 7
+    },
+    "geofilter" : {
+        "coordinates" : "0.000000,0.000000",
+        "coordinatesParam" : "coordinates",
+        "fieldName" : "geocoords_loc",
+        "radius" : 1.23456,
+        "radiusParam" : "radius",
+        "units" : "km",
+        "unitsParam" : "units"
     }
 }

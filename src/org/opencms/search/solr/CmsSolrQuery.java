@@ -69,7 +69,7 @@ public class CmsSolrQuery extends SolrQuery {
     public static final String DEFAULT_QUERY_TYPE = "edismax";
 
     /** The default search result count. */
-    public static final Integer DEFAULT_ROWS = new Integer(10);
+    public static final Integer DEFAULT_ROWS = Integer.valueOf(10);
 
     /** A constant to add the score field to the result documents. */
     public static final String MINIMUM_FIELDS = CmsSearchField.FIELD_PATH
@@ -350,6 +350,21 @@ public class CmsSolrQuery extends SolrQuery {
     public void setFacetDateGap(String facetDateGap) {
 
         m_facetDateGap = facetDateGap;
+    }
+
+    /**
+     * Sets the Geo filter query if not exists.
+     * @param fieldName the field name storing the coordinates
+     * @param coordinates the coordinates string as a lat,lng pair
+     * @param radius the radius
+     * @param units the units of the search radius
+     */
+    public void setGeoFilterQuery(String fieldName, String coordinates, String radius, String units) {
+
+        String geoFilterQuery = CmsSolrQueryUtil.composeGeoFilterQuery(fieldName, coordinates, radius, units);
+        if (!Arrays.asList(getFilterQueries()).contains(geoFilterQuery)) {
+            addFilterQuery(geoFilterQuery);
+        }
     }
 
     /**

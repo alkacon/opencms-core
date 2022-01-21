@@ -43,9 +43,11 @@ import org.opencms.main.CmsException;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.solr.CmsSolrQuery;
+import org.opencms.search.solr.CmsSolrQueryUtil;
 import org.opencms.ui.apps.lists.CmsListManager;
 import org.opencms.ui.apps.lists.CmsListManager.ListConfigurationBean;
 import org.opencms.ui.apps.lists.CmsListManager.ListConfigurationBean.ListCategoryFolderRestrictionBean;
+import org.opencms.ui.apps.lists.CmsListManager.ListConfigurationBean.ListGeoFilterBean;
 import org.opencms.ui.apps.lists.daterestrictions.I_CmsListDateRestriction;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -379,7 +381,11 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
 
         String params = super.getExtraSolrParams();
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(params)) {
-            params = getCategoryFolderFilter() + getResourceTypeFilter() + getFilterQuery() + getBlacklistFilter();
+            params = getCategoryFolderFilter()
+                + getResourceTypeFilter()
+                + getFilterQuery()
+                + getBlacklistFilter()
+                + getGeoFilterQuery();
         }
         return params;
     }
@@ -643,6 +649,26 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
             result = "parent-folders:(\"/\")";
         } else {
             result = "parent-folders:(" + CmsStringUtil.listAsString(parentFolderVals, " OR ") + ")";
+        }
+        return result;
+    }
+
+    /**
+     * Returns the Geo filter query string.<p>
+     *
+     * @return the Geo filter query string
+     */
+    String getGeoFilterQuery() {
+
+        String result = "";
+        ListGeoFilterBean geoFilterBean = m_config.getGeoFilter();
+        if (geoFilterBean != null) {
+            String fq = CmsSolrQueryUtil.composeGeoFilterQuery(
+                CmsSearchField.FIELD_GEOCOORDS,
+                geoFilterBean.getCoordinates(),
+                geoFilterBean.getRadius(),
+                "km");
+            result = "&fq=" + fq;
         }
         return result;
     }

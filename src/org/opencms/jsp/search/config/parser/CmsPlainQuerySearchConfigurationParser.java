@@ -35,6 +35,7 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationDidYouMean;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetRange;
+import org.opencms.jsp.search.config.I_CmsSearchConfigurationGeoFilter;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSorting;
@@ -150,6 +151,15 @@ public class CmsPlainQuerySearchConfigurationParser implements I_CmsSearchConfig
     public Map<String, I_CmsSearchConfigurationFacetField> parseFieldFacets() {
 
         return null != m_baseConfig ? m_baseConfig.getFieldFacetConfigs() : Collections.emptyMap();
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseGeoFilter()
+     */
+    @Override
+    public I_CmsSearchConfigurationGeoFilter parseGeoFilter() {
+
+        return null;
     }
 
     /**

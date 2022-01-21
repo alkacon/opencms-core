@@ -37,6 +37,7 @@ import org.opencms.jsp.search.config.CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetQuery;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetQuery.CmsFacetQueryItem;
 import org.opencms.jsp.search.config.CmsSearchConfigurationFacetRange;
+import org.opencms.jsp.search.config.CmsSearchConfigurationGeoFilter;
 import org.opencms.jsp.search.config.CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.CmsSearchConfigurationSortOption;
@@ -49,6 +50,7 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery.I_CmsFacetQueryItem;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetRange;
+import org.opencms.jsp.search.config.I_CmsSearchConfigurationGeoFilter;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSortOption;
@@ -214,6 +216,23 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     public static final String JSON_KEY_DIDYOUMEAN_COLLATE = "didYouMeanCollate";
     /** A JSON key. */
     public static final String JSON_KEY_DIDYOUMEAN_COUNT = "didYouMeanCount";
+
+    /** JSON keys for the Geo filter. */
+    public static final String JSON_KEY_GEO_FILTER = "geofilter";
+    /** A JSON key. */
+    public static final String JSON_KEY_GEO_FILTER_COORDINATES = "coordinates";
+    /** A JSON key. */
+    public static final String JSON_KEY_GEO_FILTER_COORDINATES_PARAM = "coordinatesparam";
+    /** A JSON key. */
+    public static final String JSON_KEY_GEO_FILTER_FIELD_NAME = "fieldName";
+    /** A JSON key. */
+    public static final String JSON_KEY_GEO_FILTER_RADIUS = "radius";
+    /** A JSON key. */
+    public static final String JSON_KEY_GEO_FILTER_RADIUS_PARAM = "radiusparam";
+    /** A JSON key. */
+    public static final String JSON_KEY_GEO_FILTER_UNITS = "units";
+    /** A JSON key. */
+    public static final String JSON_KEY_GEO_FILTER_UNITS_PARAM = "unitsparam";
 
     /** The default values. */
     /** A JSON key. */
@@ -414,6 +433,34 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             }
         }
         return facetConfigs;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseGeoFilter()
+     */
+    @Override
+    public I_CmsSearchConfigurationGeoFilter parseGeoFilter() {
+
+        try {
+            JSONObject geoFilter = m_configObject.getJSONObject(JSON_KEY_GEO_FILTER);
+            String coordinates = parseOptionalStringValue(geoFilter, JSON_KEY_GEO_FILTER_COORDINATES);
+            String coordinatesParam = parseOptionalStringValue(geoFilter, JSON_KEY_GEO_FILTER_COORDINATES_PARAM);
+            String fieldName = parseOptionalStringValue(geoFilter, JSON_KEY_GEO_FILTER_FIELD_NAME);
+            String radius = parseOptionalStringValue(geoFilter, JSON_KEY_GEO_FILTER_RADIUS);
+            String radiusParam = parseOptionalStringValue(geoFilter, JSON_KEY_GEO_FILTER_RADIUS_PARAM);
+            String units = parseOptionalStringValue(geoFilter, JSON_KEY_GEO_FILTER_UNITS);
+            String unitsParam = parseOptionalStringValue(geoFilter, JSON_KEY_GEO_FILTER_UNITS_PARAM);
+            return new CmsSearchConfigurationGeoFilter(
+                coordinates,
+                coordinatesParam,
+                fieldName,
+                radius,
+                radiusParam,
+                units,
+                unitsParam);
+        } catch (JSONException e) {
+            return new CmsSearchConfigurationGeoFilter();
+        }
     }
 
     /**

@@ -42,6 +42,9 @@ public class CmsSearchConfiguration implements I_CmsSearchConfiguration {
     /** The general search configuration. */
     private final I_CmsSearchConfigurationCommon m_general;
 
+    /** The Geo filter configuration. */
+    private final I_CmsSearchConfigurationGeoFilter m_geoFilter;
+
     /** The configuration for pagination. */
     private final I_CmsSearchConfigurationPagination m_pagination;
 
@@ -70,6 +73,7 @@ public class CmsSearchConfiguration implements I_CmsSearchConfiguration {
     public CmsSearchConfiguration(final I_CmsSearchConfigurationParser parser, CmsObject cms) {
 
         m_general = parser.parseCommon(cms);
+        m_geoFilter = parser.parseGeoFilter();
         m_pagination = parser.parsePagination();
         m_sorting = parser.parseSorting();
         m_fieldFacets = parser.parseFieldFacets();
@@ -106,6 +110,15 @@ public class CmsSearchConfiguration implements I_CmsSearchConfiguration {
     public I_CmsSearchConfigurationCommon getGeneralConfig() {
 
         return m_general;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfiguration#getGeoFilterConfig()
+     */
+    @Override
+    public I_CmsSearchConfigurationGeoFilter getGeoFilterConfig() {
+
+        return m_geoFilter;
     }
 
     /**
