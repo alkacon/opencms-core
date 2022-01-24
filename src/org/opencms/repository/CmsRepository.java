@@ -158,10 +158,13 @@ public class CmsRepository extends A_CmsRepository {
         String configuredProject = getConfiguration().getString("project", null);
         String configuredSite = getConfiguration().getString("root", null);
         String roleStr = getConfiguration().getString("role", CmsRole.WORKPLACE_USER.getRoleName());
-
         CmsRole requiredRole = null;
         if (!"any".equals(roleStr)) {
-            requiredRole = CmsRole.valueOfRoleName(roleStr);
+            if (roleStr.indexOf("/") == -1) {
+                requiredRole = CmsRole.valueOfRoleName(roleStr).forOrgUnit(null);
+            } else {
+                requiredRole = CmsRole.valueOfRoleName(roleStr);
+            }
         }
         String project = configuredProject;
         String site = configuredSite;
