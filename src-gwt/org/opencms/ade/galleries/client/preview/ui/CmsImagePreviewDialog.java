@@ -138,6 +138,7 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
         if (CmsClientStringUtil.checkIsPathOrLinkToSvg(infoBean.getResourcePath())) {
             m_previewImage.getElement().getStyle().setWidth(100, Unit.PCT);
             m_previewImage.getElement().getStyle().setHeight(100, Unit.PCT);
+            m_previewImage.getElement().getStyle().setProperty("objectFit", "contain");
         }
         StringBuffer urlScaled = new StringBuffer(128);
         String src = infoBean.getViewLink() != null

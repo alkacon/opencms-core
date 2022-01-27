@@ -614,6 +614,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         if (CmsClientStringUtil.checkIsPathOrLinkToSvg(realPath)) {
             image.getStyle().setWidth(100, Unit.PCT);
             image.getStyle().setHeight(100, Unit.PCT);
+            image.getStyle().setProperty("objectFit", "contain");
         }
         m_imagePreview.setInnerHTML("");
         m_imagePreview.appendChild(image);
