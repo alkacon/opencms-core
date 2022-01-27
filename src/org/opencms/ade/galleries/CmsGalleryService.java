@@ -2150,7 +2150,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         int currentPage = 1;
         boolean found = false;
         searchObj.setPage(currentPage);
-        CmsGallerySearchParameters params = prepareSearchParams(searchObj);
+        CmsGallerySearchParameters params = prepareSearchParams(searchObj, CmsAddContentRestriction.EMPTY);
         CmsObject searchCms = getSearchCms(searchObj);
         org.opencms.search.galleries.CmsGallerySearch searchBean = new org.opencms.search.galleries.CmsGallerySearch();
         searchBean.init(searchCms);
@@ -2687,10 +2687,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * Returns the search parameters for the given query data.<p>
      *
      * @param searchData the query data
+     * @param replacementConfig the replacement configuration
      *
      * @return the prepared search parameters
      */
-    private CmsGallerySearchParameters prepareSearchParams(CmsGallerySearchBean searchData) {
+    private CmsGallerySearchParameters prepareSearchParams(
+        CmsGallerySearchBean searchData,
+        CmsAddContentRestriction replacementConfig) {
 
         // create a new search parameter object
         CmsGallerySearchParameters params = new CmsGallerySearchParameters();
@@ -2785,6 +2788,19 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 CmsFormatterConfigurationCacheState formatterState = OpenCms.getADEManager().getCachedFormatters(
                     cms.getRequestContext().getCurrentProject().isOnlineProject());
                 params.setFunctionAvailability(config.getDynamicFunctionAvailability(formatterState));
+            }
+            if (replacementConfig != null) {
+                // if the search replacement configuration didn't already handle the replacement,
+                // exclude the type from search results (this happens when searching for multiple types).
+                Set<String> excludedTypes = replacementConfig.getTypes();
+                if ((excludedTypes.size() > 0) && (params.getResourceTypes() != null)) {
+                    List<String> types = new ArrayList<>(params.getResourceTypes());
+                    boolean removed = types.removeAll(excludedTypes);
+                    if (removed && (types.size() == 0)) {
+                        params.setForceEmptyResult(true);
+                    }
+                    params.setResourceTypes(types);
+                }
             }
         }
 
@@ -3006,30 +3022,60 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         }
         // store folder filter
         storeFolderFilter(searchObj.getFolders());
+        CmsObject cms = getCmsObject();
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(
+            cms,
+            cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri()));
+        CmsAddContentRestriction replacementConfig = config.getAddContentRestriction();
+        CmsGallerySearchResultList searchResults = null;
+        List<String> types = searchObj.getTypes();
 
-        // search
-        CmsGallerySearchParameters params = prepareSearchParams(searchObj);
-        CmsObject searchCms = getSearchCms(searchObj);
+        searchObjBean.setReplacedResults(false);
+        if (searchObj.getGalleryMode().equals(GalleryMode.ade)
+            && (types.size() == 1)
+            && replacementConfig.getTypes().contains(types.iterator().next())) {
 
-        CmsGallerySearchResultList searchResults = OpenCms.getSearchManager().getIndexSolr(
-            "Solr Offline").gallerySearch(searchCms, params);
-        searchResults.calculatePages(params.getResultPage(), params.getMatchesPerPage());
-
-        // set only the result dependent search params for this search
-        // the user dependent params(galleries, types etc.) remain unchanged
-        searchObjBean.setSortOrder(params.getSortOrder().name());
-        searchObjBean.setScope(params.getScope());
-        searchObjBean.setResultCount(searchResults.getHitCount());
-        searchObjBean.setPage(params.getResultPage());
-        searchObjBean.setLastPage(params.getResultPage());
-        searchObjBean.setResults(buildSearchResultList(searchResults, null));
-        if (searchObj.getGalleryMode().equals(GalleryMode.ade)) {
+            List<CmsGallerySearchResult> items = replacementConfig.getResult(cms, types.iterator().next());
+            searchResults = new CmsGallerySearchResultList();
+            searchResults.addAll(items);
+            searchObjBean.setReplacedResults(true);
+            searchObjBean.setPage(1);
+            searchObjBean.setFolders(new HashSet<>());
+            searchObjBean.setGalleries(new ArrayList<>());
+            searchObjBean.setCategories(new ArrayList<>());
+            // searchObjBean.setMatchesPerPage(searchResults.size());
+            searchObjBean.setNoUploadReason(
+                Messages.get().getBundle(m_wpLocale).key(Messages.GUI_NO_UPLOAD_FOR_REPLACED_SEARCH_RESULTS_0));
+            searchObjBean.setResults(buildSearchResultList(searchResults, null));
+            searchObjBean.setResultCount(searchResults.size());
             if (searchObjBean.getResultCount() > 0) {
                 CmsADESessionCache cache = CmsADESessionCache.getCache(getRequest(), getCmsObject());
                 cache.setLastPageEditorGallerySearch(searchObj);
             }
+
+        } else {
+            // search
+            CmsGallerySearchParameters params = prepareSearchParams(searchObj, replacementConfig);
+            CmsObject searchCms = getSearchCms(searchObj);
+            searchResults = OpenCms.getSearchManager().getIndexSolr("Solr Offline").gallerySearch(searchCms, params);
+            searchResults.calculatePages(params.getResultPage(), params.getMatchesPerPage());
+
+            // set only the result dependent search params for this search
+            // the user dependent params(galleries, types etc.) remain unchanged
+            searchObjBean.setSortOrder(params.getSortOrder().name());
+            searchObjBean.setScope(params.getScope());
+            searchObjBean.setResultCount(searchResults.getHitCount());
+            searchObjBean.setPage(params.getResultPage());
+            searchObjBean.setLastPage(params.getResultPage());
+            searchObjBean.setResults(buildSearchResultList(searchResults, null));
+            if (searchObj.getGalleryMode().equals(GalleryMode.ade)) {
+                if (searchObjBean.getResultCount() > 0) {
+                    CmsADESessionCache cache = CmsADESessionCache.getCache(getRequest(), getCmsObject());
+                    cache.setLastPageEditorGallerySearch(searchObj);
+                }
+            }
+            updateNoUploadReason(searchCms, searchObjBean);
         }
-        updateNoUploadReason(searchCms, searchObjBean);
         return searchObjBean;
     }
 

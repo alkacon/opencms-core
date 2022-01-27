@@ -36,6 +36,7 @@ import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
+import org.opencms.ade.galleries.CmsAddContentRestriction;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -520,6 +521,18 @@ public class CmsADEConfigData {
             result = Collections.unmodifiableSet(mutableResult);
             m_typesActive = result;
             return result;
+        }
+    }
+
+    public CmsAddContentRestriction getAddContentRestriction() {
+
+        getAncestorTypeNames();
+
+        CmsADEConfigData parentConfig = parent();
+        if (parentConfig == null) {
+            return m_data.getAddContentRestriction();
+        } else {
+            return parentConfig.getAddContentRestriction().merge(m_data.getAddContentRestriction());
         }
     }
 

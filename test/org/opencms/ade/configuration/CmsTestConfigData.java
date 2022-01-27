@@ -31,6 +31,7 @@ import org.opencms.ade.configuration.CmsConfigurationReader.DiscardPropertiesMod
 import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
+import org.opencms.ade.galleries.CmsAddContentRestriction;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.util.CmsUUID;
@@ -146,6 +147,7 @@ public class CmsTestConfigData extends CmsADEConfigData {
             /*Set<CmsUUID> removedPlugins*/pluginsToRemove,
             /*Boolean useFormatterKeys*/null,
             /*CmsTypeOrderingMode orderingMode*/CmsTypeOrderingMode.byDisplayOrder,
+            CmsAddContentRestriction.EMPTY,
             /*Map<String, String> attributes*/new HashMap<>());
         return new CmsTestConfigData(internal);
 

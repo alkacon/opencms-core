@@ -250,6 +250,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
             return;
         }
         List<CmsSearchParamPanel> paramPanels = null;
+        boolean empty = searchObj.isEmpty();
         if (!searchObj.isEmpty()) {
             enableSearchTab();
             paramPanels = new ArrayList<CmsSearchParamPanel>();

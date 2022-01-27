@@ -56,6 +56,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_IMAGE_GALLERY_TITLE_0 = "GUI_IMAGE_GALLERY_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_NO_UPLOAD_FOR_REPLACED_SEARCH_RESULTS_0 = "GUI_NO_UPLOAD_FOR_REPLACED_SEARCH_RESULTS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCE_NOT_FOUND_0 = "GUI_RESOURCE_NOT_FOUND_0";
 
     /** Message constant for key in the resource bundle. */

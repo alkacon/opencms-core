@@ -129,13 +129,17 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
      *
      * @param cms the current CMS context
      * @param res the resource from which the data should be read
+     * @param title optional value that can be used to override the title (if null, the title is not overridden)
      */
-    public CmsGallerySearchResult(CmsObject cms, CmsResource res) {
+    public CmsGallerySearchResult(CmsObject cms, CmsResource res, String title) {
 
+        m_title = title;
         try {
             Map<String, String> props = CmsProperty.toMap(
                 cms.readPropertyObjects(res, CmsResourceTypeXmlContainerPage.isContainerPage(res)));
-            m_title = props.get(CmsPropertyDefinition.PROPERTY_TITLE);
+            if (m_title == null) {
+                m_title = props.get(CmsPropertyDefinition.PROPERTY_TITLE);
+            }
             m_description = props.get(CmsPropertyDefinition.PROPERTY_DESCRIPTION);
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);

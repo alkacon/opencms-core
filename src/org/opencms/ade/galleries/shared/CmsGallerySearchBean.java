@@ -125,6 +125,9 @@ public class CmsGallerySearchBean implements IsSerializable {
     /** The gallery reference path. */
     private String m_referencePath;
 
+    /** True if the search results were replaced. */
+    private boolean m_replacedResults;
+
     /** The path to the selected resource. */
     private String m_resourcePath;
 
@@ -200,6 +203,7 @@ public class CmsGallerySearchBean implements IsSerializable {
         setGalleryStoragePrefix(searchObj.getGalleryStoragePrefix());
         setServerSearchTypes(searchObj.getServerSearchTypes());
         setOriginalGalleryData(searchObj.getOriginalGalleryData());
+        setReplacedResults(searchObj.hasReplacedResults());
     }
 
     /**
@@ -609,7 +613,19 @@ public class CmsGallerySearchBean implements IsSerializable {
      */
     public boolean hasMore() {
 
-        return ((m_results.size() >= m_matchesPerPage) && (m_resultCount > (m_page * m_matchesPerPage)));
+        return ((m_results.size() >= m_matchesPerPage)
+            && (m_resultCount > (m_page * m_matchesPerPage))
+            && !hasReplacedResults());
+    }
+
+    /**
+     * Returns true if the search results were replaced with something else.
+     *
+     * @return true if the search results were replaced with something else
+     */
+    public boolean hasReplacedResults() {
+
+        return m_replacedResults;
     }
 
     /**
@@ -941,6 +957,17 @@ public class CmsGallerySearchBean implements IsSerializable {
     public void setReferencePath(String referencePath) {
 
         m_referencePath = referencePath;
+    }
+
+    /**
+     * Sets the 'results were replaced' status.
+     *
+     * @param replacedResults the new value for the 'results were replaced' status
+     */
+    public void setReplacedResults(boolean replacedResults) {
+
+        m_replacedResults = replacedResults;
+
     }
 
     /**

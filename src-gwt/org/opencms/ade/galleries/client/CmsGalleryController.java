@@ -304,6 +304,10 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         m_previewFactoryRegistration.put(previewProviderName, factory);
     }
 
+    private static native void debugger() /*-{
+        debugger;
+    }-*/;
+
     /**
      * Add category to search object.<p>
      *
@@ -1610,6 +1614,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                     m_loading = false;
                     m_searchObject.setResults(searchObj.getResults());
                     m_searchObject.setResultCount(searchObj.getResultCount());
+                    m_searchObject.setReplacedResults(searchObj.hasReplacedResults());
                     m_searchObject.setSortOrder(searchObj.getSortOrder());
                     m_searchObject.setPage(searchObj.getPage());
                     m_searchObject.setLastPage(searchObj.getLastPage());

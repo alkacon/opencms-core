@@ -466,6 +466,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
     public CmsGallerySearchResultList gallerySearch(CmsObject cms, CmsGallerySearchParameters params) {
 
         CmsGallerySearchResultList resultList = new CmsGallerySearchResultList();
+        if (params.isForceEmptyResult()) {
+            return resultList;
+        }
 
         try {
             CmsSolrResultList list = search(

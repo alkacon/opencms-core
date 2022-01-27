@@ -178,7 +178,7 @@ public class CmsGallerySearch {
             result = new CmsGallerySearchResult(sDoc, m_cms, 100, locale);
         } else {
             CmsResource res = m_cms.readResource(id, CmsResourceFilter.ALL);
-            result = new CmsGallerySearchResult(m_cms, res);
+            result = new CmsGallerySearchResult(m_cms, res, null);
         }
         return result;
     }
@@ -201,7 +201,7 @@ public class CmsGallerySearch {
             result = new CmsGallerySearchResult(sDoc, m_cms, 100, locale);
         } else {
             CmsResource res = m_cms.readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
-            result = new CmsGallerySearchResult(m_cms, res);
+            result = new CmsGallerySearchResult(m_cms, res, null);
         }
         return result;
     }

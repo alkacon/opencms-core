@@ -399,7 +399,14 @@ public class CmsResultsTab extends A_CmsListTab {
         m_sortSelectBox.selectValue(searchObj.getSortOrder());
         displayResultCount(getResultsDisplayed(searchObj), searchObj.getResultCount());
         m_hasMoreResults = searchObj.hasMore();
-        if (searchObj.getPage() == 1) {
+        if (searchObj.hasReplacedResults()) {
+            m_preset = null;
+            getList().scrollToTop();
+            clearList();
+            showParams(paramPanels);
+            addContent(searchObj);
+            getList().getElement().getStyle().clearDisplay();
+        } else if (searchObj.getPage() == 1) {
             m_preset = null;
             getList().scrollToTop();
             clearList();
@@ -407,7 +414,6 @@ public class CmsResultsTab extends A_CmsListTab {
             m_backwardScrollHandler.updateSearchBean(searchObj);
             getList().getElement().getStyle().clearDisplay();
             scrollToPreset();
-
         } else {
             showParams(paramPanels);
             addContent(searchObj);
@@ -779,6 +785,9 @@ public class CmsResultsTab extends A_CmsListTab {
      */
     private int getResultsDisplayed(CmsGallerySearchBean searchObj) {
 
+        if (searchObj.hasReplacedResults()) {
+            return searchObj.getResults().size();
+        }
         int resultsDisplayed = searchObj.getMatchesPerPage() * searchObj.getLastPage();
         return (resultsDisplayed > searchObj.getResultCount()) ? searchObj.getResultCount() : resultsDisplayed;
     }

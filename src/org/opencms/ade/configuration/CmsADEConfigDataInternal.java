@@ -30,6 +30,7 @@ package org.opencms.ade.configuration;
 import org.opencms.ade.configuration.CmsConfigurationReader.DiscardPropertiesMode;
 import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
+import org.opencms.ade.galleries.CmsAddContentRestriction;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
@@ -63,11 +64,11 @@ public class CmsADEConfigDataInternal {
      */
     public static class AttributeValue {
 
-        /** The value of the attribute. */
-        private String m_value;
-
         /** The path of the configuration from which this attribute value originates. */
         private String m_origin;
+
+        /** The value of the attribute. */
+        private String m_value;
 
         /**
          * Creates a new instance.
@@ -124,9 +125,6 @@ public class CmsADEConfigDataInternal {
     /** Should inherited types be discarded? */
     protected boolean m_discardInheritedTypes;
 
-    /** Mode for using formatter keys / the new container page format. */
-    protected Boolean m_useFormatterKeys;
-
     /** The 'discard properties' mode. */
     protected DiscardPropertiesMode m_discardPropertiesMode;
 
@@ -142,23 +140,35 @@ public class CmsADEConfigDataInternal {
     /** The master configuration structure ids. */
     protected List<CmsUUID> m_masterConfigs;
 
-    /** The base path of this configuration. */
-    private String m_basePath;
+    /** Mode for using formatter keys / the new container page format. */
+    protected Boolean m_useFormatterKeys;
 
-    /** the dynamic functions available. */
-    private Set<CmsUUID> m_dynamicFunctions;
+    /** The restrictions for the 'add content' dialog. */
+    private CmsAddContentRestriction m_addContentRestriction = CmsAddContentRestriction.EMPTY;
 
-    /** The functions to remove. */
-    private Set<CmsUUID> m_functionsToRemove;
-
-    /** True if detail contents outside the sitemap should not be used with detail pages in the sitemap. */
-    private boolean m_excludeExternalDetailContents;
+    /** The set of ids of site plugins to add. */
+    private Set<CmsUUID> m_addedPlugins;
 
     /** The map of attributes. */
     private Map<String, AttributeValue> m_attributes = Collections.emptyMap();
 
+    /** The base path of this configuration. */
+    private String m_basePath;
+
+    /** The CMS context. */
+    private CmsObject m_cms;
+
+    /** the dynamic functions available. */
+    private Set<CmsUUID> m_dynamicFunctions;
+
+    /** True if detail contents outside the sitemap should not be used with detail pages in the sitemap. */
+    private boolean m_excludeExternalDetailContents;
+
     /** The list of configured function references. */
     private List<CmsFunctionReference> m_functionReferences = Lists.newArrayList();
+
+    /** The functions to remove. */
+    private Set<CmsUUID> m_functionsToRemove;
 
     /** The internal detail page configuration. */
     private List<CmsDetailPageInfo> m_ownDetailPages = Lists.newArrayList();
@@ -181,23 +191,17 @@ public class CmsADEConfigDataInternal {
     /** Flag indicating whether all functions should be removed. */
     private boolean m_removeAllFunctions;
 
-    /** The resource from which the configuration data was read. */
-    private CmsResource m_resource;
-
-    /** The CMS context. */
-    private CmsObject m_cms;
-
-    /** The type ordering mode. */
-    private CmsTypeOrderingMode m_typeOrderingMode;
-
-    /** The set of ids of site plugins to add. */
-    private Set<CmsUUID> m_addedPlugins;
+    /** If true, all site plugins inherited from parent sitemaps should be removed. */
+    private boolean m_removeAllPlugins;
 
     /** The set of ids of site plugins to remove. */
     private Set<CmsUUID> m_removedPlugins;
 
-    /** If true, all site plugins inherited from parent sitemaps should be removed. */
-    private boolean m_removeAllPlugins;
+    /** The resource from which the configuration data was read. */
+    private CmsResource m_resource;
+
+    /** The type ordering mode. */
+    private CmsTypeOrderingMode m_typeOrderingMode;
 
     /**
      * Creates a new configuration data instance.<p>
@@ -228,6 +232,7 @@ public class CmsADEConfigDataInternal {
      * @param addedPlugins the ids of site plugins to add
      * @param useFormatterKeys mode for using formatter keys / the new container page format
      * @param orderingMode the mode used to order the resource types
+     * @param restriction the restrictions for the 'Add content' dialog
      * @param attributes the map of attributes
      */
     public CmsADEConfigDataInternal(
@@ -257,6 +262,7 @@ public class CmsADEConfigDataInternal {
         Set<CmsUUID> removedPlugins,
         Boolean useFormatterKeys,
         CmsTypeOrderingMode orderingMode,
+        CmsAddContentRestriction restriction,
         Map<String, String> attributes) {
 
         m_cms = cms;
@@ -300,6 +306,7 @@ public class CmsADEConfigDataInternal {
         m_attributes = Collections.unmodifiableMap(new HashMap<>(attributeObjects));
 
         m_typeOrderingMode = orderingMode;
+        m_addContentRestriction = restriction;
     }
 
     /**
@@ -391,6 +398,16 @@ public class CmsADEConfigDataInternal {
     public static CmsADEConfigDataInternal emptyConfiguration(String basePath) {
 
         return new CmsADEConfigDataInternal(basePath);
+    }
+
+    /**
+     * Gets the restrictions for the 'Add content' dialog.
+     *
+     * @return the restrictions for the 'Add content' dialog
+     */
+    public CmsAddContentRestriction getAddContentRestriction() {
+
+        return m_addContentRestriction;
     }
 
     /**
