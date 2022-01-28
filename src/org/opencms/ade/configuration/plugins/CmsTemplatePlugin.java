@@ -27,7 +27,18 @@
 
 package org.opencms.ade.configuration.plugins;
 
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsLog;
+import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsLinkInfo;
+import org.opencms.xml.content.I_CmsXmlContentLocation;
+import org.opencms.xml.content.I_CmsXmlContentValueLocation;
+import org.opencms.xml.types.CmsXmlVarLinkValue;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Bean representing a template plugin.
@@ -38,6 +49,18 @@ import org.opencms.relations.CmsLinkInfo;
  * (plugins will be sorted by descending order).
  */
 public class CmsTemplatePlugin {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsTemplatePlugin.class);
+
+    /** Content value node name. */
+    public static final String N_GROUP = "Group";
+
+    /** Content value node name. */
+    public static final String N_ORDER = "Order";
+
+    /** XML node name. */
+    public static final String N_TARGET = "Target";
 
     /** The plugin group. */
     private String m_group;
@@ -65,6 +88,64 @@ public class CmsTemplatePlugin {
         m_group = group;
         m_order = order;
         m_origin = origin;
+    }
+
+    /**
+     * Parses the template plugins.
+     *
+     * @param cms the CMS context
+     * @param parent the parent location under which the template plugins are located
+     * @param subName the node name for the template plugins
+     *
+     * @return the list of parsed template plugins
+     */
+    public static List<CmsTemplatePlugin> parsePlugins(CmsObject cms, I_CmsXmlContentLocation parent, String subName) {
+
+        List<CmsTemplatePlugin> result = new ArrayList<>();
+        for (I_CmsXmlContentValueLocation pluginLoc : parent.getSubValues(subName)) {
+            try {
+                CmsTemplatePlugin plugin = parsePlugin(cms, pluginLoc);
+                if (plugin != null) {
+                    result.add(plugin);
+                }
+            } catch (Exception e) {
+                LOG.error(
+                    "Error reading plugin in "
+                        + parent.getDocument().getFile().getRootPath()
+                        + ": "
+                        + e.getLocalizedMessage(),
+                    e);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Parses a template plugin from the XML content.
+     *
+     * @param cms the CMS context
+     * @param pluginLocation the location representing the template plugin
+     *
+     * @return the parsed template plugin
+     */
+    private static CmsTemplatePlugin parsePlugin(CmsObject cms, I_CmsXmlContentValueLocation pluginLocation) {
+
+        String groupStr = pluginLocation.getSubValue(N_GROUP).getValue().getStringValue(cms).trim();
+        String origin = pluginLocation.getValue().getDocument().getFile().getRootPath();
+        I_CmsXmlContentValueLocation orderLoc = pluginLocation.getSubValue(N_ORDER);
+        int order = 0;
+        if (orderLoc != null) {
+            order = Integer.parseInt(orderLoc.getValue().getStringValue(cms).trim());
+        }
+        CmsXmlVarLinkValue target = (CmsXmlVarLinkValue)(pluginLocation.getSubValue(N_TARGET).getValue());
+        CmsLink link = target.getLink(cms);
+        if (link != null) {
+            CmsTemplatePlugin plugin = new CmsTemplatePlugin(link.toLinkInfo(), groupStr, order, origin);
+            return plugin;
+        } else {
+            LOG.error("Plugin definition has null link in " + pluginLocation.getDocument().getFile().getRootPath());
+            return null;
+        }
     }
 
     /**

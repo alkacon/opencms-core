@@ -27,18 +27,18 @@
 
 package org.opencms.ade.configuration.plugins;
 
-import org.opencms.ade.configuration.formatters.CmsFormatterBeanParser;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.content.CmsXmlContentRootLocation;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -47,6 +47,15 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * Immutable collection of template plugins, normally read from a file of type site-plugin.
  */
 public class CmsSitePlugin {
+
+    /** Content value node name. */
+    public static final String N_DESCRIPTION = "Description";
+
+    /** Content value node name. */
+    public static final String N_NICE_NAME = "NiceName";
+
+    /** Content value node name. */
+    public static final String N_PLUGIN = "Plugin";
 
     /** The nice name. */
     private String m_niceName;
@@ -97,8 +106,31 @@ public class CmsSitePlugin {
     public static CmsSitePlugin read(CmsObject cms, CmsResource res) throws CmsException {
 
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(res));
-        CmsFormatterBeanParser parser = new CmsFormatterBeanParser(cms, new HashMap<>());
-        return parser.readSitePlugin(content);
+        return readSitePlugin(cms, content);
+
+    }
+
+    /**
+     * Reads a list of plugins from the given XML content.
+     *
+     * @param cms the CMS context
+     * @param content the XML content object
+     * @return the template plugin group
+     * @throws CmsException if something goes wrong
+     */
+    public static CmsSitePlugin readSitePlugin(CmsObject cms, CmsXmlContent content) throws CmsException {
+
+        CmsXmlContentRootLocation root = new CmsXmlContentRootLocation(content, Locale.ENGLISH);
+        String niceName = root.getSubValue(N_NICE_NAME).getValue().getStringValue(cms).trim();
+        String description = root.getSubValue(N_DESCRIPTION).getValue().getStringValue(cms).trim();
+        List<CmsTemplatePlugin> plugins = CmsTemplatePlugin.parsePlugins(cms, root, N_PLUGIN);
+        CmsSitePlugin result = new CmsSitePlugin(
+            content.getFile().getStructureId(),
+            niceName,
+            description,
+            plugins,
+            content.getFile().getRootPath());
+        return result;
 
     }
 

@@ -29,7 +29,6 @@ package org.opencms.ade.configuration.formatters;
 
 import org.opencms.ade.configuration.CmsConfigurationReader;
 import org.opencms.ade.configuration.CmsPropertyConfig;
-import org.opencms.ade.configuration.plugins.CmsSitePlugin;
 import org.opencms.ade.configuration.plugins.CmsTemplatePlugin;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
@@ -474,7 +473,7 @@ public class CmsFormatterBeanParser {
         String useMetaMappinsForNormalElementsStr = getString(root, N_USE_META_MAPPINGS_FOR_NORMAL_ELEMENTS, "false");
         boolean useMetaMappingsForNormalElements = Boolean.parseBoolean(useMetaMappinsForNormalElementsStr);
 
-        List<CmsTemplatePlugin> plugins = parsePlugins(root, N_PLUGIN);
+        List<CmsTemplatePlugin> plugins = CmsTemplatePlugin.parsePlugins(m_cms, root, N_PLUGIN);
 
         // Functions which just have been created don't have any matching rules, but should fit anywhere
         boolean strictMode = !isFunction;
@@ -663,29 +662,6 @@ public class CmsFormatterBeanParser {
         }
 
         return formatterBean;
-    }
-
-    /**
-     * Reads a list of plugins from the given XML content.
-     *
-     * @param content the XML content object
-     * @return the template plugin group
-     * @throws CmsException if something goes wrong
-     */
-    public CmsSitePlugin readSitePlugin(CmsXmlContent content) throws CmsException {
-
-        CmsXmlContentRootLocation root = new CmsXmlContentRootLocation(content, Locale.ENGLISH);
-        String niceName = root.getSubValue(N_NICE_NAME).getValue().getStringValue(m_cms).trim();
-        String description = root.getSubValue(N_DESCRIPTION).getValue().getStringValue(m_cms).trim();
-        List<CmsTemplatePlugin> plugins = parsePlugins(root, N_PLUGIN);
-        CmsSitePlugin result = new CmsSitePlugin(
-            content.getFile().getStructureId(),
-            niceName,
-            description,
-            plugins,
-            content.getFile().getRootPath());
-        return result;
-
     }
 
     /**
@@ -885,62 +861,6 @@ public class CmsFormatterBeanParser {
         }
         return result;
 
-    }
-
-    /**
-     * Parses a template plugin from the XML content.
-     *
-     * @param pluginLocation the location representing the template plugin
-     *
-     * @return the parsed template plugin
-     */
-    private CmsTemplatePlugin parsePlugin(I_CmsXmlContentValueLocation pluginLocation) {
-
-        String groupStr = pluginLocation.getSubValue(N_GROUP).getValue().getStringValue(m_cms).trim();
-        String origin = pluginLocation.getValue().getDocument().getFile().getRootPath();
-        I_CmsXmlContentValueLocation orderLoc = pluginLocation.getSubValue(N_ORDER);
-        int order = 0;
-        if (orderLoc != null) {
-            order = Integer.parseInt(orderLoc.getValue().getStringValue(m_cms).trim());
-        }
-        CmsXmlVarLinkValue target = (CmsXmlVarLinkValue)(pluginLocation.getSubValue(N_TARGET).getValue());
-        CmsLink link = target.getLink(m_cms);
-        if (link != null) {
-            CmsTemplatePlugin plugin = new CmsTemplatePlugin(link.toLinkInfo(), groupStr, order, origin);
-            return plugin;
-        } else {
-            LOG.error("Plugin definition has null link in " + pluginLocation.getDocument().getFile().getRootPath());
-            return null;
-        }
-    }
-
-    /**
-     * Parses the template plugins.
-     *
-     * @param parent the parent location under which the template plugins are located
-     * @param subName the node name for the template plugins
-     *
-     * @return the list of parsed template plugins
-     */
-    private List<CmsTemplatePlugin> parsePlugins(I_CmsXmlContentLocation parent, String subName) {
-
-        List<CmsTemplatePlugin> result = new ArrayList<>();
-        for (I_CmsXmlContentValueLocation pluginLoc : parent.getSubValues(subName)) {
-            try {
-                CmsTemplatePlugin plugin = parsePlugin(pluginLoc);
-                if (plugin != null) {
-                    result.add(plugin);
-                }
-            } catch (Exception e) {
-                LOG.error(
-                    "Error reading plugin in "
-                        + parent.getDocument().getFile().getRootPath()
-                        + ": "
-                        + e.getLocalizedMessage(),
-                    e);
-            }
-        }
-        return result;
     }
 
     /**
