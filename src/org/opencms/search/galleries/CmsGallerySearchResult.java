@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
 /**
  *
  */
-public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult> {
+public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult>, Cloneable {
 
     /** The logger instance for this class. */
     public static final Log LOG = CmsLog.getLog(CmsGallerySearchResult.class);
@@ -592,6 +592,26 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         long time = cms.getRequestContext().getRequestTime();
         return (time == CmsResource.DATE_RELEASED_EXPIRED_IGNORE)
             || ((time > m_dateReleased.getTime()) && (time < m_dateExpired.getTime()));
+    }
+
+    /**
+     * Returns a shallow copy of this result, with a changed title.
+     *
+     * @param title the new title
+     *
+     * @return the shallow copy with the changed title
+     */
+    public CmsGallerySearchResult withTitle(String title) {
+
+        try {
+            CmsGallerySearchResult res = (CmsGallerySearchResult)clone();
+            res.m_title = title;
+            return res;
+        } catch (CloneNotSupportedException e) {
+            // shouldn't happen
+            LOG.error(e.getLocalizedMessage(), e);
+            return null;
+        }
     }
 
     /**

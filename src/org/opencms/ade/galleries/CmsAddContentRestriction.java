@@ -33,6 +33,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsMacroResolver;
@@ -131,9 +132,16 @@ public class CmsAddContentRestriction {
                     CmsResource currentRes = cms.readResource(
                         res.getStructureId(),
                         CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+
+                    CmsGallerySearchResult singleResult = CmsGallerySearch.searchById(
+                        cms,
+                        res.getStructureId(),
+                        locale);
                     String replacementTitle = m_replacedTitles.get(currentRes.getStructureId());
-                    replacementTitle = macroResolver.resolveMacros(replacementTitle);
-                    CmsGallerySearchResult singleResult = new CmsGallerySearchResult(cms, currentRes, replacementTitle);
+                    if (replacementTitle != null) {
+                        replacementTitle = macroResolver.resolveMacros(replacementTitle);
+                        singleResult = singleResult.withTitle(replacementTitle);
+                    }
                     result.add(singleResult);
                 } catch (CmsVfsResourceNotFoundException | CmsSecurityException e) {
                     LOG.debug("filtered resource " + res.getRootPath() + " (" + res.getStructureId() + ")");
