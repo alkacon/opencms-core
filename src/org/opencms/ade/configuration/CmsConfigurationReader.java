@@ -154,6 +154,12 @@ public class CmsConfigurationReader {
     /** The detail pages disabled node name. */
     public static final String N_DETAIL_PAGES_DISABLED = "DetailPagesDisabled";
 
+    /** The SharedSettingOverride node name. */
+    public static final String N_SHARED_SETTING_OVERRIDE = "SharedSettingOverride";
+
+    /** The RemoveAllSharedSettingOverrides node name. */
+    public static final String N_REMOVE_ALL_SHARED_SETTING_OVERRIDES = "RemoveAllSharedSettingOverrides";
+
     /** The disabled node name. */
     public static final String N_DISABLED = "Disabled";
 
@@ -530,6 +536,13 @@ public class CmsConfigurationReader {
             parseFunctionReference(node);
         }
 
+        CmsUUID sharedSettingOverride = null;
+        for (I_CmsXmlContentValueLocation node : root.getSubValues(N_SHARED_SETTING_OVERRIDE)) {
+            sharedSettingOverride = ((CmsXmlVfsFileValue)node.getValue()).getLink(m_cms).getStructureId();
+        }
+
+        boolean removeSharedSettingOverrides = getBoolean(root, N_REMOVE_ALL_SHARED_SETTING_OVERRIDES);
+
         boolean removeFunctions = false;
         removeFunctions = getBoolean(root, N_REMOVE_ALL_FUNCTIONS);
 
@@ -658,6 +671,8 @@ public class CmsConfigurationReader {
             useFormatterKeys,
             typeOrderingMode,
             addContentRestriction,
+            sharedSettingOverride,
+            removeSharedSettingOverrides,
             attributes);
         return result;
     }

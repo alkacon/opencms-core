@@ -136,7 +136,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                     CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(request);
 
                     Map<String, String> settings = new HashMap<>();
-                    for (Map.Entry<String, CmsXmlContentProperty> entry : formatter.getSettings().entrySet()) {
+                    for (Map.Entry<String, CmsXmlContentProperty> entry : formatter.getSettings(adeConfig).entrySet()) {
                         CmsXmlContentProperty settingConfig = entry.getValue();
                         String defaultValue = settingConfig.getDefault();
                         if (defaultValue != null) {

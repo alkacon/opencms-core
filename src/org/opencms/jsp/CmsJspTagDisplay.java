@@ -322,7 +322,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
         if (!keyMatch && !idMatch) {
             return null;
         }
-        if (!dynamicFmt.getSettings().containsKey(suffix)) {
+        if (!dynamicFmt.getSettings(config).containsKey(suffix)) {
             return null;
         }
         return suffix;

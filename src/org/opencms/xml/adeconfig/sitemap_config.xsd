@@ -31,6 +31,8 @@
             <xsd:element name="TypeOrderingMode" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="ResourceType" type="OpenCmsADEType" minOccurs="0" maxOccurs="unbounded" />
 			<xsd:element name="UseFormatterKeys" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="SharedSettingOverride" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="RemoveAllSharedSettingOverrides" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="RemoveAllFormatters" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="RemoveFormatters" type="OpenCmsRemoveFormattersBlock" minOccurs="0"/>
             <xsd:element name="AddFormatters"    type="OpenCmsAddFormattersBlock" minOccurs="0"/>

@@ -399,11 +399,11 @@ public class CmsElementUtil {
         return formatter;
     }
 
-    /** 
-     * Checks if the given setting name is a system setting. 
-     * 
-     * @param name the setting name 
-     * @return true if the name corresponds to a system setting 
+    /**
+     * Checks if the given setting name is a system setting.
+     *
+     * @param name the setting name
+     * @return true if the name corresponds to a system setting
      */
     public static final boolean isSystemSetting(String name) {
 
@@ -1225,12 +1225,12 @@ public class CmsElementUtil {
             return false;
         }
 
-        CmsFormatterConfiguration formatters = getConfigData().getFormatters(m_cms, resource);
+        CmsADEConfigData config = getConfigData();
+        CmsFormatterConfiguration formatters = config.getFormatters(m_cms, resource);
         boolean result = (formatters.getAllFormatters().size() > 1)
             || !CmsXmlContentPropertyHelper.getPropertyInfo(m_cms, null, resource).isEmpty();
         if (!result && (formatters.getAllFormatters().size() == 1)) {
-            result = (formatters.getAllFormatters().get(0).getSettings() != null)
-                && (formatters.getAllFormatters().get(0).getSettings().size() > 0);
+            result = (formatters.getAllFormatters().get(0).getSettings(config).size() > 0);
         }
         return result;
     }

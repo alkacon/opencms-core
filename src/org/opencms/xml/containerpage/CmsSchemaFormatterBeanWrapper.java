@@ -27,6 +27,7 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.plugins.CmsTemplatePlugin;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -255,10 +256,9 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
     }
 
     /**
-     *
-     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getSettings()
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getSettings(org.opencms.ade.configuration.CmsADEConfigData)
      */
-    public Map<String, CmsXmlContentProperty> getSettings() {
+    public Map<String, CmsXmlContentProperty> getSettings(CmsADEConfigData config) {
 
         return m_contentHandler.getSettings(m_cms, m_elementResource);
     }

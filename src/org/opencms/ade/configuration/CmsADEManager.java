@@ -606,7 +606,7 @@ public class CmsADEManager {
         Map<String, CmsXmlContentProperty> result = new LinkedHashMap<String, CmsXmlContentProperty>();
         Visibility defaultVisibility = Visibility.elementAndParentIndividual;
         if (mainFormatter != null) {
-            for (Entry<String, CmsXmlContentProperty> entry : mainFormatter.getSettings().entrySet()) {
+            for (Entry<String, CmsXmlContentProperty> entry : mainFormatter.getSettings(config).entrySet()) {
                 Visibility visibility = entry.getValue().getVisibility(defaultVisibility);
                 if (!(visibility.equals(Visibility.parentShared) || visibility.equals(Visibility.parentIndividual))) {
                     result.put(entry.getKey(), entry.getValue());
@@ -616,7 +616,7 @@ public class CmsADEManager {
                 List<I_CmsFormatterBean> nestedFormatters = getNestedFormatters(cms, config, res, locale, req);
                 if (nestedFormatters != null) {
                     for (I_CmsFormatterBean formatter : nestedFormatters) {
-                        for (Entry<String, CmsXmlContentProperty> entry : formatter.getSettings().entrySet()) {
+                        for (Entry<String, CmsXmlContentProperty> entry : formatter.getSettings(config).entrySet()) {
                             Visibility visibility = entry.getValue().getVisibility(defaultVisibility);
                             switch (visibility) {
                                 case parentShared:

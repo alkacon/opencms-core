@@ -80,6 +80,7 @@ import org.apache.commons.logging.Log;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
@@ -227,6 +228,9 @@ public class CmsADEConfigData {
 
     /** Lazily initialized cache for formatters by formatter key. */
     private Multimap<String, I_CmsFormatterBean> m_formattersByKey;
+
+    /** Cached shared setting overrides. */
+    private volatile ImmutableList<CmsUUID> m_sharedSettingOverrides;
 
     /** Set of names of active types.*/
     private Set<String> m_typesActive;
@@ -1222,6 +1226,44 @@ public class CmsADEConfigData {
     public Collection<CmsResourceTypeConfig> getSearchableTypes(CmsObject cms) {
 
         return getResourceTypes();
+    }
+
+    /**
+     * Gets the list of structure ids of the shared setting overrides, ordered by increasing specificity.
+     *
+     * @return the list of structure ids of shared setting overrides
+     */
+    public ImmutableList<CmsUUID> getSharedSettingOverrides() {
+
+        if (m_sharedSettingOverrides != null) {
+            return m_sharedSettingOverrides;
+        }
+
+        CmsADEConfigData currentConfig = this;
+        List<CmsADEConfigData> relevantConfigurations = new ArrayList<>();
+        while (currentConfig != null) {
+            relevantConfigurations.add(currentConfig);
+            if (currentConfig.m_data.isRemoveSharedSettingOverrides()) {
+                // once we find a configuration where 'remove all shared setting overrides' is enabled,
+                // all parent configurations become irrelevant
+                break;
+            }
+            currentConfig = currentConfig.parent();
+        }
+
+        // order by ascending specificity
+        Collections.reverse(relevantConfigurations);
+
+        List<CmsUUID> ids = new ArrayList<>();
+        for (CmsADEConfigData config : relevantConfigurations) {
+            CmsUUID id = config.m_data.getSharedSettingOverride();
+            if (id != null) {
+                ids.add(id);
+            }
+        }
+        ImmutableList<CmsUUID> result = ImmutableList.copyOf(ids);
+        m_sharedSettingOverrides = result;
+        return result;
     }
 
     /**

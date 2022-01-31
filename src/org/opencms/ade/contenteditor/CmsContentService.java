@@ -803,8 +803,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     I_CmsFormatterBean formatter = getFormatterForElement(configData, containerElement);
                     if ((formatter != null)
                         && formatter.isAllowsSettingsInEditor()
-                        && (formatter.getSettings() != null)
-                        && !formatter.getSettings().isEmpty()) {
+                        && !formatter.getSettings(configData).isEmpty()) {
                         Locale locale = CmsLocaleManager.getLocale(lastEditedLocale);
                         Map<String, CmsXmlContentProperty> settingsConfig = OpenCms.getADEManager().getFormatterSettings(
                             cms,
@@ -1022,8 +1021,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     I_CmsFormatterBean formatter = getFormatterForElement(config, containerElement);
                     if ((formatter != null)
                         && formatter.isAllowsSettingsInEditor()
-                        && (formatter.getSettings() != null)
-                        && !formatter.getSettings().isEmpty()) {
+                        && !formatter.getSettings(config).isEmpty()) {
                         Map<String, CmsXmlContentProperty> settingsConfig = OpenCms.getADEManager().getFormatterSettings(
                             cms,
                             config,
@@ -2209,8 +2207,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             I_CmsFormatterBean formatter = getFormatterForElement(configData, containerElement);
             if ((formatter != null)
                 && formatter.isAllowsSettingsInEditor()
-                && (formatter.getSettings() != null)
-                && !formatter.getSettings().isEmpty()) {
+                && !formatter.getSettings(config).isEmpty()) {
                 Map<String, CmsXmlContentProperty> settingsConfig = OpenCms.getADEManager().getFormatterSettings(
                     cms,
                     config,

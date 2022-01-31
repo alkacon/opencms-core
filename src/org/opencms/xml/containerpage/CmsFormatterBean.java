@@ -27,6 +27,8 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.formatters.CmsSettingConfiguration;
 import org.opencms.ade.configuration.plugins.CmsTemplatePlugin;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
@@ -37,7 +39,6 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -45,6 +46,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * A bean containing formatter configuration data as strings.<p>
@@ -146,9 +149,6 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     /** Indicates if the content should be searchable in the online index when this formatter is used. */
     protected boolean m_search;
 
-    /** The settings. */
-    protected Map<String, CmsXmlContentProperty> m_settings = new LinkedHashMap<String, CmsXmlContentProperty>();
-
     /** Indicating if this formatter will always render all nested containers. */
     protected boolean m_strictContainers;
 
@@ -160,6 +160,9 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
 
     /** Flag indicating this formatter allows settings to be edited in the content editor. */
     private boolean m_isAllowsSettingsInEditor;
+
+    /** The setting configuration. */
+    private CmsSettingConfiguration m_settingConfig;
 
     /**
      * Constructor for creating a new formatter configuration with resource structure id.<p>
@@ -183,7 +186,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
      * @param resourceTypeNames the resource type names
      * @param rank the configuration rank
      * @param id the configuration id
-     * @param settings the settings configuration
+     * @param settingConfig the settings configuration
      * @param isFromConfigFile <code>true</code> if configuration file based
      * @param isAutoEnabled <code>true</code> if auto enabled
      * @param isDetail <code>true</code> if detail formatter
@@ -215,7 +218,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         Collection<String> resourceTypeNames,
         int rank,
         String id,
-        Map<String, CmsXmlContentProperty> settings,
+        CmsSettingConfiguration settingConfig,
         boolean isFromConfigFile,
         boolean isAutoEnabled,
         boolean isDetail,
@@ -251,7 +254,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         m_javascriptHeadIncludes.addAll(javascriptHeadIncludes);
         m_cssHeadIncludes.addAll(cssHeadIncludes);
         m_plugins = new ArrayList<>(plugins);
-        m_settings.putAll(settings);
+        m_settingConfig = settingConfig;
         m_isFromFormatterConfigFile = isFromConfigFile;
         m_isAutoEnabled = isAutoEnabled;
         m_isDetail = isDetail;
@@ -306,7 +309,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             Collections.<String> emptySet(),
             1000,
             null,
-            Collections.<String, CmsXmlContentProperty> emptyMap(),
+            new CmsSettingConfiguration(),
             false,
             false,
             true,
@@ -404,7 +407,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             Collections.<String> emptySet(),
             DEFAULT_SCHEMA_RANK,
             null,
-            Collections.<String, CmsXmlContentProperty> emptyMap(),
+            new CmsSettingConfiguration(),
             false,
             false,
             true,
@@ -621,12 +624,13 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     }
 
     /**
-     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getSettings()
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getSettings(org.opencms.ade.configuration.CmsADEConfigData)
      */
     @Override
-    public Map<String, CmsXmlContentProperty> getSettings() {
+    public Map<String, CmsXmlContentProperty> getSettings(CmsADEConfigData config) {
 
-        return Collections.unmodifiableMap(m_settings);
+        ImmutableList<CmsUUID> sharedSettingOverrides = config.getSharedSettingOverrides();
+        return m_settingConfig.getSettings(sharedSettingOverrides);
     }
 
     /**

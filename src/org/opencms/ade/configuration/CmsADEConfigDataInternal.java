@@ -197,8 +197,14 @@ public class CmsADEConfigDataInternal {
     /** The set of ids of site plugins to remove. */
     private Set<CmsUUID> m_removedPlugins;
 
+    /** True if inherited shared setting overrides should be removed. */
+    private boolean m_removeSharedSettingOverrides;
+
     /** The resource from which the configuration data was read. */
     private CmsResource m_resource;
+
+    /** Shared setting override ID, may be null. */
+    private CmsUUID m_sharedSettingOverride;
 
     /** The type ordering mode. */
     private CmsTypeOrderingMode m_typeOrderingMode;
@@ -233,6 +239,8 @@ public class CmsADEConfigDataInternal {
      * @param useFormatterKeys mode for using formatter keys / the new container page format
      * @param orderingMode the mode used to order the resource types
      * @param restriction the restrictions for the 'Add content' dialog
+     * @param sharedSettingOverride shared setting override id, may be null
+     * @param removeSharedSettingOverrides true if inherited shared setting overrides should be removed
      * @param attributes the map of attributes
      */
     public CmsADEConfigDataInternal(
@@ -263,6 +271,8 @@ public class CmsADEConfigDataInternal {
         Boolean useFormatterKeys,
         CmsTypeOrderingMode orderingMode,
         CmsAddContentRestriction restriction,
+        CmsUUID sharedSettingOverride,
+        boolean removeSharedSettingOverrides,
         Map<String, String> attributes) {
 
         m_cms = cms;
@@ -295,6 +305,8 @@ public class CmsADEConfigDataInternal {
         m_removeAllPlugins = removeAllPlugins;
         m_addedPlugins = Collections.unmodifiableSet(addedPlugins);
         m_removedPlugins = Collections.unmodifiableSet(removedPlugins);
+        m_sharedSettingOverride = sharedSettingOverride;
+        m_removeSharedSettingOverrides = removeSharedSettingOverrides;
         Map<String, AttributeValue> attributeObjects = new HashMap<>();
         String attributeOrigin = basePath;
         if (resource != null) {
@@ -579,6 +591,16 @@ public class CmsADEConfigDataInternal {
     }
 
     /**
+     * Gets the shared setting override ID (may be null).
+     *
+     * @return the shared setting override ID
+     */
+    public CmsUUID getSharedSettingOverride() {
+
+        return m_sharedSettingOverride;
+    }
+
+    /**
      * Gets the type ordering mode.
      *
      * @return the type ordering mode
@@ -698,6 +720,16 @@ public class CmsADEConfigDataInternal {
     public boolean isRemoveAllPlugins() {
 
         return m_removeAllPlugins;
+    }
+
+    /**
+     * Returns true if shared setting overrides inherited from other sitemap configurations should be discarded.
+     *
+     * @return true if inherited shared setting overrides should be discarded
+     */
+    public boolean isRemoveSharedSettingOverrides() {
+
+        return m_removeSharedSettingOverrides;
     }
 
     /**

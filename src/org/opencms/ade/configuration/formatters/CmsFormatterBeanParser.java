@@ -310,9 +310,6 @@ public class CmsFormatterBeanParser {
     /** Setting configurations read from content. **/
     private List<CmsXmlContentProperty> m_settingList = new ArrayList<>();
 
-    /** Settings merged with included settings. */
-    private Map<String, CmsXmlContentProperty> m_settings = new HashMap<>();
-
     /**
      * Creates a new parser instance.<p>
      *
@@ -386,52 +383,16 @@ public class CmsFormatterBeanParser {
         parseSettings(root);
         List<I_CmsXmlContentValue> settingIncludes = content.getValues(N_INCLUDE_SETTINGS, en);
         settingIncludes = Lists.reverse(settingIncludes); // make defaults from earlier include files 'win' when merging them into a map
-        Map<String, CmsXmlContentProperty> includesByIncludeName = new HashMap<>();
+        List<CmsUUID> includeIds = new ArrayList<>();
         for (I_CmsXmlContentValue settingInclude : settingIncludes) {
             try {
                 CmsXmlVfsFileValue includeFileVal = (CmsXmlVfsFileValue)settingInclude;
                 CmsUUID includeSettingsId = includeFileVal.getLink(m_cms).getStructureId();
-                List<CmsXmlContentProperty> includedSettings = m_additionalSettingConfigs.get(includeSettingsId);
-                if (includedSettings == null) {
-                    continue;
-                }
-                for (CmsXmlContentProperty prop : includedSettings) {
-                    String includeName = prop.getIncludeName(prop.getName());
-                    if (includeName != null) {
-                        CmsXmlContentProperty existingProp = includesByIncludeName.get(includeName);
-                        if (existingProp != null) {
-                            LOG.warn("Conflict with included setting configuration: " + path);
-                        }
-                        includesByIncludeName.put(includeName, prop);
-                    }
-                }
+                includeIds.add(includeSettingsId);
             } catch (Exception e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
-
-        Map<String, CmsXmlContentProperty> mergedSettings = new LinkedHashMap<>();
-
-        for (CmsXmlContentProperty setting : m_settingList) {
-            String includeName = setting.getIncludeName(setting.getName());
-            if (includeName == null) {
-                LOG.warn("Neither name nor include name given in setting definition in " + path);
-                continue;
-            }
-            CmsXmlContentProperty defaultSetting = includesByIncludeName.get(includeName);
-            CmsXmlContentProperty mergedSetting;
-            if (defaultSetting != null) {
-                mergedSetting = setting.mergeDefaults(defaultSetting);
-            } else {
-                mergedSetting = setting;
-            }
-            if (mergedSetting.getName() == null) {
-                LOG.warn("Invalid setting without name in " + path);
-                continue;
-            }
-            mergedSettings.put(mergedSetting.getName(), mergedSetting);
-        }
-        m_settings = mergedSettings;
 
         String isDetailStr = getString(root, N_DETAIL, "false");
         boolean isDetail = Boolean.parseBoolean(isDetailStr);
@@ -439,22 +400,13 @@ public class CmsFormatterBeanParser {
         String displayType = getString(root, N_DISPLAY, null);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(displayType) || "false".equals(displayType)) {
             displayType = null;
-        } else if (!m_settings.containsKey(SETTING_DISPLAY_TYPE)) {
-            m_settings.put(
-                SETTING_DISPLAY_TYPE,
-                new CmsXmlContentProperty(
-                    SETTING_DISPLAY_TYPE,
-                    "string",
-                    "hidden",
-                    null,
-                    null,
-                    null,
-                    displayType,
-                    null,
-                    null,
-                    null,
-                    null));
         }
+
+        CmsSettingConfiguration settingConfig = new CmsSettingConfiguration(
+            m_settingList,
+            m_additionalSettingConfigs,
+            includeIds,
+            displayType);
 
         String isAllowSettingsStr = getString(root, N_ALLOWS_SETTINGS_IN_EDITOR, "false");
         boolean isAllowSettings = Boolean.parseBoolean(isAllowSettingsStr);
@@ -524,7 +476,7 @@ public class CmsFormatterBeanParser {
                     id,
                     defContentRes != null ? defContentRes.getRootPath() : null,
                     defContentRes != null ? defContentRes.getStructureId() : null,
-                    m_settings,
+                    settingConfig,
                     m_autoEnabled,
                     isDetail,
                     displayType,
@@ -554,7 +506,7 @@ public class CmsFormatterBeanParser {
                     id,
                     defContentRes != null ? defContentRes.getRootPath() : null,
                     defContentRes != null ? defContentRes.getStructureId() : null,
-                    m_settings,
+                    settingConfig,
                     m_autoEnabled,
                     isDetail,
                     displayType,
@@ -622,7 +574,7 @@ public class CmsFormatterBeanParser {
                     m_niceName,
                     description,
                     id,
-                    m_settings,
+                    settingConfig,
                     isAllowSettings,
                     isStrictContainers,
                     rparams);
@@ -647,7 +599,7 @@ public class CmsFormatterBeanParser {
                     m_resourceType,
                     m_rank,
                     id,
-                    m_settings,
+                    settingConfig,
                     true,
                     m_autoEnabled,
                     isDetail,

@@ -824,7 +824,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                     String partBeforeUnderscore = key.substring(0, underscorePos);
                     String partAfterUnderscore = key.substring(underscorePos + 1);
                     I_CmsFormatterBean dynamicFmt = config.findFormatter(partBeforeUnderscore);
-                    if ((dynamicFmt != null) && dynamicFmt.getSettings().containsKey(partAfterUnderscore)) {
+                    if ((dynamicFmt != null) && dynamicFmt.getSettings(config).containsKey(partAfterUnderscore)) {
                         String id = dynamicFmt.getId();
                         if (id != null) {
                             key = id + "_" + partAfterUnderscore;

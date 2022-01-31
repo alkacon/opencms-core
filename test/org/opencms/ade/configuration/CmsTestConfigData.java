@@ -148,6 +148,8 @@ public class CmsTestConfigData extends CmsADEConfigData {
             /*Boolean useFormatterKeys*/null,
             /*CmsTypeOrderingMode orderingMode*/CmsTypeOrderingMode.byDisplayOrder,
             CmsAddContentRestriction.EMPTY,
+            /*CmsUUID sharedSettingsOverride */ null,
+            /*boolean removeAllSharedSettingsOverrides*/false,
             /*Map<String, String> attributes*/new HashMap<>());
         return new CmsTestConfigData(internal);
 

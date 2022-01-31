@@ -619,7 +619,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         String resourceTypeName = resType;
         int rank = rank1;
         String id = "" + CmsUUID.getConstantUUID(name);
-        Map<String, CmsXmlContentProperty> settings = Maps.newHashMap();
+
         boolean isFromConfigFile = true;
         boolean isAutoEnabled = enabled;
         boolean isDetail = true;
@@ -644,7 +644,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             Collections.singleton(resourceTypeName),
             rank,
             id,
-            settings,
+            new CmsSettingConfiguration(),
             isFromConfigFile,
             isAutoEnabled,
             isDetail,
@@ -742,7 +742,6 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         String resourceTypeName = resType;
         int rank = rank1;
         String id = "" + CmsUUID.getConstantUUID(name);
-        Map<String, CmsXmlContentProperty> settings = Maps.newHashMap();
         boolean isFromConfigFile = true;
         boolean isAutoEnabled = enabled;
         boolean isDetail = true;
@@ -767,7 +766,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             Collections.singleton(resourceTypeName),
             rank,
             id,
-            settings,
+            new CmsSettingConfiguration(),
             isFromConfigFile,
             isAutoEnabled,
             isDetail,
@@ -814,7 +813,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         String resourceTypeName = TYPE_A;
         int rank = rank1;
         String id = "" + CmsUUID.getConstantUUID(name);
-        Map<String, CmsXmlContentProperty> settings = Maps.newHashMap();
+        CmsSettingConfiguration settings = new CmsSettingConfiguration();
         boolean isFromConfigFile = true;
         boolean isAutoEnabled = true;
         boolean isDetail = true;
@@ -904,7 +903,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             Collections.singleton(resourceTypeName),
             rank,
             id,
-            settings,
+            new CmsSettingConfiguration(),
             isFromConfigFile,
             isAutoEnabled,
             isDetail,

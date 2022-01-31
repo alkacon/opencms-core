@@ -27,6 +27,7 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.plugins.CmsTemplatePlugin;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -214,9 +215,11 @@ public interface I_CmsFormatterBean {
     /**
      * Gets the defined settings.<p>
      *
+     * @param sitemapConfig the sitemap configuration for which the settings should be retrieved
+     *
      * @return the defined settings
      */
-    Map<String, CmsXmlContentProperty> getSettings();
+    Map<String, CmsXmlContentProperty> getSettings(CmsADEConfigData sitemapConfig);
 
     /**
      * Gets the template plugins.

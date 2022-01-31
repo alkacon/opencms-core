@@ -27,13 +27,12 @@
 
 package org.opencms.xml.containerpage;
 
+import org.opencms.ade.configuration.formatters.CmsSettingConfiguration;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -70,7 +69,7 @@ public class CmsFlexFormatterBean extends CmsFormatterBean {
      * @param id the configuration id
      * @param defaultContentRootPath the root path to the default content
      * @param defaultContentStructureId the UUID of the default content resource
-     * @param settings the settings configuration
+     * @param settingConfig the settings configuration
      * @param isDetail <code>true</code> if detail formatter
      * @param isAutoEnabled <code>true</code> if auto enabled
      * @param displayType the display type
@@ -96,7 +95,7 @@ public class CmsFlexFormatterBean extends CmsFormatterBean {
         String id,
         String defaultContentRootPath,
         CmsUUID defaultContentStructureId,
-        Map<String, CmsXmlContentProperty> settings,
+        CmsSettingConfiguration settingConfig,
         boolean isAutoEnabled,
         boolean isDetail,
         String displayType,
@@ -126,7 +125,7 @@ public class CmsFlexFormatterBean extends CmsFormatterBean {
             resourceTypeNames,
             rank,
             id,
-            settings,
+            settingConfig,
             true,
             isAutoEnabled,
             isDetail,
