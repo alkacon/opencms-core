@@ -586,8 +586,12 @@ public class CmsADEConfigCacheState {
         while (!stack.isEmpty()) {
             CmsADEConfigDataInternal current = stack.remove(stack.size() - 1);
             if (alreadySeen.contains(current.getResource().getStructureId())) {
+
                 LOG.error(
-                    "Circular master configuration references detected for " + current.getResource().getRootPath());
+                    "The same master configuration is referenced multiple times from "
+                        + startMasterConfig.getResource()
+                        + ": "
+                        + current.getResource().getRootPath());
             } else {
                 alreadySeen.add(current.getResource().getStructureId());
                 result.add(current);
