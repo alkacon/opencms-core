@@ -259,8 +259,8 @@ public class CmsFormatterBeanParser {
     /** Parsed field. */
     int m_width;
 
-    /** Additional setting configurations for includes. */
-    private Map<CmsUUID, List<CmsXmlContentProperty>> m_additionalSettingConfigs = new HashMap<>();
+    /** Additional setting configurations for includes. Entries consist of structure ids of setting definition files as keys and the corresponding setting definition maps as entries. */
+    private Map<CmsUUID, Map<CmsSharedSettingKey, CmsXmlContentProperty>> m_additionalSettingConfigs = new HashMap<>();
 
     /** Parsed field. */
     private boolean m_autoEnabled;
@@ -318,7 +318,9 @@ public class CmsFormatterBeanParser {
      * @param cms the CMS context to use for parsing
      * @param settingConfigs the additional setting configurations used for includes
      */
-    public CmsFormatterBeanParser(CmsObject cms, Map<CmsUUID, List<CmsXmlContentProperty>> settingConfigs) {
+    public CmsFormatterBeanParser(
+        CmsObject cms,
+        Map<CmsUUID, Map<CmsSharedSettingKey, CmsXmlContentProperty>> settingConfigs) {
 
         m_cms = cms;
         m_additionalSettingConfigs = settingConfigs;
@@ -351,7 +353,6 @@ public class CmsFormatterBeanParser {
     public I_CmsFormatterBean parse(CmsXmlContent content, String location, String id)
     throws CmsException, ParseException {
 
-        String path = content.getFile().getRootPath();
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(content.getFile());
         boolean isMacroFromatter = CmsFormatterConfigurationCache.TYPE_MACRO_FORMATTER.equals(type.getTypeName());
         boolean isFlexFormatter = CmsFormatterConfigurationCache.TYPE_FLEX_FORMATTER.equals(type.getTypeName());
@@ -402,10 +403,16 @@ public class CmsFormatterBeanParser {
             displayType = null;
         }
 
+        String key = getString(root, N_KEY, "").trim();
+        if (key.equals("")) {
+            key = null;
+        }
+
         CmsSettingConfiguration settingConfig = new CmsSettingConfiguration(
             m_settingList,
             m_additionalSettingConfigs,
             includeIds,
+            key,
             displayType);
 
         String isAllowSettingsStr = getString(root, N_ALLOWS_SETTINGS_IN_EDITOR, "false");
@@ -430,11 +437,6 @@ public class CmsFormatterBeanParser {
         // Functions which just have been created don't have any matching rules, but should fit anywhere
         boolean strictMode = !isFunction;
         parseMatch(root, strictMode);
-
-        String key = getString(root, N_KEY, "").trim();
-        if (key.equals("")) {
-            key = null;
-        }
 
         m_key = key;
 

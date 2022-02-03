@@ -40,6 +40,7 @@ import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsWaitHandle;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
@@ -61,6 +62,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Maps;
@@ -75,6 +78,9 @@ import com.google.common.collect.Maps;
  * Two instances of this cache are needed, one for the Online project and one for Offline projects.<p>
  **/
 public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationCache {
+
+    /** Node name for the FormatterKey node. */
+    public static final String N_FORMATTER_KEY = "FormatterKey";
 
     /** A UUID which is used to mark the configuration cache for complete reloading. */
     public static final CmsUUID RELOAD_MARKER = CmsUUID.getNullUUID();
@@ -97,12 +103,6 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
     /** The logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFormatterConfigurationCache.class);
 
-    /** The future for the scheduled task. */
-    private volatile ScheduledFuture<?> m_taskFuture;
-
-    /** The work queue to keep track of what needs to be done during the next cache update. */
-    private LinkedBlockingQueue<Object> m_workQueue = new LinkedBlockingQueue<>();
-
     /** The CMS context used by this cache. */
     private CmsObject m_cms;
 
@@ -110,11 +110,17 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
     private String m_name;
 
     /** Additional setting configurations. */
-    private volatile Map<CmsUUID, List<CmsXmlContentProperty>> m_settingConfigs;
+    private volatile Map<CmsUUID, Map<CmsSharedSettingKey, CmsXmlContentProperty>> m_settingConfigs;
 
     /** The current data contained in the formatter cache.<p> This field is reassigned when formatters are changed, but the objects pointed to by this  field are immutable.<p> **/
     private volatile CmsFormatterConfigurationCacheState m_state = new CmsFormatterConfigurationCacheState(
         Collections.<CmsUUID, I_CmsFormatterBean> emptyMap());
+
+    /** The future for the scheduled task. */
+    private volatile ScheduledFuture<?> m_taskFuture;
+
+    /** The work queue to keep track of what needs to be done during the next cache update. */
+    private LinkedBlockingQueue<Object> m_workQueue = new LinkedBlockingQueue<>();
 
     /**
      * Creates a new formatter configuration cache instance.<p>
@@ -241,11 +247,15 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
         } catch (CmsException e) {
             LOG.warn(e.getLocalizedMessage(), e);
         }
-        Map<CmsUUID, List<CmsXmlContentProperty>> settingConfigs = new HashMap<>();
+
+        Map<CmsUUID, Map<CmsSharedSettingKey, CmsXmlContentProperty>> sharedSettingsByStructureId = new HashMap<>();
         for (CmsResource resource : settingConfigResources) {
-            parseSettingsConfig(resource, settingConfigs);
+            Map<CmsSharedSettingKey, CmsXmlContentProperty> sharedSettings = parseSettingsConfig(resource);
+            if (sharedSettings != null) {
+                sharedSettingsByStructureId.put(resource.getStructureId(), sharedSettings);
+            }
         }
-        m_settingConfigs = settingConfigs;
+        m_settingConfigs = sharedSettingsByStructureId;
 
         List<CmsResource> formatterResources = new ArrayList<CmsResource>();
         try {
@@ -399,15 +409,17 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
     }
 
     /**
-     * Helper method for parsing a settings configuration file.<p>
+     * Helper method for parsing a settings configuration file.
+     *
+     * <p> If a setting definition contains formatter keys, then one entry for each formatter key will be added to the result
+     * map, otherwise just one general map entry with formatterKey = null will be generated for that setting.
      *
      * @param resource the resource to parse
-     * @param settingConfigs the map in which the result should be stored, with the structure id of the resource as the key
+     * @return the parsed setting definitions
      */
-    private void parseSettingsConfig(CmsResource resource, Map<CmsUUID, List<CmsXmlContentProperty>> settingConfigs) {
+    private Map<CmsSharedSettingKey, CmsXmlContentProperty> parseSettingsConfig(CmsResource resource) {
 
-        List<CmsXmlContentProperty> settingConfig = new ArrayList<>();
-
+        Map<CmsSharedSettingKey, CmsXmlContentProperty> result = new HashMap<>();
         try {
             CmsFile settingFile = m_cms.readFile(resource);
             CmsXmlContent settingContent = CmsXmlContentFactory.unmarshal(m_cms, settingFile);
@@ -416,11 +428,35 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
                 CmsXmlContentProperty setting = CmsConfigurationReader.parseProperty(
                     m_cms,
                     settingLoc).getPropertyData();
-                settingConfig.add(setting);
+                String includeName = setting.getIncludeName(setting.getName());
+                if (includeName == null) {
+                    LOG.warn(
+                        "No include name defined for setting in "
+                            + resource.getRootPath()
+                            + ", setting = "
+                            + ReflectionToStringBuilder.toString(setting, ToStringStyle.SHORT_PREFIX_STYLE));
+                    continue;
+                }
+                Set<String> formatterKeys = new HashSet<>();
+                for (I_CmsXmlContentValueLocation formatterKeyLoc : settingLoc.getSubValues(N_FORMATTER_KEY)) {
+                    String formatterKey = formatterKeyLoc.getValue().getStringValue(m_cms);
+                    if (!CmsStringUtil.isEmptyOrWhitespaceOnly(formatterKey)) {
+                        formatterKeys.add(formatterKey.trim());
+                    }
+                }
+                if (formatterKeys.size() == 0) {
+                    result.put(new CmsSharedSettingKey(includeName, null), setting);
+                } else {
+                    for (String formatterKey : formatterKeys) {
+                        result.put(new CmsSharedSettingKey(includeName, formatterKey), setting);
+
+                    }
+                }
             }
-            settingConfigs.put(resource.getStructureId(), settingConfig);
+            return result;
         } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
+            LOG.error(e.getLocalizedMessage());
+            return null;
         }
     }
 }
