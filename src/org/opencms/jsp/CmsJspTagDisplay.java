@@ -88,6 +88,9 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
     /** The base URI. */
     private String m_baseUri;
 
+    /** True if the display formatter include should go through the flex cache. */
+    private Boolean m_cacheable;
+
     /** Flag, indicating if the create option should be displayed. */
     private boolean m_canCreate;
 
@@ -136,6 +139,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
      *
      * @param element the element
      * @param formatter the formatter configuration bean
+     * @param cacheable true if the flex cache should be used for calling the display formatter
      * @param editable if editable
      * @param canCreate if new resources may be created
      * @param canDelete if the resource may be deleted
@@ -148,6 +152,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
     public static void displayAction(
         CmsContainerElementBean element,
         I_CmsFormatterBean formatter,
+        boolean cacheable,
         boolean editable,
         boolean canCreate,
         boolean canDelete,
@@ -204,7 +209,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                             null,
                             locale,
                             false,
-                            isOnline,
+                            isOnline && cacheable,
                             CmsRequestUtil.createParameterMap(element.getSettings()),
                             CmsRequestUtil.getAtrributeMap(request),
                             request,
@@ -240,7 +245,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
         ServletRequest request,
         ServletResponse response) {
 
-        displayAction(element, formatter, false, false, false, null, null, context, request, response);
+        displayAction(element, formatter, true, false, false, false, null, null, context, request, response);
     }
 
     /**
@@ -249,6 +254,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
      * @param elementResource the element resource
      * @param formatter the formatter configuration bean
      * @param settings the element settings
+     * @param cacheable true if the flex cache should be used for calling the display formatter
      * @param editable if editable
      * @param canCreate if new resources may be created
      * @param canDelete if the resource may be deleted
@@ -262,6 +268,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
         CmsResource elementResource,
         I_CmsFormatterBean formatter,
         Map<String, String> settings,
+        boolean cacheable,
         boolean editable,
         boolean canCreate,
         boolean canDelete,
@@ -279,6 +286,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
         displayAction(
             element,
             formatter,
+            cacheable,
             editable,
             canCreate,
             canDelete,
@@ -416,6 +424,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                     res,
                     formatter,
                     settings,
+                    isCacheable(),
                     m_editable,
                     m_canCreate,
                     m_canDelete,
@@ -516,6 +525,16 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
     public void setBaseUri(String uri) {
 
         m_baseUri = uri;
+    }
+
+    /**
+     * Enables/disables the use of the flex cache for the display formatter include.
+     *
+     * @param cacheable true if the flex cache should be used for the display formatter include
+     */
+    public void setCacheable(boolean cacheable) {
+
+        m_cacheable = Boolean.valueOf(cacheable);
     }
 
     /** Setter for the "create" attribute of the tag.
@@ -702,5 +721,15 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
             }
         }
         return result;
+    }
+
+    /**
+     * Checks if this tag instance should use the flex cache for including the formatter.
+     *
+     * @return true if this tag instance should use the flex cache for including the formatter
+     */
+    private boolean isCacheable() {
+
+        return (m_cacheable == null) || m_cacheable.booleanValue();
     }
 }

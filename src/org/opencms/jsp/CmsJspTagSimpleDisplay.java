@@ -68,6 +68,9 @@ public class CmsJspTagSimpleDisplay extends BodyTagSupport implements I_CmsJspTa
     /** The serial version id. */
     private static final long serialVersionUID = 2285680951218629093L;
 
+    /** True if the display formatter include should go through the flex cache. */
+    private Boolean m_cacheable;
+
     /** Flag, indicating if the create option should be displayed. */
     private boolean m_canCreate;
 
@@ -79,6 +82,12 @@ public class CmsJspTagSimpleDisplay extends BodyTagSupport implements I_CmsJspTa
 
     /** The editable flag. */
     private boolean m_editable;
+
+    /** The formatter key. */
+    private String m_formatterKey;
+
+    /** Stores the formatter path. */
+    private String m_formatterPath;
 
     /** The settings parameter map. */
     private Map<String, String> m_parameterMap;
@@ -94,12 +103,6 @@ public class CmsJspTagSimpleDisplay extends BodyTagSupport implements I_CmsJspTa
 
     /** The site path to the resource to display. */
     private String m_value;
-
-    /** Stores the formatter path. */
-    private String m_formatterPath;
-
-    /** The formatter key. */
-    private String m_formatterKey;
 
     /**
      * Constructor.<p>
@@ -168,6 +171,7 @@ public class CmsJspTagSimpleDisplay extends BodyTagSupport implements I_CmsJspTa
                     res,
                     formatter,
                     settings,
+                    isCacheable(),
                     m_editable,
                     m_canCreate,
                     m_canDelete,
@@ -256,6 +260,16 @@ public class CmsJspTagSimpleDisplay extends BodyTagSupport implements I_CmsJspTa
         m_passSettings = false;
         m_editable = false;
         m_value = null;
+    }
+
+    /**
+     * Sets the 'cacheable' attribute.
+     *
+     * @param cacheable controls whether the JSP include should go through the Flex cache or not
+     */
+    public void setCacheable(boolean cacheable) {
+
+        m_cacheable = Boolean.valueOf(cacheable);
     }
 
     /** Setter for the "create" attribute of the tag.
@@ -402,6 +416,16 @@ public class CmsJspTagSimpleDisplay extends BodyTagSupport implements I_CmsJspTa
             cms.getRequestContext().getCurrentProject().isOnlineProject());
         I_CmsFormatterBean formatter = formatterCache.getFormatters().get(formatterResource.getStructureId());
         return formatter;
+    }
+
+    /**
+     * Checks if this tag instance should use the flex cache for including the formatter.
+     *
+     * @return true if this tag instance should use the flex cache for including the formatter
+     */
+    private boolean isCacheable() {
+
+        return (m_cacheable == null) || m_cacheable.booleanValue();
     }
 
 }
