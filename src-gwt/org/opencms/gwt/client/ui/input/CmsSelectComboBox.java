@@ -38,6 +38,7 @@ import org.opencms.gwt.client.ui.history.CmsPropertyComboBox;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.base.Optional;
@@ -93,8 +94,12 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, I_CmsH
     public CmsSelectComboBox(Map<String, String> options, boolean forProperties, boolean nullOption) {
 
         m_options = options;
-        m_selectBox = forProperties ? new CmsPropertySelectBox(options) : new CmsSelectBox(options, nullOption);
-        m_comboBox = forProperties ? new CmsPropertyComboBox(m_options) : new CmsComboBox(m_options);
+        m_selectBox = forProperties
+        ? new CmsPropertySelectBox(new HashMap<>(options))
+        : new CmsSelectBox(new HashMap<>(options), nullOption);
+        m_comboBox = forProperties
+        ? new CmsPropertyComboBox(new HashMap<>(m_options))
+        : new CmsComboBox(new HashMap<>(m_options), nullOption);
         m_panel.add(m_selectBox);
         CmsPushButton comboButton = new CmsPushButton();
         comboButton.setButtonStyle(ButtonStyle.FONT_ICON, null);

@@ -34,6 +34,7 @@ import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.client.util.CmsMessages;
+import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;
@@ -132,6 +133,12 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
 
         super();
         addStyleName(CSS_CLASS);
+        String resizable = items.remove(CmsSelectBox.OPTION_RESIZABLE);
+        if ((resizable != null) && Boolean.FALSE.toString().equals(resizable)) {
+            CmsGwtLog.log("combo box, set resize false");
+            setPopupResize(false);
+        }
+
         if (items.containsKey(NO_SELECTION_TEXT)) {
             m_noSelectionText = items.get(NO_SELECTION_TEXT);
             m_noSelectionOpenerText = items.get(NO_SELECTION_OPENER_TEXT);

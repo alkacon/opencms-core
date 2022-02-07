@@ -68,6 +68,9 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
     /** Widget type identifier (no null value). */
     public static final String WIDGET_TYPE_NOTNULL = WIDGET_TYPE + NOTNULL_SUFFIX;
 
+    /** Widget parameter to control the resize behavior, defaults to 'true'. */
+    public static final String OPTION_RESIZABLE = "CmsSelectBox_resizable";
+
     /** The ghost value. */
     protected String m_ghostValue;
 
@@ -118,6 +121,10 @@ public class CmsSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> implements 
     public CmsSelectBox(Map<String, String> items, boolean addNullOption) {
 
         this();
+        String resizable = items.remove(OPTION_RESIZABLE);
+        if ((resizable != null) && Boolean.FALSE.toString().equals(resizable)) {
+            setPopupResize(false);
+        }
         if (items.containsKey(NO_SELECTION_TEXT)) {
             m_noSelectionText = items.get(NO_SELECTION_TEXT);
             m_noSelectionOpenerText = items.get(NO_SELECTION_OPENER_TEXT);

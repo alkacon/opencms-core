@@ -463,6 +463,10 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
             if ((defaultValue != null) && defaultValue.isPresent() && widgetParams.containsKey(defaultValue.get())) {
                 key = key + CmsSelectBox.NOTNULL_SUFFIX;
             }
+            Map<String, String> newParams = new HashMap<>();
+            newParams.putAll(widgetParams);
+            newParams.put(CmsSelectBox.OPTION_RESIZABLE, "false");
+            widgetParams = newParams;
         }
 
         return CmsWidgetFactoryRegistry.instance().createFormWidget(key, widgetParams, defaultValue);
@@ -475,17 +479,6 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
     public void show() {
 
         super.show();
-        truncateForm();
-    }
-
-    /**
-     * Truncates the form panel.<p>
-     */
-    public void truncateForm() {
-
-        if (getWidth() > 0) {
-            getForm().getWidget().truncate("settings_truncation", getWidth() - 20);
-        }
     }
 
     /**
@@ -582,7 +575,6 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
             }
         }
         getForm().render();
-        truncateForm();
     }
 
     /**
