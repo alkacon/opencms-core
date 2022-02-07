@@ -341,7 +341,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
                 CmsFormRow.installTooltipEventHandlers(help, tooltipProvider);
                 formatterFieldset.add(formatterWidget);
             }
-            if (isDeveloper || m_controller.getData().isModelPage() || isEditableModelGroup) {
+            if (m_controller.getData().isModelPage() || isEditableModelGroup) {
                 CmsFieldSet modelGroupFieldSet = new CmsFieldSet();
                 modelGroupFieldSet.setLegend(Messages.get().key(Messages.GUI_CREATE_NEW_LEGEND_0
 
