@@ -245,7 +245,8 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
         Map<String, String> settingPresets)
     throws NoFormatterException {
 
-        super(Messages.get().key(Messages.GUI_PROPERTY_DIALOG_TITLE_0), new CmsForm(false), 700);
+        super(Messages.get().key(Messages.GUI_PROPERTY_DIALOG_TITLE_0), new CmsForm(false), null);
+        addStyleName(I_CmsLayoutBundle.INSTANCE.elementSettingsDialogCss().elementSettingsDialog());
         m_presets = settingPresets != null ? settingPresets : new HashMap<String, String>();
         CmsContainerElementData elementBean = settingsConfig.getElementData();
         m_elementWidget = elementWidget;

@@ -301,6 +301,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         I_CmsLayoutBundle.INSTANCE.containerpageCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.dragdropCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.groupcontainerCss().ensureInjected();
+        org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.elementSettingsDialogCss().ensureInjected();
 
         final CmsContainerpageController controller = new CmsContainerpageController();
         final CmsContainerpageHandler containerpageHandler = new CmsContainerpageHandler(controller, this);
