@@ -135,7 +135,6 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I
         addStyleName(CSS_CLASS);
         String resizable = items.remove(CmsSelectBox.OPTION_RESIZABLE);
         if ((resizable != null) && Boolean.FALSE.toString().equals(resizable)) {
-            CmsGwtLog.log("combo box, set resize false");
             setPopupResize(false);
         }
 
