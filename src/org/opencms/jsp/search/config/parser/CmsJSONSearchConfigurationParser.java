@@ -459,7 +459,14 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 units,
                 unitsParam);
         } catch (JSONException e) {
-            return new CmsSearchConfigurationGeoFilter();
+            if (null == m_baseConfig) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_GEOFILTER_CONFIG_0), e);
+                }
+                return null;
+            } else {
+                return m_baseConfig.getGeoFilterConfig();
+            }
         }
     }
 

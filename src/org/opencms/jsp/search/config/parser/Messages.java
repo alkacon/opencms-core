@@ -77,6 +77,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_NO_FACET_CONFIG_0 = "LOG_NO_FACET_CONFIG_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_NO_GEOFILTER_CONFIG_0 = "LOG_NO_GEOFILTER_CONFIG_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_NO_HIGHLIGHTING_CONFIG_0 = "LOG_NO_HIGHLIGHTING_CONFIG_0";
 
     /** Message constant for key in the resource bundle. */

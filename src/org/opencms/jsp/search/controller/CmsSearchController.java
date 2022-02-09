@@ -100,8 +100,10 @@ public class CmsSearchController implements I_CmsSearchControllerMain {
             m_queryFacet = new CmsSearchControllerFacetQuery(config.getQueryFacetConfig());
             m_controllers.add(m_queryFacet);
         }
-        m_geoFilter = new CmsSearchControllerGeoFilter(config.getGeoFilterConfig());
-        m_controllers.add(m_geoFilter);
+        if (config.getGeoFilterConfig() != null) {
+            m_geoFilter = new CmsSearchControllerGeoFilter(config.getGeoFilterConfig());
+            m_controllers.add(m_geoFilter);
+        }
     }
 
     /**
