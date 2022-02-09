@@ -130,23 +130,29 @@ public class CmsSearchControllerGeoFilter implements I_CmsSearchControllerGeoFil
     @Override
     public void updateFromRequestParameters(Map<String, String[]> parameters, boolean isRepeated) {
 
-        String[] coordinates = parameters.get(m_config.getCoordinatesParam());
-        String[] radius = parameters.get(m_config.getRadiusParam());
-        String[] units = parameters.get(m_config.getUnitsParam());
-        if (((coordinates != null) && (coordinates.length > 0)) && CmsGeoUtil.validateCoordinates(coordinates[0])) {
-            m_state.setCoordinates(coordinates[0]);
-        } else {
-            m_state.setCoordinates(null);
+        if (parameters.containsKey(m_config.getCoordinatesParam())) {
+            String[] coordinates = parameters.get(m_config.getCoordinatesParam());
+            if (((coordinates != null) && (coordinates.length > 0)) && CmsGeoUtil.validateCoordinates(coordinates[0])) {
+                m_state.setCoordinates(coordinates[0]);
+            } else {
+                m_state.setCoordinates(null);
+            }
         }
-        if (((radius != null) && (radius.length > 0)) && CmsGeoUtil.validateRadius(radius[0])) {
-            m_state.setRadius(radius[0]);
-        } else {
-            m_state.setRadius(null);
+        if (parameters.containsKey(m_config.getRadiusParam())) {
+            String[] radius = parameters.get(m_config.getRadiusParam());
+            if (((radius != null) && (radius.length > 0)) && CmsGeoUtil.validateRadius(radius[0])) {
+                m_state.setRadius(radius[0]);
+            } else {
+                m_state.setRadius(null);
+            }
         }
-        if ((units != null) && (units.length > 0) && CmsGeoUtil.validateUnits(units[0])) {
-            m_state.setUnits(units[0]);
-        } else {
-            m_state.setUnits(null);
+        if (parameters.containsKey(m_config.getUnitsParam())) {
+            String[] units = parameters.get(m_config.getUnitsParam());
+            if ((units != null) && (units.length > 0) && CmsGeoUtil.validateUnits(units[0])) {
+                m_state.setUnits(units[0]);
+            } else {
+                m_state.setUnits(null);
+            }
         }
     }
 }
