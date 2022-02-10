@@ -216,10 +216,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
     protected List<String> m_installModules;
 
     /** Location for log file.  */
-    protected String m_logFile = CmsSystemInfo.FOLDER_WEBINF + CmsLog.FOLDER_LOGS + "setup.log";
-
-    /** Location for logs relative to the webapp folder.  */
-    protected String m_logsFolder = CmsSystemInfo.FOLDER_WEBINF + CmsLog.FOLDER_LOGS;
+    protected String m_logFile = OpenCms.getSystemInfo().getLogFileRfsFolder() + "setup.log";
 
     /** A map with lists of dependent module package names keyed by module package names. */
     protected Map<String, List<String>> m_moduleDependencies;
@@ -959,7 +956,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public String getLogName() {
 
-        return new StringBuffer(m_webAppRfsPath).append(m_logFile).toString();
+        return m_logFile;
     }
 
     /**

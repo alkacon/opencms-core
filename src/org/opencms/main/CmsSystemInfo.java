@@ -462,6 +462,21 @@ public class CmsSystemInfo {
     }
 
     /**
+     * Returns the absolute path to the folder of the main OpenCms log file
+     * (in the "real" file system).<p>
+     *
+     * If the method returns <code>null</code>, this means that the log
+     * file is not managed by OpenCms.<p>
+     *
+     * @return the absolute path to the folder of the main OpenCms log file (in
+     * the "real" file system)
+     */
+    public String getLogFileRfsFolder() {
+
+        return CmsLog.getLogFileRfsFolder();
+    }
+
+    /**
      * Returns the settings for the internal OpenCms email service.<p>
      *
      * @return the settings for the internal OpenCms email service

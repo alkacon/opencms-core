@@ -292,4 +292,19 @@ public final class CmsLog {
 
         return m_logFileRfsPath;
     }
+
+    /**
+     * Returns the absolute path to the folder of the main OpenCms log file
+     * (in the "real" file system).<p>
+     *
+     * If the method returns <code>null</code>, this means that the log
+     * file is not managed by OpenCms.<p>
+     *
+     * @return the absolute path to the folder of the main OpenCms log file (in
+     * the "real" file system)
+     */
+    protected static String getLogFileRfsFolder() {
+
+        return m_logFileRfsFolder;
+    }
 }
