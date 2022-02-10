@@ -29,13 +29,21 @@ package org.opencms.jsp.util;
 
 import org.opencms.ade.configuration.plugins.CmsTemplatePlugin;
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsLog;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsLinkInfo;
+
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Wrapper around template plugin objects for use in JSP EL expressions.
  */
 public class CmsTemplatePluginWrapper {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsTemplatePluginWrapper.class);
 
     /** The current CmsObject. */
     private CmsObject m_cms;
@@ -53,6 +61,16 @@ public class CmsTemplatePluginWrapper {
 
         m_cms = cms;
         m_plugin = plugin;
+    }
+
+    /**
+     * Gets the plugin attributes.
+     *
+     * @return the plugin attributes
+     */
+    public Map<String, String> getAttributes() {
+
+        return m_plugin.getAttributes();
     }
 
     /**
@@ -74,6 +92,10 @@ public class CmsTemplatePluginWrapper {
 
         CmsLinkInfo target = m_plugin.getTarget();
         CmsLink targetLink = target.toLink();
+        if (targetLink == null) {
+            LOG.warn("getLink called on template plugin with no link target: " + toString());
+            return "";
+        }
         String link = targetLink.getLink(m_cms);
         return link;
     }
@@ -88,10 +110,10 @@ public class CmsTemplatePluginWrapper {
         return m_plugin.getOrder();
     }
 
-    /** 
-     * Returns the path of the resource, if this is an internal link, and null otherwise. 
-     * 
-     * @return the path of the link target 
+    /**
+     * Returns the path of the resource, if this is an internal link, and null otherwise.
+     *
+     * @return the path of the link target
      */
     public String getPath() {
 
@@ -100,6 +122,9 @@ public class CmsTemplatePluginWrapper {
             return null;
         }
         CmsLink targetLink = target.toLink();
+        if (targetLink == null) {
+            return null;
+        }
         targetLink.checkConsistency(m_cms);
         return m_cms.getRequestContext().removeSiteRoot(targetLink.getTarget());
     }

@@ -36,7 +36,10 @@ import org.opencms.xml.content.I_CmsXmlContentValueLocation;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
@@ -50,17 +53,29 @@ import org.apache.commons.logging.Log;
  */
 public class CmsTemplatePlugin {
 
-    /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsTemplatePlugin.class);
+    /** Attribute node name. */
+    public static final String N_ATTRIBUTE = "Attribute";
 
     /** Content value node name. */
     public static final String N_GROUP = "Group";
+
+    /** Key node name. */
+    public static final String N_KEY = "Key";
 
     /** Content value node name. */
     public static final String N_ORDER = "Order";
 
     /** XML node name. */
     public static final String N_TARGET = "Target";
+
+    /** Value node name. */
+    public static final String N_VALUE = "Value";
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsTemplatePlugin.class);
+
+    /** The map of attributes. */
+    private Map<String, String> m_attributes;
 
     /** The plugin group. */
     private String m_group;
@@ -81,13 +96,20 @@ public class CmsTemplatePlugin {
      * @param group the plugin group
      * @param order the plugin order
      * @param origin the origin from which the plugin was read (for debugging)
+     * @param attributes the attribute map
      */
-    public CmsTemplatePlugin(CmsLinkInfo target, String group, int order, String origin) {
+    public CmsTemplatePlugin(
+        CmsLinkInfo target,
+        String group,
+        int order,
+        String origin,
+        Map<String, String> attributes) {
 
         m_target = target;
         m_group = group;
         m_order = order;
         m_origin = origin;
+        m_attributes = Collections.unmodifiableMap(attributes);
     }
 
     /**
@@ -139,13 +161,30 @@ public class CmsTemplatePlugin {
         }
         CmsXmlVarLinkValue target = (CmsXmlVarLinkValue)(pluginLocation.getSubValue(N_TARGET).getValue());
         CmsLink link = target.getLink(cms);
-        if (link != null) {
-            CmsTemplatePlugin plugin = new CmsTemplatePlugin(link.toLinkInfo(), groupStr, order, origin);
-            return plugin;
-        } else {
-            LOG.error("Plugin definition has null link in " + pluginLocation.getDocument().getFile().getRootPath());
-            return null;
+
+        Map<String, String> attributes = new HashMap<>();
+        for (I_CmsXmlContentValueLocation attrLoc : pluginLocation.getSubValues(N_ATTRIBUTE)) {
+            String key = attrLoc.getSubValue(N_KEY).getValue().getStringValue(cms);
+            String value = attrLoc.getSubValue(N_VALUE).getValue().getStringValue(cms);
+            attributes.put(key, value);
         }
+        CmsTemplatePlugin plugin = new CmsTemplatePlugin(
+            link != null ? link.toLinkInfo() : CmsLinkInfo.EMPTY,
+            groupStr,
+            order,
+            origin,
+            Collections.unmodifiableMap(attributes));
+        return plugin;
+    }
+
+    /**
+     * Gets the configured attributes of the plugin.
+     *
+     * @return the plugin attributes
+     */
+    public Map<String, String> getAttributes() {
+
+        return Collections.unmodifiableMap(m_attributes);
     }
 
     /**

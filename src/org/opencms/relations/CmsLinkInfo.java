@@ -39,6 +39,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  */
 public class CmsLinkInfo {
 
+    /** Empty link. */
+    public static final CmsLinkInfo EMPTY = new CmsLinkInfo(CmsUUID.getNullUUID(), null, null, null, null, true);
+
     /** The anchor. */
     private String m_anchor;
 
@@ -221,6 +224,9 @@ public class CmsLinkInfo {
      */
     public CmsLink toLink() {
 
+        if (this == EMPTY) {
+            return null;
+        }
         return new CmsLink(this);
 
     }

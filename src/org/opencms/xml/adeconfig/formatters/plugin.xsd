@@ -3,6 +3,7 @@
     <!-- File: formatter_settings.xsd -->
 
     <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/parameters.xsd" />
 
     <xsd:element name="Plugins" type="OpenCmsPlugins" />
 
@@ -16,7 +17,8 @@
         <xsd:sequence>
             <xsd:element name="Group" type="OpenCmsString"  />
             <xsd:element name="Target" type="OpenCmsVarLink" />
-            <xsd:element name="Order" type="OpenCmsString" minOccurs="0" /> 
+            <xsd:element name="Order" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="Attribute" type="OpenCmsParameter" minOccurs="0" maxOccurs="unbounded" /> 
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
