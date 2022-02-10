@@ -26,6 +26,7 @@
             <xsd:element name="RuleRegex" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="RuleType" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Error" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="Comment" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
@@ -37,6 +38,7 @@
                 <layout element="Visibility" widget="SelectorWidget" configuration="element|elementAndParentShared|elementAndParentIndividual|parentShared|parentIndividual" />
                 <layout element="Widget" widget="ComboWidget" configuration="string:%(key.label.string)|select:%(key.label.select)|multicheck:%(key.label.multicheck)|checkbox:%(key.label.checkbox)|combo:%(key.label.combo)|selectcombo:%(key.label.selectcombo)|datebox:%(key.label.datebox)|gallery:%(key.label.link)|multiselectbox:%(key.label.multiselectbox)|radio:%(key.label.radio)|groupselection:%(key.label.groupselection)|hidden:%(key.label.hidden)" />
                 <layout element="RuleType" widget="SelectorWidget" configuration="error:%(key.label.error)|warning:%(key.label.warning)" />
+                <layout element="Comment" widget="TextareaWidget" />
             </layouts>
         </xsd:appinfo>
     </xsd:annotation>
