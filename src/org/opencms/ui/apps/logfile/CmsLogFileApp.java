@@ -87,16 +87,14 @@ import com.vaadin.ui.Window.CloseListener;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
- * Main class of Log managment app.<p>
+ * Main class of Log management app.<p>
  */
 public class CmsLogFileApp extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Logger> {
 
     /**Log folder path.*/
-    protected static final String LOG_FOLDER = OpenCms.getSystemInfo().getLogFileRfsPath() == null
-    ? ""
-    : OpenCms.getSystemInfo().getLogFileRfsPath().substring(
-        0,
-        OpenCms.getSystemInfo().getLogFileRfsPath().lastIndexOf(File.separatorChar) + 1);
+    protected static final String LOG_FOLDER =
+            OpenCms.getSystemInfo().getLogFileRfsFolder() == null ?
+                    "" : OpenCms.getSystemInfo().getLogFileRfsFolder();
 
     /**Path to channel settings view.*/
     protected static String PATH_LOGCHANNEL = "log-channel";

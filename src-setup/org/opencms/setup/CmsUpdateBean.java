@@ -238,7 +238,7 @@ public class CmsUpdateBean extends CmsSetupBean {
         super();
         m_preserveLibModules = Collections.emptyList();
         m_modulesFolder = FOLDER_UPDATE + CmsSystemInfo.FOLDER_MODULES;
-        m_logFile = CmsSystemInfo.FOLDER_WEBINF + CmsLog.FOLDER_LOGS + "update.log";
+        m_logFile = OpenCms.getSystemInfo().getLogFileRfsFolder() + "update.log";
     }
 
     /**
