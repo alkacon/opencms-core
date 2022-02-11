@@ -220,7 +220,7 @@ dependencies {
     distribution group: 'org.hibernate', name: 'jtidy', version: 'r8-20060801'
     distribution group: 'org.htmlparser', name: 'htmlparser', version: '2.1'
     distribution group: 'org.htmlparser', name: 'htmllexer', version: '2.1'
-    distribution group: 'org.jpedal.jpedal-lgpl', name: 'jpedal-lgpl', version: '4.92b23'
+    distribution group: 'com.github.kwart.jsign', name: 'jsign-jpedal', version: '4.92.13'
     distribution group: 'org.jsoup', name: 'jsoup', version: '1.14.2'
     distribution group: 'org.jvnet.mimepull', name: 'mimepull', version: '1.9.13'
     distribution group: 'org.locationtech.spatial4j', name: 'spatial4j', version: '0.6'
