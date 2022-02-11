@@ -164,7 +164,7 @@ testModuleTargetPath(){
 setOptions "${@}"
 
 echo
-echo "${green}${bold}Exporting modules from OpenCms to a local git repository.${normal}"
+echo "${green}${bold}Exporting modules from OpenCms to local git repository.${normal}"
 echo
 
 if [[ -z "$configfile" ]]; then
@@ -409,7 +409,7 @@ fi
 cd $REPOSITORY_HOME
 
 echo
-echo "${bold}Script completed successfully!${normal}"
+echo "${bold}Export completed successfully!${normal}"
 echo
 
 exit 0
