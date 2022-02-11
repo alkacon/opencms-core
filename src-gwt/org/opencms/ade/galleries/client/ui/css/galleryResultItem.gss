@@ -43,6 +43,7 @@
 
 .tilingList div.imageTile.svg img {
 	background-color: white;
+	object-fit: contain;
 }
 
 .expiredImageOverlay {
