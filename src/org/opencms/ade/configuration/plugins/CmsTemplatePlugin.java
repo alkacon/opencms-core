@@ -41,6 +41,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.commons.logging.Log;
 
 /**
@@ -238,6 +240,7 @@ public class CmsTemplatePlugin {
     @Override
     public String toString() {
 
-        return "[CmsTemplatePlugin: " + getTarget().toString() + "," + getGroup() + "," + getOrder() + "]";
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+
     }
 }

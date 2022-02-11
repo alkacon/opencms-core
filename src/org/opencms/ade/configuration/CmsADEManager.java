@@ -31,6 +31,8 @@ import org.opencms.ade.configuration.CmsADEConfigData.DetailInfo;
 import org.opencms.ade.configuration.CmsElementView.ElementViewComparator;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCache;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
+import org.opencms.ade.configuration.plugins.CmsTemplatePlugin;
+import org.opencms.ade.configuration.plugins.CmsTemplatePluginFinder;
 import org.opencms.ade.containerpage.inherited.CmsContainerConfigurationCache;
 import org.opencms.ade.containerpage.inherited.CmsContainerConfigurationWriter;
 import org.opencms.ade.containerpage.inherited.CmsInheritedContainerState;
@@ -60,6 +62,7 @@ import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.jsp.CmsJspTagLink;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
+import org.opencms.jsp.util.CmsTemplatePluginWrapper;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -99,6 +102,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -108,6 +112,7 @@ import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 
 /**
  * This is the main class used to access the ADE configuration and also accomplish some other related tasks
@@ -861,6 +866,32 @@ public class CmsADEManager {
 
         }
         return new CmsPermissionInfo(hasView, hasWrite, noEdit);
+    }
+
+    /**
+     * Gets a map of plugin wrappers for the given site path.
+     *
+     * <p>This *only* includes plugins defined in site plugins active on the given path, not those referenced in formatters.
+     *
+     * @param cms the CMS context
+     * @param path the path for which to get the plugins
+     *
+     * @return the map of plugin wrappers, with the plugin groups as keys
+     */
+    public Map<String, List<CmsTemplatePluginWrapper>> getPluginsForPath(CmsObject cms, String path) {
+
+        CmsADEConfigData config = lookupConfigurationWithCache(cms, cms.getRequestContext().addSiteRoot(path));
+
+        Multimap<String, CmsTemplatePlugin> plugins = CmsTemplatePluginFinder.getActiveTemplatePluginsFromSitePlugins(
+            config);
+        Map<String, List<CmsTemplatePluginWrapper>> result = new HashMap<>();
+        for (String key : plugins.keySet()) {
+            List<CmsTemplatePluginWrapper> wrappers = plugins.get(key).stream().map(
+                plugin -> new CmsTemplatePluginWrapper(cms, plugin)).collect(Collectors.toList());
+            result.put(key, Collections.unmodifiableList(wrappers));
+        }
+        return Collections.unmodifiableMap(result);
+
     }
 
     /**

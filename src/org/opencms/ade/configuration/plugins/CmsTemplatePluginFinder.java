@@ -80,6 +80,22 @@ public class CmsTemplatePluginFinder {
     }
 
     /**
+     * Gets the active plugins from site plugins only.
+     *
+     * @param config the sitemap configuration for which to get the plugins
+     *
+     * @return the multimap of active plugins by group
+     */
+    public static Multimap<String, CmsTemplatePlugin> getActiveTemplatePluginsFromSitePlugins(CmsADEConfigData config) {
+
+        List<CmsTemplatePlugin> plugins = new ArrayList<>();
+        for (CmsSitePlugin sitePlugin : config.getSitePlugins()) {
+            plugins.addAll(sitePlugin.getPlugins());
+        }
+        return getActivePlugins(plugins);
+    }
+
+    /**
      * Collects the referenced plugins from the current page (from container elements, detail elements, etc.).
      *
      * @param standardContext the standard context bean

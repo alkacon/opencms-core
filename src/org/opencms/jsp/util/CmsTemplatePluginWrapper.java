@@ -130,6 +130,16 @@ public class CmsTemplatePluginWrapper {
     }
 
     /**
+     * Gets the plugin bean wrapped by this wrapper.
+     *
+     * @return the wrapped template plugin
+     */
+    public CmsTemplatePlugin getPlugin() {
+
+        return m_plugin;
+    }
+
+    /**
      * @see java.lang.Object#toString()
      */
     @Override
