@@ -1,7 +1,19 @@
+.dialog-popup.elementSettingsDialog {
+	position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .dialog-popup.elementSettingsDialog > .dialog-popupContent {
     min-width: 700px;
-    width: 90vw;
-    max-width: 1100px;
+    width: 80vw;
+    max-width: 900px;
+}
+
+.dialog-popup.elementSettingsDialog .dialog-contentPadding {
+    overflow: auto;
+    max-height: 80vh;
 }
 
 .dialog-popup.elementSettingsDialog > .dialog-popupContent .input-formLabel {

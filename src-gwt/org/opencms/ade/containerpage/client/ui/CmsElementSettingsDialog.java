@@ -246,6 +246,8 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
     throws NoFormatterException {
 
         super(Messages.get().key(Messages.GUI_PROPERTY_DIALOG_TITLE_0), new CmsForm(false), null);
+        setAnimationEnabled(false);
+        setUseAnimation(false);
         addStyleName(I_CmsLayoutBundle.INSTANCE.elementSettingsDialogCss().elementSettingsDialog());
         m_presets = settingPresets != null ? settingPresets : new HashMap<String, String>();
         CmsContainerElementData elementBean = settingsConfig.getElementData();
@@ -452,6 +454,15 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.form.CmsFormDialog#center()
+     */
+    @Override
+    public void center() {
+
+        show();
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetMultiFactory#createFormWidget(java.lang.String, java.util.Map, com.google.common.base.Optional)
      */
     public I_CmsFormWidget createFormWidget(
@@ -473,12 +484,26 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
     }
 
     /**
+     * @see com.google.gwt.user.client.ui.PopupPanel#setPopupPosition(int, int)
+     */
+    @Override
+    public void setPopupPosition(int left, int top) {
+
+        // positioning handled via CSS
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.form.CmsFormDialog#show()
      */
     @Override
     public void show() {
 
         super.show();
+        // positioning handled by CSS
+        getElement().getStyle().clearPosition();
+        getElement().getStyle().clearLeft();
+        getElement().getStyle().clearTop();
+
     }
 
     /**

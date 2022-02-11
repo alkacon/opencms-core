@@ -79,6 +79,7 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
@@ -404,7 +405,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                             elementWidget,
                             settingsConfig,
                             settingPresets);
-                        dialog.center();
+                        dialog.show();
                     } catch (NoFormatterException e) {
                         String ctype = "???";
                         String cname = "???";
