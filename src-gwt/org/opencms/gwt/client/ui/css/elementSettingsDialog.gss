@@ -5,8 +5,12 @@
     transform: translate(-50%, -50%);
 }
 
+.dialog-popup.elementSettingsDialog .dialog-popupHead , .dialog-popup.elementSettingsDialog .dialog-caption {
+	cursor: default;
+} 
+
 .dialog-popup.elementSettingsDialog > .dialog-popupContent {
-    min-width: 700px;
+    min-width: 720px;
     width: 80vw;
     max-width: 900px;
 }

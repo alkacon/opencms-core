@@ -129,6 +129,10 @@ div.frameDialog div.popupButtonPanel {
 .popupOverlay{
     background: value("constants.css.backgroundColorOverlay");
     z-index: value("constants.css.zIndexPopup");
+    opacity: value("constants.css.overlayOpacity");
+    width: 100vw !important; 
+    height: 100vh !important;
+    position: fixed !important;
 }
 
 .popup .popupMainContent{
@@ -207,9 +211,6 @@ div.menuArrowBottom:after {
 	margin-left: 10px;
 }
 
-.popupOverlay{
-    opacity: value("constants.css.overlayOpacity");
-}
 
 
 .alertMainContent table {

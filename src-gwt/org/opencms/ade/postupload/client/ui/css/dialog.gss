@@ -10,6 +10,9 @@
 .popupOverlay {
 	background: value("constants.css.backgroundColorDialog");
     z-index: value("constants.css.zIndexPopup");
+    width: 100vw !important; 
+    height: 100vh !important;
+    position: fixed !important;
 }
 
 .propertyDialog .fieldsetSpacer {
