@@ -37,7 +37,6 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
@@ -644,6 +643,21 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                             propertiesMap.put(CmsFormatterConfig.FORMATTER_SETTINGS_KEY + containerName, formatterKey);
                         }
 
+                        if (config != null) {
+                            // make sure alias keys are replaced with main keys in the settings
+                            String key1 = CmsFormatterConfig.FORMATTER_SETTINGS_KEY + containerName;
+                            String key2 = CmsFormatterConfig.FORMATTER_SETTINGS_KEY;
+                            for (String key : new String[] {key1, key2}) {
+                                String value = propertiesMap.get(key);
+                                if (value != null) {
+                                    I_CmsFormatterBean dynFmt = config.findFormatter(value);
+                                    if (dynFmt != null) {
+                                        propertiesMap.put(key, dynFmt.getKeyOrId());
+                                    }
+                                }
+                            }
+                        }
+
                         if (elementInstanceId != null) {
                             propertiesMap.put(CmsContainerElement.ELEMENT_INSTANCE_ID, elementInstanceId);
                         }
@@ -748,7 +762,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
     }
 
     /**
-     * Replaces formatter id prefixes for nested settings with corresponding formatter keys, if possible.
+     * Replaces formatter id prefixes for nested settings with corresponding formatter keys, if possible.<p>
+     *
+     * Also handles replacement of alias keys with main keys in nested settings.
      *
      * @param cms the CMS Context
      * @param config the sitemap configuration
@@ -763,35 +779,18 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         Map<String, String> result = new HashMap<>();
         for (Map.Entry<String, String> entry : propertiesMap.entrySet()) {
             String key = entry.getKey();
-            boolean replaced = false;
 
-            // replace ID with key
-            if (key.length() > 37) {
-                String prefix = key.substring(0, 36);
-                if (CmsUUID.isValidUUID(prefix) && (key.charAt(36) == '_')) {
-                    I_CmsFormatterBean formatter = config.findFormatter(prefix);
-                    if (formatter != null) {
-                        key = formatter.getKeyOrId() + key.substring(36);
-                        replaced = true;
-                    }
+            // replace structure ids, fallback keys or alias keys with the main key if possible
+
+            int underscorePos = key.indexOf("_");
+            if (underscorePos >= 0) {
+                String prefix = key.substring(0, underscorePos);
+                I_CmsFormatterBean formatter = config.findFormatter(prefix);
+                if (formatter != null) {
+                    key = formatter.getKeyOrId() + key.substring(underscorePos);
                 }
             }
 
-            // if formatter is not available and has a fallback formatter, use the fallback's key
-            if (!replaced) {
-                int underscorePos = key.indexOf("_");
-                if (underscorePos >= 0) {
-                    String prefix = key.substring(0, underscorePos);
-                    int separatorPos = prefix.indexOf(CmsGwtConstants.FORMATTER_SUBKEY_SEPARATOR);
-                    if (separatorPos >= 0) {
-                        I_CmsFormatterBean formatter = config.findFormatter(prefix);
-                        if (formatter != null) {
-                            key = formatter.getKeyOrId() + key.substring(underscorePos);
-                            replaced = true;
-                        }
-                    }
-                }
-            }
             result.put(key, entry.getValue());
         }
         return result;

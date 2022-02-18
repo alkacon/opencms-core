@@ -36,12 +36,27 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
  * Interface representing a configured formatter.<p>
  */
 public interface I_CmsFormatterBean {
+
+    /**
+     * Gets the set of alias keys for the formatter.
+     *
+     * @return the set of alias keys
+     */
+    Set<String> getAliasKeys();
+
+    /**
+     * Gets the complete set of keys for the formatter, i.e. its main key and all alias keys.
+     *
+     * @return the complete set of keys
+     */
+    Set<String> getAllKeys();
 
     /**
      * Gets the map of attributes.<p>
@@ -313,5 +328,19 @@ public interface I_CmsFormatterBean {
      * @return true if meta mappings should be evaluated for normal container elements
      */
     boolean useMetaMappingsForNormalElements();
+
+    /**
+     * If possible, returns a formatter bean that is basically a copy of this one, but has the keys supplied
+     * as a parameter.
+     *
+     * <p>Note that this only works for formatters which already have a key, and can not replace the main key. If the keys
+     * already match, the current instance may be returned rather than a copy.
+     *
+     * <p>If the formatter bean implementation does not support key replacement, or an error occurs, an empty Optional is returned
+     *
+     * @param keys the keys to use (should include the current key of the formatter
+     * @return the copy with the replaced keys
+     */
+    Optional<I_CmsFormatterBean> withKeys(Collection<String> keys);
 
 }

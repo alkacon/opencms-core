@@ -50,6 +50,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -503,6 +504,105 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
     }
 
     /**
+     * Tests that formatters added in lower sitemap configurations override those with overlapping key sets, and take over their keys.
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void testReplaceFormatterWithOverlappingKeys1() throws CmsException {
+
+        I_CmsFormatterBean f1 = createFormatterWithKey(TYPE_A, "f1", 1000, true, "alpha", "beta");
+        I_CmsFormatterBean f2 = createFormatterWithKey(TYPE_A, "f2", 1000, false, "beta", "gamma");
+        I_CmsFormatterBean f3 = createFormatterWithKey(TYPE_A, "f3", 1000, true, null);
+
+        CmsTestConfigData config = createConfig("/", f1, f2, f3);
+        CmsTestConfigData config2 = createConfig("/invalid-name", f1, f2, f3);
+        config2.setParent(config);
+        CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet(
+            Collections.<String> emptyList(),
+            Arrays.asList("" + CmsUUID.getConstantUUID("f2")),
+            null,
+            false,
+            false,
+            null,
+            null);
+        config2.setFormatterChangeSet(changeSet);
+        assertEquals("only two formatters should be active", 2, config2.getActiveFormatters().size());
+        assertEquals("f2", config2.findFormatter("alpha").getNiceName(Locale.ENGLISH));
+        assertEquals("f2", config2.findFormatter("beta").getNiceName(Locale.ENGLISH));
+        assertEquals("f2", config2.findFormatter("gamma").getNiceName(Locale.ENGLISH));
+        assertEquals(
+            new HashSet<>(Arrays.asList("alpha", "beta", "gamma")),
+            config2.findFormatter("alpha").getAllKeys());
+
+    }
+
+    /**
+     * Tests that formatters added in lower sitemap configurations override those with overlapping key sets, and take over their keys.
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void testReplaceFormatterWithOverlappingKeys2() throws CmsException {
+
+        I_CmsFormatterBean f1 = createFormatterWithKey(TYPE_A, "f1", 1000, true, "alpha", "beta");
+        I_CmsFormatterBean f2 = createFormatterWithKey(TYPE_A, "f2", 1000, false, "gamma", "beta");
+        I_CmsFormatterBean f3 = createFormatterWithKey(TYPE_A, "f3", 1000, true, null);
+
+        CmsTestConfigData config = createConfig("/", f1, f2, f3);
+        CmsTestConfigData config2 = createConfig("/invalid-name", f1, f2, f3);
+        config2.setParent(config);
+        CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet(
+            Collections.<String> emptyList(),
+            Arrays.asList("" + CmsUUID.getConstantUUID("f2")),
+            null,
+            false,
+            false,
+            null,
+            null);
+        config2.setFormatterChangeSet(changeSet);
+        assertEquals("only two formatters should be active", 2, config2.getActiveFormatters().size());
+        assertEquals("f2", config2.findFormatter("alpha").getNiceName(Locale.ENGLISH));
+        assertEquals("f2", config2.findFormatter("beta").getNiceName(Locale.ENGLISH));
+        assertEquals("f2", config2.findFormatter("gamma").getNiceName(Locale.ENGLISH));
+        assertEquals(
+            new HashSet<>(Arrays.asList("alpha", "beta", "gamma")),
+            config2.findFormatter("alpha").getAllKeys());
+
+    }
+
+    /**
+     * Tests that formatters added in lower sitemap configurations override those with overlapping key sets, and take over their keys.
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void testReplaceFormatterWithOverlappingKeys3() throws CmsException {
+
+        I_CmsFormatterBean f1 = createFormatterWithKey(TYPE_A, "f1", 1000, true, "alpha", "beta");
+        I_CmsFormatterBean f2 = createFormatterWithKey(TYPE_A, "f2", 1000, false, "alpha", "gamma");
+        I_CmsFormatterBean f3 = createFormatterWithKey(TYPE_A, "f3", 1000, true, null);
+
+        CmsTestConfigData config = createConfig("/", f1, f2, f3);
+        CmsTestConfigData config2 = createConfig("/invalid-name", f1, f2, f3);
+        config2.setParent(config);
+        CmsFormatterChangeSet changeSet = new CmsFormatterChangeSet(
+            Collections.<String> emptyList(),
+            Arrays.asList("" + CmsUUID.getConstantUUID("f2")),
+            null,
+            false,
+            false,
+            null,
+            null);
+        config2.setFormatterChangeSet(changeSet);
+        assertEquals("only two formatters should be active", 2, config2.getActiveFormatters().size());
+        assertEquals("f2", config2.findFormatter("alpha").getNiceName(Locale.ENGLISH));
+        assertEquals("f2", config2.findFormatter("beta").getNiceName(Locale.ENGLISH));
+        assertEquals("f2", config2.findFormatter("gamma").getNiceName(Locale.ENGLISH));
+        assertEquals(
+            new HashSet<>(Arrays.asList("alpha", "beta", "gamma")),
+            config2.findFormatter("alpha").getAllKeys());
+
+    }
+
+    /**
      * Tests that formatters with the same key override formatters inherited from parent sitemap configurations.
      *
      * @throws CmsException if something goes wrong
@@ -628,6 +728,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             jspRootPath,
             jspStructureId,
             null,
+            new HashSet<>(),
             minWidth,
             maxWidth,
             preview,
@@ -722,7 +823,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         String name,
         int rank1,
         boolean enabled,
-        String key) {
+        String key,
+        String... keyAliases) {
 
         Set<String> containerTypes = new HashSet<String>();
         containerTypes.add("foo");
@@ -750,6 +852,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             jspRootPath,
             jspStructureId,
             key,
+            new HashSet<>(Arrays.asList(keyAliases)),
             minWidth,
             maxWidth,
             preview,
@@ -822,6 +925,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             jspRootPath,
             jspStructureId,
             null,
+            new HashSet<>(),
             minWidth,
             maxWidth,
             preview,
@@ -888,6 +992,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             jspRootPath,
             jspStructureId,
             null,
+            new HashSet<>(),
             minWidth,
             maxWidth,
             preview,

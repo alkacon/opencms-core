@@ -557,7 +557,7 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         Set<String> headincludes,
         Map<String, String> inline) {
 
-        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(
             cms,
             cms.getRequestContext().getRootUri());
         if ((containerPage != null) && (containerPage.getElements() != null)) {

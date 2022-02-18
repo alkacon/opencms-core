@@ -61,6 +61,7 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
      * @param jspRootPath the formatter JSP VFS root path
      * @param jspStructureId the structure id of the formatter JSP
      * @param key the key
+     * @param aliasKeys the alias keys
      * @param functionFormatterId the standard function formatter structure id
      * @param minWidth the formatter min width
      * @param maxWidth the formatter max width
@@ -83,6 +84,7 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
         String jspRootPath,
         CmsUUID jspStructureId,
         String key,
+        Set<String> aliasKeys,
         CmsUUID functionFormatterId,
         int minWidth,
         int maxWidth,
@@ -105,6 +107,7 @@ public class CmsFunctionFormatterBean extends CmsFormatterBean {
             jspRootPath,
             jspStructureId,
             key,
+            aliasKeys,
             minWidth,
             maxWidth,
             true, // preview

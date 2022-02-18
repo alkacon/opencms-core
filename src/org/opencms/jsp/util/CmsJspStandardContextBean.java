@@ -1986,7 +1986,7 @@ public final class CmsJspStandardContextBean {
             if (pageResource == null) {
                 pageResource = m_cms.readResource(requestUri, CmsResourceFilter.ignoreExpirationOffline(m_cms));
             }
-            m_config = OpenCms.getADEManager().lookupConfiguration(m_cms, pageResource.getRootPath());
+            m_config = OpenCms.getADEManager().lookupConfigurationWithCache(m_cms, pageResource.getRootPath());
             m_page = getPage(pageResource);
             m_page = CmsTemplateMapper.get(m_request).transformContainerpageBean(
                 m_cms,

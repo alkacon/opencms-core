@@ -32,6 +32,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -58,6 +59,7 @@ public class CmsFlexFormatterBean extends CmsFormatterBean {
      * @param containerTypes the formatter container types
      * @param jspRootPath the formatter JSP VFS root path
      * @param jspStructureId the structure id of the formatter JSP
+     * @param key the formatter key
      * @param minWidth the formatter min width
      * @param maxWidth the formatter max width
      * @param searchContent indicates if the content should be searchable in the online index when this formatter is used
@@ -110,6 +112,7 @@ public class CmsFlexFormatterBean extends CmsFormatterBean {
             jspRootPath,
             jspStructureId,
             key,
+            new HashSet<>(),
             minWidth,
             maxWidth,
             false,

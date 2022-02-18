@@ -30,6 +30,7 @@ package org.opencms.xml.containerpage;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.formatters.CmsSettingConfiguration;
 import org.opencms.ade.configuration.plugins.CmsTemplatePlugin;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -39,13 +40,16 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.logging.Log;
 
 import com.google.common.collect.ImmutableList;
 
@@ -54,7 +58,7 @@ import com.google.common.collect.ImmutableList;
  *
  * @since 8.0.0
  */
-public class CmsFormatterBean implements I_CmsFormatterBean {
+public class CmsFormatterBean implements I_CmsFormatterBean, Cloneable {
 
     /** Default rank for formatters from formatter configuration files. */
     public static final int DEFAULT_CONFIGURATION_RANK = 1000;
@@ -71,6 +75,9 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     /** Wildcard formatter type for width based formatters. */
     public static final String WILDCARD_TYPE = "*";
 
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFormatterBean.class);
+
     /** The formatter container type. */
     protected Set<String> m_containerTypes;
 
@@ -79,6 +86,12 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
 
     /** The description text for the formatter. */
     protected String m_description;
+
+    /** Set of alias keys. */
+    protected Set<String> m_aliasKeys = new HashSet<>();
+
+    /** Set of all formatter keys (main + alias keys). */
+    private Set<String> m_allKeys = new HashSet<>();
 
     /** Provides the display type. If empty if this formatter should not be used by the display tag. */
     protected String m_displayType;
@@ -171,6 +184,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
      * @param jspRootPath the formatter JSP VFS root path
      * @param jspStructureId the structure id of the formatter JSP
      * @param key the formatter key
+     * @param aliasKeys the alias keys
      * @param minWidth the formatter min width
      * @param maxWidth the formatter max width
      * @param preview indicates if this formatter is to be used for the preview in the ADE gallery GUI
@@ -203,6 +217,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         String jspRootPath,
         CmsUUID jspStructureId,
         String key,
+        Set<String> aliasKeys,
         int minWidth,
         int maxWidth,
         boolean preview,
@@ -235,7 +250,13 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         m_key = key;
         if (m_key != null) {
             m_key = m_key.trim();
+            m_allKeys.add(m_key);
         }
+        if (aliasKeys != null) {
+            m_aliasKeys.addAll(aliasKeys);
+            m_allKeys.addAll(aliasKeys);
+        }
+
         m_containerTypes = containerTypes;
         m_minWidth = minWidth;
         m_maxWidth = maxWidth;
@@ -294,6 +315,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             rootPath,
             structureId,
             null,
+            new HashSet<String>(),
             minWidth,
             maxWidth,
             preview,
@@ -392,6 +414,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             jspRootPath,
             jspStructureId,
             null,
+            new HashSet<String>(),
             -1,
             Integer.MAX_VALUE,
             preview,
@@ -443,6 +466,22 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     private static boolean isWildcardType(String containerType) {
 
         return CmsStringUtil.isEmptyOrWhitespaceOnly(containerType) || WILDCARD_TYPE.equals(containerType);
+    }
+
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getAliasKeys()
+     */
+    public Set<String> getAliasKeys() {
+
+        return Collections.unmodifiableSet(m_aliasKeys);
+    }
+
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getAllKeys()
+     */
+    public Set<String> getAllKeys() {
+
+        return Collections.unmodifiableSet(m_allKeys);
     }
 
     /**
@@ -775,5 +814,30 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     public boolean useMetaMappingsForNormalElements() {
 
         return m_useMetaMappingsForNormalElements;
+    }
+
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#withKeys(java.util.Collection)
+     */
+    public Optional<I_CmsFormatterBean> withKeys(Collection<String> keys) {
+
+        if ((getKey() != null) && !getAllKeys().equals(keys)) {
+            Set<String> newAllKeys = new HashSet<>(keys);
+            newAllKeys.add(getKey());
+            Set<String> newAliases = new HashSet<>(keys);
+            newAliases.remove(getKey());
+            CmsFormatterBean clonedBean;
+            try {
+                clonedBean = (CmsFormatterBean)clone();
+                clonedBean.m_aliasKeys = newAliases;
+                clonedBean.m_allKeys = new HashSet<>(keys);
+                return Optional.of(clonedBean);
+
+            } catch (CloneNotSupportedException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                return Optional.empty();
+            }
+        }
+        return Optional.of(this);
     }
 }

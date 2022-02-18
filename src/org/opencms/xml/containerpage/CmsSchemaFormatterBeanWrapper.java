@@ -44,6 +44,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -87,6 +88,22 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
         m_contentHandler = contentHandler;
         m_wrappedFormatter = wrappedBean;
         m_cms = cms;
+    }
+
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getAliasKeys()
+     */
+    public Set<String> getAliasKeys() {
+
+        return Collections.emptySet();
+    }
+
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getAllKeys()
+     */
+    public Set<String> getAllKeys() {
+
+        return Collections.emptySet();
     }
 
     /**
@@ -187,6 +204,9 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
         return m_wrappedFormatter.getJspStructureId();
     }
 
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getKey()
+     */
     public String getKey() {
 
         return null;
@@ -263,6 +283,9 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
         return m_contentHandler.getSettings(m_cms, m_elementResource);
     }
 
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getTemplatePlugins()
+     */
     public List<CmsTemplatePlugin> getTemplatePlugins() {
 
         return Collections.emptyList();
@@ -366,6 +389,15 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
     public boolean useMetaMappingsForNormalElements() {
 
         return false;
+    }
+
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#withKeys(java.util.Collection)
+     */
+    public Optional<I_CmsFormatterBean> withKeys(Collection<String> keys) {
+
+        // no keys supported
+        return Optional.empty();
     }
 
 }

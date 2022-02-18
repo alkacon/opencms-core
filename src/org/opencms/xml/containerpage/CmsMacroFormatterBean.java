@@ -35,6 +35,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,6 +126,7 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
             jspRootPath,
             jspStructureId,
             null,
+            new HashSet<>(),
             minWidth,
             maxWidth,
             false,
@@ -210,7 +212,7 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
     }
 
     /**
-     * @see org.opencms.xml.containerpage.CmsFormatterBean#getSettings()
+     * @see org.opencms.xml.containerpage.CmsFormatterBean#getSettings(org.opencms.ade.configuration.CmsADEConfigData)
      */
     @Override
     public Map<String, CmsXmlContentProperty> getSettings(CmsADEConfigData config) {

@@ -236,6 +236,7 @@ public class CmsTestConfigData extends CmsADEConfigData {
     public void setFormatterChangeSet(CmsFormatterChangeSet changeSet) {
 
         m_data.m_formatterChangeSet = changeSet;
+        clearCaches();
     }
 
     /**

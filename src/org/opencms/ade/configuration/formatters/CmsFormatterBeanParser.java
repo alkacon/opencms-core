@@ -178,6 +178,9 @@ public class CmsFormatterBeanParser {
     /** Content value node name. */
     public static final String N_KEY = "Key";
 
+    /** Content value node name. */
+    public static final String N_KEY_ALIAS = "KeyAlias";
+
     /** Node name. */
     public static final String N_MACRO = "Macro";
 
@@ -407,6 +410,14 @@ public class CmsFormatterBeanParser {
         if (key.equals("")) {
             key = null;
         }
+        Set<String> aliasKeys = new HashSet<>();
+        for (I_CmsXmlContentValueLocation aliasKeyLoc : root.getSubValues(N_KEY_ALIAS)) {
+            String aliasKey = aliasKeyLoc.getValue().getStringValue(m_cms);
+            aliasKey = aliasKey.trim();
+            if (!aliasKey.equals("")) {
+                aliasKeys.add(aliasKey);
+            }
+        }
 
         CmsSettingConfiguration settingConfig = new CmsSettingConfiguration(
             m_settingList,
@@ -564,6 +575,7 @@ public class CmsFormatterBeanParser {
                     m_formatterResource.getRootPath(),
                     m_formatterResource.getStructureId(),
                     m_key,
+                    aliasKeys,
                     functionFormatter.getStructureId(),
                     m_width,
                     m_maxWidth,
@@ -586,6 +598,7 @@ public class CmsFormatterBeanParser {
                     m_formatterResource.getRootPath(),
                     m_formatterResource.getStructureId(),
                     m_key,
+                    aliasKeys,
                     m_width,
                     m_maxWidth,
                     m_preview,
