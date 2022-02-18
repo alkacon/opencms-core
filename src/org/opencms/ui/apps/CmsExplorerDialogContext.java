@@ -63,6 +63,7 @@ public class CmsExplorerDialogContext extends CmsFileTableDialogContext {
         CmsFileTable fileTable,
         CmsFileExplorer explorer,
         List<CmsResource> resources) {
+
         super(CmsFileExplorerConfiguration.APP_ID, contextType, fileTable, resources);
         m_explorer = explorer;
     }
@@ -86,6 +87,7 @@ public class CmsExplorerDialogContext extends CmsFileTableDialogContext {
         closeWindow();
         CmsAppWorkplaceUi.get().enableGlobalShortcuts();
         if (ids != null) {
+            m_explorer.clearSelection();
             for (CmsUUID id : ids) {
                 if (id.isNullUUID()) {
                     m_explorer.updateAll(false);

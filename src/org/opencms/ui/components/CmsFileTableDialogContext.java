@@ -63,6 +63,7 @@ public class CmsFileTableDialogContext extends A_CmsDialogContext implements I_C
         ContextType contextType,
         CmsFileTable fileTable,
         List<CmsResource> resources) {
+
         super(appId, contextType, resources);
         m_fileTable = fileTable;
     }
@@ -96,6 +97,7 @@ public class CmsFileTableDialogContext extends A_CmsDialogContext implements I_C
     public void finish(Collection<CmsUUID> ids) {
 
         super.finish(ids);
+        m_fileTable.clearSelection();
         if (ids != null) {
             m_fileTable.update(ids, false);
         }

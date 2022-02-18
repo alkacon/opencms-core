@@ -884,6 +884,14 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
     }
 
     /**
+     * Clears the file table selection.
+     */
+    public void clearSelection() {
+
+        m_fileTable.clearSelection();
+    }
+
+    /**
      * Gets all ids of resources in current folder.<p>
      *
      * @return the
