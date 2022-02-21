@@ -4190,6 +4190,7 @@ public final class CmsContainerpageController {
         for (Element elem : CmsDomUtil.getElementsByClass(CmsGwtConstants.CLASS_DETAIL_PREVIEW)) {
             elem.removeClassName(CmsGwtConstants.CLASS_DETAIL_PREVIEW);
         }
+        boolean defaultDetailPage = detailTypes.contains(CmsGwtConstants.DEFAULT_DETAILPAGE_TYPE);
 
         processPageContent(new I_PageContentVisitor() {
 
@@ -4208,7 +4209,7 @@ public final class CmsContainerpageController {
 
             public void handleElement(CmsContainerPageElementPanel element) {
 
-                if (m_isdetail && detailTypes.contains(element.getResourceType())) {
+                if (m_isdetail && (defaultDetailPage || detailTypes.contains(element.getResourceType()))) {
                     element.addStyleName(CmsGwtConstants.CLASS_DETAIL_PREVIEW);
                 }
             }

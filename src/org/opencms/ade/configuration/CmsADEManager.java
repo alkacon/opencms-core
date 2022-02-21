@@ -51,6 +51,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsEncoder;
@@ -164,7 +165,7 @@ public class CmsADEManager {
     public static final String CONTENT_FOLDER_NAME = ".content";
 
     /** The default detail page type name. */
-    public static final String DEFAULT_DETAILPAGE_TYPE = "##DEFAULT##";
+    public static final String DEFAULT_DETAILPAGE_TYPE = CmsGwtConstants.DEFAULT_DETAILPAGE_TYPE;
 
     /** Default favorite/recent list size constant. */
     public static final int DEFAULT_ELEMENT_LIST_SIZE = 10;

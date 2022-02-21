@@ -1305,6 +1305,17 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Checks if the current page is a detail page.
+     *
+     * @return true if the current page is a detail page
+     */
+    public boolean getIsDetailPage() {
+
+        CmsJspResourceWrapper page = getPageResource();
+        return OpenCms.getADEManager().isDetailPage(m_cms, page);
+    }
+
+    /**
      * Checks if the current request should be direct edit enabled.
      * Online-, history-requests, previews and temporary files will not be editable.<p>
      *

@@ -174,6 +174,9 @@ public final class CmsGwtConstants {
     /** The context type sitemap toolbar. */
     public static final String CONTEXT_TYPE_SITEMAP_TOOLBAR = "sitemapToolbar";
 
+    /** Special 'type' name (that isn't actually a type) used to mark default detail pages in the sitemap configuration. */
+    public static final String DEFAULT_DETAILPAGE_TYPE = "##DEFAULT##";
+
     public static final String EDITOR_PAGE_ID = "pageId";
 
     /** A HTML comment that will cause the container page editor to reload the page if it is contained in HTML which is reloaded after the element or its settings have been edited. */
