@@ -245,6 +245,7 @@ public class CmsContextInfo implements Serializable {
         result.m_siteRoot = m_siteRoot;
         result.m_user = m_user;
         result.m_userName = m_userName;
+        result.m_ouFqn = m_ouFqn;
         return result;
     }
 
