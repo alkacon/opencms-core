@@ -31,6 +31,7 @@ import org.opencms.acacia.client.CmsEditorBase;
 import org.opencms.acacia.client.I_CmsInlineFormParent;
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.ade.containerpage.shared.CmsElementLockInfo;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.ade.contenteditor.client.CmsContentEditor;
 import org.opencms.gwt.client.I_CmsElementToolbarContext;
@@ -279,6 +280,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     /** The resource type icon CSS classes. */
     private String m_iconClasses;
 
+    /** The lock information. */
+    private CmsElementLockInfo m_lockInfo;
+
     /**
      * Constructor.<p>
      *
@@ -287,6 +291,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      * @param clientId the client id
      * @param sitePath the element site-path
      * @param noEditReason the no edit reason, if empty, editing is allowed
+     * @param lockInfo the lock information
      * @param title the resource title
      * @param subTitle the sub title
      * @param resourceType the resource type
@@ -307,6 +312,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         String clientId,
         String sitePath,
         String noEditReason,
+        CmsElementLockInfo lockInfo,
         String title,
         String subTitle,
         String resourceType,
@@ -328,6 +334,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         m_subTitle = subTitle;
         m_resourceType = resourceType;
         m_noEditReason = noEditReason;
+        m_lockInfo = lockInfo;
         m_hasSettings = hasSettings;
         m_parent = parent;
         m_disableNewEditor = disableNewEditor;
@@ -465,6 +472,16 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     public CmsInheritanceInfo getInheritanceInfo() {
 
         return m_inheritanceInfo;
+    }
+
+    /**
+     * Gets the lock information.
+     *
+     * @return the lock information
+     */
+    public CmsElementLockInfo getLockInfo() {
+
+        return m_lockInfo != null ? m_lockInfo : new CmsElementLockInfo(null, false);
     }
 
     /**

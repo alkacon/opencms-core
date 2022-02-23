@@ -261,7 +261,9 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
 
                             public void execute(Void arg1) {
 
-                                CmsContainerpageController.get().reloadElements(new String[] {getParentResourceId()});
+                                CmsContainerpageController.get().reloadElements(
+                                    new String[] {getParentResourceId()},
+                                    () -> {/*do nothing*/});
                             }
                         });
                     }

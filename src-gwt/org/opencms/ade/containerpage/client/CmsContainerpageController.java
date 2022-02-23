@@ -83,6 +83,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -499,15 +500,20 @@ public final class CmsContainerpageController {
         /** The requested client id's. */
         private Set<String> m_clientIds;
 
+        /** The callback to execute after the reload. */
+        private Runnable m_callback;
+
         /**
          * Constructor.<p>
          *
          * @param clientIds the client id's to reload
+         * @param callback the callback to execute after the reload
          */
-        public ReloadElementAction(Set<String> clientIds) {
+        public ReloadElementAction(Set<String> clientIds, Runnable callback) {
 
             super();
             m_clientIds = clientIds;
+            m_callback = callback;
         }
 
         /**
@@ -572,6 +578,9 @@ public final class CmsContainerpageController {
             m_handler.updateClipboard(result);
             resetEditButtons();
             CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.elementEdited));
+            if (m_callback != null) {
+                m_callback.run();
+            }
         }
     }
 
@@ -662,6 +671,9 @@ public final class CmsContainerpageController {
 
     /** Instance of the data provider. */
     private static CmsContainerpageController INSTANCE;
+
+    /** The publish lock checker. */
+    private CmsPublishLockChecker m_publishLockChecker = new CmsPublishLockChecker(this);
 
     /** The container element data. All requested elements will be cached here.*/
     protected Map<String, CmsContainerElementData> m_elements;
@@ -1119,7 +1131,7 @@ public final class CmsContainerpageController {
         elementId = getServerId(elementId);
         removeContainerElements(elementId);
         addToRecentList(elementId, null);
-        reloadElements(new String[] {relatedElementId});
+        reloadElements(new String[] {relatedElementId}, () -> {/*do nothing*/});
     }
 
     /**
@@ -2132,6 +2144,7 @@ public final class CmsContainerpageController {
         });
         updateDetailPreviewStyles();
         updateButtonsForCurrentView();
+        startPublishLockCheck();
 
     }
 
@@ -2526,20 +2539,39 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Reloads the content for the given elements and related elements.
+     *
+     * @param ids the element ids
+     * @param callback the callback to execute after the reload
+     */
+    public void reloadElements(Collection<String> ids, Runnable callback) {
+
+        Set<String> related = new HashSet<String>();
+        for (String id : ids) {
+            related.addAll(getRelatedElementIds(id));
+        }
+        if (!related.isEmpty()) {
+            ReloadElementAction action = new ReloadElementAction(related, callback);
+            action.execute();
+        }
+    }
+
+    /**
      * Reloads the content for the given element and all related elements.<p>
      *
      * Call this if the element content has changed.<p>
      *
-     * @param ids the element id's
+     * @param ids the element ids
+     * @param callback the callback to execute after the reload
      */
-    public void reloadElements(String[] ids) {
+    public void reloadElements(String[] ids, Runnable callback) {
 
         Set<String> related = new HashSet<String>();
         for (int i = 0; i < ids.length; i++) {
             related.addAll(getRelatedElementIds(ids[i]));
         }
         if (!related.isEmpty()) {
-            ReloadElementAction action = new ReloadElementAction(related);
+            ReloadElementAction action = new ReloadElementAction(related, callback);
             action.execute();
         }
     }
@@ -2772,8 +2804,12 @@ public final class CmsContainerpageController {
      *
      * @param elementWidget the element to replace
      * @param elementId the id of the replacing content
+     * @param callback  the callback to execute after the element is replaced
      */
-    public void replaceElement(final CmsContainerPageElementPanel elementWidget, final String elementId) {
+    public void replaceElement(
+        final CmsContainerPageElementPanel elementWidget,
+        final String elementId,
+        Runnable callback) {
 
         final CmsRpcAction<CmsContainerElementData> action = new CmsRpcAction<CmsContainerElementData>() {
 
@@ -2808,8 +2844,9 @@ public final class CmsContainerpageController {
 
                             public void run() {
 
-                                // nothing to do
-
+                                if (callback != null) {
+                                    callback.run();
+                                }
                             }
                         });
                     } catch (Exception e) {
@@ -3371,6 +3408,38 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Starts the publish lock check.
+     */
+    public void startPublishLockCheck() {
+
+        Set<CmsUUID> elementIds = new HashSet<>();
+        processPageContent(new I_PageContentVisitor() {
+
+            public boolean beginContainer(String name, CmsContainer container) {
+
+                return true;
+            }
+
+            public void endContainer() {
+
+                // do nothing
+            }
+
+            public void handleElement(CmsContainerPageElementPanel element) {
+
+                if (element.hasWritePermission() && element.getLockInfo().isPublishLock()) {
+                    CmsUUID structureId = element.getStructureId();
+                    if (structureId != null) {
+                        elementIds.add(structureId);
+                    }
+                }
+            }
+        });
+
+        m_publishLockChecker.addIdsToCheck(elementIds);
+    }
+
+    /**
      * Tells the controller that group-container editing has stopped.<p>
      */
     public void stopEditingGroupcontainer() {
@@ -3390,6 +3459,9 @@ public final class CmsContainerpageController {
         return CmsCoreProvider.get().unlock(structureId);
     }
 
+    /**
+     * Updates he
+     */
     public void updateButtonsForCurrentView() {
 
         String nonDefaultViewClass = I_CmsLayoutBundle.INSTANCE.containerpageCss().nonDefaultView();

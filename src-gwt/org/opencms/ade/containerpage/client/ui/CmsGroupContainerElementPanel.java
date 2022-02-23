@@ -29,6 +29,7 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
+import org.opencms.ade.containerpage.shared.CmsElementLockInfo;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
@@ -120,6 +121,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
             clientId,
             sitePath,
             noEditReason,
+            new CmsElementLockInfo(null, false),
             title,
             subTitle,
             resourceType,

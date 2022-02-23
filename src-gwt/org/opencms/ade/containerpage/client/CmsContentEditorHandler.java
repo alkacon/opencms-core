@@ -35,6 +35,7 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsDialogOptionsAndInfo;
 import org.opencms.ade.contenteditor.client.CmsContentEditor;
 import org.opencms.ade.contenteditor.client.CmsEditorContext;
+import org.opencms.ade.contenteditor.client.I_CmsEditorCloseHandler;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.CmsEditHandlerData;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
@@ -112,13 +113,24 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler#onClose(java.lang.String, org.opencms.util.CmsUUID, boolean, boolean)
+     * @see org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler#onClose(java.lang.String, org.opencms.util.CmsUUID, boolean, boolean, boolean)
      */
-    public void onClose(String sitePath, CmsUUID structureId, boolean isNew, boolean hasChangedSettings) {
+    public void onClose(
+        String sitePath,
+        CmsUUID structureId,
+        boolean isNew,
+        boolean hasChangedSettings,
+        boolean usedPublishDialog) {
 
         if (m_currentElementId == null) {
             m_currentElementId = structureId.toString();
         }
+        Runnable checkPublishLocks = () -> {
+            if (usedPublishDialog) {
+                m_handler.m_controller.startPublishLockCheck();
+            }
+        };
+
         if (m_replaceElement != null) {
             if ((m_handler.m_controller.getData().getDetailId() != null)
                 && m_replaceElement.getId().startsWith(m_handler.m_controller.getData().getDetailId().toString())) {
@@ -129,18 +141,17 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                         CmsContainerpageController.getServerId(m_currentElementId)));
             }
 
-            m_handler.replaceElement(m_replaceElement, m_currentElementId);
-
+            m_handler.replaceElement(m_replaceElement, m_currentElementId, checkPublishLocks);
             m_replaceElement = null;
             if (m_dependingElementId != null) {
-                m_handler.reloadElements(m_dependingElementId);
+                m_handler.reloadElements(new String[] {m_dependingElementId}, checkPublishLocks);
                 m_dependingElementId = null;
             }
         } else if (m_dependingElementId != null) {
-            m_handler.reloadElements(m_currentElementId, m_dependingElementId);
+            m_handler.reloadElements(new String[] {m_currentElementId, m_dependingElementId}, checkPublishLocks);
             m_dependingElementId = null;
         } else {
-            m_handler.reloadElements(m_currentElementId);
+            m_handler.reloadElements(new String[] {m_currentElementId}, checkPublishLocks);
         }
         if (m_currentElementId != null) {
             m_handler.addToRecent(m_currentElementId);
@@ -323,12 +334,17 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 } else {
                     m_currentElementId = URL.decodePathSegment(id);
                 }
-                I_CmsSimpleCallback<Boolean> onClose = new I_CmsSimpleCallback<Boolean>() {
+                I_CmsEditorCloseHandler onClose = new I_CmsEditorCloseHandler() {
 
-                    public void execute(Boolean hasChangedSettings) {
+                    public void onClose(boolean hasChangedSettings, boolean usedPublishDialog) {
 
                         addClosedEditorHistoryItem();
-                        onClose(null, new CmsUUID(getCurrentElementId()), false, hasChangedSettings.booleanValue());
+                        CmsContentEditorHandler.this.onClose(
+                            null,
+                            new CmsUUID(getCurrentElementId()),
+                            false,
+                            hasChangedSettings,
+                            usedPublishDialog);
                     }
                 };
                 String editorLocale = CmsCoreProvider.get().getLocale();
@@ -458,12 +474,18 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 } else {
                     mainLocale = m_handler.m_controller.getData().getMainLocale();
                 }
-                I_CmsSimpleCallback<Boolean> onClose = new I_CmsSimpleCallback<Boolean>() {
+                I_CmsEditorCloseHandler onClose = new I_CmsEditorCloseHandler() {
 
-                    public void execute(Boolean hasChangedSettings) {
+                    public void onClose(boolean hasChangedSettings, boolean usedPublishDialog) {
 
                         addClosedEditorHistoryItem();
-                        onClose(element.getSitePath(), new CmsUUID(serverId), false, hasChangedSettings.booleanValue());
+                        CmsContentEditorHandler.this.onClose(
+                            element.getSitePath(),
+                            new CmsUUID(serverId),
+                            false,
+                            hasChangedSettings,
+                            usedPublishDialog);
+
                     }
                 };
                 if (inline && CmsContentEditor.hasEditable(element.getElement())) {
@@ -581,16 +603,17 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 mode,
                 m_handler.m_controller.getData().getMainLocale(),
                 editHandlerData,
-                new I_CmsSimpleCallback<Boolean>() {
+                new I_CmsEditorCloseHandler() {
 
-                    public void execute(Boolean hasChangedSettings) {
+                    public void onClose(boolean hasChangedSettings, boolean usedPublishDialog) {
 
                         addClosedEditorHistoryItem();
-                        onClose(
+                        CmsContentEditorHandler.this.onClose(
                             editableData.getSitePath(),
                             editableData.getStructureId(),
                             isNew,
-                            hasChangedSettings.booleanValue());
+                            hasChangedSettings,
+                            usedPublishDialog);
                     }
                 });
         }

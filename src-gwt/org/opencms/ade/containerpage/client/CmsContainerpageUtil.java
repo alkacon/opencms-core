@@ -500,6 +500,7 @@ public class CmsContainerpageUtil {
             elementData.getClientId(),
             elementData.getSitePath(),
             elementData.getNoEditReason(),
+            elementData.getLockInfo(),
             elementData.getTitle(),
             elementData.getSubTitle(),
             elementData.getResourceType(),

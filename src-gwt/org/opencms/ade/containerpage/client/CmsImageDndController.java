@@ -254,7 +254,7 @@ public class CmsImageDndController implements I_CmsDNDController {
 
                         if (m_containerElement.isPresent()) {
                             String clientId = m_containerElement.get().getId();
-                            m_pageController.reloadElements(new String[] {clientId});
+                            m_pageController.reloadElements(new String[] {clientId}, () -> {/*do nothing*/});
                         } else {
                             Window.Location.reload();
                         }

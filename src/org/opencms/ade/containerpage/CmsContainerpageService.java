@@ -1014,6 +1014,33 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementsLockedForPublishing(java.util.Set)
+     */
+    public Set<CmsUUID> getElementsLockedForPublishing(Set<CmsUUID> idsToCheck) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            Set<CmsUUID> result = new HashSet<>();
+            for (CmsUUID id : idsToCheck) {
+                try {
+                    CmsResource resource = cms.readResource(id, CmsResourceFilter.ALL);
+                    CmsLock lock = cms.getLock(resource);
+                    if (!lock.getSystemLock().isUnlocked()
+                        && lock.getUserId().equals(cms.getRequestContext().getCurrentUser().getId())) {
+                        result.add(resource.getStructureId());
+                    }
+                } catch (CmsVfsResourceNotFoundException e) {
+                    LOG.debug(e.getLocalizedMessage(), e);
+                }
+            }
+            return result;
+        } catch (Exception e) {
+            error(e);
+            return null;
+        }
+    }
+
+    /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getElementWithSettings(org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.util.Map, java.util.Collection, java.lang.String)
      */
     public CmsContainerElementData getElementWithSettings(

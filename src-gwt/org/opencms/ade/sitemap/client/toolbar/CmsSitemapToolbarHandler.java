@@ -76,7 +76,12 @@ public class CmsSitemapToolbarHandler extends A_CmsToolbarHandler {
         m_contextMenuEntries = transformEntries(menuBeans, null);
         m_editorHandler = new I_CmsContentEditorHandler() {
 
-            public void onClose(String sitePath, CmsUUID structureId, boolean isNew, boolean hasChangedSettings) {
+            public void onClose(
+                String sitePath,
+                CmsUUID structureId,
+                boolean isNew,
+                boolean hasChangedSettings,
+                boolean usedPublishDialog) {
 
                 CmsSitemapView.getInstance().getController().updateEntry(sitePath);
             }

@@ -45,6 +45,7 @@ import org.opencms.util.CmsUUID;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -228,6 +229,14 @@ public interface I_CmsContainerpageServiceAsync {
         Collection<CmsContainer> containers,
         String locale,
         AsyncCallback<CmsElementSettingsConfig> callback);
+
+    /**
+     * Checks which structure ids of a given set belong to resources locked for publishing by the current user, and then returns those.
+     *
+     * @param idsToCheck the set of ids to check
+     * @param callback the callback to call with the result
+     */
+    void getElementsLockedForPublishing(Set<CmsUUID> idsToCheck, AsyncCallback<Set<CmsUUID>> callback);
 
     /**
      * Gets the element data for an id and a map of settings.<p>

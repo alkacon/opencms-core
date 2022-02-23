@@ -586,7 +586,8 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
                 String editedFilesitePath,
                 CmsUUID editedFilestructureId,
                 boolean isNew,
-                boolean hasChangedSettings) {
+                boolean hasChangedSettings,
+                boolean usedPublishDialog) {
 
                 close(0);
             }

@@ -46,6 +46,7 @@ import org.opencms.util.CmsUUID;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 
@@ -250,6 +251,16 @@ public interface I_CmsContainerpageService extends RemoteService {
         Collection<CmsContainer> containers,
         String locale)
     throws CmsRpcException;
+
+    /**
+     * Checks which structure ids of a given set belong to resources locked for publishing by the current user, and then returns those.
+     *
+     * @param idsToCheck the set of ids to check
+     * @return the subset of ids which belong to resources locked for publishing by the current user
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    Set<CmsUUID> getElementsLockedForPublishing(Set<CmsUUID> idsToCheck) throws CmsRpcException;
 
     /**
      * Gets the element data for an id and a map of settings.<p>

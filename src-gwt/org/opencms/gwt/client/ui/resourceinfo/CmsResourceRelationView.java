@@ -283,7 +283,8 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
                                             String sitePath,
                                             CmsUUID structureId,
                                             boolean isNew,
-                                            boolean hasChangedSettings) {
+                                            boolean hasChangedSettings,
+                                            boolean usedPublishDialog) {
 
                                             if (m_popup != null) {
                                                 m_popup.hide();

@@ -242,7 +242,7 @@ public final class CmsContentEditor extends CmsEditorBase {
     protected String m_locale;
 
     /** The on close call back. */
-    protected I_CmsSimpleCallback<Boolean> m_onClose;
+    protected I_CmsEditorCloseHandler m_onClose;
 
     /** The edit tool-bar. */
     protected CmsToolbar m_toolbar;
@@ -833,7 +833,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         final String mode,
         final String mainLocale,
         final CmsEditHandlerData editHandlerData,
-        final I_CmsSimpleCallback<Boolean> onClose) {
+        final I_CmsEditorCloseHandler onClose) {
 
         m_onClose = onClose;
         m_clientId = clientId;
@@ -897,7 +897,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         final I_CmsInlineFormParent panel,
         final String mainLocale,
         long loadTime,
-        I_CmsSimpleCallback<Boolean> onClose) {
+        I_CmsEditorCloseHandler onClose) {
 
         initEventPreviewHandler();
         final String entityId = CmsContentDefinition.uuidToEntityId(elementId, locale);
@@ -1309,7 +1309,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         setEditorState(false);
         unlockResource();
         if (m_onClose != null) {
-            m_onClose.execute(Boolean.valueOf(m_hasChangedSettings));
+            m_onClose.onClose(m_hasChangedSettings, /*publishDialog=*/false);
         }
         destroyForm(true);
         clearEditor();
@@ -1825,7 +1825,9 @@ public final class CmsContentEditor extends CmsEditorBase {
 
                 setSaved();
                 if (m_onClose != null) {
-                    m_onClose.execute(Boolean.valueOf(m_hasChangedSettings || hasChangedSettings.booleanValue()));
+                    m_onClose.onClose(
+                        m_hasChangedSettings || hasChangedSettings.booleanValue(),
+                        /*publishDialog=*/false);
                 }
                 clearEditor();
                 // restore the scroll position
@@ -2350,8 +2352,9 @@ public final class CmsContentEditor extends CmsEditorBase {
                             public void onClose(CloseEvent<PopupPanel> closeEvent) {
 
                                 if (m_onClose != null) {
-                                    m_onClose.execute(
-                                        Boolean.valueOf(m_hasChangedSettings || hasChangedSeetings.booleanValue()));
+                                    m_onClose.onClose(
+                                        m_hasChangedSettings || hasChangedSeetings.booleanValue(),
+                                        /*publishDialog=*/true);
                                 }
                                 clearEditor();
                             }

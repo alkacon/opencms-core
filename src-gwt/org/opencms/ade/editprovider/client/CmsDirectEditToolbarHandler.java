@@ -86,9 +86,14 @@ public class CmsDirectEditToolbarHandler extends A_CmsToolbarHandler {
         m_editorHandler = new I_CmsContentEditorHandler() {
 
             /**
-             * @see org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler#onClose(java.lang.String, org.opencms.util.CmsUUID, boolean, boolean)
+             * @see org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler#onClose(java.lang.String, org.opencms.util.CmsUUID, boolean, boolean, boolean)
              */
-            public void onClose(String sitePath, CmsUUID structureId, boolean isNew, boolean hasChangedSettings) {
+            public void onClose(
+                String sitePath,
+                CmsUUID structureId,
+                boolean isNew,
+                boolean hasChangedSettings,
+                boolean usedPublishDialog) {
 
                 Window.Location.reload();
             }

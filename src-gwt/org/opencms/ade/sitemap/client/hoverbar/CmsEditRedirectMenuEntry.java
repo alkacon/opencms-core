@@ -75,7 +75,12 @@ public class CmsEditRedirectMenuEntry extends A_CmsSitemapMenuEntry {
             dlgOptions,
             new I_CmsContentEditorHandler() {
 
-                public void onClose(String sitePath, CmsUUID structureId, boolean isNew, boolean hasChangedSettings) {
+                public void onClose(
+                    String sitePath,
+                    CmsUUID structureId,
+                    boolean isNew,
+                    boolean hasChangedSettings,
+                    boolean usedPublishDialog) {
 
                     getHoverbar().getController().updateEntry(sitePath);
 

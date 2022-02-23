@@ -176,7 +176,12 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsValid
             I_CmsContentEditorHandler handler = new I_CmsContentEditorHandler() {
 
                 @SuppressWarnings("synthetic-access")
-                public void onClose(String sitePath, CmsUUID id, boolean isNew, boolean hasChangedSettings) {
+                public void onClose(
+                    String sitePath,
+                    CmsUUID id,
+                    boolean isNew,
+                    boolean hasChangedSettings,
+                    boolean usedPublishDialog) {
 
                     if (!m_reload) {
                         return;

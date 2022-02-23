@@ -124,6 +124,8 @@ public class CmsContainerElement implements IsSerializable, I_CmsHasIconClasses 
     /** The use as copy model setting key. */
     public static final String USE_AS_COPY_MODEL = "use_as_copy_model";
 
+    private CmsElementLockInfo m_lockInfo = new CmsElementLockInfo(null, false);
+
     /** The element client id. */
     private String m_clientId;
 
@@ -258,6 +260,11 @@ public class CmsContainerElement implements IsSerializable, I_CmsHasIconClasses 
     public CmsInheritanceInfo getInheritanceInfo() {
 
         return m_inheritanceInfo;
+    }
+
+    public CmsElementLockInfo getLockInfo() {
+
+        return m_lockInfo;
     }
 
     /**
@@ -552,6 +559,11 @@ public class CmsContainerElement implements IsSerializable, I_CmsHasIconClasses 
     public void setInheritanceInfo(CmsInheritanceInfo inheritanceInfo) {
 
         m_inheritanceInfo = inheritanceInfo;
+    }
+
+    public void setLockInfo(CmsElementLockInfo lockInfo) {
+
+        m_lockInfo = lockInfo;
     }
 
     /**

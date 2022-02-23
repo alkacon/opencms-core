@@ -38,6 +38,7 @@ import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElement.ModelGroupState;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.containerpage.shared.CmsElementLockInfo;
 import org.opencms.ade.containerpage.shared.CmsElementSettingsConfig;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfigCollection;
@@ -62,6 +63,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
 import org.opencms.loader.CmsTemplateContextManager;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -931,6 +933,8 @@ public class CmsElementUtil {
         String title;
         String subTitle;
         if (!elementBean.isInMemoryOnly()) {
+            CmsElementLockInfo lockInfo = getLockInfo(m_cms, resource);
+            result.setLockInfo(lockInfo);
             permissionInfo = OpenCms.getADEManager().getPermissionInfo(m_cms, resource, m_page.getRootPath());
             if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(permissionInfo.getNoEditReason())
@@ -1206,6 +1210,26 @@ public class CmsElementUtil {
                 encoding)).trim();
         } finally {
             m_cms.getRequestContext().setUri(oldUri);
+        }
+    }
+
+    /**
+     * Gets the lock information.
+     *
+     * @param cms the current CMS context
+     * @param resource the resource for which to get lock information
+     * @return the lock information
+     */
+    private CmsElementLockInfo getLockInfo(CmsObject cms, CmsResource resource) {
+
+        try {
+            CmsLock lock = cms.getLock(resource);
+            CmsUUID owner = lock.getUserId();
+            boolean isPublish = lock.isPublish();
+            return new CmsElementLockInfo(owner, isPublish);
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return new CmsElementLockInfo(null, false);
         }
     }
 
