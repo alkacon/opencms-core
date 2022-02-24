@@ -520,14 +520,14 @@ public class CmsConfigurationReader {
         for (I_CmsXmlContentValueLocation node : root.getSubValues(N_MODEL_PAGE)) {
             try {
                 parseModelPage(node);
-            } catch (CmsException e) {
+            } catch (Exception e) {
                 LOG.warn(e.getLocalizedMessage(), e);
             }
         }
         for (I_CmsXmlContentLocation node : root.getSubValues(N_DETAIL_PAGE)) {
             try {
                 parseDetailPage(node);
-            } catch (CmsException e) {
+            } catch (Exception e) {
                 LOG.warn(e.getLocalizedMessage(), e);
             }
         }
@@ -745,9 +745,8 @@ public class CmsConfigurationReader {
      * Parses model page data from the XML content.<p>
      *
      * @param node the XML content node
-     * @throws CmsException if something goes wrong
      */
-    public void parseModelPage(I_CmsXmlContentLocation node) throws CmsException {
+    public void parseModelPage(I_CmsXmlContentLocation node) {
 
         CmsXmlVfsFileValue pageValue = (CmsXmlVfsFileValue)node.getSubValue(N_PAGE).getValue();
         CmsLink link = pageValue.getUncheckedLink();
@@ -1008,10 +1007,8 @@ public class CmsConfigurationReader {
      * Parses the detail pages from an XML content node.<p>
      *
      * @param node the XML content node
-     *
-     * @throws CmsException if something goes wrong
      */
-    protected void parseDetailPage(I_CmsXmlContentLocation node) throws CmsException {
+    protected void parseDetailPage(I_CmsXmlContentLocation node) {
 
         I_CmsXmlContentValueLocation pageLoc = node.getSubValue(N_PAGE);
         String typeName = getString(node.getSubValue(N_TYPE));

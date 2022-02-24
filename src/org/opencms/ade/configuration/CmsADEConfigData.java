@@ -234,6 +234,7 @@ public class CmsADEConfigData {
     /** Lazily initialized cache for formatters by formatter key. */
     private Multimap<String, I_CmsFormatterBean> m_formattersByKey;
 
+    /** Loading cache for for formatters grouped by type. */
     private LoadingCache<String, List<I_CmsFormatterBean>> m_formattersByTypeCache = CacheBuilder.newBuilder().build(
         new CacheLoader<String, List<I_CmsFormatterBean>>() {
 
@@ -363,17 +364,6 @@ public class CmsADEConfigData {
         }
         return key.substring(0, separatorPos);
 
-    }
-
-    private static List<String> getFormatterKeyAndFallbacks(String key) {
-
-        String fallback = getParentFormatterKey(key);
-        List<String> result = new ArrayList<>();
-        result.add(key);
-        if (fallback != null) {
-            result.add(fallback);
-        }
-        return result;
     }
 
     /**
@@ -552,6 +542,11 @@ public class CmsADEConfigData {
         }
     }
 
+    /**
+     * Gets the 'add content' restriction for this configuration.
+     *
+     * @return the 'add content' restriction
+     */
     public CmsAddContentRestriction getAddContentRestriction() {
 
         getAncestorTypeNames();
@@ -1696,7 +1691,6 @@ public class CmsADEConfigData {
         CmsFormatterConfiguration schemaFormatters) {
 
         String typeName = resType.getTypeName();
-        CmsFormatterConfigurationCacheState formatterCacheState = getCachedFormatters();
         List<I_CmsFormatterBean> formatters = new ArrayList<I_CmsFormatterBean>();
         Set<String> types = new HashSet<String>();
         types.add(typeName);

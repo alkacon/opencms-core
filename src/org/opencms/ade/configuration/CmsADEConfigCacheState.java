@@ -329,6 +329,11 @@ public class CmsADEConfigCacheState {
         return m_siteConfigurationsByPath.keySet();
     }
 
+    /**
+     * The map of site plugins, by structure id.
+     *
+     * @return the map of site plugins
+     */
     public Map<CmsUUID, CmsSitePlugin> getSitePlugins() {
 
         return m_sitePlugins;

@@ -91,6 +91,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     /** ID which is used to signal that the module configuration should be updated. */
     public static final CmsUUID ID_UPDATE_MODULES = CmsUUID.getNullUUID();
 
+    /** ID to signal that plugins should be updated. */
     public static final CmsUUID ID_UPDATE_SITE_PLUGINS = CmsUUID.getConstantUUID("site_plugins");
 
     /** The interval at which the tasks which checks for configuration updates runs, in milliseconds. */

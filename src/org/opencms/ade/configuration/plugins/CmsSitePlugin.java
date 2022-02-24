@@ -116,9 +116,8 @@ public class CmsSitePlugin {
      * @param cms the CMS context
      * @param content the XML content object
      * @return the template plugin group
-     * @throws CmsException if something goes wrong
      */
-    public static CmsSitePlugin readSitePlugin(CmsObject cms, CmsXmlContent content) throws CmsException {
+    public static CmsSitePlugin readSitePlugin(CmsObject cms, CmsXmlContent content) {
 
         CmsXmlContentRootLocation root = new CmsXmlContentRootLocation(content, Locale.ENGLISH);
         String niceName = root.getSubValue(N_NICE_NAME).getValue().getStringValue(cms).trim();

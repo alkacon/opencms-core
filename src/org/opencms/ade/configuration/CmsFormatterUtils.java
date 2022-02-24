@@ -76,7 +76,7 @@ public class CmsFormatterUtils {
      * Gets the formatter key for the given container name from an element's settings.
      *
      * @param containerName the container name
-     * @param element the element from which to get the formatter key
+     * @param settings the settings from which to get the formatter key
      *
      * @return the formatter key
      */
