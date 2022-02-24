@@ -200,6 +200,7 @@ public class CmsDbExportView extends VerticalLayout {
     public CmsDbExportView() {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+        setHeightUndefined();
         try {
             m_cms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
         } catch (CmsException e) {

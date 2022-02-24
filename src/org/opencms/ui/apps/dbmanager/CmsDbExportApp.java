@@ -64,7 +64,7 @@ public class CmsDbExportApp extends A_CmsWorkplaceApp {
     @Override
     protected Component getComponentForState(String state) {
 
-        m_rootLayout.setMainHeightFull(true);
+        m_rootLayout.setMainHeightFull(false);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
             return new CmsDbExportView();
         }
