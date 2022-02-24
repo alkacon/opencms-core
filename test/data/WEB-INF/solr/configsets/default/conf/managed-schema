@@ -5,6 +5,7 @@
   <fieldType name="binary" class="solr.BinaryField"/>
   <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true"/>
   <fieldType name="date" class="solr.DatePointField" docValues="true"/>
+  <fieldType name="date_range" class="solr.DateRangeField"/>
   <fieldType name="double" class="solr.DoublePointField" docValues="true"/>
   <fieldType name="float" class="solr.FloatPointField" docValues="true"/>
   <fieldType name="ignored" class="solr.StrField" indexed="false" stored="false" multiValued="true"/>
@@ -268,6 +269,7 @@
   <dynamicField name="*_loc" type="location" indexed="true" stored="true"/>
   <dynamicField name="dep_*" type="string" multiValued="true" indexed="false" stored="true"/>
   <dynamicField name="*_dt" type="date" indexed="true" stored="true"/>
+  <dynamicField name="*_dr" type="date_range" indexed="true" stored="true"/>
   <dynamicField name="*_ti" type="pint" indexed="true" stored="true"/>
   <dynamicField name="*_tl" type="plong" indexed="true" stored="true"/>
   <dynamicField name="*_tf" type="pfloat" indexed="true" stored="true"/>
