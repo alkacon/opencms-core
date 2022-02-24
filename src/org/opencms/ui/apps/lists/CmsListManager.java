@@ -849,10 +849,10 @@ I_CmsCachableApp {
     public static final String FIELD_CATEGORIES = "category_exact";
 
     /** SOLR field name. */
-    public static final String FIELD_DATE = "instancedate_%s_dt";
+    public static final String FIELD_DATE = "instancedaterange_%s_dr";
 
     /** SOLR field name. */
-    public static final String FIELD_DATE_FACET_NAME = "instancedate";
+    public static final String FIELD_DATE_FACET_NAME = "instancedaterange";
 
     /** SOLR field name. */
     public static final String FIELD_PARENT_FOLDERS = "parent-folders";

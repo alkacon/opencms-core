@@ -38,6 +38,8 @@
     <!-- KD-tree versions of date fields -->
     <fieldType name="date"  class="solr.DatePointField" docValues="true"/>
     <fieldType name="pdate" class="solr.DatePointField" docValues="true" multiValued="true"/>
+    <fieldType name="date_range"  class="solr.DateRangeField"/>
+    <fieldType name="pdate_range" class="solr.DateRangeField" multiValued="true"/>
 
     <!-- A specialized field for geospatial search filters and distance sorting. -->
     <fieldType name="location"      class="solr.LatLonPointSpatialField" docValues="true" />
@@ -344,6 +346,8 @@
     <dynamicField name="*_d"          type="double"       indexed="true"  stored="true"/>
     <dynamicField name="*_dt"         type="date"         indexed="true"  stored="true"/>
     <dynamicField name="*_dts"        type="date"         indexed="true"  stored="true" multiValued="true"/>
+    <dynamicField name="*_dr"         type="date_range"   indexed="true"  stored="true"/>
+    <dynamicField name="*_drs"        type="date_range"   indexed="true"  stored="true" multiValued="true"/>
     <dynamicField name="*_ti"         type="pint"         indexed="true"  stored="true"/>
     <dynamicField name="*_tl"         type="plong"        indexed="true"  stored="true"/>
     <dynamicField name="*_tf"         type="pfloat"       indexed="true"  stored="true"/>

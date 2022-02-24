@@ -217,7 +217,7 @@ public class CmsSolrIndexWriter implements I_CmsSolrIndexWriter {
         SolrInputDocument inputDoc = (SolrInputDocument)document.getDocument();
         String id = inputDoc.getFieldValue(CmsSearchField.FIELD_ID).toString();
         if (null != serialDates) {
-            // NOTE: We can assume the following to arrays have the same length as serialDates.
+            // NOTE: We can assume the following two arrays have the same length as serialDates.
             List<String> serialDatesEnd = document.getMultivaluedFieldAsStringList(
                 CmsSearchField.FIELD_SERIESDATES_END);
             List<String> serialDatesCurrentTill = document.getMultivaluedFieldAsStringList(
@@ -225,9 +225,13 @@ public class CmsSolrIndexWriter implements I_CmsSolrIndexWriter {
             for (int i = 0; i < serialDates.size(); i++) {
                 String date = serialDates.get(i);
                 String endDate = serialDatesEnd.get(i);
+                String dateRange = "[" + date + " TO " + endDate + "]";
                 String currentTillDate = serialDatesCurrentTill.get(i);
                 inputDoc.setField(CmsSearchField.FIELD_INSTANCEDATE + CmsSearchField.FIELD_POSTFIX_DATE, date);
                 inputDoc.setField(CmsSearchField.FIELD_INSTANCEDATE_END + CmsSearchField.FIELD_POSTFIX_DATE, endDate);
+                inputDoc.setField(
+                    CmsSearchField.FIELD_INSTANCEDATE_RANGE + CmsSearchField.FIELD_POSTFIX_DATE_RANGE,
+                    dateRange);
                 inputDoc.setField(
                     CmsSearchField.FIELD_INSTANCEDATE_CURRENT_TILL + CmsSearchField.FIELD_POSTFIX_DATE,
                     currentTillDate);
@@ -238,6 +242,12 @@ public class CmsSolrIndexWriter implements I_CmsSolrIndexWriter {
                     inputDoc.setField(
                         CmsSearchField.FIELD_INSTANCEDATE_END + "_" + locale + CmsSearchField.FIELD_POSTFIX_DATE,
                         endDate);
+                    inputDoc.setField(
+                        CmsSearchField.FIELD_INSTANCEDATE_RANGE
+                            + "_"
+                            + locale
+                            + CmsSearchField.FIELD_POSTFIX_DATE_RANGE,
+                        dateRange);
                     inputDoc.setField(
                         CmsSearchField.FIELD_INSTANCEDATE_CURRENT_TILL
                             + "_"

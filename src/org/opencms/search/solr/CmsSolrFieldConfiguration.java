@@ -764,6 +764,8 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
      * <p>The fields are:
      * <ul>
      *  <li>instancedate_dt</li>
+     *  <li>instancedatecurrenttill_dt</li>
+     *  <li>instancedaterange_dr</li>
      *  <li>disptitle_s</li>
      *  <li>disporder_i</li>
      * </ul>
@@ -792,6 +794,12 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
             }
             document.addDateField(fieldName, instanceDate.getTime(), false);
         }
+        // Set instancedaterange_dr
+        fieldName = CmsSearchField.FIELD_INSTANCEDATE_RANGE + CmsSearchField.FIELD_POSTFIX_DATE_RANGE;
+        String instanceDateString = document.getFieldValueAsString(
+            CmsSearchField.FIELD_INSTANCEDATE + CmsSearchField.FIELD_POSTFIX_DATE);
+        String instanceDateRangeString = "[" + instanceDateString + " TO " + instanceDateString + "]";
+        ((SolrInputDocument)document.getDocument()).setField(fieldName, instanceDateRangeString);
         // Set instancedatecurrenttill_dt to instancedate_dt if not set yet
         fieldName = CmsSearchField.FIELD_INSTANCEDATE_CURRENT_TILL + CmsSearchField.FIELD_POSTFIX_DATE;
         Date instanceDateCurrentTill = document.getFieldValueAsDate(fieldName);
@@ -842,6 +850,19 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                 localeInstanceDate = instanceDate;
                 document.addDateField(fieldName, localeInstanceDate.getTime(), false);
             }
+            // instance date range
+            fieldName = CmsSearchField.FIELD_INSTANCEDATE_RANGE
+                + "_"
+                + locale
+                + CmsSearchField.FIELD_POSTFIX_DATE_RANGE;
+            String localeInstanceDateString = document.getFieldValueAsString(
+                CmsSearchField.FIELD_INSTANCEDATE + "_" + locale + CmsSearchField.FIELD_POSTFIX_DATE);
+            String localeInstanceDateRangeString = "["
+                + localeInstanceDateString
+                + " TO "
+                + localeInstanceDateString
+                + "]";
+            ((SolrInputDocument)document.getDocument()).setField(fieldName, localeInstanceDateRangeString);
             // Set instancedatecurrenttill_dt to instancedate_dt if not set yet
             fieldName = CmsSearchField.FIELD_INSTANCEDATE_CURRENT_TILL
                 + "_"

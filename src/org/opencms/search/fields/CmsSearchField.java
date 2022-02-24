@@ -146,6 +146,12 @@ public class CmsSearchField implements Serializable {
     /** The default (multi-valued) dates field postfix. */
     public static final String FIELD_POSTFIX_DATES = "_dts";
 
+    /** The default (single-valued) date range field postfix. */
+    public static final String FIELD_POSTFIX_DATE_RANGE = "_dr";
+
+    /** The default (multi-valued) date range field postfix. */
+    public static final String FIELD_POSTFIX_DATE_RANGES = "_drs";
+
     /** The default int field postfix. */
     public static final String FIELD_POSTFIX_INT = "_i";
 
@@ -236,6 +242,9 @@ public class CmsSearchField implements Serializable {
 
     /** The field PREFIX where the date until which the single entry of a serial date entry should be treated as "current" is stored. */
     public static final String FIELD_INSTANCEDATE_CURRENT_TILL = "instancedatecurrenttill";
+
+    /** The field PREFIX where the start date and the end date of the single entry of a serial date entry is stored as a date range. */
+    public static final String FIELD_INSTANCEDATE_RANGE = "instancedaterange";
 
     /** The field where the dates for a serial date are stored. */
     public static final String FIELD_SERIESDATES = "seriesdates" + FIELD_POSTFIX_DATES;

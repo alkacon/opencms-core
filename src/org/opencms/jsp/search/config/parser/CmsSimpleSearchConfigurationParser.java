@@ -580,13 +580,20 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         StringBuffer fields = new StringBuffer("");
         fields.append(CmsSearchField.FIELD_PATH);
         fields.append(',');
-        fields.append(CmsSearchField.FIELD_INSTANCEDATE).append('_').append(getSearchLocale().toString()).append("_dt");
+        fields.append(CmsSearchField.FIELD_INSTANCEDATE).append(CmsSearchField.FIELD_POSTFIX_DATE);
+        fields.append(',');
+        fields.append(CmsSearchField.FIELD_INSTANCEDATE_END).append(CmsSearchField.FIELD_POSTFIX_DATE);
+        fields.append(',');
+        fields.append(CmsSearchField.FIELD_INSTANCEDATE_CURRENT_TILL).append(CmsSearchField.FIELD_POSTFIX_DATE);
+        fields.append(',');
+        fields.append(CmsSearchField.FIELD_INSTANCEDATE).append('_').append(getSearchLocale().toString()).append(
+            CmsSearchField.FIELD_POSTFIX_DATE);
         fields.append(',');
         fields.append(CmsSearchField.FIELD_INSTANCEDATE_END).append('_').append(getSearchLocale().toString()).append(
-            "_dt");
+            CmsSearchField.FIELD_POSTFIX_DATE);
         fields.append(',');
         fields.append(CmsSearchField.FIELD_INSTANCEDATE_CURRENT_TILL).append('_').append(
-            getSearchLocale().toString()).append("_dt");
+            getSearchLocale().toString()).append(CmsSearchField.FIELD_POSTFIX_DATE);
         fields.append(',');
         fields.append(CmsSearchField.FIELD_ID);
         fields.append(',');
@@ -628,6 +635,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
                         + dateRestriction.getRange());
 
         }
+        result += "&fq=con_locales:" + getSearchLocale().toString();
         return result;
     }
 
