@@ -34,9 +34,9 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.components.CmsUploadButton.I_UploadListener;
-import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.components.CmsUserInfo;
 import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.dialogs.CmsEmbeddedDialogContext;
 
 import java.util.List;

@@ -35,6 +35,9 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.collectors.A_CmsResourceCollector;
+import org.opencms.file.collectors.I_CmsCollectorPostCreateHandler;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.gwt.shared.I_CmsUploadConstants;
 import org.opencms.i18n.CmsMessages;
@@ -49,6 +52,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -107,7 +111,7 @@ public class CmsUploadBean extends CmsJspBean {
     private Map<String, String[]> m_parameterMap;
 
     /** The names by id of the resources that have been created successfully. */
-    private HashMap<String, String> m_resourcesCreated = new HashMap<String, String>();
+    private HashMap<CmsUUID, String> m_resourcesCreated = new HashMap<CmsUUID, String>();
 
     /** A CMS context for the root site. */
     private CmsObject m_rootCms;
@@ -272,22 +276,45 @@ public class CmsUploadBean extends CmsJspBean {
                     } finally {
                         // get the created resource names
                         for (CmsResource importedResource : importZip.getImportedResources()) {
-                            m_resourcesCreated.put(
-                                importedResource.getStructureId().toString(),
-                                importedResource.getName());
+                            m_resourcesCreated.put(importedResource.getStructureId(), importedResource.getName());
                         }
                     }
                 } else {
                     // create the resource
                     CmsResource importedResource = createSingleResource(cms, fileName, targetFolder, content);
                     // add the name of the created resource to the list of successful created resources
-                    m_resourcesCreated.put(importedResource.getStructureId().toString(), importedResource.getName());
+                    m_resourcesCreated.put(importedResource.getStructureId(), importedResource.getName());
                 }
 
                 if (listener.isCanceled()) {
                     throw listener.getException();
                 }
             }
+        }
+
+        String postCreateHandlerStr = getPostCreateHandler();
+        if (postCreateHandlerStr != null) {
+            try {
+                CmsPair<String, String> classAndConfig = I_CmsCollectorPostCreateHandler.splitClassAndConfig(
+                    postCreateHandlerStr);
+                String className = classAndConfig.getFirst();
+                String config = classAndConfig.getSecond();
+                I_CmsCollectorPostCreateHandler handler = A_CmsResourceCollector.getPostCreateHandler(className);
+                for (Map.Entry<CmsUUID, String> resourceEntry : m_resourcesCreated.entrySet()) {
+                    try {
+                        CmsUUID structureId = resourceEntry.getKey();
+                        CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+                        if (!resource.isFolder()) {
+                            handler.onCreate(cms, resource, false, config);
+                        }
+                    } catch (Exception e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+
         }
     }
 
@@ -407,6 +434,40 @@ public class CmsUploadBean extends CmsJspBean {
     }
 
     /**
+     * Creates the upload target folder.
+     *
+     * @param cms the CMS context
+     * @param targetFolder the upload target folder
+     * @return the new folder
+     * @throws CmsException if something goes wrong
+     */
+    private CmsResource createTargetFolder(CmsObject cms, String targetFolder) throws CmsException {
+
+        List<String> parentFolders = new ArrayList<>();
+        String currentFolder = targetFolder;
+        while ((currentFolder != null) && !cms.existsResource(currentFolder, CmsResourceFilter.IGNORE_EXPIRATION)) {
+            parentFolders.add(currentFolder);
+            currentFolder = CmsResource.getParentFolder(currentFolder);
+        }
+        Collections.reverse(parentFolders);
+        CmsResource lastCreated = null;
+        CmsResource firstCreated = null;
+        for (String parentFolder : parentFolders) {
+
+            CmsResource createdFolder = cms.createResource(
+                parentFolder,
+                OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()));
+            lastCreated = createdFolder;
+            if (firstCreated == null) {
+                firstCreated = createdFolder;
+            }
+        }
+        cms.unlockResource(firstCreated);
+        return lastCreated;
+
+    }
+
+    /**
      * Returns the stacktrace of the given exception as String.<p>
      *
      * @param e the exception
@@ -435,7 +496,10 @@ public class CmsUploadBean extends CmsJspBean {
             result.put(I_CmsUploadConstants.KEY_MESSAGE, message);
             result.put(I_CmsUploadConstants.KEY_STACKTRACE, stacktrace);
             result.put(I_CmsUploadConstants.KEY_REQUEST_SIZE, getRequest().getContentLength());
+
+            // UUIDs get converted to strings when generating the JSON text
             result.put(I_CmsUploadConstants.KEY_UPLOADED_FILES, new JSONArray(m_resourcesCreated.keySet()));
+
             result.put(I_CmsUploadConstants.KEY_UPLOADED_FILE_NAMES, new JSONArray(m_resourcesCreated.values()));
             if (m_uploadHook != null) {
                 result.put(I_CmsUploadConstants.KEY_UPLOAD_HOOK, m_uploadHook);
@@ -492,6 +556,17 @@ public class CmsUploadBean extends CmsJspBean {
     }
 
     /**
+     * Gets the post-create handler.
+     *
+     * @return the post-create handler
+     */
+    private String getPostCreateHandler() {
+
+        String[] values = m_parameterMap.get(I_CmsUploadConstants.POST_CREATE_HANDLER);
+        return ((values != null) && (values.length > 0)) ? values[0] : null;
+    }
+
+    /**
      * Returns the target folder for the new resource,
      * if the given folder does not exist root folder
      * of the current site is returned.<p>
@@ -508,12 +583,14 @@ public class CmsUploadBean extends CmsJspBean {
         CmsResource target = cms.readResource("/", CmsResourceFilter.IGNORE_EXPIRATION);
         if (m_parameterMap.get(I_CmsUploadConstants.UPLOAD_TARGET_FOLDER_FIELD_NAME) != null) {
             String targetFolder = m_parameterMap.get(I_CmsUploadConstants.UPLOAD_TARGET_FOLDER_FIELD_NAME)[0];
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(targetFolder)) {
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(targetFolder)) {
                 if (cms.existsResource(targetFolder, CmsResourceFilter.IGNORE_EXPIRATION)) {
                     CmsResource tmpTarget = cms.readResource(targetFolder, CmsResourceFilter.IGNORE_EXPIRATION);
                     if (tmpTarget.isFolder()) {
                         target = tmpTarget;
                     }
+                } else {
+                    target = createTargetFolder(cms, targetFolder);
                 }
             }
         }

@@ -27,6 +27,8 @@
 
 package org.opencms.gwt.client;
 
+import org.opencms.gwt.client.util.CmsEditableDataUtil;
+import org.opencms.gwt.shared.I_CmsEditableDataExtensions;
 import org.opencms.util.CmsUUID;
 
 /**
@@ -50,6 +52,9 @@ public class CmsEditableData implements I_CmsEditableData {
 
     /** The element name. */
     private String m_elementName;
+
+    /** The extended attributes. */
+    private I_CmsEditableDataExtensions m_extensions;
 
     /** Indicates the availability of an edit handler for the content resource type. */
     private boolean m_hasEditHandler;
@@ -86,7 +91,7 @@ public class CmsEditableData implements I_CmsEditableData {
      */
     public CmsEditableData() {
 
-        // do nothing
+        m_extensions = CmsEditableDataUtil.parseExtensions("{}");
     }
 
     /**
@@ -96,6 +101,7 @@ public class CmsEditableData implements I_CmsEditableData {
      */
     public CmsEditableData(I_CmsEditableData source) {
 
+        m_extensions = source.getExtensions();
         m_contextId = source.getContextId();
         m_editId = source.getEditId();
         m_elementLanguage = source.getElementLanguage();
@@ -150,6 +156,14 @@ public class CmsEditableData implements I_CmsEditableData {
     public String getElementName() {
 
         return m_elementName;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.I_CmsEditableData#getExtensions()
+     */
+    public I_CmsEditableDataExtensions getExtensions() {
+
+        return m_extensions;
     }
 
     /**

@@ -1370,6 +1370,11 @@
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
+        <attribute>
+        	<description>The folder to upload binary folders to. If not set, upload for binary files is disabled.</description>
+        	<name>uploadFolder</name>
+        	<rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
 
     <tag>
@@ -2351,6 +2356,11 @@
             <name>cacheable</name>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+        	<description>The folder to upload binary folders to. If not set, upload for binary files is disabled.</description>
+        	<name>uploadFolder</name>
+        	<rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
 
     <tag>
@@ -2474,6 +2484,12 @@
             <name>cacheable</name>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+		<attribute>
+        	<description>The folder to upload binary folders to. If not set, upload for binary files is disabled.</description>
+        	<name>uploadFolder</name>
+        	<rtexprvalue>true</rtexprvalue>
+        </attribute>
+        
     </tag>
 
     <tag>

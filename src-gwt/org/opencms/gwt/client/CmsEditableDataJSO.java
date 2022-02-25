@@ -28,7 +28,9 @@
 package org.opencms.gwt.client;
 
 import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
+import org.opencms.gwt.client.util.CmsEditableDataUtil;
 import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.gwt.shared.I_CmsEditableDataExtensions;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -118,6 +120,22 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
             return null;
         }
         return new CmsUUID(elementViewString);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.I_CmsEditableData#getExtensions()
+     */
+    public I_CmsEditableDataExtensions getExtensions() {
+
+        if (getStoredExtensions() == null) {
+            String extensionsJson = getString(CmsGwtConstants.ATTR_EXTENSIONS);
+            if (extensionsJson == null) {
+                extensionsJson = "{}";
+            }
+            I_CmsEditableDataExtensions extensions = CmsEditableDataUtil.parseExtensions(extensionsJson);
+            setStoredExtensions(extensions);
+        }
+        return getStoredExtensions();
     }
 
     /**
@@ -237,6 +255,15 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
     }-*/;
 
     /**
+     * Gets the cached extensions.
+     *
+     * @return the cached extensions
+     */
+    private native I_CmsEditableDataExtensions getStoredExtensions() /*-{
+        return this._ext;
+    }-*/;
+
+    /**
      * Reads an attribute of the underlying Javascript object as a string.<p>
      *
      * @param attribute the name of the attribute
@@ -254,6 +281,15 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
      */
     private native String nativeGetStructureId() /*-{
         return this.structureId ? this.structureId : "";
+    }-*/;
+
+    /**
+     * Sets the cached extensions.
+     *
+     * @param extensions the cached extensions
+     */
+    private native void setStoredExtensions(I_CmsEditableDataExtensions extensions) /*-{
+        this._ext = extensions;
     }-*/;
 
 }

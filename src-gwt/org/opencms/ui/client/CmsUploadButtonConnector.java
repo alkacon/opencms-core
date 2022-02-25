@@ -78,6 +78,7 @@ public class CmsUploadButtonConnector extends ButtonConnector {
      * Constructor.<p>
      */
     public CmsUploadButtonConnector() {
+
         m_rpc = getRpcProxy(I_CmsUploadRpc.class);
     }
 

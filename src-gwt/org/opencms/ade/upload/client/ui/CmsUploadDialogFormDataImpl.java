@@ -189,35 +189,33 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
      * @param element the element to add the upload zone
      * @param dialog this dialog
      */
-    private native void addUploadZone(
-        JavaScriptObject element,
-        CmsUploadDialogFormDataImpl dialog)/*-{
+    private native void addUploadZone(JavaScriptObject element, CmsUploadDialogFormDataImpl dialog)/*-{
 
-                                           function dragover(event) {
-                                           event.stopPropagation();
-                                           event.preventDefault();
-                                           element.style.backgroundColor = dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::m_hightLightColor;
-                                           }
+        function dragover(event) {
+            event.stopPropagation();
+            event.preventDefault();
+            element.style.backgroundColor = dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::m_hightLightColor;
+        }
 
-                                           function dragleave(event) {
-                                           event.stopPropagation();
-                                           event.preventDefault();
-                                           element.style.backgroundColor = dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::m_normalColor;
-                                           }
+        function dragleave(event) {
+            event.stopPropagation();
+            event.preventDefault();
+            element.style.backgroundColor = dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::m_normalColor;
+        }
 
-                                           function drop(event) {
-                                           event.preventDefault();
-                                           var dt = event.dataTransfer;
-                                           var files = dt.files;
-                                           element.style.backgroundColor = dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::m_normalColor;
-                                           dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::addJsFiles(Lcom/google/gwt/core/client/JavaScriptObject;)(files);
-                                           }
+        function drop(event) {
+            event.preventDefault();
+            var dt = event.dataTransfer;
+            var files = dt.files;
+            element.style.backgroundColor = dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::m_normalColor;
+            dialog.@org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl::addJsFiles(Lcom/google/gwt/core/client/JavaScriptObject;)(files);
+        }
 
-                                           element.addEventListener("dragover", dragover, false);
-                                           element.addEventListener("dragexit", dragleave, false);
-                                           element.addEventListener("dragleave", dragleave, false);
-                                           element.addEventListener("dragend", dragleave, false);
-                                           element.addEventListener("drop", drop, false);
+        element.addEventListener("dragover", dragover, false);
+        element.addEventListener("dragexit", dragleave, false);
+        element.addEventListener("dragleave", dragleave, false);
+        element.addEventListener("dragend", dragleave, false);
+        element.addEventListener("drop", drop, false);
 
-                                           }-*/;
+    }-*/;
 }

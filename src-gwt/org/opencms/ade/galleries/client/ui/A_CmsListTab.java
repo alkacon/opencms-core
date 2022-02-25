@@ -108,16 +108,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         }
 
         /**
-         * Returns the check box.<p>
-         *
-         * @return the check box
-         */
-        protected CmsCheckBox getCheckBox() {
-
-            return m_checkBox;
-        }
-
-        /**
          * Returns the select button.<p>
          *
          * @return the select button
@@ -141,6 +131,26 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         }
 
         /**
+         * Sets the select button, can be used instead of a double click to select and search.<p>
+         *
+         * @param button the select button
+         */
+        public void setSelectButton(CmsPushButton button) {
+
+            m_selectButton = button;
+        }
+
+        /**
+         * Returns the check box.<p>
+         *
+         * @return the check box
+         */
+        protected CmsCheckBox getCheckBox() {
+
+            return m_checkBox;
+        }
+
+        /**
          * Executed on selection change. Either when the check box was clicked or on double click on a list item.<p>
          */
         protected abstract void onSelectionChange();
@@ -154,23 +164,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
             m_checkBox.setChecked(true);
             onSelectionChange();
         }
-
-        /**
-         * Sets the select button, can be used instead of a double click to select and search.<p>
-         *
-         * @param button the select button
-         */
-        public void setSelectButton(CmsPushButton button) {
-
-            m_selectButton = button;
-        }
-    }
-
-    /**
-     * @see com.google.gwt.uibinder.client.UiBinder
-     */
-    interface I_CmsListTabUiBinder extends UiBinder<Widget, A_CmsListTab> {
-        // GWT interface, nothing to do here
     }
 
     /**
@@ -221,6 +214,13 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
             getTabHandler().selectResource(m_resourcePath, m_structureId, m_title, m_resourceType);
         }
+    }
+
+    /**
+     * @see com.google.gwt.uibinder.client.UiBinder
+     */
+    interface I_CmsListTabUiBinder extends UiBinder<Widget, A_CmsListTab> {
+        // GWT interface, nothing to do here
     }
 
     /** The css bundle used for this widget. */
@@ -299,6 +299,114 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     }
 
     /**
+     * Returns the list.<p>
+     *
+     * @return the list
+     */
+    public CmsScrollPanel getList() {
+
+        return m_list;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getRequiredHeight()
+     */
+    @Override
+    public int getRequiredHeight() {
+
+        int list = m_scrollList.getOffsetHeight();
+        list = list > 82 ? list : 82;
+        return list + 47;
+    }
+
+    /**
+     * Call on content change to update the layout.<p>
+     */
+    public void onContentChange() {
+
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+            public void execute() {
+
+                Widget parent = getParent();
+                while (parent != null) {
+                    if (parent instanceof CmsGalleryDialog) {
+                        ((CmsGalleryDialog)parent).updateSizes();
+                        parent = null;
+                    } else {
+                        parent = parent.getParent();
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onResize()
+     */
+    @Override
+    public void onResize() {
+
+        m_list.onResizeDescendant();
+    }
+
+    /**
+     * Will be triggered if the value in the select box changes.<p>
+     *
+     * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
+     */
+    public void onValueChange(ValueChangeEvent<String> event) {
+
+        cancelQuickFilterTimer();
+        if (event.getSource() == m_sortSelectBox) {
+            // depending on the sort value the tab may or may not have the quick filter ability
+            if (hasQuickFilter()) {
+                if (m_quickSearch == null) {
+                    createQuickBox();
+                }
+            } else {
+                removeQuickBox();
+            }
+            getTabHandler().onSort(event.getValue(), hasQuickFilter() ? m_quickSearch.getFormValueAsString() : null);
+        }
+        if ((event.getSource() == m_quickSearch)) {
+            if (hasQuickFilter()) {
+
+                if ((CmsStringUtil.isEmptyOrWhitespaceOnly(event.getValue()) || (event.getValue().length() >= 3))) {
+                    // only act if filter length is at least 3 characters or empty
+                    if ((m_lastQuickSearchValue == null) || !m_lastQuickSearchValue.equals(event.getValue())) {
+                        scheduleQuickFilterTimer();
+                    }
+                    m_lastQuickSearchValue = event.getValue();
+                }
+            } else {
+                checkQuickSearchStatus();
+            }
+        }
+    }
+
+    /**
+     * Sets the value selected in the sort select box, if possible.<p>
+     *
+     * @param value the new value for the sort select box
+     * @param fireEvents if true, the change event of the select box is fired
+     */
+    public void setSortSelectBoxValue(String value, boolean fireEvents) {
+
+        if ((m_sortSelectBox != null) && (value != null)) {
+            m_sortSelectBox.setFormValue(value, fireEvents);
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+     */
+    public void truncate(String textMetricsKey, int clientWidth) {
+
+        m_scrollList.truncate(TM_LIST_TAB, clientWidth);
+    }
+
+    /**
      * Adds a widget to the front of the list.<p>
      *
      * @param listItem the list item to add
@@ -366,7 +474,8 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     /**
      * Generates a new custom upload button.<p>
      *
-     * @param parentPath the folder site path
+     * @param nativeMethod the name of the custom JS upload action
+     * @param target the upload target
      *
      * @return the button widget
      */
@@ -425,6 +534,12 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         return createNewButton;
     }
 
+    /**
+     * Creates the 'optmize gallery' button.
+     *
+     * @param selectionHandler the selection handler
+     * @return the created button
+     */
     protected CmsPushButton createOptimizeButton(A_SelectionHandler selectionHandler) {
 
         CmsPushButton selectButton = new CmsPushButton();
@@ -434,73 +549,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         selectionHandler.setSelectButton(selectButton);
         selectButton.addClickHandler(selectionHandler);
         return selectButton;
-    }
-
-    /**
-     * Creates the quick search/finder box.<p>
-     */
-    private void createQuickBox() {
-
-        if (hasQuickSearch() || hasQuickFilter()) {
-            m_quickSearch = new CmsTextBox();
-            //   m_quickFilter.setVisible(hasQuickFilter());
-            m_quickSearch.addStyleName(DIALOG_CSS.quickFilterBox());
-            m_quickSearch.setTriggerChangeOnKeyPress(true);
-            String message = hasQuickFilter()
-            ? Messages.get().key(Messages.GUI_QUICK_FINDER_FILTER_0)
-            : Messages.get().key(Messages.GUI_QUICK_FINDER_SEARCH_0);
-            m_quickSearch.setGhostValue(message, true);
-            m_quickSearch.setGhostModeClear(true);
-            m_options.insert(m_quickSearch, 0);
-            m_searchButton = new CmsPushButton();
-            m_searchButton.setImageClass(hasQuickFilter() ? I_CmsButton.FILTER : I_CmsButton.SEARCH_SMALL);
-            m_searchButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
-            m_searchButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
-            m_searchButton.getElement().getStyle().setMarginTop(4, Unit.PX);
-            m_options.insert(m_searchButton, 0);
-            m_quickSearch.addValueChangeHandler(this);
-            if (hasQuickFilter()) {
-                m_filterTimer = new Timer() {
-
-                    @Override
-                    public void run() {
-
-                        getTabHandler().onSort(
-                            m_sortSelectBox.getFormValueAsString(),
-                            m_quickSearch.getFormValueAsString());
-                        onContentChange();
-                    }
-                };
-                m_searchButton.setTitle(message);
-            } else {
-                m_quickSearch.addKeyPressHandler(new KeyPressHandler() {
-
-                    public void onKeyPress(KeyPressEvent event) {
-
-                        if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
-                            quickSearch();
-                        }
-                    }
-                });
-                m_searchButton.addClickHandler(new ClickHandler() {
-
-                    public void onClick(ClickEvent arg0) {
-
-                        quickSearch();
-                    }
-                });
-                m_quickSearchRegistration = getTabHandler().addSearchChangeHandler(
-                    new ValueChangeHandler<CmsGallerySearchBean>() {
-
-                        public void onValueChange(ValueChangeEvent<CmsGallerySearchBean> event) {
-
-                            m_quickSearch.setFormValueAsString(event.getValue().getQuery());
-                        }
-                    });
-                m_searchButton.setTitle(Messages.get().key(Messages.GUI_TAB_SEARCH_SEARCH_EXISTING_0));
-            }
-
-        }
     }
 
     /**
@@ -592,34 +640,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         return uploadButton;
     }
 
-    native void customUploadAction(String nativeMethod, String target) /*-{
-
-                                                                       var uploadAction = $wnd[nativeMethod];
-                                                                       nativeMethod(target);
-
-                                                                       }-*/;
-
-    /**
-     * Returns the list.<p>
-     *
-     * @return the list
-     */
-    public CmsScrollPanel getList() {
-
-        return m_list;
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#getRequiredHeight()
-     */
-    @Override
-    public int getRequiredHeight() {
-
-        int list = m_scrollList.getOffsetHeight();
-        list = list > 82 ? list : 82;
-        return list + 47;
-    }
-
     /**
      * Returns a list with sort values for this tab.<p>
      *
@@ -669,72 +689,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     }
 
     /**
-     * Call on content change to update the layout.<p>
-     */
-    public void onContentChange() {
-
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-            public void execute() {
-
-                Widget parent = getParent();
-                while (parent != null) {
-                    if (parent instanceof CmsGalleryDialog) {
-                        ((CmsGalleryDialog)parent).updateSizes();
-                        parent = null;
-                    } else {
-                        parent = parent.getParent();
-                    }
-                }
-            }
-        });
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.client.ui.A_CmsTab#onResize()
-     */
-    @Override
-    public void onResize() {
-
-        m_list.onResizeDescendant();
-    }
-
-    /**
-     * Will be triggered if the value in the select box changes.<p>
-     *
-     * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
-     */
-    public void onValueChange(ValueChangeEvent<String> event) {
-
-        cancelQuickFilterTimer();
-        if (event.getSource() == m_sortSelectBox) {
-            // depending on the sort value the tab may or may not have the quick filter ability
-            if (hasQuickFilter()) {
-                if (m_quickSearch == null) {
-                    createQuickBox();
-                }
-            } else {
-                removeQuickBox();
-            }
-            getTabHandler().onSort(event.getValue(), hasQuickFilter() ? m_quickSearch.getFormValueAsString() : null);
-        }
-        if ((event.getSource() == m_quickSearch)) {
-            if (hasQuickFilter()) {
-
-                if ((CmsStringUtil.isEmptyOrWhitespaceOnly(event.getValue()) || (event.getValue().length() >= 3))) {
-                    // only act if filter length is at least 3 characters or empty
-                    if ((m_lastQuickSearchValue == null) || !m_lastQuickSearchValue.equals(event.getValue())) {
-                        scheduleQuickFilterTimer();
-                    }
-                    m_lastQuickSearchValue = event.getValue();
-                }
-            } else {
-                checkQuickSearchStatus();
-            }
-        }
-    }
-
-    /**
      * Sets the search query an selects the result tab.<p>
      */
     protected void quickSearch() {
@@ -742,25 +696,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         if ((m_quickSearch != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_quickSearch.getFormValueAsString())) {
             getTabHandler().setSearchQuery(m_quickSearch.getFormValueAsString());
             getTabHandler().selectResultTab();
-        }
-    }
-
-    /**
-     * Removes the quick search/finder box.<p>
-     */
-    private void removeQuickBox() {
-
-        if (m_quickSearch != null) {
-            m_quickSearch.removeFromParent();
-            m_quickSearch = null;
-        }
-        if (m_searchButton != null) {
-            m_searchButton.removeFromParent();
-            m_searchButton = null;
-        }
-        if (m_quickSearchRegistration != null) {
-            m_quickSearchRegistration.removeHandler();
-            m_quickSearchRegistration = null;
         }
     }
 
@@ -802,23 +737,101 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     }
 
     /**
-     * Sets the value selected in the sort select box, if possible.<p>
+     * Runs the native custom uplod handler.
      *
-     * @param value the new value for the sort select box
-     * @param fireEvents if true, the change event of the select box is fired
+     * @param nativeMethod the native method name
+     * @param target the upload target
      */
-    public void setSortSelectBoxValue(String value, boolean fireEvents) {
+    native void customUploadAction(String nativeMethod, String target) /*-{
 
-        if ((m_sortSelectBox != null) && (value != null)) {
-            m_sortSelectBox.setFormValue(value, fireEvents);
+        var uploadAction = $wnd[nativeMethod];
+        nativeMethod(target);
+
+    }-*/;
+
+    /**
+     * Creates the quick search/finder box.<p>
+     */
+    private void createQuickBox() {
+
+        if (hasQuickSearch() || hasQuickFilter()) {
+            m_quickSearch = new CmsTextBox();
+            //   m_quickFilter.setVisible(hasQuickFilter());
+            m_quickSearch.addStyleName(DIALOG_CSS.quickFilterBox());
+            m_quickSearch.setTriggerChangeOnKeyPress(true);
+            String message = hasQuickFilter()
+            ? Messages.get().key(Messages.GUI_QUICK_FINDER_FILTER_0)
+            : Messages.get().key(Messages.GUI_QUICK_FINDER_SEARCH_0);
+            m_quickSearch.setGhostValue(message, true);
+            m_quickSearch.setGhostModeClear(true);
+            m_options.insert(m_quickSearch, 0);
+            m_searchButton = new CmsPushButton();
+            m_searchButton.setImageClass(hasQuickFilter() ? I_CmsButton.FILTER : I_CmsButton.SEARCH_SMALL);
+            m_searchButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+            m_searchButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
+            m_searchButton.getElement().getStyle().setMarginTop(4, Unit.PX);
+            m_options.insert(m_searchButton, 0);
+            m_quickSearch.addValueChangeHandler(this);
+            if (hasQuickFilter()) {
+                m_filterTimer = new Timer() {
+
+                    @Override
+                    public void run() {
+
+                        getTabHandler().onSort(
+                            m_sortSelectBox.getFormValueAsString(),
+                            m_quickSearch.getFormValueAsString());
+                        onContentChange();
+                    }
+                };
+                m_searchButton.setTitle(message);
+            } else {
+                m_quickSearch.addKeyPressHandler(new KeyPressHandler() {
+
+                    public void onKeyPress(KeyPressEvent event) {
+
+                        if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
+                            quickSearch();
+                        }
+                    }
+                });
+                m_searchButton.addClickHandler(new ClickHandler() {
+
+                    public void onClick(ClickEvent arg0) {
+
+                        quickSearch();
+                    }
+                });
+                m_quickSearchRegistration = getTabHandler().addSearchChangeHandler(
+                    new ValueChangeHandler<CmsGallerySearchBean>() {
+
+                        public void onValueChange(ValueChangeEvent<CmsGallerySearchBean> event) {
+
+                            m_quickSearch.setFormValueAsString(event.getValue().getQuery());
+                        }
+                    });
+                m_searchButton.setTitle(Messages.get().key(Messages.GUI_TAB_SEARCH_SEARCH_EXISTING_0));
+            }
+
         }
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+     * Removes the quick search/finder box.<p>
      */
-    public void truncate(String textMetricsKey, int clientWidth) {
+    private void removeQuickBox() {
 
-        m_scrollList.truncate(TM_LIST_TAB, clientWidth);
+        if (m_quickSearch != null) {
+            m_quickSearch.removeFromParent();
+            m_quickSearch = null;
+        }
+        if (m_searchButton != null) {
+            m_searchButton.removeFromParent();
+            m_searchButton = null;
+        }
+        if (m_quickSearchRegistration != null) {
+            m_quickSearchRegistration.removeHandler();
+            m_quickSearchRegistration = null;
+        }
     }
 }

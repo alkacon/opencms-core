@@ -63,6 +63,9 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
     /** True if the the target folder should be treated as a root path. */
     private boolean m_isTargetRootPath;
 
+    /** The post-create handler. **/
+    private String m_postCreateHandler;
+
     /** The target folder for the upload dialog. */
     private String m_targetFolder;
 
@@ -199,6 +202,16 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
     }
 
     /**
+     * Sets the post-create handler.
+     *
+     * @param postCreateHandler the post-create handler
+     */
+    public void setPostCreateHandler(String postCreateHandler) {
+
+        m_postCreateHandler = postCreateHandler;
+    }
+
+    /**
      * Sets the upload target folder.<p>
      *
      * @param targetFolder the upload target folder
@@ -234,6 +247,7 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
             if ((m_targetFolder != null)) {
                 m_uploadDialog.setTargetFolder(m_targetFolder);
             }
+            m_uploadDialog.setPostCreateHandler(m_postCreateHandler);
             m_uploadDialog.setIsTargetRootPath(m_isTargetRootPath);
         }
     }

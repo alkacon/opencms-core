@@ -60,6 +60,9 @@ public class CmsDirectEditParams {
     /** The edit target VFS resource name. */
     protected String m_resourceName;
 
+    /** The upload folder. */
+    protected String m_uploadFolder;
+
     /** The 'container' element (when using display tag). */
     private CmsContainerElementBean m_containerElement;
 
@@ -253,6 +256,16 @@ public class CmsDirectEditParams {
     }
 
     /**
+     * Gets the upload folder.
+     *
+     * @return the upload folder
+     */
+    public String getUploadFolder() {
+
+        return m_uploadFolder;
+    }
+
+    /**
      * Sets the collectorName.<p>
      *
      * @param collectorName the collectorName to set
@@ -300,5 +313,15 @@ public class CmsDirectEditParams {
     public void setPostCreateHandler(String postCreateHandler) {
 
         m_postCreateHandler = postCreateHandler;
+    }
+
+    /**
+     * Sets the upload folder.
+     *
+     * @param uploadFolder the upload folder
+     */
+    public void setUploadFolder(String uploadFolder) {
+
+        m_uploadFolder = uploadFolder;
     }
 }

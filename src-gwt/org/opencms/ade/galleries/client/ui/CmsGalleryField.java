@@ -309,6 +309,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     /**
      * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
      */
+    @Override
     public HandlerRegistration addFocusHandler(FocusHandler handler) {
 
         return addDomHandler(handler, FocusEvent.getType());
@@ -689,6 +690,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
                 }
 
+                @SuppressWarnings("synthetic-access")
+                @Override
                 protected void onResponse(CmsGalleryActionInfo result) {
 
                     stop(false);
@@ -904,6 +907,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         uploadButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
         uploadButton.addClickHandler(new ClickHandler() {
 
+            @Override
             public void onClick(ClickEvent event) {
 
                 CmsRpcAction<CmsUUID> action = new CmsRpcAction<CmsUUID>() {
@@ -915,6 +919,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                         CmsCoreProvider.getVfsService().getStructureId(m_uploadTarget, this);
                     }
 
+                    @SuppressWarnings("synthetic-access")
+                    @Override
                     protected void onResponse(CmsUUID result) {
 
                         stop(false);
@@ -945,52 +951,52 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      * @param element the drop zone element
      */
     private native void initUploadZone(JavaScriptObject element)/*-{
-		// check for file api support
-		if ((typeof FileReader == 'function' || typeof FileReader == 'object')
-				&& (typeof FormData == 'function' || typeof FormData == 'object')) {
-			var self = this;
+        // check for file api support
+        if ((typeof FileReader == 'function' || typeof FileReader == 'object')
+                && (typeof FormData == 'function' || typeof FormData == 'object')) {
+            var self = this;
 
-			function isDndEnabled() {
-				return self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::isDndEnabled()();
-			}
+            function isDndEnabled() {
+                return self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::isDndEnabled()();
+            }
 
-			function dragover(event) {
-				event.stopPropagation();
-				event.preventDefault();
-				if (!isDndEnabled()) {
-					return;
-				}
-				self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOver()();
-			}
+            function dragover(event) {
+                event.stopPropagation();
+                event.preventDefault();
+                if (!isDndEnabled()) {
+                    return;
+                }
+                self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOver()();
+            }
 
-			function dragleave(event) {
-				event.stopPropagation();
-				event.preventDefault();
-				if (!isDndEnabled()) {
-					return;
-				}
-				self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
-			}
+            function dragleave(event) {
+                event.stopPropagation();
+                event.preventDefault();
+                if (!isDndEnabled()) {
+                    return;
+                }
+                self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
+            }
 
-			function drop(event) {
-				event.preventDefault();
-				if (!isDndEnabled()) {
-					return;
-				}
-				self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
-				if (self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::m_uploadTarget != null) {
-					var dt = event.dataTransfer;
-					var files = dt.files;
-					self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::openUploadWithFiles(Lcom/google/gwt/core/client/JavaScriptObject;)(files);
-				}
-			}
+            function drop(event) {
+                event.preventDefault();
+                if (!isDndEnabled()) {
+                    return;
+                }
+                self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
+                if (self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::m_uploadTarget != null) {
+                    var dt = event.dataTransfer;
+                    var files = dt.files;
+                    self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::openUploadWithFiles(Lcom/google/gwt/core/client/JavaScriptObject;)(files);
+                }
+            }
 
-			element.addEventListener("dragover", dragover, false);
-			element.addEventListener("dragexit", dragleave, false);
-			element.addEventListener("dragleave", dragleave, false);
-			element.addEventListener("dragend", dragleave, false);
-			element.addEventListener("drop", drop, false);
-		}
+            element.addEventListener("dragover", dragover, false);
+            element.addEventListener("dragexit", dragleave, false);
+            element.addEventListener("dragleave", dragleave, false);
+            element.addEventListener("dragend", dragleave, false);
+            element.addEventListener("drop", drop, false);
+        }
     }-*/;
 
     /**
@@ -1008,6 +1014,11 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         ((CmsDialogUploadButtonHandler)m_uploadButton.getButtonHandler()).openDialogWithFiles(fileObjects);
     }
 
+    /**
+     * Enables the special upload button.
+     *
+     * @param specialUpload true if the special upload button should be enabled
+     */
     private void setSpecialUpload(boolean specialUpload) {
 
         m_specialUploadButton.setVisible(specialUpload);
@@ -1015,6 +1026,11 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     }
 
+    /**
+     * Updates the value to the path for the given structure id.
+     *
+     * @param id a structure id
+     */
     private void updateValueFromId(CmsUUID id) {
 
         CmsRpcAction<String> action = new CmsRpcAction<String>() {
@@ -1027,6 +1043,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
             }
 
+            @Override
             protected void onResponse(String result) {
 
                 stop(false);

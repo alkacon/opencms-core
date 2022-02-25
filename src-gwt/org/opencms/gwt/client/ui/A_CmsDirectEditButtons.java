@@ -101,7 +101,11 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem, I_C
                     onClickEdit();
                 }
                 if (source == m_new) {
-                    onClickNew(true);
+                    if (m_editableData.getExtensions().isUploadEnabled()) {
+                        onClickUpload();
+                    } else {
+                        onClickNew(true);
+                    }
                 }
             }
         }
@@ -190,6 +194,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem, I_C
             m_editableData = CmsEditableDataJSO.parseEditableData(jsonText);
             CmsScriptCallbackHelper callbackForElement = new CmsScriptCallbackHelper() {
 
+                @Override
                 public void run() {
 
                     A_CmsDirectEditButtons.this.onClickNew(false);
@@ -468,6 +473,14 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem, I_C
      * @param askCreateMode true if the user should be asked for the 'content create mode'
      */
     protected abstract void onClickNew(boolean askCreateMode);
+
+    /**
+     * Method to be executed when the "new" direct edit button is clicked, and the corresponding file has a type for which the upload dialog should be triggered.
+     */
+    protected void onClickUpload() {
+
+        // empty
+    }
 
     /**
      * Removes the highlighting and option bar.<p>

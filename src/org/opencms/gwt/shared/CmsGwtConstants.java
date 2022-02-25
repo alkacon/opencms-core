@@ -126,6 +126,8 @@ public final class CmsGwtConstants {
     /** Key for the element id attribute. */
     public static final String ATTR_ELEMENT_ID = "ATTR_ELEMENT_ID";
 
+    public static final String ATTR_EXTENSIONS = "ext";
+
     /** Element data to enable / disable the favorite button. */
     public static final String ATTR_FAVORITE = "fav";
 

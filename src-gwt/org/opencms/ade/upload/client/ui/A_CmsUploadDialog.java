@@ -125,14 +125,14 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     /** The scroll panel. */
     protected CmsScrollPanel m_scrollPanel;
 
-    /** True if the target folder is given as a root path. */
-    boolean m_isTargetRootPath;
-
     /** The uploaded file names. */
     protected List<String> m_uploadedFiles;
 
     /** Signals that the upload dialog was canceled. */
     boolean m_canceled;
+
+    /** True if the target folder is given as a root path. */
+    boolean m_isTargetRootPath;
 
     /** Stores all files that were added. */
     private Map<String, CmsFileInfo> m_allFiles;
@@ -190,6 +190,9 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /** The OK button. */
     private CmsPushButton m_okButton;
+
+    /** The post-create handler. */
+    private String m_postCreateHandler;
 
     /** The progress bar for the upload process. */
     private CmsUploadProgressInfo m_progressInfo;
@@ -467,6 +470,16 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     }
 
     /**
+     * Sets the post-create handler.
+     *
+     * @param postCreateHandler the post-create handler
+     */
+    public void setPostCreateHandler(String postCreateHandler) {
+
+        m_postCreateHandler = postCreateHandler;
+    }
+
+    /**
      * Sets the target folder.<p>
      *
      * @param target the target folder to set
@@ -512,6 +525,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
             getUploadUri(),
             getTargetFolder(),
             m_isTargetRootPath,
+            getPostCreateHandler(),
             filesToUpload,
             getFilesToUnzip(false),
             this);
@@ -736,6 +750,16 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
                 org.opencms.gwt.client.Messages.GUI_UPLOAD_FILES_SINGULAR_0);
         }
         return org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_UPLOAD_FILES_PLURAL_0);
+    }
+
+    /**
+     * Gets the post-create handler.
+     *
+     * @return the post-create handler
+     */
+    protected String getPostCreateHandler() {
+
+        return m_postCreateHandler;
     }
 
     /**

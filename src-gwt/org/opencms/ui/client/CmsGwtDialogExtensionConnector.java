@@ -53,11 +53,13 @@ import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.ui.preferences.CmsUserSettingsDialog;
 import org.opencms.gwt.client.ui.replace.CmsReplaceHandler;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
+import org.opencms.gwt.client.util.CmsEditableDataUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsHistoryVersion;
 import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsPreviewInfo;
+import org.opencms.gwt.shared.I_CmsEditableDataExtensions;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc;
 import org.opencms.ui.shared.components.I_CmsGwtDialogServerRpc;
@@ -527,6 +529,11 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
             public String getElementName() {
 
                 return null;
+            }
+
+            public I_CmsEditableDataExtensions getExtensions() {
+
+                return CmsEditableDataUtil.parseExtensions("{}");
             }
 
             public String getNewLink() {

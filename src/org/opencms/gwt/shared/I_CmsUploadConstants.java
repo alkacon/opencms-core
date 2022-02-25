@@ -63,14 +63,17 @@ public interface I_CmsUploadConstants extends IsSerializable {
     /** Key for the upload hook. */
     String KEY_UPLOAD_HOOK = "uploadHook";
 
-    /** Key for the uploaded file ids. */
-    String KEY_UPLOADED_FILES = "uploadedFiles";
-
     /** Key for the uploaded file names. */
     String KEY_UPLOADED_FILE_NAMES = "uploadedFileNames";
 
+    /** Key for the uploaded file ids. */
+    String KEY_UPLOADED_FILES = "uploadedFiles";
+
     /** The resources parameter name. */
     String PARAM_RESOURCES = "resources";
+
+    /** The post-create handler parameter. */
+    String POST_CREATE_HANDLER = "post_create_handler";
 
     /** Upload action JSP URI. */
     String UPLOAD_ACTION_JSP_URI = "/system/workplace/commons/uploadAction.jsp";

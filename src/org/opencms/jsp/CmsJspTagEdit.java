@@ -87,6 +87,9 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
     /** The fully qualified class name of the post create handler to use. */
     private String m_postCreateHandler;
 
+    /** The upload folder. */
+    private String m_uploadFolder;
+
     /** UUID of the content to edit. */
     private String m_uuid;
 
@@ -100,6 +103,7 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
      * @param postCreateHandler optional class name of an {@link I_CmsCollectorPostCreateHandler} which is invoked after the content has been created.
      *      The fully qualified class name can be followed by a "|" symbol and a handler specific configuration string.
      * @return The site-path of the newly created resource.
+     * @throws CmsException if something goes wrong
      */
     public static String createResource(
         CmsObject cmsObject,
@@ -224,6 +228,7 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
      * @param createType the resource type to create, default to the type of the edited resource
      * @param creationSitemap the sitemap context to create the resource in, default to the current requested URI
      * @param postCreateHandler the post create handler if required
+     * @param binaryUploadFolder the upload folder for binary files
      *
      * @return <code>true</code> if an opening direct edit tag was inserted
      */
@@ -235,7 +240,8 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
         boolean canDelete,
         String createType,
         String creationSitemap,
-        String postCreateHandler) {
+        String postCreateHandler,
+        String binaryUploadFolder) {
 
         boolean result = false;
         CmsDirectEditParams editParams = null;
@@ -275,6 +281,7 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
 
         if (editParams != null) {
             editParams.setPostCreateHandler(postCreateHandler);
+            editParams.setUploadFolder(binaryUploadFolder);
             try {
                 CmsJspTagEditable.startDirectEdit(pageContext, editParams);
                 result = true;
@@ -362,7 +369,8 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
             m_canDelete,
             m_createType,
             m_creationSiteMap,
-            m_postCreateHandler);
+            m_postCreateHandler,
+            m_uploadFolder);
         return EVAL_BODY_INCLUDE;
     }
 
@@ -421,6 +429,16 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
     public void setPostCreateHandler(final String postCreateHandler) {
 
         m_postCreateHandler = postCreateHandler;
+    }
+
+    /**
+     * Sets the upload folder.
+     *
+     * @param uploadFolder the upload folder
+     */
+    public void setUploadFolder(String uploadFolder) {
+
+        m_uploadFolder = uploadFolder;
     }
 
     /** Setter for the uuid attribute of the tag, providing the uuid of content that should be edited.

@@ -67,7 +67,9 @@ import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.search.galleries.CmsGalleryNameMacroResolver;
 import org.opencms.site.CmsSite;
+import org.opencms.ui.apps.lists.CmsListManager;
 import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -994,6 +996,48 @@ public final class CmsJspStandardContextBean {
         }
         return null;
 
+    }
+
+    /**
+     * Finds the folder to use for binary uploads, based on the list configuration given as an argument or
+     * the current sitemap configuration.
+     *
+     * @param content the list configuration content
+     *
+     * @return the binary upload folder
+     */
+    public String getBinaryUploadFolder(CmsJspContentAccessBean content) {
+
+        String keyToFind = CmsADEConfigData.ATTR_BINARY_UPLOAD_TARGET;
+        String baseValue = null;
+        if (content != null) {
+            for (CmsJspContentAccessValueWrapper wrapper : content.getValueList().get(CmsListManager.N_PARAMETER)) {
+                String key1 = wrapper.getValue().get(CmsListManager.N_KEY).getToString();
+                String value1 = wrapper.getValue().get(CmsListManager.N_VALUE).getToString();
+                if (key1.equals(keyToFind)) {
+                    LOG.debug("Found upload folder in configuration: " + value1);
+                    baseValue = value1;
+                    break;
+                }
+            }
+        }
+        if (baseValue == null) {
+            baseValue = m_config.getAttribute(keyToFind, null);
+            if (baseValue != null) {
+                LOG.debug("Found upload folder in sitemap configuration: " + baseValue);
+            }
+        }
+
+        CmsMacroResolver resolver = new CmsMacroResolver();
+        resolver.setCmsObject(getCmsObject());
+        resolver.addMacro("subsitepath", CmsFileUtil.removeTrailingSeparator(getSubSitePath()));
+        resolver.addMacro("sitepath", "/");
+
+        // if baseValue is still null, then resolveMacros will just return null
+        String result = resolver.resolveMacros(baseValue);
+
+        LOG.debug("Final value for upload folder : " + result);
+        return result;
     }
 
     /**

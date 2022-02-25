@@ -77,6 +77,9 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public class CmsSingleFileUploadDialog extends CmsPopup implements I_CmsUploadDialog {
 
+    /** The upload context. */
+    protected I_CmsUploadContext m_context;
+
     /** The main content panel. */
     protected CmsReplaceContentWidget m_mainPanel;
 
@@ -124,9 +127,6 @@ public class CmsSingleFileUploadDialog extends CmsPopup implements I_CmsUploadDi
 
     /** The upload service. */
     private I_CmsUploadServiceAsync m_uploadService;
-
-    /** The upload context. */
-    protected I_CmsUploadContext m_context;
 
     /**
      * Constructor.<p>
@@ -474,6 +474,7 @@ public class CmsSingleFileUploadDialog extends CmsPopup implements I_CmsUploadDi
             CmsCoreProvider.get().link(I_CmsUploadConstants.UPLOAD_ACTION_JSP_URI),
             CmsResource.getFolderPath(m_handler.getTargetFolderPath()),
             true,
+            null,
             Collections.singletonList(info),
             Collections.<String> emptyList(),
             this);

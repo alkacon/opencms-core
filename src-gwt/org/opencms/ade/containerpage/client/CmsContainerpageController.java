@@ -497,11 +497,11 @@ public final class CmsContainerpageController {
      */
     private class ReloadElementAction extends CmsRpcAction<Map<String, CmsContainerElementData>> {
 
-        /** The requested client id's. */
-        private Set<String> m_clientIds;
-
         /** The callback to execute after the reload. */
         private Runnable m_callback;
+
+        /** The requested client id's. */
+        private Set<String> m_clientIds;
 
         /**
          * Constructor.<p>
@@ -672,9 +672,6 @@ public final class CmsContainerpageController {
     /** Instance of the data provider. */
     private static CmsContainerpageController INSTANCE;
 
-    /** The publish lock checker. */
-    private CmsPublishLockChecker m_publishLockChecker = new CmsPublishLockChecker(this);
-
     /** The container element data. All requested elements will be cached here.*/
     protected Map<String, CmsContainerElementData> m_elements;
 
@@ -752,6 +749,9 @@ public final class CmsContainerpageController {
 
     /** Flag if the container-page has changed. */
     private boolean m_pageChanged;
+
+    /** The publish lock checker. */
+    private CmsPublishLockChecker m_publishLockChecker = new CmsPublishLockChecker(this);
 
     /** Timer to handle window resize. */
     private Timer m_resizeTimer;
@@ -2145,7 +2145,6 @@ public final class CmsContainerpageController {
         updateDetailPreviewStyles();
         updateButtonsForCurrentView();
         startPublishLockCheck();
-
     }
 
     /**

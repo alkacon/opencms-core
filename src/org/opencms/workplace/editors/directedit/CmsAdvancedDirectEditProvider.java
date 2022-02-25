@@ -32,11 +32,17 @@ import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypeBinary;
+import org.opencms.file.types.CmsResourceTypeImage;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.I_CmsCollectorInfoFactory;
 import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
+import org.opencms.gwt.shared.I_CmsEditableDataExtensions;
+import org.opencms.gwt.shared.I_CmsEditableDataExtensionsFactory;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
@@ -47,11 +53,14 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.Messages;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -95,11 +104,11 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         /** True if creating elements is allowed. */
         private boolean m_create;
 
-        /** Allow favoriting. */
-        private boolean m_favorite;
-
         /** True if editing elements is allowed. */
         private boolean m_edit;
+
+        /** Allow favoriting. */
+        private boolean m_favorite;
 
         /**
          * Private constructor.
@@ -154,6 +163,10 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
 
     /** True if the elements should be assigned randomly generated ids. */
     protected boolean m_useIds;
+
+    /** Factory for the editable data extended attributes. */
+    I_CmsEditableDataExtensionsFactory m_editableDataExtensionsFactory = AutoBeanFactorySource.create(
+        I_CmsEditableDataExtensionsFactory.class);
 
     /** The random number generator used for element ids. */
     private Random m_random = new Random();
@@ -215,7 +228,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
             if (!OpenCms.getResourceManager().getResourceType(resource.getTypeId()).isDirectEditable()
                 && !resource.isFolder()) {
                 // don't show direct edit button for non-editable resources
-                return CmsDirectEditResourceInfo.INACTIVE;
+                // return CmsDirectEditResourceInfo.INACTIVE;
             }
             // check the resource lock
             CmsLock lock = m_cms.getLock(resource);
@@ -461,11 +474,14 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
             }
         }
         SitemapDirectEditPermissions sitemapConfigPermissions = configData.getDirectEditPermissions(typeName);
-        editableData.put("hasEdit", params.getButtonSelection().isShowEdit());
+        boolean hasNew = false;
+        editableData.put(
+            "hasEdit",
+            params.getButtonSelection().isShowEdit() && CmsResourceTypeXmlContent.isXmlContent(resource));
         editableData.put(
             "hasDelete",
             params.getButtonSelection().isShowDelete() && writable && sitemapConfigPermissions.canEdit());
-        editableData.put("hasNew", params.getButtonSelection().isShowNew() && sitemapConfigPermissions.canCreate());
+        // hasNew = params.getButtonSelection().isShowNew() && writable && sitemapConfigPermissions.canEdit();
 
         editableData.put(CmsEditorConstants.ATTR_ELEMENT_VIEW, viewId);
         editableData.put("hasEditHandler", hasEditHandler);
@@ -484,6 +500,60 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
             }
         }
         editableData.put(CmsGwtConstants.ATTR_FAVORITE, Boolean.valueOf(favorites));
+        AutoBean<I_CmsEditableDataExtensions> extensions = m_editableDataExtensionsFactory.createExtensions();
+        boolean isUploadType = false;
+        List<String> uploadTypes = Arrays.asList(
+            CmsResourceTypeBinary.getStaticTypeName(),
+            CmsResourceTypeImage.getStaticTypeName(),
+            CmsResourceTypePlain.getStaticTypeName());
+        if ((resource != null) && !resource.isFolder()) {
+            for (String type : uploadTypes) {
+                if (OpenCms.getResourceManager().matchResourceType(type, resource.getTypeId())) {
+                    isUploadType = true;
+                    break;
+                }
+            }
+        } else {
+            String newLink = params.getLinkForNew();
+            if (newLink != null) {
+                int pipePos = newLink.lastIndexOf('|');
+                String typePart = newLink.substring(pipePos + 1);
+                isUploadType = uploadTypes.contains(typePart);
+            }
+        }
+        String uploadFolder = params.getUploadFolder();
+        hasNew = params.getButtonSelection().isShowNew();
+        if (isUploadType) {
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(uploadFolder) && !"none".equals(uploadFolder)) {
+                CmsResource uploadFolderResource = null;
+                try {
+                    uploadFolderResource = m_cms.readResource(uploadFolder, CmsResourceFilter.IGNORE_EXPIRATION);
+                    hasNew &= m_cms.hasPermissions(
+                        uploadFolderResource,
+                        CmsPermissionSet.ACCESS_WRITE,
+                        false,
+                        CmsResourceFilter.IGNORE_EXPIRATION);
+                } catch (CmsVfsResourceNotFoundException e) {
+                    LOG.debug(e.getLocalizedMessage(), e);
+                } catch (CmsPermissionViolationException e) {
+                    LOG.debug(
+                        "hasNew = false for upload folder " + uploadFolder + ", reason: " + e.getLocalizedMessage(),
+                        e);
+                    hasNew = false;
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    hasNew = false;
+                }
+            } else {
+                hasNew = false;
+            }
+        } else {
+            hasNew &= sitemapConfigPermissions.canCreate();
+        }
+        extensions.as().setUploadEnabled(isUploadType && hasUploadSupport() && (params.getUploadFolder() != null));
+        extensions.as().setUploadFolder(params.getUploadFolder());
+        editableData.put(CmsGwtConstants.ATTR_EXTENSIONS, AutoBeanCodex.encode(extensions).getPayload());
+        editableData.put("hasNew", hasNew);
 
         StringBuffer result = new StringBuffer(512);
         if (m_useIds) {
@@ -505,4 +575,15 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         }
         return result.toString();
     }
+
+    /**
+     * Checks if upload for binaries are supported by this provider.
+     *
+     * @return true if binary upload is supported
+     */
+    protected boolean hasUploadSupport() {
+
+        return true;
+    }
+
 }

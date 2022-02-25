@@ -194,6 +194,9 @@ public class CmsADEConfigData {
         }
     }
 
+    /** Sitemap attribute for the upload folder. */
+    public static final String ATTR_BINARY_UPLOAD_TARGET = "binary.upload.target";
+
     /** Prefix for logging special request log messages. */
     public static final String REQ_LOG_PREFIX = "[CmsADEConfigData] ";
 

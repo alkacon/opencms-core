@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.client;
 
+import org.opencms.gwt.shared.I_CmsEditableDataExtensions;
 import org.opencms.util.CmsUUID;
 
 /**
@@ -70,6 +71,13 @@ public interface I_CmsEditableData {
      * @return the element name
      */
     String getElementName();
+
+    /**
+     * Gets the extended attributes.
+     *
+     * @return the extended attributes
+     */
+    I_CmsEditableDataExtensions getExtensions();
 
     /**
      * Returns the new link url.<p>

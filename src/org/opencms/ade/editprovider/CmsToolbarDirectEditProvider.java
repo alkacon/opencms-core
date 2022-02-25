@@ -107,4 +107,13 @@ public class CmsToolbarDirectEditProvider extends CmsAdvancedDirectEditProvider 
         return result;
     }
 
+    /**
+     * @see org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider#hasUploadSupport()
+     */
+    @Override
+    protected boolean hasUploadSupport() {
+
+        return false;
+    }
+
 }

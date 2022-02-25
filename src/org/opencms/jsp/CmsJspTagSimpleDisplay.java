@@ -101,6 +101,9 @@ public class CmsJspTagSimpleDisplay extends BodyTagSupport implements I_CmsJspTa
     /** The element settings to be used. */
     private Map<String, String> m_settings;
 
+    /** The upload folder. */
+    private String m_uploadFolder;
+
     /** The site path to the resource to display. */
     private String m_value;
 
@@ -177,6 +180,7 @@ public class CmsJspTagSimpleDisplay extends BodyTagSupport implements I_CmsJspTa
                     m_canDelete,
                     m_creationSiteMap,
                     m_postCreateHandler,
+                    m_uploadFolder,
                     pageContext,
                     request,
                     response);
@@ -378,6 +382,16 @@ public class CmsJspTagSimpleDisplay extends BodyTagSupport implements I_CmsJspTa
     public void setSettings(Map<String, String> settings) {
 
         m_settings = settings;
+    }
+
+    /**
+     * Sets the upload folder.
+     *
+     * @param uploadFolder the upload folder
+     */
+    public void setUploadFolder(String uploadFolder) {
+
+        m_uploadFolder = uploadFolder;
     }
 
     /**

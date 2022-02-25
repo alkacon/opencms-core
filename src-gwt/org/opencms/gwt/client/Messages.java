@@ -85,6 +85,12 @@ public final class Messages {
     public static final String GUI_ABOUT_DIALOG_TITLE_0 = "GUI_ABOUT_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_BINARY_UPLOAD_DIALOG_CONTENT_1 = "GUI_BINARY_UPLOAD_DIALOG_CONTENT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BINARY_UPLOAD_DIALOG_TITLE_0 = "GUI_BINARY_UPLOAD_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_BROADCAST_SEND_BY_1 = "GUI_BROADCAST_SEND_BY_1";
 
     /** Message constant for key in the resource bundle. */

@@ -50,17 +50,18 @@ public class CmsUploader implements I_CmsUploader {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.upload.I_CmsUploader#uploadFiles(java.lang.String, java.lang.String, boolean, java.util.List, java.util.List, org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog)
+     * @see org.opencms.gwt.client.ui.input.upload.I_CmsUploader#uploadFiles(java.lang.String, java.lang.String, boolean, java.lang.String, java.util.List, java.util.List, org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog)
      */
     public void uploadFiles(
         String uploadUri,
         String targetFolder,
         boolean isRootPath,
+        String postCreateHandler,
         List<CmsFileInfo> filesToUpload,
         List<String> filesToUnzip,
         I_CmsUploadDialog dialog) {
 
-        m_impl.uploadFiles(uploadUri, targetFolder, isRootPath, filesToUpload, filesToUnzip, dialog);
+        m_impl.uploadFiles(uploadUri, targetFolder, isRootPath, postCreateHandler, filesToUpload, filesToUnzip, dialog);
     }
 
 }

@@ -53,12 +53,12 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     public static native void exportOpenUploadDialog() /*-{
 
-                                                       $wnd[@org.opencms.ade.upload.client.CmsUpload::FUNCTION_OPEN_UPLOAD_DIALOG] = function(
-                                                       uploadTarget) {
-                                                       @org.opencms.ade.upload.client.CmsUpload::openDialog(Ljava/lang/String;)(uploadTarget);
-                                                       };
+        $wnd[@org.opencms.ade.upload.client.CmsUpload::FUNCTION_OPEN_UPLOAD_DIALOG] = function(
+                uploadTarget) {
+            @org.opencms.ade.upload.client.CmsUpload::openDialog(Ljava/lang/String;)(uploadTarget);
+        };
 
-                                                       }-*/;
+    }-*/;
 
     /**
      * Opens an empty upload dialog.<p>
@@ -125,9 +125,9 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     protected native String getCloseLink() /*-{
 
-                                           return $wnd[@org.opencms.gwt.shared.I_CmsUploadConstants::ATTR_CLOSE_LINK];
+        return $wnd[@org.opencms.gwt.shared.I_CmsUploadConstants::ATTR_CLOSE_LINK];
 
-                                           }-*/;
+    }-*/;
 
     /**
      * Retrieves the dialog mode global variable as a string.<p>
@@ -136,9 +136,9 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     protected native String getDialogMode() /*-{
 
-                                            return $wnd[@org.opencms.gwt.shared.I_CmsUploadConstants::ATTR_DIALOG_MODE];
+        return $wnd[@org.opencms.gwt.shared.I_CmsUploadConstants::ATTR_DIALOG_MODE];
 
-                                            }-*/;
+    }-*/;
 
     /**
      * Retrieves the target folder global variable as a string.<p>
@@ -147,7 +147,7 @@ public class CmsUpload extends A_CmsEntryPoint {
      */
     private native String getTargetFolder() /*-{
 
-                                            return $wnd[@org.opencms.gwt.shared.I_CmsUploadConstants::VAR_TARGET_FOLDER];
+        return $wnd[@org.opencms.gwt.shared.I_CmsUploadConstants::VAR_TARGET_FOLDER];
 
-                                            }-*/;
+    }-*/;
 }

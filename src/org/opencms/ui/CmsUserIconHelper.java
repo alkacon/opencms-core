@@ -65,6 +65,7 @@ public class CmsUserIconHelper {
      * Available icon sizes.<p>
      */
     private enum IconSize {
+
         /**The big icon size. */
         Big(96, BIG_ICON_SUFFIX),
         /**The small icon size.*/
@@ -85,6 +86,7 @@ public class CmsUserIconHelper {
          * @param suffix for filename
          */
         private IconSize(int size, String suffix) {
+
             m_size = size;
             m_suffix = suffix;
         }
@@ -123,11 +125,11 @@ public class CmsUserIconHelper {
     /** The small icon suffix. */
     public static final String SMALL_ICON_SUFFIX = "_small_icon.png";
 
-    /** The tiny icon suffix. */
-    public static final String TINY_ICON_SUFFIX = "_tiny_icon.png";
-
     /** The temp folder name. */
     public static final String TEMP_FOLDER = "temp/";
+
+    /** The tiny icon suffix. */
+    public static final String TINY_ICON_SUFFIX = "_tiny_icon.png";
 
     /** The user image folder. */
     public static final String USER_IMAGE_FOLDER = "/system/userimages/";
@@ -153,6 +155,7 @@ public class CmsUserIconHelper {
      * @param adminCms the admin cms context
      */
     public CmsUserIconHelper(CmsObject adminCms) {
+
         m_adminCms = adminCms;
         m_renderer = new IdentIcon();
         m_renderer.setReservedColor(ADMIN_COLOR);
