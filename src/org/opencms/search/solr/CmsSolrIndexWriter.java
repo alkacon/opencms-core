@@ -177,6 +177,21 @@ public class CmsSolrIndexWriter implements I_CmsSolrIndexWriter {
     }
 
     /**
+     * Updates a search document without removing it beforehand. Use for migration purposes only.
+     * @param searchDocument the search document.
+     * @throws IOException if the update fails
+     */
+    public void updateDocument(I_CmsSearchDocument searchDocument) throws IOException {
+
+        SolrInputDocument inputDoc = (SolrInputDocument)searchDocument.getDocument();
+        try {
+            m_server.add(m_index.getCoreName(), inputDoc, m_commitMs);
+        } catch (SolrServerException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    /**
      * @see org.opencms.search.I_CmsIndexWriter#updateDocument(java.lang.String, org.opencms.search.I_CmsSearchDocument)
      */
     public void updateDocument(String rootPath, I_CmsSearchDocument document) throws IOException {
