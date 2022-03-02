@@ -34,10 +34,14 @@ package org.opencms.search.solr;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.search.CmsSearchUtil;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.fields.CmsSearchField;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -240,7 +244,17 @@ public class CmsSolrIndexWriter implements I_CmsSolrIndexWriter {
             for (int i = 0; i < serialDates.size(); i++) {
                 String date = serialDates.get(i);
                 String endDate = serialDatesEnd.get(i);
-                String dateRange = "[" + date + " TO " + endDate + "]";
+                String endDateRange = endDate;
+                try {
+                    Date parsed = CmsSearchUtil.parseDate(endDate);
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(parsed);
+                    calendar.add(Calendar.SECOND, -1);
+                    endDateRange = CmsSearchUtil.getDateAsIso8601(calendar.getTime());
+                } catch (ParseException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+                String dateRange = "[" + date + " TO " + endDateRange + "]";
                 String currentTillDate = serialDatesCurrentTill.get(i);
                 inputDoc.setField(CmsSearchField.FIELD_INSTANCEDATE + CmsSearchField.FIELD_POSTFIX_DATE, date);
                 inputDoc.setField(CmsSearchField.FIELD_INSTANCEDATE_END + CmsSearchField.FIELD_POSTFIX_DATE, endDate);

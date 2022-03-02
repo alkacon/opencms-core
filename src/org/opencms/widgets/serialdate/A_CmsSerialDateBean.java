@@ -100,7 +100,7 @@ public abstract class A_CmsSerialDateBean implements I_CmsSerialDateBean {
             m_endDate.set(Calendar.HOUR_OF_DAY, 0);
             m_endDate.set(Calendar.MINUTE, 0);
             m_endDate.set(Calendar.SECOND, 0);
-            m_endDate.set(Calendar.MILLISECOND, -1);
+            m_endDate.set(Calendar.MILLISECOND, 0);
             m_endDate.add(Calendar.DATE, 1);
         }
         m_endType = endType;
