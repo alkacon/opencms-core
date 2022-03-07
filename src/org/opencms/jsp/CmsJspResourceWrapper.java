@@ -394,7 +394,7 @@ public class CmsJspResourceWrapper extends CmsResource {
         try {
             CmsLocaleGroup localeGroup = m_cms.getLocaleGroupService().readLocaleGroup(this);
             Map<Locale, CmsResource> resourcesByLocale = localeGroup.getResourcesByLocale();
-            Map<String, CmsJspResourceWrapper> result = Maps.newHashMap();
+            Map<String, CmsJspResourceWrapper> result = new HashMap<>();
             for (Map.Entry<Locale, CmsResource> entry : resourcesByLocale.entrySet()) {
                 result.put(entry.getKey().toString(), CmsJspResourceWrapper.wrap(m_cms, entry.getValue()));
             }
