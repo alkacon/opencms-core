@@ -62,8 +62,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 
-import com.google.common.collect.Maps;
-
 /**
  * Wrapper subclass of CmsResource with some convenience methods.<p>
  */
@@ -840,6 +838,23 @@ public class CmsJspResourceWrapper extends CmsResource {
             m_imageBean = new CmsJspImageBean(getCmsObject(), this, null);
         }
         return m_imageBean;
+    }
+
+    /**
+     * Returns this resource wrapper.<p>
+     *
+     * This is included because in case {@link org.opencms.jsp.util.CmsJspStandardContextBean#getWrap()} is used, the result may be
+     * either a {@link org.opencms.jsp.util.CmsJspObjectValueWrapper} or a {@link CmsJspResourceWrapper}.
+     * Using {@link #getToResource()} on the result will always return a resource wrapper this way.<p>
+     *
+     * @return this resource wrapper
+     *
+     * @see org.opencms.jsp.util.CmsJspStandardContextBean#getWrap()
+     * @see org.opencms.jsp.util.CmsJspObjectValueWrapper#getToResource()
+     */
+    public CmsJspResourceWrapper getToResource() {
+
+        return this;
     }
 
     /**
