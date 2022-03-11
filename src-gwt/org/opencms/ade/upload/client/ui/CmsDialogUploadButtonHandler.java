@@ -27,7 +27,7 @@
 
 package org.opencms.ade.upload.client.ui;
 
-import org.opencms.ade.upload.client.I_CmsUploadContext;
+import org.opencms.gwt.client.I_CmsUploadContext;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;

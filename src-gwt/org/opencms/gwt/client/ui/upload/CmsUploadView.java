@@ -27,9 +27,9 @@
 
 package org.opencms.gwt.client.ui.upload;
 
-import org.opencms.ade.upload.client.I_CmsUploadContext;
 import org.opencms.ade.upload.client.ui.CmsDialogUploadButtonHandler;
 import org.opencms.gwt.client.I_CmsEditableData;
+import org.opencms.gwt.client.I_CmsUploadContext;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.shared.CmsListInfoBean;

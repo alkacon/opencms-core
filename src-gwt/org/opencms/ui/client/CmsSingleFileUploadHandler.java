@@ -27,8 +27,8 @@
 
 package org.opencms.ui.client;
 
-import org.opencms.ade.upload.client.I_CmsUploadContext;
 import org.opencms.ade.upload.client.Messages;
+import org.opencms.gwt.client.I_CmsUploadContext;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
