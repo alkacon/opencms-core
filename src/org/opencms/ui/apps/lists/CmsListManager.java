@@ -849,10 +849,13 @@ I_CmsCachableApp {
     public static final String FIELD_CATEGORIES = "category_exact";
 
     /** SOLR field name. */
-    public static final String FIELD_DATE = "instancedaterange_%s_dr";
+    public static final String FIELD_DATE = "instancedate_%s_dt";
 
     /** SOLR field name. */
-    public static final String FIELD_DATE_FACET_NAME = "instancedaterange";
+    public static final String FIELD_DATE_RANGE = "instancedaterange_%s_dr";
+
+    /** SOLR field name. */
+    public static final String FIELD_DATE_FACET_NAME = "instancedatefacet";
 
     /** SOLR field name. */
     public static final String FIELD_PARENT_FOLDERS = "parent-folders";
@@ -880,6 +883,9 @@ I_CmsCachableApp {
 
     /** List configuration node name and field key. */
     public static final String N_DISPLAY_TYPE = "TypesToCollect";
+
+    /** List configuration node name and field key. */
+    public static final String N_FILTER_MULTI_DAY = "FilterMultiDay";
 
     /** List configuration node name and field key. */
     public static final String N_FILTER_QUERY = "FilterQuery";
@@ -921,6 +927,7 @@ I_CmsCachableApp {
     public static final String[] PARAMETER_FIELDS = new String[] {
         N_TITLE,
         N_CATEGORY,
+        N_FILTER_MULTI_DAY,
         N_FILTER_QUERY,
         N_SORT_ORDER,
         N_SHOW_EXPIRED,

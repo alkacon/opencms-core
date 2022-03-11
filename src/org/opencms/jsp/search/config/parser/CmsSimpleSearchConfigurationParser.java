@@ -286,8 +286,12 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
             return super.parseRangeFacets();
         } else {
             Map<String, I_CmsSearchConfigurationFacetRange> rangeFacets = new HashMap<String, I_CmsSearchConfigurationFacetRange>();
+            String indexField = CmsListManager.FIELD_DATE;
+            if (Boolean.parseBoolean(m_config.getParameterValue(CmsListManager.N_FILTER_MULTI_DAY))) {
+                indexField = CmsListManager.FIELD_DATE_RANGE;
+            }
             I_CmsSearchConfigurationFacetRange rangeFacet = new CmsSearchConfigurationFacetRange(
-                String.format(CmsListManager.FIELD_DATE, getSearchLocale().toString()),
+                String.format(indexField, getSearchLocale().toString()),
                 "NOW/YEAR-20YEARS",
                 "NOW/MONTH+5YEARS",
                 "+1MONTHS",

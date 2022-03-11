@@ -30,6 +30,7 @@
         <xsd:element name="DateRestriction" type="OpenCmsListDateRestriction" minOccurs="0" />
         <xsd:element name="GeoFilter" type="OpenCmsListGeoFilter" minOccurs="0" />
         <xsd:element name="ShowExpired" type="OpenCmsBoolean" minOccurs="0" />
+        <xsd:element name="FilterMultiDay" type="OpenCmsBoolean" minOccurs="0" />
         <xsd:element name="Parameter" type="OpenCmsParameter" minOccurs="0" maxOccurs="unbounded" />
         <xsd:element name="Blacklist" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
