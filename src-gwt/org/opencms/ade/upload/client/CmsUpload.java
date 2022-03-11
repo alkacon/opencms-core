@@ -31,7 +31,6 @@ import org.opencms.ade.upload.client.ui.A_CmsUploadDialog;
 import org.opencms.ade.upload.client.ui.CmsUploadDialogImpl;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.I_CmsUploadContext;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 
 import java.util.List;

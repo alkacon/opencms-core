@@ -27,9 +27,9 @@
 
 package org.opencms.ui.client;
 
+import org.opencms.ade.upload.client.I_CmsUploadContext;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.I_CmsUploadContext;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsErrorDialog;

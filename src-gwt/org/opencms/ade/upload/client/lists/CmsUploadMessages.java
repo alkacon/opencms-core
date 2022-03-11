@@ -25,40 +25,46 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.upload;
+package org.opencms.ade.upload.client.lists;
 
-import org.opencms.gwt.client.I_CmsEditableData;
-import org.opencms.gwt.client.I_CmsUploadContext;
-import org.opencms.gwt.client.ui.CmsPopup;
-import org.opencms.gwt.shared.CmsListInfoBean;
-
-import com.google.gwt.user.client.ui.Widget;
+import org.opencms.gwt.client.Messages;
 
 /**
- * Popup used for the upload dialog.
+ * Class with static accessor methods for text messages.
  */
-public class CmsUploadPopup extends CmsPopup {
-
-    /** The popup content. */
-    private CmsUploadView m_view;
+public class CmsUploadMessages {
 
     /**
-     * Creates a new instance.
+     * Message text accessor.
      *
-     * @param data the editable data
-     * @param context the upload context
-     * @param info the list info bean to display
+     * @return the message text
      */
-    public CmsUploadPopup(I_CmsEditableData data, I_CmsUploadContext context, CmsListInfoBean info) {
+    public static String dialogTitle() {
 
-        super(CmsUploadMessages.dialogTitle());
-        setModal(true);
-        setGlassEnabled(true);
-        addDialogClose(() -> {/*do nothing*/});
-        m_view = new CmsUploadView(data, context, info);
-        setMainContent(m_view);
-        for (Widget widget : m_view.getButtons()) {
-            addButton(widget);
-        }
+        return Messages.get().key(Messages.GUI_BINARY_UPLOAD_DIALOG_TITLE_0);
     }
+
+    /**
+     * Message text accessor.
+     *
+     * @param folder the folder path
+     *
+     * @return the message text
+     */
+    public static String innerText(String folder) {
+
+        return Messages.get().key(Messages.GUI_BINARY_UPLOAD_DIALOG_CONTENT_1, folder);
+    }
+
+    /**
+     * Message text accessor.
+     *
+     * @return the message text
+     */
+    public static String upload() {
+
+        return Messages.get().key(Messages.GUI_OK_0);
+
+    }
+
 }

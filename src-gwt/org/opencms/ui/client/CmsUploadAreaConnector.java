@@ -27,8 +27,8 @@
 
 package org.opencms.ui.client;
 
+import org.opencms.ade.upload.client.I_CmsUploadContext;
 import org.opencms.ade.upload.client.ui.CmsDialogUploadButtonHandler;
-import org.opencms.gwt.client.I_CmsUploadContext;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.ui.components.extensions.CmsUploadAreaExtension;
 import org.opencms.ui.shared.components.CmsUploadAreaState;
