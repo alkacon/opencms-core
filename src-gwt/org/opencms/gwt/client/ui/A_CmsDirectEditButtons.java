@@ -224,7 +224,11 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem, I_C
             }
             if (m_editableData.hasNew()) {
                 m_new = new CmsPushButton();
-                m_new.setImageClass(I_CmsButton.ADD_SMALL);
+                if (m_editableData.getExtensions().isUploadEnabled()) {
+                    m_new.setImageClass(I_CmsButton.UPLOAD_SMALL);
+                } else {
+                    m_new.setImageClass(I_CmsButton.ADD_SMALL);
+                }
                 m_new.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_NEW_0));
                 m_new.setButtonStyle(I_CmsButton.ButtonStyle.FONT_ICON, null);
                 buttonMap.put(Integer.valueOf(200), m_new);
