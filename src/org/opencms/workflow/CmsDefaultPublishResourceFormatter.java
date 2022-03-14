@@ -103,7 +103,15 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
             String info;
             CmsPublishResourceInfo.Type infoType;
             CmsPublishResourceInfo infoObj;
-            String publishUser = getOuAwareName(m_cms, m_cms.readUser(resource.getUserLastModified()).getName());
+            String publishUser = null;
+            try {
+                String userName = m_cms.readUser(resource.getUserLastModified()).getName();
+                publishUser = getOuAwareName(m_cms, userName);
+            } catch (Exception e) {
+                publishUser = "" + resource.getUserLastModified();
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+
             Date publishDate = new Date(resource.getDateLastModified());
             info = Messages.get().getBundle(getLocale()).key(
                 Messages.GUI_RESOURCE_PUBLISHED_BY_2,

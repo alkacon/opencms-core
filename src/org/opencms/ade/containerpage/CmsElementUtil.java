@@ -51,6 +51,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
@@ -1067,7 +1068,15 @@ public class CmsElementUtil {
         setElementInfo(element, elementData);
         elementData.setLoadTime(System.currentTimeMillis());
         elementData.setLastModifiedDate(element.getResource().getDateLastModified());
-        elementData.setLastModifiedByUser(m_cms.readUser(element.getResource().getUserLastModified()).getName());
+        String userName = null;
+        try {
+            CmsUser user = m_cms.readUser(element.getResource().getUserLastModified());
+            userName = user.getName();
+        } catch (CmsException e) {
+            userName = "" + element.getResource().getUserLastModified();
+            LOG.debug(e.getLocalizedMessage(), e);
+        }
+        elementData.setLastModifiedByUser(userName);
         elementData.setNavText(resUtil.getNavText());
         Map<String, CmsXmlContentProperty> settingConfig = CmsXmlContentPropertyHelper.getPropertyInfo(
             m_cms,
