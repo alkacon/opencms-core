@@ -207,7 +207,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
      * Similar to the method in the superclass, but removes the write permission check, as this is handled differently.
      */
     @Override
-    public CmsDirectEditResourceInfo getResourceInfo(String resourceName) {
+    public CmsDirectEditResourceInfo getResourceInfo(CmsDirectEditParams params, String resourceName) {
 
         try {
             // first check some simple preconditions for direct edit
@@ -227,8 +227,9 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
             CmsResource resource = m_cms.readResource(resourceName, CmsResourceFilter.ALL);
             if (!OpenCms.getResourceManager().getResourceType(resource.getTypeId()).isDirectEditable()
                 && !resource.isFolder()) {
-                // don't show direct edit button for non-editable resources
-                // return CmsDirectEditResourceInfo.INACTIVE;
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(params.getUploadFolder())) {
+                    return CmsDirectEditResourceInfo.INACTIVE;
+                }
             }
             // check the resource lock
             CmsLock lock = m_cms.getLock(resource);
@@ -322,7 +323,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
 
         String content;
         // check the direct edit permissions of the current user
-        CmsDirectEditResourceInfo resourceInfo = getResourceInfo(params.getResourceName());
+        CmsDirectEditResourceInfo resourceInfo = getResourceInfo(params, params.getResourceName());
 
         // check the permission mode
         m_lastPermissionMode = resourceInfo.getPermissions().getPermission();

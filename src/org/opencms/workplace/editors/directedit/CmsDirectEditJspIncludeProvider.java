@@ -130,7 +130,8 @@ public class CmsDirectEditJspIncludeProvider extends A_CmsDirectEditProvider {
         String editElement,
         String editOptions,
         String editPermissions,
-        String createLink) throws JspException {
+        String createLink)
+    throws JspException {
 
         if (editPermissions == null) {
             // we do not have direct edit permissions
@@ -265,7 +266,7 @@ public class CmsDirectEditJspIncludeProvider extends A_CmsDirectEditProvider {
     public boolean insertDirectEditStart(PageContext context, CmsDirectEditParams params) throws JspException {
 
         String result = null;
-        CmsDirectEditPermissions permissions = getResourceInfo(params.getResourceName()).getPermissions();
+        CmsDirectEditPermissions permissions = getResourceInfo(params, params.getResourceName()).getPermissions();
         if (permissions.getPermission() > 0) {
             // permission to direct edit is granted
             m_permissions = permissions.toString();

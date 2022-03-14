@@ -164,7 +164,7 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
 
         String content;
         // check the direct edit permissions of the current user
-        CmsDirectEditResourceInfo resourceInfo = getResourceInfo(params.getResourceName());
+        CmsDirectEditResourceInfo resourceInfo = getResourceInfo(params, params.getResourceName());
         // check the permission mode
         m_lastPermissionMode = resourceInfo.getPermissions().getPermission();
         switch (m_lastPermissionMode) {

@@ -112,11 +112,12 @@ public abstract class A_CmsDirectEditProvider implements I_CmsDirectEditProvider
      * If the permissions are not {@link CmsDirectEditPermissions#INACTIVE}, then the resource and lock
      * information is also included in the result.<p>
      *
+     * @param params the direct edit parameters
      * @param resourceName the name of the VFS resource to get the direct edit info for
      *
      * @return the direct edit resource information for the given VFS resource
      */
-    public CmsDirectEditResourceInfo getResourceInfo(String resourceName) {
+    public CmsDirectEditResourceInfo getResourceInfo(CmsDirectEditParams params, String resourceName) {
 
         try {
             // first check some simple preconditions for direct edit
