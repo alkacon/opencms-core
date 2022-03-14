@@ -183,7 +183,8 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
         m_adminCms = OpenCms.initCmsObject(adminCms);
         m_configuration = configuration;
-        if (cms.getRequestContext().getCurrentUser().isGuestUser() && m_configuration.getUserForGuests().isPresent()) {
+        if ((cms.getRequestContext().getCurrentUser().isGuestUser() || configuration.getForceUserSubstitution())
+            && m_configuration.getUserForGuests().isPresent()) {
             m_cms = OpenCms.initCmsObject(
                 adminCms,
                 new CmsContextInfo(m_configuration.getUserForGuests().get().getName()));

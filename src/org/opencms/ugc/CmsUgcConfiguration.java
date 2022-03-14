@@ -47,6 +47,9 @@ public class CmsUgcConfiguration {
     /** The user to user for VFS operations caused by guests who submit the XML content form. */
     private Optional<CmsUser> m_userForGuests;
 
+    /** Whether to force substitution of the current user with the configured UGC system user. */
+    private boolean m_forceUserSubstitution;
+
     /** An id that should uniquely identify the configuration. */
     private CmsUUID m_id;
 
@@ -148,6 +151,16 @@ public class CmsUgcConfiguration {
     public CmsResource getContentParentFolder() {
 
         return m_contentParentFolder;
+    }
+
+    /**
+     * Returns the force user substitution flag.
+     *
+     * @return the force user substitution flag
+     */
+    public boolean getForceUserSubstitution() {
+
+        return m_forceUserSubstitution;
     }
 
     /**
