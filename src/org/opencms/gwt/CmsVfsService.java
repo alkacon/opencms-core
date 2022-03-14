@@ -43,6 +43,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeBinary;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypePointer;
@@ -921,6 +922,27 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         try {
             CmsResource res = getCmsObject().readResource(vfsPath, CmsResourceFilter.IGNORE_EXPIRATION);
             return res.getStructureId();
+        } catch (Throwable e) {
+            error(e);
+            return null; // will never be reached
+        }
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getUploadFolderInfo(java.lang.String)
+     */
+    public CmsListInfoBean getUploadFolderInfo(String path) throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        try {
+            CmsResource res = cms.readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
+            return getPageInfo(res);
+        } catch (CmsVfsResourceNotFoundException e) {
+            String title = CmsResource.getName(path);
+            CmsListInfoBean info = new CmsListInfoBean(title, path, new ArrayList<>());
+            info.setResourceType(CmsResourceTypeFolder.getStaticTypeName());
+            info.setBigIconClasses(CmsIconUtil.getIconClasses(CmsResourceTypeFolder.getStaticTypeName(), "", false));
+            return info;
         } catch (Throwable e) {
             error(e);
             return null; // will never be reached

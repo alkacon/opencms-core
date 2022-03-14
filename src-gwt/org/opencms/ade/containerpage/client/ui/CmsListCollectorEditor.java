@@ -396,7 +396,9 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
 
                     start(0, false);
                     CmsCoreProvider.get();
-                    CmsCoreProvider.getVfsService().getPageInfo(m_editableData.getStructureId(), this);
+                    CmsCoreProvider.getVfsService().getUploadFolderInfo(
+                        m_editableData.getExtensions().getUploadFolder(),
+                        this);
                 }
 
                 @SuppressWarnings("synthetic-access")

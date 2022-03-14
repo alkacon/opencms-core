@@ -361,6 +361,15 @@ public interface I_CmsVfsService extends RemoteService {
     CmsUUID getStructureId(String vfsPath) throws CmsRpcException;
 
     /**
+     * Gets the resource info to display for an upload folder.
+     *
+     * @param path the folder path
+     * @return the info to display
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsListInfoBean getUploadFolderInfo(String path) throws CmsRpcException;
+
+    /**
      * Loads the external link info.<p>
      *
      * @param structureId the external link structure id

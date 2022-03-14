@@ -311,6 +311,14 @@ public interface I_CmsVfsServiceAsync {
     void getStructureId(String vfsPath, AsyncCallback<CmsUUID> callback);
 
     /**
+     * Gets the resource info to display for an upload folder.
+     *
+     * @param path the folder path
+     * @param callback the callback to call with the result
+     */
+    void getUploadFolderInfo(String path, AsyncCallback<CmsListInfoBean> callback);
+
+    /**
      * Loads the external link info.<p>
      *
      * @param structureId the external link structure id
