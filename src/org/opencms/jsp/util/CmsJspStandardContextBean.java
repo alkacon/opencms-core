@@ -73,6 +73,7 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.galleries.CmsAjaxDownloadGallery;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -1020,7 +1021,26 @@ public final class CmsJspStandardContextBean {
                     break;
                 }
             }
+
+            if (baseValue == null) {
+                List<CmsJspContentAccessValueWrapper> folderEntries = content.getValueList().get(
+                    CmsListManager.N_SEARCH_FOLDER);
+                if (folderEntries.size() == 1) {
+                    CmsResource resource = folderEntries.get(0).getToResource();
+                    if (resource != null) {
+                        if (OpenCms.getResourceManager().matchResourceType(
+                            CmsAjaxDownloadGallery.GALLERYTYPE_NAME,
+                            resource.getTypeId())) {
+                            baseValue = m_cms.getSitePath(resource);
+                            LOG.debug(
+                                "Using single download gallery from search folder configuration as upload folder: "
+                                    + baseValue);
+                        }
+                    }
+                }
+            }
         }
+
         if (baseValue == null) {
             baseValue = m_config.getAttribute(keyToFind, null);
             if (baseValue != null) {
