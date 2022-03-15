@@ -74,6 +74,7 @@ import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.galleries.CmsAjaxDownloadGallery;
+import org.opencms.workplace.galleries.CmsAjaxImageGallery;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -101,6 +102,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -1013,11 +1015,11 @@ public final class CmsJspStandardContextBean {
         String baseValue = null;
         if (content != null) {
             for (CmsJspContentAccessValueWrapper wrapper : content.getValueList().get(CmsListManager.N_PARAMETER)) {
-                String key1 = wrapper.getValue().get(CmsListManager.N_KEY).getToString();
-                String value1 = wrapper.getValue().get(CmsListManager.N_VALUE).getToString();
-                if (key1.equals(keyToFind)) {
-                    LOG.debug("Found upload folder in configuration: " + value1);
-                    baseValue = value1;
+                String paramKey = wrapper.getValue().get(CmsListManager.N_KEY).getToString();
+                String paramValue = wrapper.getValue().get(CmsListManager.N_VALUE).getToString();
+                if (paramKey.equals(keyToFind)) {
+                    LOG.debug("Found upload folder in configuration: " + paramValue);
+                    baseValue = paramValue;
                     break;
                 }
             }
@@ -1027,15 +1029,18 @@ public final class CmsJspStandardContextBean {
                     CmsListManager.N_SEARCH_FOLDER);
                 if (folderEntries.size() == 1) {
                     CmsResource resource = folderEntries.get(0).getToResource();
-                    if (resource != null) {
-                        if (OpenCms.getResourceManager().matchResourceType(
-                            CmsAjaxDownloadGallery.GALLERYTYPE_NAME,
-                            resource.getTypeId())) {
-                            baseValue = m_cms.getSitePath(resource);
-                            LOG.debug(
-                                "Using single download gallery from search folder configuration as upload folder: "
-                                    + baseValue);
-                        }
+                    List<String> galleryTypes = Arrays.asList(
+                        CmsAjaxDownloadGallery.GALLERYTYPE_NAME,
+                        CmsAjaxImageGallery.GALLERYTYPE_NAME);
+                    if ((resource != null) && (null != findAncestor(m_cms, resource, (ancestor) -> {
+                        return galleryTypes.stream().anyMatch(
+                            type -> OpenCms.getResourceManager().matchResourceType(type, ancestor.getTypeId()));
+                    }))) {
+                        baseValue = m_cms.getSitePath(resource);
+                        LOG.debug(
+                            "Using single download gallery from search folder configuration as upload folder: "
+                                + baseValue);
+
                     }
                 }
             }
@@ -2448,6 +2453,43 @@ public final class CmsJspStandardContextBean {
 
         m_elementInstances = null;
         m_parentContainers = null;
+    }
+
+    /**
+     * Finds the first ancestor of a resource matching a given predicate.
+     *
+     * @param cms the CMS context
+     * @param resource the resource
+     * @param predicate the predicate to test
+     *
+     * @return the first ancestor matching the predicate (which may possibly be the given resource itself), or null if no matching ancestor is found
+     * @throws CmsException
+     */
+    private CmsResource findAncestor(CmsObject cms, CmsResource resource, Predicate<CmsResource> predicate) {
+
+        try {
+            CmsObject rootCms = OpenCms.initCmsObject(cms);
+            rootCms.getRequestContext().setSiteRoot("");
+            CmsResource ancestor = resource;
+            while (ancestor != null) {
+                if (predicate.test(ancestor)) {
+                    return ancestor;
+                }
+                String parentFolder = CmsResource.getParentFolder(ancestor.getRootPath());
+                if (parentFolder == null) {
+                    break;
+                }
+                try {
+                    ancestor = rootCms.readResource(parentFolder, CmsResourceFilter.IGNORE_EXPIRATION);
+                } catch (CmsException e) {
+                    LOG.info(e.getLocalizedMessage(), e);
+                    break;
+                }
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return null;
     }
 
     /**
