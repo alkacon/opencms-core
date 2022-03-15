@@ -39,17 +39,17 @@ public interface I_CmsButton {
     /** Available button colors. */
     public enum ButtonColor {
 
-    /** Button color. */
-    BLUE(I_CmsLayoutBundle.INSTANCE.buttonCss().blue()),
+        /** Button color. */
+        BLUE(I_CmsLayoutBundle.INSTANCE.buttonCss().blue()),
 
-    /** Button color. */
-    GRAY(I_CmsLayoutBundle.INSTANCE.buttonCss().gray()),
+        /** Button color. */
+        GRAY(I_CmsLayoutBundle.INSTANCE.buttonCss().gray()),
 
-    /** Button color. */
-    GREEN(I_CmsLayoutBundle.INSTANCE.buttonCss().green()),
+        /** Button color. */
+        GREEN(I_CmsLayoutBundle.INSTANCE.buttonCss().green()),
 
-    /** Button color. */
-    RED(I_CmsLayoutBundle.INSTANCE.buttonCss().red());
+        /** Button color. */
+        RED(I_CmsLayoutBundle.INSTANCE.buttonCss().red());
 
         /** The list of additional style class names for this button style. */
         private String m_className;
@@ -507,6 +507,9 @@ public interface I_CmsButton {
 
     /** Font icon using a 32x32 grid. */
     String UPLOAD = "opencms-icon-upload";
+
+    /** Special icon class for list upload buttons. */
+    String UPLOAD_SELECTION = "opencms-icon-upload-selection";
 
     /** Small font icon using a 20x20 grid. */
     String UPLOAD_SMALL = "opencms-icon-upload-20";

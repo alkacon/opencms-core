@@ -1,4 +1,4 @@
-@external oc-edit-buttons-visible, oc-ignore-small-element, oc-small-element, oc-enlarge-small-elements, oc-drag-element, oc-option-bar, oc-touch-only, opencms-icon, opencms-icon-edit-point, html-face, oc-groupcontainer, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled, gwt-TabLayoutPanel;
+@external oc-edit-buttons-visible, oc-ignore-small-element, oc-small-element, oc-enlarge-small-elements, oc-drag-element, oc-option-bar, oc-touch-only, opencms-icon, opencms-icon-edit-point, html-face, oc-groupcontainer, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled, gwt-TabLayoutPanel, opencms-icon-upload-selection;
 
 .showButtons, .hideButtons, .elementInfoChanged, .elementInfoUnchanged, .editableElement {}
 
@@ -218,6 +218,19 @@ div.groupcontainerPlaceholder{
 	content: "\e902";
 	opacity: 1;
 }
+
+.opencms-icon-upload-selection:before {
+	background: transparent;
+	opacity: 1; 
+	content: "\e600";
+}
+
+.oc-option-bar.cmsHovering .opencms-icon-upload-selection:before {
+	background: transparent;
+	opacity: 1; 
+	content: "\e909";
+}
+
 
 .oc-enlarge-small-elements .oc-small-element {
 	min-height: eval("org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler.NECESSARY_HEIGHT_RULE");

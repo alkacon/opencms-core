@@ -225,7 +225,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem, I_C
             if (m_editableData.hasNew()) {
                 m_new = new CmsPushButton();
                 if (m_editableData.getExtensions().isUploadEnabled()) {
-                    m_new.setImageClass(I_CmsButton.UPLOAD_SMALL);
+                    m_new.setImageClass(I_CmsButton.UPLOAD_SELECTION);
                 } else {
                     m_new.setImageClass(I_CmsButton.ADD_SMALL);
                 }
@@ -237,7 +237,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem, I_C
             Map<Integer, CmsPushButton> additionalButtons = getAdditionalButtons();
             buttonMap.putAll(additionalButtons);
             if ((buttonMap.size() > 0) || m_editableData.hasEdit()) {
-                if (!m_editableData.getExtensions().isUploadEnabled()) { // for the upload case, the bull's eye icon / pen are not used
+                if (!m_editableData.getExtensions().isUploadEnabled()) { // for the upload case, the edit button is not needed, the bullseye edit point is displayed on the upload button instead
                     m_edit = new CmsPushButton();
                     m_edit.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
                     m_edit.setButtonStyle(I_CmsButton.ButtonStyle.FONT_ICON, null);
