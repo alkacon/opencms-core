@@ -127,6 +127,15 @@ public class CmsDirectEditButtons extends A_CmsDirectEditButtons implements I_Cm
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#getUploadButtonTitle(java.lang.String)
+     */
+    @Override
+    protected String getUploadButtonTitle(String uploadFolder) {
+
+        return null;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#onClickDelete()
      */
     @Override

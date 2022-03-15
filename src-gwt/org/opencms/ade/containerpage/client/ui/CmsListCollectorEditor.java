@@ -249,6 +249,17 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#getUploadButtonTitle(java.lang.String)
+     */
+    @Override
+    protected String getUploadButtonTitle(String uploadFolder) {
+
+        return org.opencms.ade.galleries.client.Messages.get().key(
+            org.opencms.ade.galleries.client.Messages.GUI_GALLERY_UPLOAD_TITLE_1,
+            uploadFolder);
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.A_CmsDirectEditButtons#onClickDelete()
      */
     @Override

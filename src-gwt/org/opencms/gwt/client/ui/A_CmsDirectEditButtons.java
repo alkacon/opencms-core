@@ -226,10 +226,12 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem, I_C
                 m_new = new CmsPushButton();
                 if (m_editableData.getExtensions().isUploadEnabled()) {
                     m_new.setImageClass(I_CmsButton.UPLOAD_SELECTION);
+                    m_new.setTitle(getUploadButtonTitle(m_editableData.getExtensions().getUploadFolder()));
                 } else {
                     m_new.setImageClass(I_CmsButton.ADD_SMALL);
+                    m_new.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_NEW_0));
                 }
-                m_new.setTitle(Messages.get().key(Messages.GUI_TOOLBAR_NEW_0));
+
                 m_new.setButtonStyle(I_CmsButton.ButtonStyle.FONT_ICON, null);
                 buttonMap.put(Integer.valueOf(200), m_new);
                 m_new.addClickHandler(handler);
@@ -462,6 +464,14 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem, I_C
 
         return new HashMap<String, String>();
     }
+
+    /**
+     * Gets the upload button title.
+     *
+     * @param uploadFolder the upload folder
+     * @return the upload button title
+     */
+    protected abstract String getUploadButtonTitle(String uploadFolder);
 
     /**
      * This method should be executed when the "delete" direct edit button is clicked.<p>
