@@ -53,7 +53,7 @@ public class CmsUploadMessages {
      */
     public static String innerText(String folder) {
 
-        return Messages.get().key(Messages.GUI_BINARY_UPLOAD_DIALOG_CONTENT_1, folder);
+        return Messages.get().key(Messages.GUI_BINARY_UPLOAD_DIALOG_CONTENT_0, folder);
     }
 
     /**
