@@ -237,20 +237,22 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem, I_C
             Map<Integer, CmsPushButton> additionalButtons = getAdditionalButtons();
             buttonMap.putAll(additionalButtons);
             if ((buttonMap.size() > 0) || m_editableData.hasEdit()) {
-                m_edit = new CmsPushButton();
-                m_edit.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
-                m_edit.setButtonStyle(I_CmsButton.ButtonStyle.FONT_ICON, null);
-                buttonMap.put(Integer.valueOf(300), m_edit);
-                if (m_editableData.hasEdit()) {
-                    m_edit.setTitle(I_CmsButton.ButtonData.EDIT.getTitle());
-                    m_edit.addStyleName(I_CmsLayoutBundle.INSTANCE.directEditCss().editableElement());
-                    m_edit.addClickHandler(handler);
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_editableData.getNoEditReason())) {
-                        m_edit.disable(m_editableData.getNoEditReason());
+                if (!m_editableData.getExtensions().isUploadEnabled()) { // for the upload case, the bull's eye icon / pen are not used
+                    m_edit = new CmsPushButton();
+                    m_edit.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
+                    m_edit.setButtonStyle(I_CmsButton.ButtonStyle.FONT_ICON, null);
+                    buttonMap.put(Integer.valueOf(300), m_edit);
+                    if (m_editableData.hasEdit()) {
+                        m_edit.setTitle(I_CmsButton.ButtonData.EDIT.getTitle());
+                        m_edit.addStyleName(I_CmsLayoutBundle.INSTANCE.directEditCss().editableElement());
+                        m_edit.addClickHandler(handler);
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_editableData.getNoEditReason())) {
+                            m_edit.disable(m_editableData.getNoEditReason());
+                        }
+                    } else if (m_editableData.hasNew()) {
+                        String message = Messages.get().key(Messages.GUI_DIRECTEDIT_ONLY_CREATE_0);
+                        m_edit.disable(message);
                     }
-                } else if (m_editableData.hasNew()) {
-                    String message = Messages.get().key(Messages.GUI_DIRECTEDIT_ONLY_CREATE_0);
-                    m_edit.disable(message);
                 }
             }
 
