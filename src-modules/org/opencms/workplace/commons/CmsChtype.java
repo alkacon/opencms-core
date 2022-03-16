@@ -267,7 +267,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
         StringBuffer result = new StringBuffer(256);
         result.append(super.customHtmlStart());
 
-        result.append("<script type='text/javascript'>\n");
+        result.append("<script >\n");
 
         result.append("function submitAdvanced(theForm) {\n");
         result.append("\ttheForm.action.value = \"" + CmsNewResource.DIALOG_ADVANCED + "\";\n");

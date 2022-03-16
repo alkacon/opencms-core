@@ -10,7 +10,7 @@ Bean.prepareUpdateStep1b();
 <head>
 <title>OpenCms Update-Wizard - Update database</title>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<script language="JavaScript">
+<script >
 <!--
 
 var output = new Array();

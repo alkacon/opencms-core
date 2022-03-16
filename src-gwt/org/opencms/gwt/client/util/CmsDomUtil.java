@@ -2213,7 +2213,6 @@ public final class CmsDomUtil {
     private static native void injectScript(String scriptLink)/*-{
         var headID = $wnd.document.getElementsByTagName("head")[0];
         var scriptNode = $wnd.document.createElement('script');
-        scriptNode.type = 'text/javascript';
         scriptNode.src = scriptLink;
         headID.appendChild(scriptNode);
     }-*/;

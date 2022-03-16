@@ -360,11 +360,11 @@ public abstract class CmsTabDialog extends CmsDialog {
         }
         StringBuffer result = new StringBuffer(super.pageHtmlStyle(HTML_START, null, stylesheet));
         if (getSettings().isViewExplorer()) {
-            result.append("<script type=\"text/javascript\" src=\"");
+            result.append("<script  src=\"");
             result.append(getSkinUri());
             result.append("commons/explorer.js\"></script>\n");
         }
-        result.append("<script type=\"text/javascript\">\n");
+        result.append("<script >\n");
         if (helpUrl != null) {
             result.append("top.head.helpUrl=\"");
             result.append(helpUrl + "\";\n");

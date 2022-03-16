@@ -513,9 +513,9 @@ default:
 
 <link rel="stylesheet" type="text/css" href="<%= wp.getStyleUri("workplace.css") %>">
 <link rel="stylesheet" type="text/css" href="<%= cms.link("/system/workplace/editors/tinymce/tinymce_xmlpage.css") %>">
-<script type="text/javascript" src="<%= CmsWorkplace.getStaticResourceUri("editors/tinymce/jscripts/tinymce/tinymce.min.js") %>"></script>
-<script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() + "jquery/packed/" %>jquery.js"></script>
-<script type="text/javascript">
+<script  src="<%= CmsWorkplace.getStaticResourceUri("editors/tinymce/jscripts/tinymce/tinymce.min.js") %>"></script>
+<script  src="<%= CmsWorkplace.getSkinUri() + "jquery/packed/" %>jquery.js"></script>
+<script >
 
 // dialog windows
 var dialogCharWindow = null;
@@ -677,8 +677,8 @@ function popupCloseAction(closeObj) {
 	}
 }
 </script>
-<script type="text/javascript" src="<cms:link>/system/workplace/editors/tinymce/opencms_plugin.js</cms:link>"></script>
-<script type="text/javascript">
+<script  src="<cms:link>/system/workplace/editors/tinymce/opencms_plugin.js</cms:link>"></script>
+<script >
 <!--
 var toolbarButtons="<%= CmsTinyMCE.buildToolbar(toolbar.toString())%>";
 var contextmenu="";
@@ -953,7 +953,7 @@ if (options.showElement("option.cleanup", displayOptions)) {
 <tr>
 <td style="width:100%; height:100%;">
 <div id="textarea-container" class="cmsTinyMCE" style="width:100%; height:100%; background-color: /*begin-color Window*/#ffffff/*end-color*/;">
-<script language="javascript">
+<script >
 document.write ('<textarea id="tinymce_content" name="tinymce_content" style="height:'+getEditorHeight()+'px; width:100%;"></textarea>');
 </script>
 </div>

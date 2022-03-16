@@ -1,5 +1,5 @@
 <link type="text/css" rel="stylesheet" href="%(skinUri)editors/directedit/jq_edit.css" />
-<script type="text/javascript">
+<script>
 if (window.jQuery) {
 } else {
 	%(jquery)
@@ -15,5 +15,5 @@ if (window.jQuery && window.jQuery.fn && window.jQuery.fn.createAppend) {
 	%(jquery_flydom)
 }
 </script>
-<script type="text/javascript" src="%(skinUri)editors/directedit/jq_edit.js"></script>
+<script src="%(skinUri)editors/directedit/jq_edit.js"></script>
 

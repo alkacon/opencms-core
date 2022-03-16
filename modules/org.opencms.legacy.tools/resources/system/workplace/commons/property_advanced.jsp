@@ -18,7 +18,7 @@ case CmsPropertyAdvanced.ACTION_CLOSEPOPUP:
 %>
 	
 	<html><head></head>
-	<script type="text/javascript">
+	<script >
 		window.close();
 	</script>
 	</head></html>
@@ -60,7 +60,7 @@ case CmsPropertyAdvanced.ACTION_SHOW_DEFINE:
 	wp.setParamAction(wp.DIALOG_SAVE_DEFINE);
 	
 %><%= wp.htmlStart("help.explorer.contextmenu.properties", wp.getParamTitle()) %>
-<script type="text/javascript">
+<script >
 <!--
 function checkName() {
 	var newProp = document.getElementById("<%= wp.PARAM_NEWPROPERTY %>").value;
@@ -115,7 +115,7 @@ default:
 wp.setParamAction(wp.DIALOG_SAVE_EDIT);
 	
 %><%= wp.htmlStart("help.explorer.contextmenu.properties") %>
-<script type="text/javascript">
+<script >
 <!--
 
 function resizeWindow() {
@@ -248,7 +248,7 @@ function doSet() {
 <%= wp.dialogEnd() %>
 <%
 if ("true".equals(wp.getParamIsPopup())) {
-	%><script type="text/javascript">
+	%><script >
 <!--
 resizeWindow();
 //-->

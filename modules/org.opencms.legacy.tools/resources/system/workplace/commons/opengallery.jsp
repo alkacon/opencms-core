@@ -4,7 +4,7 @@
 	CmsOpenGallery wp = new CmsOpenGallery(pageContext, request, response);	
 %>
 <%= wp.htmlStart(null) %>
-<script type="text/javascript">
+<script >
 <!--
 	<%= wp.openGallery() %>
 //-->

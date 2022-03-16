@@ -226,7 +226,7 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
         }
         result.append(" -->\n");
 
-        result.append("<script type=\"text/javascript\">\n");
+        result.append("<script >\n");
         result.append("registerButtonOcms(\"").append(editId).append("\");\n");
         result.append("</script>\n");
         result.append("<div class=\"ocms_de_bt\" id=\"buttons_").append(editId).append("\">\n");
@@ -286,7 +286,7 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
         }
         result.append(" -->\n");
 
-        result.append("<script type=\"text/javascript\">\n");
+        result.append("<script >\n");
         result.append("registerButtonOcms(\"").append(editId).append("\");\n");
         result.append("</script>\n");
         result.append("<div class=\"ocms_de_bt\" id=\"buttons_").append(editId).append("\">\n");

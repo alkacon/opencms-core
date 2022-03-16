@@ -104,23 +104,23 @@ public class CmsDeletedResources extends CmsDialog {
 
         StringBuffer html = new StringBuffer(512);
 
-        html.append("<script type='text/javascript' src='");
+        html.append("<script  src='");
         html.append(CmsWorkplace.getSkinUri());
         html.append("commons/ajax.js'></script>\n");
 
-        html.append("<script type='text/javascript' src='");
+        html.append("<script  src='");
         html.append(CmsWorkplace.getSkinUri());
         html.append("editors/xmlcontent/help.js'></script>\n");
 
-        html.append("<script type='text/javascript' src='");
+        html.append("<script  src='");
         html.append(CmsWorkplace.getSkinUri());
         html.append("admin/javascript/general.js'></script>\n");
 
-        html.append("<script type='text/javascript' src='");
+        html.append("<script  src='");
         html.append(CmsWorkplace.getSkinUri());
         html.append("admin/javascript/list.js'></script>\n");
 
-        html.append("<script type='text/javascript'><!--\n");
+        html.append("<script ><!--\n");
 
         html.append("\tvar ");
         html.append(CmsHtmlList.NO_SELECTION_HELP_VAR);
@@ -247,7 +247,7 @@ public class CmsDeletedResources extends CmsDialog {
 
         StringBuffer html = new StringBuffer(512);
 
-        html.append("<script type='text/javascript'><!--\n");
+        html.append("<script ><!--\n");
         html.append("makeRequest('");
         html.append(getJsp().link("/system/workplace/commons/report-deleted.jsp"));
         html.append("', '");

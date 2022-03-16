@@ -112,7 +112,7 @@ public class CmsAdminEditorWrapper extends CmsDialog {
         out.print("'>\n");
         out.print(allParamsAsHidden());
         out.print("</form>\n");
-        out.print("<script type='text/javascript'>\n");
+        out.print("<script>\n");
         out.print("document.forms['editor'].submit();\n");
         out.print("</script>\n");
         out.print(dialogContentStart(getParamTitle()));

@@ -440,13 +440,13 @@ public class CmsToolDialog extends CmsWorkplace {
         html.append("<link rel='stylesheet' type='text/css' href='");
         html.append(getStyleUri(getJsp()));
         html.append("new_admin.css'>\n");
-        html.append("<script type='text/javascript' src='");
+        html.append("<script  src='");
         html.append(getSkinUri());
         html.append("admin/javascript/general.js'></script>\n");
-        html.append("<script type='text/javascript' src='");
+        html.append("<script  src='");
         html.append(getResourceUri());
         html.append("editors/xmlcontent/help.js'></script>\n\n");
-        html.append("<script type='text/javascript'>\n");
+        html.append("<script >\n");
         html.append("\tfunction bodyLoad() {\n");
 
         // add a special CSS class in case we are in the new vaadin based workplace

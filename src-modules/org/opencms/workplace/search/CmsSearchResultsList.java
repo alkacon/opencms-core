@@ -178,7 +178,7 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
         result.append(htmlStart(null));
         result.append(getList().listJs());
         result.append(CmsListExplorerColumn.getExplorerStyleDef());
-        result.append("<script language='JavaScript'>\n");
+        result.append("<script >\n");
         result.append(new CmsExplorer(getJsp()).getInitializationHeader());
         result.append("\ntop.updateWindowStore();\n");
         result.append("top.displayHead(top.win.head, 0, 1);\n}\n");

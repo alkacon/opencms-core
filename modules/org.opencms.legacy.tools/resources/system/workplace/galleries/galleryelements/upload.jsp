@@ -20,7 +20,7 @@ if (CmsStringUtil.isNotEmpty(request.getParameter("gallery"))) {
 %>
 <html>
 <head>
-<script type="text/javascript">
+<script >
 	parent.markItem(-1, "gallery");
 	// refresh gallery item list
 	parent.refreshGallery();

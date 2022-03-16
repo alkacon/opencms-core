@@ -445,7 +445,7 @@ public class CmsDialog extends CmsToolDialog {
     public String buildLockConfirmationMessageJS() {
 
         StringBuffer html = new StringBuffer(512);
-        html.append("<script type='text/javascript'><!--\n");
+        html.append("<script ><!--\n");
         html.append("function setConfirmationMessage(locks, blockinglocks) {\n");
         html.append("\tvar confMsg = document.getElementById('conf-msg');\n");
         html.append("\tif (locks > -1) {\n");
@@ -1483,11 +1483,11 @@ public class CmsDialog extends CmsToolDialog {
             }
             StringBuffer result = new StringBuffer(pageHtmlStyle(segment, title, stylesheet));
             if (getSettings().isViewExplorer()) {
-                result.append("<script type=\"text/javascript\" src=\"");
+                result.append("<script  src=\"");
                 result.append(getSkinUri());
                 result.append("commons/explorer.js\"></script>\n");
             }
-            result.append("<script type=\"text/javascript\">\n");
+            result.append("<script >\n");
             result.append(dialogScriptSubmit());
             if (helpUrl != null) {
                 result.append("if (top.head && top.head.helpUrl) {\n");
@@ -1939,7 +1939,7 @@ public class CmsDialog extends CmsToolDialog {
         JspWriter out = getJsp().getJspContext().getOut();
         try {
             out.write(
-                "<html><head><script type=\"text/javascript\">top.location.href=\""
+                "<html><head><script >top.location.href=\""
                     + workplaceLink
                     + "\";</script></head>\n");
             out.write("</html>\n");

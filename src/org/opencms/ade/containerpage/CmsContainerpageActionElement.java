@@ -92,7 +92,7 @@ public class CmsContainerpageActionElement extends CmsGwtActionElement {
             getCntPageData());
         sb.append(prefetchedData);
         sb.append(exportModuleScriptTag(GWT_MODULE_NAME));
-        sb.append("<script type=\"text/javascript\" src=\"");
+        sb.append("<script src=\"");
         sb.append(
             OpenCms.getLinkManager().substituteLinkForRootPath(
                 getCmsObject(),

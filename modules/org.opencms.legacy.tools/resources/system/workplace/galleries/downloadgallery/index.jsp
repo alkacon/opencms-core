@@ -36,19 +36,19 @@ String uploadVariant = wp.getSettings().getUserSettings().getUploadVariant().toS
   <link rel="stylesheet" type="text/css" href="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/galleries/css/ie.css" />
 <![endif]-->
 
-<script type="text/javascript" src="<%= jQueryResourcePath %>packed/jquery.js"></script>
-<script type="text/javascript" src="<%= jQueryResourcePath %>packed/jquery.pagination.js"></script>
-<script type="text/javascript" src="<%= jQueryResourcePath %>packed/thickbox.js"></script>
-<script type="text/javascript" src="<%= jQueryResourcePath %>packed/jquery.ui.js"></script>
+<script  src="<%= jQueryResourcePath %>packed/jquery.js"></script>
+<script  src="<%= jQueryResourcePath %>packed/jquery.pagination.js"></script>
+<script  src="<%= jQueryResourcePath %>packed/thickbox.js"></script>
+<script  src="<%= jQueryResourcePath %>packed/jquery.ui.js"></script>
 
-<script type="text/javascript" src="<%= wp.getJsp().link("../galleryelements/localization.js?locale=" + wp.getLocale()) %>"></script>
-<script type="text/javascript" src="<%= galleryResourcePath %>js/jquery.jeditable.pack.js"></script>
-<script type="text/javascript" src="<%= galleryResourcePath %>js/jquery.jHelperTip.1.0.min.js"></script>
-<script type="text/javascript" src="<%= galleryResourcePath %>js/galleryfunctions.js"></script>
-<script type="text/javascript" src="<%= galleryResourcePath %>js/downloadgallery/downloadgalleryfunctions.js"></script>
+<script  src="<%= wp.getJsp().link("../galleryelements/localization.js?locale=" + wp.getLocale()) %>"></script>
+<script  src="<%= galleryResourcePath %>js/jquery.jeditable.pack.js"></script>
+<script  src="<%= galleryResourcePath %>js/jquery.jHelperTip.1.0.min.js"></script>
+<script  src="<%= galleryResourcePath %>js/galleryfunctions.js"></script>
+<script  src="<%= galleryResourcePath %>js/downloadgallery/downloadgalleryfunctions.js"></script>
 
 
-<script type="text/javascript">
+<script >
 
 //link to ajaxcalls.jsp of download gallery
 var vfsPathAjaxJsp = "<%= wp.getJsp().link("/system/workplace/galleries/downloadgallery/ajaxcalls.jsp") %>";

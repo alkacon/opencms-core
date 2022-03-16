@@ -122,7 +122,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
             getEncoding()).append("\">\n");
         String uplink = "/opencms_a/opencms/system/workplace/views/admin/admin-main.jsp?path=/projects/files&action=initial&projectid=fa9f561f-be30-11e2-bac3-21ebf444feef&showexplorer=true";
         html.append(
-            "<script type='text/javascript'>var uplink = \""
+            "<script >var uplink = \""
                 + CmsStringUtil.escapeJavaScript(uplink)
                 + "\";</script>\n");
         html.append("\t\t<title>\n");

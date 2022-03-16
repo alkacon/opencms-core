@@ -907,7 +907,7 @@ public class CmsChacc extends CmsDialog {
         StringBuffer result = new StringBuffer(256);
         result.append(super.htmlStart());
         result.append((new CmsPrincipalWidget().getDialogIncludes(getCms(), null)));
-        result.append("<script type='text/javascript' >");
+        result.append("<script  >");
         result.append("typeField = '").append(PARAM_TYPE).append("';");
         result.append("</script>");
         return result.toString();

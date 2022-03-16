@@ -194,7 +194,7 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
             LOG.error("Error parsing widget configuration", e);
         }
         if (additional != null) {
-            result.append("\n<script type=\"text/javascript\">\n");
+            result.append("\n<script>\n");
             result.append("var cms_additional_").append(idHash).append("=");
             result.append(additional.toString()).append(";\n");
             result.append("</script>");
@@ -268,7 +268,8 @@ public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_Cms
         CmsObject cms,
         String resource,
         CmsMessages messages,
-        I_CmsWidgetParameter param) throws JSONException;
+        I_CmsWidgetParameter param)
+    throws JSONException;
 
     /**
      * Returns the required gallery open parameters.

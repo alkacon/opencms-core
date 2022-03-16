@@ -353,12 +353,12 @@ public class CmsHelpTemplateBean extends CmsDialog {
 
             result.append(buildHtmlHelpStart("workplace.css", false));
             result.append("<body class=\"buttons-head\" unselectable=\"on\">\n");
-            result.append("<script type=\"text/javascript\" src=\"");
+            result.append("<script  src=\"");
             result.append(getJsp().link("/system/modules/org.opencms.workplace.help/resources/search.js"));
             result.append("\"></script>\n");
 
             // store home link in JS variable to use it in body frame
-            result.append("<script type=\"text/javascript\">\n<!--\n");
+            result.append("<script >\n<!--\n");
             result.append("\tvar homeLink = \"");
             result.append(CmsEncoder.escapeXml(getParamHomelink()));
             result.append("\";\n\n");
@@ -702,7 +702,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
         result.append("</title>\n");
 
         // script to avoid frameset display errors
-        result.append("<script type=\"text/javascript\">\n<!--\n");
+        result.append("<script >\n<!--\n");
         result.append("\t if (window.name == \"body\") {\n");
         result.append("\t\ttop.location.href = \"" + getJsp().link(getJsp().getRequestContext().getUri()) + "\";\n");
         result.append("\t}\n");

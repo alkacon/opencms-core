@@ -5,7 +5,7 @@ CmsContentEditorActionElement actionElement=new CmsContentEditorActionElement(pa
 <html>
 	<head>
 	<%= actionElement.exportAll() %>
-	<script type="text/javascript" src="<cms:link>/system/workplace/editors/tinymce/opencms_plugin.js</cms:link>"></script>
+	<script src="<cms:link>/system/workplace/editors/tinymce/opencms_plugin.js</cms:link>"></script>
 	</head>
 	<body>&nbsp;</body>
 </html>

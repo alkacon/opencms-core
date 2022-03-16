@@ -118,7 +118,7 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
         result.append(CmsEncoder.encode(value));
         result.append("\">");
 
-        result.append("<script type=\"text/javascript\">\n");
+        result.append("<script >\n");
 
         result.append("initTinyMCE(").append(getTinyMceConfiguration(cms, param)).append(");\n");
         result.append("contentFields[contentFields.length] = document.getElementById(\"").append(id).append("\");\n");

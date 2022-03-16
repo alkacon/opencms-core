@@ -748,7 +748,6 @@ public class CmsLocationController {
 		uri += '&callback=cmsLocationPickerApiReady';
 
 		var script = $wnd.document.createElement('script');
-		script.type = 'text/javascript';
 		script.src = uri;
 		$wnd.document.body.appendChild(script);
     }-*/;

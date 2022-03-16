@@ -28,7 +28,7 @@
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html;" charset=<%= wp.getEncoding() %>">
 <title><%= wp.key("label.wptitle") %> <%= wp.getSettings().getUser().getName() %>@<%= request.getServerName() %></title>
 
-<script language="javascript"><!--
+<script ><!--
 var _context = "";
 //--></script>
 

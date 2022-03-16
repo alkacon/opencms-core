@@ -193,7 +193,7 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
             LOG.error("Error parsing widget configuration", e);
         }
         if (additional != null) {
-            result.append("\n<script type=\"text/javascript\">\n");
+            result.append("\n<script >\n");
             result.append("var cms_additional_").append(idHash).append("=");
             result.append(additional.toString()).append(";\n");
             result.append("</script>");
@@ -271,7 +271,7 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
             result.append(PREFIX_IMAGERATIO).append(id).append("\" id=\"");
             result.append(PREFIX_IMAGERATIO).append(id).append("\" />");
             // add possible format names and values as JS variables to access them from image gallery window
-            result.append("\n<script type=\"text/javascript\">");
+            result.append("\n<script >");
             JSONArray formatsJson = new JSONArray(configuration.getFormatValues());
             result.append("\nvar imgFmts").append(idHash).append(" = ").append(formatsJson).append(";");
             result.append("\nvar imgFmtNames").append(idHash).append(" = \"").append(
@@ -285,7 +285,7 @@ public class CmsVfsImageWidget extends CmsAdeImageGalleryWidget {
             result.append("<input type=\"hidden\" value=\"").append(format).append("\" name=\"");
             result.append(PREFIX_FORMAT).append(id).append("\" id=\"");
             result.append(PREFIX_FORMAT).append(id).append("\" />");
-            result.append("\n<script type=\"text/javascript\">");
+            result.append("\n<script >");
             result.append("\nvar useFmts").append(idHash).append(" = false;");
             result.append("\n</script>");
         }

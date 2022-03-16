@@ -1035,20 +1035,20 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         StringBuffer result = new StringBuffer(1024);
 
         // first include general JQuery JS and UI components
-        result.append("<script type=\"text/javascript\" src=\"");
+        result.append("<script  src=\"");
         result.append(CmsWorkplace.getSkinUri()).append("jquery/packed/jquery.js");
         result.append("\"></script>\n");
-        result.append("<script type=\"text/javascript\" src=\"");
+        result.append("<script  src=\"");
         result.append(CmsWorkplace.getSkinUri()).append("jquery/packed/jquery.ui.js");
         result.append("\"></script>\n");
 
         // including dialog-helper.js to be used by ADE gallery widgets
-        result.append("<script type=\"text/javascript\" src=\"");
+        result.append("<script  src=\"");
         result.append(CmsWorkplace.getSkinUri()).append("components/widgets/dialog-helper.js");
         result.append("\"></script>\n");
 
         // import the JavaScript for JSON helper functions
-        result.append("<script type=\"text/javascript\" src=\"");
+        result.append("<script  src=\"");
         result.append(CmsWorkplace.getSkinUri()).append("commons/json2.js");
         result.append("\"></script>\n");
         result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
@@ -1851,7 +1851,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     }
 
                     result.append("</div>\n");
-                    result.append("<script type=\"text/javascript\">\n");
+                    result.append("<script >\n");
                     result.append("$(\"#xmlerrordialog\").dialog({\n");
                     result.append("\tautoOpen: true,\n");
                     result.append("\tbgiframe: true,\n");
@@ -1971,7 +1971,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     if ((m_currentTab != null) && CmsStringUtil.isNotEmpty(getParamElementName())) {
                         // an element was modified, add JS to preselect tab
                         if (key.startsWith(getParamElementName()) && (selectedTabScript.length() == 0)) {
-                            selectedTabScript.append("<script type=\"text/javascript\">\n\txmlSelectedTab = ").append(
+                            selectedTabScript.append("<script >\n\txmlSelectedTab = ").append(
                                 m_currentTabIndex).append(";\n</script>\n");
                         }
                     }
@@ -2119,7 +2119,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 // close block element around tabs
                 result.append("</div>\n");
                 // mark eventual warning and error tabs
-                result.append("<script type=\"text/javascript\">\n");
+                result.append("<script >\n");
                 for (Iterator<CmsXmlContentTab> i = m_warningTabs.iterator(); i.hasNext();) {
                     CmsXmlContentTab checkTab = i.next();
                     if (!m_errorTabs.contains(checkTab)) {

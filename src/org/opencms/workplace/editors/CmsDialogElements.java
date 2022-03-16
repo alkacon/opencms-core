@@ -343,7 +343,7 @@ public class CmsDialogElements extends CmsDialog {
                     retValue.append(" disabled=\"disabled\"");
                 }
                 retValue.append(">");
-                retValue.append("<script type=\"text/javascript\">registerElement(\"");
+                retValue.append("<script >registerElement(\"");
 
                 retValue.append(element.getName());
                 retValue.append("\", ");

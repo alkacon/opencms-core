@@ -834,10 +834,10 @@ public class CmsLogin extends CmsJspLoginBean {
      */
     protected void appendDefaultLoginScript(StringBuffer html, CmsMessageContainer message) {
 
-        html.append("<script type=\"text/javascript\" src=\"");
+        html.append("<script  src=\"");
         html.append(CmsWorkplace.getSkinUri()).append("jquery/packed/jquery.js");
         html.append("\"></script>\n");
-        html.append("<script type=\"text/javascript\">\n");
+        html.append("<script >\n");
         if (message != null) {
             html.append("function showAlert() {\n");
             html.append("\talert(\"");
@@ -1071,7 +1071,7 @@ public class CmsLogin extends CmsJspLoginBean {
      */
     protected void appendDirectEditOpenerScript(StringBuffer html) {
 
-        html.append("<script type=\"text/javascript\">\n");
+        html.append("<script >\n");
         html.append("function doOnload() {\n");
 
         // the window's name must be the same as in:
@@ -1115,7 +1115,7 @@ public class CmsLogin extends CmsJspLoginBean {
 
         String winId = "OpenCms" + System.currentTimeMillis();
 
-        html.append("<script type=\"text/javascript\">\n");
+        html.append("<script >\n");
 
         html.append("function doOnload() {\n");
 

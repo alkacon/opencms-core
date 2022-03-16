@@ -492,7 +492,7 @@ public abstract class A_CmsWidget implements I_CmsWidget {
     protected String getJSIncludeFile(String fileName) {
 
         StringBuffer result = new StringBuffer(8);
-        result.append("<script type=\"text/javascript\" src=\"");
+        result.append("<script  src=\"");
         result.append(fileName);
         result.append("\"></script>");
         return result.toString();

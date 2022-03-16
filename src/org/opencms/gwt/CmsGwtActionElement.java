@@ -62,7 +62,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     protected static final String SCRIPT_TAG_CLOSE = "\n//-->\n</script>";
 
     /** The opening script tag. */
-    protected static final String SCRIPT_TAG_OPEN = "<script type=\"text/javascript\">\n<!--\n";
+    protected static final String SCRIPT_TAG_OPEN = "<script>\n<!--\n";
 
     /** In page variable name for missing permutation message. */
     private static final String CMS_NO_PERMUTATION_MESSAGE = "CMS_NO_PERMUTATION_MESSAGE";
@@ -95,7 +95,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
      */
     public static String createNoCacheScript(String moduleName, String moduleVersion) {
 
-        String result = "<script type=\"text/javascript\" src=\""
+        String result = "<script src=\""
             + CmsWorkplace.getResourceUri("ade/" + moduleName + "/" + moduleName + ".nocache.js");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(moduleVersion)) {
             result += "?version=" + moduleVersion + "_" + OpenCms.getSystemInfo().getVersionNumber().hashCode();
@@ -127,7 +127,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
         sb.append("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />\n");
 
         sb.append(
-            "<script type=\"text/javascript\" src=\""
+            "<script src=\""
                 + OpenCms.getStaticExportManager().getVfsPrefix()
                 + "/"
                 + CmsMessagesService.class.getName()
@@ -363,7 +363,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
             + CmsCoreData.META_PARAM_MODULE_KEY
             + "\" content=\""
             + moduleName
-            + "\" >\n<script type=\"text/javascript\" src=\""
+            + "\" >\n<script src=\""
             + CmsWorkplace.getStaticResourceUri("gwt/opencms/opencms.nocache.js");
         result += "\"></script>\n";
         return result;

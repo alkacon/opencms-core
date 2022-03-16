@@ -11,7 +11,7 @@ if (CmsStringUtil.isNotEmpty(request.getParameter("resource"))) {
 } else {
 %><html>
 <head>
-<script type="text/javascript">
+<script >
 	parent.markItem(-1, "gallery");
 	parent.markItem(-1, "category");
 	// refresh gallery item list delayed

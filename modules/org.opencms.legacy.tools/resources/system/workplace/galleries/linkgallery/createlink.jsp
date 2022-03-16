@@ -18,7 +18,7 @@ if (CmsStringUtil.isNotEmpty(request.getParameter("createlink"))) {
 %>
 <html>
 <head>
-<script type="text/javascript">
+<script >
 
 	parent.markItem(-1, "gallery");
 	// refresh gallery item list

@@ -201,7 +201,7 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
     public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         StringBuffer result = new StringBuffer(16);
-        result.append("<script type=\"text/javascript\" src=\"");
+        result.append("<script  src=\"");
         result.append(CmsWorkplace.getSkinUri());
         result.append("components/widgets/category.js\"></script>\n");
         return result.toString();
@@ -225,7 +225,7 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
         List<List<CmsSelectWidgetOption>> levels = new ArrayList<List<CmsSelectWidgetOption>>();
         try {
             // write arrays of categories
-            result.append("<script language='javascript'>\n");
+            result.append("<script >\n");
             String referencePath = null;
             try {
                 referencePath = cms.getSitePath(getResource(cms, param));

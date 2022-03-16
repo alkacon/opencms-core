@@ -19,7 +19,7 @@ case CmsDialogElements.ACTION_UPDATE_ELEMENTS:
 %>
 
 	<html><head>
-	<script type="text/javascript">
+	<script>
 		function closeAction() {
 			this.elemName = "<%= wp.getChangeElement() %>";
 			this.elemLocale = "<%= wp.getElementLocale() %>";
@@ -43,7 +43,7 @@ default:
 	wp.setParamAction(CmsDialogElements.DIALOG_UPDATE_ELEMENTS);
 
 %><%= wp.htmlStart(null, wp.getParamTitle()) %>
-<script type="text/javascript">
+<script>
 <!--
 
 function confirmDelete() {
@@ -112,7 +112,7 @@ function registerElement(elemName, isEnabled) {
 <%
 if (Boolean.valueOf(wp.getParamIsPopup()).booleanValue()) {
     // this is a popup window
-	%><script type="text/javascript">
+	%><script>
 <!--
 resizeWindow();
 //-->

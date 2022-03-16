@@ -213,10 +213,10 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(256);
-        result.append("<script type='text/javascript' src='");
+        result.append("<script  src='");
         result.append(CmsWorkplace.getSkinUri());
         result.append("admin/javascript/general.js'></script>\n");
-        result.append("<script type='text/javascript' src='");
+        result.append("<script  src='");
         result.append(CmsWorkplace.getSkinUri());
         result.append("editors/xmlcontent/help.js'></script>\n");
         result.append(dialogBlockStart(getListTitle()));

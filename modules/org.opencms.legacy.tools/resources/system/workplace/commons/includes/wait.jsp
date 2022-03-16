@@ -8,7 +8,7 @@
 
 %><%= wp.htmlStart() %>
 
-<script language="JavaScript">
+<script >
 function submitForm() {
 	if (true == <%= wp.isSubElement() %>) {
 		document.forms["main"].submit();

@@ -218,7 +218,7 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
 
         if (dialog.equals(PAGES[0])) {
             // create the widgets for the first dialog page
-            result.append("<script type=\"text/javascript\">\n");
+            result.append("<script >\n");
             result.append("function download(){\n");
             result.append("\twindow.open(\"").append(
                 getJsp().link(

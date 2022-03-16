@@ -19,9 +19,9 @@
   <meta http-equiv='Content-Type' content='text/html; charset=<%= wp.getEncoding() %>'>
   <link rel='stylesheet' type='text/css' href='<%= CmsWorkplace.getStyleUri(wp.getJsp(),"menu.css") %>'>
 
-  <script type='text/javascript' src='<%= CmsWorkplace.getSkinUri() %>admin/javascript/general.js'></script>
-  <script type='text/javascript' src='<%= CmsWorkplace.getSkinUri() %>admin/javascript/adminmenu.js'></script>
-  <script type='text/javascript'>
+  <script src='<%= CmsWorkplace.getSkinUri() %>admin/javascript/general.js'></script>
+  <script src='<%= CmsWorkplace.getSkinUri() %>admin/javascript/adminmenu.js'></script>
+  <script>
     function bodyLoad() {
       checkSize();
       setContextHelp();

@@ -42,7 +42,7 @@ OpenCms Update-Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
-<script type="text/javascript">
+<script >
 	function toggleButton(theFlag) {
 		document.getElementById("continue").disabled = theFlag;
 	}	
@@ -122,7 +122,7 @@ OpenCms Update-Wizard - License Agreement
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" style="margin-left: 50px; visibility: hidden;" disabled="disabled">
 </form>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
-<script type="text/javascript">
+<script >
 	toggleButton(true);
 </script>
 <% } %>

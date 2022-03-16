@@ -474,7 +474,7 @@ public class CmsReport extends CmsMultiDialog {
                 result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
                 result.append(getStyleUri(getJsp(), "workplace.css"));
                 result.append("\">\n");
-                result.append("<script type=\"text/javascript\">\n");
+                result.append("<script >\n");
                 result.append(dialogScriptSubmit());
                 result.append("</script>\n");
             }

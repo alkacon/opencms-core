@@ -6,7 +6,7 @@
 	boolean link = (wp.getParamCloseLink() != null) && org.opencms.util.CmsRequestUtil.checkBacklink(wp.getParamCloseLink(), request);
 
  %><%= wp.htmlStart() %>
-<script type="text/javascript">
+<script >
 <!--
 <% if (link) { %>
 // check for direct edit frame

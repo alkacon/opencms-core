@@ -107,7 +107,7 @@ form.ocms_nomargin {
 }
 </style>
 
-<script type="text/javascript">
+<script>
 <!--
 window.onresize = showButtonsOcms;
 document.onkeyup = keyUpOcms;

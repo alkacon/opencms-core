@@ -4,7 +4,7 @@
 
 String xmlValidation = Bean.getXmlConfigUpdater().validationErrors(); 
 if (xmlValidation != null) {%>
-    <script type="text/javascript">
+    <script >
     validation = <%= xmlValidation%> ; 
     alert(validation.err);
 </script><%return;
@@ -12,7 +12,7 @@ if (xmlValidation != null) {%>
 
 
 	if (!Bean.isValidUser()){%>
-		<script type="text/javascript">
+		<script >
 			alert('The given user/password combination is not valid, or the given user has no root administrator role.');
 			location.href = 'step_2_settings.jsp';
 		</script>
@@ -38,7 +38,7 @@ OpenCms Update-Wizard
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
 <%= Bean.getHtmlPart("C_SCRIPT_HELP") %>
-<script type="text/javascript" language="JavaScript"><!--
+<script  ><!--
 <%= Bean.jsModuleNames() %>
 <%= Bean.jsModuleDependencies() %>
 

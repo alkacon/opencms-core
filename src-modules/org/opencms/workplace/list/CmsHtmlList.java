@@ -562,17 +562,17 @@ public class CmsHtmlList {
 
         StringBuffer js = new StringBuffer(1024);
         CmsMessages messages = Messages.get().getBundle(getWp().getLocale());
-        js.append("<script type='text/javascript' src='");
+        js.append("<script  src='");
         js.append(CmsWorkplace.getSkinUri());
         js.append("jquery/unpacked/jquery.js'></script>\n");
-        js.append("<script type='text/javascript' src='");
+        js.append("<script  src='");
         js.append(CmsWorkplace.getSkinUri());
         js.append("jquery/unpacked/jquery.hint.js'></script>\n");
-        js.append("<script type='text/javascript' src='");
+        js.append("<script  src='");
         js.append(CmsWorkplace.getSkinUri());
         js.append("admin/javascript/list.js'></script>\n");
         if (!m_metadata.getMultiActions().isEmpty()) {
-            js.append("<script type='text/javascript'>\n");
+            js.append("<script >\n");
             js.append("\tvar ");
             js.append(NO_SELECTION_HELP_VAR);
             js.append(" = '");

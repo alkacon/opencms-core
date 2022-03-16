@@ -13,7 +13,7 @@
 	
 %><%= wp.htmlStart(null, dialogTitle) %>
 
-<script type="text/javascript">
+<script >
 
 function resizeWindow() {
 	var wantedHeight = document.body.offsetHeight;
@@ -270,7 +270,7 @@ function checkField(elementId, checkFieldId) {
 <%= wp.dialogButtonsOkCancel(null, "onclick=\"window.close();\"") %>
 </form>
 
-<%= wp.dialogEnd() %><script type="text/javascript">
+<%= wp.dialogEnd() %><script >
 <!--
 setTimeout("resizeWindow()", 100);
 //-->

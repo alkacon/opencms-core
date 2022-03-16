@@ -22,9 +22,9 @@ if (wp.isReloadRequired()) {
 		<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=<%= wp.getEncoding() %>">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<title><%= wp.key(org.opencms.workplace.Messages.GUI_LABEL_WPTITLE_1, new Object[]{wp.getSettings().getUser().getFullName()}) %></title>
-		<script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() %>commons/explorer.js"></script>
-		<script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() %>commons/ajax.js"></script>
-		<script type="text/javascript" src="<%= cms.link("/system/workplace/views/top_js.jsp") %>"></script>
+		<script  src="<%= CmsWorkplace.getSkinUri() %>commons/explorer.js"></script>
+		<script  src="<%= CmsWorkplace.getSkinUri() %>commons/ajax.js"></script>
+		<script  src="<%= cms.link("/system/workplace/views/top_js.jsp") %>"></script>
 	</head>
 	<frameset rows="24,*,24" border="0" frameborder="0" framespacing="0">
 	    <frame <%= wp.getFrameSource("head", cms.link("/system/workplace/views/top_head.jsp?wpFrame=head")) %> noresize scrolling="no">

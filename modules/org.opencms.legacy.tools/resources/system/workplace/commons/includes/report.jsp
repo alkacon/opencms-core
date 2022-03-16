@@ -35,7 +35,7 @@ switch (wp.getAction()) {
 
 <%= wp.htmlStart(false) %>
 
-<script language='JavaScript'>
+<script >
 <!--
 
 function a(message) {
@@ -146,7 +146,7 @@ wp.setParamAction(CmsDialog.REPORT_END);
 
 <%= wp.htmlStart() %>
 
-<script type="text/javascript" language="JavaScript">
+<script  >
 <!--
 
 // saves the HTML of the extended report format, 

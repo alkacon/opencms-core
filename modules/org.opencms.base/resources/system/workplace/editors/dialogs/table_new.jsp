@@ -15,7 +15,7 @@
 	
 %><%= wp.htmlStart(null, dialogTitle) %>
 
-<script type="text/javascript">
+<script >
 
 var ColorSelected = -1;
 
@@ -281,7 +281,7 @@ function resizeWindow() {
 <%= wp.dialogButtonsOkCancel(null, "onclick=\"window.close();\"") %>
 </form>
 
-<%= wp.dialogEnd() %><script type="text/javascript">
+<%= wp.dialogEnd() %><script >
 <!--
 setTimeout("resizeWindow()", 100);
 //-->

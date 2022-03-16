@@ -244,14 +244,14 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADE
                 getConfiguration());
 
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getStartup())) {
-                result.append("\n<script type=\"text/javascript\">");
+                result.append("\n<script >");
                 result.append("\nvar startupFolder").append(idHash).append(" = \"").append(
                     configuration.getStartup()).append("\";");
                 result.append("\nvar startupType").append(idHash).append(" = \"").append(
                     configuration.getType()).append("\";");
                 result.append("\n</script>");
             } else {
-                result.append("\n<script type=\"text/javascript\">");
+                result.append("\n<script >");
                 result.append("\nvar startupFolder").append(idHash).append(" = null;");
                 result.append("\nvar startupType").append(idHash).append(" = null;");
                 result.append("\n</script>");
@@ -260,7 +260,7 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADE
             //This part is not used in javascript for now
             if (configuration.isShowFormat()) {
                 // create hidden field to store the matching image format value
-                result.append("\n<script type=\"text/javascript\">");
+                result.append("\n<script >");
                 JSONArray formatsJson = new JSONArray(configuration.getFormatValues());
                 result.append("\nvar imgFmts").append(idHash).append(" = ").append(formatsJson).append(";");
                 result.append("\nvar imgFmtNames").append(idHash).append(" = \"").append(
@@ -268,7 +268,7 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADE
                 result.append("\nvar useFmts").append(idHash).append(" = true;");
                 result.append("\n</script>");
             } else {
-                result.append("\n<script type=\"text/javascript\">");
+                result.append("\n<script >");
                 result.append("\nvar useFmts").append(idHash).append(" = false;");
                 result.append("\nvar imgFmts").append(idHash).append(" = null;");
                 result.append("\nvar imgFmtNames").append(idHash).append(" = null;");
@@ -283,14 +283,14 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADE
                 getConfiguration());
 
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getStartup())) {
-                result.append("\n<script type=\"text/javascript\">");
+                result.append("\n<script >");
                 result.append("\nvar startupFolder").append(idHash).append(" = \"").append(
                     configuration.getStartup()).append("\";");
                 result.append("\nvar startupType").append(idHash).append(" = \"").append(
                     configuration.getType()).append("\";");
                 result.append("\n</script>");
             } else {
-                result.append("\n<script type=\"text/javascript\">");
+                result.append("\n<script >");
                 result.append("\nvar startupFolder").append(idHash).append(" = null;");
                 result.append("\nvar startupType").append(idHash).append(" = null;");
                 result.append("\n</script>");

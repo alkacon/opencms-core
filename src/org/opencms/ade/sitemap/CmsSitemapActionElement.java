@@ -106,9 +106,9 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
         String vaadinBootstrap = CmsStringUtil.joinPaths(
             OpenCms.getSystemInfo().getContextPath(),
             "VAADIN/vaadinBootstrap.js");
-        sb.append("  <script type=\"text/javascript\"\n" + "          src=\"" + vaadinBootstrap + "\"></script>");
+        sb.append("  <script \n" + "          src=\"" + vaadinBootstrap + "\"></script>");
         sb.append(
-            "<script type='text/javascript'>    \n"
+            "<script>    \n"
                 + "function initVaadin() { "
                 + CmsVaadinUtils.getBootstrapScript(getCmsObject(), "sitemap-ui", "workplace/sitemap/")
                 + " } "

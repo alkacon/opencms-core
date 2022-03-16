@@ -625,7 +625,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
         result.append("<input name=\"dummysearchcategory\" id=\"dummysearchcategory\" type=\"hidden\" value=\"\">\n");
         result.append("<input name=\"dummysearchpage\" id=\"dummysearchpage\" type=\"hidden\" value=\"\">\n");
         // delete all other chosen "cateogries.x" values and put a value here
-        result.append("<script type=\"text/javascript\">\n");
+        result.append("<script >\n");
         result.append("  function filterCategory(category) {\n");
         result.append("    var searchform = document.forms['EDITOR'];\n");
         result.append("    var inputFields = searchform.elements;\n");
@@ -714,7 +714,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
     private String normalizePreviousQueryJS() {
 
         StringBuffer result = new StringBuffer();
-        result.append("<script type=\"text/javascript\">\n");
+        result.append("<script >\n");
         result.append("  function normalizeQueryValue() {\n");
         result.append("    var searchform = document.forms['EDITOR'];\n");
         result.append("    var query = searchform.elements['query.0'].value;\n");

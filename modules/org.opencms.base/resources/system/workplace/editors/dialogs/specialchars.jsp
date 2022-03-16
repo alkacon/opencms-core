@@ -8,7 +8,7 @@
 	
 %><%= wp.htmlStart(null, dialogTitle) %>
 
-<script type="text/javascript">
+<script >
 <!--
 function insertChar(thechar) {
 	window.opener.insertHtml(thechar);

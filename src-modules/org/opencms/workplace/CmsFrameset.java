@@ -135,7 +135,7 @@ public class CmsFrameset extends CmsWorkplace {
 
         if (CmsStringUtil.isNotEmpty(message)) {
             // create a javascript alert for the message
-            result.append("\n<script type=\"text/javascript\">\n<!--\n");
+            result.append("\n<script >\n<!--\n");
             // the timeout gives the frameset enough time to load before the alert is shown
             result.append("function showMessage() {\n");
             result.append("\talert(decodeURIComponent(\"");

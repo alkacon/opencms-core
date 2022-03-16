@@ -68,9 +68,9 @@ default:
 
 <link rel=stylesheet type="text/css" href="<%= wp.getStyleUri("workplace.css") %>">
 
-<script type="text/javascript" src="<%= wp.getEditorResourceUri() %>edit.js"></script> 
+<script  src="<%= wp.getEditorResourceUri() %>edit.js"></script> 
 	
-<script type="text/javascript">
+<script >
 <!--
 // sets the Document Source-Code for later including into the editor
 var __content = "<%= wp.getParamContent() %>";

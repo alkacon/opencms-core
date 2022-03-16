@@ -81,7 +81,7 @@ public class CmsSearchEditorWrapper extends CmsDialog {
         out.print("'>\n");
         out.print(paramsAsHidden());
         out.print("</form>\n");
-        out.print("<script type='text/javascript'>\n");
+        out.print("<script >\n");
         out.print("document.forms['editor'].submit();\n");
         out.print("</script>\n");
         out.print(bodyEnd());

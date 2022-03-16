@@ -10,7 +10,7 @@
 <%= Bean.getHtmlPart("C_HTML_START") %>
 OpenCms Update-Wizard - Update Database
 <%= Bean.getHtmlPart("C_HEAD_START") %>
-	<script type="text/javascript">
+	<script >
 
 		var enabled = false;
 		var finished = false;
@@ -110,7 +110,7 @@ OpenCms Update-Wizard - Update database
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="top.document.location.href='index.jsp';" style="margin-left: 50px;">
 </form>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
-<script type="text/javascript">
+<script >
 	enable();
 </script>
 <% } else { %>

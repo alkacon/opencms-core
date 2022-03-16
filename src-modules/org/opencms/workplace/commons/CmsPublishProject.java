@@ -238,7 +238,7 @@ public class CmsPublishProject extends CmsMultiDialog {
     public String buildLockConfirmationMessageJS() {
 
         StringBuffer html = new StringBuffer(512);
-        html.append("<script type='text/javascript'><!--\n");
+        html.append("<script ><!--\n");
         html.append("function setConfirmationMessage(locks, blockinglocks) {\n");
         html.append("\tvar confMsg = document.getElementById('conf-msg');\n");
         html.append("\tif (locks > -1) {\n");

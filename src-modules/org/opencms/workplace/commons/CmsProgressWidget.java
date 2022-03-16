@@ -291,11 +291,11 @@ public class CmsProgressWidget {
 
         StringBuffer result = new StringBuffer();
 
-        result.append("<script type=\"text/javascript\" src=\"");
+        result.append("<script  src=\"");
         result.append(CmsWorkplace.getSkinUri());
         result.append("commons/ajax.js\"></script>\n");
 
-        result.append("<script type=\"text/javascript\">\n");
+        result.append("<script >\n");
 
         // initialize global variables
         result.append("\tvar progressState = 0;\n");
@@ -525,7 +525,7 @@ public class CmsProgressWidget {
         // if the thread is finished before the widget is rendered
         // show directly the result
         if ((thread != null) && (!thread.isAlive())) {
-            result.append("<script type=\"text/javascript\">\n");
+            result.append("<script >\n");
             result.append("\tprogressState = 0;\n");
             result.append("\tprogressResult = '");
             result.append(CmsStringUtil.escapeJavaScript(getActualProgress()));
@@ -578,7 +578,7 @@ public class CmsProgressWidget {
                     org.opencms.workplace.Messages.GUI_AJAX_REPORT_WAIT_0));
             result.append("</div>\n");
 
-            result.append("<script type=\"text/javascript\">\n");
+            result.append("<script >\n");
             result.append("\tstartProgressBar();\n");
             result.append("</script>\n");
         }

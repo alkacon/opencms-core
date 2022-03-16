@@ -4,7 +4,7 @@
 	CmsOpenVfsGallery wp = new CmsOpenVfsGallery(pageContext, request, response);	
 %>
 <%= wp.htmlStart(null) %>
-<script type="text/javascript">
+<script >
 <!--
 	<%= wp.openGallery() %>
 //-->

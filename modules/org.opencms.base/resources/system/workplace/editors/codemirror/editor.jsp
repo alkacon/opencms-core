@@ -32,7 +32,7 @@ case CmsEditor.ACTION_EXIT:
 		<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 		<html>
 			<head>
-				<script type="text/javascript">
+				<script>
 					<%= wp.getParamCloseFunction() %>
 				</script>
 			</head>
@@ -53,7 +53,7 @@ case CmsEditor.ACTION_SAVEEXIT:
 		<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 		<html>
 			<head>
-				<script type="text/javascript">
+				<script>
 					<%= wp.getParamCloseFunction() %>
 				</script>
 			</head>
@@ -90,9 +90,9 @@ default:
 <link rel="stylesheet" href="<%= wp.getEditorResourceUri() %>dist/addon/hint/show-hint.css">
 <link rel="stylesheet" type="text/css" href="<%= wp.getEditorResourceUri() %>codemirror-ocms.css" title="cssocms">
 
-<script type="text/javascript" src="<%= wp.getEditorResourceUri() %>js/lang-<%= wp.getEditorLanguage() %>.js"></script>
-<script type="text/javascript" src="<%= wp.getEditorResourceUri() %>edit.js"></script>
-<script type="text/javascript" src="<%= wp.getEditorResourceUri() %>dist/lib/codemirror.js"></script>
+<script src="<%= wp.getEditorResourceUri() %>js/lang-<%= wp.getEditorLanguage() %>.js"></script>
+<script src="<%= wp.getEditorResourceUri() %>edit.js"></script>
+<script src="<%= wp.getEditorResourceUri() %>dist/lib/codemirror.js"></script>
 <script src="<%= wp.getEditorResourceUri() %>dist/addon/dialog/dialog.js"></script>
 <script src="<%= wp.getEditorResourceUri() %>dist/addon/search/searchcursor.js"></script>
 <script src="<%= wp.getEditorResourceUri() %>js/search.js"></script>
@@ -137,7 +137,7 @@ if (modeName.equals("text/html")) {
 <script src="<%= wp.getEditorResourceUri() %>dist/mode/htmlmixed/htmlmixed.js"></script>
 <script src="<%= wp.getEditorResourceUri() %>js/htmlembedded_modified.js"></script>
 
-<script type="text/javascript">
+<script >
 
 	// the editor instance object
 	var editorCodeMirror;
@@ -323,7 +323,7 @@ if (wp.isHelpEnabled()) {%>
 
 </form>
 
-<script type="text/javascript">
+<script >
 	// create the editor and manually set the content state
     loadEditor();
 	setContentDirty(false);

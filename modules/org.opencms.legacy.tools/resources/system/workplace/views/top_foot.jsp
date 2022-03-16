@@ -17,7 +17,7 @@
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=<%= wp.getEncoding() %>">
 <link rel="stylesheet" type="text/css" href="<%= CmsWorkplace.getStyleUri(wp.getJsp(), "workplace.css")%>">
 <title>OpenCms Workplace Foot Frame</title>
-<script type="text/javascript"> 
+<script > 
 function doReloadFoot() {
    <%if (OpenCms.getWorkplaceManager().isKeepAlive()) {%>
 	document.location.href="<%= cms.link("top_foot.jsp?wpFrame=foot") %>";

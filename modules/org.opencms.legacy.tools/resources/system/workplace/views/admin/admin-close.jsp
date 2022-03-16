@@ -15,7 +15,7 @@ int buttonStyle = wp.getSettings().getUserSettings().getEditorButtonStyle();
 
 <link rel=stylesheet type="text/css" href="<%= CmsWorkplace.getStyleUri(wp.getJsp())%>workplace.css">
 
-<script type="text/javascript">
+<script >
 <!--
 	// Ask user whether he really wants to leave 
 	function confirmExit()	{

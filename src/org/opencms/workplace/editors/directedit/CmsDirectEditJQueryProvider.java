@@ -127,7 +127,7 @@ public class CmsDirectEditJQueryProvider extends CmsDirectEditDefaultProvider {
      *
      * Generates the following code:<p>
      * <pre>
-     *  &#60;script type="text/javascript" &#62;
+     *  &#60;script  &#62;
      *      ocms_de_data['key']= {
      *          id: key,
      *          resource: res,
@@ -146,7 +146,7 @@ public class CmsDirectEditJQueryProvider extends CmsDirectEditDefaultProvider {
         StringBuffer result = new StringBuffer(512);
         String editId = getNextDirectEditId();
 
-        result.append("\n<script type=\"text/javascript\">\n");
+        result.append("\n<script>\n");
 
         result.append("ocms_de_data['").append(editId).append("']= {\n");
         result.append("\t").append("id: '").append(editId).append("',\n");

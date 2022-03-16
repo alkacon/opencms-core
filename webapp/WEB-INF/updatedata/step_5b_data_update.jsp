@@ -10,7 +10,7 @@ Bean.prepareUpdateStep5b();
 <head>
 <title>OpenCms Update-Wizard - Update modules</title>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<script language="JavaScript">
+<script >
 <!--
 
 var output = new Array();

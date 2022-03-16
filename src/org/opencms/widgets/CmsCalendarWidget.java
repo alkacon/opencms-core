@@ -113,15 +113,15 @@ public class CmsCalendarWidget extends A_CmsWidget implements I_CmsADEWidget {
         result.append("calendar-");
         result.append(style);
         result.append(".css\">\n");
-        result.append("<script type=\"text/javascript\" src=\"");
+        result.append("<script  src=\"");
         result.append(calendarPath);
         result.append("calendar.js\"></script>\n");
-        result.append("<script type=\"text/javascript\" src=\"");
+        result.append("<script  src=\"");
         result.append(calendarPath);
         result.append("lang/calendar-");
         result.append(getLanguageSuffix(locale.getLanguage()));
         result.append(".js\"></script>\n");
-        result.append("<script type=\"text/javascript\" src=\"");
+        result.append("<script  src=\"");
         result.append(calendarPath);
         result.append("calendar-setup.js\"></script>\n");
         return result.toString();
@@ -158,7 +158,7 @@ public class CmsCalendarWidget extends A_CmsWidget implements I_CmsADEWidget {
         if (CmsStringUtil.isEmpty(align)) {
             align = "Bc";
         }
-        result.append("<script type=\"text/javascript\">\n");
+        result.append("<script >\n");
         result.append("<!--\n");
         result.append("\tCalendar.setup({\n");
         result.append("\t\tinputField     :    \"");

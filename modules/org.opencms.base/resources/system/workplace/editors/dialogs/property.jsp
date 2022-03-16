@@ -28,7 +28,7 @@ case CmsDialog.ACTION_CLOSEPOPUP:
 	
 	<html>
 	<head>
-	<script type="text/javascript">
+	<script >
 		<%= additionalScript %>
 		window.close();
 	</script>
@@ -63,7 +63,7 @@ default:
 	wp.setParamAction(CmsPropertyAdvanced.DIALOG_SAVE_EDIT);
 	
 %><%= wp.htmlStart(null, wp.getParamTitle()) %>
-<script type="text/javascript">
+<script >
 <!--
 
 function resizeWindow() {
@@ -208,7 +208,7 @@ function doSet() {
 
 <%= wp.dialogEnd() %>
 
-<script type="text/javascript">
+<script >
 <!--
 toggleNav();
 <%

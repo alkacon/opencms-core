@@ -111,7 +111,7 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
             for (String script : configuration.getJavaScriptResourceLinks()) {
                 // avoid including the same resource twice
                 if (!includedScripts.contains(script)) {
-                    sb.append("<script type=\"text/javascript\" src=\"").append(script).append("\"></script>");
+                    sb.append("<script src=\"").append(script).append("\"></script>");
                     includedScripts.add(script);
                 }
             }

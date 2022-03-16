@@ -110,7 +110,7 @@ public class CmsListMultiSearchAction extends CmsListSearchAction {
             html.append(getShowAllAction().buttonHtml());
         }
         // load script
-        html.append("<script type=\"text/javascript\">\n");
+        html.append("<script >\n");
         html.append("var LIST_SEARCH_DATA = {\n");
         html.append("SEARCH_BAR_INPUT_ID: \"").append(SEARCH_BAR_INPUT_ID).append("\",\n");
         html.append("FORM: \"").append(getListId() + "-form").append("\",\n");

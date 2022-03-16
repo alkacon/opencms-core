@@ -55,7 +55,7 @@ String editId = "directedit_".concat(String.valueOf(rnd.nextInt()));
 
 --%><cms:template element="start_directedit_enabled">
 <!-- EDIT BLOCK START -->
-<script type="text/javascript">
+<script >
 <!--
 	registerButtonOcms("<%= editId %>");
 //-->
@@ -123,7 +123,7 @@ if (showNew) {
 
 --%><cms:template element="start_directedit_disabled">
 <!-- EDIT BLOCK START -->
-<script type="text/javascript">
+<script >
 <!--
 	registerButtonOcms("<%= editId %>");
 //-->
@@ -232,7 +232,7 @@ form.ocms_nomargin {
 //-->
 </style>
 
-<script type="text/javascript">
+<script >
 <!--
 window.onresize = showButtonsOcms;
 document.onkeyup = keyUpOcms;

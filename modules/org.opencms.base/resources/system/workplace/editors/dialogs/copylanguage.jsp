@@ -21,7 +21,7 @@ case CmsDialogCopyLanguage.ACTION_UPDATE_LANGUAGES:
 %>
 
 	<html><head>
-	<script type="text/javascript">
+	<script>
 		function closeAction() {
 			window.opener.parent.frames[0].location.reload();
 			window.close();
@@ -46,7 +46,7 @@ default:
 	wp.setParamAction(CmsDialogCopyLanguage.DIALOG_UPDATE_LANGUAGES);
 
 %><%= wp.htmlStart(null, wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_DIALOG_COPYLANGUAGE_TITLE_0)) %>
-<script type="text/javascript">
+<script>
 <!--
 
 function resizeWindow() {
@@ -106,7 +106,7 @@ function registerElement(elemName, isEnabled) {
 <%
 if (Boolean.valueOf(wp.getParamIsPopup()).booleanValue()) {
     // this is a popup window
-	%><script type="text/javascript">
+	%><script>
 <!--
 resizeWindow();
 //-->

@@ -13,10 +13,10 @@ A_CmsAjaxGallery wp = new CmsAjaxImageGallery(pageContext, request, response);
 <link rel="stylesheet" type="text/css" href="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/galleries/css/crop.css" />
 <link rel="stylesheet" type="text/css" href="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>jquery/css/ui-ocms/jquery.ui.css" />
 <link rel="stylesheet" type="text/css" href="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>jquery/css/ui-ocms/jquery.ui.ocms.css" />
-<script type="text/javascript" src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>jquery/packed/jquery.js"></script>
-<script type="text/javascript" src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>jquery/packed/jquery.dimensions.js"></script>
-<script type="text/javascript" src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/galleries/js/jquery.imgareaselect.min.js"></script>
-<script type="text/javascript">
+<script  src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>jquery/packed/jquery.js"></script>
+<script  src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>jquery/packed/jquery.dimensions.js"></script>
+<script  src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/galleries/js/jquery.imgareaselect.min.js"></script>
+<script >
 	var imgPreviewHeight = 450;
 	if (parent.initValues.dialogmode == "editor") {
 		imgPreviewHeight = 390;

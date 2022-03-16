@@ -13,7 +13,7 @@ OpenCms Update-Wizard
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
 <%= Bean.getHtmlPart("C_SCRIPT_HELP") %>
-<script type="text/javascript">
+<script >
 <!--
 	function checkSubmit()	{
 		if(document.forms[0].adminUser.value == "")	{

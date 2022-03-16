@@ -9,7 +9,7 @@
 	}
 	
 %><%= wp.htmlStart(null, wp.key(org.opencms.workplace.editors.Messages.GUI_TITLE_NEWLINK_0)) %>
-<script type="text/javascript">
+<script>
 <!--
 
 var linkEditorStyleInputs = <%= Boolean.parseBoolean(request.getParameter("showCss")) %>;
@@ -195,8 +195,8 @@ function checkContext(linkUrl, add) {
 
 //-->
 </script>
-<script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() %>commons/tree.js"></script>
-<script type="text/javascript">
+<script src="<%= CmsWorkplace.getSkinUri() %>commons/tree.js"></script>
+<script>
 <!--
         <%= CmsTree.initTree(wp.getCms(), wp.getEncoding(), CmsWorkplace.getSkinUri()) %>
                 
@@ -272,7 +272,7 @@ function checkContext(linkUrl, add) {
                     </td>
                     <td><a href="javascript:openTreeWin('NEU', 'neulink', document);"><img src="<%= CmsWorkplace.getSkinUri() %>filetypes/folder.gif" border="0" alt="<%= wp.key(org.opencms.workplace.editors.Messages.GUI_LABEL_SELECTFOLDER_0)%>"></a></td>
                 </tr>
-                <script type="text/javascript">
+                <script>
                 <!--
                 if (linkEditorStyleInputs) {
                   document.write('<tr><td style="white-space: nowrap;"><%= wp.key(org.opencms.workplace.editors.Messages.GUI_INPUT_LINKSTYLE_0) %>:</td>' +
