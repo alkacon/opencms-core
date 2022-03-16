@@ -245,14 +245,16 @@ public class CmsSolrIndexWriter implements I_CmsSolrIndexWriter {
                 String date = serialDates.get(i);
                 String endDate = serialDatesEnd.get(i);
                 String endDateRange = endDate;
-                try {
-                    Date parsed = CmsSearchUtil.parseDate(endDate);
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(parsed);
-                    calendar.add(Calendar.SECOND, -1);
-                    endDateRange = CmsSearchUtil.getDateAsIso8601(calendar.getTime());
-                } catch (ParseException e) {
-                    LOG.error(e.getLocalizedMessage(), e);
+                if (!date.equals(endDate)) {
+                    try {
+                        Date parsed = CmsSearchUtil.parseDate(endDate);
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(parsed);
+                        calendar.add(Calendar.SECOND, -1);
+                        endDateRange = CmsSearchUtil.getDateAsIso8601(calendar.getTime());
+                    } catch (ParseException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
                 }
                 String dateRange = "[" + date + " TO " + endDateRange + "]";
                 String currentTillDate = serialDatesCurrentTill.get(i);
