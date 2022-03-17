@@ -85,6 +85,9 @@ public class CmsPropertyEditorHelper {
     /** The CMS context. */
     private CmsObject m_cms;
 
+    /** Flag that controls whether the index should be updated after saving. */
+    private boolean m_updateIndex;
+
     /** Structure id which should be used instead of the structure id in a property change set (can be null). */
     private CmsUUID m_overrideStructureId;
 
@@ -351,7 +354,20 @@ public class CmsPropertyEditorHelper {
                 cms.unlockResource(resource);
             }
         }
+        if (m_updateIndex) {
+            OpenCms.getSearchManager().updateOfflineIndexes();
+        }
 
+    }
+
+    /**
+     * Sets the 'update index' flag to control whether the index should be updated after saving.
+     *
+     * @param updateIndex true if the index should be updated after saving
+     */
+    public void setUpdateIndex(boolean updateIndex) {
+
+        m_updateIndex = updateIndex;
     }
 
     /**

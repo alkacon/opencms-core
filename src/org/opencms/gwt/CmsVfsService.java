@@ -1146,14 +1146,15 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#saveProperties(org.opencms.gwt.shared.property.CmsPropertyChangeSet)
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#saveProperties(org.opencms.gwt.shared.property.CmsPropertyChangeSet, boolean)
      */
-    public void saveProperties(CmsPropertyChangeSet changes) throws CmsRpcException {
+    public void saveProperties(CmsPropertyChangeSet changes, boolean updateIndex) throws CmsRpcException {
 
         String origSiteRoot = getCmsObject().getRequestContext().getSiteRoot();
         try {
             getCmsObject().getRequestContext().setSiteRoot("");
             CmsPropertyEditorHelper helper = new CmsPropertyEditorHelper(getCmsObject());
+            helper.setUpdateIndex(updateIndex);
             helper.saveProperties(changes);
         } catch (Throwable t) {
             error(t);

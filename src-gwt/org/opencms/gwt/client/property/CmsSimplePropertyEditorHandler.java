@@ -333,7 +333,7 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
         if (m_propertySaver != null) {
             m_propertySaver.saveProperties(changes, callback);
         } else {
-            CmsCoreProvider.getVfsService().saveProperties(changes, callback);
+            CmsCoreProvider.getVfsService().saveProperties(changes, false, callback);
         }
     }
 

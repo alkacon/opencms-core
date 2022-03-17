@@ -192,7 +192,7 @@ public class CmsUploadPropertyEditorHandler implements I_CmsPropertyEditorHandle
 
                 start(300, false);
                 CmsPropertyChangeSet changeBean = new CmsPropertyChangeSet(m_data.getStructureId(), propertyChanges);
-                vfsService.saveProperties(changeBean, this);
+                vfsService.saveProperties(changeBean, true, this);
             }
 
             @Override

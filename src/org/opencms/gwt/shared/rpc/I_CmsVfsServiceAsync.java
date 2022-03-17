@@ -401,10 +401,10 @@ public interface I_CmsVfsServiceAsync {
      * Saves a set of property changes.<p>
      *
      * @param changes the property changes
-     *
+     * @param updateIndex true if the index should be updated after saving the property changes
      * @param callback the asynchronous callback
      */
-    void saveProperties(CmsPropertyChangeSet changes, AsyncCallback<Void> callback);
+    void saveProperties(CmsPropertyChangeSet changes, boolean updateIndex, AsyncCallback<Void> callback);
 
     /**
      * Returns the absolute link to the given root path.<p>

@@ -194,7 +194,7 @@ public class CmsFocalPointController {
                 @Override
                 public void execute() {
 
-                    CmsCoreProvider.getVfsService().saveProperties(changeSet, this);
+                    CmsCoreProvider.getVfsService().saveProperties(changeSet, false, this);
 
                 }
 
@@ -384,7 +384,7 @@ public class CmsFocalPointController {
                 @Override
                 public void execute() {
 
-                    CmsCoreProvider.getVfsService().saveProperties(changeSet, this);
+                    CmsCoreProvider.getVfsService().saveProperties(changeSet, false, this);
 
                 }
 

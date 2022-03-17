@@ -459,10 +459,11 @@ public interface I_CmsVfsService extends RemoteService {
      * Saves  a set of property changes.<p>
      *
      * @param changes a set of property changes
+     * @param updateIndex true if the index should be updated after saving the property changes
      *
      * @throws CmsRpcException if something goes wrong
      */
-    void saveProperties(CmsPropertyChangeSet changes) throws CmsRpcException;
+    void saveProperties(CmsPropertyChangeSet changes, boolean updateIndex) throws CmsRpcException;
 
     /**
      * Returns the absolute link to the given root path.<p>
