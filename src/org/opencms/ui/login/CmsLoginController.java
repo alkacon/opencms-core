@@ -44,6 +44,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsCustomLoginException;
 import org.opencms.security.CmsRole;
+import org.opencms.security.CmsUserLog;
 import org.opencms.ui.A_CmsDialogContext;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
@@ -357,6 +358,7 @@ public class CmsLoginController {
                         "{workplace logout option}",
                         cms.getRequestContext().getRemoteAddress()));
             }
+            CmsUserLog.logLogout(cms);
         }
     }
 
@@ -372,6 +374,7 @@ public class CmsLoginController {
     public static void logout(CmsObject cms, HttpServletRequest request, HttpServletResponse response)
     throws IOException {
 
+        CmsUserLog.logLogout(cms);
         String loggedInUser = cms.getRequestContext().getCurrentUser().getName();
         HttpSession session = request.getSession(false);
         String logoutUri = OpenCms.getLoginManager().getLogoutUri();
@@ -485,12 +488,14 @@ public class CmsLoginController {
                 message = org.opencms.workplace.Messages.get().container(
                     org.opencms.workplace.Messages.GUI_LOGIN_FAILED_0);
                 displayError(message.key(m_params.getLocale()), true, true);
+                CmsUserLog.logLoginFailure(currentCms, realUser);
                 return;
             }
             if (OpenCms.getLoginManager().canLockBecauseOfInactivity(currentCms, userObj)) {
                 boolean locked = null != userObj.getAdditionalInfo().get(KEY_ACCOUNT_LOCKED);
                 if (locked) {
                     displayError(CmsInactiveUserMessages.getLockoutText(A_CmsUI.get().getLocale()), false, false);
+                    CmsUserLog.logLoginFailure(currentCms, realUser);
                     return;
                 }
             }
@@ -528,6 +533,7 @@ public class CmsLoginController {
 
             // provisional login successful, now do for real
             currentCms.loginUser(realUser, password);
+            CmsUserLog.logLogin(currentCms, realUser);
             if (LOG.isInfoEnabled()) {
                 CmsRequestContext context = currentCms.getRequestContext();
                 LOG.info(
@@ -674,6 +680,7 @@ public class CmsLoginController {
 
             if (e instanceof CmsException) {
                 CmsJspLoginBean.logLoginException(currentCms.getRequestContext(), user, (CmsException)e);
+                CmsUserLog.logLoginFailure(currentCms, user);
             } else {
                 LOG.error(e.getLocalizedMessage(), e);
             }

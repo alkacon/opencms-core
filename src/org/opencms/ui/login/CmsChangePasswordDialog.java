@@ -34,6 +34,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.security.CmsUserLog;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsPasswordSecurityEvaluator;
 import org.opencms.security.I_CmsPasswordSecurityEvaluator.SecurityLevel;
@@ -308,6 +309,7 @@ public class CmsChangePasswordDialog extends CmsBasicDialog {
             } else {
                 try {
                     m_cms.setPassword(m_user.getName(), oldPassword, password1);
+                    CmsUserLog.logPasswordChangeForRequestedReset(A_CmsUI.getCmsObject(), m_user.getName());
                 } catch (CmsException e) {
                     m_form.setErrorOldPassword(
                         new UserError(e.getLocalizedMessage(m_locale)),

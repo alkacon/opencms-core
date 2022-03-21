@@ -34,6 +34,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.security.CmsUserLog;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsHasButtons;
@@ -134,7 +135,7 @@ public class CmsForgotPasswordDialog extends VerticalLayout implements I_CmsHasB
                 selectedOu = (selectedOu != null) ? selectedOu : "";
                 String fullName = CmsStringUtil.joinPaths(selectedOu, m_userField.getValue());
                 if (sendPasswordResetLink(CmsLoginUI.m_adminCms, fullName, m_emailField.getValue())) {
-
+                    CmsUserLog.logPasswordResetRequest(A_CmsUI.getCmsObject(), fullName);
                     // Since we need to actually go to a different page here, we can't use a Vaadin notification,
                     // because we don't get notified on the server when the user clicks it.
                     CmsVaadinUtils.showAlert(

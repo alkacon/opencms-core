@@ -42,6 +42,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPasswordInfo;
 import org.opencms.security.CmsRole;
+import org.opencms.security.CmsUserLog;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -204,6 +205,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             } else if (CmsStringUtil.isNotEmpty(m_pwdInfo.getNewPwd())) {
                 m_pwdInfo.validate();
                 getCms().setPassword(m_user.getName(), m_pwdInfo.getNewPwd());
+                CmsUserLog.logPasswordChange(getCms(), m_user.getName());
             }
 
             // write the edited user

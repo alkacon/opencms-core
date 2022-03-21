@@ -37,6 +37,7 @@ import org.opencms.main.CmsBroadcast.ContentMode;
 import org.opencms.security.CmsCustomLoginException;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.security.CmsUserLog;
 import org.opencms.ui.login.CmsLoginHelper;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -655,6 +656,7 @@ public class CmsSessionManager {
         cms.getRequestContext().setCurrentProject(userProject);
         cms.getRequestContext().setOuFqn(user.getOuFqn());
         USERSWITCH.info("User '" + oldUser + "' switched to user '" + user.getName() + "'");
+        CmsUserLog.logSwitchUser(cms, user.getName());
         String directEditTarget = CmsLoginHelper.getDirectEditPath(cms, new CmsUserSettings(user), false);
         return directEditTarget != null
         ? OpenCms.getLinkManager().substituteLink(cms, directEditTarget, userSiteRoot)

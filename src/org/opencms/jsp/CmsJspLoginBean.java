@@ -36,6 +36,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAuthentificationException;
+import org.opencms.security.CmsUserLog;
 
 import java.io.IOException;
 import java.net.URI;
@@ -313,6 +314,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                         getRequestContext().addSiteRoot(getRequestContext().getUri()),
                         getRequestContext().getRemoteAddress()));
             }
+            CmsUserLog.logLogin(getCmsObject(), userName);
         } else {
             // login was not successful
             if (session != null) {
@@ -320,6 +322,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
             }
             CmsException currentLoginException = m_loginException;
             logLoginException(getRequestContext(), userName, currentLoginException);
+            CmsUserLog.logLoginFailure(getCmsObject(), userName);
         }
     }
 
@@ -385,6 +388,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                     getRequestContext().addSiteRoot(getRequestContext().getUri()),
                     getRequestContext().getRemoteAddress()));
         }
+        CmsUserLog.logLogout(getCmsObject());
         getResponse().sendRedirect(getFormLink());
     }
 }

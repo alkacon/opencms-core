@@ -32,6 +32,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsUserLog;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
@@ -63,6 +64,7 @@ public class CmsSetPasswordDialog extends CmsChangePasswordDialog {
      * @param locale the locale
      */
     public CmsSetPasswordDialog(final CmsObject cms, CmsUser user, Locale locale) {
+
         super(cms, user, locale);
         // hide the old password field, it's not required
         m_form.hideOldPassword();
@@ -83,6 +85,7 @@ public class CmsSetPasswordDialog extends CmsChangePasswordDialog {
         if (validatePasswords(password1, password2)) {
             try {
                 m_cms.setPassword(m_user.getName(), password1);
+                CmsUserLog.logPasswordChange(m_cms, m_user.getName());
                 CmsTokenValidator.clearToken(CmsLoginUI.m_adminCms, m_user);
             } catch (CmsException e) {
                 error = e.getLocalizedMessage(m_locale);

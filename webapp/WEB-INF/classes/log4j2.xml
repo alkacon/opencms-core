@@ -31,6 +31,15 @@
 			</Policies>
 			<DefaultRolloverStrategy max="20"/>
 		</RollingFile>
+		
+		<RollingFile name="OCUsers" fileName="${sys:opencms.logfolder}opencms-user.log"
+			filePattern="${sys:opencms.logfolder}opencms-user.log.%i.log.gz">
+			<PatternLayout pattern="%d{DATE} [r:%6X{request_id}] %5p [%30.30C:%4L] %m %n" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="5 MB"/>
+			</Policies>
+			<DefaultRolloverStrategy max="20"/>
+		</RollingFile>
 
 		<RollingFile name="OCMemoryMonitor" fileName="${sys:opencms.logfolder}opencms-memory.log"
 			filePattern="${sys:opencms.logfolder}opencms-memory.log.%i.log.gz">
@@ -73,6 +82,9 @@
 	    </Logger>
 	    <Logger level="info" name="org.opencms.monitor.CmsMemoryMonitor" additivity="false">
 	        <AppenderRef ref="OCMemoryMonitor"/>
+	    </Logger>
+	    <Logger level="info" name="org.opencms.security.CmsUserLog" additivity="false">
+	    	<AppenderRef ref="OCUsers" />
 	    </Logger>
 	    <Root level="error">
 	        <AppenderRef ref="OC"/>
