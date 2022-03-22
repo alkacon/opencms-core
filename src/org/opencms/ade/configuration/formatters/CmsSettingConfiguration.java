@@ -54,9 +54,6 @@ public class CmsSettingConfiguration {
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSettingConfiguration.class);
 
-    /** The key of the formatter using this configuration (may be null). */
-    private String m_formatterKey;
-
     /** Cache for calculating and storing the setting definition maps for various combinations of override shared setting configuration file ids. */
     private LoadingCache<ImmutableList<CmsUUID>, Map<String, CmsXmlContentProperty>> m_cache = CacheBuilder.newBuilder().concurrencyLevel(
         4).build(new CacheLoader<ImmutableList<CmsUUID>, Map<String, CmsXmlContentProperty>>() {
@@ -74,6 +71,9 @@ public class CmsSettingConfiguration {
 
     /** The display type. */
     private String m_displayType;
+
+    /** The key of the formatter using this configuration (may be null). */
+    private String m_formatterKey;
 
     /** The settings configured in the formatter configuration. */
     private List<CmsXmlContentProperty> m_listedSettings;
@@ -140,6 +140,58 @@ public class CmsSettingConfiguration {
     }
 
     /**
+     * Combines shard setting definitions from multiple shared setting files into a single map.
+     *
+     * @param ids the structure ids of shared setting files, in order of increasing specificity
+     *
+     * @return the combined map of shared setting definitions
+     */
+    private Map<CmsSharedSettingKey, CmsXmlContentProperty> combinareSharedSettingDefinitionMaps(List<CmsUUID> ids) {
+
+        Map<CmsSharedSettingKey, CmsXmlContentProperty> result = new HashMap<>();
+        for (CmsUUID settingFileId : ids) {
+            Map<CmsSharedSettingKey, CmsXmlContentProperty> sharedSettingsForLevel = m_sharedSettingConfigsById.get(
+                settingFileId);
+            if (sharedSettingsForLevel != null) {
+                // since we have different map keys for each (includeName, formatterKey) combination,
+                // putAll does the right thing here, i.e. setting definitions are overridden for their individual formatter keys
+                result.putAll(sharedSettingsForLevel);
+            } else {
+                LOG.warn("Shared setting reference not found: " + settingFileId);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Helper method to get a shared setting for this formatter.
+     *
+     *  <p>Prioritizes shared settings with a formatter key matching this formatter's key.
+     *
+     * @param map the map of shared settings
+     * @param includeName the effective include name of the setting definition to find
+     *
+     * @return the shared setting definition
+     */
+    private CmsXmlContentProperty getSharedSetting(
+        Map<CmsSharedSettingKey, CmsXmlContentProperty> map,
+        String includeName) {
+
+        CmsXmlContentProperty result = null;
+
+        // try formatter key specific entry first, if not found try the general entry
+
+        if (m_formatterKey != null) {
+            result = map.get(new CmsSharedSettingKey(includeName, m_formatterKey));
+        }
+        if (result == null) {
+            result = map.get(new CmsSharedSettingKey(includeName, null));
+        }
+        return result;
+
+    }
+
+    /**
      * Computes the finished map of settings for the given combination of shared setting overrides.+
      *
      * @param overrideSharedSettingsIds the structure ids of shared setting overrides active in the current context, with the most specific override last
@@ -149,55 +201,33 @@ public class CmsSettingConfiguration {
     private Map<String, CmsXmlContentProperty> resolveSettings(ImmutableList<CmsUUID> overrideSharedSettingsIds) {
 
         Map<String, CmsXmlContentProperty> result = new LinkedHashMap<>();
-        List<CmsUUID> allSharedSettingsIds = new ArrayList<>();
 
-        // Shared setting configurations from the formatter are processed first, then shared setting overrides from the sitemap configuration.
-        // This means the latter are prioritized, since the entries from them are put into the combined map last, and thus replace
-        // existing entries.
+        Map<CmsSharedSettingKey, CmsXmlContentProperty> sharedSettingDefinitions = combinareSharedSettingDefinitionMaps(
+            m_sharedSettingsIdsFromFormatter);
+        Map<CmsSharedSettingKey, CmsXmlContentProperty> overrideSettingDefinitions = combinareSharedSettingDefinitionMaps(
+            overrideSharedSettingsIds);
 
-        allSharedSettingsIds.addAll(m_sharedSettingsIdsFromFormatter);
-        allSharedSettingsIds.addAll(overrideSharedSettingsIds);
-
-        // first merge all shared setting definitions into a single map
-        Map<CmsSharedSettingKey, CmsXmlContentProperty> mergedSettingDefinitions = new HashMap<>();
-
-        for (CmsUUID includeOverride : allSharedSettingsIds) {
-            Map<CmsSharedSettingKey, CmsXmlContentProperty> sharedSettingsForLevel = m_sharedSettingConfigsById.get(
-                includeOverride);
-            if (sharedSettingsForLevel != null) {
-                // since we have different map keys for each (includeName, formatterKey) combination,
-                // putAll does the right thing here, i.e. setting definitions are overridden for their individual formatter keys
-                mergedSettingDefinitions.putAll(sharedSettingsForLevel);
-            } else {
-                LOG.warn("Shared setting reference not found: " + includeOverride);
-            }
-        }
-
-        // then build the actual setting map, while using the combined shared setting definition from above to look
-        // up IncludeNames.
-
+        /*
+         * For each setting listed in the formatter, try to find a matching setting definition in both the shared settings (referenced from the formatter)
+         * and the setting overrides (configured in the sitemap/master configuration). These three setting definition objects (or less, if the setting override or shared
+         * setting doesn't exist) are then merged, such that each individual field value for the setting definition is pulled from the first entry in the list
+         * [overrideSetting, settingFromFormatter, settingFromSharedSettings] where it is defined. I.e. the field values defined in setting overrides have the highest
+         * priority.
+         */
         for (CmsXmlContentProperty settingDef : m_listedSettings) {
             String includeName = settingDef.getIncludeName(settingDef.getName());
             if (includeName == null) {
                 continue;
             }
 
-            CmsXmlContentProperty defaultSetting = null;
-
-            // try formatter key specific entry first, if not found try the general entry
-
-            if (m_formatterKey != null) {
-                defaultSetting = mergedSettingDefinitions.get(new CmsSharedSettingKey(includeName, m_formatterKey));
-            }
-            if (defaultSetting == null) {
-                defaultSetting = mergedSettingDefinitions.get(new CmsSharedSettingKey(includeName, null));
-            }
-
-            CmsXmlContentProperty mergedSetting;
+            CmsXmlContentProperty defaultSetting = getSharedSetting(sharedSettingDefinitions, includeName);
+            CmsXmlContentProperty overrideSetting = getSharedSetting(overrideSettingDefinitions, includeName);
+            CmsXmlContentProperty mergedSetting = settingDef;
             if (defaultSetting != null) {
-                mergedSetting = settingDef.mergeDefaults(defaultSetting);
-            } else {
-                mergedSetting = settingDef;
+                mergedSetting = mergedSetting.mergeDefaults(defaultSetting);
+            }
+            if (overrideSetting != null) {
+                mergedSetting = overrideSetting.mergeDefaults(mergedSetting);
             }
             if (mergedSetting.getName() == null) {
                 continue;
