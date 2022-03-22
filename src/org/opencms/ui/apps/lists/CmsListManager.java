@@ -855,7 +855,7 @@ I_CmsCachableApp {
     public static final String FIELD_DATE_RANGE = "instancedaterange_%s_dr";
 
     /** SOLR field name. */
-    public static final String FIELD_DATE_FACET_NAME = "instancedatefacet";
+    public static final String FIELD_DATE_FACET_NAME = "instancedate";
 
     /** SOLR field name. */
     public static final String FIELD_PARENT_FOLDERS = "parent-folders";
