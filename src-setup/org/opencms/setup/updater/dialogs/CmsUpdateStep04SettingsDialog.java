@@ -130,7 +130,7 @@ public class CmsUpdateStep04SettingsDialog extends A_CmsUpdateDialog {
                 m_adminPassword.removeAllValidators();
                 m_adminPassword.addValidator(new UserValidator());
             } catch (Exception e) {
-                CmsSetupErrorDialog.showErrorDialog("Unable to transform configs", configUpdater.validationErrors());
+                CmsSetupErrorDialog.showErrorDialog("Unable to transform configs", e);
                 return false;
             }
         } else {
