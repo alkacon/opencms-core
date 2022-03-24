@@ -175,7 +175,7 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
                 // HTTP basic authentication is used
                 res.setHeader(
                     CmsRequestUtil.HEADER_WWW_AUTHENTICATE,
-                    "BASIC realm=\"" + OpenCms.getSystemInfo().getOpenCmsContext() + "\"");
+                    "BASIC realm=\"" + OpenCms.getSystemInfo().getServerName() + "\"");
                 res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
 
