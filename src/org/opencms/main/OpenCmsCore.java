@@ -78,6 +78,7 @@ import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.json.JSONObject;
 import org.opencms.jsp.jsonpart.CmsJsonPartFilter;
 import org.opencms.jsp.userdata.CmsUserDataRequestManager;
+import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.letsencrypt.CmsLetsEncryptConfiguration;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.loader.CmsTemplateContextManager;
@@ -2730,6 +2731,7 @@ public final class OpenCmsCore {
 
         // remove the controller attribute from the request
         CmsFlexController.removeController(req);
+        req.removeAttribute(CmsJspStandardContextBean.ATTRIBUTE_NAME);
 
         boolean canWrite = (!res.isCommitted() && !res.containsHeader("Location"));
         int status = -1;
