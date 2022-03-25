@@ -29,13 +29,13 @@ package org.opencms.ui.apps.dbmanager;
 
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.report.CmsReportWidget;
+import org.opencms.ui.apps.Messages;
+import org.opencms.ui.report.CmsReportDialog;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Panel;
-import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.VerticalLayout;
 
 /**
@@ -47,16 +47,7 @@ public class CmsDbStaticExportView extends VerticalLayout {
     private static final long serialVersionUID = 6812301161700680358L;
 
     /**Vaadin component.*/
-    private VerticalLayout m_layout;
-
-    /**Vaadin component.*/
     private Button m_ok;
-
-    /**Vaadin component.*/
-    private Label m_report;
-
-    /**Vaadin component.*/
-    private Panel m_reportPanel;
 
     /**Vaadin component.*/
     private Panel m_startPanel;
@@ -67,11 +58,6 @@ public class CmsDbStaticExportView extends VerticalLayout {
     public CmsDbStaticExportView() {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-        m_report.setHeight("500px");
-        m_layout.setWidth("100%");
-        m_report.addStyleName("v-scrollable");
-        m_report.addStyleName("o-report");
-
         m_ok.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 3329214665347113504L;
@@ -81,7 +67,6 @@ public class CmsDbStaticExportView extends VerticalLayout {
                 startThread();
             }
         });
-        m_reportPanel.setVisible(false);
     }
 
     /**
@@ -89,14 +74,9 @@ public class CmsDbStaticExportView extends VerticalLayout {
      */
     void startThread() {
 
-        m_reportPanel.setVisible(true);
         m_startPanel.setVisible(false);
-        m_report.setVisible(false);
         CmsStaticExportThread thread = new CmsStaticExportThread(A_CmsUI.getCmsObject());
-        CmsReportWidget report = new CmsReportWidget(thread);
-        report.setHeight("500px");
-        report.setWidth("100%");
-        m_layout.addComponent(report);
-        thread.start();
+        String title = CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_STATEXP_ADMIN_TOOL_NAME_0);
+        CmsReportDialog.showReportDialog(title, thread);
     }
 }
