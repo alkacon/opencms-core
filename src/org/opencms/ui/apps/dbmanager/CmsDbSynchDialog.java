@@ -118,6 +118,7 @@ public class CmsDbSynchDialog extends CmsBasicDialog {
         widget.setHeight("100%");
         widget.setWidth("100%");
         m_report.addComponent(widget);
-        m_okButton.setEnabled(false);
+        m_okButton.setVisible(false);
+        m_cancelButton.setCaption(CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_BUTTON_CLOSE_DIALOG_0));
     }
 }
