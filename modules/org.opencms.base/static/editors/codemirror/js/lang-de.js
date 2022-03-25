@@ -7,5 +7,6 @@ var lang = {
   replaceconfirm : "Ersetzen?",
   replaceyes : "Ja",
   replaceno : "Nein",
-  replacestop : "Stop"
+  replacestop : "Stop",
+  fontsize: "--Schriftgr&ouml;&szlig;e--"
 };

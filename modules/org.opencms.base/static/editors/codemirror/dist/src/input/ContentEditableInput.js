@@ -10,7 +10,7 @@ import { simpleSelection } from "../model/selection.js"
 import { setSelection } from "../model/selection_updates.js"
 import { getBidiPartAt, getOrder } from "../util/bidi.js"
 import { android, chrome, gecko, ie_version } from "../util/browser.js"
-import { contains, range, removeChildrenAndAdd, selectInput } from "../util/dom.js"
+import { activeElt, contains, range, removeChildrenAndAdd, selectInput } from "../util/dom.js"
 import { on, signalDOMEvent } from "../util/event.js"
 import { Delayed, lst, sel_dontScroll } from "../util/misc.js"
 
@@ -29,10 +29,19 @@ export default class ContentEditableInput {
   init(display) {
     let input = this, cm = input.cm
     let div = input.div = display.lineDiv
+    div.contentEditable = true
     disableBrowserMagic(div, cm.options.spellcheck, cm.options.autocorrect, cm.options.autocapitalize)
 
+    function belongsToInput(e) {
+      for (let t = e.target; t; t = t.parentNode) {
+        if (t == div) return true
+        if (/\bCodeMirror-(?:line)?widget\b/.test(t.className)) break
+      }
+      return false
+    }
+
     on(div, "paste", e => {
-      if (signalDOMEvent(cm, e) || handlePaste(e, cm)) return
+      if (!belongsToInput(e) || signalDOMEvent(cm, e) || handlePaste(e, cm)) return
       // IE doesn't fire input events, so we schedule a read for the pasted content in this way
       if (ie_version <= 11) setTimeout(operation(cm, () => this.updateFromDOM()), 20)
     })
@@ -57,7 +66,7 @@ export default class ContentEditableInput {
     })
 
     function onCopyCut(e) {
-      if (signalDOMEvent(cm, e)) return
+      if (!belongsToInput(e) || signalDOMEvent(cm, e)) return
       if (cm.somethingSelected()) {
         setLastCopied({lineWise: false, text: cm.getSelections()})
         if (e.type == "cut") cm.replaceSelection("", null, "cut")
@@ -87,7 +96,7 @@ export default class ContentEditableInput {
       let kludge = hiddenTextarea(), te = kludge.firstChild
       cm.display.lineSpace.insertBefore(kludge, cm.display.lineSpace.firstChild)
       te.value = lastCopied.text.join("\n")
-      let hadFocus = document.activeElement
+      let hadFocus = activeElt()
       selectInput(te)
       setTimeout(() => {
         cm.display.lineSpace.removeChild(kludge)
@@ -99,9 +108,18 @@ export default class ContentEditableInput {
     on(div, "cut", onCopyCut)
   }
 
+  screenReaderLabelChanged(label) {
+    // Label for screenreaders, accessibility
+    if(label) {
+      this.div.setAttribute('aria-label', label)
+    } else {
+      this.div.removeAttribute('aria-label')
+    }
+  }
+
   prepareSelection() {
     let result = prepareSelection(this.cm, false)
-    result.focus = this.cm.state.focused
+    result.focus = activeElt() == this.div
     return result
   }
 
@@ -195,7 +213,7 @@ export default class ContentEditableInput {
 
   focus() {
     if (this.cm.options.readOnly != "nocursor") {
-      if (!this.selectionInEditor())
+      if (!this.selectionInEditor() || activeElt() != this.div)
         this.showSelection(this.prepareSelection(), true)
       this.div.focus()
     }
@@ -208,7 +226,7 @@ export default class ContentEditableInput {
   receivedFocus() {
     let input = this
     if (this.selectionInEditor())
-      this.pollSelection()
+      setTimeout(() => this.pollSelection(), 20)
     else
       runInOp(this.cm, () => input.cm.curOp.selectionChanged = true)
 

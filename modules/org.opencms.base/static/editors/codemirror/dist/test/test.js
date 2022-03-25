@@ -1807,8 +1807,8 @@ testCM("atomicMarker", function(cm) {
       inclusiveRight: ri
     };
 
-    if (ls === true || ls === false) options["selectLeft"] = ls;
-    if (rs === true || rs === false) options["selectRight"] = rs;
+    if (ls === true || ls === false) options.selectLeft = ls;
+    if (rs === true || rs === false) options.selectRight = rs;
 
     return cm.markText(Pos(ll, cl), Pos(lr, cr), options);
   }
@@ -2672,3 +2672,7 @@ testCM("mode_lookahead", function(cm) {
   eq(cm.getTokenAt(Pos(0, 1)).type, null)
   eq(cm.getTokenAt(Pos(1, 1)).type, "atom")
 }, {value: "foo\na\nx\nx\n", mode: "lookahead_mode"})
+
+testCM("should have translate=no attribute", function(cm) {
+  eq(cm.getWrapperElement().getAttribute("translate"), "no")
+}, {})
