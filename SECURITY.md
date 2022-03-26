@@ -1,10 +1,7 @@
-# Security Policy
+# Reporting Security Issues
 
-## Reporting a Vulnerability
+The Alkacon Software team and the OpenCms community take security issues in OpenCms seriously. We appreciate your efforts to responsibly disclose your findings, and will make every effort to acknowledge your contributions.
 
-Please report security vulnerabilities in OpenCms using the [contact form on the Alkacon web site](https://www.alkacon.com/security/).
+Please report security issues in OpenCms using the [security issue report form on the Alkacon website](https://www.alkacon.com/security/).
 
-We will contact you as soon as possible in order to resolve the issue.
-
-
-
+We'll endeavor to respond quickly, and will keep you updated in the course of the resolution process.
