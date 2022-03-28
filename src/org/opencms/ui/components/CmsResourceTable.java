@@ -84,15 +84,20 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.vaadin.event.dd.DropHandler;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.Property;
 import com.vaadin.v7.data.util.IndexedContainer;
+import com.vaadin.v7.data.util.converter.Converter;
 import com.vaadin.v7.shared.ui.label.ContentMode;
+import com.vaadin.v7.ui.AbstractSelect.ItemDescriptionGenerator;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.Table;
 import com.vaadin.v7.ui.Table.RowHeaderMode;
@@ -247,6 +252,48 @@ public class CmsResourceTable extends CustomComponent {
     }
 
     /**
+     * Default description generator for table entries.
+     */
+    public static class DefaultItemDescriptionGenerator implements ItemDescriptionGenerator {
+
+        /** Serial version id.*/
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * @see com.vaadin.v7.ui.AbstractSelect.ItemDescriptionGenerator#generateDescription(com.vaadin.ui.Component, java.lang.Object, java.lang.Object)
+         */
+        @SuppressWarnings("synthetic-access")
+        public String generateDescription(Component source, Object itemId, Object propertyId) {
+
+            Table table = (Table)source;
+            try {
+                if ((propertyId != null) && (itemId != null)) {
+                    Property prop = table.getContainerDataSource().getItem(itemId).getItemProperty(propertyId);
+                    Converter<String, Object> converter = table.getConverter(propertyId);
+                    if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME == propertyId) {
+                        // when working with the explorer, tool tips constantly showing up when
+                        // hovering over the file name accidentally seems more annoying than useful
+                        return null;
+                    } else if ((converter != null) && String.class.equals(converter.getPresentationType())) {
+                        return converter.convertToPresentation(
+                            prop.getValue(),
+                            String.class,
+                            A_CmsUI.get().getLocale());
+                    } else if (String.class.equals(prop.getType()) || ClassUtils.isPrimitiveOrWrapper(prop.getType())) {
+                        Object value = prop.getValue();
+                        if (value != null) {
+                            return "" + value;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+            return null;
+        }
+    }
+
+    /**
      * Provides item property values for additional table columns.<p>
      */
     public static interface I_ResourcePropertyProvider {
@@ -326,6 +373,7 @@ public class CmsResourceTable extends CustomComponent {
         m_fileTable.setContainerDataSource(m_container);
         setCompositionRoot(m_fileTable);
         m_fileTable.setRowHeaderMode(RowHeaderMode.HIDDEN);
+        m_fileTable.setItemDescriptionGenerator(new DefaultItemDescriptionGenerator());
     }
 
     /**

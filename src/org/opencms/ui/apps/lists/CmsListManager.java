@@ -1618,6 +1618,7 @@ I_CmsCachableApp {
                 return style;
             }
         });
+        final ItemDescriptionGenerator defaultDescriptionGenerator = new CmsResourceTable.DefaultItemDescriptionGenerator();
         m_resultTable.setsetItemDescriptionGenerator(new ItemDescriptionGenerator() {
 
             private static final long serialVersionUID = 1L;
@@ -1629,7 +1630,7 @@ I_CmsCachableApp {
                     && ((Boolean)item.getItemProperty(BLACKLISTED_PROPERTY).getValue()).booleanValue()) {
                     return CmsVaadinUtils.getMessageText(Messages.GUI_LISTMANAGER_COLUMN_BLACKLISTED_0);
                 }
-                return null;
+                return defaultDescriptionGenerator.generateDescription(source, itemId, propertyId);
             }
         });
         m_resultTable.setContextProvider(this);

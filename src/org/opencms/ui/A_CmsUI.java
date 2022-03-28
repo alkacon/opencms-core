@@ -53,12 +53,13 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.WrappedHttpSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.TooltipConfiguration;
 import com.vaadin.ui.UI;
-import com.vaadin.v7.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.v7.ui.Label;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Abstract UI class providing access to the OpenCms context.<p>
@@ -84,9 +85,14 @@ public abstract class A_CmsUI extends UI {
      * Constructor.<p>
      */
     public A_CmsUI() {
+
         m_windowExtension = new CmsWindowExtension(this);
         m_attributes = new ConcurrentHashMap<String, Serializable>();
         getLoadingIndicatorConfiguration().setFirstDelay(600);
+        TooltipConfiguration tooltipConfig = getTooltipConfiguration();
+        tooltipConfig.setOpenDelay(750);
+        tooltipConfig.setQuickOpenDelay(750);
+
     }
 
     /**
