@@ -379,8 +379,9 @@ public class CmsLogChannelTable extends Table {
         Item item = m_container.addItem(logger);
         if (item != null) {
             item.getItemProperty(TableColumn.Channel).setValue(logger.getName());
-            Logger parent = logger.getParent();
-            item.getItemProperty(TableColumn.ParentChannel).setValue(parent != null ? parent.getName() : "none");
+            String parentChannelName = getParentLogChannelName(logger);
+            item.getItemProperty(TableColumn.ParentChannel).setValue(
+                parentChannelName != null ? parentChannelName : "none");
             item.getItemProperty(TableColumn.File).setValue(m_app.getLogFile(logger));
             item.getItemProperty(TableColumn.Level).setValue(LoggerLevel.fromLogger(logger));
         }
@@ -532,6 +533,23 @@ public class CmsLogChannelTable extends Table {
         for (Logger logger : m_app.getAllElements()) {
             addItemForLogger(logger);
         }
+    }
+
+    /**
+     * Gets the parent log channel name of a logger.
+     *
+     * @param logger the logger
+     * @return the parent log channel name
+     */
+    private String getParentLogChannelName(Logger logger) {
+
+        LoggerConfig parentConfig = null;
+        if (logger.getName().equals(logger.get().getName())) {
+            parentConfig = logger.get().getParent();
+        } else {
+            parentConfig = logger.get();
+        }
+        return parentConfig != null ? parentConfig.getName() : null;
     }
 
     /**
