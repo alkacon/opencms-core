@@ -2,13 +2,13 @@
 
 This page provides information on how to install OpenCms using Tomcat and MySQL. All installation parts are described as single steps. After completing each step you are strongly advised to verify the success of your work.
 
-- Install the Java SDK
-- Install Tomcat
-- Install MySQL/MariaDB
-- Deploy the opencms.war file
-- Install OpenCms using the Setup-Wizard
-- Now your system is ready
-- Security issues
+- [Install the Java SDK](#install-the-java-sdk)
+- [Install Tomcat](#install-tomcat)
+- [Install MySQL/MariaDB](#install-mysql-mariadb)
+- [Deploy the opencms.war file](#deploy-the-opencms-war-file)
+- [Install OpenCms using the Setup-Wizard](#install-opencms-using-the-setup-wizard)
+- [Now your system is ready](#now-your-system-is-ready)
+- [Security issues](#security-issues)
 
 ## Install the Java SDK
 Install the Java JDK, version 8 or newer (from OpenJDK [https://openjdk.java.net/projects/jdk/](https://openjdk.java.net/projects/jdk/), or from Oracle [https://www.oracle.com/java/technologies/downloads/](https://www.oracle.com/java/technologies/downloads/)). For details on how to install these components on your operating system, see the documentation that comes with them. You must install the Java JDK (Java Development Kit), not the JRE (Java Runtime Environment) that is also available. The JRE is not sufficient to run OpenCms!
