@@ -14,6 +14,24 @@
         For more details about Alkacon Software GmbH & Co. KG, please see http://www.alkacon.com/.
     ]]></description>
 
+    <!-- Because auto-initialization is disabled with the isLog4jAutoInitializationDisabled context parameter,
+        we must configure the Log4jServletContextListener and Log4jServletFilter in the deployment descriptor
+        or programmatically. See http://logging.apache.org/log4j/2.x/manual/webapp.html. -->
+    <filter>
+        <filter-name>log4jServletFilter</filter-name>
+        <filter-class>org.apache.logging.log4j.web.Log4jServletFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>log4jServletFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+        <dispatcher>ASYNC</dispatcher><!-- Servlet 3.0 w/ disabled auto-initialization only; not supported in 2.5 -->
+    </filter-mapping>
+
     <!-- Changing the servlet name from "opencms" to something else requires
         2 changes in this file. For example, to change the servlet name to "mycms"
         you must: 1. Change the <context-param> called "OpenCmsServlet" from "/opencms/*"
@@ -93,6 +111,15 @@
         <param-value>true</param-value>
     </context-param>
 
+    <!-- Disable automatic start of log4j2: when started automatically, the opencms system properties
+         that allows the customization of the logging paths don't get default values. If these are not set and
+          are used in the log4j2.xml configuration file, log4j2 will create during its configuration empty
+          files with non-sensic names. -->
+    <context-param>
+        <param-name>isLog4jAutoInitializationDisabled</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
     <!-- Uncomment this parameter in case you change the web application context
         using an application server specific deployment descriptor. E.g. in Jboss,
         you could use the jboss-web.xml file to deploy opencms under the context
@@ -101,6 +128,10 @@
         </context-param> -->
 
     <!-- *********************** Main OpenCms configuration ****************************** -->
+
+    <listener>
+        <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
+    </listener>
 
     <listener>
         <listener-class>org.opencms.main.OpenCmsListener</listener-class>
