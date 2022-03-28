@@ -37,13 +37,15 @@ work.</p>
 <h2>
 <a id="a1" name="a1"></a>Install the Java SDK, version 8 or newer</h2>
 
-<p>Install the Java JDK, version 8 or newer (from Oracle 
+<p>Install the Java JDK, version 8 or newer (OpenJDK <code>
+<a  href="https://openjdk.java.net/projects/jdk/" target="_blank" 
+title="External link, opens in new window">https://openjdk.java.net/projects/jdk/</a></code>, or from Oracle 
 <code>
-<a  href="http://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank" 
-title="External link, opens in new window">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a></code>). For details on how to install these components on your operating system, see the
+<a  href="https://www.oracle.com/java/technologies/downloads/" target="_blank" 
+title="External link, opens in new window">https://www.oracle.com/java/technologies/downloads/</a></code>). For details on how to install these components on your operating system, see the
 documentation that comes with them. You must install the Java 
 <em>JDK</em> (Java Development Kit), not the 
-<em>JRE</em> (Java Runtime Environment) that is also available from Oracle. The JRE is 
+<em>JRE</em> (Java Runtime Environment) that is also available. The JRE is 
 <em>not</em> sufficient to run OpenCms!</p>
 <p>
 <strong>Important</strong>: @OPENCMS_VERSION@ was tested with Java 8 (1.8).</p>
@@ -55,8 +57,8 @@ This release was tested with Tomcat 8.x.</p>
 
 <p>Install Tomcat from 
 <code>
-<a href="http://tomcat.apache.org"
-target="_blank" title="External link, opens in new window">http://tomcat.apache.org</a>
+<a href="https://tomcat.apache.org/"
+target="_blank" title="External link, opens in new window">https://tomcat.apache.org/</a>
 </code> into a folder of your choice. This is the 
 <code>CATALINA_HOME</code> folder. Don't forget to set the environment variables 
 <code>CATALINA_HOME</code> and 
@@ -65,29 +67,35 @@ target="_blank" title="External link, opens in new window">http://tomcat.apache.
 uses port 8080 in standalone mode. If you wish, you can combine the servlet-engine with a webserver
 like the Apache Web Server 
 <code>
-<a href="http://httpd.apache.org" target="_blank" title="External link, 
-opens in new window">http://httpd.apache.org</a></code>. 
+<a href="https://httpd.apache.org/" target="_blank" title="External link, 
+opens in new window">https://httpd.apache.org/</a></code>. 
 Please see the documentation available with the webserver on how to combine it with your
 servlet environment.</p>
+<p>Additionally, you can check the OpenCms documentation for this task: <code>
+<a href="https://documentation.opencms.org/opencms-documentation/server-installation/traditional-with-apache-webserver/" target="_blank" title="External link, 
+opens in new window">https://documentation.opencms.org/opencms-documentation/server-installation/traditional-with-apache-webserver/</a></code>.
 <p><strong>Please note:</strong> On Linux systems, Tomcat's JVM has to be started with the command
 line argument 
 <code>-Djava.awt.headless=true</code>.</p>
 <h2>
-<a id="a3" name="a3"></a>Install MySQL</h2>
+<a id="a3" name="a3"></a>Install MySQL/MariaDB</h2>
 
 <p>Install MySQL from 
 <code>
-<a href="http://www.mysql.com/downloads/index.html"
-target="_blank" title="External link, opens in new window">http://www.mysql.com/downloads/index.html</a>
+<a href="https://dev.mysql.com/downloads/mysql/"
+target="_blank" title="External link, opens in new window">https://dev.mysql.com/downloads/mysql/</a>
 </code> (see the MySQL documentation on 
 <code>
-<a href="http://www.mysql.com/documentation/index.html"
-target="_blank" title="External link, opens in new window">http://www.mysql.com/documentation/index.html</a></code>). 
+<a href="https://dev.mysql.com/doc/"
+target="_blank" title="External link, opens in new window">https://dev.mysql.com/doc/</a></code>) or MariaDB from <code>
+<a href="hhttps://mariadb.org/download/"
+target="_blank" title="External link, opens in new window">https://mariadb.org/download/</a>
+</code>. 
 On Windows-based systems MySQL has to be installed on the 
 <code>C:\</code> drive and should be registered as service using 
 <code>%MYSQL_HOME%/bin/mysqld -install</code>.</p>
 
-<p>OpenCms can be used with MySQL 5.x.</p>
+<p>OpenCms can be used with MySQL/MariaDB >= 5.5.</p>
 <p>Start the MySQL server by running the service (WINDOWS) or executing 
 <code>%MYSQL_HOME%/bin/mysqld</code> (UNIX).</p>
 <p>Check that MySQL is running before you continue by starting the MySQL monitor (execute 
@@ -98,7 +106,8 @@ step.</p>
 <strong>Important:</strong> You will have to increase the MySQL configuration variable 
 <code>max_allowed_packet</code> located in the MySQL configuration file (usually called 
 
-<code>my.ini</code>). For OpenCms, the limit should be as high as possible, a setting of at least 
+<code>my.ini</code> on Windows-based and <code>my.cnf</code> on other systems).
+For OpenCms, the limit should be as high as possible, a setting of at least 
 <code>max_allowed_packet=32M</code> is recommended.</p>
 <h2>
 <a id="a4" name="a4"></a>Deploy the 
@@ -152,10 +161,10 @@ default configuration is:
 <a id="a7" name="a7"></a>Security issues</h2>
 <p>Finally after you have installed OpenCms you should have a look at the security settings.</p>
 <p>First change the 
-<code>Admin</code> user password of OpenCms by calling the user preferences (the "checkbox" icon in
-the top menu on the main screen of the Workplace).</p>
-<p>Then you can add a password to the MySQL database. Enter the following commands at the MySQL
-command line.</p>
+<code>Admin</code> user password of OpenCms by calling the user preferences (the blue
+"identicon" icon on the right in the top toolbar of the main screen of the OpenCms Workplace).</p>
+<p>Then you should add a password to the MySQL database. Enter the following commands at the MySQL
+command line:</p>
 <blockquote>
 <p>
 
