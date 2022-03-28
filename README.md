@@ -12,7 +12,7 @@
 
 ## Table of contents
 
-- [General OpenCms features](#general-openCms-features)
+- [General OpenCms features](#general-opencms-features)
 - [Online live demo](#online-live-demo)
 - [Documentation](#documentation)
 - [Community](#community)

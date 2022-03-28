@@ -16,7 +16,7 @@ Install the Java JDK, version 8 or newer (from OpenJDK [https://openjdk.java.net
 **Important**: OpenCms was tested with Java 8 (1.8).
 
 ## Install Tomcat
-OpenCms requires a Servlet 2.4 / JSP 2.0 standards compliant container. This release was tested with Tomcat 8.x.
+OpenCms requires a Servlet 2.4 / JSP 2.0 standards compliant container. This release was tested with Tomcat 9 and 8.5.
 
 Install Tomcat from [https://tomcat.apache.org/](https://tomcat.apache.org/) into a folder of your choice. This is the `CATALINA_HOME` folder. Don't forget to set the environment variables `CATALINA_HOME` and `JAVA_HOME`.
 
