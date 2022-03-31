@@ -141,6 +141,8 @@ public class CmsPublishLockChecker {
             @Override
             protected void onResponse(Set<CmsUUID> locked) {
 
+                stop(false);
+
                 processCheckResult(locked);
             }
 
