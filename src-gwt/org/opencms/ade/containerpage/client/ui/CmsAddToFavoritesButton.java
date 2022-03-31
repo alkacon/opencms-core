@@ -56,7 +56,7 @@ public class CmsAddToFavoritesButton extends A_CmsToolbarOptionButton {
     public CmsElementOptionButton createOptionForElement(CmsContainerPageElementPanel element) {
 
         CmsElementOptionButton button = super.createOptionForElement(element);
-        if (element.isNew()) {
+        if (element.isNew() && (button != null)) {
             button.disable("Can not add empty element to favorites.");
         }
         return button;
