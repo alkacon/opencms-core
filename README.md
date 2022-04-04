@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">A powerful open source website content management system.</p>
-<p align="center">OpenCms is build in Java and XML from open source components. OpenCms provides powerful features especially suited for medium and large Internet or Intranet applications.</p>
+<p align="center"><a href="http://opencms.org/">OpenCms</a> is build in Java and XML from open source components. OpenCms provides compelling features especially suited for large Internet or Intranet websites.</p>
 
 
 ## Table of contents
@@ -51,6 +51,7 @@ OpenCms features include:
 - JSP integration for dynamic functionality in templates, dynamic forms etc.
 - ... and much more
 
+See the [OpenCms website](http://opencms.org/) for further information.
 
 ## Online live demo
 
