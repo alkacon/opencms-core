@@ -43,8 +43,8 @@ OpenCms 13.0.0 - April 13, 2022
 - General: Improved the role and permission cache by reworking the flushing with regard to efficiency.
 - General: The "Image Preview" dialog now has a checkerboard background, improving the display of white or transparent images.
 - General: Optional logging of certain user activities such as login, logout and password change.
-- Updated TinyMCE editor to version 5.10.3
-- Updated CodeMirror editor to version 5.65.2
+- Updated TinyMCE editor to version 5.10.3.
+- Updated CodeMirror editor to version 5.65.2.
 * Fixed issue with localization in the TinyMCE link dialog.
 * Fixed issue where the explorer view in the workplace was not always updated correctly for deleted resources.
 * Fixed issue where the layout of the "Resources to export" tab in the DB export app was broken.
@@ -55,15 +55,15 @@ OpenCms 13.0.0 - April 13, 2022
 * Fixed issue where the "New Resource Type" dialog did throw a NPE if no module was selected.
 * Fixed issue where the "Reload page automatically" mechanism did not work if a hash was at the end of the URL.
 * Fixed issue where the layout of the "Edit point" icon bar in the form editor was broken.
-* Fixed issue 611: NPE in custom error pages
-* Fixed issue 641: Added tool tips for resource tables
-* Fixed issue 645: TinyMCE style select menu could become unreadable due to text color
-* Fixed issue 657: Full static export report now shown in a popup dialog
-* Fixed issue 658: Improved button labels for RFS synchronisation tool
-* Fixed issue 665: Missing JPedal dependency in build scripts
-* Fixed issue 685: Realm attribute for HTTP Basic Authentication changed from context path to server name
-* Fixed issue 721: Vulnerability in profile picture upload
-* Fixed issue 726: Log management tool producing unnecessary warnings in the log
+* Fixed issue 611: NPE in custom error pages.
+* Fixed issue 641: Added tool tips for resource tables.
+* Fixed issue 645: TinyMCE style select menu could become unreadable due to text color.
+* Fixed issue 657: Full static export report now shown in a popup dialog.
+* Fixed issue 658: Improved button labels for RFS synchronisation tool.
+* Fixed issue 665: Missing JPedal dependency in build scripts.
+* Fixed issue 685: Realm attribute for HTTP Basic Authentication changed from context path to server name.
+* Fixed issue 721: Vulnerability in profile picture upload.
+* Fixed issue 726: Log management tool producing unnecessary warnings in the log.
 
 OpenCms 12.0.0 - October 12, 2021
 ! Headless API: Access XML contents as JSON objects.
