@@ -15,6 +15,55 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 13.0.0 - April 13, 2022
+! Plugins: Introduced a plugin system for formatters and dynamic functions as a more flexible replacement of the "headincludes" feature.
+! Plugins: Added ${cms.plugins} EL function to access plugin definitions in a JSP page.
+! Plugins: Added "Site plugins" that can be automatically activated for all pages that share a site configuration.
+! Geo Search: Introduced a Geo search feature in order to retrieve XML contents by geo coordinates.
+! Geo Search: Added Geo mapping syntax for XML content schemas, even if coordinates are stored in linked contents.
+! Page editor: Extended the <cms:display> tag to handle upload for binary resources in lists.
+- Security: Updated Log4j to the latest version to solve the Log4j security vulnerability.
+- Workplace: Improved the image upload so that pictures taken with a mobile device are rotated correctly.
+- Workplace: Improved the "Image preview" dialog to better display SVG images.
+- Workplace: Improved the "Page editor" and the "Form editor" to better work with touch devices.
+- Workplace: Improved the "Publish directly" dialog options depending on whether folders or files are selected. 
+- Workplace: Improved the usage of <script> tags in the page editor and in the workplace.
+- Workplace: Added an option to manually define the resources in the "Add content" dialog.
+- Template Variants: Element setting overrides allow to change formatter settings by master configuration.
+- Template Variants: Shared settings and overrides can be defined for specific formatters only.
+- Template Variants: Shared setting definitions now have an optional comment node.
+- Template Variants: Container pages now support an alias option for formatter keys.
+- Template Variants: Container pages now support a fallback mechanism for formatter keys.
+- Page editor: Improved the layout of the "Element settings" dialog.
+- Page editor: Improved the lock removal when publishing directly from the form editor.
+- Page editor: Improved the detail page mechanism to allow multiple default elements for different types.
+- Search: Extended the search implementation to facet and filter XML contents by date range.
+- Search: Improved the performance when re-indexing container pages containing model groups.
+- General: Improved the import process so that it continues if a file throws an error during import.
+- General: Improved the role and permission cache by reworking the flushing with regard to efficiency.
+- General: The "Image Preview" dialog now has a checkerboard background, improving the display of white or transparent images.
+- Updated TinyMCE editor to version 5.10.3
+- Updated CodeMirror editor to version 5.65.2
+* Fixed issue with localization in the TinyMCE link dialog.
+* Fixed issue where the explorer view in the workplace was not always updated correctly for deleted resources.
+* Fixed issue where the layout of the "Resources to export" tab in the DB export app was broken.
+* Fixed issue where a folder with an expired expiration date could not be renamed in the explorer.
+* Fixed issue where scheduled publishing did not clean up publish locks correctly.
+* Fixed issue where the layout of the "Bookmarks" dialog was broken in Safari.
+* Fixed issue where the layout of the "RFS Synchronization" report view was broken.
+* Fixed issue where the "New Resource Type" dialog did throw a NPE if no module was selected.
+* Fixed issue where the "Reload page automatically" mechanism did not work if a hash was at the end of the URL.
+* Fixed issue where the layout of the "Edit point" icon bar in the form editor was broken. #66
+* Fixed issue 611: NPE in custom error pages
+* Fixed issue 641: Added tool tips for resource tables
+* Fixed issue 645: TinyMCE style select menu could become unreadable due to text color
+* Fixed issue 657: Full static export report now shown in a popup dialog
+* Fixed issue 658: Improved button labels for RFS synchronisation tool
+* Fixed issue 665: Missing JPedal dependency in build scripts
+* Fixed issue 685: Realm attribute for HTTP Basic Authentication changed from context path to server name
+* Fixed issue 721: Vulnerability in profile picture upload
+* Fixed issue 726: Log management tool producing unnecessary warnings in the log
+
 OpenCms 12.0.0 - October 12, 2021
 ! Headless API: Access XML contents as JSON objects.
 ! Headless API: List all resources in a folder tree as JSON.
