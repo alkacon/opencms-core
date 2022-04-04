@@ -42,6 +42,7 @@ OpenCms 13.0.0 - April 13, 2022
 - General: Improved the import process so that it continues if a file throws an error during import.
 - General: Improved the role and permission cache by reworking the flushing with regard to efficiency.
 - General: The "Image Preview" dialog now has a checkerboard background, improving the display of white or transparent images.
+- General: Optional logging of certain user activities such as login, logout and password change.
 - Updated TinyMCE editor to version 5.10.3
 - Updated CodeMirror editor to version 5.65.2
 * Fixed issue with localization in the TinyMCE link dialog.
