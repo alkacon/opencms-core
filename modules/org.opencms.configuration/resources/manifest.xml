@@ -14,14 +14,14 @@
         <export-mode name="reduced" />
         <description><![CDATA[<p>Contains various configuration files to specify OpenCms core behavior.</p>
 <p><i>&copy; by Alkacon Software GmbH &amp; Co. KG (http://www.alkacon.com).</i></p>]]></description>
-        <version>12.0.0</version>
+        <version>13.0.0</version>
         <authorname><![CDATA[Alkacon Software GmbH &amp; Co. KG]]></authorname>
         <authoremail><![CDATA[info@alkacon.com]]></authoremail>
         <datecreated />
         <userinstalled />
         <dateinstalled />
         <dependencies>
-            <dependency name="org.opencms.base" version="12.0.0" />
+            <dependency name="org.opencms.base" version="13.0.0" />
         </dependencies>
         <exportpoints />
         <resources>
