@@ -1544,7 +1544,7 @@ public class CmsADEConfigData {
         if (parent != null) {
             return parent.isUseFormatterKeys();
         }
-        boolean defaultValue = false;
+        boolean defaultValue = true;
         LOG.debug("isUseFormatterKeys - using defaultValue " + defaultValue);
         return defaultValue;
     }

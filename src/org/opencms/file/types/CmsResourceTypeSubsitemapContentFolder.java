@@ -48,7 +48,7 @@ public class CmsResourceTypeSubsitemapContentFolder extends CmsResourceTypeFolde
     public static final String DEFAULT_CONFIG_SOURCE = "/system/modules/org.opencms.base/copyresources/sitemap.config";
 
     /** True if the 'use formatter keys' option should be enabled by default in newly created sitemap configurations. */
-    private static boolean m_enableNewPageFormatByDefault;
+    private static boolean m_enableNewPageFormatByDefault = true;
 
     /**
      * Checks if the 'use formatter keys' option should be enabled by default in generated sitemap configurations.
