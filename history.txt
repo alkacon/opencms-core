@@ -54,7 +54,7 @@ OpenCms 13.0.0 - April 13, 2022
 * Fixed issue where the layout of the "RFS Synchronization" report view was broken.
 * Fixed issue where the "New Resource Type" dialog did throw a NPE if no module was selected.
 * Fixed issue where the "Reload page automatically" mechanism did not work if a hash was at the end of the URL.
-* Fixed issue where the layout of the "Edit point" icon bar in the form editor was broken. #66
+* Fixed issue where the layout of the "Edit point" icon bar in the form editor was broken.
 * Fixed issue 611: NPE in custom error pages
 * Fixed issue 641: Added tool tips for resource tables
 * Fixed issue 645: TinyMCE style select menu could become unreadable due to text color
