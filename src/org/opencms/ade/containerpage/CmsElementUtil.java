@@ -744,12 +744,17 @@ public class CmsElementUtil {
             for (CmsContainer cnt : containers) {
                 if (cnt.getName().equals(containerId)) {
                     CmsFormatterConfigCollection containerFormatters = new CmsFormatterConfigCollection();
-                    boolean missesFormatterSetting = !elementData.getSettings().containsKey(
-                        CmsFormatterConfig.getSettingsKeyForContainer(cnt.getName()));
+                    String foundFormatterKey = null;
+                    for (String containerName : new String[] {cnt.getName(), ""}) {
+                        foundFormatterKey = elementData.getSettings().get(
+                            CmsFormatterConfig.getSettingsKeyForContainer(containerName));
+                        if (foundFormatterKey != null) {
+                            break;
+                        }
+                    }
+                    boolean missesFormatterSetting = (foundFormatterKey == null);
                     if (!missesFormatterSetting) {
-                        foundFormatter = adeConfig.findFormatter(
-                            elementData.getSettings().get(
-                                CmsFormatterConfig.getSettingsKeyForContainer(cnt.getName())));
+                        foundFormatter = adeConfig.findFormatter(foundFormatterKey);
                     }
                     Map<String, I_CmsFormatterBean> formatterSelection = formatterConfiguraton.getFormatterSelection(
                         cnt.getType(),
