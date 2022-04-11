@@ -712,15 +712,20 @@ public class CmsModuleManager {
                 }
             }
 
-            report.println(Messages.get().container(Messages.RPT_PUBLISH_PROJECT_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
+            if (moduleResources.size() > 0) {
+                report.println(
+                    Messages.get().container(Messages.RPT_PUBLISH_PROJECT_BEGIN_0),
+                    I_CmsReport.FORMAT_HEADLINE);
+                // now unlock and publish the project
+                cms.unlockProject(deleteProject.getUuid());
+                OpenCms.getPublishManager().publishProject(cms, report);
+                OpenCms.getPublishManager().waitWhileRunning();
+                report.println(
+                    Messages.get().container(Messages.RPT_PUBLISH_PROJECT_END_0),
+                    I_CmsReport.FORMAT_HEADLINE);
+                report.println(Messages.get().container(Messages.RPT_DELETE_MODULE_END_0), I_CmsReport.FORMAT_HEADLINE);
+            }
 
-            // now unlock and publish the project
-            cms.unlockProject(deleteProject.getUuid());
-            OpenCms.getPublishManager().publishProject(cms, report);
-            OpenCms.getPublishManager().waitWhileRunning();
-
-            report.println(Messages.get().container(Messages.RPT_PUBLISH_PROJECT_END_0), I_CmsReport.FORMAT_HEADLINE);
-            report.println(Messages.get().container(Messages.RPT_DELETE_MODULE_END_0), I_CmsReport.FORMAT_HEADLINE);
         } catch (CmsException e) {
             throw new CmsConfigurationException(e.getMessageContainer(), e);
         } finally {
