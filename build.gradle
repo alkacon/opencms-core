@@ -1042,8 +1042,9 @@ task bindist (dependsOn: war, type: Zip){
     baseName 'opencms'
     from "${project.buildDir}/distributions/opencms.war"
     from(projectDir) {
-        include 'install.html'
-        include 'license.txt'
+        include 'INSTALL.md'
+        include 'LICENSE'
+        include 'README.md'
         include 'history.txt'
         filter(ReplaceTokens, tokens: [
             OPENCMS_VERSION_NUMBER: version,
