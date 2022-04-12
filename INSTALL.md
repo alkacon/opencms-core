@@ -17,7 +17,7 @@ Download and install Java, e.g., from one of the following repositories:
 * [OpenJDK](https://openjdk.java.net/projects/jdk/)
 * [Oracle](https://www.oracle.com/java/technologies/downloads/)
 
-OpenCms 12 is tested with Java 8 and Java 11.
+OpenCms 13 is tested with Java 8 and Java 11.
 
 You must install a Java JDK (Java Development Kit), a JRE (Java Runtime Environment) is not sufficient.
 
@@ -29,7 +29,7 @@ Download and install Tomcat from [https://tomcat.apache.org/](https://tomcat.apa
 
 OpenCms requires a Servlet 3.1 / JSP 2.3 standards compliant container.
 
-OpenCms 12 is tested with Tomcat 9 and 8.5.
+OpenCms 13 is tested with Tomcat 9 and 8.5.
 
 Make sure that the environment variable `CATALINA_HOME` points to the folder where you did install Tomcat.
 
