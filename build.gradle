@@ -1634,6 +1634,10 @@ tasks.withType(Javadoc) {
         options.addStringOption("Xdoclint:none", "-quiet")
         options.addBooleanOption("-allow-script-in-comments",true);
     }
+    doLast {
+        def searchScript = new File(destinationDir.getAbsolutePath() + '/search.js')
+        searchScript.append "getURLPrefix = function(ui) { return ''; };"
+    }
 }
 // all tasks implementing the CopySpec (Copy,Jar,Zip,...) should fail, in case they generate duplicate files
 tasks.withType(CopySpec){
