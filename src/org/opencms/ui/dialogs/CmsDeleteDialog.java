@@ -46,12 +46,16 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsGwtContextMenuButton;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.CmsResourceInfo;
+import org.opencms.ui.shared.rpc.I_CmsGwtContextMenuServerRpc;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.commons.Messages;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -276,6 +280,17 @@ public class CmsDeleteDialog extends CmsBasicDialog {
      */
     void displayBrokenLinks() {
 
+        I_CmsGwtContextMenuServerRpc rpc = new I_CmsGwtContextMenuServerRpc() {
+
+            public void refresh(String id) {
+
+                if (id != null) {
+                    m_context.finish(Arrays.asList(new CmsUUID(id)));
+                } else {
+                    m_context.finish(Collections.emptyList());
+                }
+            }
+        };
         CmsObject cms = A_CmsUI.getCmsObject();
         m_resourceBox.removeAllComponents();
         m_deleteResource.setValue(
@@ -301,9 +316,14 @@ public class CmsDeleteDialog extends CmsBasicDialog {
                     m_okButton.setVisible(false);
                 }
                 for (CmsResource source : brokenLinks.keySet()) {
-                    m_resourceBox.addComponent(new CmsResourceInfo(source));
+                    CmsResourceInfo parentInfo = new CmsResourceInfo(source);
+                    CmsGwtContextMenuButton contextMenu = new CmsGwtContextMenuButton(source.getStructureId(), rpc);
+                    contextMenu.addStyleName("o-gwt-contextmenu-button-margin");
+                    parentInfo.setButtonWidget(contextMenu);
+                    m_resourceBox.addComponent(parentInfo);
                     for (CmsResource target : brokenLinks.get(source)) {
-                        m_resourceBox.addComponent(indent(new CmsResourceInfo(target)));
+                        CmsResourceInfo childInfo = new CmsResourceInfo(target);
+                        m_resourceBox.addComponent(indent(childInfo));
                     }
 
                 }

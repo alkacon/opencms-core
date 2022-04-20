@@ -1486,6 +1486,21 @@
 		width: 170px;
 		height: 42px;
 	}
+	
+	.o-resinfo-button-container {
+		display: flex; 
+		align-items: center; 
+	}
+	
+	.o-gwt-contextmenu-button {
+		& > *[role="button"] {
+			vertical-align: middle;
+		}
+	}
+	
+	.o-gwt-contextmenu-button-margin {
+		margin-right: 5px;
+	}
 }
 
 .waggle{
