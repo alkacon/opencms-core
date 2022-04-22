@@ -29,6 +29,8 @@
 #     server:       the server address used for this site
 #     offset:       time in seconds added to the current time written as attribute
 #                   into the session when accessing the site over this alias
+#     redirect:     Possible values: true, false, permanent. If true or permanent, redirect to main URL with HTTP status 302 or 301, respectively.
+# 
 #alternative-site-root: alternative site root to use for specific paths - can be separately selected in the site selector
 #	uri:			the alternative site root path
 #	title-suffix:	the title suffix to display for the alternative site root in the site selector
@@ -74,7 +76,7 @@
 <!ELEMENT alias EMPTY>	
 <!ATTLIST alias
 	server CDATA #REQUIRED
-	redirect (true|false|True|False) "false"
+	redirect (true|false|True|False|permanent|Permanent) "false"
 	offset CDATA #IMPLIED>
 	
 	

@@ -2191,18 +2191,29 @@ public final class OpenCmsCore {
                         return;
                     }
                 }
-                List<CmsSiteMatcher> currentSiteAliase = m_siteManager.getCurrentSite(cms).getAliases();
+                List<CmsSiteMatcher> currentSiteAliases = m_siteManager.getCurrentSite(cms).getAliases();
                 CmsSiteMatcher currentSiteMatcher = cms.getRequestContext().getRequestMatcher();
-                if (currentSiteAliase.contains(currentSiteMatcher.forDifferentScheme("http"))
-                    || currentSiteAliase.contains(currentSiteMatcher.forDifferentScheme("https"))) {
-                    int pos = currentSiteAliase.indexOf(currentSiteMatcher.forDifferentScheme("http"));
+                if (currentSiteAliases.contains(currentSiteMatcher.forDifferentScheme("http"))
+                    || currentSiteAliases.contains(currentSiteMatcher.forDifferentScheme("https"))) {
+                    int pos = currentSiteAliases.indexOf(currentSiteMatcher.forDifferentScheme("http"));
                     if (pos == -1) {
-                        pos = currentSiteAliase.indexOf(currentSiteMatcher.forDifferentScheme("https"));
+                        pos = currentSiteAliases.indexOf(currentSiteMatcher.forDifferentScheme("https"));
                     }
-                    if (currentSiteAliase.get(pos).isRedirect()) {
-                        res.sendRedirect(
-                            m_siteManager.getCurrentSite(cms).getUrl() + req.getContextPath() + req.getPathInfo());
-                        return;
+                    switch (currentSiteAliases.get(pos).getRedirectMode()) {
+                        case none:
+                            break;
+                        case temporary:
+                            res.sendRedirect(
+                                m_siteManager.getCurrentSite(cms).getUrl() + req.getContextPath() + req.getPathInfo());
+                            return;
+                        case permanent:
+                            res.setHeader(
+                                CmsRequestUtil.HEADER_LOCATION,
+                                m_siteManager.getCurrentSite(cms).getUrl() + req.getContextPath() + req.getPathInfo());
+                            res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+                            return;
+                        default:
+                            break;
                     }
                 }
 
@@ -2236,7 +2247,9 @@ public final class OpenCmsCore {
                 }
             }
 
-        } catch (Throwable t) {
+        } catch (
+
+        Throwable t) {
             errorHandling(cms, req, res, t);
         }
     }

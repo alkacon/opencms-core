@@ -49,6 +49,7 @@ import org.opencms.site.CmsAlternativeSiteRootMapping;
 import org.opencms.site.CmsSSLMode;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
+import org.opencms.site.CmsSiteMatcher.RedirectMode;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
@@ -929,7 +930,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
             public Component get() {
 
-                return createAliasComponent("", true);
+                return createAliasComponent("", CmsSiteMatcher.RedirectMode.temporary);
 
             }
 
@@ -1066,17 +1067,37 @@ public class CmsEditSiteForm extends CmsBasicDialog {
      * @param red redirect
      * @return component
      */
-    protected FormLayout createAliasComponent(String alias, boolean red) {
+    protected FormLayout createAliasComponent(String alias, CmsSiteMatcher.RedirectMode redirectMode) {
 
         FormLayout layout = new FormLayout();
         TextField field = new TextField(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ALIAS_0));
         field.setWidth("100%");
         field.setValue(alias);
         field.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ALIAS_HELP_0));
-        CheckBox redirect = new CheckBox(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ALIAS_REDIRECT_0), red);
-        redirect.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ALIAS_REDIRECT_HELP_0));
+        ComboBox redirectSelection = new ComboBox();
+        redirectSelection.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ALIAS_REDIRECT_0));
+        redirectSelection.setWidth("100%");
+        redirectSelection.addItem(RedirectMode.none);
+        redirectSelection.addItem(RedirectMode.temporary);
+        redirectSelection.addItem(RedirectMode.permanent);
+        redirectSelection.setItemCaptionMode(ItemCaptionMode.EXPLICIT);
+        redirectSelection.setItemCaption(
+            RedirectMode.none,
+            CmsVaadinUtils.getMessageText(Messages.GUI_SITE_REDIRECT_MODE_NONE_0));
+        redirectSelection.setItemCaption(
+            RedirectMode.temporary,
+            CmsVaadinUtils.getMessageText(Messages.GUI_SITE_REDIRECT_MODE_TEMPORARY_0));
+        redirectSelection.setItemCaption(
+            RedirectMode.permanent,
+            CmsVaadinUtils.getMessageText(Messages.GUI_SITE_REDIRECT_MODE_PERMANENT_0));
+        redirectSelection.setNullSelectionAllowed(false);
+        redirectSelection.setNewItemsAllowed(false);
+        redirectSelection.setTextInputAllowed(false);
+        redirectSelection.setValue(redirectMode);
+        // CheckBox redirect = new CheckBox(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ALIAS_REDIRECT_0), red);
+        redirectSelection.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_ALIAS_REDIRECT_HELP_0));
         layout.addComponent(field);
-        layout.addComponent(redirect);
+        layout.addComponent(redirectSelection);
         return layout;
     }
 
@@ -1693,10 +1714,10 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         List<CmsSiteMatcher> ret = new ArrayList<CmsSiteMatcher>();
         for (I_CmsEditableGroupRow row : m_aliasGroup.getRows()) {
             FormLayout layout = (FormLayout)(row.getComponent());
-            CheckBox box = (CheckBox)(layout.getComponent(1));
+            ComboBox box = (ComboBox)(layout.getComponent(1));
             TextField field = (TextField)layout.getComponent(0);
             CmsSiteMatcher matcher = new CmsSiteMatcher(field.getValue());
-            matcher.setRedirect(box.getValue().booleanValue());
+            matcher.setRedirectMode((RedirectMode)(box.getValue()));
             ret.add(matcher);
         }
         return ret;
@@ -2049,9 +2070,9 @@ public class CmsEditSiteForm extends CmsBasicDialog {
 
         for (CmsSiteMatcher siteMatcher : siteAliases) {
             if (enableAll) {
-                m_aliasGroup.addRow(createAliasComponent(siteMatcher.getUrl(), siteMatcher.isRedirect()));
+                m_aliasGroup.addRow(createAliasComponent(siteMatcher.getUrl(), siteMatcher.getRedirectMode()));
             } else {
-                Component c = createAliasComponent(siteMatcher.getUrl(), siteMatcher.isRedirect());
+                Component c = createAliasComponent(siteMatcher.getUrl(), siteMatcher.getRedirectMode());
                 c.setEnabled(false);
                 m_aliases.addComponent(c);
             }

@@ -87,6 +87,7 @@ import org.apache.commons.logging.Log;
  *
  * @since 9.0.0
  */
+@Deprecated
 public class CmsSiteDetailDialog extends CmsWidgetDialog {
 
     /** The module name constant. */

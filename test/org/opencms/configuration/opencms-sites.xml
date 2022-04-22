@@ -17,6 +17,8 @@
 		</site>
         <site server="http://other.localhost:8080" uri="/sites/other/" position="10.0" webserver="true" sslmode="secure-server" subsiteSelection="true">
             <alias server="http://blah.localhost:8080" redirect="false" offset="500"  />
+            <alias server="http://temporary.localhost:8080" redirect="true"  />
+            <alias server="http://permanent.localhost:8080" redirect="permanent"  />
             <alternative-site-root uri="/sites/foobar" title-suffix="alternative">
                 <path>/foobar-folder1</path>
                 <path>/foobar-folder2</path>

@@ -42,6 +42,41 @@ import org.apache.commons.logging.Log;
  */
 public final class CmsSiteMatcher implements Cloneable, Serializable {
 
+    /**
+     * Represents the different redirect modes for a site alias.
+     */
+    public static enum RedirectMode {
+
+        /** Don't redirect. */
+        none,
+        /** HTTP 302 */
+        temporary,
+        /** HTTP 301 */
+        permanent;
+
+        /**
+         * Converts a redirect mode string from the configuration to the corresponding enum value.
+         *
+         * @param strValue the string value
+         * @return the enum value
+         */
+        public static RedirectMode parse(String strValue) {
+
+            if (strValue == null) {
+                return none;
+            }
+            strValue = strValue.toLowerCase();
+            if ("true".equals(strValue)) {
+                return temporary;
+            } else if ("permanent".equals(strValue)) {
+                return permanent;
+            }
+
+            return none;
+
+        }
+    }
+
     /** The serial version id. */
     private static final long serialVersionUID = -3988887650237005342L;
 
@@ -67,7 +102,7 @@ public final class CmsSiteMatcher implements Cloneable, Serializable {
     public static final CmsSiteMatcher DEFAULT_MATCHER = new CmsSiteMatcher(WILDCARD, WILDCARD, 0);
 
     /** Hashcode buffer to save multiple calculations. */
-    private Integer m_hashCode;
+    private transient Integer m_hashCode;
 
     /** The hostname (e.g. localhost) which is required to access this site. */
     private String m_serverName;
@@ -82,7 +117,7 @@ public final class CmsSiteMatcher implements Cloneable, Serializable {
     private long m_timeOffset;
 
     /**Redirect (only for aliase). */
-    private boolean m_redirect = false;
+    private RedirectMode m_redirect = RedirectMode.none;
 
     /**
      * Construct a new site matcher from a String which should be in default URL notation.<p>
@@ -208,7 +243,12 @@ public final class CmsSiteMatcher implements Cloneable, Serializable {
     @Override
     public Object clone() {
 
-        return new CmsSiteMatcher(m_serverProtocol, m_serverName, m_serverPort, (m_timeOffset / 1000L));
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            // should not happen
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -245,12 +285,22 @@ public final class CmsSiteMatcher implements Cloneable, Serializable {
             URI uri = new URI(getUrl());
             URI changedUri = new URI(scheme, uri.getAuthority(), uri.getPath(), uri.getQuery(), uri.getFragment());
             CmsSiteMatcher res = new CmsSiteMatcher(changedUri.toString(), m_timeOffset);
-            res.setRedirect(m_redirect);
+            res.m_redirect = m_redirect;
             return res;
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
             return null;
         }
+    }
+
+    /**
+     * Gets the redirect mode.
+     *
+     * @return the redirect mode
+     */
+    public RedirectMode getRedirectMode() {
+
+        return m_redirect;
     }
 
     /**
@@ -325,7 +375,7 @@ public final class CmsSiteMatcher implements Cloneable, Serializable {
      */
     public boolean isRedirect() {
 
-        return m_redirect;
+        return m_redirect != RedirectMode.none;
     }
 
     /**
@@ -333,7 +383,7 @@ public final class CmsSiteMatcher implements Cloneable, Serializable {
      *
      * @param redirect boolean
      */
-    public void setRedirect(boolean redirect) {
+    public void setRedirectMode(RedirectMode redirect) {
 
         m_redirect = redirect;
     }

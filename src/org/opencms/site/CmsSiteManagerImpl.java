@@ -284,8 +284,8 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             // ignore
         }
         CmsSiteMatcher siteMatcher = new CmsSiteMatcher(alias, timeOffset);
-        boolean redirectVal = new Boolean(redirect).booleanValue();
-        siteMatcher.setRedirect(redirectVal);
+        CmsSiteMatcher.RedirectMode redirectMode = CmsSiteMatcher.RedirectMode.parse(redirect);
+        siteMatcher.setRedirectMode(redirectMode);
         return siteMatcher;
     }
 

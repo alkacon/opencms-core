@@ -38,15 +38,18 @@ import org.opencms.site.CmsSSLMode;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.site.CmsSiteMatcher;
+import org.opencms.site.CmsSiteMatcher.RedirectMode;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.logging.Log;
@@ -63,9 +66,6 @@ public class CmsSiteBean implements Serializable {
 
     /** The serial version id. */
     private static final long serialVersionUID = 7202674198996429791L;
-
-    /** The aliases. */
-    private List<String> m_aliases = new ArrayList<String>();
 
     /** Alternative site root mapping. */
     private CmsAlternativeSiteRootMapping m_alternativeSiteRootMapping;
@@ -97,8 +97,8 @@ public class CmsSiteBean implements Serializable {
     /** The position. */
     private float m_position;
 
-    /** The list of aliases that are configured to redirect to the site's main URL. */
-    private List<String> m_redirectAliases = new ArrayList<String>();
+    /** An ordered map of the aliases (site URLs as keys, redirect modes as values). */
+    private LinkedHashMap<String, CmsSiteMatcher.RedirectMode> m_aliases = new LinkedHashMap<>();
 
     /** The secure server. */
     private boolean m_secureServer;
@@ -164,10 +164,7 @@ public class CmsSiteBean implements Serializable {
             }
             for (CmsSiteMatcher aMatcher : site.getAliases()) {
                 if ((aMatcher != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(aMatcher.getUrl())) {
-                    m_aliases.add(aMatcher.getUrl());
-                    if (aMatcher.isRedirect()) {
-                        m_redirectAliases.add(aMatcher.getUrl());
-                    }
+                    m_aliases.put(aMatcher.getUrl(), aMatcher.getRedirectMode());
                 }
             }
             m_position = site.getPosition();
@@ -196,7 +193,7 @@ public class CmsSiteBean implements Serializable {
      */
     public List<String> getAliases() {
 
-        return m_aliases;
+        return new ArrayList<>(m_aliases.keySet());
     }
 
     /**
@@ -276,7 +273,8 @@ public class CmsSiteBean implements Serializable {
      */
     public List<String> getRedirectAliases() {
 
-        return m_redirectAliases;
+        return m_aliases.entrySet().stream().filter(entry -> entry.getValue() != RedirectMode.none).map(
+            entry -> entry.getKey()).collect(Collectors.toList());
     }
 
     /**
@@ -424,16 +422,6 @@ public class CmsSiteBean implements Serializable {
     }
 
     /**
-     * Sets the aliases.<p>
-     *
-     * @param aliases the aliases to set
-     */
-    public void setAliases(List<String> aliases) {
-
-        m_aliases = aliases;
-    }
-
-    /**
      * Sets the alternative site root mapping.
      *
      * @param alternativeSiteRootMapping the site root mapping
@@ -511,16 +499,6 @@ public class CmsSiteBean implements Serializable {
     public void setPosition(float position) {
 
         m_position = position;
-    }
-
-    /**
-     * Sets the list of aliases that are configured to redirect to the site's main URL.<p>
-     *
-     * @param redirectAliases the redierect aliases
-     */
-    public void setRedirectAliases(List<String> redirectAliases) {
-
-        m_redirectAliases = redirectAliases;
     }
 
     /**
@@ -654,9 +632,10 @@ public class CmsSiteBean implements Serializable {
         }
         String errorPage = CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_errorPage) ? m_errorPage : null;
         List<CmsSiteMatcher> aliases = new ArrayList<CmsSiteMatcher>();
-        for (String alias : m_aliases) {
+        for (String alias : m_aliases.keySet()) {
+            RedirectMode redirectMode = m_aliases.get(alias);
             CmsSiteMatcher aliasMatcher = new CmsSiteMatcher(alias);
-            aliasMatcher.setRedirect(m_redirectAliases.contains(alias));
+            aliasMatcher.setRedirectMode(redirectMode);
             aliases.add(aliasMatcher);
         }
         CmsSite result = new CmsSite(
