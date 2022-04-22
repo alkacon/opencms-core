@@ -380,19 +380,23 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration implements I_Cm
                 aliasElement.addAttribute(A_SERVER, matcher.getUrl());
 
                 RedirectMode redirectMode = matcher.getRedirectMode();
-                if (redirectMode != RedirectMode.none) {
-                    String redirectModeStr = null;
-                    switch (redirectMode) {
-                        case permanent:
-                            redirectModeStr = "permanent";
-                            break;
-                        case temporary:
-                        default:
-                            redirectModeStr = "true";
-                            break;
-                    }
-                    aliasElement.addAttribute(A_REDIRECT, redirectModeStr);
+
+                String redirectModeStr = null;
+                switch (redirectMode) {
+
+                    case permanent:
+                        redirectModeStr = "permanent";
+                        break;
+                    case temporary:
+
+                        redirectModeStr = "true";
+                        break;
+                    case none:
+                    default:
+                        redirectModeStr = "false";
+                        break;
                 }
+                aliasElement.addAttribute(A_REDIRECT, redirectModeStr);
 
                 if (matcher.getTimeOffset() != 0) {
                     aliasElement.addAttribute(A_OFFSET, "" + (matcher.getTimeOffset() / 1000));
@@ -404,6 +408,7 @@ public class CmsSitesConfiguration extends A_CmsXmlConfiguration implements I_Cm
             }
         }
         return sitesElement;
+
     }
 
     /**
