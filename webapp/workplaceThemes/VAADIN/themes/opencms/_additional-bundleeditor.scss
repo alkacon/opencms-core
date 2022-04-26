@@ -1,71 +1,75 @@
 @mixin o-table-bundleeditor {
 
-	.o-message-bundle-editor {
-		table.v-table-table {
-			.v-table-cell-wrapper {
-				line-height: normal;
-				padding-top: 6px;
-				padding-bottom: 6px;
-			}
-	
-			.v-table-cell-content {
-				white-space: normal;
-				vertical-align: top;
-			}
+    .o-message-bundle-editor {
+        table.v-table-table {
+            .v-table-cell-wrapper {
+                line-height: normal;
+                padding-top: 6px;
+                padding-bottom: 6px;
+            }
 
-			.v-table-cell-content-key-fix, .v-table-cell-content-key-fix input.v-textfield, .v-table-cell-content-key-editable, .v-table-cell-content-key-editable input.v-textfield {
-				font-weight: bold;
-			}
+            .v-table-cell-content {
+                white-space: normal;
+                vertical-align: top;
+            }
 
-			.v-selected .v-table-cell-content.v-table-cell-content-editable, .v-selected .v-table-cell-content.v-table-cell-content-key-editable {
-				outline-color: adjust-color($v-selection-color, $lightness: -8%, $saturation: -8%);
-				outline-style: solid;
-				outline-width: 1px;
-				outline-offset: -1px;
-				background: white;
-			}
-		}
-	
-		.v-table-body {
-			.v-table-cell-wrapper {
-				> .v-textarea, > .v-textfield {
-					background: transparent;
-					border: none;
-					box-shadow: none;
-					padding: 0px;
-					height: auto;
-					margin: 0px;
-				}
-			}
-		
-			.v-textarea[class*="prompt"], .v-textfield[class*="prompt"] {
-				color: $o-state-new-color
-			}	
-		}
-		
-		.v-table-row-odd {
-			background: white;
-		}
-		
-		.v-table .filters-panel {
-			input.v-textfield.v-widget {
-				height: $v-unit-size;
-				border-radius: $v-border-radius;
-				padding: 3px 7px;
-			}
-		
-			.filters-panel {
-				height: unset;
-			}
-		}
-	
-		.v-options {
-			background-color: $v-app-background-color;
-			padding-left: $toolbar-padding;
-		}
+            .v-table-cell-content-key-fix, .v-table-cell-content-key-fix input.v-textfield, .v-table-cell-content-key-editable, .v-table-cell-content-key-editable input.v-textfield {
+                font-weight: bold;
+            }
 
-		.filterwrapper:not(:empty) {
-			min-height: $v-unit-size;
-		}
-	}
+            .v-selected .v-table-cell-content.v-table-cell-content-editable, .v-selected .v-table-cell-content.v-table-cell-content-key-editable {
+                outline-color: adjust-color($v-selection-color, $lightness: -8%, $saturation: -8%);
+                outline-style: solid;
+                outline-width: 1px;
+                outline-offset: -1px;
+                background: white;
+            }
+        }
+
+        .v-table-body {
+            .v-table-cell-wrapper {
+                > .v-textarea, > .v-textfield {
+                    background: transparent;
+                    border: none;
+                    box-shadow: none;
+                    padding: 0px;
+                    height: auto;
+                    margin: 0px;
+                }
+            }
+
+            .v-textarea[class*="prompt"], .v-textfield[class*="prompt"] {
+                color: $o-state-new-color
+            }
+        }
+
+        .v-table-row-odd {
+            background: white;
+        }
+
+        .v-table .filters-panel {
+            input.v-textfield.v-widget {
+                height: $v-unit-size;
+                border-radius: $v-border-radius;
+                padding: 3px 7px;
+            }
+
+            .filters-panel {
+                height: unset;
+            }
+        }
+
+        .v-options {
+            background-color: $v-app-background-color;
+            padding-left: $toolbar-padding;
+        }
+
+        .filterwrapper:not(:empty) {
+            min-height: $v-unit-size;
+        }
+
+        .v-scrollable.v-table-body-wrapper.v-table-body {
+            overflow-y: auto !important;
+        }
+    }
 }
