@@ -38,12 +38,14 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
+import org.opencms.file.wrapper.CmsWrappedResource;
 import org.opencms.loader.CmsDumpLoader;
 import org.opencms.loader.CmsImageLoader;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsStringUtil;
@@ -544,39 +546,57 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#importResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, java.lang.String, org.opencms.file.CmsResource, byte[], java.util.List)
+     * @see org.opencms.file.types.A_CmsResourceType#importResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.report.I_CmsReport, java.lang.String, org.opencms.file.CmsResource, byte[], java.util.List)
      */
     @Override
     public CmsResource importResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
+        I_CmsReport report,
         String resourcename,
         CmsResource resource,
         byte[] content,
         List<CmsProperty> properties)
     throws CmsException {
 
+        // keep original parameter, for debugging
+        @SuppressWarnings("unused")
+        CmsResource originalResource = resource;
+
         if (resourcename.toLowerCase().endsWith(".svg")) {
             properties = tryAddImageSizeFromSvg(content, properties);
         } else if (CmsImageLoader.isEnabled()) {
             // siblings have null content in import
             if (content != null) {
-                // get the downscaler to use
-                CmsImageScaler downScaler = getDownScaler(cms, resource.getRootPath());
-                // create a new image scale adjuster
-                CmsImageAdjuster adjuster = new CmsImageAdjuster(
-                    content,
-                    resource.getRootPath(),
-                    properties,
-                    downScaler);
-                // update the image scale adjuster - this will calculate the image dimensions and (optionally) adjust the size
-                adjuster.adjust();
-                // continue with the updated content and properties
-                content = adjuster.getContent();
-                properties = adjuster.getProperties();
+                try {
+                    // get the downscaler to use
+                    CmsImageScaler downScaler = getDownScaler(cms, resource.getRootPath());
+                    // create a new image scale adjuster
+                    CmsImageAdjuster adjuster = new CmsImageAdjuster(
+                        content,
+                        resource.getRootPath(),
+                        properties,
+                        downScaler);
+                    // update the image scale adjuster - this will calculate the image dimensions and (optionally) adjust the size
+                    adjuster.adjust();
+                    // continue with the updated content and properties
+                    content = adjuster.getContent();
+                    properties = adjuster.getProperties();
+                } catch (Throwable e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    if (report != null) {
+                        report.println(e);
+                        report.addWarning(e);
+                    }
+                    CmsWrappedResource wrappedRes = new CmsWrappedResource(resource);
+                    wrappedRes.setTypeId(
+                        OpenCms.getResourceManager().getResourceType(
+                            CmsResourceTypeBinary.getStaticTypeId()).getTypeId());
+                    resource = wrappedRes.getResource();
+                }
             }
         }
-        return super.importResource(cms, securityManager, resourcename, resource, content, properties);
+        return super.importResource(cms, securityManager, report, resourcename, resource, content, properties);
     }
 
     /**

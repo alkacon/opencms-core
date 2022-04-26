@@ -38,6 +38,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.report.I_CmsReport;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 
 import java.io.Serializable;
@@ -507,6 +508,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler, S
      *
      * @param cms the initialized CmsObject
      * @param securityManager the initialized OpenCms security manager
+     * @param report optional report to write non-critical import problems to
      * @param resourcename the target name (with full path) for the resource after import
      * @param resource the resource to be imported
      * @param content the content of the resource
@@ -523,6 +525,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler, S
     CmsResource importResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
+        I_CmsReport report,
         String resourcename,
         CmsResource resource,
         byte[] content,

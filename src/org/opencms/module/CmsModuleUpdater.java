@@ -579,6 +579,7 @@ public class CmsModuleUpdater {
             if (needsImport || (oldRes == null)) { // oldRes null check is redundant, we just do it to remove the warning in Eclipse
                 currentRes = cms.importResource(
                     resData.getPath(),
+                    m_report,
                     resData.getResource(),
                     content,
                     new ArrayList<CmsProperty>());

@@ -2028,7 +2028,40 @@ public final class CmsObject {
     throws CmsException {
 
         return getResourceType(
-            resource).importResource(this, m_securityManager, resourcename, resource, content, properties);
+            resource).importResource(this, m_securityManager, null, resourcename, resource, content, properties);
+    }
+
+    /**
+     * Imports a resource to the OpenCms VFS.<p>
+     *
+     * If a resource already exists in the VFS (i.e. has the same name and
+     * same id) it is replaced by the imported resource.<p>
+     *
+     * If a resource with the same name but a different id exists,
+     * the imported resource is (usually) moved to the "lost and found" folder.<p>
+     *
+     * @param resourcename the name for the resource after import (full current site relative path)
+     * @param report optional report to write non-critical errors to (may be null)
+     * @param resource the resource object to be imported
+     * @param content the content of the resource
+     * @param properties the properties of the resource
+     *
+     * @return the imported resource
+     *
+     * @throws CmsException if something goes wrong
+     *
+     * @see CmsObject#moveToLostAndFound(String)
+     */
+    public CmsResource importResource(
+        String resourcename,
+        I_CmsReport report,
+        CmsResource resource,
+        byte[] content,
+        List<CmsProperty> properties)
+    throws CmsException {
+
+        return getResourceType(
+            resource).importResource(this, m_securityManager, report, resourcename, resource, content, properties);
     }
 
     /**

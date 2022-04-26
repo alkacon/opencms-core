@@ -2092,6 +2092,7 @@ public class CmsImportVersion10 implements I_CmsImport {
                     // import this resource in the VFS
                     m_resource = getCms().importResource(
                         translatedName,
+                        getReport(),
                         resource,
                         content,
                         new ArrayList<CmsProperty>(m_properties.values()));
