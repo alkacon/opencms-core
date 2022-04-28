@@ -54,7 +54,6 @@ import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.Descript
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
-import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentValueSequence;
 
 import java.io.UnsupportedEncodingException;
@@ -93,8 +92,6 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /** Key used to specify the context path as macro value. */
     public static final String KEY_CONTEXT_PATH = "contextPath";
-
-    public static final String KEY_PROPERTY_LABEL = "propertyLabel:";
 
     /** Key used to specify the description of the current organizational unit as macro value. */
     public static final String KEY_CURRENT_ORGUNIT_DESCRIPTION = "currentou.description";
@@ -1022,23 +1019,6 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                 }
                 return val;
 
-            }
-
-            if (macro.startsWith(KEY_PROPERTY_LABEL)) {
-                String remaining = macro.substring(KEY_PROPERTY_LABEL.length());
-                String adeContext = (String)m_cms.getRequestContext().getAttribute(
-                    CmsRequestContext.ATTRIBUTE_ADE_CONTEXT_PATH);
-                String key = remaining;
-                if (adeContext == null) {
-                    adeContext = m_cms.getRequestContext().getRootUri();
-                }
-                CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(m_cms, adeContext);
-                CmsXmlContentProperty propDef = config.getPropertyConfigurationAsMap().get(key);
-                if (propDef != null) {
-                    return propDef.getNiceName();
-                } else {
-                    return key;
-                }
             }
 
             if (CmsMacroResolver.KEY_CURRENT_USER_NAME.equals(macro)) {

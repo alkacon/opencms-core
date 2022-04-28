@@ -31,7 +31,6 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
-import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -42,8 +41,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
@@ -66,14 +64,13 @@ public class CmsHtmlRedirectHandler extends CmsDefaultXmlContentHandler {
         try {
             String linkStr = getStringValue(cms, content, "Link");
             String typeStr = getStringValue(cms, content, "Type");
-            List<CmsProperty> propsToWrite = new ArrayList<>();
-            Locale locale = OpenCms.getLocaleManager().getDefaultLocale(cms, file);
-            if ("sublevel".equals(typeStr)) {
 
+            if ("sublevel".equals(typeStr)) {
+                Locale locale = OpenCms.getLocaleManager().getDefaultLocale(cms, file);
                 String title = org.opencms.xml.containerpage.Messages.get().getBundle(locale).key(
                     org.opencms.xml.containerpage.Messages.GUI_REDIRECT_SUBLEVEL_TITLE_0);
                 CmsProperty titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, null);
-                propsToWrite.add(titleProp);
+                cms.writePropertyObjects(file, Arrays.asList(titleProp));
             } else if (!CmsStringUtil.isEmptyOrWhitespaceOnly(linkStr)) {
                 boolean hasScheme = false;
                 try {
@@ -85,37 +82,13 @@ public class CmsHtmlRedirectHandler extends CmsDefaultXmlContentHandler {
                 if (!hasScheme) {
                     linkStr = cms.getRequestContext().removeSiteRoot(linkStr);
                 }
+                Locale locale = OpenCms.getLocaleManager().getDefaultLocale(cms, file);
                 String title = org.opencms.xml.containerpage.Messages.get().getBundle(locale).key(
                     org.opencms.xml.containerpage.Messages.GUI_REDIRECT_TITLE_1,
                     linkStr);
                 CmsProperty titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, null);
-                propsToWrite.add(titleProp);
+                cms.writePropertyObjects(file, Arrays.asList(titleProp));
             }
-
-            // Can't use the normal mapping mechanism for NavText and NavInfo because of how it interacts with locales:
-            // we always want to use the value from the English locale of the content (because it's the only one);
-            // then for NavText, we want to write the value to the localized property, but for NavInfo we want
-            // to write it the unlocalized property.
-
-            I_CmsXmlContentValue navTextVal = content.getValue("NavText", Locale.ENGLISH);
-            if (navTextVal != null) {
-                String navText = navTextVal.getStringValue(cms);
-                String propName = CmsPropertyDefinition.PROPERTY_NAVTEXT;
-                if (!locale.equals(CmsLocaleManager.getDefaultLocale())) {
-                    propName += "_" + locale;
-                }
-                CmsProperty prop = new CmsProperty(propName, navText, null);
-                propsToWrite.add(prop);
-            }
-
-            I_CmsXmlContentValue navInfoVal = content.getValue("NavInfo", Locale.ENGLISH);
-            if (navInfoVal != null) {
-                String navInfo = navInfoVal.getStringValue(cms);
-                CmsProperty prop = new CmsProperty(CmsPropertyDefinition.PROPERTY_NAVINFO, navInfo, null);
-                propsToWrite.add(prop);
-            }
-
-            cms.writePropertyObjects(file, propsToWrite);
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
