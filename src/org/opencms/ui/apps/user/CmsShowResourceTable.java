@@ -274,7 +274,7 @@ public class CmsShowResourceTable extends Table {
     private String getPermissionString(CmsObject cms, CmsResource res, DialogType type) throws CmsException {
 
         if (type.equals(DialogType.User)) {
-            cms.getPermissions(res.getRootPath(), m_principal.getName()).getPermissionString();
+            return cms.getPermissions(res.getRootPath(), m_principal.getName()).getPermissionString();
         } else if (type.equals(DialogType.Group)) {
             Iterator<CmsAccessControlEntry> itAces = cms.getAccessControlEntries(res.getRootPath(), false).iterator();
             while (itAces.hasNext()) {
