@@ -33,6 +33,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPrincipal;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
@@ -181,6 +182,10 @@ public class CmsShowResourceTable extends Table {
 
             setColumnWidth(null, 40);
             setVisibleColumns(PROP_NAME, PROP_PERMISSION);
+            setColumnHeader(PROP_NAME, CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_NAME_0));
+            setColumnHeader(
+                PROP_PERMISSION,
+                CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_PERMISSION_0));
         } catch (CmsException e) {
             LOG.error("Can not read user information.", e);
         }
