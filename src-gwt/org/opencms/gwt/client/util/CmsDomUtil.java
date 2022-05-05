@@ -781,8 +781,30 @@ public final class CmsDomUtil {
      */
     public static void ensureJavaScriptIncluded(String javascriptLink) {
 
+        ensureJavaScriptIncluded(javascriptLink, true);
+    }
+
+    /**
+     * Ensures a script tag is present within the window document context.<p>
+     *
+     * @param javascriptLink the link to the java script resource
+     */
+    public static void ensureJavaScriptIncluded(String javascriptLink, boolean async) {
+
         if (!isJavaScriptPresent(javascriptLink)) {
-            injectScript(javascriptLink);
+            injectScript(javascriptLink, async, null);
+        }
+    }
+
+    /**
+     * Ensures a script tag is present within the window document context.<p>
+     *
+     * @param javascriptLink the link to the java script resource
+     */
+    public static void ensureJavaScriptIncluded(String javascriptLink, boolean async, JavaScriptObject callback) {
+
+        if (!isJavaScriptPresent(javascriptLink)) {
+            injectScript(javascriptLink, async, callback);
         }
     }
 
@@ -2209,10 +2231,16 @@ public final class CmsDomUtil {
      * Injects a script tag into the page head.<p>
      *
      * @param scriptLink the link to the javascript resource
+     * @param async the value for the async attribute of the new script node
+     * @param onload load handler for the script
      */
-    private static native void injectScript(String scriptLink)/*-{
+    private static native void injectScript(String scriptLink, boolean async, JavaScriptObject onload)/*-{
         var headID = $wnd.document.getElementsByTagName("head")[0];
         var scriptNode = $wnd.document.createElement('script');
+        scriptNode.async = async;
+        if (onload) {
+            scriptNode.onload = onload;
+        }
         scriptNode.src = scriptLink;
         headID.appendChild(scriptNode);
     }-*/;

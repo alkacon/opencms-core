@@ -587,6 +587,11 @@
                     <widget-alias>SerialDateWidget</widget-alias>
                     <widget-alias>serialdate</widget-alias>
                 </widget>
+                <widget class="org.opencms.widgets.CmsCodeWidget">
+                	<widget-alias>CodeWidget</widget-alias>
+                	<widget-alias>code</widget-alias>
+                	<widget-alias>sourcecode</widget-alias>
+                </widget>
             </widgets>
             <schematypes>
                 <schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.widgets.CmsCheckboxWidget" />
@@ -607,3 +612,4 @@
         </xmlcontent>
     </vfs>
 </opencms>
+

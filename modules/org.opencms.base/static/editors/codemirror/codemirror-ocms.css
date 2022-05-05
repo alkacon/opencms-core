@@ -7,6 +7,12 @@
 	bottom: 0;
 }
 
+.oc-codemirror-editorwidget {
+	border: 1px solid #7788aa;
+	border-radius: 4px;
+	padding: 2px;
+}
+
 /* Editor appearance modifications */
 .CodeMirror {
 	background-color: /*begin-color Window*/#ffffff/*end-color*/;
@@ -24,6 +30,7 @@
 	min-width: 3em; 
 	cursor: pointer;
 }
+
 
 /* Active editor line */
 .CodeMirror-activeline-background {
@@ -68,7 +75,7 @@
 	font-size: 12px !important;
 }
 
-.CodeMirror-dialog input {
+.CodeMirror-dialog input, .oc-codemirror-editorwidget .CodeMirror-dialog input {
 	border: 1px solid /*begin-color ButtonShadow*/#999999/*end-color*/;
 	outline: none;
 	background: /*begin-color Window*/#ffffff/*end-color*/;
@@ -82,3 +89,121 @@
 	margin-left: 1em;
 	font-size: 12px !important;
 }
+
+
+.oc-codewidget-toolbar .oc-codewidget-button * {
+	font-family: opencms-font; 
+	font-size: 20px;
+}
+
+.oc-codewidget-toolbar .oc-codewidget-button {
+	width: 34px;
+	height: 34px;
+	border-radius: 4px; 
+	cursor: pointer; 
+	user-select: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-left: 2px;
+	margin-right: 2px;
+}
+
+.oc-codewidget-toolbar .oc-codewidget-button:hover {
+	background-color: rgb(220, 220, 220);
+}
+
+.oc-codewidget-toolbar .oc-codewidget-button.cmsState-down {
+	background-color: rgb(200, 200, 200);
+}
+
+.oc-codewidget-toolbar .oc-codewidget-button.oc-disabled {
+	cursor: default;
+	background-color: transparent;
+}
+
+.oc-codewidget-toolbar .oc-codewidget-button.oc-disabled *  {
+	color: rgb(153, 153, 153);
+}
+
+.oc-codewidget-toolbar { 
+	height: 40px;
+	display: flex;
+	align-items: center; 
+	border-bottom: 1px solid #7788aa;
+	background-color: white;
+}
+
+.oc-codemirror-editorwidget .CodeMirror-linenumber { 
+	min-width: 4ch;
+} 
+
+.oc-codemirror-editorwidget .CodeMirror span, .oc-codemirror-editorwidget .CodeMirror pre, .oc-codemirror-editorwidget .CodeMirror-linenumber {
+	font-size: var(--codemirror-font-size, 14px);
+}
+
+.oc-codemirror-editorwidget .CodeMirror .cm-tab::after {
+	visibility: var(--codemirror-tab-state, hidden);
+}
+
+.oc-codewidget-fontsize-select {
+	margin-left: 20px;
+	width: 75px;
+}
+
+.oc-codewidget-mode-select {
+	margin-left: 20px;
+	width: 100px; 
+}
+
+.oc-codemirror-editorwidget .CodeMirror-dialog button {
+	border: 1px solid black;
+	padding: 2px;
+	border-radius: 4px;
+	min-width: 50px;
+	text-align: center;
+	cursor: pointer;
+}
+
+.oc-codemirror-editorwidget .CodeMirror-dialog {
+	min-width: 400px;
+}
+
+.oc-codemirror-editorwidget .CodeMirror-dialog input {
+	width: 20em !important;
+	color: inherit;
+	font-family: monospace;
+	float: none;
+}
+
+/* enforce line break directly after input field. */ 
+.oc-codemirror-editorwidget .CodeMirror-dialog input+*::before {
+	content: " ";
+	display: block;
+}
+
+.oc-codemirror-editorwidget .CodeMirror-dialog button:focus {
+	outline-style: none;
+} 
+
+.oc-codemirror-editorwidget.oc-dynamic-height .CodeMirror-scroll {
+	min-height: var(--codemirror-height, 300px)
+}
+
+.oc-codemirror-editorwidget.oc-dynamic-height .CodeMirror {
+	height: auto;
+}
+
+.oc-codemirror-editorwidget.oc-fixed-height .CodeMirror {
+	height: var(--codemirror-height, 300px)
+}
+
+.oc-codemirror-editorwidget .cm-trailingspace {
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAYAAAB/qH1jAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QUXCToH00Y1UgAAACFJREFUCNdjPMDBUc/AwNDAAAFMTAwMDA0OP34wQgX/AQBYgwYEx4f9lQAAAABJRU5ErkJggg==);
+        background-position: bottom left;
+        background-repeat: repeat-x;
+}
+
+
+
+

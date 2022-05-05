@@ -1,0 +1,13 @@
+{
+  "Search:": "Suchen:",
+  "(Use /re/ syntax for regexp search)" : "(Benutzen Sie die /re/ Syntax für die Suche mit regulären Ausdrücken)",
+  "Replace:": "Ersetzen:",
+  "With:":"Mit:",
+  "Replace?":"Ersetzen?",
+  "Yes":"Ja",
+  "No":"Nein",
+  "All": "Alle",
+  "Stop":"Stop",
+  "Jump to line:": "Springe zu Zeile:",
+  "(Use line:column or scroll% syntax)": "(es kann die Syntax Zeile:Spalte oder xy% verwendet werden)"
+}

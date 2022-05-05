@@ -27,6 +27,8 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.ui.FontOpenCms.IconHTML;
+
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.HTML;
 
@@ -196,6 +198,7 @@ public enum FontOpenCms {
          * @param codepoint the icon character code point
          */
         IconHTML(int codepoint) {
+
             super(Document.get().createSpanElement());
             getElement().setInnerHTML("&#x" + Integer.toHexString(codepoint) + ";");
             getElement().setClassName(FONT_ICON_CLASS);
@@ -208,6 +211,7 @@ public enum FontOpenCms {
          * @param size the icon size
          */
         IconHTML(int codepoint, int size) {
+
             this(codepoint);
             getElement().setAttribute("style", "font-size: " + size + "px; line-height: " + size + "px;");
         }
@@ -220,6 +224,7 @@ public enum FontOpenCms {
          * @param color the icon color
          */
         IconHTML(int codepoint, int size, String color) {
+
             this(codepoint);
             getElement().setAttribute(
                 "style",
@@ -239,7 +244,28 @@ public enum FontOpenCms {
      * @param codepoint the icon code point
      */
     FontOpenCms(int codepoint) {
+
         m_codepoint = codepoint;
+    }
+
+    /**
+     * Gets the code point.
+     *
+     * @return the code point
+     */
+    public int getCodePoint() {
+
+        return m_codepoint;
+    }
+
+    /**
+     * Formats the code point as an HTML entity.
+     *
+     * @return the code point as an HTML entity
+     */
+    public String getCodePointEntity() {
+
+        return "&#x" + Integer.toHexString(m_codepoint) + ";";
     }
 
     /**

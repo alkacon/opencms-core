@@ -130,6 +130,33 @@ public final class Messages {
     public static final String GUI_CLOSE_0 = "GUI_CLOSE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_BUTTON_FIND_0 = "GUI_CODEMIRROR_BUTTON_FIND_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_BUTTON_JUMP_TO_LINE_0 = "GUI_CODEMIRROR_BUTTON_JUMP_TO_LINE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_BUTTON_REDO_0 = "GUI_CODEMIRROR_BUTTON_REDO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_BUTTON_REPLACE_0 = "GUI_CODEMIRROR_BUTTON_REPLACE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_BUTTON_UNDO_0 = "GUI_CODEMIRROR_BUTTON_UNDO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_TOGGLE_AUTO_CLOSE_BRACKETS_0 = "GUI_CODEMIRROR_TOGGLE_AUTO_CLOSE_BRACKETS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_TOGGLE_LINE_WRAP_0 = "GUI_CODEMIRROR_TOGGLE_LINE_WRAP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_TOGGLE_SYNTAX_HIGHLIGHTING_0 = "GUI_CODEMIRROR_TOGGLE_SYNTAX_HIGHLIGHTING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CODEMIRROR_TOGGLE_TABS_0 = "GUI_CODEMIRROR_TOGGLE_TABS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CONFIRM_REVERT_TITLE_0 = "GUI_CONFIRM_REVERT_TITLE_0";
 
     /** Message constant for key in the resource bundle. */

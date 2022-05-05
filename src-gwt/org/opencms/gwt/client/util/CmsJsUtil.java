@@ -191,6 +191,16 @@ public final class CmsJsUtil {
     }-*/;
 
     /**
+     * Creates a JavaScript object from a JSON string.
+     *
+     * @param json the JSON string
+     * @return the JavaScript object parsed from the JSON string
+     */
+    public static native JavaScriptObject parseJSON(String json) /*-{
+        return JSON.parse(json);
+    }-*/;
+
+    /**
      * Sets an attribute of the given Javascript object to a new value.<p>
      *
      * @param jso the object to modify
