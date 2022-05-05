@@ -31,7 +31,6 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.ui.components.CmsRichTextArea;
-import org.opencms.util.CmsStringUtil;
 
 import java.util.GregorianCalendar;
 
@@ -236,7 +235,7 @@ public class CmsLoginMessage {
     public void setMessage(String message) {
 
         checkFrozen();
-        if (isEnabled() && CmsStringUtil.isEmptyOrWhitespaceOnly(message)) {
+        if (isEnabled() && (message == null)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_LOGIN_MESSAGE_BAD_MESSAGE_0));
         }
         m_message = CmsRichTextArea.cleanHtml(message, true);
