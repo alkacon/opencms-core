@@ -81,7 +81,6 @@ import org.opencms.gwt.CmsIconUtil;
 import org.opencms.gwt.CmsPropertyEditorHelper;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsTemplateFinder;
-import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsClientLock;
 import org.opencms.gwt.shared.CmsCoreData;
@@ -1182,27 +1181,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             }
         }
         return result;
-    }
-
-    /**
-     * Creates a "broken link" bean based on a resource.<p>
-     *
-     * @param resource the resource
-     *
-     * @return the "broken link" bean with the data from the resource
-     *
-     * @throws CmsException if something goes wrong
-     */
-    protected CmsBrokenLinkBean createSitemapBrokenLinkBean(CmsResource resource) throws CmsException {
-
-        CmsObject cms = getCmsObject();
-        CmsProperty titleProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, true);
-        String defaultTitle = "";
-        String title = titleProp.getValue(defaultTitle);
-        String path = cms.getSitePath(resource);
-        String subtitle = path;
-        return new CmsBrokenLinkBean(resource.getStructureId(), title, subtitle);
-
     }
 
     /**

@@ -1271,8 +1271,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         String title = titleProp.getValue(defaultTitle);
         String path = cms.getSitePath(resource);
         String subtitle = path;
+        String icon = CmsIconUtil.getIconClasses(CmsIconUtil.getDisplayType(cms, resource), resource.getName(), false);
 
-        CmsBrokenLinkBean result = new CmsBrokenLinkBean(resource.getStructureId(), title, subtitle, typeName);
+        CmsBrokenLinkBean result = new CmsBrokenLinkBean(resource.getStructureId(), title, subtitle, typeName, icon);
 
         return result;
     }

@@ -199,14 +199,20 @@ public class CmsBrokenLinkRenderer {
                             CmsPropertyDefinition.PROPERTY_TITLE,
                             true).getValue();
                     }
+                    String icon = CmsIconUtil.getIconClasses(
+                        CmsIconUtil.getDisplayType(m_cms, source),
+                        source.getName(),
+                        false);
                     result.add(
+
                         createBrokenLinkBean(
                             group.getStructureId(),
                             CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_CONFIG_TYPE_NAME,
                             title,
                             path,
                             extraTitle,
-                            extraPath));
+                            extraPath,
+                            icon));
                 }
             } else {
                 result.add(createSitemapBrokenLinkBean(source));
@@ -241,6 +247,7 @@ public class CmsBrokenLinkRenderer {
      * @param type the resource type
      * @param title the title
      * @param path the path
+     * @param icon the icon CSS classes
      * @param extraTitle an optional additional page title
      * @param extraPath an optional additional page path
      *
@@ -251,10 +258,11 @@ public class CmsBrokenLinkRenderer {
         String type,
         String title,
         String path,
+        String icon,
         String extraTitle,
         String extraPath) {
 
-        CmsBrokenLinkBean result = new CmsBrokenLinkBean(structureId, title, path, type);
+        CmsBrokenLinkBean result = new CmsBrokenLinkBean(structureId, title, path, type, icon);
         addPageInfo(result, extraTitle, extraPath);
         return result;
     }
@@ -274,8 +282,12 @@ public class CmsBrokenLinkRenderer {
         String defaultTitle = CmsResource.getName(resource.getRootPath());
         String title = titleProp.getValue(defaultTitle);
         String path = m_cms.getSitePath(resource);
+        String icon = CmsIconUtil.getIconClasses(
+            CmsIconUtil.getDisplayType(m_cms, resource),
+            resource.getName(),
+            false);
         String subtitle = path;
-        return new CmsBrokenLinkBean(resource.getStructureId(), title, subtitle, typeName);
+        return new CmsBrokenLinkBean(resource.getStructureId(), title, subtitle, typeName, icon);
     }
 
     /**

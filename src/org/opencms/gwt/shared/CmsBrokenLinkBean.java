@@ -46,6 +46,9 @@ public class CmsBrokenLinkBean implements IsSerializable {
     /** The child beans (usually represent link targets). */
     private List<CmsBrokenLinkBean> m_children = new ArrayList<CmsBrokenLinkBean>();
 
+    /** The icon CSS classes. */
+    private String m_icon;
+
     /** The broken link info. */
     private Map<String, String> m_info = new LinkedHashMap<String, String>();
 
@@ -62,31 +65,21 @@ public class CmsBrokenLinkBean implements IsSerializable {
     private String m_type;
 
     /**
-     * Constructor without a type parameter.<p>
-     * @param structureId the structure id
-     * @param title the title
-     * @param subtitle the subtitle
-     */
-    public CmsBrokenLinkBean(CmsUUID structureId, String title, String subtitle) {
-
-        this(structureId, title, subtitle, null);
-
-    }
-
-    /**
      * Constructor.<p>
      *
      * @param structureId the structure id
      * @param title the title
      * @param subtitle the subtitle
      * @param type the resource type
+     * @param icon the
      */
-    public CmsBrokenLinkBean(CmsUUID structureId, String title, String subtitle, String type) {
+    public CmsBrokenLinkBean(CmsUUID structureId, String title, String subtitle, String type, String icon) {
 
         m_title = title;
         m_subtitle = subtitle;
         m_type = type;
         m_structureId = structureId;
+        m_icon = icon;
     }
 
     /**
@@ -137,6 +130,16 @@ public class CmsBrokenLinkBean implements IsSerializable {
     public List<CmsBrokenLinkBean> getChildren() {
 
         return m_children;
+    }
+
+    /**
+     * Gets the icon CSS classes.
+     *
+     * @return the icon CSS classes
+     */
+    public String getIcon() {
+
+        return m_icon;
     }
 
     /**

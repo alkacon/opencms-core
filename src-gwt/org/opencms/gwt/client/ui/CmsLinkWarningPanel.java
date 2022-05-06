@@ -122,6 +122,7 @@ public class CmsLinkWarningPanel extends Composite {
         }
         info.setTitle(title);
         info.setSubTitle(brokenLinkBean.getSubTitle());
+        info.setBigIconClasses(brokenLinkBean.getIcon());
         String type = brokenLinkBean.getType();
         if (type != null) {
             info.setResourceType(type);
