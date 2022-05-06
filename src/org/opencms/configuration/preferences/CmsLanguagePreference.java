@@ -33,8 +33,11 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Workplace locale preference.<p>
@@ -55,6 +58,32 @@ public class CmsLanguagePreference extends CmsBuiltinPreference {
 
         super(name);
         m_basic = true;
+    }
+
+    /**
+     * Gets the language selection options, with the locales as keys and the titles as values.
+     *
+     * @return the map of language selection options
+     */
+    public static Map<Locale, String> getOptionMapForLanguage() {
+
+        // get available locales from the workplace manager
+        List<Locale> locales = OpenCms.getWorkplaceManager().getLocales();
+        Iterator<Locale> i = locales.iterator();
+        LinkedHashMap<Locale, String> result = new LinkedHashMap<>();
+        for (Locale currentLocale : locales) {
+            // add all locales to the select box
+            String language = currentLocale.getDisplayLanguage(currentLocale);
+            if (CmsStringUtil.isNotEmpty(currentLocale.getCountry())) {
+                language = language + " (" + currentLocale.getDisplayCountry(currentLocale) + ")";
+            }
+            if (CmsStringUtil.isNotEmpty(currentLocale.getVariant())) {
+                language = language + " (" + currentLocale.getDisplayVariant(currentLocale) + ")";
+            }
+            result.put(currentLocale, language);
+        }
+        return result;
+
     }
 
     /**
@@ -112,28 +141,10 @@ public class CmsLanguagePreference extends CmsBuiltinPreference {
      */
     private String getOptionsForLanguage(Locale setLocale) {
 
-        // get available locales from the workplace manager
-        List<Locale> locales = OpenCms.getWorkplaceManager().getLocales();
-        StringBuffer resultBuffer = new StringBuffer();
-        int counter = 0;
-        Iterator<Locale> i = locales.iterator();
-        while (i.hasNext()) {
-            Locale currentLocale = i.next();
-            // add all locales to the select box
-            String language = currentLocale.getDisplayLanguage(currentLocale);
-            if (CmsStringUtil.isNotEmpty(currentLocale.getCountry())) {
-                language = language + " (" + currentLocale.getDisplayCountry(currentLocale) + ")";
-            }
-            if (CmsStringUtil.isNotEmpty(currentLocale.getVariant())) {
-                language = language + " (" + currentLocale.getDisplayVariant(currentLocale) + ")";
-            }
-            if (counter != 0) {
-                resultBuffer.append("|");
-            }
-            resultBuffer.append(currentLocale.toString()).append(":").append(language);
-            counter++;
-        }
-        return resultBuffer.toString();
+        Map<Locale, String> options = getOptionMapForLanguage();
+        String result = options.entrySet().stream().map(entry -> entry.getKey() + ":" + entry.getValue()).collect(
+            Collectors.joining("|"));
+        return result;
     }
 
 }

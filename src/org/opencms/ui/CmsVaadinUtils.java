@@ -29,6 +29,7 @@ package org.opencms.ui;
 
 import org.opencms.ade.galleries.CmsSiteSelectorOptionBuilder;
 import org.opencms.ade.galleries.shared.CmsSiteSelectorOption;
+import org.opencms.configuration.preferences.CmsLanguagePreference;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
@@ -941,6 +942,25 @@ public final class CmsVaadinUtils {
     }
 
     /**
+     * Get container with workpalce languages.<p>
+     *
+     * @param captionPropertyName name
+     * @return indexed container
+     */
+    public static IndexedContainer getWorkplaceLanguageContainer(String captionPropertyName) {
+
+        IndexedContainer result = new IndexedContainer();
+        result.addContainerProperty(captionPropertyName, String.class, "");
+        CmsLanguagePreference.getOptionMapForLanguage().forEach((locale, title) -> {
+            Item item = result.addItem(locale);
+            item.getItemProperty(captionPropertyName).setValue(title);
+
+        });
+
+        return result;
+    }
+
+    /**
      * Gets the link to the (new) workplace.<p>
      *
      * @return the link to the workplace
@@ -1030,11 +1050,12 @@ public final class CmsVaadinUtils {
      * @return the workplace messages
      */
     public static CmsMessages getWpMessagesForCurrentLocale() {
+
         Locale locale;
-        if (A_CmsUI.get() != null) { 
+        if (A_CmsUI.get() != null) {
             locale = A_CmsUI.get().getLocale();
-        } else { 
-            if (LOG.isWarnEnabled()) { 
+        } else {
+            if (LOG.isWarnEnabled()) {
                 Exception e = new Exception("getWpMessagesForCurrentLocale called from non-Vaadin context");
                 LOG.warn(e.getLocalizedMessage(), e);
             }
@@ -1391,7 +1412,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-    
+
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)

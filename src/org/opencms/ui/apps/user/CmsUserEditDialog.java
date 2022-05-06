@@ -1246,7 +1246,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
      */
     private void iniLanguage(CmsUserSettings settings) {
 
-        IndexedContainer container = CmsVaadinUtils.getLanguageContainer("caption");
+        IndexedContainer container = CmsVaadinUtils.getWorkplaceLanguageContainer("caption");
         m_language.setContainerDataSource(container);
         m_language.setItemCaptionPropertyId("caption");
         m_language.setNewItemsAllowed(false);
