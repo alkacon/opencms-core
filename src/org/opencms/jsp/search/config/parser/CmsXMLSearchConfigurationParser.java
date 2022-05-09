@@ -447,11 +447,22 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     protected int getMaxReturnedResults(String indexName) {
 
         Integer maxReturnedResults = parseOptionalIntValue(XML_ELEMENT_MAX_RETURNED_RESULTS);
-        if (null == maxReturnedResults) {
-            return OpenCms.getSearchManager().getIndexSolr(indexName).getMaxProcessedResults();
-        } else {
+        if (null != maxReturnedResults) {
             return maxReturnedResults.intValue();
         }
+        try {
+            CmsSolrIndex idx = OpenCms.getSearchManager().getIndexSolr(indexName);
+            if (null != idx) {
+                return idx.getMaxProcessedResults();
+            }
+        } catch (Throwable t) {
+            // This is ok, it's allowed to have an external other index here.
+            LOG.debug(
+                "Parsing JSON search configuration for none-CmsSolrIndex "
+                    + indexName
+                    + ". Setting max processed results to unlimited.");
+        }
+        return CmsSolrIndex.MAX_RESULTS_UNLIMITED;
     }
 
     /** Helper to read a mandatory String value list.
@@ -758,22 +769,12 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         String indexName = parseOptionalStringValue(XML_ELEMENT_INDEX);
         if (null != indexName) {
             indexName = indexName.trim();
-            try {
-                if (null != OpenCms.getSearchManager().getIndexSolr(indexName)) {
-                    return indexName;
-                }
-            } catch (Throwable t) {
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(
-                        Messages.get().getBundle().key(
-                            Messages.ERR_REQUESTED_INDEX_NOT_CONFIGURED_USING_DEFAULT_1,
-                            indexName));
-                }
-            }
         }
-        return cms.getRequestContext().getCurrentProject().isOnlineProject()
+        return null != indexName
+        ? indexName
+        : (cms.getRequestContext().getCurrentProject().isOnlineProject()
         ? CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE
-        : CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE;
+        : CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE);
     }
 
     /** Returns the configured request parameter for the last query, or the default parameter if the core is not specified.
