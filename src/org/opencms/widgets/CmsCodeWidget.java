@@ -58,7 +58,6 @@ import com.google.web.bindery.autobean.vm.AutoBeanFactorySource;
  * <p>The configuration string is a JSON string (in the form parseable by org.opencms.json.JSONObject) with the following possible optional attributes:
  * <ul>
  * <li>mode: the initially selected editor mode (text|javascript|jsp|java|html|xml)
- * <li>grow: boolean value that indicates whether the editor should grow with the size of its content
  * <li>height: the height in pixels (if 'grow' is set to true, this is used as minimum height instead).
  * </ul>
  */
@@ -105,7 +104,6 @@ public class CmsCodeWidget extends A_CmsWidget implements I_CmsADEWidget {
         }
         try {
             JSONObject serverConfig = new JSONObject(getConfiguration());
-            boolean grow = serverConfig.optBoolean("grow", false);
             String mode = serverConfig.optString("mode", "text/plain");
             String heightStr = serverConfig.optString("height");
             Integer height = null;
@@ -120,7 +118,6 @@ public class CmsCodeWidget extends A_CmsWidget implements I_CmsADEWidget {
             Locale userLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
             clientConfig.as().setPhrasesJSON(getPhrases(userLocale));
             clientConfig.as().setHeight(height);
-            clientConfig.as().setGrow(grow);
             clientConfig.as().setStartMode(mode);
             String clientConfigJsonString = AutoBeanCodex.encode(clientConfig).getPayload();
             return clientConfigJsonString;

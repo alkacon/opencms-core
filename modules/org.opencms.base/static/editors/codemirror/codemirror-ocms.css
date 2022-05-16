@@ -186,16 +186,13 @@
 	outline-style: none;
 } 
 
-.oc-codemirror-editorwidget.oc-dynamic-height .CodeMirror-scroll {
-	min-height: var(--codemirror-height, 300px)
-}
 
 .oc-codemirror-editorwidget.oc-dynamic-height .CodeMirror {
 	height: auto;
 }
 
-.oc-codemirror-editorwidget.oc-fixed-height .CodeMirror {
-	height: var(--codemirror-height, 300px)
+.oc-codemirror-editorwidget .CodeMirror {
+	resize: vertical;
 }
 
 .oc-codemirror-editorwidget .cm-trailingspace {

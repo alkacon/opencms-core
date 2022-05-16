@@ -54,20 +54,6 @@ public interface I_CmsCodeMirrorClientConfiguration {
     public String getStartMode();
 
     /**
-     * Returns true if the widget should grow with its content.
-     *
-     * @return true if the widget should grow with its content
-     */
-    public boolean isGrow();
-
-    /**
-     * Enables / disables automatic resizing of the widget based on its content.
-     *
-     * @param autoGrow if true, the widget should be resized based on its content
-     */
-    public void setGrow(boolean autoGrow);
-
-    /**
      * Sets the height in pixels.
      *
      * @param height the height in pixesls

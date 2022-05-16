@@ -139,7 +139,6 @@ public class CmsCodeMirrorWidget extends ComplexPanel implements I_CmsEditWidget
         setElement(Document.get().createDivElement());
         m_config = AutoBeanCodex.decode(m_configFactory, I_CmsCodeMirrorClientConfiguration.class, config).as();
         addStyleName("oc-codemirror-editorwidget");
-        addStyleName(m_config.isGrow() ? "oc-dynamic-height" : "oc-fixed-height");
         Integer height = m_config.getHeight();
         if (height != null) {
             nativeSetProperty(getElement(), "--codemirror-height", height + "px");
@@ -337,7 +336,15 @@ public class CmsCodeMirrorWidget extends ComplexPanel implements I_CmsEditWidget
 
         super.onAttach();
         scriptLoader.load(() -> {
-            initCodeMirror(CmsCodeMirrorWidget.this, getElement(), CmsJsUtil.parseJSON(m_config.getPhrasesJSON()));
+            int height = -1;
+            if (m_config.getHeight() != null) {
+                height = m_config.getHeight().intValue();
+            }
+            initCodeMirror(
+                CmsCodeMirrorWidget.this,
+                getElement(),
+                CmsJsUtil.parseJSON(m_config.getPhrasesJSON()),
+                height);
             initializeUserControlledSettings();
             if (m_originalContent != null) {
                 nativeSetContent(m_originalContent);
@@ -534,8 +541,9 @@ public class CmsCodeMirrorWidget extends ComplexPanel implements I_CmsEditWidget
      *
      * @param elem the parent element
      * @param phrases the localization phrases
+     * @param height the initial editor height, or -1 if no height should be set
      */
-    private native void initCodeMirror(CmsCodeMirrorWidget instance, Element elem, JavaScriptObject phrases) /*-{
+    private native void initCodeMirror(CmsCodeMirrorWidget instance, Element elem, JavaScriptObject phrases, int height) /*-{
         var config = {
             theme: "eclipse",
             mode: "text/plain",
@@ -557,6 +565,13 @@ public class CmsCodeMirrorWidget extends ComplexPanel implements I_CmsEditWidget
         result.on("changes", function(editor, changes) {
             that.@org.opencms.acacia.client.widgets.code.CmsCodeMirrorWidget::fireChangeEvent()();
         });
+        if (height > 0) {
+            result.setSize(null, height);
+        }
+        var resizeHandler = new ResizeObserver(function(entries) {
+            result.refresh();
+        });
+        resizeHandler.observe(elem);
     }-*/;
 
     /**
