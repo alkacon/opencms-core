@@ -405,6 +405,8 @@ public class CmsRenderer implements I_CmsEntityRenderer {
             context.getElement().setAttribute(CmsGwtConstants.ATTR_DATA_ID, entity.getId());
             context.getElement().getStyle().setPadding(0, Unit.PX);
             CmsTabbedPanel<FlowPanel> tabbedPanel = new CmsTabbedPanel<FlowPanel>(CmsTabbedPanelStyle.classicTabs);
+            context.add(tabbedPanel);
+
             tabbedPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().wrapTabs());
             final TabSizeHandler tabSizeHandler = new TabSizeHandler(tabbedPanel, context);
             tabbedPanel.addSelectionHandler(tabSizeHandler);
@@ -503,7 +505,6 @@ public class CmsRenderer implements I_CmsEntityRenderer {
                 // revert that as no following widget will occupy the second column
                 lastCompactView.setCompactMode(CmsAttributeValueView.COMPACT_MODE_WIDE);
             }
-            context.add(tabbedPanel);
             return tabbedPanel;
         }
     }
