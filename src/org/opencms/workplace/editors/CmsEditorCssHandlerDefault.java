@@ -27,6 +27,7 @@
 
 package org.opencms.workplace.editors;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.loader.CmsTemplateContextManager;
@@ -47,6 +48,9 @@ public class CmsEditorCssHandlerDefault implements I_CmsEditorCssHandler {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsEditorCssHandlerDefault.class);
+
+    /** Sitemap attribute that can be used to configure the editor stylesheet. */
+    public static final String ATTR_TEMPLATE_EDITOR_CSS = "template.editor.css";
 
     /**
      * @see org.opencms.workplace.editors.I_CmsEditorCssHandler#getUriStyleSheet(org.opencms.file.CmsObject, java.lang.String)
@@ -88,6 +92,18 @@ public class CmsEditorCssHandlerDefault implements I_CmsEditorCssHandler {
             return "";
         }
         String result = "";
+        try {
+            CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(
+                cms,
+                cms.getRequestContext().addSiteRoot(editedResourcePath));
+            String cssPathFromSitemapConfig = config.getAttribute(ATTR_TEMPLATE_EDITOR_CSS, null);
+            if ((cssPathFromSitemapConfig != null) && cms.existsResource(cssPathFromSitemapConfig)) {
+                return cssPathFromSitemapConfig;
+            }
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+
         try {
             // determine the path of the template
             String templatePath = "";
