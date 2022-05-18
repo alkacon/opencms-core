@@ -523,6 +523,9 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * to a comma separated list of locale names. However, you can not add new available locales,
      * only remove from the configured list.<p>
      *
+     * Note that if the <code>localesconfigured<code> node contains  a locale variant for a specific country (e.g. de_DE),
+     * then both that locale and the locale without the country suffix will be in the returned list.
+     *
      * @return the list of available locale names, e.g. <code>en, de</code>
      *
      * @see #getDefaultLocales()

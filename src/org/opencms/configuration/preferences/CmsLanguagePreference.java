@@ -32,12 +32,18 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.collect.ComparisonChain;
 
 /**
  * Workplace locale preference.<p>
@@ -68,7 +74,18 @@ public class CmsLanguagePreference extends CmsBuiltinPreference {
     public static Map<Locale, String> getOptionMapForLanguage() {
 
         // get available locales from the workplace manager
-        List<Locale> locales = OpenCms.getWorkplaceManager().getLocales();
+        List<Locale> locales = new ArrayList<>(OpenCms.getWorkplaceManager().getLocales());
+        List<Locale> contentLocales = OpenCms.getLocaleManager().getAvailableLocales();
+
+        // Put locales that are configured as content locales first
+        Collections.sort(locales, (a, b) -> {
+            int indexA = contentLocales.indexOf(a);
+            int indexB = contentLocales.indexOf(b);
+            return ComparisonChain.start().compareTrueFirst(indexA != -1, indexB != -1).compare(indexA, indexB).compare(
+                a.toString(),
+                b.toString()).result();
+        });
+
         Iterator<Locale> i = locales.iterator();
         LinkedHashMap<Locale, String> result = new LinkedHashMap<>();
         for (Locale currentLocale : locales) {
@@ -80,6 +97,7 @@ public class CmsLanguagePreference extends CmsBuiltinPreference {
             if (CmsStringUtil.isNotEmpty(currentLocale.getVariant())) {
                 language = language + " (" + currentLocale.getDisplayVariant(currentLocale) + ")";
             }
+            language = StringUtils.capitalize(language);
             result.put(currentLocale, language);
         }
         return result;
