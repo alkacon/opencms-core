@@ -138,13 +138,13 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PREF_UPLOAD_VARIANT_NOT_FOUND_0 = "ERR_PREF_UPLOAD_VARIANT_NOT_FOUND_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROGRESS_INTERRUPTED_0 = "ERR_PROGRESS_INTERRUPTED_0";
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROGRESS_START_INVALID_LIST_0 = "ERR_PROGRESS_START_INVALID_LIST_0";
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROGRESS_START_THREAD_EXISTS_0 = "ERR_PROGRESS_START_THREAD_EXISTS_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PUBLISH_LIST_CREATION_0 = "ERR_PUBLISH_LIST_CREATION_0";
 
@@ -213,6 +213,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_AVAILABILITY_RESPONSIBLES_0 = "GUI_AVAILABILITY_RESPONSIBLES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BROKEN_LINK_TEXT_0 = "GUI_BROKEN_LINK_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BROKENRELATIONS_1 = "GUI_BROKENRELATIONS_1";
@@ -1454,6 +1457,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PUBLISH_UNLOCK_CONFIRMATION_0 = "GUI_PUBLISH_UNLOCK_CONFIRMATION_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_REINDEX_CONFIRMATION_1 = "GUI_REINDEX_CONFIRMATION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REINDEX_INDEX_TYPE_OFFLINE_0 = "GUI_REINDEX_INDEX_TYPE_OFFLINE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REINDEX_INDEX_TYPE_ONLINE_0 = "GUI_REINDEX_INDEX_TYPE_ONLINE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REINDEX_RELATED_0 = "GUI_REINDEX_RELATED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RELATION_LIST_BROKEN_HELP_0 = "GUI_RELATION_LIST_BROKEN_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1482,18 +1497,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RENAMEIMAGES_TITLE_1 = "GUI_RENAMEIMAGES_TITLE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_REINDEX_CONFIRMATION_1 = "GUI_REINDEX_CONFIRMATION_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_REINDEX_INDEX_TYPE_OFFLINE_0 = "GUI_REINDEX_INDEX_TYPE_OFFLINE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_REINDEX_INDEX_TYPE_ONLINE_0 = "GUI_REINDEX_INDEX_TYPE_ONLINE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_REINDEX_RELATED_0 = "GUI_REINDEX_RELATED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_REPLACE_FILE_1 = "GUI_REPLACE_FILE_1";
