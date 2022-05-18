@@ -686,7 +686,10 @@
 	*[location="buttonContainer"] > * > * > .o-resinfo2 {
 		margin-top: -1px;
 	}
-
+	
+	.o-broken-links .o-deleted .o-resinfo2 .o-resinfo-top > * {
+		text-decoration: line-through;
+	}
 
 	.o-resinfo2 {
 		 border: 1px solid #ccc;
@@ -1501,6 +1504,16 @@
 	.o-gwt-contextmenu-button-margin {
 		margin-right: 5px;
 	}
+	
+	.o-resinfo2 .o-gwt-contextmenu-button {
+		visibility: hidden;
+	}
+	
+	.o-resinfo2:hover .o-gwt-contextmenu-button {
+		visibility: visible;
+	}
+
+	
 }
 
 .waggle{
