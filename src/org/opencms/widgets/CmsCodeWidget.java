@@ -32,10 +32,12 @@ import org.opencms.file.CmsResource;
 import org.opencms.gwt.shared.I_CmsCodeMirrorClientConfiguration;
 import org.opencms.gwt.shared.I_CmsCodeMirrorClientConfigurationFactory;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
@@ -99,12 +101,16 @@ public class CmsCodeWidget extends A_CmsWidget implements I_CmsADEWidget {
         CmsResource resource,
         Locale contentLocale) {
 
-        if ((getConfiguration() == null) || "".equals(getConfiguration())) {
-            return "{}";
-        }
         try {
-            JSONObject serverConfig = new JSONObject(getConfiguration());
-            String mode = serverConfig.optString("mode", "text/plain");
+            JSONObject serverConfig = new JSONObject();
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(getConfiguration())) {
+                try {
+                    serverConfig = new JSONObject(getConfiguration());
+                } catch (JSONException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            String mode = serverConfig.optString("mode", "html");
             String heightStr = serverConfig.optString("height");
             Integer height = null;
             if ((heightStr != null) && !("none".equals(heightStr))) {
