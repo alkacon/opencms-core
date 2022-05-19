@@ -2075,7 +2075,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         }
         String resNameWithoutServer = OpenCms.getLinkManager().getRootPath(getCmsObject(), resName);
         if (resNameWithoutServer != null) {
-            resName = resNameWithoutServer;
+            // also cut off fragment if it has one
+            resName = resNameWithoutServer.replaceFirst("#.*$", "");
         }
         CmsObject cms = getCmsObject();
         try {

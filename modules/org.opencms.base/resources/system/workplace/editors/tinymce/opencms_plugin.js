@@ -191,7 +191,7 @@ function createGalleryDialogUrl(path, typesParam, integrator, integratorArgs) {
    }else{
        searchParam="&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG%>=selectDoc&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_RESOURCE_TYPES%>="+typesParam;
    }
-   searchParam+="&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_CURRENT_ELEMENT%>="+ ((path==null|| path.indexOf("#")==0)? "" : path)+"&__locale="+elementLanguage;
+   searchParam+="&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_CURRENT_ELEMENT%>="+ ((path==null|| path.indexOf("#")==0)? "" : encodeURIComponent(path))+"&__locale="+elementLanguage;
    var galleryStoragePrefixParam = "&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_GALLERY_STORAGE_PREFIX%>=";
    if (typesParam == "image") { 
        galleryStoragePrefixParam += "image";
@@ -202,7 +202,8 @@ function createGalleryDialogUrl(path, typesParam, integrator, integratorArgs) {
        // leave the parameter empty  
    } 
    
-   return "<%= cms.link("/system/workplace/commons/gallery.jsp") %>?<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE+"="+org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode.editor.name() %>" + searchParam + resParam + galleryStoragePrefixParam + integratorParam + debugParam;
+   var result =  "<%= cms.link("/system/workplace/commons/gallery.jsp") %>?<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE+"="+org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode.editor.name() %>" + searchParam + resParam + galleryStoragePrefixParam + integratorParam + debugParam;
+   return result; 
 }
 
 
