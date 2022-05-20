@@ -142,13 +142,13 @@ public final class CmsContentEditor extends CmsEditorBase {
         /** The scope values. */
         Map<String, String> m_scopeValues;
 
+        private Set<String> m_changedScopes = new HashSet<>();
+
         /** The change handler registration. */
         private HandlerRegistration m_handlerRegistration;
 
         /** The observed entity. */
         private CmsEntity m_observerdEntity;
-
-        private Set<String> m_changedScopes = new HashSet<>();
 
         /**
          * Constructor.<p>
@@ -216,6 +216,9 @@ public final class CmsContentEditor extends CmsEditorBase {
             });
         }
     }
+
+    /** CSS marker class added to the html element when  the editor is active. */
+    public static final String EDITOR_MARKER_CLASS = "opencms-editor-active";
 
     /** The add change listener method name. */
     private static final String ADD_CHANGE_LISTENER_METHOD = "cmsAddEntityChangeListener";
@@ -1189,6 +1192,7 @@ public final class CmsContentEditor extends CmsEditorBase {
             m_previewHandlerRegistration.removeHandler();
             m_previewHandlerRegistration = null;
         }
+        CmsDomUtil.getHtmlElement().removeClassName(EDITOR_MARKER_CLASS);
     }
 
     /**
@@ -1569,6 +1573,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         m_deleteOnCancel = contentDefinition.isDeleteOnCancel();
         m_autoUnlock = contentDefinition.isAutoUnlock();
         m_isDirectEdit = contentDefinition.isDirectEdit();
+        CmsDomUtil.getHtmlElement().addClassName(EDITOR_MARKER_CLASS);
 
         initClosingHandler();
         setContentDefinition(contentDefinition);

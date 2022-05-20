@@ -1444,6 +1444,15 @@ public final class CmsDomUtil {
     }
 
     /**
+     * Gets the root &lt;html&gt; element.
+     *
+     * @return the html element
+     */
+    public static native Element getHtmlElement() /*-{
+        return $wnd.document.querySelector("html");
+    }-*/;
+
+    /**
      * Returns the content height of the given iFrame element.<p>
      *
      * @param iframe the iFrame element
