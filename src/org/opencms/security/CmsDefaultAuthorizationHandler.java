@@ -34,8 +34,10 @@ import org.opencms.main.A_CmsAuthorizationHandler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsHttpAuthenticationSettings;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.login.CmsLoginHelper;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.workplace.CmsWorkplaceManager;
+import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,6 +46,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -247,7 +250,27 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
             cms.loginUser(username, password);
 
             // authorization was successful create a session
-            req.getSession(true);
+            HttpSession session = req.getSession(true);
+
+            boolean isWorkplaceUri = req.getRequestURI().startsWith(OpenCms.getSystemInfo().getWorkplaceContext());
+            boolean isElementAuthor = OpenCms.getRoleManager().hasRole(cms, CmsRole.ELEMENT_AUTHOR);
+            boolean initStartSettings = isWorkplaceUri && isElementAuthor;
+            LOG.debug(
+                "checkBasicAuthorization, start settings check -- uri="
+                    + req.getRequestURI()
+                    + ", user="
+                    + cms.getRequestContext().getCurrentUser().getName()
+                    + ", isElementAuthor="
+                    + isElementAuthor
+                    + ", isWorkplaceUrl="
+                    + isWorkplaceUri
+                    + ", initStartSettings="
+                    + initStartSettings);
+            if (initStartSettings) {
+                CmsWorkplaceSettings settings = CmsLoginHelper.initSiteAndProject(cms);
+                session.setAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS, settings);
+            }
+
             return cms;
         } catch (CmsException e) {
             // authorization failed
