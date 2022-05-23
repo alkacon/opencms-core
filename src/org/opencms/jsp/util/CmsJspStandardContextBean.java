@@ -41,10 +41,12 @@ import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.flex.CmsFlexController;
@@ -722,6 +724,9 @@ public final class CmsJspStandardContextBean {
     /** Lazily initialized map from a category path to all sub-categories of that category. */
     private Map<String, CmsJspCategoryAccessBean> m_allSubCategories;
 
+    /** Lazily initialized nested map for reading either attributes or properties (first key: file name, second key: attribute / property name). */
+    private Map<String, Map<String, CmsJspObjectValueWrapper>> m_attributesOrProperties;
+
     /** Lazily initialized map from a category path to the path's category object. */
     private Map<String, CmsCategory> m_categories;
 
@@ -793,7 +798,6 @@ public final class CmsJspStandardContextBean {
      */
     private CmsJspStandardContextBean() {
 
-        // NOOP
     }
 
     /**
@@ -803,6 +807,7 @@ public final class CmsJspStandardContextBean {
      */
     private CmsJspStandardContextBean(ServletRequest req) {
 
+        this();
         CmsFlexController controller = CmsFlexController.getController(req);
         m_request = req;
         CmsObject cms;
@@ -1710,6 +1715,41 @@ public final class CmsJspStandardContextBean {
             });
         }
         return m_allSubCategories;
+    }
+
+    /**
+     * Lazily reads the given attribute from the current sitemap or a property of the same name from the given resource.
+     *
+     * <p>Usage example: ${cms.readAttributeOrProperty['/index.html']['attr']}
+     *
+     * @return a lazy loading map for accessing attributes / properties
+     */
+    public Map<String, Map<String, CmsJspObjectValueWrapper>> getReadAttributeOrProperty() {
+
+        if (m_attributesOrProperties == null) {
+            m_attributesOrProperties = CmsCollectionsGenericWrapper.createLazyMap(pathObj -> {
+                return CmsCollectionsGenericWrapper.createLazyMap(keyObj -> {
+
+                    String path = (String)pathObj;
+                    String key = (String)keyObj;
+
+                    CmsObject cms = getCmsObject();
+                    String result = m_config.getAttribute(key, null);
+                    if (result == null) {
+                        try {
+                            CmsProperty prop = cms.readPropertyObject(path, key, /*search=*/true);
+                            result = prop.getValue();
+                        } catch (CmsVfsResourceNotFoundException e) {
+                            LOG.info(e.getLocalizedMessage(), e);
+                        } catch (Exception e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                    return CmsJspObjectValueWrapper.createWrapper(cms, result);
+                });
+            });
+        }
+        return m_attributesOrProperties;
     }
 
     /**
