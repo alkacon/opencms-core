@@ -1305,6 +1305,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
+        String bigIndentation();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
         String list();
 
         /**

@@ -15,15 +15,19 @@
 		}
 		
 		.root {
-			padding: 2px;
+			padding: 10px;
 		}
 		
-		.label {
-			padding: 6px;
-		}
+		.root .list {
+	        border: 1px solid rgb(217,217,217);
+	        padding: 2px;
+	        border-radius: 4px;
+	        margin-top: 5px;
+	    }
+		
 	</ui:style>
 	<g:FlowPanel styleName="{style.root}" addStyleNames="{resources.generalCss.border} {resources.generalCss.cornerAll}" >
-		<g:Label ui:field="m_label"  styleName="{resources.generalCss.textMedium}"  addStyleNames="{style.label}" />
+		<g:Label ui:field="m_label"  styleName="{resources.generalCss.textMedium}" />
 		<cms:CmsList ui:field="m_linkPanel" addStyleNames="{style.list}" />
 	</g:FlowPanel>
 </ui:UiBinder> 

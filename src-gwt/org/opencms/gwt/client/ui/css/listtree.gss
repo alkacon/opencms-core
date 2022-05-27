@@ -34,6 +34,10 @@ ul.listTreeItemChildren {
 	padding-left: 0px;
 }
 
+ul.listTreeItemChildren.bigIndentation {
+	margin-left: 35px;
+}
+
 ul.list {
 	list-style-type: none;
 	margin: 0px;
