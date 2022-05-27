@@ -149,7 +149,7 @@ public final class CmsADESessionCache {
     private CmsGallerySearchBean m_lastPageEditorGallerySearch;
 
     /** The recently used formatters by resource type. */
-    private Map<String, List<CmsUUID>> m_recentFormatters = new ConcurrentHashMap<String, List<CmsUUID>>();
+    private Map<String, List<String>> m_recentFormatters = new ConcurrentHashMap<String, List<String>>();
 
     /** The sitemap editor mode. */
     private EditorMode m_sitemapEditorMode;
@@ -224,20 +224,20 @@ public final class CmsADESessionCache {
      * Adds the formatter id to the recently used list for the given type.<p>
      *
      * @param resType the resource type
-     * @param formatterId the formatter id
+     * @param keyOrId the formatter id
      */
-    public void addRecentFormatter(String resType, CmsUUID formatterId) {
+    public void addRecentFormatter(String resType, String keyOrId) {
 
-        List<CmsUUID> formatterIds = m_recentFormatters.get(resType);
+        List<String> formatterIds = m_recentFormatters.get(resType);
         if (formatterIds == null) {
-            formatterIds = new ArrayList<CmsUUID>();
+            formatterIds = new ArrayList<String>();
             m_recentFormatters.put(resType, formatterIds);
         }
-        formatterIds.remove(formatterId);
+        formatterIds.remove(keyOrId);
         if (formatterIds.size() >= (RECENT_FORMATTERS_SIZE)) {
             formatterIds.remove(RECENT_FORMATTERS_SIZE - 1);
         }
-        formatterIds.add(0, formatterId);
+        formatterIds.add(0, keyOrId);
     }
 
     /**
@@ -333,13 +333,14 @@ public final class CmsADESessionCache {
     public I_CmsFormatterBean getRecentFormatter(String resType, CmsContainer container, CmsADEConfigData config) {
 
         I_CmsFormatterBean result = null;
-        List<CmsUUID> formatterIds = m_recentFormatters.get(resType);
-        if (formatterIds != null) {
-            Map<CmsUUID, I_CmsFormatterBean> availableFormatters = config.getActiveFormatters();
+        List<String> formatterKeys = m_recentFormatters.get(resType);
+        if (formatterKeys != null) {
             Set<String> types = new HashSet<String>(Arrays.asList(container.getType().trim().split(" *, *")));
-            for (CmsUUID id : formatterIds) {
-                I_CmsFormatterBean formatter = availableFormatters.get(id);
+            for (String key : formatterKeys) {
+                I_CmsFormatterBean formatter = config.findFormatter(key);
                 if ((formatter != null)
+                    && CmsUUID.isValidUUID(formatter.getId())
+                    && config.getActiveFormatters().containsKey(new CmsUUID(formatter.getId())) // findFormatter may return inactive formatters, but here we only want active ones
                     && CmsFormatterConfiguration.matchFormatter(formatter, types, container.getWidth())) {
                     result = formatter;
                     break;

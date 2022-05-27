@@ -2111,12 +2111,13 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 || !formatterEntry.getKey().equals(previousFormatterEntry.getKey())
                 || !formatterEntry.getValue().equals(previousFormatterEntry.getValue()))) {
             String idString = formatterEntry.getValue();
-            if (CmsUUID.isValidUUID(idString)) { // TODO: Make this work for schema formatters
+            if (idString != null) {
                 // the formatter setting has changed
                 I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(elementBean.getResource());
-                getSessionCache().addRecentFormatter(resType.getTypeName(), new CmsUUID(idString));
+                getSessionCache().addRecentFormatter(resType.getTypeName(), idString);
             }
         }
+
     }
 
     /**
