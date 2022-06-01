@@ -2375,8 +2375,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-VarLink-1.xml", CmsEncoder.ENCODING_UTF_8);
         CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
         I_CmsXmlContentValue value = xmlcontent.getValue("VarLink", Locale.ENGLISH);
-        String link = "http://www.alkacon.com/%C3%A4";
-        value.setStringValue(cms, "http://www.alkacon.com/%C3%A4");
+        String link = "http://www.alkacon.com/%C3%A4/%26/x?f=%26&g=%26";
+        value.setStringValue(cms, link);
 
         String content2 = new String(xmlcontent.marshal(), "UTF-8");
         CmsXmlContent xmlcontent2 = CmsXmlContentFactory.unmarshal(content2, CmsEncoder.ENCODING_UTF_8, resolver);

@@ -30,6 +30,8 @@ package org.opencms.util;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.http.client.utils.URIBuilder;
+
 /**
  * Splits an URI String into separate components.<p>
  *
@@ -95,7 +97,7 @@ public class CmsUriSplitter {
             try {
                 URI u = new URI(uri);
                 m_protocol = u.getScheme();
-                URI tempUri = new URI(u.getScheme(), u.getAuthority(), u.getPath(), null, null);
+                URI tempUri = new URIBuilder(u).setCustomQuery(null).setFragment(null).build();
                 m_prefix = tempUri.toASCIIString();
                 m_anchor = u.getRawFragment();
                 m_query = u.getRawQuery();

@@ -236,6 +236,20 @@ public class TestCmsEncoder extends OpenCmsTestCase {
     }
 
     /**
+     * Tests punycode conversion of domain names with special characters in them.
+     *
+     * @throws Exception
+     */
+    public void testPunycodeConversion() throws Exception {
+
+        assertEquals("http://xn--wrmer-kva.de", CmsEncoder.convertHostToPunycode("http://würmer.de"));
+        // test with more complicated URI (with port, path, query, special characters)
+        assertEquals(
+            "http://xn--wrmer-kva.de:77/%26/?f=%26&g=%26",
+            CmsEncoder.convertHostToPunycode("http://würmer.de:77/%26/?f=%26&g=%26"));
+    }
+
+    /**
      * Tests wether two subsequent calls to
      * <code>{@link CmsEncoder#escapeWBlanks(String, String)}</code>
      * are undone by onde decode call (the 2nd encode call must not modify anything.<p>

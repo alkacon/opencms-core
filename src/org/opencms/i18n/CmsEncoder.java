@@ -52,6 +52,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
+import org.apache.http.client.utils.URIBuilder;
 
 import com.google.common.collect.Lists;
 
@@ -184,13 +185,12 @@ public final class CmsEncoder {
                 } else {
                     authority = IDN.toASCII(authority);
                 }
-                URI uriWithCorrectedHost = new URI(
-                    uri.getScheme(),
-                    authority,
-                    uri.getPath(),
-                    uri.getQuery(),
-                    uri.getFragment());
-                uriString = uriWithCorrectedHost.toASCIIString();
+                URI uriWithCorrectedHost = new URI(uri.getScheme(), authority, null, null, null);
+                URIBuilder builder = new URIBuilder(uri);
+                builder.setHost(uriWithCorrectedHost.getHost());
+                builder.setPort(uriWithCorrectedHost.getPort());
+                builder.setUserInfo(uriWithCorrectedHost.getUserInfo());
+                uriString = builder.build().toASCIIString();
             } catch (URISyntaxException e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }

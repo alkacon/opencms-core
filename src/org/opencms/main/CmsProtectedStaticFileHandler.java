@@ -45,12 +45,15 @@ import org.opencms.xml.xml2json.I_CmsApiAuthorizationHandler;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URIBuilder;
 
 /**
  * Resource init handler that provides an alternative way of serving static files like images or binary files, using the API authorization mechanism
@@ -117,18 +120,18 @@ implements I_CmsResourceInit, I_CmsConfigurationParameterHandler, I_CmsNeedsAdmi
 
         try {
             URI baseUri = new URI(prefix);
-            URI correctedUri = new URI(
-                baseUri.getScheme(),
-                baseUri.getAuthority(),
-                CmsStringUtil.joinPaths(baseUri.getPath(), PREFIX, path),
-                query,
-                null);
-            return correctedUri.toASCIIString();
+
+            // we can't give an URIBuilder an already escaped query string, so we parse a dummy URL with the query string
+            // and use its parameter list for constructing the final URI
+            URI queryStringUri = new URI("http://test.invalid" + (query != null ? ("?" + query) : ""));
+            List<NameValuePair> params = new URIBuilder(queryStringUri).getQueryParams();
+            String result = new URIBuilder(baseUri).setPath(
+                CmsStringUtil.joinPaths(baseUri.getPath(), PREFIX, path)).setParameters(params).build().toASCIIString();
+            return result;
         } catch (URISyntaxException e) {
             LOG.error(e.getLocalizedMessage(), e);
             return null;
         }
-
     }
 
     /**

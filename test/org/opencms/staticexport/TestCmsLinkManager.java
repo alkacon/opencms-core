@@ -87,6 +87,7 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
         suite1.addTest(new TestCmsLinkManager("testCustomLinkHandler"));
         suite1.addTest(new TestCmsLinkManager("testRootPathAdjustment"));
         suite1.addTest(new TestCmsLinkManager("testAbsolutePathAdjustment"));
+        suite1.addTest(new TestCmsLinkManager("testLinkSubstitutionPreserveSpecialChars"));
 
         suite2.addTest(new TestCmsLinkManager("testToAbsoluteWithAdjustedVfsPrefix"));
         suite2.addTest(new TestCmsLinkManager("testLinkSubstitutionWithAdjustedVfsPrefix"));
@@ -365,6 +366,19 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
         test = CmsLinkManager.getRelativeUri("/", "/");
         System.out.println(test);
         assertEquals("./", test);
+    }
+
+    /**
+     * Tests the link substitution.<p>
+     *
+     * @throws Exception if test fails
+     */
+    public void testLinkSubstitutionPreserveSpecialChars() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsLinkManager linkManager = OpenCms.getLinkManager();
+        String link = "http://foo.invalid/%26/x?f=%26&g=%26";
+        assertEquals(link, linkManager.substituteLinkForUnknownTarget(cms, link));
     }
 
     /**
