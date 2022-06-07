@@ -757,6 +757,9 @@ public final class CmsJspStandardContextBean {
     /** The lazy initialized map for the function detail pages. */
     private Map<String, String> m_functionDetailPage;
 
+    /** The lazy initialized map for the function detail pages. */
+    private Map<String, String> m_functionDetailPageExact;
+
     /** Indicates if in drag mode. */
     private boolean m_isDragMode;
 
@@ -845,10 +848,8 @@ public final class CmsJspStandardContextBean {
             cms.addSiteRoot(cms.getRequestContext().getUri()));
         List<CmsDetailPageInfo> detailPages = config.getDetailPagesForType(type);
         CmsDetailPageInfo detailPage = null;
-        boolean usingDefault = false;
         if ((detailPages == null) || (detailPages.size() == 0)) {
             detailPage = config.getDefaultDetailPage();
-            usingDefault = true;
         } else {
             detailPage = detailPages.get(0);
         }
@@ -863,9 +864,6 @@ public final class CmsJspStandardContextBean {
             try {
                 cms.getRequestContext().setForceAbsoluteLinks(fullLink || originalForceAbsoluteLinks);
                 String link = OpenCms.getLinkManager().substituteLink(cms, r);
-                if (usingDefault) {
-                    link = CmsStringUtil.joinPaths(link, functionName);
-                }
                 return link;
             } finally {
                 cms.getRequestContext().setForceAbsoluteLinks(originalForceAbsoluteLinks);
@@ -874,6 +872,46 @@ public final class CmsJspStandardContextBean {
             LOG.warn(e.getLocalizedMessage(), e);
             return "[Error reading detail page for type =" + type + "=]";
         }
+    }
+
+    /**
+     * Gets the link to a function detail page.
+     *
+     * <p>This just returns null if no function detail page is defined, it does not use the default detail page as a fallback.
+     *
+     * @param cms the CMS context
+     * @param functionName the function name
+     *
+     * @return the link
+     */
+    public static String getFunctionDetailLinkExact(CmsObject cms, String functionName) {
+
+        String type = CmsDetailPageInfo.FUNCTION_PREFIX + functionName;
+
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(
+            cms,
+            cms.addSiteRoot(cms.getRequestContext().getUri()));
+        List<CmsDetailPageInfo> detailPages = config.getDetailPagesForType(type);
+
+        CmsDetailPageInfo detailPage = null;
+        if ((detailPages == null) || (detailPages.size() == 0)) {
+            return null;
+        }
+        detailPage = detailPages.get(0);
+        if (detailPage.isDefaultDetailPage()) {
+            return null;
+        }
+
+        CmsUUID id = detailPage.getId();
+        try {
+            CmsResource r = cms.readResource(id);
+            String link = OpenCms.getLinkManager().substituteLink(cms, r);
+            return link;
+        } catch (CmsException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return null;
+        }
+
     }
 
     /**
@@ -1338,6 +1376,30 @@ public final class CmsJspStandardContextBean {
                 new CmsDetailLookupTransformer(CmsDetailPageInfo.FUNCTION_PREFIX));
         }
         return m_functionDetailPage;
+    }
+
+    /**
+     * Returns a lazy initialized Map that provides the detail page link as a value when given the name of a
+     * (named) dynamic function as a key.<p>
+     *
+     * The provided Map key is assumed to be a String that represents a named dynamic function.<p>
+     *
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;a href=${cms.functionDetailPage['search']} /&gt
+     * </pre>
+     *
+     * @return a lazy initialized Map that provides the detail page link as a value when given the name of a
+     * (named) dynamic function as a key
+     *
+     * @see #getTypeDetailPage()
+     */
+    public Map<String, String> getFunctionDetailPageExact() {
+
+        if (m_functionDetailPageExact == null) {
+            m_functionDetailPageExact = CmsCollectionsGenericWrapper.createLazyMap(
+                name -> getFunctionDetailLinkExact(m_cms, (String)name));
+        }
+        return m_functionDetailPageExact;
     }
 
     /**

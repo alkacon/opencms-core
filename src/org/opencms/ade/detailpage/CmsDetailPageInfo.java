@@ -27,6 +27,7 @@
 
 package org.opencms.ade.detailpage;
 
+import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 
@@ -193,6 +194,16 @@ public class CmsDetailPageInfo implements Serializable {
     public int hashCode() {
 
         return toString().hashCode();
+    }
+
+    /**
+     * Checks if this detail page has the default detail page type.
+     *
+     * @return true if this is a default detail page
+     */
+    public boolean isDefaultDetailPage() {
+
+        return CmsADEManager.DEFAULT_DETAILPAGE_TYPE.equals(getType());
     }
 
     /**
