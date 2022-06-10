@@ -103,6 +103,8 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_INVALID_ELEM_SEARCHSETTINGS_1 = "ERR_XMLCONTENT_INVALID_ELEM_SEARCHSETTINGS_1";
 
+    public static final String ERR_XMLCONTENT_VERSION_TRANSFORMATION_ERROR_1 = "ERR_XMLCONTENT_VERSION_TRANSFORMATION_ERROR_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_INVALID_ELEM_VALIDATION_1 = "ERR_XMLCONTENT_INVALID_ELEM_VALIDATION_1";
 

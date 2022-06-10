@@ -222,9 +222,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
         boolean hasModelUri = false;
         CmsXmlContent newContent = null;
-        if ((m_schema != null) && ((content == null) || (content.length == 0))) {
-            // unmarshal the content definition for the new resource
-            CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, m_schema);
+        if ((content == null) || (content.length == 0)) {
 
             // read the default locale for the new resource
             Locale locale = getLocaleForNewContent(cms, securityManager, resourcename, properties);
@@ -238,7 +236,10 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
                 // create the new content from the model file
                 newContent = CmsXmlContentFactory.createDocument(newCms, locale, modelUri);
                 hasModelUri = true;
-            } else {
+            } else if (m_schema != null) {
+                // unmarshal the content definition for the new resource
+                CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, m_schema);
+
                 // create the new content from the content definition
                 newContent = CmsXmlContentFactory.createDocument(
                     newCms,
@@ -247,7 +248,9 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
                     contentDefinition);
             }
             // get the bytes from the created content
-            content = newContent.marshal();
+            if (newContent != null) {
+                content = newContent.marshal();
+            }
         }
 
         // now create the resource using the super class

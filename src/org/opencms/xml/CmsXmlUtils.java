@@ -30,6 +30,7 @@ package org.opencms.xml;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.content.CmsXmlContent;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -48,9 +49,13 @@ import javax.xml.parsers.SAXParserFactory;
 import org.apache.commons.logging.Log;
 import org.apache.xerces.parsers.SAXParser;
 
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.Element;
 import org.dom4j.Node;
+import org.dom4j.io.DOMReader;
+import org.dom4j.io.DOMWriter;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
@@ -154,6 +159,29 @@ public final class CmsXmlUtils {
             return result.toString();
         }
         return suffix;
+    }
+
+    /**
+     * Converts an org.dom4j.Document to a org.w3c.dom.Document.
+     *
+     * @param doc the document to convert
+     * @return the converted document
+     */
+    public static org.w3c.dom.Document convertDocumentFromDom4jToW3C(Document doc) throws DocumentException {
+
+        return new DOMWriter().write(doc);
+    }
+
+    /**
+     * Converts an org.w3c.dom.Document to an org.dom4j.Document.
+     *
+     * @param doc the document to convert
+     * @return the converted document
+     */
+    public static Document convertDocumentFromW3CToDom4j(org.w3c.dom.Document doc) {
+
+        org.dom4j.io.DOMReader reader = new DOMReader();
+        return reader.read(doc);
     }
 
     /**
@@ -313,6 +341,30 @@ public final class CmsXmlUtils {
             path = path.substring(pos + 1);
         }
         return path;
+    }
+
+    /**
+     * Helper method to get the version number from a schema's/content's XML document.
+     *
+     * @param doc the document
+     * @return the version (returns 0 if no version is set)
+     */
+    public static int getSchemaVersion(Document doc) {
+
+        if (doc == null) {
+            LOG.info("getSchemaVersion called with null document");
+            return 0;
+        }
+        Element root = doc.getRootElement();
+        Attribute versionAttr = root.attribute(CmsXmlContent.A_VERSION);
+        if (versionAttr != null) {
+            try {
+                return Integer.parseInt(versionAttr.getValue());
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return 0;
     }
 
     /**

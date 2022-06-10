@@ -1,0 +1,30 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" version="1">
+
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+
+    <xsd:element name="ArticleData" type="OpenCmsArticleData" />
+
+    <xsd:complexType name="OpenCmsArticleData">
+        <xsd:sequence>
+            <xsd:element name="Article" type="OpenCmsArticle" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="version" type="xsd:integer" />
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsArticle">
+        <xsd:sequence>
+            <xsd:element name="Intro" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="Heading" type="OpenCmsString" />
+            <xsd:element name="Image" type="OpenCmsVfsFile" minOccurs="0" />
+            <xsd:element name="Text" type="OpenCmsHtml" minOccurs="0" />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="required" />
+    </xsd:complexType>
+
+    <xsd:annotation>
+        <xsd:appinfo>
+            <versiontransformation>/system/news.xsl</versiontransformation>
+        </xsd:appinfo>
+    </xsd:annotation>
+
+</xsd:schema>

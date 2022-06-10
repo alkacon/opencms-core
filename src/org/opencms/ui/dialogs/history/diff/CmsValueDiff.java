@@ -95,9 +95,6 @@ public class CmsValueDiff implements I_CmsDiffProvider {
             vl.setMargin(true);
             vl.setSpacing(true);
             Table table = buildValueComparisonTable(cms, panel, file1, file2, resolver);
-            if (table.getContainerDataSource().size() == 0) {
-                return Optional.absent();
-            }
             Button fileTextCompareButton = new Button(
                 CmsVaadinUtils.getMessageText(Messages.GUI_HISTORY_DIALOG_COMPARE_WHOLE_FILE_0));
             vl.addComponent(fileTextCompareButton);

@@ -63,6 +63,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 
@@ -87,12 +88,12 @@ public class CmsXmlContentDefinition implements Cloneable {
      * Enumeration of possible sequence types in a content definition.
      */
     public enum SequenceType {
-    /** A <code>xsd:choice</code> where the choice elements can appear more than once in a mix. */
-    MULTIPLE_CHOICE,
-    /** A simple <code>xsd:sequence</code>. */
-    SEQUENCE,
-    /** A <code>xsd:choice</code> where only one choice element can be selected. */
-    SINGLE_CHOICE
+        /** A <code>xsd:choice</code> where the choice elements can appear more than once in a mix. */
+        MULTIPLE_CHOICE,
+        /** A simple <code>xsd:sequence</code>. */
+        SEQUENCE,
+        /** A <code>xsd:choice</code> where only one choice element can be selected. */
+        SINGLE_CHOICE
     }
 
     /** Constant for the XML schema attribute "mapto". */
@@ -662,33 +663,23 @@ public class CmsXmlContentDefinition implements Cloneable {
 
         // now check the type definition list
         List<Element> mainElements = CmsXmlGenericWrapper.elements(element);
-        if ((mainElements.size() != 1) && (mainElements.size() != 2)) {
-            throw new CmsXmlException(
-                Messages.get().container(
-                    Messages.ERR_TS_SUBELEMENT_COUNT_2,
-                    element.getUniquePath(),
-                    new Integer(mainElements.size())));
-        }
+        List<Element> attributes = mainElements.stream().filter(
+            elem -> XSD_NODE_ATTRIBUTE.equals(elem.getQName())).collect(Collectors.toList());
 
         boolean hasLanguageAttribute = false;
-        if (mainElements.size() == 2) {
-            // two elements in the master list: the second must be the "language" attribute definition
 
-            Element typeAttribute = mainElements.get(1);
-            if (!XSD_NODE_ATTRIBUTE.equals(typeAttribute.getQName())) {
-                throw new CmsXmlException(
-                    Messages.get().container(
-                        Messages.ERR_CD_ELEMENT_NAME_3,
-                        typeAttribute.getUniquePath(),
-                        XSD_NODE_ATTRIBUTE.getQualifiedName(),
-                        typeAttribute.getQName().getQualifiedName()));
-            }
-            validateAttribute(typeAttribute, XSD_ATTRIBUTE_NAME, XSD_ATTRIBUTE_VALUE_LANGUAGE);
-            validateAttribute(typeAttribute, XSD_ATTRIBUTE_TYPE, CmsXmlLocaleValue.TYPE_NAME);
+        // two elements in the master list: the second must be the "language" attribute definition
+
+        Element languageAttribute = attributes.stream().filter(
+            elem -> elem.attribute(XSD_ATTRIBUTE_NAME).getValue().equals(
+                XSD_ATTRIBUTE_VALUE_LANGUAGE)).findFirst().orElse(null);
+        if (languageAttribute != null) {
+
+            validateAttribute(languageAttribute, XSD_ATTRIBUTE_TYPE, CmsXmlLocaleValue.TYPE_NAME);
             try {
-                validateAttribute(typeAttribute, XSD_ATTRIBUTE_USE, XSD_ATTRIBUTE_VALUE_REQUIRED);
+                validateAttribute(languageAttribute, XSD_ATTRIBUTE_USE, XSD_ATTRIBUTE_VALUE_REQUIRED);
             } catch (CmsXmlException e) {
-                validateAttribute(typeAttribute, XSD_ATTRIBUTE_USE, XSD_ATTRIBUTE_VALUE_OPTIONAL);
+                validateAttribute(languageAttribute, XSD_ATTRIBUTE_USE, XSD_ATTRIBUTE_VALUE_OPTIONAL);
             }
             // no error: then the language attribute is valid
             hasLanguageAttribute = true;
@@ -1220,7 +1211,10 @@ public class CmsXmlContentDefinition implements Cloneable {
 
         root.add(I_CmsXmlSchemaType.XSI_NAMESPACE);
         root.addAttribute(I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION, getSchemaLocation());
-
+        int version = getVersion();
+        if (version != 0) {
+            root.addAttribute(CmsXmlContent.A_VERSION, "" + version);
+        }
         createLocale(cms, document, root, locale);
         return doc;
     }
@@ -1522,6 +1516,16 @@ public class CmsXmlContentDefinition implements Cloneable {
     public List<I_CmsXmlSchemaType> getTypeSequence() {
 
         return m_typeSequence;
+    }
+
+    /**
+     * Gets the version.
+     *
+     * @return the version number
+     */
+    public int getVersion() {
+
+        return CmsXmlUtils.getSchemaVersion(m_schemaDocument);
     }
 
     /**

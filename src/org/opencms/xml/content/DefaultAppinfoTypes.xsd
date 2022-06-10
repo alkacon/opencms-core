@@ -348,6 +348,11 @@
         <xsd:attribute name="class" type="xsd:string" use="required" />
         <xsd:attribute name="configuration" type="xsd:string" use="optional" />
     </xsd:complexType>
+    
+    <xsd:complexType name="OpenCmsDefaultAppinfoVersion">
+        <xsd:attribute name="number" type="xsd:string" use="required" />
+        <xsd:attribute name="migration" type="xsd:string" use="optional" />
+    </xsd:complexType>
 
     <xsd:complexType name="OpenCmsDefaultAppinfoParameters">
         <xsd:sequence>

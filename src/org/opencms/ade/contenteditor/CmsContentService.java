@@ -1574,7 +1574,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      */
     private boolean checkAutoCorrection(CmsObject cms, CmsXmlContent content) throws CmsXmlException {
 
-        boolean performedAutoCorrection = false;
+        boolean performedAutoCorrection = content.isTransformedVersion();
         try {
             content.validateXmlStructure(new CmsXmlEntityResolver(cms));
         } catch (CmsXmlException eXml) {

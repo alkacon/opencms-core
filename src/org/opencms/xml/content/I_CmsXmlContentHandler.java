@@ -598,6 +598,16 @@ public interface I_CmsXmlContentHandler {
     String getTitleMapping(CmsObject cms, CmsXmlContent document, Locale locale);
 
     /**
+     * Gets the version transformation VFS path.
+     *
+     * <p>If schema versions are used, the the XSLT transformation read from this VFS path is used to transform contents
+     * of older versions into the current version.
+     *
+     * @return the VFS path to read an XSLT file for version transformation from
+     */
+    String getVersionTransformation();
+
+    /**
      * Gets the widget for the given path and CMS context.
      *
      * @param cms the current CMS context

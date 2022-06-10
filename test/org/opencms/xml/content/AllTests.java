@@ -67,6 +67,7 @@ public final class AllTests {
         suite.addTest(TestCmsXmlContentLinks.suite());
         suite.addTest(TestCmsXmlContent75Features.suite());
         suite.addTest(TestCmsXmlContentChoice.suite());
+        suite.addTest(TestCmsXmlContentVersions.suite());
         //$JUnit-END$
         return suite;
     }
