@@ -1,5 +1,5 @@
 @external tox, tox-tinymce, tox-toolbar, tox-editor-container, tox-statusbar__branding, tox-edit-area, tox-statusbar, tox-fullscreen, tox-tinymce-inline,
-	gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, tabDescriptionPanel, oc-screensize-medium, oc-touch-only;
+	gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, tabDescriptionPanel, oc-screensize-medium, oc-touch-only, gwt-TabLayoutPanelContentContainer;
 
 @def SECOND_COLUMN_WIDTH 448;
  
@@ -25,6 +25,11 @@ div.gwt-TabLayoutPanel div.formParent{
 	background-color: transparent;
 	border: none;
 	border-radius: 0;
+}
+
+div.formParent .gwt-TabLayoutPanelContentContainer > div {
+    overflow: visible !important;
+    /* This is to ensure the help bubbles for fields remain visible, even if they clip out of the tab content. */ 
 }
 
 div.formParent div.gwt-TabLayoutPanel, div.formParent div.gwt-TabLayoutPanel div.gwt-TabLayoutPanelTabBar{
