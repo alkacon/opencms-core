@@ -213,18 +213,18 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The "offline" attribute. */
     public static final String A_OFFLINE = "offline";
+
     /** The "online" attribute. */
     public static final String A_ONLINE = "online";
     /** The "poolname" attribute. */
     public static final String A_POOLNAME = "poolname";
-
     /** The "security" attribute. */
     public static final String A_SECURITY = "security";
+
     /** The name of the DTD for this configuration. */
     public static final String CONFIGURATION_DTD_NAME = "opencms-system.dtd";
     /** The default user session mode. */
     public static final UserSessionMode DEFAULT_USER_SESSION_MODE = UserSessionMode.standard;
-
     /** The name of the default XML file for this configuration. */
     public static final String DEFAULT_XML_FILE_NAME = "opencms-system.xml";
 
@@ -603,6 +603,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** Node name for the user session mode. */
     private static final String N_USER_SESSION_MODE = "user-session-mode";
 
+    /** Parameters for the authorization handler. */
+    private Map<String, String> m_authHandlerParams = new HashMap<>();
+
     /** The ADE cache settings. */
     private CmsADECacheSettings m_adeCacheSettings;
 
@@ -742,6 +745,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public void addAdeParameter(String name, String value) {
 
         m_adeParameters.put(name, value);
+    }
+
+    /**
+     * Adds a parameter for the authorization handler.
+     *
+     * @param name the parameter name
+     * @param value the parameter value
+     */
+    public void addAuthorizationHandlerParam(String name, String value) {
+
+        m_authHandlerParams.put(name, value);
     }
 
     /**
@@ -1168,6 +1182,13 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         // add authorization handler creation rules
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_AUTHORIZATIONHANDLER, "setAuthorizationHandler", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_AUTHORIZATIONHANDLER, 0, A_CLASS);
+
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_AUTHORIZATIONHANDLER + "/parameters/param",
+            "addAuthorizationHandlerParam",
+            2);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_AUTHORIZATIONHANDLER + "/parameters/param", 0, "name");
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_AUTHORIZATIONHANDLER + "/parameters/param", 1);
 
         String apiAuthPath = "*/system/" + N_API_AUTHORIZATIONS + "/" + N_API_AUTHORIZATION;
         digester.addRule(apiAuthPath, new Rule() {
@@ -1878,7 +1899,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                         Messages.INIT_AUTHORIZATION_HANDLER_CLASS_SUCCESS_1,
                         m_authorizationHandler));
             }
-            authorizationHandler.setParameters(m_runtimeProperties);
+            authorizationHandler.setParameters(new HashMap<>(m_authHandlerParams));
             return authorizationHandler;
         } catch (Throwable t) {
             LOG.error(

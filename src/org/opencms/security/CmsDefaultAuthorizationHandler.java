@@ -28,14 +28,18 @@
 package org.opencms.security;
 
 import org.opencms.crypto.CmsEncryptionException;
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.A_CmsAuthorizationHandler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsHttpAuthenticationSettings;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.login.CmsLoginHelper;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -43,6 +47,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,6 +65,12 @@ import com.google.common.base.Joiner;
  */
 public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
 
+    /** Configuration parameter to control for which paths startup settings should be applied after HTTP Basic authentication. */
+    public static final String PARAM_HTTP_BASICAUTH_USESTARTSETTINGS_PATHS = "http.basicauth.usestartsettings.paths";
+
+    /** Configuration parameter to control for which users startup settings should be applied after HTTP Basic authentication. */
+    public static final String PARAM_HTTP_BASICAUTH_USESTARTSETTINGS_USERS = "http.basicauth.usestartsettings.users";
+
     /** Basic authorization prefix constant. */
     public static final String AUTHORIZATION_BASIC_PREFIX = "BASIC ";
     /** Authorization header constant. */
@@ -69,6 +81,90 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
 
     /** Credentials separator constant. */
     public static final String SEPARATOR_CREDENTIALS = ":";
+
+    /**
+     * Checks if a request URI path matches a given set of prefix paths.
+     *
+     * @param uri the request URI path
+     * @param pathSpec a comma separated list of path prefixes, which may contain %(contextPath) macros
+     * @return true if the URI path matches the path spec
+     */
+    protected static boolean checkPath(String uri, String pathSpec) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(pathSpec)) {
+            return false;
+        }
+        CmsMacroResolver resolver = new CmsMacroResolver();
+        pathSpec = resolver.resolveMacros(pathSpec);
+        String[] pathPatterns = pathSpec.split(",");
+        for (String pathToken : pathPatterns) {
+            if (CmsStringUtil.isPrefixPath(pathToken, uri)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the authenticated user matches a user specification string.
+     *
+     * <p>The user specification string is a comma-separed list of entries of the form TYPE.Name, where
+     * TYPE is either ROLE, GROUP, or USER. The method returns true if the user matches any of the groups, roles, or user names from this list.
+     *
+     * <p>It's also possible to configure an entry "*", which always matches.
+     *
+     * @param cms the CMS context
+     * @param userSpec the user specification
+     * @return true if the user matches any entry from the user specification
+     */
+    protected static boolean checkUser(CmsObject cms, String userSpec) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(userSpec)) {
+            return false;
+        }
+
+        Set<String> groupsOfUser = null; // lazily initialized
+        String[] entries = userSpec.split(",");
+        for (String userSpecEntry : entries) {
+            userSpecEntry = userSpecEntry.trim();
+            if ("*".equals(userSpecEntry)) {
+                return true;
+            } else if (userSpecEntry.startsWith(I_CmsPrincipal.PRINCIPAL_USER)) {
+                String userName = CmsUser.removePrefix(userSpecEntry);
+                if (cms.getRequestContext().getCurrentUser().getName().equals(userName)) {
+                    return true;
+                }
+            } else if (userSpecEntry.startsWith(CmsRole.PRINCIPAL_ROLE)) {
+                String actualRole = CmsRole.removePrefix(userSpecEntry);
+                CmsRole roleObj = null;
+                if (actualRole.contains("/")) {
+                    roleObj = CmsRole.valueOfRoleName(actualRole);
+                } else {
+                    roleObj = CmsRole.valueOfRoleName(actualRole).forOrgUnit(null);
+                }
+                if (OpenCms.getRoleManager().hasRole(cms, roleObj)) {
+                    return true;
+                }
+            } else if (userSpecEntry.startsWith(I_CmsPrincipal.PRINCIPAL_GROUP)) {
+                String groupName = CmsGroup.removePrefix(userSpecEntry);
+
+                if (groupsOfUser == null) {
+                    try {
+                        groupsOfUser = cms.getGroupsOfUser(
+                            cms.getRequestContext().getCurrentUser().getName(),
+                            false).stream().map(group -> group.getName()).collect(Collectors.toSet());
+                    } catch (Exception e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                        continue;
+                    }
+                }
+                if (groupsOfUser.contains(groupName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     /**
      * @see org.opencms.security.I_CmsAuthorizationHandler#getLoginFormURL(java.lang.String, java.lang.String, java.lang.String)
@@ -251,21 +347,15 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
 
             // authorization was successful create a session
             HttpSession session = req.getSession(true);
-
-            boolean isWorkplaceUri = req.getRequestURI().startsWith(OpenCms.getSystemInfo().getWorkplaceContext());
-            boolean isElementAuthor = OpenCms.getRoleManager().hasRole(cms, CmsRole.ELEMENT_AUTHOR);
-            boolean initStartSettings = isWorkplaceUri && isElementAuthor;
-            LOG.debug(
-                "checkBasicAuthorization, start settings check -- uri="
-                    + req.getRequestURI()
-                    + ", user="
-                    + cms.getRequestContext().getCurrentUser().getName()
-                    + ", isElementAuthor="
-                    + isElementAuthor
-                    + ", isWorkplaceUrl="
-                    + isWorkplaceUri
-                    + ", initStartSettings="
-                    + initStartSettings);
+            String requestUri = req.getRequestURI();
+            boolean isWorkplace = requestUri.startsWith(OpenCms.getSystemInfo().getWorkplaceContext())
+                || requestUri.startsWith(
+                    CmsStringUtil.joinPaths(OpenCms.getSystemInfo().getOpenCmsContext(), "/system/workplace"));
+            isWorkplace = isWorkplace && OpenCms.getRoleManager().hasRole(cms, CmsRole.ELEMENT_AUTHOR);
+            LOG.debug("isWorkplace = " + isWorkplace);
+            boolean initStartSettings = isWorkplace || shouldUseStartSettingsForHttpBasicAuth(cms, req);
+            LOG.debug("initStartSettings = " + initStartSettings);
+            OpenCms.getSiteManager().isWorkplaceRequest(req);
             if (initStartSettings) {
                 CmsWorkplaceSettings settings = CmsLoginHelper.initSiteAndProject(cms);
                 session.setAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS, settings);
@@ -276,5 +366,36 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
             // authorization failed
             return null;
         }
+    }
+
+    /**
+     * Checks whether start settings should be used after HTTP Basic authentication.
+     *
+     * <p>This method will not be called for workplace requests; for these the start settings will always be used.
+     *
+     * @param cms the CMS context initialized with the user from the HTTP Basic authentication
+     * @param req the current request
+     *
+     * @return true if the start settings should be used
+     */
+    protected boolean shouldUseStartSettingsForHttpBasicAuth(CmsObject cms, HttpServletRequest req) {
+
+        String userSpec = m_parameters.get(PARAM_HTTP_BASICAUTH_USESTARTSETTINGS_USERS);
+        String pathSpec = m_parameters.get(PARAM_HTTP_BASICAUTH_USESTARTSETTINGS_PATHS);
+
+        if (!checkPath(req.getRequestURI(), pathSpec)) {
+            LOG.debug("checkPath returned false for " + req.getRequestURI() + ", pathSpec=" + pathSpec);
+            return false;
+        }
+        if (!checkUser(cms, userSpec)) {
+            LOG.debug(
+                "checkUser returned false for "
+                    + cms.getRequestContext().getCurrentUser().getName()
+                    + ", userSpec = "
+                    + userSpec);
+            return false;
+        }
+
+        return true;
     }
 }
