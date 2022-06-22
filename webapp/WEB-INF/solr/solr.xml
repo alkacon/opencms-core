@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <solr>
+  <!--
+    NOTE: For permission check reasons, OpenCms will implicitely send a query with fq=solr_id:(id1 OR id2 ... idn) where n is the number of rows you request.
+    In consequence you can never request more the maxBooleanClauses results at a time.
+  -->
+  <maxBooleanClauses>${solr.max.booleanClauses:1024}</maxBooleanClauses>
   <str name="shareSchema">${shareSchema:true}</str>
   <str name="allowPaths">*</str>
 </solr>
