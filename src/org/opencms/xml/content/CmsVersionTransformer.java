@@ -159,7 +159,7 @@ public class CmsVersionTransformer {
             DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
             org.w3c.dom.Document targetDoc = builder.newDocument();
             DOMResult target = new DOMResult(targetDoc);
-            transformer.setParameter(XSL_PARAM_TRANSFORMATION_CONTEXT, new CmsVersionTransformationContext(cms));
+            transformer.setParameter(XSL_PARAM_TRANSFORMATION_CONTEXT, new CmsXsltContext(cms));
             transformer.transform(source, target);
             if (errors.size() > 0) {
                 throw errors.get(0);

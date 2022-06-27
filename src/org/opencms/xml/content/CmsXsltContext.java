@@ -56,10 +56,10 @@ import org.w3c.dom.NodeList;
  *
  * <p>An instance of this class is meant to be used for only a single content conversion.
  */
-public class CmsVersionTransformationContext {
+public class CmsXsltContext {
 
     /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsVersionTransformationContext.class);
+    private static final Log LOG = CmsLog.getLog(CmsXsltContext.class);
 
     /** The CMS context. */
     private CmsObject m_cms;
@@ -75,7 +75,7 @@ public class CmsVersionTransformationContext {
      *
      * @param cms the CMS context
      */
-    public CmsVersionTransformationContext(CmsObject cms) {
+    public CmsXsltContext(CmsObject cms) {
 
         m_cms = cms;
         m_documentBuilderFactory = DocumentBuilderFactory.newInstance();
