@@ -71,22 +71,21 @@ public class CmsToolbarEditButton extends A_CmsToolbarOptionButton {
         button.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(element.getNoEditReason())) {
 
-            if (element.hasWritePermission()
+            List<String> cssClasses = new ArrayList<>();
+            cssClasses.add(I_CmsButton.ButtonData.SELECTION.getIconClass());
+            if (functionTypes.contains(element.getResourceType())) {
+                cssClasses.add(I_CmsLayoutBundle.INSTANCE.containerpageCss().functionElement());
+                cssClasses.add(I_CmsLayoutBundle.INSTANCE.containerpageCss().lockedElement());
+                button.setTitle(element.getNoEditReason());
+            } else if (element.hasWritePermission()
                 && !((element instanceof CmsGroupContainerElementPanel)
                     && ((CmsGroupContainerElementPanel)element).isInheritContainer())) {
-
-                List<String> cssClasses = new ArrayList<>();
-                cssClasses.add(I_CmsButton.ButtonData.SELECTION.getIconClass());
                 cssClasses.add(I_CmsLayoutBundle.INSTANCE.containerpageCss().lockedElement());
-
-                if (functionTypes.contains(element.getResourceType())) {
-                    cssClasses.add(I_CmsLayoutBundle.INSTANCE.containerpageCss().functionElement());
-                }
-                button.setImageClass(Joiner.on(" ").join(cssClasses));
                 button.setTitle(element.getNoEditReason());
             } else {
                 button.disable(element.getNoEditReason());
             }
+            button.setImageClass(Joiner.on(" ").join(cssClasses));
         }
         return button;
     }

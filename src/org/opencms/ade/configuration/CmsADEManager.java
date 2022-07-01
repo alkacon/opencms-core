@@ -852,20 +852,19 @@ public class CmsADEManager {
         String noEdit = new CmsResourceUtil(cms, resource).getNoEditReason(
             OpenCms.getWorkplaceManager().getWorkplaceLocale(cms),
             true);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(noEdit)) {
-            boolean isFunction = false;
-            for (String type : new String[] {"function", "function_config"}) {
-                if (OpenCms.getResourceManager().matchResourceType(type, resource.getTypeId())) {
-                    isFunction = true;
-                    break;
-                }
-            }
-            if (isFunction) {
-                Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-                noEdit = Messages.get().getBundle(locale).key(Messages.GUI_CANT_EDIT_FUNCTIONS_0);
-            }
 
+        boolean isFunction = false;
+        for (String type : new String[] {"function", "function_config"}) {
+            if (OpenCms.getResourceManager().matchResourceType(type, resource.getTypeId())) {
+                isFunction = true;
+                break;
+            }
         }
+        if (isFunction) {
+            Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+            noEdit = Messages.get().getBundle(locale).key(Messages.GUI_CANT_EDIT_FUNCTIONS_0);
+        }
+
         return new CmsPermissionInfo(hasView, hasWrite, noEdit);
     }
 
