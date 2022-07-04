@@ -224,13 +224,11 @@ public class CmsUserDataFormLayout extends FormLayout {
                         if (info.isAdditionalInfo()) {
                             user.setAdditionalInfo(info.getAddInfoKey(), m_infos.getItemProperty(info).getValue());
                         } else {
-                            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(
-                                (String)m_infos.getItemProperty(info).getValue())) {
-                                propUtils.setProperty(
-                                    user,
-                                    info.getField().name(),
-                                    m_infos.getItemProperty(info).getValue());
+                            String valueToSet = (String)m_infos.getItemProperty(info).getValue();
+                            if (CmsStringUtil.isEmptyOrWhitespaceOnly(valueToSet)) {
+                                valueToSet = null;
                             }
+                            propUtils.setProperty(user, info.getField().name(), valueToSet);
                         }
                     }
                 }

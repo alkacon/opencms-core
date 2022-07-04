@@ -3003,8 +3003,8 @@ public class CmsUserDriver implements I_CmsUserDriver {
             while (itEntries.hasNext()) {
                 Entry<String, Object> entry = itEntries.next();
                 if ((entry.getKey() != null) && (entry.getValue() != null)) {
-                    // entry does not exist in new additional infos -> delete it
-                    if (!additionalInfo.containsKey(entry.getKey())) {
+                    // entry does not exist or is null in new additional infos -> delete it
+                    if (null == additionalInfo.get(entry.getKey())) {
                         dbc.setAttribute(ATTRIBUTE_USERADDINFO, ATTRIBUTE_USERADDINFO_VALUE_DELETE);
                         writeUserInfo(dbc, userId, entry.getKey(), entry.getValue());
                     } else {
