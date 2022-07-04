@@ -31,6 +31,9 @@ import org.opencms.jsp.util.CmsJspStatusBean;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -56,6 +59,9 @@ public class OpenCmsServletErrorHandler extends OpenCmsServlet {
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 5316004893684482816L;
+
+    /** HTTP methods for which we want normal handling (rather than just setting the error code) .*/
+    private static Set<String> defaultMethods = new HashSet<>(Arrays.asList("GET", "HEAD", "POST"));
 
     /**
      * OpenCms servlet main request handling method.<p>
@@ -104,13 +110,25 @@ public class OpenCmsServletErrorHandler extends OpenCmsServlet {
     }
 
     /**
-     * @see javax.servlet.http.HttpServlet#doDelete(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        Integer errorStatus = (Integer)req.getAttribute(CmsJspStatusBean.ERROR_STATUS_CODE);
-        resp.setStatus(errorStatus);
+        // the service() method of HttpServlet sets a status code of 405 for unimplemented / unsupported methods,
+        // which is a problem for servlets using non-standard methods like the WebDAV servlet (in the case of WebDAV,
+        // it might break clients which rely on status 404 to be returned for PROPFIND requests to nonexistent resources).
+        // So we just set the HTTP response status to the original status for all methods except GET/POST.
+
+        if (defaultMethods.contains(req.getMethod())) {
+            super.service(req, resp);
+        } else {
+            Integer errorStatus = (Integer)req.getAttribute(CmsJspStatusBean.ERROR_STATUS_CODE);
+            if (errorStatus != null) {
+                resp.setStatus(errorStatus.intValue());
+            }
+        }
+
     }
 
 }
