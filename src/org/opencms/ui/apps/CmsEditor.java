@@ -34,6 +34,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspTagEdit;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -184,7 +185,8 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         if (backlink.startsWith(current)) {
             // use the navigator to open the target
             String target = backlink.substring(backlink.indexOf("#") + 1);
-            CmsAppWorkplaceUi.get().getNavigator().navigateTo(target);
+            String decodedTarget = CmsEncoder.decode(target);
+            CmsAppWorkplaceUi.get().getNavigator().navigateTo(decodedTarget);
         } else {
             // otherwise set the new location
             Page.getCurrent().setLocation(backlink);
