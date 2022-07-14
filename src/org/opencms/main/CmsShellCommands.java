@@ -65,6 +65,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
+import org.opencms.security.CmsOrgUnitManager;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
@@ -171,6 +172,22 @@ class CmsShellCommands implements I_CmsShellCommands {
         }
         entries.add(entry);
         favDao.saveFavorites(entries);
+    }
+
+    /**
+     * Adds a resource to an organizational unit.
+     *
+     * @param ouFqn the full path of the OU
+     * @param resource the resource path to add
+     *
+     * @throws Exception if something goes wrong
+     */
+    public void addResourceToOU(String ouFqn, String resource) throws Exception {
+
+        CmsObject cms = m_cms;
+        CmsOrgUnitManager ouManager = OpenCms.getOrgUnitManager();
+        ouManager.addResourceToOrgUnit(cms, ouFqn, resource);
+
     }
 
     /**
@@ -361,6 +378,28 @@ class CmsShellCommands implements I_CmsShellCommands {
     public CmsGroup createGroup(String name, String description) throws Exception {
 
         return m_cms.createGroup(name, description, I_CmsPrincipal.FLAG_ENABLED, null);
+    }
+
+    /**
+     * Create an OU
+     * @param ouFqn the fully qualified name of the OU
+     * @param description the description of the OU
+     * @param hideLogin flag, indicating if the OU should be hidden from the login form.
+     * @param resource the initial OU resource
+     *
+     * @return the created OU, or <code>null</code> if creation fails.
+     * @throws Exception if something goes wrong
+     */
+    public CmsOrganizationalUnit createOU(String ouFqn, String description, boolean hideLogin, String resource)
+    throws Exception {
+
+        return OpenCms.getOrgUnitManager().createOrganizationalUnit(
+            m_cms,
+            ouFqn,
+            description,
+            (hideLogin ? CmsOrganizationalUnit.FLAG_HIDE_LOGIN : 0),
+            resource);
+
     }
 
     /**
