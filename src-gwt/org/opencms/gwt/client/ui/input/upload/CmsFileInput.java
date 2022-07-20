@@ -135,6 +135,16 @@ public class CmsFileInput extends CmsWidget implements HasName, HasChangeHandler
     }
 
     /**
+     * Sets the 'accept' attribute.
+     *
+     * @param acceptAttribute the new value for the 'accept' attribute
+     */
+    public void setAccept(String acceptAttribute) {
+
+        m_inputElement.setAttribute("accept", acceptAttribute);
+    }
+
+    /**
      * Sets the the flag for allowing multiple file selection.<p>
      *
      * @param allow <code>true</code> if the multiple file selection should be allowed

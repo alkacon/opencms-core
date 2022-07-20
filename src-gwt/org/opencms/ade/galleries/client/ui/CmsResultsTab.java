@@ -923,6 +923,7 @@ public class CmsResultsTab extends A_CmsListTab {
                     ((CmsDialogUploadButtonHandler)handler).setTargetFolder(uploadTarget);
                     // in case the upload target is a folder the root path is used
                     ((CmsDialogUploadButtonHandler)handler).setIsTargetRootPath(searchObj.getFolders().size() == 1);
+                    m_uploadButton.updateFileInput();
                 }
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(searchObj.getNoUploadReason())) {
                     m_uploadButton.enable();

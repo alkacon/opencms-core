@@ -701,8 +701,10 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
                         m_uploadButton.enable();
                         ((CmsDialogUploadButtonHandler)m_uploadButton.getButtonHandler()).setTargetFolder(
                             m_uploadTarget);
+                        m_uploadButton.updateFileInput();
                         m_uploadButton.setTitle(
                             Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, m_uploadTarget));
+
                     } else {
                         m_uploadAction = result.getUploadAction();
                         setSpecialUpload(true);

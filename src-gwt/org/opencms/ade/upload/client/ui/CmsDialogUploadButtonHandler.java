@@ -28,11 +28,13 @@
 package org.opencms.ade.upload.client.ui;
 
 import org.opencms.ade.upload.client.I_CmsUploadContext;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
+import org.opencms.gwt.shared.CmsUploadRestrictionInfo;
 
 import java.util.List;
 
@@ -104,6 +106,23 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
      */
     public void initializeFileInput(CmsFileInput fileInput) {
 
+        CmsUploadRestrictionInfo restriction = CmsCoreProvider.get().getUploadRestriction();
+
+        if (m_targetFolder != null) {
+
+            String realTargetFolder = m_targetFolder;
+            if (!m_isTargetRootPath) {
+                realTargetFolder = CmsCoreProvider.get().addSiteRoot(m_targetFolder);
+            }
+
+            boolean enabled = restriction.isUploadEnabled(realTargetFolder);
+            m_button.setEnabled(enabled, "");
+            fileInput.setDisabled(!enabled);
+            String accept = restriction.getAcceptAttribute(realTargetFolder);
+            fileInput.setAccept(accept);
+        } else {
+            // CmsGwtLog.log("target folder is null");
+        }
         // important to set font-size as inline style, as IE7 and IE8 will not accept it otherwise
         fileInput.getElement().getStyle().setFontSize(200, Unit.PX);
         fileInput.getElement().getStyle().setProperty("minHeight", "200px");
@@ -249,6 +268,7 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
             }
             m_uploadDialog.setPostCreateHandler(m_postCreateHandler);
             m_uploadDialog.setIsTargetRootPath(m_isTargetRootPath);
+            m_uploadDialog.updateHandler();
         }
     }
 }

@@ -39,6 +39,7 @@ import org.opencms.file.collectors.A_CmsResourceCollector;
 import org.opencms.file.collectors.I_CmsCollectorPostCreateHandler;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.gwt.shared.CmsUploadRestrictionInfo;
 import org.opencms.gwt.shared.I_CmsUploadConstants;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONArray;
@@ -122,6 +123,8 @@ public class CmsUploadBean extends CmsJspBean {
     /** The upload hook URI. */
     private String m_uploadHook;
 
+    private CmsUploadRestrictionInfo m_uploadRestrictionInfo;
+
     /**
      * Constructor, with parameters.<p>
      *
@@ -139,6 +142,8 @@ public class CmsUploadBean extends CmsJspBean {
 
         m_rootCms = OpenCms.initCmsObject(getCmsObject());
         m_rootCms.getRequestContext().setSiteRoot("");
+        m_uploadRestrictionInfo = OpenCms.getWorkplaceManager().getUploadRestriction().getUploadRestrictionInfo(
+            m_rootCms);
     }
 
     /**
@@ -282,8 +287,10 @@ public class CmsUploadBean extends CmsJspBean {
                 } else {
                     // create the resource
                     CmsResource importedResource = createSingleResource(cms, fileName, targetFolder, content);
-                    // add the name of the created resource to the list of successful created resources
-                    m_resourcesCreated.put(importedResource.getStructureId(), importedResource.getName());
+                    if (importedResource != null) {
+                        // add the name of the created resource to the list of successful created resources
+                        m_resourcesCreated.put(importedResource.getStructureId(), importedResource.getName());
+                    }
                 }
 
                 if (listener.isCanceled()) {
@@ -335,6 +342,12 @@ public class CmsUploadBean extends CmsJspBean {
     @SuppressWarnings("deprecation")
     private CmsResource createSingleResource(CmsObject cms, String fileName, String targetFolder, byte[] content)
     throws CmsException, CmsLoaderException, CmsDbSqlException {
+
+        String folderRootPath = cms.getRequestContext().addSiteRoot(targetFolder);
+        if (!m_uploadRestrictionInfo.isUploadEnabled(folderRootPath)) {
+            LOG.error("Upload not enabled for folder " + targetFolder);
+            return null;
+        }
 
         String newResname = getNewResourceName(cms, fileName, targetFolder);
         CmsResource createdResource = null;

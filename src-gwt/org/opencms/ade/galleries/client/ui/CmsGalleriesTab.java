@@ -543,7 +543,12 @@ public class CmsGalleriesTab extends A_CmsListTab {
                     }
                 } else {
                     if (!CmsCoreProvider.get().isUploadDisabled()) {
-                        listItemWidget.addButton(createUploadButtonForTarget(galleryInfo.getPath(), false));
+                        String uploadPath = CmsStringUtil.joinPaths(
+                            CmsCoreProvider.get().getSiteRoot(),
+                            galleryInfo.getPath());
+                        if (CmsCoreProvider.get().getUploadRestriction().isUploadEnabled(uploadPath)) {
+                            listItemWidget.addButton(createUploadButtonForTarget(galleryInfo.getPath(), false));
+                        }
                     }
                 }
             }

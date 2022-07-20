@@ -310,5 +310,9 @@
         <user-lists mode="lazy" />
         <additional-log-folders />
         <use-formatter-keys-for-new-sites>true</use-formatter-keys-for-new-sites>
+        <upload-restriction class="org.opencms.ade.upload.CmsDefaultUploadRestriction">
+            <param name="/">enabled:true|types:*</param>
+        </upload-restriction> 
+        
     </workplace>
 </opencms>

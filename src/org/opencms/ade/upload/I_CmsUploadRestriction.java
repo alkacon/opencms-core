@@ -25,39 +25,24 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.input.upload;
+package org.opencms.ade.upload;
+
+import org.opencms.configuration.I_CmsConfigurationParameterHandler;
+import org.opencms.configuration.I_CmsNeedsAdminCmsObject;
+import org.opencms.file.CmsObject;
+import org.opencms.gwt.shared.CmsUploadRestrictionInfo;
 
 /**
- * The upload button interface.<p>
+ * Interface that provides upload restriction information, based on which upload buttons may be disabled or restricted to specific types.
  */
-public interface I_CmsUploadButton {
+public interface I_CmsUploadRestriction extends I_CmsConfigurationParameterHandler, I_CmsNeedsAdminCmsObject {
 
     /**
-     * Creates and adds a file input.<p>
+     * Gets the upload restriction information for the given CMS context
      *
-     * @return returns the previous file input widget
+     * @param cms the CMS context
+     * @return the upload restriction information
      */
-    CmsFileInput createFileInput();
+    CmsUploadRestrictionInfo getUploadRestrictionInfo(CmsObject cms);
 
-    /**
-     * Gets the upload button handler instance for this button.<p>
-     *
-     * @return the upload button handler
-     */
-    I_CmsUploadButtonHandler getButtonHandler();
-
-    /**
-     * Reinitializes the button with a new button handler.<p>
-     *
-     * @param buttonHandler the button handler
-     */
-    void reinitButton(I_CmsUploadButtonHandler buttonHandler);
-
-    /**
-     * Enables / disables the button.
-     *
-     * @param enabled true if the button should be enabled
-     * @param disabledMessage the message to display for disabled buttons
-     */
-    void setEnabled(boolean enabled, String disabledMessage);
 }

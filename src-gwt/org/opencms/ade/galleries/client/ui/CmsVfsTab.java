@@ -315,7 +315,9 @@ public class CmsVfsTab extends A_CmsListTab {
         dataValue.setUnselectable();
         if (vfsEntry.isEditable()) {
             if (!CmsCoreProvider.get().isUploadDisabled()) {
-                dataValue.addButton(createUploadButtonForTarget(vfsEntry.getRootPath(), true));
+                if (CmsCoreProvider.get().getUploadRestriction().isUploadEnabled(vfsEntry.getRootPath())) {
+                    dataValue.addButton(createUploadButtonForTarget(vfsEntry.getRootPath(), true));
+                }
             }
         }
         CmsLazyTreeItem result;

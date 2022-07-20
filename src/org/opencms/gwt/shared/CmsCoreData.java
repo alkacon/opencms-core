@@ -305,8 +305,14 @@ public class CmsCoreData implements IsSerializable {
     /** A flag which indicates whether the toolbar should be shown initially. */
     private boolean m_toolbarVisible;
 
+    /** Flag indicating whether upload buttons should be disabled. */
+    private boolean m_uploadDisabled;
+
     /** The maximum file size for the upload. */
     private long m_uploadFileSizeLimit;
+
+    /** The upload restriction data. */
+    private CmsUploadRestrictionInfo m_uploadRestriction;
 
     /** The current uri. */
     private String m_uri;
@@ -320,8 +326,8 @@ public class CmsCoreData implements IsSerializable {
     /** The current workplace locale. */
     private String m_wpLocale;
 
-    /** Flag indicating whether upload buttons should be disabled. */
-    private boolean m_uploadDisabled;
+    /** The shared folder. */
+    private String m_sharedFolder;
 
     /**
      * Constructor.<p>
@@ -347,6 +353,7 @@ public class CmsCoreData implements IsSerializable {
             clone.getWorkplaceResourcesPrefix(),
             clone.getEmbeddedDialogsUrl(),
             clone.getSiteRoot(),
+            clone.getSharedFolder(),
             clone.getProjectId(),
             clone.getLocale(),
             clone.getWpLocale(),
@@ -364,7 +371,8 @@ public class CmsCoreData implements IsSerializable {
             clone.getUploadFileSizeLimit(),
             clone.isKeepAlive(),
             clone.isUploadDisabled(),
-            clone.m_adeParameters);
+            clone.m_adeParameters,
+            clone.m_uploadRestriction);
         setTinymce(clone.getTinymce());
     }
 
@@ -397,6 +405,7 @@ public class CmsCoreData implements IsSerializable {
      * @param isKeepAlive the keep-alive mode
      * @param uploadDisabled true if upload buttons should be disabled
      * @param adeParameters the map of ADE configuration parameters
+     * @param uploadRestriction the upload restriction data
      */
     public CmsCoreData(
         String contentEditorUrl,
@@ -407,6 +416,7 @@ public class CmsCoreData implements IsSerializable {
         String workplaceResourcesPrefix,
         String embeddedDialogsUrl,
         String siteRoot,
+        String sharedFolder,
         CmsUUID projectId,
         String locale,
         String wpLocale,
@@ -424,7 +434,8 @@ public class CmsCoreData implements IsSerializable {
         long uploadFileSizeLimit,
         boolean isKeepAlive,
         boolean uploadDisabled,
-        Map<String, String> adeParameters) {
+        Map<String, String> adeParameters,
+        CmsUploadRestrictionInfo uploadRestriction) {
 
         m_contentEditorUrl = contentEditorUrl;
         m_contentEditorBacklinkUrl = contentEditorBacklinkUrl;
@@ -452,6 +463,8 @@ public class CmsCoreData implements IsSerializable {
         m_adeParameters = adeParameters;
         m_fileExplorerLink = fileExplorerLink;
         m_uploadDisabled = uploadDisabled;
+        m_uploadRestriction = uploadRestriction;
+        m_sharedFolder = sharedFolder;
     }
 
     /**
@@ -585,6 +598,16 @@ public class CmsCoreData implements IsSerializable {
     }
 
     /**
+     * Gets the shared folder.
+     *
+     * @return the shared folder
+     */
+    public String getSharedFolder() {
+
+        return m_sharedFolder;
+    }
+
+    /**
      * Returns the current site root.<p>
      *
      * @return the current site root
@@ -623,6 +646,16 @@ public class CmsCoreData implements IsSerializable {
     public long getUploadFileSizeLimit() {
 
         return m_uploadFileSizeLimit;
+    }
+
+    /**
+     * Gets the upload restriction data.
+     *
+     * @return the upload restriction data
+     */
+    public CmsUploadRestrictionInfo getUploadRestriction() {
+
+        return m_uploadRestriction;
     }
 
     /**

@@ -273,7 +273,7 @@ public final class CmsCoreProvider extends CmsCoreData {
      */
     public String getAdjustedSiteRoot(String siteRoot, String resourcename) {
 
-        if (resourcename.startsWith(VFS_PATH_SYSTEM)) {
+        if (resourcename.startsWith(VFS_PATH_SYSTEM) || resourcename.startsWith(getSharedFolder())) {
             return "";
         } else {
             return siteRoot;

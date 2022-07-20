@@ -45,7 +45,8 @@
 	gallery-default-scope?,
 	element-delete-mode?,
 	additional-log-folders?,
-	use-formatter-keys-for-new-sites?
+	use-formatter-keys-for-new-sites?,
+	upload-restriction?
 	)>
 
 <!--
@@ -889,6 +890,9 @@
 # The value for the 'use formatter keys' option in sitemap configurations created by the sitemap editor.
 -->
 <!ELEMENT use-formatter-keys-for-new-sites (#PCDATA)>
+
+<!ELEMENT upload-restriction (param*)>
+<!ATTLIST upload-restriction class CDATA #REQUIRED>
 
 <!--
 # Include the explorer types DTD.

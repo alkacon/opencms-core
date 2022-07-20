@@ -33,7 +33,6 @@ import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -343,6 +342,18 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
         m_color = color;
     }
 
+    public void setEnabled(boolean enabled, String disabledMessage) {
+
+        if (enabled) {
+            enable();
+        } else {
+            disable(disabledMessage);
+        }
+
+        // TODO Auto-generated method stub
+
+    }
+
     /**
      * This is the alignment of the text in reference to the image, possible values are left or right.<p>
      *
@@ -432,6 +443,11 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
             }
             m_useMinWidth = useMinWidth;
         }
+    }
+
+    public void updateFileInput() {
+
+        m_buttonHandler.initializeFileInput(m_fileInput);
     }
 
     /**

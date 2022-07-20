@@ -573,20 +573,20 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
     /** The site selector. */
     private ComboBox m_siteSelector;
 
+    /** Button for uploading to folders with special upload actions. */
+    private Button m_specialUploadButton;
+
     /** The folder tree data container. */
     private HierarchicalContainer m_treeContainer;
+
+    /** Upload action for the current folder. */
+    private String m_uploadAction;
 
     /** The upload drop area extension. */
     private CmsUploadAreaExtension m_uploadArea;
 
     /** The upload button. */
     private CmsUploadButton m_uploadButton;
-
-    /** Button for uploading to folders with special upload actions. */
-    private Button m_specialUploadButton;
-
-    /** Upload action for the current folder. */
-    private String m_uploadAction;
 
     /** The current upload folder. */
     private CmsResource m_uploadFolder;
@@ -1070,18 +1070,18 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
                 changeSite(siteRoot, path, true);
             } else if ((siteRoot != null)
                 && !CmsStringUtil.comparePaths(siteRoot, cms.getRequestContext().getSiteRoot())) {
-                    String saveState = m_currentState;
-                    changeSite(siteRoot, path);
-                    if (!getSelectionFromState(saveState).isEmpty()) {
-                        m_fileTable.setValue(Collections.singleton(getSelectionFromState(saveState)));
-                    }
-                } else {
-                    String saveState = m_currentState;
-                    openPath(path, true);
-                    if (!getSelectionFromState(saveState).isEmpty()) {
-                        m_fileTable.setValue(Collections.singleton(getSelectionFromState(saveState)));
-                    }
+                String saveState = m_currentState;
+                changeSite(siteRoot, path);
+                if (!getSelectionFromState(saveState).isEmpty()) {
+                    m_fileTable.setValue(Collections.singleton(getSelectionFromState(saveState)));
                 }
+            } else {
+                String saveState = m_currentState;
+                openPath(path, true);
+                if (!getSelectionFromState(saveState).isEmpty()) {
+                    m_fileTable.setValue(Collections.singleton(getSelectionFromState(saveState)));
+                }
+            }
         }
     }
 
@@ -2048,7 +2048,9 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
             m_specialUploadButton.setVisible(true);
             m_uploadArea.setTargetFolder(null);
         } else {
-            m_uploadButton.setVisible(true);
+            boolean enabled = OpenCms.getWorkplaceManager().getUploadRestriction().getUploadRestrictionInfo(
+                A_CmsUI.getCmsObject()).isUploadEnabled(folder.getRootPath());
+            m_uploadButton.setVisible(enabled);
             m_specialUploadButton.setVisible(false);
             m_uploadButton.setTargetFolder(folder.getRootPath());
             m_uploadArea.setTargetFolder(folder.getRootPath());

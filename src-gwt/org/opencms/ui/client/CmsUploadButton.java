@@ -71,6 +71,7 @@ public class CmsUploadButton extends VButton implements I_CmsUploadButton, HasWi
      * @param buttonHandler the button handler
      */
     public CmsUploadButton(I_CmsUploadButtonHandler buttonHandler) {
+
         super();
         addStyleName("o-upload-button");
         m_buttonHandler = buttonHandler;
@@ -182,6 +183,12 @@ public class CmsUploadButton extends VButton implements I_CmsUploadButton, HasWi
             m_fileInput = null;
         }
         return true;
+    }
+
+    public void setEnabled(boolean enabled, String disabledMessage) {
+
+        setEnabled(enabled);
+        setUploadEnabled(enabled);
     }
 
     /**
