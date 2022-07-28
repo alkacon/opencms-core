@@ -107,11 +107,12 @@ public class CmsUploaderFormData implements I_CmsUploader {
                         @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_TARGET_FOLDER_FIELD_NAME,
                         targetFolder);
 
-        data
-                .append(
-                        @org.opencms.gwt.shared.I_CmsUploadConstants::POST_CREATE_HANDLER,
-                        postCreateHandler);
-
+        if (postCreateHandler) {
+            data
+                    .append(
+                            @org.opencms.gwt.shared.I_CmsUploadConstants::POST_CREATE_HANDLER,
+                            postCreateHandler);
+        };
         data
                 .append(
                         @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_IS_ROOT_PATH_FIELD_NAME,
