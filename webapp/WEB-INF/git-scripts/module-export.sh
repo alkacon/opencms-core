@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Script to export modules from a mounted OpenCms.
 # To be used for a manual Git workflow.
@@ -349,8 +349,8 @@ if [ $copyAndUnzip == 1 ]; then
 					echoError "Failed to remove all resources under $(pwd)." 13
 				fi
 			else
-				echoError "   * Something went wrong the current directory \($(pwd)\) is not a\
-				subdirectory of the repository's configured modules main folder (${MODULE_TARGET_PATH})." 4
+				echoError "   * Error: The current directory [$(pwd)] is not a\
+				subdirectory of the repository's configured modules main folder [${MODULE_TARGET_PATH}]." 4
 			fi
 			echoVerbose "   * Copying "${moduleSourcePath}/${fileName}" to $(pwd) ..."
 			#copy the new module .zip
@@ -366,7 +366,7 @@ if [ $copyAndUnzip == 1 ]; then
 			fi
 			if [ ! "$module" == "$targetModule" ] ; then
 				echoVerbose "Adjusting module name from $module to $targetModule in manifest"
-				manifest=$(find -type f -name manifest.xml | head -1)
+				manifest=$(find . -type f -name manifest.xml | head -1)
 				echoVerbose "CWD=$(pwd)"
 				echoVerbose "Manifest path: $manifest"
 				if [ ! -z "$manifest" ] ; then
