@@ -488,7 +488,6 @@ public final class CmsXmlUtils {
             format.setEncoding(encoding);
 
             XMLWriter writer = new XMLWriter(out, format);
-            writer.setEscapeText(false);
 
             writer.write(document);
             writer.close();
