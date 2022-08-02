@@ -2134,7 +2134,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
      */
     public CmsFile prepareForWrite(CmsObject cms, CmsXmlContent content, CmsFile file) throws CmsException {
 
-        System.out.println("version = " + content.getSchemaVersion());
         if (!content.isAutoCorrectionEnabled()) {
             // check if the XML should be corrected automatically (if not already set)
             Object attribute = cms.getRequestContext().getAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE);
