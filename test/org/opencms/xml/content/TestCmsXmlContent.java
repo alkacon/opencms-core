@@ -27,7 +27,6 @@
 
 package org.opencms.xml.content;
 
-import org.apache.commons.logging.Log;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 import org.opencms.test.OpenCmsTestCase;
@@ -43,11 +42,14 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Locale;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Tests for generating an XML content.<p>
  *
  */
 public class TestCmsXmlContent extends OpenCmsTestCase {
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(TestCmsXmlContent.class);
 
@@ -62,6 +64,26 @@ public class TestCmsXmlContent extends OpenCmsTestCase {
     public TestCmsXmlContent(String arg0) {
 
         super(arg0);
+    }
+
+    /**
+     * Test that reading a schema containing ampersands in the appinfo section doesn't cause errors.
+     *
+     * @throws Exception in case something goes wrong
+     */
+    public void testAppInfoWithSpecialChars() throws Exception {
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
+
+        String content;
+        // unmarshal content definition
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-specialchars.xsd",
+            CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(
+            content,
+            "dummy://xmlcontent-definition-specialchars.xsd",
+            resolver);
     }
 
     /**
@@ -195,7 +217,8 @@ public class TestCmsXmlContent extends OpenCmsTestCase {
             fail("Shouldn't have marshaled a xsd with invalid nested elements");
         } catch (CmsXmlException e) {
             assertTrue(e.getMessage().contains("schemaLocation: '" + SCHEMA_LOCATION + "'"));
-            assertTrue(e.getCause().getMessage().contains("Unable to resolve included schema \"opencms://invalid.xsd\""));
+            assertTrue(
+                e.getCause().getMessage().contains("Unable to resolve included schema \"opencms://invalid.xsd\""));
             LOG.info("Expected exception detected.");
             LOG.debug("", e);
         }
