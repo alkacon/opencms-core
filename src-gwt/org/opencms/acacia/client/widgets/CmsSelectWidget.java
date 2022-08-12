@@ -61,16 +61,19 @@ public class CmsSelectWidget extends Composite implements I_CmsEditWidget, I_Cms
     /** The last value set through the setValue method. This is not necessarily the current widget value. */
     private String m_externalValue;
 
+    private boolean m_allowUnknown;
+
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
      * @param config The configuration string given from OpenCms XSD.
      */
-    public CmsSelectWidget(String config) {
+    public CmsSelectWidget(String config, boolean allowUnknown) {
 
         parseConfiguration(config);
 
         // Place the check above the box using a vertical panel.
         m_selectBox.addStyleName(I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().selectBoxPanel());
+        m_allowUnknown = allowUnknown;
         m_selectBox.setPopupResize(false);
         // add some styles to parts of the selectbox.
         m_selectBox.getOpener().addStyleName(I_CmsWidgetsLayoutBundle.INSTANCE.widgetCss().selectBoxSelected());
@@ -208,7 +211,9 @@ public class CmsSelectWidget extends Composite implements I_CmsEditWidget, I_Cms
     public void setValue(String value, boolean fireEvents) {
 
         Map<String, String> items = m_selectBox.getItems();
-        if (items.containsKey(value)) {
+        if (m_allowUnknown) {
+            m_selectBox.setFormValue(value, false);
+        } else if (items.containsKey(value)) {
             m_selectBox.selectValue(value);
             m_externalValue = value;
         } else {

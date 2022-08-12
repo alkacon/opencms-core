@@ -127,6 +127,13 @@ public interface I_CmsWidgetsLayoutBundle extends org.opencms.gwt.client.ui.css.
          *
          * @return the css class
          */
+        String attributeFilterLine();
+
+        /**
+         * Css class reader.<p>
+         *
+         * @return the css class
+         */
         String inputField();
 
         /**

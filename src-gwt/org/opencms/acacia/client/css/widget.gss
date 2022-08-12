@@ -359,6 +359,22 @@ div.inputField>div{
 	right:2px;
 }
 
+div.attributeFilterLine {
+	display: flex;
+	margin-bottom: 5px;
+	align-items: center; 
+}
+
+div.attributeFilterLine > *:first-child {
+	width: 6em;
+	display: block;  
+}
+
+div.attributeFilterLine > *:nth-child(2) {
+	flex: 1; 
+	display: block; 
+}
+
 .widgetHolder{}
 .inActive{}
 .attributeValue{}

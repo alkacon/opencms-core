@@ -41,12 +41,23 @@ public class CmsSelectWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit 
     /** The widget name. */
     private static final String WIDGET_NAME = "org.opencms.widgets.CmsSelectWidget";
 
+    private static final String WIDGET_NAME_ALLOW_UNKNOWN = "org.opencms.widgets.CmsSelectWidget_allowUnknown";
+
+    private boolean m_allowUnknown;
+
+    public CmsSelectWidgetFactory(boolean allowUnknown) {
+
+        m_allowUnknown = allowUnknown;
+    }
+
     /**
      * Initializes this class.<p>
      */
     public static void initClass() {
 
-        WidgetRegistry.getInstance().registerWidgetFactory(WIDGET_NAME, new CmsSelectWidgetFactory());
+        WidgetRegistry.getInstance().registerWidgetFactory(WIDGET_NAME, new CmsSelectWidgetFactory(false));
+        WidgetRegistry.getInstance().registerWidgetFactory(WIDGET_NAME_ALLOW_UNKNOWN, new CmsSelectWidgetFactory(true));
+
     }
 
     /**
@@ -54,7 +65,7 @@ public class CmsSelectWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit 
      */
     public I_CmsFormEditWidget createFormWidget(String configuration) {
 
-        return new CmsFormWidgetWrapper(new CmsSelectWidget(configuration));
+        return new CmsFormWidgetWrapper(new CmsSelectWidget(configuration, m_allowUnknown));
     }
 
     /**
