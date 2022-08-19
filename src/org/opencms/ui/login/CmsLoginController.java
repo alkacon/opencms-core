@@ -453,13 +453,7 @@ public class CmsLoginController {
         String user = m_ui.getUser();
         String password = m_ui.getPassword();
         CmsMessageContainer message = CmsLoginHelper.validateUserAndPasswordNotEmpty(user, password);
-        CmsLoginMessage loginMessage = OpenCms.getLoginManager().getLoginMessage();
-        String storedMessage = null;
-        ContentMode messageMode = ContentMode.html;
-        if ((loginMessage != null) && !loginMessage.isLoginCurrentlyForbidden() && loginMessage.isActive()) {
-            storedMessage = loginMessage.getMessage();
-            // If login is forbidden, we will get an error message anyway, so we don't need to store the message here
-        }
+
         String ou = m_ui.getOrgUnit();
         if (CmsLoginOuSelector.OU_NONE.equals(ou)) {
             displayError(
@@ -470,7 +464,6 @@ public class CmsLoginController {
         }
         if (message != null) {
             String errorMessage = message.key(m_params.getLocale());
-            //  m_ui.displayError(errorMessage);
             displayError(errorMessage, true, false);
             return;
         }
@@ -499,6 +492,7 @@ public class CmsLoginController {
                     return;
                 }
             }
+
             CmsObject cloneCms = OpenCms.initCmsObject(currentCms);
             cloneCms.loginUser(realUser, password);
 
@@ -521,21 +515,16 @@ public class CmsLoginController {
                     passwordDialog);
                 return;
             }
-            CmsWorkplaceSettings settings = CmsLoginHelper.initSiteAndProject(cloneCms);
-            final String loginTarget = getLoginTarget(cloneCms, settings, m_params.getRequestedResource());
-
-            // make sure we have a new session after login for security reasons
-            HttpSession session = ((HttpServletRequest)VaadinService.getCurrentRequest()).getSession(false);
-            if (session != null) {
-                session.invalidate();
-            }
-            session = ((HttpServletRequest)VaadinService.getCurrentRequest()).getSession(true);
 
             // provisional login successful, now do for real
-            currentCms.loginUser(realUser, password);
-            CmsUserLog.logLogin(currentCms, realUser);
+            // we use another separate CmsObject so we can manually control when it is written to the session info
+            CmsObject loginCms = OpenCms.initCmsObject(currentCms);
+
+            loginCms.loginUser(realUser, password);
+            CmsUserLog.logLogin(loginCms, realUser);
+
             if (LOG.isInfoEnabled()) {
-                CmsRequestContext context = currentCms.getRequestContext();
+                CmsRequestContext context = loginCms.getRequestContext();
                 LOG.info(
                     org.opencms.jsp.Messages.get().getBundle().key(
                         org.opencms.jsp.Messages.LOG_LOGIN_SUCCESSFUL_3,
@@ -543,36 +532,8 @@ public class CmsLoginController {
                         "{workplace login dialog}",
                         context.getRemoteAddress()));
             }
-            settings = CmsLoginHelper.initSiteAndProject(currentCms);
-            OpenCms.getSessionManager().updateSessionInfo(
-                currentCms,
-                (HttpServletRequest)VaadinService.getCurrentRequest());
-            if ((loginMessage != null) && loginMessage.isLoginCurrentlyForbidden()) {
-                if (loginMessage.getTimeEnd() == CmsLoginMessage.DEFAULT_TIME_END) {
-                    // we are an administrator
-                    storedMessage = org.opencms.workplace.Messages.get().container(
-                        org.opencms.workplace.Messages.GUI_LOGIN_SUCCESS_WITH_MESSAGE_WITHOUT_TIME_1,
-                        loginMessage.getMessage(),
-                        new Date(loginMessage.getTimeEnd())).key(A_CmsUI.get().getLocale());
-                    messageMode = ContentMode.html;
-
-                } else {
-                    // we are an administrator
-                    storedMessage = org.opencms.workplace.Messages.get().container(
-                        org.opencms.workplace.Messages.GUI_LOGIN_SUCCESS_WITH_MESSAGE_2,
-                        loginMessage.getMessage(),
-                        new Date(loginMessage.getTimeEnd())).key(A_CmsUI.get().getLocale());
-                    messageMode = ContentMode.html;
-                }
-            }
-
-            if (storedMessage != null) {
-                OpenCms.getSessionManager().sendBroadcast(
-                    null,
-                    storedMessage,
-                    currentCms.getRequestContext().getCurrentUser(),
-                    messageMode);
-            }
+            CmsWorkplaceSettings settings = CmsLoginHelper.initSiteAndProject(loginCms);
+            final String loginTarget = getLoginTarget(loginCms, settings, m_params.getRequestedResource());
 
             CmsLoginHelper.setCookieData(
                 pcType,
@@ -585,7 +546,7 @@ public class CmsLoginController {
                 settings);
 
             final boolean isPublicPC = CmsLoginForm.PC_TYPE_PUBLIC.equals(pcType);
-            if (OpenCms.getLoginManager().requiresUserDataCheck(currentCms, userObj)) {
+            if (OpenCms.getLoginManager().requiresUserDataCheck(loginCms, userObj)) {
                 I_CmsDialogContext context = new A_CmsDialogContext("", ContextType.appToolbar, null) {
 
                     @Override
@@ -597,7 +558,9 @@ public class CmsLoginController {
                     @Override
                     public void finish(Collection<CmsUUID> result) {
 
+                        initSessionAndSendMessages(currentCms, loginCms);
                         m_ui.openLoginTarget(loginTarget, isPublicPC);
+
                     }
 
                     public void focus(CmsUUID structureId) {
@@ -608,6 +571,12 @@ public class CmsLoginController {
                     public List<CmsUUID> getAllStructureIdsInView() {
 
                         return null;
+                    }
+
+                    @Override
+                    public CmsObject getCms() {
+
+                        return loginCms;
                     }
 
                     @Override
@@ -633,11 +602,11 @@ public class CmsLoginController {
                 u.setAdditionalInfo(
                     CmsUserSettings.ADDITIONAL_INFO_LAST_USER_DATA_CHECK,
                     Long.toString(System.currentTimeMillis()));
-                currentCms.writeUser(u);
+                loginCms.writeUser(u);
                 CmsUserDataDialog dialog = new CmsUserDataDialog(context, true);
                 context.start(dialog.getTitle(UI.getCurrent().getLocale()), dialog);
             } else {
-
+                initSessionAndSendMessages(currentCms, loginCms);
                 m_ui.openLoginTarget(loginTarget, isPublicPC);
             }
         } catch (Exception e) {
@@ -649,21 +618,19 @@ public class CmsLoginController {
                     // the user account is disabled
                     message = org.opencms.workplace.Messages.get().container(
                         org.opencms.workplace.Messages.GUI_LOGIN_FAILED_DISABLED_0);
-                } else
-                    if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == exceptionMessage.getKey()) {
-                        // the user account is temporarily disabled because of too many login failures
+                } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == exceptionMessage.getKey()) {
+                    // the user account is temporarily disabled because of too many login failures
+                    message = org.opencms.workplace.Messages.get().container(
+                        org.opencms.workplace.Messages.GUI_LOGIN_FAILED_TEMP_DISABLED_0);
+                } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == exceptionMessage.getKey()) {
+                    // all logins have been disabled be the Administration
+                    CmsLoginMessage loginMessage2 = OpenCms.getLoginManager().getLoginMessage();
+                    if (loginMessage2 != null) {
                         message = org.opencms.workplace.Messages.get().container(
-                            org.opencms.workplace.Messages.GUI_LOGIN_FAILED_TEMP_DISABLED_0);
-                    } else
-                        if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == exceptionMessage.getKey()) {
-                            // all logins have been disabled be the Administration
-                            CmsLoginMessage loginMessage2 = OpenCms.getLoginManager().getLoginMessage();
-                            if (loginMessage2 != null) {
-                                message = org.opencms.workplace.Messages.get().container(
-                                    org.opencms.workplace.Messages.GUI_LOGIN_FAILED_WITH_MESSAGE_1,
-                                    loginMessage2.getMessage().replace("\n", ""));
-                            }
-                        }
+                            org.opencms.workplace.Messages.GUI_LOGIN_FAILED_WITH_MESSAGE_1,
+                            loginMessage2.getMessage().replace("\n", ""));
+                    }
+                }
             }
             if (message == null) {
                 if (e instanceof CmsCustomLoginException) {
@@ -738,6 +705,60 @@ public class CmsLoginController {
             return bundle.getString("passwordchange.text");
         } catch (MissingResourceException e) {
             return CmsVaadinUtils.getMessageText(Messages.GUI_PWCHANGE_INTERVAL_EXPIRED_0);
+        }
+    }
+
+    /**
+     * Switches the session to a new one with the logged in CmsObject.
+     *
+     * <p>This needs to be called in the <em>last</em> request to the Vaadin servlet in the login process, because switching the session breaks the Vaadin session state.
+     *
+     * @param currentCms the CmsObject for the current request from the Vaadin UI
+     * @param loginCms the CmsObject which was used for the actual login operation
+     */
+    protected void initSessionAndSendMessages(CmsObject currentCms, CmsObject loginCms) {
+
+        HttpSession session = ((HttpServletRequest)VaadinService.getCurrentRequest()).getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        session = ((HttpServletRequest)VaadinService.getCurrentRequest()).getSession(true);
+
+        // we don't want currentCms to be used to automatically update the session at the end of the request...
+        currentCms.getRequestContext().setUpdateSessionEnabled(false);
+        
+        // ...instead we manually update the session with loginCms
+        loginCms.getRequestContext().setUpdateSessionEnabled(true);
+        OpenCms.getSessionManager().updateSessionInfo(loginCms, (HttpServletRequest)VaadinService.getCurrentRequest());
+
+        String storedMessage = null;
+        CmsLoginMessage loginMessage = OpenCms.getLoginManager().getLoginMessage();
+        if (loginMessage != null) {
+            // forbidden implies active
+            if (loginMessage.isLoginCurrentlyForbidden()) {
+                // we are an administrator, otherwise login would have failed
+                if (loginMessage.getTimeEnd() == CmsLoginMessage.DEFAULT_TIME_END) {
+                    storedMessage = org.opencms.workplace.Messages.get().container(
+                        org.opencms.workplace.Messages.GUI_LOGIN_SUCCESS_WITH_MESSAGE_WITHOUT_TIME_1,
+                        loginMessage.getMessage(),
+                        new Date(loginMessage.getTimeEnd())).key(A_CmsUI.get().getLocale());
+                } else {
+                    storedMessage = org.opencms.workplace.Messages.get().container(
+                        org.opencms.workplace.Messages.GUI_LOGIN_SUCCESS_WITH_MESSAGE_2,
+                        loginMessage.getMessage(),
+                        new Date(loginMessage.getTimeEnd())).key(A_CmsUI.get().getLocale());
+                }
+            } else if (loginMessage.isActive()) {
+                storedMessage = loginMessage.getMessage();
+            }
+        }
+
+        if (storedMessage != null) {
+            OpenCms.getSessionManager().sendBroadcast(
+                null,
+                storedMessage,
+                loginCms.getRequestContext().getCurrentUser(),
+                ContentMode.html);
         }
     }
 
