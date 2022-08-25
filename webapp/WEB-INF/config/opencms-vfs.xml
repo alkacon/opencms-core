@@ -388,6 +388,8 @@
                 <translation>s#&#0214;#Oe#g</translation>
                 <translation>s#&#0252;#ue#g</translation>
                 <translation>s#&#0220;#Ue#g</translation>
+                <!-- Mac special encoding of Umlauts. -->
+                <translation>s#([aAoOuU])&#x308;#$1e#g</translation>
                 <translation>s#&#0223;#ss#g</translation>
                 <translation>s#[&#x00e0;&#x00e1;&#x00e2;&#x00e3;&#x00e5;&#x0101;&#x0103;&#x0105;&#x01ce;&#x01df;&#x01e1;&#x01fb;&#x0201;&#x0203;&#x0227;&#x1e01;&#x1e9a;&#x1ea1;&#x1ea3;&#x1ea5;&#x1ea7;&#x1ea9;&#x1eab;&#x1ead;&#x1eaf;&#x1eb1;&#x1eb3;&#x1eb5;&#x1eb7;]#a#g</translation>
                 <translation>s#[&#x00c0;&#x00c1;&#x00c2;&#x00c3;&#x00c5;&#x0100;&#x0102;&#x0104;&#x01cd;&#x01de;&#x01e0;&#x01fa;&#x0200;&#x0202;&#x0226;&#x1e00;&#x1ea0;&#x1ea2;&#x1ea4;&#x1ea6;&#x1ea8;&#x1eaa;&#x1eac;&#x1eae;&#x1eb0;&#x1eb2;&#x1eb4;&#x1eb6;]#A#g</translation>
@@ -588,9 +590,9 @@
                     <widget-alias>serialdate</widget-alias>
                 </widget>
                 <widget class="org.opencms.widgets.CmsCodeWidget">
-                	<widget-alias>CodeWidget</widget-alias>
-                	<widget-alias>code</widget-alias>
-                	<widget-alias>sourcecode</widget-alias>
+                    <widget-alias>CodeWidget</widget-alias>
+                    <widget-alias>code</widget-alias>
+                    <widget-alias>sourcecode</widget-alias>
                 </widget>
             </widgets>
             <schematypes>
