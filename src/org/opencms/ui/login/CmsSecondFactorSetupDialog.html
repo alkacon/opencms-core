@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="package-mapping" content="o:org.opencms.ui.components" />
+    </head>
+    <body>
+        <o-cms-basic-dialog>
+            <content>
+                <v-horizontal-layout width="100%">
+                    <v-vertical-layout width="350px">
+                        <v-image style-name="o-login-qr-code" width="350px" _id="m_qrCodeImage"></v-image>
+                        <v-label style-name="o-center" width="350px" _id="m_secretLabel"></v-label>
+                    </v-vertical-layout>
+                    <v-vertical-layout width="100%" height="100%" :expand>
+                        <v-vertical-layout :middle>
+                            <v-label style-name="o-label-wrap">%(key.GUI_LOGIN_2FA_SETUP_DESCRIPTION_0)</v-label>
+                            <v-form-layout>
+                                <v-text-field _id="m_verification" caption="%(key.GUI_LOGIN_2FA_VERIFICATION_CODE_0)"></v-text-field>
+                            </v-form-layout>
+                        </v-vertical-layout>
+                    </v-vertical-layout>)
+                </v-horizontal-layout>
+            </content>
+            <buttons>
+                <v-button _id="m_okButton" :bottom>%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+            </buttons>
+        </o-cms-basic-dialog>
+    </body>
+</html>

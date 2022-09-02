@@ -54,7 +54,19 @@
 			<enableSecurity>false</enableSecurity>
             <requireOrgUnit>true</requireOrgUnit>
 			<logoutUri>/foo/bar</logoutUri>
-		</loginmanager>	
+		</loginmanager>
+		<two-factor-authentication>
+		  <enabled>false</enabled>
+		  <secret>password</secret>
+		  <issuer>XYZ</issuer>
+		  <include-users>
+		      <group>TwoFactorAuthenticated</group>
+		      <orgunit>special</orgunit>
+		  </include-users>
+		  <exclude-users>
+		      <pattern>.*/nl_.*</pattern>
+		  </exclude-users>
+		</two-factor-authentication>	
 		<sax-impl-system-properties>true</sax-impl-system-properties>
 		<runtimeproperties>
 			<param name="compatibility.support.oldlocales">false</param>

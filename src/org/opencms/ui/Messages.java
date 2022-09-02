@@ -350,6 +350,21 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOCK_DIALOG_TITLE_0 = "GUI_LOCK_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_2FA_DESCRIPTION_0 = "GUI_LOGIN_2FA_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_2FA_SETUP_1 = "GUI_LOGIN_2FA_SETUP_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_2FA_SETUP_DESCRIPTION_0 = "GUI_LOGIN_2FA_SETUP_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_2FA_VERIFICATION_1 = "GUI_LOGIN_2FA_VERIFICATION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_2FA_VERIFICATION_CODE_0 = "GUI_LOGIN_2FA_VERIFICATION_CODE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_NO_OU_SELECTED_0 = "GUI_LOGIN_NO_OU_SELECTED_0";
 
     /** Message constant for key in the resource bundle. */

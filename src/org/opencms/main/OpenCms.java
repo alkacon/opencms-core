@@ -57,6 +57,7 @@ import org.opencms.security.I_CmsAuthorizationHandler;
 import org.opencms.security.I_CmsCredentialsResolver;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsValidationHandler;
+import org.opencms.security.twofactor.CmsTwoFactorAuthenticationHandler;
 import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
@@ -638,6 +639,21 @@ public final class OpenCms {
         return OpenCmsCore.getInstance().getThreadStore();
     }
 
+    /**
+     * Gets the two-factor authentication handler.
+     *
+     * @return the two-factor authentication handler
+     */
+    public static CmsTwoFactorAuthenticationHandler getTwoFactorAuthenticationHandler() {
+
+        return OpenCmsCore.getInstance().getTwoFactorAuthenticationHandler();
+    }
+
+    /**
+     * Gets the user data request manager.
+     *
+     * @return the user data request manager
+     */
     public static CmsUserDataRequestManager getUserDataRequestManager() {
 
         return OpenCmsCore.getInstance().getUserDataRequestManager();

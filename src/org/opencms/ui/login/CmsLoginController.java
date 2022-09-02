@@ -45,6 +45,8 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsCustomLoginException;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsUserLog;
+import org.opencms.security.twofactor.CmsSecondFactorInfo;
+import org.opencms.security.twofactor.CmsTwoFactorAuthenticationHandler;
 import org.opencms.ui.A_CmsDialogContext;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
@@ -79,6 +81,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.commons.logging.Log;
 
 import com.vaadin.server.Page;
@@ -87,6 +91,7 @@ import com.vaadin.server.VaadinServletRequest;
 import com.vaadin.server.VaadinServletResponse;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
 
 /**
  * Controller class which actually handles the login dialog logic.<p>
@@ -154,6 +159,90 @@ public class CmsLoginController {
     }
 
     /**
+     * The login context.
+     */
+    public static class LoginContext {
+
+        /** The CMS context. */
+        private CmsObject m_cms;
+
+        /** The second factor information. */
+        private CmsSecondFactorInfo m_secondFactorInfo;
+
+        /** The user being logged in. */
+        private CmsUser m_user;
+
+        /**
+         * Gets the CmsObject.
+         *
+         * @return the CmsObject
+         */
+        public CmsObject getCms() {
+
+            return m_cms;
+        }
+
+        /**
+         * The second factor information for 2FA.
+         *
+         * @return the second factor information
+         */
+        public CmsSecondFactorInfo getSecondFactorInfo() {
+
+            return m_secondFactorInfo;
+        }
+
+        /**
+         * Gets the user to be logged in.
+         *
+         * @return the user
+         */
+        public CmsUser getUser() {
+
+            return m_user;
+        }
+
+        /**
+         * Sets the CMS context.
+         *
+         * @param cms the CMS context
+         */
+        public void setCms(CmsObject cms) {
+
+            m_cms = cms;
+        }
+
+        /**
+         * Sets the second factor information for 2FA.
+         *
+         * @param secondFactorInfo the second factor information
+         */
+        public void setSecondFactorInfo(CmsSecondFactorInfo secondFactorInfo) {
+
+            m_secondFactorInfo = secondFactorInfo;
+        }
+
+        /**
+         * Sets the user.
+         *
+         * @param user the user
+         */
+        public void setUser(CmsUser user) {
+
+            m_user = user;
+        }
+
+        /**
+         * @see java.lang.Object#toString()
+         */
+        @Override
+        public String toString() {
+
+            return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        }
+    };
+
+    /**
      * Helper subclass of CmsLoginUserAgreement which can be used without a page context.<p>
      *
      * This is only used for detecting whether we need to display the user agreement dialog, not for displaying the dialog itself.<p>
@@ -208,11 +297,29 @@ public class CmsLoginController {
         }
     }
 
+    /**
+     * Helper interface for splitting the actual login off into its own object
+     * which can be called from multiple places.
+     */
+    interface LoginContinuation {
+
+        /**
+         * Continues with the login process.
+         *
+         * @param data the login data
+         * @throws Exception if something goes wrong
+         */
+        void continueLogin(LoginContext data) throws Exception;
+    }
+
     /** Additional info key to mark accounts as locked due to inactivity. */
     public static final String KEY_ACCOUNT_LOCKED = "accountLocked";
 
     /** The logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLoginController.class);
+
+    /** The two-factor authentication handler. */
+    protected CmsTwoFactorAuthenticationHandler m_otpHandler = OpenCms.getTwoFactorAuthenticationHandler();
 
     /** The UI instance. */
     CmsLoginUI m_ui;
@@ -452,8 +559,6 @@ public class CmsLoginController {
 
         String user = m_ui.getUser();
         String password = m_ui.getPassword();
-        CmsMessageContainer message = CmsLoginHelper.validateUserAndPasswordNotEmpty(user, password);
-
         String ou = m_ui.getOrgUnit();
         if (CmsLoginOuSelector.OU_NONE.equals(ou)) {
             displayError(
@@ -462,10 +567,13 @@ public class CmsLoginController {
                 false);
             return;
         }
-        if (message != null) {
-            String errorMessage = message.key(m_params.getLocale());
-            displayError(errorMessage, true, false);
-            return;
+        {
+            CmsMessageContainer message = CmsLoginHelper.validateUserAndPasswordNotEmpty(user, password);
+            if (message != null) {
+                String errorMessage = message.key(m_params.getLocale());
+                displayError(errorMessage, true, false);
+                return;
+            }
         }
 
         String realUser = CmsStringUtil.joinPaths(ou, user);
@@ -478,12 +586,13 @@ public class CmsLoginController {
                 userObj = currentCms.readUser(realUser);
             } catch (CmsException e) {
                 LOG.warn(e.getLocalizedMessage(), e);
-                message = org.opencms.workplace.Messages.get().container(
+                CmsMessageContainer message = org.opencms.workplace.Messages.get().container(
                     org.opencms.workplace.Messages.GUI_LOGIN_FAILED_0);
                 displayError(message.key(m_params.getLocale()), true, true);
                 CmsUserLog.logLoginFailure(currentCms, realUser);
                 return;
             }
+            final CmsUser userNonNull = userObj;
             if (OpenCms.getLoginManager().canLockBecauseOfInactivity(currentCms, userObj)) {
                 boolean locked = null != userObj.getAdditionalInfo().get(KEY_ACCOUNT_LOCKED);
                 if (locked) {
@@ -494,7 +603,7 @@ public class CmsLoginController {
             }
 
             CmsObject cloneCms = OpenCms.initCmsObject(currentCms);
-            cloneCms.loginUser(realUser, password);
+            cloneCms.checkLoginUser(realUser, password);
 
             String messageToChange = "";
             if (OpenCms.getLoginManager().isPasswordReset(currentCms, userObj)) {
@@ -516,143 +625,123 @@ public class CmsLoginController {
                 return;
             }
 
-            // provisional login successful, now do for real
-            // we use another separate CmsObject so we can manually control when it is written to the session info
-            CmsObject loginCms = OpenCms.initCmsObject(currentCms);
+            /*
+             * Login branches now into multiple paths: For the non-OTP case we can do it directly (synchronously),
+             * and for the OTP cases we need to show additional dialogs first (so it's asynchronous). But at the end,
+             * the same things happen. So we put these 'things that happen at the end' in a closure, so we can either
+             * execute it directly or pass it as a callback to the dialogs.
+             */
+            LoginContinuation loginContinuation = (LoginContext details) -> {
 
-            loginCms.loginUser(realUser, password);
-            CmsUserLog.logLogin(loginCms, realUser);
+                // provisional login successful, now do for real
+                // we use another separate CmsObject so we can manually control when it is written to the session info
+                CmsObject loginCms = OpenCms.initCmsObject(currentCms);
+                CmsSecondFactorInfo secondFactorInfo = details.getSecondFactorInfo();
+                loginCms.loginUser(realUser, password, secondFactorInfo);
+                CmsUserLog.logLogin(loginCms, realUser);
 
-            if (LOG.isInfoEnabled()) {
-                CmsRequestContext context = loginCms.getRequestContext();
-                LOG.info(
-                    org.opencms.jsp.Messages.get().getBundle().key(
-                        org.opencms.jsp.Messages.LOG_LOGIN_SUCCESSFUL_3,
-                        context.getCurrentUser().getName(),
-                        "{workplace login dialog}",
-                        context.getRemoteAddress()));
-            }
-            CmsWorkplaceSettings settings = CmsLoginHelper.initSiteAndProject(loginCms);
-            final String loginTarget = getLoginTarget(loginCms, settings, m_params.getRequestedResource());
+                if (LOG.isInfoEnabled()) {
+                    CmsRequestContext context = loginCms.getRequestContext();
+                    LOG.info(
+                        org.opencms.jsp.Messages.get().getBundle().key(
+                            org.opencms.jsp.Messages.LOG_LOGIN_SUCCESSFUL_3,
+                            context.getCurrentUser().getName(),
+                            "{workplace login dialog}",
+                            context.getRemoteAddress()));
+                }
+                CmsWorkplaceSettings settings = CmsLoginHelper.initSiteAndProject(loginCms);
+                final String loginTarget = getLoginTarget(loginCms, settings, m_params.getRequestedResource());
 
-            CmsLoginHelper.setCookieData(
-                pcType,
-                user,
-                ou,
-                (VaadinServletRequest)(VaadinService.getCurrentRequest()),
-                (VaadinServletResponse)(VaadinService.getCurrentResponse()));
-            VaadinService.getCurrentRequest().getWrappedSession().setAttribute(
-                CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
-                settings);
+                CmsLoginHelper.setCookieData(
+                    pcType,
+                    user,
+                    ou,
+                    (VaadinServletRequest)(VaadinService.getCurrentRequest()),
+                    (VaadinServletResponse)(VaadinService.getCurrentResponse()));
+                VaadinService.getCurrentRequest().getWrappedSession().setAttribute(
+                    CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
+                    settings);
 
-            final boolean isPublicPC = CmsLoginForm.PC_TYPE_PUBLIC.equals(pcType);
-            if (OpenCms.getLoginManager().requiresUserDataCheck(loginCms, userObj)) {
-                I_CmsDialogContext context = new A_CmsDialogContext("", ContextType.appToolbar, null) {
+                final boolean isPublicPC = CmsLoginForm.PC_TYPE_PUBLIC.equals(pcType);
+                if (OpenCms.getLoginManager().requiresUserDataCheck(loginCms, userNonNull)) {
+                    I_CmsDialogContext context = new A_CmsDialogContext("", ContextType.appToolbar, null) {
 
-                    @Override
-                    public void finish(CmsProject project, String siteRoot) {
+                        @Override
+                        public void finish(CmsProject project, String siteRoot) {
 
-                        finish(null);
-                    }
+                            finish(null);
+                        }
 
-                    @Override
-                    public void finish(Collection<CmsUUID> result) {
+                        @Override
+                        public void finish(Collection<CmsUUID> result) {
 
-                        initSessionAndSendMessages(currentCms, loginCms);
-                        m_ui.openLoginTarget(loginTarget, isPublicPC);
+                            initSessionAndSendMessages(currentCms, loginCms);
+                            m_ui.openLoginTarget(loginTarget, isPublicPC);
 
-                    }
+                        }
 
-                    public void focus(CmsUUID structureId) {
+                        public void focus(CmsUUID structureId) {
 
-                        // nothing to do
-                    }
+                            // nothing to do
+                        }
 
-                    public List<CmsUUID> getAllStructureIdsInView() {
+                        public List<CmsUUID> getAllStructureIdsInView() {
 
-                        return null;
-                    }
+                            return null;
+                        }
 
-                    @Override
-                    public CmsObject getCms() {
+                        @Override
+                        public CmsObject getCms() {
 
-                        return loginCms;
-                    }
+                            return loginCms;
+                        }
 
-                    @Override
-                    public void start(String title, Component dialog, DialogWidth style) {
+                        @Override
+                        public void start(String title, Component dialog, DialogWidth style) {
 
-                        if (dialog != null) {
-                            m_window = CmsBasicDialog.prepareWindow(style);
-                            m_window.setCaption(title);
-                            m_window.setContent(dialog);
-                            UI.getCurrent().addWindow(m_window);
-                            if (dialog instanceof CmsBasicDialog) {
-                                ((CmsBasicDialog)dialog).initActionHandler(m_window);
+                            if (dialog != null) {
+                                m_window = CmsBasicDialog.prepareWindow(style);
+                                m_window.setCaption(title);
+                                m_window.setContent(dialog);
+                                UI.getCurrent().addWindow(m_window);
+                                if (dialog instanceof CmsBasicDialog) {
+                                    ((CmsBasicDialog)dialog).initActionHandler(m_window);
+                                }
                             }
                         }
-                    }
 
-                    public void updateUserInfo() {
+                        public void updateUserInfo() {
 
-                        // not supported
-                    }
-                };
-                CmsUser u = currentCms.readUser(userObj.getId());
-                u.setAdditionalInfo(
-                    CmsUserSettings.ADDITIONAL_INFO_LAST_USER_DATA_CHECK,
-                    Long.toString(System.currentTimeMillis()));
-                loginCms.writeUser(u);
-                CmsUserDataDialog dialog = new CmsUserDataDialog(context, true);
-                context.start(dialog.getTitle(UI.getCurrent().getLocale()), dialog);
+                            // not supported
+                        }
+                    };
+                    CmsUser u = currentCms.readUser(userNonNull.getId());
+                    u.setAdditionalInfo(
+                        CmsUserSettings.ADDITIONAL_INFO_LAST_USER_DATA_CHECK,
+                        Long.toString(System.currentTimeMillis()));
+                    loginCms.writeUser(u);
+                    CmsUserDataDialog dialog = new CmsUserDataDialog(context, true);
+                    context.start(dialog.getTitle(UI.getCurrent().getLocale()), dialog);
+                } else {
+                    initSessionAndSendMessages(currentCms, loginCms);
+                    m_ui.openLoginTarget(loginTarget, isPublicPC);
+                }
+            };
+            LoginContext context = new LoginContext();
+            context.setUser(userNonNull);
+            context.setCms(currentCms);
+            if (m_otpHandler.needsTwoFactorAuthentication(userNonNull)) {
+                if (!m_otpHandler.hasSecondFactor(userObj)) {
+                    showSecondFactorSetup(context, loginContinuation);
+                } else {
+                    showSecondFactorDialog(context, loginContinuation);
+                }
             } else {
-                initSessionAndSendMessages(currentCms, loginCms);
-                m_ui.openLoginTarget(loginTarget, isPublicPC);
+                loginContinuation.continueLogin(context);
             }
         } catch (Exception e) {
 
-            // there was an error during login
-            if (e instanceof CmsException) {
-                CmsMessageContainer exceptionMessage = ((CmsException)e).getMessageContainer();
-                if (org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_2 == exceptionMessage.getKey()) {
-                    // the user account is disabled
-                    message = org.opencms.workplace.Messages.get().container(
-                        org.opencms.workplace.Messages.GUI_LOGIN_FAILED_DISABLED_0);
-                } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == exceptionMessage.getKey()) {
-                    // the user account is temporarily disabled because of too many login failures
-                    message = org.opencms.workplace.Messages.get().container(
-                        org.opencms.workplace.Messages.GUI_LOGIN_FAILED_TEMP_DISABLED_0);
-                } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == exceptionMessage.getKey()) {
-                    // all logins have been disabled be the Administration
-                    CmsLoginMessage loginMessage2 = OpenCms.getLoginManager().getLoginMessage();
-                    if (loginMessage2 != null) {
-                        message = org.opencms.workplace.Messages.get().container(
-                            org.opencms.workplace.Messages.GUI_LOGIN_FAILED_WITH_MESSAGE_1,
-                            loginMessage2.getMessage().replace("\n", ""));
-                    }
-                }
-            }
-            if (message == null) {
-                if (e instanceof CmsCustomLoginException) {
-                    message = ((CmsCustomLoginException)e).getMessageContainer();
-                } else {
-                    // any other error - display default message
-                    message = org.opencms.workplace.Messages.get().container(
-                        org.opencms.workplace.Messages.GUI_LOGIN_FAILED_0);
-                    LOG.error(e.getLocalizedMessage(), e);
-                    displayError(message.key(m_params.getLocale()), true, true);
-                    return;
-                }
-            }
-
-            if (e instanceof CmsException) {
-                CmsJspLoginBean.logLoginException(currentCms.getRequestContext(), user, (CmsException)e);
-                CmsUserLog.logLoginFailure(currentCms, user);
-            } else {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-            displayError(message.key(m_params.getLocale()), false, false);
-            return;
+            handleError(currentCms, realUser, e);
         }
     }
 
@@ -709,6 +798,61 @@ public class CmsLoginController {
     }
 
     /**
+     * Handles exceptions during the login process and displays appropriate error messages.
+     *
+     * @param currentCms the CMS context
+     * @param user the user being logged in
+     * @param e the error
+     */
+    protected void handleError(CmsObject currentCms, String user, Exception e) {
+
+        CmsMessageContainer message = null;
+
+        // there was an error during login
+        if (e instanceof CmsException) {
+            CmsMessageContainer exceptionMessage = ((CmsException)e).getMessageContainer();
+            if (org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_2 == exceptionMessage.getKey()) {
+                // the user account is disabled
+                message = org.opencms.workplace.Messages.get().container(
+                    org.opencms.workplace.Messages.GUI_LOGIN_FAILED_DISABLED_0);
+            } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == exceptionMessage.getKey()) {
+                // the user account is temporarily disabled because of too many login failures
+                message = org.opencms.workplace.Messages.get().container(
+                    org.opencms.workplace.Messages.GUI_LOGIN_FAILED_TEMP_DISABLED_0);
+            } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == exceptionMessage.getKey()) {
+                // all logins have been disabled be the Administration
+                CmsLoginMessage loginMessage2 = OpenCms.getLoginManager().getLoginMessage();
+                if (loginMessage2 != null) {
+                    message = org.opencms.workplace.Messages.get().container(
+                        org.opencms.workplace.Messages.GUI_LOGIN_FAILED_WITH_MESSAGE_1,
+                        loginMessage2.getMessage().replace("\n", ""));
+                }
+            }
+        }
+        if (message == null) {
+            if (e instanceof CmsCustomLoginException) {
+                message = ((CmsCustomLoginException)e).getMessageContainer();
+            } else {
+                // any other error - display default message
+                message = org.opencms.workplace.Messages.get().container(
+                    org.opencms.workplace.Messages.GUI_LOGIN_FAILED_0);
+                LOG.warn(e.getLocalizedMessage(), e);
+                displayError(message.key(m_params.getLocale()), true, true);
+                CmsUserLog.logLoginFailure(currentCms, user);
+                return;
+            }
+        }
+
+        if (e instanceof CmsException) {
+            CmsJspLoginBean.logLoginException(currentCms.getRequestContext(), user, (CmsException)e);
+            CmsUserLog.logLoginFailure(currentCms, user);
+        } else {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        displayError(message.key(m_params.getLocale()), false, false);
+    }
+
+    /**
      * Switches the session to a new one with the logged in CmsObject.
      *
      * <p>This needs to be called in the <em>last</em> request to the Vaadin servlet in the login process, because switching the session breaks the Vaadin session state.
@@ -726,7 +870,7 @@ public class CmsLoginController {
 
         // we don't want currentCms to be used to automatically update the session at the end of the request...
         currentCms.getRequestContext().setUpdateSessionEnabled(false);
-        
+
         // ...instead we manually update the session with loginCms
         loginCms.getRequestContext().setUpdateSessionEnabled(true);
         OpenCms.getSessionManager().updateSessionInfo(loginCms, (HttpServletRequest)VaadinService.getCurrentRequest());
@@ -796,5 +940,55 @@ public class CmsLoginController {
                 + "</div>";
         }
         m_ui.showLoginError(message);
+    }
+
+    /**
+     * Shows the verification dialog for 2FA.
+     *
+     * @param context the login context
+     * @param loginContinuation the handler to which we pass the verification code to continue with the login
+     */
+    private void showSecondFactorDialog(LoginContext context, LoginContinuation loginContinuation) {
+
+        Window window = CmsBasicDialog.prepareWindow(DialogWidth.narrow);
+        window.setClosable(false);
+        window.setResizable(false);
+        window.setCaption(CmsSecondFactorDialog.getCaption(context.getUser()));
+        CmsSecondFactorDialog dialog = new CmsSecondFactorDialog(verificationCode -> {
+            context.setSecondFactorInfo(new CmsSecondFactorInfo(verificationCode));
+            try {
+                loginContinuation.continueLogin(context);
+            } catch (Exception e) {
+                handleError(context.getCms(), context.getUser().getName(), e);
+            }
+        });
+        A_CmsUI.get().addWindow(window);
+        window.setContent(dialog);
+
+    }
+
+    /**
+     * Shows a dialog for setting up 2FA.
+     *
+     * @param context the login context
+     * @param loginContinuation the handler we call with the secret and verification code to set up 2FA and proceed with the loin.
+     */
+    private void showSecondFactorSetup(LoginContext context, LoginContinuation loginContinuation) {
+
+        Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+        window.setClosable(false);
+        window.setResizable(false);
+        CmsSecondFactorSetupDialog dialog = new CmsSecondFactorSetupDialog(context, context2 -> {
+            try {
+                loginContinuation.continueLogin(context);
+            } catch (Exception e) {
+                handleError(context.getCms(), context.getUser().getName(), e);
+            }
+        });
+        window.setCaption(
+            CmsVaadinUtils.getMessageText(Messages.GUI_LOGIN_2FA_SETUP_1, context.getUser().getFullName()));
+        A_CmsUI.get().addWindow(window);
+        window.setContent(dialog);
+
     }
 }

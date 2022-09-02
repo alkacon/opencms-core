@@ -37,6 +37,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAuthentificationException;
 import org.opencms.security.CmsUserLog;
+import org.opencms.security.twofactor.CmsSecondFactorInfo;
 
 import java.io.IOException;
 import java.net.URI;
@@ -69,6 +70,9 @@ public class CmsJspLoginBean extends CmsJspActionElement {
 
     /** Flag to indicate if a login was successful. */
     private CmsException m_loginException;
+
+    /** The verification code for 2FA. */
+    private String m_verificationCode;
 
     /**
      * Empty constructor, required for every JavaBean.<p>
@@ -116,63 +120,60 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                         requestContext.addSiteRoot(requestContext.getUri()),
                         requestContext.getRemoteAddress()));
 
-            } else
-                if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == currentLoginException.getMessageContainer().getKey()) {
+            } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == currentLoginException.getMessageContainer().getKey()) {
 
-                    // the user has been disabled
-                    LOG.warn(
-                        Messages.get().getBundle().key(
-                            Messages.LOG_LOGIN_FAILED_TEMP_DISABLED_5,
-                            new Object[] {
-                                userName,
-                                requestContext.addSiteRoot(requestContext.getUri()),
-                                requestContext.getRemoteAddress(),
-                                currentLoginException.getMessageContainer().getArgs()[2],
-                                currentLoginException.getMessageContainer().getArgs()[3]}));
+                // the user has been disabled
+                LOG.warn(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_LOGIN_FAILED_TEMP_DISABLED_5,
+                        new Object[] {
+                            userName,
+                            requestContext.addSiteRoot(requestContext.getUri()),
+                            requestContext.getRemoteAddress(),
+                            currentLoginException.getMessageContainer().getArgs()[2],
+                            currentLoginException.getMessageContainer().getArgs()[3]}));
 
-                } else
-                    if (org.opencms.security.Messages.ERR_LOGIN_FAILED_NO_USER_2 == currentLoginException.getMessageContainer().getKey()) {
+            } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_NO_USER_2 == currentLoginException.getMessageContainer().getKey()) {
 
-                        // the requested user does not exist in the database
-                        LOG.warn(
-                            Messages.get().getBundle().key(
-                                Messages.LOG_LOGIN_FAILED_NO_USER_3,
-                                userName,
-                                requestContext.addSiteRoot(requestContext.getUri()),
-                                requestContext.getRemoteAddress()));
+                // the requested user does not exist in the database
+                LOG.warn(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_LOGIN_FAILED_NO_USER_3,
+                        userName,
+                        requestContext.addSiteRoot(requestContext.getUri()),
+                        requestContext.getRemoteAddress()));
 
-                    } else
-                        if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == currentLoginException.getMessageContainer().getKey()) {
+            } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == currentLoginException.getMessageContainer().getKey()) {
 
-                            // logins have been disabled by the administration
-                            long endTime = CmsLoginMessage.DEFAULT_TIME_END;
-                            if (OpenCms.getLoginManager().getLoginMessage() != null) {
-                                endTime = OpenCms.getLoginManager().getLoginMessage().getTimeEnd();
-                            }
-                            LOG.info(
-                                Messages.get().getBundle().key(
-                                    Messages.LOG_LOGIN_FAILED_WITH_MESSAGE_4,
-                                    new Object[] {
-                                        userName,
-                                        requestContext.addSiteRoot(requestContext.getUri()),
-                                        requestContext.getRemoteAddress(),
-                                        new Date(endTime)}));
+                // logins have been disabled by the administration
+                long endTime = CmsLoginMessage.DEFAULT_TIME_END;
+                if (OpenCms.getLoginManager().getLoginMessage() != null) {
+                    endTime = OpenCms.getLoginManager().getLoginMessage().getTimeEnd();
+                }
+                LOG.info(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_LOGIN_FAILED_WITH_MESSAGE_4,
+                        new Object[] {
+                            userName,
+                            requestContext.addSiteRoot(requestContext.getUri()),
+                            requestContext.getRemoteAddress(),
+                            new Date(endTime)}));
 
-                        } else {
+            } else {
 
-                            // the user exists, so the password must have been wrong
-                            CmsMessageContainer message = Messages.get().container(
-                                Messages.LOG_LOGIN_FAILED_3,
-                                userName,
-                                requestContext.addSiteRoot(requestContext.getUri()),
-                                requestContext.getRemoteAddress());
-                            if (OpenCms.getDefaultUsers().isUserAdmin(userName)) {
-                                // someone tried to log in as "Admin", log this in a higher channel
-                                LOG.error(message.key());
-                            } else {
-                                LOG.warn(message.key());
-                            }
-                        }
+                // the user exists, so the password must have been wrong
+                CmsMessageContainer message = Messages.get().container(
+                    Messages.LOG_LOGIN_FAILED_3,
+                    userName,
+                    requestContext.addSiteRoot(requestContext.getUri()),
+                    requestContext.getRemoteAddress());
+                if (OpenCms.getDefaultUsers().isUserAdmin(userName)) {
+                    // someone tried to log in as "Admin", log this in a higher channel
+                    LOG.error(message.key());
+                } else {
+                    LOG.warn(message.key());
+                }
+            }
         } else {
             // the error was database related, there may be an issue with the setup
             // write the exception to the log as well
@@ -279,7 +280,11 @@ public class CmsJspLoginBean extends CmsJspActionElement {
             // login the user and create a new session
             CmsUser user = getCmsObject().readUser(userName);
             OpenCms.getSessionManager().checkCreateSessionForUser(user);
-            getCmsObject().loginUser(userName, password, getRequestContext().getRemoteAddress());
+            CmsSecondFactorInfo secondFactorInfo = null;
+            if (m_verificationCode != null) {
+                secondFactorInfo = new CmsSecondFactorInfo(m_verificationCode);
+            }
+            getCmsObject().loginUser(userName, password, secondFactorInfo, getRequestContext().getRemoteAddress());
 
             // make sure we have a new session after login for security reasons
             session = getRequest().getSession(false);
@@ -390,5 +395,15 @@ public class CmsJspLoginBean extends CmsJspActionElement {
         }
         CmsUserLog.logLogout(getCmsObject());
         getResponse().sendRedirect(getFormLink());
+    }
+
+    /**
+     * Sets the verification code for two-factor authentication.
+     *
+     * @param code the verification code
+     */
+    public void setVerificationCode(String code) {
+
+        m_verificationCode = code;
     }
 }

@@ -36,11 +36,17 @@ import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.twofactor.CmsSecondFactorInfo;
+import org.opencms.security.twofactor.CmsSecondFactorSetupInfo;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
+import java.util.HashMap;
+
 import com.lambdaworks.crypto.SCryptUtil;
 
+import dev.samstevens.totp.code.DefaultCodeGenerator;
+import dev.samstevens.totp.time.SystemTimeProvider;
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -83,6 +89,7 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
         suite.addTest(new TestLoginAndPasswordHandler("testLoginMessage"));
         suite.addTest(new TestLoginAndPasswordHandler("testPasswordValidation"));
         suite.addTest(new TestLoginAndPasswordHandler("testSetResetPassword"));
+        suite.addTest(new TestLoginAndPasswordHandler("testTwoFactorAuthentication"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -478,6 +485,64 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
     }
 
     /**
+     * Checks two-factor authentication.
+     *
+     * @throws Exception if something goes wrong
+     */
+    public void testTwoFactorAuthentication() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        String userName = "testTwoFactorAuthentication2";
+        String password = "password";
+        CmsUser user = cms.createUser(userName, password, "", new HashMap<>());
+        String groupName = "TwoFactorAuthentication";
+        try {
+            cms.readGroup(groupName);
+        } catch (Exception e) {
+            cms.createGroup(groupName, "", 0, null);
+        }
+        cms.addUserToGroup(userName, groupName);
+        CmsObject loginCms = OpenCms.initCmsObject("Guest");
+        boolean caughtException = false;
+        try {
+            loginCms.loginUser(userName, password);
+        } catch (Exception e) {
+            caughtException = true;
+        }
+        assertTrue("should not be able to log in without second factor", caughtException);
+
+        caughtException = false;
+        try {
+            loginCms.loginUser(userName, password, new CmsSecondFactorInfo("123456"));
+        } catch (Exception e) {
+            caughtException = true;
+        }
+        assertTrue("should not be able to log in with dummy verification code", caughtException);
+
+        caughtException = false;
+        try {
+            loginCms.loginUser(userName, password, new CmsSecondFactorInfo("$%& // ---!", "123456"));
+        } catch (Exception e) {
+            caughtException = true;
+        }
+        assertTrue("should not be able to log in with dummy verification code and secret", caughtException);
+
+        String code;
+        DefaultCodeGenerator generator = new DefaultCodeGenerator();
+
+        CmsSecondFactorSetupInfo info = OpenCms.getTwoFactorAuthenticationHandler().generateSetupInfo(user);
+        String secret = info.getSecret();
+
+        code = generator.generate(secret, new SystemTimeProvider().getTime() / 30);
+        CmsSecondFactorInfo secretAndVerificationCode = new CmsSecondFactorInfo(secret, code);
+        loginCms.loginUser(userName, password, secretAndVerificationCode);
+        loginCms = OpenCms.initCmsObject("Guest");
+        code = generator.generate(secret, new SystemTimeProvider().getTime() / 30);
+        loginCms.loginUser(userName, password, new CmsSecondFactorInfo(code));
+
+    }
+
+    /**
      * Tests if the user passwords are imported / set correctly.<p>
      *
      * @throws Exception if something goes wrong
@@ -545,4 +610,5 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
             "test2 user password does not check with fallback to MD5",
             passwordHandler.checkPassword("test2", user.getPassword(), true));
     }
+
 }

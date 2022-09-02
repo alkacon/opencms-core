@@ -244,6 +244,10 @@ dependencies {
     distribution group: 'xerces', name: 'xercesImpl', version: '2.12.0'
     distribution group: 'xml-apis', name: 'xml-apis', version: '1.4.01'
     distribution group: 'xml-resolver', name: 'xml-resolver', version: '1.2'
+    
+    distribution group: 'dev.samstevens.totp', name:'totp', version:'1.7.1'
+    distribution group: 'com.google.zxing', name: 'core', version: '3.4.0'
+    distribution group: 'com.google.zxing', name: 'javase', version: '3.4.0'
 
     // http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD/root/projects/alfresco-jlan/
     // Revision r55007

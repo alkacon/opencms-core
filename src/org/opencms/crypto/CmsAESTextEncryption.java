@@ -72,6 +72,23 @@ public class CmsAESTextEncryption implements I_CmsTextEncryption {
     private String m_name;
 
     /**
+     * Default constructor (used when instantiated automatically during OpenCms configuration).
+     */
+    public CmsAESTextEncryption() {}
+
+    /**
+     * Constructor used to manually, conveniently create a new encryption object with a given secret.
+     *
+     * <p>When using this constructor, it is not necessary to call initialize() to make the object usable.
+     *
+     * @param secret the secret used to generate the key
+     */
+    public CmsAESTextEncryption(String secret) {
+
+        m_key = generateAESKey(secret);
+    }
+
+    /**
      * Helper method for generating an AES key from a secret string.
      *
      * @param secret the secret string

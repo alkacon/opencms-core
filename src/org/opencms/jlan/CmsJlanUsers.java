@@ -98,16 +98,16 @@ public class CmsJlanUsers implements UsersInterface {
         }
     }
 
-    /** 
+    /**
      * Translates user names by replacing a custom OU separator with the standard OU separator '/'.
-     * 
+     *
      * This is needed because either JLAN or the client cuts off the part before the slash during authentication,
      * so OpenCms never gets to see it. So if we want CIFS authentication for users from non-root OUs, we need to use
      * a different separator.<p>
-     *       
-     * @param name the user name to translate 
-     * 
-     * @return the translated user name 
+     *
+     * @param name the user name to translate
+     *
+     * @return the translated user name
      */
     public static final String translateUser(String name) {
 
@@ -130,6 +130,9 @@ public class CmsJlanUsers implements UsersInterface {
             CmsUser user = m_adminCms.readUser(userName);
             UserAccount account = new UserAccount(userName, "");
             Object jlanHash = user.getAdditionalInfo(JLAN_HASH);
+            if (OpenCms.getTwoFactorAuthenticationHandler().needsTwoFactorAuthentication(user)) {
+                LOG.warn("JLAN: Users for who two-factor authentication is enabled cannot access the network share.");
+            }
             if (jlanHash != null) {
                 account.setMD4Password((byte[])jlanHash);
             } else {

@@ -18,6 +18,7 @@
 	passwordhandler,
 	validationhandler?,
 	loginmanager?,
+	two-factor-authentication?,
 	loginmessage?,
 	sax-impl-system-properties?,
 	runtimeproperties?,
@@ -163,6 +164,18 @@
 <!ELEMENT passwordChangeInterval (#PCDATA)>
 <!ELEMENT userDataCheckInterval (#PCDATA)>
 <!ELEMENT logoutUri (#PCDATA)>
+
+
+<!ELEMENT two-factor-authentication (enabled, secret, issuer, include-users?, exclude-users?)>
+<!ELEMENT issuer (#PCDATA)>
+<!ELEMENT secret (#PCDATA)>
+<!ELEMENT include-users (group | orgunit | pattern)*>
+<!ELEMENT exclude-users (group | orgunit | pattern)*>
+
+<!ELEMENT group (#PCDATA)>
+<!ELEMENT orgunit (#PCDATA)>
+<!ELEMENT pattern (#PCDATA)>
+
 
 <!--
 # Login message:

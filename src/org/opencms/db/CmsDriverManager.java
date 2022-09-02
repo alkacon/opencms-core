@@ -118,6 +118,9 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPermissionHandler;
 import org.opencms.security.I_CmsPermissionHandler.LockCheck;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.security.twofactor.CmsSecondFactorInfo;
+import org.opencms.security.twofactor.CmsSecondFactorSetupException;
+import org.opencms.security.twofactor.CmsTwoFactorAuthenticationHandler;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsPath;
@@ -164,6 +167,17 @@ import com.google.common.collect.Multimap;
 public final class CmsDriverManager implements I_CmsEventListener {
 
     /**
+     * Enum for distinguishing between login modes.
+     */
+    public static enum LoginUserMode {
+        /** Check mode, where the user is not logged in, but the password check and other checks are still done (however not the second factor check for 2FA). */
+        checkOnly,
+
+        /** Normal login process. */
+        standard
+    }
+
+    /**
      * Special key class for caching the resource OU data with a Guava LoadingCache.<p>
      *
      * In principle, the actual cache key is just the current project, but because of how cache loaders work,
@@ -173,11 +187,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public static class ResourceOUCacheKey {
 
-        /** The DB context. */
-        private CmsDbContext m_dbc;
-
         /** The actual cache key. */
         private String m_actualKey;
+
+        /** The DB context. */
+        private CmsDbContext m_dbc;
 
         /** The driver manager to use. */
         private CmsDriverManager m_driverManager;
@@ -253,11 +267,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public static class ResourceOUMap {
 
-        /** The organizational units, with their UUIDs as keys. */
-        private Map<CmsUUID, CmsOrganizationalUnit> m_ousById = new HashMap<>();
-
         /** Multimap from the paths of resources to the OUs to which they are assigned as OU resources. */
         private Multimap<CmsPath, CmsOrganizationalUnit> m_ousByAssignedResourcePaths = ArrayListMultimap.create();
+
+        /** The organizational units, with their UUIDs as keys. */
+        private Map<CmsUUID, CmsOrganizationalUnit> m_ousById = new HashMap<>();
 
         /**
          * Gets the list of organizational units to which a given root path belongs, according to the cached
@@ -466,6 +480,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** Mode for reading project resources from the db. */
     public static final int READMODE_UNMATCHSTATE = 2;
 
+    /** Flag that can be used to disable the resource OU caching if necessary. */
+    public static boolean resourceOrgUnitCachingEnabled = true;
+
     /** Prefix char for temporary files in the VFS. */
     public static final String TEMP_FILE_PREFIX = "~";
 
@@ -504,9 +521,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
     /** Constant mode parameter to read all files and folders in the {@link #readChangedResourcesInsideProject(CmsDbContext, CmsUUID, CmsReadChangedProjectResourceMode)}} method. */
     private static final CmsReadChangedProjectResourceMode RCPRM_FOLDERS_ONLY_MODE = new CmsReadChangedProjectResourceMode();
-
-    /** Flag that can be used to disable the resource OU caching if necessary. */
-    public static boolean resourceOrgUnitCachingEnabled = true;
 
     /** The history driver. */
     private I_CmsHistoryDriver m_historyDriver;
@@ -938,9 +952,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     dbc.getRequestContext().getSitePath(resource)));
         } else if ((lockType == CmsLockType.EXCLUSIVE)
             && currentLock.isExclusiveOwnedInProjectBy(dbc.currentUser(), dbc.currentProject())) {
-                // the current lock requires no change
-                return;
-            }
+            // the current lock requires no change
+            return;
+        }
 
         // duplicate logic from CmsSecurityManager#hasPermissions() because lock state can't be ignored
         // if another user has locked the file, the current user can never get WRITE permissions with the default check
@@ -5714,12 +5728,18 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Attempts to authenticate a user into OpenCms with the given password.<p>
+     * Attempts to authenticate a user into OpenCms with the given password.
+     *
+     * <p>The method can be used in multiple modes (see the CmsDriverManager.LoginUserMode enum): Standard mode is the mode for actually logging in a user,
+     * while check mode merely checks the login details without firing the events normally fired during login, and without modifying the user. However,
+     * in the case an incorrect password is given, the invalid login counter is still incremented.
      *
      * @param dbc the current database context
      * @param userName the name of the user to be logged in
      * @param password the password of the user
+     * @param secondFactorInfo the second factor information for 2FA (may be null)
      * @param remoteAddress the ip address of the request
+     * @param mode the mode to use (real login or check only)
      *
      * @return the logged in user
      *
@@ -5727,17 +5747,24 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @throws CmsDataAccessException in case of errors accessing the database
      * @throws CmsPasswordEncryptionException in case of errors encrypting the users password
      */
-    public CmsUser loginUser(CmsDbContext dbc, String userName, String password, String remoteAddress)
+    public CmsUser loginUser(
+        CmsDbContext dbc,
+        String userName,
+        String password,
+        CmsSecondFactorInfo secondFactorInfo,
+        String remoteAddress,
+        LoginUserMode mode)
     throws CmsAuthentificationException, CmsDataAccessException, CmsPasswordEncryptionException {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(password)) {
             throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_USER_1, userName));
         }
-        String originalUserName = userName;
         CmsUser newUser;
+        CmsUser userCopy;
         try {
             // read the user from the driver to avoid the cache
             newUser = getUserDriver(dbc).readUser(dbc, userName, password, remoteAddress);
+            userCopy = newUser.clone();
             userName = newUser.getName();
 
         } catch (CmsDbEntryNotFoundException e) {
@@ -5772,7 +5799,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     if (parentOu != null) {
                         // try a higher level ou
                         String uName = CmsOrganizationalUnit.getSimpleName(userName);
-                        return loginUser(dbc, parentOu + uName, password, remoteAddress);
+                        return loginUser(dbc, parentOu + uName, password, secondFactorInfo, remoteAddress, mode);
                     }
                 }
                 throw new CmsAuthentificationException(
@@ -5793,12 +5820,44 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     remoteAddress));
         }
 
+        if (mode == LoginUserMode.standard) {
+            CmsTwoFactorAuthenticationHandler handler = OpenCms.getTwoFactorAuthenticationHandler();
+            if (handler.needsTwoFactorAuthentication(newUser)) {
+                if (handler.hasSecondFactor(newUser)) {
+                    if (!handler.verifySecondFactor(newUser, secondFactorInfo)) {
+                        throw new CmsAuthentificationException(
+                            org.opencms.security.Messages.get().container(
+                                org.opencms.security.Messages.ERR_VERIFICATION_FAILED_1,
+                                userName));
+                    }
+                } else {
+                    try {
+                        if (handler.setUpAndVerifySecondFactor(newUser, secondFactorInfo)) {
+                            LOG.info("Second factor setup successful for user " + newUser.getName());
+                        } else {
+                            throw new CmsAuthentificationException(
+                                org.opencms.security.Messages.get().container(
+                                    org.opencms.security.Messages.ERR_VERIFICATION_FAILED_1,
+                                    userName));
+                        }
+                    } catch (CmsSecondFactorSetupException e) {
+                        throw new CmsAuthentificationException(
+                            org.opencms.security.Messages.get().container(
+                                org.opencms.security.Messages.ERR_VERIFICATION_FAILED_1,
+                                userName),
+                            e);
+                    }
+                }
+            }
+        }
         if (dbc.currentUser().isGuestUser()) {
             // check if this account is temporarily disabled because of too many invalid login attempts
             // this will throw an exception if the test fails
             OpenCms.getLoginManager().checkInvalidLogins(userName, remoteAddress);
-            // test successful, remove all previous invalid login attempts for this user from the storage
-            OpenCms.getLoginManager().removeInvalidLogins(userName, remoteAddress);
+            if (mode == LoginUserMode.standard) {
+                // test successful, remove all previous invalid login attempts for this user from the storage
+                OpenCms.getLoginManager().removeInvalidLogins(userName, remoteAddress);
+            }
         }
 
         if (!m_securityManager.hasRole(
@@ -5808,69 +5867,76 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // new user is not Administrator, check if login is currently allowed
             OpenCms.getLoginManager().checkLoginAllowed();
         }
-        m_monitor.clearUserCache(newUser);
-        // set the last login time to the current time
-        newUser.setLastlogin(System.currentTimeMillis());
 
-        // write the changed user object back to the user driver
-        Map<String, Object> additionalInfosForRepositories = OpenCms.getRepositoryManager().getAdditionalInfoForLogin(
-            newUser.getName(),
-            password);
-        boolean requiresAddInfoUpdate = false;
+        if (mode == LoginUserMode.standard) {
 
-        // check for changes
-        for (Entry<String, Object> entry : additionalInfosForRepositories.entrySet()) {
-            Object value = entry.getValue();
-            Object current = newUser.getAdditionalInfo(entry.getKey());
-            if (((value == null) && (current != null)) || ((value != null) && !value.equals(current))) {
-                requiresAddInfoUpdate = true;
-                break;
+            newUser.setLastlogin(System.currentTimeMillis());
+            m_monitor.clearUserCache(newUser);
+
+            // write the changed user object back to the user driver
+            Map<String, Object> additionalInfosForRepositories = OpenCms.getRepositoryManager().getAdditionalInfoForLogin(
+                newUser.getName(),
+                password);
+            boolean requiresAddInfoUpdate = false;
+
+            // check for changes
+            for (Entry<String, Object> entry : additionalInfosForRepositories.entrySet()) {
+                Object value = entry.getValue();
+                Object current = newUser.getAdditionalInfo(entry.getKey());
+                if (((value == null) && (current != null)) || ((value != null) && !value.equals(current))) {
+                    requiresAddInfoUpdate = true;
+                    break;
+                }
             }
-        }
-        if (requiresAddInfoUpdate) {
-            newUser.getAdditionalInfo().putAll(additionalInfosForRepositories);
-        }
-        String lastPasswordChange = (String)newUser.getAdditionalInfo(
-            CmsUserSettings.ADDITIONAL_INFO_LAST_PASSWORD_CHANGE);
-        if (lastPasswordChange == null) {
-            requiresAddInfoUpdate = true;
-            newUser.getAdditionalInfo().put(
-                CmsUserSettings.ADDITIONAL_INFO_LAST_PASSWORD_CHANGE,
-                "" + System.currentTimeMillis());
-        }
-        if (!requiresAddInfoUpdate) {
-            dbc.setAttribute(ATTRIBUTE_LOGIN, newUser.getName());
-        }
-        getUserDriver(dbc).writeUser(dbc, newUser);
-        int changes = CmsUser.FLAG_LAST_LOGIN;
+            if (requiresAddInfoUpdate) {
+                newUser.getAdditionalInfo().putAll(additionalInfosForRepositories);
+            }
+            String lastPasswordChange = (String)newUser.getAdditionalInfo(
+                CmsUserSettings.ADDITIONAL_INFO_LAST_PASSWORD_CHANGE);
+            if (lastPasswordChange == null) {
+                requiresAddInfoUpdate = true;
+                newUser.getAdditionalInfo().put(
+                    CmsUserSettings.ADDITIONAL_INFO_LAST_PASSWORD_CHANGE,
+                    "" + System.currentTimeMillis());
+            }
+            if (!requiresAddInfoUpdate) {
+                dbc.setAttribute(ATTRIBUTE_LOGIN, newUser.getName());
+            }
 
-        // check if we need to update the password
-        if (!OpenCms.getPasswordHandler().checkPassword(password, newUser.getPassword(), false)
-            && OpenCms.getPasswordHandler().checkPassword(password, newUser.getPassword(), true)) {
-            // the password does not check with the current hash algorithm but with the fall back, update the password
-            getUserDriver(dbc).writePassword(dbc, userName, password, password);
-            changes = changes | CmsUser.FLAG_CORE_DATA;
+            if (mode == LoginUserMode.standard) {
+                OpenCms.getTwoFactorAuthenticationHandler().trackUserChange(dbc.getRequestContext(), userCopy, newUser);
+                getUserDriver(dbc).writeUser(dbc, newUser);
+            }
+            int changes = CmsUser.FLAG_LAST_LOGIN;
+
+            // check if we need to update the password
+            if (!OpenCms.getPasswordHandler().checkPassword(password, newUser.getPassword(), false)
+                && OpenCms.getPasswordHandler().checkPassword(password, newUser.getPassword(), true)) {
+                // the password does not check with the current hash algorithm but with the fall back, update the password
+                getUserDriver(dbc).writePassword(dbc, userName, password, password);
+                changes = changes | CmsUser.FLAG_CORE_DATA;
+            }
+
+            // update cache
+            m_monitor.cacheUser(newUser);
+
+            // invalidate all user dependent caches
+            m_monitor.flushCache(
+                CmsMemoryMonitor.CacheType.ACL,
+                CmsMemoryMonitor.CacheType.GROUP,
+                CmsMemoryMonitor.CacheType.ORG_UNIT,
+                CmsMemoryMonitor.CacheType.USER_LIST,
+                CmsMemoryMonitor.CacheType.PERMISSION,
+                CmsMemoryMonitor.CacheType.RESOURCE_LIST);
+
+            // fire user modified event
+            Map<String, Object> eventData = new HashMap<String, Object>();
+            eventData.put(I_CmsEventListener.KEY_USER_ID, newUser.getId().toString());
+            eventData.put(I_CmsEventListener.KEY_USER_NAME, newUser.getName());
+            eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_WRITE_USER);
+            eventData.put(I_CmsEventListener.KEY_USER_CHANGES, Integer.valueOf(changes));
+            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
         }
-
-        // update cache
-        m_monitor.cacheUser(newUser);
-
-        // invalidate all user dependent caches
-        m_monitor.flushCache(
-            CmsMemoryMonitor.CacheType.ACL,
-            CmsMemoryMonitor.CacheType.GROUP,
-            CmsMemoryMonitor.CacheType.ORG_UNIT,
-            CmsMemoryMonitor.CacheType.USER_LIST,
-            CmsMemoryMonitor.CacheType.PERMISSION,
-            CmsMemoryMonitor.CacheType.RESOURCE_LIST);
-
-        // fire user modified event
-        Map<String, Object> eventData = new HashMap<String, Object>();
-        eventData.put(I_CmsEventListener.KEY_USER_ID, newUser.getId().toString());
-        eventData.put(I_CmsEventListener.KEY_USER_NAME, newUser.getName());
-        eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_WRITE_USER);
-        eventData.put(I_CmsEventListener.KEY_USER_CHANGES, Integer.valueOf(changes));
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
 
         // return the user object read from the driver
         return newUser.clone();
@@ -8065,17 +8131,27 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         List<CmsResource> resourceList = m_monitor.getCachedResourceList(cacheKey);
         if ((resourceList == null) || !dbc.getProjectId().isNullUUID()) {
-            // first read the property definition
-            CmsPropertyDefinition propDef = readPropertyDefinition(dbc, propertyDefinition);
-            // now read the list of resources that have a value set for the property definition
-            resourceList = getVfsDriver(dbc).readResourcesWithProperty(
-                dbc,
-                dbc.currentProject().getUuid(),
-                propDef.getId(),
-                folder.getRootPath(),
-                value);
-            // apply permission filter
-            resourceList = filterPermissions(dbc, resourceList, filter);
+
+            CmsPropertyDefinition propDef = null;
+            try {
+                // first read the property definition
+                propDef = readPropertyDefinition(dbc, propertyDefinition);
+            } catch (CmsDbEntryNotFoundException e) {
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+            if (propDef != null) {
+                // now read the list of resources that have a value set for the property definition
+                resourceList = getVfsDriver(dbc).readResourcesWithProperty(
+                    dbc,
+                    dbc.currentProject().getUuid(),
+                    propDef.getId(),
+                    folder.getRootPath(),
+                    value);
+                // apply permission filter
+                resourceList = filterPermissions(dbc, resourceList, filter);
+            } else {
+                resourceList = new ArrayList<>();
+            }
             // store the result in the resourceList cache
             if (dbc.getProjectId().isNullUUID()) {
                 m_monitor.cacheResourceList(cacheKey, resourceList);
@@ -8718,12 +8794,18 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param dbc the current database context
      * @param username the name of the user
      * @param oldPassword the old password
+     * @param secondFactor the second factor data used for 2FA
      * @param newPassword the new password
      *
      * @throws CmsException if the user data could not be read from the database
      * @throws CmsSecurityException if the specified username and old password could not be verified
      */
-    public void resetPassword(CmsDbContext dbc, String username, String oldPassword, String newPassword)
+    public void resetPassword(
+        CmsDbContext dbc,
+        String username,
+        String oldPassword,
+        CmsSecondFactorInfo secondFactor,
+        String newPassword)
     throws CmsException, CmsSecurityException {
 
         if ((oldPassword != null) && (newPassword != null)) {
@@ -8739,6 +8821,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 user = getUserDriver(dbc).readUser(dbc, username, oldPassword, null);
             } catch (CmsDbEntryNotFoundException e) {
                 throw new CmsDataAccessException(Messages.get().container(Messages.ERR_RESET_PASSWORD_1, username), e);
+            }
+            CmsTwoFactorAuthenticationHandler twoFactorHandler = OpenCms.getTwoFactorAuthenticationHandler();
+            if (twoFactorHandler.needsTwoFactorAuthentication(user) && twoFactorHandler.hasSecondFactor(user)) {
+                if (!twoFactorHandler.verifySecondFactor(user, secondFactor)) {
+                    throw new CmsDataAccessException(
+                        Messages.get().container(Messages.ERR_RESET_PASSWORD_1, username),
+                        new RuntimeException("Verification code mismatch"));
+                }
             }
 
             if ((user == null) || user.isManaged()) {
@@ -10527,6 +10617,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_WRITE_USER);
         eventData.put(I_CmsEventListener.KEY_USER_CHANGES, Integer.valueOf(user.getChanges(oldUser)));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
+        OpenCms.getTwoFactorAuthenticationHandler().trackUserChange(dbc.getRequestContext(), oldUser, user);
     }
 
     /**

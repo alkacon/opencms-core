@@ -28,6 +28,7 @@
 package org.opencms.security;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsFileUtil;
 
@@ -111,6 +112,39 @@ public class CmsUserLog {
     }
 
     /**
+     * Logs when a second factor was added.
+     *
+     * @param requestContext the request context
+     * @param name the user name
+     */
+    public static void logSecondFactorAdded(CmsRequestContext requestContext, String name) {
+
+        LOG.info("second factor added: " + formatUser(name) + " " + context(requestContext));
+    }
+
+    /**
+     * Logs when a second factor was modified.
+     *
+     * @param requestContext the request context
+     * @param name the user name
+     */
+    public static void logSecondFactorInfoModified(CmsRequestContext requestContext, String name) {
+
+        LOG.info("second factor information modified: " + formatUser(name) + " " + context(requestContext));
+    }
+
+    /**
+     * Logs when a second factor was removed.
+     *
+     * @param requestContext the request context
+     * @param name the user name
+     */
+    public static void logSecondFactorReset(CmsRequestContext requestContext, String name) {
+
+        LOG.info("second factor reset: " + formatUser(name) + " " + context(requestContext));
+    }
+
+    /**
      * Logs that the 'force reset password' status was set on a user.
      *
      * @param cms the CMS context
@@ -138,7 +172,6 @@ public class CmsUserLog {
                 + context(cms));
 
         // TODO Auto-generated method stub
-
     }
 
     /**
@@ -149,9 +182,20 @@ public class CmsUserLog {
      */
     private static TreeMap<String, String> context(CmsObject cms) {
 
+        return context(cms.getRequestContext());
+    }
+
+    /**
+     * Helper method for formatting context information.
+     *
+     * @param requestContext the request context
+     * @return the context information
+     */
+    private static TreeMap<String, String> context(CmsRequestContext requestContext) {
+
         TreeMap<String, String> result = new TreeMap<>();
-        result.put("remote_address", cms.getRequestContext().getRemoteAddress());
-        result.put("current_user", cms.getRequestContext().getCurrentUser().getName());
+        result.put("remote_address", requestContext.getRemoteAddress());
+        result.put("current_user", requestContext.getCurrentUser().getName());
         return result;
     }
 

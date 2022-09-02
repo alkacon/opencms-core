@@ -30,6 +30,7 @@ package org.opencms.ui.login;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.components.CmsNewPasswordField;
 import org.opencms.ui.util.CmsStyleVariable;
 import org.opencms.util.CmsStringUtil;
 
@@ -77,10 +78,10 @@ public class CmsPasswordForm extends VerticalLayout {
     private CssLayout m_password2Wrapper;
 
     /** First password field. */
-    private PasswordField m_passwordField1;
+    private CmsNewPasswordField m_passwordField1;
 
     /** Second password field. */
-    private PasswordField m_passwordField2;
+    private CmsNewPasswordField m_passwordField2;
 
     /** Label to display the security hint. */
     private Label m_securityHint;
@@ -142,7 +143,7 @@ public class CmsPasswordForm extends VerticalLayout {
      *
      * @return the password 1 field
      */
-    public PasswordField getPassword1Field() {
+    public CmsNewPasswordField getPassword1Field() {
 
         return m_passwordField1;
     }
@@ -162,7 +163,7 @@ public class CmsPasswordForm extends VerticalLayout {
      *
      * @return the password 2 field
      */
-    public PasswordField getPassword2Field() {
+    public CmsNewPasswordField getPassword2Field() {
 
         return m_passwordField2;
     }

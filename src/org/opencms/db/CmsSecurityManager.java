@@ -91,6 +91,7 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPermissionHandler;
 import org.opencms.security.I_CmsPermissionHandler.LockCheck;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.security.twofactor.CmsSecondFactorInfo;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -371,6 +372,35 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
         return result;
+    }
+
+    /**
+     * Checks user name / password and other things which would prevent the user from logging in, but does not check the second factor for 2FA.
+     *
+     * <p>Throws an exception like the normal login method if these checks fail. If it succeeds, nothing actually happens.
+     *
+     * @param context the request context
+     * @param username the user name
+     * @param password the password
+     * @param remoteAddress the remote address
+     * @throws CmsException if the login check fails
+     */
+    public void checkLogin(CmsRequestContext context, String username, String password, String remoteAddress)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        CmsUser result = null;
+        try {
+            result = m_driverManager.loginUser(
+                dbc,
+                CmsOrganizationalUnit.removeLeadingSeparator(username),
+                password,
+                null,
+                remoteAddress,
+                CmsDriverManager.LoginUserMode.checkOnly);
+        } finally {
+            dbc.clear();
+        }
     }
 
     /**
@@ -3666,13 +3696,19 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param username the name of the user to be logged in
      * @param password the password of the user
+     * @param code the additional login information for 2FA
      * @param remoteAddress the ip address of the request
      *
      * @return the logged in user
      *
      * @throws CmsException if the login was not successful
      */
-    public CmsUser loginUser(CmsRequestContext context, String username, String password, String remoteAddress)
+    public CmsUser loginUser(
+        CmsRequestContext context,
+        String username,
+        String password,
+        CmsSecondFactorInfo code,
+        String remoteAddress)
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -3682,7 +3718,9 @@ public final class CmsSecurityManager {
                 dbc,
                 CmsOrganizationalUnit.removeLeadingSeparator(username),
                 password,
-                remoteAddress);
+                code,
+                remoteAddress,
+                CmsDriverManager.LoginUserMode.standard);
         } finally {
             dbc.clear();
         }
@@ -5831,12 +5869,18 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param username the name of the user
      * @param oldPassword the old password
+     * @param secondFactor the additional information for 2FA
      * @param newPassword the new password
      *
      * @throws CmsException if the user data could not be read from the database
      * @throws CmsSecurityException if the specified user name and old password could not be verified
      */
-    public void resetPassword(CmsRequestContext context, String username, String oldPassword, String newPassword)
+    public void resetPassword(
+        CmsRequestContext context,
+        String username,
+        String oldPassword,
+        CmsSecondFactorInfo secondFactor,
+        String newPassword)
     throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -5845,6 +5889,7 @@ public final class CmsSecurityManager {
                 dbc,
                 CmsOrganizationalUnit.removeLeadingSeparator(username),
                 oldPassword,
+                secondFactor,
                 newPassword);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_RESET_PASSWORD_1, username), e);

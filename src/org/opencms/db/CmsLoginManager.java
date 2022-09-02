@@ -161,11 +161,11 @@ public class CmsLoginManager {
     /** Default for bad login attempts. */
     public static final int MAX_BAD_ATTEMPTS_DEFAULT = 3;
 
-    /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsLoginManager.class);
-
     /**Map holding usernames and userdata for user which are currently locked.*/
     protected static Map<String, Set<CmsUserData>> TEMP_DISABLED_USER;
+
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLoginManager.class);
 
     /** The milliseconds to disable an account if the threshold is reached. */
     protected int m_disableMillis;
@@ -185,11 +185,14 @@ public class CmsLoginManager {
     /** The token lifetime. */
     protected String m_tokenLifetimeStr;
 
+    /** The before login message. */
+    private CmsLoginMessage m_beforeLoginMessage;
+
     /** The login message, setting this may also disable logins for non-Admin users. */
     private CmsLoginMessage m_loginMessage;
 
-    /** The before login message. */
-    private CmsLoginMessage m_beforeLoginMessage;
+    /** The logout URI. */
+    private String m_logoutUri;
 
     /** Max inactivity time. */
     private String m_maxInactive;
@@ -197,14 +200,11 @@ public class CmsLoginManager {
     /** Password change interval. */
     private String m_passwordChangeInterval;
 
-    /** User data check interval. */
-    private String m_userDateCheckInterval;
-
     /** Option which determines whether the login dialog should require an organizational unit. */
     private boolean m_requireOrgUnit;
 
-    /** The logout URI. */
-    private String m_logoutUri;
+    /** User data check interval. */
+    private String m_userDateCheckInterval;
 
     /**
      * Creates a new storage for invalid logins.<p>
@@ -651,6 +651,7 @@ public class CmsLoginManager {
             || OpenCms.getRoleManager().hasRole(cms, user.getName(), CmsRole.ROOT_ADMIN)) {
             return false;
         }
+
         String lastCheckStr = (String)user.getAdditionalInfo().get(
             CmsUserSettings.ADDITIONAL_INFO_LAST_USER_DATA_CHECK);
         if (lastCheckStr == null) {

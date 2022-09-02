@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <transforms>
+      <transform config="opencms-system.xml" xslt="disable2FA.xslt" />
       <transform config="opencms-search.xml" xslt="disableSolr.xslt" />
       <transform config="opencms-vfs.xml" xslt="replaceResourceTypes.xslt" />
       <transform config="opencms-vfs.xml" xslt="replaceResourceLoader.xslt" />
@@ -20,5 +21,6 @@
       <transform config="opencms-workplace.xml" xslt="removeOldWorkplaceEntries.xslt" />
       <transform config="opencms-importexport.xml" xslt="replaceImportVersions.xslt" />
       <transform config="opencms-importexport.xml" xslt="updateRepositories.xslt" />
+      
 
 </transforms>

@@ -11,7 +11,7 @@
 		<o-cms-basic-dialog>
 			<content>
 				<vaadin7-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
-					<v-tab-sheet _id="m_tab" height="400px">
+					<v-tab-sheet _id="m_tab" height="450px">
 						<tab  caption="%(key.GUI_USERMANAGEMENT_USER_0)">
 								<v-form-layout _id="m_tabSimple" margin spacing style-name="o-formlayout-workplace-main">
 									<vaadin7-text-field _id="m_loginname" width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_LOGIN_NAME_0)" description="%(key.GUI_USERMANAGEMENT_USER_LOGIN_NAME_HELP_0)" />
@@ -45,6 +45,10 @@
 									<vaadin7-check-box _id="m_sendEmail" caption="%(key.GUI_USERMANAGEMENT_USER_SEND_PASSWORD_MAIL_0)" description="%(key.GUI_USERMANAGEMENT_USER_SEND_PASSWORD_MAIL_HELP_0)" />								
 									<v-button _id="m_generateButton">%(key.GUI_USERMANAGEMENT_GEN_PASSWORD_CAPTION_0)</v-button>
 								</v-form-layout>
+                                <v-form-layout _id="m_twoFactorBox" margin spacing style-name="o-formlayout-workplace-main">
+                                    <v-label _id="m_twoFactorAuthState"></v-label>
+                                    <vaadin7-check-box _id="m_resetTwoFactorAuthentication" caption="%(key.GUI_USERMANAGEMENT_RESET_2FA_0)"></vaadin7-check-box>
+                                </v-form-layout>
 								<k-cms-password-form _id="m_pw"></k-cms-password-form>
 								<vaadin7-label _id="m_dummyPasswordLabel">
 								</vaadin7-label>

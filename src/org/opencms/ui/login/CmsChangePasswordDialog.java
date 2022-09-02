@@ -38,6 +38,8 @@ import org.opencms.security.CmsUserLog;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsPasswordSecurityEvaluator;
 import org.opencms.security.I_CmsPasswordSecurityEvaluator.SecurityLevel;
+import org.opencms.security.twofactor.CmsSecondFactorInfo;
+import org.opencms.security.twofactor.CmsTwoFactorAuthenticationHandler;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
@@ -51,6 +53,7 @@ import org.opencms.workplace.CmsWorkplaceLoginHandler;
 
 import java.util.Collections;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 import org.apache.commons.logging.Log;
 
@@ -59,10 +62,9 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
-import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
-import com.vaadin.v7.event.FieldEvents.TextChangeListener;
 
 /**
  * Dialog used to change the password.<p>
@@ -120,6 +122,7 @@ public class CmsChangePasswordDialog extends CmsBasicDialog {
             m_form.setSecurityHint(
                 ((I_CmsPasswordSecurityEvaluator)OpenCms.getPasswordHandler()).getPasswordSecurityHint(m_locale));
         }
+
         m_passwordChangeButton = new Button(CmsVaadinUtils.getMessageText(Messages.GUI_CHANGE_PASSWORD_BUTTON_0));
         addButton(m_passwordChangeButton);
         m_passwordChangeButton.addClickListener(new ClickListener() {
@@ -147,8 +150,6 @@ public class CmsChangePasswordDialog extends CmsBasicDialog {
         });
         m_cancelButton.setVisible(false);
         m_form.getOldPasswordField().setImmediate(true);
-        m_form.getPassword1Field().setImmediate(true);
-        m_form.getPassword2Field().setImmediate(true);
 
         m_form.getOldPasswordField().addValueChangeListener(new ValueChangeListener() {
 
@@ -160,23 +161,12 @@ public class CmsChangePasswordDialog extends CmsBasicDialog {
             }
         });
 
-        m_form.getPassword1Field().addTextChangeListener(new TextChangeListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void textChange(TextChangeEvent event) {
-
-                checkSecurity(event.getText());
-            }
+        m_form.getPassword1Field().addValueChangeListener(event -> {
+            checkSecurity(event.getValue());
         });
-        m_form.getPassword2Field().addTextChangeListener(new TextChangeListener() {
 
-            private static final long serialVersionUID = 1L;
-
-            public void textChange(TextChangeEvent event) {
-
-                checkPasswordMatch(event.getText());
-            }
+        m_form.getPassword2Field().addValueChangeListener(event -> {
+            checkPasswordMatch(event.getValue());
         });
     }
 
@@ -216,6 +206,36 @@ public class CmsChangePasswordDialog extends CmsBasicDialog {
     public void setAdditionalMessage(String text) {
 
         m_form.setAdditionalText(text);
+    }
+
+    /**
+     * Opens the 2FA verification code dialog for the user if necessary, and passes the code obtained from the dialog
+     * to the handler object passed as a parameter.
+     *
+     *  <p>If the user doesn't need 2FA, no dialog is opened and null is passed to the handler.
+     *
+     * @param handler the handler to call with the verification code data
+     */
+    protected void maybeCheckSecondFactor(Consumer<CmsSecondFactorInfo> handler) {
+
+        CmsTwoFactorAuthenticationHandler twoFactorHandler = OpenCms.getTwoFactorAuthenticationHandler();
+        boolean needToCheck = twoFactorHandler.needsTwoFactorAuthentication(m_user)
+            && twoFactorHandler.hasSecondFactor(m_user);
+
+        if (!needToCheck) {
+            handler.accept(null);
+        } else {
+            Window window = CmsBasicDialog.prepareWindow(DialogWidth.narrow);
+            window.setModal(true);
+            window.setResizable(false);
+            window.setCaption(CmsSecondFactorDialog.getCaption(m_user));
+            CmsSecondFactorDialog dialog = new CmsSecondFactorDialog(code -> {
+                CmsSecondFactorInfo info = new CmsSecondFactorInfo(code);
+                handler.accept(info);
+            });
+            A_CmsUI.get().addWindow(window);
+            window.setContent(dialog);
+        }
     }
 
     /**
@@ -298,52 +318,25 @@ public class CmsChangePasswordDialog extends CmsBasicDialog {
 
         if (validatePasswords(password1, password2)) {
             String oldPassword = m_form.getOldPassword();
-            boolean error = false;
-
             if (oldPassword.equals(password1)) {
                 m_form.setErrorPassword1(
                     new UserError(
                         Messages.get().getBundle(m_locale).key(Messages.GUI_PWCHANGE_DIFFERENT_PASSWORD_REQUIRED_0)),
                     OpenCmsTheme.SECURITY_INVALID);
-                error = true;
             } else {
-                try {
-                    m_cms.setPassword(m_user.getName(), oldPassword, password1);
-                    CmsUserLog.logPasswordChangeForRequestedReset(A_CmsUI.getCmsObject(), m_user.getName());
-                } catch (CmsException e) {
-                    m_form.setErrorOldPassword(
-                        new UserError(e.getLocalizedMessage(m_locale)),
-                        OpenCmsTheme.SECURITY_INVALID);
-                    error = true;
-                    LOG.debug(e.getLocalizedMessage(), e);
-                }
-            }
+                maybeCheckSecondFactor((CmsSecondFactorInfo secondFactor) -> {
 
-            if (!error) {
-                if (m_context != null) {
-                    close();
-                } else {
-                    // this will be the case for forced password changes after login
-                    CmsVaadinUtils.showAlert(
-                        Messages.get().getBundle(m_locale).key(Messages.GUI_PWCHANGE_SUCCESS_HEADER_0),
-                        Messages.get().getBundle(m_locale).key(Messages.GUI_PWCHANGE_GUI_PWCHANGE_SUCCESS_CONTENT_0),
-                        new Runnable() {
-
-                            public void run() {
-
-                                A_CmsUI.get().getPage().setLocation(
-                                    OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-                                        CmsLoginUI.m_adminCms,
-                                        CmsWorkplaceLoginHandler.LOGIN_HANDLER
-                                            + "?ocUname="
-                                            + m_user.getSimpleName()
-                                            + "&ocOuFqn="
-                                            + m_user.getOuFqn(),
-                                        false));
-                            }
-
-                        });
-                }
+                    try {
+                        m_cms.setPassword(m_user.getName(), oldPassword, secondFactor, password1);
+                        CmsUserLog.logPasswordChangeForRequestedReset(A_CmsUI.getCmsObject(), m_user.getName());
+                        closeOrRedirectToLoginForm();
+                    } catch (CmsException e) {
+                        m_form.setErrorOldPassword(
+                            new UserError(e.getLocalizedMessage(m_locale)),
+                            OpenCmsTheme.SECURITY_INVALID);
+                        LOG.debug(e.getLocalizedMessage(), e);
+                    }
+                });
             }
         }
     }
@@ -371,6 +364,37 @@ public class CmsChangePasswordDialog extends CmsBasicDialog {
         } catch (CmsException e) {
             m_form.setErrorPassword1(new UserError(e.getLocalizedMessage(m_locale)), OpenCmsTheme.SECURITY_INVALID);
             return false;
+        }
+    }
+
+    /**
+     * Closes the dialog, or redirects to the login form, depending on context.
+     */
+    private void closeOrRedirectToLoginForm() {
+
+        if (m_context != null) {
+            close();
+        } else {
+            // this will be the case for forced password changes after login
+            CmsVaadinUtils.showAlert(
+                Messages.get().getBundle(m_locale).key(Messages.GUI_PWCHANGE_SUCCESS_HEADER_0),
+                Messages.get().getBundle(m_locale).key(Messages.GUI_PWCHANGE_GUI_PWCHANGE_SUCCESS_CONTENT_0),
+                new Runnable() {
+
+                    public void run() {
+
+                        A_CmsUI.get().getPage().setLocation(
+                            OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                                CmsLoginUI.m_adminCms,
+                                CmsWorkplaceLoginHandler.LOGIN_HANDLER
+                                    + "?ocUname="
+                                    + m_user.getSimpleName()
+                                    + "&ocOuFqn="
+                                    + m_user.getOuFqn(),
+                                false));
+                    }
+
+                });
         }
     }
 }
