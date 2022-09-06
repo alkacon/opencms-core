@@ -25,6 +25,8 @@ div.dragHandle{
 
 .dragStarted, .dragPlaceholder{}
 
+html.fullWindowDrag {}
+
 
 
 .currentTarget{

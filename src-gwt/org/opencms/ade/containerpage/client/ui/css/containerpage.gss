@@ -31,6 +31,8 @@
 	display:none;
 }
 
+html.fullWindowDrag {}
+
 
 .oc-edit-buttons-visible div.oc-option-bar{
 	border: 1px solid transparent;

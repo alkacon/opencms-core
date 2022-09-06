@@ -627,6 +627,10 @@ public class CmsDNDHandler implements MouseDownHandler {
         // add marker css class to enable drag and drop dependent styles
         Document.get().getBody().addClassName(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
+        if (m_scrollElement == null) {
+            CmsDomUtil.getHtmlElement().addClassName(
+                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dragdropCss().fullWindowDrag());
+        }
         if (m_previewHandlerRegistration != null) {
             // this should never be the case
             CmsDebugLog.getInstance().printLine("Preview handler already registered!!!");
@@ -852,6 +856,10 @@ public class CmsDNDHandler implements MouseDownHandler {
         m_draggable = null;
         Document.get().getBody().removeClassName(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
+
+        CmsDomUtil.getHtmlElement().removeClassName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dragdropCss().fullWindowDrag());
+
         m_currentAnimation = null;
         m_modifierCTRL = false;
     }

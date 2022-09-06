@@ -599,6 +599,8 @@ div.helpBubble a, div.helpBubble a:hover, div.helpBubble a:focus{
 	background: transparent;
 }
 
+html.fullWindowDrag {}
+
 div.inlineEditOverlay {
 	position:absolute;
 	top:0px;
@@ -693,3 +695,4 @@ div.overlayButtonPanel > div{
 .tabDescription.tabDescription .tabDescriptionPanel strong, .tabDescription.tabDescription.tabDescriptionPanel strong{
 	font-weight: 700;
 }
+

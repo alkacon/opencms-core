@@ -47,3 +47,5 @@ div.hoverbar{
 .dragStarted .hoverbar > .cmsState{
 	display: inline-block;
 }	
+
+html.fullWindowDrag {}

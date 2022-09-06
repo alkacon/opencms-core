@@ -1,5 +1,8 @@
 
 .dragStarted, .dragPlaceholder{}
+html.fullWindowDrag {
+	scroll-behavior: auto !important;
+}
 
 .dragPlaceholder{
 	opacity: 0.7;
