@@ -29,6 +29,10 @@ package org.opencms.setup;
 
 import org.opencms.test.OpenCmsTestCase;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Properties;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -63,6 +67,7 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
         suite.addTest(new TestCmsSetupDb("testCreateTables"));
         suite.addTest(new TestCmsSetupDb("testDropTables"));
         suite.addTest(new TestCmsSetupDb("testDropDatabase"));
+        suite.addTest(new TestCmsSetupDb("testJdbcDriverVersions"));
 
         return suite;
     }
@@ -149,5 +154,29 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
 
         // close connections
         setupDb.closeConnection();
+    }
+
+    /**
+     * Tests that JDBC drivers referenced in database.properties actually match the existing Jar files.
+     *
+     * @throws Exception
+     */
+    public void testJdbcDriverVersions() throws Exception {
+
+        File baseFolder = new File("./webapp/WEB-INF/setupdata/database");
+        for (File dbFolder : baseFolder.listFiles()) {
+            if (!dbFolder.isDirectory()) {
+                continue;
+            }
+            File propFile = new File(dbFolder, "database.properties");
+            Properties props = new Properties();
+            try (FileInputStream stream = new FileInputStream(propFile)) {
+                props.load(stream);
+                String name = dbFolder.getName();
+                String lib = (String)props.get(name + ".libs");
+                File driverFile = new File(dbFolder, lib);
+                assertTrue("JDBC driver not found or wrong version: " + driverFile, driverFile.exists());
+            }
+        }
     }
 }
