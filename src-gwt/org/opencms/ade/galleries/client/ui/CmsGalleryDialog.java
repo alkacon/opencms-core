@@ -256,8 +256,11 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
             paramPanels = new ArrayList<CmsSearchParamPanel>();
             Iterator<A_CmsTab> it = m_tabbedPanel.iterator();
             while (it.hasNext()) {
+
                 A_CmsTab tab = it.next();
-                paramPanels.addAll(tab.getParamPanels(searchObj));
+                if (tab != m_resultsTab) { // parameters from the results tab are handled in the fillContent method
+                    paramPanels.addAll(tab.getParamPanels(searchObj));
+                }
             }
             m_resultsTab.fillContent(searchObj, paramPanels);
         }
@@ -304,8 +307,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
                         m_autoHideParent,
                         m_controller.getStartLocale(),
                         m_controller.getAvailableLocales(),
-                        m_controller.getSearchScope(),
-                        m_controller.getDefaultScope(),
                         m_controller.getShowExpiredDefault());
                     m_searchTab.enableExpiredResourcesSearch(true);
                     m_searchTab.setTabTextAccessor(getTabTextAccessor(i));
@@ -328,7 +329,9 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
                     m_resultsTab = new CmsResultsTab(
                         new CmsResultsTabHandler(controller),
                         m_dndHandler,
-                        m_galleryHandler);
+                        m_galleryHandler,
+                        m_controller.getSearchScope(),
+                        m_controller.getDefaultScope());
                     m_resultsTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.addWithLeftMargin(m_resultsTab, Messages.get().key(Messages.GUI_TAB_TITLE_RESULTS_0));
                     disableSearchTab();

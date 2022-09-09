@@ -1,0 +1,38 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+    xmlns:g="urn:import:com.google.gwt.user.client.ui"
+    xmlns:input="urn:import:org.opencms.gwt.client.ui.input"
+    xmlns:cms="urn:import:org.opencms.gwt.client.ui">
+    <ui:with field="galleryResources" type="org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle" />
+    <ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
+    <ui:style>
+    .searchBar {
+	   display: flex;
+	   margin-top: 5px;
+	   margin-bottom: 5px;
+	   align-items: center; 
+    }
+    
+    .searchBar > * {
+	   margin-right: 5px;
+    }
+    
+    .searchBar > *:last-child {
+	   margin-right: 0px;
+    }
+    
+    .scope { 
+	   flex: 1;
+    }
+    
+    .searchField {
+	   flex: 2;
+    }
+    
+    </ui:style>
+    <g:FlowPanel styleName="{style.searchBar}">
+        <input:CmsSelectBox addStyleNames="{style.scope}" ui:field="m_scopeSelection" />
+        <input:CmsTextBox addStyleNames="{style.searchField}" ui:field="m_searchInput" />
+        <cms:CmsPushButton ui:field="m_textSearchButton" />
+    </g:FlowPanel> 
+</ui:UiBinder> 

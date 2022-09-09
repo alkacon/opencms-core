@@ -10,18 +10,6 @@
 	
 	<g:HTMLPanel styleName="{resources.tabbedPanelCss.tabPanel}">
 		<div class="{resources.generalCss.cornerAll} {galleryResources.galleryDialogCss.searchTabBorderLayer}">
-			<div class="{galleryResources.galleryDialogCss.searchTabRow}">
-				<g:Label ui:field="m_searchLabel"  addStyleNames="{galleryResources.galleryDialogCss.searchTabLabelLeft}"></g:Label>
-				<div class="{galleryResources.galleryDialogCss.searchTabInputWide} {galleryResources.galleryDialogCss.hasButton}">
-					<cms:CmsPushButton ui:field="m_searchButton" /><input:CmsTextBox ui:field="m_searchInput" />
-				</div>
-			</div>
-		    <g:HTMLPanel ui:field="m_scopeRow" addStyleNames="{galleryResources.galleryDialogCss.searchTabRow}">
-				<g:Label ui:field="m_scopeLabel"  addStyleNames="{galleryResources.galleryDialogCss.searchTabLabelLeft}"></g:Label>
-				<div class="{galleryResources.galleryDialogCss.searchTabInputWide}">
-					<input:CmsSelectBox ui:field="m_scopeSelection" />
-				</div>
-			</g:HTMLPanel>
 			<g:HTMLPanel ui:field="m_localeRow" addStyleNames="{galleryResources.galleryDialogCss.searchTabRow}">
 				<g:Label ui:field="m_localeLabel"  addStyleNames="{galleryResources.galleryDialogCss.searchTabLabelLeft}"></g:Label>
 				<div class="{galleryResources.galleryDialogCss.searchTabInputWide}">

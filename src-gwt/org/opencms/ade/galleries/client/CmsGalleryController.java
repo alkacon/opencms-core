@@ -1111,6 +1111,28 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Removes the query.
+     */
+    public void removeQuery() {
+
+        m_searchObject.setQuery(null);
+        m_handler.onRemoveQuery();
+        updateResultsTab(false);
+        ValueChangeEvent.fire(this, m_searchObject);
+    }
+
+    /**
+     * Removes the search scope.
+     */
+    public void removeScope() {
+
+        m_searchObject.setScope(m_searchObject.getOriginalGalleryData().getScope());
+        m_handler.onRemoveScope();
+        updateResultsTab(false);
+        ValueChangeEvent.fire(this, m_searchObject);
+    }
+
+    /**
      * Removes the given full text search criteria from the search object.<p>
      *
      * @param key the key of the parameter to remove
@@ -1122,9 +1144,6 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             switch (type) {
                 case language:
                     m_searchObject.setLocale(getStartLocale());
-                    break;
-                case text:
-                    m_searchObject.setQuery(null);
                     break;
                 case expired:
                     m_searchObject.setIncludeExpired(false);
@@ -1562,15 +1581,19 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         // if the RPC call will be sent the search object is in a unchanged state
         m_searchObjectChanged = false;
         if (!m_handler.hasResultsTab()) {
+
             return;
         }
         if (m_searchObject.isEmpty()) {
+
             // don't search: notify the user that at least one search criteria should be selected
             if ((m_handler.m_galleryDialog.getResultsTab() == null)
                 || m_handler.m_galleryDialog.getResultsTab().isSelected()) {
+
                 m_handler.showFirstTab();
             }
         } else {
+
             // perform the search
 
             /** The RPC search action for the gallery dialog. */
@@ -1588,6 +1611,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                     m_currentCallId++;
                     m_callId = m_currentCallId;
                     m_loading = true;
+
                     CmsGallerySearchBean preparedObject = prepareSearchObject();
 
                     if (isNextPage) {

@@ -34,6 +34,7 @@ import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
+import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
@@ -51,6 +52,7 @@ import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.externallink.CmsEditExternalLinkDialog;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
 import org.opencms.gwt.client.util.CmsDebugLog;
@@ -62,7 +64,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -70,6 +71,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Display;
@@ -78,13 +80,19 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -126,6 +134,92 @@ public class CmsResultsTab extends A_CmsListTab {
             getTabHandler().deleteResource(m_resourcePath);
         }
 
+    }
+
+    /**
+     * Enum representing different options for the results tab.
+     */
+    public enum ParamType {
+        /** Search scope. */
+        scope,
+        /** Query text. */
+        text;
+    }
+
+    /**
+     * Bar containing the search scope selection and a text search field.
+     */
+    public class SearchBar extends Composite {
+
+        /** The field for the text search. */
+        @UiField
+        protected CmsTextBox m_searchInput;
+
+        /** The search button. */
+        @UiField
+        protected CmsPushButton m_textSearchButton;
+
+        /** The select box for the search scope selection. */
+        @UiField
+        protected CmsSelectBox m_scopeSelection;
+
+        /**
+         * Creates a new instance.
+         */
+        public SearchBar() {
+
+            I_CmsSearchBarUiBinder uiBinder = GWT.create(I_CmsSearchBarUiBinder.class);
+            FlowPanel content = uiBinder.createAndBindUi(this);
+            initWidget(content);
+            m_searchInput.setGhostValue(Messages.get().key(Messages.GUI_QUICK_FINDER_SEARCH_0), true);
+            m_searchInput.setGhostModeClear(true);
+            m_textSearchButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+            m_textSearchButton.setImageClass(I_CmsButton.SEARCH_SMALL);
+            m_textSearchButton.setTitle(Messages.get().key(Messages.GUI_TAB_SEARCH_SEARCH_EXISTING_0));
+        }
+
+        /**
+         * Gets the scope selection widget.
+         *
+         * @return the scope selection widget
+         */
+        public CmsSelectBox getScopeSelection() {
+
+            return m_scopeSelection;
+        }
+
+        /**
+         * Gets the search button.
+         *
+         * @return the search button
+         */
+        public CmsPushButton getSearchButton() {
+
+            return m_textSearchButton;
+        }
+
+        /**
+         * Gets the search input field.
+         *
+         * @return the search input field
+         */
+        public CmsTextBox getSearchInput() {
+
+            return m_searchInput;
+        }
+
+        /**
+         * Handles the change event on the search scope select box.<p>
+         *
+         * @param event the change event
+         */
+        @UiHandler("m_scopeSelection")
+        protected void onScopeChange(ValueChangeEvent<String> event) {
+
+            String value = event.getValue();
+            m_tabHandler.setScope(CmsGallerySearchScope.valueOf(value));
+
+        }
     }
 
     /**
@@ -258,6 +352,14 @@ public class CmsResultsTab extends A_CmsListTab {
         }
     }
 
+    /**
+     * UiBinder interface for the search bar.
+     */
+    @UiTemplate("CmsResultsTabSearchBar.ui.xml")
+    interface I_CmsSearchBarUiBinder extends UiBinder<FlowPanel, SearchBar> {
+        // UiBinder
+    }
+
     /** The big thumbnails view name. */
     static final String BIG = "big";
 
@@ -298,7 +400,7 @@ public class CmsResultsTab extends A_CmsListTab {
     private CmsPushButton m_specialUploadButton;
 
     /** The reference to the handler of this tab. */
-    private CmsResultsTabHandler m_tabHandler;
+    CmsResultsTabHandler m_tabHandler;
 
     /** Set of resource types currently displayed in the result list. */
     private Set<String> m_types;
@@ -306,20 +408,63 @@ public class CmsResultsTab extends A_CmsListTab {
     /** The upload button. */
     private CmsUploadButton m_uploadButton;
 
+    /** The search bar. */
+    private SearchBar m_searchBar = new SearchBar();
+
+    /** The default scope. */
+    private CmsGallerySearchScope m_defaultScope;
+
     /**
      * The constructor.<p>
      *
      * @param tabHandler the tab handler
      * @param dndHandler the dnd manager
      * @param galleryHandler the gallery handler
+     * @param scope the initial scope
+     * @param defaultScope the default scope
      **/
     public CmsResultsTab(
         CmsResultsTabHandler tabHandler,
         CmsDNDHandler dndHandler,
-        I_CmsGalleryHandler galleryHandler) {
+        I_CmsGalleryHandler galleryHandler,
+        CmsGallerySearchScope scope,
+        CmsGallerySearchScope defaultScope) {
 
         super(GalleryTabId.cms_tab_results);
+        m_defaultScope = defaultScope;
         m_galleryHandler = galleryHandler;
+        m_additionalWidgets.add(m_searchBar);
+        for (CmsGallerySearchScope choice : CmsGallerySearchScope.values()) {
+            String name = Messages.get().key(choice.getKey());
+            m_searchBar.getScopeSelection().addOption(choice.name(), name);
+        }
+        m_searchBar.getScopeSelection().selectValue(scope.name());
+        m_searchBar.getSearchButton().addClickHandler(event -> {
+            m_tabHandler.updateResult();
+        });
+        m_searchBar.getSearchInput().addValueChangeHandler(event -> {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(event.getValue()) && (event.getValue().length() >= 3)) {
+                m_tabHandler.setSearchQuery(event.getValue());
+            } else {
+                m_tabHandler.setSearchQuery(null);
+            }
+        });
+        m_searchBar.getSearchInput().addKeyPressHandler(event -> {
+            if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
+                m_tabHandler.updateResult();
+            }
+        });
+        tabHandler.addSearchChangeHandler(new ValueChangeHandler<CmsGallerySearchBean>() {
+
+            @SuppressWarnings("synthetic-access")
+            public void onValueChange(ValueChangeEvent<CmsGallerySearchBean> event) {
+
+                // only set the query if the tab is not currently selected
+                if (!isSelected()) {
+                    m_searchBar.getSearchInput().setFormValueAsString(event.getValue().getQuery());
+                }
+            }
+        });
 
         m_contextMenuHandler = new CmsResultContextMenuHandler(tabHandler);
         m_types = new HashSet<String>();
@@ -398,6 +543,12 @@ public class CmsResultsTab extends A_CmsListTab {
         }
         m_sortSelectBox.selectValue(searchObj.getSortOrder());
         displayResultCount(getResultsDisplayed(searchObj), searchObj.getResultCount());
+        m_searchBar.getSearchInput().setFormValueAsString(searchObj.getQuery());
+        if (searchObj.getScope() != null) {
+            m_searchBar.getScopeSelection().setFormValue(searchObj.getScope().name());
+        }
+        paramPanels.addAll(getParamPanels(searchObj));
+
         m_hasMoreResults = searchObj.hasMore();
         if (searchObj.hasReplacedResults()) {
             m_preset = null;
@@ -437,8 +588,28 @@ public class CmsResultsTab extends A_CmsListTab {
     @Override
     public List<CmsSearchParamPanel> getParamPanels(CmsGallerySearchBean searchObj) {
 
-        // not available for this tab
-        return Collections.emptyList();
+        List<CmsSearchParamPanel> result = new ArrayList<CmsSearchParamPanel>();
+        CmsGallerySearchScope scope = CmsGallerySearchScope.valueOf(
+            m_searchBar.getScopeSelection().getFormValueAsString());
+        if ((scope != m_defaultScope)) {
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(
+                Messages.get().key(Messages.GUI_PARAMS_LABEL_SCOPE_0),
+                this);
+            panel.setContent(Messages.get().key(scope.getKey()), ParamType.scope.name());
+            result.add(panel);
+        }
+
+        String query = m_searchBar.getSearchInput().getFormValueAsString();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(query)) {
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(
+                Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_TEXT_0),
+                this);
+            panel.setContent(query, ParamType.text.name());
+            result.add(panel);
+        }
+
+        return result;
+
     }
 
     /**
@@ -447,7 +618,9 @@ public class CmsResultsTab extends A_CmsListTab {
     @Override
     public int getRequiredHeight() {
 
-        return super.getRequiredHeight() + (m_params.isVisible() ? m_params.getOffsetHeight() + 5 : 21);
+        return super.getRequiredHeight()
+            + (m_searchBar.getOffsetHeight())
+            + (m_params.isVisible() ? m_params.getOffsetHeight() + 5 : 21);
     }
 
     /**
@@ -488,6 +661,22 @@ public class CmsResultsTab extends A_CmsListTab {
     }
 
     /**
+     * Removes the query.
+     */
+    public void removeQuery() {
+
+        m_searchBar.getSearchInput().setFormValueAsString("");
+    }
+
+    /**
+     * Removes the scope.
+     */
+    public void removeScope() {
+
+        m_searchBar.getScopeSelection().setFormValueAsString(m_defaultScope.name());
+    }
+
+    /**
      * Updates the height (with border) of the result list panel according to the search parameter panels shown.<p>
      */
     public void updateListSize() {
@@ -498,7 +687,10 @@ public class CmsResultsTab extends A_CmsListTab {
         : 21;
         int optionsHeight = m_options.getOffsetHeight()
             + CmsDomUtil.getCurrentStyleInt(m_options.getElement(), CmsDomUtil.Style.marginBottom);
-        int listTop = paramsHeight + optionsHeight + 5;
+        int addHeight = m_additionalWidgets.getOffsetHeight()
+            + CmsDomUtil.getCurrentStyleInt(m_additionalWidgets.getElement(), CmsDomUtil.Style.marginBottom);
+
+        int listTop = paramsHeight + optionsHeight + addHeight + 5;
         // another sanity check, don't set any top value below 35
         if (listTop > 35) {
             m_list.getElement().getStyle().setTop(listTop, Unit.PX);

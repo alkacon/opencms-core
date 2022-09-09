@@ -327,6 +327,24 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
     }
 
     /**
+     * Called when the query is removed.
+     */
+    public void onRemoveQuery() {
+
+        m_galleryDialog.getResultsTab().removeQuery();
+
+    }
+
+    /**
+     * Called when the search scope is removed.
+     */
+    public void onRemoveScope() {
+
+        m_galleryDialog.getResultsTab().removeScope();
+
+    }
+
+    /**
      * Removes a parameter from the search tab.<p>
      *
      * @param type the parameter type

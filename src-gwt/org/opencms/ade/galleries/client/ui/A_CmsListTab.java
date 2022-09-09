@@ -274,6 +274,10 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
     /** The quick search handler registration. */
     private HandlerRegistration m_quickSearchRegistration;
 
+    /** Panel to put additional widgets. */
+    @UiField
+    FlowPanel m_additionalWidgets;
+
     /**
      * The default constructor with drag handler.<p>
      *

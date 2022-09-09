@@ -27,6 +27,9 @@
 
 package org.opencms.ade.galleries.client;
 
+import org.opencms.ade.galleries.client.ui.CmsResultsTab.ParamType;
+import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
+
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.user.client.ui.PopupPanel;
 
@@ -168,7 +171,13 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     @Override
     public void removeParam(String paramKey) {
 
-        // nothing to do
+        if (ParamType.scope.name().equals(paramKey)) {
+            m_controller.removeScope();
+
+        } else if (ParamType.text.name().equals(paramKey)) {
+            m_controller.removeQuery();
+
+        }
     }
 
     /**
@@ -179,6 +188,17 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
     public void setResultViewType(String resultViewType) {
 
         m_controller.setResultViewType(resultViewType);
+    }
+
+    /**
+     * Sets the search scope.<p>
+     *
+     * @param scope the search scope
+     */
+    public void setScope(CmsGallerySearchScope scope) {
+
+        m_controller.addScope(scope);
+        m_controller.updateResultsTab(false);
     }
 
     /**

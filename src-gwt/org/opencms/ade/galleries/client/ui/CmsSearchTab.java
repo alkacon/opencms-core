@@ -30,17 +30,13 @@ package org.opencms.ade.galleries.client.ui;
 import org.opencms.ade.galleries.client.CmsSearchTabHandler;
 import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
-import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
-import org.opencms.gwt.client.ui.I_CmsButton;
-import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsLabelSelectCell;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
-import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.datebox.CmsDateBox;
 import org.opencms.util.CmsStringUtil;
 
@@ -50,15 +46,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -81,11 +72,7 @@ public class CmsSearchTab extends A_CmsTab {
         /** The language type. */
         language,
         /** The modification range type. */
-        modification,
-        /** The search scope type. */
-        scope,
-        /** Text query type. */
-        text
+        modification;
     }
 
     /** The ui-binder interface. */
@@ -158,30 +145,6 @@ public class CmsSearchTab extends A_CmsTab {
     @UiField
     protected CmsSelectBox m_localeSelection;
 
-    /** The label for the search scope selection. */
-    @UiField
-    protected Label m_scopeLabel;
-
-    /** The row for the search scope selection. */
-    @UiField
-    protected HTMLPanel m_scopeRow;
-
-    /** The select box for the search scope selection. */
-    @UiField
-    protected CmsSelectBox m_scopeSelection;
-
-    /** The search button. */
-    @UiField
-    protected CmsPushButton m_searchButton;
-
-    /** The input field for the search query. */
-    @UiField
-    protected CmsTextBox m_searchInput;
-
-    /** The label for the search query. */
-    @UiField
-    protected Label m_searchLabel;
-
     /** The tab handler. */
     CmsSearchTabHandler m_tabHandler;
 
@@ -190,9 +153,6 @@ public class CmsSearchTab extends A_CmsTab {
 
     /** The map of available locales. */
     private Map<String, String> m_availableLocales;
-
-    /** The default search scope. */
-    private CmsGallerySearchScope m_defaultScope;
 
     /** The tab panel. */
     private HTMLPanel m_tab;
@@ -204,8 +164,6 @@ public class CmsSearchTab extends A_CmsTab {
      * @param autoHideParent the auto-hide parent to this dialog if present
      * @param currentLocale the current content locale
      * @param availableLocales the available locales
-     * @param scope the search scope
-     * @param defaultScope the default search scope
      * @param defaultIncludeExpired true if 'show expired' should be enabled by default
      */
     @SuppressWarnings("deprecation")
@@ -214,8 +172,6 @@ public class CmsSearchTab extends A_CmsTab {
         I_CmsAutoHider autoHideParent,
         String currentLocale,
         Map<String, String> availableLocales,
-        CmsGallerySearchScope scope,
-        CmsGallerySearchScope defaultScope,
         boolean defaultIncludeExpired) {
 
         // initialize the tab
@@ -227,16 +183,6 @@ public class CmsSearchTab extends A_CmsTab {
         m_autoHideParent = autoHideParent;
         m_currentLocale = currentLocale;
         m_availableLocales = availableLocales;
-        m_defaultScope = defaultScope;
-
-        //add search roots selection
-        String scopeLabelText = Messages.get().key(Messages.GUI_SEARCH_SCOPE_0);
-        m_scopeLabel.setText(scopeLabelText);
-        for (CmsGallerySearchScope choice : CmsGallerySearchScope.values()) {
-            String name = Messages.get().key(choice.getKey());
-            m_scopeSelection.addOption(choice.name(), name);
-        }
-        m_scopeSelection.selectValue(scope.name());
 
         // add the language selection
         m_localeLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LANGUAGE_LABEL_TEXT_0));
@@ -252,13 +198,6 @@ public class CmsSearchTab extends A_CmsTab {
         if (availableLocales.size() <= 1) {
             m_localeRow.getElement().getStyle().setDisplay(Display.NONE);
         }
-        m_searchButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
-        m_searchButton.setImageClass(I_CmsButton.SEARCH_SMALL);
-        m_searchButton.setTitle(Messages.get().key(Messages.GUI_TAB_SEARCH_SEARCH_EXISTING_0));
-        // add the query
-        m_searchLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_TEXT_0));
-        m_searchInput.setGhostValue(Messages.get().key(Messages.GUI_QUICK_FINDER_SEARCH_0), true);
-        m_searchInput.setGhostModeClear(true);
         m_includeExpiredCheckBox.setChecked(defaultIncludeExpired);
         m_tabHandler.setIncludeExpired(defaultIncludeExpired, false);
         m_includeExpiredCheckBox.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_INCLUDE_EXPIRED_0));
@@ -287,17 +226,6 @@ public class CmsSearchTab extends A_CmsTab {
         // add the clear button
         m_clearButton.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_BUTTON_CLEAR_0));
         m_clearButton.setUseMinWidth(true);
-        // add change handler to display the query string changes that may have occurred within another tab
-        getTabHandler().addSearchChangeHandler(new ValueChangeHandler<CmsGallerySearchBean>() {
-
-            public void onValueChange(ValueChangeEvent<CmsGallerySearchBean> arg0) {
-
-                // only set the query if the tab is not currently selected
-                if (!isSelected()) {
-                    m_searchInput.setFormValueAsString(arg0.getValue().getQuery());
-                }
-            }
-        });
     }
 
     /**
@@ -305,8 +233,6 @@ public class CmsSearchTab extends A_CmsTab {
      */
     public void clearInput() {
 
-        m_searchInput.setFormValueAsString("");
-        ValueChangeEvent.fire(m_searchInput, "");
         m_dateCreatedStartDateBox.setValue(null, true);
         m_dateCreatedEndDateBox.setValue(null, true);
         m_dateModifiedStartDateBox.setValue(null, true);
@@ -333,7 +259,6 @@ public class CmsSearchTab extends A_CmsTab {
     public void fillParams(CmsGallerySearchBean search) {
 
         m_localeSelection.setFormValue(search.getLocale(), false);
-        m_searchInput.setFormValueAsString(search.getQuery());
         m_includeExpiredCheckBox.setChecked(search.isIncludeExpired());
         if (search.getDateCreatedStart() > 9) {
             m_dateCreatedStartDateBox.setValue(new Date(search.getDateCreatedStart()));
@@ -347,9 +272,10 @@ public class CmsSearchTab extends A_CmsTab {
         if (search.getDateModifiedEnd() > 0) {
             m_dateModifiedEndDateBox.setValue(new Date(search.getDateModifiedEnd()));
         }
-        if (search.getScope() != null) {
-            m_scopeSelection.setFormValue(search.getScope().name());
-        }
+        //        m_searchInput.setFormValueAsString(search.getQuery());
+        //        if (search.getScope() != null) {
+        //            m_scopeSelection.setFormValue(search.getScope().name());
+        //        }
 
     }
 
@@ -361,20 +287,11 @@ public class CmsSearchTab extends A_CmsTab {
 
         List<CmsSearchParamPanel> result = new ArrayList<CmsSearchParamPanel>();
         // get the required data
-        String query = m_searchInput.getFormValueAsString();
         String createdStart = m_dateCreatedStartDateBox.getValueAsFormatedString();
         String createdEnd = m_dateCreatedEndDateBox.getValueAsFormatedString();
         String modifiedStart = m_dateModifiedStartDateBox.getValueAsFormatedString();
         String modifiedEnd = m_dateModifiedEndDateBox.getValueAsFormatedString();
 
-        CmsGallerySearchScope scope = CmsGallerySearchScope.valueOf(m_scopeSelection.getFormValueAsString());
-        if ((scope != m_defaultScope)) {
-            CmsSearchParamPanel panel = new CmsSearchParamPanel(
-                Messages.get().key(Messages.GUI_PARAMS_LABEL_SCOPE_0),
-                this);
-            panel.setContent(Messages.get().key(scope.getKey()), ParamType.scope.name());
-            result.add(panel);
-        }
         // append the language
         String locale = m_localeSelection.getFormValueAsString();
         String language = m_availableLocales.get(locale);
@@ -386,14 +303,6 @@ public class CmsSearchTab extends A_CmsTab {
                 Messages.get().key(Messages.GUI_TAB_SEARCH_LANGUAGE_LABEL_TEXT_0),
                 this);
             panel.setContent(language, ParamType.language.name());
-            result.add(panel);
-        }
-
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(query)) {
-            CmsSearchParamPanel panel = new CmsSearchParamPanel(
-                Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_TEXT_0),
-                this);
-            panel.setContent(query, ParamType.text.name());
             result.add(panel);
         }
 
@@ -484,9 +393,6 @@ public class CmsSearchTab extends A_CmsTab {
             case language:
                 m_localeSelection.reset();
                 break;
-            case text:
-                m_searchInput.setFormValueAsString("");
-                break;
             case expired:
                 m_includeExpiredCheckBox.setChecked(false);
                 break;
@@ -497,9 +403,6 @@ public class CmsSearchTab extends A_CmsTab {
             case modification:
                 m_dateModifiedStartDateBox.setValue(null, true);
                 m_dateModifiedEndDateBox.setValue(null, true);
-                break;
-            case scope:
-                m_scopeSelection.setFormValueAsString(m_defaultScope.name());
                 break;
             default:
         }
@@ -607,73 +510,4 @@ public class CmsSearchTab extends A_CmsTab {
         m_tabHandler.setLocale(value);
     }
 
-    /**
-     * Handles the change event on the search scope select box.<p>
-     *
-     * @param event the change event
-     */
-    @UiHandler("m_scopeSelection")
-    protected void onScopeChange(ValueChangeEvent<String> event) {
-
-        String value = event.getValue();
-        m_tabHandler.setScope(CmsGallerySearchScope.valueOf(value));
-
-    }
-
-    /**
-     * Handles search input change events.<p>
-     *
-     * @param event the change event
-     */
-    @UiHandler("m_searchInput")
-    protected void onSearchInputChange(ValueChangeEvent<String> event) {
-
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(event.getValue()) && (event.getValue().length() >= 3)) {
-            m_tabHandler.setSearchQuery(event.getValue());
-        } else {
-            m_tabHandler.setSearchQuery(null);
-        }
-    }
-
-    /**
-     * Handles key press events of the search input field.<p>
-     *
-     * @param event the key press event
-     */
-    @UiHandler("m_searchInput")
-    protected void onSearchInputKeyPress(KeyPressEvent event) {
-
-        if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
-            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-                public void execute() {
-
-                    m_tabHandler.selectResultTab();
-                }
-            });
-        } else {
-
-            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-                /**
-                 * @see com.google.gwt.user.client.Command#execute()
-                 */
-                public void execute() {
-
-                    ValueChangeEvent.fire(m_searchInput, m_searchInput.getText());
-                }
-            });
-        }
-    }
-
-    /**
-     * Starts the search.<p>
-     *
-     * @param event the click event
-     */
-    @UiHandler("m_searchButton")
-    protected void startSearch(ClickEvent event) {
-
-        getTabHandler().selectResultTab();
-    }
 }
