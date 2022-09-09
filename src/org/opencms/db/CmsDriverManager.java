@@ -5823,8 +5823,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (mode == LoginUserMode.standard) {
             CmsTwoFactorAuthenticationHandler handler = OpenCms.getTwoFactorAuthenticationHandler();
             if (handler.needsTwoFactorAuthentication(newUser)) {
+                // note that password check must already have been successful at this stage
+
                 if (handler.hasSecondFactor(newUser)) {
                     if (!handler.verifySecondFactor(newUser, secondFactorInfo)) {
+                        if (dbc.currentUser().isGuestUser()) {
+                            // add an invalid login attempt for this user to the storage
+                            OpenCms.getLoginManager().addInvalidLogin(userName, remoteAddress);
+                        }
+                        OpenCms.getLoginManager().checkInvalidLogins(userName, remoteAddress);
                         throw new CmsAuthentificationException(
                             org.opencms.security.Messages.get().container(
                                 org.opencms.security.Messages.ERR_VERIFICATION_FAILED_1,
@@ -5835,6 +5842,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         if (handler.setUpAndVerifySecondFactor(newUser, secondFactorInfo)) {
                             LOG.info("Second factor setup successful for user " + newUser.getName());
                         } else {
+                            if (dbc.currentUser().isGuestUser()) {
+                                // add an invalid login attempt for this user to the storage
+                                OpenCms.getLoginManager().addInvalidLogin(userName, remoteAddress);
+                            }
+                            OpenCms.getLoginManager().checkInvalidLogins(userName, remoteAddress);
                             throw new CmsAuthentificationException(
                                 org.opencms.security.Messages.get().container(
                                     org.opencms.security.Messages.ERR_VERIFICATION_FAILED_1,
