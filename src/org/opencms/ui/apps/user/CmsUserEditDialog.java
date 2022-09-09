@@ -361,6 +361,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     /**Select view for principals.*/
     private CmsPrincipalSelect m_group;
 
+    /** Check box for resetting 2FA information. */
     private CheckBox m_resetTwoFactorAuthentication;
 
     /**vaadin component.*/
