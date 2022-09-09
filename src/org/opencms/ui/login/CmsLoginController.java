@@ -954,7 +954,7 @@ public class CmsLoginController {
         window.setClosable(false);
         window.setResizable(false);
         window.setCaption(CmsSecondFactorDialog.getCaption(context.getUser()));
-        CmsSecondFactorDialog dialog = new CmsSecondFactorDialog(verificationCode -> {
+        CmsSecondFactorDialog dialog = new CmsSecondFactorDialog(context.getUser(), verificationCode -> {
             context.setSecondFactorInfo(new CmsSecondFactorInfo(verificationCode));
             try {
                 loginContinuation.continueLogin(context);

@@ -8822,6 +8822,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
             } catch (CmsDbEntryNotFoundException e) {
                 throw new CmsDataAccessException(Messages.get().container(Messages.ERR_RESET_PASSWORD_1, username), e);
             }
+
+            if ((user == null) || user.isManaged()) {
+                throw new CmsDataAccessException(Messages.get().container(Messages.ERR_RESET_PASSWORD_1, username));
+            }
+
             CmsTwoFactorAuthenticationHandler twoFactorHandler = OpenCms.getTwoFactorAuthenticationHandler();
             if (twoFactorHandler.needsTwoFactorAuthentication(user) && twoFactorHandler.hasSecondFactor(user)) {
                 if (!twoFactorHandler.verifySecondFactor(user, secondFactor)) {
@@ -8829,10 +8834,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         Messages.get().container(Messages.ERR_RESET_PASSWORD_1, username),
                         new RuntimeException("Verification code mismatch"));
                 }
-            }
-
-            if ((user == null) || user.isManaged()) {
-                throw new CmsDataAccessException(Messages.get().container(Messages.ERR_RESET_PASSWORD_1, username));
             }
 
             getUserDriver(dbc).writePassword(dbc, username, oldPassword, newPassword);

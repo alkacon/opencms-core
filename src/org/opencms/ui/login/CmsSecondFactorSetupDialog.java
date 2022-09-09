@@ -32,10 +32,12 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.twofactor.CmsSecondFactorInfo;
 import org.opencms.security.twofactor.CmsSecondFactorSetupInfo;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.user.CmsAccountsApp;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.login.CmsLoginController.LoginContext;
 import org.opencms.ui.login.CmsLoginController.LoginContinuation;
 
+import java.util.Collections;
 import java.util.HashMap;
 
 import org.apache.commons.logging.Log;
@@ -96,6 +98,7 @@ public class CmsSecondFactorSetupDialog extends CmsBasicDialog {
         CmsLoginController.LoginContinuation continuation) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), new HashMap<>());
+        displayResourceInfoDirectly(Collections.singletonList(CmsAccountsApp.getPrincipalInfo(context.getUser())));
         setWidth("800px");
         m_context = context;
         m_continuation = continuation;

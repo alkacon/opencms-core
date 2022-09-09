@@ -30,9 +30,11 @@ package org.opencms.ui.login;
 import org.opencms.file.CmsUser;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
+import org.opencms.ui.apps.user.CmsAccountsApp;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
@@ -63,7 +65,9 @@ public class CmsSecondFactorDialog extends CmsBasicDialog {
      *
      * @param verificationCodeHandler the handler to which to pass the code entered by the user
      */
-    public CmsSecondFactorDialog(Consumer<String> verificationCodeHandler) {
+    public CmsSecondFactorDialog(CmsUser user, Consumer<String> verificationCodeHandler) {
+
+        displayResourceInfoDirectly(Collections.singletonList(CmsAccountsApp.getPrincipalInfo(user)));
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), new HashMap<>());
         m_verificationCodeHandler = verificationCodeHandler;

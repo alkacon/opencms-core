@@ -229,7 +229,7 @@ public class CmsChangePasswordDialog extends CmsBasicDialog {
             window.setModal(true);
             window.setResizable(false);
             window.setCaption(CmsSecondFactorDialog.getCaption(m_user));
-            CmsSecondFactorDialog dialog = new CmsSecondFactorDialog(code -> {
+            CmsSecondFactorDialog dialog = new CmsSecondFactorDialog(m_user, code -> {
                 CmsSecondFactorInfo info = new CmsSecondFactorInfo(code);
                 handler.accept(info);
             });
