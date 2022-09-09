@@ -54,6 +54,9 @@ public class CmsTwoFactorAuthenticationConfig {
     /** The secret key used to encrypt/decrypt the two-factor authentication data for users. */
     private String m_secret;
 
+    /** The setup message. */
+    private String m_setupMessage;
+
     /**
      * Creates a new configuration from the given XML configuration element.
      *
@@ -67,6 +70,10 @@ public class CmsTwoFactorAuthenticationConfig {
         m_enabled = Boolean.parseBoolean(((Element)element.selectSingleNode("enabled")).getTextTrim());
         m_secret = ((Element)element.selectSingleNode("secret")).getTextTrim();
         m_policy = parsePolicy(element);
+        Element messageElem = (Element)(element.selectSingleNode("setup-message"));
+        if (messageElem != null) {
+            m_setupMessage = messageElem.getText();
+        }
 
     }
 
@@ -108,6 +115,17 @@ public class CmsTwoFactorAuthenticationConfig {
     public String getSecret() {
 
         return m_secret;
+    }
+
+    /**
+     * Gets the setup message.
+     *
+     * @return the setup message
+     */
+    public String getSetupMessage() {
+
+        return m_setupMessage;
+
     }
 
     /**

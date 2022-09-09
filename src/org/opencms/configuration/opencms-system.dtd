@@ -166,9 +166,10 @@
 <!ELEMENT logoutUri (#PCDATA)>
 
 
-<!ELEMENT two-factor-authentication (enabled, secret, issuer, include-users?, exclude-users?)>
+<!ELEMENT two-factor-authentication (enabled, secret, issuer, setup-message?, include-users?, exclude-users?)>
 <!ELEMENT issuer (#PCDATA)>
 <!ELEMENT secret (#PCDATA)>
+<!ELEMENT setup-message (#PCDATA)>
 <!ELEMENT include-users (group | orgunit | pattern)*>
 <!ELEMENT exclude-users (group | orgunit | pattern)*>
 

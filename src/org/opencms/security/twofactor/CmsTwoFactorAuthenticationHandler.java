@@ -35,7 +35,12 @@ import org.opencms.file.CmsUser;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsUserLog;
+import org.opencms.util.CmsMacroResolver;
+import org.opencms.workplace.CmsWorkplaceMessages;
+
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
@@ -149,6 +154,21 @@ public class CmsTwoFactorAuthenticationHandler {
         } catch (QrGenerationException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Gets the message to display during two-factor authentication setup.
+     *
+     * @param locale the locale
+     * @return the message
+     */
+    public String getSetupMessage(Locale locale) {
+
+        String rawMessage = m_config.getSetupMessage();
+        CmsMacroResolver resolver = new CmsMacroResolver();
+        CmsWorkplaceMessages messages = OpenCms.getWorkplaceManager().getMessages(locale);
+        resolver.setMessages(messages);
+        return resolver.resolveMacros(rawMessage);
     }
 
     /**

@@ -31,6 +31,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.twofactor.CmsSecondFactorInfo;
 import org.opencms.security.twofactor.CmsSecondFactorSetupInfo;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.user.CmsAccountsApp;
 import org.opencms.ui.components.CmsBasicDialog;
@@ -39,6 +40,7 @@ import org.opencms.ui.login.CmsLoginController.LoginContinuation;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
@@ -72,6 +74,9 @@ public class CmsSecondFactorSetupDialog extends CmsBasicDialog {
     /** The handler to call when we can continue with the login process. */
     private LoginContinuation m_continuation;
 
+    /** The description label. */
+    private Label m_description;
+
     /** The OK button. */
     private Button m_okButton;
 
@@ -104,6 +109,11 @@ public class CmsSecondFactorSetupDialog extends CmsBasicDialog {
         m_continuation = continuation;
         CmsSecondFactorSetupInfo info = OpenCms.getTwoFactorAuthenticationHandler().generateSetupInfo(
             context.getUser());
+        Locale locale = A_CmsUI.get().getLocale();
+        String specialDescription = OpenCms.getTwoFactorAuthenticationHandler().getSetupMessage(locale);
+        if (specialDescription != null) {
+            m_description.setValue(specialDescription);
+        }
 
         m_qrCodeImage.setSource(new ExternalResource(info.getQrCodeImageUrl()));
         m_secret = info.getSecret();
