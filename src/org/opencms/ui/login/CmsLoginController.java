@@ -985,8 +985,7 @@ public class CmsLoginController {
                 handleError(context.getCms(), context.getUser().getName(), e);
             }
         });
-        window.setCaption(
-            CmsVaadinUtils.getMessageText(Messages.GUI_LOGIN_2FA_SETUP_1, context.getUser().getFullName()));
+        window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_LOGIN_2FA_SETUP_0));
         A_CmsUI.get().addWindow(window);
         window.setContent(dialog);
 

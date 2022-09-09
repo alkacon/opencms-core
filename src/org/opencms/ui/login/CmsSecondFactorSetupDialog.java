@@ -35,6 +35,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.user.CmsAccountsApp;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.login.CmsLoginController.LoginContext;
 import org.opencms.ui.login.CmsLoginController.LoginContinuation;
 
@@ -103,7 +104,9 @@ public class CmsSecondFactorSetupDialog extends CmsBasicDialog {
         CmsLoginController.LoginContinuation continuation) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), new HashMap<>());
-        displayResourceInfoDirectly(Collections.singletonList(CmsAccountsApp.getPrincipalInfo(context.getUser())));
+        CmsResourceInfo userInfo = CmsAccountsApp.getPrincipalInfo(context.getUser());
+        userInfo.setTopLineText(context.getUser().getFullName());
+        displayResourceInfoDirectly(Collections.singletonList(userInfo));
         setWidth("800px");
         m_context = context;
         m_continuation = continuation;

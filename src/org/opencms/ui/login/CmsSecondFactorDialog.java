@@ -32,6 +32,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
 import org.opencms.ui.apps.user.CmsAccountsApp;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Collections;
@@ -67,7 +68,9 @@ public class CmsSecondFactorDialog extends CmsBasicDialog {
      */
     public CmsSecondFactorDialog(CmsUser user, Consumer<String> verificationCodeHandler) {
 
-        displayResourceInfoDirectly(Collections.singletonList(CmsAccountsApp.getPrincipalInfo(user)));
+        CmsResourceInfo userInfo = CmsAccountsApp.getPrincipalInfo(user);
+        userInfo.setTopLineText(user.getFullName());
+        displayResourceInfoDirectly(Collections.singletonList(userInfo));
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), new HashMap<>());
         m_verificationCodeHandler = verificationCodeHandler;
@@ -95,7 +98,7 @@ public class CmsSecondFactorDialog extends CmsBasicDialog {
      */
     public static String getCaption(CmsUser user) {
 
-        return CmsVaadinUtils.getMessageText(Messages.GUI_LOGIN_2FA_VERIFICATION_1, user.getFullName());
+        return CmsVaadinUtils.getMessageText(Messages.GUI_LOGIN_2FA_VERIFICATION_0);
     }
 
     /**
