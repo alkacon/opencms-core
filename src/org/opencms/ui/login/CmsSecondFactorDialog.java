@@ -64,6 +64,7 @@ public class CmsSecondFactorDialog extends CmsBasicDialog {
     /**
      * Creates a new instance.
      *
+     * @param user the user who should be asked for the second factor
      * @param verificationCodeHandler the handler to which to pass the code entered by the user
      */
     public CmsSecondFactorDialog(CmsUser user, Consumer<String> verificationCodeHandler) {

@@ -271,14 +271,14 @@ public class CmsTwoFactorAuthenticationHandler {
      * @param oldUser the user before modification
      * @param newUser the user after modification
      */
+    @SuppressWarnings("null")
     public void trackUserChange(CmsRequestContext requestContext, CmsUser oldUser, CmsUser newUser) {
 
         String info1 = (String)oldUser.getAdditionalInfo(ATTR_TWOFACTOR_INFO);
         String info2 = (String)newUser.getAdditionalInfo(ATTR_TWOFACTOR_INFO);
         if ((info1 == null) && (info2 == null)) {
             return;
-        }
-        if ((info1 == null) && (info2 != null)) {
+        } else if ((info1 == null) && (info2 != null)) {
             CmsUserLog.logSecondFactorAdded(requestContext, oldUser.getName());
         } else if ((info1 != null) && (info2 == null)) {
             CmsUserLog.logSecondFactorReset(requestContext, oldUser.getName());

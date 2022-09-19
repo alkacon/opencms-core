@@ -114,6 +114,9 @@ public class CmsSetPasswordDialog extends CmsChangePasswordDialog {
         }
     }
 
+    /**
+     * Shows that setting the password was successful.
+     */
     private void showSetPasswordSuccess() {
 
         CmsVaadinUtils.showAlert(

@@ -203,7 +203,7 @@ public class CmsUserLog {
      * Formats a user name.
      *
      * @param userName the user nam
-     * @return
+     * @return the formatted user name
      */
     private static String formatUser(String userName) {
 

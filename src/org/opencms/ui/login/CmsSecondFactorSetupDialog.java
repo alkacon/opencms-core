@@ -140,7 +140,7 @@ public class CmsSecondFactorSetupDialog extends CmsBasicDialog {
     /**
      * Executed when the user clicks OK.
      */
-    private void submit() {
+    protected void submit() {
 
         String verificationCode = m_verification.getValue().trim();
         m_context.setSecondFactorInfo(new CmsSecondFactorInfo(m_secret, verificationCode));
