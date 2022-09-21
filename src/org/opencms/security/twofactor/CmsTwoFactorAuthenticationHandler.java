@@ -318,6 +318,19 @@ public class CmsTwoFactorAuthenticationHandler {
     }
 
     /**
+     * Verifies that the verification code is correct for a secret.
+     *
+     * @param secondFactorInfo object containing the secret and verification code
+     *
+     * @return true if the verification is successful
+     */
+    public boolean verifySecondFactorSetup(CmsSecondFactorInfo secondFactorInfo) {
+
+        return m_verifier.isValidCode(secondFactorInfo.getSecret(), secondFactorInfo.getCode());
+
+    }
+
+    /**
      * Throws an exception if 2FA is disabled.
      */
     private void checkEnabled() {

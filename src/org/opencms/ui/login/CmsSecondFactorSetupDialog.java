@@ -33,6 +33,7 @@ import org.opencms.security.twofactor.CmsSecondFactorInfo;
 import org.opencms.security.twofactor.CmsSecondFactorSetupInfo;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.Messages;
 import org.opencms.ui.apps.user.CmsAccountsApp;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsResourceInfo;
@@ -48,6 +49,7 @@ import org.apache.commons.logging.Log;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
@@ -145,8 +147,15 @@ public class CmsSecondFactorSetupDialog extends CmsBasicDialog {
      */
     protected void submit() {
 
+        m_verification.setComponentError(null);
         String verificationCode = m_verification.getValue().trim();
-        m_context.setSecondFactorInfo(new CmsSecondFactorInfo(m_secret, verificationCode));
+        CmsSecondFactorInfo secondFactorInfo = new CmsSecondFactorInfo(m_secret, verificationCode);
+        if (!OpenCms.getTwoFactorAuthenticationHandler().verifySecondFactorSetup(secondFactorInfo)) {
+            String message = CmsVaadinUtils.getMessageText(Messages.GUI_LOGIN_2FA_SETUP_INVALID_CODE_0);
+            m_verification.setComponentError(new UserError(message));
+            return;
+        }
+        m_context.setSecondFactorInfo(secondFactorInfo);
         CmsVaadinUtils.closeWindow(this);
         try {
             m_continuation.continueLogin(m_context);

@@ -359,6 +359,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOGIN_2FA_SETUP_DESCRIPTION_0 = "GUI_LOGIN_2FA_SETUP_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_2FA_SETUP_INVALID_CODE_0 = "GUI_LOGIN_2FA_SETUP_INVALID_CODE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_2FA_VERIFICATION_0 = "GUI_LOGIN_2FA_VERIFICATION_0";
 
     /** Message constant for key in the resource bundle. */
