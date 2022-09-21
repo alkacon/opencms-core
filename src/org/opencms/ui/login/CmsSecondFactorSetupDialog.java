@@ -122,6 +122,7 @@ public class CmsSecondFactorSetupDialog extends CmsBasicDialog {
         m_secret = info.getSecret();
         m_secretLabel.setValue(info.getSecret());
         m_okButton.addClickListener(event -> submit());
+        m_verification.addStyleName(CmsSecondFactorDialog.CLASS_VERIFICATION_CODE_FIELD);
         m_verification.addShortcutListener(new ShortcutListener(null, KeyCode.ENTER, null) {
 
             private static final long serialVersionUID = 1L;
@@ -134,6 +135,8 @@ public class CmsSecondFactorSetupDialog extends CmsBasicDialog {
         });
         addAttachListener(event -> {
             m_verification.focus();
+            CmsSecondFactorDialog.initVerificationField();
+
         });
     }
 

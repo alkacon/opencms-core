@@ -28,26 +28,37 @@
 package org.opencms.ui.login;
 
 import org.opencms.file.CmsUser;
+import org.opencms.main.CmsLog;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
 import org.opencms.ui.apps.user.CmsAccountsApp;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsResourceInfo;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
+import org.apache.commons.logging.Log;
+
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.TextField;
 
 /**
  * Dialog used to ask the user for a verification code generated from his second factor, using an authenticator app.
  */
 public class CmsSecondFactorDialog extends CmsBasicDialog {
+
+    public static final String CLASS_VERIFICATION_CODE_FIELD = "o-verification-code-field";
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSecondFactorDialog.class);
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -87,7 +98,11 @@ public class CmsSecondFactorDialog extends CmsBasicDialog {
                 submit();
             }
         });
-        addAttachListener(event -> m_verification.focus());
+        m_verification.addStyleName(CLASS_VERIFICATION_CODE_FIELD);
+        addAttachListener(event -> {
+            m_verification.focus();
+            initVerificationField();
+        });
     }
 
     /**
@@ -100,6 +115,22 @@ public class CmsSecondFactorDialog extends CmsBasicDialog {
     public static String getCaption(CmsUser user) {
 
         return CmsVaadinUtils.getMessageText(Messages.GUI_LOGIN_2FA_VERIFICATION_0);
+    }
+
+    /**
+     * Executes Javascript code that sets additional attributes on the verification code field.
+     */
+    public static void initVerificationField() {
+
+        try {
+            byte[] jsSnippetBytes = CmsFileUtil.readFully(
+                CmsSecondFactorDialog.class.getResourceAsStream("init-verification-field.js"),
+                true);
+            String jsSnippet = new String(jsSnippetBytes, StandardCharsets.UTF_8);
+            JavaScript.getCurrent().execute(jsSnippet);
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
     }
 
     /**
