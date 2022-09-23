@@ -2665,17 +2665,7 @@ public final class CmsContainerpageController {
             @SuppressWarnings("synthetic-access")
             public void run() {
 
-                Window.Location.assign(m_originalUrl);
-                Timer timer2 = new Timer() {
-
-                    @Override
-                    public void run() {
-
-                        Window.Location.reload();
-                    }
-
-                };
-                timer2.schedule(100);
+                Window.Location.reload();
             }
         };
 
