@@ -29,6 +29,7 @@ package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
@@ -38,6 +39,7 @@ import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.ui.dialogs.history.CmsHistoryDialog;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,7 +71,7 @@ public class CmsHistoryDialogAction extends A_CmsWorkplaceAction implements I_Cm
      */
     public String getCommandClassName() {
 
-        return "org.opencms.gwt.client.ui.contextmenu.CmsHistory";
+        return "org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction";
     }
 
     /**
@@ -93,7 +95,9 @@ public class CmsHistoryDialogAction extends A_CmsWorkplaceAction implements I_Cm
      */
     public Map<String, String> getParams() {
 
-        return null;
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(CmsGwtConstants.ACTION_PARAM_DIALOG_ID, this.getClass().getName());
+        return params;
     }
 
     /**
