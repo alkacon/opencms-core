@@ -33,6 +33,7 @@ import org.opencms.gwt.shared.attributeselect.I_CmsAttributeSelectData;
 import org.opencms.gwt.shared.attributeselect.I_CmsAttributeSelectData.AttributeDefinition;
 import org.opencms.gwt.shared.attributeselect.I_CmsAttributeSelectData.Option;
 import org.opencms.gwt.shared.attributeselect.I_CmsAttributeSelectData.OptionWithAttributes;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -294,7 +295,12 @@ public class CmsAttributeSelectWidget extends Composite implements I_CmsEditWidg
         } else {
             for (AttributeDefinition attrDef : m_attributeDefinitions.values()) {
                 CmsSelectBox select = m_attributeSelects.get(attrDef.getName());
-                select.setFormValue(getNeutralOption(attrDef), false);
+                // the editor initializes new widgets with the empty value, so we want to use the default option instead
+                // the neutral option for the attribute in that case.
+                String attrSelectValue = CmsStringUtil.isEmpty(value)
+                ? getDefaultOption(attrDef)
+                : getNeutralOption(attrDef);
+                select.setFormValue(attrSelectValue, false);
             }
             handleFilterChange();
             m_mainSelect.setFormValue(value, false);
