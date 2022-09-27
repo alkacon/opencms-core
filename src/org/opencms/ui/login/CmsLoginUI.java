@@ -387,6 +387,11 @@ public class CmsLoginUI extends A_CmsUI {
         return settings;
     }
 
+    public void clearError() {
+
+        m_loginForm.clearError();
+    }
+
     /**
      * Gets the selected org unit.<p>
      *

@@ -200,6 +200,14 @@ public class CmsLoginForm extends VerticalLayout {
     }
 
     /**
+     * Hides the error message.
+     */
+    public void clearError() {
+
+        m_error.setVisible(false);
+    }
+
+    /**
      * Gets the OU.<p>
      *
      * @return the OU

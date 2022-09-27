@@ -731,6 +731,7 @@ public class CmsLoginController {
             context.setUser(userNonNull);
             context.setCms(currentCms);
             if (m_otpHandler.needsTwoFactorAuthentication(userNonNull)) {
+                m_ui.clearError();
                 if (!m_otpHandler.hasSecondFactor(userObj)) {
                     showSecondFactorSetup(context, loginContinuation);
                 } else {
