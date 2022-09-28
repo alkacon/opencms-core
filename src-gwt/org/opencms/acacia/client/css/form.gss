@@ -76,6 +76,11 @@ div.formParent div.gwt-TabLayoutPanel, div.formParent div.gwt-TabLayoutPanel div
 	margin: 0px 0px 0px 20px;
 }
 
+.formTabTerminator {
+	display: block;
+	clear: both; 
+}
+
 /** Attribute value view styles. */
 .attributeValue .label{
 	margin:0px 25px 0px 3px;

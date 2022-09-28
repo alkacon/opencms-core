@@ -220,6 +220,13 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
         String formParent();
 
         /**
+         * Returns the formTabTerminator CSS class name.
+         *
+         * @return the formTabTerminator class name
+         */
+        String formTabTerminator();
+
+        /**
          * Returns the help bubble CSS class name.<p>
          *
          * @return the help bubble CSS class

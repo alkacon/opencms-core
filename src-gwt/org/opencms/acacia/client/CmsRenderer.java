@@ -163,8 +163,8 @@ public class CmsRenderer implements I_CmsEntityRenderer {
             FlowPanel tab = m_tabbedPanel.getWidget(tabIndex);
             int height = CmsPositionBean.getInnerDimensions(tab.getElement()).getHeight()
                 + m_tabbedPanel.getTabBarHeight();
-
-            m_context.getElement().getStyle().setHeight(22 + height, Unit.PX);
+            int newHeight = 22 + height;
+            m_context.getElement().getStyle().setHeight(newHeight, Unit.PX);
         }
 
         /**
@@ -397,6 +397,7 @@ public class CmsRenderer implements I_CmsEntityRenderer {
                 renderDescription(tabInfos.get(0), context);
             }
             renderForm(entity, context, parentHandler, attributeIndex);
+            finishTab(context);
             return null;
         } else {
 
@@ -448,6 +449,7 @@ public class CmsRenderer implements I_CmsEntityRenderer {
                 if ((nextTab != null) && attributeName.endsWith("/" + nextTab.getStartName())) {
                     currentTab = nextTab;
                     nextTab = tabIt.hasNext() ? tabIt.next() : null;
+                    finishTab(tabPanel);
                     tabPanel = createTab();
                     renderDescription(currentTab, tabPanel);
                     tabbedPanel.addNamed(tabPanel, currentTab.getTabName(), currentTab.getTabId());
@@ -500,11 +502,13 @@ public class CmsRenderer implements I_CmsEntityRenderer {
                 }
                 handler.updateButtonVisisbility();
             }
+            finishTab(tabPanel);
             if (lastCompactView != null) {
                 // previous widget was set to first column mode,
                 // revert that as no following widget will occupy the second column
                 lastCompactView.setCompactMode(CmsAttributeValueView.COMPACT_MODE_WIDE);
             }
+
             return tabbedPanel;
         }
     }
@@ -764,6 +768,23 @@ public class CmsRenderer implements I_CmsEntityRenderer {
         tabPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.form().formParent());
         tabPanel.getElement().getStyle().setMargin(0, Unit.PX);
         return tabPanel;
+    }
+
+    /**
+     * This is called after the last attribute for a tab (or for the whole content, if no tabs are used) is rendered.
+     *
+     * @param panel the parent panel into which the attributes were rendered
+     */
+    private void finishTab(Panel panel) {
+
+        /*
+         * Place an element after all the other attribute elements in the panel.
+         * We need this because the 'column' layout causes attributes to be floated, which
+         * confuses the algorithm used to resize the tab panel.
+         */
+        FlowPanel formTabTerminator = new FlowPanel();
+        formTabTerminator.addStyleName(I_CmsLayoutBundle.INSTANCE.form().formTabTerminator());
+        panel.add(formTabTerminator);
     }
 
     /**
