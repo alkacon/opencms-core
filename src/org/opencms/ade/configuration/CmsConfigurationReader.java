@@ -805,13 +805,19 @@ public class CmsConfigurationReader {
         boolean addDisabled = false;
         boolean createDisabled = false;
         String disabledStr = disabledLoc == null ? null : disabledLoc.asString(m_cms);
-        if ((disabledStr != null) && "add".equalsIgnoreCase(disabledStr.trim())) {
-            addDisabled = true;
-        } else if ((disabledStr != null) && "create".equalsIgnoreCase(disabledStr.trim())) {
-            createDisabled = true;
+        boolean availabilityNotSet = false;
+        if (disabledStr != null) {
+            if ("add".equalsIgnoreCase(disabledStr.trim())) {
+                addDisabled = true;
+            } else if ("create".equalsIgnoreCase(disabledStr.trim())) {
+                createDisabled = true;
+            } else {
+                disabled = Boolean.parseBoolean(disabledStr);
+            }
         } else {
-            disabled = Boolean.parseBoolean(disabledStr);
+            availabilityNotSet = true;
         }
+
         I_CmsXmlContentValueLocation namePatternLoc = node.getSubValue(N_NAME_PATTERN);
         String namePattern = null;
         if (namePatternLoc != null) {
@@ -912,6 +918,7 @@ public class CmsConfigurationReader {
             detailPagesDisabled,
             addDisabled,
             createDisabled,
+            availabilityNotSet,
             elementView,
             localization,
             showInDefaultView,

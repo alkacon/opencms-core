@@ -499,7 +499,21 @@ public class TestConfig extends OpenCmsTestCase {
 
         List<CmsResourceTypeConfig> types = new ArrayList<CmsResourceTypeConfig>();
         types.add(
-            new CmsResourceTypeConfig("a", false, null, null, false, false, false, null, null, true, false, 1, null));
+            new CmsResourceTypeConfig(
+                "a",
+                false,
+                null,
+                null,
+                false,
+                false,
+                false,
+                false,
+                null,
+                null,
+                true,
+                false,
+                1,
+                null));
 
         CmsTestConfigData config1 = new CmsTestConfigData(
             "/sites/default",
@@ -1202,6 +1216,71 @@ public class TestConfig extends OpenCmsTestCase {
         t2.setParent(t1);
         assertNotNull(t2.getResourceType("c"));
         assertNotSame(t1.getResourceType("c"), t2.getResourceType("c"));
+    }
+
+    /**
+     * Tests inheritance of detail page configurations.<p>
+     *
+     * @throws Exception -
+     */
+    public void testUnsetTypeAvailability() throws Exception {
+
+        List<CmsResourceTypeConfig> types = new ArrayList<CmsResourceTypeConfig>();
+        types.add(
+            new CmsResourceTypeConfig(
+                "a",
+                false,
+                null,
+                null,
+                false,
+                true,
+                true,
+                false,
+                null,
+                null,
+                true,
+                false,
+                1,
+                null));
+
+        List<CmsResourceTypeConfig> childTypes = new ArrayList<CmsResourceTypeConfig>();
+        childTypes.add(
+            new CmsResourceTypeConfig(
+                "a",
+                false,
+                null,
+                null,
+                false,
+                false,
+                false,
+                true,
+                null,
+                null,
+                true,
+                false,
+                1,
+                null));
+
+        CmsTestConfigData config1 = new CmsTestConfigData(
+            "/sites/default",
+            types,
+            NO_PROPERTIES,
+            new ArrayList<>(),
+            NO_MODEL_PAGES);
+        config1.initialize(rootCms());
+
+        CmsTestConfigData config2 = new CmsTestConfigData(
+            "/sites/default/foo",
+            childTypes,
+            NO_PROPERTIES,
+            new ArrayList<>(),
+            NO_MODEL_PAGES);
+        config2.initialize(rootCms());
+        config2.setParent(config1);
+
+        assertTrue(config2.getResourceType("a").isAddDisabled());
+        assertTrue(config2.getResourceType("a").isCreateDisabled());
+
     }
 
     /**

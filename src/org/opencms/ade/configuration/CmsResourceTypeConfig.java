@@ -135,6 +135,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     /** The name of the resource type. */
     private String m_typeName;
 
+    /** True if availability has not been set in the configuration file.*/ 
+    private boolean m_availabilityNotSet;
+
     /**
      * Creates a new resource type configuration.<p>
      *
@@ -150,6 +153,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             disabled,
             folder,
             pattern,
+            false,
             false,
             false,
             false,
@@ -171,6 +175,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * @param detailPagesDisabled true if detail page creation should be disabled for this type
      * @param addDisabled true if adding elements of this type via ADE should be disabled
      * @param createDisabled true if creating elements of this type via ADE should be disabled
+     * @param availabilityNotSet true if the availability has not been set
      * @param elementView the element view id
      * @param localization the base name of the bundle to add as workplace bundle for the resource type
      * @param showInDefaultView if true, the element type should be shown in the default element view even if it doesn't belong to it
@@ -187,6 +192,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         boolean detailPagesDisabled,
         boolean addDisabled,
         boolean createDisabled,
+        boolean availabilityNotSet,
         CmsUUID elementView,
         String localization,
         Boolean showInDefaultView,
@@ -201,6 +207,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         m_detailPagesDisabled = detailPagesDisabled;
         m_addDisabled = addDisabled;
         m_createDisabled = createDisabled;
+        m_availabilityNotSet = availabilityNotSet;
         m_elementView = elementView;
         m_localization = localization;
         m_showInDefaultView = showInDefaultView;
@@ -656,24 +663,28 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         : m_elementDeleteMode;
         Integer order = childConfig.m_order != null ? childConfig.m_order : m_order;
 
+        boolean mergedDisabled = childConfig.m_availabilityNotSet ? isDisabled() : childConfig.isDisabled();
+        boolean mergedAddDisabled = childConfig.m_availabilityNotSet ? isAddDisabled() : childConfig.isAddDisabled();
+        boolean mergedCreateDisabled = childConfig.m_availabilityNotSet
+        ? isCreateDisabled()
+        : (isCreateDisabled() || childConfig.isCreateDisabled());
+
         CmsResourceTypeConfig result = new CmsResourceTypeConfig(
             m_typeName,
-            false,
+            mergedDisabled,
             folderOrName,
             namePattern,
             isDetailPagesDisabled() || childConfig.isDetailPagesDisabled(),
-            childConfig.isAddDisabled(),
+            mergedAddDisabled,
             // a type marked as not creatable, should not be creatable in any sub site
-            isCreateDisabled() || childConfig.isCreateDisabled(),
+            mergedCreateDisabled,
+            false /* availabilityNotSet - doesn't matter what we use here, because we do not use the return value of this method as a child for configuration merging (which is the only way this attribute is used) */,
             elementView,
             m_localization,
             showInDefaultView,
             copyInModels,
             order,
             deleteMode);
-        if (childConfig.isDisabled()) {
-            result.m_disabled = true;
-        }
         return result;
     }
 
@@ -704,6 +715,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             m_detailPagesDisabled,
             isAddDisabled(),
             isCreateDisabled(),
+            m_availabilityNotSet,
             m_elementView,
             m_localization,
             m_showInDefaultView,
