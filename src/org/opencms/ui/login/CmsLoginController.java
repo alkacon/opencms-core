@@ -448,6 +448,7 @@ public class CmsLoginController {
         String logoutUri = OpenCms.getLoginManager().getLogoutUri();
         if (logoutUri != null) {
             String target = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, logoutUri, false);
+            // open in top frame, so it still works when the Vaadin dialog is embedded
             Page.getCurrent().open(target, "_top", false);
         } else {
             String loginLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
@@ -455,7 +456,8 @@ public class CmsLoginController {
                 CmsWorkplaceLoginHandler.LOGIN_HANDLER,
                 false);
             VaadinService.getCurrentRequest().getWrappedSession().invalidate();
-            Page.getCurrent().setLocation(loginLink);
+            // open in top frame, so it still works when the Vaadin dialog is embedded
+            Page.getCurrent().open(loginLink, "_top", false);
             // logout was successful
             if (LOG.isInfoEnabled()) {
                 LOG.info(
