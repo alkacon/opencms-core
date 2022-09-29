@@ -1877,32 +1877,36 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     CmsContainerPageWrapper wrapper = new CmsContainerPageWrapper(cms, page);
                     if (isFunctionDetail) {
                         String functionDetailContainer = getFunctionDetailContainerName(parentFolder);
-                        CmsUUID functionStructureId = new CmsUUID(change.getCreateParameter());
-                        CmsResource functionRes = cms.readResource(
-                            functionStructureId,
-                            CmsResourceFilter.IGNORE_EXPIRATION);
-                        CmsResource functionFormatter;
-                        if (OpenCms.getResourceManager().matchResourceType(
-                            CmsResourceTypeFunctionConfig.TYPE_NAME,
-                            functionRes.getTypeId())) {
-                            functionFormatter = cms.readResource(CmsResourceTypeFunctionConfig.FORMATTER_PATH);
-                        } else {
-                            functionFormatter = cms.readResource(
-                                CmsResourceTypeFunctionConfig.FORMATTER_PATH,
-                                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
-                        }
-                        if (!wrapper.addElementToContainer(
-                            functionDetailContainer,
-                            new CmsContainerElementBean(
+                        if (functionDetailContainer != null) {
+                            CmsUUID functionStructureId = new CmsUUID(change.getCreateParameter());
+                            CmsResource functionRes = cms.readResource(
                                 functionStructureId,
-                                functionFormatter.getStructureId(),
-                                new HashMap<>(),
-                                false))) {
+                                CmsResourceFilter.IGNORE_EXPIRATION);
+                            CmsResource functionFormatter;
+                            if (OpenCms.getResourceManager().matchResourceType(
+                                CmsResourceTypeFunctionConfig.TYPE_NAME,
+                                functionRes.getTypeId())) {
+                                functionFormatter = cms.readResource(CmsResourceTypeFunctionConfig.FORMATTER_PATH);
+                            } else {
+                                functionFormatter = cms.readResource(
+                                    CmsResourceTypeFunctionConfig.FORMATTER_PATH,
+                                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+                            }
+                            if (!wrapper.addElementToContainer(
+                                functionDetailContainer,
+                                new CmsContainerElementBean(
+                                    functionStructureId,
+                                    functionFormatter.getStructureId(),
+                                    new HashMap<>(),
+                                    false))) {
 
-                            throw new CmsException(
-                                Messages.get().container(
-                                    Messages.ERR_NO_FUNCTION_DETAIL_CONTAINER_1,
-                                    page.getFile().getRootPath()));
+                                throw new CmsException(
+                                    Messages.get().container(
+                                        Messages.ERR_NO_FUNCTION_DETAIL_CONTAINER_1,
+                                        page.getFile().getRootPath()));
+                            }
+                        } else {
+                            LOG.debug("function detail container is null for " + parentFolder.getRootPath());
                         }
                     }
                     createNewContainerElements(cms, wrapper.page(), entryPath);
