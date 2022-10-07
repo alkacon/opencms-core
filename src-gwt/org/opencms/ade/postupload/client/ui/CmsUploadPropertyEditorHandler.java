@@ -173,6 +173,16 @@ public class CmsUploadPropertyEditorHandler implements I_CmsPropertyEditorHandle
     }
 
     /**
+     * Gets the warning message.
+     * 
+     * @return the warning message 
+     */
+    public String getWarning() {
+
+        return m_data.getWarning();
+    }
+
+    /**
      * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#handleSubmit(java.lang.String, java.lang.String, java.util.List, boolean, org.opencms.gwt.client.property.CmsReloadMode)
      */
     public void handleSubmit(

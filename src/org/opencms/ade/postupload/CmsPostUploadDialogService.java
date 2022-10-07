@@ -60,6 +60,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -131,6 +132,14 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
             CmsListInfoBean listInfo = CmsVfsService.getPageInfo(getCmsObject(), res);
 
             CmsPostUploadDialogPanelBean result = new CmsPostUploadDialogPanelBean(id, listInfo);
+            String warning = OpenCms.getADEManager().getUploadWarningTable().getMessage(res.getStructureId());
+            if (warning != null) {
+                Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
+                CmsMacroResolver resolver = new CmsMacroResolver();
+                resolver.setMessages(OpenCms.getWorkplaceManager().getMessages(wpLocale));
+                warning = resolver.resolveMacros(warning);
+                result.setWarning(warning);
+            }
 
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(res.getTypeId());
             String typeName = type.getTypeName();

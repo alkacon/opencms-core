@@ -39,6 +39,7 @@ import org.opencms.ade.containerpage.inherited.CmsInheritedContainerState;
 import org.opencms.ade.detailpage.CmsDetailPageConfigurationWriter;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.detailpage.I_CmsDetailPageHandler;
+import org.opencms.ade.upload.CmsUploadWarningTable;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.file.CmsFile;
@@ -247,6 +248,9 @@ public class CmsADEManager {
 
     /** The online formatter bean cache. */
     private CmsFormatterConfigurationCache m_onlineFormatterCache;
+
+    /** The table of upload warnings. */ 
+    private CmsUploadWarningTable m_uploadWarningTable = new CmsUploadWarningTable();
 
     /** ADE parameters. */
     private Map<String, String> m_parameters;
@@ -1010,6 +1014,16 @@ public class CmsADEManager {
 
         return getCacheState(online).getSubsitesForSiteSelector();
 
+    }
+
+    /**
+     * Gets the table of upload warnings.
+     * 
+     * @return the table of upload warnings 
+     */
+    public CmsUploadWarningTable getUploadWarningTable() {
+
+        return m_uploadWarningTable;
     }
 
     /**

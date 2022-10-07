@@ -42,3 +42,13 @@
 .propertyDialog .inputLineHeight div {
 	line-height: 20px;
 }
+
+.warningBox {
+	white-space: pre; 
+	border: 1px solid #c9c9c9;
+	border-radius: 4px;
+	padding: 5px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+

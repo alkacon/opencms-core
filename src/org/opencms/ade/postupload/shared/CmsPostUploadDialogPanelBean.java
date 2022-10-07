@@ -41,6 +41,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsPostUploadDialogPanelBean implements IsSerializable {
 
+    /** The warning to display. */ 
+    private String m_warning;
+
     /** The page info for displaying the CmsListItemWidget. */
     private CmsListInfoBean m_infoBean;
 
@@ -114,6 +117,16 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
     }
 
     /**
+     * Gets the warning to display.
+     * 
+     * @return the warning to display
+     */
+    public String getWarning() {
+
+        return m_warning;
+    }
+
+    /**
      * Sets the list info bean for the resource.<p>
      *
      * @param info the list info bean for the resource
@@ -152,6 +165,16 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
     public void setStructureId(CmsUUID structureId) {
 
         m_structureId = structureId;
+    }
+
+    /**
+     * Sets the warning to display.
+     * 
+     * @param warning the warning to display
+     */
+    public void setWarning(String warning) {
+
+        m_warning = warning;
     }
 
 }

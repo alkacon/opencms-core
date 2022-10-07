@@ -99,6 +99,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          */
         String propertyDialog();
 
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String warningBox();
+
     }
 
     /** The bundle instance. */
