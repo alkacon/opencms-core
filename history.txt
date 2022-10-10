@@ -12,8 +12,51 @@ For more information about the OpenCms project, see the OpenCms website at http:
 
 Legend:
 ! New Feature
+- Minor improvement or general comment
 * Bug fixed
-- General comment
+
+OpenCms 14.0.0 - October 11, 2022
+
+! XML schema versioning with automatic content rewrite
+! Support for 2 factor authentication (2FA) in the user workplace login
+! Source code widget for the form editor based on CodeMirror
+! Mercury template: Updated to use Bootstrap 5.2, dropped some jQuery dependencies
+! Improved the documentation website (work in progress)
+
+- Page editor: The "add content" dialog now shows the site and text filters directly on the the result page
+- Page editor: HTML marker html.opencms-editor-active is added in case the user is actively editing
+- Form editor: CSS can now be configured with the sitemap attribute template.editor.css
+- JSP API: Added cms.readAttributeOrProperty allows to read either attribute or property
+- JSP API: Added cms.functionDetailPageExact returning null in case the requested detail page is not configured
+- Websites app: Alias redirects can now be configured as 301, 302 or direct display
+- User preferences: Locale selection now lists locales configured for the VFS first
+- Shell: New commands createOU and addResourceToOU to create / modify OUs
+- The delete resource dialog now provides editing options for conflicting resources
+- Improved use of <script> tags in page editor and workplace
+- Better handling of errors during file import
+- Support for setting the start project when using HTTP Basic authentication
+- Added configurable option to control which user settings are applied when using HTTP Basic authentication
+- Added configurable upload restrictions for target folders and upload-able file types
+- Master sitemap: "Content element configuration > Availability" is now optional with inheritance
+
+* Sitemap editor: Redirects require reload before fully editable
+* Accounts app: User language selection does not show the available workplace locales
+* Accounts app: Information on institution, zip code, address and city can't be removed anymore
+* Form editor: Problems when changing the link target of an existing link with a hash fragment
+* Form editor: Help texts wrongly positioned
+* Form editor: Fixed problem with 'column' layout (github issue #743)
+* Page / form editor: Percent-encoded ampersands do not work correctly in links
+* Page editor: Adding a new content element via drag&drop does not default to the last used formatter
+* Page editor: Edit point function symbol not displayed for all users
+* Page editor: Page not scrolling on element drag&drop when scroll-behavior: smooth CSS is present
+* Translation Tool: Improved scrolling behavior with filter
+* Sessions app: Empty login message causes error during startup
+* Source search app: URL is sometimes escaped too often
+* XML content schemas: Using ampersands in values for the <xsd:appinfo> element in XSDs causes errors
+* Sitemap editor: Issue when creating function detail pages without function detail container
+* Password reset dialog: Email address is checked case-sensitive during password reset
+* Documentation: Fixed broken burger menu (github issue #16)
+
 
 OpenCms 13.0.0 - April 13, 2022
 ! Plugins: Introduced a plugin system for formatters and dynamic functions as a more flexible replacement of the "headincludes" feature.
