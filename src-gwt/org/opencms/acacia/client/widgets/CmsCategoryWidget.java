@@ -237,7 +237,11 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget, I_C
         String result = "";
         int y = 0;
         if (m_isSingleValue) {
-            result = m_categoryField.getSingelSitePath();
+            if (m_selected.size() != 0) {
+                result = m_selected.iterator().next();
+            } else {
+                result = "";
+            }
         } else {
             Iterator<String> i = m_categoryField.getAllSitePath().iterator();
             while (i.hasNext()) {
