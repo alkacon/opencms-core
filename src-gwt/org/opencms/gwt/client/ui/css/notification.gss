@@ -101,9 +101,12 @@ div.notificationContainer, .notificationContainer div.messagesPanel > div{
 	pointer-events: none;    	
 } 
 
+.notificationMessage {
+	pointer-events: auto;
+}
+
 .notificationMessage div.messageContent{
 	dislay: inline-block;
-	pointer-events: auto;
 }
 
 .notificationMessage div.messageContent p{
