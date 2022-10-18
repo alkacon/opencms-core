@@ -312,7 +312,7 @@
         <use-formatter-keys-for-new-sites>true</use-formatter-keys-for-new-sites>
         <upload-restriction class="org.opencms.ade.upload.CmsDefaultUploadRestriction">
             <param name="/">enabled:true|types:*</param>
-        </upload-restriction> 
-        
+        </upload-restriction>
+        <sitemap-config-edit-role>DEVELOPER</sitemap-config-edit-role>
     </workplace>
 </opencms>

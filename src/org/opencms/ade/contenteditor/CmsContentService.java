@@ -68,6 +68,7 @@ import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspTagEdit;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
@@ -691,6 +692,15 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
             try {
                 CmsResource resource = cms.readResource(paramResource, CmsResourceFilter.IGNORE_EXPIRATION);
+
+                if (OpenCms.getADEManager().isEditorRestricted(cms, resource)) {
+                    // Context menus / buttons for editing the file should be disabled if above condition is true.
+                    // You only get here if you directly open the editor URL, so this does not need
+                    // a particularly nice error message
+                    throw new CmsRuntimeException(
+                        org.opencms.ade.contenteditor.Messages.get().container(
+                            org.opencms.ade.contenteditor.Messages.ERR_EDITOR_RESTRICTED_0));
+                }
                 if (CmsResourceTypeXmlContent.isXmlContent(resource) || createNew) {
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramLocale)) {
                         locale = CmsLocaleManager.getLocale(paramLocale);
@@ -2439,9 +2449,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)
                 && !HIDDEN_SETTINGS_WIDGET_NAME.equals(settingsEntry.getValue().getWidget())
                 && !value.equals(values.get(settingsEntry.getKey()))) {
-                    values.put(settingsEntry.getKey(), value);
-                    hasChangedSettings = true;
-                }
+                values.put(settingsEntry.getKey(), value);
+                hasChangedSettings = true;
+            }
         }
         if (hasChangedSettings) {
             containerElement.updateIndividualSettings(values);

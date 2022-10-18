@@ -76,6 +76,9 @@ public class CmsEditContentAction extends A_CmsEditFileAction {
         }
         List<CmsResource> resources = context.getResources();
         CmsResource resource = resources.get(0);
+        if (OpenCms.getADEManager().isEditorRestricted(context.getCms(), resource)) {
+            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+        }
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
         if ((type instanceof CmsResourceTypeXmlContent) && !CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
             return CmsStandardVisibilityCheck.DEFAULT.getSingleVisibility(context.getCms(), resource);

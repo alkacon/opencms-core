@@ -347,6 +347,7 @@
 		<upload-restriction class="org.opencms.ade.upload.CmsDefaultUploadRestriction">
             <param name="/">enabled:true|types:pdf,doc,png,jpg</param>
         </upload-restriction>
+        <sitemap-config-edit-role>DEVELOPER</sitemap-config-edit-role>
 		
 	</workplace>
 </opencms>

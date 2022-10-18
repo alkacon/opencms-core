@@ -39,6 +39,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.lock.CmsLockUtil.LockedFile;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
@@ -176,12 +177,6 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_CmsHasSh
         ShortcutAction.KeyCode.S,
         new int[] {ShortcutAction.ModifierKey.CTRL});
 
-    /** Save shortcut, (using Apple CMD as modifier). */
-    private static final Action ACTION_SAVE_CMD = new ShortcutAction(
-        "CMD+S",
-        ShortcutAction.KeyCode.S,
-        new int[] {ShortcutAction.ModifierKey.META});
-
     /** Save & Exit shortcut. */
     private static final Action ACTION_SAVE_AND_EXIT = new ShortcutAction(
         "Ctrl+Shift+S",
@@ -193,6 +188,12 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_CmsHasSh
         "CMD+Shift+S",
         ShortcutAction.KeyCode.S,
         new int[] {ShortcutAction.ModifierKey.META, ShortcutAction.ModifierKey.SHIFT});
+
+    /** Save shortcut, (using Apple CMD as modifier). */
+    private static final Action ACTION_SAVE_CMD = new ShortcutAction(
+        "CMD+S",
+        ShortcutAction.KeyCode.S,
+        new int[] {ShortcutAction.ModifierKey.META});
 
     /** The available font sizes. */
     private static final String[] FONT_SIZES = new String[] {"8px", "10px", "12px", "14px", "16px", "18px", "20px"};
@@ -351,6 +352,12 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_CmsHasSh
      */
     public void initUI(I_CmsAppUIContext context, CmsResource resource, String backLink, Map<String, String> params) {
 
+        CmsObject cms = A_CmsUI.getCmsObject();
+        if (OpenCms.getADEManager().isEditorRestricted(cms, resource)) {
+            throw new CmsRuntimeException(
+                org.opencms.ade.contenteditor.Messages.get().container(
+                    org.opencms.ade.contenteditor.Messages.ERR_EDITOR_RESTRICTED_0));
+        }
         CmsMessages messages = Messages.get().getBundle(UI.getCurrent().getLocale());
         context.showInfoArea(false);
         context.setAppTitle(messages.key(Messages.GUI_SOURCE_EDITOR_TITLE_0));

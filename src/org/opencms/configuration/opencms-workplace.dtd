@@ -46,7 +46,8 @@
 	element-delete-mode?,
 	additional-log-folders?,
 	use-formatter-keys-for-new-sites?,
-	upload-restriction?
+	upload-restriction?,
+	sitemap-config-edit-role?
 	)>
 
 <!--
@@ -893,6 +894,14 @@
 
 <!ELEMENT upload-restriction (param*)>
 <!ATTLIST upload-restriction class CDATA #REQUIRED>
+
+<!-- 
+# Element containing the role necessary to edit sitemap configurations
+-->
+<!ELEMENT sitemap-config-edit-role (#PCDATA)>
+
+
+
 
 <!--
 # Include the explorer types DTD.

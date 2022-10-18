@@ -363,6 +363,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The XML content auto correction flag. */
     private boolean m_xmlContentAutoCorrect;
 
+    /** The role required for editing the sitemap configuration. */
+    private String m_sitemapConfigEditRole;
+
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
      */
@@ -1429,6 +1432,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
+     * Gets the name of the role necessary for editing the sitemap configuration.
+     *
+     * @return the name of the role necessary for editing the sitemap configuration
+     */
+    public String getSitemapConfigEditRole() {
+
+        return m_sitemapConfigEditRole;
+    }
+
+    /**
      * Returns Regex patterns that should be excluded from synchronization.<p>
      *
      * @return the exclude patterns
@@ -2178,6 +2191,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                     org.opencms.configuration.Messages.INIT_REPOSITORY_FOLDER_1,
                     m_repositoryFolderHandler.getClass().getName()));
         }
+    }
+
+    /**
+     * Sets the name of the role necessary for editing the sitemap configuration.
+     *
+     * @param roleName the name of the role necessary for editing the sitemap configuration
+     */
+    public void setSitemapConfigEditRole(String roleName) {
+
+        m_sitemapConfigEditRole = roleName;
     }
 
     /**

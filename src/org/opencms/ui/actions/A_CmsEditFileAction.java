@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.gwt.CmsVfsService;
+import org.opencms.main.OpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 
@@ -106,6 +107,9 @@ public abstract class A_CmsEditFileAction extends A_CmsWorkplaceAction implement
     protected boolean existsFile(I_CmsDialogContext context) {
 
         CmsResource res = context.getResources().get(0);
+        if (OpenCms.getADEManager().isEditorRestricted(context.getCms(), res)) {
+            return false;
+        }
         String sitePath = CmsVfsService.prepareFileNameForEditor(context.getCms(), res, getFileParam());
         return context.getCms().existsResource(sitePath, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
     }

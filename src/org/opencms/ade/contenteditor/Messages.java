@@ -38,6 +38,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_EDITOR_RESTRICTED_0 = "ERR_EDITOR_RESTRICTED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERROR_CONFIGURATION_EDITOR_CHANGE_HANDLER_FORMATTER_SELECTION_1 = "ERROR_CONFIGURATION_EDITOR_CHANGE_HANDLER_FORMATTER_SELECTION_1";
 
     /** Message constant for key in the resource bundle. */
@@ -45,7 +48,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CONTENT_TAB_LABEL_0 = "GUI_CONTENT_TAB_LABEL_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SERIALDATE_EMPTY_EVENT_SERIES_0 = "GUI_SERIALDATE_EMPTY_EVENT_SERIES_0";
 

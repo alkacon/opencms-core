@@ -30,6 +30,7 @@ package org.opencms.ui.actions;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.main.OpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.workplace.explorer.Messages;
@@ -104,9 +105,16 @@ public class CmsSitemapEditConfigAction extends A_CmsWorkplaceAction implements 
     @Override
     public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
 
-        return AdeContext.sitemapeditor.name().equals(context.getAppId())
-        ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
-        : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+        if (AdeContext.sitemapeditor.name().equals(context.getAppId())) {
+            if (OpenCms.getADEManager().canEditSitemapConfiguration(context.getCms())) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+            } else {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+
+        } else {
+            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+        }
     }
 
     /**

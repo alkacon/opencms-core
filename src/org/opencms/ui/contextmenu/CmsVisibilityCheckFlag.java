@@ -118,6 +118,9 @@ public enum CmsVisibilityCheckFlag {
     /** Checks if resource is xml content. */
     xml,
 
+    /** Checks if the file shouldn't be edited by the current user (used for sitemap config). */
+    restrictedconfig,
+
     /** If resource is an XML content, check if unmarshalling succeeds. */
     xmlunmarshal;
 }

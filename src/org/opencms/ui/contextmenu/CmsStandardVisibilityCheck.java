@@ -51,6 +51,7 @@ import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.pagefolder;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.pointer;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.publishpermission;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.replacable;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.restrictedconfig;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.roleeditor;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.rolerootadmin;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.rolevfsmanager;
@@ -139,7 +140,8 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         writepermisssion,
         inproject,
         xmlunmarshal,
-        haseditor);
+        haseditor,
+        restrictedconfig);
 
     /** Like DEFAULT, but only active for files. */
     public static final CmsStandardVisibilityCheck EDIT_CODE = new CmsStandardVisibilityCheck(
@@ -150,7 +152,8 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         notdeleted,
         writepermisssion,
         inproject,
-        haseditor);
+        haseditor,
+        restrictedconfig);
 
     /** Visibility check for editing external links (pointers). */
     public static final I_CmsHasMenuItemVisibility EDIT_POINTER = new CmsStandardVisibilityCheck(
@@ -443,6 +446,12 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
 
             if (flag(notnew) && (inActiveKey == null) && resource.getState().isNew()) {
                 inActiveKey = Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_NEW_UNCHANGED_0;
+            }
+
+            if (flag(restrictedconfig)) {
+                if (OpenCms.getADEManager().isEditorRestricted(cms, resource)) {
+                    return VISIBILITY_INVISIBLE;
+                }
             }
 
             if (flag(xmlunmarshal)) {
