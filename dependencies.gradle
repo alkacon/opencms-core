@@ -144,7 +144,7 @@ dependencies {
     // used by Apache POI
     distribution group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
     distribution group: 'org.apache.commons', name: 'commons-pool2', version: '2.8.1'
-    distribution group: 'org.apache.commons', name: 'commons-text', version: '1.9'
+    distribution group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
     distribution group: 'org.apache.cxf', name: 'cxf-core', version:'3.3.8'
     distribution group: 'org.apache.cxf', name: 'cxf-rt-bindings-soap', version: '3.3.8'
     distribution group: 'org.apache.cxf', name: 'cxf-rt-bindings-xml', version: '3.3.8'
