@@ -1996,6 +1996,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         if (locale.equals(m_locale)) {
             return;
         }
+        final Integer oldTabIndex = getTabIndex();
         m_locale = locale;
         m_basePanel.clear();
         destroyForm(false);
@@ -2013,6 +2014,11 @@ public final class CmsContentEditor extends CmsEditorBase {
 
                     setContentDefinition(contentDefinition);
                     renderFormContent();
+                    if (oldTabIndex != null) {
+                        if (oldTabIndex.intValue() < getFormTabs().getTabCount()) {
+                            getFormTabs().selectTab(oldTabIndex.intValue());
+                        }
+                    }
                     setChanged();
 
                 }
@@ -2024,6 +2030,11 @@ public final class CmsContentEditor extends CmsEditorBase {
 
                     setContentDefinition(contentDefinition);
                     renderFormContent();
+                    if (oldTabIndex != null) {
+                        if (oldTabIndex.intValue() < getFormTabs().getTabCount()) {
+                            getFormTabs().selectTab(oldTabIndex.intValue());
+                        }
+                    }
                 }
             });
         }
@@ -2226,6 +2237,19 @@ public final class CmsContentEditor extends CmsEditorBase {
     private String getIdForLocale(String locale) {
 
         return CmsContentDefinition.uuidToEntityId(CmsContentDefinition.entityIdToUuid(m_entityId), locale);
+    }
+
+    /**
+     * Returns the selected tab index, or null if there are no tabs.
+     *
+     * @return the selected tab index or null
+     */
+    private Integer getTabIndex() {
+
+        if (getFormTabs() != null) {
+            return Integer.valueOf(getFormTabs().getSelectedIndex());
+        }
+        return null;
     }
 
     /**
@@ -2561,12 +2585,12 @@ public final class CmsContentEditor extends CmsEditorBase {
                                         previousAttribute.getSimpleValues().get(i))
                                         && previousAttribute.getSimpleValues().get(i).equals(
                                             targetAttribute.getSimpleValues().get(i))) {
-                                                changeSimpleValue(
-                                                    attributeName,
-                                                    i,
-                                                    updatedAttribute.getSimpleValues().get(i),
-                                                    parentPathElements);
-                                            }
+                                        changeSimpleValue(
+                                            attributeName,
+                                            i,
+                                            updatedAttribute.getSimpleValues().get(i),
+                                            parentPathElements);
+                                    }
                                 }
                             } else {
                                 // values have been removed
@@ -2577,12 +2601,12 @@ public final class CmsContentEditor extends CmsEditorBase {
                                         previousAttribute.getSimpleValues().get(i))
                                         && previousAttribute.getSimpleValues().get(i).equals(
                                             targetAttribute.getSimpleValues().get(i))) {
-                                                changeSimpleValue(
-                                                    attributeName,
-                                                    i,
-                                                    updatedAttribute.getSimpleValues().get(i),
-                                                    parentPathElements);
-                                            }
+                                        changeSimpleValue(
+                                            attributeName,
+                                            i,
+                                            updatedAttribute.getSimpleValues().get(i),
+                                            parentPathElements);
+                                    }
                                 }
                             }
                         }
