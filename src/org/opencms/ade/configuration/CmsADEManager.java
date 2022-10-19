@@ -1231,7 +1231,7 @@ public class CmsADEManager {
 
         if (OpenCms.getResourceManager().matchResourceType(CONFIG_TYPE, res.getTypeId())) {
             CmsRole role = getRoleForSitemapConfigEditing();
-            if (!OpenCms.getRoleManager().hasRoleForResource(cms, role, res)) {
+            if ((role != null) && !OpenCms.getRoleManager().hasRoleForResource(cms, role, res)) {
                 return true;
             }
         }
