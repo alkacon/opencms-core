@@ -804,6 +804,8 @@ public class CmsConfigurationReader {
         boolean disabled = false;
         boolean addDisabled = false;
         boolean createDisabled = false;
+        boolean editDisabled = false;
+        boolean listsOnly = false;
         String disabledStr = disabledLoc == null ? null : disabledLoc.asString(m_cms);
         boolean availabilityNotSet = false;
         if (disabledStr != null) {
@@ -811,6 +813,12 @@ public class CmsConfigurationReader {
                 addDisabled = true;
             } else if ("create".equalsIgnoreCase(disabledStr.trim())) {
                 createDisabled = true;
+            } else if ("createOrEdit".equalsIgnoreCase(disabledStr.trim())) {
+                createDisabled = true;
+                editDisabled = true;
+            } else if ("listsOnly".equalsIgnoreCase(disabledStr.trim())) {
+                listsOnly = true;
+                addDisabled = true;
             } else {
                 disabled = Boolean.parseBoolean(disabledStr);
             }
@@ -918,6 +926,8 @@ public class CmsConfigurationReader {
             detailPagesDisabled,
             addDisabled,
             createDisabled,
+            editDisabled,
+            listsOnly,
             availabilityNotSet,
             elementView,
             localization,

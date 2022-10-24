@@ -825,10 +825,10 @@ public class CmsADEConfigData {
             for (CmsDetailPageInfo detailpage : getAllDetailPages(true)) {
                 if (detailpage.getType().equals(type)) {
                     result.add(detailpage);
-                } else
-                    if ((defaultPage == null) && CmsADEManager.DEFAULT_DETAILPAGE_TYPE.equals(detailpage.getType())) {
-                        defaultPage = detailpage;
-                    }
+                } else if ((defaultPage == null)
+                    && CmsADEManager.DEFAULT_DETAILPAGE_TYPE.equals(detailpage.getType())) {
+                    defaultPage = detailpage;
+                }
             }
             if (defaultPage != null) {
                 // add default detail page last
@@ -853,12 +853,16 @@ public class CmsADEConfigData {
 
         if (!getAncestorTypeNames().contains(type)) {
             // not configured anywhere for ADE
-            return SitemapDirectEditPermissions.notInSitemapConfig;
+            return SitemapDirectEditPermissions.editAndCreate;
         }
 
         CmsResourceTypeConfig typeConfig = getResourceType(type);
         if (typeConfig == null) {
             return SitemapDirectEditPermissions.none;
+        }
+
+        if (typeConfig.isEnabledInLists()) {
+            return SitemapDirectEditPermissions.editAndCreate;
         }
 
         if (typeConfig.isCreateDisabled() || typeConfig.isAddDisabled()) {

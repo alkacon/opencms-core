@@ -92,14 +92,14 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         /** Everything allowed. */
         all(true, true, true),
 
+        /** Not found in sitemap config. */
+        editAndCreate(true, true, false),
+
         /** Can edit, but not add. */
         editOnly(false, true, true),
 
         /** Nothing allowed. */
-        none(false, false, false),
-
-        /** Not found in sitemap config. */
-        notInSitemapConfig(true, true, false);
+        none(false, false, false);
 
         /** True if creating elements is allowed. */
         private boolean m_create;

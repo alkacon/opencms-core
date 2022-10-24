@@ -1023,7 +1023,8 @@ public class CmsElementUtil {
             }
             result.setElementView(elementView);
         }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(permissionInfo.getNoEditReason()) && (typeConfig == null)) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(permissionInfo.getNoEditReason())
+            && ((typeConfig == null) || typeConfig.isEditDisabled())) {
             String message = Messages.get().getBundle(wpLocale).key(
                 Messages.GUI_CONTAINERPAGE_EDIT_DISABLED_BY_SITEMAP_CONFIG_0);
             permissionInfo.setNoEditReason(message);
