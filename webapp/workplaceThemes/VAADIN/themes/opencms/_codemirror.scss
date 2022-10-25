@@ -26,6 +26,11 @@
 			color: #999;
 			visibility: hidden;
 		}
+		
+		.CodeMirror-code {
+            /* For weird issue on iPad where spaces couldn't be entered and cursor wasn't visible. See https://github.com/codemirror/codemirror5/issues/5367 . */
+            -webkit-user-select: text; 
+        }
 	}
 	
 	.CodeMirror-dialog {
