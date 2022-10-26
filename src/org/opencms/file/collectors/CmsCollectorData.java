@@ -121,8 +121,8 @@ public class CmsCollectorData {
                 m_type = resourceType.getTypeId();
             } catch (CmsLoaderException e) {
                 // maybe the int id is directly used?
-                int typeInt = Integer.valueOf(type).intValue();
                 try {
+                    int typeInt = Integer.valueOf(type).intValue();
                     I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(typeInt);
                     m_type = resourceType.getTypeId();
                     if (LOG.isWarnEnabled()) {
@@ -132,7 +132,7 @@ public class CmsCollectorData {
                                 resourceType.getTypeName(),
                                 new Integer(resourceType.getTypeId())));
                     }
-                } catch (CmsLoaderException e1) {
+                } catch (CmsLoaderException | NumberFormatException e1) {
                     // this resource type does not exist
                     throw new CmsRuntimeException(Messages.get().container(Messages.ERR_UNKNOWN_RESTYPE_1, type), e1);
                 }
