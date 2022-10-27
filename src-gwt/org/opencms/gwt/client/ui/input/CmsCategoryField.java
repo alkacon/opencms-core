@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.client.ui.input;
 
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.I_CmsHasResizeOnShow;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -43,7 +44,6 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -196,6 +196,68 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
                 return new CmsCategoryField();
             }
         });
+    }
+
+    /**
+     * Checks if the given category is a parent category of any element of the given selection.<p>
+     *
+     * The selection might contain either category paths or site paths of categories.
+     *
+     * @param category a category path
+     * @param selection a set containing either category paths or category site paths
+     * @return true if the category is a parent category of any element of the given selection
+     */
+    public static boolean isParentCategoryOfSelected(String category, Collection<String> selection) {
+
+        category = normalizePath(category);
+        for (String selected : selection) {
+            selected = normalizePath(removeCategoryPrefix(selected));
+            if (selected.startsWith(category)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Adds leading/trailing slashes to a path if it doesn't already have them.
+     *
+     * @param path the path to normalize
+     * @return the normalized path
+     */
+    private static String normalizePath(String path) {
+
+        if (!path.startsWith("/")) {
+            path = "/" + path;
+        }
+        if (!path.endsWith("/")) {
+            path = path + "/";
+        }
+        return path;
+    }
+
+    /**
+     * Removes the category folder portion from the path of a category.
+     *
+     *  <p>If the argument doesn't have a category folder portion, it will be returned unchanged.
+     *
+     * @param selected a category site path (or in some cases just a category path)
+     * @return the category path (with the category folder stripped)
+     */
+    private static String removeCategoryPrefix(String selected) {
+
+        String globalFolder = "/system/categories/";
+        String localName = normalizePath(CmsCoreProvider.get().getCategoryBaseFolder());
+        String result = selected;
+        if (selected.startsWith(globalFolder)) {
+            result = selected.substring(globalFolder.length() - 1); // keep the slash
+        } else {
+            int namePos = selected.indexOf(localName);
+            if (namePos != -1) {
+                result = selected.substring((namePos + localName.length()) - 1);
+            }
+        }
+        return result;
     }
 
     /**
@@ -440,13 +502,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
                 // set the category tree item and add to parent tree item
                 CmsTreeItem treeItem;
                 boolean isPartofPath = false;
-                Iterator<String> it = selectedCategories.iterator();
-                while (it.hasNext()) {
-                    String path = it.next();
-                    if (path.contains(child.getPath())) {
-                        isPartofPath = true;
-                    }
-                }
+                isPartofPath = isParentCategoryOfSelected(child.getPath(), selectedCategories);
                 if (isPartofPath) {
                     m_singleSidePath = child.getSitePath();
                     m_valuesSet++;
@@ -494,13 +550,7 @@ public class CmsCategoryField extends Composite implements I_CmsFormWidget, I_Cm
         CmsTreeItem treeItem = new CmsTreeItem(false, categoryTreeItem);
         treeItem.setId(category.getPath());
         boolean isPartofPath = false;
-        Iterator<String> it = selectedCategories.iterator();
-        while (it.hasNext()) {
-            String path = it.next();
-            if (path.startsWith(category.getPath()) || path.contains("/" + category.getPath())) {
-                isPartofPath = true;
-            }
-        }
+        isPartofPath = isParentCategoryOfSelected(category.getPath(), selectedCategories);
         if (isPartofPath) {
             m_categories.add(treeItem);
             treeItem.setOpen(true);

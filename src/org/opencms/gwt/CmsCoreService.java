@@ -1190,6 +1190,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         boolean uploadDisabled = !OpenCms.getRoleManager().hasRole(cms, CmsRole.EDITOR);
         CmsUploadRestrictionInfo uploadRestrictionInfo = OpenCms.getWorkplaceManager().getUploadRestriction().getUploadRestrictionInfo(
             cms);
+        String categoryBaseFolder = CmsCategoryService.getInstance().getRepositoryBaseFolderName(cms);
 
         CmsCoreData data = new CmsCoreData(
             EDITOR_URI,
@@ -1219,7 +1220,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             OpenCms.getWorkplaceManager().isKeepAlive(),
             uploadDisabled,
             OpenCms.getADEManager().getParameters(getCmsObject()),
-            uploadRestrictionInfo);
+            uploadRestrictionInfo,
+            categoryBaseFolder);
         CmsTinyMCEData tinyMCEData = new CmsTinyMCEData();
         tinyMCEData.setLink(tinyMCE);
         data.setTinymce(tinyMCEData);

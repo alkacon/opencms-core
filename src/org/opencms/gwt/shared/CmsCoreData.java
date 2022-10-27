@@ -254,6 +254,9 @@ public class CmsCoreData implements IsSerializable {
     /** ADE parameters. */
     private Map<String, String> m_adeParameters;
 
+    /** The category base folder. */
+    private String m_categoryBaseFolder;
+
     /** The XML content editor back-link URL. */
     private String m_contentEditorBacklinkUrl;
 
@@ -293,6 +296,9 @@ public class CmsCoreData implements IsSerializable {
     /** The project id. */
     private CmsUUID m_projectId;
 
+    /** The shared folder. */
+    private String m_sharedFolder;
+
     /** The current site root. */
     private String m_siteRoot;
 
@@ -325,9 +331,6 @@ public class CmsCoreData implements IsSerializable {
 
     /** The current workplace locale. */
     private String m_wpLocale;
-
-    /** The shared folder. */
-    private String m_sharedFolder;
 
     /**
      * Constructor.<p>
@@ -372,7 +375,8 @@ public class CmsCoreData implements IsSerializable {
             clone.isKeepAlive(),
             clone.isUploadDisabled(),
             clone.m_adeParameters,
-            clone.m_uploadRestriction);
+            clone.m_uploadRestriction,
+            clone.m_categoryBaseFolder);
         setTinymce(clone.getTinymce());
     }
 
@@ -387,6 +391,7 @@ public class CmsCoreData implements IsSerializable {
      * @param workplaceResourcesPrefix the workplace resources path prefix
      * @param embeddedDialogsUrl the embedded dialogs URL
      * @param siteRoot the current site root
+     * @param sharedFolder the shared folder
      * @param projectId the project id
      * @param locale the current request locale
      * @param wpLocale the workplace locale
@@ -406,6 +411,7 @@ public class CmsCoreData implements IsSerializable {
      * @param uploadDisabled true if upload buttons should be disabled
      * @param adeParameters the map of ADE configuration parameters
      * @param uploadRestriction the upload restriction data
+     * @param categoryBaseFolder the category base folder
      */
     public CmsCoreData(
         String contentEditorUrl,
@@ -435,7 +441,8 @@ public class CmsCoreData implements IsSerializable {
         boolean isKeepAlive,
         boolean uploadDisabled,
         Map<String, String> adeParameters,
-        CmsUploadRestrictionInfo uploadRestriction) {
+        CmsUploadRestrictionInfo uploadRestriction,
+        String categoryBaseFolder) {
 
         m_contentEditorUrl = contentEditorUrl;
         m_contentEditorBacklinkUrl = contentEditorBacklinkUrl;
@@ -465,6 +472,7 @@ public class CmsCoreData implements IsSerializable {
         m_uploadDisabled = uploadDisabled;
         m_uploadRestriction = uploadRestriction;
         m_sharedFolder = sharedFolder;
+        m_categoryBaseFolder = categoryBaseFolder;
     }
 
     /**
@@ -485,6 +493,16 @@ public class CmsCoreData implements IsSerializable {
     public Map<String, String> getAdeParameters() {
 
         return m_adeParameters;
+    }
+
+    /**
+     * Gets the category folder name.
+     *
+     * @return the category folder name
+     */
+    public String getCategoryBaseFolder() {
+
+        return m_categoryBaseFolder;
     }
 
     /**
