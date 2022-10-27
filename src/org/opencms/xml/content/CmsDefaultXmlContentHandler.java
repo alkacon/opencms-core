@@ -2061,6 +2061,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         try {
             List<CmsRole> roles = OpenCms.getRoleManager().getRolesOfUser(cms, user.getName(), "", true, false, true);
             List<CmsGroup> groups = cms.getGroupsOfUser(user.getName(), false);
+            CmsMacroResolver resolver = new CmsMacroResolver();
+            resolver.setCmsObject(cms);
+            Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+            resolver.setMessages(OpenCms.getWorkplaceManager().getMessages(wpLocale));
+            params = resolver.resolveMacros(params);
 
             String[] allowedPrincipals = params.split("\\|");
             List<String> groupNames = new ArrayList<String>();
