@@ -657,7 +657,13 @@ public class CmsContentTypeVisitor {
         DisplayType defaultType = DisplayType.none;
         EvaluationRule rule = EvaluationRule.none;
         try {
-            WidgetInfo widgetInfo = CmsWidgetUtil.collectWidgetInfo(cms, m_rootContentDefinition, path);
+            if ((cms.getRequestContext().getAttribute(CmsRequestContext.ATTRIBUTE_ADE_CONTEXT_PATH) == null)
+                && (m_file != null)) {
+                cms.getRequestContext().setAttribute(
+                    CmsRequestContext.ATTRIBUTE_ADE_CONTEXT_PATH,
+                    m_file.getRootPath());
+            }
+            WidgetInfo widgetInfo = CmsWidgetUtil.collectWidgetInfo(cms, m_rootContentDefinition, path, m_messages);
             I_CmsWidget widget = widgetInfo.getWidget();
             I_CmsComplexWidget complexWidget = widgetInfo.getComplexWidget();
             configuredType = widgetInfo.getDisplayType();
@@ -690,12 +696,7 @@ public class CmsContentTypeVisitor {
                     I_CmsADEWidget adeWidget = (I_CmsADEWidget)widget;
                     defaultType = adeWidget.getDefaultDisplayType();
                     widgetName = adeWidget.getWidgetName();
-                    if ((cms.getRequestContext().getAttribute(CmsRequestContext.ATTRIBUTE_ADE_CONTEXT_PATH) == null)
-                        && (m_file != null)) {
-                        cms.getRequestContext().setAttribute(
-                            CmsRequestContext.ATTRIBUTE_ADE_CONTEXT_PATH,
-                            m_file.getRootPath());
-                    }
+
                     widgetConfig = adeWidget.getConfiguration(cms, schemaType, m_messages, m_file, m_locale);
                     if (!adeWidget.isInternal() && !m_widgetConfigurations.containsKey(widgetName)) {
                         CmsExternalWidgetConfiguration externalConfiguration = new CmsExternalWidgetConfiguration(
