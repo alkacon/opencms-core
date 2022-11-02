@@ -2067,6 +2067,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             resolver.setMessages(OpenCms.getWorkplaceManager().getMessages(wpLocale));
             params = resolver.resolveMacros(params);
 
+            if ("visible".equals(params.trim())) {
+                return true;
+            }
             String[] allowedPrincipals = params.split("\\|");
             List<String> groupNames = new ArrayList<String>();
             List<String> roleNames = new ArrayList<String>();
