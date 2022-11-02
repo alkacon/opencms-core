@@ -37,6 +37,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
@@ -1070,18 +1071,18 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
                 changeSite(siteRoot, path, true);
             } else if ((siteRoot != null)
                 && !CmsStringUtil.comparePaths(siteRoot, cms.getRequestContext().getSiteRoot())) {
-                String saveState = m_currentState;
-                changeSite(siteRoot, path);
-                if (!getSelectionFromState(saveState).isEmpty()) {
-                    m_fileTable.setValue(Collections.singleton(getSelectionFromState(saveState)));
+                    String saveState = m_currentState;
+                    changeSite(siteRoot, path);
+                    if (!getSelectionFromState(saveState).isEmpty()) {
+                        m_fileTable.setValue(Collections.singleton(getSelectionFromState(saveState)));
+                    }
+                } else {
+                    String saveState = m_currentState;
+                    openPath(path, true);
+                    if (!getSelectionFromState(saveState).isEmpty()) {
+                        m_fileTable.setValue(Collections.singleton(getSelectionFromState(saveState)));
+                    }
                 }
-            } else {
-                String saveState = m_currentState;
-                openPath(path, true);
-                if (!getSelectionFromState(saveState).isEmpty()) {
-                    m_fileTable.setValue(Collections.singleton(getSelectionFromState(saveState)));
-                }
-            }
         }
     }
 
@@ -1470,8 +1471,9 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
      */
     void openPath(String path, boolean initTree) {
 
+        CmsObject cms = A_CmsUI.getCmsObject();
         if (path == null) {
-            String siteRoot = A_CmsUI.getCmsObject().getRequestContext().getSiteRoot();
+            String siteRoot = cms.getRequestContext().getSiteRoot();
             path = m_locationCache.getFileExplorerLocation(siteRoot);
             if (path == null) {
                 path = "";
@@ -1479,8 +1481,18 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
                 path = path.substring(siteRoot.length());
             }
         }
+
+        CmsSiteManagerImpl siteManager = OpenCms.getSiteManager();
+        if (siteManager.isSharedFolder(cms.getRequestContext().getSiteRoot()) && siteManager.startsWithShared(path)) {
+            // siteManager.getSharedFolder() has a trailing slash - we want to cut off the shared folder, but keep a leading slash in path
+            path = path.substring(siteManager.getSharedFolder().length() - 1);
+            if ("".equals(path)) {
+                path = "/";
+            }
+        }
+
         boolean existsPath = CmsStringUtil.isNotEmptyOrWhitespaceOnly(path)
-            && A_CmsUI.getCmsObject().existsResource(path, FILES_N_FOLDERS);
+            && cms.existsResource(path, FILES_N_FOLDERS);
 
         if (path.startsWith("/")) {
             // remove a leading slash to avoid an empty first path fragment
