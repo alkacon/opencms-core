@@ -265,7 +265,6 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
         // in the online project search is possible only
         // in other projects there is replaced, if the replace pattern is not empty
         if (CmsStringUtil.isEmpty(m_settings.getReplacepattern()) && !m_settings.isForceReplace()) {
-            // empty replace pattern, search only
             report.println(
                 Messages.get().container(Messages.RPT_SOURCESEARCH_PARAMETERS_EMPTY_REPLACEPATTERN_0),
                 I_CmsReport.FORMAT_NOTE);

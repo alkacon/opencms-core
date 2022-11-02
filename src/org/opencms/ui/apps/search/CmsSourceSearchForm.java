@@ -73,6 +73,7 @@ public class CmsSourceSearchForm extends VerticalLayout {
 
     /** The available search types. */
     public static enum SearchType {
+
         /** XML content values only. */
         contentValues(false, true, false),
         /** Full text search. */
@@ -414,11 +415,10 @@ public class CmsSourceSearchForm extends VerticalLayout {
             } else if (SearchType.renameContainer.equals(m_searchType.getValue())) {
                 settings.setReplacepattern(m_oldName.getValue() + ";" + m_newName.getValue());
             } else {
-
                 settings.setReplacepattern(m_replacePattern.getValue());
             }
-
         }
+        settings.setForceReplace(m_replace.getValue().booleanValue());
 
         if (SearchType.resourcetype.equals(m_searchType.getValue())
             | SearchType.renameContainer.equals(m_searchType.getValue())) {
