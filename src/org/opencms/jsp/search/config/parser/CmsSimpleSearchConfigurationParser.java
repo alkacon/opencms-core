@@ -39,16 +39,15 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetRange;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSortOption;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsListCategoryFolderRestrictionBean;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigurationBean;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsListGeoFilterBean;
+import org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsListDateRestriction;
 import org.opencms.main.CmsException;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrQueryUtil;
-import org.opencms.ui.apps.lists.CmsListManager;
-import org.opencms.ui.apps.lists.CmsListManager.ListConfigurationBean;
-import org.opencms.ui.apps.lists.CmsListManager.ListConfigurationBean.ListCategoryFolderRestrictionBean;
-import org.opencms.ui.apps.lists.CmsListManager.ListConfigurationBean.ListGeoFilterBean;
-import org.opencms.ui.apps.lists.daterestrictions.I_CmsListDateRestriction;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
@@ -163,6 +162,21 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         }
     }
 
+    /** SOLR field name. */
+    public static final String FIELD_CATEGORIES = "category_exact";
+
+    /** SOLR field name. */
+    public static final String FIELD_DATE = "instancedate_%s_dt";
+
+    /** SOLR field name. */
+    public static final String FIELD_DATE_RANGE = "instancedaterange_%s_dr";
+
+    /** SOLR field name. */
+    public static final String FIELD_DATE_FACET_NAME = "instancedate";
+
+    /** SOLR field name. */
+    public static final String FIELD_PARENT_FOLDERS = "parent-folders";
+
     /** Pagination which may override the default pagination. */
     private I_CmsSearchConfigurationPagination m_pagination;
 
@@ -170,7 +184,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
     private CmsObject m_cms;
 
     /** The list configuration bean. */
-    private ListConfigurationBean m_config;
+    private CmsListConfigurationBean m_config;
 
     /** The (mutable) search locale. */
     private Locale m_searchLocale;
@@ -192,7 +206,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
      */
     public CmsSimpleSearchConfigurationParser(
         CmsObject cms,
-        CmsListManager.ListConfigurationBean config,
+        CmsListConfigurationBean config,
         String additionalParamJSON)
     throws JSONException {
 
@@ -214,7 +228,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
      */
     public static CmsSimpleSearchConfigurationParser createInstanceWithNoJsonConfig(
         CmsObject cms,
-        CmsListManager.ListConfigurationBean config) {
+        CmsListConfigurationBean config) {
 
         try {
             return new CmsSimpleSearchConfigurationParser(cms, config, null);
@@ -286,9 +300,9 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
             return super.parseRangeFacets();
         } else {
             Map<String, I_CmsSearchConfigurationFacetRange> rangeFacets = new HashMap<String, I_CmsSearchConfigurationFacetRange>();
-            String indexField = CmsListManager.FIELD_DATE;
-            if (Boolean.parseBoolean(m_config.getParameterValue(CmsListManager.N_FILTER_MULTI_DAY))) {
-                indexField = CmsListManager.FIELD_DATE_RANGE;
+            String indexField = FIELD_DATE;
+            if (Boolean.parseBoolean(m_config.getParameterValue(CmsListConfigurationBean.PARAM_FILTER_MULTI_DAY))) {
+                indexField = FIELD_DATE_RANGE;
             }
             I_CmsSearchConfigurationFacetRange rangeFacet = new CmsSearchConfigurationFacetRange(
                 String.format(indexField, getSearchLocale().toString()),
@@ -297,7 +311,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
                 "+1MONTHS",
                 null,
                 Boolean.FALSE,
-                CmsListManager.FIELD_DATE_FACET_NAME,
+                FIELD_DATE_FACET_NAME,
                 Integer.valueOf(1),
                 "Date",
                 Boolean.FALSE,
@@ -557,7 +571,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         if (!categoryFilterPart.isEmpty()) {
             defaultPart = "((" + defaultPart + ") AND (" + categoryFilterPart + "))";
         }
-        for (ListCategoryFolderRestrictionBean restriction : m_config.getCategoryFolderRestrictions()) {
+        for (CmsListCategoryFolderRestrictionBean restriction : m_config.getCategoryFolderRestrictions()) {
             String restrictionQuery = restriction.toString();
             if (!restrictionQuery.isEmpty()) {
                 restrictionQuery = "(" + restrictionQuery + " AND " + defaultPart + ")";
@@ -673,7 +687,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
     String getGeoFilterQuery() {
 
         String result = "";
-        ListGeoFilterBean geoFilterBean = m_config.getGeoFilter();
+        CmsListGeoFilterBean geoFilterBean = m_config.getGeoFilter();
         if (geoFilterBean != null) {
             String fq = CmsSolrQueryUtil.composeGeoFilterQuery(
                 CmsSearchField.FIELD_GEOCOORDS,
@@ -717,9 +731,9 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
 
         Map<String, I_CmsSearchConfigurationFacetField> fieldFacets = new HashMap<String, I_CmsSearchConfigurationFacetField>();
         fieldFacets.put(
-            CmsListManager.FIELD_CATEGORIES,
+            FIELD_CATEGORIES,
             new CmsSearchConfigurationFacetField(
-                CmsListManager.FIELD_CATEGORIES,
+                FIELD_CATEGORIES,
                 null,
                 Integer.valueOf(1),
                 Integer.valueOf(200),
@@ -732,9 +746,9 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
                 Boolean.TRUE,
                 null));
         fieldFacets.put(
-            CmsListManager.FIELD_PARENT_FOLDERS,
+            FIELD_PARENT_FOLDERS,
             new CmsSearchConfigurationFacetField(
-                CmsListManager.FIELD_PARENT_FOLDERS,
+                FIELD_PARENT_FOLDERS,
                 null,
                 Integer.valueOf(1),
                 Integer.valueOf(200),

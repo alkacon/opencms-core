@@ -25,12 +25,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.apps.lists.daterestrictions;
+package org.opencms.jsp.search.config.parser.simplesearch.daterestrictions;
 
 import org.opencms.file.CmsObject;
+import org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsListDateRestriction.TimeDirection;
+import org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsListDateRestriction.TimeUnit;
 import org.opencms.main.CmsLog;
-import org.opencms.ui.apps.lists.daterestrictions.I_CmsListDateRestriction.TimeDirection;
-import org.opencms.ui.apps.lists.daterestrictions.I_CmsListDateRestriction.TimeUnit;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentValueLocation;
 

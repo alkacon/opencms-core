@@ -28,6 +28,7 @@
 package org.opencms.ui.apps.lists;
 
 import org.opencms.file.CmsObject;
+import org.opencms.jsp.search.config.parser.CmsSimpleSearchConfigurationParser;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetField;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetRange;
 import org.opencms.jsp.search.result.CmsSearchResultWrapper;
@@ -323,9 +324,9 @@ public class CmsResultFacets extends VerticalLayout {
      */
     private Component prepareCategoryFacets(CmsSolrResultList solrResultList, CmsSearchResultWrapper resultWrapper) {
 
-        FacetField categoryFacets = solrResultList.getFacetField(CmsListManager.FIELD_CATEGORIES);
+        FacetField categoryFacets = solrResultList.getFacetField(CmsSimpleSearchConfigurationParser.FIELD_CATEGORIES);
         I_CmsSearchControllerFacetField facetController = resultWrapper.getController().getFieldFacets().getFieldFacetController().get(
-            CmsListManager.FIELD_CATEGORIES);
+            CmsSimpleSearchConfigurationParser.FIELD_CATEGORIES);
         if ((categoryFacets != null) && (categoryFacets.getValueCount() > 0)) {
             VerticalLayout catLayout = new VerticalLayout();
             for (final Count value : categoryFacets.getValues()) {
@@ -345,7 +346,7 @@ public class CmsResultFacets extends VerticalLayout {
                         if (isSelected(event.getComponent())) {
                             resetFacetsAndSearch();
                         } else {
-                            selectFieldFacet(CmsListManager.FIELD_CATEGORIES, value.getName());
+                            selectFieldFacet(CmsSimpleSearchConfigurationParser.FIELD_CATEGORIES, value.getName());
                         }
                     }
                 });
@@ -369,9 +370,10 @@ public class CmsResultFacets extends VerticalLayout {
      */
     private Component prepareDateFacets(CmsSolrResultList solrResultList, CmsSearchResultWrapper resultWrapper) {
 
-        RangeFacet<?, ?> dateFacets = resultWrapper.getRangeFacet().get(CmsListManager.FIELD_DATE_FACET_NAME);
+        RangeFacet<?, ?> dateFacets = resultWrapper.getRangeFacet().get(
+            CmsSimpleSearchConfigurationParser.FIELD_DATE_FACET_NAME);
         I_CmsSearchControllerFacetRange facetController = resultWrapper.getController().getRangeFacets().getRangeFacetController().get(
-            CmsListManager.FIELD_DATE_FACET_NAME);
+            CmsSimpleSearchConfigurationParser.FIELD_DATE_FACET_NAME);
         DateTimeFormatter isoFormat = ISODateTimeFormat.dateTimeNoMillis();
 
         if ((dateFacets != null) && (dateFacets.getCounts().size() > 0)) {
@@ -413,7 +415,9 @@ public class CmsResultFacets extends VerticalLayout {
                         if (isSelected(event.getComponent())) {
                             resetFacetsAndSearch();
                         } else {
-                            selectRangeFacet(CmsListManager.FIELD_DATE_FACET_NAME, value.getValue());
+                            selectRangeFacet(
+                                CmsSimpleSearchConfigurationParser.FIELD_DATE_FACET_NAME,
+                                value.getValue());
                         }
                     }
                 });
@@ -447,9 +451,9 @@ public class CmsResultFacets extends VerticalLayout {
      */
     private Component prepareFolderFacets(CmsSolrResultList solrResultList, CmsSearchResultWrapper resultWrapper) {
 
-        FacetField folderFacets = solrResultList.getFacetField(CmsListManager.FIELD_PARENT_FOLDERS);
+        FacetField folderFacets = solrResultList.getFacetField(CmsSimpleSearchConfigurationParser.FIELD_PARENT_FOLDERS);
         I_CmsSearchControllerFacetField facetController = resultWrapper.getController().getFieldFacets().getFieldFacetController().get(
-            CmsListManager.FIELD_PARENT_FOLDERS);
+            CmsSimpleSearchConfigurationParser.FIELD_PARENT_FOLDERS);
         if ((folderFacets != null) && (folderFacets.getValueCount() > 0)) {
             VerticalLayout folderLayout = new VerticalLayout();
             for (final Count value : filterFolderFacets(folderFacets.getValues())) {
@@ -469,7 +473,7 @@ public class CmsResultFacets extends VerticalLayout {
                         if (isSelected(event.getComponent())) {
                             resetFacetsAndSearch();
                         } else {
-                            selectFieldFacet(CmsListManager.FIELD_PARENT_FOLDERS, value.getName());
+                            selectFieldFacet(CmsSimpleSearchConfigurationParser.FIELD_PARENT_FOLDERS, value.getName());
                         }
                     }
                 });

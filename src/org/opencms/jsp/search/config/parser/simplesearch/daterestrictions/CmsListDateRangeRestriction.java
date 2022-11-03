@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.apps.lists.daterestrictions;
+package org.opencms.jsp.search.config.parser.simplesearch.daterestrictions;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -62,7 +62,7 @@ public class CmsListDateRangeRestriction implements I_CmsListDateRestriction {
     }
 
     /**
-     * @see org.opencms.ui.apps.lists.daterestrictions.I_CmsListDateRestriction#getRange()
+     * @see org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsListDateRestriction#getRange()
      */
     public String getRange() {
 

@@ -35,6 +35,8 @@ import org.opencms.json.JSONObject;
 import org.opencms.jsp.search.config.CmsSearchConfiguration;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon;
 import org.opencms.jsp.search.config.parser.CmsSimpleSearchConfigurationParser;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigParserUtils;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigurationBean;
 import org.opencms.jsp.search.controller.CmsSearchController;
 import org.opencms.jsp.search.result.CmsSearchResultWrapper;
 import org.opencms.jsp.search.result.I_CmsSearchResourceBean;
@@ -44,8 +46,6 @@ import org.opencms.search.CmsSearchException;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrResultList;
-import org.opencms.ui.apps.lists.CmsListManager;
-import org.opencms.ui.apps.lists.CmsListManager.ListConfigurationBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.xml2json.CmsJsonRequest;
@@ -146,7 +146,7 @@ public class CmsJsonDocumentList extends CmsJsonDocumentXmlContent {
     private CmsSearchResultWrapper getSearchResult(CmsJsonHandlerContext context)
     throws JSONException, CmsSearchException {
 
-        ListConfigurationBean listConfigurationBean = CmsListManager.parseListConfiguration(
+        CmsListConfigurationBean listConfigurationBean = CmsListConfigParserUtils.parseListConfiguration(
             context.getCms(),
             context.getResource());
         CmsSimpleSearchConfigurationParser searchConfigurationParser = new CmsSimpleSearchConfigurationParser(

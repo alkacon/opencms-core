@@ -59,6 +59,7 @@ import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.jsp.CmsJspTagEditable;
 import org.opencms.jsp.Messages;
 import org.opencms.jsp.jsonpart.CmsJsonPartFilter;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigParserUtils;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -69,7 +70,6 @@ import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.search.galleries.CmsGalleryNameMacroResolver;
 import org.opencms.site.CmsSite;
-import org.opencms.ui.apps.lists.CmsListManager;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
@@ -1057,9 +1057,9 @@ public final class CmsJspStandardContextBean {
         String keyToFind = CmsADEConfigData.ATTR_BINARY_UPLOAD_TARGET;
         String baseValue = null;
         if (content != null) {
-            for (CmsJspContentAccessValueWrapper wrapper : content.getValueList().get(CmsListManager.N_PARAMETER)) {
-                String paramKey = wrapper.getValue().get(CmsListManager.N_KEY).getToString();
-                String paramValue = wrapper.getValue().get(CmsListManager.N_VALUE).getToString();
+            for (CmsJspContentAccessValueWrapper wrapper : content.getValueList().get(CmsListConfigParserUtils.N_PARAMETER)) {
+                String paramKey = wrapper.getValue().get(CmsListConfigParserUtils.N_KEY).getToString();
+                String paramValue = wrapper.getValue().get(CmsListConfigParserUtils.N_VALUE).getToString();
                 if (paramKey.equals(keyToFind)) {
                     LOG.debug("Found upload folder in configuration: " + paramValue);
                     baseValue = paramValue;
@@ -1069,7 +1069,7 @@ public final class CmsJspStandardContextBean {
 
             if (baseValue == null) {
                 List<CmsJspContentAccessValueWrapper> folderEntries = content.getValueList().get(
-                    CmsListManager.N_SEARCH_FOLDER);
+                    CmsListConfigParserUtils.N_SEARCH_FOLDER);
                 if (folderEntries.size() == 1) {
                     CmsResource resource = folderEntries.get(0).getToResource();
                     List<String> galleryTypes = Arrays.asList(

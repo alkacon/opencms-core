@@ -46,6 +46,8 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.parser.CmsSimpleSearchConfigurationParser;
 import org.opencms.jsp.search.config.parser.CmsSimpleSearchConfigurationParser.SortOption;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigParserUtils;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigurationBean;
 import org.opencms.jsp.search.controller.CmsSearchController;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetField;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetRange;
@@ -58,8 +60,6 @@ import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.relations.CmsCategoryService;
-import org.opencms.relations.CmsLink;
 import org.opencms.search.CmsSearchException;
 import org.opencms.search.CmsSearchResource;
 import org.opencms.search.fields.CmsSearchField;
@@ -89,11 +89,7 @@ import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.I_CmsCachableApp;
 import org.opencms.ui.apps.I_CmsContextProvider;
 import org.opencms.ui.apps.Messages;
-import org.opencms.ui.apps.lists.CmsListManager.ListConfigurationBean.ListCategoryFolderRestrictionBean;
-import org.opencms.ui.apps.lists.CmsListManager.ListConfigurationBean.ListGeoFilterBean;
 import org.opencms.ui.apps.lists.CmsOptionDialog.I_OptionHandler;
-import org.opencms.ui.apps.lists.daterestrictions.CmsDateRestrictionParser;
-import org.opencms.ui.apps.lists.daterestrictions.I_CmsListDateRestriction;
 import org.opencms.ui.apps.projects.CmsProjectManagerConfiguration;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
@@ -110,27 +106,20 @@ import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.CmsResourceContextMenuBuilder;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
-import org.opencms.util.CmsGeoUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.directedit.CmsDateSeriesEditHandler;
 import org.opencms.workplace.editors.directedit.I_CmsEditHandler;
 import org.opencms.workplace.explorer.CmsResourceUtil;
-import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
-import org.opencms.xml.content.CmsXmlContentValueLocation;
-import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
-import org.opencms.xml.types.CmsXmlVfsFileValue;
-import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -169,463 +158,6 @@ import com.vaadin.v7.ui.TextField;
 public class CmsListManager extends A_CmsWorkplaceApp
 implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener, I_CmsWindowCloseListener,
 I_CmsCachableApp {
-
-    /**
-     * Enum representing how selected categories should be combined in a search.<p>
-     */
-    public static enum CategoryMode {
-        /** Combine categories with AND. */
-        AND,
-
-        /** Combine categories with OR. */
-        OR;
-    }
-
-    /**
-     * The list configuration data.<p>
-     */
-    public static class ListConfigurationBean {
-
-        /** Wrapper for a combined category and folder restriction. */
-        public static class ListCategoryFolderRestrictionBean {
-
-            /** The categories to restrict the search to. */
-            private List<String> m_categories;
-
-            /** The folders to restrict the search to. */
-            private List<String> m_folders;
-
-            /** The category combination mode, i.e., "AND" or "OR". */
-            private CategoryMode m_categoryMode;
-
-            /**
-             * Constructor for the wrapper.
-             * @param categories the categories to filter
-             * @param folders the folders to filter
-             * @param categoryMode the combination mode for categories
-             */
-            public ListCategoryFolderRestrictionBean(
-                List<String> categories,
-                List<String> folders,
-                CategoryMode categoryMode) {
-
-                m_categories = categories == null ? Collections.<String> emptyList() : categories;
-                m_folders = folders == null ? Collections.<String> emptyList() : folders;
-                m_categoryMode = categoryMode == null ? CategoryMode.OR : categoryMode;
-            }
-
-            /**
-             * Outputs the restriction as Solr filter query.
-             *
-             * @see java.lang.Object#toString()
-             */
-            @Override
-            public String toString() {
-
-                if (m_categories.isEmpty() && m_folders.isEmpty()) {
-                    return "";
-                }
-                String result = "(";
-                if (!m_categories.isEmpty()) {
-                    result += "category_exact:(";
-                    if (m_categories.size() > 1) {
-                        result += m_categories.stream().reduce(
-                            (cat1, cat2) -> "\"" + cat1 + "\" " + m_categoryMode + " \"" + cat2 + "\"").get();
-                    } else {
-                        result += "\"" + m_categories.get(0) + "\"";
-                    }
-                    result += ")";
-                }
-                if (!m_folders.isEmpty()) {
-                    if (!m_categories.isEmpty()) {
-                        result += " AND ";
-                    }
-                    result += "parent-folders:(";
-                    if (m_folders.size() > 1) {
-                        result += m_folders.stream().reduce((f1, f2) -> "\"" + f1 + "\" OR \"" + f2 + "\"").get();
-                    } else {
-                        result += "\"" + m_folders.get(0) + "\"";
-                    }
-                    result += ")";
-                }
-                result += ")";
-                return result;
-            }
-        }
-
-        /**
-         * Bean representing a Geo filter.
-         */
-        public static class ListGeoFilterBean {
-
-            /** The center point coordinates. */
-            private String m_coordinates;
-
-            /** The search radius. */
-            private String m_radius;
-
-            /**
-             * Creates a new Geo filter bean.
-             * @param coordinates the coordinates
-             * @param radius the radius
-             */
-            public ListGeoFilterBean(String coordinates, String radius) {
-
-                m_coordinates = coordinates;
-                m_radius = radius;
-            }
-
-            /**
-             * Returns the center point coordinates.
-             * @return the center point coordinates
-             */
-            public String getCoordinates() {
-
-                return m_coordinates;
-            }
-
-            /**
-             * Returns the search radius.
-             * @return the search radius
-             */
-            public String getRadius() {
-
-                return m_radius;
-            }
-        }
-
-        /** Special parameter to configure the maximally returned results. */
-        private static final String ADDITIONAL_PARAM_MAX_RETURNED_RESULTS = "maxresults";
-
-        /** The additional content parameters. */
-        private Map<String, String> m_additionalParameters;
-
-        /** The resource blacklist. */
-        private List<CmsUUID> m_blacklist;
-
-        /** The categories. */
-        private List<String> m_categories;
-
-        /** The category mode. */
-        private CategoryMode m_categoryMode;
-
-        /** The date restriction. */
-        private I_CmsListDateRestriction m_dateRestriction;
-
-        /** The display types. */
-        private List<String> m_dislayTypes;
-
-        /** The Geo filter */
-        private ListGeoFilterBean m_geoFilter;
-
-        /** The folders. */
-        private List<String> m_folders;
-
-        /** Search parameters by configuration node name. */
-        private Map<String, String> m_parameterFields;
-
-        /** Combined category and folder restrictions. */
-        private List<ListCategoryFolderRestrictionBean> m_categoryFolderRestrictions = new ArrayList<>();
-
-        /**
-         * Constructor.<p>
-         */
-        public ListConfigurationBean() {
-
-            m_parameterFields = new HashMap<String, String>();
-        }
-
-        /**
-         * Add a combined category-folder restriction.
-         * @param listCategoryFolderRestrictionBean the category-folder restriction to add.
-         */
-        public void addCategoryFolderFilter(ListCategoryFolderRestrictionBean listCategoryFolderRestrictionBean) {
-
-            m_categoryFolderRestrictions.add(listCategoryFolderRestrictionBean);
-
-        }
-
-        /**
-         * Returns the additional content parameters.<p>
-         *
-         * @return the additional content parameters
-         */
-        public Map<String, String> getAdditionalParameters() {
-
-            return m_additionalParameters;
-        }
-
-        /**
-         * Returns the black list.<p>
-         *
-         * @return the black list
-         */
-        public List<CmsUUID> getBlacklist() {
-
-            return m_blacklist;
-        }
-
-        /**
-         * Returns the categories.<p>
-         *
-         * @return the categories
-         */
-        public List<String> getCategories() {
-
-            return m_categories;
-        }
-
-        /**
-         * Returns the combined category-folder restrictions.<p>
-         *
-         * @return the combined category-folder restrictions
-         */
-        public List<ListCategoryFolderRestrictionBean> getCategoryFolderRestrictions() {
-
-            return m_categoryFolderRestrictions;
-        }
-
-        /**
-         * Gets the category mode.<p>
-         *
-         * @return the category mode
-         */
-        public CategoryMode getCategoryMode() {
-
-            return m_categoryMode;
-        }
-
-        /**
-         * Gets the date restriction.<p>
-         *
-         * @return the date restriction
-         */
-        public I_CmsListDateRestriction getDateRestriction() {
-
-            return m_dateRestriction;
-        }
-
-        /**
-         * Returns the display types.<p>
-         *
-         * @return the display types
-         */
-        public List<String> getDisplayTypes() {
-
-            return m_dislayTypes;
-        }
-
-        /**
-         * Gets the filter query.<p>
-         *
-         * @return the filter query
-         */
-        public String getFilterQuery() {
-
-            return m_parameterFields.get(N_FILTER_QUERY);
-        }
-
-        /**
-         * Returns the folders.<p>
-         *
-         * @return the folders
-         */
-        public List<String> getFolders() {
-
-            return m_folders;
-        }
-
-        /**
-         * Returns the Geo filter.<p>
-         *
-         * @return the Geo filter
-         */
-        public ListGeoFilterBean getGeoFilter() {
-
-            return m_geoFilter;
-        }
-
-        /**
-         * Returns the number of results to return maximally, or <code>null</code> if not explicitly specified.
-         * @return the number of results to return maximally, or <code>null</code> if not explicitly specified.
-         */
-        public Integer getMaximallyReturnedResults() {
-
-            String resString = m_parameterFields.get(N_MAX_RESULTS);
-            // Fallback, we first added the restriction as additional parameter. To make it more obvious, we integrated it as extra field.
-            // Only if the extra field is not set, we use the additional parameter to be backward compatible.
-            if (null == resString) {
-                m_additionalParameters.get(ADDITIONAL_PARAM_MAX_RETURNED_RESULTS);
-            }
-            if (null != resString) {
-                try {
-                    return Integer.valueOf(resString);
-                } catch (NumberFormatException e) {
-                    if (LOG.isErrorEnabled()) {
-                        LOG.error("Ignoring invalid maxresults param " + resString + " in list-config.");
-                    }
-                }
-            }
-            return null;
-        }
-
-        /**
-         * Returns the parameter map.<p>
-         *
-         * @return the parameters
-         */
-        public Map<String, String> getParameters() {
-
-            return m_parameterFields;
-        }
-
-        /**
-         * Returns the parameter by name.<p>
-         *
-         * @param key the parameter name
-         *
-         * @return the parameter value
-         */
-        public String getParameterValue(String key) {
-
-            return m_parameterFields.get(key);
-        }
-
-        /**
-         * Gets the sort order.<p>
-         *
-         * @return the sort order
-         */
-        public String getSortOrder() {
-
-            return getParameterValue(N_SORT_ORDER);
-        }
-
-        /**
-         * Returns the search types.<p>
-         *
-         * @return the search types
-         */
-        public List<String> getTypes() {
-
-            List<String> result = new ArrayList<String>();
-            if (m_dislayTypes != null) {
-                for (String displayType : m_dislayTypes) {
-                    String type = displayType;
-                    if (type.contains(CmsXmlDisplayFormatterValue.SEPARATOR)) {
-                        type = type.substring(0, type.indexOf(CmsXmlDisplayFormatterValue.SEPARATOR));
-                    }
-                    if (!result.contains(type)) {
-                        result.add(type);
-                    }
-                }
-            }
-            return result;
-        }
-
-        /**
-         * Returns the 'show expired' setting.<p>
-         *
-         * @return the 'show expired' setting
-         */
-        public boolean isShowExpired() {
-
-            return Boolean.parseBoolean(m_parameterFields.get(N_SHOW_EXPIRED));
-
-        }
-
-        /**
-         * Sets the additional content parameters.<p>
-         *
-         * @param additionalParameters the additional content parameters to set
-         */
-        public void setAdditionalParameters(Map<String, String> additionalParameters) {
-
-            m_additionalParameters = additionalParameters;
-        }
-
-        /**
-         * Sets the blacklist.<p>
-         *
-         * @param blacklist the blacklist
-         */
-        public void setBlacklist(List<CmsUUID> blacklist) {
-
-            m_blacklist = blacklist;
-        }
-
-        /**
-         * Sets the categories.<p>
-         *
-         * @param categories the categories
-         */
-        public void setCategories(List<String> categories) {
-
-            m_categories = categories;
-        }
-
-        /**
-         * Sets the category mode.<p>
-         *
-         * @param categoryMode the category mode to set
-         */
-        public void setCategoryMode(CategoryMode categoryMode) {
-
-            m_categoryMode = categoryMode;
-        }
-
-        /**
-         * Sets the date restrictions.<p>
-         *
-         * @param restriction the date restrictions
-         */
-        public void setDateRestriction(I_CmsListDateRestriction restriction) {
-
-            m_dateRestriction = restriction;
-        }
-
-        /**
-         * Sets the display types.<p>
-         *
-         * @param displayTypes the display types
-         */
-        public void setDisplayTypes(List<String> displayTypes) {
-
-            m_dislayTypes = displayTypes;
-        }
-
-        /**
-         * Sets the folders.<p>
-         *
-         * @param folders the folders
-         */
-        public void setFolders(List<String> folders) {
-
-            m_folders = folders;
-        }
-
-        /**
-         * Sets the Geo filter.<p>
-         *
-         * @param geoFilter the Geo filter
-         */
-        public void setGeoFilter(ListGeoFilterBean geoFilter) {
-
-            m_geoFilter = geoFilter;
-        }
-
-        /**
-         * Sets the parameter by name.<p>
-         *
-         * @param name the parameter name
-         * @param value the parameter value
-         */
-        public void setParameterValue(String name, String value) {
-
-            m_parameterFields.put(name, value);
-
-        }
-    }
 
     /**
      * Extended dialog context.<p>
@@ -845,93 +377,8 @@ I_CmsCachableApp {
         }
     }
 
-    /** SOLR field name. */
-    public static final String FIELD_CATEGORIES = "category_exact";
-
-    /** SOLR field name. */
-    public static final String FIELD_DATE = "instancedate_%s_dt";
-
-    /** SOLR field name. */
-    public static final String FIELD_DATE_RANGE = "instancedaterange_%s_dr";
-
-    /** SOLR field name. */
-    public static final String FIELD_DATE_FACET_NAME = "instancedate";
-
-    /** SOLR field name. */
-    public static final String FIELD_PARENT_FOLDERS = "parent-folders";
-
-    /** List configuration node name and field key. */
-    public static final String N_BLACKLIST = "Blacklist";
-
-    /** List configuration node name and field key. */
-    public static final String N_CATEGORY = "Category";
-
-    /** List configuration node name and field key. */
-    private static final String N_CATEGORY_FOLDER_RESTRICTION = "CategoryFolderFilter";
-
-    /** List configuration node name and field key. */
-    private static final String N_COORDINATES = "Coordinates";
-
-    /** List configuration node name and field key. */
-    private static final String N_FOLDER = "Folder";
-
-    /** List configuration node name for the category mode. */
-    public static final String N_CATEGORY_MODE = "CategoryMode";
-
-    /** XML content node name. */
-    public static final String N_DATE_RESTRICTION = "DateRestriction";
-
-    /** List configuration node name and field key. */
-    public static final String N_DISPLAY_TYPE = "TypesToCollect";
-
-    /** List configuration node name and field key. */
-    public static final String N_FILTER_MULTI_DAY = "FilterMultiDay";
-
-    /** List configuration node name and field key. */
-    public static final String N_FILTER_QUERY = "FilterQuery";
-
-    /** List configuration node name and field key. */
-    public static final String N_GEO_FILTER = "GeoFilter";
-
-    /** List configuration node name and field key. */
-    public static final String N_KEY = "Key";
-
-    /** List configuration node name and field key. */
-    public static final String N_PARAMETER = "Parameter";
-
-    /** List configuration node name and field key. */
-    public static final String N_RADIUS = "Radius";
-
-    /** List configuration node name and field key. */
-    public static final String N_SEARCH_FOLDER = "SearchFolder";
-
-    /** List configuration node name and field key. */
-    public static final String N_SHOW_EXPIRED = "ShowExpired";
-
-    /** List configuration node name and field key. */
-    public static final String N_SORT_ORDER = "SortOrder";
-
-    /** List configuration node name and field key. */
-    public static final String N_TITLE = "Title";
-
-    /** List configuration node name and field key. */
-    public static final String N_VALUE = "Value";
-
     /** List configuration node name and field key. */
     public static final String PARAM_LOCALE = "locale";
-
-    /** List configuration node name and field key. */
-    public static final String N_MAX_RESULTS = "MaxResults";
-
-    /** The parameter fields. */
-    public static final String[] PARAMETER_FIELDS = new String[] {
-        N_TITLE,
-        N_CATEGORY,
-        N_FILTER_MULTI_DAY,
-        N_FILTER_QUERY,
-        N_SORT_ORDER,
-        N_SHOW_EXPIRED,
-        N_MAX_RESULTS};
 
     /** The view content list path name. */
     public static final String PATH_NAME_VIEW = "view";
@@ -1024,7 +471,7 @@ I_CmsCachableApp {
     private static final long serialVersionUID = -25954374225590319L;
 
     /** The current list configuration data. */
-    ListConfigurationBean m_currentConfig;
+    CmsListConfigurationBean m_currentConfig;
 
     /** The current list configuration resource. */
     CmsResource m_currentResource;
@@ -1094,186 +541,6 @@ I_CmsCachableApp {
 
     /** The toggle date series display. */
     private Button m_toggleSeriesButton;
-
-    /**
-     * Parses the list configuration resource.<p>
-     *
-     * @param cms the CMS context to use
-     * @param res the list configuration resource
-     *
-     * @return the configuration data bean
-     */
-    public static ListConfigurationBean parseListConfiguration(CmsObject cms, CmsResource res) {
-
-        ListConfigurationBean result = new ListConfigurationBean();
-        try {
-            CmsFile configFile = cms.readFile(res);
-            CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, configFile);
-            Locale locale = CmsLocaleManager.MASTER_LOCALE;
-
-            if (!content.hasLocale(locale)) {
-                locale = content.getLocales().get(0);
-            }
-            for (String field : PARAMETER_FIELDS) {
-                String val = content.getStringValue(cms, field, locale);
-                if (N_CATEGORY.equals(field)) {
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(val)) {
-                        result.setCategories(Arrays.asList(val.split(",")));
-                    } else {
-                        result.setCategories(Collections.<String> emptyList());
-                    }
-                } else {
-                    result.setParameterValue(field, val);
-                }
-            }
-
-            I_CmsXmlContentValue restrictValue = content.getValue(N_DATE_RESTRICTION, locale);
-            if (restrictValue != null) {
-                CmsDateRestrictionParser parser = new CmsDateRestrictionParser(cms);
-                I_CmsListDateRestriction restriction = parser.parse(new CmsXmlContentValueLocation(restrictValue));
-                if (restriction == null) {
-                    LOG.warn(
-                        "Improper date restriction configuration in content "
-                            + content.getFile().getRootPath()
-                            + ", online="
-                            + cms.getRequestContext().getCurrentProject().isOnlineProject());
-                }
-                result.setDateRestriction(restriction);
-            }
-
-            I_CmsXmlContentValue geoFilterValue = content.getValue(N_GEO_FILTER, locale);
-            if (geoFilterValue != null) {
-                String coordinatesPath = geoFilterValue.getPath() + "/" + N_COORDINATES;
-                String radiusPath = geoFilterValue.getPath() + "/" + N_RADIUS;
-                I_CmsXmlContentValue coordinatesValue = content.getValue(coordinatesPath, locale);
-                I_CmsXmlContentValue radiusValue = content.getValue(radiusPath, locale);
-                String coordinates = CmsGeoUtil.parseCoordinates(coordinatesValue.getStringValue(cms));
-                String radius = radiusValue.getStringValue(cms);
-                boolean radiusValid = false;
-                try {
-                    Float.parseFloat(radius);
-                    radiusValid = true;
-                } catch (NumberFormatException e) {
-                    radiusValid = false;
-                }
-                if ((coordinates != null) && radiusValid) {
-                    ListGeoFilterBean listGeoFilterBean = new ListGeoFilterBean(coordinates, radius);
-                    result.setGeoFilter(listGeoFilterBean);
-                } else {
-                    LOG.warn(
-                        "Improper Geo filter in content "
-                            + content.getFile().getRootPath()
-                            + ", online="
-                            + cms.getRequestContext().getCurrentProject().isOnlineProject());
-                }
-            }
-
-            I_CmsXmlContentValue categoryModeVal = content.getValue(N_CATEGORY_MODE, locale);
-            CategoryMode categoryMode = CategoryMode.OR;
-            if (categoryModeVal != null) {
-                try {
-                    categoryMode = CategoryMode.valueOf(categoryModeVal.getStringValue(cms));
-                } catch (Exception e) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-            }
-            result.setCategoryMode(categoryMode);
-
-            LinkedHashMap<String, String> parameters = new LinkedHashMap<String, String>();
-            for (I_CmsXmlContentValue parameter : content.getValues(N_PARAMETER, locale)) {
-                I_CmsXmlContentValue keyVal = content.getValue(parameter.getPath() + "/" + N_KEY, locale);
-                I_CmsXmlContentValue valueVal = content.getValue(parameter.getPath() + "/" + N_VALUE, locale);
-                if ((keyVal != null)
-                    && CmsStringUtil.isNotEmptyOrWhitespaceOnly(keyVal.getStringValue(cms))
-                    && (valueVal != null)) {
-                    parameters.put(keyVal.getStringValue(cms), valueVal.getStringValue(cms));
-                }
-            }
-            result.setAdditionalParameters(parameters);
-            List<String> displayTypes = new ArrayList<String>();
-            List<I_CmsXmlContentValue> typeValues = content.getValues(N_DISPLAY_TYPE, locale);
-            if (!typeValues.isEmpty()) {
-                for (I_CmsXmlContentValue value : typeValues) {
-                    displayTypes.add(value.getStringValue(cms));
-                }
-            }
-            result.setDisplayTypes(displayTypes);
-            List<String> folders = new ArrayList<String>();
-            List<I_CmsXmlContentValue> folderValues = content.getValues(N_SEARCH_FOLDER, locale);
-            if (!folderValues.isEmpty()) {
-                for (I_CmsXmlContentValue value : folderValues) {
-                    CmsLink val = ((CmsXmlVfsFileValue)value).getLink(cms);
-                    if (val != null) {
-                        // we are using root paths
-                        folders.add(cms.getRequestContext().addSiteRoot(val.getSitePath(cms)));
-                    }
-                }
-            }
-            result.setFolders(folders);
-            List<CmsUUID> blackList = new ArrayList<CmsUUID>();
-            List<I_CmsXmlContentValue> blacklistValues = content.getValues(N_BLACKLIST, locale);
-            if (!blacklistValues.isEmpty()) {
-                for (I_CmsXmlContentValue value : blacklistValues) {
-                    CmsLink link = ((CmsXmlVfsFileValue)value).getLink(cms);
-                    if (link != null) {
-                        blackList.add(link.getStructureId());
-                    }
-                }
-            }
-            List<I_CmsXmlContentValue> categoryFolderRestrictions = content.getValues(
-                N_CATEGORY_FOLDER_RESTRICTION,
-                locale);
-            if (!categoryFolderRestrictions.isEmpty()) {
-                for (I_CmsXmlContentValue restriction : categoryFolderRestrictions) {
-                    List<String> restrictionFolders = new ArrayList<>();
-                    List<I_CmsXmlContentValue> folderVals = content.getValues(
-                        CmsXmlUtils.concatXpath(restriction.getPath(), N_FOLDER),
-                        locale);
-                    for (I_CmsXmlContentValue folderVal : folderVals) {
-                        CmsLink val = ((CmsXmlVfsFileValue)folderVal).getLink(cms);
-                        if (val != null) {
-                            // we are using root paths
-                            restrictionFolders.add(cms.getRequestContext().addSiteRoot(val.getSitePath(cms)));
-                        }
-                    }
-                    List<String> restrictionCategorySitePaths;
-                    I_CmsXmlContentValue categoryVal = content.getValue(
-                        CmsXmlUtils.concatXpath(restriction.getPath(), N_CATEGORY),
-                        locale);
-                    String categoryString = null != categoryVal ? categoryVal.getStringValue(cms) : "";
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(categoryString)) {
-                        restrictionCategorySitePaths = Arrays.asList(categoryString.split(","));
-                    } else {
-                        restrictionCategorySitePaths = Collections.<String> emptyList();
-                    }
-                    List<String> restrictionCategories = new ArrayList<>(restrictionCategorySitePaths.size());
-                    for (String sitePath : restrictionCategorySitePaths) {
-                        try {
-                            String path = CmsCategoryService.getInstance().getCategory(
-                                cms,
-                                cms.getRequestContext().addSiteRoot(sitePath)).getPath();
-                            restrictionCategories.add(path);
-                        } catch (CmsException e) {
-                            LOG.warn(e.getLocalizedMessage(), e);
-                        }
-                    }
-                    String restrictionCategoryMode = content.getValue(
-                        CmsXmlUtils.concatXpath(restriction.getPath(), N_CATEGORY_MODE),
-                        locale).getStringValue(cms);
-                    result.addCategoryFolderFilter(
-                        new ListCategoryFolderRestrictionBean(
-                            restrictionCategories,
-                            restrictionFolders,
-                            null == restrictionCategoryMode ? null : CategoryMode.valueOf(restrictionCategoryMode)));
-
-                }
-            }
-            result.setBlacklist(blackList);
-        } catch (CmsException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
 
     /**
      * @see org.opencms.ui.components.CmsResourceTable.I_ResourcePropertyProvider#addItemProperties(com.vaadin.v7.data.Item, org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.util.Locale)
@@ -1767,7 +1034,7 @@ I_CmsCachableApp {
      *
      * @param configBean the bean whose blacklist should be saved
      */
-    public void saveBlacklist(ListConfigurationBean configBean) {
+    public void saveBlacklist(CmsListConfigurationBean configBean) {
 
         if (m_dialogWindow != null) {
             m_dialogWindow.close();
@@ -1785,18 +1052,7 @@ I_CmsCachableApp {
         try {
             CmsFile configFile = cms.readFile(m_currentResource);
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, configFile);
-            // list configurations are single locale contents
-            Locale locale = CmsLocaleManager.MASTER_LOCALE;
-            int count = 0;
-            while (content.hasValue(N_BLACKLIST, locale)) {
-                content.removeValue(N_BLACKLIST, locale, 0);
-            }
-            for (CmsUUID hiddenId : configBean.getBlacklist()) {
-                CmsXmlVfsFileValue contentVal;
-                contentVal = (CmsXmlVfsFileValue)content.addValue(cms, N_BLACKLIST, locale, count);
-                contentVal.setIdValue(cms, hiddenId);
-                count++;
-            }
+            content = CmsListConfigParserUtils.updateBlackList(cms, content, configBean);
             configFile.setContents(content.marshal());
             cms.writeFile(configFile);
             if (m_lockAction.getChange().equals(LockChange.locked)) {
@@ -1820,7 +1076,7 @@ I_CmsCachableApp {
         m_currentConfigParser = configParser;
         resetContentLocale(configParser.getSearchLocale());
         m_resetting = true;
-        m_resultSorter.setValue(m_currentConfig.getParameterValue(N_SORT_ORDER));
+        m_resultSorter.setValue(m_currentConfig.getParameterValue(CmsListConfigurationBean.PARAM_SORT_ORDER));
         m_resetting = false;
 
         search(null, null, null);
@@ -1931,7 +1187,7 @@ I_CmsCachableApp {
             try {
                 CmsUUID id = new CmsUUID(A_CmsWorkplaceApp.getParamFromState(state, CmsEditor.RESOURCE_ID_PREFIX));
                 CmsResource res = cms.readResource(id, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
-                m_currentConfig = parseListConfiguration(A_CmsUI.getCmsObject(), res);
+                m_currentConfig = CmsListConfigParserUtils.parseListConfiguration(A_CmsUI.getCmsObject(), res);
                 String localeString = A_CmsWorkplaceApp.getParamFromState(state, PARAM_LOCALE);
                 Locale locale;
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(localeString)) {
@@ -2433,7 +1689,7 @@ I_CmsCachableApp {
      *
      * @return the locale
      */
-    private Locale getContentLocale(ListConfigurationBean bean) {
+    private Locale getContentLocale(CmsListConfigurationBean bean) {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         if (bean.getFolders().isEmpty()) {
