@@ -7,6 +7,7 @@
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/date_restriction.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/list_category_folder_filter.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/list_geo_filter.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/list_preconfigured_filter.xsd" />
 
     <xsd:element name="ListConfigs" type="OpenCmsListConfigs" />
 
@@ -24,11 +25,12 @@
         <xsd:element name="Category" type="OpenCmsCategory" />
         <xsd:element name="CategoryMode" type="OpenCmsString" />
         <xsd:element name="SortOrder" type="OpenCmsString" />
+        <xsd:element name="DateRestriction" type="OpenCmsListDateRestriction" minOccurs="0" />
         <xsd:element name="CategoryFolderFilter" type="OpenCmsListCategoryFolderFilter" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element name="GeoFilter" type="OpenCmsListGeoFilter" minOccurs="0" />
+        <xsd:element name="PreconfiguredFilterQuery" type="OpenCmsListPreconfiguredFilter" minOccurs="0" maxOccurs="50" />
         <xsd:element name="FilterQuery" type="OpenCmsString" minOccurs="0" />
         <xsd:element name="MaxResults" type="OpenCmsString" minOccurs="0" />
-        <xsd:element name="DateRestriction" type="OpenCmsListDateRestriction" minOccurs="0" />
-        <xsd:element name="GeoFilter" type="OpenCmsListGeoFilter" minOccurs="0" />
         <xsd:element name="ShowExpired" type="OpenCmsBoolean" minOccurs="0" />
         <xsd:element name="FilterMultiDay" type="OpenCmsBoolean" minOccurs="0" />
         <xsd:element name="Parameter" type="OpenCmsParameter" minOccurs="0" maxOccurs="unbounded" />
@@ -39,11 +41,11 @@
 
     <xsd:annotation>
         <xsd:appinfo>
-        	<handler class="org.opencms.xml.containerpage.CmsListConfigContentHandler" />
+            <handler class="org.opencms.xml.containerpage.CmsListConfigContentHandler" />
             <resourcebundle name="org.opencms.xml.containerpage.messages" />
             <tabs>
                 <tab element="Title" collapse="false" name="TabGeneral" />
-                <tab element="CategoryFolderFilter" collapse="false" name="TabAdvanced" />
+                <tab element="DateRestriction" collapse="false" name="TabAdvanced" />
                 <tab element="Blacklist" collapse="false" name="TabBlacklist" />
             </tabs>
             <mappings>
