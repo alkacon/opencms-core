@@ -27,7 +27,7 @@
 
 package org.opencms.jsp.search.config.parser.simplesearch;
 
-import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigurationBean.CategoryMode;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigurationBean.CombinationMode;
 
 import java.util.Collections;
 import java.util.List;
@@ -42,7 +42,7 @@ public class CmsListCategoryFolderRestrictionBean {
     private List<String> m_folders;
 
     /** The category combination mode, i.e., "AND" or "OR". */
-    private CategoryMode m_categoryMode;
+    private CombinationMode m_categoryMode;
 
     /**
      * Constructor for the wrapper.
@@ -50,11 +50,11 @@ public class CmsListCategoryFolderRestrictionBean {
      * @param folders the folders to filter
      * @param categoryMode the combination mode for categories
      */
-    public CmsListCategoryFolderRestrictionBean(List<String> categories, List<String> folders, CategoryMode categoryMode) {
+    public CmsListCategoryFolderRestrictionBean(List<String> categories, List<String> folders, CombinationMode categoryMode) {
 
         m_categories = categories == null ? Collections.<String> emptyList() : categories;
         m_folders = folders == null ? Collections.<String> emptyList() : folders;
-        m_categoryMode = categoryMode == null ? CategoryMode.OR : categoryMode;
+        m_categoryMode = categoryMode == null ? CombinationMode.OR : categoryMode;
     }
 
     /**

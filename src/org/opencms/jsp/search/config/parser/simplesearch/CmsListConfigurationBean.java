@@ -45,13 +45,13 @@ import org.apache.commons.logging.Log;
 public class CmsListConfigurationBean {
 
     /**
-     * Enum representing how selected categories should be combined in a search.<p>
+     * Enum representing how filter queries should be combined in a search.<p>
      */
-    public static enum CategoryMode {
-        /** Combine categories with AND. */
+    public static enum CombinationMode {
+        /** Combine with AND. */
         AND,
 
-        /** Combine categories with OR. */
+        /** Combine with OR. */
         OR;
     }
 
@@ -92,7 +92,7 @@ public class CmsListConfigurationBean {
     private List<String> m_categories;
 
     /** The category mode. */
-    private CategoryMode m_categoryMode;
+    private CombinationMode m_categoryMode;
 
     /** The date restriction. */
     private I_CmsListDateRestriction m_dateRestriction;
@@ -175,7 +175,7 @@ public class CmsListConfigurationBean {
      *
      * @return the category mode
      */
-    public CategoryMode getCategoryMode() {
+    public CombinationMode getCategoryMode() {
 
         return m_categoryMode;
     }
@@ -354,7 +354,7 @@ public class CmsListConfigurationBean {
      *
      * @param categoryMode the category mode to set
      */
-    public void setCategoryMode(CategoryMode categoryMode) {
+    public void setCategoryMode(CombinationMode categoryMode) {
 
         m_categoryMode = categoryMode;
     }

@@ -31,7 +31,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigurationBean.CategoryMode;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigurationBean.CombinationMode;
 import org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.CmsDateRestrictionParser;
 import org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsListDateRestriction;
 import org.opencms.main.CmsException;
@@ -217,10 +217,10 @@ public final class CmsListConfigParserUtils {
             }
 
             I_CmsXmlContentValue categoryModeVal = content.getValue(N_CATEGORY_MODE, locale);
-            CategoryMode categoryMode = CategoryMode.OR;
+            CombinationMode categoryMode = CombinationMode.OR;
             if (categoryModeVal != null) {
                 try {
-                    categoryMode = CategoryMode.valueOf(categoryModeVal.getStringValue(cms));
+                    categoryMode = CombinationMode.valueOf(categoryModeVal.getStringValue(cms));
                 } catch (Exception e) {
                     LOG.error(e.getLocalizedMessage(), e);
                 }
@@ -312,7 +312,7 @@ public final class CmsListConfigParserUtils {
                         new CmsListCategoryFolderRestrictionBean(
                             restrictionCategories,
                             restrictionFolders,
-                            null == restrictionCategoryMode ? null : CategoryMode.valueOf(restrictionCategoryMode)));
+                            null == restrictionCategoryMode ? null : CombinationMode.valueOf(restrictionCategoryMode)));
 
                 }
             }
