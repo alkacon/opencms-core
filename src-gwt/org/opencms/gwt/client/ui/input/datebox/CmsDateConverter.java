@@ -130,9 +130,23 @@ public final class CmsDateConverter {
     @SuppressWarnings("deprecation")
     public static Date getDateWithTime(Date date, String time) {
 
+        return getDateWithTime(date, time, Z_TIME_FORMAT);
+    }
+
+    /**
+     * Changes the time portion of date to another value.
+     * 
+     * @param date the original date
+     * @param time the string representing the time to be set in the result 
+     * @param timeFormat the format to use for parsing the time
+     * 
+     * @return a new Date with the date from the date parameter and the time from the time parameter.
+     */
+    public static Date getDateWithTime(Date date, String time, DateTimeFormat timeFormat) {
+
         Date result;
         try {
-            Date timeAsDate = Z_TIME_FORMAT.parse(time);
+            Date timeAsDate = timeFormat.parse(time);
             result = new Date(date.getYear(), date.getMonth(), date.getDate());
             result.setHours(timeAsDate.getHours());
             result.setMinutes(timeAsDate.getMinutes());
@@ -141,6 +155,7 @@ public final class CmsDateConverter {
             result = null;
         }
         return result;
+
     }
 
     /**
@@ -275,7 +290,8 @@ public final class CmsDateConverter {
     public static boolean validateDate(Date date) {
 
         String time = getTime(date);
-        return validateTime(time);
+        boolean timeOk = validateTime(time);
+        return timeOk;
 
     }
 

@@ -67,6 +67,7 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
@@ -202,6 +203,9 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers, I
     /** Dummy value used for invalid dates. */
     public static final Date INVALID_DATE = new Date(Integer.MIN_VALUE + 37); // can't use Long.MIN_VALUE since this leads to an invalid Date object in GWT
 
+    /** Format used to parse the configured time in fixed-time mode. */
+    public static final DateTimeFormat TIME_FORMAT_24H = DateTimeFormat.getFormat("HH:mm");
+
     /** The widget type identifier for this widget. */
     public static final String WIDGET_TYPE = "datebox";
 
@@ -250,6 +254,9 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers, I
 
     /** The value for show date only. */
     private boolean m_dateOnly;
+
+    /** The time to use for the widget value when used in date-only mode. */
+    private String m_fixedTime;
 
     /** The initial date shown, when the date picker is opened and no date was set before. */
     private Date m_initialDate;
@@ -430,7 +437,8 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers, I
         } else if (allowInvalidValue() && value.equals(INVALID_DATE)) {
             return "INVALID_DATE";
         }
-        return String.valueOf(getValue().getTime());
+        String result = String.valueOf(getValue().getTime());
+        return result;
     }
 
     /**
@@ -453,6 +461,9 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers, I
             try {
                 if (m_dateOnly) {
                     date = CmsDateConverter.toDayDate(m_box.getText());
+                    if (m_fixedTime != null) {
+                        date = CmsDateConverter.getDateWithTime(date, m_fixedTime, TIME_FORMAT_24H);
+                    }
                 } else {
                     date = CmsDateConverter.toDate(m_box.getText());
                 }
@@ -465,7 +476,6 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers, I
                 }
             }
         }
-
         return date;
     }
 
@@ -591,6 +601,16 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers, I
     public void setErrorMessage(String errorMessage) {
 
         m_box.setErrorMessage(errorMessage);
+    }
+
+    /**
+     * Sets the time to be used when the widget is in date-only mode.
+     *
+     * @param time the time to use when the widget is in date-only mode
+     */
+    public void setFixedTime(String time) {
+
+        m_fixedTime = time;
     }
 
     /**

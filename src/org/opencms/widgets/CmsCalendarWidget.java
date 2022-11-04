@@ -30,6 +30,8 @@ package org.opencms.widgets;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -304,7 +306,19 @@ public class CmsCalendarWidget extends A_CmsWidget implements I_CmsADEWidget {
         CmsResource resource,
         Locale contentLocale) {
 
-        return getConfiguration();
+        String configStr = getConfiguration();
+        JSONObject resultObj = null;
+        // ensure configuration is either empty or a valid JSON object - if empty, convert to empty JSON object,
+        // otherwise convert to standard JSON format (fully quoted keys etc.)
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(configStr)) {
+            try {
+                resultObj = new JSONObject(configStr);
+                return resultObj.toString();
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return "{}";
     }
 
     /**

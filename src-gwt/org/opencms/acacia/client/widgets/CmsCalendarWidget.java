@@ -42,6 +42,9 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
@@ -62,6 +65,13 @@ public class CmsCalendarWidget extends Composite implements I_CmsEditWidget, I_C
      */
     public CmsCalendarWidget(String config) {
 
+        JSONObject jsonConfig = JSONParser.parseStrict(config).isObject();
+        JSONValue jFixedTime = jsonConfig.get("fixedTime");
+        if ((jFixedTime != null) && (jFixedTime.isString() != null)) {
+            String fixedTime = jFixedTime.isString().stringValue();
+            m_dateBox.setFixedTime(fixedTime);
+            m_dateBox.setDateOnly(true);
+        }
         m_dateBox.setAllowInvalidValue(true);
 
         // All composites must call initWidget() in their constructors.
@@ -142,7 +152,8 @@ public class CmsCalendarWidget extends Composite implements I_CmsEditWidget, I_C
      */
     public String getValue() {
 
-        return m_dateBox.getFormValueAsString();
+        String result = m_dateBox.getFormValueAsString();
+        return result;
     }
 
     /**
