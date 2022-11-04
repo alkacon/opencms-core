@@ -315,7 +315,7 @@ public class CmsCalendarWidget extends A_CmsWidget implements I_CmsADEWidget {
                 resultObj = new JSONObject(configStr);
                 return resultObj.toString();
             } catch (JSONException e) {
-                throw new RuntimeException(e);
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return "{}";
