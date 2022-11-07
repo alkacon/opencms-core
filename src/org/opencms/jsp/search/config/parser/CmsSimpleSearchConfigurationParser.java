@@ -41,8 +41,11 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationSortOption;
 import org.opencms.jsp.search.config.parser.simplesearch.CmsListCategoryFolderRestrictionBean;
 import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigurationBean;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigurationBean.CombinationMode;
 import org.opencms.jsp.search.config.parser.simplesearch.CmsListGeoFilterBean;
 import org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsListDateRestriction;
+import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsListPreconfiguredRestrictionsBean;
+import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionRule;
 import org.opencms.main.CmsException;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.search.fields.CmsSearchField;
@@ -50,15 +53,17 @@ import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrQueryUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.apache.solr.common.params.CommonParams;
 
@@ -401,6 +406,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(params)) {
             params = getCategoryFolderFilter()
                 + getResourceTypeFilter()
+                + getPreconfiguredFilterQuery()
                 + getFilterQuery()
                 + getBlacklistFilter()
                 + getGeoFilterQuery();
@@ -504,6 +510,71 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
             }
             return options;
         }
+    }
+
+    /**
+     * Generates the query part for the preconfigured restrictions for the type.
+     * @param type the type to generate the restriction for.
+     * @param restrictionsForType the preconfigured restrictions for the type.
+     * @return the part of the Solr query for the restriction.
+     */
+    String generatePreconfiguredRestriction(
+        String type,
+        Map<CmsRestrictionRule, Collection<String>> restrictionsForType) {
+
+        String result = "";
+        if ((null != restrictionsForType) && (restrictionsForType.size() > 0)) {
+            Collection<String> ruleRestrictions = new HashSet<>(restrictionsForType.size());
+            for (Map.Entry<CmsRestrictionRule, Collection<String>> ruleEntry : restrictionsForType.entrySet()) {
+                ruleRestrictions.add(generatePreconfiguredRestrictionForRule(ruleEntry.getKey(), ruleEntry.getValue()));
+            }
+            result = ruleRestrictions.size() > 1
+            ? ruleRestrictions.stream().reduce((r1, r2) -> (r1 + " " + CombinationMode.AND + " " + r2)).get()
+            : ruleRestrictions.iterator().next();
+            if (null != type) {
+                result = "type:\"" + type + "\" AND (" + result + ")";
+            }
+        } else if (null != type) {
+            result = "type:\"" + type + "\"";
+        }
+        return result.isEmpty() ? result : "(" + result + ")";
+    }
+
+    /**
+     * Generates the query part for the preconfigured restriction for a single rule.
+     * @param rule the rule to generate the restriction for.
+     * @param values the values provided for the rule.
+     * @return the part of the Solr query for the restriction.
+     */
+    String generatePreconfiguredRestrictionForRule(CmsRestrictionRule rule, Collection<String> values) {
+
+        Collection<String> finalValues;
+        switch (rule.getMatchType()) {
+            case DEFAULT:
+                finalValues = values;
+                break;
+            case EXACT:
+                finalValues = values.stream().map(v -> ("\"" + v + "\"")).collect(Collectors.toSet());
+                break;
+            case INFIX:
+                finalValues = values.stream().map(
+                    v -> ("(" + v + " OR *" + v + " OR *" + v + "* OR " + v + "*)")).collect(Collectors.toSet());
+                break;
+            case POSTFIX:
+                finalValues = values.stream().map(v -> ("(" + v + " OR *" + v + ")")).collect(Collectors.toSet());
+                break;
+            case PREFIX:
+                finalValues = values.stream().map(v -> ("(" + v + " OR " + v + "*)")).collect(Collectors.toSet());
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown match type '" + rule.getMatchType() + "'.");
+        }
+        String seperator = " " + rule.getCombinationMode().toString() + " ";
+        return rule.getFieldForLocale(getSearchLocale())
+            + ":("
+            + finalValues.stream().reduce((v1, v2) -> v1 + seperator + v2).get()
+            + ")";
+
     }
 
     /**
@@ -700,6 +771,36 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
     }
 
     /**
+     * Returns the filter query string.<p>
+     *
+     * @return the filter query
+     */
+    String getPreconfiguredFilterQuery() {
+
+        String result = "";
+        if (m_config.hasPreconfiguredRestrictions()) {
+            CmsListPreconfiguredRestrictionsBean restrictions = m_config.getPreconfiguredRestrictions();
+            String restriction = generatePreconfiguredRestriction(null, restrictions.getRestrictionsForType(null));
+            if (!restriction.isEmpty()) {
+                result = "&fq=" + CmsEncoder.encode(restriction);
+            }
+            Collection<String> typedRestrictions = new HashSet<>();
+            for (String type : m_config.getTypes()) {
+                restriction = generatePreconfiguredRestriction(type, restrictions.getRestrictionsForType(type));
+                if (!restriction.isEmpty()) {
+                    typedRestrictions.add(restriction);
+                }
+            }
+            if (!typedRestrictions.isEmpty()) {
+                result += "&fq="
+                    + CmsEncoder.encode(
+                        "(" + typedRestrictions.stream().reduce((r1, r2) -> (r1 + " OR " + r2)).get() + ")");
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns the resource type filter string.<p>
      *
      * @return the folder filter
@@ -707,17 +808,15 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
     String getResourceTypeFilter() {
 
         String result = "";
-        List<String> typeVals = Lists.newArrayList();
-        if (!m_config.getDisplayTypes().isEmpty()) {
-            for (String displayType : m_config.getDisplayTypes()) {
-                if (displayType.contains(CmsXmlDisplayFormatterValue.SEPARATOR)) {
-                    displayType = displayType.substring(0, displayType.indexOf(CmsXmlDisplayFormatterValue.SEPARATOR));
-                }
-                typeVals.add("\"" + displayType + "\"");
+        // When we have pre-configured restrictions, we need to combine the type filter with these restrictions.
+        if (!m_config.hasPreconfiguredRestrictions()) {
+            List<String> typeVals = Lists.newArrayList();
+            for (String type : m_config.getTypes()) {
+                typeVals.add("\"" + type + "\"");
             }
-        }
-        if (!typeVals.isEmpty()) {
-            result = "&fq=" + CmsEncoder.encode("type:(" + CmsStringUtil.listAsString(typeVals, " OR ") + ")");
+            if (!typeVals.isEmpty()) {
+                result = "&fq=" + CmsEncoder.encode("type:(" + CmsStringUtil.listAsString(typeVals, " OR ") + ")");
+            }
         }
         return result;
     }

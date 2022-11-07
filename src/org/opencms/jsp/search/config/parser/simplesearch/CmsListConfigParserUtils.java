@@ -34,6 +34,7 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigurationBean.CombinationMode;
 import org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.CmsDateRestrictionParser;
 import org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsListDateRestriction;
+import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsListPreconfiguredRestrictionsBean;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.relations.CmsCategoryService;
@@ -56,6 +57,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 
@@ -124,6 +126,12 @@ public final class CmsListConfigParserUtils {
 
     /** List configuration node name and field key. */
     public static final String N_MAX_RESULTS = "MaxResults";
+
+    /** List configuration node name and field key. */
+    public static final String N_PRECONFIGURED_FILTER_QUERY = "PreconfiguredFilterQuery";
+
+    /** List configuration node name and field key. */
+    public static final String N_RULE = "Rule";
 
     /** The parameter fields. */
     public static final String[] PARAMETER_FIELDS = new String[] {
@@ -268,6 +276,7 @@ public final class CmsListConfigParserUtils {
                     }
                 }
             }
+            result.setBlacklist(blackList);
             List<I_CmsXmlContentValue> categoryFolderRestrictions = content.getValues(
                 N_CATEGORY_FOLDER_RESTRICTION,
                 locale);
@@ -316,7 +325,24 @@ public final class CmsListConfigParserUtils {
 
                 }
             }
-            result.setBlacklist(blackList);
+            List<I_CmsXmlContentValue> preconfiguredRestrictions = content.getValues(
+                N_PRECONFIGURED_FILTER_QUERY,
+                locale);
+            if (!preconfiguredRestrictions.isEmpty()) {
+                CmsListPreconfiguredRestrictionsBean restrictionBean = new CmsListPreconfiguredRestrictionsBean();
+                for (I_CmsXmlContentValue restriction : preconfiguredRestrictions) {
+                    String restrictionRule = content.getValue(
+                        CmsXmlUtils.concatXpath(restriction.getPath(), N_RULE),
+                        locale).getStringValue(cms);
+                    List<I_CmsXmlContentValue> restrictionVals = content.getValues(
+                        CmsXmlUtils.concatXpath(restriction.getPath(), N_VALUE),
+                        locale);
+                    List<String> restrictionValues = restrictionVals.stream().map(v -> v.getStringValue(cms)).collect(
+                        Collectors.toList());
+                    restrictionBean.addRestriction(restrictionRule, restrictionValues);
+                }
+                result.setPreconfiguredRestrictions(restrictionBean);
+            }
         } catch (CmsException e) {
             e.printStackTrace();
         }

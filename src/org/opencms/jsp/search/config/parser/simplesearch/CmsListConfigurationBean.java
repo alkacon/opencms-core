@@ -28,6 +28,7 @@
 package org.opencms.jsp.search.config.parser.simplesearch;
 
 import org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsListDateRestriction;
+import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsListPreconfiguredRestrictionsBean;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
@@ -108,6 +109,9 @@ public class CmsListConfigurationBean {
 
     /** Search parameters by configuration node name. */
     private Map<String, String> m_parameterFields;
+
+    /** The preconfigured restrictions */
+    private CmsListPreconfiguredRestrictionsBean m_preconfiguredRestrictions;
 
     /** Combined category and folder restrictions. */
     private List<CmsListCategoryFolderRestrictionBean> m_categoryFolderRestrictions = new ArrayList<>();
@@ -277,6 +281,15 @@ public class CmsListConfigurationBean {
     }
 
     /**
+     * Returns the preconfigured restrictions.
+     * @return the preconfigured restrictions.
+     */
+    public CmsListPreconfiguredRestrictionsBean getPreconfiguredRestrictions() {
+
+        return m_preconfiguredRestrictions;
+    }
+
+    /**
      * Gets the sort order.<p>
      *
      * @return the sort order
@@ -306,6 +319,28 @@ public class CmsListConfigurationBean {
             }
         }
         return result;
+    }
+
+    /**
+     * Returns a flag, indicating if there are preconfigured restrictions.
+     *
+     * @return <code>true</code> iff there are preconfiugred restrictions, <code>false</code> otherwise.
+     */
+    public boolean hasPreconfiguredRestrictions() {
+
+        return (null != m_preconfiguredRestrictions) && m_preconfiguredRestrictions.hasRestrictions();
+    }
+
+    /**
+     * Returns a flag, indicating if there are preconfigured restrictions for the provided type.
+     *
+     * @param type the type to check the existence of preconfigured restrictions for.
+     *
+     * @return <code>true</code> iff there are preconfigured restrictions for the provided type, <code>false</code> otherwise.
+     */
+    public boolean hasTypeSpecificRestriction(String type) {
+
+        return (null != m_preconfiguredRestrictions) && m_preconfiguredRestrictions.hasRestrictionForType(type);
     }
 
     /**
@@ -409,5 +444,15 @@ public class CmsListConfigurationBean {
 
         m_parameterFields.put(name, value);
 
+    }
+
+    /**
+     * Set the preconfigured restrictions.
+     *
+     * @param restrictionBean the restrictions to set.
+     */
+    public void setPreconfiguredRestrictions(CmsListPreconfiguredRestrictionsBean restrictionBean) {
+
+        m_preconfiguredRestrictions = restrictionBean;
     }
 }

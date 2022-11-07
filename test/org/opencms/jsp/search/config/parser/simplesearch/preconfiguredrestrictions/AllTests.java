@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.jsp.search.config.parser;
+package org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions;
 
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -58,9 +58,8 @@ public final class AllTests {
         TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
-        suite.addTest(TestJSONSearchConfigurationParser.suite());
-        suite.addTest(TestPlainQuerySearchConfigurationParser.suite());
-        suite.addTest(TestSimpleSearchConfigurationParser.suite());
+        suite.addTest(TestRestrictionRuleParser.suite());
+        suite.addTest(TestListPreconfiguredRestrictionsBean.suite());
         //$JUnit-END$
         return suite;
     }
