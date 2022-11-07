@@ -19,50 +19,44 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
-package org.opencms.jsp.search.config.parser.simplesearch;
+
+package org.opencms.jsp.search.config.parser.simplesearch.daterestrictions;
+
 /**
- * Bean representing a Geo filter.
+ * A restriction which selects either all entries in the past (from the current time) or all entries in the future.<p>
  */
-public class CmsListGeoFilterBean {
+public class CmsDatePastFutureRestriction implements I_CmsDateRestriction {
 
-    /** The center point coordinates. */
-    private String m_coordinates;
-
-    /** The search radius. */
-    private String m_radius;
+    /** The time direction. */
+    private TimeDirection m_direction;
 
     /**
-     * Creates a new Geo filter bean.
-     * @param coordinates the coordinates
-     * @param radius the radius
+     * Creates a new instance.<p>
+     *
+     * @param direction the time direction
      */
-    public CmsListGeoFilterBean(String coordinates, String radius) {
-
-        m_coordinates = coordinates;
-        m_radius = radius;
+    public CmsDatePastFutureRestriction(TimeDirection direction) {
+        m_direction = direction;
     }
 
     /**
-     * Returns the center point coordinates.
-     * @return the center point coordinates
+     * @see org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsDateRestriction#getRange()
      */
-    public String getCoordinates() {
+    public String getRange() {
 
-        return m_coordinates;
+        switch (m_direction) {
+            case future:
+                return "[NOW TO *]";
+            case past:
+                return "[* TO NOW ]";
+            default:
+                return null;
+        }
     }
 
-    /**
-     * Returns the search radius.
-     * @return the search radius
-     */
-    public String getRadius() {
-
-        return m_radius;
-    }
 }

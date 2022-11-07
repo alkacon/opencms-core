@@ -46,8 +46,8 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.config.parser.CmsSimpleSearchConfigurationParser;
 import org.opencms.jsp.search.config.parser.CmsSimpleSearchConfigurationParser.SortOption;
-import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigParserUtils;
-import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigurationBean;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigParserUtils;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigurationBean;
 import org.opencms.jsp.search.controller.CmsSearchController;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetField;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetRange;
@@ -471,7 +471,7 @@ I_CmsCachableApp {
     private static final long serialVersionUID = -25954374225590319L;
 
     /** The current list configuration data. */
-    CmsListConfigurationBean m_currentConfig;
+    CmsConfigurationBean m_currentConfig;
 
     /** The current list configuration resource. */
     CmsResource m_currentResource;
@@ -1034,7 +1034,7 @@ I_CmsCachableApp {
      *
      * @param configBean the bean whose blacklist should be saved
      */
-    public void saveBlacklist(CmsListConfigurationBean configBean) {
+    public void saveBlacklist(CmsConfigurationBean configBean) {
 
         if (m_dialogWindow != null) {
             m_dialogWindow.close();
@@ -1052,7 +1052,7 @@ I_CmsCachableApp {
         try {
             CmsFile configFile = cms.readFile(m_currentResource);
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, configFile);
-            content = CmsListConfigParserUtils.updateBlackList(cms, content, configBean);
+            content = CmsConfigParserUtils.updateBlackList(cms, content, configBean);
             configFile.setContents(content.marshal());
             cms.writeFile(configFile);
             if (m_lockAction.getChange().equals(LockChange.locked)) {
@@ -1076,7 +1076,7 @@ I_CmsCachableApp {
         m_currentConfigParser = configParser;
         resetContentLocale(configParser.getSearchLocale());
         m_resetting = true;
-        m_resultSorter.setValue(m_currentConfig.getParameterValue(CmsListConfigurationBean.PARAM_SORT_ORDER));
+        m_resultSorter.setValue(m_currentConfig.getParameterValue(CmsConfigurationBean.PARAM_SORT_ORDER));
         m_resetting = false;
 
         search(null, null, null);
@@ -1187,7 +1187,7 @@ I_CmsCachableApp {
             try {
                 CmsUUID id = new CmsUUID(A_CmsWorkplaceApp.getParamFromState(state, CmsEditor.RESOURCE_ID_PREFIX));
                 CmsResource res = cms.readResource(id, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
-                m_currentConfig = CmsListConfigParserUtils.parseListConfiguration(A_CmsUI.getCmsObject(), res);
+                m_currentConfig = CmsConfigParserUtils.parseListConfiguration(A_CmsUI.getCmsObject(), res);
                 String localeString = A_CmsWorkplaceApp.getParamFromState(state, PARAM_LOCALE);
                 Locale locale;
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(localeString)) {
@@ -1689,7 +1689,7 @@ I_CmsCachableApp {
      *
      * @return the locale
      */
-    private Locale getContentLocale(CmsListConfigurationBean bean) {
+    private Locale getContentLocale(CmsConfigurationBean bean) {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         if (bean.getFolders().isEmpty()) {

@@ -27,7 +27,7 @@
 
 package org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions;
 
-import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigurationBean.CombinationMode;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigurationBean.CombinationMode;
 import org.opencms.jsp.search.config.parser.simplesearch.Messages;
 import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionRule.MatchType;
 import org.opencms.main.CmsException;

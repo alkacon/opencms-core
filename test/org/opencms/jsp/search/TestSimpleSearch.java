@@ -32,8 +32,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.jsp.search.config.CmsSearchConfiguration;
 import org.opencms.jsp.search.config.I_CmsSearchConfiguration;
 import org.opencms.jsp.search.config.parser.CmsSimpleSearchConfigurationParser;
-import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigParserUtils;
-import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigurationBean;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigParserUtils;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigurationBean;
 import org.opencms.jsp.search.controller.CmsSearchController;
 import org.opencms.jsp.search.controller.I_CmsSearchController;
 import org.opencms.main.CmsException;
@@ -169,7 +169,7 @@ public class TestSimpleSearch extends OpenCmsTestCase {
     private Set<String> searchForConfig(CmsObject cms, String listName) throws CmsException {
 
         CmsResource listConfig = cms.readResource(CmsStringUtil.joinPaths(LIST_BASE_FOLDER, listName));
-        CmsListConfigurationBean listConfigBean = CmsListConfigParserUtils.parseListConfiguration(cms, listConfig);
+        CmsConfigurationBean listConfigBean = CmsConfigParserUtils.parseListConfiguration(cms, listConfig);
         I_CmsSearchConfiguration config = new CmsSearchConfiguration(
             CmsSimpleSearchConfigurationParser.createInstanceWithNoJsonConfig(getCmsObject(), listConfigBean),
             cms);

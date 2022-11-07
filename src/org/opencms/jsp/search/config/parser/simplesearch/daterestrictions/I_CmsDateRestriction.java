@@ -30,7 +30,7 @@ package org.opencms.jsp.search.config.parser.simplesearch.daterestrictions;
 /**
  * Interface for date restrictions used in list configurations.<p>
  */
-public interface I_CmsListDateRestriction {
+public interface I_CmsDateRestriction {
 
     /**
      * Enum representing a direction in time (past / future).

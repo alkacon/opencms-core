@@ -43,14 +43,14 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /** Test cases for the preconfigured restriction bean. */
-public class TestListPreconfiguredRestrictionsBean extends OpenCmsTestCase {
+public class TestRestrictionsBean extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
      *
      * @param arg0 JUnit parameters
      */
-    public TestListPreconfiguredRestrictionsBean(String arg0) {
+    public TestRestrictionsBean(String arg0) {
 
         super(arg0);
     }
@@ -65,10 +65,10 @@ public class TestListPreconfiguredRestrictionsBean extends OpenCmsTestCase {
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
 
         TestSuite suite = new TestSuite();
-        suite.addTest(new TestListPreconfiguredRestrictionsBean("testEmptyCheckAndSimpleRestrictions"));
-        suite.addTest(new TestListPreconfiguredRestrictionsBean("testMultipleRestrictions"));
-        suite.addTest(new TestListPreconfiguredRestrictionsBean("testValueHandling"));
-        suite.addTest(new TestListPreconfiguredRestrictionsBean("testIgnoredRule"));
+        suite.addTest(new TestRestrictionsBean("testEmptyCheckAndSimpleRestrictions"));
+        suite.addTest(new TestRestrictionsBean("testMultipleRestrictions"));
+        suite.addTest(new TestRestrictionsBean("testValueHandling"));
+        suite.addTest(new TestRestrictionsBean("testIgnoredRule"));
 
         return suite;
     }
@@ -79,7 +79,7 @@ public class TestListPreconfiguredRestrictionsBean extends OpenCmsTestCase {
     @org.junit.Test
     public void testEmptyCheckAndSimpleRestrictions() {
 
-        CmsListPreconfiguredRestrictionsBean bean = new CmsListPreconfiguredRestrictionsBean();
+        CmsRestrictionsBean bean = new CmsRestrictionsBean();
         assertFalse(bean.hasRestrictions());
         bean.addRestriction("field=test", Collections.emptySet());
         // Restriction should not be added, since no values
@@ -114,7 +114,7 @@ public class TestListPreconfiguredRestrictionsBean extends OpenCmsTestCase {
     public void testIgnoredRule() {
 
         // Test escaping of special characters
-        CmsListPreconfiguredRestrictionsBean bean = new CmsListPreconfiguredRestrictionsBean();
+        CmsRestrictionsBean bean = new CmsRestrictionsBean();
         bean.addRestriction("none", Collections.singleton("v1"));
         assertFalse(bean.hasRestrictions());
     }
@@ -125,7 +125,7 @@ public class TestListPreconfiguredRestrictionsBean extends OpenCmsTestCase {
     @org.junit.Test
     public void testMultipleRestrictions() {
 
-        CmsListPreconfiguredRestrictionsBean bean = new CmsListPreconfiguredRestrictionsBean();
+        CmsRestrictionsBean bean = new CmsRestrictionsBean();
         Collection<String> values = new HashSet<>(2);
         values.add("v1");
         values.add("v2");
@@ -157,7 +157,7 @@ public class TestListPreconfiguredRestrictionsBean extends OpenCmsTestCase {
     public void testValueHandling() {
 
         // Test escaping of special characters
-        CmsListPreconfiguredRestrictionsBean bean = new CmsListPreconfiguredRestrictionsBean();
+        CmsRestrictionsBean bean = new CmsRestrictionsBean();
         bean.addRestriction("field=test,match=default", Collections.singleton("v1*\"&"));
         Map<CmsRestrictionRule, Collection<String>> restrictions = bean.getRestrictionsForType(null);
         assertEquals(1, restrictions.size());
@@ -167,7 +167,7 @@ public class TestListPreconfiguredRestrictionsBean extends OpenCmsTestCase {
         assertEquals(values, storedValues);
 
         // For non-exact match type, the values should be taken apart
-        bean = new CmsListPreconfiguredRestrictionsBean();
+        bean = new CmsRestrictionsBean();
         bean.addRestriction("field=test,match=default", Collections.singleton("v1 v2"));
         restrictions = bean.getRestrictionsForType(null);
         assertEquals(1, restrictions.size());
@@ -178,7 +178,7 @@ public class TestListPreconfiguredRestrictionsBean extends OpenCmsTestCase {
         assertEquals(values, storedValues);
 
         // For exact match type, the values should remain together
-        bean = new CmsListPreconfiguredRestrictionsBean();
+        bean = new CmsRestrictionsBean();
         bean.addRestriction("field=test,match=exact", Collections.singleton("v1 v2"));
         restrictions = bean.getRestrictionsForType(null);
         assertEquals(1, restrictions.size());

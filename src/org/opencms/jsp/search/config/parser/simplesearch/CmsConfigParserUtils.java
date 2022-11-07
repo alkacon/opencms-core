@@ -31,10 +31,10 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigurationBean.CombinationMode;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigurationBean.CombinationMode;
 import org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.CmsDateRestrictionParser;
-import org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsListDateRestriction;
-import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsListPreconfiguredRestrictionsBean;
+import org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsDateRestriction;
+import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionsBean;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.relations.CmsCategoryService;
@@ -62,10 +62,10 @@ import java.util.stream.Collectors;
 import org.apache.commons.logging.Log;
 
 /** Utils to read and update the list configuration. */
-public final class CmsListConfigParserUtils {
+public final class CmsConfigParserUtils {
 
     /** The logger for this class. */
-    static final Log LOG = CmsLog.getLog(CmsListConfigParserUtils.class.getName());
+    static final Log LOG = CmsLog.getLog(CmsConfigParserUtils.class.getName());
 
     /** List configuration node name and field key. */
     public static final String N_BLACKLIST = "Blacklist";
@@ -154,9 +154,9 @@ public final class CmsListConfigParserUtils {
      *
      * @return the configuration data bean
      */
-    public static CmsListConfigurationBean parseListConfiguration(CmsObject cms, CmsResource res) {
+    public static CmsConfigurationBean parseListConfiguration(CmsObject cms, CmsResource res) {
 
-        CmsListConfigurationBean result = new CmsListConfigurationBean();
+        CmsConfigurationBean result = new CmsConfigurationBean();
         try {
             CmsFile configFile = cms.readFile(res);
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, configFile);
@@ -186,7 +186,7 @@ public final class CmsListConfigParserUtils {
             I_CmsXmlContentValue restrictValue = content.getValue(N_DATE_RESTRICTION, locale);
             if (restrictValue != null) {
                 CmsDateRestrictionParser parser = new CmsDateRestrictionParser(cms);
-                I_CmsListDateRestriction restriction = parser.parse(new CmsXmlContentValueLocation(restrictValue));
+                I_CmsDateRestriction restriction = parser.parse(new CmsXmlContentValueLocation(restrictValue));
                 if (restriction == null) {
                     LOG.warn(
                         "Improper date restriction configuration in content "
@@ -213,7 +213,7 @@ public final class CmsListConfigParserUtils {
                     radiusValid = false;
                 }
                 if ((coordinates != null) && radiusValid) {
-                    CmsListGeoFilterBean listGeoFilterBean = new CmsListGeoFilterBean(coordinates, radius);
+                    CmsGeoFilterBean listGeoFilterBean = new CmsGeoFilterBean(coordinates, radius);
                     result.setGeoFilter(listGeoFilterBean);
                 } else {
                     LOG.warn(
@@ -318,7 +318,7 @@ public final class CmsListConfigParserUtils {
                         CmsXmlUtils.concatXpath(restriction.getPath(), N_CATEGORY_MODE),
                         locale).getStringValue(cms);
                     result.addCategoryFolderFilter(
-                        new CmsListCategoryFolderRestrictionBean(
+                        new CmsCategoryFolderRestrictionBean(
                             restrictionCategories,
                             restrictionFolders,
                             null == restrictionCategoryMode ? null : CombinationMode.valueOf(restrictionCategoryMode)));
@@ -329,7 +329,7 @@ public final class CmsListConfigParserUtils {
                 N_PRECONFIGURED_FILTER_QUERY,
                 locale);
             if (!preconfiguredRestrictions.isEmpty()) {
-                CmsListPreconfiguredRestrictionsBean restrictionBean = new CmsListPreconfiguredRestrictionsBean();
+                CmsRestrictionsBean restrictionBean = new CmsRestrictionsBean();
                 for (I_CmsXmlContentValue restriction : preconfiguredRestrictions) {
                     String restrictionRule = content.getValue(
                         CmsXmlUtils.concatXpath(restriction.getPath(), N_RULE),
@@ -359,7 +359,7 @@ public final class CmsListConfigParserUtils {
     public static CmsXmlContent updateBlackList(
         CmsObject cms,
         CmsXmlContent content,
-        CmsListConfigurationBean configBean) {
+        CmsConfigurationBean configBean) {
 
         // list configurations are single locale contents
         Locale locale = CmsLocaleManager.MASTER_LOCALE;
@@ -383,12 +383,12 @@ public final class CmsListConfigParserUtils {
     private static Map<String, String> createParamsMap() {
 
         Map<String, String> result = new HashMap<>();
-        result.put(N_TITLE, CmsListConfigurationBean.PARAM_TITLE);
-        result.put(N_FILTER_MULTI_DAY, CmsListConfigurationBean.PARAM_FILTER_MULTI_DAY);
-        result.put(N_FILTER_QUERY, CmsListConfigurationBean.PARAM_FILTER_QUERY);
-        result.put(N_SORT_ORDER, CmsListConfigurationBean.PARAM_SORT_ORDER);
-        result.put(N_SHOW_EXPIRED, CmsListConfigurationBean.PARAM_SHOW_EXPIRED);
-        result.put(N_MAX_RESULTS, CmsListConfigurationBean.PARAM_MAX_RESULTS);
+        result.put(N_TITLE, CmsConfigurationBean.PARAM_TITLE);
+        result.put(N_FILTER_MULTI_DAY, CmsConfigurationBean.PARAM_FILTER_MULTI_DAY);
+        result.put(N_FILTER_QUERY, CmsConfigurationBean.PARAM_FILTER_QUERY);
+        result.put(N_SORT_ORDER, CmsConfigurationBean.PARAM_SORT_ORDER);
+        result.put(N_SHOW_EXPIRED, CmsConfigurationBean.PARAM_SHOW_EXPIRED);
+        result.put(N_MAX_RESULTS, CmsConfigurationBean.PARAM_MAX_RESULTS);
         return Collections.unmodifiableMap(result);
     }
 

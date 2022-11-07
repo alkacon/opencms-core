@@ -27,7 +27,7 @@
 
 package org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions;
 
-import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigurationBean.CombinationMode;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigurationBean.CombinationMode;
 
 import java.util.Locale;
 

@@ -28,8 +28,8 @@
 package org.opencms.jsp.search.config.parser;
 
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigurationBean;
-import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsListPreconfiguredRestrictionsBean;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigurationBean;
+import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionsBean;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -92,9 +92,9 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
     public void testExactRule() {
 
         // Set up the configuration bean
-        CmsListConfigurationBean bean = getBasicBean("event");
+        CmsConfigurationBean bean = getBasicBean("event");
         // Add simple preconfiguration
-        CmsListPreconfiguredRestrictionsBean preconfigurations = new CmsListPreconfiguredRestrictionsBean();
+        CmsRestrictionsBean preconfigurations = new CmsRestrictionsBean();
         preconfigurations.addRestriction("field=field,type=event,match=exact", Collections.singleton("v1 value"));
         bean.setPreconfiguredRestrictions(preconfigurations);
         // Initialize the parser
@@ -121,9 +121,9 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
     public void testInfixRule() {
 
         // Set up the configuration bean
-        CmsListConfigurationBean bean = getBasicBean("event");
+        CmsConfigurationBean bean = getBasicBean("event");
         // Add simple preconfiguration
-        CmsListPreconfiguredRestrictionsBean preconfigurations = new CmsListPreconfiguredRestrictionsBean();
+        CmsRestrictionsBean preconfigurations = new CmsRestrictionsBean();
         preconfigurations.addRestriction("field=field,type=event,match=infix", Collections.singleton("v1"));
         bean.setPreconfiguredRestrictions(preconfigurations);
         // Initialize the parser
@@ -149,9 +149,9 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
     public void testMultipleRestrictionsWithType() {
 
         // Set up the configuration bean
-        CmsListConfigurationBean bean = getBasicBean("event");
+        CmsConfigurationBean bean = getBasicBean("event");
         // Add simple preconfiguration
-        CmsListPreconfiguredRestrictionsBean preconfigurations = new CmsListPreconfiguredRestrictionsBean();
+        CmsRestrictionsBean preconfigurations = new CmsRestrictionsBean();
         List<String> values = new ArrayList<>(2);
         values.add("v1");
         values.add("v2");
@@ -181,9 +181,9 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
     public void testPostfixRule() {
 
         // Set up the configuration bean
-        CmsListConfigurationBean bean = getBasicBean("event");
+        CmsConfigurationBean bean = getBasicBean("event");
         // Add simple preconfiguration
-        CmsListPreconfiguredRestrictionsBean preconfigurations = new CmsListPreconfiguredRestrictionsBean();
+        CmsRestrictionsBean preconfigurations = new CmsRestrictionsBean();
         preconfigurations.addRestriction("field=field,type=event,match=postfix", Collections.singleton("v1"));
         bean.setPreconfiguredRestrictions(preconfigurations);
         // Initialize the parser
@@ -208,9 +208,9 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
     public void testPrefixRule() {
 
         // Set up the configuration bean
-        CmsListConfigurationBean bean = getBasicBean("event");
+        CmsConfigurationBean bean = getBasicBean("event");
         // Add simple preconfiguration
-        CmsListPreconfiguredRestrictionsBean preconfigurations = new CmsListPreconfiguredRestrictionsBean();
+        CmsRestrictionsBean preconfigurations = new CmsRestrictionsBean();
         preconfigurations.addRestriction("field=field,type=event,match=prefix", Collections.singleton("v1"));
         bean.setPreconfiguredRestrictions(preconfigurations);
         // Initialize the parser
@@ -235,9 +235,9 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
     public void testRuleForUnknownType() {
 
         // Set up the configuration bean
-        CmsListConfigurationBean bean = getBasicBean("event");
+        CmsConfigurationBean bean = getBasicBean("event");
         // Add simple preconfiguration
-        CmsListPreconfiguredRestrictionsBean preconfigurations = new CmsListPreconfiguredRestrictionsBean();
+        CmsRestrictionsBean preconfigurations = new CmsRestrictionsBean();
         preconfigurations.addRestriction("field=field,type=article", Collections.singleton("value"));
         bean.setPreconfiguredRestrictions(preconfigurations);
         // Initialize the parser
@@ -262,7 +262,7 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
     public void testTypeRestrictionWithoutPreconfiguredRestrictions() {
 
         // Set up the configuration bean
-        CmsListConfigurationBean bean = getBasicBean("event", "article");
+        CmsConfigurationBean bean = getBasicBean("event", "article");
         // Initialize the parser
         CmsSimpleSearchConfigurationParser parser = CmsSimpleSearchConfigurationParser.createInstanceWithNoJsonConfig(
             null,
@@ -282,9 +282,9 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
     public void testTypeRestrictionWithPreconfiguredRestrictionWithoutType() {
 
         // Set up the configuration bean
-        CmsListConfigurationBean bean = getBasicBean("article", "event");
+        CmsConfigurationBean bean = getBasicBean("article", "event");
         // Add simple preconfiguration
-        CmsListPreconfiguredRestrictionsBean preconfigurations = new CmsListPreconfiguredRestrictionsBean();
+        CmsRestrictionsBean preconfigurations = new CmsRestrictionsBean();
         preconfigurations.addRestriction("field", Collections.singleton("value"));
         bean.setPreconfiguredRestrictions(preconfigurations);
         // Initialize the parser
@@ -312,9 +312,9 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
     public void testTypeRestrictionWithPreconfiguredRestrictionWithType() {
 
         // Set up the configuration bean
-        CmsListConfigurationBean bean = getBasicBean("article", "event");
+        CmsConfigurationBean bean = getBasicBean("article", "event");
         // Add simple preconfiguration
-        CmsListPreconfiguredRestrictionsBean preconfigurations = new CmsListPreconfiguredRestrictionsBean();
+        CmsRestrictionsBean preconfigurations = new CmsRestrictionsBean();
         preconfigurations.addRestriction("field=field,type=event", Collections.singleton("value"));
         bean.setPreconfiguredRestrictions(preconfigurations);
         // Initialize the parser
@@ -338,9 +338,9 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
      * @param types the configured types.
      * @return the configured bean.
      */
-    private CmsListConfigurationBean getBasicBean(String... types) {
+    private CmsConfigurationBean getBasicBean(String... types) {
 
-        CmsListConfigurationBean bean = new CmsListConfigurationBean();
+        CmsConfigurationBean bean = new CmsConfigurationBean();
         List<String> displayTypes = new ArrayList<>(types.length);
         for (String type : Arrays.asList(types)) {
             displayTypes.add(type + ":some-display-formatter-uuid-does-not-matter");

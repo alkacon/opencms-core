@@ -27,13 +27,13 @@
 
 package org.opencms.jsp.search.config.parser.simplesearch;
 
-import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigurationBean.CombinationMode;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigurationBean.CombinationMode;
 
 import java.util.Collections;
 import java.util.List;
 
 /** Wrapper for a combined category and folder restriction. */
-public class CmsListCategoryFolderRestrictionBean {
+public class CmsCategoryFolderRestrictionBean {
 
     /** The categories to restrict the search to. */
     private List<String> m_categories;
@@ -50,7 +50,7 @@ public class CmsListCategoryFolderRestrictionBean {
      * @param folders the folders to filter
      * @param categoryMode the combination mode for categories
      */
-    public CmsListCategoryFolderRestrictionBean(List<String> categories, List<String> folders, CombinationMode categoryMode) {
+    public CmsCategoryFolderRestrictionBean(List<String> categories, List<String> folders, CombinationMode categoryMode) {
 
         m_categories = categories == null ? Collections.<String> emptyList() : categories;
         m_folders = folders == null ? Collections.<String> emptyList() : folders;

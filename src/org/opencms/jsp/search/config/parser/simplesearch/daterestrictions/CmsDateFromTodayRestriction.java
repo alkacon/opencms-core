@@ -30,7 +30,7 @@ package org.opencms.jsp.search.config.parser.simplesearch.daterestrictions;
 /**
  * Date restrictions for a fixed number of time units going backward or forward from the current time.<p>
  */
-public class CmsListDateFromTodayRestriction implements I_CmsListDateRestriction {
+public class CmsDateFromTodayRestriction implements I_CmsDateRestriction {
 
     /** The number of time units. */
     private int m_count;
@@ -48,7 +48,7 @@ public class CmsListDateFromTodayRestriction implements I_CmsListDateRestriction
      * @param unit the time unit
      * @param direction the time direction
      */
-    public CmsListDateFromTodayRestriction(int count, TimeUnit unit, TimeDirection direction) {
+    public CmsDateFromTodayRestriction(int count, TimeUnit unit, TimeDirection direction) {
 
         m_count = count;
         m_unit = unit;
@@ -56,7 +56,7 @@ public class CmsListDateFromTodayRestriction implements I_CmsListDateRestriction
     }
 
     /**
-     * @see org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsListDateRestriction#getRange()
+     * @see org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsDateRestriction#getRange()
      */
     public String getRange() {
 

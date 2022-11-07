@@ -37,8 +37,8 @@ import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
 import org.opencms.jsp.search.config.CmsSearchConfiguration;
 import org.opencms.jsp.search.config.I_CmsSearchConfiguration;
 import org.opencms.jsp.search.config.parser.CmsSimpleSearchConfigurationParser;
-import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigParserUtils;
-import org.opencms.jsp.search.config.parser.simplesearch.CmsListConfigurationBean;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigParserUtils;
+import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigurationBean;
 import org.opencms.jsp.search.controller.CmsSearchController;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerCommon;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerMain;
@@ -173,7 +173,7 @@ public class CmsJspTagSimpleSearch extends CmsJspScopedVarBodyTagSuport implemen
         try {
             I_CmsSearchConfiguration config = null;
             CmsResource resource = CmsJspElFunctions.convertRawResource(cms, m_configFile);
-            CmsListConfigurationBean configBean = CmsListConfigParserUtils.parseListConfiguration(cms, resource);
+            CmsConfigurationBean configBean = CmsConfigParserUtils.parseListConfiguration(cms, resource);
             config = new CmsSearchConfiguration(
                 new CmsSimpleSearchConfigurationParser(cms, configBean, m_configString),
                 cms);

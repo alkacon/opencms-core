@@ -27,8 +27,8 @@
 
 package org.opencms.jsp.search.config.parser.simplesearch;
 
-import org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsListDateRestriction;
-import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsListPreconfiguredRestrictionsBean;
+import org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsDateRestriction;
+import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionsBean;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
@@ -43,7 +43,7 @@ import org.apache.commons.logging.Log;
 /**
  * The list configuration data.<p>
  */
-public class CmsListConfigurationBean {
+public class CmsConfigurationBean {
 
     /**
      * Enum representing how filter queries should be combined in a search.<p>
@@ -78,7 +78,7 @@ public class CmsListConfigurationBean {
     public static final String PARAM_MAX_RESULTS = "MaxResults";
 
     /** The logger for this class. */
-    static final Log LOG = CmsLog.getLog(CmsListConfigurationBean.class.getName());
+    static final Log LOG = CmsLog.getLog(CmsConfigurationBean.class.getName());
 
     /** Special parameter to configure the maximally returned results. */
     private static final String ADDITIONAL_PARAM_MAX_RETURNED_RESULTS = "maxresults";
@@ -96,13 +96,13 @@ public class CmsListConfigurationBean {
     private CombinationMode m_categoryMode;
 
     /** The date restriction. */
-    private I_CmsListDateRestriction m_dateRestriction;
+    private I_CmsDateRestriction m_dateRestriction;
 
     /** The display types. */
     private List<String> m_dislayTypes;
 
     /** The Geo filter */
-    private CmsListGeoFilterBean m_geoFilter;
+    private CmsGeoFilterBean m_geoFilter;
 
     /** The folders. */
     private List<String> m_folders;
@@ -111,15 +111,15 @@ public class CmsListConfigurationBean {
     private Map<String, String> m_parameterFields;
 
     /** The preconfigured restrictions */
-    private CmsListPreconfiguredRestrictionsBean m_preconfiguredRestrictions;
+    private CmsRestrictionsBean m_preconfiguredRestrictions;
 
     /** Combined category and folder restrictions. */
-    private List<CmsListCategoryFolderRestrictionBean> m_categoryFolderRestrictions = new ArrayList<>();
+    private List<CmsCategoryFolderRestrictionBean> m_categoryFolderRestrictions = new ArrayList<>();
 
     /**
      * Constructor.<p>
      */
-    public CmsListConfigurationBean() {
+    public CmsConfigurationBean() {
 
         m_parameterFields = new HashMap<String, String>();
     }
@@ -128,7 +128,7 @@ public class CmsListConfigurationBean {
      * Add a combined category-folder restriction.
      * @param listCategoryFolderRestrictionBean the category-folder restriction to add.
      */
-    public void addCategoryFolderFilter(CmsListCategoryFolderRestrictionBean listCategoryFolderRestrictionBean) {
+    public void addCategoryFolderFilter(CmsCategoryFolderRestrictionBean listCategoryFolderRestrictionBean) {
 
         m_categoryFolderRestrictions.add(listCategoryFolderRestrictionBean);
 
@@ -169,7 +169,7 @@ public class CmsListConfigurationBean {
      *
      * @return the combined category-folder restrictions
      */
-    public List<CmsListCategoryFolderRestrictionBean> getCategoryFolderRestrictions() {
+    public List<CmsCategoryFolderRestrictionBean> getCategoryFolderRestrictions() {
 
         return m_categoryFolderRestrictions;
     }
@@ -189,7 +189,7 @@ public class CmsListConfigurationBean {
      *
      * @return the date restriction
      */
-    public I_CmsListDateRestriction getDateRestriction() {
+    public I_CmsDateRestriction getDateRestriction() {
 
         return m_dateRestriction;
     }
@@ -229,7 +229,7 @@ public class CmsListConfigurationBean {
      *
      * @return the Geo filter
      */
-    public CmsListGeoFilterBean getGeoFilter() {
+    public CmsGeoFilterBean getGeoFilter() {
 
         return m_geoFilter;
     }
@@ -284,7 +284,7 @@ public class CmsListConfigurationBean {
      * Returns the preconfigured restrictions.
      * @return the preconfigured restrictions.
      */
-    public CmsListPreconfiguredRestrictionsBean getPreconfiguredRestrictions() {
+    public CmsRestrictionsBean getPreconfiguredRestrictions() {
 
         return m_preconfiguredRestrictions;
     }
@@ -399,7 +399,7 @@ public class CmsListConfigurationBean {
      *
      * @param restriction the date restrictions
      */
-    public void setDateRestriction(I_CmsListDateRestriction restriction) {
+    public void setDateRestriction(I_CmsDateRestriction restriction) {
 
         m_dateRestriction = restriction;
     }
@@ -429,7 +429,7 @@ public class CmsListConfigurationBean {
      *
      * @param geoFilter the Geo filter
      */
-    public void setGeoFilter(CmsListGeoFilterBean geoFilter) {
+    public void setGeoFilter(CmsGeoFilterBean geoFilter) {
 
         m_geoFilter = geoFilter;
     }
@@ -451,7 +451,7 @@ public class CmsListConfigurationBean {
      *
      * @param restrictionBean the restrictions to set.
      */
-    public void setPreconfiguredRestrictions(CmsListPreconfiguredRestrictionsBean restrictionBean) {
+    public void setPreconfiguredRestrictions(CmsRestrictionsBean restrictionBean) {
 
         m_preconfiguredRestrictions = restrictionBean;
     }

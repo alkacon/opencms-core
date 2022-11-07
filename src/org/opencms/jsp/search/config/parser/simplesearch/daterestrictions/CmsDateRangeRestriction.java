@@ -35,7 +35,7 @@ import java.util.TimeZone;
 /**
  * Restriction to a date between a fixed start and end date, but only one of them has to be given.<p>
  */
-public class CmsListDateRangeRestriction implements I_CmsListDateRestriction {
+public class CmsDateRangeRestriction implements I_CmsDateRestriction {
 
     /** A constant for the Solr date format. */
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -55,14 +55,14 @@ public class CmsListDateRangeRestriction implements I_CmsListDateRestriction {
      * @param fromDate the start date
      * @param toDate the end date
      */
-    public CmsListDateRangeRestriction(Date fromDate, Date toDate) {
+    public CmsDateRangeRestriction(Date fromDate, Date toDate) {
 
         m_from = fromDate;
         m_to = toDate;
     }
 
     /**
-     * @see org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsListDateRestriction#getRange()
+     * @see org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsDateRestriction#getRange()
      */
     public String getRange() {
 

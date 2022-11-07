@@ -28,8 +28,8 @@
 package org.opencms.jsp.search.config.parser.simplesearch.daterestrictions;
 
 import org.opencms.file.CmsObject;
-import org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsListDateRestriction.TimeDirection;
-import org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsListDateRestriction.TimeUnit;
+import org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsDateRestriction.TimeDirection;
+import org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsDateRestriction.TimeUnit;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentValueLocation;
@@ -90,9 +90,9 @@ public class CmsDateRestrictionParser {
      *
      * @return the date restriction
      */
-    public I_CmsListDateRestriction parse(CmsXmlContentValueLocation dateRestriction) {
+    public I_CmsDateRestriction parse(CmsXmlContentValueLocation dateRestriction) {
 
-        I_CmsListDateRestriction result = null;
+        I_CmsDateRestriction result = null;
         result = parseRange(dateRestriction);
         if (result != null) {
             return result;
@@ -135,7 +135,7 @@ public class CmsDateRestrictionParser {
      *
      * @return the time direction, or null if it could not be parsed
      */
-    private I_CmsListDateRestriction.TimeDirection parseDirection(CmsXmlContentValueLocation location) {
+    private I_CmsDateRestriction.TimeDirection parseDirection(CmsXmlContentValueLocation location) {
 
         try {
             return TimeDirection.valueOf(location.getValue().getStringValue(m_cms));
@@ -151,7 +151,7 @@ public class CmsDateRestrictionParser {
      *
      * @return the date restriction
      */
-    private I_CmsListDateRestriction parseFromToday(CmsXmlContentValueLocation dateRestriction) {
+    private I_CmsDateRestriction parseFromToday(CmsXmlContentValueLocation dateRestriction) {
 
         CmsXmlContentValueLocation location = dateRestriction.getSubValue(N_FROM_TODAY);
         if (location == null) {
@@ -167,7 +167,7 @@ public class CmsDateRestrictionParser {
         if (count == null) {
             return null;
         }
-        return new CmsListDateFromTodayRestriction(count.intValue(), unit, direction);
+        return new CmsDateFromTodayRestriction(count.intValue(), unit, direction);
     }
 
     /**
@@ -177,7 +177,7 @@ public class CmsDateRestrictionParser {
      *
      * @return the date restriction
      */
-    private I_CmsListDateRestriction parsePastFuture(CmsXmlContentValueLocation dateRestriction) {
+    private I_CmsDateRestriction parsePastFuture(CmsXmlContentValueLocation dateRestriction) {
 
         CmsXmlContentValueLocation location = dateRestriction.getSubValue(N_PAST_FUTURE);
         if (location == null) {
@@ -185,7 +185,7 @@ public class CmsDateRestrictionParser {
         }
         CmsXmlContentValueLocation directionLoc = location.getSubValue(N_DIRECTION);
         TimeDirection direction = parseDirection(directionLoc);
-        return new CmsListDatePastFutureRestriction(direction);
+        return new CmsDatePastFutureRestriction(direction);
     }
 
     /**
@@ -219,7 +219,7 @@ public class CmsDateRestrictionParser {
      *
      * @return the date restriction or null if it could not be parsed
      */
-    private I_CmsListDateRestriction parseRange(CmsXmlContentValueLocation dateRestriction) {
+    private I_CmsDateRestriction parseRange(CmsXmlContentValueLocation dateRestriction) {
 
         CmsXmlContentValueLocation location = dateRestriction.getSubValue(N_RANGE);
         if (location == null) {
@@ -230,7 +230,7 @@ public class CmsDateRestrictionParser {
         Date fromDate = parseDate(fromLoc);
         Date toDate = parseDate(toLoc);
         if ((fromDate != null) || (toDate != null)) {
-            return new CmsListDateRangeRestriction(fromDate, toDate);
+            return new CmsDateRangeRestriction(fromDate, toDate);
         } else {
             return null;
         }

@@ -42,10 +42,10 @@ import org.apache.commons.logging.Log;
 import org.apache.solr.client.solrj.util.ClientUtils;
 
 /** Wraps the preconfigured restrictions. */
-public class CmsListPreconfiguredRestrictionsBean {
+public class CmsRestrictionsBean {
 
     /** The logger for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsListPreconfiguredRestrictionsBean.class.getName());
+    private static final Log LOG = CmsLog.getLog(CmsRestrictionsBean.class.getName());
 
     /** Constant for the rule to ignore. */
     private static final String CONST_IGNORED_RULE = "none";
