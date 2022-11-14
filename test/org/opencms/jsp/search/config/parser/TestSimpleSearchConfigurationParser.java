@@ -326,12 +326,19 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
         // Whenever we use the predefined filter, it takes over the role of the type filter and the type filter is empty
         assertEquals("", typeFilter);
         // Our check is not very great, since we deal with hash sets and the order could be different
-        String expectedPreconfiguredFilter = "&fq="
+        Collection<String> expectedResults = new HashSet<>(2);
+        String expectedPreconfiguredFilterV1 = "&fq="
+            + CmsEncoder.encode("(field:((v1 AND v2) OR (v1 OR v2) OR v3))")
+            + "&fq="
+            + CmsEncoder.encode("((type:\"event\") OR (type:\"article\"))");
+        expectedResults.add(expectedPreconfiguredFilterV1);
+        String expectedPreconfiguredFilterV2 = "&fq="
             + CmsEncoder.encode("(field:((v1 OR v2) OR (v1 AND v2) OR v3))")
             + "&fq="
             + CmsEncoder.encode("((type:\"event\") OR (type:\"article\"))");
+        expectedResults.add(expectedPreconfiguredFilterV2);
         String preconfiguredFilter = parser.getPreconfiguredFilterQuery();
-        assertEquals(expectedPreconfiguredFilter, preconfiguredFilter);
+        assertTrue(expectedResults.contains(preconfiguredFilter));
     }
 
     /**
