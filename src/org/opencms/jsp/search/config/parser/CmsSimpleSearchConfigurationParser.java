@@ -44,8 +44,10 @@ import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigurationBean;
 import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigurationBean.CombinationMode;
 import org.opencms.jsp.search.config.parser.simplesearch.CmsGeoFilterBean;
 import org.opencms.jsp.search.config.parser.simplesearch.daterestrictions.I_CmsDateRestriction;
-import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionsBean;
 import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionRule;
+import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionsBean;
+import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionsBean.FieldValues;
+import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionsBean.FieldValues.FieldType;
 import org.opencms.main.CmsException;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.search.fields.CmsSearchField;
@@ -209,10 +211,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
      *
      * @throws JSONException in case parsing the JSON fails
      */
-    public CmsSimpleSearchConfigurationParser(
-        CmsObject cms,
-        CmsConfigurationBean config,
-        String additionalParamJSON)
+    public CmsSimpleSearchConfigurationParser(CmsObject cms, CmsConfigurationBean config, String additionalParamJSON)
     throws JSONException {
 
         super(CmsStringUtil.isEmptyOrWhitespaceOnly(additionalParamJSON) ? "{}" : additionalParamJSON);
@@ -520,12 +519,12 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
      */
     String generatePreconfiguredRestriction(
         String type,
-        Map<CmsRestrictionRule, Collection<String>> restrictionsForType) {
+        Map<CmsRestrictionRule, Collection<FieldValues>> restrictionsForType) {
 
         String result = "";
         if ((null != restrictionsForType) && (restrictionsForType.size() > 0)) {
             Collection<String> ruleRestrictions = new HashSet<>(restrictionsForType.size());
-            for (Map.Entry<CmsRestrictionRule, Collection<String>> ruleEntry : restrictionsForType.entrySet()) {
+            for (Map.Entry<CmsRestrictionRule, Collection<FieldValues>> ruleEntry : restrictionsForType.entrySet()) {
                 ruleRestrictions.add(generatePreconfiguredRestrictionForRule(ruleEntry.getKey(), ruleEntry.getValue()));
             }
             result = ruleRestrictions.size() > 1
@@ -546,33 +545,15 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
      * @param values the values provided for the rule.
      * @return the part of the Solr query for the restriction.
      */
-    String generatePreconfiguredRestrictionForRule(CmsRestrictionRule rule, Collection<String> values) {
+    String generatePreconfiguredRestrictionForRule(CmsRestrictionRule rule, Collection<FieldValues> values) {
 
-        Collection<String> finalValues;
-        switch (rule.getMatchType()) {
-            case DEFAULT:
-                finalValues = values;
-                break;
-            case EXACT:
-                finalValues = values.stream().map(v -> ("\"" + v + "\"")).collect(Collectors.toSet());
-                break;
-            case INFIX:
-                finalValues = values.stream().map(
-                    v -> ("(" + v + " OR *" + v + " OR *" + v + "* OR " + v + "*)")).collect(Collectors.toSet());
-                break;
-            case POSTFIX:
-                finalValues = values.stream().map(v -> ("(" + v + " OR *" + v + ")")).collect(Collectors.toSet());
-                break;
-            case PREFIX:
-                finalValues = values.stream().map(v -> ("(" + v + " OR " + v + "*)")).collect(Collectors.toSet());
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown match type '" + rule.getMatchType() + "'.");
-        }
-        String seperator = " " + rule.getCombinationMode().toString() + " ";
+        Collection<String> resolvedFieldValues = values.stream().map(v -> resolveFieldValues(rule, v)).collect(
+            Collectors.toSet());
+
+        String seperator = " " + rule.getCombinationModeBetweenFields().toString() + " ";
         return rule.getFieldForLocale(getSearchLocale())
             + ":("
-            + finalValues.stream().reduce((v1, v2) -> v1 + seperator + v2).get()
+            + resolvedFieldValues.stream().reduce((v1, v2) -> v1 + seperator + v2).get()
             + ")";
 
     }
@@ -819,6 +800,50 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
             }
         }
         return result;
+    }
+
+    /**
+     * Generates the search string part for one input field value.
+     * @param rule the preconfigured rule.
+     * @param fieldValues the values in the field.
+     * @return the search term part for the value in the field.
+     */
+    String resolveFieldValues(CmsRestrictionRule rule, FieldValues fieldValues) {
+
+        Collection<String> values = fieldValues.getValues();
+        Collection<String> finalValues;
+        if (FieldType.PLAIN.equals(fieldValues.getFieldType())) {
+            // We are sure that there is exactly one value in that case.
+            return "(" + values.iterator().next() + ")";
+        } else {
+            switch (rule.getMatchType()) {
+                case DEFAULT:
+                    finalValues = values;
+                    break;
+                case EXACT:
+                    finalValues = values.stream().map(v -> ("\"" + v + "\"")).collect(Collectors.toSet());
+                    break;
+                case INFIX:
+                    finalValues = values.stream().map(
+                        v -> ("(" + v + " OR *" + v + " OR *" + v + "* OR " + v + "*)")).collect(Collectors.toSet());
+                    break;
+                case POSTFIX:
+                    finalValues = values.stream().map(v -> ("(" + v + " OR *" + v + ")")).collect(Collectors.toSet());
+                    break;
+                case PREFIX:
+                    finalValues = values.stream().map(v -> ("(" + v + " OR " + v + "*)")).collect(Collectors.toSet());
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown match type '" + rule.getMatchType() + "'.");
+            }
+            if (finalValues.size() > 1) {
+                String seperator = " " + rule.getCombinationModeInField().toString() + " ";
+                return "(" + finalValues.stream().reduce((v1, v2) -> v1 + seperator + v2).get() + ")";
+            } else {
+                return finalValues.iterator().next();
+            }
+
+        }
     }
 
     /** The default field facets.

@@ -77,14 +77,25 @@ public class TestRestrictionRuleParser extends OpenCmsTestCase {
 
         // Only field
         CmsRestrictionRule rule = CmsRestrictionRuleParser.parseRule("field=test");
-        assertEquals(CombinationMode.OR, rule.getCombinationMode());
+        assertEquals(CombinationMode.OR, rule.getCombinationModeBetweenFields());
+        assertEquals(CombinationMode.OR, rule.getCombinationModeInField());
         assertNull(rule.getType());
         assertEquals(MatchType.DEFAULT, rule.getMatchType());
         assertEquals("test", rule.getRawField());
 
         // all possible combinations
         rule = CmsRestrictionRuleParser.parseRule("field=test,type=type,match=exact,combine=AND");
-        assertEquals(CombinationMode.AND, rule.getCombinationMode());
+        assertEquals(CombinationMode.AND, rule.getCombinationModeBetweenFields());
+        assertEquals(CombinationMode.AND, rule.getCombinationModeInField());
+        assertEquals("type", rule.getType());
+        assertEquals(MatchType.EXACT, rule.getMatchType());
+        assertEquals("test", rule.getRawField());
+        assertEquals("test", rule.getFieldForLocale(Locale.ENGLISH));
+
+        // different combination modes
+        rule = CmsRestrictionRuleParser.parseRule("field=test,type=type,match=exact,combine=AND-or");
+        assertEquals(CombinationMode.AND, rule.getCombinationModeBetweenFields());
+        assertEquals(CombinationMode.OR, rule.getCombinationModeInField());
         assertEquals("type", rule.getType());
         assertEquals(MatchType.EXACT, rule.getMatchType());
         assertEquals("test", rule.getRawField());
@@ -92,7 +103,8 @@ public class TestRestrictionRuleParser extends OpenCmsTestCase {
 
         // different order
         rule = CmsRestrictionRuleParser.parseRule("type=type,match=PREFIX,field=test,combine=or");
-        assertEquals(CombinationMode.OR, rule.getCombinationMode());
+        assertEquals(CombinationMode.OR, rule.getCombinationModeBetweenFields());
+        assertEquals(CombinationMode.OR, rule.getCombinationModeInField());
         assertEquals("type", rule.getType());
         assertEquals(MatchType.PREFIX, rule.getMatchType());
         assertEquals("test", rule.getRawField());
@@ -100,7 +112,8 @@ public class TestRestrictionRuleParser extends OpenCmsTestCase {
 
         // invalid with defaults as fallback
         rule = CmsRestrictionRuleParser.parseRule("type=type,match=InValiD,combine=UnKnown,field=test");
-        assertEquals(CombinationMode.OR, rule.getCombinationMode());
+        assertEquals(CombinationMode.OR, rule.getCombinationModeBetweenFields());
+        assertEquals(CombinationMode.OR, rule.getCombinationModeInField());
         assertEquals("type", rule.getType());
         assertEquals(MatchType.DEFAULT, rule.getMatchType());
         assertEquals("test", rule.getRawField());
@@ -129,7 +142,8 @@ public class TestRestrictionRuleParser extends OpenCmsTestCase {
     public void testSimpleRule() throws CmsException {
 
         CmsRestrictionRule rule = CmsRestrictionRuleParser.parseRule("test");
-        assertEquals(CombinationMode.OR, rule.getCombinationMode());
+        assertEquals(CombinationMode.OR, rule.getCombinationModeBetweenFields());
+        assertEquals(CombinationMode.OR, rule.getCombinationModeInField());
         assertNull(rule.getType());
         assertEquals(MatchType.DEFAULT, rule.getMatchType());
         assertEquals("test", rule.getRawField());

@@ -85,14 +85,20 @@ public final class CmsRestrictionRuleParser {
                 String field = null;
                 String type = null;
                 MatchType match = null;
-                CombinationMode mode = null;
+                CombinationMode modeBetweenFields = null;
+                CombinationMode modeInField = null;
                 for (String rulePart : Arrays.asList(ruleParts)) {
                     if (rulePart.startsWith(PREFIX_FIELD)) {
                         field = rulePart.substring(PREFIX_FIELD.length());
                     } else if (rulePart.startsWith(PREFIX_COMBINE)) {
                         String modeString = rulePart.substring(PREFIX_COMBINE.length());
                         try {
-                            mode = CombinationMode.valueOf(modeString.toUpperCase());
+                            if (modeString.contains("-")) {
+                                String[] modes = modeString.split("-");
+                                modeBetweenFields = CombinationMode.valueOf(modes[0].toUpperCase());
+                                modeInField = CombinationMode.valueOf(modes[1].toUpperCase());
+                            }
+                            modeBetweenFields = CombinationMode.valueOf(modeString.toUpperCase());
                         } catch (Throwable t) {
                             LOG.info("Invalid combination mode '" + modeString + "' is ignored");
                         }
@@ -111,7 +117,7 @@ public final class CmsRestrictionRuleParser {
                     }
                 }
                 if (field != null) {
-                    return new CmsRestrictionRule(field, type, match, mode);
+                    return new CmsRestrictionRule(field, type, match, modeBetweenFields, modeInField);
                 } else {
                     throw new CmsException(Messages.get().container(Messages.ERR_WRONG_CONFIGURATION_SYNTAX_1, rule));
                 }

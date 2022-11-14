@@ -35,7 +35,9 @@ import org.opencms.test.OpenCmsTestProperties;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -76,6 +78,10 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
             new TestSimpleSearchConfigurationParser("testTypeRestrictionWithPreconfiguredRestrictionWithoutType"));
         suite.addTest(
             new TestSimpleSearchConfigurationParser("testTypeRestrictionWithPreconfiguredRestrictionWithType"));
+        suite.addTest(
+            new TestSimpleSearchConfigurationParser("testTypeRestrictionWithComplexPreconfiguredRestriction"));
+        suite.addTest(
+            new TestSimpleSearchConfigurationParser("testTypeRestrictionWithComplexExactPreconfiguredRestriction"));
         suite.addTest(new TestSimpleSearchConfigurationParser("testMultipleRestrictionsWithType"));
         suite.addTest(new TestSimpleSearchConfigurationParser("testRuleForUnknownType"));
         suite.addTest(new TestSimpleSearchConfigurationParser("testInfixRule"));
@@ -251,6 +257,79 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsTestCase {
         assertEquals("", typeFilter);
         // Our check is not very great, since we deal with hash sets and the order could be different
         String expectedPreconfiguredFilter = "&fq=" + CmsEncoder.encode("((type:\"event\"))");
+        String preconfiguredFilter = parser.getPreconfiguredFilterQuery();
+        assertEquals(expectedPreconfiguredFilter, preconfiguredFilter);
+    }
+
+    /**
+     * Test the type restriction if no predefined restriction is present.
+     */
+    @org.junit.Test
+    public void testTypeRestrictionWithComplexExactPreconfiguredRestriction() {
+
+        // Set up the configuration bean
+        CmsConfigurationBean bean = getBasicBean("article", "event");
+        // Add complex preconfiguration
+        CmsRestrictionsBean preconfigurations = new CmsRestrictionsBean();
+        Collection<String> values = new HashSet<>(3);
+        values.add("v1 v2");
+        values.add("plain: v1 OR v2");
+        values.add("v3");
+        preconfigurations.addRestriction("field=field,match=exact,combine=and-and", values);
+        bean.setPreconfiguredRestrictions(preconfigurations);
+        // Initialize the parser
+        CmsSimpleSearchConfigurationParser parser = CmsSimpleSearchConfigurationParser.createInstanceWithNoJsonConfig(
+            null,
+            bean);
+        // We explicitly set the locale to prevent using the CmsObject
+        parser.setSearchLocale(Locale.ENGLISH);
+        String typeFilter = parser.getResourceTypeFilter();
+        // Whenever we use the predefined filter, it takes over the role of the type filter and the type filter is empty
+        assertEquals("", typeFilter);
+        // Our check is not very great, since we deal with hash sets and the order could be different
+        String expectedPreconfiguredFilter = "&fq="
+            + CmsEncoder.encode(
+                "(field:(\""
+                    + ClientUtils.escapeQueryChars("v1 v2")
+                    + "\" AND \""
+                    + ClientUtils.escapeQueryChars("v3")
+                    + "\" AND (v1 OR v2)))")
+            + "&fq="
+            + CmsEncoder.encode("((type:\"event\") OR (type:\"article\"))");
+        String preconfiguredFilter = parser.getPreconfiguredFilterQuery();
+        assertEquals(expectedPreconfiguredFilter, preconfiguredFilter);
+    }
+
+    /**
+     * Test the type restriction if no predefined restriction is present.
+     */
+    @org.junit.Test
+    public void testTypeRestrictionWithComplexPreconfiguredRestriction() {
+
+        // Set up the configuration bean
+        CmsConfigurationBean bean = getBasicBean("article", "event");
+        // Add complex preconfiguration
+        CmsRestrictionsBean preconfigurations = new CmsRestrictionsBean();
+        Collection<String> values = new HashSet<>(3);
+        values.add("v1 v2");
+        values.add("plain: v1 OR v2");
+        values.add("v3");
+        preconfigurations.addRestriction("field=field,combine=or-and", values);
+        bean.setPreconfiguredRestrictions(preconfigurations);
+        // Initialize the parser
+        CmsSimpleSearchConfigurationParser parser = CmsSimpleSearchConfigurationParser.createInstanceWithNoJsonConfig(
+            null,
+            bean);
+        // We explicitly set the locale to prevent using the CmsObject
+        parser.setSearchLocale(Locale.ENGLISH);
+        String typeFilter = parser.getResourceTypeFilter();
+        // Whenever we use the predefined filter, it takes over the role of the type filter and the type filter is empty
+        assertEquals("", typeFilter);
+        // Our check is not very great, since we deal with hash sets and the order could be different
+        String expectedPreconfiguredFilter = "&fq="
+            + CmsEncoder.encode("(field:((v1 OR v2) OR (v1 AND v2) OR v3))")
+            + "&fq="
+            + CmsEncoder.encode("((type:\"event\") OR (type:\"article\"))");
         String preconfiguredFilter = parser.getPreconfiguredFilterQuery();
         assertEquals(expectedPreconfiguredFilter, preconfiguredFilter);
     }

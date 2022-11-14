@@ -59,8 +59,10 @@ public class CmsRestrictionRule {
     private String m_field;
     /** The match type for the restriction. */
     private MatchType m_match;
-    /** The combination mode for multiple values, either AND or OR - match all or only any of the values. */
-    private CombinationMode m_combinationMode;
+    /** The combination mode for multiple values in different input fields, either AND or OR - match all or only any of the values. */
+    private CombinationMode m_combinationModeBetweenFields;
+    /** The combination mode for multiple values in one input field, either AND or OR - match all or only any of the values. */
+    private CombinationMode m_combinationModeInField;
 
     /**
      * Constructs a restriction rule for the provided field that has no type restriction and default combination mode and match type.
@@ -68,7 +70,7 @@ public class CmsRestrictionRule {
      */
     public CmsRestrictionRule(String field) {
 
-        this(field, null, null, null);
+        this(field, null, null, null, null);
     }
 
     /**
@@ -76,23 +78,43 @@ public class CmsRestrictionRule {
      * @param field the field the restriction has to be enforced on.
      * @param type the resource type the restriction should be enforced on.
      * @param matchType the way how values should be treated.
-     * @param combinationMode the way how values should be combined.
+     * @param combinationModeBetweenFields the way how values in different fields should be combined.
+     * @param combinationModeInField the way how values in different fields in one field should be combined.
      */
-    public CmsRestrictionRule(String field, String type, MatchType matchType, CombinationMode combinationMode) {
+    public CmsRestrictionRule(
+        String field,
+        String type,
+        MatchType matchType,
+        CombinationMode combinationModeBetweenFields,
+        CombinationMode combinationModeInField) {
 
         m_field = field;
         m_type = type;
         m_match = null == matchType ? MatchType.DEFAULT : matchType;
-        m_combinationMode = null == combinationMode ? CombinationMode.OR : combinationMode;
+        m_combinationModeBetweenFields = null == combinationModeBetweenFields
+        ? CombinationMode.OR
+        : combinationModeBetweenFields;
+        m_combinationModeInField = (null == combinationModeInField)
+        ? m_combinationModeBetweenFields
+        : combinationModeInField;
     }
 
     /**
-     * Returns the way values are combined (match any or all).
-     * @return the way values are combined (match any or all).
+     * Returns the way values of different input fields are combined (match any or all).
+     * @return the way values of different input fields are combined (match any or all).
      */
-    public CombinationMode getCombinationMode() {
+    public CombinationMode getCombinationModeBetweenFields() {
 
-        return m_combinationMode;
+        return m_combinationModeBetweenFields;
+    }
+
+    /**
+     * Returns the way values of different input fields are combined (match any or all).
+     * @return the way values of different input fields are combined (match any or all).
+     */
+    public CombinationMode getCombinationModeInField() {
+
+        return m_combinationModeInField;
     }
 
     /**

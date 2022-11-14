@@ -27,6 +27,8 @@
 
 package org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions;
 
+import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionsBean.FieldValues;
+import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionsBean.FieldValues.FieldType;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -36,6 +38,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.apache.solr.client.solrj.util.ClientUtils;
 
@@ -69,6 +72,7 @@ public class TestRestrictionsBean extends OpenCmsTestCase {
         suite.addTest(new TestRestrictionsBean("testMultipleRestrictions"));
         suite.addTest(new TestRestrictionsBean("testValueHandling"));
         suite.addTest(new TestRestrictionsBean("testIgnoredRule"));
+        suite.addTest(new TestRestrictionsBean("testFieldValues"));
 
         return suite;
     }
@@ -93,11 +97,11 @@ public class TestRestrictionsBean extends OpenCmsTestCase {
         // The restriction holds without type restriction
         assertTrue(bean.hasRestrictionForType(null));
         // We should get the restriction
-        Map<CmsRestrictionRule, Collection<String>> restrictions = bean.getRestrictionsForType(null);
+        Map<CmsRestrictionRule, Collection<FieldValues>> restrictions = bean.getRestrictionsForType(null);
         assertEquals(1, restrictions.size());
-        Collection<String> values = restrictions.entrySet().iterator().next().getValue();
+        Collection<FieldValues> values = restrictions.entrySet().iterator().next().getValue();
         assertEquals(1, values.size());
-        assertEquals("value", values.iterator().next());
+        assertEquals("value", values.iterator().next().getValues().iterator().next());
         // But not for some special type
         assertFalse(bean.hasRestrictionForType("type"));
         assertNull(bean.getRestrictionsForType("type"));
@@ -105,6 +109,57 @@ public class TestRestrictionsBean extends OpenCmsTestCase {
         bean.addRestriction("field=test,type=type", Collections.singleton("value"));
         assertTrue(bean.hasRestrictionForType("type"));
         assertNotNull(bean.getRestrictionsForType("type"));
+    }
+
+    /**
+     * Tests field values behavior.
+     */
+    @org.junit.Test
+    public void testFieldValues() {
+
+        // simple rule
+        CmsRestrictionsBean bean = new CmsRestrictionsBean();
+        Collection<String> values = new HashSet<>(1);
+        values.add("v1 v2");
+        bean.addRestriction("field=test", values);
+        Map<CmsRestrictionRule, Collection<FieldValues>> restrictions = bean.getRestrictionsForType(null);
+        assertEquals(1, restrictions.size());
+        Collection<FieldValues> storedFieldValues = restrictions.entrySet().iterator().next().getValue();
+        assertEquals(1, storedFieldValues.size());
+        FieldValues storedFV = storedFieldValues.iterator().next();
+        assertEquals(FieldType.DEFAULT, storedFV.getFieldType());
+        Collection<String> expectedFieldValues = new HashSet<>(2);
+        expectedFieldValues.add("v1");
+        expectedFieldValues.add("v2");
+        assertEquals(new HashSet<>(expectedFieldValues), new HashSet<>(storedFV.getValues()));
+
+        // rule with exact match
+        bean = new CmsRestrictionsBean();
+        bean.addRestriction("field=test,match=exact", values);
+        restrictions = bean.getRestrictionsForType(null);
+        assertEquals(1, restrictions.size());
+        storedFieldValues = restrictions.entrySet().iterator().next().getValue();
+        assertEquals(1, storedFieldValues.size());
+        storedFV = storedFieldValues.iterator().next();
+        assertEquals(FieldType.DEFAULT, storedFV.getFieldType());
+        expectedFieldValues = new HashSet<>(1);
+        expectedFieldValues.add(ClientUtils.escapeQueryChars("v1 v2"));
+        assertEquals(new HashSet<>(expectedFieldValues), new HashSet<>(storedFV.getValues()));
+
+        // rule with plain value
+        bean = new CmsRestrictionsBean();
+        values.clear();
+        values.add("plain: (\"some term\" OR test) AND open*");
+        bean.addRestriction("field=test,match=exact", values);
+        restrictions = bean.getRestrictionsForType(null);
+        assertEquals(1, restrictions.size());
+        storedFieldValues = restrictions.entrySet().iterator().next().getValue();
+        assertEquals(1, storedFieldValues.size());
+        storedFV = storedFieldValues.iterator().next();
+        assertEquals(FieldType.PLAIN, storedFV.getFieldType());
+        expectedFieldValues = new HashSet<>(1);
+        expectedFieldValues.add("(\"some term\" OR test) AND open*");
+        assertEquals(new HashSet<>(expectedFieldValues), new HashSet<>(storedFV.getValues()));
     }
 
     /**
@@ -130,24 +185,26 @@ public class TestRestrictionsBean extends OpenCmsTestCase {
         values.add("v1");
         values.add("v2");
         bean.addRestriction("field=test", values);
-        Map<CmsRestrictionRule, Collection<String>> restrictions = bean.getRestrictionsForType(null);
+        Map<CmsRestrictionRule, Collection<FieldValues>> restrictions = bean.getRestrictionsForType(null);
         assertEquals(1, restrictions.size());
-        Collection<String> storedValues = restrictions.entrySet().iterator().next().getValue();
-        assertEquals(values, storedValues);
+        Collection<FieldValues> storedFieldValues = restrictions.entrySet().iterator().next().getValue();
+        Collection<String> storedValues = storedFieldValues.stream().map(
+            fv -> fv.getValues().iterator().next()).collect(Collectors.toSet());
+        assertEquals(new HashSet<>(values), new HashSet<>(storedValues));
         bean.addRestriction("field=test,type=type", Collections.singleton("v1"));
         bean.addRestriction("field=test,type=type", Collections.singleton("v2"));
         restrictions = bean.getRestrictionsForType("type");
 
         assertEquals(2, restrictions.size());
-        Iterator<Entry<CmsRestrictionRule, Collection<String>>> it = restrictions.entrySet().iterator();
-        Collection<String> vals1 = it.next().getValue();
-        Collection<String> vals2 = it.next().getValue();
+        Iterator<Entry<CmsRestrictionRule, Collection<FieldValues>>> it = restrictions.entrySet().iterator();
+        Collection<String> vals1 = it.next().getValue().iterator().next().getValues();
+        Collection<String> vals2 = it.next().getValue().iterator().next().getValues();
         assertEquals(1, vals1.size());
         assertEquals(1, vals2.size());
         storedValues = new HashSet<>(2);
         storedValues.addAll(vals1);
         storedValues.addAll(vals2);
-        assertEquals(values, storedValues);
+        assertEquals(new HashSet<>(values), new HashSet<>(storedValues));
     }
 
     /**
@@ -159,32 +216,32 @@ public class TestRestrictionsBean extends OpenCmsTestCase {
         // Test escaping of special characters
         CmsRestrictionsBean bean = new CmsRestrictionsBean();
         bean.addRestriction("field=test,match=default", Collections.singleton("v1*\"&"));
-        Map<CmsRestrictionRule, Collection<String>> restrictions = bean.getRestrictionsForType(null);
+        Map<CmsRestrictionRule, Collection<FieldValues>> restrictions = bean.getRestrictionsForType(null);
         assertEquals(1, restrictions.size());
-        Collection<String> storedValues = restrictions.entrySet().iterator().next().getValue();
-        Collection<String> values = new HashSet<>(2);
+        Collection<String> storedValues = restrictions.entrySet().iterator().next().getValue().iterator().next().getValues();
+        Collection<String> values = new HashSet<>(1);
         values.add(ClientUtils.escapeQueryChars("v1*\"&"));
-        assertEquals(values, storedValues);
+        assertEquals(new HashSet<>(values), new HashSet<>(storedValues));
 
         // For non-exact match type, the values should be taken apart
         bean = new CmsRestrictionsBean();
         bean.addRestriction("field=test,match=default", Collections.singleton("v1 v2"));
         restrictions = bean.getRestrictionsForType(null);
         assertEquals(1, restrictions.size());
-        storedValues = restrictions.entrySet().iterator().next().getValue();
+        storedValues = restrictions.entrySet().iterator().next().getValue().iterator().next().getValues();
         values = new HashSet<>(2);
         values.add("v1");
         values.add("v2");
-        assertEquals(values, storedValues);
+        assertEquals(new HashSet<>(values), new HashSet<>(storedValues));
 
         // For exact match type, the values should remain together
         bean = new CmsRestrictionsBean();
         bean.addRestriction("field=test,match=exact", Collections.singleton("v1 v2"));
         restrictions = bean.getRestrictionsForType(null);
         assertEquals(1, restrictions.size());
-        storedValues = restrictions.entrySet().iterator().next().getValue();
+        storedValues = restrictions.entrySet().iterator().next().getValue().iterator().next().getValues();
         values = new HashSet<>(1);
         values.add("v1\\ v2");
-        assertEquals(values, storedValues);
+        assertEquals(new HashSet<>(values), new HashSet<>(storedValues));
     }
 }

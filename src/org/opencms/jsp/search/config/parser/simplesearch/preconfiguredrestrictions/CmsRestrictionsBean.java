@@ -28,11 +28,13 @@
 package org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions;
 
 import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionRule.MatchType;
+import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionsBean.FieldValues.FieldType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -44,17 +46,66 @@ import org.apache.solr.client.solrj.util.ClientUtils;
 /** Wraps the preconfigured restrictions. */
 public class CmsRestrictionsBean {
 
+    /** The values in one input field. */
+    public static class FieldValues {
+
+        /** The type describes how values in that input field should be handled. */
+        public static enum FieldType {
+            /** Use the value as plain Solr input. */
+            PLAIN,
+            /** Use the values in the default way, that is according to the rule configuration. */
+            DEFAULT
+        }
+
+        /** The field type. */
+        private FieldType m_type;
+        /** The values in the field. */
+        private Collection<String> m_values;
+
+        /**
+         * Default constructor.
+         * @param type the field type.
+         * @param values the field values.
+         */
+        public FieldValues(FieldType type, Collection<String> values) {
+
+            m_type = type;
+            m_values = Collections.unmodifiableCollection(values);
+        }
+
+        /**
+         * Returns the type of the input field.
+         * @return the type of the input field.
+         */
+        public FieldType getFieldType() {
+
+            return m_type;
+        }
+
+        /**
+         * Returns the values in the input field.
+         * @return the values in the input field.
+         */
+        public Collection<String> getValues() {
+
+            return m_values;
+        }
+    }
+
     /** The logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsRestrictionsBean.class.getName());
 
     /** Constant for the rule to ignore. */
     private static final String CONST_IGNORED_RULE = "none";
 
+    /** Constant for the rule rule prefix, if the rule should be just used as plain solr query. */
+    private static final String PREFIX_PLAIN = "plain:";
+
     /**
      * Map from type to rule to values for the rule.
      * We use this structure to easily generate the solr queries.
      */
-    private Map<String, Map<CmsRestrictionRule, Collection<String>>> m_restrictions = new HashMap<>();
+    private Map<String, Map<CmsRestrictionRule, Collection<FieldValues>>> m_restrictions = new HashMap<>();
 
     /**
      * Add a preconfigured restriction.
@@ -84,20 +135,22 @@ public class CmsRestrictionsBean {
             if (null == m_restrictions.get(type)) {
                 m_restrictions.put(type, new HashMap<>());
             }
-            Map<CmsRestrictionRule, Collection<String>> mapForType = m_restrictions.get(type);
-            if (!rule.getMatchType().equals(MatchType.EXACT)) {
-                Collection<String> seperatedWords = new HashSet<>();
-                for (String value : realValues) {
-                    for (String word : Arrays.asList(value.split(" "))) {
-                        seperatedWords.add(ClientUtils.escapeQueryChars(word.trim()));
-                    }
+            Map<CmsRestrictionRule, Collection<FieldValues>> mapForType = m_restrictions.get(type);
+            Collection<FieldValues> fieldValues = new HashSet<>(realValues.size());
+            for (String value : realValues) {
+                if (value.startsWith(PREFIX_PLAIN)) {
+                    String realValue = value.substring(PREFIX_PLAIN.length()).trim();
+                    fieldValues.add(new FieldValues(FieldValues.FieldType.PLAIN, Collections.singleton(realValue)));
+                } else if (rule.getMatchType().equals(MatchType.EXACT)) {
+                    fieldValues.add(
+                        new FieldValues(FieldType.DEFAULT, Collections.singleton(ClientUtils.escapeQueryChars(value))));
+                } else {
+                    Collection<String> finalValues = (Arrays.asList(value.split(" "))).stream().map(
+                        word -> ClientUtils.escapeQueryChars(word.trim())).collect(Collectors.toSet());
+                    fieldValues.add(new FieldValues(FieldValues.FieldType.DEFAULT, finalValues));
                 }
-                mapForType.put(rule, seperatedWords);
-            } else {
-                Collection<String> finalValues = realValues.stream().map(v -> ClientUtils.escapeQueryChars(v)).collect(
-                    Collectors.toSet());
-                mapForType.put(rule, finalValues);
             }
+            mapForType.put(rule, fieldValues);
         } else {
             LOG.debug("Ignoring restriction with rule '" + ruleString + "' since no real values are provided.");
         }
@@ -108,7 +161,7 @@ public class CmsRestrictionsBean {
      * @param type the type to get the restrictions for.
      * @return the restrictions for the provided type.
      */
-    public Map<CmsRestrictionRule, Collection<String>> getRestrictionsForType(String type) {
+    public Map<CmsRestrictionRule, Collection<FieldValues>> getRestrictionsForType(String type) {
 
         return m_restrictions.get(type);
     }
