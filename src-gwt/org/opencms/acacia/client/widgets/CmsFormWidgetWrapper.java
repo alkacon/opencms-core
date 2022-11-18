@@ -256,4 +256,13 @@ implements I_CmsFormEditWidget, HasResizeHandlers, I_CmsHasResizeOnShow, I_CmsHa
 
         m_label.setHTML(label);
     }
+
+    /**
+     * @see org.opencms.acacia.client.widgets.I_CmsEditWidget#shouldSetDefaultWhenDisabled()
+     */
+    public boolean shouldSetDefaultWhenDisabled() {
+
+        assert m_editWidget != null;
+        return m_editWidget.shouldSetDefaultWhenDisabled();
+    }
 }

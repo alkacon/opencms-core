@@ -214,6 +214,14 @@ public class CmsComboWidget extends Composite implements I_CmsEditWidget, I_CmsH
     }
 
     /**
+     * @see org.opencms.acacia.client.widgets.I_CmsEditWidget#shouldSetDefaultWhenDisabled()
+     */
+    public boolean shouldSetDefaultWhenDisabled() {
+
+        return true;
+    }
+
+    /**
      *  Helper function to handle the popup of the combobox. <p>
      */
     protected void onkeyupevent() {

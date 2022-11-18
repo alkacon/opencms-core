@@ -651,7 +651,11 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
         } else {
             // only deactivate the widget and restore the default value
             m_widget.setActive(false);
-            m_widget.setValue("");
+            if (m_widget.shouldSetDefaultWhenDisabled() && (m_defaultValue != null)) {
+                m_widget.setValue(m_defaultValue);
+            } else {
+                m_widget.setValue("");
+            }
             addActivationHandler();
         }
         addStyleName(formCss().emptyValue());
@@ -787,6 +791,8 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
         m_widget.setWidgetInfo(m_label, m_help);
         if (active) {
             m_widget.setValue(value, false);
+        } else if (m_widget.shouldSetDefaultWhenDisabled()) {
+            m_widget.setValue(defaultValue, false);
         } else {
             m_widget.setValue("");
         }
@@ -1031,6 +1037,7 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
      * @param event the click event
      */
     @UiHandler("m_removeButton")
+
     protected void removeAttributeValue(ClickEvent event) {
 
         m_handler.removeAttributeValue(this);

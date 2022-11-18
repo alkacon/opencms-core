@@ -87,4 +87,14 @@ public interface I_CmsEditWidget extends HasValue<String>, HasFocusHandlers, IsW
      * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
      */
     void setValue(String value, boolean fireEvent);
+
+    /**
+     * If this returns true, the default value will also be set as the widget value if the widget is inactive (i.e. for optional values which don't exist yet).
+     *
+     * @return true if the default value should be set even if the widget is inactive
+     */
+    default boolean shouldSetDefaultWhenDisabled() {
+
+        return false;
+    }
 }

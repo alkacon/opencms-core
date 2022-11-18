@@ -151,6 +151,14 @@ public final class WidgetWrapper extends Widget implements I_CmsFormEditWidget {
     }
 
     /**
+     * @see org.opencms.acacia.client.widgets.I_CmsEditWidget#shouldSetDefaultWhenDisabled()
+     */
+    public boolean shouldSetDefaultWhenDisabled() {
+
+        return m_nativeWidget.shouldSetDefaultWhenDisabled();
+    }
+
+    /**
      * Fires the value change event.<p>
      */
     protected void fireChangeEvent() {
@@ -180,13 +188,13 @@ public final class WidgetWrapper extends Widget implements I_CmsFormEditWidget {
      * Initializes the native widget by setting the on change and on focus functions.<p>
      */
     private native void initNativeWidget()/*-{
-                                          var self = this;
-                                          var nativeWidget = this.@org.opencms.ade.contenteditor.widgetregistry.client.WidgetWrapper::m_nativeWidget;
-                                          nativeWidget.onChangeCommand = function() {
-                                          self.@org.opencms.ade.contenteditor.widgetregistry.client.WidgetWrapper::fireChangeEvent()();
-                                          }
-                                          nativeWidget.onFocusCommand = function() {
-                                          self.@org.opencms.ade.contenteditor.widgetregistry.client.WidgetWrapper::fireFocusEvent()();
-                                          }
-                                          }-*/;
+        var self = this;
+        var nativeWidget = this.@org.opencms.ade.contenteditor.widgetregistry.client.WidgetWrapper::m_nativeWidget;
+        nativeWidget.onChangeCommand = function() {
+            self.@org.opencms.ade.contenteditor.widgetregistry.client.WidgetWrapper::fireChangeEvent()();
+        }
+        nativeWidget.onFocusCommand = function() {
+            self.@org.opencms.ade.contenteditor.widgetregistry.client.WidgetWrapper::fireFocusEvent()();
+        }
+    }-*/;
 }

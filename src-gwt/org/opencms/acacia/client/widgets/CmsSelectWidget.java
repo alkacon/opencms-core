@@ -226,6 +226,14 @@ public class CmsSelectWidget extends Composite implements I_CmsEditWidget, I_Cms
     }
 
     /**
+     * @see org.opencms.acacia.client.widgets.I_CmsEditWidget#shouldSetDefaultWhenDisabled()
+     */
+    public boolean shouldSetDefaultWhenDisabled() {
+
+        return true;
+    }
+
+    /**
      * Helper class for parsing the configuration of the select-box. <p>
      *
      * @param config the configuration string
