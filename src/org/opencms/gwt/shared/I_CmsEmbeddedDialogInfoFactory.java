@@ -25,51 +25,21 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.shared.rpc;
+package org.opencms.gwt.shared;
 
-import com.vaadin.shared.communication.ClientRpc;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 
 /**
- * Client RPC to handle embedded dialogs.<p>
+ * The AutoBean factory interface for the beans used to open new embedded Vaadin dialogs from GWT.
  */
-public interface I_CmsEmbeddedDialogClientRPC extends ClientRpc {
+public interface I_CmsEmbeddedDialogInfoFactory extends AutoBeanFactory {
 
     /**
-     * Removes the dialog iFrame and refreshes the given resources.<p>
+     * Creates a new dialog info AutoBean.
      *
-     * @param resourceIds the resources to refresh
+     * @return the new bean
      */
-    void finish(String resourceIds);
+    AutoBean<I_CmsEmbeddedDialogInfo> createDialogInfo();
 
-    /**
-     * Removes the dialog iFrame and reloads the app for the given site path and server link.<p>
-     *
-     * @param sitePath the site path
-     * @param serverLink the server link
-     */
-    void finishForProjectOrSiteChange(String sitePath, String serverLink);
-
-    /**
-     * Tells the client to initialize the client-to-server RPC.
-     **/
-    void initServerRpc();
-
-    /**
-     * Leaves the current page calling the given URI.<p>
-     *
-     * @param targetUri the target URI
-     */
-    void leavePage(String targetUri);
-
-    /**
-     * Reloads the parent window.<p>
-     */
-    void reloadParent();
-
-    /**
-     * Sets the selected string.<p>
-     *
-     * @param str the string
-     */
-    void selectString(String str);
 }

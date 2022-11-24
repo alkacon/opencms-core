@@ -524,6 +524,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
+        String embeddedDialogFrameHidden();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
         String frameDialog();
 
         /**

@@ -36,13 +36,13 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.ui.dialogs.CmsEmbeddedDialogContext;
 import org.opencms.ui.favorites.CmsFavoriteDAO;
 import org.opencms.ui.favorites.CmsFavoriteDialog;
 import org.opencms.ui.favorites.CmsPageEditorFavoriteContext;
-import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 
@@ -69,7 +69,7 @@ public class CmsFavoriteDialogAction extends A_CmsWorkplaceAction {
         try {
             VaadinRequest req = VaadinRequest.getCurrent();
             CmsFavoriteDialog dialog = new CmsFavoriteDialog(
-                new CmsPageEditorFavoriteContext((CmsEmbeddedDialogContext)context, req),
+                new CmsPageEditorFavoriteContext((CmsEmbeddedDialogContext)context),
                 new CmsFavoriteDAO(A_CmsUI.getCmsObject()));
             context.start(
                 CmsVaadinUtils.getMessageText(Messages.GUI_FAVORITES_DIALOG_TITLE_0),

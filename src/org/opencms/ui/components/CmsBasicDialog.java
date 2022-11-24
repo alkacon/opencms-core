@@ -181,17 +181,19 @@ public class CmsBasicDialog extends VerticalLayout {
         window.setModal(true);
         window.setClosable(true);
         int pageWidth = Page.getCurrent().getBrowserWindowWidth();
-        if (((width == DialogWidth.wide) && (pageWidth < 810))
-            || ((width == DialogWidth.narrow) && (pageWidth < 610))) {
-            // in case the available page width does not allow the desired width, use max
-            width = DialogWidth.max;
-        }
-        if (width == DialogWidth.max) {
-            // in case max width would result in a width very close to wide or narrow, use their static width instead of relative width
-            if ((pageWidth >= 610) && (pageWidth < 670)) {
-                width = DialogWidth.narrow;
-            } else if ((pageWidth >= 810) && (pageWidth < 890)) {
-                width = DialogWidth.wide;
+        if (pageWidth != 0) { // page width 0 can happen for first dialog opened in embedded mode in page editor
+            if (((width == DialogWidth.wide) && (pageWidth < 810))
+                || ((width == DialogWidth.narrow) && (pageWidth < 610))) {
+                // in case the available page width does not allow the desired width, use max
+                width = DialogWidth.max;
+            }
+            if (width == DialogWidth.max) {
+                // in case max width would result in a width very close to wide or narrow, use their static width instead of relative width
+                if ((pageWidth >= 610) && (pageWidth < 670)) {
+                    width = DialogWidth.narrow;
+                } else if ((pageWidth >= 810) && (pageWidth < 890)) {
+                    width = DialogWidth.wide;
+                }
             }
         }
         switch (width) {

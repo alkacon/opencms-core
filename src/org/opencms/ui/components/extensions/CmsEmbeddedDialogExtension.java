@@ -25,51 +25,41 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.shared.rpc;
+package org.opencms.ui.components.extensions;
 
-import com.vaadin.shared.communication.ClientRpc;
+import org.opencms.ui.dialogs.CmsEmbeddedDialogsUI;
+import org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC;
+import org.opencms.ui.shared.rpc.I_CmsEmbeddingServerRpc;
+
+import com.vaadin.server.AbstractExtension;
 
 /**
- * Client RPC to handle embedded dialogs.<p>
+ * The extension that provides RPC communication between the client and server side of embedded VAADIN dialogs.
  */
-public interface I_CmsEmbeddedDialogClientRPC extends ClientRpc {
+public class CmsEmbeddedDialogExtension extends AbstractExtension {
+
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
 
     /**
-     * Removes the dialog iFrame and refreshes the given resources.<p>
+     * Creates a new instance.
+     * @param ui the UI instance to use
      *
-     * @param resourceIds the resources to refresh
      */
-    void finish(String resourceIds);
+    public CmsEmbeddedDialogExtension(CmsEmbeddedDialogsUI ui) {
+
+        super(ui);
+        registerRpc(ui, I_CmsEmbeddingServerRpc.class);
+    }
 
     /**
-     * Removes the dialog iFrame and reloads the app for the given site path and server link.<p>
+     * Gets the client RPC instance.
      *
-     * @param sitePath the site path
-     * @param serverLink the server link
+     * @return the client RPC instance
      */
-    void finishForProjectOrSiteChange(String sitePath, String serverLink);
+    public I_CmsEmbeddedDialogClientRPC getClientRPC() {
 
-    /**
-     * Tells the client to initialize the client-to-server RPC.
-     **/
-    void initServerRpc();
+        return getRpcProxy(I_CmsEmbeddedDialogClientRPC.class);
+    }
 
-    /**
-     * Leaves the current page calling the given URI.<p>
-     *
-     * @param targetUri the target URI
-     */
-    void leavePage(String targetUri);
-
-    /**
-     * Reloads the parent window.<p>
-     */
-    void reloadParent();
-
-    /**
-     * Sets the selected string.<p>
-     *
-     * @param str the string
-     */
-    void selectString(String str);
 }

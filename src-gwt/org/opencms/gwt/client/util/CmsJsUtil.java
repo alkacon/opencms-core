@@ -211,6 +211,10 @@ public final class CmsJsUtil {
         jso[attr] = newValue;
     }-*/;
 
+    public static native JavaScriptObject toJavaScriptObject(Object o) /*-{
+        return o;
+    }-*/;
+
     /**
      * Wraps a native JavaScript callback taking a string argument into an AsyncCallback so that it can easily be called from GWT Java code.<p>
      *

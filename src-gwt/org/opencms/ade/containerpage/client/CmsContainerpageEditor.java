@@ -58,6 +58,7 @@ import org.opencms.gwt.client.ui.I_CmsToolbarButton;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommandInitializer;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsEmbeddedDialogFrame;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsGwtConstants.QuickLaunch;
@@ -403,6 +404,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
             m_properties,
             m_addToFavorites,
             m_remove);
+        CmsEmbeddedDialogFrame.get().preload();
         controller.init(containerpageHandler, dndHandler, contentEditorHandler, containerpageUtil);
 
         // export open stack trace dialog function

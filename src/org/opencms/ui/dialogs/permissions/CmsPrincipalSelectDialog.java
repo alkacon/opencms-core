@@ -382,6 +382,79 @@ public class CmsPrincipalSelectDialog extends CmsBasicDialog {
     }
 
     /**
+     * Opens the principal select dialog within an embedded dialog context.<p>
+     *
+     * @param dialogContext the dialog context
+     * @param params the request parameters
+     * @param includeWebOus include WebOu?
+     */
+    public static void openEmbeddedDialogV2(
+        final CmsEmbeddedDialogContext dialogContext,
+        Map<String, String> params,
+        boolean includeWebOus) {
+
+        String ou = params.get(PARAM_OU);
+        if (ou == null) {
+            ou = dialogContext.getCms().getRequestContext().getCurrentUser().getOuFqn();
+        }
+        boolean realOnly;
+        String param = params.get(PARAM_REAL_ONLY);
+        if (param != null) {
+            realOnly = Boolean.parseBoolean(param);
+        } else {
+            realOnly = true;
+        }
+        WidgetType type = WidgetType.groupwidget;
+        param = params.get(PARAM_TYPE);
+        if (param != null) {
+            try {
+                type = WidgetType.valueOf(param);
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+        CmsPrincipalSelect.PrincipalType startType = null;
+        param = params.get(PARAM_START_TYPE);
+        if (param != null) {
+            try {
+                startType = CmsPrincipalSelect.PrincipalType.valueOf(param);
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+        if (startType == null) {
+            if ((type == WidgetType.principalwidget) || (type == WidgetType.groupwidget)) {
+                startType = CmsPrincipalSelect.PrincipalType.group;
+            } else if (type == WidgetType.userwidget) {
+                startType = CmsPrincipalSelect.PrincipalType.user;
+            }
+        }
+        Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
+        dialogContext.setWindow(window);
+        CmsPrincipalSelectDialog dialog = new CmsPrincipalSelectDialog(
+            null,
+            ou,
+            window,
+            type,
+            realOnly,
+            startType,
+            includeWebOus,
+            false);
+        dialog.setSelectHandler(new I_PrincipalSelectHandler() {
+
+            public void onPrincipalSelect(String principalType, String principalName) {
+
+                dialogContext.selectString(principalName);
+            }
+        });
+        window.setCaption(
+            CmsVaadinUtils.getMessageText(
+                org.opencms.workplace.commons.Messages.GUI_PRINCIPALSELECTION_LIST_ACTION_SELECT_NAME_0));
+        window.setContent(dialog);
+        A_CmsUI.get().addWindow(window);
+    }
+
+    /**
      * Selects a principal and closes the dialog.<p>
      *
      * @param value the principal which was clicked

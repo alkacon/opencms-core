@@ -43,6 +43,7 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsExtendedSiteSelector.SiteSelectorOption;
+import org.opencms.ui.components.extensions.CmsEmbeddedDialogExtension;
 import org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -50,11 +51,11 @@ import org.opencms.util.CmsUUID;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.server.AbstractExtension;
 import com.vaadin.server.Page;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.UI;
@@ -65,16 +66,13 @@ import com.vaadin.ui.Window.CloseListener;
 /**
  * Context for dialogs embedded into plain GWT modules.<p>
  */
-public class CmsEmbeddedDialogContext extends AbstractExtension implements I_CmsDialogContext {
+public class CmsEmbeddedDialogContext implements I_CmsDialogContext {
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsEmbeddedDialogContext.class);
 
     /** Pattern to check if a given server link starts with with a protocol string. */
     private static Pattern PROTOCOL_PATTERN = Pattern.compile("^http.?://.*");
-
-    /** The serial version id. */
-    private static final long serialVersionUID = -7446784547935775629L;
 
     /** The app id. */
     private String m_appId;
@@ -91,19 +89,33 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
     /** The window used to display the dialog. */
     private Window m_window;
 
+    /** The extension used for communicating with the client. */
+    private CmsEmbeddedDialogExtension m_extension;
+
+    /** The parameters. */
+    private Map<String, String> m_parameters;
+
     /**
      * Constructor.<p>
      *
      * @param appId the app id
+     * @param extension the extension used to communicate with the client
      * @param contextType the context type
      * @param resources the resources
+     * @param parameters the additional parameters
      */
-    public CmsEmbeddedDialogContext(String appId, ContextType contextType, List<CmsResource> resources) {
+    public CmsEmbeddedDialogContext(
+        String appId,
+        CmsEmbeddedDialogExtension extension,
+        ContextType contextType,
+        List<CmsResource> resources,
+        Map<String, String> parameters) {
 
-        extend(UI.getCurrent());
+        m_extension = extension;
         m_appId = appId;
         m_contextType = contextType;
         m_resources = resources != null ? resources : Collections.<CmsResource> emptyList();
+        m_parameters = parameters;
     }
 
     /**
@@ -165,7 +177,6 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
             if (!PROTOCOL_PATTERN.matcher(serverLink).matches()) {
                 serverLink = "http://" + serverLink;
             }
-
             getClientRPC().finishForProjectOrSiteChange(sitePath, serverLink);
         } else {
             finish((Collection<CmsUUID>)null);
@@ -230,6 +241,7 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
      * @param str the string to pass to the opener
      */
     public void finishWithString(String str) {
+
         closeWindow(true);
         getClientRPC().selectString(str);
     }
@@ -272,6 +284,14 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
     public ContextType getContextType() {
 
         return m_contextType;
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsDialogContext#getParameters()
+     */
+    public Map<String, String> getParameters() {
+
+        return Collections.unmodifiableMap(m_parameters);
     }
 
     /**
@@ -396,7 +416,7 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
      */
     protected I_CmsEmbeddedDialogClientRPC getClientRPC() {
 
-        return getRpcProxy(I_CmsEmbeddedDialogClientRPC.class);
+        return m_extension.getClientRPC();
     }
 
     /**

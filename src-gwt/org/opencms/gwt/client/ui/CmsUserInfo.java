@@ -54,6 +54,7 @@ public class CmsUserInfo extends A_CmsToolbarButton<I_CmsToolbarHandler> {
      * Constructor.<p>
      */
     public CmsUserInfo() {
+
         super(null, null);
         addStyleName(I_CmsLayoutBundle.INSTANCE.toolbarCss().userInfo());
         getUpFace().setHTML("<img src=\"" + CmsCoreProvider.get().getUserInfo().getUserIcon() + "\" />");
@@ -78,7 +79,7 @@ public class CmsUserInfo extends A_CmsToolbarButton<I_CmsToolbarHandler> {
     @Override
     public boolean isActive() {
 
-        return m_dialogHandler.hasDialogFrame();
+        return false;
     }
 
     /**

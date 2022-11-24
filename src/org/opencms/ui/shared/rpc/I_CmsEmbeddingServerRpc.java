@@ -27,49 +27,18 @@
 
 package org.opencms.ui.shared.rpc;
 
-import com.vaadin.shared.communication.ClientRpc;
+import com.vaadin.shared.communication.ServerRpc;
 
 /**
- * Client RPC to handle embedded dialogs.<p>
+ * Client-to-server RPC for embedding Vaadin dialogs in GWT.
  */
-public interface I_CmsEmbeddedDialogClientRPC extends ClientRpc {
+public interface I_CmsEmbeddingServerRpc extends ServerRpc {
 
     /**
-     * Removes the dialog iFrame and refreshes the given resources.<p>
+     * Loads the dialog for the given dialog information.
      *
-     * @param resourceIds the resources to refresh
+     * @param dialogInfo the dialog information as JSON representation of an I_CmsEmbeddedDialogInfo auto bean
      */
-    void finish(String resourceIds);
+    void loadDialog(String dialogInfo);
 
-    /**
-     * Removes the dialog iFrame and reloads the app for the given site path and server link.<p>
-     *
-     * @param sitePath the site path
-     * @param serverLink the server link
-     */
-    void finishForProjectOrSiteChange(String sitePath, String serverLink);
-
-    /**
-     * Tells the client to initialize the client-to-server RPC.
-     **/
-    void initServerRpc();
-
-    /**
-     * Leaves the current page calling the given URI.<p>
-     *
-     * @param targetUri the target URI
-     */
-    void leavePage(String targetUri);
-
-    /**
-     * Reloads the parent window.<p>
-     */
-    void reloadParent();
-
-    /**
-     * Sets the selected string.<p>
-     *
-     * @param str the string
-     */
-    void selectString(String str);
 }

@@ -34,7 +34,9 @@ import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Window;
@@ -122,6 +124,16 @@ public interface I_CmsDialogContext {
      * @return the context type
      */
     ContextType getContextType();
+
+    /**
+     * Gets additional parameters.
+     *
+     * @return the map of additional parameters
+     */
+    default Map<String, String> getParameters() {
+
+        return Collections.emptyMap();
+    }
 
     /**
      * Gets the list of resources for which the dialog should be opened.<p>

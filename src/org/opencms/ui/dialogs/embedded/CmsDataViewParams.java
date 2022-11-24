@@ -29,23 +29,19 @@ package org.opencms.ui.dialogs.embedded;
 
 import org.opencms.file.CmsObject;
 import org.opencms.gwt.shared.CmsDataViewConstants;
-import org.opencms.gwt.shared.CmsDataViewParamEncoder;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
-import org.opencms.util.CmsRequestUtil;
+import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.dataview.I_CmsDataView;
 import org.opencms.widgets.dataview.I_CmsDataViewItem;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
-
-import com.google.common.collect.Multimap;
 
 /**
  * Class representing the configuration passed to the Vaadin data view dialog by the client.<p>
@@ -73,15 +69,13 @@ public class CmsDataViewParams {
     /**
      * Creates a new instance by parsing the query string of the given URI.<p>
      *
-     * @param uri the URI from which to read the configuration
+     * @param context the dialog context
      */
-    public CmsDataViewParams(URI uri) {
-        Multimap<String, String> params = CmsRequestUtil.getParameters(uri);
-        if (params.containsKey(CmsDataViewConstants.PARAM_CONFIG)) {
-            String encodedConfig = params.get(CmsDataViewConstants.PARAM_CONFIG).iterator().next();
-            try {
-                JSONObject json = new JSONObject(CmsDataViewParamEncoder.decodeString(encodedConfig));
+    public CmsDataViewParams(I_CmsDialogContext context) {
 
+        if (context.getParameters().get(CmsDataViewConstants.PARAM_CONFIG) != null) {
+            try {
+                JSONObject json = new JSONObject(context.getParameters().get(CmsDataViewConstants.PARAM_CONFIG));
                 m_callback = json.optString(CmsDataViewConstants.PARAM_CALLBACK);
                 m_callbackArg = json.optString(CmsDataViewConstants.PARAM_CALLBACK_ARG);
                 m_viewClass = json.optString(CmsDataViewConstants.CONFIG_VIEW_CLASS);

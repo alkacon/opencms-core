@@ -30,7 +30,6 @@ package org.opencms.ui.actions;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.OpenCms;
-import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.components.CmsUploadButton.I_UploadListener;
@@ -42,7 +41,6 @@ import org.opencms.ui.dialogs.CmsEmbeddedDialogContext;
 import java.util.List;
 import java.util.Locale;
 
-import com.google.common.collect.Multimap;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 
@@ -66,11 +64,10 @@ public class CmsUserInfoDialogAction extends A_CmsWorkplaceAction {
                 handleUpload(uploadedFiles, context);
             }
         }, context);
-        Multimap<String, String> params = A_CmsUI.get().getParameters();
         int top = 55;
         int left = 0;
-        if (params.containsKey("left")) {
-            String buttonLeft = params.get("left").iterator().next();
+        if (context.getParameters().get("left") != null) {
+            String buttonLeft = context.getParameters().get("left");
             left = Integer.parseInt(buttonLeft) - 290;
         }
         final Window window = new Window();

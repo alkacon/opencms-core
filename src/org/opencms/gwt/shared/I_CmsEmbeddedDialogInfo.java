@@ -25,51 +25,69 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.shared.rpc;
+package org.opencms.gwt.shared;
 
-import com.vaadin.shared.communication.ClientRpc;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Client RPC to handle embedded dialogs.<p>
+ * AutoBean interface for the data needed to open an embedded Vaadin dialog from GWT.
  */
-public interface I_CmsEmbeddedDialogClientRPC extends ClientRpc {
+public interface I_CmsEmbeddedDialogInfo {
 
     /**
-     * Removes the dialog iFrame and refreshes the given resources.<p>
+     * Gets the context type.
      *
-     * @param resourceIds the resources to refresh
+     * @return the context type
      */
-    void finish(String resourceIds);
+    public String getContextType();
 
     /**
-     * Removes the dialog iFrame and reloads the app for the given site path and server link.<p>
+     * Gets the dialog id.
      *
-     * @param sitePath the site path
-     * @param serverLink the server link
+     * @return the dialog id
      */
-    void finishForProjectOrSiteChange(String sitePath, String serverLink);
+    public String getDialogId();
 
     /**
-     * Tells the client to initialize the client-to-server RPC.
-     **/
-    void initServerRpc();
-
-    /**
-     * Leaves the current page calling the given URI.<p>
+     * Gets the parameters.
      *
-     * @param targetUri the target URI
+     * @return the parameters
      */
-    void leavePage(String targetUri);
+    public Map<String, String> getParameters();
 
     /**
-     * Reloads the parent window.<p>
-     */
-    void reloadParent();
-
-    /**
-     * Sets the selected string.<p>
+     * Gets the structure ids.
      *
-     * @param str the string
+     * @return the structure ids
      */
-    void selectString(String str);
+    public List<String> getStructureIds();
+
+    /**
+     * Sets the context type.
+     *
+     * @param contextType the new context type
+     */
+    public void setContextType(String contextType);
+
+    /**
+     * Sets the dialog id.
+     *
+     * @param dialogId the new dialog id
+     */
+    public void setDialogId(String dialogId);
+
+    /**
+     * Sets the parameters.
+     *
+     * @param parameters the parameters
+     */
+    public void setParameters(Map<String, String> parameters);
+
+    /**
+     * Sets the structure ids.
+     *
+     * @param structureIds the structure ids
+     */
+    public void setStructureIds(List<String> structureIds);
 }

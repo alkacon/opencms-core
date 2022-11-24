@@ -27,13 +27,12 @@
 
 package org.opencms.gwt.client.util;
 
-import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
-import org.opencms.gwt.client.ui.CmsIFrame;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsActionHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsStringSelectHandler;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.gwt.shared.I_CmsEmbeddedDialogInfo;
+import org.opencms.gwt.shared.I_CmsEmbeddedDialogInfoFactory;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -43,21 +42,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootPanel;
+import com.google.web.bindery.autobean.shared.AutoBean;
+import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 
 /**
  * Handler for embedded VAADIN dialogs.<p>
  */
-public class CmsEmbeddedDialogHandler implements I_CmsHasInit {
+public class CmsEmbeddedDialogHandler implements I_CmsHasInit, I_CmsEmbeddedDialogHandlerJsCallbacks {
 
-    /** The iframe element. */
-    private CmsIFrame m_frame;
+    /** The auto bean factory for the dialog info objects. */
+    private static I_CmsEmbeddedDialogInfoFactory m_beanFactory = GWT.create(I_CmsEmbeddedDialogInfoFactory.class);
 
     /** The context menu handler. */
     private I_CmsActionHandler m_handler;
@@ -222,16 +224,12 @@ public class CmsEmbeddedDialogHandler implements I_CmsHasInit {
     }
 
     /**
-     * Called on dialog close.<p>
-     *
-     * @param resources the resource ids to update as a ';' separated string.<p>
+     * @see org.opencms.gwt.client.util.I_CmsEmbeddedDialogHandlerJsCallbacks#finish(java.lang.String)
      */
+    @Override
     public void finish(String resources) {
 
-        if (m_frame != null) {
-            m_frame.removeFromParent();
-            m_frame = null;
-        }
+        CmsEmbeddedDialogFrame.get().hide();
         if (m_handler != null) {
             List<CmsUUID> resourceIds = parseResources(resources);
             if (!resourceIds.isEmpty()) {
@@ -244,13 +242,20 @@ public class CmsEmbeddedDialogHandler implements I_CmsHasInit {
     }
 
     /**
-     * Returns if the dialog iframe is attached.<p>
+     * Called when site and or project have been changed.<p>
      *
-     * @return <code>true</code> if the dialog iframe is attached
+     * @param sitePath the site path to the resource to display
+     * @param serverLink the server link to the resource to display
      */
-    public boolean hasDialogFrame() {
+    @Override
+    public void finishForProjectOrSiteChange(String sitePath, String serverLink) {
 
-        return m_frame != null;
+        CmsEmbeddedDialogFrame.get().hide();
+        if (m_handler != null) {
+            m_handler.onSiteOrProjectChange(sitePath, serverLink);
+        } else {
+            Window.Location.assign(serverLink);
+        }
     }
 
     /**
@@ -258,12 +263,10 @@ public class CmsEmbeddedDialogHandler implements I_CmsHasInit {
      *
      * @param targetUri the target URI
      */
+    @Override
     public void leavePage(String targetUri) {
 
-        if (m_frame != null) {
-            m_frame.removeFromParent();
-            m_frame = null;
-        }
+        CmsEmbeddedDialogFrame.get().hide();
         if (m_handler != null) {
             m_handler.leavePage(targetUri);
         } else {
@@ -277,25 +280,6 @@ public class CmsEmbeddedDialogHandler implements I_CmsHasInit {
                 }
             };
             timer.schedule(10);
-        }
-    }
-
-    /**
-     * Called when site and or project have been changed.<p>
-     *
-     * @param sitePath the site path to the resource to display
-     * @param serverLink the server link to the resource to display
-     */
-    public void onSiteOrProjectChange(String sitePath, String serverLink) {
-
-        if (m_frame != null) {
-            m_frame.removeFromParent();
-            m_frame = null;
-        }
-        if (m_handler != null) {
-            m_handler.onSiteOrProjectChange(sitePath, serverLink);
-        } else {
-            Window.Location.assign(serverLink);
         }
     }
 
@@ -317,44 +301,30 @@ public class CmsEmbeddedDialogHandler implements I_CmsHasInit {
      * @param dialogId the dialog id
      * @param contextType the context type, used to check the action visibility
      * @param resources the resource to handle
-     * @param rawParams additional set of parameters to append to the query string (will not be escaped, therefore 'raw')
+     * @param params additional set of parameters
      */
 
-    public void openDialog(
-        String dialogId,
-        String contextType,
-        List<CmsUUID> resources,
-        Map<String, String> rawParams) {
+    public void openDialog(String dialogId, String contextType, List<CmsUUID> resources, Map<String, String> params) {
 
-        String resourceIds = "";
-        if (resources != null) {
-            for (CmsUUID id : resources) {
-                resourceIds += id.toString() + ";";
-            }
+        AutoBean<I_CmsEmbeddedDialogInfo> info = m_beanFactory.createDialogInfo();
+        info.as().setDialogId(dialogId);
+        info.as().setContextType(contextType);
+        if (resources == null) {
+            resources = new ArrayList<>();
         }
-        String url = CmsCoreProvider.get().getEmbeddedDialogsUrl()
-            + dialogId
-            + "?resources="
-            + resourceIds
-            + "&contextType="
-            + contextType;
-
-        if ((rawParams != null) && !rawParams.isEmpty()) {
-            List<String> params = new ArrayList<String>();
-            for (Map.Entry<String, String> entry : rawParams.entrySet()) {
-                params.add(encodeParam(entry.getKey()) + "=" + encodeParam(entry.getValue()));
-            }
-            url = url + "&" + CmsStringUtil.listAsString(params, "&");
+        info.as().setStructureIds(resources.stream().map(id -> "" + id).collect(Collectors.toList()));
+        if (params == null) {
+            params = new HashMap<>();
         }
-        m_frame = new CmsIFrame("embeddedDialogFrame", url);
-        m_frame.setStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().embeddedDialogFrame());
-        RootPanel.get().add(m_frame);
-        initIFrame();
+        info.as().setParameters(params);
+        String infoJson = AutoBeanCodex.encode(info).getPayload();
+        CmsEmbeddedDialogFrame.get().loadDialog(infoJson, this);
     }
 
     /**
      * Reloads the current page.<p>
      */
+    @Override
     public void reload() {
 
         if (m_handler != null) {
@@ -370,12 +340,10 @@ public class CmsEmbeddedDialogHandler implements I_CmsHasInit {
      *
      * @param principle the principle to select
      */
+    @Override
     public void selectString(String principle) {
 
-        if (m_frame != null) {
-            m_frame.removeFromParent();
-            m_frame = null;
-        }
+        CmsEmbeddedDialogFrame.get().hide();
         if (m_stringSelectHandler != null) {
             m_stringSelectHandler.selectString(principle);
         }
@@ -425,27 +393,4 @@ public class CmsEmbeddedDialogHandler implements I_CmsHasInit {
         }
     }
 
-    /**
-     * Initializes the iFrame element.<p>
-     */
-    private native void initIFrame()/*-{
-        var self = this;
-        $wnd.frames.embeddedDialogFrame.connector = {
-            reload : function() {
-                self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::reload()();
-            },
-            finish : function(resources) {
-                self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::finish(Ljava/lang/String;)(resources);
-            },
-            finishForProjectOrSiteChange : function(sitePath, serverLink) {
-                self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::onSiteOrProjectChange(Ljava/lang/String;Ljava/lang/String;)(sitePath,serverLink)
-            },
-            leavePage : function(targetUri) {
-                self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::leavePage(Ljava/lang/String;)(targetUri);
-            },
-            selectString : function(value) {
-                self.@org.opencms.gwt.client.util.CmsEmbeddedDialogHandler::selectString(Ljava/lang/String;)(value);
-            }
-        };
-    }-*/;
 }

@@ -46,7 +46,6 @@ import java.util.Optional;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Component;
 
 /**
@@ -70,12 +69,12 @@ public class CmsPageEditorFavoriteContext implements I_CmsFavoriteContext {
      * @param context the embedded dialog context
      * @param req the current request
      */
-    public CmsPageEditorFavoriteContext(CmsEmbeddedDialogContext context, VaadinRequest req) {
+    public CmsPageEditorFavoriteContext(CmsEmbeddedDialogContext context) {
 
-        CmsUUID detailId = toUuid(req.getParameter(CmsGwtConstants.Favorites.PARAM_DETAIL));
-        CmsUUID pageId = toUuid(req.getParameter(CmsGwtConstants.Favorites.PARAM_PAGE));
-        CmsUUID project = toUuid(req.getParameter(CmsGwtConstants.Favorites.PARAM_PROJECT));
-        String siteRoot = req.getParameter(CmsGwtConstants.Favorites.PARAM_SITE);
+        CmsUUID detailId = toUuid(context.getParameters().get(CmsGwtConstants.Favorites.PARAM_DETAIL));
+        CmsUUID pageId = toUuid(context.getParameters().get(CmsGwtConstants.Favorites.PARAM_PAGE));
+        CmsUUID project = toUuid(context.getParameters().get(CmsGwtConstants.Favorites.PARAM_PROJECT));
+        String siteRoot = context.getParameters().get(CmsGwtConstants.Favorites.PARAM_SITE);
         CmsFavoriteEntry entry = new CmsFavoriteEntry();
         entry.setDetailId(detailId);
         entry.setProjectId(project);

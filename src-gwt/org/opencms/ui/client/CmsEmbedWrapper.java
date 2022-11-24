@@ -25,51 +25,21 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.shared.rpc;
+package org.opencms.ui.client;
 
-import com.vaadin.shared.communication.ClientRpc;
+import org.opencms.gwt.client.util.I_CmsEmbeddedDialogHandlerJsCallbacks;
+
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
 
 /**
- * Client RPC to handle embedded dialogs.<p>
+ * Helper class to provide access to embedded dialog handlers set by the parent frame.
  */
-public interface I_CmsEmbeddedDialogClientRPC extends ClientRpc {
+@JsType(name = "window", namespace = JsPackage.GLOBAL, isNative = true)
+public class CmsEmbedWrapper {
 
     /**
-     * Removes the dialog iFrame and refreshes the given resources.<p>
-     *
-     * @param resourceIds the resources to refresh
+     * The embedded dialog handler set by the parent frame.
      */
-    void finish(String resourceIds);
-
-    /**
-     * Removes the dialog iFrame and reloads the app for the given site path and server link.<p>
-     *
-     * @param sitePath the site path
-     * @param serverLink the server link
-     */
-    void finishForProjectOrSiteChange(String sitePath, String serverLink);
-
-    /**
-     * Tells the client to initialize the client-to-server RPC.
-     **/
-    void initServerRpc();
-
-    /**
-     * Leaves the current page calling the given URI.<p>
-     *
-     * @param targetUri the target URI
-     */
-    void leavePage(String targetUri);
-
-    /**
-     * Reloads the parent window.<p>
-     */
-    void reloadParent();
-
-    /**
-     * Sets the selected string.<p>
-     *
-     * @param str the string
-     */
-    void selectString(String str);
+    public static I_CmsEmbeddedDialogHandlerJsCallbacks connector;
 }

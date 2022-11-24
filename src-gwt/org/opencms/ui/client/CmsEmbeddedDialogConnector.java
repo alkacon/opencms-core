@@ -27,8 +27,10 @@
 
 package org.opencms.ui.client;
 
-import org.opencms.ui.dialogs.CmsEmbeddedDialogContext;
+import org.opencms.gwt.client.util.I_CmsEmbeddedDialogLoader;
+import org.opencms.ui.components.extensions.CmsEmbeddedDialogExtension;
 import org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC;
+import org.opencms.ui.shared.rpc.I_CmsEmbeddingServerRpc;
 
 import com.vaadin.client.ServerConnector;
 import com.vaadin.client.extensions.AbstractExtensionConnector;
@@ -37,8 +39,9 @@ import com.vaadin.shared.ui.Connect;
 /**
  * The embedded dialog connector.<p>
  */
-@Connect(CmsEmbeddedDialogContext.class)
-public class CmsEmbeddedDialogConnector extends AbstractExtensionConnector implements I_CmsEmbeddedDialogClientRPC {
+@Connect(CmsEmbeddedDialogExtension.class)
+public class CmsEmbeddedDialogConnector extends AbstractExtensionConnector
+implements I_CmsEmbeddedDialogClientRPC, I_CmsEmbeddedDialogLoader {
 
     /** The serial version id. */
     private static final long serialVersionUID = -7984262078804717197L;
@@ -46,38 +49,59 @@ public class CmsEmbeddedDialogConnector extends AbstractExtensionConnector imple
     /**
      * @see org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC#finish(java.lang.String)
      */
-    public native void finish(String resourceIds)/*-{
-        $wnd.connector.finish(resourceIds);
-    }-*/;
+    public void finish(String resourceIds) {
+
+        CmsEmbedWrapper.connector.finish(resourceIds);
+    }
 
     /**
      * @see org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC#finishForProjectOrSiteChange(java.lang.String, java.lang.String)
      */
-    public native void finishForProjectOrSiteChange(String sitePath, String serverLink)/*-{
+    public void finishForProjectOrSiteChange(String sitePath, String serverLink) {
 
-        $wnd.connector.finishForProjectOrSiteChange(sitePath, serverLink);
+        CmsEmbedWrapper.connector.finishForProjectOrSiteChange(sitePath, serverLink);
+    }
+
+    /**
+     * @see org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC#initServerRpc()
+     */
+    public native void initServerRpc() /*-{
+        $wnd.parent.org.opencms.gwt.client.util.CmsEmbeddedDialogFrame.get().installEmbeddedDialogLoader(this);
     }-*/;
 
     /**
      * @see org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC#leavePage(java.lang.String)
      */
-    public native void leavePage(String targetUri)/*-{
-        $wnd.connector.leavePage(targetUri);
-    }-*/;
+    public void leavePage(String targetUri) {
+
+        CmsEmbedWrapper.connector.leavePage(targetUri);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.util.I_CmsEmbeddedDialogLoader#loadDialog(java.lang.String)
+     */
+    @Override
+    public void loadDialog(String dialogInfo) {
+
+        getRpcProxy(I_CmsEmbeddingServerRpc.class).loadDialog(dialogInfo);
+    }
 
     /**
      * @see org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC#reloadParent()
      */
-    public native void reloadParent()/*-{
-        $wnd.connector.reload();
-    }-*/;
+    public void reloadParent() {
+
+        CmsEmbedWrapper.connector.reload();
+    }
 
     /**
      * @see org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC#selectString(java.lang.String)
      */
-    public native void selectString(String principal)/*-{
-        $wnd.connector.selectString(principal);
-    }-*/;
+    public void selectString(String principal) {
+
+        CmsEmbedWrapper.connector.selectString(principal);
+
+    }
 
     /**
      * @see com.vaadin.client.extensions.AbstractExtensionConnector#extend(com.vaadin.client.ServerConnector)
@@ -86,5 +110,7 @@ public class CmsEmbeddedDialogConnector extends AbstractExtensionConnector imple
     protected void extend(ServerConnector target) {
 
         registerRpc(I_CmsEmbeddedDialogClientRPC.class, this);
+        // If we don't do this, Vaadin shows an empty tooltip box in the top-left corner. I have no idea why.
+        // getConnection().getVTooltip().hide();
     }
 }

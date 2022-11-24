@@ -69,9 +69,10 @@ public class CmsDataViewDialog extends CmsBasicDialog {
      * @param context the dialog context
      */
     public CmsDataViewDialog(I_CmsDialogContext context) {
+
         m_context = context;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-        final CmsDataViewParams params = new CmsDataViewParams(A_CmsUI.get().getPage().getLocation());
+        final CmsDataViewParams params = new CmsDataViewParams(context);
 
         I_CmsDataView example = params.createViewInstance(context.getCms(), A_CmsUI.get().getLocale());
         final CmsDataViewPanel panel = new CmsDataViewPanel(example, params.isMultiSelect());

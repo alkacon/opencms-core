@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
@@ -58,7 +59,7 @@ public class CmsAvailabilityDialogAction extends A_CmsWorkplaceAction implements
     public void executeAction(I_CmsDialogContext context) {
 
         if (!hasBlockingLocks(context)) {
-            openDialog(new CmsAvailabilityDialog(context), context);
+            openDialog(new CmsAvailabilityDialog(context), context, DialogWidth.narrow);
         }
     }
 
