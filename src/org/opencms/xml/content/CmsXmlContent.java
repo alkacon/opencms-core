@@ -832,7 +832,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
      * Visits all values of this XML content with the given value visitor.<p>
      *
      * Please note that the order in which the values are visited may NOT be the
-     * order they appear in the XML document. It is ensured that the the parent
+     * order they appear in the XML document. It is ensured that the parent
      * of a nested value is visited before the element it contains.<p>
      *
      * @param visitor the value visitor implementation to visit the values with

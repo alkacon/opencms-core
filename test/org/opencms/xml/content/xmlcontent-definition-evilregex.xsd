@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>    
+    <xsd:element name="Multitests" type="OpenCmsMultitests"/>
+    
+    <xsd:complexType name="OpenCmsMultitests">
+        <xsd:sequence>
+            <xsd:element name="Multitest" type="OpenCmsMultitest" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsMultitest">
+        <xsd:sequence>
+            <xsd:element name="String" type="OpenCmsString" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+    </xsd:complexType>
+
+    <xsd:annotation>
+        <xsd:appinfo>
+             <FieldSettings>
+                <Setting>
+                    <PropertyName>String</PropertyName>
+                    <!--
+                     This kind of regex is compiled into a recursive call, which results in a StackOverflow error
+                     when used on a very large string. Source: https://stackoverflow.com/a/7510006
+                     Reported ticket in the Java Bug Database Report: https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6337993
+                     -->
+                    <RuleRegex>(.|\R)*</RuleRegex>
+                    <RuleType>error</RuleType>
+                    <Error>error</Error>
+                    <Search>listtitle</Search>
+                </Setting>
+               </FieldSettings>
+        </xsd:appinfo>
+    </xsd:annotation>  
+</xsd:schema>

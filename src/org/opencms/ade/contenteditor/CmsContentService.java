@@ -1043,7 +1043,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     }
                 }
                 return result;
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 error(e);
             }
         }
