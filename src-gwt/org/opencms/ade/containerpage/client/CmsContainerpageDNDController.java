@@ -379,6 +379,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         if ((cachedElementData != null)
                             && (!cachedElementData.hasWritePermission()
                                 || cachedElementData.isModelGroup()
+                                || cachedElementData.isCopyDisabled()
                                 || cachedElementData.isWasModelGroup())) {
                             // User is not allowed to create this element in current view, so reuse the element instead
                             reuseMode = ElementReuseMode.reuse;

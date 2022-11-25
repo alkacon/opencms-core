@@ -260,6 +260,9 @@ public class CmsADEConfigData {
     /** Set of names of active types.*/
     private Set<String> m_typesAddable;
 
+    /** Cache of (active) resource type configurations by name. */
+    private Map<String, CmsResourceTypeConfig> m_typesByName;
+
     /** Type names configured in this or ancestor sitemap configurations. */
     private Set<String> m_typesInAncestors;
 
@@ -1353,6 +1356,25 @@ public class CmsADEConfigData {
             return parentMode;
         }
 
+    }
+
+    /**
+     * Gets a map of the active resource type configurations, with type names as keys.
+     *
+     * @return the map of active types
+     */
+    public Map<String, CmsResourceTypeConfig> getTypesByName() {
+
+        if (m_typesByName != null) {
+            return m_typesByName;
+        }
+        Map<String, CmsResourceTypeConfig> result = new HashMap<>();
+        for (CmsResourceTypeConfig type : getResourceTypes()) {
+            result.put(type.getTypeName(), type);
+        }
+        result = Collections.unmodifiableMap(result);
+        m_typesByName = result;
+        return result;
     }
 
     /**

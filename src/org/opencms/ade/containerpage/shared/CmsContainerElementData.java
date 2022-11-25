@@ -95,6 +95,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     /** The supported container types of a group-container. */
     private Set<String> m_types;
 
+    private boolean m_copyDisabled;
+
+    /**
+     * Creates a new instance.
+     */
+    public CmsContainerElementData() {
+
+        // do nothing
+    }
+
     /**
      * Returns the contents.<p>
      *
@@ -368,6 +378,26 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
+     * Returns true if the element's type is disabled in the sitemap configuration.
+     *
+     * @return true if the type is disabled
+     */
+    public boolean isAddDisabled() {
+
+        return m_addDisabled;
+    }
+
+    /**
+     * Returns true if copying of the element should be disabled.
+     *
+     * @return true if copying of the element should be disabled
+     */
+    public boolean isCopyDisabled() {
+
+        return m_copyDisabled;
+    }
+
+    /**
      * Returns if this element is used as a group.<p>
      *
      * @return if this element is used as a group
@@ -395,13 +425,13 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
-     * Returns true if the element's type is disabled in the sitemap configuration.
+     * Sets the 'is type disabled' flag (type is disabled in the sitemap configuration).
      *
-     * @return true if the type is disabled
+     * @param typeDisabled the new value
      */
-    public boolean isAddDisabled() {
+    public void setAddDisabled(boolean typeDisabled) {
 
-        return m_addDisabled;
+        m_addDisabled = typeDisabled;
     }
 
     /**
@@ -412,6 +442,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     public void setContents(Map<String, String> contents) {
 
         m_contents = contents;
+    }
+
+    /**
+     * Sets the 'copy disabled' status.
+     *
+     * @param copyDisabled true if copying should be disabled
+     */
+    public void setCopyDisabled(boolean copyDisabled) {
+
+        m_copyDisabled = copyDisabled;
     }
 
     /**
@@ -543,16 +583,6 @@ public class CmsContainerElementData extends CmsContainerElement {
     public void setTitle(String title) {
 
         m_title = title;
-    }
-
-    /**
-     * Sets the 'is type disabled' flag (type is disabled in the sitemap configuration).
-     *
-     * @param typeDisabled the new value
-     */
-    public void setAddDisabled(boolean typeDisabled) {
-
-        m_addDisabled = typeDisabled;
     }
 
     /**

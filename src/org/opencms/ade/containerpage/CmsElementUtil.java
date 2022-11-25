@@ -518,6 +518,7 @@ public class CmsElementUtil {
             return null;
         }
         boolean typeDisabled = false;
+        boolean createDisabled = false;
         if (page != null) {
 
             CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(m_cms, page.getRootPath());
@@ -525,10 +526,15 @@ public class CmsElementUtil {
             if (!config.getAddableTypeNames().contains(typeName)) {
                 typeDisabled = true;
             }
+            CmsResourceTypeConfig typeConfig = config.getTypesByName().get(typeName);
+            if ((typeConfig == null) || typeConfig.isCreateDisabled()) {
+                createDisabled = true;
+            }
         }
 
         CmsContainerElementData elementData = getBaseElementData(page, element);
         elementData.setAddDisabled(typeDisabled);
+        elementData.setCopyDisabled(createDisabled);
         CmsFormatterConfiguration formatterConfiguraton = getFormatterConfiguration(element.getResource());
         Map<String, String> contents = new HashMap<String, String>();
         if (element.isGroupContainer(m_cms)) {
