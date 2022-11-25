@@ -450,7 +450,7 @@ public class CmsContainerpageUtil {
             }, AdeContext.gallery);
             listItem.getListItemWidget().addButtonToFront(button);
         }
-        if (!containerElement.isTypeDisabled()) {
+        if (!containerElement.isAddDisabled()) {
             listItem.initMoveHandle(m_controller.getDndHandler(), true);
         }
         return listItem;

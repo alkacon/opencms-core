@@ -258,7 +258,7 @@ public class CmsADEConfigData {
     private volatile ImmutableList<CmsUUID> m_sharedSettingOverrides;
 
     /** Set of names of active types.*/
-    private Set<String> m_typesActive;
+    private Set<String> m_typesAddable;
 
     /** Type names configured in this or ancestor sitemap configurations. */
     private Set<String> m_typesInAncestors;
@@ -529,18 +529,20 @@ public class CmsADEConfigData {
      *
      * @return the set of type names of active types
      */
-    public Set<String> getActiveTypeNames() {
+    public Set<String> getAddableTypeNames() {
 
-        Set<String> result = m_typesActive;
+        Set<String> result = m_typesAddable;
         if (result != null) {
             return result;
         } else {
             Set<String> mutableResult = new HashSet<>();
             for (CmsResourceTypeConfig typeConfig : internalGetResourceTypes(true)) {
-                mutableResult.add(typeConfig.getTypeName());
+                if (!typeConfig.isAddDisabled()) {
+                    mutableResult.add(typeConfig.getTypeName());
+                }
             }
             result = Collections.unmodifiableSet(mutableResult);
-            m_typesActive = result;
+            m_typesAddable = result;
             return result;
         }
     }
@@ -825,10 +827,10 @@ public class CmsADEConfigData {
             for (CmsDetailPageInfo detailpage : getAllDetailPages(true)) {
                 if (detailpage.getType().equals(type)) {
                     result.add(detailpage);
-                } else if ((defaultPage == null)
-                    && CmsADEManager.DEFAULT_DETAILPAGE_TYPE.equals(detailpage.getType())) {
-                    defaultPage = detailpage;
-                }
+                } else
+                    if ((defaultPage == null) && CmsADEManager.DEFAULT_DETAILPAGE_TYPE.equals(detailpage.getType())) {
+                        defaultPage = detailpage;
+                    }
             }
             if (defaultPage != null) {
                 // add default detail page last

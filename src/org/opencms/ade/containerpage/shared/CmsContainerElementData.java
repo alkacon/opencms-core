@@ -90,7 +90,7 @@ public class CmsContainerElementData extends CmsContainerElement {
     private String m_title;
 
     /** True if the element's type is disabled in the sitemap configuration. */
-    private boolean m_typeDisabled;
+    private boolean m_addDisabled;
 
     /** The supported container types of a group-container. */
     private Set<String> m_types;
@@ -399,9 +399,9 @@ public class CmsContainerElementData extends CmsContainerElement {
      *
      * @return true if the type is disabled
      */
-    public boolean isTypeDisabled() {
+    public boolean isAddDisabled() {
 
-        return m_typeDisabled;
+        return m_addDisabled;
     }
 
     /**
@@ -550,9 +550,9 @@ public class CmsContainerElementData extends CmsContainerElement {
      *
      * @param typeDisabled the new value
      */
-    public void setTypeDisabled(boolean typeDisabled) {
+    public void setAddDisabled(boolean typeDisabled) {
 
-        m_typeDisabled = typeDisabled;
+        m_addDisabled = typeDisabled;
     }
 
     /**
