@@ -236,6 +236,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             // in case of sitemap editor check visibility with empty list
             if (context.equals(AdeContext.sitemapeditor)) {
                 resources = Collections.emptyList();
+                cms.getRequestContext().setAttribute(I_CmsDialogContext.ATTR_SITEMAP_CONFIG_RESOURCE, resource);
             } else {
                 resources = Collections.singletonList(resource);
             }

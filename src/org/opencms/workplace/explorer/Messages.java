@@ -150,6 +150,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPLORER_CONTEXT_EDIT_SITE_CONFIG_0 = "GUI_EXPLORER_CONTEXT_EDIT_SITE_CONFIG_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_EDIT_SITEMAP_ATTRIBUTES_0 = "GUI_EXPLORER_CONTEXT_EDIT_SITEMAP_ATTRIBUTES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0 = "GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -695,6 +698,14 @@ public final class Messages extends A_CmsMessageBundle {
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
+     * Hides the public constructor for this utility class.<p>
+     */
+    private Messages() {
+
+        // hide the constructor
+    }
+
+    /**
      * Returns an instance of this localized message accessor.<p>
      *
      * @return an instance of this localized message accessor
@@ -719,14 +730,6 @@ public final class Messages extends A_CmsMessageBundle {
         sb.append(state.getState());
         sb.append(GUI_STATE_POSTFIX);
         return sb.toString();
-    }
-
-    /**
-     * Hides the public constructor for this utility class.<p>
-     */
-    private Messages() {
-
-        // hide the constructor
     }
 
     /**

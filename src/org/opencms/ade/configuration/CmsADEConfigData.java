@@ -641,6 +641,38 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Gets the active sitemap attribute editor configuration.
+     *
+     * @return the active sitemap attribute editor configuration
+     */
+    public CmsSitemapAttributeEditorConfiguration getAttributeEditorConfiguration() {
+
+        CmsUUID id = getAttributeEditorConfigurationId();
+        CmsSitemapAttributeEditorConfiguration result = m_cache.getAttributeEditorConfiguration(id);
+        if (result == null) {
+            result = CmsSitemapAttributeEditorConfiguration.EMPTY;
+        }
+        return result;
+
+    }
+
+    /**
+     * Gets the structure id of the configured sitemap attribute editor configuration.
+     *
+     * @return the structure id of the configured sitemap attribute editor configuration
+     */
+    public CmsUUID getAttributeEditorConfigurationId() {
+
+        CmsADEConfigData parent = parent();
+        CmsUUID result = m_data.getAttributeEditorConfigId();
+        if ((result == null) && (parent != null)) {
+            result = parent.getAttributeEditorConfigurationId();
+        }
+        return result;
+
+    }
+
+    /**
      * Gets the map of attributes configured for this sitemap, including values inherited from parent sitemaps.
      *
      * @return the map of attributes
@@ -1595,6 +1627,16 @@ public class CmsADEConfigData {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Returns true if the sitemap attribute editor should be available in this subsite.
+     *
+     * @return true if the sitemap attribute editor dialog should be available
+     */
+    public boolean shouldShowSitemapAttributeDialog() {
+
+        return getAttributeEditorConfiguration().getAttributeDefinitions().size() > 0;
     }
 
     /**

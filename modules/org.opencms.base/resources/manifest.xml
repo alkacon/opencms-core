@@ -465,6 +465,20 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
                 <param name="resource.flag.internal">true</param>
                 <param name="schema">/system/modules/org.opencms.ade.config/schemas/site_plugin.xsd</param>
             </type>
+            <type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration" name="attr_editor_config" id="324">
+                <properties>
+                    <property>
+                        <name>locale-available</name>
+                        <value><![CDATA[en]]></value>
+                    </property>
+                    <property>
+                        <name>locale</name>
+                        <value><![CDATA[en]]></value>
+                    </property>
+                </properties>
+                <param name="resource.flag.internal">true</param>
+                <param name="schema">/system/modules/org.opencms.ade.config/schemas/attr_editor_config.xsd</param>
+            </type>
 			
 		</resourcetypes>
 		<explorertypes>
@@ -671,6 +685,13 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
+			 <explorertype name="attr_editor_config" key="fileicon.attr_editor_config" smalliconstyle="oc-icon-16-formatter_config" bigiconstyle="oc-icon-24-formatter_config" reference="xmlcontent">
+                <newresource order="23" autosetnavigation="false" autosettitle="false" info="desc.attr_editor_config"/>
+                <accesscontrol>
+                    <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+                </accesscontrol>
+            </explorertype>
+			
 			
 		</explorertypes>
 	</module>

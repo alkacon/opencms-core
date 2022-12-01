@@ -47,6 +47,7 @@
             <xsd:element name="DiscardModelPages" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="ModelPage" type="OpenCmsADEModelPage" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="DetailPage" type="OpenCmsDetailPage" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="AttributeEditorConfig" type="OpenCmsVfsFile" minOccurs="0" />
             <xsd:element name="Attribute" type="OpenCmsParameter" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
@@ -78,7 +79,7 @@
                 <tab element="DiscardProperties" name="TabPropertyConfiguration" collapse="false" />
                 <tab element="DiscardModelPages" name="TabPageModels" collapse="false" />
                 <tab element="DetailPage" name="TabDetailPages" collapse="false" />
-                <tab element="Attribute" name="TabAttributes" collapse="false" />
+                <tab element="AttributeEditorConfig" name="TabAttributes" collapse="false" />
             </tabs>
             <editorchangehandlers>
                 <editorchangehandler class="org.opencms.ade.contenteditor.CmsEditorChangeHandlerFormatterSelection"

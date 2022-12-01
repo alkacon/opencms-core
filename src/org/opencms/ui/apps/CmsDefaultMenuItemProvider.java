@@ -71,6 +71,7 @@ import org.opencms.ui.actions.CmsSeoAction;
 import org.opencms.ui.actions.CmsShowLocaleAction;
 import org.opencms.ui.actions.CmsSiteDialogAction;
 import org.opencms.ui.actions.CmsSitemapAliasAction;
+import org.opencms.ui.actions.CmsSitemapAttributeEditorAction;
 import org.opencms.ui.actions.CmsSitemapEditConfigAction;
 import org.opencms.ui.actions.CmsSitemapOpenParentAction;
 import org.opencms.ui.actions.CmsSitemapRefreshAction;
@@ -172,6 +173,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsSeoAction(), advanced.getId(), 1200, 0),
             new CmsContextMenuActionItem(new CmsWorkplaceAction(), advanced.getId(), 1300, 0),
             new CmsContextMenuActionItem(new CmsSitemapAliasAction(), advanced.getId(), 1500, 0),
+            new CmsContextMenuActionItem(new CmsSitemapAttributeEditorAction(), advanced.getId(), 1520, 0),
             new CmsContextMenuActionItem(new CmsSitemapEditConfigAction(), advanced.getId(), 1600, 0),
             new CmsContextMenuActionItem(new CmsTemplateMapperAction(), advanced.getId(), 1700, 0),
 

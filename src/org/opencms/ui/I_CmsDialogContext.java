@@ -61,6 +61,9 @@ public interface I_CmsDialogContext {
         sitemapToolbar
     }
 
+    /** Request context attribute used to pass the sitemap configuration to sitemap context menu items. */
+    public static final String ATTR_SITEMAP_CONFIG_RESOURCE = "sitemap_config_resource";
+
     /**
      * Signals an error which occurred in the dialog.<p>
      *

@@ -69,6 +69,12 @@ public class CmsADEConfigCacheState {
     /** The CMS context used for VFS operations. */
     private CmsObject m_cms;
 
+    /** Cache for detail page lists. */
+    private Map<String, List<String>> m_detailPageCache;
+
+    /** Memoized supplier for the cached detail page ids. */
+    private Supplier<Set<CmsUUID>> m_detailPageIdCache;
+
     /** Cached detail page types. */
     private volatile Set<String> m_detailPageTypes;
 
@@ -90,17 +96,14 @@ public class CmsADEConfigCacheState {
     /** The configurations from the sitemap / VFS. */
     private Map<String, CmsADEConfigDataInternal> m_siteConfigurationsByPath = new HashMap<String, CmsADEConfigDataInternal>();
 
-    /** Cached list of subsites to be included in the site selector. */
-    private volatile List<String> m_subsitesForSiteSelector;
-
-    /** Cache for detail page lists. */
-    private Map<String, List<String>> m_detailPageCache;
-
-    /** Memoized supplier for the cached detail page ids. */
-    private Supplier<Set<CmsUUID>> m_detailPageIdCache;
+    /** The sitemap attribute editor configurations. */
+    private Map<CmsUUID, CmsSitemapAttributeEditorConfiguration> m_sitemapAttributeEditorConfigurations;
 
     /** Site plugins. */
     private Map<CmsUUID, CmsSitePlugin> m_sitePlugins;
+
+    /** Cached list of subsites to be included in the site selector. */
+    private volatile List<String> m_subsitesForSiteSelector;
 
     /**
      * Creates a new configuration cache state.<p>
@@ -110,19 +113,22 @@ public class CmsADEConfigCacheState {
      * @param moduleConfigs the complete list of module configurations
      * @param elementViews the available element views
      * @param sitePlugins the map of sitemap plugins
+     * @param attributeEditorConfigurations the attribute editor configurations
      */
     public CmsADEConfigCacheState(
         CmsObject cms,
         Map<CmsUUID, CmsADEConfigDataInternal> siteConfigurations,
         List<CmsADEConfigDataInternal> moduleConfigs,
         Map<CmsUUID, CmsElementView> elementViews,
-        Map<CmsUUID, CmsSitePlugin> sitePlugins) {
+        Map<CmsUUID, CmsSitePlugin> sitePlugins,
+        Map<CmsUUID, CmsSitemapAttributeEditorConfiguration> attributeEditorConfigurations) {
 
         m_cms = cms;
         m_siteConfigurations = siteConfigurations;
         m_moduleConfigurations = moduleConfigs;
         m_elementViews = elementViews;
         m_sitePlugins = sitePlugins;
+        m_sitemapAttributeEditorConfigurations = attributeEditorConfigurations;
         for (CmsADEConfigDataInternal data : siteConfigurations.values()) {
             if (data.getBasePath() != null) {
                 // In theory, the base path should never be null
@@ -159,6 +165,7 @@ public class CmsADEConfigCacheState {
             Collections.<CmsUUID, CmsADEConfigDataInternal> emptyMap(),
             Collections.<CmsADEConfigDataInternal> emptyList(),
             Collections.<CmsUUID, CmsElementView> emptyMap(),
+            Collections.emptyMap(),
             Collections.emptyMap());
     }
 
@@ -193,6 +200,7 @@ public class CmsADEConfigCacheState {
      * @param moduleUpdates the list of *all* module configurations, or null if no module configuration update is needed
      * @param elementViewUpdates the updated element views, or null if no update needed
      * @param sitePluginUpdates the new map of site plugins, or null if no update needed
+     * @param attributeEditorConfigurations the sitemap attribute editor configurations
      *
      * @return the new configuration state
      */
@@ -200,7 +208,8 @@ public class CmsADEConfigCacheState {
         Map<CmsUUID, CmsADEConfigDataInternal> sitemapUpdates,
         List<CmsADEConfigDataInternal> moduleUpdates,
         Map<CmsUUID, CmsElementView> elementViewUpdates,
-        Map<CmsUUID, CmsSitePlugin> sitePluginUpdates) {
+        Map<CmsUUID, CmsSitePlugin> sitePluginUpdates,
+        Map<CmsUUID, CmsSitemapAttributeEditorConfiguration> attributeEditorConfigurations) {
 
         Map<CmsUUID, CmsADEConfigDataInternal> newSitemapConfigs = Maps.newHashMap(m_siteConfigurations);
         if (sitemapUpdates != null) {
@@ -228,7 +237,29 @@ public class CmsADEConfigCacheState {
             newSitePlugins = sitePluginUpdates;
         }
 
-        return new CmsADEConfigCacheState(m_cms, newSitemapConfigs, newModuleConfigs, newElementViews, newSitePlugins);
+        Map<CmsUUID, CmsSitemapAttributeEditorConfiguration> newAttributeEditorConfigs = m_sitemapAttributeEditorConfigurations;
+        if (attributeEditorConfigurations != null) {
+            newAttributeEditorConfigs = attributeEditorConfigurations;
+        }
+
+        return new CmsADEConfigCacheState(
+            m_cms,
+            newSitemapConfigs,
+            newModuleConfigs,
+            newElementViews,
+            newSitePlugins,
+            newAttributeEditorConfigs);
+    }
+
+    /**
+     * Gets the sitemap attribute editor configuration with the given id (or null, if there isn't one).
+     *
+     * @param id the structure id of an attribute editor configuration
+     * @return the attribute editor configuration for the id
+     */
+    public CmsSitemapAttributeEditorConfiguration getAttributeEditorConfiguration(CmsUUID id) {
+
+        return m_sitemapAttributeEditorConfigurations.get(id);
     }
 
     /**

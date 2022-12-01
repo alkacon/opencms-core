@@ -2322,6 +2322,15 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     I_CmsLayoutBundle INSTANCE = GWT.create(I_CmsLayoutBundle.class);
 
     /**
+     * Access method.
+     *
+     * @return the attribute editor CSS
+     */
+    @Source("attributeEditor.gss")
+    @Import(value = {I_CmsInputCss.class, I_CmsDialogCss.class})
+    I_CmsAttributeEditorCss attributeEditorCss();
+
+    /**
      * Access method.<p>
      *
      * @return the availability dialog CSS

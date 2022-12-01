@@ -256,6 +256,9 @@ public final class CmsGwtConstants {
     /** Name of Javascript variable used to hold the structure id of the currently selected locale's root folder in the sitemap editor's locale comparison mode. */
     public static final String VAR_LOCALE_ROOT = "cmsLocaleCompareRoot";
 
+    /** Part of the URL used to unlock files. */
+    public static final String UNLOCK_FILE_PREFIX = "/unlockFile/";
+
     /**
      * Hide constructor.<p>
      */

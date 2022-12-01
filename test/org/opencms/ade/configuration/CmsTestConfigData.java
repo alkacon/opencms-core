@@ -150,6 +150,7 @@ public class CmsTestConfigData extends CmsADEConfigData {
             CmsAddContentRestriction.EMPTY,
             /*CmsUUID sharedSettingsOverride */ null,
             /*boolean removeAllSharedSettingsOverrides*/false,
+            /*CmsUUID attributeEditorConfigId*/null,
             /*Map<String, String> attributes*/new HashMap<>());
         return new CmsTestConfigData(internal);
 

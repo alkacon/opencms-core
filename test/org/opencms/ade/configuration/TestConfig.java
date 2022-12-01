@@ -989,6 +989,7 @@ public class TestConfig extends OpenCmsTestCase {
                 new HashMap<CmsUUID, CmsADEConfigDataInternal>(),
                 new ArrayList<CmsADEConfigDataInternal>(),
                 new HashMap<CmsUUID, CmsElementView>(),
+                new HashMap<>(),
                 new HashMap<>()),
             new CmsADEConfigurationSequence(Collections.singletonList(configDataInternal)));
         assertFalse(configData.isModuleConfiguration());
@@ -1037,6 +1038,7 @@ public class TestConfig extends OpenCmsTestCase {
                 new HashMap<CmsUUID, CmsADEConfigDataInternal>(),
                 new ArrayList<CmsADEConfigDataInternal>(),
                 new HashMap<CmsUUID, CmsElementView>(),
+                new HashMap<>(),
                 new HashMap<>()),
             new CmsADEConfigurationSequence(Collections.singletonList(configDataInternal)));
         assertTrue(configData.isModuleConfiguration());

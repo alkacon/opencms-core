@@ -29,6 +29,7 @@ package org.opencms.ade.configuration;
 
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.detailpage.I_CmsDetailPageHandler;
+import org.opencms.ade.sitemap.CmsSitemapAttributeUpdater;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -43,6 +44,8 @@ import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.ui.components.CmsExtendedSiteSelector;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,6 +53,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -134,6 +138,53 @@ public class TestLiveConfig extends OpenCmsTestCase {
         CmsConfigurationCache.DEBUG = true;
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         return generateSetupTestWrapper(TestLiveConfig.class, "ade-config", "/");
+    }
+
+    /**
+     * Tests programmatic updating of sitemap attributes.
+     *
+     * @throws Exception
+     */
+    public void testAttributeUpdates() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        I_CmsResourceType configType = OpenCms.getResourceManager().getResourceType("sitemap_config");
+        String path = "/savetest1.xml";
+        cms.createResource("/savetest1.xml", configType);
+        Map<String, String> originalAttributes = new HashMap<>();
+        originalAttributes.put("foo", "1");
+        originalAttributes.put("bar", "2");
+
+        {
+            CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(path));
+            // make sure we have something else than attributes in the sitemap config
+            content.addValue(cms, "DiscardTypes", Locale.ENGLISH, 0);
+            CmsSitemapAttributeUpdater updater = new CmsSitemapAttributeUpdater(cms, content);
+            updater.replaceAttributes(originalAttributes);
+            CmsFile file = content.getFile();
+            file.setContents(content.marshal());
+            cms.lockResource(file);
+            cms.writeFile(file);
+        }
+        {
+            CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(path));
+            CmsSitemapAttributeUpdater updater = new CmsSitemapAttributeUpdater(cms, content);
+            assertEquals(originalAttributes, updater.getAttributesFromContent());
+            Map<String, String> updates = new HashMap<>();
+            updates.put("foo", null);
+            updates.put("baz", "3");
+            updater.updateAttributes(updates);
+            CmsFile file = content.getFile();
+            file.setContents(content.marshal());
+            cms.lockResource(file);
+            cms.writeFile(file);
+        }
+
+        {
+            CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(path));
+            CmsSitemapAttributeUpdater updater = new CmsSitemapAttributeUpdater(cms, content);
+            assertEquals(CmsStringUtil.splitAsMap("bar:2|baz:3", "|", ":"), updater.getAttributesFromContent());
+        }
     }
 
     /**

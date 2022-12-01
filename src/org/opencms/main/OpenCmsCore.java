@@ -210,6 +210,13 @@ public final class OpenCmsCore {
     /** One instance to rule them all, one instance to find them... */
     private static OpenCmsCore m_instance;
 
+    static {
+        final String keyEntityExpansionLimit = "jdk.xml.entityExpansionLimit";
+        if (System.getProperty(keyEntityExpansionLimit) == null) {
+            System.setProperty(keyEntityExpansionLimit, "64000");
+        }
+    }
+
     /** The ADE manager instance. */
     private CmsADEManager m_adeManager;
 
@@ -384,13 +391,6 @@ public final class OpenCmsCore {
         initMembers();
         m_instance = this;
         setRunLevel(OpenCms.RUNLEVEL_1_CORE_OBJECT);
-    }
-
-    static {
-        final String keyEntityExpansionLimit = "jdk.xml.entityExpansionLimit";
-        if (System.getProperty(keyEntityExpansionLimit) == null) {
-            System.setProperty(keyEntityExpansionLimit, "64000");
-        }
     }
 
     /**
@@ -2083,6 +2083,13 @@ public final class OpenCmsCore {
                 // Count this as a heartbeat request, because it's not caused by user activity
                 boolean isHeartbeatRequest = true;
                 OpenCms.getSessionManager().updateSessionInfo(cms, req, isHeartbeatRequest);
+            } else if (remainingPath.startsWith(CmsGwtConstants.UNLOCK_FILE_PREFIX)) {
+                String idStr = remainingPath.substring(CmsGwtConstants.UNLOCK_FILE_PREFIX.length());
+                try {
+                    cms.unlockResource(cms.readResource(new CmsUUID(idStr), CmsResourceFilter.ALL));
+                } catch (Exception e) {
+                    LOG.debug(e.getLocalizedMessage(), e);
+                }
             }
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);

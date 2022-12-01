@@ -1075,6 +1075,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
         I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().ensureInjected();
         I_CmsSitemapLayoutBundle.INSTANCE.propertiesCss().ensureInjected();
         I_CmsImageBundle.INSTANCE.buttonCss().ensureInjected();
+        I_CmsLayoutBundle.INSTANCE.attributeEditorCss().ensureInjected();
 
         rootPanel.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.sitemapCss().root());
         m_treeItems = new HashMap<CmsUUID, CmsSitemapTreeItem>();

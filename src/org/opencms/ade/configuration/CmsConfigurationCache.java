@@ -82,6 +82,10 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     /** ID which is used to signal that the complete configuration should be reloaded. */
     public static final CmsUUID ID_UPDATE_ALL = CmsUUID.getConstantUUID("all");
 
+    /** ID to signal that plugins should be updated. */
+    public static final CmsUUID ID_UPDATE_ATTRIBUTE_EDITOR_CONFIGURATIONS = CmsUUID.getConstantUUID(
+        "attribute_editor_configurations");
+
     /** ID which is used to signal that the element views should be updated. */
     public static final CmsUUID ID_UPDATE_ELEMENT_VIEWS = CmsUUID.getConstantUUID("elementViews");
 
@@ -108,6 +112,9 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
 
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsConfigurationCache.class);
+
+    /** Resource type for attribute editor confiugrations. */
+    private static final String TYPE_ATTRIBUTE_EDITOR_CONFIG = "attr_editor_config";
 
     /** The resource type for sitemap configurations. */
     protected I_CmsResourceType m_configType;
@@ -367,12 +374,14 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                 + " element views.");
         Map<CmsUUID, CmsElementView> elementViews = loadElementViews();
         Map<CmsUUID, CmsSitePlugin> sitePlugins = loadSitePlugins();
+        Map<CmsUUID, CmsSitemapAttributeEditorConfiguration> attributeEditorConfigs = loadAttributeEditorConfigurations();
         CmsADEConfigCacheState result = new CmsADEConfigCacheState(
             m_cms,
             siteConfigurations,
             moduleConfigs,
             elementViews,
-            sitePlugins);
+            sitePlugins,
+            attributeEditorConfigs);
         long endTime = System.currentTimeMillis();
         if (LOG.isDebugEnabled()) {
             LOG.debug("readCompleteConfiguration took " + (endTime - beginTime) + "ms");
@@ -585,6 +594,8 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                     boolean updateModules = updateIds.remove(ID_UPDATE_MODULES);
                     boolean updateElementViews = updateIds.remove(ID_UPDATE_ELEMENT_VIEWS);
                     boolean updateSitePlugins = updateIds.remove(ID_UPDATE_SITE_PLUGINS);
+                    boolean updateAttributeEditorConfigurations = updateIds.remove(
+                        ID_UPDATE_ATTRIBUTE_EDITOR_CONFIGURATIONS);
                     updateIds.remove(ID_UPDATE_FOLDERTYPES); // folder types are always updated when the update set is not empty, so at this point we don't care whether the id for folder type updates actually is in the update set
                     Map<CmsUUID, CmsADEConfigDataInternal> updateMap = Maps.newHashMap();
                     for (CmsUUID structureId : updateIds) {
@@ -604,7 +615,17 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                     if (updateSitePlugins) {
                         sitePlugins = loadSitePlugins();
                     }
-                    m_state = oldState.createUpdatedCopy(updateMap, moduleConfigs, elementViews, sitePlugins);
+
+                    Map<CmsUUID, CmsSitemapAttributeEditorConfiguration> attributeEditorConfigurations = null;
+                    if (updateAttributeEditorConfigurations) {
+                        attributeEditorConfigurations = loadAttributeEditorConfigurations();
+                    }
+                    m_state = oldState.createUpdatedCopy(
+                        updateMap,
+                        moduleConfigs,
+                        elementViews,
+                        sitePlugins,
+                        attributeEditorConfigurations);
                 }
                 try {
                     OpenCms.getADEManager().getCache().flushContainerPages(false);
@@ -643,6 +664,8 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
             m_workQueue.add(ID_UPDATE_ELEMENT_VIEWS);
         } else if (OpenCms.getResourceManager().matchResourceType(TYPE_SITE_PLUGIN, type)) {
             m_workQueue.add(ID_UPDATE_SITE_PLUGINS);
+        } else if (OpenCms.getResourceManager().matchResourceType(TYPE_ATTRIBUTE_EDITOR_CONFIG, type)) {
+            m_workQueue.add(ID_UPDATE_ATTRIBUTE_EDITOR_CONFIGURATIONS);
         } else if (m_state.getFolderTypes().containsKey(rootPath)) {
             m_workQueue.add(ID_UPDATE_FOLDERTYPES);
         }
@@ -671,6 +694,8 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
             m_workQueue.add(ID_UPDATE_ELEMENT_VIEWS);
         } else if (OpenCms.getResourceManager().matchResourceType(TYPE_SITE_PLUGIN, type)) {
             m_workQueue.add(ID_UPDATE_SITE_PLUGINS);
+        } else if (OpenCms.getResourceManager().matchResourceType(TYPE_ATTRIBUTE_EDITOR_CONFIG, type)) {
+            m_workQueue.add(ID_UPDATE_ATTRIBUTE_EDITOR_CONFIGURATIONS);
         } else if (m_state.getFolderTypes().containsKey(rootPath)) {
             m_workQueue.add(ID_UPDATE_FOLDERTYPES);
         } else if (isMacroOrFlexFormatter(type, rootPath)) {
@@ -733,6 +758,40 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     private boolean isElementView(int type) {
 
         return type == m_elementViewType.getTypeId();
+    }
+
+    /**
+     * Loads all sitemap attribute editor configurations.
+     *
+     * @return the map of all sitemap attribute editor configurations, with their structure IDs as keys
+     */
+    private Map<CmsUUID, CmsSitemapAttributeEditorConfiguration> loadAttributeEditorConfigurations() {
+
+        Map<CmsUUID, CmsSitemapAttributeEditorConfiguration> result = new HashMap<>();
+        if (OpenCms.getResourceManager().hasResourceType(TYPE_ATTRIBUTE_EDITOR_CONFIG) && m_cms.existsResource("/")) {
+            try {
+                @SuppressWarnings("deprecation")
+                CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(
+                    OpenCms.getResourceManager().getResourceType(TYPE_ATTRIBUTE_EDITOR_CONFIG).getTypeId());
+                List<CmsResource> configResources = m_cms.readResources("/", filter);
+                for (CmsResource res : configResources) {
+                    try {
+                        CmsSitemapAttributeEditorConfiguration config = CmsSitemapAttributeEditorConfiguration.read(
+                            m_cms,
+                            res);
+                        if (config != null) {
+                            result.put(res.getStructureId(), config);
+                        }
+                    } catch (Exception e) {
+                        LOG.error(e.getMessage(), e);
+                    }
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return Collections.unmodifiableMap(result);
+
     }
 
     /**

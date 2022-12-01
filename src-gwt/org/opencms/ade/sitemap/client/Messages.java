@@ -262,6 +262,9 @@ public final class Messages {
     public static final String GUI_DND_ENTRY_TITLE_0 = "GUI_DND_ENTRY_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_ATTRIBUTES_0 = "GUI_EDIT_ATTRIBUTES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_CATEGORY_CAPTION_1 = "GUI_EDIT_CATEGORY_CAPTION_1";
 
     /** Message constant for key in the resource bundle. */

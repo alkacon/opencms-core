@@ -149,6 +149,9 @@ public class CmsADEConfigDataInternal {
     /** The set of ids of site plugins to add. */
     private Set<CmsUUID> m_addedPlugins;
 
+    /** Structure id of the sitemap attribute editor configuration file. */
+    private CmsUUID m_attributeEditorConfigId;
+
     /** The map of attributes. */
     private Map<String, AttributeValue> m_attributes = Collections.emptyMap();
 
@@ -241,6 +244,7 @@ public class CmsADEConfigDataInternal {
      * @param restriction the restrictions for the 'Add content' dialog
      * @param sharedSettingOverride shared setting override id, may be null
      * @param removeSharedSettingOverrides true if inherited shared setting overrides should be removed
+     * @param attributeEditorConfigId the structure id of the attribute editor configuration file
      * @param attributes the map of attributes
      */
     public CmsADEConfigDataInternal(
@@ -273,6 +277,7 @@ public class CmsADEConfigDataInternal {
         CmsAddContentRestriction restriction,
         CmsUUID sharedSettingOverride,
         boolean removeSharedSettingOverrides,
+        CmsUUID attributeEditorConfigId,
         Map<String, String> attributes) {
 
         m_cms = cms;
@@ -319,6 +324,7 @@ public class CmsADEConfigDataInternal {
 
         m_typeOrderingMode = orderingMode;
         m_addContentRestriction = restriction;
+        m_attributeEditorConfigId = attributeEditorConfigId;
     }
 
     /**
@@ -430,6 +436,15 @@ public class CmsADEConfigDataInternal {
     public Set<CmsUUID> getAddedPlugins() {
 
         return m_addedPlugins;
+    }
+
+    /**
+     * Gets the structure id of the sitemap attribute editor configuration
+     * @return the structure id of the sitemap attribute editor configuration
+     */
+    public CmsUUID getAttributeEditorConfigId() {
+
+        return m_attributeEditorConfigId;
     }
 
     /**

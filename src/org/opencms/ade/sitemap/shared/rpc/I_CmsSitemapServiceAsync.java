@@ -34,6 +34,7 @@ import org.opencms.ade.sitemap.shared.CmsLocaleComparePropertyData;
 import org.opencms.ade.sitemap.shared.CmsModelInfo;
 import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
+import org.opencms.ade.sitemap.shared.CmsSitemapAttributeData;
 import org.opencms.ade.sitemap.shared.CmsSitemapCategoryData;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
@@ -135,6 +136,14 @@ public interface I_CmsSitemapServiceAsync {
      * @param callback the callback
      */
     void disableModelPage(String baseUri, CmsUUID modelPageId, boolean disabled, AsyncCallback<Void> callback);
+
+    /**
+     * Loads the data for the attribute editor dialog and locks the sitemap configuration.
+     *
+     * @param rootId the root ID of the current sitemap
+     * @param callback the result callback
+     */
+    void editAttributeData(CmsUUID rootId, AsyncCallback<CmsSitemapAttributeData> callback);
 
     /**
      * Gets the alias import results from the server.<p>
@@ -286,6 +295,15 @@ public interface I_CmsSitemapServiceAsync {
         List<CmsPropertyModification> propertyChanges,
         boolean editedName,
         AsyncCallback<Void> callback);
+
+    /**
+     * Saves the data from the sitemap attribute editor dialog to the sitemap configuration.
+     *
+     * @param rootId the root ID
+     * @param attributes the sitemap attributes
+     * @param callback the callback for the result
+     */
+    void saveSitemapAttributes(CmsUUID rootId, Map<String, String> attributes, AsyncCallback<Void> callback);
 
     /**
      * Sets the default model page for the given sub-sitemap, returns the updated model info.<p>

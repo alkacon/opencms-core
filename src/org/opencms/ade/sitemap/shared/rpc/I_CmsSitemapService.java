@@ -34,6 +34,7 @@ import org.opencms.ade.sitemap.shared.CmsLocaleComparePropertyData;
 import org.opencms.ade.sitemap.shared.CmsModelInfo;
 import org.opencms.ade.sitemap.shared.CmsModelPageEntry;
 import org.opencms.ade.sitemap.shared.CmsNewResourceInfo;
+import org.opencms.ade.sitemap.shared.CmsSitemapAttributeData;
 import org.opencms.ade.sitemap.shared.CmsSitemapCategoryData;
 import org.opencms.ade.sitemap.shared.CmsSitemapChange;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
@@ -143,6 +144,15 @@ public interface I_CmsSitemapService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     void disableModelPage(String baseUri, CmsUUID modelPageId, boolean disabled) throws CmsRpcException;
+
+    /**
+     * Loads the data for the attribute editor dialog and locks the sitemap configuration.
+     *
+     * @param rootId the root ID of the current sitemap
+     * @return the data for the attribute editor dialog
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsSitemapAttributeData editAttributeData(CmsUUID rootId) throws CmsRpcException;
 
     /**
      * Gets the alias import results from the server.<p>
@@ -327,6 +337,15 @@ public interface I_CmsSitemapService extends RemoteService {
         List<CmsPropertyModification> propertyChanges,
         boolean editedName)
     throws CmsRpcException;
+
+    /**
+     * Saves the data from the sitemap attribute editor dialog to the sitemap configuration.
+     *
+     * @param rootId the root ID
+     * @param attributes the sitemap attributes
+     * @throws CmsRpcException if something goes wrong
+     */
+    void saveSitemapAttributes(CmsUUID rootId, Map<String, String> attributes) throws CmsRpcException;
 
     /**
      * Sets the default model page for the given sub-sitemap, returns the updated model info.<p>

@@ -42,7 +42,8 @@
             <xsd:element name="AddPlugins" type="OpenCmsPluginList" minOccurs="0" maxOccurs="1" />
             <xsd:element name="DiscardProperties" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Property" type="OpenCmsADEField" minOccurs="0" maxOccurs="unbounded" />
-            <xsd:element name="AddContentRestriction" type="OpenCmsAddContentRestriction" minOccurs="0" maxOccurs="unbounded" /> 
+            <xsd:element name="AddContentRestriction" type="OpenCmsAddContentRestriction" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="AttributeEditorConfig" type="OpenCmsVfsFile" minOccurs="0" /> 
             <xsd:element name="Attribute" type="OpenCmsParameter" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
@@ -71,7 +72,7 @@
                 <tab element="RemoveAllFunctions" name="TabFunctions" collapse="false" />
                 <tab element="DiscardProperties" name="TabPropertyConfiguration" collapse="false" />
                 <tab element="AddContentRestriction" name="TabRestrictions" collapse="false" />
-                <tab element="Attribute" name="TabAttributes" collapse="false" />
+                <tab element="AttributeEditorConfig" name="TabAttributes" collapse="false" />
             </tabs>
             <messagekeyhandler class="org.opencms.i18n.CmsReplaceMessageKeyPrefix" configuration="label.SitemapMasterConfiguration:label.SitemapConfiguration" />
         </xsd:appinfo>

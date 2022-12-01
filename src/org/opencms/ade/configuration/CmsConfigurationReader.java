@@ -139,6 +139,9 @@ public class CmsConfigurationReader {
     /** The Attribute node name. */
     public static final String N_ATTRIBUTE = "Attribute";
 
+    /** Node name for the attribute editor configuration reference. */
+    public static final String N_ATTRIBUTE_EDITOR_CONFIG = "AttributeEditorConfig";
+
     /** The create content locally node name. */
     public static final String N_CREATE_CONTENTS_LOCALLY = "CreateContentsLocally";
 
@@ -153,12 +156,6 @@ public class CmsConfigurationReader {
 
     /** The detail pages disabled node name. */
     public static final String N_DETAIL_PAGES_DISABLED = "DetailPagesDisabled";
-
-    /** The SharedSettingOverride node name. */
-    public static final String N_SHARED_SETTING_OVERRIDE = "SharedSettingOverride";
-
-    /** The RemoveAllSharedSettingOverrides node name. */
-    public static final String N_REMOVE_ALL_SHARED_SETTING_OVERRIDES = "RemoveAllSharedSettingOverrides";
 
     /** The disabled node name. */
     public static final String N_DISABLED = "Disabled";
@@ -268,6 +265,9 @@ public class CmsConfigurationReader {
     /** The RemoveAllPlugins node name. */
     public static final String N_REMOVE_ALL_PLUGINS = "RemoveAllPlugins";
 
+    /** The RemoveAllSharedSettingOverrides node name. */
+    public static final String N_REMOVE_ALL_SHARED_SETTING_OVERRIDES = "RemoveAllSharedSettingOverrides";
+
     /** Node name for removed formatters. */
     public static final String N_REMOVE_FORMATTER = "RemoveFormatter";
 
@@ -291,6 +291,9 @@ public class CmsConfigurationReader {
 
     /** The rule type node name. */
     public static final String N_RULE_TYPE = "RuleType";
+
+    /** The SharedSettingOverride node name. */
+    public static final String N_SHARED_SETTING_OVERRIDE = "SharedSettingOverride";
 
     /** The type node name. */
     public static final String N_TYPE = "Type";
@@ -638,6 +641,12 @@ public class CmsConfigurationReader {
             attributes.put(key, value);
         }
 
+        I_CmsXmlContentValueLocation attributeEditorConfigLoc = root.getSubValue(N_ATTRIBUTE_EDITOR_CONFIG);
+        CmsUUID attributeEditorConfigId = null;
+        if (attributeEditorConfigLoc != null) {
+            attributeEditorConfigId = attributeEditorConfigLoc.asId(m_cms);
+        }
+
         CmsAddContentRestriction addContentRestriction = CmsAddContentRestriction.read(
             m_cms,
             root,
@@ -673,6 +682,7 @@ public class CmsConfigurationReader {
             addContentRestriction,
             sharedSettingOverride,
             removeSharedSettingOverrides,
+            attributeEditorConfigId,
             attributes);
         return result;
     }
