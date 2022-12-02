@@ -956,7 +956,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
         if (m_widgetCollector == null) {
             // create an instance of the widget collector
-            m_widgetCollector = new CmsXmlContentWidgetVisitor(null, getElementLocale());
+            m_widgetCollector = new CmsXmlContentWidgetVisitor(getCms(), getElementLocale());
             m_content.visitAllValuesWith(m_widgetCollector);
         }
         return m_widgetCollector;
@@ -1971,8 +1971,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     if ((m_currentTab != null) && CmsStringUtil.isNotEmpty(getParamElementName())) {
                         // an element was modified, add JS to preselect tab
                         if (key.startsWith(getParamElementName()) && (selectedTabScript.length() == 0)) {
-                            selectedTabScript.append("<script >\n\txmlSelectedTab = ").append(
-                                m_currentTabIndex).append(";\n</script>\n");
+                            selectedTabScript.append("<script >\n\txmlSelectedTab = ").append(m_currentTabIndex).append(
+                                ";\n</script>\n");
                         }
                     }
 
