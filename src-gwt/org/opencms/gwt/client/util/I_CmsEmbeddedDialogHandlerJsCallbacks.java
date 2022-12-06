@@ -27,11 +27,12 @@
 
 package org.opencms.gwt.client.util;
 
-import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsType;
 
 /**
  * Interface used to export callback methods from CmsEmbeddedDialogHandler as JavaScript methods.
  */
+@JsType(isNative = true)
 public interface I_CmsEmbeddedDialogHandlerJsCallbacks {
 
     /**
@@ -39,7 +40,6 @@ public interface I_CmsEmbeddedDialogHandlerJsCallbacks {
      *
      * @param resources the resource ids to update as a ';' separated string.<p>
      */
-    @JsMethod
     public void finish(String resources);
 
     /**
@@ -48,7 +48,6 @@ public interface I_CmsEmbeddedDialogHandlerJsCallbacks {
      * @param sitePath the site path to the resource to display
      * @param serverLink the server link to the resource to display
      */
-    @JsMethod
     public void finishForProjectOrSiteChange(String sitePath, String serverLink);
 
     /**
@@ -56,13 +55,11 @@ public interface I_CmsEmbeddedDialogHandlerJsCallbacks {
      *
      * @param targetUri the target URI
      */
-    @JsMethod
     public void leavePage(String targetUri);
 
     /**
      * Reloads the current page.<p>
      */
-    @JsMethod
     public void reload();
 
     /**
@@ -70,7 +67,6 @@ public interface I_CmsEmbeddedDialogHandlerJsCallbacks {
      *
      * @param principle the principle to select
      */
-    @JsMethod
     public void selectString(String principle);
 
 }

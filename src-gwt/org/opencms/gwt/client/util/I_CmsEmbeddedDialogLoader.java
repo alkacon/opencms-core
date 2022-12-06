@@ -27,11 +27,11 @@
 
 package org.opencms.gwt.client.util;
 
-import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsType;
 
+@JsType(isNative = true)
 public interface I_CmsEmbeddedDialogLoader {
 
-    @JsMethod
     void loadDialog(String dialogInfoJson);
 
 }
