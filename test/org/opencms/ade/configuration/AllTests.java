@@ -59,6 +59,7 @@ public final class AllTests {
         suite.addTest(TestConfig.suite());
         suite.addTest(TestLiveConfig.suite());
         suite.addTest(TestFormatterConfiguration.suite());
+        suite.addTest(TestBaseModule.suite());
         //$JUnit-END$
         return suite;
     }
