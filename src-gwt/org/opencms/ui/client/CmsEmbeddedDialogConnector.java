@@ -84,6 +84,8 @@ implements I_CmsEmbeddedDialogClientRPC, I_CmsEmbeddedDialogLoader {
     public void loadDialog(String dialogInfo) {
 
         getRpcProxy(I_CmsEmbeddingServerRpc.class).loadDialog(dialogInfo);
+        // in Chrome, the RPC request does not get sent until the user moves the mouse unless we manually trigger a heartbeat request
+        getConnection().getHeartbeat().send();
     }
 
     /**
@@ -110,7 +112,5 @@ implements I_CmsEmbeddedDialogClientRPC, I_CmsEmbeddedDialogLoader {
     protected void extend(ServerConnector target) {
 
         registerRpc(I_CmsEmbeddedDialogClientRPC.class, this);
-        // If we don't do this, Vaadin shows an empty tooltip box in the top-left corner. I have no idea why.
-        // getConnection().getVTooltip().hide();
     }
 }
