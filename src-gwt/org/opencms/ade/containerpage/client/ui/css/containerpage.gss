@@ -89,7 +89,7 @@ div.expiredListElementOverlay{
 	padding: 0px;
 	margin: 0px;
 	position: absolute;
-	z-index: 1;
+	z-index: 99990;
 }
 
 .expired div.expiredOverlay, .hiddenElement div.hiddenElementOverlay, div.expiredListElementOverlay {
