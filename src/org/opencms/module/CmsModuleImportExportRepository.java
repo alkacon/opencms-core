@@ -72,6 +72,50 @@ import com.google.common.collect.Sets;
  */
 public class CmsModuleImportExportRepository {
 
+    /**
+     * Holds exported module data and a modification date.
+     */
+    public static class ModuleExportData {
+
+        /** The file content. */
+        private byte[] m_content;
+
+        /** The modification date. */
+        private long m_dateLastModified;
+
+        /**
+         * Creates a new instance.
+         *
+         * @param content the exported data
+         * @param dateLastModified the modification date
+         */
+        public ModuleExportData(byte[] content, long dateLastModified) {
+
+            m_content = content;
+            m_dateLastModified = dateLastModified;
+        }
+
+        /**
+         * Gets the exported data.
+         *
+         * @return the exported data
+         */
+        public byte[] getContent() {
+
+            return m_content;
+        }
+
+        /**
+         * Gets the last modification date.
+         *
+         * @return the last modification date
+         */
+        public long getDateLastModified() {
+
+            return m_dateLastModified;
+        }
+    }
+
     /** Export folder path. */
     public static final String EXPORT_FOLDER_PATH = "packages/_export";
 
@@ -141,7 +185,6 @@ public class CmsModuleImportExportRepository {
         } finally {
             m_moduleLog.log(moduleName, Action.deleteModule, ok);
         }
-
     }
 
     /**
@@ -155,7 +198,7 @@ public class CmsModuleImportExportRepository {
      * @throws CmsException if something goes wrong
      */
     @SuppressWarnings("resource")
-    public synchronized byte[] getExportedModuleData(String virtualModuleFileName, CmsProject project)
+    public synchronized ModuleExportData getExportedModuleData(String virtualModuleFileName, CmsProject project)
     throws CmsException {
 
         CmsModule module = getModuleForFileName(virtualModuleFileName);
@@ -204,7 +247,7 @@ public class CmsModuleImportExportRepository {
                 LOG.info("Created module export " + moduleFilePath);
             }
             byte[] result = CmsFileUtil.readFully(new FileInputStream(moduleFilePath));
-            return result;
+            return new ModuleExportData(result, new File(moduleFilePath).lastModified());
         } catch (IOException e) {
             LOG.error(e.getLocalizedMessage(), e);
             return null;

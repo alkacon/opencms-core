@@ -45,6 +45,7 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
+import org.opencms.module.CmsModuleImportExportRepository;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -241,10 +242,11 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
                 if (cms.getRequestContext().getAttribute(CmsJlanDiskInterface.NO_FILESIZE_REQUIRED) == null) {
                     // we *do* require the file size, so we need to get the module data
                     LOG.info("Getting data for " + resourcepath);
-                    byte[] data = OpenCms.getModuleManager().getImportExportRepository().getExportedModuleData(
+                    CmsModuleImportExportRepository.ModuleExportData data = OpenCms.getModuleManager().getImportExportRepository().getExportedModuleData(
                         CmsResource.getName(resourcepath),
                         cms.getRequestContext().getCurrentProject());
-                    resultFile.setContents(data);
+                    resultFile.setContents(data.getContent());
+                    resultFile.setDateLastModified(data.getDateLastModified());
                 }
                 return resultFile;
             }
