@@ -43,6 +43,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections4.EnumerationUtils;
 import org.apache.commons.logging.Log;
 import org.apache.jackrabbit.webdav.DavLocatorFactory;
 import org.apache.jackrabbit.webdav.DavResource;
@@ -80,6 +81,9 @@ public class CmsJackrabbitWebdavServlet extends AbstractWebdavServlet {
 
     /** The lock manager. */
     private LockManager m_lockManager = new SimpleLockManager();
+
+    /** The repository. */
+    private A_CmsRepository m_repository;
 
     /**
      * @see org.apache.jackrabbit.webdav.server.AbstractWebdavServlet#getDavSessionProvider()
@@ -145,6 +149,7 @@ public class CmsJackrabbitWebdavServlet extends AbstractWebdavServlet {
         });
         String repName = config.getInitParameter(CmsDavUtil.PARAM_REPOSITORY);
         A_CmsRepository repository = OpenCms.getRepositoryManager().getRepository(repName, A_CmsRepository.class);
+        m_repository = repository;
         m_sessionProvider.setRepository(repository);
         m_resourceFactory.setLockManager(m_lockManager);
     }
@@ -210,6 +215,17 @@ public class CmsJackrabbitWebdavServlet extends AbstractWebdavServlet {
     throws ServletException, IOException {
 
         LOG.debug("WEBDAV: " + request.getMethod() + " " + request.getRequestURI());
+        //printHeaderInfo(request);
+        if (Boolean.parseBoolean(m_repository.getConfiguration().getString("failOnRangeHeader", "false"))) {
+            // The MacOS WebDav client uses range requests and seems to assume they work even if the server sends a HTTP status of 200
+            // in response (rather than 206 Partial Content). This can cause big files to be corrupted. To prevent this,
+            // we send an empty response with status 400 when detecting a range request.
+            String range = request.getHeader("range");
+            if (range != null) {
+                response.setStatus(400);
+                return;
+            }
+        }
         try {
             super.service(request, response);
         } catch (ServletException | IOException e) {
@@ -218,6 +234,21 @@ public class CmsJackrabbitWebdavServlet extends AbstractWebdavServlet {
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
             throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Debug method for printing header information.
+     *
+     * @param request the current request
+     */
+    private void printHeaderInfo(HttpServletRequest request) {
+
+        System.out.println("--------------- " + request.getMethod() + " " + request.getRequestURI());
+        Enumeration<String> hnames = request.getHeaderNames();
+        while (hnames.hasMoreElements()) {
+            String name = hnames.nextElement();
+            System.out.println(name + ": " + EnumerationUtils.toList(request.getHeaders(name)));
         }
     }
 
