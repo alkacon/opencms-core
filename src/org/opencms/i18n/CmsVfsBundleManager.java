@@ -58,7 +58,7 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
     /**
      * Data holder for a base name and locale of a message bundle.<p>
      */
-    private class NameAndLocale {
+    public static class NameAndLocale {
 
         /** The locale. */
         private Locale m_locale;
@@ -135,6 +135,31 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
             new int[] {I_CmsEventListener.EVENT_PUBLISH_PROJECT, I_CmsEventListener.EVENT_CLEAR_CACHES});
         // immediately load all bundles for the first time
         reload(true);
+    }
+
+    /**
+     * Extracts the locale and base name from a resource's file name.<p>
+     *
+     * @param bundleRes the resource for which to get the base name and locale
+     * @return a bean containing the base name and locale
+     */
+    public static NameAndLocale getNameAndLocale(CmsResource bundleRes) {
+
+        String fileName = bundleRes.getName();
+        if (TYPE_PROPERTIES_BUNDLE.equals(OpenCms.getResourceManager().getResourceType(bundleRes).getTypeName())) {
+            String localeSuffix = CmsStringUtil.getLocaleSuffixForName(fileName);
+            if (localeSuffix == null) {
+                return new NameAndLocale(fileName, null);
+            } else {
+                String base = fileName.substring(
+                    0,
+                    fileName.lastIndexOf(localeSuffix) - (1 /* cut off trailing underscore, too*/));
+                Locale locale = CmsLocaleManager.getLocale(localeSuffix);
+                return new NameAndLocale(base, locale);
+            }
+        } else {
+            return new NameAndLocale(fileName, null);
+        }
     }
 
     /**
@@ -327,31 +352,6 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
                 CmsVfsResourceBundle.TYPE_XML);
             CmsVfsResourceBundle bundle = new CmsVfsResourceBundle(params);
             addBundle(name, locale, bundle);
-        }
-    }
-
-    /**
-     * Extracts the locale and base name from a resource's file name.<p>
-     *
-     * @param bundleRes the resource for which to get the base name and locale
-     * @return a bean containing the base name and locale
-     */
-    private NameAndLocale getNameAndLocale(CmsResource bundleRes) {
-
-        String fileName = bundleRes.getName();
-        if (TYPE_PROPERTIES_BUNDLE.equals(OpenCms.getResourceManager().getResourceType(bundleRes).getTypeName())) {
-            String localeSuffix = CmsStringUtil.getLocaleSuffixForName(fileName);
-            if (localeSuffix == null) {
-                return new NameAndLocale(fileName, null);
-            } else {
-                String base = fileName.substring(
-                    0,
-                    fileName.lastIndexOf(localeSuffix) - (1 /* cut off trailing underscore, too*/));
-                Locale locale = CmsLocaleManager.getLocale(localeSuffix);
-                return new NameAndLocale(base, locale);
-            }
-        } else {
-            return new NameAndLocale(fileName, null);
         }
     }
 

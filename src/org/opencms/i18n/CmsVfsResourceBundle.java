@@ -165,6 +165,16 @@ public class CmsVfsResourceBundle extends ResourceBundle implements I_CmsResourc
     }
 
     /**
+     * Gets the bundle parameters.
+     *
+     * @return the bundle parameters
+     */
+    public CmsVfsBundleParameters getParameters() {
+
+        return m_parameters;
+    }
+
+    /**
      * @see org.opencms.i18n.I_CmsResourceBundle#setLocale(java.util.Locale)
      */
     public void setLocale(Locale locale) {

@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -95,6 +96,9 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
         /** Cache for sitemap configurations. */
         private Map<String, CmsADEConfigData> m_configCache = new HashMap<>();
 
+        /** Map of attributes. */
+        private Map<String, Object> m_attributes = new HashMap<>();
+
         /** Buffer for log messages to write at the end of the request. */
         private CmsDuplicateRemovingLogBuffer m_logBuffer = new CmsDuplicateRemovingLogBuffer();
 
@@ -119,6 +123,29 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
         }
 
         /**
+         * Gets the attribute for the given key.
+         *
+         * @param key the key
+         * @return the attribute
+         */
+        public Object getAttribute(String key) {
+
+            return m_attributes.get(key);
+        }
+
+        /**
+         * Gets the stored attribute for the given key, or lazily initializes it with the given provider function if it doesn't exist yet.
+         *
+         * @param key the key
+         * @param provider the function to lazily initialize the entry
+         * @return the attribute
+         */
+        public Object getAttribute(String key, Function<String, Object> provider) {
+
+            return m_attributes.computeIfAbsent(key, provider);
+        }
+
+        /**
          * Gets the cached sitemap configuration data.
          *
          * @param key the key
@@ -127,6 +154,17 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
         public CmsADEConfigData getCachedConfig(String key) {
 
             return m_configCache.get(key);
+        }
+
+        /**
+         * Sets the attribute for the given key.
+         *
+         * @param key the key
+         * @param value the attribute value
+         */
+        public void setAttribute(String key, Object value) {
+
+            m_attributes.put(key, value);
         }
 
         /**

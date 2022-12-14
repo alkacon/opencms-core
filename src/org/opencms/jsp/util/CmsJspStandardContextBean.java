@@ -53,6 +53,7 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsLocaleGroupService;
+import org.opencms.i18n.CmsMessageToBundleIndex;
 import org.opencms.jsp.CmsJspBean;
 import org.opencms.jsp.CmsJspResourceWrapper;
 import org.opencms.jsp.CmsJspTagContainer;
@@ -66,6 +67,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
+import org.opencms.main.OpenCmsServlet;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.search.galleries.CmsGalleryNameMacroResolver;
@@ -1057,7 +1059,8 @@ public final class CmsJspStandardContextBean {
         String keyToFind = CmsADEConfigData.ATTR_BINARY_UPLOAD_TARGET;
         String baseValue = null;
         if (content != null) {
-            for (CmsJspContentAccessValueWrapper wrapper : content.getValueList().get(CmsConfigParserUtils.N_PARAMETER)) {
+            for (CmsJspContentAccessValueWrapper wrapper : content.getValueList().get(
+                CmsConfigParserUtils.N_PARAMETER)) {
                 String paramKey = wrapper.getValue().get(CmsConfigParserUtils.N_KEY).getToString();
                 String paramValue = wrapper.getValue().get(CmsConfigParserUtils.N_VALUE).getToString();
                 if (paramKey.equals(keyToFind)) {
@@ -1106,6 +1109,46 @@ public final class CmsJspStandardContextBean {
 
         LOG.debug("Final value for upload folder : " + result);
         return result;
+    }
+
+    /**
+     * Gets the root path for the VFS-based message bundle containing the given message key.
+     *
+     * <p>If no VFS-based message bundle contains the given key, null is returned. If multiple message bundles contain it,
+     * one of them is arbitrarily chosen (but a warning is logged).
+     *
+     * <p>Note: This uses the online (published) state of message bundles, so if you have unpublished bundle changes, they will not be reflected in
+     * the result.
+     *
+     * @param messageKey the message key
+     * @return the root path of the bundle containing the message key
+     */
+    public String getBundlePath(String messageKey) {
+
+        CmsObject cms = getCmsObject();
+        try {
+            CmsMessageToBundleIndex bundleIndex = null;
+            OpenCmsServlet.RequestCache context = OpenCmsServlet.getRequestCache();
+            if (context != null) {
+                bundleIndex = (CmsMessageToBundleIndex)context.getAttribute(
+                    CmsMessageToBundleIndex.class.getName() + "_" + cms.getRequestContext().getLocale(),
+                    k -> {
+                        try {
+                            CmsMessageToBundleIndex result = CmsMessageToBundleIndex.read(getCmsObject());
+                            return result;
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+
+            } else {
+                bundleIndex = CmsMessageToBundleIndex.read(getCmsObject());
+            }
+            return bundleIndex.getBundlePathForKey(messageKey);
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return null;
+        }
     }
 
     /**
