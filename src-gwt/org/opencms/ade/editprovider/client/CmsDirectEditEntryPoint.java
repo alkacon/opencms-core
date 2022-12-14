@@ -32,6 +32,8 @@ import org.opencms.gwt.client.CmsBroadcastTimer;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsQuickLauncher;
+import org.opencms.gwt.client.ui.CmsQuickLauncher.A_QuickLaunchHandler;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarContextButton;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
@@ -43,6 +45,8 @@ import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.gwt.shared.CmsGwtConstants.QuickLaunch;
+import org.opencms.gwt.shared.CmsQuickLaunchParams;
 
 import java.util.HashMap;
 import java.util.List;
@@ -199,6 +203,9 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
         publish.addClickHandler(clickHandler);
         m_toolbar.addLeft(publish);
 
+        CmsQuickLauncher ql = new CmsQuickLauncher();
+        m_toolbar.addRight(ql);
+
         CmsToolbarSelectionButton selection = new CmsToolbarSelectionButton(handler);
         selection.setActive(initiallyVisible);
         selection.addClickHandler(clickHandler);
@@ -208,6 +215,18 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
         contextMenuButton.addClickHandler(clickHandler);
         m_toolbar.addRight(contextMenuButton);
         handler.setContextMenuButton(contextMenuButton);
+        m_toolbar.setQuickLaunchHandler(new A_QuickLaunchHandler() {
+
+            public CmsQuickLaunchParams getParameters() {
+
+                return new CmsQuickLaunchParams(
+                    QuickLaunch.CONTEXT_PAGE,
+                    CmsCoreProvider.get().getStructureId(),
+                    null,
+                    null,
+                    CmsCoreProvider.get().getUri());
+            }
+        });
 
     }
 
