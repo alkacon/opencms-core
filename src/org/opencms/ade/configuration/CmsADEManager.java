@@ -636,7 +636,7 @@ public class CmsADEManager {
         if (mainFormatter != null) {
             for (Entry<String, CmsXmlContentProperty> entry : mainFormatter.getSettings(config).entrySet()) {
                 Visibility visibility = entry.getValue().getVisibility(defaultVisibility);
-                if (!(visibility.equals(Visibility.parentShared) || visibility.equals(Visibility.parentIndividual))) {
+                if (visibility.isVisibleOnElement()) {
                     result.put(entry.getKey(), entry.getValue());
                 }
             }

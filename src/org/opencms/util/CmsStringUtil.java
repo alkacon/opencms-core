@@ -1656,6 +1656,9 @@ public final class CmsStringUtil {
      */
     public static String substitute(Pattern pattern, String text, I_CmsRegexSubstitution sub) {
 
+        if (text == null) {
+            return null;
+        }
         StringBuffer buffer = new StringBuffer();
         Matcher matcher = pattern.matcher(text);
         while (matcher.find()) {

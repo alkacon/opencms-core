@@ -45,6 +45,7 @@ public class CmsXmlContentProperty implements Serializable {
 
     /** Type constants. */
     public enum PropType {
+
         /** Type constant string. */
         string,
         /** Type constant VFS list. */
@@ -82,7 +83,19 @@ public class CmsXmlContentProperty implements Serializable {
         parentIndividual,
 
         /** Visible only on list parent, as shared setting. */
-        parentShared
+        parentShared;
+
+        /**
+         * True if it should be visible on the element itself.
+         *
+         * @return true if visible on the element
+         **/
+        public boolean isVisibleOnElement() {
+
+            return (this == Visibility.element)
+                || (this == elementAndParentIndividual)
+                || (this == elementAndParentShared);
+        }
     }
 
     /** XML node name constants. */

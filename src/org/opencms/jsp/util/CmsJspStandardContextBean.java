@@ -49,11 +49,15 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsLocaleGroupService;
 import org.opencms.i18n.CmsMessageToBundleIndex;
+import org.opencms.i18n.CmsMessages;
+import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.jsp.CmsJspBean;
 import org.opencms.jsp.CmsJspResourceWrapper;
 import org.opencms.jsp.CmsJspTagContainer;
@@ -79,6 +83,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.galleries.CmsAjaxDownloadGallery;
 import org.opencms.workplace.galleries.CmsAjaxImageGallery;
+import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -1123,7 +1128,7 @@ public final class CmsJspStandardContextBean {
      * @param messageKey the message key
      * @return the root path of the bundle containing the message key
      */
-    public String getBundlePath(String messageKey) {
+    public String getBundleRootPath(String messageKey) {
 
         CmsObject cms = getCmsObject();
         try {
@@ -1346,6 +1351,59 @@ public final class CmsJspStandardContextBean {
     public String getEnableReload() {
 
         return getReloadMarker();
+    }
+
+    /**
+     * Provides access to the setting definitions of a formatter for use in JSPs.
+     *
+     * @param formatterKey the key of the formatter for which we want the definitions
+     *
+     * @return the formatter setting definitions
+     */
+    public List<CmsSettingDefinitionWrapper> getFormatterSettings(String formatterKey) {
+
+        CmsObject cms = m_cms;
+        CmsADEConfigData config = m_config;
+        List<CmsSettingDefinitionWrapper> result = new ArrayList<>();
+        I_CmsFormatterBean formatter = config.findFormatter(formatterKey);
+        if (formatter == null) {
+            LOG.warn("getFormatterSettings couldn't find formatter with key " + formatterKey);
+            return Collections.emptyList();
+        }
+        Map<String, CmsXmlContentProperty> settingDefs = formatter.getSettings(config);
+
+        // we don't use the CmsGalleryNameMacroResolver that the settings dialog uses because we can't use the special macros anyway: they use information from the content/page.
+        final CmsMacroResolver resolver = new CmsMacroResolver();
+        resolver.setCmsObject(cms);
+        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        CmsMultiMessages messages = new CmsMultiMessages(wpLocale);
+        messages.addMessages(OpenCms.getWorkplaceManager().getMessages(wpLocale));
+        for (String type : formatter.getResourceTypeNames()) {
+            try {
+                I_CmsResourceType typeObj = OpenCms.getResourceManager().getResourceType(type);
+                String schema = typeObj.getConfiguration().getString(
+                    CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA,
+                    null);
+                if (schema != null) {
+                    CmsXmlContentDefinition contentDef = CmsXmlContentDefinition.unmarshal(cms, schema);
+                    CmsMessages schemaMessages = contentDef.getContentHandler().getMessages(wpLocale);
+                    messages.addMessages(schemaMessages);
+
+                }
+            } catch (Exception e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+        }
+        resolver.setCmsObject(cms);
+        resolver.setKeepEmptyMacros(true);
+        resolver.setMessages(messages);
+
+        for (Map.Entry<String, CmsXmlContentProperty> entry : settingDefs.entrySet()) {
+            CmsSettingDefinitionWrapper sd = new CmsSettingDefinitionWrapper(entry.getValue(), resolver);
+            result.add(sd);
+        }
+        return result;
+
     }
 
     /**
