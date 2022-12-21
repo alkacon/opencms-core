@@ -87,6 +87,7 @@ import com.vaadin.ui.UI;
 import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.Property;
 import com.vaadin.v7.data.util.IndexedContainer;
+import com.vaadin.v7.ui.AbstractTextField;
 import com.vaadin.v7.ui.VerticalLayout;
 
 /**
@@ -96,6 +97,9 @@ import com.vaadin.v7.ui.VerticalLayout;
 public class CmsMessageBundleEditor
 implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_EntryChangeListener, I_ItemDeletionListener,
 I_OptionListener, I_CmsHasShortcutActions {
+
+    /** Name of the keyfilter parameter. */
+    public static final String PARAM_KEYFILTER = "keyfilter";
 
     /** Used to implement {@link java.io.Serializable}. */
     private static final long serialVersionUID = 5366955716462191580L;
@@ -427,6 +431,8 @@ I_OptionListener, I_CmsHasShortcutActions {
             context.setAppContent(main);
 
             adjustFocus();
+
+            initKeyFilter(params.get(PARAM_KEYFILTER));
 
             if (m_model.getSwitchedLocaleOnOpening()) {
                 CmsMessageBundleEditorTypes.showWarning(
@@ -990,6 +996,17 @@ I_OptionListener, I_CmsHasShortcutActions {
         defaultFieldFactory.registerKeyChangeListener(this);
         m_fieldFactories.put(CmsMessageBundleEditorTypes.EditMode.DEFAULT, defaultFieldFactory);
 
+    }
+
+    /**
+     * Initializes the key filter.
+     * @param the value to set as filter
+     */
+    private void initKeyFilter(String keyFilter) {
+
+        if (null != keyFilter) {
+            ((AbstractTextField)m_table.getFilterField(TableProperty.KEY)).setValue(keyFilter);
+        }
     }
 
     /**
