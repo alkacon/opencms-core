@@ -58,6 +58,8 @@ import org.opencms.i18n.CmsLocaleGroupService;
 import org.opencms.i18n.CmsMessageToBundleIndex;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
+import org.opencms.i18n.CmsResourceBundleLoader;
+import org.opencms.i18n.CmsVfsResourceBundle;
 import org.opencms.jsp.CmsJspBean;
 import org.opencms.jsp.CmsJspResourceWrapper;
 import org.opencms.jsp.CmsJspTagContainer;
@@ -76,6 +78,11 @@ import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.search.galleries.CmsGalleryNameMacroResolver;
 import org.opencms.site.CmsSite;
+import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.A_CmsWorkplaceApp;
+import org.opencms.ui.apps.CmsEditor;
+import org.opencms.ui.apps.CmsEditorConfiguration;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditor;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
@@ -110,6 +117,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -1114,6 +1122,80 @@ public final class CmsJspStandardContextBean {
 
         LOG.debug("Final value for upload folder : " + result);
         return result;
+    }
+
+    /**
+     * Generates a link to the bundle editor to edit the provided message key.
+     * The back link for the editor is the current uri.
+     *
+     * If the bundle for the key could not be found, <code>null</code> is returned.
+     *
+     * @param messageKey the message key to open the bundle editor for.
+     *
+     * @return a link to the bundle editor for editing the provided key, or <code>null</code> if the bundle for the key could not be found.
+     */
+    public String getBundleEditorLink(String messageKey) {
+
+        return getBundleEditorLink(messageKey, null);
+    }
+
+    /**
+     * Generates a link to the bundle editor to edit the provided message key.
+     * The back link for the editor is the current uri.
+     *
+     * If the bundle resource for the key could not be found, <code>null</code> is returned.
+     *
+     * @param messageKey the message key to open the bundle editor for.
+     * @param bundleName the name of the bundle to search the key in. If <code>null</code> the bundle is detected automatically.
+     *
+     * @return a link to the bundle editor for editing the provided key, or <code>null</code> if the bundle for the key could not be found.
+     */
+    public String getBundleEditorLink(String messageKey, String bundleName) {
+
+        if (!m_cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            String filePath = null;
+            if (null == bundleName) {
+                filePath = getBundleRootPath(messageKey);
+            } else {
+                ResourceBundle bundle = CmsResourceBundleLoader.getBundle(
+                    bundleName,
+                    m_cms.getRequestContext().getLocale());
+                if (bundle instanceof CmsVfsResourceBundle) {
+                    CmsVfsResourceBundle vfsBundle = (CmsVfsResourceBundle)bundle;
+                    filePath = vfsBundle.getParameters().getBasePath();
+                }
+            }
+            try {
+                if (null == filePath) {
+                    throw new Exception("Could not determine the VFS root path of the bundle.");
+                }
+                CmsUUID structureId = m_cms.readResource(filePath).getStructureId();
+                String backLink = OpenCms.getLinkManager().getServerLink(m_cms, m_cms.getRequestContext().getUri());
+                String appState = CmsEditor.getEditState(structureId, false, backLink);
+                if (null != messageKey) {
+                    appState = A_CmsWorkplaceApp.addParamToState(
+                        appState,
+                        CmsMessageBundleEditor.PARAM_KEYFILTER,
+                        messageKey);
+                }
+                String link = CmsVaadinUtils.getWorkplaceLink(CmsEditorConfiguration.APP_ID, appState);
+                return link;
+            } catch (Throwable t) {
+                if (LOG.isWarnEnabled()) {
+                    String message = "Failed to open bundle editor for key '"
+                        + messageKey
+                        + "' and bundle with name '"
+                        + bundleName
+                        + "'.";
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(message, t);
+                    } else {
+                        LOG.warn(message);
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     /**
