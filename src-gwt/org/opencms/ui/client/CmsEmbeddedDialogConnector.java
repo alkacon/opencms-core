@@ -27,6 +27,7 @@
 
 package org.opencms.ui.client;
 
+import org.opencms.gwt.client.util.CmsEmbeddedDialogFrameWrapper;
 import org.opencms.gwt.client.util.I_CmsEmbeddedDialogLoader;
 import org.opencms.ui.components.extensions.CmsEmbeddedDialogExtension;
 import org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC;
@@ -65,9 +66,12 @@ implements I_CmsEmbeddedDialogClientRPC, I_CmsEmbeddedDialogLoader {
     /**
      * @see org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC#initServerRpc()
      */
-    public native void initServerRpc() /*-{
-        $wnd.parent.org.opencms.gwt.client.util.CmsEmbeddedDialogFrame.get().installEmbeddedDialogLoader(this);
-    }-*/;
+    public void initServerRpc() {
+
+        // we only should get here if there *is* an embedded frame in the window
+        CmsEmbeddedDialogFrameWrapper parentWindow = CmsEmbeddedDialogFrameWrapper.parent;
+        parentWindow.embeddedDialogFrameInstance.installEmbeddedDialogLoader(this);
+    }
 
     /**
      * @see org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC#leavePage(java.lang.String)

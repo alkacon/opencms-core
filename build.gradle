@@ -589,7 +589,6 @@ gwtModuleNames.split(',').each{ gwtModule ->
                     buildDir,
                     '-logLevel',
                     'ERROR',
-                    '-generateJsInteropExports',
                     '-localWorkers',
                     '2',
                     '-style',
@@ -609,7 +608,6 @@ gwtModuleNames.split(',').each{ gwtModule ->
                         buildDir,
                         '-logLevel',
                         'ERROR',
-                        '-generateJsInteropExports',
                         '-localWorkers',
                         '2',
                         '-style',
@@ -1645,3 +1643,4 @@ tasks.withType(Javadoc) {
 tasks.withType(CopySpec){
     duplicatesStrategy 'fail'
 }
+

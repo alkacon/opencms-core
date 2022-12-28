@@ -34,19 +34,13 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.RootPanel;
 
-import jsinterop.annotations.JsType;
-
 /**
  * Singleton that creates and manages access to the shared iframe used for embedded Vaadin dialogs, mainly in the page editor.
  */
-@JsType
-public class CmsEmbeddedDialogFrame {
-
-    /** The singleton instance. */
-    private static CmsEmbeddedDialogFrame m_instance = new CmsEmbeddedDialogFrame();
+public class CmsEmbeddedDialogFrame implements I_CmsEmbeddedDialogFrame {
 
     /** The loader used to load dialogs - this is set by the Javascript code in the iframe. */
-    private I_CmsEmbeddedDialogLoader m_loader;
+    private I_CmsEmbeddedDialogLoader m_loader = null;
 
     /** The actual iframe. */
     private CmsIFrame m_frame;
@@ -56,7 +50,6 @@ public class CmsEmbeddedDialogFrame {
      */
     protected CmsEmbeddedDialogFrame() {
 
-        // do nothing
     }
 
     /**
@@ -66,7 +59,12 @@ public class CmsEmbeddedDialogFrame {
      */
     public static CmsEmbeddedDialogFrame get() {
 
-        return m_instance;
+        //CmsEmbeddedDialogFrameWrapper wrapper = CmsEmbeddedDialogFrameWrapper.window;
+        CmsEmbeddedDialogFrameWrapper currentWindow = CmsEmbeddedDialogFrameWrapper.window;
+        if (currentWindow.embeddedDialogFrameInstance == null) {
+            currentWindow.embeddedDialogFrameInstance = new CmsEmbeddedDialogFrame();
+        }
+        return currentWindow.embeddedDialogFrameInstance;
     }
 
     /**
@@ -87,6 +85,7 @@ public class CmsEmbeddedDialogFrame {
      *
      * @param loader the class used to load dialogs in the iframe itself
      */
+    @Override
     public void installEmbeddedDialogLoader(I_CmsEmbeddedDialogLoader loader) {
 
         m_loader = loader;
@@ -143,7 +142,7 @@ public class CmsEmbeddedDialogFrame {
                 waitUntilReady(action);
             }
         };
-        timer.schedule(100);
+        timer.schedule(200);
     }
 
     /**
@@ -155,6 +154,11 @@ public class CmsEmbeddedDialogFrame {
         $wnd.frames.embeddedDialogFrame.connector = handler;
     }-*/;
 
+    /**
+     * Shows / hides the frame.
+     *
+     * @param visible true if the frame should be shown
+     */
     private void setFrameVisible(boolean visible) {
 
         if (m_frame != null) {
