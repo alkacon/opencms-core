@@ -27,19 +27,23 @@
 
 package org.opencms.jsp.util;
 
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentProperty.Visibility;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.logging.Log;
 
 /**
  * Wrapper used to access element setting definition information in JSP code.
@@ -107,6 +111,9 @@ public class CmsSettingDefinitionWrapper {
         }
 
     }
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSettingDefinitionWrapper.class);
 
     /** Pattern to match message key macros. */
     private static final Pattern PATTERN_MESSAGE = Pattern.compile("^%\\(key\\.([^\\)]++)\\)$");
@@ -205,6 +212,26 @@ public class CmsSettingDefinitionWrapper {
     public String getDisplayNameKey() {
 
         return getKey(m_definitionWithKeys.getNiceName());
+    }
+
+    /**
+     * Tries to interpret the widget configuration as a select option configuration and returns the list of select options if this succeeds, and null otherwise.
+     *
+     * @return the list of parsed select options, or null if the widget configuration couldn't be interpreted that way
+     */
+    public List<CmsSelectWidgetOption> getParsedSelectOptions() {
+
+        String widgetConfig = getWidgetConfig();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(widgetConfig)) {
+            // passing an empty/null configuration to parseOptions would result in an empty list, not null, and we want null here
+            return null;
+        }
+        try {
+            return org.opencms.widgets.CmsSelectWidgetOption.parseOptions(widgetConfig);
+        } catch (Exception e) {
+            LOG.info(e.getLocalizedMessage(), e);
+            return null;
+        }
     }
 
     /**
