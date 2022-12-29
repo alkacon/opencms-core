@@ -331,7 +331,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
                     if (description == null) {
                         description = formatterConfig.getLabel();
                     }
-                    tooltips.put(formatterConfig.getId(), new Data(help, description, true));
+                    tooltips.put(formatterConfig.getKeyOrId(), new Data(help, description, true));
                 }
                 Supplier<CmsFieldTooltip.Data> tooltipProvider = new Supplier<CmsFieldTooltip.Data>() {
 
