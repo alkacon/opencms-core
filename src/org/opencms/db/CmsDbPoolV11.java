@@ -35,8 +35,12 @@ import org.opencms.util.CmsStringUtil;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLTimeoutException;
+import java.sql.SQLTransientConnectionException;
 import java.util.Map;
 import java.util.Properties;
+
+import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Maps;
 import com.zaxxer.hikari.HikariConfig;
@@ -101,6 +105,9 @@ public final class CmsDbPoolV11 {
     /** The prefix used for opencms JDBC pools. */
     public static final String OPENCMS_URL_PREFIX = "opencms:";
 
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDbPoolV11.class);
+
     /** Map of default test queries. */
     private static Map<String, String> testQueries = Maps.newHashMap();
 
@@ -127,6 +134,7 @@ public final class CmsDbPoolV11 {
      */
     public CmsDbPoolV11(CmsParameterConfiguration config, String key)
     throws Exception {
+
         HikariConfig hikariConf = createHikariConfig(config, key);
         m_poolUrl = OPENCMS_URL_PREFIX + key;
         m_dataSource = new HikariDataSource(hikariConf);
@@ -298,7 +306,12 @@ public final class CmsDbPoolV11 {
      */
     public Connection getConnection() throws SQLException {
 
-        return m_dataSource.getConnection();
+        try {
+            return m_dataSource.getConnection();
+        } catch (SQLTransientConnectionException | SQLTimeoutException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            throw e;
+        }
     }
 
     /**
