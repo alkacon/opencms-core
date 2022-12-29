@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.util;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -36,11 +37,15 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentProperty.Visibility;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
@@ -130,15 +135,20 @@ public class CmsSettingDefinitionWrapper {
     /** The resolved definition. */
     private CmsXmlContentProperty m_resolvedDefinition;
 
+    /** The CmsObject used. */
+    private CmsObject m_cms;
+
     /**
      * Creates a new instance.
      *
+     * @param cms the current CMS context
      * @param settingDef the raw setting definition
      * @param resolver the macro resolver to use
      */
-    public CmsSettingDefinitionWrapper(CmsXmlContentProperty settingDef, CmsMacroResolver resolver) {
+    public CmsSettingDefinitionWrapper(CmsObject cms, CmsXmlContentProperty settingDef, CmsMacroResolver resolver) {
 
         m_rawDefinition = settingDef;
+        m_cms = cms;
         m_resolvedDefinition = CmsXmlContentPropertyHelper.resolveMacrosInProperty(settingDef, resolver);
         CmsKeyDummyMacroResolver keyResolver = new CmsKeyDummyMacroResolver(resolver);
         m_definitionWithKeys = CmsXmlContentPropertyHelper.resolveMacrosInProperty(settingDef, keyResolver);
@@ -227,7 +237,22 @@ public class CmsSettingDefinitionWrapper {
             return null;
         }
         try {
-            return org.opencms.widgets.CmsSelectWidgetOption.parseOptions(widgetConfig);
+            List<CmsSelectWidgetOption> options = org.opencms.widgets.CmsSelectWidgetOption.parseOptions(widgetConfig);
+            List<CmsSelectWidgetOption> result = new ArrayList<>();
+            Set<String> values = options.stream().map(option -> option.getValue()).collect(Collectors.toSet());
+            String defaultValue = getDefaultValue();
+            Locale locale = m_cms.getRequestContext().getLocale();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(defaultValue) || !values.contains(defaultValue)) {
+                CmsSelectWidgetOption noValue = new CmsSelectWidgetOption(
+                    "",
+                    true,
+                    org.opencms.gwt.Messages.get().getBundle(locale).key(
+                        org.opencms.gwt.Messages.GUI_SELECTBOX_EMPTY_SELECTION_0));
+                result.add(noValue);
+            }
+
+            result.addAll(options);
+            return result;
         } catch (Exception e) {
             LOG.info(e.getLocalizedMessage(), e);
             return null;

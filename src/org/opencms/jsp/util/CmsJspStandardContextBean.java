@@ -1481,7 +1481,7 @@ public final class CmsJspStandardContextBean {
         resolver.setMessages(messages);
 
         for (Map.Entry<String, CmsXmlContentProperty> entry : settingDefs.entrySet()) {
-            CmsSettingDefinitionWrapper sd = new CmsSettingDefinitionWrapper(entry.getValue(), resolver);
+            CmsSettingDefinitionWrapper sd = new CmsSettingDefinitionWrapper(cms, entry.getValue(), resolver);
             result.add(sd);
         }
         return result;

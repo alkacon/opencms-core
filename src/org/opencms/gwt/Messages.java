@@ -63,9 +63,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INSTANTIATION_FAILED_1 = "ERR_INSTANTIATION_FAILED_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INSTANTIATION_INCORRECT_TYPE_2 = "ERR_INSTANTIATION_INCORRECT_TYPE_2";
-
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOCKING_MODIFIED_RESOURCE_1 = "ERR_LOCKING_MODIFIED_RESOURCE_1";
 
@@ -125,6 +125,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_QUICKLAUNCH_EXPLORER_NOT_ALLOWED_0 = "GUI_QUICKLAUNCH_EXPLORER_NOT_ALLOWED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SELECTBOX_EMPTY_SELECTION_0 = "GUI_SELECTBOX_EMPTY_SELECTION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_STATUS_PERMALINK_0 = "GUI_STATUS_PERMALINK_0";
