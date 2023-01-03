@@ -7,6 +7,9 @@
 	<inherits name="com.google.common.collect.Collect" />
 	<inherits name="com.google.common.io.Io" />
 	<inherits name="com.google.web.bindery.autobean.AutoBean"/>
+	<inherits name="jsinterop.base.Base" />
+	<inherits name="elemental2.core.Core" />
+	<inherits name="elemental2.dom.Dom" />
 	<inherits name="org.timepedia.exporter.Exporter" />
   	<set-property name="export" value="yes" />
  	<extend-property name="locale" values="en,de,it,cs,es"/>
