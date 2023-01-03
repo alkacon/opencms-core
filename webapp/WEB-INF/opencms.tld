@@ -3128,7 +3128,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-
+    
     <tag>
         <description><![CDATA[
             Takes a JSON value from the 'value' attribute and adds it to the surrounding JSON context or
@@ -3184,6 +3184,25 @@
         	<name>errorVar</name>
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    
+    <tag>
+        <description>Enables the option for creating a new content in the ADE menu of a container page element when used in the element's formatter.</description>
+        <name>enable-list-add</name>
+        <tag-class>org.opencms.jsp.CmsJspTagEnableListAdd</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>The types to show in the list element creation dialog. This should be either a string containing type names separated by commas, or a collection of objects whose toString() methods return the resource type names to use.</description>
+            <name>types</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The post-create handler configuration to use when creating new elements.</description>
+            <name>postCreateHandler</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
 

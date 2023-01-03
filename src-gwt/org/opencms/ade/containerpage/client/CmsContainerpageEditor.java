@@ -35,6 +35,7 @@ import org.opencms.ade.containerpage.client.ui.CmsToolbarElementInfoButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarFavLocationButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarGalleryMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarInfoButton;
+import org.opencms.ade.containerpage.client.ui.CmsToolbarListAddButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarListManagerButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarMoveButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarPublishButton;
@@ -301,8 +302,10 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         I_CmsLayoutBundle.INSTANCE.containerpageCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.dragdropCss().ensureInjected();
+
         I_CmsLayoutBundle.INSTANCE.groupcontainerCss().ensureInjected();
         org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.elementSettingsDialogCss().ensureInjected();
+        org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listAddCss().ensureInjected();
 
         final CmsContainerpageController controller = new CmsContainerpageController();
         final CmsContainerpageHandler containerpageHandler = new CmsContainerpageHandler(controller, this);
@@ -400,6 +403,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
             m_edit,
             m_move,
             new CmsToolbarListManagerButton(containerpageHandler),
+            new CmsToolbarListAddButton(containerpageHandler),
             m_info,
             m_properties,
             m_addToFavorites,

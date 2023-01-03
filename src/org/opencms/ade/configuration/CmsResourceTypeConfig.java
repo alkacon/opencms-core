@@ -253,6 +253,13 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             return OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER);
         }
         checkInitialized();
+        if ((m_folderOrName != null) && m_folderOrName.isPageRelative() && (pageFolderRootPath == null)) {
+            LOG.info(
+                "type "
+                    + m_typeName
+                    + " not creatable for pageFolderRootPath=null because it is configured to be page-relative");
+            return false;
+        }
         String folderPath = getFolderPath(cms, pageFolderRootPath);
         String oldSiteRoot = cms.getRequestContext().getSiteRoot();
         cms.getRequestContext().setSiteRoot("");

@@ -84,14 +84,20 @@ import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsIconUtil;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsVfsService;
+import org.opencms.gwt.shared.CmsListElementCreationDialogData;
+import org.opencms.gwt.shared.CmsListElementCreationOption;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
+import org.opencms.gwt.shared.I_CmsAutoBeanFactory;
+import org.opencms.gwt.shared.I_CmsListAddMetadata;
 import org.opencms.gwt.shared.I_CmsUnlockData;
 import org.opencms.gwt.shared.I_CmsUnlockDataFactory;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleGroup;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsMessages;
+import org.opencms.jsp.CmsJspTagEdit;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.lock.CmsLock;
@@ -117,9 +123,11 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.editors.CmsWorkplaceEditorManager;
 import org.opencms.workplace.editors.directedit.I_CmsEditHandler;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.containerpage.CmsADESessionCache;
@@ -1196,6 +1204,77 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             result.setGalleryData(data);
             return result;
 
+        } catch (Exception e) {
+            error(e);
+            return null;
+        }
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getListElementCreationOptions(org.opencms.util.CmsUUID, java.lang.String)
+     */
+    public CmsListElementCreationDialogData getListElementCreationOptions(CmsUUID structureId, String jsonListAddData)
+    throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        CmsMessages msg = Messages.get().getBundle(locale);
+        try {
+            CmsUUID listId = structureId;
+
+            String jsonConfig = jsonListAddData;
+            I_CmsAutoBeanFactory beanFactory = AutoBeanFactorySource.create(I_CmsAutoBeanFactory.class);
+            AutoBean<I_CmsListAddMetadata> listAddData = AutoBeanCodex.decode(
+                beanFactory,
+                I_CmsListAddMetadata.class,
+                jsonConfig);
+
+            CmsListElementCreationDialogData result = new CmsListElementCreationDialogData();
+            CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
+                cms,
+                cms.getRequestContext().getRootUri());
+            CmsResource listResource = cms.readResource(listId, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsListInfoBean listResourceInfo = CmsVfsService.getPageInfo(cms, listResource);
+
+            result.setCaption(msg.key(Messages.GUI_LISTADD_CAPTION_0));
+            result.setListInfo(listResourceInfo);
+            result.setPostCreateHandler(listAddData.as().getPostCreateHandler());
+            List<String> createTypes = listAddData.as().getTypes();
+            Map<String, CmsResourceTypeConfig> typeMap = adeConfig.getTypesByName();
+            for (String type : createTypes) {
+                try {
+                    CmsResourceTypeConfig currentType = typeMap.get(type);
+                    if (currentType != null) {
+                        if (adeConfig.getDirectEditPermissions(type).canCreate()
+                            && currentType.checkCreatable(cms, null)) {
+                            CmsListInfoBean typeInfo = new CmsListInfoBean();
+                            CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                                type);
+                            String title = CmsWorkplaceMessages.getResourceTypeName(locale, type);
+                            typeInfo.setTitle(title);
+                            String description = CmsWorkplaceMessages.getResourceTypeDescription(locale, type);
+                            typeInfo.setSubTitle(description);
+                            typeInfo.setResourceType(type);
+                            typeInfo.setBigIconClasses(CmsIconUtil.getIconClasses(explorerType, null, false));
+                            String newLink = CmsJspTagEdit.getNewLink(
+                                cms,
+                                OpenCms.getResourceManager().getResourceType(type),
+                                cms.getRequestContext().getUri());
+                            CmsListElementCreationOption option = new CmsListElementCreationOption(
+                                type,
+                                typeInfo,
+                                newLink);
+                            result.add(option);
+                        }
+                    }
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            if (result.getOptions().size() == 0) {
+                result.setMessage(msg.key(Messages.GUI_LISTADD_NO_TYPES_0));
+            }
+            return result;
         } catch (Exception e) {
             error(e);
             return null;
@@ -2311,8 +2390,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 formatter = dynamicFmt;
             } else if (formatterConfigId.startsWith(CmsFormatterConfig.SCHEMA_FORMATTER_ID)
                 && CmsUUID.isValidUUID(formatterConfigId.substring(CmsFormatterConfig.SCHEMA_FORMATTER_ID.length()))) {
-                    formatter = formatters.getFormatterSelection(containerType, containerWidth).get(formatterConfigId);
-                }
+                formatter = formatters.getFormatterSelection(containerType, containerWidth).get(formatterConfigId);
+            }
         }
         if (formatter == null) {
             formatter = CmsElementUtil.getFormatterForContainer(cms, element, container, config, getSessionCache());

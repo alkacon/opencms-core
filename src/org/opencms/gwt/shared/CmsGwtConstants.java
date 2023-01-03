@@ -123,6 +123,8 @@ public final class CmsGwtConstants {
     /** Entity id data attribute name. */
     public static final String ATTR_DATA_ID = "data-oc-id";
 
+    public static final String ATTR_DATA_LISTADD = "data-oc-listadd";
+
     /** Key for the element id attribute. */
     public static final String ATTR_ELEMENT_ID = "ATTR_ELEMENT_ID";
 
@@ -253,11 +255,11 @@ public final class CmsGwtConstants {
     /** Name for the pseudo-type 'navlevel'. */
     public static final String TYPE_NAVLEVEL = "navlevel";
 
-    /** Name of Javascript variable used to hold the structure id of the currently selected locale's root folder in the sitemap editor's locale comparison mode. */
-    public static final String VAR_LOCALE_ROOT = "cmsLocaleCompareRoot";
-
     /** Part of the URL used to unlock files. */
     public static final String UNLOCK_FILE_PREFIX = "/unlockFile/";
+
+    /** Name of Javascript variable used to hold the structure id of the currently selected locale's root folder in the sitemap editor's locale comparison mode. */
+    public static final String VAR_LOCALE_ROOT = "cmsLocaleCompareRoot";
 
     /**
      * Hide constructor.<p>

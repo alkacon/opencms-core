@@ -40,6 +40,7 @@ import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
+import org.opencms.gwt.shared.CmsListElementCreationDialogData;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
@@ -57,12 +58,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface I_CmsContainerpageServiceAsync {
 
     /**
-     * Adds an element specified by it's id to the favorite list.<p>
-     *
-     * @param context the rpc context
-     * @param clientId the element id
-     * @param callback the call-back executed on response
-     */
+    * Adds an element specified by it's id to the favorite list.<p>
+    *
+    * @param context the rpc context
+    * @param clientId the element id
+    * @param callback the call-back executed on response
+    */
     void addToFavoriteList(CmsContainerPageRpcContext context, String clientId, AsyncCallback<Void> callback);
 
     /**
@@ -291,6 +292,18 @@ public interface I_CmsContainerpageServiceAsync {
         String uri,
         String locale,
         AsyncCallback<CmsContainerPageGalleryData> callback);
+
+    /**
+     * Loads the data for the list element creation dialog.
+     *
+     * @param structureId the structure id of the container element for which we want to load the options
+     * @param jsonListAddData the list-add metadata read from the DOM
+     * @param callback the callback for the result
+     */
+    void getListElementCreationOptions(
+        CmsUUID structureId,
+        String jsonListAddData,
+        AsyncCallback<CmsListElementCreationDialogData> callback);
 
     /**
      * Returns new container element data for the given resource type name.<p>

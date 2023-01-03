@@ -1053,8 +1053,29 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String deletedEntryLabel();
     }
 
+    /**
+     * CSS for the list item creation dialog.
+     */
+    interface I_CmsListAddCss extends CssResource {
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String labelContainer();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String optionContainer();
+    }
+
     /** List item CSS. */
     @Shared
+    @ImportedWithPrefix("liw")
     interface I_CmsListItemWidgetCss extends I_CmsStateCss {
 
         /**
@@ -2497,6 +2518,15 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("linkWarning.gss")
     I_CmsLinkWarningCss linkWarningCss();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the CSS for the list add dialog
+     */
+    @Source("listadd.css")
+    @Import(value = {I_CmsListItemWidgetCss.class})
+    I_CmsListAddCss listAddCss();
 
     /**
      * Access method.<p>

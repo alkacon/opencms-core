@@ -125,6 +125,21 @@ public class CmsConfigurationBean {
     }
 
     /**
+     * Extracts the resource type name from a display type string.
+     * 
+     * @param displayType the display type
+     * @return the resource type name 
+     */
+    public static String getResourceTypeForDisplayType(String displayType) {
+
+        String type = displayType;
+        if (type.contains(CmsXmlDisplayFormatterValue.SEPARATOR)) {
+            type = type.substring(0, type.indexOf(CmsXmlDisplayFormatterValue.SEPARATOR));
+        }
+        return type;
+    }
+
+    /**
      * Add a combined category-folder restriction.
      * @param listCategoryFolderRestrictionBean the category-folder restriction to add.
      */
@@ -309,10 +324,7 @@ public class CmsConfigurationBean {
         List<String> result = new ArrayList<String>();
         if (m_dislayTypes != null) {
             for (String displayType : m_dislayTypes) {
-                String type = displayType;
-                if (type.contains(CmsXmlDisplayFormatterValue.SEPARATOR)) {
-                    type = type.substring(0, type.indexOf(CmsXmlDisplayFormatterValue.SEPARATOR));
-                }
+                String type = getResourceTypeForDisplayType(displayType);
                 if (!result.contains(type)) {
                     result.add(type);
                 }

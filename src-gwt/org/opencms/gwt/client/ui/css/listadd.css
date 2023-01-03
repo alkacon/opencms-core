@@ -1,0 +1,25 @@
+.optionContainer {
+	border: 1px solid rgb(204,204,204); 
+	border-radius: 4px; 
+	padding: 3px;
+	margin-top: 5px;
+}
+
+.optionContainer [role="button"]:hover, .optionContainer [role="button"]:hover * {
+	color: black !important;
+}
+
+.optionContainer .liw-buttonPanel {
+	top: 0px !important;
+}
+
+.labelContainer {
+	height: 100px;
+	display: flex;
+	align-items: center;
+	justify-content: center; 
+}
+
+.labelContainer > * {
+	width: calc(100% - 20px);
+}

@@ -71,6 +71,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LABEL_PATH_0 = "GUI_LABEL_PATH_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTADD_CAPTION_0 = "GUI_LISTADD_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LISTADD_NO_TYPES_0 = "GUI_LISTADD_NO_TYPES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCKED_BY_1 = "GUI_LOCKED_BY_1";
 
     /** Message constant for key in the resource bundle. */

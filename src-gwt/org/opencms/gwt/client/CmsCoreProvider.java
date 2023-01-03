@@ -38,6 +38,7 @@ import org.opencms.gwt.client.util.CmsMediaQuery;
 import org.opencms.gwt.client.util.CmsUniqueActiveItemContainer;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.I_CmsAutoBeanFactory;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 import org.opencms.gwt.shared.rpc.I_CmsVfsService;
@@ -65,6 +66,9 @@ import com.google.web.bindery.event.shared.SimpleEventBus;
  * @see org.opencms.gwt.CmsGwtActionElement
  */
 public final class CmsCoreProvider extends CmsCoreData {
+
+    /** AutoBean factory instance. */ 
+    public static final I_CmsAutoBeanFactory AUTO_BEAN_FACTORY = GWT.create(I_CmsAutoBeanFactory.class);
 
     /** Path to system folder. */
     public static final String VFS_PATH_SYSTEM = "/system/";

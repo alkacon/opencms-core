@@ -33,6 +33,7 @@ import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsElementSettingsDialog;
 import org.opencms.ade.containerpage.client.ui.CmsElementSettingsDialog.NoFormatterException;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
+import org.opencms.ade.containerpage.client.ui.CmsListAddDialog;
 import org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
@@ -43,6 +44,7 @@ import org.opencms.ade.containerpage.shared.CmsLocaleLinkBean;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.I_CmsEditableData;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.A_CmsToolbarHandler;
@@ -79,9 +81,12 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.gwt.shared.CmsListElementCreationDialogData;
+import org.opencms.gwt.shared.CmsListElementCreationOption;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
+import org.opencms.gwt.shared.I_CmsEditableDataExtensions;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -789,6 +794,110 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
+     * Triggers creation/editing of a new content after an option has been selected.
+     *
+     * @param option the type option selected by the user
+     * @param reloadId the id of the element to be reloaded after editing
+     * @param postCreateHandler the post-create handler  (for assigning categories or similar)
+     */
+    public void openEditorForNewListContent(
+        CmsListElementCreationOption option,
+        String reloadId,
+        String postCreateHandler) {
+
+        I_CmsEditableData editableData = new I_CmsEditableData() {
+
+            public String getContextId() {
+
+                return null;
+            }
+
+            public String getEditId() {
+
+                return null;
+            }
+
+            public String getElementId() {
+
+                return null;
+            }
+
+            public String getElementLanguage() {
+
+                return null;
+            }
+
+            public String getElementName() {
+
+                return null;
+            }
+
+            public I_CmsEditableDataExtensions getExtensions() {
+
+                return null;
+            }
+
+            public String getNewLink() {
+
+                return option.getNewLink();
+            }
+
+            public String getNewTitle() {
+
+                return null;
+            }
+
+            public String getNoEditReason() {
+
+                return null;
+            }
+
+            public String getPostCreateHandler() {
+
+                return postCreateHandler;
+            }
+
+            public String getSitePath() {
+
+                return null;
+            }
+
+            public CmsUUID getStructureId() {
+
+                return CmsCoreProvider.get().getStructureId();
+            }
+
+            public boolean hasEditHandler() {
+
+                return false;
+            }
+
+            public boolean hasResource() {
+
+                return false;
+            }
+
+            public boolean isUnreleasedOrExpired() {
+
+                return false;
+            }
+
+            public void setSitePath(String sitePath) {
+
+                // no-op
+
+            }
+        };
+
+        CmsContainerpageController.get().getContentEditorHandler().openDialog(
+            editableData,
+            true/*isNew*/,
+            reloadId /*dependingElementId*/,
+            null /*mode*/,
+            null /*handlerData*/);
+    }
+
+    /**
      * Opens the elements info dialog.<p>
      */
     public void openElementsInfo() {
@@ -807,6 +916,51 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                 }
 
             });
+    }
+
+    /**
+     * Opens the dialog for adding a new list content.
+     *
+     * @param structureId the structure id of the container element
+     * @param listAddMetadata the list-add metadata read from the container element
+     */
+    public void openListAddDialog(CmsUUID structureId, String listAddMetadata) {
+
+        CmsRpcAction<CmsListElementCreationDialogData> action = new CmsRpcAction<CmsListElementCreationDialogData>() {
+
+            @Override
+            public void execute() {
+
+                start(0, false);
+                CmsContainerpageHandler.this.m_controller.getContainerpageService().getListElementCreationOptions(
+                    structureId,
+                    listAddMetadata,
+                    this);
+
+            }
+
+            @Override
+            protected void onResponse(CmsListElementCreationDialogData result) {
+
+                stop(false);
+                // "0 options" case is handled by the dialog
+                if (result.getOptions().size() == 1) {
+                    // skip the selection dialog, immediately create and edit the content
+                    openEditorForNewListContent(
+                        result.getOptions().get(0),
+                        "" + structureId,
+                        result.getPostCreateHandler());
+                } else {
+                    CmsListAddDialog dialog = new CmsListAddDialog(
+                        structureId,
+                        result,
+                        option -> openEditorForNewListContent(option, "" + structureId, result.getPostCreateHandler()));
+                    dialog.centerHorizontally(100);
+                }
+            }
+        };
+        action.execute();
+
     }
 
     /**

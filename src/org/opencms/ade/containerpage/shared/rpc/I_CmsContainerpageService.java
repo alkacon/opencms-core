@@ -41,6 +41,7 @@ import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.gwt.shared.CmsListElementCreationDialogData;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
@@ -323,6 +324,18 @@ public interface I_CmsContainerpageService extends RemoteService {
         CmsUUID elementView,
         String uri,
         String locale)
+    throws CmsRpcException;
+
+    /**
+     * Loads the data for the list element creation dialog.
+     *
+     * @param structureId the structure id of the container element for which we want to load the options
+     * @param jsonListAddData the list-add metadata read from the DOM
+     * @return the data for the list element creation dialog
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsListElementCreationDialogData getListElementCreationOptions(CmsUUID structureId, String jsonListAddData)
     throws CmsRpcException;
 
     /**

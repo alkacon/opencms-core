@@ -183,6 +183,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     /** The former copy model property. */
     public static final String PROP_WAS_MODEL_GROUP = "was_model_group";
 
+    /** Property used to mark an element as belonging to this widget. */
+    public static final String PROP_ELEMENT_OBJECT_ID = "element_object_id";
+
     /** Highlighting border for this element. */
     protected CmsHighlightingBorder m_highlighting;
 
@@ -277,6 +280,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      **/
     private boolean m_writePermission;
 
+    /** A random id, which is also stored as a property on the HTML element for this widget. */
+    private String m_objectId;
+
     /** The resource type icon CSS classes. */
     private String m_iconClasses;
 
@@ -329,6 +335,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
         super(element);
         m_clientId = clientId;
+        m_objectId = "" + Math.random();
         m_sitePath = sitePath;
         m_title = title;
         m_subTitle = subTitle;
@@ -347,6 +354,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         m_elementView = elementView;
         getElement().setPropertyBoolean(PROP_IS_MODEL_GROUP, modelGroupId != null);
         getElement().setPropertyBoolean(PROP_WAS_MODEL_GROUP, wasModelGroup);
+        getElement().setPropertyString(PROP_ELEMENT_OBJECT_ID, m_objectId);
         m_iconClasses = iconClasses;
     }
 
@@ -512,6 +520,18 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     public String getNoEditReason() {
 
         return m_noEditReason;
+    }
+
+    /**
+     * Gets the random id identifying this widget.
+     *
+     * <p>The id is also stored in the element_object_id property of the DOM element for this widget.
+     *
+     * @return the random id identifying this widget
+     */
+    public String getObjectId() {
+
+        return m_objectId;
     }
 
     /**
