@@ -27,12 +27,12 @@
 
 package org.opencms.gwt.client.util;
 
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsActionHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsStringSelectHandler;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.I_CmsEmbeddedDialogInfo;
-import org.opencms.gwt.shared.I_CmsEmbeddedDialogInfoFactory;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -44,7 +44,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.user.client.Command;
@@ -57,9 +56,6 @@ import com.google.web.bindery.autobean.shared.AutoBeanCodex;
  * Handler for embedded VAADIN dialogs.<p>
  */
 public class CmsEmbeddedDialogHandler implements I_CmsHasInit, I_CmsEmbeddedDialogHandlerJsCallbacks {
-
-    /** The auto bean factory for the dialog info objects. */
-    private static I_CmsEmbeddedDialogInfoFactory m_beanFactory = GWT.create(I_CmsEmbeddedDialogInfoFactory.class);
 
     /** The context menu handler. */
     private I_CmsActionHandler m_handler;
@@ -306,7 +302,7 @@ public class CmsEmbeddedDialogHandler implements I_CmsHasInit, I_CmsEmbeddedDial
 
     public void openDialog(String dialogId, String contextType, List<CmsUUID> resources, Map<String, String> params) {
 
-        AutoBean<I_CmsEmbeddedDialogInfo> info = m_beanFactory.createDialogInfo();
+        AutoBean<I_CmsEmbeddedDialogInfo> info = CmsCoreProvider.AUTO_BEAN_FACTORY.createDialogInfo();
         info.as().setDialogId(dialogId);
         info.as().setContextType(contextType);
         if (resources == null) {

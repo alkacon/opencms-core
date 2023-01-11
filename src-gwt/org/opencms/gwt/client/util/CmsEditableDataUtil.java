@@ -27,19 +27,15 @@
 
 package org.opencms.gwt.client.util;
 
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.shared.I_CmsEditableDataExtensions;
-import org.opencms.gwt.shared.I_CmsEditableDataExtensionsFactory;
 
-import com.google.gwt.core.client.GWT;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 
 /**
  * Helper functions to deal with editable data.
  */
 public class CmsEditableDataUtil {
-
-    /** Factory for encoding / decoding extended editable data attributes. */
-    private static I_CmsEditableDataExtensionsFactory factory = GWT.create(I_CmsEditableDataExtensionsFactory.class);
 
     /**
      * Copies the given editable data extended attributes.
@@ -49,8 +45,8 @@ public class CmsEditableDataUtil {
      */
     public static I_CmsEditableDataExtensions copy(I_CmsEditableDataExtensions data) {
 
-        String encoded = AutoBeanCodex.encode(factory.wrapExtensions(data)).getPayload();
-        return AutoBeanCodex.decode(factory, I_CmsEditableDataExtensions.class, encoded).as();
+        String encoded = AutoBeanCodex.encode(CmsCoreProvider.AUTO_BEAN_FACTORY.wrapExtensions(data)).getPayload();
+        return AutoBeanCodex.decode(CmsCoreProvider.AUTO_BEAN_FACTORY, I_CmsEditableDataExtensions.class, encoded).as();
 
     }
 
@@ -62,7 +58,10 @@ public class CmsEditableDataUtil {
      */
     public static I_CmsEditableDataExtensions parseExtensions(String jsonData) {
 
-        return AutoBeanCodex.decode(factory, I_CmsEditableDataExtensions.class, jsonData).as();
+        return AutoBeanCodex.decode(
+            CmsCoreProvider.AUTO_BEAN_FACTORY,
+            I_CmsEditableDataExtensions.class,
+            jsonData).as();
     }
 
 }

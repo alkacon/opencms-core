@@ -92,7 +92,6 @@ import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.gwt.shared.I_CmsAutoBeanFactory;
 import org.opencms.gwt.shared.I_CmsListAddMetadata;
 import org.opencms.gwt.shared.I_CmsUnlockData;
-import org.opencms.gwt.shared.I_CmsUnlockDataFactory;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleGroup;
 import org.opencms.i18n.CmsLocaleManager;
@@ -485,7 +484,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         LOG.debug("Unlock request received: " + strData);
 
         AutoBean<I_CmsUnlockData> data = AutoBeanCodex.decode(
-            AutoBeanFactorySource.create(I_CmsUnlockDataFactory.class),
+            AutoBeanFactorySource.create(I_CmsAutoBeanFactory.class),
             I_CmsUnlockData.class,
             strData);
 

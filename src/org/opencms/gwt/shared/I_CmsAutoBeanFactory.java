@@ -36,10 +36,63 @@ import com.google.web.bindery.autobean.shared.AutoBeanFactory;
 public interface I_CmsAutoBeanFactory extends AutoBeanFactory {
 
     /**
+     * Creates a new AutoBean.<p>
+     *
+     * @return the created AutoBean
+     */
+    AutoBean<I_CmsContentLoadCollectorInfo> createCollectorInfo();
+
+    /**
+     * Creates a new configuration AutoBean.
+     *
+     * @return the new configuration bean
+     */
+    AutoBean<I_CmsCodeMirrorClientConfiguration> createConfiguration();
+
+    /**
+     * Creates a new dialog info AutoBean.
+     *
+     * @return the new bean
+     */
+    AutoBean<I_CmsEmbeddedDialogInfo> createDialogInfo();
+
+    /**
+     * Creates a new instance.
+     *
+     * @return the new instance
+     */
+    AutoBean<I_CmsEditableDataExtensions> createExtensions();
+
+    /**
      * Creates an I_CmsListAddMetadat AutoBean.
      *
      * @return the bean
      */
     AutoBean<I_CmsListAddMetadata> createListAddMetadata();
+
+    /**
+     * Creates a new unlock data instance.
+     *
+     * @return the unlock data
+     */
+    AutoBean<I_CmsUnlockData> unlockData();
+
+    /**
+     * Creates an AutoBean wrapping an object.<p>
+     *
+     * @param info the object to wrap
+     *
+     * @return the AutoBean wrapper
+     */
+    AutoBean<I_CmsContentLoadCollectorInfo> wrapCollectorInfo(I_CmsContentLoadCollectorInfo info);
+
+    /**
+     * Wraps an instance.
+     *
+     * @param data the bean to wrap
+     *
+     * @return the new wrapper
+     */
+    AutoBean<I_CmsEditableDataExtensions> wrapExtensions(I_CmsEditableDataExtensions data);
 
 }

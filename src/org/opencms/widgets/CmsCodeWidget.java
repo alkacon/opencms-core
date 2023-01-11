@@ -29,8 +29,8 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.gwt.shared.I_CmsAutoBeanFactory;
 import org.opencms.gwt.shared.I_CmsCodeMirrorClientConfiguration;
-import org.opencms.gwt.shared.I_CmsCodeMirrorClientConfigurationFactory;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -69,8 +69,7 @@ public class CmsCodeWidget extends A_CmsWidget implements I_CmsADEWidget {
     private static final Log LOG = CmsLog.getLog(CmsCodeWidget.class);
 
     /** The factory for the client-side configuration. */
-    private static I_CmsCodeMirrorClientConfigurationFactory m_configFactory = AutoBeanFactorySource.create(
-        I_CmsCodeMirrorClientConfigurationFactory.class);
+    private static I_CmsAutoBeanFactory m_configFactory = AutoBeanFactorySource.create(I_CmsAutoBeanFactory.class);
 
     /**
      * Creates a new instance.

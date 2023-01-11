@@ -37,7 +37,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.I_CmsCollectorPublishListProvider;
-import org.opencms.gwt.shared.I_CmsCollectorInfoFactory;
+import org.opencms.gwt.shared.I_CmsAutoBeanFactory;
 import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -168,8 +168,8 @@ public class CmsCurrentPageProject implements I_CmsVirtualProject {
                         LOG.error(e.getLocalizedMessage(), e);
                     }
 
-                    I_CmsCollectorInfoFactory collectorInfoFactory = AutoBeanFactorySource.create(
-                        I_CmsCollectorInfoFactory.class);
+                    I_CmsAutoBeanFactory collectorInfoFactory = AutoBeanFactorySource.create(
+                        I_CmsAutoBeanFactory.class);
                     for (Map.Entry<String, String> entry : params.entrySet()) {
                         if (entry.getKey().startsWith(CmsPublishOptions.PARAM_COLLECTOR_INFO)) {
                             try {

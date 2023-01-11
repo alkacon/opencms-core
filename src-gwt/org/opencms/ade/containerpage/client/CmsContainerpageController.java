@@ -75,8 +75,8 @@ import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
+import org.opencms.gwt.shared.I_CmsAutoBeanFactory;
 import org.opencms.gwt.shared.I_CmsUnlockData;
-import org.opencms.gwt.shared.I_CmsUnlockDataFactory;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
 import org.opencms.util.CmsDefaultSet;
 import org.opencms.util.CmsStringUtil;
@@ -3863,7 +3863,7 @@ public final class CmsContainerpageController {
      */
     protected void unlockContainerpage() {
 
-        I_CmsUnlockDataFactory factory = GWT.create(I_CmsUnlockDataFactory.class);
+        I_CmsAutoBeanFactory factory = CmsCoreProvider.AUTO_BEAN_FACTORY;
         AutoBean<I_CmsUnlockData> unlockParams = factory.unlockData();
         unlockParams.as().setPageId("" + CmsCoreProvider.get().getStructureId());
         if (getData().getDetailId() != null) {

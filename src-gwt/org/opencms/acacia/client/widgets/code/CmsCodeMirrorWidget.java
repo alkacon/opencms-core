@@ -29,20 +29,19 @@ package org.opencms.acacia.client.widgets.code;
 
 import org.opencms.acacia.client.css.I_CmsLayoutBundle;
 import org.opencms.acacia.client.widgets.I_CmsEditWidget;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.FontOpenCms;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsJsUtil;
 import org.opencms.gwt.shared.I_CmsCodeMirrorClientConfiguration;
-import org.opencms.gwt.shared.I_CmsCodeMirrorClientConfigurationFactory;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -91,10 +90,6 @@ public class CmsCodeMirrorWidget extends ComplexPanel implements I_CmsEditWidget
     /** The configuration from the server. */
     private I_CmsCodeMirrorClientConfiguration m_config;
 
-    /** Configuration bean factory. */
-    private I_CmsCodeMirrorClientConfigurationFactory m_configFactory = GWT.create(
-        I_CmsCodeMirrorClientConfigurationFactory.class);
-
     /** The native CodeMirror instance. */
     private JavaScriptObject m_editor;
 
@@ -137,7 +132,10 @@ public class CmsCodeMirrorWidget extends ComplexPanel implements I_CmsEditWidget
         super();
         m_id = "" + Math.random();
         setElement(Document.get().createDivElement());
-        m_config = AutoBeanCodex.decode(m_configFactory, I_CmsCodeMirrorClientConfiguration.class, config).as();
+        m_config = AutoBeanCodex.decode(
+            CmsCoreProvider.AUTO_BEAN_FACTORY,
+            I_CmsCodeMirrorClientConfiguration.class,
+            config).as();
         addStyleName("oc-codemirror-editorwidget");
         Integer height = m_config.getHeight();
         if (height != null) {

@@ -30,8 +30,8 @@ package org.opencms.ui.dialogs;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.gwt.shared.I_CmsAutoBeanFactory;
 import org.opencms.gwt.shared.I_CmsEmbeddedDialogInfo;
-import org.opencms.gwt.shared.I_CmsEmbeddedDialogInfoFactory;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
@@ -80,8 +80,7 @@ public class CmsEmbeddedDialogsUI extends A_CmsUI implements I_CmsEmbeddingServe
     private static final long serialVersionUID = 1201184887611215370L;
 
     /** The auto bean factory for the dialog configuration. */
-    private static I_CmsEmbeddedDialogInfoFactory m_beanFactory = AutoBeanFactorySource.create(
-        I_CmsEmbeddedDialogInfoFactory.class);
+    private static I_CmsAutoBeanFactory m_beanFactory = AutoBeanFactorySource.create(I_CmsAutoBeanFactory.class);
 
     /**
      * The dialog context of the currently opened dialog.<p>

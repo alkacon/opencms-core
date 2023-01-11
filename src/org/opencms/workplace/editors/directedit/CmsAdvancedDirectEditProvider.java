@@ -39,10 +39,9 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.shared.CmsGwtConstants;
-import org.opencms.gwt.shared.I_CmsCollectorInfoFactory;
+import org.opencms.gwt.shared.I_CmsAutoBeanFactory;
 import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
 import org.opencms.gwt.shared.I_CmsEditableDataExtensions;
-import org.opencms.gwt.shared.I_CmsEditableDataExtensionsFactory;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
@@ -165,8 +164,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
     protected boolean m_useIds;
 
     /** Factory for the editable data extended attributes. */
-    I_CmsEditableDataExtensionsFactory m_editableDataExtensionsFactory = AutoBeanFactorySource.create(
-        I_CmsEditableDataExtensionsFactory.class);
+    I_CmsAutoBeanFactory m_editableDataExtensionsFactory = AutoBeanFactorySource.create(I_CmsAutoBeanFactory.class);
 
     /** The random number generator used for element ids. */
     private Random m_random = new Random();
@@ -302,7 +300,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
             // the metadata is only needed for editing
             return;
         }
-        I_CmsCollectorInfoFactory collectorInfoFactory = AutoBeanFactorySource.create(I_CmsCollectorInfoFactory.class);
+        I_CmsAutoBeanFactory collectorInfoFactory = AutoBeanFactorySource.create(I_CmsAutoBeanFactory.class);
         AutoBean<I_CmsContentLoadCollectorInfo> collectorInfoAutoBean = collectorInfoFactory.wrapCollectorInfo(info);
         String serializedCollectorInfo = AutoBeanCodex.encode(collectorInfoAutoBean).getPayload();
 
