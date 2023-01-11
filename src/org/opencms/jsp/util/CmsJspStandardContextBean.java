@@ -1141,16 +1141,33 @@ public final class CmsJspStandardContextBean {
 
     /**
      * Generates a link to the bundle editor to edit the provided message key.
-     * The back link for the editor is the current uri.
+     * The back link for the editor is the current uri with the provided backLinkAnchor added as anchor..
+     *
+     * If the bundle for the key could not be found, <code>null</code> is returned.
+     *
+     * @param messageKey the message key to open the bundle editor for.
+     * @param backLinkAnchor the anchor id to add to the backlink to the page. If <code>null</code> no anchor is added to the backlink.
+     *
+     * @return a link to the bundle editor for editing the provided key, or <code>null</code> if the bundle for the key could not be found.
+     */
+    public String getBundleEditorLink(String messageKey, String backLinkAnchor) {
+
+        return getBundleEditorLink(messageKey, backLinkAnchor, null);
+    }
+
+    /**
+     * Generates a link to the bundle editor to edit the provided message key.
+     * The back link for the editor is the current uri with the provided backLinkAnchor added as anchor.
      *
      * If the bundle resource for the key could not be found, <code>null</code> is returned.
      *
      * @param messageKey the message key to open the bundle editor for.
+     * @param backLinkAnchor the anchor id to add to the backlink to the page. If <code>null</code> no anchor is added to the backlink.
      * @param bundleName the name of the bundle to search the key in. If <code>null</code> the bundle is detected automatically.
      *
      * @return a link to the bundle editor for editing the provided key, or <code>null</code> if the bundle for the key could not be found.
      */
-    public String getBundleEditorLink(String messageKey, String bundleName) {
+    public String getBundleEditorLink(String messageKey, String backLinkAnchor, String bundleName) {
 
         if (!m_cms.getRequestContext().getCurrentProject().isOnlineProject()) {
             String filePath = null;
@@ -1171,6 +1188,9 @@ public final class CmsJspStandardContextBean {
                 }
                 CmsUUID structureId = m_cms.readResource(filePath).getStructureId();
                 String backLink = OpenCms.getLinkManager().getServerLink(m_cms, m_cms.getRequestContext().getUri());
+                if (!((null == backLinkAnchor) || backLinkAnchor.isEmpty())) {
+                    backLink = backLink + "#" + backLinkAnchor;
+                }
                 String appState = CmsEditor.getEditState(structureId, false, backLink);
                 if (null != messageKey) {
                     appState = A_CmsWorkplaceApp.addParamToState(
