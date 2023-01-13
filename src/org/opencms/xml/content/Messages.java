@@ -150,6 +150,10 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CATEGORY_CHECK_NOLEAF_ERROR_0 = "GUI_CATEGORY_CHECK_NOLEAF_ERROR_0";
 
+    public static final String GUI_EDITOR_XMLCONTENT_CANNOT_VALIDATE_ERROR_3 = "GUI_EDITOR_XMLCONTENT_CANNOT_VALIDATE_ERROR_3";
+
+    public static final String GUI_EDITOR_XMLCONTENT_INVALID_RULE_3 = "GUI_EDITOR_XMLCONTENT_INVALID_RULE_3";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_XMLCONTENT_VALIDATION_ERROR_2 = "GUI_EDITOR_XMLCONTENT_VALIDATION_ERROR_2";
 

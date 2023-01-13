@@ -126,6 +126,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import javax.servlet.ServletRequest;
 
@@ -4255,23 +4256,60 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             return validateValue(cms, value, valueStr, errorHandler, isWarning);
         }
 
-        boolean matchResult = true;
+        boolean matchSign = true;
         if (regex.charAt(0) == '!') {
             // negate the pattern
-            matchResult = false;
+            matchSign = false;
             regex = regex.substring(1);
         }
 
-        String matchValue = valueStr;
-        if (matchValue == null) {
+        String stringToBeMatched = valueStr;
+        if (stringToBeMatched == null) {
             // set match value to empty String to avoid exceptions in pattern matcher
-            matchValue = "";
+            stringToBeMatched = "";
         }
 
         // use the custom validation pattern
-        if (matchResult != Pattern.matches(regex, matchValue)) {
+        final boolean matches;
+        try {
+            matches = Pattern.matches(regex, stringToBeMatched);
+        } catch (PatternSyntaxException | StackOverflowError e) {
+            final String localizedMessage = (e.getLocalizedMessage() != null ? e.getLocalizedMessage() : "");
+            final String ticket = String.valueOf(System.currentTimeMillis());
+
+            Throwable trace = e;
+            if (e instanceof StackOverflowError) {
+                final String stackOverflowInfoMessage = "StackOverflowError thrown on pattern matching during xml" +
+                        " content validation. (Cause will be also logged in DEBUG level.)\n" +
+                        "Note 1.- Possible cause: The Java regex engine uses recursive method calls to implement" +
+                        " backtracking. When a repetition inside a regular expression contains multiple paths" +
+                        " (i.e. the body of the repetition contains an alternation (|), an optional element or another" +
+                        " repetition), trying to match the regular expression can cause a stack overflow on large inputs." +
+                        " This does not happen when using a possessive quantifier (such as *+ instead of *) or when using" +
+                        " a character class inside a repetition (e.g. [ab]* instead of (a|b)*).\n" +
+                        "Note 2.- On StackOverflowError, the size of the stacktraces could be limited by the JVM " +
+                        " and we could be missing information to identify the origin of the problem. To help in this" +
+                        " case, we create a new exception close to this origin. Alternatively, you can increase" +
+                        " the depth of the stack trace (for instance, '-XX:MaxJavaStackTraceDepth=1000000') to" +
+                        " identify it";
+                trace = LOG.isDebugEnabled() ? new Exception(stackOverflowInfoMessage, e) : new Exception(stackOverflowInfoMessage);
+                errorHandler.addError(value, Messages.get().getBundle(
+                        value.getLocale()).key(Messages.GUI_EDITOR_XMLCONTENT_CANNOT_VALIDATE_ERROR_3, ticket, regex, stringToBeMatched));
+            } else {
+                errorHandler.addError(value, Messages.get().getBundle(
+                        value.getLocale()).key(Messages.GUI_EDITOR_XMLCONTENT_INVALID_RULE_3, ticket, regex, localizedMessage));
+            }
+
+            LOG.warn("Ticket " + ticket + " - " + localizedMessage + "\n"
+                    + " Regex='" + (matchSign ? "" : "!") + regex + "'\n"
+                    + " Path='" + value.getPath() + "'\n"
+                    + " Input='" + stringToBeMatched + "'", trace);
+
+            return errorHandler;
+        }
+        if (matchSign != matches) {
             // generate the message
-            String message = getValidationMessage(cms, value, regex, valueStr, matchResult, isWarning);
+            String message = getValidationMessage(cms, value, regex, valueStr, matchSign, isWarning);
             if (isWarning) {
                 errorHandler.addWarning(value, message);
             } else {
