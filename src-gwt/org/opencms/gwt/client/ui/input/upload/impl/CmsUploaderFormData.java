@@ -43,7 +43,7 @@ import com.google.gwt.core.client.JsArray;
 public class CmsUploaderFormData implements I_CmsUploader {
 
     /**
-     * @see org.opencms.gwt.client.ui.input.upload.I_CmsUploader#uploadFiles(java.lang.String, java.lang.String, boolean, java.lang.String, java.util.List, java.util.List, org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog)
+     * @see org.opencms.gwt.client.ui.input.upload.I_CmsUploader#uploadFiles(java.lang.String, java.lang.String, boolean, java.lang.String, java.util.List, java.util.List, boolean, org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog)
      */
     public void uploadFiles(
         String uploadUri,
@@ -52,6 +52,7 @@ public class CmsUploaderFormData implements I_CmsUploader {
         String postCreateHandler,
         List<CmsFileInfo> filesToUpload,
         List<String> filesToUnzip,
+        boolean keepFileNames,
         I_CmsUploadDialog dialog) {
 
         JsArray<CmsFileInfo> filesToUploadArray = JavaScriptObject.createArray().cast();
@@ -64,7 +65,15 @@ public class CmsUploaderFormData implements I_CmsUploader {
         for (String filename : filesToUnzip) {
             CmsClientStringUtil.pushArray(filesToUnzipArray, filename);
         }
-        upload(uploadUri, targetFolder, isRootPath, postCreateHandler, filesToUploadArray, filesToUnzipArray, dialog);
+        upload(
+            uploadUri,
+            targetFolder,
+            isRootPath,
+            postCreateHandler,
+            filesToUploadArray,
+            filesToUnzipArray,
+            keepFileNames,
+            dialog);
     }
 
     /**
@@ -85,10 +94,13 @@ public class CmsUploaderFormData implements I_CmsUploader {
         String postCreateHandler,
         JsArray<CmsFileInfo> filesToUpload,
         JavaScriptObject filesToUnzip,
+        boolean keepFileNames,
         I_CmsUploadDialog dialog) /*-{
 
         var data = new FormData();
-
+        if (keepFileNames) {
+            data.append(@org.opencms.gwt.shared.I_CmsUploadConstants::KEEP_FILE_NAMES, "true");
+        }
         for (i = 0; i < filesToUpload.length; i++) {
             var file = filesToUpload[i];
             var fieldName = "file_" + i;

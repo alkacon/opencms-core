@@ -93,6 +93,7 @@ public class CmsUploaderDefault implements I_CmsUploader {
         String postCreateHandler,
         List<CmsFileInfo> filesToUpload,
         List<String> filesToUnzip,
+        boolean keepFileNames,
         I_CmsUploadDialog dialog) {
 
         FormPanel form = createForm(

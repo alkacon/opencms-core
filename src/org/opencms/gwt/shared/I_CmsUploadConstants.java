@@ -48,6 +48,9 @@ public interface I_CmsUploadConstants extends IsSerializable {
     /** The explorer URI for the back link. */
     String EXPLORER_URI = "/system/workplace/views/explorer/explorer_files.jsp?mode=explorerview";
 
+    /** If this field is 'true', don'T perform file name translation (used for replace dialog). */
+    String KEEP_FILE_NAMES = "keepFileNames";
+
     /** Key for the JSON object. */
     String KEY_MESSAGE = "message";
 

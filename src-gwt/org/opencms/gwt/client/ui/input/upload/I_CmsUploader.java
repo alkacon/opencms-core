@@ -43,6 +43,7 @@ public interface I_CmsUploader {
      * @param postCreateHandler the post-create handler class, with parameters
      * @param filesToUpload the files to upload
      * @param filesToUnzip the files to unzip
+     * @param keepFileNames don't perform filename translation on the server if this is true
      * @param dialog the dialog instance
      */
     void uploadFiles(
@@ -52,6 +53,7 @@ public interface I_CmsUploader {
         String postCreateHandler,
         List<CmsFileInfo> filesToUpload,
         List<String> filesToUnzip,
+        boolean keepFileNames,
         I_CmsUploadDialog dialog);
 
 }

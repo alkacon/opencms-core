@@ -534,6 +534,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
             getPostCreateHandler(),
             filesToUpload,
             getFilesToUnzip(false),
+            false,
             this);
     }
 

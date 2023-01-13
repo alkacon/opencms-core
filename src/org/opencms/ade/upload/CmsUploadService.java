@@ -94,7 +94,7 @@ public class CmsUploadService extends CmsGwtService implements I_CmsUploadServic
 
                 try {
                     Streams.checkFileName(fileName);
-                    String newResName = CmsUploadBean.getNewResourceName(getCmsObject(), fileName, targetFolder);
+                    String newResName = CmsUploadBean.getNewResourceName(getCmsObject(), fileName, targetFolder, false);
                     if (existsResource(newResName, isRootPath)) {
                         if (isDeletedResource(newResName, isRootPath)) {
                             existingDeleted.add(fileName);

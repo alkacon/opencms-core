@@ -477,6 +477,7 @@ public class CmsSingleFileUploadDialog extends CmsPopup implements I_CmsUploadDi
             null,
             Collections.singletonList(info),
             Collections.<String> emptyList(),
+            false,
             this);
         showProgress();
     }

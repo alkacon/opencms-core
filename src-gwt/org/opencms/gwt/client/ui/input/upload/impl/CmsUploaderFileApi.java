@@ -39,7 +39,7 @@ import com.google.gwt.core.client.JsArray;
 public class CmsUploaderFileApi extends CmsUploaderFormData {
 
     /**
-     * @see org.opencms.gwt.client.ui.input.upload.impl.CmsUploaderFormData#upload(java.lang.String, java.lang.String, boolean, java.lang.String, com.google.gwt.core.client.JsArray, com.google.gwt.core.client.JavaScriptObject, org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog)
+     * @see org.opencms.gwt.client.ui.input.upload.impl.CmsUploaderFormData#upload(java.lang.String, java.lang.String, boolean, java.lang.String, com.google.gwt.core.client.JsArray, com.google.gwt.core.client.JavaScriptObject, boolean, org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog)
      */
     @Override
     protected native void upload(
@@ -49,6 +49,7 @@ public class CmsUploaderFileApi extends CmsUploaderFormData {
         String postCreateHandler,
         JsArray<CmsFileInfo> filesToUpload,
         JavaScriptObject filesToUnzip,
+        boolean keepFileNames,
         I_CmsUploadDialog dialog) /*-{
         var self = this;
 
@@ -115,6 +116,7 @@ public class CmsUploaderFileApi extends CmsUploaderFormData {
         // appends the infos to the request body
         // should be called at end of creating the body because the boundary is closed here
         function appendInfos() {
+            addPlainField(body, @org.opencms.gwt.shared.I_CmsUploadConstants::KEEP_FILE_NAMES, ""+keepFileNames);
             for (var i = 0; i < filesToUnzip.length; ++i) {
                 var filename = filesToUnzip[i];
                 addPlainField(

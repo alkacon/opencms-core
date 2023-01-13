@@ -164,13 +164,16 @@ public class CmsUploadBean extends CmsJspBean {
      * @param cms the cms object
      * @param fileName the filename to combine with the folder
      * @param folder the folder to combine with the filename
+     * @param keepFileNames skip file name translation if true
      *
      * @return the VFS path for the given filename and folder
      */
-    public static String getNewResourceName(CmsObject cms, String fileName, String folder) {
+    public static String getNewResourceName(CmsObject cms, String fileName, String folder, boolean keepFileNames) {
 
         String newResname = CmsResource.getName(fileName.replace('\\', '/'));
-        newResname = cms.getRequestContext().getFileTranslator().translateResource(newResname);
+        if (!keepFileNames) {
+            newResname = cms.getRequestContext().getFileTranslator().translateResource(newResname);
+        }
         newResname = folder + newResname;
         return newResname;
     }
@@ -349,7 +352,7 @@ public class CmsUploadBean extends CmsJspBean {
             return null;
         }
 
-        String newResname = getNewResourceName(cms, fileName, targetFolder);
+        String newResname = getNewResourceName(cms, fileName, targetFolder, isKeepFileNames());
         CmsResource createdResource = null;
 
         // determine Title property value to set on new resource
@@ -613,6 +616,20 @@ public class CmsUploadBean extends CmsJspBean {
             targetFolder += "/";
         }
         return targetFolder;
+    }
+
+    /**
+     * Returns true if file name translation should be skipped for the upload.
+     *
+     * <p>This is mainly used for the file replacement dialog.
+     *
+     * @return true if file name translation should be skipped
+     */
+    private boolean isKeepFileNames() {
+
+        String[] values = m_parameterMap.get(I_CmsUploadConstants.KEEP_FILE_NAMES);
+        boolean result = (values != null) && (values.length > 0) && Boolean.parseBoolean(values[0]);
+        return result;
     }
 
     /**

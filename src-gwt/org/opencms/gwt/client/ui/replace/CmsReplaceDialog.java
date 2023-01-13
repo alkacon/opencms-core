@@ -487,6 +487,7 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
             null,
             Collections.singletonList(info),
             Collections.<String> emptyList(),
+            true,
             this);
         showProgress();
     }

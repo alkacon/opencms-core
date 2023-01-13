@@ -59,9 +59,18 @@ public class CmsUploader implements I_CmsUploader {
         String postCreateHandler,
         List<CmsFileInfo> filesToUpload,
         List<String> filesToUnzip,
+        boolean keepFileNames,
         I_CmsUploadDialog dialog) {
 
-        m_impl.uploadFiles(uploadUri, targetFolder, isRootPath, postCreateHandler, filesToUpload, filesToUnzip, dialog);
+        m_impl.uploadFiles(
+            uploadUri,
+            targetFolder,
+            isRootPath,
+            postCreateHandler,
+            filesToUpload,
+            filesToUnzip,
+            keepFileNames,
+            dialog);
     }
 
 }
