@@ -73,17 +73,17 @@ public class CmsRepository extends A_CmsRepository {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsRepository.class);
 
-    /** The name of the parameter of the configuration. */
-    private static final String PARAM_WRAPPER = "wrapper";
-
     /** Random value used for hashing login credentials for the CmsObject cache. */
     private static String m_passwordSalt = RandomStringUtils.randomAlphanumeric(10);
 
-    /** The list of configured wrappers of the repository. */
-    private List<I_CmsResourceWrapper> m_wrappers;
+    /** The name of the parameter of the configuration. */
+    private static final String PARAM_WRAPPER = "wrapper";
 
     /** Timed cache for CmsObjects. */
     private Map<String, CmsObject> m_cmsObjectCache;
+
+    /** The list of configured wrappers of the repository. */
+    private List<I_CmsResourceWrapper> m_wrappers;
 
     /**
      * Empty default constructor.<p>
@@ -197,7 +197,7 @@ public class CmsRepository extends A_CmsRepository {
         objWrapper.setAddByteOrderMark(addBOM);
         cms.getRequestContext().setAttribute(CmsObjectWrapper.ATTRIBUTE_NAME, objWrapper);
 
-        return new CmsRepositorySession(objWrapper, getFilter());
+        return new CmsRepositorySession(objWrapper, getFilter(), isTranslationEnabled() ? getTranslation() : null);
     }
 
 }

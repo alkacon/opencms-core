@@ -30,6 +30,7 @@ package org.opencms.repository;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsResourceTranslator;
 
 /**
  * Abstract implementation of the repository interface {@link I_CmsRepository}.<p>
@@ -52,6 +53,12 @@ public abstract class A_CmsRepository implements I_CmsRepository {
 
     /** The name of the repository. */
     private String m_name;
+
+    /** The resource translation. */
+    private CmsResourceTranslator m_translation;
+
+    /** True if resource translation is enabled. */
+    private boolean m_translationEnabled;
 
     /**
      * Default constructor initializing member variables.<p>
@@ -97,6 +104,14 @@ public abstract class A_CmsRepository implements I_CmsRepository {
     }
 
     /**
+     * @see org.opencms.repository.I_CmsRepository#getTranslation()
+     */
+    public CmsResourceTranslator getTranslation() {
+
+        return m_translation;
+    }
+
+    /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
      */
     public void initConfiguration() throws CmsConfigurationException {
@@ -110,6 +125,14 @@ public abstract class A_CmsRepository implements I_CmsRepository {
             throw new CmsConfigurationException(null);
         }
 
+    }
+
+    /**
+     * @see org.opencms.repository.I_CmsRepository#isTranslationEnabled()
+     */
+    public boolean isTranslationEnabled() {
+
+        return m_translationEnabled;
     }
 
     /**
@@ -140,6 +163,15 @@ public abstract class A_CmsRepository implements I_CmsRepository {
     public void setName(String name) {
 
         m_name = name;
+    }
+
+    /**
+     * @see org.opencms.repository.I_CmsRepository#setTranslation(org.opencms.util.CmsResourceTranslator, boolean)
+     */
+    public void setTranslation(CmsResourceTranslator translator, boolean enabled) {
+
+        m_translation = translator;
+        m_translationEnabled = enabled;
     }
 
 }

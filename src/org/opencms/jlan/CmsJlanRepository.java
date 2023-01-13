@@ -42,6 +42,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.repository.CmsRepositoryFilter;
 import org.opencms.repository.CmsRepositoryManager;
 import org.opencms.repository.I_CmsRepository;
+import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
 
@@ -304,6 +305,14 @@ public class CmsJlanRepository implements I_CmsRepository {
     }
 
     /**
+     * @see org.opencms.repository.I_CmsRepository#getTranslation()
+     */
+    public CmsResourceTranslator getTranslation() {
+
+        return null;
+    }
+
+    /**
      * Gets the resource wrappers which have been configured for this repository.<p>
      *
      * @return the resource wrappers which have been configured
@@ -355,6 +364,14 @@ public class CmsJlanRepository implements I_CmsRepository {
     }
 
     /**
+     * @see org.opencms.repository.I_CmsRepository#isTranslationEnabled()
+     */
+    public boolean isTranslationEnabled() {
+
+        return false;
+    }
+
+    /**
      * @see org.opencms.repository.I_CmsRepository#setFilter(org.opencms.repository.CmsRepositoryFilter)
      */
     public void setFilter(CmsRepositoryFilter filter) {
@@ -369,6 +386,14 @@ public class CmsJlanRepository implements I_CmsRepository {
 
         // case sensitive share names don't work
         m_name = name.toUpperCase();
+    }
+
+    /**
+     * @see org.opencms.repository.I_CmsRepository#setTranslation(org.opencms.util.CmsResourceTranslator, boolean)
+     */
+    public void setTranslation(CmsResourceTranslator translator, boolean enabled) {
+
+        throw new UnsupportedOperationException("file translations not supported for JLAN repositories");
     }
 
     /**

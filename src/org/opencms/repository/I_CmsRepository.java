@@ -30,6 +30,7 @@ package org.opencms.repository;
 import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsResourceTranslator;
 
 /**
  * Represents a repository.<p>
@@ -56,12 +57,26 @@ public interface I_CmsRepository extends I_CmsConfigurationParameterHandler {
     String getName();
 
     /**
+     * Gets the repository-specific file translations.
+     *
+     * @return the repository-specific file translations
+     */
+    CmsResourceTranslator getTranslation();
+
+    /**
      * Initializes this repository with an admin CMS object.<p>
      *
      * @param cms an admin CMS object
      * @throws CmsException if something goes wrong
      */
     void initializeCms(CmsObject cms) throws CmsException;
+
+    /**
+     * Returns true if the repository specific file translations are enabled (they may also be set without being enabled).
+     *
+     * @return true if the file translations are enabled
+     */
+    boolean isTranslationEnabled();
 
     /**
      * Sets the repository filter.<p>
@@ -76,4 +91,12 @@ public interface I_CmsRepository extends I_CmsConfigurationParameterHandler {
      * @param name the name to use for the repository
      */
     void setName(String name);
+
+    /**
+     * Sets the repository-specific file translations
+     *
+     * @param translator the file translations
+     * @param enabled true if the translations should be enabled
+     */
+    void setTranslation(CmsResourceTranslator translator, boolean enabled);
 }

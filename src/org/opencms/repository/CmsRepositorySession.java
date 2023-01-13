@@ -43,6 +43,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsResourceTranslator;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -84,6 +86,9 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
     /** Base for the namespace encoding. */
     private static final BaseEncoding PROPERTY_NS_CODEC = BaseEncoding.base64Url().withPadChar('$');
 
+    /** Repository-specific file translations to use (may be null). */
+    private CmsResourceTranslator m_translation;
+
     /** The initialized {@link CmsObjectWrapper}. */
     private final CmsObjectWrapper m_cms;
 
@@ -93,11 +98,13 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
      *
      * @param cms the initialized CmsObject
      * @param filter the repository filter to use
+     * @param translation the repository specific file translations (may be null)
      */
-    public CmsRepositorySession(CmsObjectWrapper cms, CmsRepositoryFilter filter) {
+    public CmsRepositorySession(CmsObjectWrapper cms, CmsRepositoryFilter filter, CmsResourceTranslator translation) {
 
         m_cms = cms;
         setFilter(filter);
+        m_translation = translation;
     }
 
     /**
@@ -602,6 +609,19 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
     }
 
     /**
+     * Gets the resource translator to use for path translations.
+     *
+     * @return the resource translator to use
+     */
+    private CmsResourceTranslator getEffectiveResourceTranslator() {
+
+        if (m_translation != null) {
+            return m_translation;
+        }
+        return m_cms.getRequestContext().getFileTranslator();
+    }
+
+    /**
      * Validates (translates) the given path and checks if it is filtered out.<p>
      *
      * @param path the path to validate
@@ -614,7 +634,8 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
 
         // Problems with spaces in new folders (default: "Neuer Ordner")
         // Solution: translate this to a correct name.
-        String ret = m_cms.getRequestContext().getFileTranslator().translateResource(path);
+        CmsResourceTranslator translator = getEffectiveResourceTranslator();
+        String ret = CmsStringUtil.translatePathComponents(translator, path);
 
         // add site root only works correct if system folder ends with a slash
         if (CmsResource.VFS_FOLDER_SYSTEM.equals(ret)) {

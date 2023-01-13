@@ -198,6 +198,10 @@
 				<regex>/system/modules/.*</regex>
 				<regex>/system/workplace/.*</regex>
 			</filter>
+            <filetranslations enabled="true">
+                <translation>s/foo/bar/g</translation>
+                <translation>s/baz/qux/g</translation>
+            </filetranslations>
 		</repository>
 		<repository name="extended" class="org.opencms.repository.CmsRepository">
 			<params>

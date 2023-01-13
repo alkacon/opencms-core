@@ -55,6 +55,7 @@ import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrResultList;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -1111,6 +1112,15 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
     }
 
     /**
+     * @see org.opencms.repository.I_CmsRepository#getTranslation()
+     */
+    public CmsResourceTranslator getTranslation() {
+
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
      * @see org.opencms.cmis.I_CmsCmisRepository#getTypeChildren(org.opencms.cmis.CmsCmisCallContext, java.lang.String, boolean, java.math.BigInteger, java.math.BigInteger)
      */
     public synchronized TypeDefinitionList getTypeChildren(
@@ -1195,6 +1205,15 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
         m_adminCms = offlineCms;
         m_root = root;
         m_isReadOnly = project.isOnlineProject();
+    }
+
+    /**
+     * @see org.opencms.repository.I_CmsRepository#isTranslationEnabled()
+     */
+    public boolean isTranslationEnabled() {
+
+        // TODO Auto-generated method stub
+        return false;
     }
 
     /**
@@ -1341,6 +1360,14 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
     public void setName(String name) {
 
         m_id = name;
+    }
+
+    /**
+     * @see org.opencms.repository.I_CmsRepository#setTranslation(org.opencms.util.CmsResourceTranslator, boolean)
+     */
+    public void setTranslation(CmsResourceTranslator translator, boolean enabled) {
+
+        throw new UnsupportedOperationException("File translations not supported by CMIS repository.");
     }
 
     /**

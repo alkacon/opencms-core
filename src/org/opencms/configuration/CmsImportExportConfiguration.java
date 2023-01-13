@@ -41,6 +41,7 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.staticexport.CmsStaticExportExportRule;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.staticexport.CmsStaticExportRfsRule;
+import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
@@ -50,9 +51,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.NodeCreateRule;
+import org.apache.commons.logging.Log;
 
 import org.dom4j.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * Import / export master configuration class.<p>
@@ -68,9 +74,6 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
     public static final String DEFAULT_XML_FILE_NAME = "opencms-importexport.xml";
 
     /**  The node name of the column node. */
-    public static final String N_PROTECTED_EXPORT = "protectedexport";
-
-    /**  The node name of the column node. */
     public static final String N_COLUMN = "column";
 
     /**  The node name of the columns node. */
@@ -78,6 +81,18 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
 
     /** Node that indicates page conversion. */
     public static final String N_CONVERT = "convert";
+
+    /** The node name of the export sub-configuration. */
+    public static final String N_EXPORT = "export";
+
+    /** The node name of the defaultexporttimestamps sub-configuration. */
+    public static final String N_EXPORT_DEFAULTTIMESTAMPMODES = "defaulttimestampmodes";
+
+    /** The node name of the resourcetype sub-configuration. */
+    public static final String N_EXPORT_RESOURCETYPENAME = "resourcetypename";
+
+    /** The node name of the timestamp sub-configuration. */
+    public static final String N_EXPORT_TIMESTAMPMODE = "timestampmode";
 
     /**  The main configuration node for the extended html import. */
     public static final String N_EXTHTMLIMPORT = "extendedhtmlimport";
@@ -130,6 +145,9 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
     /**  The node name of the html import template node. */
     public static final String N_EXTHTMLIMPORT_TEMPLATE = "template";
 
+    /** filetranslations node name. */
+    public static final String N_FILETRANSLATIONS = "filetranslations";
+
     /** The node name of the repository filter node. */
     public static final String N_FILTER = "filter";
 
@@ -141,18 +159,6 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name of the import sub-configuration. */
     public static final String N_IMPORT = "import";
-
-    /** The node name of the export sub-configuration. */
-    public static final String N_EXPORT = "export";
-
-    /** The node name of the defaultexporttimestamps sub-configuration. */
-    public static final String N_EXPORT_DEFAULTTIMESTAMPMODES = "defaulttimestampmodes";
-
-    /** The node name of the timestamp sub-configuration. */
-    public static final String N_EXPORT_TIMESTAMPMODE = "timestampmode";
-
-    /** The node name of the resourcetype sub-configuration. */
-    public static final String N_EXPORT_RESOURCETYPENAME = "resourcetypename";
 
     /** The main configuration node name. */
     public static final String N_IMPORTEXPORT = "importexport";
@@ -186,6 +192,9 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
 
     /** The principal translation node. */
     public static final String N_PRINCIPALTRANSLATIONS = "principaltranslations";
+
+    /**  The node name of the column node. */
+    public static final String N_PROTECTED_EXPORT = "protectedexport";
 
     /** The node name of the repository filter regex node. */
     public static final String N_REGEX = "regex";
@@ -304,8 +313,14 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
     /** The temporary export point path node. */
     public static final String N_TEMP_EXPORTPONT_PATH = "temp-exportpoint-path";
 
+    /** translation node name. */
+    public static final String N_TRANSLATION = "translation";
+
     /**  The node name of the user csv export node. */
     public static final String N_USERCSVEXPORT = "usercsvexport";
+
+    /** Log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsImportExportConfiguration.class);
 
     /** The configured import/export manager. */
     private CmsImportExportManager m_importExportManager;
@@ -659,6 +674,31 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
             "*/" + N_REPOSITORIES + "/" + N_REPOSITORY,
             CmsConfigurationException.class.getName(),
             A_CLASS);
+
+        try {
+            digester.addRule(
+                "*/" + N_REPOSITORIES + "/" + N_REPOSITORY + "/" + N_FILETRANSLATIONS,
+                new NodeCreateRule() {
+
+                    @Override
+                    public void end(String namespace, String name) throws Exception {
+
+                        org.w3c.dom.Element elem = (org.w3c.dom.Element)digester.pop();
+                        boolean enabled = Boolean.parseBoolean(elem.getAttribute(A_ENABLED));
+                        NodeList translationElements = elem.getElementsByTagName(N_TRANSLATION);
+                        String[] translationStrings = new String[translationElements.getLength()];
+                        for (int i = 0; i < translationElements.getLength(); i++) {
+                            org.w3c.dom.Element translationElem = (org.w3c.dom.Element)translationElements.item(i);
+                            translationStrings[i] = translationElem.getTextContent();
+                        }
+                        CmsResourceTranslator translator = new CmsResourceTranslator(translationStrings, true);
+                        I_CmsRepository repo = (I_CmsRepository)(digester.peek());
+                        repo.setTranslation(translator, enabled);
+                    }
+                });
+        } catch (ParserConfigurationException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
 
         // repository name
         digester.addCallMethod("*/" + N_REPOSITORIES + "/" + N_REPOSITORY, "setName", 1);
@@ -1105,6 +1145,17 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
                                 Pattern rule = it.next();
                                 filterElement.addElement(N_REGEX).addText(rule.pattern());
                             }
+                        }
+                    }
+
+                    CmsResourceTranslator translator = repository.getTranslation();
+                    if (translator != null) {
+                        boolean translationEnabled = repository.isTranslationEnabled();
+                        Element fileTransElem = repositoryElement.addElement(N_FILETRANSLATIONS);
+                        fileTransElem.addAttribute(A_ENABLED, "" + translationEnabled);
+                        String[] translationStrings = translator.getTranslations();
+                        for (String translation : translationStrings) {
+                            fileTransElem.addElement(N_TRANSLATION).setText(translation);
                         }
                     }
                 }

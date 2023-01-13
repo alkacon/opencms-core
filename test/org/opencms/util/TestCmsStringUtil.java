@@ -744,6 +744,19 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     }
 
     /**
+     * Tests path component translation.
+     */
+    public void testTranslatePathComponents() {
+
+        String[] substitutions = {"s/ /_/g", "s/[^a-z0-9_]/x/g"};
+        CmsResourceTranslator translator = new CmsResourceTranslator(substitutions, true);
+        String input = "the quick brown fo$//ju/m/ps/over the_lazy/dog";
+        String expectedOutput = "the_quick_brown_fox//ju/m/ps/over_the_lazy/dog";
+        assertNotSame(expectedOutput, translator.translateResource(input));
+        assertEquals(expectedOutput, CmsStringUtil.translatePathComponents(translator, input));
+    }
+
+    /**
      * Test case for {@link CmsStringUtil#trimToSize(String, int)} method.<p>
      */
     public void testTrimToSize() {
