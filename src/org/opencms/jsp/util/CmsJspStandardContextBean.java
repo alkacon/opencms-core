@@ -1261,7 +1261,7 @@ public final class CmsJspStandardContextBean {
     /**
      * Returns the container the currently rendered element is part of.<p>
      *
-     * @return the currently the currently rendered element is part of
+     * @return the container the currently rendered element is part of
      */
     public CmsContainerBean getContainer() {
 
