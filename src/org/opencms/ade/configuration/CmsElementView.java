@@ -49,6 +49,9 @@ import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Ordering;
+
 /**
  * Represents a element view for the container page editor.<p>
  */
@@ -64,13 +67,10 @@ public class CmsElementView {
          */
         public int compare(CmsElementView o1, CmsElementView o2) {
 
-            int result;
-            if (o1.getOrder() == o2.getOrder()) {
-                result = o1.m_title.compareTo(o2.m_title);
-            } else {
-                result = o1.getOrder() > o2.getOrder() ? 1 : -1;
-            }
-            return result;
+            return ComparisonChain.start().compare(o1.getOrder(), o2.getOrder()).compare(
+                o1.m_title,
+                o2.m_title,
+                Ordering.natural().nullsLast()).result();
         }
     }
 
@@ -125,6 +125,7 @@ public class CmsElementView {
      * @param explorerType the explorer type
      */
     public CmsElementView(CmsExplorerTypeSettings explorerType) {
+
         m_explorerType = explorerType;
         m_id = getExplorerTypeViewId(explorerType.getName());
         m_titleKey = explorerType.getKey();
@@ -152,6 +153,7 @@ public class CmsElementView {
      * @param id the id
      */
     public CmsElementView(CmsUUID id) {
+
         m_id = id;
     }
 
