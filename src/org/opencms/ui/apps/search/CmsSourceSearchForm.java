@@ -49,11 +49,14 @@ import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.io.ByteArrayInputStream;
 import java.util.Collections;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.server.FileDownloader;
+import com.vaadin.server.StreamResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -78,26 +81,26 @@ public class CmsSourceSearchForm extends VerticalLayout {
         contentValues(false, true, false),
         /** Full text search. */
         fullText(false, false, false),
-        /** Filter using a solr index, before searching for matches. */
-        solr(true, false, false),
-        /** Filter using a solr index, before searching for matches, XML content values only. */
-        solrContentValues(true, true, false),
-
         /** Property search. */
         properties(false, false, true),
         /** */
-        resourcetype(false, false, false),
+        renameContainer(false, false, false),
+
         /** */
-        renameContainer(false, false, false);
+        resourcetype(false, false, false),
+        /** Filter using a solr index, before searching for matches. */
+        solr(true, false, false),
+        /** Filter using a solr index, before searching for matches, XML content values only. */
+        solrContentValues(true, true, false);
 
         /** The content values only flag. */
         private boolean m_contentValuesOnly;
 
-        /** The is solr search flag. */
-        private boolean m_solrSearch;
-
         /** The property flag.*/
         private boolean m_property;
+
+        /** The is solr search flag. */
+        private boolean m_solrSearch;
 
         /**
          * Constructor.<p>
@@ -156,8 +159,26 @@ public class CmsSourceSearchForm extends VerticalLayout {
     /** The source search app instance. */
     private CmsSourceSearchApp m_app;
 
+    /** The download button. */
+    private Button m_download;
+
+    /** The downloader for the CSV export. */
+    private FileDownloader m_downloader;
+
+    /** Check box to ignore subsites. */
+    private CheckBox m_ignoreSubSites;
+
     /** The search locale select. */
     private ComboBox m_locale;
+
+    /** Vaadin component.*/
+    private TextField m_newName;
+
+    /** Vaadin component.*/
+    private TextField m_oldName;
+
+    /** The property select.*/
+    private ComboBox m_property;
 
     /** The replace check box. */
     private CheckBox m_replace;
@@ -165,23 +186,17 @@ public class CmsSourceSearchForm extends VerticalLayout {
     /** The replace pattern field. */
     private TextField m_replacePattern;
 
+    /** The search root path select. */
+    private CmsPathSelectField m_replaceResource;
+
+    /** The search root path select. */
+    private CmsPathSelectField m_resourceSearch;
+
     /** The resource type select. */
     private ComboBox m_resourceType;
 
     /** The search button. */
     private Button m_search;
-
-    /** Vaadin component.*/
-    private TextField m_oldName;
-
-    /** Vaadin component.*/
-    private TextField m_newName;
-
-    /** Check box to ignore subsites. */
-    private CheckBox m_ignoreSubSites;
-
-    /** The site select. */
-    private ComboBox m_siteSelect;
 
     /** The search index select. */
     private ComboBox m_searchIndex;
@@ -192,17 +207,11 @@ public class CmsSourceSearchForm extends VerticalLayout {
     /** The search root path select. */
     private CmsPathSelectField m_searchRoot;
 
-    /** The search root path select. */
-    private CmsPathSelectField m_replaceResource;
-
-    /** The search root path select. */
-    private CmsPathSelectField m_resourceSearch;
-
     /** The search type select. */
     private ComboBox m_searchType;
 
-    /** The property select.*/
-    private ComboBox m_property;
+    /** The site select. */
+    private ComboBox m_siteSelect;
 
     /** The SOLR query field. */
     private TextField m_solrQuery;
@@ -250,6 +259,10 @@ public class CmsSourceSearchForm extends VerticalLayout {
                 search();
             }
         });
+        m_download.setVisible(false);
+        m_downloader = new FileDownloader(
+            new StreamResource(() -> new ByteArrayInputStream(new byte[] {}), "empty.csv"));
+        m_downloader.extend(m_download);
         updateReplace();
         changedSearchType();
     }
@@ -312,6 +325,17 @@ public class CmsSourceSearchForm extends VerticalLayout {
             }
 
         }
+    }
+
+    /**
+     * Sets the download provider (which may be null), and shows or hides the download button based on whether it is null.
+     *
+     * @param resource the download resource
+     */
+    public void setDownload(StreamResource resource) {
+
+        m_downloader.setFileDownloadResource(resource);
+        m_download.setVisible(resource != null);
     }
 
     /**

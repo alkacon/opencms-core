@@ -52,7 +52,10 @@ import org.opencms.ui.report.CmsReportOverlay;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.io.ByteArrayInputStream;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -62,6 +65,7 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.net.URLCodec;
 
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.server.StreamResource;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.UI;
@@ -287,12 +291,21 @@ public class CmsSourceSearchApp extends A_CmsWorkplaceApp implements I_CmsCachab
             m_resultTable.setVisible(false);
             m_infoIntroLayout.setVisible(false);
             m_infoEmptyResult.setVisible(true);
+            m_resultTable.fillTable(A_CmsUI.getCmsObject(), m_thread.getMatchedResources());
+            m_searchForm.setDownload(null);
         } else {
             m_resultTable.setVisible(true);
             m_infoIntroLayout.setVisible(false);
             m_infoEmptyResult.setVisible(false);
+            m_resultTable.fillTable(A_CmsUI.getCmsObject(), m_thread.getMatchedResources());
+            SimpleDateFormat fmt = new SimpleDateFormat("hhmmss");
+            String timeStr = fmt.format(new Date());
+            String filename = "opencms_sourcesearch_" + timeStr + ".csv";
+            StreamResource downloadResource = new StreamResource(
+                () -> new ByteArrayInputStream(m_resultTable.generateCsv()),
+                filename);
+            m_searchForm.setDownload(downloadResource);
         }
-        m_resultTable.fillTable(A_CmsUI.getCmsObject(), m_thread.getMatchedResources());
         m_searchForm.removeComponent(m_report);
         m_report = null;
     }

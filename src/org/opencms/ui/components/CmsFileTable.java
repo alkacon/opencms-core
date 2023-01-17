@@ -75,18 +75,28 @@ import org.opencms.ui.util.I_CmsItemSorter;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
@@ -112,6 +122,8 @@ import com.vaadin.v7.ui.Field;
 import com.vaadin.v7.ui.Table;
 import com.vaadin.v7.ui.Table.TableDragMode;
 import com.vaadin.v7.ui.TextField;
+
+import au.com.bytecode.opencsv.CSVWriter;
 
 /**
  * Table for displaying resources.<p>
@@ -236,35 +248,35 @@ public class CmsFileTable extends CmsResourceTable {
             } else if ((CmsResourceTableProperty.PROPERTY_TYPE_ICON.equals(propertyId)
                 || CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT.equals(propertyId))
                 && (item1.getItemProperty(CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION) != null)) {
-                    int result;
-                    Float pos1 = (Float)item1.getItemProperty(
-                        CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
-                    Float pos2 = (Float)item2.getItemProperty(
-                        CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
-                    if (pos1 == null) {
-                        result = pos2 == null
-                        ? compareProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, true, item1, item2)
-                        : 1;
-                    } else {
-                        result = pos2 == null ? -1 : Float.compare(pos1.floatValue(), pos2.floatValue());
-                    }
-                    if (!sortDirection) {
-                        result = result * (-1);
-                    }
-                    return result;
-                } else if (((CmsResourceTableProperty)propertyId).getColumnType().equals(String.class)) {
-                    String value1 = (String)item1.getItemProperty(propertyId).getValue();
-                    String value2 = (String)item2.getItemProperty(propertyId).getValue();
-                    // Java collators obtained by java.text.Collator.getInstance(...) ignore spaces, and we don't want to ignore them, so we use
-                    // ICU collators instead
-                    com.ibm.icu.text.Collator collator = com.ibm.icu.text.Collator.getInstance(
-                        com.ibm.icu.util.ULocale.ROOT);
-                    int result = collator.compare(value1, value2);
-                    if (!sortDirection) {
-                        result = -result;
-                    }
-                    return result;
+                int result;
+                Float pos1 = (Float)item1.getItemProperty(
+                    CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
+                Float pos2 = (Float)item2.getItemProperty(
+                    CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
+                if (pos1 == null) {
+                    result = pos2 == null
+                    ? compareProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, true, item1, item2)
+                    : 1;
+                } else {
+                    result = pos2 == null ? -1 : Float.compare(pos1.floatValue(), pos2.floatValue());
                 }
+                if (!sortDirection) {
+                    result = result * (-1);
+                }
+                return result;
+            } else if (((CmsResourceTableProperty)propertyId).getColumnType().equals(String.class)) {
+                String value1 = (String)item1.getItemProperty(propertyId).getValue();
+                String value2 = (String)item2.getItemProperty(propertyId).getValue();
+                // Java collators obtained by java.text.Collator.getInstance(...) ignore spaces, and we don't want to ignore them, so we use
+                // ICU collators instead
+                com.ibm.icu.text.Collator collator = com.ibm.icu.text.Collator.getInstance(
+                    com.ibm.icu.util.ULocale.ROOT);
+                int result = collator.compare(value1, value2);
+                if (!sortDirection) {
+                    result = -result;
+                }
+                return result;
+            }
             return super.compareProperty(propertyId, sortDirection, item1, item2);
             //@formatter:on
         }
@@ -451,12 +463,12 @@ public class CmsFileTable extends CmsResourceTable {
                     style += " " + OpenCmsTheme.HOVER_COLUMN;
                 } else if ((CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT == propertyId)
                     || (CmsResourceTableProperty.PROPERTY_TITLE == propertyId)) {
-                        if ((item.getItemProperty(CmsResourceTableProperty.PROPERTY_IN_NAVIGATION) != null)
-                            && ((Boolean)item.getItemProperty(
-                                CmsResourceTableProperty.PROPERTY_IN_NAVIGATION).getValue()).booleanValue()) {
-                            style += " " + OpenCmsTheme.IN_NAVIGATION;
-                        }
+                    if ((item.getItemProperty(CmsResourceTableProperty.PROPERTY_IN_NAVIGATION) != null)
+                        && ((Boolean)item.getItemProperty(
+                            CmsResourceTableProperty.PROPERTY_IN_NAVIGATION).getValue()).booleanValue()) {
+                        style += " " + OpenCmsTheme.IN_NAVIGATION;
                     }
+                }
                 for (Table.CellStyleGenerator generator : m_additionalStyleGenerators) {
                     String additional = generator.getStyle(source, itemId, propertyId);
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(additional)) {
@@ -580,6 +592,80 @@ public class CmsFileTable extends CmsResourceTable {
         }
         if ((m_fileTable.getValue() != null) & !((Set<?>)m_fileTable.getValue()).isEmpty()) {
             m_fileTable.setCurrentPageFirstItemId(((Set<?>)m_fileTable.getValue()).iterator().next());
+        }
+    }
+
+    /**
+     * Generates UTF-8 encoded CSV for currently active table columns (standard columns only).
+     *
+     * <p>Note: the generated CSV takes the active filters into account.
+     *
+     * @return the generated CSV data
+     */
+    public byte[] generateCsv() {
+
+        try {
+            Container container = m_fileTable.getContainerDataSource();
+            Object[] columnArray = m_fileTable.getVisibleColumns();
+            Set<Object> columns = new HashSet<>(Arrays.asList(columnArray));
+            LinkedHashMap<Object, Function<Object, String>> columnFormatters = new LinkedHashMap<>();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            CSVWriter writer = new CSVWriter(new OutputStreamWriter(baos, StandardCharsets.UTF_8));
+            List<String> csvHeaders = new ArrayList<>();
+            List<CmsResourceTableProperty> csvColumns = new ArrayList<>();
+
+            for (Object propId : m_fileTable.getVisibleColumns()) {
+                if (propId instanceof CmsResourceTableProperty) {
+                    CmsResourceTableProperty tableProp = (CmsResourceTableProperty)propId;
+                    if (!m_fileTable.isColumnCollapsed(propId)) {
+                        Class<?> colType = tableProp.getColumnType();
+                        // skip "widget"-valued columns - currently this is just the project flag
+                        if (!colType.getName().contains("vaadin")) {
+                            // always use English column headers, as external tools using the CSV may use the column labels as IDs
+                            String colHeader = OpenCms.getWorkplaceManager().getMessages(Locale.ENGLISH).key(
+                                tableProp.getHeaderKey());
+                            csvHeaders.add(colHeader);
+                            csvColumns.add(tableProp);
+                        }
+                    }
+                }
+            }
+
+            final String[] emptyArray = {};
+            writer.writeNext(csvHeaders.toArray(emptyArray));
+            final DateFormat iso8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            iso8601.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+            Set<CmsResourceTableProperty> dateCols = new HashSet<>(
+                Arrays.asList(
+                    CmsResourceTableProperty.PROPERTY_DATE_CREATED,
+                    CmsResourceTableProperty.PROPERTY_DATE_MODIFIED,
+                    CmsResourceTableProperty.PROPERTY_DATE_RELEASED,
+                    CmsResourceTableProperty.PROPERTY_DATE_EXPIRED));
+            for (Object itemId : m_fileTable.getContainerDataSource().getItemIds()) {
+                Item item = m_fileTable.getContainerDataSource().getItem(itemId);
+                List<String> row = new ArrayList<>();
+                for (CmsResourceTableProperty col : csvColumns) {
+                    Object value = item.getItemProperty(col).getValue();
+                    // render nulls as empty strings, some special "Long"-valued date columns as ISO8601 time stamps, and just use toString() for everything else
+                    String csvValue = "";
+                    if (value != null) {
+                        if (dateCols.contains(col) && (value instanceof Long)) {
+                            csvValue = iso8601.format(new Date((Long)value));
+                        } else {
+                            csvValue = value.toString();
+                        }
+                    }
+                    row.add(csvValue);
+                }
+                writer.writeNext(row.toArray(emptyArray));
+            }
+            writer.flush();
+            byte[] result = baos.toByteArray();
+            return result;
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return null;
         }
     }
 
