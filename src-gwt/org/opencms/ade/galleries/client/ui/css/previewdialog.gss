@@ -101,7 +101,7 @@ div.previewDialog div.previewTitle{
 
 /* Properties tab. */
 .propertiesList {	
-	height:80px; /* Change the height on resize */
+	height:120px; /* Change the height on resize */
 	overflow: auto;
 	position: relative;
 	margin:0px;

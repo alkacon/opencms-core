@@ -311,7 +311,8 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
             resource.getTypeId())) {
             properties = Lists.newArrayList(
                 CmsPropertyDefinition.PROPERTY_TITLE,
-                CmsPropertyDefinition.PROPERTY_COPYRIGHT);
+                CmsPropertyDefinition.PROPERTY_COPYRIGHT,
+                CmsPropertyDefinition.PROPERTY_DESCRIPTION);
         } else {
             properties = setting.getProperties();
             String reference = setting.getReference();
