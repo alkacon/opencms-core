@@ -151,7 +151,9 @@ public final class CmsTinyMCEHelper {
 				options.valid_elements = "*[*]";
 				options.allow_script_urls = true;
 			}
-
+			if (config.link_default_protocol) {
+				options.link_default_protocol = config.link_default_protocol;
+			}
 			if (config.toolbar_items) {
 				toolbarGroup = @org.opencms.gwt.client.ui.input.tinymce.CmsTinyMCEHelper::createToolbar(Lcom/google/gwt/core/client/JavaScriptObject;)(config.toolbar_items);
 				toolbarGroup += " | spellchecker";

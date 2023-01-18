@@ -296,6 +296,9 @@ public class CmsHtmlWidgetOption {
     /** Option for the "show/hide visual control characters" button. */
     public static final String OPTION_VISUALCHARS = "visualchars";
 
+    /** Option for the default protocol for links */
+    public static final String OPTION_LINKDEFAULTPROTOCOL = "linkdefaultprotocol:";
+
     /** The optional buttons that can be additionally added to the button bar. */
     public static final String[] OPTIONAL_BUTTONS = {
         OPTION_ANCHOR,
@@ -405,6 +408,9 @@ public class CmsHtmlWidgetOption {
     /** The style XML path. */
     private String m_stylesXmlPath;
 
+    /** The link default protocol */
+    private String m_linkDefaultProtocol;
+
     /**
      * Creates a new empty HTML widget object object.<p>
      */
@@ -502,6 +508,10 @@ public class CmsHtmlWidgetOption {
             result.append(OPTION_FORMATSELECT_OPTIONS);
             result.append(option.getFormatSelectOptions());
             added = true;
+        }
+        if (CmsStringUtil.isNotEmpty(option.getLinkDefaultProtocol())) {
+            result.append(OPTION_LINKDEFAULTPROTOCOL);
+            result.append(option.getLinkDefaultProtocol());
         }
 
         return result.toString();
@@ -862,6 +872,15 @@ public class CmsHtmlWidgetOption {
     }
 
     /**
+     * Returns the link default protocol to use when inserting/editing links via the link dialog.
+     * 
+     * @return the link default protocol to use when inserting/editing links via the link dialog
+     */
+    public String getLinkDefaultProtocol() {
+        return m_linkDefaultProtocol;
+    }
+
+    /**
      * Initializes the widget options from the given configuration String.<p>
      *
      * @param configuration the configuration String
@@ -1041,6 +1060,17 @@ public class CmsHtmlWidgetOption {
     public void setStylesXmlPath(String stylesXmlPath) {
 
         m_stylesXmlPath = stylesXmlPath;
+    }
+
+    /**
+     * Set the link default protocol to use when inserting/editing links via the link dialog
+     * 
+     * @param linkDefaultProtocol
+     *            the link default protocol to use when inserting/editing links via the link dialog
+     */
+    public void setLinkDefaultProtocol(String linkDefaultProtocol) {
+
+        m_linkDefaultProtocol = linkDefaultProtocol;
     }
 
     /**
@@ -1228,6 +1258,12 @@ public class CmsHtmlWidgetOption {
                     m_importCss = true;
                 } else if (option.startsWith(OPTION_ALLOWSCRIPTS)) {
                     m_allowScripts = true;
+                } else if (option.startsWith(OPTION_LINKDEFAULTPROTOCOL)) {
+                    // the link default protocol
+                    option = option.substring(OPTION_LINKDEFAULTPROTOCOL.length());
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(option)) {
+                        setLinkDefaultProtocol(option);
+                    }
                 } else {
                     // check if option describes an additional button
                     if (OPTIONAL_BUTTONS_LIST.contains(option)) {
