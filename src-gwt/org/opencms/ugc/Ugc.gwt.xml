@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to="ugc">
-	<inherits name="org.opencms.GwtBase" />
+	<inherits name="org.opencms.GwtBaseCommon" />
 	<source path="client" />
 	<source path="shared" />
 	<entry-point class="org.opencms.ugc.client.CmsUgcEntryPoint" />
@@ -8,4 +8,5 @@
 	
 	<!-- Build only one permutation -->
 	<collapse-all-properties />
+    <add-linker name="xsiframe" />
 </module>
