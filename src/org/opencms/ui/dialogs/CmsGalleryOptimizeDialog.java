@@ -27,6 +27,7 @@
 
 package org.opencms.ui.dialogs;
 
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
@@ -46,11 +47,14 @@ import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsConfirmationDialog;
+import org.opencms.ui.components.CmsGwtContextMenuButton;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.shared.rpc.I_CmsGwtContextMenuServerRpc;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -58,12 +62,14 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
@@ -105,6 +111,64 @@ import com.vaadin.ui.themes.ValoTheme;
  * Class representing a dialog for optimizing galleries.<p>
  */
 public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
+
+    /**
+     * The context used for child dialogs.<p>
+     */
+    public class ContextMenu implements I_CmsGwtContextMenuServerRpc {
+
+        /** Default serial version uid. */
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * The data item handled by this dialog context.
+         */
+        private final DataItem m_dataItem;
+
+        /**
+         * Creates a new instance.
+        
+         * @param dataItem the data item
+         */
+        public ContextMenu(DataItem dataItem) {
+
+            m_dataItem = dataItem;
+        }
+
+        /**
+         * @see org.opencms.ui.shared.rpc.I_CmsGwtContextMenuServerRpc#refresh(java.lang.String)
+         */
+        public void refresh(String uuid) {
+
+            if (uuid != null) {
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                    CmsResource resource = getCms().readResource(new CmsUUID(uuid), CmsResourceFilter.ONLY_VISIBLE);
+                    boolean deleted = resource.getState() == CmsResourceState.STATE_DELETED;
+                    if (deleted) {
+                        CmsGalleryOptimizeDialog.this.handleDataListDelete(Arrays.asList(m_dataItem));
+                    } else {
+                        CmsGalleryOptimizeDialog.this.handleDataListUpdate(Arrays.asList(m_dataItem));
+                    }
+                    String message = CmsVaadinUtils.getMessageText(
+                        Messages.GUI_GALLERY_OPTIMIZE_LABEL_SUCCESSFULLY_SAVED_0);
+                    Notification notification = new Notification(message, "", Notification.Type.HUMANIZED_MESSAGE);
+                    notification.setPosition(Position.TOP_CENTER);
+                    notification.show(Page.getCurrent());
+                    CmsAppWorkplaceUi.get().enableGlobalShortcuts();
+                } catch (CmsException | InterruptedException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    Notification notification = new Notification(
+                        "",
+                        e.getLocalizedMessage(),
+                        Notification.Type.ERROR_MESSAGE);
+                    notification.setHtmlContentAllowed(true);
+                    notification.setPosition(Position.TOP_CENTER);
+                    notification.show(Page.getCurrent());
+                }
+            }
+        }
+    }
 
     /**
      * Class representing an editable gallery item.<p>
@@ -483,7 +547,8 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
          */
         private String readName() throws CmsException {
 
-            return getCms().readResource(m_resource.getStructureId()).getName();
+            CmsResourceFilter resourceFilter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireFile();
+            return getCms().readResource(m_resource.getStructureId(), resourceFilter).getName();
         }
 
         /**
@@ -1071,7 +1136,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         private static final long serialVersionUID = 1L;
 
         /** The data item of this form composite. */
-        private DataItem m_dataItem;
+        DataItem m_dataItem;
 
         /**
          * Creates a new form composite for a given data item.<p>
@@ -1110,6 +1175,11 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             resourceInfo.decorateTopInput();
             TextField field = resourceInfo.getTopInput();
             m_dataItem.getBinder().bind(field, DataItem::getName, DataItem::setName);
+            CmsGwtContextMenuButton contextMenu = new CmsGwtContextMenuButton(
+                m_dataItem.getResource().getStructureId(),
+                new ContextMenu(m_dataItem));
+            contextMenu.addStyleName("o-gwt-contextmenu-button-margin");
+            resourceInfo.setButtonWidget(contextMenu);
             return resourceInfo;
         }
 
@@ -1685,6 +1755,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
         m_provider.getItems().removeAll(dataItemList);
         ((DataListHeaderComposite)m_compositeDataListHeader).refresh();
+        displayDataListView(false);
     }
 
     /**
@@ -1696,7 +1767,8 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     void handleDataListUpdate(List<DataItem> dataItemList) throws CmsException {
 
         for (DataItem dataItem : dataItemList) {
-            CmsResource reload = getCms().readResource(dataItem.getResource().getStructureId());
+            CmsResourceFilter resourceFilter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireFile();
+            CmsResource reload = getCms().readResource(dataItem.getResource().getStructureId(), resourceFilter);
             dataItem.setResource(reload);
         }
         displayDataListView(false);

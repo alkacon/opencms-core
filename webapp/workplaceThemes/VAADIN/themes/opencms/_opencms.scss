@@ -764,6 +764,14 @@
 		.o-resourceinfo-toolbar * {
 			font-size: 24px !important;
 		}
+		
+		.o-toolbar-button .v-menubar-menuitem {
+			padding: 2px !important;
+		}
+
+		.o-resourceinfo-toolbar .v-icon.opencms-font {
+			font-size: 20px !important; 
+		}
 
 		&:hover .o-resourceinfo-toolbar {
 			visibility: visible !important;

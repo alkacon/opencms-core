@@ -126,6 +126,11 @@ public class CmsResourceInfo extends CustomLayout {
         m_topText.setValue(galleryTitle);
         m_topInput.setValue(galleryTitle);
         m_bottomText.setValue(resourceUtil.getPath());
+        if (!resourceUtil.isReleasedAndNotExpired()) {
+            m_topText.addStyleName("o-expired");
+            m_topInput.addStyleName("o-expired");
+            m_bottomText.addStyleName("o-expired");
+        }
         m_icon.initContent(resourceUtil, useState ? resource.getState() : null, true, true);
 
     }
