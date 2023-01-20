@@ -34,7 +34,6 @@ import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.shared.CmsListElementCreationDialogData;
 import org.opencms.gwt.shared.CmsListElementCreationOption;
@@ -65,6 +64,8 @@ public class CmsListAddDialog extends CmsPopup {
 
         super();
         setCaption(listAddData.getCaption());
+        setGlassEnabled(true);
+        addDialogClose(() -> {});
         CmsPushButton cancel = new CmsPushButton();
         cancel.setUseMinWidth(true);
         cancel.setText(Messages.get().key(Messages.GUI_BUTTON_CANCEL_TEXT_0));
@@ -87,14 +88,13 @@ public class CmsListAddDialog extends CmsPopup {
             listAddData.getOptions().stream().forEach(option -> {
                 CmsListInfoBean listInfo = option.getInfo();
                 CmsListItemWidget itemWidget = new CmsListItemWidget(listInfo);
-                CmsPushButton plusButton = new CmsPushButton();
-                plusButton.setImageClass(I_CmsButton.ADD_SMALL);
-                plusButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
-                plusButton.setSize(Size.big);
-                plusButton.addClickHandler(event -> {
+                itemWidget.addClickHandler(evt -> {
                     CmsListAddDialog.this.hide();
                     optionHandler.accept(option);
                 });
+                CmsPushButton plusButton = new CmsPushButton();
+                plusButton.setImageClass(I_CmsButton.ADD_SMALL);
+                plusButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
                 itemWidget.getButtonPanel().add(plusButton);
                 CmsListItem item = new CmsListItem(itemWidget);
                 optionContainer.add(item);

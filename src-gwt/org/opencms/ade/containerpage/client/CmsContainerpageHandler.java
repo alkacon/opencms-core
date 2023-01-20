@@ -955,7 +955,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                         structureId,
                         result,
                         option -> openEditorForNewListContent(option, "" + structureId, result.getPostCreateHandler()));
-                    dialog.centerHorizontally(100);
+                    dialog.center();
                 }
             }
         };

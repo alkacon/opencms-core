@@ -5,12 +5,8 @@
 	margin-top: 5px;
 }
 
-.optionContainer [role="button"]:hover, .optionContainer [role="button"]:hover * {
-	color: black !important;
-}
-
-.optionContainer .liw-buttonPanel {
-	top: 0px !important;
+.optionContainer li, .optionContainer li * {
+    cursor: pointer;
 }
 
 .labelContainer {
