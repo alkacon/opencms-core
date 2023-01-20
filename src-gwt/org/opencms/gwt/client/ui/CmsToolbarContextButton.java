@@ -175,11 +175,10 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
                     setActive(false);
                 }
             });
-            m_popup.position();
+            m_popup.positionDeferred();
         } else {
             m_menuPanel.setWidget(0, 0, m_noEntriesLabel);
-            m_popup.position();
-
+            m_popup.positionDeferred();
         }
     }
 }

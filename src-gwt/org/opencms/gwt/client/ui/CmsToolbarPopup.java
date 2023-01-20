@@ -31,6 +31,7 @@ import org.opencms.ade.galleries.client.ui.CmsGalleryDialog;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsPositionBean;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
@@ -195,6 +196,14 @@ public class CmsToolbarPopup extends CmsPopup {
 
         showArrow(m_arrow);
         setPopupPosition(contentLeft + Window.getScrollLeft(), contentTop);
+    }
+
+    /**
+     * Defers execution of the position() method.<p>
+     */
+    public void positionDeferred() {
+
+        Scheduler.get().scheduleDeferred(() -> position());
     }
 
     /**

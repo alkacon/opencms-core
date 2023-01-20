@@ -176,10 +176,11 @@ public class CmsContextMenuButton extends CmsMenuButton {
                     closeMenu();
                 }
             });
-            m_popup.position();
+            // calling m_popup.position() directly causes weird layout bugs, wait until end of event cycle
+            m_popup.positionDeferred();
         } else {
             m_menuPanel.setWidget(0, 0, m_noEntriesLabel);
-            m_popup.position();
+            m_popup.positionDeferred();
         }
     }
 

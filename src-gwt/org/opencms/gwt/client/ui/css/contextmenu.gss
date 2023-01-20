@@ -70,6 +70,10 @@ div.cmsMenuBar .cmsMenuItem.selected * {
 	width: 24px; 
 }
 
+.cmsMenuItem .label {
+	white-space: nowrap; 
+}
+
 .cmsMenuBar .cmsMenuItem .html-face > span{
 	margin-right: 6px;
 }
