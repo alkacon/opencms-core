@@ -55,6 +55,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsPermalinkResourceHandler;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.components.CmsResourceIcon;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
@@ -66,6 +67,7 @@ import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContentProperty;
+import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.util.Collections;
 import java.util.Date;
@@ -306,6 +308,19 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
         // reading default explorer-type properties
         CmsExplorerTypeSettings setting = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
         List<String> properties;
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, resource.getRootPath());
+        Map<String, CmsXmlContentProperty> propConfig = config.getPropertyConfigurationAsMap();
+        CmsMacroResolver resolver = new CmsMacroResolver();
+        resolver.setCmsObject(cms);
+        resolver.setMessages(OpenCms.getWorkplaceManager().getMessages(wpLocale));
+        propConfig = CmsXmlContentPropertyHelper.resolveMacrosInProperties(propConfig, resolver);
+        Map<String, String> niceNames = new HashMap<>();
+        for (CmsXmlContentProperty propEntry : propConfig.values()) {
+            String niceName = propEntry.getNiceName();
+            if (niceName != null) {
+                niceNames.put(propEntry.getName(), niceName);
+            }
+        }
         if (OpenCms.getResourceManager().matchResourceType(
             CmsResourceTypeImage.getStaticTypeName(),
             resource.getTypeId())) {
@@ -335,6 +350,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
             }
         }
         resInfo.setProperties(props);
+        resInfo.setPropertyNiceNames(niceNames);
         resInfo.setPreviewContent(getPreviewContent(cms, resource, CmsLocaleManager.getLocale(locale)));
     }
 

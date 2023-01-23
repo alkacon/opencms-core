@@ -115,8 +115,8 @@ public class CmsPropertiesTab extends A_CmsPreviewDetailTab implements ValueChan
                 Entry<String, String> entry = it.next();
                 CmsPropertyForm property = new CmsPropertyForm(
                     entry.getKey(),
-
                     entry.getValue(),
+                    info.getPropertyLabel(entry.getKey()),
                     noEditReason);
                 property.addValueChangeHandler(this);
                 m_propertiesPanel.add(property);

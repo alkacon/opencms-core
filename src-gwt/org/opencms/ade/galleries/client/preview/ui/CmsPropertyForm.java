@@ -76,9 +76,10 @@ public class CmsPropertyForm extends Composite implements HasValueChangeHandlers
      *
      * @param id the id of the property from
      * @param value the property value
+     * @param label the label text to display
      * @param noEditReason the reason why the properties are not editable
      */
-    public CmsPropertyForm(String id, String value, String noEditReason) {
+    public CmsPropertyForm(String id, String value, String label, String noEditReason) {
 
         m_id = id;
         m_originalValue = value;
@@ -87,7 +88,7 @@ public class CmsPropertyForm extends Composite implements HasValueChangeHandlers
         m_parent = new FlowPanel();
         m_parent.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().propertyForm());
         // set form label
-        m_label = new CmsLabel(m_id);
+        m_label = new CmsLabel(label);
         m_label.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().labelField());
         m_parent.add(m_label);
 

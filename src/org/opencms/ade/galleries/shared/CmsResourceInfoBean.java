@@ -47,6 +47,9 @@ public class CmsResourceInfoBean extends CmsIconBean {
     /** The last modification date. */
     private Date m_lastModified;
 
+    /** The nice names for the properties. */
+    private Map<String, String> m_niceNames;
+
     /** The no edit reason. If empty editing is allowed. */
     private String m_noEditReason;
 
@@ -127,6 +130,24 @@ public class CmsResourceInfoBean extends CmsIconBean {
     public Map<String, String> getProperties() {
 
         return m_properties;
+    }
+
+    /**
+     * Gets the label to display for the given property.
+     *
+     * @param propName the property name
+     * @return the label to display
+     */
+    public String getPropertyLabel(String propName) {
+
+        String result = null;
+        if (m_niceNames != null) {
+            result = m_niceNames.get(propName);
+        }
+        if (result == null) {
+            result = propName;
+        }
+        return result;
     }
 
     /**
@@ -229,6 +250,16 @@ public class CmsResourceInfoBean extends CmsIconBean {
     }
 
     /**
+     * Sets the nice names for the properties.
+     *
+     * @param niceNames the nice names (keys are property names, values the corresponding nice names)
+     */
+    public void setPropertyNiceNames(Map<String, String> niceNames) {
+
+        m_niceNames = niceNames;
+    }
+
+    /**
      * Sets the resource path.<p>
      *
      * @param resourcePath the resource path to set
@@ -277,4 +308,5 @@ public class CmsResourceInfoBean extends CmsIconBean {
 
         m_title = title;
     }
+
 }
