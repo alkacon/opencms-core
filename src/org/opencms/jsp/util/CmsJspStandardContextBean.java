@@ -1469,36 +1469,6 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Provides access to the setting definitions of a formatter for use in JSPs.
-     *
-     * @param formatterKey the key of the formatter for which we want the definitions
-     *
-     * @return the formatter setting definitions
-     */
-    public List<CmsSettingDefinitionWrapper> getFormatterSettings(String formatterKey) {
-
-        CmsObject cms = m_cms;
-        CmsADEConfigData config = m_config;
-        List<CmsSettingDefinitionWrapper> result = new ArrayList<>();
-        I_CmsFormatterBean formatter = config.findFormatter(formatterKey);
-        if (formatter == null) {
-            LOG.warn("getFormatterSettings couldn't find formatter with key " + formatterKey);
-            return Collections.emptyList();
-        }
-        Map<String, CmsXmlContentProperty> settingDefs = formatter.getSettings(config);
-
-        // we don't use the CmsGalleryNameMacroResolver that the settings dialog uses because we can't use the special macros anyway: they use information from the content/page.
-        final CmsMacroResolver resolver = CmsFormatterInfoWrapper.getMacroResolverForFormatter(cms, formatter);
-
-        for (Map.Entry<String, CmsXmlContentProperty> entry : settingDefs.entrySet()) {
-            CmsSettingDefinitionWrapper sd = new CmsSettingDefinitionWrapper(cms, entry.getValue(), resolver);
-            result.add(sd);
-        }
-        return result;
-
-    }
-
-    /**
      * Returns a lazy initialized Map which allows access to the dynamic function beans using the JSP EL.<p>
      *
      * When given a key, the returned map will look up the corresponding dynamic function bean in the module configuration.<p>
