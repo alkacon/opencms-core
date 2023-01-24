@@ -152,6 +152,16 @@ public class CmsFormatterInfoWrapper {
     }
 
     /**
+     * Gets the formatter key.
+     *
+     * @return the formatter key
+     */
+    public String getKey() {
+
+        return m_formatter.getKey();
+    }
+
+    /**
      * Gets the maximum container width.
      *
      * @return the maximum container width
