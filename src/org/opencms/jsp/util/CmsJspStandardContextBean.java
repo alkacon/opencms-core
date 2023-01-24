@@ -49,6 +49,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.gwt.shared.CmsGwtConstants;
@@ -63,6 +64,7 @@ import org.opencms.jsp.CmsJspTagEditable;
 import org.opencms.jsp.Messages;
 import org.opencms.jsp.jsonpart.CmsJsonPartFilter;
 import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigParserUtils;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -2120,6 +2122,25 @@ public final class CmsJspStandardContextBean {
     public CmsRequestContext getRequestContext() {
 
         return m_cms.getRequestContext();
+    }
+
+    /**
+     * Gets information about a specific resource type for use in JSPs.
+     *
+     * <p>If no type with the given name exists, null is returned.
+     *
+     * @param typeName the type name
+     * @return the bean representing the resource type
+     */
+    public CmsResourceTypeInfoWrapper getResourceTypeInfo(String typeName) {
+
+        try {
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(typeName);
+            return new CmsResourceTypeInfoWrapper(m_cms, m_config, type);
+        } catch (CmsLoaderException e) {
+            LOG.info(e.getLocalizedMessage(), e);
+            return null;
+        }
     }
 
     /**
