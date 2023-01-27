@@ -183,24 +183,24 @@ public class CmsResourceTypeInfoWrapper implements I_CmsFormatterInfo {
      *
      * @return true if the type is active
      */
-    public boolean isActive() {
+    public boolean getIsActive() {
 
         return m_active;
 
     }
 
     /**
-     * @see org.opencms.jsp.util.I_CmsFormatterInfo#isFormatter()
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getIsFormatter()
      */
-    public boolean isFormatter() {
+    public boolean getIsFormatter() {
 
         return false;
     }
 
     /**
-     * @see org.opencms.jsp.util.I_CmsFormatterInfo#isFunction()
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getIsFunction()
      */
-    public boolean isFunction() {
+    public boolean getIsFunction() {
 
         return false;
     }

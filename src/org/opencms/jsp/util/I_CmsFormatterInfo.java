@@ -75,21 +75,21 @@ public interface I_CmsFormatterInfo {
      *
      * @return true if this is active
      */
-    boolean isActive();
+    boolean getIsActive();
 
     /**
      * Checks if this wraps a (non-function) formatter.
      *
      * @return true if this wraps a normal formatter
      */
-    boolean isFormatter();
+    boolean getIsFormatter();
 
     /**
      * Checks if this wraps a dynamic function.
      *
      * @return true if this wraps a dynamic function
      */
-    boolean isFunction();
+    boolean getIsFunction();
 
     /**
      * Gets the nice name in the given locale.

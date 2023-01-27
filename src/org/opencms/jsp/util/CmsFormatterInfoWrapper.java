@@ -264,25 +264,25 @@ public class CmsFormatterInfoWrapper implements I_CmsFormatterInfo {
     }
 
     /**
-     * @see org.opencms.jsp.util.I_CmsFormatterInfo#isActive()
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getIsActive()
      */
-    public boolean isActive() {
+    public boolean getIsActive() {
 
         return true;
     }
 
     /**
-     * @see org.opencms.jsp.util.I_CmsFormatterInfo#isFormatter()
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getIsFormatter()
      */
-    public boolean isFormatter() {
+    public boolean getIsFormatter() {
 
         return m_formatter instanceof CmsFormatterBean;
     }
 
     /**
-     * @see org.opencms.jsp.util.I_CmsFormatterInfo#isFunction()
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getIsFunction()
      */
-    public boolean isFunction() {
+    public boolean getIsFunction() {
 
         return m_formatter instanceof CmsFunctionFormatterBean;
     }
