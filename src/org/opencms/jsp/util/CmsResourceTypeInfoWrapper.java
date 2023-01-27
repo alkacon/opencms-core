@@ -30,12 +30,14 @@ package org.opencms.jsp.util;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.file.CmsObject;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -45,7 +47,7 @@ import com.google.common.collect.Multimap;
 /**
  * Wrapper for resource type information for use in JSPs.
  */
-public class CmsResourceTypeInfoWrapper {
+public class CmsResourceTypeInfoWrapper implements I_CmsFormatterInfo {
 
     /** The current CMS context. */
     private CmsObject m_cms;
@@ -61,6 +63,9 @@ public class CmsResourceTypeInfoWrapper {
 
     /** The active formatters grouped by container type. */
     private Multimap<String, I_CmsFormatterBean> m_activeFormattersByContainerType = ArrayListMultimap.create();
+
+    /** Whether the type is active in the sitemap configuration. */
+    private boolean m_active;
 
     /**
      * Creates a new instance.
@@ -82,7 +87,23 @@ public class CmsResourceTypeInfoWrapper {
             for (String containerType : formatter.getContainerTypes()) {
                 m_activeFormattersByContainerType.put(containerType, formatter);
             }
+        }
+        m_active = m_config.getResourceTypes().stream().anyMatch(
+            sitemapConfigType -> m_type.getTypeName().equals(sitemapConfigType.getTypeName()));
+    }
 
+    /**
+     * Gets the description for the type in the given locale.
+     *
+     * @param locale the locale to use
+     * @return the type description
+     */
+    public String description(Locale locale) {
+
+        try {
+            return CmsWorkplaceMessages.getResourceTypeDescription(locale, m_type.getTypeName());
+        } catch (Throwable e) {
+            return m_type.getTypeName();
         }
     }
 
@@ -96,6 +117,16 @@ public class CmsResourceTypeInfoWrapper {
 
         return wrapFormatters(m_activeFormattersByContainerType.get(containerType));
 
+    }
+
+    /**
+     * Gets the type description in the current locale.
+     *
+     * @return the type description
+     */
+    public String getDescription() {
+
+        return description(m_cms.getRequestContext().getLocale());
     }
 
     /**
@@ -120,6 +151,14 @@ public class CmsResourceTypeInfoWrapper {
     }
 
     /**
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getIsResourceType()
+     */
+    public boolean getIsResourceType() {
+
+        return true;
+    }
+
+    /**
      * Gets the type name.
      *
      * @return the type name
@@ -127,6 +166,58 @@ public class CmsResourceTypeInfoWrapper {
     public String getName() {
 
         return m_type.getTypeName();
+    }
+
+    /**
+     * Gets the user-readable nice name of the type in the current locale.
+     *
+     * @return the nice name
+     */
+    public String getNiceName() {
+
+        return niceName(m_cms.getRequestContext().getLocale());
+    }
+
+    /**
+     * Returns true if the type is active in the current sitemap configuration.
+     *
+     * @return true if the type is active
+     */
+    public boolean isActive() {
+
+        return m_active;
+
+    }
+
+    /**
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#isFormatter()
+     */
+    public boolean isFormatter() {
+
+        return false;
+    }
+
+    /**
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#isFunction()
+     */
+    public boolean isFunction() {
+
+        return false;
+    }
+
+    /**
+     * Gets the nice name of the type in the given locale.
+     *
+     * @param locale the locale to use
+     * @return the nice name for the type
+     */
+    public String niceName(Locale locale) {
+
+        try {
+            return CmsWorkplaceMessages.getResourceTypeName(locale, m_type.getTypeName());
+        } catch (Throwable e) {
+            return m_type.getTypeName();
+        }
     }
 
     /**

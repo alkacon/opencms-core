@@ -36,6 +36,7 @@ import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFunctionFormatterBean;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -49,7 +50,7 @@ import java.util.Map;
 /**
  * Wrapper class for accessing formatter information from JSPs.
  */
-public class CmsFormatterInfoWrapper {
+public class CmsFormatterInfoWrapper implements I_CmsFormatterInfo {
 
     /** The CMS context to use. */
     private CmsObject m_cms;
@@ -115,6 +116,19 @@ public class CmsFormatterInfoWrapper {
     }
 
     /**
+     * Gets the description of the formatter in the given locale.
+     *
+     * @param locale the locale to use
+     * @return the description
+     */
+    public String description(Locale locale) {
+
+        String result = m_formatter.getDescription(locale);
+        result = m_macroResolver.resolveMacros(result);
+        return result;
+    }
+
+    /**
      * Gets the matching container types.
      *
      * @return the container types the formatter fits into
@@ -135,6 +149,14 @@ public class CmsFormatterInfoWrapper {
         String result = m_formatter.getDescription(locale);
         result = m_macroResolver.resolveMacros(result);
         return result;
+    }
+
+    /**
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getIsResourceType()
+     */
+    public boolean getIsResourceType() {
+
+        return false;
     }
 
     /**
@@ -179,6 +201,14 @@ public class CmsFormatterInfoWrapper {
     public int getMinWidth() {
 
         return m_formatter.getMinWidth();
+    }
+
+    /**
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getName()
+     */
+    public String getName() {
+
+        return getKey();
     }
 
     /**
@@ -231,6 +261,41 @@ public class CmsFormatterInfoWrapper {
         List<String> result = new ArrayList<>(m_formatter.getResourceTypeNames());
         Collections.sort(result);
         return result;
+    }
+
+    /**
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#isActive()
+     */
+    public boolean isActive() {
+
+        return true;
+    }
+
+    /**
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#isFormatter()
+     */
+    public boolean isFormatter() {
+
+        return m_formatter instanceof CmsFormatterBean;
+    }
+
+    /**
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#isFunction()
+     */
+    public boolean isFunction() {
+
+        return m_formatter instanceof CmsFunctionFormatterBean;
+    }
+
+    /**
+     * Gets the nice name of the formatter in the given locale.
+     *
+     * @param locale the locale to use
+     * @return the nice name of the formatter
+     */
+    public String niceName(Locale locale) {
+
+        return m_formatter.getNiceName(locale);
     }
 
 }
