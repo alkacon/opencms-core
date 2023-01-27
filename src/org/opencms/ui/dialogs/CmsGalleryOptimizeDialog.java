@@ -340,6 +340,16 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
+         * Returns whether this data item has no copyright information.<p>
+         *
+         * @return whether this data item has no copyright information
+         */
+        public Boolean getNoCopyright() {
+
+            return Boolean.valueOf(CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_copyright));
+        }
+
+        /**
          * Returns the full path of this editable gallery item.<p>
          *
          * @return the full path
@@ -755,7 +765,8 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                 m_messageSortDateLastModifiedDescending,
                 m_messageSortPathAscending,
                 m_messageSortPathDescending,
-                m_messageSortUnusedFirst);
+                m_messageSortUnusedFirst,
+                m_messageSortNoCopyrightFirst);
             selectSortOrder.addValueChangeListener(event -> {
                 if (event.isUserOriginated()) {
                     selectPage(0);
@@ -1408,6 +1419,10 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         /** Comparator. */
         final SerializableComparator<DataItem> SORT_UNUSED_FIRST = Comparator.comparing(DataItem::getIsUsed)::compare;
 
+        /** Comparator. */
+        final SerializableComparator<DataItem> SORT_NOCOPYRIGHT_FIRST = Comparator.comparing(
+            DataItem::getNoCopyright)::compare;
+
         /**
          * Create a new provider for a given data item list.
          *
@@ -1683,6 +1698,9 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
     /** Localized message. */
     private String m_messageSortUnusedFirst;
+
+    /** Localized message. */
+    private String m_messageSortNoCopyrightFirst;
 
     /** The filter handler. */
     private FilterHandler m_filterHandler = new FilterHandler();
@@ -2035,6 +2053,8 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             m_provider.setSortComparator(m_provider.SORT_PATH_DESCENDING);
         } else if (sortOrder == m_messageSortUnusedFirst) {
             m_provider.setSortComparator(m_provider.SORT_UNUSED_FIRST);
+        } else if (sortOrder == m_messageSortNoCopyrightFirst) {
+            m_provider.setSortComparator(m_provider.SORT_NOCOPYRIGHT_FIRST);
         } else {
             m_provider.setSortComparator(defaultSortOrder);
         }
@@ -2155,6 +2175,8 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         m_messageSortTitleDescending = CmsVaadinUtils.getMessageText(
             Messages.GUI_GALLERY_OPTIMIZE_SORT_TITLE_DESCENDING_0);
         m_messageSortUnusedFirst = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_SORT_UNUSED_FIRST_0);
+        m_messageSortNoCopyrightFirst = CmsVaadinUtils.getMessageText(
+            Messages.GUI_GALLERY_OPTIMIZE_SORT_NOCOPYRIGHT_FIRST_0);
     }
 
     /**

@@ -138,6 +138,9 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_GALLERY_OPTIMIZE_SORT_UNUSED_FIRST_0 = "GUI_GALLERY_OPTIMIZE_SORT_UNUSED_FIRST_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_SORT_NOCOPYRIGHT_FIRST_0 = "GUI_GALLERY_OPTIMIZE_SORT_NOCOPYRIGHT_FIRST_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USER_DATA_ADDRESS_0 = "GUI_USER_DATA_ADDRESS_0";
 
     /** Message constant for key in the resource bundle. */
