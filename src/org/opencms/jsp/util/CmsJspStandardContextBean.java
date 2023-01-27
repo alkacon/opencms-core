@@ -1266,6 +1266,18 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Gets information about a given container type.
+     *
+     * @param containerType the container type
+     *
+     * @return the bean with the information about the container type
+     */
+    public CmsContainerTypeInfoWrapper getContainerTypeInfo(String containerType) {
+
+        return new CmsContainerTypeInfoWrapper(m_cms, m_config, containerType);
+    }
+
+    /**
      * Gets the CmsObject from the current Flex controller.
      *
      * @return the CmsObject from the current Flex controller
