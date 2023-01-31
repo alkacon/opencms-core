@@ -56,6 +56,7 @@ public class CmsReportWidgetConnector extends AbstractComponentConnector impleme
      * Creates a new instance.<p>
      */
     public CmsReportWidgetConnector() {
+
         registerRpc(I_CmsReportClientRpc.class, this);
         RepeatingCommand command = new RepeatingCommand() {
 
@@ -71,7 +72,7 @@ public class CmsReportWidgetConnector extends AbstractComponentConnector impleme
             }
 
         };
-        Scheduler.get().scheduleFixedDelay(command, 2000);
+        Scheduler.get().scheduleFixedDelay(command, 750);
 
     }
 
