@@ -33,6 +33,10 @@
 
 html.fullWindowDrag {}
 
+.oc-edit-buttons-invisible div.oc-option-bar {
+	display: none !important;
+}
+
 
 .oc-edit-buttons-visible div.oc-option-bar{
 	border: 1px solid transparent;

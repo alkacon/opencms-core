@@ -1177,7 +1177,8 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             m_editButtonVibility.setValue(
                 org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().editButtonsVisible());
         } else {
-            m_editButtonVibility.setValue(null);
+            m_editButtonVibility.setValue(
+                org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().editButtonsInvisible());
         }
     }
 

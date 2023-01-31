@@ -81,6 +81,8 @@ div.expiredListElementOverlay {
 	border-radius: value("constants.css.borderRadius");
 }
 
+.oc-edit-buttons-invisible {} 
+
 .oc-option-bar div.cmsState {
 	display: none;
 }

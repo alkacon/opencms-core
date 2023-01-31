@@ -7,7 +7,7 @@
 	shown on hovering the option-bar, by assigning the class .cmsHovering to the option bar.
 	
 **/
-@external oc-edit-buttons-visible, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled;
+@external oc-edit-buttons-visible, oc-edit-buttons-invisible, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled;
 
 .cmsHovering, .oc-edit-buttons-visible, .toolbarInfo, .elementInfoUnchanged {}
 

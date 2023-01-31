@@ -47,6 +47,14 @@ public interface I_CmsToolbarButtonLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
+        @ClassName("oc-edit-buttons-invisible")
+        String editButtonsInvisible();
+
+        /**
+         *  Access method.<p>
+         *
+         * @return the CSS class name
+         */
         @ClassName("oc-edit-buttons-visible")
         String editButtonsVisible();
 
