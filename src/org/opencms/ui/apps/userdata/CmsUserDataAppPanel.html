@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="package-mapping" content="u:org.opencms.ui" />
+    <meta name="package-mapping" content="o:org.opencms.ui.components" />
+    <meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+    <meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+</head>
+<body>
+
+    <v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+        <v-panel caption="%(key.GUI_USERDATA_SEARCH_BY_EMAIL_0)" width="100%">   
+            <v-form-layout  margin spacing style-name="o-formlayout-workplace-main" width="100%">
+                <v-text-field caption="%(key.GUI_USERDATA_EMAIL_0)" _id="m_email" width="100%"></v-text-field>
+                <v-button  _id="m_searchByEmail">%(key.GUI_USERDATA_START_0)</v-button>
+            </v-form-layout>            
+        </v-panel>
+        <v-panel caption="%(key.GUI_USERDATA_SEARCH_BY_USER_0)" width="100%">   
+            <v-form-layout  margin spacing style-name="o-formlayout-workplace-main" width="100%">
+                <v-horizontal-layout caption="%(key.GUI_USERDATA_USER_0)" width="100%">
+                    <v-text-field  _id="m_user" width="100%" :expand></v-text-field>
+                    <v-button _id="m_pickUserButton"></v-button>
+                </v-horizontal-layout>
+                <v-button  _id="m_searchByUser">%(key.GUI_USERDATA_START_0)</v-button>
+            </v-form-layout>            
+        </v-panel>
+        <v-vertical-layout _id="m_resultsContainer" margin="false">
+            <v-panel caption="%(key.GUI_USERDATA_RESULTS_CAPTION_0)">
+                <v-vertical-layout margin>
+                    <v-button _id="m_download" :right>%(key.GUI_BUTTON_DOWNLOAD_0)</v-button>
+                    <v-label _id="m_resultsLabel">
+                    </v-label>
+                </v-vertical-layout>
+            </v-panel>
+        </v-vertical-layout>
+    </v-vertical-layout>
+</body>
+</html>

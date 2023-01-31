@@ -54,6 +54,17 @@ import org.jsoup.nodes.Element;
 public interface I_CmsUserDataDomain extends I_CmsConfigurationParameterHandler {
 
     /**
+     * Describes the different places from which the user data domain plugins can be used.
+     */
+    enum Mode {
+        /** The frontend-based way to query user data. */
+        frontend,
+
+        /** The workplace-based way to query user data. */
+        workplace;
+    }
+
+    /**
      * Appends the user data to the given HTML element.
      *
      * @param cms the CMS context
@@ -64,11 +75,37 @@ public interface I_CmsUserDataDomain extends I_CmsConfigurationParameterHandler 
     void appendInfoHtml(CmsObject cms, CmsUserDataRequestType reqType, List<CmsUser> user, Element element);
 
     /**
+     * Writes additional information related to an email address which is not directly associated with a specific OpenCms user.
+     *
+     * @param cms the CMS context
+     * @param email the email address to check
+     * @param element the element which the additional information should be appended to
+     *
+     * @return true if any additional information related to the email address was found
+     */
+    default boolean appendlInfoForEmail(CmsObject cms, String email, Element element) {
+
+        return false;
+    }
+
+    /**
      * Initializes the domain with an admin CmsObject.
      *
      * @param cms a CmsObject
      */
     void initialize(CmsObject cms);
+
+    /**
+     * Checks if the plugin is available in the given mode.
+     *
+     * @param mode the mode
+     *
+     * @return true if the plugin is available
+     */
+    default boolean isAvailableForMode(Mode mode) {
+
+        return true;
+    }
 
     /**
      * Checks if the user matches the domain for the given user data request type.

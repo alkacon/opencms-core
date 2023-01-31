@@ -100,6 +100,14 @@ public class CmsUserDataHeader implements I_CmsUserDataDomain {
     }
 
     /**
+     * @see org.opencms.jsp.userdata.I_CmsUserDataDomain#isAvailableForMode(org.opencms.jsp.userdata.I_CmsUserDataDomain.Mode)
+     */
+    public boolean isAvailableForMode(Mode mode) {
+
+        return Mode.frontend == mode;
+    }
+
+    /**
      * @see org.opencms.jsp.userdata.I_CmsUserDataDomain#matchesUser(org.opencms.file.CmsObject, org.opencms.jsp.userdata.CmsUserDataRequestType, org.opencms.file.CmsUser)
      */
     public boolean matchesUser(CmsObject cms, CmsUserDataRequestType reqType, CmsUser user) {

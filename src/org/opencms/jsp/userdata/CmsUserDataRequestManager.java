@@ -40,6 +40,7 @@ import org.opencms.mail.CmsHtmlMail;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -89,14 +90,14 @@ public class CmsUserDataRequestManager {
     /** Logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUserDataRequestManager.class);
 
-    /** The store used to load/save user data requests. */
-    private CmsUserDataRequestStore m_requestStore = new CmsUserDataRequestStore();
-
     /** A CmsObject with admin privileges. */
     private CmsObject m_adminCms;
 
     /** The configured user data domains. */
     private List<I_CmsUserDataDomain> m_domains = new ArrayList<>();
+
+    /** The store used to load/save user data requests. */
+    private CmsUserDataRequestStore m_requestStore = new CmsUserDataRequestStore();
 
     /**
      * Adds digester rules for configuration.
@@ -167,6 +168,56 @@ public class CmsUserDataRequestManager {
         if (m_adminCms != null) {
             throw new IllegalStateException("CmsUserDataRequestManager already initialized.");
         }
+    }
+
+    /**
+     * Gets the user data for an email address.
+     *
+     * <p>Only callable by root admin users.
+     *
+     * @param cms the CMS context
+     * @param mode the mode
+     * @param email the email address
+     * @param root the root element to which the report should be added
+     * @return true if the HTML document was changed as a result of executing this method
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public boolean getInfoForEmail(
+        CmsObject cms,
+        I_CmsUserDataDomain.Mode mode,
+        String email,
+        org.jsoup.nodes.Element root)
+    throws CmsException {
+
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.ROOT_ADMIN);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(email)) {
+            throw new IllegalArgumentException("Can not use empty email address for user data request by email.");
+        }
+        return internalGetInfoForEmail(cms, mode, email, root);
+    }
+
+    /**
+     * Gets the user data for a specific OpenCms user.
+     *
+     * <p>Only callable by root admin users.
+     *
+     * @param cms the CMS context
+     * @param mode the mode
+     * @param user the OpenCms user
+     * @param root the root element to which the report should be added
+     * @return true if the HTML document was changed as a result of executing this method
+     *
+     */
+    public boolean getInfoForUser(
+        CmsObject cms,
+        I_CmsUserDataDomain.Mode mode,
+        CmsUser user,
+        org.jsoup.nodes.Element root)
+    throws CmsException {
+
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.ROOT_ADMIN);
+        return internalGetInfoForUser(cms, mode, user, root);
     }
 
     /**
@@ -316,6 +367,86 @@ public class CmsUserDataRequestManager {
 
         String collectorsStr = m_domains.stream().map(domain -> domain.toString()).collect(Collectors.joining(", "));
         return getClass().getName() + "[" + collectorsStr + "]";
+    }
+
+    /**
+     * Internal helper method for getting the user data for an email address.
+     *
+     * @param cms the CMS context
+     * @param mode the mode
+     * @param email the email address
+     * @param root the root element to which the report should be added
+     * @return true if the HTML document was changed as a result of executing this method
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private boolean internalGetInfoForEmail(
+        CmsObject cms,
+        I_CmsUserDataDomain.Mode mode,
+        String email,
+        org.jsoup.nodes.Element root)
+    throws CmsException {
+
+        Document doc = root.ownerDocument();
+        String oldHtml = doc.toString();
+
+        List<CmsUser> users = getUsersByEmail(m_adminCms, email);
+        boolean foundDomain = false;
+        for (I_CmsUserDataDomain userDomain : m_domains) {
+            if (!userDomain.isAvailableForMode(mode)) {
+                continue;
+            }
+            List<CmsUser> usersForDomain = new ArrayList<>();
+            for (CmsUser user : users) {
+                if (userDomain.matchesUser(cms, CmsUserDataRequestType.email, user)) {
+                    usersForDomain.add(user);
+                    foundDomain = true;
+                }
+            }
+            if (!usersForDomain.isEmpty()) {
+                userDomain.appendInfoHtml(cms, CmsUserDataRequestType.email, usersForDomain, root);
+            }
+            userDomain.appendlInfoForEmail(cms, email, root);
+        }
+        String newHtml = doc.toString();
+        boolean changed = !(newHtml.equals(oldHtml));
+        return changed;
+    }
+
+    /**
+     * Internal helper method for getting the user data for a specific OpenCms user.
+     *
+     * @param cms the CMS context
+     * @param mode the mode
+     * @param user the OpenCms user
+     * @param root the root element to which the report should be added
+     * @return true if the HTML document was changed as a result of executing this method
+     *
+     */
+    private boolean internalGetInfoForUser(
+        CmsObject cms,
+        I_CmsUserDataDomain.Mode mode,
+        CmsUser user,
+        org.jsoup.nodes.Element root) {
+
+        Document doc = root.ownerDocument();
+        String oldHtml = doc.toString();
+
+        for (I_CmsUserDataDomain userDomain : m_domains) {
+            if (!userDomain.isAvailableForMode(mode)) {
+                continue;
+            }
+            List<CmsUser> usersForDomain = new ArrayList<>();
+            if (userDomain.matchesUser(cms, CmsUserDataRequestType.email, user)) {
+                usersForDomain.add(user);
+            }
+            if (!usersForDomain.isEmpty()) {
+                userDomain.appendInfoHtml(cms, CmsUserDataRequestType.email, usersForDomain, root);
+            }
+        }
+        String newHtml = doc.toString();
+        boolean changed = !(newHtml.equals(oldHtml));
+        return changed;
     }
 
     /**

@@ -77,6 +77,7 @@ import org.opencms.ui.apps.sessions.CmsBroadCastConfigurtion;
 import org.opencms.ui.apps.shell.CmsShellAppConfiguration;
 import org.opencms.ui.apps.sitemanager.CmsSiteManagerConfiguration;
 import org.opencms.ui.apps.user.CmsAccountsAppConfiguration;
+import org.opencms.ui.apps.userdata.CmsUserDataAppConfiguration;
 import org.opencms.ui.contextmenu.CmsContextMenuItemProviderGroup;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
@@ -458,7 +459,7 @@ public class CmsWorkplaceAppManager {
     /**
      * Returns the editor for the given resource.<p>
      *
-     * @param cms the CMS context 
+     * @param cms the CMS context
      * @param resource the resource to edit
      * @param plainText if plain text editing is required
      *
@@ -837,7 +838,8 @@ public class CmsWorkplaceAppManager {
                 new CmsModuleAppConfiguration(),
                 new CmsAccountsAppConfiguration(),
                 new CmsShellAppConfiguration(),
-                new CmsResourceTypeAppConfiguration()));
+                new CmsResourceTypeAppConfiguration(),
+                new CmsUserDataAppConfiguration()));
 
         return result;
     }
