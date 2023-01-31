@@ -32,6 +32,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.userdata.I_CmsUserDataDomain;
 import org.opencms.jsp.userdata.Messages;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.I_CmsPrincipal;
@@ -44,11 +45,13 @@ import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.WidgetType;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelectDialog;
+import org.opencms.ui.report.CmsReportOverlay;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.logging.Log;
 
@@ -69,6 +72,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+// TODO: Auto-generated Javadoc
 /**
  * The GUI form for the user data app.
  *
@@ -76,6 +80,59 @@ import com.vaadin.ui.Window;
  * The report is constructed by the I_CmsUserDataDomain plugins configured in opencms-system.xml.
  */
 public class CmsUserDataAppPanel extends VerticalLayout {
+
+    /**
+     * Helper class recording the status of a user data search operation.
+     */
+    private class Status {
+
+        /** The m changed. */
+        private volatile boolean m_changed;
+
+        /** The m exception. */
+        private volatile Exception m_exception;
+
+        /**
+         * Gets the exception.
+         *
+         * @return the exception
+         */
+        public Exception getException() {
+
+            return m_exception;
+        }
+
+        /**
+         * Checks if is changed.
+         *
+         * @return true, if is changed
+         */
+        public boolean isChanged() {
+
+            return m_changed;
+        }
+
+        /**
+         * Sets the changed status.
+         *
+         * @param changed the new changed status
+         */
+        public void setChanged(boolean changed) {
+
+            m_changed = changed;
+        }
+
+        /**
+         * Sets the exception.
+         *
+         * @param exception the new exception
+         */
+        public void setException(Exception exception) {
+
+            m_exception = exception;
+        }
+
+    }
 
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
@@ -109,6 +166,9 @@ public class CmsUserDataAppPanel extends VerticalLayout {
 
     /** The report as a string (the content of the download). */
     protected String m_result;
+
+    /** The m report overlay. */
+    protected AtomicReference<CmsReportOverlay> m_reportOverlay = new AtomicReference<>();
 
     /**
      * Creates a new instance.
@@ -145,6 +205,7 @@ public class CmsUserDataAppPanel extends VerticalLayout {
         });
 
         m_searchByEmail.addClickListener(event -> {
+
             hideResult();
             m_email.setComponentError(null);
             String email = m_email.getValue().trim();
@@ -158,20 +219,43 @@ public class CmsUserDataAppPanel extends VerticalLayout {
             }
             try {
                 Document doc = Jsoup.parseBodyFragment("");
+                @SuppressWarnings("synthetic-access")
+                Status status = new Status();
                 doc.body().appendElement("h1").attr("class", "udr-header").text(
                     Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
                         Messages.GUI_USER_INFORMATION_FOR_1,
                         email));
 
-                if (OpenCms.getUserDataRequestManager().getInfoForEmail(
-                    cms,
-                    I_CmsUserDataDomain.Mode.workplace,
-                    email,
-                    doc.body())) {
-                    showResult(doc);
-                } else {
-                    showResult(null);
+                CmsUserDataReportThread thread = new CmsUserDataReportThread(cms, report -> {
+                    try {
+                        boolean changed = OpenCms.getUserDataRequestManager().getInfoForEmail(
+                            cms,
+                            I_CmsUserDataDomain.Mode.workplace,
+                            email,
+                            doc.body(),
+                            report);
+                        status.setChanged(changed);
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                        status.setException(e);
+                    }
+                });
+                if (m_reportOverlay.get() != null) {
+                    removeComponent(m_reportOverlay.get());
+                    m_reportOverlay.set(null);
                 }
+                m_reportOverlay.set(new CmsReportOverlay(thread));
+                addComponent(m_reportOverlay.get());
+                m_reportOverlay.get().addReportFinishedHandler(() -> {
+                    if (status.getException() != null) {
+                        CmsErrorDialog.showErrorDialog(status.getException());
+                    } else if (status.isChanged()) {
+                        showResult(doc);
+                    } else {
+                        showResult(null);
+                    }
+                });
+                thread.start();
             } catch (Exception e) {
                 CmsErrorDialog.showErrorDialog(e);
             }
@@ -192,22 +276,46 @@ public class CmsUserDataAppPanel extends VerticalLayout {
                         CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_USERDATA_USER_NOT_FOUND_0)));
                 return;
             }
+            final CmsUser finalUser = userObj;
             try {
                 Document doc = Jsoup.parseBodyFragment("");
+                @SuppressWarnings("synthetic-access")
+                Status status = new Status();
                 doc.body().appendElement("h1").attr("class", "udr-header").text(
                     Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
                         Messages.GUI_USER_INFORMATION_FOR_1,
                         user));
 
-                if (OpenCms.getUserDataRequestManager().getInfoForUser(
-                    cms,
-                    I_CmsUserDataDomain.Mode.workplace,
-                    userObj,
-                    doc.body())) {
-                    showResult(doc);
-                } else {
-                    showResult(null);
+                CmsUserDataReportThread thread = new CmsUserDataReportThread(cms, report -> {
+                    try {
+                        boolean changed = OpenCms.getUserDataRequestManager().getInfoForUser(
+                            cms,
+                            I_CmsUserDataDomain.Mode.workplace,
+                            finalUser,
+                            doc.body(),
+                            report);
+                        status.setChanged(changed);
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                        status.setException(e);
+                    }
+                });
+                if (m_reportOverlay.get() != null) {
+                    removeComponent(m_reportOverlay.get());
+                    m_reportOverlay.set(null);
                 }
+                m_reportOverlay.set(new CmsReportOverlay(thread));
+                addComponent(m_reportOverlay.get());
+                m_reportOverlay.get().addReportFinishedHandler(() -> {
+                    if (status.getException() != null) {
+                        CmsErrorDialog.showErrorDialog(status.getException());
+                    } else if (status.isChanged()) {
+                        showResult(doc);
+                    } else {
+                        showResult(null);
+                    }
+                });
+                thread.start();
             } catch (Exception e) {
                 CmsErrorDialog.showErrorDialog(e);
             }

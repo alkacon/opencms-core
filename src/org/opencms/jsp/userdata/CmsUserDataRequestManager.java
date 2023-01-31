@@ -40,6 +40,7 @@ import org.opencms.mail.CmsHtmlMail;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
@@ -179,6 +180,7 @@ public class CmsUserDataRequestManager {
      * @param mode the mode
      * @param email the email address
      * @param root the root element to which the report should be added
+     * @param report the report to write to
      * @return true if the HTML document was changed as a result of executing this method
      *
      * @throws CmsException if something goes wrong
@@ -187,14 +189,15 @@ public class CmsUserDataRequestManager {
         CmsObject cms,
         I_CmsUserDataDomain.Mode mode,
         String email,
-        org.jsoup.nodes.Element root)
+        org.jsoup.nodes.Element root,
+        I_CmsReport report)
     throws CmsException {
 
         OpenCms.getRoleManager().checkRole(cms, CmsRole.ROOT_ADMIN);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(email)) {
             throw new IllegalArgumentException("Can not use empty email address for user data request by email.");
         }
-        return internalGetInfoForEmail(cms, mode, email, root);
+        return internalGetInfoForEmail(cms, mode, email, root, report);
     }
 
     /**
@@ -206,18 +209,21 @@ public class CmsUserDataRequestManager {
      * @param mode the mode
      * @param user the OpenCms user
      * @param root the root element to which the report should be added
+     * @param report the report to write to
      * @return true if the HTML document was changed as a result of executing this method
+     * @throws CmsException if something goes wrong
      *
      */
     public boolean getInfoForUser(
         CmsObject cms,
         I_CmsUserDataDomain.Mode mode,
         CmsUser user,
-        org.jsoup.nodes.Element root)
+        org.jsoup.nodes.Element root,
+        I_CmsReport report)
     throws CmsException {
 
         OpenCms.getRoleManager().checkRole(cms, CmsRole.ROOT_ADMIN);
-        return internalGetInfoForUser(cms, mode, user, root);
+        return internalGetInfoForUser(cms, mode, user, root, report);
     }
 
     /**
@@ -376,15 +382,16 @@ public class CmsUserDataRequestManager {
      * @param mode the mode
      * @param email the email address
      * @param root the root element to which the report should be added
+     * @param report the report to write to
      * @return true if the HTML document was changed as a result of executing this method
-     *
      * @throws CmsException if something goes wrong
      */
     private boolean internalGetInfoForEmail(
         CmsObject cms,
         I_CmsUserDataDomain.Mode mode,
         String email,
-        org.jsoup.nodes.Element root)
+        org.jsoup.nodes.Element root,
+        I_CmsReport report)
     throws CmsException {
 
         Document doc = root.ownerDocument();
@@ -392,7 +399,11 @@ public class CmsUserDataRequestManager {
 
         List<CmsUser> users = getUsersByEmail(m_adminCms, email);
         boolean foundDomain = false;
+        int i = 0;
         for (I_CmsUserDataDomain userDomain : m_domains) {
+            i += 1;
+            report.println(
+                Messages.get().container(Messages.RPT_USERDATADOMAIN_COUNT_2, "" + i, "" + m_domains.size()));
             if (!userDomain.isAvailableForMode(mode)) {
                 continue;
             }
@@ -420,6 +431,7 @@ public class CmsUserDataRequestManager {
      * @param mode the mode
      * @param user the OpenCms user
      * @param root the root element to which the report should be added
+     * @param report the report
      * @return true if the HTML document was changed as a result of executing this method
      *
      */
@@ -427,12 +439,16 @@ public class CmsUserDataRequestManager {
         CmsObject cms,
         I_CmsUserDataDomain.Mode mode,
         CmsUser user,
-        org.jsoup.nodes.Element root) {
+        org.jsoup.nodes.Element root,
+        I_CmsReport report) {
 
         Document doc = root.ownerDocument();
         String oldHtml = doc.toString();
-
+        int i = 0;
         for (I_CmsUserDataDomain userDomain : m_domains) {
+            i += 1;
+            report.println(
+                Messages.get().container(Messages.RPT_USERDATADOMAIN_COUNT_2, "" + i, "" + m_domains.size()));
             if (!userDomain.isAvailableForMode(mode)) {
                 continue;
             }

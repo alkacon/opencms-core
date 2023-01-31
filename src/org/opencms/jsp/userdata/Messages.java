@@ -37,26 +37,29 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
 
-    /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.jsp.userdata.messages";
-
-    /** Message bundle key. */
-    public static final String GUI_DEFAULT_USERDATA_SECTION_0 = "GUI_DEFAULT_USERDATA_SECTION_0";
-
     /** Message bundle key. */
     public static final String ERR_CONFIG_NOT_SET_0 = "ERR_CONFIG_NOT_SET_0";
 
     /** Message bundle key. */
     public static final String ERR_FUNCTION_DETAIL_PAGE_NOT_SET_0 = "ERR_FUNCTION_DETAIL_PAGE_NOT_SET_0";
 
-    /** Static instance member. */
-    private static final I_CmsMessageBundle INSTANCE = new Messages();
-
     /** Message bundle key. */
     public static final String ERR_RESOURCE_INIT_HANDLER_NOT_CONFIGURED_0 = "ERR_RESOURCE_INIT_HANDLER_NOT_CONFIGURED_0";
 
     /** Message bundle key. */
+    public static final String GUI_DEFAULT_USERDATA_SECTION_0 = "GUI_DEFAULT_USERDATA_SECTION_0";
+
+    /** Message bundle key. */
     public static final String GUI_USER_INFORMATION_FOR_1 = "GUI_USER_INFORMATION_FOR_1";
+
+    /** Message bundle key. */
+    public static final String RPT_USERDATADOMAIN_COUNT_2 = "RPT_USERDATADOMAIN_COUNT_2";
+
+    /** Name of the used resource bundle. */
+    private static final String BUNDLE_NAME = "org.opencms.jsp.userdata.messages";
+
+    /** Static instance member. */
+    private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
      * Hides the public constructor for this utility class.<p>
