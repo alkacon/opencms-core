@@ -140,23 +140,26 @@ public class CmsStringTemplateRenderer {
         CmsJspContentAccessBean content,
         Map<String, Object> contextObjects) {
 
-        STGroup group = new STGroup('%', '%');
-        group.registerRenderer(Date.class, new DateRenderer());
-        CompiledST cST = group.defineTemplate("main", template);
-        cST.addArg(new FormalArgument("content"));
-        if (contextObjects != null) {
-            for (Entry<String, Object> entry : contextObjects.entrySet()) {
-                cST.addArg(new FormalArgument(entry.getKey()));
-            }
-        }
-        ST st = group.getInstanceOf("main");
-        st.add("content", content);
-        if (contextObjects != null) {
-            for (Entry<String, Object> entry : contextObjects.entrySet()) {
-                st.add(entry.getKey(), entry.getValue());
-            }
-        }
-        return st.render(cms.getRequestContext().getLocale());
+        return renderTemplateInternal(cms, template, content, contextObjects);
+    }
+
+    /**
+     * Renders the given string template.<p>
+     *
+     * @param cms the cms context
+     * @param template the template
+     * @param contentValue the content value (part of a content)
+     * @param contextObjects additional context objects made available to the template
+     *
+     * @return the rendering result
+     */
+    public static String renderTemplate(
+        CmsObject cms,
+        String template,
+        CmsJspContentAccessValueWrapper contentValue,
+        Map<String, Object> contextObjects) {
+
+        return renderTemplateInternal(cms, template, contentValue, contextObjects);
     }
 
     /**
@@ -179,6 +182,28 @@ public class CmsStringTemplateRenderer {
     }
 
     /**
+     * Renders the given string template.<p>
+     *
+     * @param cms the cms context
+     * @param template the template
+     * @param content the content
+     * @param contextObjects additional context objects made available to the template
+     * @param pathPrefix the path to the content part that should be accessible as content to the string template.
+     *
+     * @return the rendering result
+     */
+    public static String renderTemplate(
+        CmsObject cms,
+        String template,
+        CmsResource content,
+        Map<String, Object> contextObjects,
+        String pathPrefix) {
+
+        CmsJspContentAccessBean contentBean = new CmsJspContentAccessBean(cms, content);
+        return renderTemplate(cms, template, contentBean.getValue().get(pathPrefix), contextObjects);
+    }
+
+    /**
      * Wraps the element settings with access wrappers.<p>
      *
      * @param cms the current OpenCms user context
@@ -196,6 +221,41 @@ public class CmsStringTemplateRenderer {
             }
         }
         return wrappedSettings;
+    }
+
+    /**
+     * Renders the given string template.<p>
+     *
+     * @param cms the cms context
+     * @param template the template
+     * @param content the content
+     * @param contextObjects additional context objects made available to the template
+     *
+     * @return the rendering result
+     */
+    private static String renderTemplateInternal(
+        CmsObject cms,
+        String template,
+        Object content,
+        Map<String, Object> contextObjects) {
+
+        STGroup group = new STGroup('%', '%');
+        group.registerRenderer(Date.class, new DateRenderer());
+        CompiledST cST = group.defineTemplate("main", template);
+        cST.addArg(new FormalArgument("content"));
+        if (contextObjects != null) {
+            for (Entry<String, Object> entry : contextObjects.entrySet()) {
+                cST.addArg(new FormalArgument(entry.getKey()));
+            }
+        }
+        ST st = group.getInstanceOf("main");
+        st.add("content", content);
+        if (contextObjects != null) {
+            for (Entry<String, Object> entry : contextObjects.entrySet()) {
+                st.add(entry.getKey(), entry.getValue());
+            }
+        }
+        return st.render(cms.getRequestContext().getLocale());
     }
 
     /**
