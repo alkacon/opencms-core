@@ -308,7 +308,8 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
         // reading default explorer-type properties
         CmsExplorerTypeSettings setting = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
         List<String> properties;
-        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, resource.getRootPath());
+        String rootPathForConfig = cms.getRequestContext().getRootUri();
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, rootPathForConfig);
         Map<String, CmsXmlContentProperty> propConfig = config.getPropertyConfigurationAsMap();
         CmsMacroResolver resolver = new CmsMacroResolver();
         resolver.setCmsObject(cms);
