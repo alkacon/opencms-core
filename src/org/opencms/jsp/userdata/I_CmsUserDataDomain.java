@@ -81,11 +81,10 @@ public interface I_CmsUserDataDomain extends I_CmsConfigurationParameterHandler 
      * @param email the email address to check
      * @param element the element which the additional information should be appended to
      *
-     * @return true if any additional information related to the email address was found
      */
-    default boolean appendlInfoForEmail(CmsObject cms, String email, Element element) {
+    default void appendlInfoForEmail(CmsObject cms, String email, Element element) {
 
-        return false;
+        // do nothing
     }
 
     /**
