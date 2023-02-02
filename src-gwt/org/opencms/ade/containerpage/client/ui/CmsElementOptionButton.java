@@ -32,6 +32,8 @@ import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 
+import com.google.gwt.user.client.Event;
+
 /**
  * An optional container element button.<p>
  *
@@ -89,4 +91,21 @@ public class CmsElementOptionButton extends CmsPushButton implements I_CmsDragHa
         return m_toolbarButton;
     }
 
+    /**
+     * @see org.opencms.gwt.client.ui.CmsPushButton#onBrowserEvent(com.google.gwt.user.client.Event)
+     */
+    @Override
+    public void onBrowserEvent(Event event) {
+
+        /* This is to prevent click events from leaking out to the surrounding container element.
+         * We can't just use preventDefault in the click handler itself, since the GWT button widget class does
+         * some magic related to event handling (it ignores the initial click event, then fires *another* click
+         * event when receiving a mouseup event - the click handler doesn't get to see the first event).
+         */
+        if (event.getTypeInt() == Event.ONCLICK) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        super.onBrowserEvent(event);
+    }
 }
