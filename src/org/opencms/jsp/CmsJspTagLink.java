@@ -28,6 +28,9 @@
 package org.opencms.jsp;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
@@ -68,6 +71,37 @@ public class CmsJspTagLink extends BodyTagSupport {
 
     /** The optional locale attribute. */
     private Locale m_locale;
+
+    /**
+     * Tries to read the active locale for the given (site) path, or for its parent path if the path can't be read.
+     * <p>
+     * If this fails, null is returned.
+     *
+     * @param cms the CMS context
+     * @param baseUri the base URI for which to read the locale
+     * @return the locale
+     */
+    public static Locale getBaseUriLocale(CmsObject cms, String baseUri) {
+
+        try {
+            try {
+                return OpenCms.getLocaleManager().getDefaultLocale(
+                    cms,
+                    cms.readResource(baseUri, CmsResourceFilter.IGNORE_EXPIRATION));
+            } catch (CmsVfsResourceNotFoundException e) {
+                String parent = CmsResource.getParentFolder(baseUri);
+                if (parent != null) {
+                    return OpenCms.getLocaleManager().getDefaultLocale(
+                        cms,
+                        cms.readResource(parent, CmsResourceFilter.IGNORE_EXPIRATION));
+                }
+            }
+        } catch (CmsException e) {
+            LOG.info(e.getLocalizedMessage(), e);
+        }
+        return null;
+
+    }
 
     /**
      * Returns a link to a file in the OpenCms VFS
@@ -194,6 +228,12 @@ public class CmsJspTagLink extends BodyTagSupport {
                 cms = OpenCms.initCmsObject(cms);
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(baseUri)) {
                     cms.getRequestContext().setUri(baseUri);
+                    if (locale == null) {
+                        Locale baseUriLocale = getBaseUriLocale(cms, baseUri);
+                        if (baseUriLocale != null) {
+                            cms.getRequestContext().setLocale(baseUriLocale);
+                        }
+                    }
                 }
                 if (null != locale) {
                     cms.getRequestContext().setLocale(locale);

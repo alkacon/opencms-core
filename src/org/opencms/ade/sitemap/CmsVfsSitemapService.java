@@ -106,6 +106,7 @@ import org.opencms.json.JSONArray;
 import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavBuilder.Visibility;
 import org.opencms.jsp.CmsJspNavElement;
+import org.opencms.jsp.CmsJspTagLink;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockUtil;
@@ -764,6 +765,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             CmsResource baseResource = cms.readResource(baseId, CmsResourceFilter.IGNORE_EXPIRATION);
             String contextPath = cms.getSitePath(baseResource);
             cms.getRequestContext().setUri(contextPath);
+            Locale locale = CmsJspTagLink.getBaseUriLocale(cms, contextPath);
+            if (locale != null) {
+                cms.getRequestContext().setLocale(locale);
+            }
             String result = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, sitePath);
             return result;
         } catch (Exception e) {
