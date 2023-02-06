@@ -40,6 +40,9 @@ import java.io.PrintStream;
  */
 public class CmsShellScriptThread extends A_CmsReportThread {
 
+    /** Object used as lock to prevent multiple shell script threads from running at the same time. */
+    private static final Object LOCK = new Object();
+
     /**Script to run.*/
     private String m_script;
 
@@ -71,20 +74,22 @@ public class CmsShellScriptThread extends A_CmsReportThread {
     @Override
     public void run() {
 
-        String script = "echo on\n" + m_script;
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        PrintStream out = new PrintStream(buffer);
-        final CmsShell shell = new CmsShell(getCms(), "${user}@${project}:${siteroot}|${uri}>", null, out, out);
+        synchronized (LOCK) {
+            String script = "echo on\n" + m_script;
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            PrintStream out = new PrintStream(buffer);
+            final CmsShell shell = new CmsShell(getCms(), "${user}@${project}:${siteroot}|${uri}>", null, out, out);
 
-        String[] subscripts = script.split("\n");
-        int stringPos = 0;
-        for (String subscript : subscripts) {
-            shell.execute(subscript);
-            out.flush();
-            String res = buffer.toString();
-            getReport().println(
-                Messages.get().container(Messages.RPT_IMPORT_SCRIPT_OUTPUT_1, res.substring(stringPos)));
-            stringPos = res.length();
+            String[] subscripts = script.split("\n");
+            int stringPos = 0;
+            for (String subscript : subscripts) {
+                shell.execute(subscript);
+                out.flush();
+                String res = buffer.toString();
+                getReport().println(
+                    Messages.get().container(Messages.RPT_IMPORT_SCRIPT_OUTPUT_1, res.substring(stringPos)));
+                stringPos = res.length();
+            }
         }
     }
 
