@@ -57,11 +57,13 @@ import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.module.CmsModuleImportExportHandler;
 import org.opencms.module.CmsModuleManager;
+import org.opencms.report.CmsLogReport;
 import org.opencms.report.CmsMultiplexReport;
 import org.opencms.report.CmsPrintStreamReport;
 import org.opencms.report.CmsShellLogReport;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
+import org.opencms.search.CmsSearchManager;
 import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
@@ -97,6 +99,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -535,7 +538,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Deletes a project by name.<p>
      *
      * @param name the name of the project to delete
-    
+
      * @throws Exception if something goes wrong
      *
      * @see CmsObject#deleteProject(CmsUUID)
@@ -1384,6 +1387,33 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void rebuildIndex(String index) throws Exception {
 
         OpenCms.getSearchManager().rebuildIndex(index, new CmsShellReport(m_cms.getRequestContext().getLocale()));
+    }
+
+    /**
+     * Reindexes either a single file or all files under a folder in the given project.
+     *
+     * @param path the path of either a file to reindex, or a folder under which resources should be indexed
+     * @param reindexRelated true if related resources should be reindexed
+     * @throws CmsException if something goes wrong
+     */
+    public void reindexResources(String path, boolean reindexRelated) throws CmsException {
+
+        CmsObject cms = OpenCms.initCmsObject(m_cms);
+        Map<String, Object> eventData = new HashMap<>(3);
+        boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
+        if (!online) {
+            eventData.put(I_CmsEventListener.KEY_PROJECTID, cms.getRequestContext().getCurrentProject().getId());
+        }
+        CmsResource resource = cms.readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
+        eventData.put(I_CmsEventListener.KEY_RESOURCES, Collections.singletonList(resource));
+        eventData.put(
+            I_CmsEventListener.KEY_REPORT,
+            new CmsLogReport(CmsLocaleManager.getDefaultLocale(), CmsSearchManager.class));
+        eventData.put(I_CmsEventListener.KEY_REINDEX_RELATED, Boolean.valueOf(reindexRelated));
+        CmsEvent reindexEvent = new CmsEvent(
+            online ? I_CmsEventListener.EVENT_REINDEX_ONLINE : I_CmsEventListener.EVENT_REINDEX_OFFLINE,
+            eventData);
+        OpenCms.fireCmsEvent(reindexEvent);
     }
 
     /**

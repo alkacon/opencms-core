@@ -1048,10 +1048,13 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 Map<String, Object> eventData = event.getData();
                 CmsUUID userId = (CmsUUID)eventData.get(I_CmsEventListener.KEY_USER_ID);
                 CmsUser user = null;
-                try {
-                    user = m_adminCms.readUser(userId);
-                } catch (Throwable t) {
-                    // should never happen
+                if (userId != null) {
+                    try {
+                        user = m_adminCms.readUser(userId);
+                    } catch (Throwable t) {
+                        // should not normally happen
+                        LOG.debug(t.getMessage(), t);
+                    }
                 }
                 try {
                     SEARCH_MANAGER_LOCK.lock();
