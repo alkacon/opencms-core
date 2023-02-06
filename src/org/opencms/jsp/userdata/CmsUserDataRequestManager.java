@@ -402,9 +402,14 @@ public class CmsUserDataRequestManager {
         int i = 0;
         for (I_CmsUserDataDomain userDomain : m_domains) {
             i += 1;
-            report.println(
-                Messages.get().container(Messages.RPT_USERDATADOMAIN_COUNT_2, "" + i, "" + m_domains.size()));
+            report.print(Messages.get().container(Messages.RPT_USERDATADOMAIN_COUNT_2, "" + i, "" + m_domains.size()));
+            report.print(
+                org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0),
+                I_CmsReport.FORMAT_DEFAULT);
             if (!userDomain.isAvailableForMode(mode)) {
+                report.println(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SKIPPED_0),
+                    I_CmsReport.FORMAT_DEFAULT);
                 continue;
             }
             List<CmsUser> usersForDomain = new ArrayList<>();
@@ -418,6 +423,9 @@ public class CmsUserDataRequestManager {
                 userDomain.appendInfoHtml(cms, CmsUserDataRequestType.email, usersForDomain, root);
             }
             userDomain.appendlInfoForEmail(cms, email, root);
+            report.println(
+                org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                I_CmsReport.FORMAT_OK);
         }
         String newHtml = doc.toString();
         boolean changed = !(newHtml.equals(oldHtml));
@@ -447,9 +455,14 @@ public class CmsUserDataRequestManager {
         int i = 0;
         for (I_CmsUserDataDomain userDomain : m_domains) {
             i += 1;
-            report.println(
-                Messages.get().container(Messages.RPT_USERDATADOMAIN_COUNT_2, "" + i, "" + m_domains.size()));
+            report.print(Messages.get().container(Messages.RPT_USERDATADOMAIN_COUNT_2, "" + i, "" + m_domains.size()));
+            report.print(
+                org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0),
+                I_CmsReport.FORMAT_DEFAULT);
             if (!userDomain.isAvailableForMode(mode)) {
+                report.println(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SKIPPED_0),
+                    I_CmsReport.FORMAT_DEFAULT);
                 continue;
             }
             List<CmsUser> usersForDomain = new ArrayList<>();
@@ -459,6 +472,9 @@ public class CmsUserDataRequestManager {
             if (!usersForDomain.isEmpty()) {
                 userDomain.appendInfoHtml(cms, CmsUserDataRequestType.email, usersForDomain, root);
             }
+            report.println(
+                org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                I_CmsReport.FORMAT_OK);
         }
         String newHtml = doc.toString();
         boolean changed = !(newHtml.equals(oldHtml));
