@@ -30,7 +30,7 @@ package org.opencms.ui.components;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.safety.Cleaner;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 
 import com.vaadin.ui.RichTextArea;
 
@@ -71,7 +71,7 @@ public class CmsRichTextArea extends RichTextArea {
         if (html == null) {
             return null;
         }
-        Whitelist whitelist = new Whitelist();
+        Safelist whitelist = new Safelist();
         whitelist.addTags("font", "b", "span", "i", "strong", "br", "u", "ul", "ol", "li", "div");
         whitelist.addAttributes("font", "size", "color", "face");
         if (allowLinks) {
