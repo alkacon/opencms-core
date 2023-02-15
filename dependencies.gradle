@@ -268,8 +268,8 @@ dependencies {
     testGwtCompile group: 'net.sourceforge.htmlunit', name: 'htmlunit', version: '2.69.0'
     testGwtCompile group: 'net.sourceforge.htmlunit', name: 'htmlunit-xpath', version: '2.69.0'
     testGwtCompile group: 'net.sourceforge.htmlunit', name: 'htmlunit-core-js', version: '2.69.0'
-    testGwtCompile group: 'org.eclipse.jetty', name: 'apache-jsp', version: '9.4.31.v20200723'
-    testGwtCompile(group: 'org.eclipse.jetty', name: 'jetty-annotations', version: '9.4.31.v20200723'){
+    testGwtCompile group: 'org.eclipse.jetty', name: 'apache-jsp', version: '9.4.50.v20221201'
+    testGwtCompile(group: 'org.eclipse.jetty', name: 'jetty-annotations', version: '9.4.50.v20221201'){
         artifact {
             name = 'jetty-annotations'
             type = 'jar'
@@ -280,11 +280,11 @@ dependencies {
             classifier = 'sources'
         }
     }
-    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-continuation', version: '9.4.31.v20200723'
-    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-http', version: '9.4.31.v20200723'
-    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-io', version: '9.4.31.v20200723'
-    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-jndi', version: '9.4.31.v20200723'
-    testGwtCompile(group: 'org.eclipse.jetty', name: 'jetty-plus', version: '9.4.31.v20200723'){
+    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-continuation', version: '9.4.50.v20221201'
+    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-http', version: '9.4.50.v20221201'
+    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-io', version: '9.4.50.v20221201'
+    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-jndi', version: '9.4.50.v20221201'
+    testGwtCompile(group: 'org.eclipse.jetty', name: 'jetty-plus', version: '9.4.50.v20221201'){
         artifact {
             name = 'jetty-plus'
             type = 'jar'
@@ -295,17 +295,17 @@ dependencies {
             classifier = 'sources'
         }
     }
-    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-security', version: '9.4.31.v20200723'
-    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.4.31.v20200723'
-    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.4.31.v20200723'
-    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-servlets', version: '9.4.31.v20200723'
-    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-util', version: '9.4.31.v20200723'
-    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-webapp', version: '9.4.31.v20200723'
-    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-xml', version: '9.4.31.v20200723'
-    testGwtCompile group: 'org.eclipse.jetty.websocket', name: 'websocket-api', version: '9.4.31.v20200723'
-    testGwtCompile group: 'org.eclipse.jetty.websocket', name: 'websocket-client', version: '9.4.31.v20200723'
-    testGwtCompile group: 'org.eclipse.jetty.websocket', name: 'websocket-common', version: '9.4.31.v20200723'
-    testGwtCompile group: 'org.eclipse.jetty.websocket', name: 'websocket-server', version: '9.4.31.v20200723'
-    testGwtCompile group: 'org.eclipse.jetty.websocket', name: 'websocket-servlet', version: '9.4.31.v20200723'
+    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-security', version: '9.4.50.v20221201'
+    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.4.50.v20221201'
+    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.4.50.v20221201'
+    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-servlets', version: '9.4.50.v20221201'
+    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-util', version: '9.4.50.v20221201'
+    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-webapp', version: '9.4.50.v20221201'
+    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-xml', version: '9.4.50.v20221201'
+    testGwtCompile group: 'org.eclipse.jetty.websocket', name: 'websocket-api', version: '9.4.50.v20221201'
+    testGwtCompile group: 'org.eclipse.jetty.websocket', name: 'websocket-client', version: '9.4.50.v20221201'
+    testGwtCompile group: 'org.eclipse.jetty.websocket', name: 'websocket-common', version: '9.4.50.v20221201'
+    testGwtCompile group: 'org.eclipse.jetty.websocket', name: 'websocket-server', version: '9.4.50.v20221201'
+    testGwtCompile group: 'org.eclipse.jetty.websocket', name: 'websocket-servlet', version: '9.4.50.v20221201'
     testGwtCompile group: 'org.mortbay.jasper', name: 'apache-jsp', version: '8.0.33'
 }
