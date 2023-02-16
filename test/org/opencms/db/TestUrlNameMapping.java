@@ -260,6 +260,29 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
     }
 
     /**
+     * Tests mapping the same URL name to multiple ids.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    public void testMultipleIdMappingWithDot() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        String baseName = "testMultipleIdMapping.foo";
+        CmsResource res1 = createFile();
+        CmsResource res2 = createFile();
+        String name = baseName;
+        CmsUUID id1 = res1.getStructureId();
+        CmsUUID id2 = res2.getStructureId();
+        String returnedName1 = addMapping(name, res1);
+        String returnedName2 = addMapping(name, res2);
+        publish();
+        assertTrue(returnedName2.contains(returnedName1));
+        assertFalse(returnedName2.equals(returnedName1));
+        assertEquals(returnedName1, readBestUrlName(cms, id1));
+        assertEquals(returnedName2, readBestUrlName(cms, id2));
+    }
+
+    /**
      * Tests mapping multiple names to the same resource.<p>
      *
      * @throws Exception if something goes wrong
