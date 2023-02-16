@@ -63,7 +63,6 @@ public class CmsSendPasswordNotification extends A_CmsNotification {
      * @param receiver User
      * @param ou the user OU
      * @param adminUser User
-     * @param link to login
      * @param newUser boolean
      * @param tempPassword <code>true</code> to use a temporary password
      */
@@ -73,7 +72,6 @@ public class CmsSendPasswordNotification extends A_CmsNotification {
         CmsUser receiver,
         String ou,
         CmsUser adminUser,
-        String link,
         boolean newUser,
         boolean tempPassword) {
 
@@ -81,21 +79,16 @@ public class CmsSendPasswordNotification extends A_CmsNotification {
         m_new = newUser;
         m_tempPassword = tempPassword;
         addMacro("password", password);
-        addMacro(
-            CmsNotificationMacroResolver.WORKPLACE_LOGIN_LINK,
-            "<a href =\""
-                + OpenCms.getLinkManager().getWorkplaceLink(cms, CmsWorkplaceLoginHandler.LOGIN_HANDLER, false)
-                + "?"
-                + CmsLoginHelper.PARAM_USERNAME
-                + "="
-                + receiver.getSimpleName()
-                + "&"
-                + CmsLoginHelper.PARAM_OUFQN
-                + "="
-                + receiver.getOuFqn()
-                + "\">"
-                + OpenCms.getLinkManager().getWorkplaceLink(cms, CmsWorkplaceLoginHandler.LOGIN_HANDLER, false)
-                + "</a>");
+        String link = OpenCms.getLinkManager().getWorkplaceLink(cms, CmsWorkplaceLoginHandler.LOGIN_HANDLER, false)
+            + "?"
+            + CmsLoginHelper.PARAM_USERNAME
+            + "="
+            + receiver.getSimpleName()
+            + "&"
+            + CmsLoginHelper.PARAM_OUFQN
+            + "="
+            + receiver.getOuFqn();
+        addMacro(CmsNotificationMacroResolver.WORKPLACE_LOGIN_LINK, "<a href =\"" + link + "\">" + link + "</a>");
         addMacro(CmsNotificationMacroResolver.RECEIVER_OU_FQN, ou);
         try {
             addMacro(
@@ -106,6 +99,33 @@ public class CmsSendPasswordNotification extends A_CmsNotification {
         } catch (CmsException e) {
             addMacro(CmsNotificationMacroResolver.RECEIVER_OU, receiver.getOuFqn());
         }
+
+    }
+
+    /**
+     * Public constructor.<p>
+     *
+     * @param cms CmsObject
+     * @param password password
+     * @param receiver User
+     * @param ou the user OU
+     * @param adminUser User
+     * @param link not used
+     * @param newUser boolean
+     * @param tempPassword <code>true</code> to use a temporary password
+     */
+    @Deprecated
+    public CmsSendPasswordNotification(
+        CmsObject cms,
+        String password,
+        CmsUser receiver,
+        String ou,
+        CmsUser adminUser,
+        String link,
+        boolean newUser,
+        boolean tempPassword) {
+
+        this(cms, password, receiver, ou, adminUser, newUser, tempPassword);
 
     }
 

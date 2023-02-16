@@ -66,7 +66,6 @@ import org.opencms.ui.login.CmsLoginController;
 import org.opencms.ui.login.CmsPasswordForm;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsWorkplaceLoginHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -698,7 +697,6 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             user,
             ou,
             cms.getRequestContext().getCurrentUser(),
-            OpenCms.getLinkManager().getWorkplaceLink(cms, CmsWorkplaceLoginHandler.LOGIN_HANDLER, false),
             newUser,
             changePassword);
         try {
