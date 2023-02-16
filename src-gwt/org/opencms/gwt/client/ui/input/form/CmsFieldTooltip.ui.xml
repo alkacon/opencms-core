@@ -1,60 +1,112 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
-	<ui:with field="constants" type="org.opencms.gwt.client.ui.css.I_CmsConstantsBundle" />
-	<ui:style>
-		.tooltip {
-			z-index: 200000;
-			position: absolute;
-			width: 400px;
-			border-radius: 4px;
-			padding-top: 7px;
-			padding-bottom: 5px;
-			padding-left: 7px;
-			padding-right: 5px; 
-			background-color: #FFFFCC;
-			box-shadow: 2px 2px 2px #666666;
-		} 
+    xmlns:g="urn:import:com.google.gwt.user.client.ui"
+    xmlns:cms="urn:import:org.opencms.gwt.client.ui">
+    <ui:with field="constants" type="org.opencms.gwt.client.ui.css.I_CmsConstantsBundle" />
+    <ui:style>
+        .tooltip {
+            z-index: 200000;
+            position: absolute;
+            width: 400px;
+            border-radius: 4px;
+            padding-top: 7px;
+            padding-bottom: 5px;
+            padding-left: 7px;
+            padding-right: 5px; 
+            background-color: #FFFFCC;
+            box-shadow: 2px 2px 2px #666666;
+        } 
 
-		.tooltip .label {
-			font-family: "Open Sans", sans-serif;
+        .tooltip .label {
+            font-family: "Open Sans", sans-serif;
             font-size: 14px;
             font-weight: 400;
             color: #474747;
-		}
-		
-		.tooltip .arrow {
-			height: 10px;
-			width: 10px;
-			position: absolute;
-			left: calc(2 * 100% / 3 - 3px);
-			top: -5px;
-			transform: rotate(45deg);
-			background: #FFFFCC;
-		}
-		
-		.tooltip .label > p {
-			margin-left: 0px;
-			margin-right: 0px;
-			margin-top: 0px;
-			margin-bottom: 5px; 
-		}
-		
-		.tooltip .label > p:last-child {
-			margin-bottom: 0px;
-		}
-		
-		/** Insert special CSS for tooltips here. */ 
-		
-		@external indent; 
-		.tooltip .label .indent {
-			margin-left: 20px;
-		}
-	
-	</ui:style>
-	<g:FlowPanel addStyleNames="{style.tooltip}">
-		<g:Label addStyleNames="{style.arrow}" />
-		<g:HTML addStyleNames="{style.label}" ui:field="m_label"></g:HTML>
-	</g:FlowPanel>
+        }
+        
+        .tooltip .label * {
+            margin: 0;
+            font-weight: 400;
+            font-family: "Open Sans",sans-serif;
+            font-style: normal;
+            font-size: 14px;
+            line-height: 1.25;
+            color: #474747;
+            text-align: left;
+        }
+        
+        .tooltip .label h1, .tooltip .label h2, .tooltip .label h3 {
+            font-weight: 700;
+            margin-bottom: 3px;
+            color: #222;
+        }
+        
+        .tooltip .label h1 {
+            font-size: 20px;
+        }
+
+        .tooltip .label h2 {
+            font-size: 18px;
+        }
+
+        .tooltip .label strong {
+            font-weight: 700;
+        }
+        
+        .tooltip .label em {
+            font-style: italic;
+        }
+        
+        .tooltip .label a {
+            font-size: inherit;
+            line-height: inherit;
+            color: #b31b34;
+            text-decoration: underline;
+        }
+        
+        .tooltip .label small {
+            font-size: 11px;
+            display: block;
+            line-height: 1.125;
+            margin-bottom: 5px;        
+        }
+        
+        .tooltip .label ul,  .tooltip .label ol {
+            padding-left: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .tooltip .arrow {
+            height: 10px;
+            width: 10px;
+            position: absolute;
+            left: calc(2 * 100% / 3 - 3px);
+            top: -5px;
+            transform: rotate(45deg);
+            background: #FFFFCC;
+        }
+        
+        .tooltip .label > p {
+            margin-left: 0px;
+            margin-right: 0px;
+            margin-top: 0px;
+            margin-bottom: 5px; 
+        }
+        
+        .tooltip .label > p:last-child {
+            margin-bottom: 0px;
+        }
+        
+        /** Insert special CSS for tooltips here. */ 
+        
+        @external indent; 
+        .tooltip .label .indent {
+            margin-left: 20px;
+        }
+    
+    </ui:style>
+    <g:FlowPanel addStyleNames="{style.tooltip}">
+        <g:Label addStyleNames="{style.arrow}" />
+        <g:HTML addStyleNames="{style.label}" ui:field="m_label"></g:HTML>
+    </g:FlowPanel>
 </ui:UiBinder> 
