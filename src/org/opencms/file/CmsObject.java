@@ -4333,7 +4333,7 @@ public final class CmsObject {
     public String writeUrlNameMapping(String name, CmsUUID structureId, String locale, boolean replaceOnPublish)
     throws CmsException {
 
-        return writeUrlNameMapping(new CmsNumberSuffixNameSequence(name), structureId, locale, replaceOnPublish);
+        return writeUrlNameMapping(new CmsNumberSuffixNameSequence(name, false), structureId, locale, replaceOnPublish);
     }
 
     /**

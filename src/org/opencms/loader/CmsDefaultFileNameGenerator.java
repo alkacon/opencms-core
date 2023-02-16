@@ -254,7 +254,10 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
      */
     public String getUniqueFileName(CmsObject cms, String parentFolder, String baseName) {
 
-        Iterator<String> nameIterator = getUrlNameSequence(baseName);
+        String translatedTitle = OpenCms.getResourceManager().getFileTranslator().translateResource(baseName).replace(
+            "/",
+            "-");
+        Iterator<String> nameIterator = new CmsNumberSuffixNameSequence(translatedTitle, true);
         String result = nameIterator.next();
         CmsObject onlineCms = null;
 
@@ -285,7 +288,7 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
         String translatedTitle = OpenCms.getResourceManager().getFileTranslator().translateResource(baseName).replace(
             "/",
             "-");
-        return new CmsNumberSuffixNameSequence(translatedTitle);
+        return new CmsNumberSuffixNameSequence(translatedTitle, false);
     }
 
     /**

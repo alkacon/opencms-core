@@ -54,15 +54,17 @@ public class CmsNumberSuffixNameSequence implements Iterator<String> {
      * Creates a new instance.<p>
      *
      * @param str the base name which should be used for generating the names
+     * @param splitExtension if true, the number will be inserted before the 'extension', i.e. the sequence of characters starting with the last occurrence of a dot in str.
      */
-    public CmsNumberSuffixNameSequence(String str) {
+    public CmsNumberSuffixNameSequence(String str, boolean splitExtension) {
 
         m_baseName = str;
-
-        int dot = m_baseName.lastIndexOf(".");
-        if (dot > 0) {
-            m_prefix = m_baseName.substring(0, dot);
-            m_suffix = m_baseName.substring(dot);
+        if (splitExtension) {
+            int dot = m_baseName.lastIndexOf(".");
+            if (dot > 0) {
+                m_prefix = m_baseName.substring(0, dot);
+                m_suffix = m_baseName.substring(dot);
+            }
         }
     }
 
