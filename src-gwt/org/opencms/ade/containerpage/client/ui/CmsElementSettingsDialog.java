@@ -222,6 +222,9 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
     /** The break up model group checkbox. */
     private CmsCheckBox m_modelGroupBreakUp;
 
+    /** The original formatter key. */
+    private String m_originalFormatter;
+
     /** Setting presets. */
     private Map<String, String> m_presets;
 
@@ -287,6 +290,8 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
                 || CmsContainerpageController.getServerId(elementBean.getClientId()).equals(
                     m_controller.getModelGroupElementId()));
         boolean isDeveloper = CmsCoreProvider.get().getUserInfo().isDeveloper();
+        m_originalFormatter = currentFormatterConfig.getKeyOrId();
+
         if (m_contextInfo.shouldShowElementTemplateContextSelection()
             || isDeveloper
             || m_elementBean.hasAlternativeFormatters(m_containerId)) {
@@ -641,6 +646,11 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
             hasFormatterChanges = true;
         } else {
             hasFormatterChanges = false;
+            if (m_originalFormatter != null) {
+                // in case there is only 1 formatter, we still want to send the formatter key to the server to avoid cases
+                // where the element is removed because no default formatter can be found in the active sitemap config.
+                fieldValues.put(CmsFormatterConfig.getSettingsKeyForContainer(m_containerId), m_originalFormatter);
+            }
         }
         if (m_createNewCheckBox != null) {
             m_elementWidget.setCreateNew(m_createNewCheckBox.isChecked());
