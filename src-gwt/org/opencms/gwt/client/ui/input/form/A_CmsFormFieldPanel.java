@@ -157,10 +157,6 @@ public abstract class A_CmsFormFieldPanel extends Composite implements I_CmsTrun
         row.setInfo(infoText, infoIsHtml);
         row.getWidgetContainer().add(widget);
 
-        if (m_truncationWidth > 0) {
-            row.truncate(m_truncationMetricsKey, m_truncationWidth);
-        }
-
         return row;
     }
 

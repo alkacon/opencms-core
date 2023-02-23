@@ -28,7 +28,6 @@
 package org.opencms.gwt.client.ui.input.form;
 
 import org.opencms.gwt.client.ui.I_CmsButton;
-import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.css.I_CmsInputCss;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -41,7 +40,6 @@ import java.util.List;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -63,7 +61,7 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @since 8.0.0
  */
-public class CmsFormRow extends Composite implements I_CmsTruncable {
+public class CmsFormRow extends Composite {
 
     /** The ui binder interface for this widget. */
     protected interface I_CmsFormRowUiBinder extends UiBinder<Widget, CmsFormRow> {
@@ -253,27 +251,6 @@ public class CmsFormRow extends Composite implements I_CmsTruncable {
                 final Panel icon = m_icon;
                 final Supplier<Data> dataSupplier = Suppliers.ofInstance(tooltipData);
                 installTooltipEventHandlers(icon, dataSupplier);
-            }
-        }
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
-     */
-    public void truncate(String textMetricsKey, int clientWidth) {
-
-        if (clientWidth > (WIDGET_CONTAINER_WIDTH + OPENER_WIDTH + LABEL_WIDTH + WIDGET_MARGIN_RIGHT)) {
-            int availableWidth = clientWidth - OPENER_WIDTH - WIDGET_MARGIN_RIGHT;
-            int widgetContainerWidth = (int)Math.round(
-                1.00 * availableWidth * ((1.00 + WIDGET_CONTAINER_WIDTH) / (WIDGET_CONTAINER_WIDTH + LABEL_WIDTH)));
-            int labelWidth = availableWidth - widgetContainerWidth;
-            m_label.setWidth(labelWidth + "px");
-            m_widgetContainer.setWidth(widgetContainerWidth + "px");
-            m_widgetContainer.getElement().getStyle().setMarginLeft(labelWidth + OPENER_WIDTH, Unit.PX);
-            for (Widget widget : m_widgetContainer) {
-                if (widget instanceof I_CmsTruncable) {
-                    ((I_CmsTruncable)widget).truncate(textMetricsKey, widgetContainerWidth);
-                }
             }
         }
     }
