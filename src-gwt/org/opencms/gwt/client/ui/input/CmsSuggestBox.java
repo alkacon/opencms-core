@@ -36,6 +36,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
@@ -50,7 +51,7 @@ implements HasValueChangeHandlers<String>, HasSelectionHandlers<SuggestOracle.Su
     private SuggestBox m_suggestBox;
 
     /** The container for the text box. */
-    private CmsPaddedPanel m_textBoxContainer;
+    private FlowPanel m_textBoxContainer;
 
     /**
      * Constructor.<p>
@@ -59,7 +60,7 @@ implements HasValueChangeHandlers<String>, HasSelectionHandlers<SuggestOracle.Su
      */
     public CmsSuggestBox(SuggestOracle oracle) {
 
-        m_textBoxContainer = new CmsPaddedPanel(4);
+        m_textBoxContainer = new FlowPanel();
         m_textBoxContainer.setStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().textBoxPanel());
         m_textBoxContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         m_textBoxContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textMedium());

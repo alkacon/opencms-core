@@ -42,6 +42,7 @@ import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
@@ -325,14 +326,8 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
      */
     public void truncate(String textMetricsKey, int clientWidth) {
 
-        clientWidth -= 12;
-        storeTruncation(textMetricsKey, clientWidth);
-        truncatePanel(m_individualTab, textMetricsKey, clientWidth);
-        truncatePanel(m_individualTabWrapper, textMetricsKey, clientWidth);
-        truncatePanel(m_simpleTab, textMetricsKey, clientWidth);
-        truncatePanel(m_simpleTabWrapper, textMetricsKey, clientWidth);
-        truncatePanel(m_sharedTab, textMetricsKey, clientWidth);
-        truncatePanel(m_sharedTabWrapper, textMetricsKey, clientWidth);
+        // do nothing
+
     }
 
     /**

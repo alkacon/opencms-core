@@ -31,7 +31,6 @@ import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
-import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsFormRow;
@@ -177,14 +176,8 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
      */
     public void truncate(String textMetricsKey, int clientWidth) {
 
-        storeTruncation(textMetricsKey, clientWidth);
-        for (Panel container : new Panel[] {m_basicSettingsPanel, m_extendedSettingsPanel}) {
-            for (Widget widget : container) {
-                if (widget instanceof I_CmsTruncable) {
-                    ((I_CmsTruncable)widget).truncate(textMetricsKey + ".row", clientWidth - 20);
-                }
-            }
-        }
+        // do nothing
+
     }
 
     /**

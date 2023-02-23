@@ -80,7 +80,7 @@ public class CmsInfoBoxFormFieldPanel extends A_CmsFormFieldPanel {
 
     /**
      * Adds another widget after the list info widget.
-     * 
+     *
      * @param widget the widget to add
      */
     public void addWidgetAfterListInfo(Widget widget) {
@@ -116,10 +116,7 @@ public class CmsInfoBoxFormFieldPanel extends A_CmsFormFieldPanel {
      */
     public void truncate(String textMetricsKey, int clientWidth) {
 
-        clientWidth -= 12;
-        storeTruncation(textMetricsKey, clientWidth);
-        truncatePanel(m_panel, textMetricsKey, clientWidth);
-        truncatePanel(m_innerPanel, textMetricsKey, clientWidth);
+        // do nothing
     }
 
 }

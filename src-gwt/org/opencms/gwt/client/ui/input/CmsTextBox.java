@@ -312,7 +312,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     private boolean m_preventShowError;
 
     /** The container for the text box. */
-    private CmsPaddedPanel m_textboxContainer = new CmsPaddedPanel(DEFAULT_PADDING);
+    private FlowPanel m_textboxContainer = new FlowPanel();
 
     /** Flag indicating if the value change event should also be fired after key press events. */
     private boolean m_triggerChangeOnKeyPress;
@@ -354,7 +354,6 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         m_panel.add(m_textboxContainer);
         m_panel.add(m_error);
         m_textboxContainer.add(m_textbox);
-        m_textboxContainer.setPaddingX(4);
         sinkEvents(Event.ONPASTE);
         initWidget(m_panel);
 
@@ -523,7 +522,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
      *
      * @return the Panel
      */
-    public CmsPaddedPanel getTextBoxContainer() {
+    public FlowPanel getTextBoxContainer() {
 
         return m_textboxContainer;
     }
@@ -711,6 +710,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
      * @param ghostMode if true, enables ghost mode, else disables it
      */
     public void setGhostMode(boolean ghostMode) {
+
         // do nothing
     }
 
@@ -805,15 +805,6 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     public void setTriggerChangeOnKeyPress(boolean triggerOnKeyPress) {
 
         m_triggerChangeOnKeyPress = triggerOnKeyPress;
-    }
-
-    /**
-     * Updates the layout of the text box.<p>
-     */
-    public void updateLayout() {
-
-        m_textboxContainer.updatePadding();
-
     }
 
     /**

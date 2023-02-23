@@ -349,7 +349,9 @@ div.resizeButton{
 }
 
 div.cmsFontIconButton.helpIcon { 
-	font-size: 16px !important; 
-	margin-top: 2px; 
-	width: 17px !important;
+    font-size: 16px !important;
+    margin-top: 0;
+    width: auto !important;
+    height: auto !important;
+    position: static;
 }

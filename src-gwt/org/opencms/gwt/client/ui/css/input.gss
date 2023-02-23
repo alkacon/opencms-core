@@ -4,7 +4,7 @@
 /* inner text box of the text box widget */
 input.textBox {
 	border: none;
-	width: 98%;
+	width: 100%;
 	background: transparent;
 	padding: 0px;
 	margin: 0px;
@@ -97,6 +97,13 @@ input.textBoxReadOnly {
 .textBoxPanel {
 	border: 1px solid value("constants.css.borderColor");
 	overflow:hidden;
+	 
+}
+
+.textBoxPanel > input {
+    padding-left: 4px;
+    padding-right: 4px;
+    box-sizing: border-box;
 }
 
 
@@ -240,10 +247,9 @@ div.textArea.textAreaGhostMode textarea {
 	color: value("constants.css.textColor");
 }
 
-
-
-
-
+.formRow:hover .formLabel {
+    color: #356ee1;
+}
 
 .formLabel {
 	font-weight: normal;
@@ -287,6 +293,7 @@ div.error, .error {
 .formRow:last-child div.error, .formRow:last-child .error { 
    position: relative;
 }
+
 
 .selectBoxRoot.selectBoxDisabled .selectBoxSelected{
 	background-color: value("constants.css.backgroundColorStateDisabled");
@@ -550,6 +557,8 @@ div.formRow {
 	margin: 2px 0;
 	position: relative;
 	min-height: value("constants.css.inputHeight");
+    display: flex;
+    align-items: center;
 }
 
 div.formOpener {
@@ -566,18 +575,13 @@ div.formInfo {
 }
 
 div.formLabel { 
-	width: eval("org.opencms.gwt.client.ui.input.form.CmsFormRow.getLabelWidth()");
-	overflow: hidden;
-	vertical-align: top;
-	margin-top: 3px;
-	line-height: value("constants.css.lineHeight");
-	float: left;
+	width: 30%;
 }
 
 
 div.formWidgetContainer {
-	width: eval("org.opencms.gwt.client.ui.input.form.CmsFormRow.getWidgetContainerWidth()");
-	margin-left: eval("org.opencms.gwt.client.ui.input.form.CmsFormRow.getWidgetContainerLeftMargin()");
+	width: calc(70% - 25px);
+    margin-left: 0;
 }
 
 div.separator {
@@ -604,10 +608,6 @@ div.formDescriptionLabel {
 
 .formGradientBackground .fieldset-fieldsetVisible, .formGradientBackground .properties-vfsModeSimplePropertiesBox { 
 	background: transparent !important; 
-}
-
-.formWidgetContainer .checkBox { 
-	margin-top: 2px; 
 }
 
 .multiCheckboxPanel {

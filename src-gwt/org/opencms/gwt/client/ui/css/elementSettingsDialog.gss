@@ -21,22 +21,13 @@
 }
 
 .dialog-popup.elementSettingsDialog > .dialog-popupContent .input-formLabel {
-	width: 30%;
-    overflow: hidden;
-    vertical-align: top;
-    padding-top: 7px;
-    padding-bottom: 7px;
-    margin-top: 0px;
-    line-height: 16px;
-    float: left;
 }
 
 .dialog-popup.elementSettingsDialog > .dialog-popupContent .input-formWidgetContainer {
-	width: calc(70% - 25px);
-    margin-left: calc(30% + 4px);
+	
 }
 
 .dialog-popup.elementSettingsDialog > .dialog-popupContent .input-formWidgetContainer > .input-checkBox .input-checkBoxImage {
-	margin-top: -5px; 
+	/* margin-top: -5px;*/ 
 }
 
