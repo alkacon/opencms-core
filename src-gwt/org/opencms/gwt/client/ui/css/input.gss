@@ -247,9 +247,6 @@ div.textArea.textAreaGhostMode textarea {
 	color: value("constants.css.textColor");
 }
 
-.formRow:hover .formLabel {
-    color: #356ee1;
-}
 
 .formLabel {
 	font-weight: normal;
