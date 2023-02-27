@@ -144,7 +144,6 @@ public class CmsCreateGalleryDialog extends CmsPopup {
         });
         addButton(m_okButton);
         setOkEnabled(false);
-        m_dialogContent.truncate(METRICS_KEY, CmsPopup.DEFAULT_WIDTH - 20);
     }
 
     /**

@@ -28,7 +28,6 @@
 package org.opencms.gwt.client.ui.input.form;
 
 import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.util.CmsStringUtil;
 
@@ -37,7 +36,6 @@ import java.util.Collection;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -45,15 +43,9 @@ import com.google.gwt.user.client.ui.Widget;
  *
  *  @since 8.0.0
  */
-public abstract class A_CmsFormFieldPanel extends Composite implements I_CmsTruncable {
+public abstract class A_CmsFormFieldPanel extends Composite {
 
     public static final String NO_DESCRIPTION = "!nodescription";
-
-    /** Stored truncation text metrics key. */
-    protected String m_truncationMetricsKey;
-
-    /** Stored truncation width. */
-    protected int m_truncationWidth = -1;
 
     /** The info widget. */
     protected CmsListItemWidget m_infoWidget;
@@ -174,31 +166,4 @@ public abstract class A_CmsFormFieldPanel extends Composite implements I_CmsTrun
         widget.getElement().getStyle().setPadding(6, Unit.PX);
     }
 
-    /**
-     * Stores the truncation data to be used when new rows are created.<p>
-     *
-     * @param textMetricsKey the text metrics key
-     * @param clientWidth the client width
-     */
-    protected void storeTruncation(String textMetricsKey, int clientWidth) {
-
-        m_truncationWidth = clientWidth;
-        m_truncationMetricsKey = textMetricsKey;
-    }
-
-    /**
-     * Truncates all children of the given panel implementing the I_CmsTruncable.<p>
-     *
-     * @param panel the panel
-     * @param textMetricsKey the metrics key
-     * @param clientWidth the client width
-     */
-    protected void truncatePanel(Panel panel, String textMetricsKey, int clientWidth) {
-
-        for (Widget widget : panel) {
-            if (widget instanceof I_CmsTruncable) {
-                ((I_CmsTruncable)widget).truncate(textMetricsKey, clientWidth);
-            }
-        }
-    }
 }

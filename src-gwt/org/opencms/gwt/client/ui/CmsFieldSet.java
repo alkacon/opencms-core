@@ -64,7 +64,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @since 8.0.0
  */
 public class CmsFieldSet extends Composite
-implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidgets, I_CmsTruncable {
+implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidgets {
 
     /** The ui-binder interface for this composite. */
     protected interface I_CmsFieldSetUiBinder extends UiBinder<Widget, CmsFieldSet> {
@@ -279,19 +279,6 @@ implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidge
             m_opener.getElement().getStyle().clearDisplay();
         } else {
             m_opener.getElement().getStyle().setDisplay(Display.NONE);
-        }
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
-     */
-    public void truncate(String textMetricsKey, int clientWidth) {
-
-        int availableWidth = clientWidth - 12;
-        for (Widget child : m_content) {
-            if (child instanceof I_CmsTruncable) {
-                ((I_CmsTruncable)child).truncate(textMetricsKey, availableWidth);
-            }
         }
     }
 

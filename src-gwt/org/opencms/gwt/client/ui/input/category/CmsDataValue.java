@@ -313,7 +313,9 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
             for (int j = 0; j < m_table.getCellCount(i); j++) {
                 Widget w = m_table.getWidget(i, j);
                 if (w instanceof I_CmsTruncable) {
-                    ((I_CmsTruncable)w).truncate(textMetricsKey, tableWidth);
+                    I_CmsTruncable truncable = ((I_CmsTruncable)w);
+
+                    truncable.truncate(textMetricsKey, tableWidth);
                 }
             }
         }

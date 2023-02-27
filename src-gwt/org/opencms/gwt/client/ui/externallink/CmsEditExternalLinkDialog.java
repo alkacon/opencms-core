@@ -300,7 +300,6 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
             ? Messages.get().key(Messages.GUI_EDIT_LINK_NO_FILE_NAME_0)
             : Messages.get().key(Messages.GUI_EDIT_LINK_NO_CHANGES_0));
 
-        m_dialogContent.truncate(METRICS_KEY, CmsPopup.DEFAULT_WIDTH - 20);
     }
 
     /**

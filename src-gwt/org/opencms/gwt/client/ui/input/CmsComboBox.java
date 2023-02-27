@@ -34,7 +34,7 @@ import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.client.util.CmsMessages;
-import org.opencms.gwt.shared.CmsGwtLog;
+
 import org.opencms.util.CmsStringUtil;
 
 import java.util.HashMap;

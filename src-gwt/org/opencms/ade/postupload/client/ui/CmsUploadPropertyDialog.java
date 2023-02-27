@@ -408,7 +408,6 @@ public class CmsUploadPropertyDialog {
             m_frameDialog.show();
             m_dialogContent.onResizeDescendant();
         }
-        m_uploadPropertyPanel.truncate("POST_UPLOAD_DIALOG", 955);
     }
 
     /**

@@ -32,8 +32,6 @@ import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -46,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @since 8.0.0
  */
-public class CmsAlertDialog extends CmsPopup implements I_CmsTruncable {
+public class CmsAlertDialog extends CmsPopup {
 
     /** The panel for the bottom widgets. */
     private FlowPanel m_bottomWidgets;
@@ -260,18 +258,6 @@ public class CmsAlertDialog extends CmsPopup implements I_CmsTruncable {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
-     */
-    public void truncate(String textMetricsKey, int clientWidth) {
-
-        for (Widget w : m_topWidgets) {
-            if (w instanceof I_CmsTruncable) {
-                ((I_CmsTruncable)w).truncate(textMetricsKey, clientWidth);
-            }
-        }
-    }
-
-    /**
      * Returns the dialog handler.<p>
      *
      * @return the dialog handler
@@ -309,13 +295,5 @@ public class CmsAlertDialog extends CmsPopup implements I_CmsTruncable {
     protected void onShow() {
 
         getCloseButton().setEnabled(true);
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-            public void execute() {
-
-                truncate(CmsAlertDialog.this.hashCode() + "", getTopWidgets().getElement().getClientWidth());
-
-            }
-        });
     }
 }

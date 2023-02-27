@@ -425,12 +425,14 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                                 cname = cpc.getContainerId();
                             }
                         } catch (Exception e2) {
-                            /*ignore*/ }
+                            /*ignore*/
+                        }
                         String path = "???";
                         try {
                             path = elementBean.getSitePath();
                         } catch (Exception e2) {
-                            /*ignore*/ }
+                            /*ignore*/
+                        }
                         CmsAlertDialog alert = new CmsAlertDialog(
                             org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_ERROR_0),
                             Messages.get().key(Messages.GUI_NO_FORMATTER_4, path, cname, ctype, schema));

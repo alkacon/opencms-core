@@ -78,14 +78,4 @@ public class CmsSimpleFormFieldPanel extends A_CmsFormFieldPanel {
         }
     }
 
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
-     */
-    public void truncate(String textMetricsKey, int clientWidth) {
-
-        clientWidth -= 12;
-        storeTruncation(textMetricsKey, clientWidth);
-        truncatePanel(m_panel, textMetricsKey, clientWidth);
-    }
-
 }

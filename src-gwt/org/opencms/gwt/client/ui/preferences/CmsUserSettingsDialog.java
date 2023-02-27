@@ -150,7 +150,6 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
                 stop(false);
                 CmsUserSettingsDialog dlg = new CmsUserSettingsDialog(result, finishAction);
                 dlg.centerHorizontally(50);
-                dlg.initWidth();
             }
         };
 
@@ -183,15 +182,6 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
             }
         };
         action.execute();
-    }
-
-    /**
-     * Initializes the width of the dialog contents.<p>
-     */
-    protected void initWidth() {
-
-        m_panel.truncate("user_settings", getWidth() - 12);
-
     }
 
     /**

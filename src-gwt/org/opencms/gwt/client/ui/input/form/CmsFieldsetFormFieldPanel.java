@@ -29,7 +29,9 @@ package org.opencms.gwt.client.ui.input.form;
 
 import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
+
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean.StateIcon;
 
@@ -73,6 +75,7 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
         m_groupFieldSets = new HashMap<String, CmsFieldSet>();
         if (info != null) {
             m_infoWidget = new CmsListItemWidget(info);
+
             m_infoWidget.truncate(TM_INFOBOX, CmsFormDialog.STANDARD_DIALOG_WIDTH - 50);
             m_infoWidget.setStateIcon(StateIcon.standard);
             m_panel.add(m_infoWidget);
@@ -154,12 +157,4 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
         }
     }
 
-    /**
-     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
-     */
-    public void truncate(String textMetricsKey, int clientWidth) {
-
-        storeTruncation(textMetricsKey, clientWidth);
-        truncatePanel(m_panel, textMetricsKey, clientWidth);
-    }
 }
