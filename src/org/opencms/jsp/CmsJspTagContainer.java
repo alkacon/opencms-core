@@ -122,6 +122,9 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
     /** The evaluated body content if available. */
     private String m_bodyContent;
 
+    /** If false, formatters are always included in non-cacheable mode, otherwise they are included in cacheable mode in the Online project only. */
+    private boolean m_cacheable = true;
+
     /** States if this container should only be displayed on detail pages. */
     private boolean m_detailOnly;
 
@@ -509,16 +512,16 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 } else if ((m_parentElement != null)
                     && !m_detailOnly //ignore parent information for detail only containers to render content on different detail pages.
                     && !m_parentElement.getInstanceId().equals(container.getParentInstanceId())) {
-                        // the container parent instance id does not match the parent element instance id, skip rendering to avoid recursion
-                        LOG.error(
-                            new CmsIllegalStateException(
-                                Messages.get().container(
-                                    Messages.ERR_INVALID_CONTAINER_PARENT_2,
-                                    getName(),
-                                    m_parentElement.getInstanceId())));
-                        resetState();
-                        return EVAL_PAGE;
-                    }
+                    // the container parent instance id does not match the parent element instance id, skip rendering to avoid recursion
+                    LOG.error(
+                        new CmsIllegalStateException(
+                            Messages.get().container(
+                                Messages.ERR_INVALID_CONTAINER_PARENT_2,
+                                getName(),
+                                m_parentElement.getInstanceId())));
+                    resetState();
+                    return EVAL_PAGE;
+                }
                 // set the parameter
                 container.setParam(getParam());
                 // set the detail only flag
@@ -760,6 +763,19 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
     public String getWidth() {
 
         return m_width;
+    }
+
+    /**
+     * Sets the 'cacheable' mode for included formatters.
+     *
+     * <p>If this is set to false, formatters will never be included in cacheable mode, otherwise they will
+     * only be included in cacheable mode in the Online project.
+     *
+     * @param cacheable the cacheable mode (true or false)
+     */
+    public void setCacheable(String cacheable) {
+
+        m_cacheable = Boolean.parseBoolean(cacheable);
     }
 
     /**
@@ -1486,7 +1502,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                                 null,
                                 locale,
                                 false,
-                                isOnline,
+                                isOnline && m_cacheable,
                                 null,
                                 CmsRequestUtil.getAttributeMap(req),
                                 req,
@@ -1585,7 +1601,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                             null,
                             locale,
                             false,
-                            isOnline,
+                            isOnline && m_cacheable,
                             null,
                             CmsRequestUtil.getAtrributeMap(req),
                             req,

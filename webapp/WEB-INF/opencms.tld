@@ -2218,6 +2218,15 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description><![CDATA[
+              Flag to indicate if the used formatters should be included in 'cacheable' mode (see the cms:include tag). If this parameter is false, the formatters will be never included in cacheable mode,
+              otherwise they will only included in cacheable mode in the Online project. 
+            ]]></description>
+            <name>cacheable</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        
     </tag>
 
     <tag>
