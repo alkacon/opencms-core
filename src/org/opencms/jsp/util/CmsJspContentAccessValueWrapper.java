@@ -54,6 +54,7 @@ import java.util.Map;
 
 import org.apache.commons.collections.Transformer;
 
+import org.dom4j.Element;
 import org.dom4j.Node;
 
 /**
@@ -928,13 +929,10 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
                     m_parameters = new HashMap<String, String>(parameters.size());
                     for (I_CmsXmlContentValue params : parameters) {
                         // iterate all elements in this value list
-                        List<I_CmsXmlContentValue> param = xmlvalue.getDocument().getSubValues(
-                            params.getPath(),
-                            xmlvalue.getLocale());
-                        if (param.size() == 2) {
-                            // the current value has 2 sub-values, treat these as key and value
-                            String key = param.get(0).getStringValue(getCmsObject());
-                            String value = param.get(1).getStringValue(getCmsObject());
+                        List<Element> children = params.getElement().elements();
+                        if (children.size() == 2) {
+                            String key = children.get(0).getText();
+                            String value = children.get(1).getText();
                             m_parameters.put(key, value);
                         }
                     }
