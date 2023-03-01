@@ -763,6 +763,9 @@ public final class CmsJspStandardContextBean {
     /** The elements of the current page. */
     private Map<String, CmsContainerElementBean> m_elementInstances;
 
+    /** Flag to force edit mode to be disabled. */
+    private boolean m_forceDisableEditMode;
+
     /** The lazy initialized map which allows access to the dynamic function beans. */
     private Map<String, CmsDynamicFunctionBeanWrapper> m_function;
 
@@ -962,6 +965,7 @@ public final class CmsJspStandardContextBean {
             result.m_detailContentResource = m_detailContentResource.getCopy();
         }
         result.m_element = m_element;
+        result.m_forceDisableEditMode = m_forceDisableEditMode;
         result.setPage(m_page);
         return result;
     }
@@ -1664,7 +1668,7 @@ public final class CmsJspStandardContextBean {
         if (m_isEditMode == null) {
             m_isEditMode = Boolean.valueOf(CmsJspTagEditable.isEditableRequest(m_request));
         }
-        return m_isEditMode.booleanValue();
+        return m_isEditMode.booleanValue() && !m_forceDisableEditMode;
     }
 
     /**
@@ -2458,6 +2462,16 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Checks if the flag that forces edit mode to be disabled is set.
+     *
+     * @return true if the flag that disables edit mode is set
+     */
+    public boolean isForceDisableEditMode() {
+
+        return m_forceDisableEditMode;
+    }
+
+    /**
      * Returns if the current element is a model group.<p>
      *
      * @return <code>true</code> if the current element is a model group
@@ -2528,6 +2542,16 @@ public final class CmsJspStandardContextBean {
     public void setElement(CmsContainerElementBean element) {
 
         m_element = element;
+    }
+
+    /**
+     * Enables / disables the flag that forces edit mode to be disabled.
+     *
+     * @param forceDisableEditMode the new value for the flag
+     */
+    public void setForceDisableEditMode(boolean forceDisableEditMode) {
+
+        m_forceDisableEditMode = forceDisableEditMode;
     }
 
     /**
