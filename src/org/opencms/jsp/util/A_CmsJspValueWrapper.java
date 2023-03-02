@@ -122,14 +122,17 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsJspValueWrapper.class);
 
-    /** Date information as instance date bean. */
-    private CmsJspInstanceDateBean m_instanceDate;
-
     /** The wrapped OpenCms user context. */
     protected CmsObject m_cms;
 
     /** Boolean representation of the wrapped value. */
     private Boolean m_boolean;
+
+    /** Cached container page wrapper. */
+    private CmsJspContainerPageWrapper m_containerPageWrapper;
+
+    /** The lazy initialized Map that checks if the String representation of this wrapper contains specific words. */
+    private Map<Object, Boolean> m_contains;
 
     /** Date created from the wrapped value. */
     private Date m_date;
@@ -140,20 +143,20 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
     /** Image bean instance created from the wrapped value. */
     private CmsJspImageBean m_imageBean;
 
-    /** Resource created from the wrapped value. */
-    private CmsJspResourceWrapper m_resource;
+    /** Date information as instance date bean. */
+    private CmsJspInstanceDateBean m_instanceDate;
 
     /** The lazy initialized Map that checks if a Object is equal. */
     private Map<Object, Boolean> m_isEqual;
-
-    /** The lazy initialized Map that checks if the String representation of this wrapper contains specific words. */
-    private Map<Object, Boolean> m_contains;
 
     /** Link created from the wrapped value. */
     private String m_link;
 
     /** Long created from the wrapped value. */
     private Long m_long;
+
+    /** Resource created from the wrapped value. */
+    private CmsJspResourceWrapper m_resource;
 
     /** String representation of the wrapped value. */
     private String m_string;
@@ -382,6 +385,9 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
      */
     public CmsJspContainerPageWrapper getToContainerPage() {
 
+        if (m_containerPageWrapper != null) {
+            return m_containerPageWrapper;
+        }
         CmsJspResourceWrapper res = getToResource();
         if (res == null) {
             return null;
@@ -392,7 +398,8 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
                 m_cms.readFile(res),
                 true,
                 /*nocache=*/true); // container page caching causes problems with the EL container rendering feature, don't use it here
-            return new CmsJspContainerPageWrapper(page.getContainerPage(m_cms));
+            m_containerPageWrapper = new CmsJspContainerPageWrapper(page.getContainerPage(m_cms));
+            return m_containerPageWrapper;
         } catch (Exception e) {
             LOG.debug(e.getLocalizedMessage(), e);
             return null;
