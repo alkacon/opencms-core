@@ -104,27 +104,27 @@ public class CmsJspContainerPageWrapper {
     /**
      * Renders the elements from the given container as HTML and returns it.
      *
-     * @param m_context the context bean
+     * @param context the context bean
      * @param container the container whose elements should be rendered
      * @return the HTML of the container elements, without a surrounding element
      */
-    private String render(CmsJspStandardContextBean m_context, CmsContainerBean container) {
+    private String render(CmsJspStandardContextBean context, CmsContainerBean container) {
 
-        CmsFlexController controller = CmsFlexController.getController(m_context.getRequest());
-        CmsObject m_cms = m_context.getCmsObject();
-        CmsContainerBean oldContainer = m_context.getContainer();
-        CmsContainerElementBean oldElement = m_context.getElement();
-        CmsContainerPageBean oldPage = m_context.getPage();
-        boolean oldForceDisableEdit = m_context.isForceDisableEditMode();
+        CmsFlexController controller = CmsFlexController.getController(context.getRequest());
+        CmsObject m_cms = context.getCmsObject();
+        CmsContainerBean oldContainer = context.getContainer();
+        CmsContainerElementBean oldElement = context.getElement();
+        CmsContainerPageBean oldPage = context.getPage();
+        boolean oldForceDisableEdit = context.isForceDisableEditMode();
         Locale locale = m_cms.getRequestContext().getLocale();
-        m_context.getRequest();
+        context.getRequest();
         try {
-            m_context.setContainer(container);
-            m_context.setPage(m_page);
+            context.setContainer(container);
+            context.setPage(m_page);
             // The forceDisableEditMode flag may be incorrectly cached in the standard
             // context bean copies stored in flex cache entries, but it doesn't matter since edit mode is never
             // active in the Online project anyway
-            m_context.setForceDisableEditMode(true);
+            context.setForceDisableEditMode(true);
 
             int containerWidth = -1;
             try {
@@ -132,7 +132,7 @@ public class CmsJspContainerPageWrapper {
             } catch (Exception e) {
                 LOG.debug(e.getLocalizedMessage(), e);
             }
-            CmsADEConfigData adeConfig = m_context.getSitemapConfigInternal();
+            CmsADEConfigData adeConfig = context.getSitemapConfigInternal();
             StringBuilder buffer = new StringBuilder();
             for (CmsContainerElementBean element : container.getElements()) {
 
@@ -146,7 +146,7 @@ public class CmsJspContainerPageWrapper {
                         container.getType(),
                         containerWidth);
                     element.initSettings(m_cms, adeConfig, formatterBean, locale, controller.getCurrentRequest(), null);
-                    m_context.setElement(element);
+                    context.setElement(element);
                     CmsResource formatterRes = m_cms.readResource(
                         formatterBean.getJspStructureId(),
                         CmsResourceFilter.IGNORE_EXPIRATION);
@@ -167,10 +167,10 @@ public class CmsJspContainerPageWrapper {
             String resultHtml = buffer.toString();
             return resultHtml;
         } finally {
-            m_context.setPage(oldPage);
-            m_context.setContainer(oldContainer);
-            m_context.setElement(oldElement);
-            m_context.setForceDisableEditMode(oldForceDisableEdit);
+            context.setPage(oldPage);
+            context.setContainer(oldContainer);
+            context.setElement(oldElement);
+            context.setForceDisableEditMode(oldForceDisableEdit);
         }
 
     }
