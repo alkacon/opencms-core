@@ -34,6 +34,7 @@ import org.opencms.gwt.shared.I_CmsAutoBeanFactory;
 import org.opencms.gwt.shared.I_CmsListAddMetadata;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigurationBean;
+import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.main.CmsLog;
 
 import java.io.IOException;
@@ -77,8 +78,9 @@ public class CmsJspTagEnableListAdd extends SimpleTagSupport {
         PageContext pageContext = (PageContext)getJspContext();
         CmsFlexController controller = CmsFlexController.getController(pageContext.getRequest());
         CmsObject cms = controller.getCmsObject();
+        CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(pageContext.getRequest());
         // the list add information is only used by the page editor
-        if (!cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+        if (standardContext.getIsEditMode()) {
             // use autobean factory to create the necessary JSON
             I_CmsAutoBeanFactory beanFactory = AutoBeanFactorySource.create(I_CmsAutoBeanFactory.class);
             AutoBean<I_CmsListAddMetadata> bean = beanFactory.createListAddMetadata();
