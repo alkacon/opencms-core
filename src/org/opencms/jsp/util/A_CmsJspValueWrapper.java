@@ -35,6 +35,8 @@ import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.containerpage.CmsXmlContainerPage;
+import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 
 import java.util.AbstractCollection;
 import java.util.Date;
@@ -371,6 +373,30 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
             m_boolean = Boolean.valueOf(Boolean.parseBoolean(getToString()));
         }
         return m_boolean.booleanValue();
+    }
+
+    /**
+     * Tries to create a container page wrapper from the wrapped value.
+     *
+     * @return the container page wrapper or null if none could be created
+     */
+    public CmsJspContainerPageWrapper getToContainerPage() {
+
+        CmsJspResourceWrapper res = getToResource();
+        if (res == null) {
+            return null;
+        }
+        try {
+            CmsXmlContainerPage page = CmsXmlContainerPageFactory.unmarshal(
+                m_cms,
+                m_cms.readFile(res),
+                true,
+                /*nocache=*/true); // container page caching causes problems with the EL container rendering feature, don't use it here
+            return new CmsJspContainerPageWrapper(page.getContainerPage(m_cms));
+        } catch (Exception e) {
+            LOG.debug(e.getLocalizedMessage(), e);
+            return null;
+        }
     }
 
     /**

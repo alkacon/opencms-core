@@ -100,7 +100,11 @@ public class CmsJspContentAttachmentsBean {
     public CmsJspContentAttachmentsBean(CmsObject cms, CmsResource pageResource)
     throws CmsException {
 
-        CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, pageResource);
+        CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(
+            cms,
+            cms.readFile(pageResource),
+            true,
+            /*nocache=*/true); // using cache causes problems for the EL container rendering feature
         m_page = xmlContainerPage.getContainerPage(cms);
         m_cms = cms;
 
@@ -254,6 +258,16 @@ public class CmsJspContentAttachmentsBean {
             });
         }
         return m_byType;
+    }
+
+    /**
+     * Converts this to a container page wrapper.
+     *
+     * @return the container page wrapper
+     */
+    public CmsJspContainerPageWrapper getContainerPage() {
+
+        return new CmsJspContainerPageWrapper(m_page);
     }
 
     /**

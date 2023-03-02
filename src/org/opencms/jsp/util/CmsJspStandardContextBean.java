@@ -2494,6 +2494,19 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Renders the elements of container in a container page wrapper as HTML (without a surrounding element).
+     *
+     * @param page the page wrapper
+     * @param name the name or name prefix of the container
+     * @return the rendered HTML
+     */
+    public String renderContainer(CmsJspContainerPageWrapper page, String name) {
+
+        String result = page.renderContainer(this, name);
+        return result;
+    }
+
+    /**
      * Sets the container the currently rendered element is part of.<p>
      *
      * @param container the container the currently rendered element is part of
