@@ -515,6 +515,16 @@ public class CmsJspResourceWrapper extends CmsResource {
     }
 
     /**
+     * Returns the substituted online link to this resource.<p>
+     *
+     * @return the link
+     */
+    public String getOnlineLink() {
+
+        return OpenCms.getLinkManager().getOnlineLink(m_cms, m_cms.getRequestContext().getSitePath(this));
+    }
+
+    /**
      * Gets a list of resources with relations pointing to them from this resources, as resource wrappers.
      *
      * @return the list of resource wrappers
