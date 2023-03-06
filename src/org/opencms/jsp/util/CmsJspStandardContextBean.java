@@ -1647,9 +1647,9 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Checks if the current page is a detail page.
+     * Returns <code>true</code> if the current page is a detail page.<p>
      *
-     * @return true if the current page is a detail page
+     * @return <code>true</code> if the current page is a detail page
      */
     public boolean getIsDetailPage() {
 
@@ -1658,10 +1658,11 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Checks if the current request should be direct edit enabled.
+     * Returns <code>true</code> if the current request is direct edit enabled.<p>
+     *
      * Online-, history-requests, previews and temporary files will not be editable.<p>
      *
-     * @return <code>true</code> if the current request should be direct edit enabled
+     * @return <code>true</code> if the current request is direct edit enabled
      */
     public boolean getIsEditMode() {
 
@@ -1672,9 +1673,9 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Returns true if the current request is a JSON request.<p>
+     * Returns <code>true</code> if the current request is a JSON request.<p>
      *
-     * @return true if we are in a JSON request
+     * @return <code>true</code> if we are in a JSON request
      */
     public boolean getIsJSONRequest() {
 
@@ -1682,13 +1683,25 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Returns if the current project is the online project.<p>
+     * Returns <code>true</code> if the current project is the online project.<p>
      *
      * @return <code>true</code> if the current project is the online project
      */
     public boolean getIsOnlineProject() {
 
         return m_cms.getRequestContext().getCurrentProject().isOnlineProject();
+    }
+
+    /**
+     * Returns true if the current request is in direct edit preview mode.<p>
+     *
+     * This is the case if the request is not in edit mode and in the online project.<p>
+     *
+     * @return <code>true</code> if the current request is in direct edit preview mode
+     */
+    public boolean getIsPreviewMode() {
+
+        return !getIsOnlineProject() && !getIsEditMode();
     }
 
     /**
