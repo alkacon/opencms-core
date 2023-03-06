@@ -200,7 +200,9 @@ public class CmsStringTemplateRenderer {
         String pathPrefix) {
 
         CmsJspContentAccessBean contentBean = new CmsJspContentAccessBean(cms, content);
-        return renderTemplate(cms, template, contentBean.getValue().get(pathPrefix), contextObjects);
+        return (null != pathPrefix) && !pathPrefix.isEmpty()
+        ? renderTemplate(cms, template, contentBean.getValue().get(pathPrefix), contextObjects)
+        : renderTemplate(cms, template, contentBean, contextObjects);
     }
 
     /**
