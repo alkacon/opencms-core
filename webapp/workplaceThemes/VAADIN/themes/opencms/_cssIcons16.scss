@@ -1,10 +1,12 @@
 @mixin o-css-icons-16 {
-
-[class^="oc-icon-16-"], [class*=" oc-icon-16-"] {
+  
+[class^="oc-icon-16-"], 
+[class*=" oc-icon-16-"] {
   display: inline-block;
   background-repeat: no-repeat;
   background-image: url(img/icon-sprite-16.svg);
 }
+
 .oc-icon-16-edit_point {
   width: 16px;
   height: 16px;
@@ -406,3 +408,4 @@
   background-position: -480px -128px;
 }
 
+}

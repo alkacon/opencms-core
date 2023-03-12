@@ -1,22 +1,28 @@
 @mixin o-css-icons-32 {
-[class^="oc-icon-32-"], [class*=" oc-icon-32-"] {
+  
+[class^="oc-icon-32-"], 
+[class*=" oc-icon-32-"] {
   display: inline-block;
   background-repeat: no-repeat;
   background-image: url(img/icon-sprite-32.svg);
 }
+
 .v-disabled {
-	[class^="oc-icon-32-"], [class*=" oc-icon-32-"] {
-	  background-image: url(img/icon-sprite-32-disabled.svg);
-	}
+  [class^="oc-icon-32-"], 
+  [class*=" oc-icon-32-"] {
+    background-image: url(img/icon-sprite-32-disabled.svg);
+  }
+}
+.v-button {
+  &:hover:not(.v-disabled), 
+  &:focus:not(.v-disabled) {
+    [class^="oc-icon-32-"], 
+    [class*=" oc-icon-32-"] {
+      background-image: url(img/icon-sprite-32-hover.svg);
+    }
+  }
 }
 
-.v-button{
-&:hover:not(.v-disabled), &:focus:not(.v-disabled) {
-	    [class^="oc-icon-32-"], [class*=" oc-icon-32-"] {
-	    	background-image: url(img/icon-sprite-32-hover.svg);
-	    }
-	  }
-}
 .oc-icon-32-edit-point {
   width: 32px;
   height: 32px;
@@ -146,4 +152,6 @@
   width: 32px;
   height: 32px;
   background-position: -432px -48px;
+}
+
 }
