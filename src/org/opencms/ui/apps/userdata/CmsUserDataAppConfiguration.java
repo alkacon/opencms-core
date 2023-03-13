@@ -28,13 +28,14 @@
 package org.opencms.ui.apps.userdata;
 
 import org.opencms.security.CmsRole;
+import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
+import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Locale;
 
-import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Resource;
 
 /**
@@ -77,7 +78,7 @@ public class CmsUserDataAppConfiguration extends A_CmsWorkplaceAppConfiguration 
     @Override
     public Resource getIcon() {
 
-        return VaadinIcons.USER_CHECK;
+        return new CmsCssIcon(OpenCmsTheme.ICON_USER_CHECK);
     }
 
     /**

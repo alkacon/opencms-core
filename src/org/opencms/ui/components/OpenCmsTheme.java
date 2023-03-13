@@ -236,6 +236,9 @@ public final class OpenCmsTheme {
     /** Path to the project publish theme resource. */
     public static final String ICON_PUBLISH = "oc-icon-24-publish";
 
+    /** CSS style name.*/
+    public static final String ICON_RESOURCE_TYPES = "oc-icon-32-resource-types";
+
     /** The role icon CSS class.*/
     public static final String ICON_ROLE = "oc-icon-24-role";
 
@@ -265,6 +268,9 @@ public final class OpenCmsTheme {
 
     /** The user icon CSS class.*/
     public static final String ICON_USER = "oc-icon-24-user";
+
+    /** CSS style name.*/
+    public static final String ICON_USER_CHECK = "oc-icon-32-user-check";
 
     /** CSS style name. */
     public static final String IMAGE_GRADIENT = "o-image-gradient";

@@ -78,7 +78,7 @@ public class CmsResourceTypeAppConfiguration extends A_CmsWorkplaceAppConfigurat
      */
     public Resource getIcon() {
 
-        return new CmsCssIcon(OpenCmsTheme.ICON_TOOL_5);
+        return new CmsCssIcon(OpenCmsTheme.ICON_RESOURCE_TYPES);
     }
 
     /**
