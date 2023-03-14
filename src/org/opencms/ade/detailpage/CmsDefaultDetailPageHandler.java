@@ -32,6 +32,7 @@ import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -238,8 +239,18 @@ public class CmsDefaultDetailPageHandler implements I_CmsDetailPageHandler {
         if (resType == null) {
             return null;
         }
-        if ((targetDetailPage != null) && manager.getDetailPages(cms, resType).contains(targetDetailPage)) {
-            return targetDetailPage;
+
+        if (targetDetailPage != null) {
+            try {
+                CmsResource targetDetailPageRes = cms.readResource(targetDetailPage);
+                if (manager.isDetailPage(cms, targetDetailPageRes)) {
+                    return targetDetailPageRes.getRootPath();
+                }
+            } catch (CmsVfsResourceNotFoundException e) {
+                LOG.debug(e.getLocalizedMessage(), e);
+            } catch (Exception e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
         }
 
         DetailPageConfigData context = lookupDetailPageConfigData(manager, cms, contentRootPath, originPath, resType);
@@ -260,7 +271,7 @@ public class CmsDefaultDetailPageHandler implements I_CmsDetailPageHandler {
     }
 
     /**
-     * Gets the detail page.
+     * Gets the detail page to use for a detail resource.
      *
      * @param cms the cms
      * @param rootPath the root path

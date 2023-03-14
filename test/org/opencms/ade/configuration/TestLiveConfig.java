@@ -874,6 +874,23 @@ public class TestLiveConfig extends OpenCmsTestCase {
     }
 
     /**
+     * Tests the parameter for specifying a detail page.
+     *
+     * @throws Exception -
+     */
+    public void testSpecifiedTargetDetailPage() throws Exception {
+
+        waitForUpdate(false);
+        CmsObject cms = getCmsObject();
+        String detailPage = OpenCms.getADEManager().getDetailPageHandler().getDetailPage(
+            cms,
+            "/sites/default/.content/a1/blarg.html",
+            "/today/news",
+            "/otherpage");
+        assertEquals("/sites/default/otherpage/", detailPage);
+    }
+
+    /**
      * Waits until the configuration update task has been run.<p>
      *
      * @param online true if we should wait for the Online task, false for the Offline task

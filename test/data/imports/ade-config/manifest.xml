@@ -69,6 +69,35 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+        
+       <file>
+            <destination>sites/default/otherpage</destination>
+            <type>folder</type>
+            <datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        
+               <file>
+            <source>sites/default/otherpage/index.html</source>
+            <destination>sites/default/otherpage/index.html</destination>
+            <type>containerpage</type>
+            <datelastmodified>Wed, 04 May 2011 12:28:00 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Wed, 04 May 2011 12:27:02 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        
+        
 		
 		
 		<file>
