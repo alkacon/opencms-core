@@ -57,19 +57,21 @@ public class CmsEmbeddedDialogFrame implements I_CmsEmbeddedDialogFrame {
      *
      * @return the instance
      */
-    public static CmsEmbeddedDialogFrame get() {
+    public static I_CmsEmbeddedDialogFrame get() {
 
-        //CmsEmbeddedDialogFrameWrapper wrapper = CmsEmbeddedDialogFrameWrapper.window;
         CmsEmbeddedDialogFrameWrapper currentWindow = CmsEmbeddedDialogFrameWrapper.window;
         if (currentWindow.embeddedDialogFrameInstance == null) {
             currentWindow.embeddedDialogFrameInstance = new CmsEmbeddedDialogFrame();
         }
-        return currentWindow.embeddedDialogFrameInstance;
+        I_CmsEmbeddedDialogFrame result = currentWindow.embeddedDialogFrameInstance;
+        return result;
+
     }
 
     /**
-     * Hides the iframe.
+     * @see org.opencms.gwt.client.util.I_CmsEmbeddedDialogFrame#hide()
      */
+    @Override
     public void hide() {
 
         if (m_frame != null) {
@@ -92,14 +94,10 @@ public class CmsEmbeddedDialogFrame implements I_CmsEmbeddedDialogFrame {
     }
 
     /**
-     * Triggers loading of a new dialog in the iframe.
-     *
-     * <p>If the iframe has not been created/initialized yet, this will trigger the initialization and load the dialog afterwards.
-     *
-     * @param dialogInfoJson the serialized dialog info JSON from an I_CmsEmbeddedDialogInfo bean
-     * @param handler the embedded dialog handler
+     * @see org.opencms.gwt.client.util.I_CmsEmbeddedDialogFrame#loadDialog(java.lang.String, org.opencms.gwt.client.util.I_CmsEmbeddedDialogHandlerJsCallbacks)
      */
-    public void loadDialog(String dialogInfoJson, CmsEmbeddedDialogHandler handler) {
+    @Override
+    public void loadDialog(String dialogInfoJson, I_CmsEmbeddedDialogHandlerJsCallbacks handler) {
 
         waitUntilReady(() -> {
             setDialogHandlerCallbacks(handler);
@@ -109,8 +107,9 @@ public class CmsEmbeddedDialogFrame implements I_CmsEmbeddedDialogFrame {
     }
 
     /**
-     * Triggers initialization of the iframe.
+     * @see org.opencms.gwt.client.util.I_CmsEmbeddedDialogFrame#preload()
      */
+    @Override
     public void preload() {
 
         waitUntilReady(() -> {/*do nothing*/});
@@ -150,7 +149,7 @@ public class CmsEmbeddedDialogFrame implements I_CmsEmbeddedDialogFrame {
      *
      * @param handler the handler to set
      */
-    private native void setDialogHandlerCallbacks(CmsEmbeddedDialogHandler handler) /*-{
+    private native void setDialogHandlerCallbacks(I_CmsEmbeddedDialogHandlerJsCallbacks handler) /*-{
         $wnd.frames.embeddedDialogFrame.connector = handler;
     }-*/;
 

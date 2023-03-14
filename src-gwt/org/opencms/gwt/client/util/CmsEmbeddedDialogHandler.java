@@ -227,6 +227,7 @@ public class CmsEmbeddedDialogHandler implements I_CmsHasInit, I_CmsEmbeddedDial
 
         CmsEmbeddedDialogFrame.get().hide();
         if (m_handler != null) {
+
             List<CmsUUID> resourceIds = parseResources(resources);
             if (!resourceIds.isEmpty()) {
                 m_handler.refreshResource(resourceIds.get(0));

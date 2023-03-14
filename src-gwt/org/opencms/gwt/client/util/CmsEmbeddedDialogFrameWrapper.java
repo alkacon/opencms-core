@@ -46,6 +46,6 @@ public class CmsEmbeddedDialogFrameWrapper {
     public static CmsEmbeddedDialogFrameWrapper window;
 
     /** The global variable used to hold the embedded dialog frame. */
-    public CmsEmbeddedDialogFrame embeddedDialogFrameInstance;
+    public I_CmsEmbeddedDialogFrame embeddedDialogFrameInstance;
 
 }

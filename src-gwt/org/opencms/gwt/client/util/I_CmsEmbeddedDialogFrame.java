@@ -36,12 +36,32 @@ import jsinterop.annotations.JsType;
 public interface I_CmsEmbeddedDialogFrame {
 
     /**
+     * Hides the iframe.
+     */
+    void hide();
+
+    /**
      * Sets the dialog loader.
      *
      * <p>This is called by the Javascript code in the iframe.
      *
      * @param loader the class used to load dialogs in the iframe itself
      */
-    public void installEmbeddedDialogLoader(I_CmsEmbeddedDialogLoader loader);
+    void installEmbeddedDialogLoader(I_CmsEmbeddedDialogLoader loader);
+
+    /**
+     * Triggers loading of a new dialog in the iframe.
+     *
+     * <p>If the iframe has not been created/initialized yet, this will trigger the initialization and load the dialog afterwards.
+     *
+     * @param dialogInfoJson the serialized dialog info JSON from an I_CmsEmbeddedDialogInfo bean
+     * @param handler the embedded dialog handler
+     */
+    void loadDialog(String dialogInfoJson, I_CmsEmbeddedDialogHandlerJsCallbacks handler);
+
+    /**
+     * Triggers initialization of the iframe.
+     */
+    void preload();
 
 }
