@@ -583,8 +583,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         String editorStylesheet)
     throws CmsRpcException {
 
-        System.out.println("STYLESHEET = " + editorStylesheet);
-
         CmsObject cms = getCmsObject();
         CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
             cms,
