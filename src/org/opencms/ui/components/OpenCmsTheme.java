@@ -270,7 +270,7 @@ public final class OpenCmsTheme {
     public static final String ICON_USER = "oc-icon-24-user";
 
     /** CSS style name.*/
-    public static final String ICON_USER_CHECK = "oc-icon-32-user-check";
+    public static final String ICON_PERSON_DATA = "oc-icon-32-person-data";
 
     /** CSS style name. */
     public static final String IMAGE_GRADIENT = "o-image-gradient";

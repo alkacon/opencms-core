@@ -78,7 +78,7 @@ public class CmsUserDataAppConfiguration extends A_CmsWorkplaceAppConfiguration 
     @Override
     public Resource getIcon() {
 
-        return new CmsCssIcon(OpenCmsTheme.ICON_USER_CHECK);
+        return new CmsCssIcon(OpenCmsTheme.ICON_PERSON_DATA);
     }
 
     /**
