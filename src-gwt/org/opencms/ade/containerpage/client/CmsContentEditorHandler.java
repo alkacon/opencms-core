@@ -65,6 +65,8 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 
+import jsinterop.base.Js;
+
 /**
  * The container-page editor implementation of the XML content editor handler.<p>
  *
@@ -415,6 +417,12 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
             CmsPublishOptions.PARAM_DETAIL,
             "" + CmsContainerpageController.get().getData().getDetailId());
         result.getPublishParameters().put(CmsPublishOptions.PARAM_START_WITH_CURRENT_PAGE, "");
+        elemental2.dom.HTMLMetaElement meta = Js.cast(
+            elemental2.dom.DomGlobal.document.querySelector(
+                "meta[name=" + CmsGwtConstants.META_EDITOR_STYLESHEET + "]"));
+        if (meta != null) {
+            result.setEditorStylesheet(meta.content);
+        }
         return result;
     }
 

@@ -100,6 +100,7 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
      * @param postCreateHandler the post-create handler class name
      * @param editHandlerData the edit handler data, if an edit handler is used for creating a new resource; null otherwise
      * @param settingPresets the presets for container element settings
+     * @param editorStylesheet the path of the style sheet to use for the WYSIWYG editor
      * @param callback the asynchronous callback
      */
     void loadInitialDefinition(
@@ -113,6 +114,7 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
         String postCreateHandler,
         CmsEditHandlerData editHandlerData,
         Map<String, String> settingPresets,
+        String editorStylesheet,
         AsyncCallback<CmsContentDefinition> callback);
 
     /**

@@ -112,6 +112,7 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
      * @param postCreateHandler the post-create handler class name
      * @param editHandlerData the edit handler data, if an edit handler is used for creating a new element; null otherwise
      * @param settingPresets the presets for container element settings
+     * @param editorStylesheet the path of the editor style sheet (may be null)
      *
      * @return the content definition
      *
@@ -127,7 +128,8 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
         String mode,
         String postCreateHandler,
         CmsEditHandlerData editHandlerData,
-        Map<String, String> settingPresets)
+        Map<String, String> settingPresets,
+        String editorStylesheet)
     throws CmsRpcException;
 
     /**

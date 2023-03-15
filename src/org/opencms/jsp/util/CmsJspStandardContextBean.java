@@ -53,6 +53,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleGroupService;
 import org.opencms.i18n.CmsMessageToBundleIndex;
 import org.opencms.i18n.CmsResourceBundleLoader;
@@ -2558,6 +2559,27 @@ public final class CmsJspStandardContextBean {
     public void setEdited(boolean edited) {
 
         m_edited = edited;
+    }
+
+    /**
+     * In edit mode, creates a meta tag that tells the form-based content editor to use the stylesheet with the given path as a default.
+     *
+     * <p>Does nothing outside of edit mode.
+     *
+     * @param path the site path of a style sheet
+     * @return the meta tag
+     */
+    public String setEditorCssPath(String path) {
+
+        if (getIsEditMode()) {
+            return "\n<meta name=\""
+                + CmsGwtConstants.META_EDITOR_STYLESHEET
+                + "\" content=\""
+                + CmsEncoder.escapeXml(path)
+                + "\">\n";
+        } else {
+            return "";
+        }
     }
 
     /**

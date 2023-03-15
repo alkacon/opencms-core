@@ -95,6 +95,7 @@ import org.opencms.widgets.I_CmsWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.CmsEditor;
+import org.opencms.workplace.editors.CmsEditorCssHandlerDefault;
 import org.opencms.workplace.editors.CmsXmlContentEditor;
 import org.opencms.workplace.editors.directedit.I_CmsEditHandler;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -565,7 +566,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadInitialDefinition(java.lang.String, java.lang.String, java.lang.String, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.opencms.ade.contenteditor.shared.CmsEditHandlerData, java.util.Map)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#loadInitialDefinition(java.lang.String, java.lang.String, java.lang.String, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.opencms.ade.contenteditor.shared.CmsEditHandlerData, java.util.Map, java.lang.String)
      */
     public CmsContentDefinition loadInitialDefinition(
 
@@ -578,8 +579,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         String mode,
         String postCreateHandler,
         CmsEditHandlerData editHandlerDataForNew,
-        Map<String, String> settingPresets)
+        Map<String, String> settingPresets,
+        String editorStylesheet)
     throws CmsRpcException {
+
+        System.out.println("STYLESHEET = " + editorStylesheet);
 
         CmsObject cms = getCmsObject();
         CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
@@ -587,6 +591,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             cms.getRequestContext().getRootUri());
         CmsContentDefinition result = null;
         getCmsObject().getRequestContext().setAttribute(CmsXmlContentEditor.ATTRIBUTE_EDITCONTEXT, editContext);
+        if (editorStylesheet != null) {
+            getCmsObject().getRequestContext().setAttribute(
+                CmsEditorCssHandlerDefault.ATTRIBUTE_EDITOR_STYLESHEET,
+                editorStylesheet);
+        }
         try {
             CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
             CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
@@ -2072,6 +2081,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param mainLocale the main language to copy in case the element language node does not exist yet
      * @param editedLocaleEntity the edited locale entity
      * @param settingPresets the presets for settings
+     * @param configData the sitemap configuration to use
      *
      * @return the content definition
      *

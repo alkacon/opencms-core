@@ -709,6 +709,7 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param mainLocale the main language to copy in case the element language node does not exist yet
      * @param editHandlerData the data for the edit handler, if one is used to create a new content; null otherwise
      * @param settingPresets the presets for container element settings
+     * @param editorStylesheet the path for the editor style sheet (may be null)
      * @param callback the callback
      */
     public void loadInitialDefinition(
@@ -720,6 +721,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         final String mainLocale,
         final CmsEditHandlerData editHandlerData,
         Map<String, String> settingPresets,
+        String editorStylesheet,
         final I_CmsSimpleCallback<CmsContentDefinition> callback) {
 
         CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
@@ -739,6 +741,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                     mode,
                     editHandlerData,
                     settingPresets,
+                    editorStylesheet,
                     this);
             }
 
@@ -857,6 +860,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                         mainLocale,
                         editHandlerData,
                         context.getSettingPresets(),
+                        context.getEditorStylesheet(),
                         new I_CmsSimpleCallback<CmsContentDefinition>() {
 
                             public void execute(CmsContentDefinition contentDefinition) {
@@ -920,6 +924,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                         mainLocale,
                         null,
                         Collections.emptyMap(),
+                        context.getEditorStylesheet(),
                         new I_CmsSimpleCallback<CmsContentDefinition>() {
 
                             public void execute(CmsContentDefinition contentDefinition) {
@@ -2036,6 +2041,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                         }
                     }
                 }
+
             });
         }
     }
@@ -2347,6 +2353,7 @@ public final class CmsContentEditor extends CmsEditorBase {
             });
             m_toolbar.insertRight(m_copyLocaleButton, 3);
         }
+
     }
 
     /**

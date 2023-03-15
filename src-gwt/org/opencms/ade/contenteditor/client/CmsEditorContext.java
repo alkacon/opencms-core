@@ -36,6 +36,9 @@ import java.util.Map;
  */
 public class CmsEditorContext {
 
+    /** The path of the style sheet to use for the WYSIWYG editor. */ 
+    private String m_editorStylesheet;
+
     /** The HTML context info. */
     private String m_htmlContextInfo;
 
@@ -51,6 +54,16 @@ public class CmsEditorContext {
     public CmsEditorContext() {
 
         // do nothing
+    }
+
+    /** 
+     * Gets the path of the style sheet to use for the WYSIWYG editor.
+     * 
+     * @return the style sheet path 
+     */
+    public String getEditorStylesheet() {
+
+        return m_editorStylesheet;
     }
 
     /**
@@ -81,6 +94,16 @@ public class CmsEditorContext {
     public Map<String, String> getSettingPresets() {
 
         return m_settingPresets;
+    }
+
+    /**
+     * Sets the path of the style sheet to use for the WYSIWYG editor.
+     * 
+     * @param stylesheetPath the style sheet path 
+     */
+    public void setEditorStylesheet(String stylesheetPath) {
+
+        m_editorStylesheet = stylesheetPath;
     }
 
     /**

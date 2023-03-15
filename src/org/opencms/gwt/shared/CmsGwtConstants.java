@@ -261,6 +261,9 @@ public final class CmsGwtConstants {
     /** Name of Javascript variable used to hold the structure id of the currently selected locale's root folder in the sitemap editor's locale comparison mode. */
     public static final String VAR_LOCALE_ROOT = "cmsLocaleCompareRoot";
 
+    /** Name of the meta tag used to set the editor stylesheet. */
+    public static final String META_EDITOR_STYLESHEET = "cms-editor-stylesheet";
+
     /**
      * Hide constructor.<p>
      */
