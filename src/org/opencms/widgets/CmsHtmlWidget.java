@@ -31,7 +31,9 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -39,6 +41,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsSpellcheckHandler;
+import org.opencms.util.CmsJsonUtil;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.CmsEditorDisplayOptions;
 import org.opencms.workplace.editors.I_CmsEditorCssHandler;
@@ -196,10 +200,10 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
                     cms,
                     "tinymce",
                     "paste_text"));
-            JSONObject directOptions = new JSONObject();
-            directOptions.put("paste_text_sticky_default", pasteText);
-            directOptions.put("paste_text_sticky", pasteText);
-            result.put("tinyMceOptions", directOptions);
+            JSONObject pasteOptions = new JSONObject();
+            pasteOptions.put("paste_text_sticky_default", pasteText);
+            pasteOptions.put("paste_text_sticky", pasteText);
+            result.put("pasteOptions", pasteOptions);
             // if spell checking is enabled, add the spell handler URL
             if (OpenCmsSpellcheckHandler.isSpellcheckingEnabled()) {
                 result.put(
@@ -209,6 +213,36 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
                         OpenCmsSpellcheckHandler.getSpellcheckHandlerPath()));
 
                 result.put("spellcheck_language", contentLocale.getLanguage());
+            }
+
+            String editorOptions = widgetOptions.getEditorConfigPath();
+            if (editorOptions != null) {
+                try {
+                    CmsResource editorOptionsRes = cms.readResource(editorOptions, CmsResourceFilter.IGNORE_EXPIRATION);
+                    CmsFile editorOptionsFile = cms.readFile(editorOptionsRes);
+                    OpenCms.getLocaleManager();
+                    String encoding = CmsLocaleManager.getResourceEncoding(cms, editorOptionsRes);
+                    String contentAsString = new String(editorOptionsFile.getContents(), encoding);
+                    JSONObject directOptions = new JSONObject(contentAsString);
+                    // JSON may contain user-readable strings, which we may want to localize,
+                    // but we also don't want to accidentally produce invalid JSON, so we recursively
+                    // replace macros in string values occuring in the JSON
+                    CmsMacroResolver resolver = new CmsMacroResolver();
+                    resolver.setCmsObject(cms);
+                    resolver.setMessages(OpenCms.getWorkplaceManager().getMessages(workplaceLocale));
+                    JSONObject replacedOptions = CmsJsonUtil.mapJsonObject(directOptions, val -> {
+                        if (val instanceof String) {
+                            return resolver.resolveMacros((String)val);
+                        } else {
+                            return val;
+                        }
+                    });
+                    result.put("directOptions", replacedOptions);
+                } catch (Exception e) {
+                    LOG.error(
+                        "Error processing editor options from " + editorOptions + ": " + e.getLocalizedMessage(),
+                        e);
+                }
             }
         } catch (JSONException e) {
             LOG.error(e.getLocalizedMessage(), e);

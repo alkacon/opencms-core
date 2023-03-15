@@ -354,6 +354,9 @@ public class CmsHtmlWidgetOption {
     public static final Pattern PATTERN_EMBEDDED_GALLERY_CONFIG = Pattern.compile(
         "(?<![a-zA-Z0-9_])(imagegallery|downloadgallery)(\\{.*?\\})");
 
+    /** If this is set, the contents of the path following the ':' will be interpreted as JSON and passed to TinyMCE directly. */
+    public static final String OPTION_EDITORCONFIG = "editorconfig:";
+
     /** Holds the global button bar configuration options to increase performance. */
     private static List<String> m_globalButtonBarOption;
 
@@ -398,12 +401,14 @@ public class CmsHtmlWidgetOption {
 
     /**
     private boolean m_allowScripts;
-    
+
     /** The path for custom styles. */
     private String m_stylesFormatPath;
 
     /** The style XML path. */
     private String m_stylesXmlPath;
+
+    private String m_editorConfigPath;
 
     /**
      * Creates a new empty HTML widget object object.<p>
@@ -503,7 +508,14 @@ public class CmsHtmlWidgetOption {
             result.append(option.getFormatSelectOptions());
             added = true;
         }
-
+        if (null != option.getEditorConfigPath()) {
+            if (added) {
+                result.append(DELIMITER_OPTION);
+            }
+            result.append(OPTION_EDITORCONFIG);
+            result.append(option.getEditorConfigPath());
+            added = true;
+        }
         return result.toString();
     }
 
@@ -802,6 +814,16 @@ public class CmsHtmlWidgetOption {
     }
 
     /**
+     * Gets the path of a JSON file containing options to be passed directly into TinyMCE.
+     *
+     * @return the path of a JSON with direct TinyMCE options
+     */
+    public String getEditorConfigPath() {
+
+        return m_editorConfigPath;
+    }
+
+    /**
      * Returns the widget editor height.<p>
      *
      * @return the widget editor height
@@ -981,6 +1003,16 @@ public class CmsHtmlWidgetOption {
     public void setCssPath(String cssPath) {
 
         m_cssPath = cssPath;
+    }
+
+    /**
+     * Sets the path for a file containing JSON options to be passed directly into TinyMCE.
+     *
+     * @param optionJsonPath the path of a JSON file
+     */
+    public void setEditorConfigPath(String optionJsonPath) {
+
+        m_editorConfigPath = optionJsonPath;
     }
 
     /**
@@ -1224,6 +1256,9 @@ public class CmsHtmlWidgetOption {
                     // the button bar definition string
                     option = option.substring(OPTION_BUTTONBAR.length());
                     setButtonBarOptionString(option);
+                } else if (option.startsWith(OPTION_EDITORCONFIG)) {
+                    option = option.substring(OPTION_EDITORCONFIG.length());
+                    setEditorConfigPath(option);
                 } else if (option.startsWith(OPTION_IMPORTCSS)) {
                     m_importCss = true;
                 } else if (option.startsWith(OPTION_ALLOWSCRIPTS)) {

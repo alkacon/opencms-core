@@ -186,9 +186,14 @@ public final class CmsTinyMCEHelper {
 				if (contextmenu != "") {
 					options.contextmenu = contextmenu;
 				}
-				if (config.tinyMceOptions) {
-					options.paste_as_text = config.tinyMceOptions.paste_text_sticky_default ? true
+				if (config.pasteOptions) {
+					options.paste_as_text = config.pasteOptions.paste_text_sticky_default ? true
 							: false;
+				}
+				if (config.directOptions) {
+				    for (var key in config.directOptions) {
+				        options[key] = config.directOptions[key];
+				    }
 				}
 			}
 
