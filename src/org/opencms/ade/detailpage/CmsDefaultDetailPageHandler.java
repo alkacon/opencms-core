@@ -242,7 +242,15 @@ public class CmsDefaultDetailPageHandler implements I_CmsDetailPageHandler {
 
         if (targetDetailPage != null) {
             try {
-                CmsResource targetDetailPageRes = cms.readResource(targetDetailPage);
+                CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(targetDetailPage);
+                CmsResource targetDetailPageRes = null;
+                if (site != null) {
+                    CmsObject rootCms = OpenCms.initCmsObject(cms);
+                    rootCms.getRequestContext().setSiteRoot("");
+                    targetDetailPageRes = rootCms.readResource(targetDetailPage);
+                } else {
+                    targetDetailPageRes = cms.readResource(targetDetailPage);
+                }
                 if (manager.isDetailPage(cms, targetDetailPageRes)) {
                     return targetDetailPageRes.getRootPath();
                 }

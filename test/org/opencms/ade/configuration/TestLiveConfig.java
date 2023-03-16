@@ -888,6 +888,13 @@ public class TestLiveConfig extends OpenCmsTestCase {
             "/today/news",
             "/otherpage");
         assertEquals("/sites/default/otherpage/", detailPage);
+
+        detailPage = OpenCms.getADEManager().getDetailPageHandler().getDetailPage(
+            cms,
+            "/sites/default/.content/a1/blarg.html",
+            "/today/news",
+            "/sites/default/otherpage/");
+        assertEquals("/sites/default/otherpage/", detailPage);
     }
 
     /**
