@@ -96,18 +96,10 @@ public class CmsEditorCssHandlerDefault implements I_CmsEditorCssHandler {
         }
         String result = "";
 
-        try {
-            Object attr = cms.getRequestContext().getAttribute(ATTRIBUTE_EDITOR_STYLESHEET);
-            if (attr instanceof String) {
-                String editorStylesheet = (String)attr;
-                if (cms.existsResource(editorStylesheet)) {
-                    return editorStylesheet;
-                } else {
-                    LOG.info("Editor stylesheet referenced from meta tag not found: " + editorStylesheet);
-                }
-            }
-        } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
+        Object attr = cms.getRequestContext().getAttribute(ATTRIBUTE_EDITOR_STYLESHEET);
+        if (attr instanceof String) {
+            String editorStylesheet = (String)attr;
+            return editorStylesheet;
         }
 
         try {
