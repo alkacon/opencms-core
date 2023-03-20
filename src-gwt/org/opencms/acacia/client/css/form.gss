@@ -428,6 +428,61 @@ div.helpBubble a, div.helpBubble a:hover, div.helpBubble a:focus{
 	color: value("constants.css.textColorImportant");
 }
 
+div.helpBubble * {
+    margin: 0;
+    font-weight: 400;
+    font-family: "Open Sans",sans-serif;
+    font-style: normal;
+    font-size: 14px;
+    line-height: 1.25;
+    color: #474747;
+    text-align: left;
+}
+
+div.helpBubble h1, 
+div.helpBubble h2, 
+div.helpBubble h3 {
+    font-weight: 700;
+    margin-bottom: 3px;
+    color: #222;
+}
+
+div.helpBubble h1 {
+    font-size: 20px;
+}
+
+div.helpBubble h2 {
+    font-size: 18px;
+}
+
+div.helpBubble strong {
+    font-weight: 700;
+}
+
+div.helpBubble em {
+    font-style: italic;
+}
+
+div.helpBubble a {
+    font-size: inherit;
+    line-height: inherit;
+    color: #b31b34;
+    text-decoration: underline;
+}
+
+div.helpBubble small {
+    font-size: 11px;
+    display: block;
+    line-height: 1.125;
+    margin-bottom: 5px;
+}
+
+div.helpBubble ul,
+div.helpBubble ol {
+    padding-left: 14px;
+    margin-bottom: 5px;
+}
+
 .hasError .helpMessage, .hasWarning .helpMessage{
 	display: block;
 	margin-top: 3px;
