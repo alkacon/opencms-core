@@ -1126,7 +1126,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
      */
     public void removeScope() {
 
-        m_searchObject.setScope(m_searchObject.getOriginalGalleryData().getScope());
+        m_searchObject.setScope(null);
         m_handler.onRemoveScope();
         updateResultsTab(false);
         ValueChangeEvent.fire(this, m_searchObject);
