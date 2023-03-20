@@ -30,6 +30,7 @@ package org.opencms.acacia.client.ui;
 import org.opencms.acacia.client.CmsButtonBarHandler;
 import org.opencms.acacia.client.CmsChoiceMenuEntryBean;
 import org.opencms.acacia.client.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -82,7 +83,7 @@ public class CmsChoiceMenuEntryWidget extends Composite {
         m_selectCallback = selectHandler;
         m_submenu = submenu;
         m_attributeChoiceWidget = choiceWidget;
-        setTitle(help);
+        setTitle(CmsDomUtil.stripHtml(help));
         if (menuEntry.isLeaf()) {
             baseWidget.addClickHandler(new ClickHandler() {
 
