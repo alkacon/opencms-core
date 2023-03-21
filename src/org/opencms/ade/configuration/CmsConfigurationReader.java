@@ -142,6 +142,9 @@ public class CmsConfigurationReader {
     /** Node name for the attribute editor configuration reference. */
     public static final String N_ATTRIBUTE_EDITOR_CONFIG = "AttributeEditorConfig";
 
+    /** The CopyInModels node name. */
+    public static final String N_COPY_IN_MODELS = "CopyInModels";
+
     /** The create content locally node name. */
     public static final String N_CREATE_CONTENTS_LOCALLY = "CreateContentsLocally";
 
@@ -159,6 +162,9 @@ public class CmsConfigurationReader {
 
     /** The disabled node name. */
     public static final String N_DISABLED = "Disabled";
+
+    /** The DisabledTypesMode node name. */
+    public static final String N_DISABLED_TYPES_MODE = "DisabledTypesMode";
 
     /** The discard model pages node name. */
     public static final String N_DISCARD_MODEL_PAGES = "DiscardModelPages";
@@ -199,6 +205,9 @@ public class CmsConfigurationReader {
     /** The 'include in site selector' node name. */
     public static final String N_INCLUDE_IN_SITE_SELECTOR = "IncludeInSiteSelector";
 
+    /** The IncludeName node name. */
+    public static final String N_INCLUDE_NAME = "IncludeName";
+
     /** The is default node name. */
     public static final String N_IS_DEFAULT = "IsDefault";
 
@@ -237,6 +246,9 @@ public class CmsConfigurationReader {
 
     /** The page node name. */
     public static final String N_PAGE = "Page";
+
+    /** The PageRelative node name. */
+    public static final String N_PAGE_RELATIVE = "PageRelative";
 
     /** The folder path node name. */
     public static final String N_PATH = "Path";
@@ -295,6 +307,9 @@ public class CmsConfigurationReader {
     /** The SharedSettingOverride node name. */
     public static final String N_SHARED_SETTING_OVERRIDE = "SharedSettingOverride";
 
+    /** The ShowInDefaultView node name. */
+    public static final String N_SHOW_IN_DEFAULT_VIEW = "ShowInDefaultView";
+
     /** The type node name. */
     public static final String N_TYPE = "Type";
 
@@ -325,20 +340,8 @@ public class CmsConfigurationReader {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsConfigurationReader.class);
 
-    /** The CopyInModels node name. */
-    private static final String N_COPY_IN_MODELS = "CopyInModels";
-
     /** The ElementDeleteMode node name. */
     private static final String N_ELEMENT_DELETE_MODE = "ElementDeleteMode";
-
-    /** The IncludeName node name. */
-    private static final String N_INCLUDE_NAME = "IncludeName";
-
-    /** The PageRelative node name. */
-    private static final String N_PAGE_RELATIVE = "PageRelative";
-
-    /** The ShowInDefaultView node name. */
-    private static final String N_SHOW_IN_DEFAULT_VIEW = "ShowInDefaultView";
 
     /** The CMS context used for reading the configuration data. */
     private CmsObject m_cms;
@@ -610,6 +613,12 @@ public class CmsConfigurationReader {
         boolean exludeExternalDetailContents = getBoolean(root, N_EXCLUDE_EXTERNAL_DETAIL_CONTENTS);
         boolean includeInSiteSelector = getBoolean(root, N_INCLUDE_IN_SITE_SELECTOR);
 
+        String galleryDisabledTypesStr = getString(root.getSubValue(N_DISABLED_TYPES_MODE));
+        CmsGalleryDisabledTypesMode galleryDisabledTypesMode = null;
+        if (galleryDisabledTypesStr != null) {
+            galleryDisabledTypesMode = CmsGalleryDisabledTypesMode.valueOf(galleryDisabledTypesStr);
+        }
+
         I_CmsXmlContentValueLocation typeOrderingLoc = root.getSubValue(N_TYPE_ORDERING_MODE);
         CmsTypeOrderingMode typeOrderingMode = null;
         if (typeOrderingLoc != null) {
@@ -659,6 +668,7 @@ public class CmsConfigurationReader {
             basePath,
             masterConfigIds,
             m_resourceTypeConfigs,
+            galleryDisabledTypesMode,
             discardInheritedTypes,
             m_propertyConfigs,
             discardPropertiesMode,

@@ -34,6 +34,7 @@ import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean.TypeVisibility;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
@@ -174,9 +175,13 @@ public class CmsTypesTab extends A_CmsListTab {
             CmsCheckBox checkBox = new CmsCheckBox();
             CmsListItem listItem = new CmsListItem(checkBox, listItemWidget);
             if (typeBean.isDeactivated()) {
-                checkBox.disable("");
-                listItem.addStyleName(
-                    org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().expired());
+                if (CmsCoreProvider.get().isHideDisabledGalleryTypes()) {
+                    continue;
+                } else {
+                    checkBox.disable("");
+                    listItem.addStyleName(
+                        org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().expired());
+                }
             } else {
                 SelectionHandler selectionHandler = new SelectionHandler(typeBean.getType(), checkBox);
                 checkBox.addClickHandler(selectionHandler);

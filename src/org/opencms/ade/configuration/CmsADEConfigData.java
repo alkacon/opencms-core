@@ -862,10 +862,10 @@ public class CmsADEConfigData {
             for (CmsDetailPageInfo detailpage : getAllDetailPages(true)) {
                 if (detailpage.getType().equals(type)) {
                     result.add(detailpage);
-                } else
-                    if ((defaultPage == null) && CmsADEManager.DEFAULT_DETAILPAGE_TYPE.equals(detailpage.getType())) {
-                        defaultPage = detailpage;
-                    }
+                } else if ((defaultPage == null)
+                    && CmsADEManager.DEFAULT_DETAILPAGE_TYPE.equals(detailpage.getType())) {
+                    defaultPage = detailpage;
+                }
             }
             if (defaultPage != null) {
                 // add default detail page last
@@ -907,6 +907,25 @@ public class CmsADEConfigData {
         }
 
         return SitemapDirectEditPermissions.all;
+    }
+
+    /**
+     * Gets the display mode for deactivated types in the gallery dialog.
+     *
+     * @param defaultValue the default value to return if it's not set
+     * @return the display mode for deactivated types
+     */
+    public CmsGalleryDisabledTypesMode getDisabledTypeMode(CmsGalleryDisabledTypesMode defaultValue) {
+
+        CmsADEConfigData parentData = parent();
+        if (m_data.getDisabledTypeMode() != null) {
+            return m_data.getDisabledTypeMode();
+        } else if (parentData != null) {
+            return parentData.getDisabledTypeMode(defaultValue);
+        } else {
+            return defaultValue;
+        }
+
     }
 
     /**

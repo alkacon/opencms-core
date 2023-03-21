@@ -27,6 +27,8 @@
 
 package org.opencms.gwt;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsGalleryDisabledTypesMode;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -1157,6 +1159,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         CmsObject cms = getCmsObject();
         String navigationUri = cms.getRequestContext().getUri();
+        CmsADEConfigData sitemapConfig = OpenCms.getADEManager().lookupConfigurationWithCache(
+            cms,
+            cms.getRequestContext().getRootUri());
         boolean toolbarVisible = CmsADESessionCache.getCache(getRequest(), getCmsObject()).isToolbarVisible();
         boolean isShowHelp = OpenCms.getADEManager().isShowEditorHelp(cms);
 
@@ -1192,6 +1197,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsUploadRestrictionInfo uploadRestrictionInfo = OpenCms.getWorkplaceManager().getUploadRestriction().getUploadRestrictionInfo(
             cms);
         String categoryBaseFolder = CmsCategoryService.getInstance().getRepositoryBaseFolderName(cms);
+        CmsGalleryDisabledTypesMode disabledTypesMode = sitemapConfig.getDisabledTypeMode(
+            CmsGalleryDisabledTypesMode.mark);
+        boolean hideDisabledTypes = disabledTypesMode == CmsGalleryDisabledTypesMode.hide;
 
         CmsCoreData data = new CmsCoreData(
             EDITOR_URI,
@@ -1222,7 +1230,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             uploadDisabled,
             OpenCms.getADEManager().getParameters(getCmsObject()),
             uploadRestrictionInfo,
-            categoryBaseFolder);
+            categoryBaseFolder,
+            hideDisabledTypes);
         CmsTinyMCEData tinyMCEData = new CmsTinyMCEData();
         tinyMCEData.setLink(tinyMCE);
         data.setTinymce(tinyMCEData);

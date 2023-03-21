@@ -275,6 +275,9 @@ public class CmsCoreData implements IsSerializable {
     /** The file explorer link. */
     private String m_fileExplorerLink;
 
+    /** True if deactivated types should be hidden in the gallery dialog. */
+    private boolean m_hideDisabledGalleryTypes;
+
     /** The resource icon mapping. */
     private Map<String, String> m_iconMapping;
 
@@ -376,7 +379,8 @@ public class CmsCoreData implements IsSerializable {
             clone.isUploadDisabled(),
             clone.m_adeParameters,
             clone.m_uploadRestriction,
-            clone.m_categoryBaseFolder);
+            clone.m_categoryBaseFolder,
+            clone.m_hideDisabledGalleryTypes);
         setTinymce(clone.getTinymce());
     }
 
@@ -412,6 +416,7 @@ public class CmsCoreData implements IsSerializable {
      * @param adeParameters the map of ADE configuration parameters
      * @param uploadRestriction the upload restriction data
      * @param categoryBaseFolder the category base folder
+     * @param hideDisabledGalleryTypes true if deactivated types should be hidden in the gallery dialog
      */
     public CmsCoreData(
         String contentEditorUrl,
@@ -442,7 +447,8 @@ public class CmsCoreData implements IsSerializable {
         boolean uploadDisabled,
         Map<String, String> adeParameters,
         CmsUploadRestrictionInfo uploadRestriction,
-        String categoryBaseFolder) {
+        String categoryBaseFolder,
+        boolean hideDisabledGalleryTypes) {
 
         m_contentEditorUrl = contentEditorUrl;
         m_contentEditorBacklinkUrl = contentEditorBacklinkUrl;
@@ -473,6 +479,7 @@ public class CmsCoreData implements IsSerializable {
         m_uploadRestriction = uploadRestriction;
         m_sharedFolder = sharedFolder;
         m_categoryBaseFolder = categoryBaseFolder;
+        m_hideDisabledGalleryTypes = hideDisabledGalleryTypes;
     }
 
     /**
@@ -724,6 +731,16 @@ public class CmsCoreData implements IsSerializable {
     public String getWpLocale() {
 
         return m_wpLocale;
+    }
+
+    /**
+     * Returns true if deactivated types should be hidden in the gallery dialog.
+     *
+     * @return true if deactivated types should be hidden
+     */
+    public boolean isHideDisabledGalleryTypes() {
+
+        return m_hideDisabledGalleryTypes;
     }
 
     /**

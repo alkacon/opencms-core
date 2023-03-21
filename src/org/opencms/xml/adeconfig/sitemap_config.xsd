@@ -29,6 +29,7 @@
             <xsd:element name="ExcludeExternalDetailContents" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="IncludeInSiteSelector" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="TypeOrderingMode" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="DisabledTypesMode" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="ResourceType" type="OpenCmsADEType" minOccurs="0" maxOccurs="unbounded" />
 			<xsd:element name="UseFormatterKeys" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
 			<xsd:element name="SharedSettingOverride" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="1" />
@@ -60,6 +61,7 @@
                 <layout element="Function" widget="VfsFileWidget" configuration="searchtypes=function,function_config"  />
                 <layout element="Attribute/Value" widget="TextareaWidget" />
                 <layout element="DiscardProperties" widget="SelectorWidget" configuration="false:%(key.discardprops.false)|true:%(key.discardprops.true)|top:%(key.discardprops.top)" />
+                <layout element="DisabledTypesMode" widget="SelectorWidget" configuration="mark:%(key.disabledtypesmode.mark)|hide:%(key.disabledtypesmode.hide)" display="singleline"/>
             </layouts>
             <relations>
                 <relation element="AddFormatters/AddFormatter" invalidate="false" />
@@ -86,6 +88,12 @@
                                      scope="RemoveAllFormatters"
                                      configuration="" />
             </editorchangehandlers>
+            <FieldSettings>
+            <Setting>
+                    <PropertyName>MasterConfig</PropertyName>
+                    <Visibility>hidden</Visibility>
+                </Setting>
+                </FieldSettings>
         </xsd:appinfo>
     </xsd:annotation>
 

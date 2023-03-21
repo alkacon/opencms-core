@@ -27,6 +27,7 @@
             <xsd:element name="DiscardTypes" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="PreferDetailPagesForLocalContents" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="TypeOrderingMode" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="DisabledTypesMode" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="ResourceType" type="OpenCmsADEType" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="UseFormatterKeys" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
     		<xsd:element name="SharedSettingOverride" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="1" />
@@ -58,6 +59,7 @@
                 <layout element="AddFormatters/AddFormatter" widget="VfsFileWidget" configuration="searchtypes=formatter_config,flex_formatter,macro_formatter|selectabletypes=formatter_config,flex_formatter,macro_formatter" />
                 <layout element="RemoveFormatters/RemoveFormatter" widget="VfsFileWidget" configuration="searchtypes=formatter_config,flex_formatter,macro_formatter|selectabletypes=formatter_config,flex_formatter,macro_formatter" />
                 <layout element="DiscardProperties" widget="SelectorWidget" configuration="false:%(key.discardprops.false)|true:%(key.discardprops.true)|top:%(key.discardprops.top)" />
+                <layout element="DisabledTypesMode" widget="SelectorWidget" configuration="mark:%(key.disabledtypesmode.mark)|hide:%(key.disabledtypesmode.hide)" display="singleline"/>
             </layouts>
             <relations>
                 <relation element="AddFormatters/AddFormatter" invalidate="false" />

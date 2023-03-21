@@ -179,6 +179,9 @@ public class CmsADEConfigDataInternal {
     /** The internal model page entries. */
     private volatile List<CmsModelPageConfig> m_ownModelPageConfig = null;
 
+    /** The display mode for deactivated types in the gallery dialog. */
+    private CmsGalleryDisabledTypesMode m_galleryDisabledTypesMode;
+
     /** Model page data with no resources. */
     private List<CmsModelPageConfigWithoutResource> m_ownModelPageConfigRaw = new ArrayList<>();
 
@@ -221,6 +224,7 @@ public class CmsADEConfigDataInternal {
      * @param basePath the base path
      * @param masterConfigs structure ids of master configuration files
      * @param resourceTypeConfig the resource type configuration
+     * @param galleryDisabledTypesMode  the display mode deactivated types in the gallery dialog
      * @param discardInheritedTypes the "discard inherited types" flag
      * @param propertyConfig the property configuration
      * @param discardPropertiesMode the "discard inherited properties" mode
@@ -254,6 +258,7 @@ public class CmsADEConfigDataInternal {
         String basePath,
         List<CmsUUID> masterConfigs,
         List<CmsResourceTypeConfig> resourceTypeConfig,
+        CmsGalleryDisabledTypesMode galleryDisabledTypesMode,
         boolean discardInheritedTypes,
         List<CmsPropertyConfig> propertyConfig,
         DiscardPropertiesMode discardPropertiesMode,
@@ -284,6 +289,7 @@ public class CmsADEConfigDataInternal {
         m_resource = resource;
         m_basePath = basePath;
         m_ownResourceTypes = resourceTypeConfig;
+        m_galleryDisabledTypesMode = galleryDisabledTypesMode;
         m_ownPropertyConfigurations = propertyConfig;
         m_ownModelPageConfigRaw = modelPages;
         m_ownDetailPages = detailPageInfos;
@@ -339,7 +345,7 @@ public class CmsADEConfigDataInternal {
 
     /**
      * Creates a new configuration data instance.<p>
-
+    
      * @param resource the resource from which this configuration data was read
      * @param isModuleConfig true if this is a module configuration
      * @param basePath the base path
@@ -465,6 +471,16 @@ public class CmsADEConfigDataInternal {
     public String getBasePath() {
 
         return m_basePath;
+    }
+
+    /**
+     * Gets the display mode for deactivated types in the sitemap dialog.
+     *
+     * @return the display mode for deactivated types
+     */
+    public CmsGalleryDisabledTypesMode getDisabledTypeMode() {
+
+        return m_galleryDisabledTypesMode;
     }
 
     /**
