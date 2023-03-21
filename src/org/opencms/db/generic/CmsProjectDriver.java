@@ -3449,19 +3449,28 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 // deleted also offline. if this is the case, the online and offline structure
                 // ID's do match, but the resource ID's are different. structure IDs are reused
                 // to prevent orphan structure records in the online project.
+
+                // Addendum (2023): It shouldn't be possible for resources to be in this state anymore,
+                // since creating new resources over deleted ones isn't really possible anymore,
+                // but apparently it can still happen, though I can't reproduce it.
                 if (!onlineResource.getResourceId().equals(offlineResource.getResourceId())) {
                     List<CmsProperty> offlineProperties = m_driverManager.getVfsDriver(dbc).readPropertyObjects(
                         dbc,
                         dbc.currentProject(),
                         onlineResource);
                     if (offlineProperties.size() > 0) {
+                        List<CmsProperty> newProperties = new ArrayList<>();
                         for (int i = 0; i < offlineProperties.size(); i++) {
-                            CmsProperty property = offlineProperties.get(i);
-                            property.setStructureValue(null);
-                            property.setResourceValue(CmsProperty.DELETE_VALUE);
+                            CmsProperty oldProperty = offlineProperties.get(i);
+                            // property may be frozen (non-modifiable), so create a new one
+                            CmsProperty newProperty = new CmsProperty(
+                                oldProperty.getName(),
+                                null,
+                                CmsProperty.DELETE_VALUE);
+                            newProperties.add(newProperty);
                         }
                         m_driverManager.getVfsDriver(
-                            dbc).writePropertyObjects(dbc, dbc.currentProject(), onlineResource, offlineProperties);
+                            dbc).writePropertyObjects(dbc, dbc.currentProject(), onlineResource, newProperties);
                     }
                 }
             }
