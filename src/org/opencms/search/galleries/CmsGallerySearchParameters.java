@@ -464,7 +464,7 @@ public class CmsGallerySearchParameters {
         query.setFields(CmsGallerySearchResult.getRequiredSolrFields());
 
         if ((m_functionAvailability != null) && m_functionAvailability.isDefined()) {
-            String notFunction = "(-type:("
+            String notFunction = "(*:* AND -type:("
                 + CmsXmlDynamicFunctionHandler.TYPE_FUNCTION
                 + " OR "
                 + CmsResourceTypeFunctionConfig.TYPE_NAME
