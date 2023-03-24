@@ -910,6 +910,24 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Gets the display mode for deactivated functions in the gallery dialog.
+     *
+     * @param defaultValue the default value to return if it's not set
+     * @return the display mode for deactivated types
+     */
+    public CmsGalleryDisabledTypesMode getDisabledFunctionsMode(CmsGalleryDisabledTypesMode defaultValue) {
+
+        CmsADEConfigData parentData = parent();
+        if (m_data.getGalleryDisabledFunctionsMode() != null) {
+            return m_data.getGalleryDisabledFunctionsMode();
+        } else if (parentData != null) {
+            return parentData.getDisabledFunctionsMode(defaultValue);
+        } else {
+            return defaultValue;
+        }
+    }
+
+    /**
      * Gets the display mode for deactivated types in the gallery dialog.
      *
      * @param defaultValue the default value to return if it's not set
@@ -925,7 +943,6 @@ public class CmsADEConfigData {
         } else {
             return defaultValue;
         }
-
     }
 
     /**
@@ -1559,6 +1576,11 @@ public class CmsADEConfigData {
     public boolean isExcludeExternalDetailContents() {
 
         return m_data.isExcludeExternalDetailContents();
+    }
+
+    public boolean isHideNonMatchingFunctions() {
+
+        return getDisabledFunctionsMode(CmsGalleryDisabledTypesMode.hide) == CmsGalleryDisabledTypesMode.hide;
     }
 
     /**

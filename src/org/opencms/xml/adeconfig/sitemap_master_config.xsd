@@ -35,6 +35,7 @@
             <xsd:element name="RemoveAllFormatters" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="RemoveFormatters" type="OpenCmsRemoveFormattersBlock" minOccurs="0"/>
             <xsd:element name="AddFormatters"    type="OpenCmsAddFormattersBlock" minOccurs="0"/>
+            <xsd:element name="DisabledFunctionsMode" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="RemoveAllFunctions" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="RemoveFunctions" type="OpenCmsFunctionList" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Function" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
@@ -60,6 +61,7 @@
                 <layout element="RemoveFormatters/RemoveFormatter" widget="VfsFileWidget" configuration="searchtypes=formatter_config,flex_formatter,macro_formatter|selectabletypes=formatter_config,flex_formatter,macro_formatter" />
                 <layout element="DiscardProperties" widget="SelectorWidget" configuration="false:%(key.discardprops.false)|true:%(key.discardprops.true)|top:%(key.discardprops.top)" />
                 <layout element="DisabledTypesMode" widget="SelectorWidget" configuration="mark:%(key.disabledtypesmode.mark)|hide:%(key.disabledtypesmode.hide)" display="singleline"/>
+                <layout element="DisabledFunctionsMode" widget="SelectorWidget" configuration="mark:%(key.disabledfunctionsmode.mark)|hide*:%(key.disabledfunctionsmode.hide)" display="singleline"/>
             </layouts>
             <relations>
                 <relation element="AddFormatters/AddFormatter" invalidate="false" />
@@ -71,7 +73,7 @@
             <tabs>
                 <tab element="MasterConfig" name="TabResourceTypes" collapse="false" />
                 <tab element="UseFormatterKeys" name="TabFormatters" collapse="false" />
-                <tab element="RemoveAllFunctions" name="TabFunctions" collapse="false" />
+                <tab element="DisabledFunctionsMode" name="TabFunctions" collapse="false" />
                 <tab element="DiscardProperties" name="TabPropertyConfiguration" collapse="false" />
                 <tab element="AddContentRestriction" name="TabRestrictions" collapse="false" />
                 <tab element="AttributeEditorConfig" name="TabAttributes" collapse="false" />

@@ -68,6 +68,7 @@ import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsIconUtil;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsVfsService;
+import org.opencms.gwt.shared.CmsGalleryContainerInfo;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
@@ -102,7 +103,10 @@ import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsADESessionCache;
+import org.opencms.xml.containerpage.CmsFormatterConfiguration;
+import org.opencms.xml.containerpage.CmsFunctionFormatterBean;
 import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
 import java.text.Collator;
 import java.text.DateFormat;
@@ -122,6 +126,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.function.Predicate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -566,6 +572,40 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
+     * Helper function for getting the IDs of functions which do not fit into a given set of container type/width combinations.
+     *
+     * @param cms the current CMS context
+     * @param config the sitemap configuration
+     * @param containerInfo the information about available container type/width combinations
+     *
+     * @return the set of functions which should be excluded
+     */
+    private static Set<CmsUUID> getExcludedFunctionsForContainerInfo(
+        CmsObject cms,
+        CmsADEConfigData config,
+        CmsGalleryContainerInfo containerInfo) {
+
+        CmsFormatterConfigurationCacheState formatterCache = config.getCachedFormatters();
+        // start with all functions, then go through each item in the container info and remove formatters if they match that item
+        // -> we end up with the functions that don't match anything
+        Map<CmsUUID, I_CmsFormatterBean> remainingUnmatchedFunctions = new HashMap<>(
+            Maps.filterValues(
+                formatterCache.getFormatters(),
+                formatter -> formatter instanceof CmsFunctionFormatterBean));
+        for (CmsGalleryContainerInfo.Item item : containerInfo.getItems()) {
+            Iterator<Map.Entry<CmsUUID, I_CmsFormatterBean>> iterator = remainingUnmatchedFunctions.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<CmsUUID, I_CmsFormatterBean> entry = iterator.next();
+                I_CmsFormatterBean formatter = entry.getValue();
+                if (CmsFormatterConfiguration.matchFormatter(formatter, item.getType(), item.getWidth())) {
+                    iterator.remove();
+                }
+            }
+        }
+        return new TreeSet<>(remainingUnmatchedFunctions.keySet());
+    }
+
+    /**
      * Returns the resource types beans.<p>
      *
      * @param resourceTypes the resource types
@@ -666,6 +706,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         return buildGalleriesList(readGalleryInfosByTypeNames(resourceTypes));
     }
 
+    /**
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getGalleryActionInfo(java.lang.String)
+     */
     public CmsGalleryActionInfo getGalleryActionInfo(String sitePath) throws CmsRpcException {
 
         try {
@@ -816,7 +859,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                             }
                             notFound = resultItem == null;
                             if (!notFound) {
-                                result = buildSingleSearchResultItem(getCmsObject(), resultItem, null);
+                                result = buildSingleSearchResultItem(getCmsObject(), resultItem, null, res -> false);
                             }
                         }
                     } catch (CmsException ex) {
@@ -1671,12 +1714,14 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      *
      * @param searchResult the list of search results
      * @param presetResult the search result which corresponds to a preset value in the editor
+     * @param checkDeactivated checks if search results should be shown as deactivated
      *
      * @return the list with the current search results
      */
     private List<CmsResultItemBean> buildSearchResultList(
         List<CmsGallerySearchResult> searchResult,
-        CmsGallerySearchResult presetResult) {
+        CmsGallerySearchResult presetResult,
+        Predicate<CmsResource> checkDeactivated) {
 
         ArrayList<CmsResultItemBean> list = new ArrayList<CmsResultItemBean>();
         if ((searchResult == null) || (searchResult.size() == 0)) {
@@ -1685,7 +1730,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsObject cms = getCmsObject();
         for (CmsGallerySearchResult sResult : searchResult) {
             try {
-                CmsResultItemBean bean = buildSingleSearchResultItem(cms, sResult, presetResult);
+                CmsResultItemBean bean = buildSingleSearchResultItem(cms, sResult, presetResult, checkDeactivated);
                 list.add(bean);
             } catch (Exception e) {
                 logError(e);
@@ -1700,6 +1745,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * @param cms the current CMS context
      * @param sResult the server-side search result
      * @param presetResult the preselected result
+     * @param checkDeactivated checks if search results should be shown as deactivated
      *
      * @return the client side search result item
      *
@@ -1709,7 +1755,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     private CmsResultItemBean buildSingleSearchResultItem(
         CmsObject cms,
         CmsGallerySearchResult sResult,
-        CmsGallerySearchResult presetResult)
+        CmsGallerySearchResult presetResult,
+        Predicate<CmsResource> checkDeactivated)
     throws CmsException, ParseException {
 
         Locale wpLocale = getWorkplaceLocale();
@@ -1840,6 +1887,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             new CmsResourceUtil(cms, resultResource).getNoEditReason(
                 OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)));
         bean.setMarkChangedState(true);
+        if (checkDeactivated.test(resultResource)) {
+            bean.setDeactivated(true);
+        }
         return bean;
     }
 
@@ -2188,7 +2238,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             initialSearchObj.setSortOrder(params.getSortOrder().name());
             initialSearchObj.setResultCount(searchResults.getHitCount());
             initialSearchObj.setPage(params.getResultPage());
-            initialSearchObj.setResults(buildSearchResultList(searchResults, foundItem));
+            initialSearchObj.setResults(buildSearchResultList(searchResults, foundItem, res -> false));
             initialSearchObj.setPage(1);
             initialSearchObj.setLastPage(currentPage);
             initialSearchObj.setTabId(I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_results.name());
@@ -2789,6 +2839,15 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 CmsFormatterConfigurationCacheState formatterState = OpenCms.getADEManager().getCachedFormatters(
                     cms.getRequestContext().getCurrentProject().isOnlineProject());
                 params.setFunctionAvailability(config.getDynamicFunctionAvailability(formatterState));
+                if (config.isHideNonMatchingFunctions()) {
+                    if (searchData.getContainerInfo() != null) {
+                        Set<CmsUUID> excludedFunctions = getExcludedFunctionsForContainerInfo(
+                            cms,
+                            config,
+                            searchData.getContainerInfo());
+                        params.setExcludedFunctions(excludedFunctions);
+                    }
+                }
             }
             if (replacementConfig != null) {
                 // if the search replacement configuration didn't already handle the replacement,
@@ -2853,13 +2912,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             title = navElement.getProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT);
         } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(
             navElement.getProperty(CmsPropertyDefinition.PROPERTY_TITLE))) {
-                title = navElement.getProperty(CmsPropertyDefinition.PROPERTY_TITLE);
-            } else {
-                title = navElement.getFileName();
-                if (title.contains("/")) {
-                    title = title.substring(0, title.indexOf("/"));
-                }
+            title = navElement.getProperty(CmsPropertyDefinition.PROPERTY_TITLE);
+        } else {
+            title = navElement.getFileName();
+            if (title.contains("/")) {
+                title = title.substring(0, title.indexOf("/"));
             }
+        }
         String childPath = navElement.getResource().getRootPath();
         boolean noChildren = true;
 
@@ -3030,6 +3089,17 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsAddContentRestriction replacementConfig = config.getAddContentRestriction();
         CmsGallerySearchResultList searchResults = null;
         List<String> types = searchObj.getTypes();
+        Predicate<CmsResource> deactivatedCheck = res -> false;
+        if (searchObj.getGalleryMode().equals(GalleryMode.ade)
+            && types.contains(CmsResourceTypeFunctionConfig.TYPE_NAME)
+            && !config.isHideNonMatchingFunctions()
+            && (searchObj.getContainerInfo() != null)) {
+            final Set<CmsUUID> excludedFunctions = getExcludedFunctionsForContainerInfo(
+                cms,
+                config,
+                searchObj.getContainerInfo());
+            deactivatedCheck = res -> excludedFunctions.contains(res.getStructureId());
+        }
 
         searchObjBean.setReplacedResults(false);
         if (searchObj.getGalleryMode().equals(GalleryMode.ade)
@@ -3047,7 +3117,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             // searchObjBean.setMatchesPerPage(searchResults.size());
             searchObjBean.setNoUploadReason(
                 Messages.get().getBundle(m_wpLocale).key(Messages.GUI_NO_UPLOAD_FOR_REPLACED_SEARCH_RESULTS_0));
-            searchObjBean.setResults(buildSearchResultList(searchResults, null));
+            searchObjBean.setResults(buildSearchResultList(searchResults, null, deactivatedCheck));
             searchObjBean.setResultCount(searchResults.size());
             if (searchObjBean.getResultCount() > 0) {
                 CmsADESessionCache cache = CmsADESessionCache.getCache(getRequest(), getCmsObject());
@@ -3068,7 +3138,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             searchObjBean.setResultCount(searchResults.getHitCount());
             searchObjBean.setPage(params.getResultPage());
             searchObjBean.setLastPage(params.getResultPage());
-            searchObjBean.setResults(buildSearchResultList(searchResults, null));
+            searchObjBean.setResults(buildSearchResultList(searchResults, null, deactivatedCheck));
             if (searchObj.getGalleryMode().equals(GalleryMode.ade)) {
                 if (searchObjBean.getResultCount() > 0) {
                     CmsADESessionCache cache = CmsADESessionCache.getCache(getRequest(), getCmsObject());

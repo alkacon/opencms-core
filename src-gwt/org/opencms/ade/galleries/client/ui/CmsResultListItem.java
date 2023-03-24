@@ -95,7 +95,9 @@ public class CmsResultListItem extends CmsListItem {
             } else {
                 setName(resultItem.getClientId());
             }
-            initMoveHandle(dndHandler);
+            if (!resultItem.isDeactivated()) {
+                initMoveHandle(dndHandler);
+            }
         }
         if (resultItemWidget.hasTileView()) {
             addStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().tilingItem());
@@ -114,7 +116,7 @@ public class CmsResultListItem extends CmsListItem {
         m_selectButton.setVisible(false);
         resultItemWidget.addButton(m_selectButton);
 
-        if (!resultItem.isReleasedAndNotExpired()) {
+        if (!resultItem.isReleasedAndNotExpired() || resultItem.isDeactivated()) {
             addStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().expired());
         }
     }

@@ -76,6 +76,9 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasPath {
     /** The link for displaying the resource. */
     private String m_viewLink;
 
+    /** True if the result is deactivated. */
+    private boolean m_deactivated;
+
     /**
      * Default constructor.<p>
      */
@@ -198,6 +201,16 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasPath {
     }
 
     /**
+     * Checks if the result is deactivated.
+     *
+     * @return true if the result is deactivated
+     */
+    public boolean isDeactivated() {
+
+        return m_deactivated;
+    }
+
+    /**
      * Returns if the represented resource is editable by the current user.<p>
      *
      * @return <code>true</code> if editable
@@ -245,6 +258,16 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasPath {
     public void setDateLastModified(String formattedDate) {
 
         m_dateLastModified = formattedDate;
+    }
+
+    /**
+     * Sets the 'deactivated' state.
+     *
+     * @param deactivated the 'deactivated' state
+     */
+    public void setDeactivated(boolean deactivated) {
+
+        m_deactivated = deactivated;
     }
 
     /**

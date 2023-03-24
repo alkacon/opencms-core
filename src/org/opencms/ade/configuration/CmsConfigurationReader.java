@@ -166,6 +166,9 @@ public class CmsConfigurationReader {
     /** The DisabledTypesMode node name. */
     public static final String N_DISABLED_TYPES_MODE = "DisabledTypesMode";
 
+    /** The DisabledFunctionsMode node name. */
+    public static final String N_DISABLED_FUNCTIONS_MODE = "DisabledFunctionsMode";
+
     /** The discard model pages node name. */
     public static final String N_DISCARD_MODEL_PAGES = "DiscardModelPages";
 
@@ -619,6 +622,12 @@ public class CmsConfigurationReader {
             galleryDisabledTypesMode = CmsGalleryDisabledTypesMode.valueOf(galleryDisabledTypesStr);
         }
 
+        String galleryDisabledFunctionsStr = getString(root.getSubValue(N_DISABLED_FUNCTIONS_MODE));
+        CmsGalleryDisabledTypesMode galleryDisabledFunctionsMode = null;
+        if (galleryDisabledFunctionsStr != null) {
+            galleryDisabledFunctionsMode = CmsGalleryDisabledTypesMode.valueOf(galleryDisabledFunctionsStr);
+        }
+
         I_CmsXmlContentValueLocation typeOrderingLoc = root.getSubValue(N_TYPE_ORDERING_MODE);
         CmsTypeOrderingMode typeOrderingMode = null;
         if (typeOrderingLoc != null) {
@@ -669,6 +678,7 @@ public class CmsConfigurationReader {
             masterConfigIds,
             m_resourceTypeConfigs,
             galleryDisabledTypesMode,
+            galleryDisabledFunctionsMode,
             discardInheritedTypes,
             m_propertyConfigs,
             discardPropertiesMode,

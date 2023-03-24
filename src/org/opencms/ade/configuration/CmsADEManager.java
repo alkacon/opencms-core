@@ -49,6 +49,7 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.types.CmsResourceTypeFunctionConfig;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
@@ -880,7 +881,7 @@ public class CmsADEManager {
             true);
 
         boolean isFunction = false;
-        for (String type : new String[] {"function", "function_config"}) {
+        for (String type : new String[] {"function", CmsResourceTypeFunctionConfig.TYPE_NAME}) {
             if (OpenCms.getResourceManager().matchResourceType(type, resource.getTypeId())) {
                 isFunction = true;
                 break;

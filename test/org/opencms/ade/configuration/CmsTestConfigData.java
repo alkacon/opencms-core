@@ -128,6 +128,7 @@ public class CmsTestConfigData extends CmsADEConfigData {
             /*List<CmsUUID> masterConfigs*/new ArrayList<>(),
             /*List<CmsResourceTypeConfig> resourceTypeConfig*/new ArrayList<>(),
             /*CmsGalleriesDisabledTypeMode*/null,
+            /*CmsGalleriesDisabledTypeMode*/null,
             /*boolean discardInheritedTypes*/false,
             /*List<CmsPropertyConfig> propertyConfig*/new ArrayList<>(),
             /*DiscardPropertiesMode discardPropertiesMode*/null,

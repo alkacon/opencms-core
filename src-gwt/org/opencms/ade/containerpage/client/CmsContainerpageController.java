@@ -72,6 +72,7 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsGalleryContainerInfo;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
@@ -1334,6 +1335,23 @@ public final class CmsContainerpageController {
         } else {
             return Optional.fromNullable(result.get(0));
         }
+    }
+
+    /**
+     * Gets the container info to send to the gallery service.
+     *
+     * @return the container info to send to the gallery service
+     */
+    public CmsGalleryContainerInfo getContainerInfoForGalleries() {
+
+        if (m_targetContainers != null) {
+            HashSet<CmsGalleryContainerInfo.Item> items = new HashSet<>();
+            for (CmsContainerPageContainer cont : m_targetContainers.values()) {
+                items.add(new CmsGalleryContainerInfo.Item(cont.getContainerType(), cont.getConfiguredWidth()));
+            }
+            return new CmsGalleryContainerInfo(items);
+        }
+        return null;
     }
 
     /**

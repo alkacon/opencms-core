@@ -59,6 +59,7 @@ import org.opencms.gwt.client.util.CmsJsUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsCategoryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
+import org.opencms.gwt.shared.CmsGalleryContainerInfo;
 import org.opencms.gwt.shared.rpc.I_CmsVfsServiceAsync;
 import org.opencms.gwt.shared.sort.CmsComparatorPath;
 import org.opencms.gwt.shared.sort.CmsComparatorTitle;
@@ -74,6 +75,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
@@ -127,6 +129,9 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
     /** The gallery configuration. */
     private I_CmsGalleryConfiguration m_configuration;
+
+    /** Provides container information for the gallery dialog. */
+    private Supplier<CmsGalleryContainerInfo> m_containerInfoProvider = () -> null;
 
     /** The current resource preview. */
     private I_CmsResourcePreview<?> m_currentPreview;
@@ -303,10 +308,6 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
         m_previewFactoryRegistration.put(previewProviderName, factory);
     }
-
-    private static native void debugger() /*-{
-        debugger;
-    }-*/;
 
     /**
      * Add category to search object.<p>
@@ -1293,6 +1294,19 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Sets the function that provides the container information.
+     *
+     * @param containerInfoProvider the container info provider
+     */
+    public void setContainerInfoProvider(Supplier<CmsGalleryContainerInfo> containerInfoProvider) {
+
+        if (containerInfoProvider == null) {
+            containerInfoProvider = () -> null;
+        }
+        m_containerInfoProvider = containerInfoProvider;
+    }
+
+    /**
      * Sets the controller handler for gallery dialog.<p>
      *
      * @param handler the handler to set
@@ -1811,6 +1825,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             preparedSearchObj.setGalleriesChanged(true);
             m_galleriesChanged = false;
         }
+        preparedSearchObj.setContainerInfo(m_containerInfoProvider.get());
         return preparedSearchObj;
 
     }

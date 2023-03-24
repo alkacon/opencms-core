@@ -182,6 +182,8 @@ public class CmsADEConfigDataInternal {
     /** The display mode for deactivated types in the gallery dialog. */
     private CmsGalleryDisabledTypesMode m_galleryDisabledTypesMode;
 
+    private CmsGalleryDisabledTypesMode m_galleryDisabledFunctionsMode;
+
     /** Model page data with no resources. */
     private List<CmsModelPageConfigWithoutResource> m_ownModelPageConfigRaw = new ArrayList<>();
 
@@ -259,6 +261,7 @@ public class CmsADEConfigDataInternal {
         List<CmsUUID> masterConfigs,
         List<CmsResourceTypeConfig> resourceTypeConfig,
         CmsGalleryDisabledTypesMode galleryDisabledTypesMode,
+        CmsGalleryDisabledTypesMode galleryDisabledFunctionsMode,
         boolean discardInheritedTypes,
         List<CmsPropertyConfig> propertyConfig,
         DiscardPropertiesMode discardPropertiesMode,
@@ -290,6 +293,7 @@ public class CmsADEConfigDataInternal {
         m_basePath = basePath;
         m_ownResourceTypes = resourceTypeConfig;
         m_galleryDisabledTypesMode = galleryDisabledTypesMode;
+        m_galleryDisabledFunctionsMode = galleryDisabledFunctionsMode;
         m_ownPropertyConfigurations = propertyConfig;
         m_ownModelPageConfigRaw = modelPages;
         m_ownDetailPages = detailPageInfos;
@@ -535,6 +539,11 @@ public class CmsADEConfigDataInternal {
     public Collection<CmsUUID> getFunctionsToRemove() {
 
         return m_functionsToRemove;
+    }
+
+    public CmsGalleryDisabledTypesMode getGalleryDisabledFunctionsMode() {
+
+        return m_galleryDisabledFunctionsMode;
     }
 
     /**

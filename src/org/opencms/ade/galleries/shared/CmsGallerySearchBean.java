@@ -30,6 +30,7 @@ package org.opencms.ade.galleries.shared;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
+import org.opencms.gwt.shared.CmsGalleryContainerInfo;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -61,6 +62,9 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /** The list of selected categories ids (path). */
     private List<String> m_categories = new ArrayList<String>();
+
+    /** The container information (used for the container page Add menu case of the gallery dialog). */
+    private CmsGalleryContainerInfo m_containerInfo;
 
     /** The end creation date criteria as long. */
     private long m_dateCreatedEnd = -1L;
@@ -204,6 +208,7 @@ public class CmsGallerySearchBean implements IsSerializable {
         setServerSearchTypes(searchObj.getServerSearchTypes());
         setOriginalGalleryData(searchObj.getOriginalGalleryData());
         setReplacedResults(searchObj.hasReplacedResults());
+        setContainerInfo(searchObj.getContainerInfo());
     }
 
     /**
@@ -317,6 +322,18 @@ public class CmsGallerySearchBean implements IsSerializable {
     public List<String> getCategories() {
 
         return m_categories;
+    }
+
+    /**
+     * Gets the container information.<p>
+     *
+     * This is used for filtering of dynamic function search results in the 'Add menu' case of the gallery dialog.
+     *
+     * @return the container information
+     */
+    public CmsGalleryContainerInfo getContainerInfo() {
+
+        return m_containerInfo;
     }
 
     /**
@@ -747,6 +764,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public void setCategories(List<String> categories) {
 
         m_categories = categories;
+    }
+
+    /**
+     * Sets the container information.
+     *
+     * @param containerInfo the container information
+     */
+    public void setContainerInfo(CmsGalleryContainerInfo containerInfo) {
+
+        m_containerInfo = containerInfo;
     }
 
     /**

@@ -74,6 +74,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypeFunctionConfig;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
@@ -1143,7 +1144,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
         CmsGalleryDataBean data = null;
         try {
-
             CmsObject cms = getCmsObject();
 
             CmsAddDialogTypeHelper typeHelper = new CmsAddDialogTypeHelper(CmsResourceTypeConfig.AddMenuType.ade);
@@ -1175,7 +1175,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             String subsite = OpenCms.getADEManager().getSubSiteRoot(cms, cms.addSiteRoot(uri));
             String searchStoreKey = elementView + "|" + subsite + "|" + locale;
             data.getContextParameters().put("searchStoreKey", searchStoreKey);
-            if (search != null) {
+            if ((search != null) && !search.getServerSearchTypes().contains(CmsResourceTypeFunctionConfig.TYPE_NAME)) {
                 if (searchStoreKey.equals(
                     search.getOriginalGalleryData().getContextParameters().get("searchStoreKey"))) {
                     if (hasCompatibleSearchData(search.getOriginalGalleryData(), data, search)) {
