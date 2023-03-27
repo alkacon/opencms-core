@@ -2657,6 +2657,21 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+		<attribute>
+            <description><![CDATA[
+              Configure if the included css/js files should be extended with a timestamp. This is neccessary to avoid caching.<BR />
+              The following values are supported:
+              <DL>
+                <DT><b>false</b> (default)</DT>
+                <DD>No timestamp will be added.</DD>
+                <DT><b>true</b></DT>
+                <DD>All css/js files included by this tag are extended with a timestamp.</DD>
+               </DL>
+            ]]></description>
+            <name>addtimestamp</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
 
     <tag>

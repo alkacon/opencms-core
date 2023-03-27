@@ -107,6 +107,9 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
     /** The detail container width. */
     private String m_detailWidth;
 
+    /** The value of the addTimestamp attribute. */
+    private String m_addTimestamp;
+
     /** Map to save parameters to the include in. */
     private Map<String, String[]> m_parameterMap;
 
@@ -333,6 +336,16 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
     }
 
     /**
+     * Sets the value of the addTimestamp attribute.<p>
+     *
+     * @param addTimestamp if a timestamp should be added to the script files
+     */
+    public void setAddtimestamp(String addTimestamp) {
+
+        m_addTimestamp = addTimestamp;
+    }
+
+    /**
      * Returns true if the headincludes tag should be closed.<p>
      *
      * @return true if the headincludes tag should be closed
@@ -343,6 +356,19 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             return true;
         }
         return Boolean.parseBoolean(m_closeTags);
+    }
+    
+    /**
+     * Returns true if a timestamp should be added to the script files.<p>
+     *
+     * @return true if a timestamp should be added to the script files
+     */
+    public boolean addTimestamp() {
+        if(m_addTimestamp == null) {
+            return false;
+        }
+        
+        return Boolean.parseBoolean(m_addTimestamp);
     }
 
     /**
@@ -420,6 +446,10 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             }
         }
         for (String cssUri : cssIncludes) {
+            if(addTimestamp()) {
+                cssUri = addTimestampParam(cms, cssUri.trim());
+            }
+            
             pageContext.getOut().print(
                 "\n<link rel=\"stylesheet\" href=\""
                     + CmsJspTagLink.linkTagAction(addParams(cssUri.trim()), req)
@@ -521,6 +551,10 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
             }
         }
         for (String jsUri : jsIncludes) {
+            if(addTimestamp()) {
+                jsUri = addTimestampParam(cms, jsUri.trim());
+            }
+            
             pageContext.getOut().print(
                 "\n<script src=\"" + CmsJspTagLink.linkTagAction(addParams(jsUri.trim()), req) + "\"></script>");
         }
@@ -830,4 +864,24 @@ public class CmsJspTagHeadIncludes extends BodyTagSupport implements I_CmsJspTag
         return standardContext;
     }
 
+    /**
+     * Adds a timestamp to the file uri to avoid browser caching. </p>
+     * 
+     * @param cms
+     *           the current cms context
+     * @param uri
+     *              the current uri
+     * @return file uri extended with timestamp param as <code>String</code>
+     */
+    private String addTimestampParam(CmsObject cms, String uri) {
+        try {
+            CmsResource resource = cms.readResource(uri.trim());
+            String versionParam = "?ver=" + resource.getDateLastModified();
+            return uri + versionParam;
+        } catch (CmsException e) {
+            LOG.debug("Error reading required head include resource " + uri.trim()
+                    + ". Timestamp can not be added.", e);
+        }
+        return uri;
+    }
 }
