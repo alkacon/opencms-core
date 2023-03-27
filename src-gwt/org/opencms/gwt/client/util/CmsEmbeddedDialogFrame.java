@@ -45,6 +45,8 @@ public class CmsEmbeddedDialogFrame implements I_CmsEmbeddedDialogFrame {
     /** The actual iframe. */
     private CmsIFrame m_frame;
 
+    private String m_frameName;
+
     /**
      * Hidden default constructor.
      */
@@ -100,7 +102,7 @@ public class CmsEmbeddedDialogFrame implements I_CmsEmbeddedDialogFrame {
     public void loadDialog(String dialogInfoJson, I_CmsEmbeddedDialogHandlerJsCallbacks handler) {
 
         waitUntilReady(() -> {
-            setDialogHandlerCallbacks(handler);
+            setDialogHandlerCallbacks(m_frameName, handler);
             setFrameVisible(true);
             m_loader.loadDialog(dialogInfoJson);
         });
@@ -128,7 +130,8 @@ public class CmsEmbeddedDialogFrame implements I_CmsEmbeddedDialogFrame {
         }
         if (m_frame == null) {
             String url = CmsCoreProvider.get().getEmbeddedDialogsUrl();
-            m_frame = new CmsIFrame("embeddedDialogFrame", url);
+            m_frameName = "embeddedDialogFrame-" + Math.random();
+            m_frame = new CmsIFrame(m_frameName, url);
             m_frame.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().embeddedDialogFrame());
             setFrameVisible(false);
             RootPanel.get().add(m_frame);
@@ -149,8 +152,8 @@ public class CmsEmbeddedDialogFrame implements I_CmsEmbeddedDialogFrame {
      *
      * @param handler the handler to set
      */
-    private native void setDialogHandlerCallbacks(I_CmsEmbeddedDialogHandlerJsCallbacks handler) /*-{
-        $wnd.frames.embeddedDialogFrame.connector = handler;
+    private native void setDialogHandlerCallbacks(String frameName, I_CmsEmbeddedDialogHandlerJsCallbacks handler) /*-{
+        $wnd.frames[frameName].connector = handler;
     }-*/;
 
     /**
