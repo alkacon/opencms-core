@@ -38,8 +38,6 @@ import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.CmsSearchUtil;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
-import org.opencms.search.galleries.CmsGallerySearchParameters.CmsGallerySearchTimeRange;
-import org.opencms.search.galleries.CmsGallerySearchParameters.CmsGallerySortParam;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsUUID;
@@ -507,7 +505,8 @@ public class CmsGallerySearchParameters {
             query.addFilterQuery(functionFilter);
         }
 
-        if (m_resourceTypes.contains(CmsResourceTypeFunctionConfig.TYPE_NAME)
+        if ((m_resourceTypes != null)
+            && m_resourceTypes.contains(CmsResourceTypeFunctionConfig.TYPE_NAME)
             && (m_excludedFunctions != null)
             && (m_excludedFunctions.size() > 0)) {
             String orList = Joiner.on(" OR ").join(m_excludedFunctions);
