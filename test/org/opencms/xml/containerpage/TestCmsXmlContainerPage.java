@@ -41,6 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -319,6 +320,7 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
         Map<String, String> props = new HashMap<String, String>();
         props.put("abc", "abc");
         props.put("test", cms.readResource("/containerpage/content.html").getStructureId().toString());
+        props.put(CmsContainerElement.SETTING_PAGE_ID, "" + CmsUUID.getNullUUID());
         CmsContainerElementBean elem = new CmsContainerElementBean(
             cms.readResource("/containerpage/content.html").getStructureId(),
             cms.readResource("/containerpage/formatter.jsp").getStructureId(),
@@ -373,8 +375,10 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
                     assertEquals(expected.getFormatterId(), element.getFormatterId());
                     assertEquals(expected.getIndividualSettings().size(), element.getIndividualSettings().size());
                     for (Entry<String, String> settingsEntry : element.getIndividualSettings().entrySet()) {
-                        // all settings but the instance id should be the same
-                        if (!settingsEntry.getKey().equals(CmsContainerElement.ELEMENT_INSTANCE_ID)) {
+                        // all settings but the instance id and page id should be the same
+                        if (settingsEntry.getKey().equals(CmsContainerElement.SETTING_PAGE_ID)) {
+                            continue;
+                        } else if (!settingsEntry.getKey().equals(CmsContainerElement.ELEMENT_INSTANCE_ID)) {
                             assertEquals(
                                 expected.getIndividualSettings().get(settingsEntry.getKey()),
                                 settingsEntry.getValue());
