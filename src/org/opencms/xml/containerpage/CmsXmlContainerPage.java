@@ -662,6 +662,14 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                             propertiesMap.put(CmsContainerElement.ELEMENT_INSTANCE_ID, elementInstanceId);
                         }
 
+                        CmsUUID pageId;
+                        if (getFile() != null) {
+                            pageId = getFile().getStructureId();
+                        } else {
+                            pageId = CmsUUID.getNullUUID();
+                        }
+                        propertiesMap.put(CmsContainerElement.SETTING_PAGE_ID, "" + pageId);
+
                         boolean createNewFromSetting = Boolean.parseBoolean(
                             propertiesMap.remove(CmsContainerElement.SETTING_CREATE_NEW));
                         createNew |= createNewFromSetting;
@@ -833,6 +841,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             }
             result.put(key, value);
         }
+        result.remove(CmsContainerElement.SETTING_PAGE_ID);
         return result;
     }
 
@@ -860,6 +869,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             }
             result.put(key, value);
         }
+        result.remove(CmsContainerElement.SETTING_PAGE_ID);
         result = sortSettingsForSave(translateMapKeys(result, this::translateSettingNameForSave));
         return result;
     }

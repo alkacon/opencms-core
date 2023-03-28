@@ -1834,6 +1834,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     CmsContainerElement.ELEMENT_INSTANCE_ID,
                     elementBean.getIndividualSettings().get(CmsContainerElement.ELEMENT_INSTANCE_ID));
             }
+            if (elementBean.getIndividualSettings().containsKey(CmsContainerElement.SETTING_PAGE_ID)) {
+                settings.put(
+                    CmsContainerElement.SETTING_PAGE_ID,
+                    elementBean.getIndividualSettings().get(CmsContainerElement.SETTING_PAGE_ID));
+            }
             if (!isEditingModelGroups(cms, pageResource)) {
                 // in case of model group state set to 'noGroup', the group will be dissolved and former group id forgotten
                 if (!(settings.containsKey(CmsContainerElement.MODEL_GROUP_STATE)
@@ -2777,6 +2782,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             if (cms.existsResource(element.getId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFile())) {
                 try {
                     CmsContainerElementBean clone = element.clone();
+                    // Because ensureNewInstanceId() just generates a new UUID,
+                    // the key for the element cache will not collide with anything else, so
+                    // we do not need to set the SYSTEM::pageId setting for disambiguation here.
                     clone.ensureNewInstanceId();
                     cache.setCacheContainerElement(clone.editorHash(), clone);
                     CmsContainerElementData elementData = elemUtil.getElementData(
@@ -3152,6 +3160,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
             settings.put(CmsFormatterConfig.FORMATTER_SETTINGS_KEY, formatterID);
             settings.put(SOURCE_CONTAINERPAGE_ID_SETTING, containerPage.getStructureId().toString());
+            settings.remove(CmsContainerElement.SETTING_PAGE_ID);
             element = CmsContainerElementBean.cloneWithSettings(element, settings);
             Iterator<CmsContainerElementBean> listIt = list.iterator();
             while (listIt.hasNext()) {

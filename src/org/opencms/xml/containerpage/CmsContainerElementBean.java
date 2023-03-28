@@ -761,17 +761,6 @@ public class CmsContainerElementBean implements Cloneable {
     }
 
     /**
-     * Removes the instance id.<p>
-     */
-    public void removeInstanceId() {
-
-        Map<String, String> newSettings = new HashMap<String, String>(m_individualSettings);
-        newSettings.remove(CmsContainerElement.ELEMENT_INSTANCE_ID);
-        m_individualSettings = Collections.unmodifiableMap(newSettings);
-        m_editorHash = m_elementId.toString() + getSettingsHash();
-    }
-
-    /**
      * Enables / disables 'do not cache' status, which prevents the element from being cached in the session cache.
      *
      * @param doNotCache the new value
@@ -857,7 +846,10 @@ public class CmsContainerElementBean implements Cloneable {
         if (instanceId == null) {
             throw new RuntimeException("Missing instance id");
         }
-        return CmsADEManager.CLIENT_ID_SEPERATOR + getInstanceId();
+        return CmsADEManager.CLIENT_ID_SEPERATOR
+            + getInstanceId()
+            + "_"
+            + getIndividualSettings().get(CmsContainerElement.SETTING_PAGE_ID);
     }
 
     /**

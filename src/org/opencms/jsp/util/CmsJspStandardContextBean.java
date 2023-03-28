@@ -411,15 +411,6 @@ public final class CmsJspStandardContextBean {
         }
 
         /**
-         * @see org.opencms.xml.containerpage.CmsContainerElementBean#removeInstanceId()
-         */
-        @Override
-        public void removeInstanceId() {
-
-            m_wrappedElement.removeInstanceId();
-        }
-
-        /**
          * @see org.opencms.xml.containerpage.CmsContainerElementBean#setFormatterId(org.opencms.util.CmsUUID)
          */
         @Override

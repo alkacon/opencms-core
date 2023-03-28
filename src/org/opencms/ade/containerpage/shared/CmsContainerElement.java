@@ -121,6 +121,13 @@ public class CmsContainerElement implements IsSerializable, I_CmsHasIconClasses 
     /** Key for the setting that replaces the CreateNew element. */
     public static final String SETTING_CREATE_NEW = "SYSTEM::create_new";
 
+    /**
+     * Key for the setting used to identify which page this element was read from originally.
+     *
+     * <p>This setting is not stored when saving a container page.
+     **/
+    public static final String SETTING_PAGE_ID = "SYSTEM::pageId";
+
     /** The use as copy model setting key. */
     public static final String USE_AS_COPY_MODEL = "use_as_copy_model";
 
