@@ -87,13 +87,7 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
      */
     public Runnable getAppLaunchCommand() {
 
-        return new Runnable() {
-
-            public void run() {
-
-                openPageEditor();
-            }
-        };
+        return this::openPageEditor;
     }
 
     /**

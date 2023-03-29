@@ -70,7 +70,8 @@ public class CmsSitemapToolbar extends CmsToolbar {
                 null,
                 null,
                 CmsSitemapView.getInstance().getController().getData().getReturnCode(),
-                CmsCoreProvider.get().getUri());
+                CmsCoreProvider.get().getUri(),
+                CmsCoreProvider.get().getLastPageId());
         }
 
     }

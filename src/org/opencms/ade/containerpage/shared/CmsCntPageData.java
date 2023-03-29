@@ -31,6 +31,7 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsUUID;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -194,6 +195,9 @@ public final class CmsCntPageData implements IsSerializable {
 
     /** The detail container page id (may be null). */
     private CmsUUID m_detailContainerPageId;
+
+    /** Key-value pairs to store in the sessionStorage. */ 
+    private Map<String, String> m_sessionStorageData = new HashMap<>();
 
     /**
      * Constructor.<p>
@@ -525,6 +529,16 @@ public final class CmsCntPageData implements IsSerializable {
     }
 
     /**
+     * Gets the key-value pairs to store in the session storage of the browser.
+     * 
+     * @return the map of entries to store in the session storage 
+     */
+    public Map<String, String> getSessionStorageData() {
+
+        return m_sessionStorageData;
+    }
+
+    /**
      * Returns the sitemap URI.<p>
      *
      * @return the sitemap URI
@@ -612,6 +626,16 @@ public final class CmsCntPageData implements IsSerializable {
     public void setRpcContext(CmsContainerPageRpcContext context) {
 
         m_rpcContext = context;
+    }
+
+    /**
+     * Sets the entries to store in the browser's session storage.
+     * 
+     * @param sessionStorageData the entries to store in the browser's session storage  
+     */
+    public void setSessionStorageData(Map<String, String> sessionStorageData) {
+
+        m_sessionStorageData = sessionStorageData;
     }
 
 }

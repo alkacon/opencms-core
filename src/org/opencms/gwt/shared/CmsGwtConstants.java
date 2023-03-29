@@ -265,6 +265,11 @@ public final class CmsGwtConstants {
     public static final String META_EDITOR_STYLESHEET = "cms-editor-stylesheet";
 
     /**
+     * Session storage key for memorizing the last opened container page.
+     */
+    public static final String LAST_CONTAINER_PAGE_ID = "lastContainerPageId";
+
+    /**
      * Hide constructor.<p>
      */
     private CmsGwtConstants() {

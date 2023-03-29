@@ -38,6 +38,7 @@ import org.opencms.gwt.client.util.CmsMediaQuery;
 import org.opencms.gwt.client.util.CmsUniqueActiveItemContainer;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.I_CmsAutoBeanFactory;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync;
@@ -58,6 +59,9 @@ import com.google.web.bindery.event.shared.Event;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 
+import elemental2.dom.DomGlobal;
+import elemental2.webstorage.WebStorageWindow;
+
 /**
  * Client side core data provider.<p>
  *
@@ -67,7 +71,7 @@ import com.google.web.bindery.event.shared.SimpleEventBus;
  */
 public final class CmsCoreProvider extends CmsCoreData {
 
-    /** AutoBean factory instance. */ 
+    /** AutoBean factory instance. */
     public static final I_CmsAutoBeanFactory AUTO_BEAN_FACTORY = GWT.create(I_CmsAutoBeanFactory.class);
 
     /** Path to system folder. */
@@ -325,6 +329,22 @@ public final class CmsCoreProvider extends CmsCoreData {
 
         return m_activeFlyoutMenu;
 
+    }
+
+    /**
+     * Gets the page id that was last stored in sessionStorage.
+     *
+     * @return the page id that was last stored in session storage
+     */
+    public CmsUUID getLastPageId() {
+
+        WebStorageWindow window = WebStorageWindow.of(DomGlobal.window);
+        String lastPageStr = window.sessionStorage.getItem(CmsGwtConstants.LAST_CONTAINER_PAGE_ID);
+        if (lastPageStr != null) {
+            return new CmsUUID(lastPageStr);
+        } else {
+            return null;
+        }
     }
 
     /**

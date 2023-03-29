@@ -103,7 +103,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
                 CmsCoreProvider.get().getStructureId(),
                 CmsContainerpageController.get().getData().getDetailId(),
                 null,
-                CmsCoreProvider.get().getUri());
+                CmsCoreProvider.get().getUri(),
+                CmsCoreProvider.get().getLastPageId());
         }
 
     }

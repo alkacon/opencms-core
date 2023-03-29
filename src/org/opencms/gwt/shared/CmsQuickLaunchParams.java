@@ -45,6 +45,9 @@ public class CmsQuickLaunchParams implements IsSerializable {
     /** Detail content id. */
     private CmsUUID m_detailId;
 
+    /** The last opened page id from the session storage. */
+    private CmsUUID m_sessionPageId;
+
     /** Return code. */
     private String m_returnCode;
 
@@ -59,19 +62,29 @@ public class CmsQuickLaunchParams implements IsSerializable {
      * @param detailId the detail content id
      * @param returnCode the return code
      * @param path  the path
+     * @param sessionPageId the id of the last opened page from the browser sessionStorage
      */
-    public CmsQuickLaunchParams(String context, CmsUUID pageId, CmsUUID detailId, String returnCode, String path) {
+    public CmsQuickLaunchParams(
+        String context,
+        CmsUUID pageId,
+        CmsUUID detailId,
+        String returnCode,
+        String path,
+        CmsUUID sessionPageId) {
+
         m_context = context;
         m_pageId = pageId;
         m_detailId = detailId;
         m_returnCode = returnCode;
         m_path = path;
+        m_sessionPageId = sessionPageId;
     }
 
     /**
      * Default constructor for serialization.<p>
      */
     protected CmsQuickLaunchParams() {
+
         // do nothing
     }
 
@@ -123,6 +136,16 @@ public class CmsQuickLaunchParams implements IsSerializable {
     public String getReturnCode() {
 
         return m_returnCode;
+    }
+
+    /**
+     * Gets the id of the last edited container page.
+     *
+     * @return the id of the last edited container page
+     */
+    public CmsUUID getSessionPageId() {
+
+        return m_sessionPageId;
     }
 
     /**

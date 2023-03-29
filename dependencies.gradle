@@ -79,6 +79,7 @@ dependencies {
     distribution group: 'com.google.elemental2', name: 'elemental2-promise', version: '1.1.0'
     distribution group: 'com.google.elemental2', name: 'elemental2-core', version: '1.1.0'
     distribution group: 'com.google.elemental2', name: 'elemental2-dom', version: '1.1.0'
+    distribution group: 'com.google.elemental2', name: 'elemental2-webstorage', version: '1.1.0'
     distribution group: 'com.google.guava', name: 'failureaccess', version: '1.0.1'
     distribution group: 'org.gwtproject', name: 'gwt-servlet', version: '2.10.0'
     distribution group: 'com.google.gwt', name: 'gwt-elemental', version: '2.9.0'

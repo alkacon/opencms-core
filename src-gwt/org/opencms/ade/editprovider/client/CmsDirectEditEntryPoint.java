@@ -224,7 +224,8 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
                     CmsCoreProvider.get().getStructureId(),
                     null,
                     null,
-                    CmsCoreProvider.get().getUri());
+                    CmsCoreProvider.get().getUri(),
+                    CmsCoreProvider.get().getLastPageId());
             }
         });
 

@@ -31,12 +31,14 @@ import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.gwt.shared.CmsQuickLaunchData;
 import org.opencms.gwt.shared.CmsQuickLaunchParams;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
@@ -45,6 +47,7 @@ import org.opencms.ui.apps.CmsPageEditorConfiguration;
 import org.opencms.ui.apps.CmsQuickLaunchLocationCache;
 import org.opencms.ui.apps.CmsSitemapEditorConfiguration;
 import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,13 +138,32 @@ public final class CmsQuickLaunchProvider {
                         if ((currentPage != null)
                             && CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME.equals(
                                 OpenCms.getResourceManager().getResourceType(currentPage).getTypeName())) {
-                            String page = locationCache.getPageEditorLocation(
-                                cms,
-                                cms.getRequestContext().getSiteRoot());
-                            if (page != null) {
-                                link = OpenCms.getLinkManager().substituteLink(cms, page);
-                            } else {
-                                reload = true;
+                            if (params.getSessionPageId() != null) {
+                                try {
+                                    CmsResource page = cms.readResource(
+                                        params.getSessionPageId(),
+                                        CmsResourceFilter.IGNORE_EXPIRATION);
+                                    // only use the page id from session storage if it's in the current site.
+                                    if (CmsStringUtil.isPrefixPath(
+                                        cms.getRequestContext().getSiteRoot(),
+                                        page.getRootPath())) {
+                                        link = OpenCms.getLinkManager().substituteLink(cms, page);
+                                    }
+                                } catch (CmsVfsResourceNotFoundException | CmsSecurityException e) {
+                                    LOG.info(e.getLocalizedMessage(), e);
+                                } catch (Exception e) {
+                                    LOG.error(e.getLocalizedMessage(), e);
+                                }
+                            }
+                            if (link == null) {
+                                String page = locationCache.getPageEditorLocation(
+                                    cms,
+                                    cms.getRequestContext().getSiteRoot());
+                                if (page != null) {
+                                    link = OpenCms.getLinkManager().substituteLink(cms, page);
+                                } else {
+                                    reload = true;
+                                }
                             }
                         } else {
                             reload = true;

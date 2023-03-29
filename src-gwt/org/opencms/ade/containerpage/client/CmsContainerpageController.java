@@ -119,6 +119,9 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.autobean.shared.AutoBean;
 import com.google.web.bindery.autobean.shared.AutoBeanCodex;
 
+import elemental2.dom.DomGlobal;
+import elemental2.webstorage.WebStorageWindow;
+
 /**
  * Data provider for the container-page editor. All data concerning the container-page is requested and maintained by this provider.<p>
  *
@@ -774,6 +777,14 @@ public final class CmsContainerpageController {
             m_elementView = m_data.getElementView();
             m_modelGroupElementId = m_data.getModelGroupElementId();
             m_loadTime = m_data.getLoadTime();
+            try {
+                WebStorageWindow window = WebStorageWindow.of(DomGlobal.window);
+                for (Map.Entry<String, String> entry : m_data.getSessionStorageData().entrySet()) {
+                    window.sessionStorage.setItem(entry.getKey(), entry.getValue());
+                }
+            } catch (Exception e) {
+                DomGlobal.console.log("can't use webstorage API");
+            }
         } catch (SerializationException e) {
             CmsErrorDialog.handleException(
                 new Exception(
@@ -783,6 +794,7 @@ public final class CmsContainerpageController {
         m_smallElementsHandler = new CmsSmallElementsHandler(getContainerpageService());
         if (m_data != null) {
             m_smallElementsHandler.setEditSmallElements(m_data.isEditSmallElementsInitially(), false);
+
             m_data.setRpcContext(
                 new CmsContainerPageRpcContext(
                     CmsCoreProvider.get().getStructureId(),

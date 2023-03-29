@@ -85,6 +85,7 @@ import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsIconUtil;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsVfsService;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsListElementCreationDialogData;
 import org.opencms.gwt.shared.CmsListElementCreationOption;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -1489,7 +1490,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsObject cms = getCmsObject();
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         HttpServletRequest request = getRequest();
+
         try {
+            Map<String, String> sessionStorageData = new HashMap<>();
             CmsTemplateContextInfo info = OpenCms.getTemplateContextManager().getContextInfoBean(cms, request);
             CmsResource containerPage = getContainerpage(cms);
             Set<String> detailTypes = getDetailTypes(cms, containerPage);
@@ -1550,6 +1553,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             } else {
                 if (!isModelPage && !isEditingModelGroup) {
                     locationCache.setPageEditorResource(cms.getRequestContext().getSiteRoot(), containerPage);
+                    sessionStorageData.put(
+                        CmsGwtConstants.LAST_CONTAINER_PAGE_ID,
+                        containerPage.getStructureId().toString());
                 }
                 noEditReason = getNoEditReason(cms, containerPage);
             }
@@ -1669,6 +1675,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     || Boolean.valueOf(param).booleanValue();
             }
             data.setAllowSettingsInEditor(allowSettingsInEditor);
+            data.setSessionStorageData(sessionStorageData);
         } catch (Throwable e) {
             error(e);
         }
