@@ -40,7 +40,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Performs attribute changes in a sitemap configuration file CmsXmlContent instance.
@@ -87,14 +86,11 @@ public class CmsSitemapAttributeUpdater {
             String updateValue = attrValue;
             if (parentConfig != null) {
                 String parentValue = parentConfig.getAttribute(attrName, null);
-                if (parentValue == null) {
-                    if ("".equals(attrValue)) {
-                        updateValue = null;
-                    }
-                } else {
-                    if (parentValue.equals(attrValue)) {
-                        updateValue = null;
-                    }
+                if ((parentValue != null) && parentValue.equals(attrValue)) {
+                    updateValue = null;
+                }
+                if ("".equals(attrValue)) {
+                    updateValue = null;
                 }
             }
             updates.put(attrName, updateValue);
@@ -190,23 +186,20 @@ public class CmsSitemapAttributeUpdater {
      */
     public boolean updateAttributes(Map<String, String> attributeUpdates) {
 
-        Map<String, String> allValues = getAttributesFromContent();
-        boolean changed = false;
+        Map<String, String> oldValues = getAttributesFromContent();
+        Map<String, String> newValues = new HashMap<>(oldValues);
         for (Map.Entry<String, String> entry : attributeUpdates.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
-            String oldValue = allValues.get(value);
-            if (!Objects.equals(value, oldValue)) {
-                changed = true;
-            }
             if (value != null) {
-                allValues.put(key, value);
+                newValues.put(key, value);
             } else {
-                allValues.remove(key);
+                newValues.remove(key);
             }
         }
+        boolean changed = !oldValues.equals(newValues);
         if (changed) {
-            replaceAttributes(allValues);
+            replaceAttributes(newValues);
         }
         return changed;
 

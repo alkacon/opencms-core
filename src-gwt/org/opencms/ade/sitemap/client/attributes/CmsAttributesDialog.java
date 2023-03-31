@@ -134,7 +134,7 @@ public class CmsAttributesDialog extends CmsFormDialog {
                     @Override
                     public void execute() {
 
-                        start(0, false);
+                        start(0, true);
                         CmsUUID rootId = CmsSitemapView.getInstance().getController().getData().getRoot().getId();
                         // We need to send all values to the server, not just the edited ones, because when an inherited
                         // value from a parent sitemap has changed to match the value explicitly set in a child sitemap, we want
@@ -171,10 +171,6 @@ public class CmsAttributesDialog extends CmsFormDialog {
                         Map<String, String> widgetParams,
                         Optional<String> defaultValue) {
 
-                        // we don't want an "unselected" option, for now
-                        if ("select".equals(widgetName)) {
-                            widgetName = "select_notnull";
-                        }
                         return CmsWidgetFactoryRegistry.instance().createFormWidget(
                             widgetName,
                             widgetParams,

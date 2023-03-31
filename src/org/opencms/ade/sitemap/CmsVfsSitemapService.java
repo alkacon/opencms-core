@@ -1181,6 +1181,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 CmsFile file = configContent.getFile();
                 file.setContents(newContentBytes);
                 cms.writeFile(file);
+                OpenCms.getADEManager().waitForCacheUpdate(false);
             }
         } catch (Exception e) {
             error(e);
