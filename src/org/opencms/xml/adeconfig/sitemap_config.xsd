@@ -90,12 +90,6 @@
                                      scope="RemoveAllFormatters"
                                      configuration="" />
             </editorchangehandlers>
-            <FieldSettings>
-            <Setting>
-                    <PropertyName>MasterConfig</PropertyName>
-                    <Visibility>hidden</Visibility>
-                </Setting>
-                </FieldSettings>
         </xsd:appinfo>
     </xsd:annotation>
 
