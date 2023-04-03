@@ -93,7 +93,7 @@ public class CmsAttributesDialog extends CmsFormDialog {
                 A_CmsFormFieldPanel.NO_DESCRIPTION,
                 (Widget)field.getWidget(),
                 field.getDescription(),
-                false);
+                true);
             return row;
         }
 
