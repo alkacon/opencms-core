@@ -72,7 +72,7 @@ public class CmsSitemapAttributeUpdater {
      * @param newAttributes the map of attributes
      * @param config the sitemap config we are currently working on
      *
-     * @return the map of updates
+     * @return the map of updates (with null values indicating that the key should be removed)
      */
     public static Map<String, String> computeUpdatesRelativeToInheritedValues(
         Map<String, String> newAttributes,
@@ -89,9 +89,9 @@ public class CmsSitemapAttributeUpdater {
                 if ((parentValue != null) && parentValue.equals(attrValue)) {
                     updateValue = null;
                 }
-                if ("".equals(attrValue)) {
-                    updateValue = null;
-                }
+            }
+            if ("".equals(attrValue)) {
+                updateValue = null;
             }
             updates.put(attrName, updateValue);
         }
