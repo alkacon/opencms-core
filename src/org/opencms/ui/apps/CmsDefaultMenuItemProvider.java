@@ -172,9 +172,10 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsUnlinkLocaleVariantAction(), advanced.getId(), 1150, 0),
             new CmsContextMenuActionItem(new CmsSeoAction(), advanced.getId(), 1200, 0),
             new CmsContextMenuActionItem(new CmsWorkplaceAction(), advanced.getId(), 1300, 0),
-            new CmsContextMenuActionItem(new CmsSitemapAliasAction(), advanced.getId(), 1500, 0),
-            new CmsContextMenuActionItem(new CmsSitemapAttributeEditorAction(), advanced.getId(), 1520, 0),
-            new CmsContextMenuActionItem(new CmsSitemapEditConfigAction(), advanced.getId(), 1600, 0),
+
+            new CmsContextMenuActionItem(new CmsSitemapAttributeEditorAction(), advanced.getId(), 1500, 0),
+            new CmsContextMenuActionItem(new CmsSitemapEditConfigAction(), advanced.getId(), 1520, 0),
+            new CmsContextMenuActionItem(new CmsSitemapAliasAction(), advanced.getId(), 1600, 0),
             new CmsContextMenuActionItem(new CmsTemplateMapperAction(), advanced.getId(), 1700, 0),
 
             new CmsContextMenuActionItem(new CmsHistoryDialogAction(), null, 2450, 0),

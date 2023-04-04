@@ -195,6 +195,29 @@ public class CmsAttributesDialog extends CmsFormDialog {
     private static native void sendBeacon(String target, String data);
 
     /**
+     * @see com.google.gwt.user.client.ui.PopupPanel#setPopupPosition(int, int)
+     */
+    @Override
+    public void setPopupPosition(int left, int top) {
+
+        // handled by CSS
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.input.form.CmsFormDialog#show()
+     */
+    @Override
+    public void show() {
+
+        super.show();
+        // positioning handled by CSS
+        getElement().getStyle().clearPosition();
+        getElement().getStyle().clearLeft();
+        getElement().getStyle().clearTop();
+
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.form.CmsFormDialog#onClickCancel()
      */
     @Override

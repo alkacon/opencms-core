@@ -187,7 +187,7 @@ public class CmsSitemapAttributeUpdater {
     public boolean updateAttributes(Map<String, String> attributeUpdates) {
 
         Map<String, String> oldValues = getAttributesFromContent();
-        Map<String, String> newValues = new HashMap<>(oldValues);
+        Map<String, String> newValues = new LinkedHashMap<>(oldValues);
         for (Map.Entry<String, String> entry : attributeUpdates.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();

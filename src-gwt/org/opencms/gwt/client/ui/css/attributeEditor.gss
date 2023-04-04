@@ -1,2 +1,35 @@
 .dialog-popup.attributeEditor > .dialog-popupContent .input-formWidgetContainer {
 }
+
+.dialog-popup.attributeEditor {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.dialog-popup.attributeEditor .dialog-popupHead , .dialog-popup.attributeEditor .dialog-caption {
+    cursor: default;
+} 
+
+.dialog-popup.attributeEditor > .dialog-popupContent {
+    min-width: 720px;
+    width: 80vw;
+    max-width: 900px;
+}
+
+.dialog-popup.attributeEditor .dialog-contentPadding {
+    overflow: auto;
+    max-height: 80vh;
+}
+
+.dialog-popup.attributeEditor > .dialog-popupContent .input-formLabel {
+}
+
+.dialog-popup.attributeEditor > .dialog-popupContent .input-formWidgetContainer {
+    
+}
+
+.dialog-popup.attributeEditor > .dialog-popupContent .input-formWidgetContainer > .input-checkBox .input-checkBoxImage {
+    /* margin-top: -5px;*/ 
+}
