@@ -530,10 +530,13 @@ public class CmsLoginController {
      */
     public String getResetPasswordLink() {
 
-        return OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+        String result = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
             CmsLoginUI.m_adminCms,
             CmsWorkplaceLoginHandler.LOGIN_HANDLER,
             false) + "?" + CmsLoginHelper.PARAM_RESET_PASSWORD;
+        String ou = m_ui.getOrgUnit();
+        result += "&" + CmsLoginHelper.PARAM_OUFQN + "=" + ou;
+        return result;
     }
 
     /**
@@ -757,7 +760,7 @@ public class CmsLoginController {
         if (authToken != null) {
             m_ui.showForgotPasswordView(authToken);
         } else if (m_params.isReset()) {
-            m_ui.showPasswordResetDialog();
+            m_ui.showPasswordResetDialog(m_params.getOufqn());
         } else {
             boolean loggedIn = !A_CmsUI.getCmsObject().getRequestContext().getCurrentUser().isGuestUser();
             m_ui.setSelectableOrgUnits(CmsLoginHelper.getOrgUnitsForLoginDialog(A_CmsUI.getCmsObject(), null));

@@ -78,6 +78,17 @@ public class CmsLoginOuSelector extends CustomComponent {
     }
 
     /**
+     * Checks if a given OU is available for selection.
+     * 
+     * @param ou the OU to check
+     * @return true if the OU is available
+     */
+    public boolean hasOrgUnit(String ou) {
+
+        return m_ouSelect.getContainerDataSource().getItem(normalizeOuName(ou)) != null;
+    }
+
+    /**
      * Initializes the select options.<p>
      *
      * @param orgUnits the selectable OUs

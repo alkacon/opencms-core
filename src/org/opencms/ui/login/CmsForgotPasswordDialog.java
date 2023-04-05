@@ -87,13 +87,18 @@ public class CmsForgotPasswordDialog extends VerticalLayout implements I_CmsHasB
 
     /**
      * Creates a new instance.<p>
+     *
+     * @param startOu the organizational unit that should be preselected
      */
-    public CmsForgotPasswordDialog() {
+    public CmsForgotPasswordDialog(String startOu) {
 
         Locale locale = A_CmsUI.get().getLocale();
         CmsVaadinUtils.readAndLocalizeDesign(this, OpenCms.getWorkplaceManager().getMessages(locale), null);
         List<CmsOrganizationalUnit> ouList = CmsLoginHelper.getOrgUnitsForLoginDialog(A_CmsUI.getCmsObject(), null);
         m_ouSelect.initOrgUnits(ouList, false);
+        if ((startOu != null) && m_ouSelect.hasOrgUnit(startOu)) {
+            m_ouSelect.setValue(startOu);
+        }
         String notEmptyMessage = CmsVaadinUtils.getMessageText(Messages.GUI_VALIDATION_FIELD_EMPTY_0);
         m_userField.setRequired(true);
         m_userField.setRequiredError(notEmptyMessage);
@@ -131,8 +136,7 @@ public class CmsForgotPasswordDialog extends VerticalLayout implements I_CmsHasB
                 if (!valid) {
                     return;
                 }
-                String selectedOu = m_ouSelect.getValue();
-                selectedOu = (selectedOu != null) ? selectedOu : "";
+                String selectedOu = getSelectedOrgUnit();
                 String fullName = CmsStringUtil.joinPaths(selectedOu, m_userField.getValue());
                 if (sendPasswordResetLink(CmsLoginUI.m_adminCms, fullName, m_emailField.getValue())) {
                     CmsUserLog.logPasswordResetRequest(A_CmsUI.getCmsObject(), fullName);
@@ -158,6 +162,7 @@ public class CmsForgotPasswordDialog extends VerticalLayout implements I_CmsHasB
                         });
                 }
             }
+
         });
 
     }
@@ -242,6 +247,18 @@ public class CmsForgotPasswordDialog extends VerticalLayout implements I_CmsHasB
     public List<Button> getButtons() {
 
         return Arrays.asList(m_mailButton, m_cancelButton);
+    }
+
+    /**
+     * Gets the selected organizational unit.
+     *
+     * @return the selected organizational unit
+     */
+    private String getSelectedOrgUnit() {
+
+        String selectedOu = m_ouSelect.getValue();
+        selectedOu = (selectedOu != null) ? selectedOu : "";
+        return selectedOu;
     }
 
 }

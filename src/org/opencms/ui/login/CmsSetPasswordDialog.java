@@ -127,11 +127,12 @@ public class CmsSetPasswordDialog extends CmsChangePasswordDialog {
 
                 public void run() {
 
-                    A_CmsUI.get().getPage().setLocation(
-                        OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-                            CmsLoginUI.m_adminCms,
-                            CmsWorkplaceLoginHandler.LOGIN_HANDLER,
-                            false));
+                    String target = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                        CmsLoginUI.m_adminCms,
+                        CmsWorkplaceLoginHandler.LOGIN_HANDLER,
+                        false);
+                    target += "?" + CmsLoginHelper.PARAM_OUFQN + "=" + m_user.getOuFqn();
+                    A_CmsUI.get().getPage().setLocation(target);
                 }
             });
     }

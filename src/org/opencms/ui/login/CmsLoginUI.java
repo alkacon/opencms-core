@@ -544,8 +544,10 @@ public class CmsLoginUI extends A_CmsUI {
 
     /**
      * Shows the password reset dialog.<p>
+     * 
+     * @param orgUnit the OU that should be preselected
      */
-    public void showPasswordResetDialog() {
+    public void showPasswordResetDialog(String orgUnit) {
 
         String caption = CmsVaadinUtils.getMessageText(Messages.GUI_PWCHANGE_FORGOT_PASSWORD_0);
         A_CmsUI r = A_CmsUI.get();
@@ -557,7 +559,7 @@ public class CmsLoginUI extends A_CmsUI {
         window.setContent(dialog);
         window.setCaption(caption);
         window.setClosable(true);
-        final CmsForgotPasswordDialog forgotPassword = new CmsForgotPasswordDialog();
+        final CmsForgotPasswordDialog forgotPassword = new CmsForgotPasswordDialog(orgUnit);
         window.addCloseListener(new CloseListener() {
 
             /** Serial version id. */
