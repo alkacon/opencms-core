@@ -28,6 +28,7 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.I_CmsDescendantResizeHandler;
+import org.opencms.gwt.client.js.ResizeObserver;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
@@ -57,6 +58,8 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbstractNativeScrollbar;
 import com.google.gwt.user.client.ui.VerticalScrollbar;
 import com.google.gwt.user.client.ui.Widget;
+
+import jsinterop.base.Js;
 
 /**
  * Scroll panel implementation with custom scroll bars. Works in all browsers but IE7.<p>
@@ -155,6 +158,9 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
 
     /** The measured width of the native scroll bars. */
     private int m_nativeScrollbarWidth;
+
+    /** The resize observer. */
+    private ResizeObserver m_resizeObserver;
 
     /** The vertical scroll bar. */
     private VerticalScrollbar m_scrollbar;
@@ -322,6 +328,28 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
                 onResizeDescendant();
             }
         });
+        initResizeObserver();
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#onUnload()
+     */
+    @Override
+    protected void onUnload() {
+
+        super.onUnload();
+        disconnectResizeObserver();
+    }
+
+    /**
+     * Disconnects and removes the resize observer.
+     */
+    private void disconnectResizeObserver() {
+
+        if (m_resizeObserver != null) {
+            m_resizeObserver.disconnect();
+            m_resizeObserver = null;
+        }
     }
 
     /**
@@ -342,6 +370,22 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
         HoverHandler handler = new HoverHandler(getElement(), m_scrollbar.asWidget().getElement());
         addDomHandler(handler, MouseOverEvent.getType());
         addDomHandler(handler, MouseOutEvent.getType());
+    }
+
+    /**
+     * Initializes the resize observer.
+     *
+     * <p>This throws away any old resize observers and creates a new one
+     * to observe the element of the scroll panel itself, and the element with the scrollable content.
+     */
+    private void initResizeObserver() {
+
+        disconnectResizeObserver();
+        m_resizeObserver = new ResizeObserver(entries -> {
+            maybeUpdateScrollbars();
+        });
+        m_resizeObserver.observe(Js.cast(getElement()));
+        m_resizeObserver.observe(Js.cast(getContainerElement()));
     }
 
     /**
