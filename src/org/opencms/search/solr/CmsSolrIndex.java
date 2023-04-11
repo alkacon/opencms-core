@@ -1102,9 +1102,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
             SolrQuery queryForResults = query.clone();
             // we add an additional filter, such that we can only find the documents we want to retrieve, as we figured out in the check query.
             if (!resultSolrIds.isEmpty()) {
-                Optional<String> queryFilterString = resultSolrIds.stream().map(a -> '"' + a + '"').reduce(
-                    (a, b) -> a + " OR " + b);
-                queryForResults.addFilterQuery(CmsSearchField.FIELD_SOLR_ID + ":(" + queryFilterString.get() + ")");
+                Optional<String> queryFilterString = resultSolrIds.stream().reduce((a, b) -> a + "," + b);
+                queryForResults.addFilterQuery(
+                    "{!terms f=" + CmsSearchField.FIELD_SOLR_ID + " seperator=\",\"}" + queryFilterString.get());
             }
             queryForResults.setRows(Integer.valueOf(resultSolrIds.size()));
             queryForResults.setStart(Integer.valueOf(0));
