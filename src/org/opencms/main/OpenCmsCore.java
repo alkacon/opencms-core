@@ -29,6 +29,7 @@ package org.opencms.main;
 
 import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.containerpage.CmsContainerpageService;
+import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsImportExportConfiguration;
@@ -376,6 +377,9 @@ public final class OpenCmsCore {
     /** The XML content type manager that contains the initialized XML content types. */
     private CmsXmlContentTypeManager m_xmlContentTypeManager;
 
+    /** The default memory object cache instance. */
+    private CmsVfsMemoryObjectCache m_vfsMemoryObjectCache;
+
     /**
      * Protected constructor that will initialize the singleton OpenCms instance
      * with runlevel {@link OpenCms#RUNLEVEL_1_CORE_OBJECT}.<p>
@@ -487,6 +491,20 @@ public final class OpenCmsCore {
                     new Integer(m_instance.getRunLevel()),
                     errorCondition.key()));
         }
+    }
+
+    /**
+     * Gets the default CmsVfsMemoryCache instance.
+     *
+     * @return the default cache instance
+     */
+    public CmsVfsMemoryObjectCache getVfsMemoryObjectCache() {
+
+        if (m_vfsMemoryObjectCache == null) {
+            m_vfsMemoryObjectCache = new CmsVfsMemoryObjectCache();
+        }
+        return m_vfsMemoryObjectCache;
+
     }
 
     /**

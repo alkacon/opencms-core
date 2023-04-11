@@ -28,6 +28,7 @@
 package org.opencms.main;
 
 import org.opencms.ade.configuration.CmsADEManager;
+import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.crypto.I_CmsTextEncryption;
 import org.opencms.db.CmsAliasManager;
 import org.opencms.db.CmsDefaultUsers;
@@ -667,6 +668,16 @@ public final class OpenCms {
     public static I_CmsValidationHandler getValidationHandler() {
 
         return OpenCmsCore.getInstance().getValidationHandler();
+    }
+
+    /**
+     * Gets the default memory object cache instance.
+     *
+     * @return the memory object cache
+     */
+    public static CmsVfsMemoryObjectCache getVfsMemoryObjectCache() {
+
+        return OpenCmsCore.getInstance().getVfsMemoryObjectCache();
     }
 
     /**

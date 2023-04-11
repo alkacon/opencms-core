@@ -50,9 +50,6 @@ public class CmsVfsMemoryObjectCache extends CmsVfsCache {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsVfsMemoryObjectCache.class);
 
-    /** A cache that maps VFS resource names to Objects. */
-    private static CmsVfsMemoryObjectCache m_vfsMemoryObjectCache;
-
     /** The id for this instance, which is used for distinguishing cache keys of different instances. */
     private int m_id;
 
@@ -74,10 +71,13 @@ public class CmsVfsMemoryObjectCache extends CmsVfsCache {
      */
     public static CmsVfsMemoryObjectCache getVfsMemoryObjectCache() {
 
-        if (m_vfsMemoryObjectCache == null) {
-            m_vfsMemoryObjectCache = new CmsVfsMemoryObjectCache();
-        }
-        return m_vfsMemoryObjectCache;
+        // Changed this so instead of a static variable, it lazily initializes and
+        // returns a member of OpenCmsCore. This makes it better for test cases, because
+        // registerEventListener() only registers an event listener with the *current event manager*,
+        // but in the test cases, for each test class a new OpenCmsCore and event manager are created.
+        // This means that a CmsVfsMemoryObjectCache initialized in one test class will not get flushed in
+        // another, which makes using static variables a bad idea in this case.
+        return OpenCms.getVfsMemoryObjectCache();
     }
 
     /**
