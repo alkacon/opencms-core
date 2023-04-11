@@ -2570,5 +2570,25 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<destination>system/config</destination>
+			<type>folder</type>
+			<properties />
+		</file>
+		<file>
+			<destination>system/config/wysiwyg</destination>
+			<type>folder</type>
+			<uuidstructure>7289c0e4-d14c-11e8-9434-b90516ef3600</uuidstructure>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Editor display options]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
 	</files>
 </export>
