@@ -215,6 +215,11 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
                 result.put("spellcheck_language", contentLocale.getLanguage());
             }
 
+            String linkDefaultProtocol = widgetOptions.getLinkDefaultProtocol();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(linkDefaultProtocol)) {
+                result.put("link_default_protocol", linkDefaultProtocol);
+            }
+
             String editorOptions = widgetOptions.getEditorConfigPath();
             if (editorOptions != null) {
                 try {
@@ -244,6 +249,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
                         e);
                 }
             }
+
         } catch (JSONException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
