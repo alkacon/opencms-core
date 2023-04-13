@@ -65,6 +65,7 @@ import org.apache.commons.logging.Log;
  *     <code>groupfilter</code> and <code>includesubous</code> are <i>not</i> considered anymore.</li>
  * <li><code>includesubous</code>: boolean flag to indicate if sub OUs should be scanned for groups to select</li>
  * <li><code>oufqn</code>: the fully qualified name of the OU to read the groups from</li>
+ * <li><code>fullnames</code>: boolean flag to indicate whether the full names of groups (including organizational unit) should be shown
  * </ul>
  * To map the selected group to a permission to set, use the following mapping configuration:<p>
  * <code>&lt;mapping element="..." mapto="permission:GROUP:+r+v|GROUP.ALL_OTHERS:|GROUP.Projectmanagers:+r+v+w+c" /&gt;</code><p>
@@ -100,6 +101,12 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
 
     /** Flag to indicate if the multi-select needs to be activated by a check box. */
     private boolean m_requiresActivation;
+
+    /** If true, show full group names (with OU) in the widget, and simple names otherwise. */
+    private boolean m_useFullNames;
+
+    /** Configuration option to show full group names including OU.*/
+    protected static final String CONFIGURATION_FULLNAMES = "fullnames";
 
     /**
      * Creates a new group select widget.<p>
@@ -366,7 +373,7 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
                         // ensure that only existing groups are available in the select box
                         CmsGroup group = cms.readGroup(getOuFqn() + groupName);
                         result.add(
-                            new CmsSelectWidgetOption(group.getName(), m_defaultAllAvailable, group.getSimpleName()));
+                            new CmsSelectWidgetOption(group.getName(), m_defaultAllAvailable, getGroupLabel(group)));
                     } catch (CmsException e) {
                         // error reading the group by name, simply skip it
                     }
@@ -384,7 +391,7 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
                             }
                         }
                         result.add(
-                            new CmsSelectWidgetOption(group.getName(), m_defaultAllAvailable, group.getSimpleName()));
+                            new CmsSelectWidgetOption(group.getName(), m_defaultAllAvailable, getGroupLabel(group)));
                     }
                 } catch (CmsException e) {
                     // error reading the groups
@@ -416,6 +423,17 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
     private Pattern getGroupFilter() {
 
         return m_groupFilter;
+    }
+
+    /**
+     * Gets the label to show for a group.
+     *
+     * @param group a group available for selection
+     * @return the label to display to the user for the group
+     */
+    private String getGroupLabel(CmsGroup group) {
+
+        return m_useFullNames ? group.getName() : group.getSimpleName();
     }
 
     /**
@@ -500,6 +518,7 @@ public class CmsMultiSelectGroupWidget extends CmsSelectGroupWidget {
         } else if (!m_ouFqn.endsWith(CmsOrganizationalUnit.SEPARATOR)) {
             m_ouFqn += CmsOrganizationalUnit.SEPARATOR;
         }
+        m_useFullNames = Boolean.parseBoolean(config.get(CmsMultiSelectGroupWidget.CONFIGURATION_FULLNAMES));
         // set the flag to include sub OUs
         m_includeSubOus = Boolean.parseBoolean(config.get(CONFIGURATION_INCLUDESUBOUS));
         m_defaultAllAvailable = Boolean.parseBoolean(config.get(CONFIGURATION_DEFAULT_ALL));
