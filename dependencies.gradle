@@ -59,7 +59,7 @@ dependencies {
 
     distribution group: 'antlr', name: 'antlr', version: '2.7.7'
     distribution group: 'com.adobe.xmp', name: 'xmpcore', version: '6.1.11'
-    distribution group: 'com.alkacon', name: 'alkacon-simapi', version: '1.0.3'
+    distribution group: 'com.alkacon', name: 'alkacon-simapi', version: '1.0.4'
     distribution group: 'com.alkacon', name: 'alkacon-diff', version: '0.9.2'
     distribution group: 'com.carrotsearch', name: 'hppc', version: '0.8.2'
     distribution group: 'com.cybozu.labs', name: 'langdetect', version: '1.1-20120112'
