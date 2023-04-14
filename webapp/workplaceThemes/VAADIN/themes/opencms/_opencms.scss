@@ -1165,7 +1165,10 @@
 	.o-quicklaunch > .v-slot {
 		margin-bottom: 10px;
 	}
-
+	
+        .o-quicklaunch-editor .v-button-wrap > img {
+            pointer-events: none; /* Fix for weird Chrome Drag/Drop bug with buttons that use images instead of font icons) */
+        }
 
 	.o-sitemap-tree-node {
 		display: flex;

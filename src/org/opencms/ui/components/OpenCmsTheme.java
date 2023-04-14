@@ -484,6 +484,9 @@ public final class OpenCmsTheme {
     /** CSS style name. */
     protected static final String QUICK_LAUNCH = "o-quicklaunch";
 
+    /** CSS style name. */
+    public static final String QUICK_LAUNCH_EDITOR = "o-quicklaunch-editor";
+
     /**
      * Hidden default constructor.
      */

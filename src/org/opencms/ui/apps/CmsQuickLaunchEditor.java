@@ -32,6 +32,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -163,6 +164,7 @@ public class CmsQuickLaunchEditor extends VerticalLayout {
                 resetAppIcons();
             }
         });
+        addStyleName(OpenCmsTheme.QUICK_LAUNCH_EDITOR);
     }
 
     /**
