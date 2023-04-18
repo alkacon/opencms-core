@@ -79,10 +79,11 @@ public interface I_CmsUserDataDomain extends I_CmsConfigurationParameterHandler 
      *
      * @param cms the CMS context
      * @param email the email address to check
+     * @param searchStrings additional search strings entered by the user
      * @param element the element which the additional information should be appended to
      *
      */
-    default void appendlInfoForEmail(CmsObject cms, String email, Element element) {
+    default void appendlInfoForEmail(CmsObject cms, String email, List<String> searchStrings, Element element) {
 
         // do nothing
     }

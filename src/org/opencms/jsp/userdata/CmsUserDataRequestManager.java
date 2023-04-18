@@ -51,18 +51,21 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.digester3.Digester;
+import org.apache.commons.digester3.Rule;
 import org.apache.commons.logging.Log;
 import org.apache.commons.mail.EmailException;
 
 import org.dom4j.Element;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.xml.sax.Attributes;
 
 /**
  * Manager class for user data requests.<p>
@@ -85,6 +88,9 @@ public class CmsUserDataRequestManager {
     /** Tag name for the user data request manager. */
     public static final String N_USERDATA = "userdata";
 
+    /** Attribute to enable/disable autoloading of plugins via service loader.*/
+    public static final String A_AUTOLOAD = "autoload";
+
     /** Tag name for the user data domain. */
     public static final String N_USERDATA_DOMAIN = "userdata-domain";
 
@@ -95,10 +101,16 @@ public class CmsUserDataRequestManager {
     private CmsObject m_adminCms;
 
     /** The configured user data domains. */
-    private List<I_CmsUserDataDomain> m_domains = new ArrayList<>();
+    private List<I_CmsUserDataDomain> m_configuredDomains = new ArrayList<>();
 
     /** The store used to load/save user data requests. */
     private CmsUserDataRequestStore m_requestStore = new CmsUserDataRequestStore();
+
+    /** If true, additional plugins should be loaded via service loader. */
+    private boolean m_autoload;
+
+    /** List of all domains, both the ones from the configuration and the ones loaded via service loader. */
+    private List<I_CmsUserDataDomain> m_allDomains = new ArrayList<>();
 
     /**
      * Adds digester rules for configuration.
@@ -109,6 +121,24 @@ public class CmsUserDataRequestManager {
     public static void addDigesterRules(Digester digester, String basePath) {
 
         digester.addObjectCreate(basePath, CmsUserDataRequestManager.class);
+        digester.addRule(basePath, new Rule() {
+
+            private boolean m_autoload;
+
+            @Override
+            public void begin(String namespace, String name, Attributes attributes) throws Exception {
+
+                m_autoload = Boolean.parseBoolean(attributes.getValue(A_AUTOLOAD));
+            }
+
+            @Override
+            public void end(String namespace, String name) throws Exception {
+
+                CmsUserDataRequestManager manager = digester.peek();
+                manager.setAutoload(m_autoload);
+            }
+
+        });
         String domainPath = basePath + "/" + N_USERDATA_DOMAIN;
         digester.addObjectCreate(domainPath, null, I_CmsXmlConfiguration.A_CLASS);
         digester.addSetNext(domainPath, "addUserDataDomain");
@@ -125,6 +155,10 @@ public class CmsUserDataRequestManager {
      */
     public static List<CmsUser> getUsersByEmail(CmsObject cms, String email) throws CmsException {
 
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(email)) {
+            // we don't want to find the users with no email address!
+            return new ArrayList<>();
+        }
         CmsUserSearchParameters params = new CmsUserSearchParameters();
         params.setPaging(9999, 1);
         params.setFilterEmail(email);
@@ -141,7 +175,7 @@ public class CmsUserDataRequestManager {
     public void addUserDataDomain(I_CmsUserDataDomain domain) {
 
         checkNotInitialized();
-        m_domains.add(domain);
+        m_configuredDomains.add(domain);
     }
 
     /**
@@ -152,7 +186,10 @@ public class CmsUserDataRequestManager {
     public void appendToXml(Element element) {
 
         Element root = element.addElement(N_USERDATA);
-        for (I_CmsUserDataDomain domain : m_domains) {
+        if (isAutoload()) {
+            root.addAttribute(A_AUTOLOAD, "true");
+        }
+        for (I_CmsUserDataDomain domain : m_configuredDomains) {
             String clsName = domain.getClass().getName();
             Element domainElem = root.addElement(N_USERDATA_DOMAIN);
             domainElem.addAttribute(I_CmsXmlConfiguration.A_CLASS, clsName);
@@ -172,13 +209,24 @@ public class CmsUserDataRequestManager {
     }
 
     /**
+     * Gets the list of all user data domains, both those from the configuration and those loaded via service loader.
+     *
+     * @return the list of all user data domains
+     */
+    public List<I_CmsUserDataDomain> getAllDomains() {
+
+        return m_allDomains;
+    }
+
+    /**
      * Gets the user data for an email address.
      *
      * <p>Only callable by root admin users.
      *
      * @param cms the CMS context
      * @param mode the mode
-     * @param email the email address
+     * @param email the email address (may be null)
+     * @param searchStrings a list of additional search strings entered by the user
      * @param root the root element to which the report should be added
      * @param report the report to write to
      * @return true if the HTML document was changed as a result of executing this method
@@ -189,15 +237,13 @@ public class CmsUserDataRequestManager {
         CmsObject cms,
         I_CmsUserDataDomain.Mode mode,
         String email,
+        List<String> searchStrings,
         org.jsoup.nodes.Element root,
         I_CmsReport report)
     throws CmsException {
 
         OpenCms.getRoleManager().checkRole(cms, CmsRole.ROOT_ADMIN);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(email)) {
-            throw new IllegalArgumentException("Can not use empty email address for user data request by email.");
-        }
-        return internalGetInfoForEmail(cms, mode, email, root, report);
+        return internalGetInfoForEmail(cms, mode, email, searchStrings, root, report);
     }
 
     /**
@@ -245,7 +291,11 @@ public class CmsUserDataRequestManager {
 
         checkNotInitialized();
         m_adminCms = cms;
-        for (I_CmsUserDataDomain domain : m_domains) {
+        m_allDomains.addAll(m_configuredDomains);
+        if (m_autoload) {
+            m_allDomains.addAll(loadUserDataDomainsFromClasses());
+        }
+        for (I_CmsUserDataDomain domain : m_allDomains) {
             domain.initialize(cms);
         }
         m_requestStore.initialize(cms);
@@ -301,7 +351,7 @@ public class CmsUserDataRequestManager {
         info.setType(CmsUserDataRequestType.singleUser);
         info.setEmail(user.getEmail());
         info.setExpiration(System.currentTimeMillis() + config.getRequestLifetime());
-        for (I_CmsUserDataDomain userDomain : m_domains) {
+        for (I_CmsUserDataDomain userDomain : getAllDomains()) {
             if (userDomain.matchesUser(cms, CmsUserDataRequestType.singleUser, user)) {
                 userDomain.appendInfoHtml(
                     cms,
@@ -337,7 +387,7 @@ public class CmsUserDataRequestManager {
             org.jsoup.nodes.Element root = doc.body().appendElement("div");
 
             boolean foundDomain = false;
-            for (I_CmsUserDataDomain userDomain : m_domains) {
+            for (I_CmsUserDataDomain userDomain : getAllDomains()) {
                 List<CmsUser> usersForDomain = new ArrayList<>();
                 for (CmsUser user : users) {
                     if (userDomain.matchesUser(cms, CmsUserDataRequestType.email, user)) {
@@ -371,8 +421,20 @@ public class CmsUserDataRequestManager {
     @Override
     public String toString() {
 
-        String collectorsStr = m_domains.stream().map(domain -> domain.toString()).collect(Collectors.joining(", "));
+        String collectorsStr = getAllDomains().stream().map(domain -> domain.toString()).collect(
+            Collectors.joining(", "));
         return getClass().getName() + "[" + collectorsStr + "]";
+    }
+
+    /**
+     * Sets the autoload flag, which enables automatic loading of plugins via service loader.
+     *
+     * @param autoload the value of the autoload flag
+     */
+    protected void setAutoload(boolean autoload) {
+
+        checkNotInitialized();
+        m_autoload = autoload;
     }
 
     /**
@@ -381,6 +443,7 @@ public class CmsUserDataRequestManager {
      * @param cms the CMS context
      * @param mode the mode
      * @param email the email address
+     * @param searchStrings an additional list of search strings entered by the user
      * @param root the root element to which the report should be added
      * @param report the report to write to
      * @return true if the HTML document was changed as a result of executing this method
@@ -390,6 +453,7 @@ public class CmsUserDataRequestManager {
         CmsObject cms,
         I_CmsUserDataDomain.Mode mode,
         String email,
+        List<String> searchStrings,
         org.jsoup.nodes.Element root,
         I_CmsReport report)
     throws CmsException {
@@ -400,9 +464,10 @@ public class CmsUserDataRequestManager {
         List<CmsUser> users = getUsersByEmail(m_adminCms, email);
         boolean foundDomain = false;
         int i = 0;
-        for (I_CmsUserDataDomain userDomain : m_domains) {
+        for (I_CmsUserDataDomain userDomain : getAllDomains()) {
             i += 1;
-            report.print(Messages.get().container(Messages.RPT_USERDATADOMAIN_COUNT_2, "" + i, "" + m_domains.size()));
+            report.print(
+                Messages.get().container(Messages.RPT_USERDATADOMAIN_COUNT_2, "" + i, "" + getAllDomains().size()));
             report.print(
                 org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0),
                 I_CmsReport.FORMAT_DEFAULT);
@@ -422,7 +487,7 @@ public class CmsUserDataRequestManager {
             if (!usersForDomain.isEmpty()) {
                 userDomain.appendInfoHtml(cms, CmsUserDataRequestType.email, usersForDomain, root);
             }
-            userDomain.appendlInfoForEmail(cms, email, root);
+            userDomain.appendlInfoForEmail(cms, email, searchStrings, root);
             report.println(
                 org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                 I_CmsReport.FORMAT_OK);
@@ -453,9 +518,10 @@ public class CmsUserDataRequestManager {
         Document doc = root.ownerDocument();
         String oldHtml = doc.toString();
         int i = 0;
-        for (I_CmsUserDataDomain userDomain : m_domains) {
+        for (I_CmsUserDataDomain userDomain : getAllDomains()) {
             i += 1;
-            report.print(Messages.get().container(Messages.RPT_USERDATADOMAIN_COUNT_2, "" + i, "" + m_domains.size()));
+            report.print(
+                Messages.get().container(Messages.RPT_USERDATADOMAIN_COUNT_2, "" + i, "" + getAllDomains().size()));
             report.print(
                 org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0),
                 I_CmsReport.FORMAT_DEFAULT);
@@ -479,6 +545,33 @@ public class CmsUserDataRequestManager {
         String newHtml = doc.toString();
         boolean changed = !(newHtml.equals(oldHtml));
         return changed;
+    }
+
+    /**
+     * Returns true if the autoload flag is enabled.
+     *
+     * @return true if the autoload flag is enabled
+     */
+    private boolean isAutoload() {
+
+        return m_autoload;
+    }
+
+    /**
+     * Loads additional plugins via service loader.
+     *
+     * @return the additional plugins loaded
+     */
+    private List<I_CmsUserDataDomain> loadUserDataDomainsFromClasses() {
+
+        List<I_CmsUserDataDomain> result = new ArrayList<>();
+        ServiceLoader<I_CmsUserDataDomainProvider> loader = ServiceLoader.load(I_CmsUserDataDomainProvider.class);
+        for (I_CmsUserDataDomainProvider provider : loader) {
+            for (I_CmsUserDataDomain domain : provider.getUserDataDomains()) {
+                result.add(domain);
+            }
+        }
+        return result;
     }
 
     /**

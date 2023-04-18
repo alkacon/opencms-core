@@ -643,6 +643,7 @@
 
 
 <!ELEMENT userdata (userdata-domain*) >
+<!ATTLIST userdata autoload CDATA #IMPLIED>
 <!ELEMENT userdata-domain (param*) >
 <!ATTLIST userdata-domain class CDATA #REQUIRED>
 

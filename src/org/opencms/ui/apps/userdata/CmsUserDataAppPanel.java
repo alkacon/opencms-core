@@ -42,6 +42,7 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.components.editablegroup.CmsEditableGroup;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.WidgetType;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelectDialog;
@@ -50,8 +51,11 @@ import org.opencms.util.CmsStringUtil;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 
@@ -66,13 +70,13 @@ import com.vaadin.server.StreamResource;
 import com.vaadin.server.UserError;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-// TODO: Auto-generated Javadoc
 /**
  * The GUI form for the user data app.
  *
@@ -143,8 +147,14 @@ public class CmsUserDataAppPanel extends VerticalLayout {
     /** The field for entering the email address. */
     protected TextField m_email;
 
+    /** Contains the (dynamic) additional text filter fields. */
+    protected FormLayout m_filters;
+
     /** The button for generating the report based on the email address. */
     protected Button m_searchByEmail;
+
+    /** Manages the dynamic text filter fields. */
+    protected CmsEditableGroup m_filterGroup;
 
     /** The widget containing the report/results. */
     protected VerticalLayout m_resultsContainer;
@@ -178,6 +188,13 @@ public class CmsUserDataAppPanel extends VerticalLayout {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), new HashMap<>());
         m_resultsLabel.setContentMode(ContentMode.HTML);
         m_resultsContainer.setVisible(false);
+        m_filterGroup = new CmsEditableGroup(m_filters, () -> {
+            TextField filterField = new TextField();
+            return filterField;
+        }, CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_USERDATA_TEXT_FILTER_ADD_0));
+        m_filterGroup.setRowCaption(
+            CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_USERDATA_TEXT_FILTER_0));
+        m_filterGroup.addRow(new TextField());
         FileDownloader downloader = new FileDownloader(new StreamResource(() -> {
             String result = CmsUserDataAppPanel.this.getResult();
             byte[] resultBytes = result.getBytes(StandardCharsets.UTF_8);
@@ -207,24 +224,35 @@ public class CmsUserDataAppPanel extends VerticalLayout {
         m_searchByEmail.addClickListener(event -> {
 
             hideResult();
-            m_email.setComponentError(null);
+            List<String> filterStrings = new ArrayList<>();
+            m_filterGroup.getRows().stream().forEach(row -> {
+                if (row.getComponent() instanceof TextField) {
+                    TextField textField = (TextField)row.getComponent();
+                    String value = textField.getValue();
+                    if (!CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+                        value = value.trim();
+                        filterStrings.add(value);
+                    }
+                }
+            });
+
             String email = m_email.getValue().trim();
             CmsObject cms = getCmsObjectForReport();
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(email)) {
-                m_email.setComponentError(
-                    new UserError(
-                        CmsVaadinUtils.getMessageText(
-                            org.opencms.ui.apps.Messages.GUI_USERDATA_EMPTY_EMAIL_NOT_ALLOWED_0)));
-                return;
-            }
             try {
                 Document doc = Jsoup.parseBodyFragment("");
                 @SuppressWarnings("synthetic-access")
                 Status status = new Status();
+                List<String> headerSearchTerms = new ArrayList<>();
+                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(email)) {
+                    headerSearchTerms.add(email);
+                }
+                headerSearchTerms.addAll(filterStrings);
+                String headerSearchTermsString = headerSearchTerms.stream().map(s -> "\"" + s + "\"").collect(
+                    Collectors.joining(", "));
                 doc.body().appendElement("h1").attr("class", "udr-header").text(
                     Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
                         Messages.GUI_USER_INFORMATION_FOR_1,
-                        email));
+                        headerSearchTermsString));
 
                 CmsUserDataReportThread thread = new CmsUserDataReportThread(cms, report -> {
                     try {
@@ -232,6 +260,7 @@ public class CmsUserDataAppPanel extends VerticalLayout {
                             cms,
                             I_CmsUserDataDomain.Mode.workplace,
                             email,
+                            filterStrings,
                             doc.body(),
                             report);
                         status.setChanged(changed);
