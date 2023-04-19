@@ -1,6 +1,6 @@
 @external html-face, textboxGhostMode, scrollContainer, popupContent, gwt-ToggleButton, cmsState-up-disabled, 
 	cmsState-down-disabled, cmsState-up, cmsState-up-hovering, cmsState-down-hovering, cmsState-down, cmsState-up-disabled, cmsState-down-disabled, 
-	opencms_dialog, tox-dialog, tox-dialog__header, tox-dialog__footer, tox-silver-sink;
+	opencms_dialog, tox-dialog, tox-dialog__header, tox-dialog__footer, tox-silver-sink, tox-tinymce-aux, tox-fullscreen, tox;
 	
 /* TinyMCE plugin popup dialog styles, all used classes are external. */
 div.tox-silver-sink{
@@ -16,6 +16,10 @@ body.opencms_dialog .tox-dialog, body.opencms_dialog .tox-dialog div{
 	background: transparent;
 	overflow: visible;
 }
+
+.tox-fullscreen .tox.tox-tinymce-aux, .tox-fullscreen ~ .tox.tox-tinymce-aux {
+    z-index: 200000 !important;
+} 
 
 div.radioButtonPanel {
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
