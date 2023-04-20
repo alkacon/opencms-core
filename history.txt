@@ -15,7 +15,8 @@ Legend:
 - Minor improvement or general comment
 * Bug fixed
 
-OpenCms 15.0.0 - April 23, 2023
+
+OpenCms 15.0.0 - April 25, 2023
 
 ! Restrict write access to sitemap .config file to a configured role
 ! Added configurable sitemap attribute editor for all content managers
@@ -43,9 +44,9 @@ OpenCms 15.0.0 - April 23, 2023
 - Lists: Added simplified rule syntax to specify complex SOLR filter queries
 - XML: Added "visible" option for <Visibility> schema config node
 - CmsShell: Added "reindexResources" command
-- Pull request #752 improved error handling during XML validation (github pull request https://github.com/alkacon/opencms-core/pull/752)
-- Pull request #753 added WYSIWYG editor option 'link_default_protocol' which is passed to TinyMCE (github pull request https://github.com/alkacon/opencms-core/pull/753)
-- Pull request #756 added option for showing full groups names to multi-group selector widget (github issue https://github.com/alkacon/opencms-core/issues/756)
+- Pull request #752 improved error handling during XML validation
+- Pull request #753 added WYSIWYG editor option 'link_default_protocol' which is passed to TinyMCE
+- Pull request #766 added option for showing full groups names to multi-group selector widget
 - Updated multiple dependency libs that contained security vulnerabilities
 
 * Source search app: Replacing result with empty string or only whitespace not possible
@@ -60,7 +61,7 @@ OpenCms 15.0.0 - April 23, 2023
 * Page editor: Attachment container elements could get removed when editing their settings
 * Page editor: Editing copied model groups simultaneously lead to issues
 * Page editor: For long notification messages the scroll bar did not work
-* Sitemap editor: "Switch Site" dialog did not work anymore
+* Sitemap editor: "Switch Site" dialog in did not work anymore
 * Element settings: Help icon after formatter selection did not show description
 * Workplace: GWT context menu has wrong position after the first click
 * Workplace: HTML tags sometimes shown in "title" attribute for editor components
@@ -70,17 +71,19 @@ OpenCms 15.0.0 - April 23, 2023
 * JSP API: <x:transform> tag in JSPs erroneously deleted attributes
 * Fixed issue where dots '.' in the detail page title leads to bad detail page URLs
 * Fixed issue with context menu replace function and file translations
-* Fixed issue #751 with missing list pagination when maxReturnedResults is -1 (github issue https://github.com/alkacon/opencms-core/issues/751)
-* Fixed issue #760 with missing scrollbar in multi-group selector widget (github issue https://github.com/alkacon/opencms-core/issues/760)
-* Fixed issue #761 where creating a bookmark in the shared folder causes an error (github issue https://github.com/alkacon/opencms-core/issues/761)
+* Fixed issue #751 with missing list pagination when maxReturnedResults is -1
+* Fixed issue #760 with missing scrollbar in multi-group selector widget
+* Fixed issue #761 where creating a bookmark in the shared folder causes an error
 
 
 OpenCms 14.0.0 - October 11, 2022
+
 ! XML schema versioning with automatic content rewrite
 ! Support for 2 factor authentication (2FA) in the user workplace login
 ! Source code widget for the form editor based on CodeMirror
 ! Mercury template: Updated to use Bootstrap 5.2, dropped some jQuery dependencies
 ! Improved the documentation website (work in progress)
+
 - Page editor: The "add content" dialog now shows the site and text filters directly on the the result page
 - Page editor: HTML marker html.opencms-editor-active is added in case the user is actively editing
 - Form editor: CSS can now be configured with the sitemap attribute template.editor.css
@@ -96,6 +99,7 @@ OpenCms 14.0.0 - October 11, 2022
 - Added configurable option to control which user settings are applied when using HTTP Basic authentication
 - Added configurable upload restrictions for target folders and upload-able file types
 - Master sitemap: "Content element configuration > Availability" is now optional with inheritance
+
 * Sitemap editor: Redirects require reload before fully editable
 * Accounts app: User language selection does not show the available workplace locales
 * Accounts app: Information on institution, zip code, address and city can't be removed anymore
@@ -114,6 +118,7 @@ OpenCms 14.0.0 - October 11, 2022
 * Password reset dialog: Email address is checked case-sensitive during password reset
 * Documentation: Fixed broken burger menu (github issue #16)
 
+
 OpenCms 13.0.0 - April 13, 2022
 ! Plugins: Introduced a plugin system for formatters and dynamic functions as a more flexible replacement of the "headincludes" feature.
 ! Plugins: Added ${cms.plugins} EL function to access plugin definitions in a JSP page.
@@ -125,7 +130,7 @@ OpenCms 13.0.0 - April 13, 2022
 - Workplace: Improved the image upload so that pictures taken with a mobile device are rotated correctly.
 - Workplace: Improved the "Image preview" dialog to better display SVG images.
 - Workplace: Improved the "Page editor" and the "Form editor" to better work with touch devices.
-- Workplace: Improved the "Publish directly" dialog options depending on whether folders or files are selected. 
+- Workplace: Improved the "Publish directly" dialog options depending on whether folders or files are selected.
 - Workplace: Improved the usage of <script> tags in the page editor and in the workplace.
 - Workplace: Added an option to manually define the resources in the "Add content" dialog.
 - Template Variants: Element setting overrides allow to change formatter settings by master configuration.
