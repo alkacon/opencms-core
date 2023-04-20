@@ -2865,6 +2865,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERDATA_NOT_FOUND_0 = "GUI_USERDATA_NOT_FOUND_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERDATA_OR_0 = "GUI_USERDATA_OR_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USERDATA_RESULTS_CAPTION_0 = "GUI_USERDATA_RESULTS_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */

@@ -10,11 +10,14 @@
 
     <v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
         <v-panel caption="%(key.GUI_USERDATA_SEARCH_BY_EMAIL_0)" width="100%">
-            <v-vertical-layout>
+            <v-vertical-layout spacing="false">
                 <v-form-layout  margin-left="true" margin-right="true" margin-top="true" margin-bottom="false"  spacing style-name="o-formlayout-workplace-main" width="100%">
                     <v-text-field caption="%(key.GUI_USERDATA_EMAIL_0)" _id="m_email" width="100%"></v-text-field>
                 </v-form-layout>
-                <v-form-layout _id="m_filters" margin-top="false" margin-left="true" margin-right="true" margin-bottom="false" spacing style-name="o-formlayout-workplace-main" width="100%">
+                <v-form-layout margin-top="true" margin-bottom="true" style-name="o-formlayout-workplace-main">
+                    <v-label style-name="o-userdata-or">%(key.GUI_USERDATA_OR_0)</v-label>
+                </v-form-layout>
+                <v-form-layout _id="m_filters" margin-top="false" margin-left="true" margin-right="true" margin-bottom="true" spacing style-name="o-formlayout-workplace-main" width="100%">
                 </v-form-layout>
                 <v-form-layout margin-top="false" margin-bottom="false" style-name="o-formlayout-workplace-main" width="100%">
                     <v-button  _id="m_searchByEmail">%(key.GUI_USERDATA_START_0)</v-button>

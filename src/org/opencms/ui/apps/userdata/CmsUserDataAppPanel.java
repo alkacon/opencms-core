@@ -47,9 +47,11 @@ import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.WidgetType;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelectDialog;
 import org.opencms.ui.report.CmsReportOverlay;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -144,6 +146,9 @@ public class CmsUserDataAppPanel extends VerticalLayout {
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUserDataAppPanel.class);
 
+    /** CSS class for the container for the user data HTML. */
+    public static final String O_USERDATA_CONTAINER = "o-userdata-container";
+
     /** The field for entering the email address. */
     protected TextField m_email;
 
@@ -187,6 +192,8 @@ public class CmsUserDataAppPanel extends VerticalLayout {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), new HashMap<>());
         m_resultsLabel.setContentMode(ContentMode.HTML);
+        m_resultsLabel.setWidth("100%");
+        m_resultsLabel.addStyleName(O_USERDATA_CONTAINER);
         m_resultsContainer.setVisible(false);
         m_filterGroup = new CmsEditableGroup(m_filters, () -> {
             TextField filterField = new TextField();
@@ -240,6 +247,13 @@ public class CmsUserDataAppPanel extends VerticalLayout {
             CmsObject cms = getCmsObjectForReport();
             try {
                 Document doc = Jsoup.parseBodyFragment("");
+                doc.body().addClass(O_USERDATA_CONTAINER);
+                doc.head().append("<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />");
+                try (InputStream stream = getClass().getClassLoader().getResourceAsStream(
+                    "VAADIN/themes/opencms/userdata.css")) {
+                    String style = new String(CmsFileUtil.readFully(stream, false), StandardCharsets.UTF_8);
+                    doc.head().append("<style>\n" + style + "\n</style>\n");
+                }
                 @SuppressWarnings("synthetic-access")
                 Status status = new Status();
                 List<String> headerSearchTerms = new ArrayList<>();
@@ -414,7 +428,7 @@ public class CmsUserDataAppPanel extends VerticalLayout {
         if (doc != null) {
             m_resultsContainer.setVisible(true);
             m_resultsLabel.setValue(doc.body().html());
-            m_result = doc.toString();
+            m_result = "<!DOCTYPE html>\n" + doc.toString();
         } else {
             hideResult();
             String notfound = CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_USERDATA_NOT_FOUND_0);
