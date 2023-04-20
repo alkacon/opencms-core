@@ -1,6 +1,6 @@
 <!doctype html>
 
-<title>CodeMirror: User Manual</title>
+<title>CodeMirror 5 User Manual</title>
 <meta charset="utf-8"/>
 <link rel=stylesheet href="docs.css">
 <script src="activebookmark.js"></script>
@@ -24,11 +24,11 @@
 </style>
 
 <div id=nav>
-  <a href="https://codemirror.net"><h1>CodeMirror</h1><img id=logo src="logo.png"></a>
+  <a href="https://codemirror.net/5"><h1>CodeMirror</h1><img id=logo src="logo.png"></a>
   <ul>
     <li><a href="../index.html">Home</a></li>
     <li><a href="#overview" class=active data-default="true">Manual</a></li>
-    <li><a href="https://github.com/codemirror/codemirror">Code</a></li>
+    <li><a href="https://github.com/codemirror/codemirror5">Code</a></li>
   </ul>
   <ul>
     <li><a href="#usage">Basic Usage</a></li>
@@ -70,7 +70,7 @@
 <section class=first id=overview>
     <h2 style="position: relative">
       User manual and reference guide
-      <span style="color: #888; font-size: 1rem; position: absolute; right: 0; bottom: 0">version 5.65.2</span>
+      <span style="color: #888; font-size: 1rem; position: absolute; right: 0; bottom: 0">version 5.65.12</span>
     </h2>
 
     <p>CodeMirror is a code-editor component that can be embedded in
@@ -286,7 +286,7 @@
       should be replaced by a
       special <a href="#option_specialCharPlaceholder">placeholder</a>.
       Mostly useful for non-printing special characters. The default
-      is <code>/[\u0000-\u001f\u007f-\u009f\u00ad\u061c\u200b-\u200f\u2028\u2029\ufeff\ufff9-\ufffc]/</code>.</dd>
+      is <code>/[\u0000-\u001f\u007f-\u009f\u00ad\u061c\u200b\u200e\u200f\u2028\u2029\u202d\u202e\u2066\u2067\u2069\ufeff\ufff9-\ufffc]/</code>.</dd>
       <dt id="option_specialCharPlaceholder"><code><strong>specialCharPlaceholder</strong>: function(char) → Element</code></dt>
       <dd>A function that, given a special character identified by
       the <a href="#option_specialChars"><code>specialChars</code></a>
@@ -2408,7 +2408,7 @@ editor.setOption("extraKeys", {
       Accepts <code>linenumber</code>, <code>+/-linenumber</code>, <code>line:char</code>,
       <code>scroll%</code> and <code>:linenumber</code> formats.
       This will make use of <a href="#addon_dialog"><code>openDialog</code></a>
-      when available to make prompting for line number neater.</dd> Demo available <a href="https://codemirror.net/demo/search.html">here</a>.
+      when available to make prompting for line number neater.</dd> Demo available <a href="https://codemirror.net/5/demo/search.html">here</a>.
 
       <dt id="addon_matchesonscrollbar"><a href="../addon/search/matchesonscrollbar.js"><code>search/matchesonscrollbar.js</code></a></dt>
       <dd>Adds a <code>showMatchesOnScrollbar</code> method to editor

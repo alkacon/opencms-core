@@ -72,7 +72,7 @@ export function handlePaste(e, cm) {
   let pasted = e.clipboardData && e.clipboardData.getData("Text")
   if (pasted) {
     e.preventDefault()
-    if (!cm.isReadOnly() && !cm.options.disableInput)
+    if (!cm.isReadOnly() && !cm.options.disableInput && cm.hasFocus())
       runInOp(cm, () => applyTextInput(cm, pasted, 0, null, "paste"))
     return true
   }
@@ -114,8 +114,8 @@ export function copyableRanges(cm) {
 }
 
 export function disableBrowserMagic(field, spellcheck, autocorrect, autocapitalize) {
-  field.setAttribute("autocorrect", autocorrect ? "" : "off")
-  field.setAttribute("autocapitalize", autocapitalize ? "" : "off")
+  field.setAttribute("autocorrect", autocorrect ? "on" : "off")
+  field.setAttribute("autocapitalize", autocapitalize ? "on" : "off")
   field.setAttribute("spellcheck", !!spellcheck)
 }
 
@@ -130,6 +130,5 @@ export function hiddenTextarea() {
   else te.setAttribute("wrap", "off")
   // If border: 0; -- iOS fails to open keyboard (issue #1287)
   if (ios) te.style.border = "1px solid black"
-  disableBrowserMagic(te)
   return div
 }
