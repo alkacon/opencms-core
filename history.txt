@@ -74,14 +74,13 @@ OpenCms 15.0.0 - April 23, 2023
 * Fixed issue #760 with missing scrollbar in multi-group selector widget (github issue https://github.com/alkacon/opencms-core/issues/760)
 * Fixed issue #761 where creating a bookmark in the shared folder causes an error (github issue https://github.com/alkacon/opencms-core/issues/761)
 
-OpenCms 14.0.0 - October 11, 2022
 
+OpenCms 14.0.0 - October 11, 2022
 ! XML schema versioning with automatic content rewrite
 ! Support for 2 factor authentication (2FA) in the user workplace login
 ! Source code widget for the form editor based on CodeMirror
 ! Mercury template: Updated to use Bootstrap 5.2, dropped some jQuery dependencies
 ! Improved the documentation website (work in progress)
-
 - Page editor: The "add content" dialog now shows the site and text filters directly on the the result page
 - Page editor: HTML marker html.opencms-editor-active is added in case the user is actively editing
 - Form editor: CSS can now be configured with the sitemap attribute template.editor.css
@@ -97,7 +96,6 @@ OpenCms 14.0.0 - October 11, 2022
 - Added configurable option to control which user settings are applied when using HTTP Basic authentication
 - Added configurable upload restrictions for target folders and upload-able file types
 - Master sitemap: "Content element configuration > Availability" is now optional with inheritance
-
 * Sitemap editor: Redirects require reload before fully editable
 * Accounts app: User language selection does not show the available workplace locales
 * Accounts app: Information on institution, zip code, address and city can't be removed anymore
@@ -115,7 +113,6 @@ OpenCms 14.0.0 - October 11, 2022
 * Sitemap editor: Issue when creating function detail pages without function detail container
 * Password reset dialog: Email address is checked case-sensitive during password reset
 * Documentation: Fixed broken burger menu (github issue #16)
-
 
 OpenCms 13.0.0 - April 13, 2022
 ! Plugins: Introduced a plugin system for formatters and dynamic functions as a more flexible replacement of the "headincludes" feature.
