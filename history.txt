@@ -15,6 +15,65 @@ Legend:
 - Minor improvement or general comment
 * Bug fixed
 
+OpenCms 15.0.0 - April 23, 2023
+
+! Restrict write access to sitemap .config file to a configured role
+! Added configurable sitemap attribute editor for all content managers
+! In the "Add content" dialog, content types that are not supported in the current page can now be hidden instead of shown disabled
+! Launchpad app "Person data search" reveals personal user data stored in the VFS
+! Improved native WebDAV support for macOS
+! Lists now allow to add new elements without existing elements
+! Optimize gallery dialog now features a context menu that allows to rename, replace or delete images
+! Results from the "Source search" app can now be exported to a CSV file
+
+- Sitemap: More options for creating contents via new-dialog and lists
+- Form Editor: Active tab is remembered when language is switched
+- Form editor: Allow calendar widget for dates without time
+- Page editor: Recent and favorites options reflect sitemap settings
+- Page editor: Added editable "Description" field to image gallery selection dialog
+- Page editor: Improved HTML/CSS in element setting dialog
+- Page editor: Show functions that do not fit on the current page as disabled / hide them
+- Page editor: Speed up loading of Vaadin widgets by reusing the iframe
+- Page / Form editor: Improved CSS formatting options for tooltip help texts
+- TinyMCE: Allow to pass a JSON configuration
+- TinyMCE: Added option to set the CSS path for WYSIWYG editor in the template JSP code
+- JSP API: EL functions that provide information about the editor capabilities / options
+- JSP API: Added "cachable=false" option to cms:container tag
+- JSP API: Allow to render named container X of page A in code
+- Lists: Added simplified rule syntax to specify complex SOLR filter queries
+- XML: Added "visible" option for <Visibility> schema config node
+- CmsShell: Added "reindexResources" command
+- Pull request #752 improved error handling during XML validation (github pull request https://github.com/alkacon/opencms-core/pull/752)
+- Pull request #753 added WYSIWYG editor option 'link_default_protocol' which is passed to TinyMCE (github pull request https://github.com/alkacon/opencms-core/pull/753)
+- Pull request #756 added option for showing full groups names to multi-group selector widget (github issue https://github.com/alkacon/opencms-core/issues/756)
+- Updated multiple dependency libs that contained security vulnerabilities
+
+* Source search app: Replacing result with empty string or only whitespace not possible
+* Codemirror editor not usable in iPad
+* XML: Schema macros not always resolved as expected
+* Form editor: Disabled select default is not displayed correctly
+* Form editor: Calendar widget did interpret two-digit year numbers literally
+* Form editor: Category widget did not work correctly when category paths were substrings of the subsite path
+* Page editor: Edit points mess up the page layout with Bootstrap "row-cols"
+* Page editor: Z-Index for "disabled" overlay is too low
+* Page editor: Pointer events for edit point do "bubble"
+* Page editor: Attachment container elements could get removed when editing their settings
+* Page editor: Editing copied model groups simultaneously lead to issues
+* Page editor: For long notification messages the scroll bar did not work
+* Sitemap editor: "Switch Site" dialog did not work anymore
+* Element settings: Help icon after formatter selection did not show description
+* Workplace: GWT context menu has wrong position after the first click
+* Workplace: HTML tags sometimes shown in "title" attribute for editor components
+* Workplace: Removing site selection by clicking on "x" did not work in gallery view
+* JSP API: UGC did not work if scripts were loaded with "defer"
+* JSP API: "cms:link" detailPage parameter did not work as expected
+* JSP API: <x:transform> tag in JSPs erroneously deleted attributes
+* Fixed issue where dots '.' in the detail page title leads to bad detail page URLs
+* Fixed issue with context menu replace function and file translations
+* Fixed issue #751 with missing list pagination when maxReturnedResults is -1 (github issue https://github.com/alkacon/opencms-core/issues/751)
+* Fixed issue #760 with missing scrollbar in multi-group selector widget (github issue https://github.com/alkacon/opencms-core/issues/760)
+* Fixed issue #761 where creating a bookmark in the shared folder causes an error (github issue https://github.com/alkacon/opencms-core/issues/761)
+
 OpenCms 14.0.0 - October 11, 2022
 
 ! XML schema versioning with automatic content rewrite
