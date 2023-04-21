@@ -1,5 +1,5 @@
 
-      Instructions for updating OpenCms 8.x, 9.x and 10.0.x to @OPENCMS_VERSION@
+      Instructions for updating OpenCms 10.x, 11.x, 12.x 13.x and 14.x to @OPENCMS_VERSION@
 
 
                                     WARNING:
@@ -16,7 +16,7 @@ existing OpenCms installation when using this upgrade wizard.
 IMPORTANT: Before using this upgrade wizard, make sure you have a full backup
            of your OpenCms installation and database.
 
-IMPORTANT: Alkacon OCEE versions less than 5 will not work with OpenCms 10.
+IMPORTANT: Alkacon OCEE versions less than 15 will not work with OpenCms 15.
 
 IMPORTANT: The updater is only compatible with the database engines MySQL,
            Oracle and PostgreSQL.
@@ -30,7 +30,7 @@ IMPORTANT: The upgrade wizard will replace all VFS resources of the updated modu
            Administration to export all the changes you have done after installing
            OpenCms.
 
-Follow the following steps to update from OpenCms 10.x to @OPENCMS_VERSION@:
+Follow the following steps to update from OpenCms 10.x, 11.x, 12.x 13.x or 14.x to @OPENCMS_VERSION@:
 
 
 1. Shutdown your OpenCms servlet container
@@ -87,8 +87,7 @@ file for errors and exceptions after installation. There should be no exceptions
 caused by the upgrade if everything went as expected. Some exceptions may occur
 in case you have an advanced OpenCms installation with many customized classes.
 
-The update wizard will also do a full rebuild of all your search indices, and
-purge the JSP repository.
+The update wizard will also purge the JSP repository.
 
 The wizard will finish similar to the setup wizard. After the final confirmation,
 the wizard will be locked again (in the opencms.properties file).
@@ -106,9 +105,6 @@ the solr-update/ folder. Else if you have customized the Solr configuration you 
 want to merge the 'schema.xml' and the 'solrconfig.xml' first. Note that these two files
 are now located under solr/configsets/default/conf/ - up to OpenCms 10 it was solr/conf/.
 Even if you only keep your old config files, move them to solr/configsets/default/conf/.
-
-If you are updating from an earlier version than 8.5.0, always copy the whole solr-update/
-folder to the solr/ folder instead.
 
 When you are done, enable Solr in the opencms-search.xml again (and restart the servlet
 container).
@@ -128,8 +124,10 @@ You should now be able to log into the OpenCms workplace as before.
 8. Rebuild search indexes
 
 As the search libraries and configuration may have changed, it is necessary to rebuild all search indexes.
-Log into OpenCms and navigate to Launchpad > Search Management and rebuild all indexes.
+Log into OpenCms and navigate to Launchpad > Database -> Search Indexes and rebuild all indexes.
 
+If you update from OpenCms 10.x, you must delete the files under WEB-INF/index/ first and restart your 
+servlet container and then reindex your search indexes as shown above.
 
 
 9. Convert model groups [only relevant when updating from 10.0.x]
