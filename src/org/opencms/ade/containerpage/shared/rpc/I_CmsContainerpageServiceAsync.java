@@ -40,6 +40,7 @@ import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
+import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsListElementCreationDialogData;
 import org.opencms.util.CmsUUID;
 
@@ -568,4 +569,18 @@ public interface I_CmsContainerpageServiceAsync {
      * @param callback the callback
      */
     void setLastPage(CmsUUID pageId, CmsUUID detailId, AsyncCallback<Void> callback);
+
+    /**
+     * Updates the formatter setting for an element in the server-side element cache.
+     *
+     * @param clientId the client id of the element
+     * @param containerId the id of the container containing the element
+     * @param settings the settings of the element
+     * @throws CmsRpcException if something goes wrong
+     */
+    void updateServerElementFormatter(
+        String clientId,
+        String containerId,
+        Map<String, String> settings,
+        AsyncCallback<Void> callback);
 }

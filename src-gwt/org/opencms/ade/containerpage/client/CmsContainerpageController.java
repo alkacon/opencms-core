@@ -3493,6 +3493,36 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Updates the formatter in the server-side element bean. 
+     * 
+     * @param clientId the client element bean 
+     * @param containerId the container id 
+     * @param settings the settings 
+     */
+    public void updateServerElementFormatter(String clientId, String containerId, Map<String, String> settings) {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            @Override
+            public void execute() {
+
+                start(0, false);
+                getContainerpageService().updateServerElementFormatter(clientId, containerId, settings, this);
+
+            }
+
+            @Override
+            protected void onResponse(Void result) {
+
+                stop(false);
+
+            }
+
+        };
+        action.execute();
+    }
+
+    /**
      * Adds the given element data to the element cache.<p>
      *
      * @param elements the element data

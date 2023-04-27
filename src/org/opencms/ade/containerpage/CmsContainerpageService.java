@@ -2105,6 +2105,30 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#updateServerElementFormatter(java.lang.String, java.lang.String, java.util.Map)
+     */
+    public void updateServerElementFormatter(String clientId, String containerId, Map<String, String> clientSettings)
+    throws CmsRpcException {
+
+        try {
+            CmsContainerElementBean elementBean = getSessionCache().getCacheContainerElement(clientId);
+            if (elementBean != null) {
+                HashMap<String, String> newSettings = new HashMap<>(elementBean.getIndividualSettings());
+                String key = CmsFormatterConfig.getSettingsKeyForContainer(containerId);
+                String formatterId = clientSettings.get(key);
+                if (formatterId != null) {
+                    newSettings.put(key, formatterId);
+                }
+                elementBean = CmsContainerElementBean.cloneWithSettings(elementBean, newSettings);
+                getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);
+            }
+
+        } catch (Exception e) {
+            error(e);
+        }
+    }
+
+    /**
      * Gets the settings which should be updated for an element in the DND case.<p>
      *
      * @param config the sitemap configuration
