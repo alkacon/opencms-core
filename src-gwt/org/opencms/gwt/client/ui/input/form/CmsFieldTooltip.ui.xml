@@ -17,21 +17,17 @@
             box-shadow: 2px 2px 2px #666666;
         } 
 
-        .tooltip .label {
+        .tooltip .label, .tooltip .label * {
             font-family: "Open Sans", sans-serif;
             font-size: 14px;
             font-weight: 400;
+            font-style: normal;
+            line-height: 1.25;
             color: #474747;
         }
         
         .tooltip .label * {
             margin: 0;
-            font-weight: 400;
-            font-family: "Open Sans",sans-serif;
-            font-style: normal;
-            font-size: 14px;
-            line-height: 1.25;
-            color: #474747;
             text-align: left;
         }
         
