@@ -50,7 +50,7 @@ import com.google.common.collect.Interners;
 /**
  * Cache for users' groups and data derived from those groups, like role membership.
  *
- * <p>The cache can be either flushed completeley, or just for a single user id.
+ * <p>The cache can be either flushed completely, or just for a single user id.
  * The data for a user must be flushed when their group membership changes.
  *
  */
@@ -198,7 +198,7 @@ public class CmsGroupListCache implements I_CmsMemoryMonitorable {
      * Gets the cached bare roles for the given user id, or null if none are cached.
      *
      * <p>These are just the roles of the user, but with no OU information.
-
+    
      * @param userId the user id
      * @return the bare roles for the user
      */
