@@ -782,55 +782,6 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
     }
 
     /**
-     * Select a single value and all parents.<p>
-     *
-     * @param item the tree item
-     * @param path The path of the Item that should be selected
-     * @param result the resulting categories
-     *
-     * @return true if this CmsTreeItem is selected or one of its children
-     */
-    protected boolean selectAllParents(CmsTreeItem item, String path, List<String> result) {
-
-        // if this is a list view
-        if (m_listView) {
-            // check if the path contains the item path
-            if (path.contains(item.getId())) {
-                // add it to the list of selected categories
-                if (!result.contains(item.getId())) {
-                    result.add(item.getId());
-                }
-                return true;
-            }
-
-        }
-        // if this is a tree view
-        else {
-            // check if the pach contains the item path
-            if (item.getId().equals(path)) {
-                // add it to the list of selected categories
-                if (!result.contains(item.getId())) {
-                    result.add(item.getId());
-                }
-                return true;
-            } else {
-                // iterate about all children of this item
-                Iterator<Widget> it = item.getChildren().iterator();
-                while (it.hasNext()) {
-                    if (selectAllParents((CmsTreeItem)it.next(), path, result)) {
-                        if (!result.contains(item.getId())) {
-                            result.add(item.getId());
-                        }
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * Sorts a list of tree items according to the sort parameter.<p>
      *
      * @param items the items to sort
