@@ -1276,7 +1276,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 }
             }
             for (String path : categories) {
-                catService.addResourceToCategory(cms, sitePath, path);
+                if (!path.isEmpty()) { // Prevent adding category repositories itself.
+                    catService.addResourceToCategory(cms, sitePath, path);
+                }
             }
             tryUnlock(resource);
         } catch (Throwable t) {
