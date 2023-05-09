@@ -361,7 +361,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
     public void bump(CmsClientSitemapEntry entry) {
 
         CmsDetailPageTable table = getDetailPageTable().copy();
-        table.bump(entry.getId());
+        table.makeDefault(entry.getId());
         CmsSitemapChange change = new CmsSitemapChange(entry.getId(), entry.getSitePath(), ChangeType.bumpDetailPage);
         change.setDetailPageInfos(table.toList());
         commitChange(change, null);
@@ -461,6 +461,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
                     newEntry.getId(),
                     newEntry.getSitePath(),
                     newEntry.getDetailpageTypeName(),
+                    /* qualifier = */null,
                     newEntry.getVfsModeIcon());
                 table.add(info);
             }
@@ -2062,7 +2063,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
             case bumpDetailPage:
                 CmsDetailPageTable detailPageTable = getData().getDetailPageTable();
                 if (detailPageTable.contains(change.getEntryId())) {
-                    detailPageTable.bump(change.getEntryId());
+                    detailPageTable.makeDefault(change.getEntryId());
                 }
                 break;
             case clipboardOnly:
@@ -2095,6 +2096,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
                             newEntry.getId(),
                             newEntry.getSitePath(),
                             newEntry.getDetailpageTypeName(),
+                            /* qualifier = */null,
                             newEntry.getVfsModeIcon());
                     }
                     addDetailPageInfo(info);

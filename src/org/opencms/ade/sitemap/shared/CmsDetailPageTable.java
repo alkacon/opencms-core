@@ -36,6 +36,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * A data structure for managing the detail page ordering for different types in a given sitemap.<p>
@@ -91,29 +92,26 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
      */
     public void add(CmsDetailPageInfo info) {
 
-        m_map.compute(info.getType(), (k, vs) -> vs == null ? new ArrayList<>() : vs).add(info);
+        m_map.computeIfAbsent(info.getType(), type -> new ArrayList<>()).add(info);
         m_infoById.put(info.getId(), info);
     }
 
     /**
-     * Moves the detail page information for a given page to the front of the detail pages for the same type.<p>
+     * Checks if the entry for the given id can be made the default detail page entry for its type.
      *
-     * @param id a page id
-     *
-     * @return the original position of the detail page entry in the list for the same type
+     * @param id the id to check
+     * @return true if the entry can be made the default detail page entry
      */
-    public int bump(CmsUUID id) {
+    public boolean canMakeDefault(CmsUUID id) {
 
-        CmsDetailPageInfo info = m_infoById.get(id);
-        if (info == null) {
-            throw new IllegalArgumentException();
+        if (isDefaultDetailPage(id)) {
+            return false;
         }
-        String type = info.getType();
-        List<CmsDetailPageInfo> infos = m_map.compute(type, (k, v) -> v != null ? v : new ArrayList<>());
-        int oldPos = infos.indexOf(info);
-        infos.remove(oldPos);
-        infos.add(0, info);
-        return oldPos;
+        CmsDetailPageInfo info = m_infoById.get(id);
+        if ((info == null) || info.isInherited()) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -164,39 +162,6 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
     }
 
     /**
-     * Returns the detail page which is in front of the detail page list for the given type.<p>
-     *
-     * @param type a resource type
-     * @return a detail page information bean
-     */
-    public CmsDetailPageInfo getBestDetailPage(String type) {
-
-        List<CmsDetailPageInfo> infos = m_map.compute(type, (k, v) -> v != null ? v : new ArrayList<>());
-        if ((infos == null) || infos.isEmpty()) {
-            return null;
-        }
-        return infos.get(0);
-    }
-
-    /**
-     * Returns a list which contains the best detail page for each type.<p>
-     *
-     * @return the list of best detail pages for each type
-     */
-    public List<CmsDetailPageInfo> getBestDetailPages() {
-
-        List<CmsDetailPageInfo> result = new ArrayList<CmsDetailPageInfo>();
-        for (String key : m_map.keySet()) {
-            List<CmsDetailPageInfo> vals = m_map.get(key);
-            if (!vals.isEmpty()) {
-                result.add(vals.get(0));
-            }
-        }
-        return result;
-
-    }
-
-    /**
      * Returns the list of detail page info beans for a given type.<p>
      *
      * @param type the type for which the detail page beans should be retrieved
@@ -205,7 +170,7 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
      */
     public List<CmsDetailPageInfo> getInfosForType(String type) {
 
-        return new ArrayList<CmsDetailPageInfo>(m_map.compute(type, (k, v) -> v != null ? v : new ArrayList<>()));
+        return new ArrayList<CmsDetailPageInfo>(m_map.computeIfAbsent(type, k -> new ArrayList<>()));
     }
 
     /**
@@ -222,7 +187,12 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
             return Status.noDetailPage;
         }
         String type = info.getType();
-        int index = m_map.compute(type, (k, v) -> v != null ? v : new ArrayList<>()).indexOf(info);
+        List<CmsDetailPageInfo> pagesWithNoQualifier = m_map.computeIfAbsent(
+            type,
+            k -> new ArrayList<>()).stream().filter(detailPage -> detailPage.getQualifier() == null).collect(
+                Collectors.toList());
+        int index = pagesWithNoQualifier.indexOf(info);
+        // if info has a qualifier, index will be -1, but it's still in the list of other detail pages
         if (index == 0) {
             return Status.firstDetailPage;
         }
@@ -242,28 +212,48 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
         if (info == null) {
             return false;
         }
-        return m_map.get(info.getType()).get(0).getId().equals(id);
+        CmsDetailPageInfo firstUnqualifiedEntry = m_map.get(info.getType()).stream().filter(
+            page -> page.getQualifier() == null).findFirst().orElse(null);
+        return (firstUnqualifiedEntry != null) && firstUnqualifiedEntry.getId().equals(id);
     }
 
     /**
-     * Changes the position of a detail page in the list of detail pages for its type.<p>
+     * Moves the detail page information for a given page to the front of the detail pages for the same type.<p>
      *
-     * @param id the page id
-     * @param newPos the position which the page should be moved to
+     * @param id a page id
      *
-     * @return the original position of the detail page
+     * @return the original position of the detail page entry in the list for the same type
      */
-    public int move(CmsUUID id, int newPos) {
+    public int makeDefault(CmsUUID id) {
 
         CmsDetailPageInfo info = m_infoById.get(id);
         if (info == null) {
             throw new IllegalArgumentException();
         }
+
+        CmsDetailPageInfo infoToSave = info;
+        // Making a detail page the default detail page should discard the qualifier
+
+        if (info.getQualifier() != null) {
+            CmsDetailPageInfo info2 = new CmsDetailPageInfo(
+                info.getId(),
+                info.getUri(),
+                info.getType(),
+                null,
+                info.getIconClasses());
+            m_infoById.put(id, info2);
+            if (info.isInherited()) {
+                // this case should be prevented by the GUI, we handle it just to make sure the entry is not saved
+                infoToSave = info2.copyAsInherited();
+            } else {
+                infoToSave = info2;
+            }
+        }
         String type = info.getType();
-        List<CmsDetailPageInfo> infos = m_map.get(type);
+        List<CmsDetailPageInfo> infos = m_map.computeIfAbsent(type, k -> new ArrayList<>());
         int oldPos = infos.indexOf(info);
         infos.remove(oldPos);
-        infos.add(newPos, info);
+        infos.add(0, infoToSave);
         return oldPos;
     }
 

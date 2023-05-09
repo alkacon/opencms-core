@@ -74,7 +74,7 @@ public class CmsBumpDetailPageMenuEntry extends A_CmsSitemapMenuEntry {
             && (entry != null)
             && controller.isDetailPage(entry)
             && controller.getData().canEditDetailPages()
-            && !controller.getDetailPageTable().isDefaultDetailPage(entry.getId());
+            && controller.getDetailPageTable().canMakeDefault(entry.getId());
         setVisible(show);
 
     }

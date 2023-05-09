@@ -172,7 +172,7 @@ public class CmsDetailPageConfigurationWriter {
             if (id == null) {
                 id = newId;
             }
-            writeValue(info.getType(), id, i);
+            writeValue(info.getQualifiedType(), id, i);
             i += 1;
         }
     }

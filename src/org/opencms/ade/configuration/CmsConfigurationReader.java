@@ -1059,6 +1059,12 @@ public class CmsConfigurationReader {
 
         I_CmsXmlContentValueLocation pageLoc = node.getSubValue(N_PAGE);
         String typeName = getString(node.getSubValue(N_TYPE));
+        int qualifierPos = typeName.indexOf(CmsDetailPageInfo.QUALIFIER_SEPARATOR);
+        String qualifier = null;
+        if (qualifierPos != -1) {
+            qualifier = typeName.substring(qualifierPos + 1);
+            typeName = typeName.substring(0, qualifierPos);
+        }
         CmsXmlVfsFileValue detailPageValue = (CmsXmlVfsFileValue)pageLoc.getValue();
         CmsLink uncheckedLink = detailPageValue.getUncheckedLink();
         if (uncheckedLink == null) {
@@ -1079,7 +1085,7 @@ public class CmsConfigurationReader {
             iconClasses = CmsIconUtil.getIconClasses(typeName, null, false);
         }
 
-        CmsDetailPageInfo detailPage = new CmsDetailPageInfo(structureId, page, typeName, iconClasses);
+        CmsDetailPageInfo detailPage = new CmsDetailPageInfo(structureId, page, typeName, qualifier, iconClasses);
         m_detailPageConfigs.add(detailPage);
 
     }
