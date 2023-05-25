@@ -28,6 +28,7 @@
 package org.opencms.ade.configuration;
 
 import org.opencms.ade.configuration.CmsConfigurationReader.DiscardPropertiesMode;
+import org.opencms.ade.detailpage.CmsDetailPageFilter;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -52,6 +53,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 
@@ -477,6 +479,54 @@ public class TestConfig extends OpenCmsTestCase {
         typeConf2 = config2.getResourceType("foo");
         String folderPath = typeConf2.getFolderPath(getCmsObject(), null);
         assertPathEquals("/sites/default/.content/foo", folderPath);
+    }
+
+    /**
+     * Tests filtering of qualified detail pages.
+     *
+     * @throws Exception if something goes wrong
+     */
+    public void testDetailPageFiltering() throws Exception {
+
+        CmsDetailPageInfo foo1 = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a1", "a", "foo", "");
+        CmsDetailPageInfo foo2 = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a2", "a", "foo", "");
+        CmsDetailPageInfo bar = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a3", "a", "bar", "");
+        CmsDetailPageInfo unqualified1 = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a4", "a", null, "");
+        CmsDetailPageInfo unqualified2 = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a5", "a", null, "");
+        CmsDetailPageInfo unqualifiedDefault = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a6", "##DEFAULT##", null, "");
+        CmsDetailPageInfo fooDefault = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a7", "##DEFAULT##", "foo", "");
+        final Set<String> qualifiersToMatch = new HashSet<>();
+        // we use a dummy that doesn't check categories and just uses the set qualifierToMatch for testing qualifiers
+        CmsDetailPageFilter filter = new CmsDetailPageFilter(getCmsObject(), (CmsResource)null) {
+
+            @Override
+            protected boolean checkQualifier(String qualifier) {
+
+                return qualifiersToMatch.contains(qualifier);
+            }
+        };
+
+        List<CmsDetailPageInfo> infos2 = filter.filterDetailPages(Arrays.asList(fooDefault, unqualifiedDefault, unqualified1, unqualified2, bar, foo1, foo2)).collect(
+            Collectors.toList());
+        assertEquals(Arrays.asList(unqualified1, unqualified2, unqualifiedDefault), infos2);
+
+        infos2 = filter.filterDetailPages(Arrays.asList(foo1, foo2, bar, unqualified1, unqualified2, unqualifiedDefault, fooDefault)).collect(Collectors.toList());
+        assertEquals(Arrays.asList(unqualified1, unqualified2, unqualifiedDefault), infos2);
+
+        qualifiersToMatch.add("foo");
+        infos2 = filter.filterDetailPages(Arrays.asList(fooDefault, unqualifiedDefault, unqualified1, unqualified2, bar, foo1, foo2)).collect(Collectors.toList());
+        assertEquals(Arrays.asList(foo1, foo2, unqualified1, unqualified2, fooDefault, unqualifiedDefault), infos2);
+
+        infos2 = filter.filterDetailPages(Arrays.asList(foo1, foo2, bar, unqualified1, unqualified2, unqualifiedDefault, fooDefault)).collect(Collectors.toList());
+        assertEquals(Arrays.asList(foo1, foo2, unqualified1, unqualified2, fooDefault, unqualifiedDefault), infos2);
+
+        qualifiersToMatch.add("bar");
+        infos2 = filter.filterDetailPages(Arrays.asList(fooDefault, unqualifiedDefault, unqualified1, unqualified2, bar, foo1, foo2)).collect(Collectors.toList());
+        assertEquals(Arrays.asList(bar, foo1, foo2, unqualified1, unqualified2, fooDefault, unqualifiedDefault), infos2);
+
+        infos2 = filter.filterDetailPages(Arrays.asList(foo1, foo2, bar, unqualified1, unqualified2, unqualifiedDefault, fooDefault)).collect(Collectors.toList());
+        assertEquals(Arrays.asList(foo1, foo2, bar, unqualified1, unqualified2, fooDefault, unqualifiedDefault), infos2);
+
     }
 
     /**

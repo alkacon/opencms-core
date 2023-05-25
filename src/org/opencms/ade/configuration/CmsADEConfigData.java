@@ -858,19 +858,15 @@ public class CmsADEConfigData {
         if (type.startsWith(CmsDetailPageInfo.FUNCTION_PREFIX)
             || ((typeConfig != null) && !typeConfig.isDetailPagesDisabled())) {
 
-            CmsDetailPageInfo defaultPage = null;
+            List<CmsDetailPageInfo> defaultPages = new ArrayList<>();
             for (CmsDetailPageInfo detailpage : getAllDetailPages(true)) {
                 if (detailpage.getType().equals(type)) {
                     result.add(detailpage);
-                } else if ((defaultPage == null)
-                    && CmsADEManager.DEFAULT_DETAILPAGE_TYPE.equals(detailpage.getType())) {
-                    defaultPage = detailpage;
+                } else if (CmsADEManager.DEFAULT_DETAILPAGE_TYPE.equals(detailpage.getType())) {
+                    defaultPages.add(detailpage);
                 }
             }
-            if (defaultPage != null) {
-                // add default detail page last
-                result.add(defaultPage);
-            }
+            result.addAll(defaultPages);
         }
         return result;
     }
@@ -1138,22 +1134,6 @@ public class CmsADEConfigData {
         Map<CmsUUID, I_CmsFormatterBean> result = Maps.newHashMap(cacheState.getFormatters());
         result.keySet().removeAll(getActiveFormatters().keySet());
         return result;
-    }
-
-    /**
-     * Gets the main detail page for a specific type.<p>
-     *
-     * @param type the type name
-     *
-     * @return the main detail page for that type
-     */
-    public CmsDetailPageInfo getMainDetailPage(String type) {
-
-        List<CmsDetailPageInfo> detailPages = getDetailPagesForType(type);
-        if ((detailPages == null) || detailPages.isEmpty()) {
-            return null;
-        }
-        return detailPages.get(0);
     }
 
     /**
@@ -1967,6 +1947,7 @@ public class CmsADEConfigData {
                     structureId,
                     rootPath,
                     page.getType(),
+                    page.getQualifier(),
                     iconClasses);
                 result.add(page.isInherited() ? correctedPage.copyAsInherited() : correctedPage);
             } catch (CmsException e) {

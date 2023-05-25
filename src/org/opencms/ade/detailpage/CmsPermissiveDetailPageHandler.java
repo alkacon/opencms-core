@@ -87,9 +87,12 @@ public class CmsPermissiveDetailPageHandler implements I_CmsDetailPageHandler {
         ? Arrays.asList(targetConfigData, configData)
         : Arrays.asList(configData, targetConfigData);
         for (CmsADEConfigData config : configs) {
+            CmsDetailPageFilter filter = new CmsDetailPageFilter(cms, pageRootPath);
             List<CmsDetailPageInfo> pageInfo = config.getDetailPagesForType(resType);
-            if ((pageInfo != null) && !pageInfo.isEmpty()) {
-                return pageInfo.get(0).getUri();
+            String uri = filter.filterDetailPages(pageInfo).map(detailPage -> detailPage.getUri()).findFirst().orElse(
+                null);
+            if (uri != null) {
+                return uri;
             }
         }
         return null;

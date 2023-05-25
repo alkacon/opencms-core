@@ -266,16 +266,20 @@ public class CmsDefaultDetailPageHandler implements I_CmsDetailPageHandler {
         if (context.getConfigForDetailPages() == null) {
             return null;
         }
+        LOG.info(
+            "Trying to determine detail page for '"
+                + contentRootPath
+                + "' in context '"
+                + context.getConfigForDetailPages().getBasePath()
+                + "'");
         if (!CmsStringUtil.isPrefixPath(
             context.getConfigForDetailPages().getExternalDetailContentExclusionFolder(),
             contentRootPath)) {
             return null;
         }
-        if (relevantPages.size() > 0) {
-            return relevantPages.get(0).getUri();
-        }
-        return null;
-
+        String result = new CmsDetailPageFilter(cms, contentRootPath).filterDetailPages(relevantPages).map(
+            info -> info.getUri()).findFirst().orElse(null);
+        return result;
     }
 
     /**
@@ -370,7 +374,8 @@ public class CmsDefaultDetailPageHandler implements I_CmsDetailPageHandler {
             cms.getSitePath(page),
             typeName);
         String pageFolder = CmsFileUtil.removeTrailingSeparator(CmsResource.getParentFolder(page.getRootPath()));
-        boolean foundDetailPage = context.getDetailPages().stream().anyMatch(
+        CmsDetailPageFilter detailPageFilter = new CmsDetailPageFilter(cms, detailRes);
+        boolean foundDetailPage = detailPageFilter.filterDetailPages(context.getDetailPages()).anyMatch(
             info -> pageFolder.equals(CmsFileUtil.removeTrailingSeparator(info.getUri())));
         CmsADEConfigData configForPage = context.getConfigForDetailPages();
         if (configForPage == null) {

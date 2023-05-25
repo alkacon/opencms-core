@@ -488,6 +488,9 @@ public class CmsXmlSitemapGenerator {
     /**
      * Gets the detail link for a given container page and detail content.<p>
      *
+     * Note: The actual container page used for the result link is not necessarily the container page passed
+     * in as parameter - the default detail page in the sitemap containing the page is used.
+     *
      * @param pageRes the container page
      * @param detailRes the detail content
      * @param locale the locale for which we want the link

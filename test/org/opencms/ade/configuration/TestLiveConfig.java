@@ -39,6 +39,7 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsCategoryService;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.ui.components.CmsExtendedSiteSelector;
@@ -58,6 +59,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
@@ -188,6 +190,44 @@ public class TestLiveConfig extends OpenCmsTestCase {
     }
 
     /**
+     * Tests category-based detail page selection.
+     * @throws Exception
+     */
+    public void testCategoryDetailPages() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        String base = "/testCategoryDetailPages";
+        cms.createResource(base, 0);
+        cms.createResource("/.categories", 0);
+        cms.createResource("/.categories/foo", 0);
+        if (!cms.existsResource("/system/categories")) {
+            cms.createResource("/system/categories", 0);
+        }
+
+        boolean preferDetailPages;
+        boolean excludeExternalContents;
+
+        preferDetailPages = true;
+        excludeExternalContents = false;
+        createCategoryDetailPageTestSitemap(base + "/a", preferDetailPages, excludeExternalContents, false);
+        OpenCms.getADEManager().waitForCacheUpdate(false);
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+            cms,
+            cms.readResource(base + "/a").getRootPath());
+        List<CmsDetailPageInfo> pages = config.getDetailPagesForType("article1");
+        List<String> types = pages.stream().map(page -> page.getQualifiedType()).collect(Collectors.toList());
+        String articlePath = base + "/a/.content/blogentries/article.xml";
+        String link1 = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, articlePath);
+        assertTrue(link1.contains("/detail/"));
+        assertFalse(link1.contains("/detail-foo/"));
+        CmsCategoryService.getInstance().addResourceToCategory(cms, articlePath, "foo");
+        String link2 = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, articlePath);
+        assertFalse(link2.contains("/detail/"));
+        assertTrue(link2.contains("/detail-foo/"));
+
+    }
+
+    /**
      * Tests cross-site detail page links.<p>
      *
      * @throws Exception -
@@ -241,6 +281,34 @@ public class TestLiveConfig extends OpenCmsTestCase {
         String link = OpenCms.getLinkManager().getOnlineLink(cms, rootPath);
         assertEquals("http://foo.org" + getVfsPrefix() + "/main/blog/" + res.getStructureId() + "/", link);
         System.out.println(link);
+    }
+
+    /**
+     * Tests that multiple default detail pages can be returned CmsADEConfigData#getDetailPagesForType().
+     *
+     * @throws Exception
+     */
+    public void testDefaultDetailPagesPreserved() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        String base = "/testDefaultDetailPagesPreserved";
+        cms.createResource(base, 0);
+
+        boolean preferDetailPages;
+        boolean excludeExternalContents;
+
+        preferDetailPages = false;
+        excludeExternalContents = false;
+        createCategoryDetailPageTestSitemap(base + "/a", preferDetailPages, excludeExternalContents, false);
+        OpenCms.getADEManager().waitForCacheUpdate(false);
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+            cms,
+            cms.readResource(base + "/a").getRootPath());
+        List<CmsDetailPageInfo> pages = config.getDetailPagesForType("article1");
+        List<String> types = pages.stream().map(page -> page.getQualifiedType()).collect(Collectors.toList());
+        assertEquals(
+            Arrays.asList("article1", "article1|category:foo", "##DEFAULT##", "##DEFAULT##|category:foo"),
+            types);
     }
 
     /**
@@ -1072,6 +1140,119 @@ public class TestLiveConfig extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         cms.getRequestContext().setSiteRoot("");
         return cms;
+    }
+
+    private void createCategoryDetailPageTestSitemap(
+        String path,
+        boolean preferDetailPages,
+        boolean excludeExternalContents,
+        boolean includeInSiteSelector)
+    throws Exception {
+
+        CmsObject cms = getCmsObject();
+        cms.createResource(path, 0);
+        cms.createResource(path + "/.content", 0);
+        CmsResource detailFolder = cms.createResource(path + "/detail", 0);
+        CmsResource fooFolder = cms.createResource(path + "/detail-foo", 0);
+        cms.createResource(path + "/detail/index.html", OpenCms.getResourceManager().getResourceType("containerpage"));
+        CmsResource special1 = cms.createResource(path + "/default-1", 0);
+        cms.createResource(
+            path + "/default-1/index.html",
+            OpenCms.getResourceManager().getResourceType("containerpage"));
+
+        CmsResource special2 = cms.createResource(path + "/default-2", 0);
+        cms.createResource(
+            path + "/default-2/index.html",
+            OpenCms.getResourceManager().getResourceType("containerpage"));
+
+        String config = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            + "\n"
+            + "<SitemapConfigurations xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd\">\n"
+            + "  <SitemapConfiguration language=\"en\">\n"
+            + "    <CreateContentsLocally>true</CreateContentsLocally>\n"
+            + "    <PreferDetailPagesForLocalContents>"
+            + preferDetailPages
+            + "</PreferDetailPagesForLocalContents>\n"
+            + "    <ExcludeExternalDetailContents>"
+            + excludeExternalContents
+            + "</ExcludeExternalDetailContents>\n"
+            + "<IncludeInSiteSelector>"
+            + includeInSiteSelector
+            + "</IncludeInSiteSelector>"
+            + " <ResourceType>\n"
+            + "      <TypeName><![CDATA[article1]]></TypeName>\n"
+            + "      <Disabled><![CDATA[false]]></Disabled>\n"
+            + "      <Folder>\n"
+            + "        <Name><![CDATA[blogentries]]></Name>\n"
+            + "      </Folder>\n"
+            + "    </ResourceType>"
+            + "    <DetailPage>\n"
+            + "      <Type><![CDATA[article1]]></Type>\n"
+            + "      <Page>\n"
+            + "        <link type=\"WEAK\">\n"
+            + "          <target><![CDATA["
+            + detailFolder.getRootPath()
+            + "]]></target>\n"
+            + "          <uuid>"
+            + detailFolder.getStructureId()
+            + "</uuid>\n"
+            + "        </link>\n"
+            + "      </Page>\n"
+            + "    </DetailPage>\n"
+            + "    <DetailPage>\n"
+            + "      <Type><![CDATA[article1|category:foo]]></Type>\n"
+            + "      <Page>\n"
+            + "        <link type=\"WEAK\">\n"
+            + "          <target><![CDATA["
+            + fooFolder.getRootPath()
+            + "]]></target>\n"
+            + "          <uuid>"
+            + fooFolder.getStructureId()
+            + "</uuid>\n"
+            + "        </link>\n"
+            + "      </Page>\n"
+            + "    </DetailPage>\n"
+
+            + "    <DetailPage>\n"
+            + "      <Type><![CDATA[##DEFAULT##]]></Type>\n"
+            + "      <Page>\n"
+            + "        <link type=\"WEAK\">\n"
+            + "          <target><![CDATA["
+            + special1.getRootPath()
+            + "]]></target>\n"
+            + "          <uuid>"
+            + special1.getStructureId()
+            + "</uuid>\n"
+            + "        </link>\n"
+            + "      </Page>\n"
+            + "    </DetailPage>\n"
+            + "    <DetailPage>\n"
+            + "      <Type><![CDATA[##DEFAULT##|category:foo]]></Type>\n"
+            + "      <Page>\n"
+            + "        <link type=\"WEAK\">\n"
+            + "          <target><![CDATA["
+            + special2.getRootPath()
+            + "]]></target>\n"
+            + "          <uuid>"
+            + special2.getStructureId()
+            + "</uuid>\n"
+            + "        </link>\n"
+            + "      </Page>\n"
+            + "    </DetailPage>\n"
+
+            + "  </SitemapConfiguration>\n"
+            + "</SitemapConfigurations>\n"
+            + "";
+        cms.createResource(path + "/.content/.config", OpenCms.getResourceManager().getResourceType("sitemap_config"));
+        CmsFile file = cms.readFile(path + "/.content/.config");
+        file.setContents(config.getBytes("UTF-8"));
+        cms.writeFile(file);
+
+        cms.createResource(path + "/.content/blogentries", 0);
+        cms.createResource(
+            path + "/.content/blogentries/article.xml",
+            OpenCms.getResourceManager().getResourceType("article1"));
+
     }
 
     private void createDetailPageTestSitemap(
