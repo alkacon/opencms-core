@@ -326,6 +326,32 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+             <description><![CDATA[
+                The type of link to generate. One of default, perma, online, server (uses default if not set).
+            ]]></description>
+            <name>type</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+             <description><![CDATA[
+                The type of link to generate. One of default, perma, online, server (uses default if not set).
+            ]]></description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+             <description><![CDATA[
+                The scope to use for the variable if the var attribute is used. One of (page|request|session|application).
+            ]]></description>
+            <name>scope</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        
+        
     </tag>
 
     <tag>
