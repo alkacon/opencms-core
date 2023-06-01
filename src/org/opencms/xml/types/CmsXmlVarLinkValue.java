@@ -115,6 +115,52 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue implements I_CmsJso
     }
 
     /**
+     * Converts the value for a VarLink field to the form "root path + query string" if it's an internal link, and returns null if it's an external link.
+     *
+     * @param cms the CMS context
+     * @param value the value to convert
+     * @return the root path with the query if value is an internal link, and null otherwise
+     */
+    public static String getInternalPathAndQuery(CmsObject cms, String value) {
+
+        String path = value;
+        if (cms != null) {
+            String siteRoot = OpenCms.getSiteManager().getSiteRoot(value);
+            String oldSite = cms.getRequestContext().getSiteRoot();
+            try {
+                if (siteRoot != null) {
+                    // only switch the site if needed
+                    cms.getRequestContext().setSiteRoot(siteRoot);
+                    // remove the site root, because the link manager call will append it anyway
+                    path = cms.getRequestContext().removeSiteRoot(value);
+                }
+                // remove parameters, if not the link manager call might fail
+                String query = "";
+                int pos = path.indexOf(CmsRequestUtil.URL_DELIMITER);
+                int anchorPos = path.indexOf('#');
+                if ((pos == -1) || ((anchorPos > -1) && (pos > anchorPos))) {
+                    pos = anchorPos;
+                }
+                if (pos > -1) {
+                    query = path.substring(pos);
+                    path = path.substring(0, pos);
+                }
+                // get the root path
+                path = OpenCms.getLinkManager().getRootPath(cms, path);
+                if (path != null) {
+                    // append parameters again
+                    path += query;
+                }
+            } finally {
+                if (siteRoot != null) {
+                    cms.getRequestContext().setSiteRoot(oldSite);
+                }
+            }
+        }
+        return path;
+    }
+
+    /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(I_CmsXmlDocument, org.dom4j.Element, Locale)
      */
     public I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale) {
@@ -249,40 +295,7 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue implements I_CmsJso
             return;
         }
 
-        String path = value;
-        if (cms != null) {
-            String siteRoot = OpenCms.getSiteManager().getSiteRoot(value);
-            String oldSite = cms.getRequestContext().getSiteRoot();
-            try {
-                if (siteRoot != null) {
-                    // only switch the site if needed
-                    cms.getRequestContext().setSiteRoot(siteRoot);
-                    // remove the site root, because the link manager call will append it anyway
-                    path = cms.getRequestContext().removeSiteRoot(value);
-                }
-                // remove parameters, if not the link manager call might fail
-                String query = "";
-                int pos = path.indexOf(CmsRequestUtil.URL_DELIMITER);
-                int anchorPos = path.indexOf('#');
-                if ((pos == -1) || ((anchorPos > -1) && (pos > anchorPos))) {
-                    pos = anchorPos;
-                }
-                if (pos > -1) {
-                    query = path.substring(pos);
-                    path = path.substring(0, pos);
-                }
-                // get the root path
-                path = OpenCms.getLinkManager().getRootPath(cms, path);
-                if (path != null) {
-                    // append parameters again
-                    path += query;
-                }
-            } finally {
-                if (siteRoot != null) {
-                    cms.getRequestContext().setSiteRoot(oldSite);
-                }
-            }
-        }
+        String path = getInternalPathAndQuery(cms, value);
         boolean internal = (path != null);
         CmsRelationType type;
         if (internal) {

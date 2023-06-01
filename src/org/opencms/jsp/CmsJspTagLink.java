@@ -33,6 +33,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.jsp.util.CmsLinkWrapper;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -308,27 +309,7 @@ public class CmsJspTagLink extends BodyTagSupport {
         CmsFlexController controller = CmsFlexController.getController(req);
         // be sure the link is absolute
         String uri = CmsLinkManager.getAbsoluteUri(params.getTarget(), controller.getCurrentRequest().getElementUri());
-        CmsObject cms = controller.getCmsObject();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(params.getBaseUri()) || (null != params.getLocale())) {
-            try {
-                cms = OpenCms.initCmsObject(cms);
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(params.getBaseUri())) {
-                    cms.getRequestContext().setUri(params.getBaseUri());
-                    if (params.getLocale() == null) {
-                        Locale baseUriLocale = getBaseUriLocale(cms, params.getBaseUri());
-                        if (baseUriLocale != null) {
-                            cms.getRequestContext().setLocale(baseUriLocale);
-                        }
-                    }
-                }
-                if (null != params.getLocale()) {
-                    cms.getRequestContext().setLocale(params.getLocale());
-                }
-            } catch (CmsException e) {
-                // should not happen, if it does we can't do anything useful and will just keep the original object
-                LOG.debug(e.getLocalizedMessage(), e);
-            }
-        }
+        CmsObject cms = prepareCmsObject(controller.getCmsObject(), params);
         CmsLinkManager linkManager = OpenCms.getLinkManager();
         // generate the link
         switch (params.getType()) {
@@ -465,6 +446,39 @@ public class CmsJspTagLink extends BodyTagSupport {
     }
 
     /**
+     * Initializes CmsObject with data from the tag parameters.
+     *
+     * @param cms1 the CmsObject to use as a base
+     * @param params the parameters to use for the initialization
+     * @return the initialized CmsObject
+     */
+    private static CmsObject prepareCmsObject(CmsObject cms1, Parameters params) {
+
+        CmsObject cms = cms1;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(params.getBaseUri()) || (null != params.getLocale())) {
+            try {
+                cms = OpenCms.initCmsObject(cms);
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(params.getBaseUri())) {
+                    cms.getRequestContext().setUri(params.getBaseUri());
+                    if (params.getLocale() == null) {
+                        Locale baseUriLocale = getBaseUriLocale(cms, params.getBaseUri());
+                        if (baseUriLocale != null) {
+                            cms.getRequestContext().setLocale(baseUriLocale);
+                        }
+                    }
+                }
+                if (null != params.getLocale()) {
+                    cms.getRequestContext().setLocale(params.getLocale());
+                }
+            } catch (CmsException e) {
+                // should not happen, if it does we can't do anything useful and will just keep the original object
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+        }
+        return cms;
+    }
+
+    /**
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
      *
      * @return EVAL_PAGE
@@ -479,13 +493,11 @@ public class CmsJspTagLink extends BodyTagSupport {
         // This will always be true if the page is called through OpenCms
         if (CmsFlexController.isCmsRequest(req)) {
             try {
+
                 // Get link-string from the body and reset body
                 String link = getBodyContent().getString();
                 getBodyContent().clear();
-                // Calculate the link substitution
-                String newlink = linkTagAction(
-                    new Parameters(link, getBaseUri(), getDetailPage(), m_locale, m_type),
-                    req);
+                Parameters params = new Parameters(link, getBaseUri(), getDetailPage(), m_locale, m_type);
                 if (m_var != null) {
                     int scope = PageContext.PAGE_SCOPE; // default
                     if (SCOPE_REQUEST.equalsIgnoreCase(m_scope)) {
@@ -495,8 +507,12 @@ public class CmsJspTagLink extends BodyTagSupport {
                     } else if (SCOPE_APPLICATION.equalsIgnoreCase(m_scope)) {
                         scope = PageContext.APPLICATION_SCOPE;
                     }
-                    pageContext.setAttribute(m_var, newlink, scope);
+                    CmsFlexController controller = CmsFlexController.getController(req);
+                    CmsObject cms = prepareCmsObject(controller.getCmsObject(), params);
+                    pageContext.setAttribute(m_var, new CmsLinkWrapper(cms, link), scope);
                 } else {
+                    // Calculate the link substitution
+                    String newlink = linkTagAction(params, req);
                     // Write the result back to the page
                     getBodyContent().print(newlink);
                     getBodyContent().writeOut(pageContext.getOut());

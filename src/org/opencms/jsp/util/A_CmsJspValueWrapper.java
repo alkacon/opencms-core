@@ -44,6 +44,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.logging.Log;
@@ -166,6 +167,9 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
 
     /** The lazy initialized trim to size map. */
     private Map<Object, String> m_trimToSize;
+
+    /** Cached link wrapper - use Optional to distinguish 'uncached' state from 'does not exist'. */
+    protected Optional<CmsLinkWrapper> m_linkObj;
 
     /**
      * Returns the substituted link to the given target.<p>
@@ -505,13 +509,31 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
     }
 
     /**
+     * Converts the value to a link wrapper.
+     *
+     * @return the link wrapper
+     */
+    public CmsLinkWrapper getToLink() {
+
+        if (m_linkObj == null) {
+            String target = toString();
+            if (target != null) {
+                m_linkObj = Optional.of(new CmsLinkWrapper(m_cms, target));
+            } else {
+                m_linkObj = Optional.empty();
+            }
+        }
+        return m_linkObj.orElse(null);
+    }
+
+    /**
      * Returns the substituted link to the wrapped value.<p>
      *
      * In case no link can be substituted from the wrapped value, an empty String <code>""</code> is returned.
      *
      * @return the substituted link
      */
-    public String getToLink() {
+    public String getToLinkStr() {
 
         if (m_link == null) {
             String target = toString();
