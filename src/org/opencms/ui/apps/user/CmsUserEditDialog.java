@@ -316,8 +316,6 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     /**vaadin serial id.*/
     private static final long serialVersionUID = -5198443053070008413L;
 
-    private FormLayout m_twoFactorBox;
-
     /**Visible sites? */
     protected boolean m_visSites = true;
 
@@ -332,6 +330,9 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
 
     /**vaadin component.*/
     CmsPathSelectField m_startfolder;
+
+    /** The app instance. */ 
+    private CmsAccountsApp m_app;
 
     /**vaadin component.*/
     private Button m_cancel;
@@ -360,9 +361,6 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     /**Select view for principals.*/
     private CmsPrincipalSelect m_group;
 
-    /** Check box for resetting 2FA information. */
-    private CheckBox m_resetTwoFactorAuthentication;
-
     /**vaadin component.*/
     private ComboBox m_language;
 
@@ -381,13 +379,16 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     /**vaadin component.*/
     private Label m_ou;
 
+    private PasswordValidator m_passwordValidator = new PasswordValidator();
+
     /**vaadin component.*/
     private ComboBox m_project;
 
+    /** Check box for resetting 2FA information. */
+    private CheckBox m_resetTwoFactorAuthentication;
+
     /**vaadin component. */
     private ComboBox m_role;
-
-    private com.vaadin.ui.Label m_twoFactorAuthState;
 
     /**vaadin component.*/
     private CheckBox m_selfmanagement;
@@ -401,13 +402,15 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     /**vaadin component.*/
     private TabSheet m_tab;
 
+    private com.vaadin.ui.Label m_twoFactorAuthState;
+
+    private FormLayout m_twoFactorBox;
+
     /**vaadin component.*/
     private CmsUser m_user;
 
     /**User data form.<p>*/
     private CmsUserDataFormLayout m_userdata;
-
-    private PasswordValidator m_passwordValidator = new PasswordValidator();
 
     /**
      * public constructor.<p>
@@ -423,6 +426,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         setPasswordFields();
         try {
             m_cms = OpenCms.initCmsObject(cms);
+            m_app = app;
             m_startfolder.disableSiteSwitch();
             m_user = m_cms.readUser(userId);
             m_editParams = app.getUserEditParameters(m_user);
@@ -452,9 +456,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             init(window, app, settings, m_editParams.isEditEnabled());
             m_sendEmail.setEnabled(false);
             m_forceResetPassword.setValue(
-                CmsUserTable.USER_PASSWORD_STATUS.get(m_user.getId()) == null
-                ? Boolean.FALSE
-                : CmsUserTable.USER_PASSWORD_STATUS.get(m_user.getId()));
+                m_user.getAdditionalInfo().get(CmsUserSettings.ADDITIONAL_INFO_PASSWORD_RESET) != null);
             m_next.setVisible(false);
             setupStartFolder(settings.getStartFolder());
 
@@ -504,6 +506,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         CmsOrganizationalUnit myOu = null;
         try {
+            m_app = app;
             m_cms = OpenCms.initCmsObject(cms);
             myOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, ou);
 
@@ -1569,7 +1572,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         } else {
             user.deleteAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_PASSWORD_RESET);
         }
-        CmsUserTable.USER_PASSWORD_STATUS.put(user.getId(), new Boolean(reset));
+        m_app.getPasswordResetStateCache().put(user.getId(), new Boolean(reset));
     }
 
     /**

@@ -69,6 +69,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 import org.apache.commons.logging.Log;
@@ -241,6 +242,9 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
 
     /** The folder tree. */
     private CmsOuTree m_ouTree;
+
+    /** Map for the cached password reset states. */ 
+    private Map<CmsUUID, Boolean> m_passwordResetStateCache = new ConcurrentHashMap<>();
 
     /**vaadin component.*/
     private HorizontalSplitPanel m_splitScreen;
@@ -491,6 +495,17 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     public CmsCssIcon getGroupIcon(CmsGroup group) {
 
         return new CmsCssIcon("oc-icon-24-group");
+    }
+
+    /** 
+     * Gets the cache for the password reset states.
+     * <p>The cache keys are user ids.
+     * 
+     * @return the cache for the password reset states 
+     */
+    public Map<CmsUUID, Boolean> getPasswordResetStateCache() {
+
+        return m_passwordResetStateCache;
     }
 
     /**

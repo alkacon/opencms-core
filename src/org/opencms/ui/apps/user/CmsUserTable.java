@@ -56,12 +56,10 @@ import org.opencms.util.CmsUUID;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -88,6 +86,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
 
     /**Table properties. */
     public enum TableProperty {
+
         /**Last login. */
         Created(Messages.GUI_USERMANAGEMENT_USER_DATE_CREATED_0, Long.class, new Long(0L)),
         /**Is the user disabled? */
@@ -805,9 +804,6 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
 
     }
 
-    /**Map for password status of user. */
-    protected static final Map<CmsUUID, Boolean> USER_PASSWORD_STATUS = new HashMap<CmsUUID, Boolean>();
-
     /** Log instance for this class. */
     static final Log LOG = CmsLog.getLog(CmsUserTable.class);
 
@@ -837,9 +833,6 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
 
     /**Black list of user from higher OU than current user.*/
     private HashSet<CmsUser> m_blackList = new HashSet<CmsUser>();
-
-    /**Set of user with Flag to reset password. */
-    private Set<CmsUUID> m_checkedUserPasswordReset;
 
     /**Indexed container. */
     private IndexedContainer m_container;
@@ -1032,7 +1025,6 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
 
         m_container.removeAllContainerFilters();
         m_container.removeAllItems();
-        m_checkedUserPasswordReset = new HashSet<CmsUUID>();
         for (CmsUser user : m_users) {
             if (showIndirect || !m_indirects.contains(user)) {
                 addUserToContainer(m_container, user);
@@ -1416,13 +1408,9 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
      */
     boolean isUserPasswordReset(CmsUser user) {
 
-        if (USER_PASSWORD_STATUS.containsKey(user.getId())) { //Check if user was checked before
-            if (!USER_PASSWORD_STATUS.get(user.getId()).booleanValue()) { // was false before, false->true is never done without changing map
-                return false;
-            }
-            if (m_checkedUserPasswordReset.contains(user.getId())) { //was true before, true->false happens when user resets password. Only check one time per table load.
-                return true; //Set gets flushed on reloading table
-            }
+        Boolean cachedValue = m_app.getPasswordResetStateCache().get(user.getId());
+        if (cachedValue != null) {
+            return cachedValue.booleanValue();
         }
         CmsUser currentUser = user;
         if (user.getAdditionalInfo().size() < 3) {
@@ -1433,13 +1421,9 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
                 LOG.error("Can not read user", e);
             }
         }
-        if (currentUser.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_PASSWORD_RESET) != null) {
-            USER_PASSWORD_STATUS.put(currentUser.getId(), new Boolean(true));
-            m_checkedUserPasswordReset.add(currentUser.getId());
-            return true;
-        }
-        USER_PASSWORD_STATUS.put(currentUser.getId(), new Boolean(false));
-        return false;
+        boolean result = currentUser.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_PASSWORD_RESET) != null;
+        m_app.getPasswordResetStateCache().put(user.getId(), Boolean.valueOf(result));
+        return result;
     }
 
     /**
