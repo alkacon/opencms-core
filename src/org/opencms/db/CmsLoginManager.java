@@ -520,6 +520,18 @@ public class CmsLoginManager {
     }
 
     /**
+     * Checks if the user should be excluded from password reset.
+     *
+     * @param cms the CmsObject to use
+     * @param user the user to check
+     * @return true if the user should be excluded from password reset
+     */
+    public boolean isExcludedFromPasswordReset(CmsObject cms, CmsUser user) {
+
+        return user.isManaged() || user.isWebuser() || OpenCms.getDefaultUsers().isDefaultUser(user.getName());
+    }
+
+    /**
      * Returns true if organizational unit selection should be required on login.
      *
      * @return true if org unit selection should be required
@@ -538,7 +550,7 @@ public class CmsLoginManager {
      */
     public boolean isPasswordReset(CmsObject cms, CmsUser user) {
 
-        if (user.isManaged() || user.isWebuser() || OpenCms.getDefaultUsers().isDefaultUser(user.getName())) {
+        if (isExcludedFromPasswordReset(cms, user)) {
             return false;
         }
         if (user.getAdditionalInfo().get(CmsUserSettings.ADDITIONAL_INFO_PASSWORD_RESET) != null) {
