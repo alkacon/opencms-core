@@ -30,6 +30,7 @@ package org.opencms.main;
 import org.opencms.configuration.CmsSitesConfiguration;
 import org.opencms.configuration.CmsVariablesConfiguration;
 import org.opencms.db.CmsDbEntryNotFoundException;
+import org.opencms.db.CmsLoginManager;
 import org.opencms.db.CmsLoginMessage;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
@@ -538,7 +539,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Deletes a project by name.<p>
      *
      * @param name the name of the project to delete
-
+    
      * @throws Exception if something goes wrong
      *
      * @see CmsObject#deleteProject(CmsUUID)
@@ -887,6 +888,33 @@ class CmsShellCommands implements I_CmsShellCommands {
             moduleName,
             true,
             new CmsShellReport(m_cms.getRequestContext().getLocale()));
+    }
+
+    /**
+     * Forces password reset state for (non-managed, non-default) users.
+     */
+    public void forcePasswordResetForUsers() throws Exception {
+
+        CmsObject cms = m_cms;
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.ACCOUNT_MANAGER);
+        CmsLoginManager loginManager = OpenCms.getLoginManager();
+        String ou = "";
+        List<CmsUser> users = OpenCms.getOrgUnitManager().getUsers(cms, ou, true);
+        for (CmsUser user : users) {
+            if (loginManager.isExcludedFromPasswordReset(cms, user)) {
+                LOG.info("Excluded user " + user.getName() + " from password reset.");
+                continue;
+            }
+            try {
+                if (user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_PASSWORD_RESET) == null) {
+                    LOG.info("Marking user " + user.getName() + " for password reset.");
+                    user.setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_PASSWORD_RESET, "true");
+                    cms.writeUser(user);
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
     }
 
     /**
