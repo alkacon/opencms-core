@@ -518,7 +518,7 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
         if (m_linkObj == null) {
             String target = toString();
             if (target != null) {
-                m_linkObj = Optional.of(new CmsLinkWrapper(m_cms, target));
+                m_linkObj = Optional.of(new CmsLinkWrapper(getCmsObject(), target));
             } else {
                 m_linkObj = Optional.empty();
             }
