@@ -202,7 +202,6 @@ public class CmsTemplateContextManager {
             }
             result.setContextLabels(niceNames);
             String providerKey = OpenCms.getTemplateContextManager().getProviderKey(provider);
-            System.out.println(providerKey);
             result.setContextProvider(providerKey);
         }
         Map<String, CmsDefaultSet<String>> allowedContextMap = safeGetAllowedContextMap();
