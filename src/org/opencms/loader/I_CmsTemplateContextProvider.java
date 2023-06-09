@@ -123,4 +123,14 @@ public interface I_CmsTemplateContextProvider {
      */
     String readCommonProperty(CmsObject cms, String propertyName, String fallbackValue) throws CmsException;
 
+    /**
+     * Return true if this should be shown in the 'advanced' submenu.
+     *
+     * @return true if this should be shown in the 'advanced' submenu
+     */
+    default boolean useAdvancedOption() {
+
+        return false;
+    }
+
 }

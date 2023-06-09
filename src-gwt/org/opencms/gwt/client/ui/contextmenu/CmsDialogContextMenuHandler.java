@@ -46,7 +46,7 @@ public class CmsDialogContextMenuHandler extends CmsContextMenuHandler {
 
     static {
         m_filteredActions = new HashSet<String>();
-        m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
+        m_filteredActions.add(CmsGwtConstants.TEMPLATECONTEXT_MENU_PLACEHOLDER);
         m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
         m_filteredActions.add(CmsGwtConstants.ACTION_SELECTELEMENTVIEW);
         m_filteredActions.add(CmsGwtConstants.ACTION_SHOWLOCALE);

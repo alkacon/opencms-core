@@ -151,7 +151,10 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsUndoDialogAction(), null, 1900, 0),
             new CmsContextMenuActionItem(new CmsShowLocaleAction(), null, 1925, 0),
             new CmsContextMenuActionItem(new CmsSelectElementViewAction(), null, 1950, 0),
-            new CmsContextMenuActionItem(new CmsTemplateContextsAction(), null, 1975, 0),
+
+            // add template contexts entry in two places (top-level and Advanced sub-menu) and only show one
+            new CmsContextMenuActionItem(new CmsTemplateContextsAction(false), null, 1975, 0),
+
             new CmsContextMenuActionItem(new CmsEditSmallElementsAction(), null, 2000, 0),
             new CmsContextMenuActionItem(new CmsUndeleteDialogAction(), null, 2100, 0),
             new CmsContextMenuActionItem(new CmsResourceInfoAction(), null, 2200, 0),
@@ -160,6 +163,10 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
 
             advanced,
             new CmsContextMenuActionItem(new CmsTouchDialogAction(), advanced.getId(), 170, 0),
+
+            // add template contexts entry in two places (top-level and Advanced sub-menu) and only show one
+            new CmsContextMenuActionItem(new CmsTemplateContextsAction(true), advanced.getId(), 180, 0),
+
             new CmsContextMenuActionItem(new CmsAvailabilityDialogAction(), advanced.getId(), 300, 0),
             new CmsContextMenuActionItem(new CmsSecureExportDialogAction(), advanced.getId(), 500, 0),
             new CmsContextMenuActionItem(new CmsChangeTypeDialogAction(), advanced.getId(), 700, 0),

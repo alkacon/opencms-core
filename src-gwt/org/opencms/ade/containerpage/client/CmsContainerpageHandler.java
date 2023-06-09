@@ -1341,7 +1341,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         if (name == null) {
             return super.transformSingleEntry(structureId, menuEntryBean);
         }
-        if (name.equals(CmsGwtConstants.ACTION_TEMPLATECONTEXTS)) {
+        if (name.equals(CmsGwtConstants.TEMPLATECONTEXT_MENU_PLACEHOLDER)) {
             return createTemplateContextSelectionMenuEntry(structureId);
         } else if (name.equals(CmsGwtConstants.ACTION_EDITSMALLELEMENTS)) {
             return createToggleEditSmallElementsMenuEntry();
