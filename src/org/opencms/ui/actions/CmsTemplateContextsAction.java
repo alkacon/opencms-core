@@ -30,6 +30,7 @@ package org.opencms.ui.actions;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 
@@ -43,7 +44,7 @@ import java.util.Map;
 public class CmsTemplateContextsAction extends A_CmsWorkplaceAction implements I_CmsADEAction {
 
     /** The action id. */
-    public static final String ACTION_ID = "templatecontexts";
+    public static final String ACTION_ID = CmsGwtConstants.ACTION_TEMPLATECONTEXTS;
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
