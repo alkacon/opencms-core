@@ -142,15 +142,22 @@ public class CmsTemplateContextsAction extends A_CmsWorkplaceAction implements I
                 if (CmsTemplateContextManager.hasPropertyPrefix(propertyValue)) {
                     I_CmsTemplateContextProvider provider = OpenCms.getTemplateContextManager().getTemplateContextProvider(
                         CmsTemplateContextManager.removePropertyPrefix(propertyValue));
-                    if ((provider != null) && (provider.useAdvancedOption() != m_advanced)) {
-                        return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                    if (provider != null) {
+                        if (provider.useAdvancedOption() != m_advanced) {
+                            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                        }
+                        if (!provider.shouldShowContextMenuOption(cms)) {
+                            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                        }
                     }
                 }
             }
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
+
         }
         return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+
     }
 
     /**
