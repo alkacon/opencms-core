@@ -46,11 +46,11 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
@@ -90,7 +90,7 @@ public class CmsTemplateContextManager {
     private CmsObject m_cms;
 
     /** A cache in which the template context provider instances are stored, with their class name as the key. */
-    private Map<String, I_CmsTemplateContextProvider> m_providerInstances = new HashMap<String, I_CmsTemplateContextProvider>();
+    private Map<String, I_CmsTemplateContextProvider> m_providerInstances = new ConcurrentHashMap<String, I_CmsTemplateContextProvider>();
 
     /** Cached allowed context map. */
     private volatile Map<String, CmsDefaultSet<String>> m_cachedContextMap = null;
@@ -201,11 +201,35 @@ public class CmsTemplateContextManager {
                 }
             }
             result.setContextLabels(niceNames);
-            result.setContextProvider(provider.getClass().getName());
+            String providerKey = OpenCms.getTemplateContextManager().getProviderKey(provider);
+            System.out.println(providerKey);
+            result.setContextProvider(providerKey);
         }
         Map<String, CmsDefaultSet<String>> allowedContextMap = safeGetAllowedContextMap();
         result.setAllowedContexts(allowedContextMap);
         return result;
+    }
+
+    /**
+     * Gets the key of a cached template provider (consisting of class name and parameters)
+     * that can later be used as an argument to getTemplateContextProvider.
+     *
+     * <p>If the provider is not already cached, returns null.
+     *
+     * @param provider the template provider
+     *
+     * @return the cache key
+     */
+    public String getProviderKey(I_CmsTemplateContextProvider provider) {
+
+        // Just do a linear search over the map entries. There should only be a small number of different configured template providers,
+        // so this is not a problem for performance.
+        for (Map.Entry<String, I_CmsTemplateContextProvider> entry : m_providerInstances.entrySet()) {
+            if (entry.getValue() == provider) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     /**
@@ -309,7 +333,7 @@ public class CmsTemplateContextManager {
         I_CmsTemplateContextProvider result = m_providerInstances.get(providerName);
         if (result == null) {
             try {
-                Class<?> providerClass = Class.forName(providerClassName);
+                Class<?> providerClass = Class.forName(providerClassName, false, getClass().getClassLoader());
                 if (I_CmsTemplateContextProvider.class.isAssignableFrom(providerClass)) {
                     result = (I_CmsTemplateContextProvider)providerClass.newInstance();
                     result.initialize(m_cms, providerConfig);
