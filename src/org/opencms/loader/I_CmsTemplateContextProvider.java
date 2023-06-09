@@ -124,6 +124,28 @@ public interface I_CmsTemplateContextProvider {
     String readCommonProperty(CmsObject cms, String propertyName, String fallbackValue) throws CmsException;
 
     /**
+     * Checks if the context menu option for switching the template should be shown for the given user context.
+     *
+     * @param cms the CmsObject to check
+     * @return true if the context menu option should be visible
+     */
+    default boolean shouldShowContextMenuOption(CmsObject cms) {
+
+        return true;
+    }
+
+    /**
+     * Controls whether template context select options should be shown in the element settings dialog.
+     *
+     * @param cms the CmsObject for the current user
+     * @return true if the template context select options should be shown in the element settings dialog
+     */
+    default boolean shouldShowElementTemplateContextSelection(CmsObject cms) {
+
+        return true;
+    }
+
+    /**
      * Return true if this should be shown in the 'advanced' submenu.
      *
      * @return true if this should be shown in the 'advanced' submenu

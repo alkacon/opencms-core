@@ -67,14 +67,17 @@ public class CmsTemplateContextInfo implements IsSerializable {
     /** The key of the currently active context. */
     private String m_currentContext;
 
+    /** Custom label for the context menu entry. */
+    private String m_menuLabel;
+
     /** The name of the selected context (using the cookie) .*/
     private String m_selectedContext;
 
     /** The setting definition for the templateContexts setting. */
     private CmsXmlContentProperty m_settingDefinition;
 
-    /** Custom label for the context menu entry. */
-    private String m_menuLabel;
+    /** If false, hide template context select options in the settings dialog. */
+    private boolean m_shouldShowElementTemplateContextSelection;
 
     /**
      * Default constructor.<p>
@@ -285,13 +288,23 @@ public class CmsTemplateContextInfo implements IsSerializable {
     }
 
     /**
+     * Enables / disables display of the template context select options in the settings dialog.
+     *
+     * @param newValue if true, show the select options
+     */
+    public void setShouldShowElementTemplateContextSelection(boolean newValue) {
+
+        m_shouldShowElementTemplateContextSelection = newValue;
+    }
+
+    /**
      * Returns true if the template context selection should be shown for container elements.<p>
      *
      * @return true if the template context selection for elements should be shown
      */
     public boolean shouldShowElementTemplateContextSelection() {
 
-        return hasMoreThanOneOption();
+        return m_shouldShowElementTemplateContextSelection && hasMoreThanOneOption();
     }
 
     /**
