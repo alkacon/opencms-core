@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -63,6 +64,19 @@ public interface I_CmsTemplateContextProvider {
      * @return the path of the style sheet to be used for the resource
      */
     String getEditorStyleSheet(CmsObject cms, String editedResourcePath);
+
+    /**
+     * Gets the label to use for the menu entry in the given locale.
+     *
+     *  <p>If this returns null, the default menu entry label is used.
+     *
+     * @param locale the locale for which we want the menu entry label
+     * @return the menu entry label
+     */
+    default String getMenuLabel(Locale locale) {
+
+        return null;
+    }
 
     /**
      * Gets the name of the cookie which should be used for overriding the template context.<p>

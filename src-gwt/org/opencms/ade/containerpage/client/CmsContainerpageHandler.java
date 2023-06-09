@@ -1519,9 +1519,12 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             });
             CmsContextMenuEntryBean parentBean = new CmsContextMenuEntryBean();
 
-            parentBean.setLabel(
-                org.opencms.gwt.client.Messages.get().key(
-                    org.opencms.gwt.client.Messages.GUI_TEMPLATE_CONTEXT_PARENT_0));
+            String parentLabel = info.getMenuLabel();
+            if (parentLabel == null) {
+                parentLabel = org.opencms.gwt.client.Messages.get().key(
+                    org.opencms.gwt.client.Messages.GUI_TEMPLATE_CONTEXT_PARENT_0);
+            }
+            parentBean.setLabel(parentLabel);
             parentBean.setActive(true);
             parentBean.setVisible(true);
             parentEntry.setBean(parentBean);

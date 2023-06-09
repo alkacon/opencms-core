@@ -73,6 +73,9 @@ public class CmsTemplateContextInfo implements IsSerializable {
     /** The setting definition for the templateContexts setting. */
     private CmsXmlContentProperty m_settingDefinition;
 
+    /** Custom label for the context menu entry. */
+    private String m_menuLabel;
+
     /**
      * Default constructor.<p>
      */
@@ -142,6 +145,16 @@ public class CmsTemplateContextInfo implements IsSerializable {
     public String getCurrentContext() {
 
         return m_currentContext;
+    }
+
+    /**
+     * Gets the custom context menu entry label (if null, the default is used).
+     *
+     * @return the custom context menu entry label
+     */
+    public String getMenuLabel() {
+
+        return m_menuLabel;
     }
 
     /**
@@ -239,6 +252,16 @@ public class CmsTemplateContextInfo implements IsSerializable {
     public void setCurrentContext(String context) {
 
         m_currentContext = context;
+    }
+
+    /**
+     * Sets the custom context menu entry label.
+     *
+     * @param label the custom context menu entry label
+     */
+    public void setMenuLabel(String label) {
+
+        m_menuLabel = label;
     }
 
     /**

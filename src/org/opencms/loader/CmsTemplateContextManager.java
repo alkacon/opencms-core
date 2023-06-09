@@ -176,6 +176,7 @@ public class CmsTemplateContextManager {
 
             I_CmsTemplateContextProvider provider = context.getProvider();
             Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+            result.setMenuLabel(provider.getMenuLabel(locale));
             CmsXmlContentProperty settingDefinition = createTemplateContextsPropertyDefinition(provider, locale);
             result.setSettingDefinition(settingDefinition);
             String cookieName = context.getProvider().getOverrideCookieName();
