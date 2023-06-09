@@ -99,6 +99,8 @@ public interface I_CmsTemplateContextProvider {
     /**
      * Initializes the context provider using a CMS object.<p>
      *
+     * <p>Initialization always happens in the Online project.
+     *
      * @param cms the current CMS context
      * @param config the template context provider configuration
      */
