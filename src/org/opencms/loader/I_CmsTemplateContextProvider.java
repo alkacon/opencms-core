@@ -146,9 +146,9 @@ public interface I_CmsTemplateContextProvider {
     }
 
     /**
-     * Return true if this should be shown in the 'advanced' submenu.
+     * Return true if the menu option for switching templates should be shown in the 'advanced' submenu.
      *
-     * @return true if this should be shown in the 'advanced' submenu
+     * @return true if the menu option for switching templates should be shown in the 'advanced' submenu
      */
     default boolean useAdvancedOption() {
 
