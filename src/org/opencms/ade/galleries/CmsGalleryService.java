@@ -2929,13 +2929,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             title = navElement.getProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT);
         } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(
             navElement.getProperty(CmsPropertyDefinition.PROPERTY_TITLE))) {
-                title = navElement.getProperty(CmsPropertyDefinition.PROPERTY_TITLE);
-            } else {
-                title = navElement.getFileName();
-                if (title.contains("/")) {
-                    title = title.substring(0, title.indexOf("/"));
-                }
+            title = navElement.getProperty(CmsPropertyDefinition.PROPERTY_TITLE);
+        } else {
+            title = navElement.getFileName();
+            if (title.contains("/")) {
+                title = title.substring(0, title.indexOf("/"));
             }
+        }
         String childPath = navElement.getResource().getRootPath();
         boolean noChildren = true;
 
