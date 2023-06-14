@@ -62,6 +62,9 @@ import org.apache.commons.logging.Log;
  */
 public class CmsTemplateContextManager {
 
+    /** Request attribute used to set the template context during RPC calls. */
+    public static final String ATTR_RPC_CONTEXT_OVERRIDE = "ATTR_RPC_CONTEXT_OVERRIDE";
+
     /** A bean containing information about the selected template. */
     public static final String ATTR_TEMPLATE_BEAN = "ATTR_TEMPLATE_BEAN";
 
@@ -83,17 +86,14 @@ public class CmsTemplateContextManager {
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTemplateContextManager.class);
 
-    /** Request attribute used to set the template context during RPC calls. */
-    public static final String ATTR_RPC_CONTEXT_OVERRIDE = "ATTR_RPC_CONTEXT_OVERRIDE";
+    /** Cached allowed context map. */
+    private volatile Map<String, CmsDefaultSet<String>> m_cachedContextMap = null;
 
     /** The CMS context. */
     private CmsObject m_cms;
 
     /** A cache in which the template context provider instances are stored, with their class name as the key. */
     private Map<String, I_CmsTemplateContextProvider> m_providerInstances = new ConcurrentHashMap<String, I_CmsTemplateContextProvider>();
-
-    /** Cached allowed context map. */
-    private volatile Map<String, CmsDefaultSet<String>> m_cachedContextMap = null;
 
     /**
      * Creates a new instance.<p>
@@ -177,7 +177,8 @@ public class CmsTemplateContextManager {
             I_CmsTemplateContextProvider provider = context.getProvider();
             Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
             result.setMenuLabel(provider.getMenuLabel(locale));
-            result.setShouldShowElementTemplateContextSelection(provider.shouldShowElementTemplateContextSelection(cms));
+            result.setShouldShowElementTemplateContextSelection(
+                provider.shouldShowElementTemplateContextSelection(cms));
             CmsXmlContentProperty settingDefinition = createTemplateContextsPropertyDefinition(provider, locale);
             result.setSettingDefinition(settingDefinition);
             String cookieName = context.getProvider().getOverrideCookieName();
@@ -318,6 +319,9 @@ public class CmsTemplateContextManager {
      */
     public I_CmsTemplateContextProvider getTemplateContextProvider(String providerName) {
 
+        if (providerName == null) {
+            return null;
+        }
         providerName = providerName.trim();
         providerName = removePropertyPrefix(providerName);
         String providerClassName = providerName;

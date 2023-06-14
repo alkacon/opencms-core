@@ -84,6 +84,9 @@ public class CmsTransformerTemplateProvider implements I_CmsTemplateContextProvi
         /** The context menu label. */
         private CmsJsonMessageContainer m_menuLabel;
 
+        /** Map from template key to template compatibility string. */
+        private Map<String, String> m_templateCompatibility = new HashMap<>();
+
         /**
          * Creates a new instance.
          */
@@ -147,6 +150,17 @@ public class CmsTransformerTemplateProvider implements I_CmsTemplateContextProvi
         }
 
         /**
+         * Gets the template compatibility for the given template context.
+         *
+         * @param currentContext the current template context
+         * @return the template compatibility for the template context
+         */
+        public String getTemplateCompatibility(String currentContext) {
+
+            return m_templateCompatibility.get(currentContext);
+        }
+
+        /**
          * Helper method to read a template context from a JSON value.
          *
          * @param key the name of the template context
@@ -169,6 +183,10 @@ public class CmsTransformerTemplateProvider implements I_CmsTemplateContextProvi
             if (functionFilter != null) {
                 m_functionFilters.put(key, Pattern.compile(functionFilter));
             }
+            String templateCompatibility = object.optString(JsonKeys.compatibility.name(), null);
+            if (templateCompatibility != null) {
+                m_templateCompatibility.put(key, templateCompatibility);
+            }
 
             return context;
         }
@@ -176,6 +194,9 @@ public class CmsTransformerTemplateProvider implements I_CmsTemplateContextProvi
 
     /** Enum representing the keys in the configuration JSON file. */
     enum JsonKeys {
+        /** Key for the template compatibility. */
+        compatibility,
+
         /** Key for the regex used for filtering dynamic function paths. */
         functionFilter,
 
@@ -309,6 +330,14 @@ public class CmsTransformerTemplateProvider implements I_CmsTemplateContextProvi
     public String getOverrideCookieName() {
 
         return m_cookieName;
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsTemplateContextProvider#getTemplateCompatibility(java.lang.String)
+     */
+    public String getTemplateCompatibility(String currentContext) {
+
+        return getConfiguration().getTemplateCompatibility(currentContext);
     }
 
     /**

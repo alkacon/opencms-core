@@ -42,6 +42,7 @@ import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsListElementCreationDialogData;
+import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
@@ -314,6 +315,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param elementView the element view
      * @param uri the page URI
      * @param locale the content locale
+     * @param contextInfo the template context information
      *
      * @return the gallery data
      *
@@ -323,7 +325,8 @@ public interface I_CmsContainerpageService extends RemoteService {
         List<CmsContainer> containers,
         CmsUUID elementView,
         String uri,
-        String locale)
+        String locale,
+        CmsTemplateContextInfo contextInfo)
     throws CmsRpcException;
 
     /**

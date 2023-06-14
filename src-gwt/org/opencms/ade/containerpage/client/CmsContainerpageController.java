@@ -3493,11 +3493,11 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Updates the formatter in the server-side element bean. 
-     * 
-     * @param clientId the client element bean 
-     * @param containerId the container id 
-     * @param settings the settings 
+     * Updates the formatter in the server-side element bean.
+     *
+     * @param clientId the client element bean
+     * @param containerId the container id
+     * @param settings the settings
      */
     public void updateServerElementFormatter(String clientId, String containerId, Map<String, String> settings) {
 
@@ -4009,6 +4009,7 @@ public final class CmsContainerpageController {
                     getElementView().getElementViewId(),
                     CmsCoreProvider.get().getUri(),
                     getData().getLocale(),
+                    CmsContainerpageController.get().getData().getTemplateContextInfo(),
                     this);
             }
 

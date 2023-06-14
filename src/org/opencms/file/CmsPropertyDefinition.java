@@ -165,7 +165,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property containing the maps API key. */
     public static final String PROPERTY_GOOGLE_API_KEY_WORKPLACE = "google.apikey.workplace";
 
-    /** Property to control whether historic versions should be removed when deleted resources are published. */ 
+    /** Property to control whether historic versions should be removed when deleted resources are published. */
     public static final String PROPERTY_HISTORY_REMOVE_DELETED = "history.removedeleted";
 
     /** Name of the property in which the focal point is stored. */
@@ -236,6 +236,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
 
     /** Property to control the template. */
     public static final String PROPERTY_TEMPLATE = "template";
+
+    /** Property to customize for which templates elements should be displayed in the gallery when using the CmsTransformerTemplateProvider. */
+    public static final String PROPERTY_TEMPLATE_COMPATILIBITY = "template.compatibility";
 
     /** Property for specifying a list of container types used to match formatters in the display formatter selection widget. */
     public static final String PROPERTY_TEMPLATE_DISPLAY_TYPES = "template.display.types";

@@ -30,9 +30,11 @@ package org.opencms.search.galleries;
 import org.opencms.ade.configuration.CmsFunctionAvailability;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFunctionConfig;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsSearchIndex;
 import org.opencms.search.CmsSearchUtil;
@@ -52,6 +54,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.logging.Log;
 import org.apache.solr.client.solrj.SolrQuery.ORDER;
 
 import com.google.common.base.Joiner;
@@ -195,6 +198,9 @@ public class CmsGallerySearchParameters {
         }
     }
 
+    /** Logge instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsGallerySearchParameters.class);
+
     /** The categories to search in. */
     private List<String> m_categories;
 
@@ -254,6 +260,9 @@ public class CmsGallerySearchParameters {
 
     /** The sort order for the search result. */
     private CmsGallerySortParam m_sortOrder;
+
+    /** The template compatibility. */
+    private String m_templateCompatibility;
 
     /** Search words to search for. */
     private String m_words;
@@ -549,6 +558,18 @@ public class CmsGallerySearchParameters {
             }
         }
 
+        if (m_templateCompatibility != null) {
+            if (m_templateCompatibility.matches("^[0-9a-zA-Z_]+$")) {
+                String fieldName = CmsPropertyDefinition.PROPERTY_TEMPLATE_COMPATILIBITY + "_prop";
+                query.addFilterQuery("(*:* NOT " + fieldName + ":*) OR " + fieldName + ":" + m_templateCompatibility);
+            } else {
+                LOG.warn(
+                    "Invalid template compatibility value: "
+                        + m_templateCompatibility
+                        + ". Must only contain digits, letters (a-z) or underscores.");
+            }
+        }
+
         // include expired/unreleased
         if (m_includeExpired) {
             query.removeExpiration();
@@ -633,6 +654,18 @@ public class CmsGallerySearchParameters {
             m_sortOrder = CmsGallerySortParam.DEFAULT;
         }
         return m_sortOrder;
+    }
+
+    /**
+     * Gets the template compatibility.
+     *
+     * <p>If set, matches those resources whose template.compatibility property is either empty or contains the value (possibly together with other values, separated by whitespace).
+     *
+     * @return the template compatibility
+     */
+    public String getTemplateCompatibility() {
+
+        return m_templateCompatibility;
     }
 
     /**
@@ -906,6 +939,16 @@ public class CmsGallerySearchParameters {
     public void setSortOrder(CmsGallerySortParam sortOrder) {
 
         m_sortOrder = sortOrder;
+    }
+
+    /**
+     * Sets the template compatibility string.
+     *
+     * @param compatibility the template compatibility string
+     */
+    public void setTemplateCompatibility(String compatibility) {
+
+        m_templateCompatibility = compatibility;
     }
 
     /**

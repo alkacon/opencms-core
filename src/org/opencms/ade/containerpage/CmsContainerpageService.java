@@ -101,6 +101,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspTagEdit;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
 import org.opencms.loader.CmsTemplateContextManager;
+import org.opencms.loader.I_CmsTemplateContextProvider;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
@@ -148,6 +149,9 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -165,6 +169,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Optional;
@@ -1134,13 +1139,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getGalleryDataForPage(java.util.List, org.opencms.util.CmsUUID, java.lang.String, java.lang.String)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getGalleryDataForPage(java.util.List, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, org.opencms.gwt.shared.CmsTemplateContextInfo)
      */
     public CmsContainerPageGalleryData getGalleryDataForPage(
         final List<CmsContainer> containers,
         CmsUUID elementView,
         String uri,
-        String locale)
+        String locale,
+        CmsTemplateContextInfo templateContextInfo)
     throws CmsRpcException {
 
         CmsGalleryDataBean data = null;
@@ -1174,7 +1180,29 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsADESessionCache cache = CmsADESessionCache.getCache(getRequest(), cms);
             CmsGallerySearchBean search = cache.getLastPageEditorGallerySearch();
             String subsite = OpenCms.getADEManager().getSubSiteRoot(cms, cms.addSiteRoot(uri));
-            String searchStoreKey = elementView + "|" + subsite + "|" + locale;
+
+            // The template context now influences the gallery search results, so use checksum of the template context provider and context as part of the cache key
+            String providerSuffix = "null";
+            if (templateContextInfo != null) {
+                String providerKey = templateContextInfo.getContextProvider();
+                I_CmsTemplateContextProvider provider = OpenCms.getTemplateContextManager().getTemplateContextProvider(
+                    providerKey);
+                if (provider != null) {
+                    try {
+                        MessageDigest md5 = MessageDigest.getInstance("md5");
+                        md5.update(providerKey.getBytes(StandardCharsets.UTF_8));
+                        if (templateContextInfo.getCurrentContext() != null) {
+                            md5.update((byte)0); // 0 byte as separator
+                            md5.update(templateContextInfo.getCurrentContext().getBytes(StandardCharsets.UTF_8));
+                            providerSuffix = Hex.encodeHexString(md5.digest());
+                        }
+                    } catch (NoSuchAlgorithmException e) {
+                        // MD5 must be in standard library
+                    }
+                }
+            }
+
+            String searchStoreKey = elementView + "|" + subsite + "|" + locale + "|" + providerSuffix;
             data.getContextParameters().put("searchStoreKey", searchStoreKey);
             if ((search != null) && !search.getServerSearchTypes().contains(CmsResourceTypeFunctionConfig.TYPE_NAME)) {
                 if (searchStoreKey.equals(

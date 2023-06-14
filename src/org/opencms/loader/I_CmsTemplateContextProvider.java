@@ -102,6 +102,22 @@ public interface I_CmsTemplateContextProvider {
     String getOverrideCookieName();
 
     /**
+     * Gets the template compatibility for the given template context key.
+     *
+     * <p>The template compatibility controls which elements are visible as gallery search results when the template
+     * with the given key is active. If the template.compatibility property on a resource is set (possibly inherited from a parent folder), but does not contain the
+     * compatibility value returned by this method, it will not show up in gallery search results when the template referenced by
+     * templateContextKey is active.
+     *
+     * @param templateContextKey the key for a template context
+     * @return a template compatibility string (should not contain whitespace or punctuation)
+     */
+    default String getTemplateCompatibility(String templateContextKey) {
+
+        return null;
+    }
+
+    /**
      * Determines the template context from the current CMS context, request, and resource.<p>
      *
      * @param cms the CMS context

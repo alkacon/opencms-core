@@ -2863,7 +2863,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         templateContextInfo.getCurrentContext());
                     // allowed functions may be null - this is fine
                     params.setIncludedFunctions(allowedFunctions);
-
+                    String compatibility = provider.getTemplateCompatibility(templateContextInfo.getCurrentContext());
+                    params.setTemplateCompatibility(compatibility);
                 }
             }
             if (replacementConfig != null) {
