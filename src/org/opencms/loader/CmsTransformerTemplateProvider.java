@@ -39,15 +39,21 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
+import org.opencms.xml.containerpage.CmsFunctionFormatterBean;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -72,6 +78,9 @@ public class CmsTransformerTemplateProvider implements I_CmsTemplateContextProvi
         /** The map of template contexts. */
         private Map<String, CmsTemplateContext> m_contextMap = new HashMap<>();
 
+        /** The path filter regexes for restricting functions in the gallery search results.*/
+        private Map<String, Pattern> m_functionFilters = new HashMap<>();
+
         /** The context menu label. */
         private CmsJsonMessageContainer m_menuLabel;
 
@@ -92,8 +101,8 @@ public class CmsTransformerTemplateProvider implements I_CmsTemplateContextProvi
             Map<String, CmsTemplateContext> contextMap = new LinkedHashMap<>();
             JSONObject source = configJson.getJSONObject(JsonKeys.sourceTemplate.name());
             JSONObject target = configJson.getJSONObject(JsonKeys.targetTemplate.name());
-            CmsTemplateContext sourceContext = buildTemplateContext(TEMPLATE_KEY_SOURCE, source);
-            CmsTemplateContext targetContext = buildTemplateContext(TEMPLATE_KEY_TARGET, target);
+            CmsTemplateContext sourceContext = parseTemplateContext(TEMPLATE_KEY_SOURCE, source);
+            CmsTemplateContext targetContext = parseTemplateContext(TEMPLATE_KEY_TARGET, target);
             contextMap.put(TEMPLATE_KEY_SOURCE, sourceContext);
             contextMap.put(TEMPLATE_KEY_TARGET, targetContext);
             m_contextMap = Collections.unmodifiableMap(contextMap);
@@ -101,6 +110,7 @@ public class CmsTransformerTemplateProvider implements I_CmsTemplateContextProvi
             if (menuLabel != null) {
                 m_menuLabel = new CmsJsonMessageContainer(menuLabel);
             }
+
         }
 
         /**
@@ -111,6 +121,19 @@ public class CmsTransformerTemplateProvider implements I_CmsTemplateContextProvi
         public Map<String, CmsTemplateContext> getContextMap() {
 
             return m_contextMap;
+        }
+
+        /**
+         * Gets the function filter pattern used to filter dynamic function paths.
+         *
+         * <p>If this returns null, dynamic functions shouldn't be filtered.
+         *
+         * @param key the template context key
+         * @return the dynamic function filter
+         */
+        public Pattern getFunctionFilter(String key) {
+
+            return m_functionFilters.get(key);
         }
 
         /**
@@ -132,7 +155,7 @@ public class CmsTransformerTemplateProvider implements I_CmsTemplateContextProvi
          *
          * @throws JSONException if something goes wrong with the JSON
          */
-        private CmsTemplateContext buildTemplateContext(String key, JSONObject object) throws JSONException {
+        private CmsTemplateContext parseTemplateContext(String key, JSONObject object) throws JSONException {
 
             Object niceNameValue = object.opt(JsonKeys.niceName.name());
             CmsTemplateContext context = new CmsTemplateContext(
@@ -142,41 +165,47 @@ public class CmsTransformerTemplateProvider implements I_CmsTemplateContextProvi
                 CmsTransformerTemplateProvider.this,
                 Collections.emptyList(),
                 false);
+            String functionFilter = object.optString(JsonKeys.functionFilter.name(), null);
+            if (functionFilter != null) {
+                m_functionFilters.put(key, Pattern.compile(functionFilter));
+            }
+
             return context;
-
         }
-
     }
 
     /** Enum representing the keys in the configuration JSON file. */
     enum JsonKeys {
-        /** Key for the source template. */
-        sourceTemplate,
-
-        /** Key for the target template. */
-        targetTemplate,
-
-        /** Key for the nice name of a template. */
-        niceName,
+        /** Key for the regex used for filtering dynamic function paths. */
+        functionFilter,
 
         /** Key for the context menu label. */
         menuLabel,
 
+        /** Key for the nice name of a template. */
+        niceName,
+
         /** Key for the template path. */
-        path
+        path,
+
+        /** Key for the source template. */
+        sourceTemplate,
+
+        /** Key for the target template. */
+        targetTemplate;
     }
+
+    /** The cookie prefix. */
+    public static final String COOKIE_PREFIX = "templatetransformer_override_";
+
+    /** Parameter for the configuration file in the template provider string. */
+    public static final String PARAM_CONFIG = "config";
 
     /** The template context key for the source template. */
     public static final String TEMPLATE_KEY_SOURCE = "source";
 
     /** The template context key for the target template. */
     public static final String TEMPLATE_KEY_TARGET = "target";
-
-    /** Parameter for the configuration file in the template provider string. */
-    public static final String PARAM_CONFIG = "config";
-
-    /** The cookie prefix. */
-    public static final String COOKIE_PREFIX = "templatetransformer_override_";
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTransformerTemplateProvider.class);
@@ -231,6 +260,34 @@ public class CmsTransformerTemplateProvider implements I_CmsTemplateContextProvi
 
         // we assume here that the WYSIWYG editor stylesheet is configured via sitemap configuration.
         return null;
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsTemplateContextProvider#getFunctionsForGallery(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public Set<CmsUUID> getFunctionsForGallery(CmsObject cms, String templateContext) {
+
+        Configuration config = getConfiguration();
+        Pattern functionFilter = config.getFunctionFilter(templateContext);
+        if (functionFilter == null) {
+            // everything allowed
+            return null;
+        }
+        Set<CmsUUID> result = new HashSet<>();
+        for (I_CmsFormatterBean formatter : OpenCms.getADEManager().getCachedFormatters(
+            false).getFormatters().values()) {
+            if (!(formatter instanceof CmsFunctionFormatterBean)) {
+                continue;
+            }
+            if (!CmsUUID.isValidUUID(formatter.getId()) || (formatter.getLocation() == null)) {
+                continue;
+            }
+            if (!functionFilter.matcher(formatter.getLocation()).matches()) {
+                continue;
+            }
+            result.add(new CmsUUID(formatter.getId()));
+        }
+        return Collections.unmodifiableSet(result);
     }
 
     /**

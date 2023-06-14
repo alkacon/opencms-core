@@ -46,6 +46,7 @@ import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -227,6 +228,9 @@ public class CmsGallerySearchParameters {
     /** Indicates the search exclude property should be ignored. */
     private boolean m_ignoreSearchExclude;
 
+    /** Set of functions to include (whitelist). */
+    private Set<CmsUUID> m_includedFunctions;
+
     /** Indicates if expired and unreleased resources should be included in the search. */
     private boolean m_includeExpired;
 
@@ -347,6 +351,19 @@ public class CmsGallerySearchParameters {
     public List<String> getGalleries() {
 
         return m_galleries;
+    }
+
+    /**
+     * Gets the set of ids of functions to include.
+     *
+     * <p>Note: If the id of a function is returned in the ID set returned by thsi method,
+     * the function may still be excluded from search results based on other parameters.
+     *
+     * @return the included functions
+     */
+    public Set<CmsUUID> getIncludedFunctions() {
+
+        return m_includedFunctions;
     }
 
     /**
@@ -505,13 +522,31 @@ public class CmsGallerySearchParameters {
             query.addFilterQuery(functionFilter);
         }
 
-        if ((m_resourceTypes != null)
-            && m_resourceTypes.contains(CmsResourceTypeFunctionConfig.TYPE_NAME)
-            && (m_excludedFunctions != null)
-            && (m_excludedFunctions.size() > 0)) {
-            String orList = Joiner.on(" OR ").join(m_excludedFunctions);
-            String filter = "*:* AND -id:(" + orList + ")";
-            query.addFilterQuery(filter);
+        if ((m_resourceTypes != null) && m_resourceTypes.contains(CmsResourceTypeFunctionConfig.TYPE_NAME)) {
+            if ((m_excludedFunctions != null) && (m_excludedFunctions.size() > 0)) {
+                List<CmsUUID> excludedFunctions = new ArrayList<>(m_excludedFunctions);
+                Collections.sort(excludedFunctions);
+                String orList = Joiner.on(" OR ").join(excludedFunctions);
+                String filter = "*:* AND -id:(" + orList + ")";
+                query.addFilterQuery(filter);
+            }
+            if (m_includedFunctions != null) {
+                List<CmsUUID> includedFunctions = new ArrayList<>(m_includedFunctions);
+                // not sure if order of terms matters for filter query caching in Solr, so normalize order just in case
+                Collections.sort(includedFunctions);
+                List<String> conditions = new ArrayList<>();
+                String notFunction = "(*:* AND -type:("
+                    + CmsXmlDynamicFunctionHandler.TYPE_FUNCTION
+                    + " OR "
+                    + CmsResourceTypeFunctionConfig.TYPE_NAME
+                    + "))";
+                conditions.add(notFunction);
+                for (CmsUUID id : includedFunctions) {
+                    conditions.add("id:" + id);
+                }
+                String includedFunctionsFilter = Joiner.on(" OR ").join(conditions);
+                query.addFilterQuery(includedFunctionsFilter);
+            }
         }
 
         // include expired/unreleased
@@ -602,7 +637,8 @@ public class CmsGallerySearchParameters {
 
     /**
      * If this returns true, an empty search result should be returned, regardless of other settings.
-     * @return
+     *
+     * @return true if an empty search result should be forced
      */
     public boolean isForceEmptyResult() {
 
@@ -744,6 +780,16 @@ public class CmsGallerySearchParameters {
     public void setIgnoreSearchExclude(boolean excludeForPageEditor) {
 
         m_ignoreSearchExclude = excludeForPageEditor;
+    }
+
+    /**
+     * Sets the ids of functions to include.
+     *
+     * @param includedFunctions the ids of functions to include
+     */
+    public void setIncludedFunctions(Set<CmsUUID> includedFunctions) {
+
+        m_includedFunctions = includedFunctions;
     }
 
     /**

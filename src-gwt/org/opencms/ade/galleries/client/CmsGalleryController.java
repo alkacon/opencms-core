@@ -60,6 +60,7 @@ import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsCategoryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsGalleryContainerInfo;
+import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.gwt.shared.rpc.I_CmsVfsServiceAsync;
 import org.opencms.gwt.shared.sort.CmsComparatorPath;
 import org.opencms.gwt.shared.sort.CmsComparatorTitle;
@@ -159,6 +160,9 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
     /** The configured tabs. */
     private GalleryTabId[] m_tabIds;
+
+    /** Provides the template context information. */ 
+    private Supplier<CmsTemplateContextInfo> m_templateContextInfoProvider = () -> null;
 
     /** The tree token for this gallery instance (determines which tree open state to use). */
     private String m_treeToken;
@@ -1386,6 +1390,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     }
 
     /**
+     * Sets the template context info provider.
+     * 
+     * @param provider the template context info provider
+     */
+    public void setTemplateContextInfoProvider(Supplier<CmsTemplateContextInfo> provider) {
+
+        m_templateContextInfoProvider = provider;
+    }
+
+    /**
      * Sorts the categories according to given parameters and updates the list.<p>
      *
      * @param sortParams the sort parameters
@@ -1826,6 +1840,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             m_galleriesChanged = false;
         }
         preparedSearchObj.setContainerInfo(m_containerInfoProvider.get());
+        preparedSearchObj.setTemplateContextInfo(m_templateContextInfoProvider.get());
         return preparedSearchObj;
 
     }

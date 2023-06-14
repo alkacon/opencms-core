@@ -30,9 +30,11 @@ package org.opencms.loader;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsUUID;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -64,6 +66,20 @@ public interface I_CmsTemplateContextProvider {
      * @return the path of the style sheet to be used for the resource
      */
     String getEditorStyleSheet(CmsObject cms, String editedResourcePath);
+
+    /**
+     * Returns a set of structure ids of dynamic functions that are allowed to appear in the gallery dialog search results, or null if the dynamic function results should not be restricted.
+     *
+     *  <p>Note: Functions may be  excluded from the gallery dialog search results for other reasons even if they appear in the set returned by this method.
+     *
+     * @param cms the current CMS context
+     * @param templateContext the current template context key
+     * @return the set of ids of dynamic functions to allow in the gallery search results, or null if function results shouldn't be restricted
+     */
+    default Set<CmsUUID> getFunctionsForGallery(CmsObject cms, String templateContext) {
+
+        return null;
+    }
 
     /**
      * Gets the label to use for the menu entry in the given locale.

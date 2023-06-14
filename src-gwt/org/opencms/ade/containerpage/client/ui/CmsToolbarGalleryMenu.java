@@ -190,6 +190,8 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
                 m_search);
             galleryController.setContainerInfoProvider(
                 () -> CmsContainerpageController.get().getContainerInfoForGalleries());
+            galleryController.setTemplateContextInfoProvider(
+                () -> CmsContainerpageController.get().getData().getTemplateContextInfo());
             m_dialog = galleryDialog;
             m_dialog.setDialogSize(dialogWidth, dialogHeight);
             getPopup().setWidth(dialogWidth);

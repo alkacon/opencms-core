@@ -70,6 +70,7 @@ import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsVfsService;
 import org.opencms.gwt.shared.CmsGalleryContainerInfo;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONException;
@@ -79,6 +80,7 @@ import org.opencms.jsp.CmsJspNavBuilder.Visibility;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsResourceManager;
+import org.opencms.loader.I_CmsTemplateContextProvider;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsPermalinkResourceHandler;
@@ -2849,6 +2851,21 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     }
                 }
             }
+            CmsTemplateContextInfo templateContextInfo = searchData.getTemplateContextInfo();
+            if ((templateContextInfo != null)
+                && (templateContextInfo.getContextProvider() != null)
+                && (templateContextInfo.getCurrentContext() != null)) {
+                I_CmsTemplateContextProvider provider = OpenCms.getTemplateContextManager().getTemplateContextProvider(
+                    templateContextInfo.getContextProvider());
+                if (provider != null) {
+                    Set<CmsUUID> allowedFunctions = provider.getFunctionsForGallery(
+                        cms,
+                        templateContextInfo.getCurrentContext());
+                    // allowed functions may be null - this is fine
+                    params.setIncludedFunctions(allowedFunctions);
+
+                }
+            }
             if (replacementConfig != null) {
                 // if the search replacement configuration didn't already handle the replacement,
                 // exclude the type from search results (this happens when searching for multiple types).
@@ -2912,13 +2929,13 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             title = navElement.getProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT);
         } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(
             navElement.getProperty(CmsPropertyDefinition.PROPERTY_TITLE))) {
-            title = navElement.getProperty(CmsPropertyDefinition.PROPERTY_TITLE);
-        } else {
-            title = navElement.getFileName();
-            if (title.contains("/")) {
-                title = title.substring(0, title.indexOf("/"));
+                title = navElement.getProperty(CmsPropertyDefinition.PROPERTY_TITLE);
+            } else {
+                title = navElement.getFileName();
+                if (title.contains("/")) {
+                    title = title.substring(0, title.indexOf("/"));
+                }
             }
-        }
         String childPath = navElement.getResource().getRootPath();
         boolean noChildren = true;
 

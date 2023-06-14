@@ -31,6 +31,7 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMod
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.shared.CmsGalleryContainerInfo;
+import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -158,6 +159,9 @@ public class CmsGallerySearchBean implements IsSerializable {
 
     /** The tab id to be selected by opening the gallery dialog. */
     private String m_tabId = I_CmsGalleryProviderConstants.GalleryTabId.cms_tab_types.name();
+
+    /** The template context information. */
+    private CmsTemplateContextInfo m_templateContextInfo;
 
     /** The list of the resource types ids (resource type name). */
     private List<String> m_types = new ArrayList<String>();
@@ -601,6 +605,16 @@ public class CmsGallerySearchBean implements IsSerializable {
     public String getTabId() {
 
         return m_tabId;
+    }
+
+    /**
+     * Gets the template context information.
+     * 
+     * @return the template context information
+     */
+    public CmsTemplateContextInfo getTemplateContextInfo() {
+
+        return m_templateContextInfo;
     }
 
     /**
@@ -1085,6 +1099,11 @@ public class CmsGallerySearchBean implements IsSerializable {
     public void setTabId(String tabId) {
 
         m_tabId = tabId;
+    }
+
+    public void setTemplateContextInfo(CmsTemplateContextInfo cmsTemplateContextInfo) {
+
+        m_templateContextInfo = cmsTemplateContextInfo;
     }
 
     /**
