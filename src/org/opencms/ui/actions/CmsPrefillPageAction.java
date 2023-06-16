@@ -69,10 +69,10 @@ public class CmsPrefillPageAction extends A_CmsWorkplaceAction implements I_CmsA
     public static final String GUI_EXPLORER_CONTEXT_PREFILL_PAGE_0 = "GUI_EXPLORER_CONTEXT_PREFILL_PAGE_0";
 
     /** The sitemap attribute used to configure the container which should be filled. */
-    private static final String ATTR_PREFILL_CONTAINER = "page.prefill.container";
+    private static final String ATTR_PREFILL_CONTAINER = "template.prefill.container";
 
     /** The sitemap attribute used to configure the prefill template. */
-    private static final String ATTR_PREFILL_TEMPLATE = "page.prefill.template";
+    private static final String ATTR_PREFILL_TEMPLATE = "template.prefill.file";
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
