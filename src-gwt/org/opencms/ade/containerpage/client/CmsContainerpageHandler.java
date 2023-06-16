@@ -190,6 +190,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     /** Overlay to prevent user actions while shown. */
     private SimplePanel m_overlay;
 
+    /** Field to store the 'prefill' context menu entry that gets manually moved to a different location later by the context menu code. */
+    private CmsContextMenuEntryBean m_prefill;
+
     /**
      * Constructor.<p>
      *
@@ -1343,6 +1346,11 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         }
         if (name.equals(CmsGwtConstants.TEMPLATECONTEXT_MENU_PLACEHOLDER)) {
             return createTemplateContextSelectionMenuEntry(structureId);
+        } else if ((menuEntryBean.getParams() != null)
+            && menuEntryBean.getParams().containsKey(CmsGwtConstants.PREFILL_MENU_PLACEHOLDER)) {
+            // hack: this comes before the template contexts option in the context menu order, so we have it ready when we get there
+            m_prefill = menuEntryBean;
+            return null;
         } else if (name.equals(CmsGwtConstants.ACTION_EDITSMALLELEMENTS)) {
             return createToggleEditSmallElementsMenuEntry();
         } else if (name.equals(CmsGwtConstants.ACTION_SELECTELEMENTVIEW)) {
@@ -1585,6 +1593,16 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                     Objects.equal(null, info.getSelectedContext()),
                     this,
                     structureId));
+            if (m_prefill != null) {
+                String name = m_prefill.getName();
+                I_CmsContextMenuCommand command = null;
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
+                    command = getContextMenuCommands().get(name);
+                }
+                CmsContextMenuEntry entry = new CmsContextMenuEntry(this, structureId, command);
+                entry.setBean(m_prefill);
+                templateContextEntries.add(entry);
+            }
             parentEntry.setSubMenu(templateContextEntries);
 
             return parentEntry;

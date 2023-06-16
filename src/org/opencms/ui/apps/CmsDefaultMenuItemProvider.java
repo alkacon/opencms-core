@@ -117,6 +117,10 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
         // the entries in this list will be sorted by there order property
         // for better readability please place additional entries  according to this sort order
         List<I_CmsContextMenuItem> items = Arrays.<I_CmsContextMenuItem> asList(
+
+            // hack:  the prefill action must come first because it requires some special processing on the client
+            new CmsContextMenuActionItem(new CmsPrefillPageAction(), null, 0, 0),
+
             new CmsContextMenuActionItem(new CmsSiteDialogAction(), null, 10, 0),
             new CmsContextMenuActionItem(new CmsEditPageAction(), null, 10, 0),
             new CmsContextMenuActionItem(new CmsEditDialogAction(), null, 50, 0),
@@ -166,7 +170,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsTouchDialogAction(), advanced.getId(), 170, 0),
 
             new CmsContextMenuActionItem(new CmsAvailabilityDialogAction(), advanced.getId(), 300, 0),
-            new CmsContextMenuActionItem(new CmsPrefillPageAction(), advanced.getId(), 400, 0),
+
             new CmsContextMenuActionItem(new CmsSecureExportDialogAction(), advanced.getId(), 500, 0),
             new CmsContextMenuActionItem(new CmsChangeTypeDialogAction(), advanced.getId(), 700, 0),
             new CmsContextMenuActionItem(new CmsFormEditDialogAction(), advanced.getId(), 800, 0),

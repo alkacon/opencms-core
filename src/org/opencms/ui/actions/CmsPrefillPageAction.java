@@ -140,6 +140,7 @@ public class CmsPrefillPageAction extends A_CmsWorkplaceAction implements I_CmsA
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(CmsGwtConstants.ACTION_PARAM_DIALOG_ID, this.getClass().getName());
+        params.put(CmsGwtConstants.PREFILL_MENU_PLACEHOLDER, "true");
         return params;
     }
 

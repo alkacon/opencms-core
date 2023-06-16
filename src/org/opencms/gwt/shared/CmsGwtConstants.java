@@ -230,6 +230,9 @@ public final class CmsGwtConstants {
     /** Parameter to force a specific template context. */
     public static final String PARAM_TEMPLATE_CONTEXT = "__templateContext";
 
+    /** Marker for the 'prefill' context menu action. */
+    public static final String PREFILL_MENU_PLACEHOLDER = "PREFILL_MENU_PLACEHOLDER";
+
     /** Name of property containing focal point for images. */
     public static final String PROPERTY_IMAGE_FOCALPOINT = "image.focalpoint";
 

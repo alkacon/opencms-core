@@ -216,6 +216,9 @@ public class CmsTransformerTemplateProvider implements I_CmsTemplateContextProvi
         targetTemplate;
     }
 
+    /** Version string used for cookie name calculation. */
+    private static final String VERSION = "2";
+
     /** The cookie prefix. */
     public static final String COOKIE_PREFIX = "templatetransformer_override_";
 
@@ -272,6 +275,15 @@ public class CmsTransformerTemplateProvider implements I_CmsTemplateContextProvi
                 return new Configuration();
             }
         }
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsTemplateContextProvider#getDefaultLabel(java.util.Locale)
+     */
+    public String getDefaultLabel(Locale locale) {
+
+        Configuration config = getConfiguration();
+        return config.getContextMap().get(TEMPLATE_KEY_SOURCE).getLocalizedName(locale);
     }
 
     /**
@@ -377,12 +389,22 @@ public class CmsTransformerTemplateProvider implements I_CmsTemplateContextProvi
         try {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
             md5.update(m_configPath.getBytes(StandardCharsets.UTF_8));
+            md5.update((byte)0);
+            md5.update(VERSION.getBytes(StandardCharsets.UTF_8));
             byte[] md5bytes = md5.digest();
             m_cookieName = COOKIE_PREFIX + Hex.encodeHexString(md5bytes);
         } catch (NoSuchAlgorithmException e) {
             // shouldn't happen - MD5 must be in standard library
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsTemplateContextProvider#isHiddenContext(java.lang.String)
+     */
+    public boolean isHiddenContext(String key) {
+
+        return TEMPLATE_KEY_SOURCE.equals(key);
     }
 
     /**
