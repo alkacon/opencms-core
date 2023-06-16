@@ -191,6 +191,9 @@ public class CmsTemplateContextManager {
             Map<String, String> niceNames = new LinkedHashMap<String, String>();
             for (Map.Entry<String, CmsTemplateContext> entry : provider.getAllContexts().entrySet()) {
                 CmsTemplateContext otherContext = entry.getValue();
+                if (provider.isHiddenContext(otherContext.getKey())) {
+                    continue;
+                }
                 String niceName = otherContext.getLocalizedName(locale);
                 niceNames.put(otherContext.getKey(), niceName);
                 for (CmsClientVariant variant : otherContext.getClientVariants().values()) {

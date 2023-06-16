@@ -348,6 +348,6 @@ public class CmsTemplateContextInfo implements IsSerializable {
      */
     private boolean hasMoreThanOneOption() {
 
-        return (m_currentContext != null) && (m_contextLabels.size() > 1);
+        return (m_currentContext != null);
     }
 }

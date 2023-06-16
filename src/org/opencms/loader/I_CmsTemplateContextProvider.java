@@ -165,6 +165,17 @@ public interface I_CmsTemplateContextProvider {
     void initialize(CmsObject cms, String config);
 
     /**
+     * Checks if the template context should be hidden in the GUI.
+     *
+     * @param key the key of a template context
+     * @return true if the template context should be hidden in the GUI
+     */
+    default boolean isHiddenContext(String key) {
+
+        return false;
+    }
+
+    /**
      * Gets the value which should be used instead of a property which was read from the template resource.<p>
      *
      * This is needed because before template context providers, it was common to store template-specific configuration in
