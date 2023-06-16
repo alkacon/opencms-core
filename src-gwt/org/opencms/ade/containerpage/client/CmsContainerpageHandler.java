@@ -1593,7 +1593,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                     Objects.equal(null, info.getSelectedContext()),
                     this,
                     structureId));
-            if (m_prefill != null) {
+            if ((m_prefill != null) && (info.getSelectedContext() != null)) {
                 String name = m_prefill.getName();
                 I_CmsContextMenuCommand command = null;
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
