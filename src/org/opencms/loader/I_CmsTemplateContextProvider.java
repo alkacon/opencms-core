@@ -95,6 +95,18 @@ public interface I_CmsTemplateContextProvider {
     }
 
     /**
+     * Special integer that indicates the position for the template context selection in the context menu.
+     *
+     * <p>Currently can only return 0 or 1.
+     *
+     * @return the context menu position
+     */
+    default int getMenuPosition() {
+
+        return 0;
+    }
+
+    /**
      * Gets the name of the cookie which should be used for overriding the template context.<p>
      *
      * @return the name of the cookie used for overriding the template context
@@ -175,16 +187,6 @@ public interface I_CmsTemplateContextProvider {
     default boolean shouldShowElementTemplateContextSelection(CmsObject cms) {
 
         return true;
-    }
-
-    /**
-     * Return true if the menu option for switching templates should be shown in the 'advanced' submenu.
-     *
-     * @return true if the menu option for switching templates should be shown in the 'advanced' submenu
-     */
-    default boolean useAdvancedOption() {
-
-        return false;
     }
 
 }

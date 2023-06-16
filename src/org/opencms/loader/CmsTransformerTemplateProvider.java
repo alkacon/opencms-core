@@ -325,6 +325,14 @@ public class CmsTransformerTemplateProvider implements I_CmsTemplateContextProvi
     }
 
     /**
+     * @see org.opencms.loader.I_CmsTemplateContextProvider#getMenuPosition()
+     */
+    public int getMenuPosition() {
+
+        return 1;
+    }
+
+    /**
      * @see org.opencms.loader.I_CmsTemplateContextProvider#getOverrideCookieName()
      */
     public String getOverrideCookieName() {
@@ -409,14 +417,6 @@ public class CmsTransformerTemplateProvider implements I_CmsTemplateContextProvi
     public boolean shouldShowElementTemplateContextSelection(CmsObject cms) {
 
         return false;
-    }
-
-    /**
-     * @see org.opencms.loader.I_CmsTemplateContextProvider#useAdvancedOption()
-     */
-    public boolean useAdvancedOption() {
-
-        return true;
     }
 
     /**

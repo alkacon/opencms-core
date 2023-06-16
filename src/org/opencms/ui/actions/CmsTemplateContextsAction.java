@@ -55,17 +55,21 @@ public class CmsTemplateContextsAction extends A_CmsWorkplaceAction implements I
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTemplateContextsAction.class);
 
-    /** True if this is the 'advanced' version of the action (shown in Advanced sub-menu). */
-    private boolean m_advanced;
+    /** Special integer that indicates one of several positions in the context menu. Currently can only be 0 or 1. */
+    private int m_menuPosition;
 
     /**
      * Creates a new instance.
      *
-     * @param advanced true if the action should be shown in the 'advanced' sub-menu
+     * @param menuPosition the position in the context menu
      */
-    public CmsTemplateContextsAction(boolean advanced) {
+    public CmsTemplateContextsAction(int menuPosition) {
 
-        m_advanced = advanced;
+        if ((menuPosition != 0) && (menuPosition != 1)) {
+            throw new IllegalArgumentException("Menu position must be 0 or 1");
+        }
+        m_menuPosition = menuPosition;
+
     }
 
     /**
@@ -89,7 +93,7 @@ public class CmsTemplateContextsAction extends A_CmsWorkplaceAction implements I
      */
     public String getId() {
 
-        return m_advanced ? CmsGwtConstants.ACTION_TEMPLATECONTEXTS_ADVANCED : CmsGwtConstants.ACTION_TEMPLATECONTEXTS;
+        return CmsGwtConstants.ACTION_TEMPLATECONTEXTS + "_" + m_menuPosition;
     }
 
     /**
@@ -143,7 +147,7 @@ public class CmsTemplateContextsAction extends A_CmsWorkplaceAction implements I
                     I_CmsTemplateContextProvider provider = OpenCms.getTemplateContextManager().getTemplateContextProvider(
                         CmsTemplateContextManager.removePropertyPrefix(propertyValue));
                     if (provider != null) {
-                        if (provider.useAdvancedOption() != m_advanced) {
+                        if (provider.getMenuPosition() != m_menuPosition) {
                             return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
                         }
                         if (!provider.shouldShowContextMenuOption(cms)) {
