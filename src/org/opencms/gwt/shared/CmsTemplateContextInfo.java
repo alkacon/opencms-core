@@ -61,6 +61,9 @@ public class CmsTemplateContextInfo implements IsSerializable {
     /** The context provider class. */
     private String m_contextProvider;
 
+    /** The custom label for the default template option. */
+    private String m_defaultLabel;
+
     /** The name of the cookie used for overriding the template context. */
     private String m_cookieName;
 
@@ -148,6 +151,16 @@ public class CmsTemplateContextInfo implements IsSerializable {
     public String getCurrentContext() {
 
         return m_currentContext;
+    }
+
+    /**
+     * Gets the default label.
+     *
+     * @return the default label
+     */
+    public String getDefaultLabel() {
+
+        return m_defaultLabel;
     }
 
     /**
@@ -255,6 +268,16 @@ public class CmsTemplateContextInfo implements IsSerializable {
     public void setCurrentContext(String context) {
 
         m_currentContext = context;
+    }
+
+    /**
+     * Sets the default label.
+     *
+     * @param defaultLabel the default label
+     */
+    public void setDefaultLabel(String defaultLabel) {
+
+        m_defaultLabel = defaultLabel;
     }
 
     /**

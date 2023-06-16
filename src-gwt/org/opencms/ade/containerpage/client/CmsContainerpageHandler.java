@@ -1572,12 +1572,16 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                     templateContextEntries.add(menuEntry);
                 }
             }
+            String autoLabel = org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_TEMPLATE_CONTEXT_NONE_0);
+            if (info.getDefaultLabel() != null) {
+                autoLabel = info.getDefaultLabel();
+            }
             templateContextEntries.add(
                 createMenuEntryForTemplateContext(
                     info.getCookieName(),
                     null,
-                    org.opencms.gwt.client.Messages.get().key(
-                        org.opencms.gwt.client.Messages.GUI_TEMPLATE_CONTEXT_NONE_0),
+                    autoLabel,
                     Objects.equal(null, info.getSelectedContext()),
                     this,
                     structureId));

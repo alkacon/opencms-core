@@ -58,6 +58,20 @@ public interface I_CmsTemplateContextProvider {
     Map<String, CmsTemplateContext> getAllContexts();
 
     /**
+     * Customizes the label for the default template context option.
+     *
+     * <p>If null is returned, the default label for the default template will be used.
+     *
+     * If null is returned, a default
+     * @param locale the locale for i18n
+     * @return the label for the default template context option
+     */
+    default String getDefaultLabel(Locale locale) {
+
+        return null;
+    }
+
+    /**
      * Returns the style sheet to be used for the editor.<p>
      *
      * @param cms the current CMS context

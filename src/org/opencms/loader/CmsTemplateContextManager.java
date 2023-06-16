@@ -177,6 +177,7 @@ public class CmsTemplateContextManager {
             I_CmsTemplateContextProvider provider = context.getProvider();
             Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
             result.setMenuLabel(provider.getMenuLabel(locale));
+            result.setDefaultLabel(provider.getDefaultLabel(locale));
             result.setShouldShowElementTemplateContextSelection(
                 provider.shouldShowElementTemplateContextSelection(cms));
             CmsXmlContentProperty settingDefinition = createTemplateContextsPropertyDefinition(provider, locale);
