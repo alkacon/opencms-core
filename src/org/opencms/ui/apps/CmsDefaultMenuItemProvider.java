@@ -55,6 +55,7 @@ import org.opencms.ui.actions.CmsLockedResourcesAction;
 import org.opencms.ui.actions.CmsLogoutAction;
 import org.opencms.ui.actions.CmsMoveDialogAction;
 import org.opencms.ui.actions.CmsPermissionDialogAction;
+import org.opencms.ui.actions.CmsPrefillPageAction;
 import org.opencms.ui.actions.CmsPreviewAction;
 import org.opencms.ui.actions.CmsProjectDialogAction;
 import org.opencms.ui.actions.CmsPropertiesDialogAction;
@@ -168,6 +169,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsTemplateContextsAction(true), advanced.getId(), 180, 0),
 
             new CmsContextMenuActionItem(new CmsAvailabilityDialogAction(), advanced.getId(), 300, 0),
+            new CmsContextMenuActionItem(new CmsPrefillPageAction(), advanced.getId(), 400, 0),
             new CmsContextMenuActionItem(new CmsSecureExportDialogAction(), advanced.getId(), 500, 0),
             new CmsContextMenuActionItem(new CmsChangeTypeDialogAction(), advanced.getId(), 700, 0),
             new CmsContextMenuActionItem(new CmsFormEditDialogAction(), advanced.getId(), 800, 0),

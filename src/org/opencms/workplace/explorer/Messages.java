@@ -120,6 +120,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPLORER_CONTEXT_AVAILABILITY_0 = "GUI_EXPLORER_CONTEXT_AVAILABILITY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_PREFILL_PAGE_DEFAULT_0 = "GUI_EXPLORER_CONTEXT_PREFILL_PAGE_DEFAULT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_CATEGORIES_0 = "GUI_EXPLORER_CONTEXT_CATEGORIES_0";
 
     /** Message constant for key in the resource bundle. */
