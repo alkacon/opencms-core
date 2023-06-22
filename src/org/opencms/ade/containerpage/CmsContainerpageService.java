@@ -1639,8 +1639,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 if (detailResource != null) {
                     onlineLink = OpenCms.getLinkManager().getOnlineLink(
                         cms,
-                        cms.getSitePath(containerPage),
                         cms.getSitePath(detailResource),
+                        cms.getSitePath(containerPage),
                         false);
                 } else {
                     onlineLink = OpenCms.getLinkManager().getOnlineLink(cms, cms.getSitePath(containerPage));
