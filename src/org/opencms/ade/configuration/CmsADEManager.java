@@ -1126,6 +1126,13 @@ public class CmsADEManager {
                 errorCode = Integer.valueOf(HttpServletResponse.SC_NOT_FOUND);
             }
         }
+        if (!currentContext.getCurrentProject().isOnlineProject()) {
+            // permanent redirects are confusing and not useful in the Offline project because they are stored
+            // by the browser based on the host name, not the site the user is working in.
+            if (errorCode.intValue() == HttpServletResponse.SC_MOVED_PERMANENTLY) {
+                errorCode = Integer.valueOf(HttpServletResponse.SC_MOVED_TEMPORARILY);
+            }
+        }
         request.setAttribute(CmsRequestUtil.ATTRIBUTE_ERRORCODE, errorCode);
         response.setHeader("Location", CmsEncoder.convertHostToPunycode(lnkUri));
         response.setHeader("Connection", "close");

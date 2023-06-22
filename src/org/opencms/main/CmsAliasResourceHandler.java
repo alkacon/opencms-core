@@ -75,7 +75,8 @@ public class CmsAliasResourceHandler implements I_CmsResourceInit {
         CmsResource resource,
         CmsObject cms,
         HttpServletRequest req,
-        HttpServletResponse res) throws CmsResourceInitException, CmsSecurityException {
+        HttpServletResponse res)
+    throws CmsResourceInitException, CmsSecurityException {
 
         // check if the resource was already found or the path starts with '/system/'
         boolean abort = (resource != null) || cms.getRequestContext().getUri().startsWith(CmsWorkplace.VFS_PATH_SYSTEM);
@@ -108,6 +109,7 @@ public class CmsAliasResourceHandler implements I_CmsResourceInit {
                 String link = OpenCms.getLinkManager().substituteLink(cms, rewriteResult.getNewPath());
                 if (rewriteResult.getAlias().getMode().isRedirect()) {
                     redirectToTarget(
+                        cms,
                         req,
                         res,
                         link,
@@ -127,7 +129,7 @@ public class CmsAliasResourceHandler implements I_CmsResourceInit {
                     String link = OpenCms.getLinkManager().substituteLink(cms, aliasTarget);
                     boolean isPermanent = alias.isPermanentRedirect();
                     // response may be null if we're coming from the locale manager
-                    redirectToTarget(req, res, link, isPermanent);
+                    redirectToTarget(cms, req, res, link, isPermanent);
                 } else {
                     // not a redirect, just proceed with the aliased resource
                     cms.getRequestContext().setUri(cms.getSitePath(aliasTarget));
@@ -155,6 +157,7 @@ public class CmsAliasResourceHandler implements I_CmsResourceInit {
     /**
      * Helper method for sending a redirect to a new URI.<p>
      *
+     * @param cms the current CMS context
      * @param req the current request
      * @param res the current response
      * @param link the redirect target
@@ -163,7 +166,12 @@ public class CmsAliasResourceHandler implements I_CmsResourceInit {
      * @throws IOException
      * @throws CmsResourceInitException
      */
-    private void redirectToTarget(HttpServletRequest req, HttpServletResponse res, String link, boolean isPermanent)
+    private void redirectToTarget(
+        CmsObject cms,
+        HttpServletRequest req,
+        HttpServletResponse res,
+        String link,
+        boolean isPermanent)
     throws IOException, CmsResourceInitException {
 
         CmsResourceInitException resInitException = new CmsResourceInitException(getClass());
@@ -175,7 +183,8 @@ public class CmsAliasResourceHandler implements I_CmsResourceInit {
             }
             // disable 404 handler
             resInitException.setClearErrors(true);
-            if (isPermanent) {
+            if (isPermanent && cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+                // offline permanent redirects are confusing and not useful because the user can switch sites while staying on the same domain
                 res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
                 res.setHeader("Location", link);
             } else {
