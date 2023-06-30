@@ -85,6 +85,7 @@
                         <mapping suffix=".mov" />
                         <mapping suffix=".qt" />
                         <mapping suffix=".avi" />
+                        <mapping suffix=".pkpass" />
                     </mappings>
                     <param name="gallery.type.names">downloadgallery</param>
                 </type>
@@ -365,6 +366,8 @@
                 <mimetype extension=".otp" type="application/vnd.oasis.opendocument.presentation-template" />
                 <mimetype extension=".otg" type="application/vnd.oasis.opendocument.graphics-template" />
 
+                <!-- Apple Wallet pkpass, see https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/PassKit_PG/DistributingPasses.html -->
+                <mimetype extension=".pkpass" type="application/vnd.apple.pkpass"/>
             </mimetypes>
 
             <html-converters>
