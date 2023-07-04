@@ -856,6 +856,7 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
         if (focusOn) {
             addStyleName(formCss().focused());
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_help) || m_hasError) {
+                m_helpBubble.getStyle().clearDisplay();
                 if (shouldDisplayTooltipAbove()) {
                     addStyleName(formCss().displayAbove());
                 } else {
@@ -871,7 +872,6 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
                     if (m_handler.getWidgetService().shouldRemoveLastValueAfterUnfocus(m_widget)) {
                         m_handler.removeAttributeValue(this);
                     }
-
                 }
             }
         }
@@ -1292,7 +1292,7 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
             }
             switch (direction) {
                 case above:
-                    displayAbove = true;
+                    displayAbove = false;
                     break;
                 case below:
                 case none:
@@ -1328,10 +1328,14 @@ implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseO
             // in case there is too little space above, and there is more below, change direction
             displayAbove = false;
         } else if (!displayAbove
-            && ((distanceToWindowBottom < bubbleHeight) && (distanceFromWindowTop > distanceToWindowBottom))) {
-                // in case there is too little space below, and there is more above, change direction
-                displayAbove = true;
-            }
+            && ((distanceToWindowBottom < bubbleHeight) && (distanceFromWindowTop > distanceToWindowBottom))
+            && !m_hasError) {
+            // in case there is too little space below, and there is more above, change direction
+            // (exception for m_hasError: when displaying a validation error for a widget that displays a popup above it, disregard the
+            // available space under it, because if we display the message below, the page expands so the user can scroll down to read it, which is less
+            // bad than the message covering a popup required to use the widget).
+            displayAbove = true;
+        }
         return displayAbove;
     }
 }

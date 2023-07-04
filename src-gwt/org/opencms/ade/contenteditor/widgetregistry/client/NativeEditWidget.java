@@ -116,6 +116,22 @@ public final class NativeEditWidget extends JavaScriptObject {
     }-*/;
 
     /**
+     * Gets the display direction for popups used by this widget using the 'getDisplayingDirection' JavaScript method (or returns "none" if that method isn't available).
+     *
+     * @return the direction in which this widget displays popups ('above', 'below' or 'none')
+     */
+    protected native String getDisplayingDirection() /*-{
+        var result = null;
+        if (this.getDisplayingDirection) {
+            result = this.getDisplayingDirection();
+        }
+        if (!result) {
+            result = "none";
+        }
+        return result;
+    }-*/;
+
+    /**
      * Returns the widget element.<p>
      *
      * @return the widget element
