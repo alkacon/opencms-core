@@ -38,6 +38,7 @@ import org.opencms.util.CmsStringUtil;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import com.google.common.collect.HashMultimap;
 import com.google.gwt.dom.client.Element;
@@ -116,6 +117,9 @@ public class CmsAttributeSelectWidget extends Composite implements I_CmsEditWidg
 
     /** Map of attribute select boxes by attribute name. */
     private Map<String, CmsSelectBox> m_attributeSelects = new HashMap<>();
+
+    /** Value set from the outside. */
+    private String m_externalValue;
 
     /** The main select box for actually choosing the widget value. */
     private CmsSelectBox m_mainSelect;
@@ -214,7 +218,8 @@ public class CmsAttributeSelectWidget extends Composite implements I_CmsEditWidg
      */
     public String getValue() {
 
-        return m_mainSelect.getFormValueAsString();
+        String value = m_mainSelect.getFormValueAsString();
+        return value;
     }
 
     /**
@@ -248,6 +253,13 @@ public class CmsAttributeSelectWidget extends Composite implements I_CmsEditWidg
     public void setActive(boolean active) {
 
         if (active == m_active) {
+            // Trying to set one value while initializing the widget can result in a different value being set.
+            // But at that time the event handler for the widget may not yet be set up correctly, so fireChangeEvent
+            // does nothing. So we have to fire the event here in setActive (which is called during widget
+            // initialization, after the change handler is set up).
+            if (active && !Objects.equals(getValue(), m_externalValue)) {
+                fireChangeEvent();
+            }
             return;
         }
         m_active = active;
@@ -283,6 +295,7 @@ public class CmsAttributeSelectWidget extends Composite implements I_CmsEditWidg
      */
     public void setValue(String value, boolean fireEvent) {
 
+        m_externalValue = value;
         OptionWithAttributes option = m_options.get(value);
         if (option != null) {
             for (String optionAttribute : option.getAttributes().keySet()) {
