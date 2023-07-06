@@ -27,12 +27,6 @@
 
 package org.opencms.main;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.util.Loader;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -46,6 +40,12 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArraySet;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.util.Loader;
 
 /**
  * Provides the OpenCms logging mechanism.<p>
@@ -140,10 +140,10 @@ public final class CmsLog {
                     String webInfPath = log4jProps.getParent();
                     webInfPath = webInfPath.substring(0, webInfPath.lastIndexOf(File.separatorChar) + 1);
 
-                    String logFilePath =
-                            ((propertyLogfile != null) ? propertyLogfile : webInfPath + FOLDER_LOGS + FILE_LOG);
-                    String logFolderPath =
-                            ((propertyLogfolder != null) ? propertyLogfolder : webInfPath + FOLDER_LOGS);
+                    String logFilePath = ((propertyLogfile != null)
+                    ? propertyLogfile
+                    : webInfPath + FOLDER_LOGS + FILE_LOG);
+                    String logFolderPath = ((propertyLogfolder != null) ? propertyLogfolder : webInfPath + FOLDER_LOGS);
                     m_logFileRfsPath = new File(logFilePath).getAbsolutePath();
                     m_logFileRfsFolder = new File(logFolderPath).getAbsolutePath() + File.separatorChar;
 
@@ -159,6 +159,13 @@ public final class CmsLog {
                     // re-read the configuration with the new environment variable available
                     ConfigurationSource source = ConfigurationSource.fromUri(log4j2Url.toURI());
                     Configurator.initialize(null, source);
+
+                    // In case we have multiple OpenCms instances running in the servlet container, we don't want them to use
+                    // the same log file path, so clear the system properties. Users will have to modify the log4j configuration
+                    // if they want to customize the log file locations for multiple instances.
+                    for (String prop : new String[] {PROPERTY_LOGFILE, PROPERTY_LOGFOLDER}) {
+                        System.clearProperty(prop);
+                    }
                 }
                 // can't localize this message since this would end in an endless logger init loop
                 INIT = LogFactory.getLog("org.opencms.init");
@@ -281,19 +288,6 @@ public final class CmsLog {
     }
 
     /**
-     * Returns the filename of the log file (in the "real" file system).<p>
-     *
-     * If the method returns <code>null</code>, this means that the log
-     * file is not managed by OpenCms.<p>
-     *
-     * @return the filename of the log file (in the "real" file system)
-     */
-    protected static String getLogFileRfsPath() {
-
-        return m_logFileRfsPath;
-    }
-
-    /**
      * Returns the absolute path to the folder of the main OpenCms log file
      * (in the "real" file system).<p>
      *
@@ -306,5 +300,18 @@ public final class CmsLog {
     protected static String getLogFileRfsFolder() {
 
         return m_logFileRfsFolder;
+    }
+
+    /**
+     * Returns the filename of the log file (in the "real" file system).<p>
+     *
+     * If the method returns <code>null</code>, this means that the log
+     * file is not managed by OpenCms.<p>
+     *
+     * @return the filename of the log file (in the "real" file system)
+     */
+    protected static String getLogFileRfsPath() {
+
+        return m_logFileRfsPath;
     }
 }
