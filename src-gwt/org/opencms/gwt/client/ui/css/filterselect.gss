@@ -1,0 +1,17 @@
+
+.input-highTextBoxes .filterSelect input {
+    height: value("constants.css.inputInnerHeight");
+}
+
+.filterSelect input {
+    height: value("constants.css.inputInnerHeight");
+    margin-left: 5px;
+    width: calc(100% - 25px);
+    position: relative;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.filterSelect input:focus {
+    cursor: text;
+}

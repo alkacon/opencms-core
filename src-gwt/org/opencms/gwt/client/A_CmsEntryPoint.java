@@ -99,6 +99,7 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
         bundle.globalWidgetCss().ensureInjected();
         bundle.categoryDialogCss().ensureInjected();
         bundle.colorSelectorCss().ensureInjected();
+        bundle.filterSelectCss().ensureInjected();
         ExporterUtil.exportAll();
 
         I_CmsInputLayoutBundle.INSTANCE.inputCss().ensureInjected();

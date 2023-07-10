@@ -709,6 +709,20 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String legend();
     }
 
+    /**
+     * CSS for the filter select box.
+     */
+    interface I_CmsFilterSelectCss extends CssResource {
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String filterSelect();
+
+    }
+
     /** General CSS, used for general re-occurring styles. */
     @Shared
     interface I_CmsGeneralCss extends CssResource {
@@ -2478,6 +2492,15 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("fieldset.gss")
     I_CmsFieldsetCss fieldsetCss();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the filter select CSS
+     */
+    @Source("filterselect.gss")
+    @Import(value = {I_CmsInputCss.class})
+    I_CmsFilterSelectCss filterSelectCss();
 
     /**
      * Access method.<p>

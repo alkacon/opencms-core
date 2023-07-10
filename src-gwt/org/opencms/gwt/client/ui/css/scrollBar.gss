@@ -27,6 +27,7 @@ div.scrollPanel{
 div.scrollable{
 	overflow:auto;
 	position: relative;
+	overscroll-behavior: contain;
 	height:100%;
 }
 
