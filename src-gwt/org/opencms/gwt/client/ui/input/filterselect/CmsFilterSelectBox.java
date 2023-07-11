@@ -37,6 +37,7 @@ import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -44,7 +45,12 @@ import com.google.common.base.Optional;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.TextBox;
+
+import elemental2.dom.Element.FocusOptionsType;
+import elemental2.dom.HTMLInputElement;
+import jsinterop.base.Js;
 
 /**
  * Select box that allows client-side filtering for its options.
@@ -68,6 +74,9 @@ public class CmsFilterSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> imple
     /** The cached items. */
     private LinkedHashMap<String, String> m_cachedItems;
 
+    /** A map of titles for the select options which should  be displayed on mouseover. */
+    private Map<String, String> m_titles = new HashMap<String, String>();
+
     /**
      * Creates a new instance.
      */
@@ -82,12 +91,10 @@ public class CmsFilterSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> imple
      *
      * @param options the select options
      */
-    public CmsFilterSelectBox(LinkedHashMap<String, String> options) {
+    public CmsFilterSelectBox(Map<String, String> options) {
 
         this();
-        for (Map.Entry<String, String> entry : options.entrySet()) {
-            addOption(new CmsLabelSelectCell(entry.getKey(), entry.getValue()));
-        }
+        setItems(options);
     }
 
     /**
@@ -154,6 +161,16 @@ public class CmsFilterSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> imple
     }
 
     /**
+     * Gets the opener.
+     *
+     * @return the opener
+     */
+    public FocusPanel getOpener() {
+
+        return m_opener;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.A_CmsSelectBox#onBrowserEvent(com.google.gwt.user.client.Event)
      */
     @Override
@@ -187,6 +204,32 @@ public class CmsFilterSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> imple
     }
 
     /**
+     * Sets the select options.
+     *
+     * @param options the select options
+     */
+    public void setItems(Map<String, String> options) {
+
+        clearItems();
+        for (Map.Entry<String, String> entry : options.entrySet()) {
+            String title = m_titles.get(entry.getKey());
+            addOption(new CmsLabelSelectCell(entry.getKey(), entry.getValue(), title));
+        }
+    }
+
+    /**
+     * Sets the title for a select option.
+     *
+     * @param key the select option key
+     * @param title the title
+     */
+    public void setTitle(String key, String title) {
+
+        m_titles.put(key, title);
+
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.A_CmsSelectBox#close()
      */
     @Override
@@ -207,6 +250,8 @@ public class CmsFilterSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> imple
         };
         blurTimer.schedule(0);
         m_filterBox.setValue(getOptionText(getFormValueAsString()));
+        HTMLInputElement input = Js.cast(m_filterBox.getElement());
+        input.scrollLeft = 0;
     }
 
     /**
@@ -245,6 +290,7 @@ public class CmsFilterSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> imple
     protected void initOpener() {
 
         m_filterBox = new TextBox();
+        m_filterBox.addStyleName(FILTERSELECT_CSS.filterInput());
         m_opener.setWidget(m_filterBox);
         // when the user types very fast, we don't want to update the filtering
         // after every keypress, so we 'debounce' the event handling using a timer
@@ -277,12 +323,21 @@ public class CmsFilterSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> imple
 
         filterCells(null); // reset the filter before opening the select box
         super.open();
-        m_filterBox.setFocus(true); // the focus panel somehow prevents the text box from gaining focus by clicking on it - so we focus it manually
-        m_filterBox.selectAll(); // when we select everything, then text typed by the user replaces the content of the filter box and gets used as the filter string
+        HTMLInputElement input = Js.cast(m_filterBox.getElement());
+        // if the content of the input is long, the browser 'helpfully' scrolls to the right when we
+        // focus it and select the text. We don't want that (the left part is more relevant to the user),
+        // so we set a special option to prevent that.
+        FocusOptionsType options = FocusOptionsType.create();
+        options.setPreventScroll(true);
+        input.focus(options);
+        // by selecting the content of the text box, the user can still see the previous value,
+        // but can start filtering immediately because the text they type replaces the selected value
+        input.select();
         CmsLabelSelectCell cell = m_selectCells.get(getFormValueAsString());
         if (cell != null) {
             cell.getElement().scrollIntoView();
         }
+        input.scrollLeft = 0;
     }
 
     /**
@@ -302,7 +357,11 @@ public class CmsFilterSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> imple
 
         String text = getOptionText(getFormValueAsString());
         m_filterBox.setValue(text);
-        m_filterBox.setTitle(text);
+        String title = m_titles.get(newValue);
+        if (title == null) {
+            title = text;
+        }
+        m_filterBox.setTitle(title);
     }
 
     /**

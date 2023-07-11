@@ -1,9 +1,9 @@
 
-.input-highTextBoxes .filterSelect input {
+.input-highTextBoxes .filterSelect input.filterInput.filterInput {
     height: value("constants.css.inputInnerHeight");
 }
 
-.filterSelect input {
+.filterSelect input.filterInput.filterInput {
     height: value("constants.css.inputInnerHeight");
     margin-left: 5px;
     width: calc(100% - 25px);
@@ -13,6 +13,10 @@
     outline: none;
 }
 
-.filterSelect input:focus {
+.filterSelect input.filterInput.filterInput:focus {
     cursor: text;
+}
+
+.filterSelect input.filterInput.filterInput[disabled] {
+    pointer-events: none;
 }

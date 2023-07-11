@@ -719,6 +719,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
+        String filterInput();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
         String filterSelect();
 
     }

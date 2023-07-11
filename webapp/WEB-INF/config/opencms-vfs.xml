@@ -541,6 +541,10 @@
                     <widget-alias>SelectorWidget</widget-alias>
                     <widget-alias>select</widget-alias>
                 </widget>
+                <widget class="org.opencms.widgets.CmsFilterSelectWidget">
+                    <widget-alias>FilterSelectorWidget</widget-alias>
+                    <widget-alias>filterselect</widget-alias>
+                </widget>
                 <widget class="org.opencms.widgets.CmsTextareaWidget">
                     <widget-alias>TextareaWidget</widget-alias>
                     <widget-alias>textarea</widget-alias>
