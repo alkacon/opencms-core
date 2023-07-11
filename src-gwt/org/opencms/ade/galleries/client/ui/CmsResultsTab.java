@@ -535,11 +535,17 @@ public class CmsResultsTab extends A_CmsListTab {
         // in case there is a single type selected and the current sort order is not by type,
         // hide the type ascending and type descending sort order options
         SortParams currentSorting = SortParams.valueOf(searchObj.getSortOrder());
-        if ((searchObj.getTypes().size() == 1)
-            && !((currentSorting == SortParams.type_asc) || (currentSorting == SortParams.type_desc))) {
-            m_sortSelectBox.setItems(getSortList(false));
+
+        // this should always be true in the results tab, but put it in an 'if' in case of future changes
+        if (m_sortSelectBox instanceof CmsSelectBox) {
+            if ((searchObj.getTypes().size() == 1)
+                && !((currentSorting == SortParams.type_asc) || (currentSorting == SortParams.type_desc))) {
+                ((CmsSelectBox)m_sortSelectBox).setItems(getSortList(false));
+            } else {
+                ((CmsSelectBox)m_sortSelectBox).setItems(getSortList(true));
+            }
         } else {
-            m_sortSelectBox.setItems(getSortList(true));
+            CmsDebugLog.consoleLog("gallery result tab sort box is not a CmsSelectBox!");
         }
         m_sortSelectBox.selectValue(searchObj.getSortOrder());
         displayResultCount(getResultsDisplayed(searchObj), searchObj.getResultCount());

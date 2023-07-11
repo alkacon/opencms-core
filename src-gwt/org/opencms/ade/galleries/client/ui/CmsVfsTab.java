@@ -38,8 +38,10 @@ import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.I_CmsListItem;
+import org.opencms.gwt.client.ui.input.A_CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.category.CmsDataValue;
+import org.opencms.gwt.client.ui.input.filterselect.CmsFilterSelectBox;
 import org.opencms.gwt.client.ui.tree.A_CmsLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;
@@ -442,6 +444,15 @@ public class CmsVfsTab extends A_CmsListTab {
     }
 
     /**
+     * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#createSelectBox(java.util.LinkedHashMap)
+     */
+    @Override
+    protected A_CmsSelectBox<?> createSelectBox(LinkedHashMap<String, String> options) {
+
+        return new CmsFilterSelectBox(options);
+    }
+
+    /**
      * @see org.opencms.ade.galleries.client.ui.A_CmsListTab#getSortList()
      */
     @Override
@@ -505,7 +516,7 @@ public class CmsVfsTab extends A_CmsListTab {
         if (m_sortSelectBox == null) {
             return;
         }
-        Map<String, String> options = m_sortSelectBox.getItems();
+        Map<String, String> options = ((CmsFilterSelectBox)m_sortSelectBox).getItems();
         String option = null;
         for (Map.Entry<String, String> entry : options.entrySet()) {
             if (CmsStringUtil.comparePaths(entry.getKey(), siteRoot)) {

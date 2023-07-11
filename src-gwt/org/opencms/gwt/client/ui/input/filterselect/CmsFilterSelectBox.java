@@ -65,6 +65,9 @@ public class CmsFilterSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> imple
     /** The currently active timer that, when it fires, will update the filtering. */
     private Timer m_filterTimer;
 
+    /** The cached items. */
+    private LinkedHashMap<String, String> m_cachedItems;
+
     /**
      * Creates a new instance.
      */
@@ -106,6 +109,16 @@ public class CmsFilterSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> imple
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.A_CmsSelectBox#addOption(org.opencms.gwt.client.ui.input.A_CmsSelectCell)
+     */
+    @Override
+    public void addOption(CmsLabelSelectCell cell) {
+
+        super.addOption(cell);
+        m_cachedItems = null;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.A_CmsSelectBox#displayingAbove()
      */
     @Override
@@ -121,6 +134,23 @@ public class CmsFilterSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> imple
 
         return getFormValueAsString();
 
+    }
+
+    /**
+     * Gets the selection items as a map (the values are map keys, and the labels are the corresponding map values).
+     *
+     * @return the selection items as a map
+     */
+    public LinkedHashMap<String, String> getItems() {
+
+        if (m_cachedItems == null) {
+            m_cachedItems = new LinkedHashMap<>();
+            for (Map.Entry<String, CmsLabelSelectCell> entry : m_selectCells.entrySet()) {
+                CmsLabelSelectCell cell = entry.getValue();
+                m_cachedItems.put(cell.getValue(), cell.getText());
+            }
+        }
+        return m_cachedItems;
     }
 
     /**
