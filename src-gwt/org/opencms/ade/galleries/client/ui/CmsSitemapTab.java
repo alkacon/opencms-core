@@ -34,8 +34,8 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTab
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.input.A_CmsSelectBox;
+import org.opencms.gwt.client.ui.input.CmsFilterSelectBox;
 import org.opencms.gwt.client.ui.input.category.CmsDataValue;
-import org.opencms.gwt.client.ui.input.filterselect.CmsFilterSelectBox;
 import org.opencms.gwt.client.ui.tree.A_CmsLazyOpenHandler;
 import org.opencms.gwt.client.ui.tree.CmsLazyTree;
 import org.opencms.gwt.client.ui.tree.CmsLazyTreeItem;

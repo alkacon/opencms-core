@@ -32,7 +32,7 @@ import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.ade.contenteditor.client.CmsContentEditor;
 import org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener;
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.input.filterselect.CmsFilterSelectBox;
+import org.opencms.gwt.client.ui.input.CmsFilterSelectBox;
 import org.opencms.gwt.client.util.CmsDebugLog;
 
 import java.util.Map.Entry;

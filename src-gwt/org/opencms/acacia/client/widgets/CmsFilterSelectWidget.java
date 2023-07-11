@@ -29,7 +29,7 @@ package org.opencms.acacia.client.widgets;
 
 import org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle;
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.input.filterselect.CmsFilterSelectBox;
+import org.opencms.gwt.client.ui.input.CmsFilterSelectBox;
 
 import java.util.Map;
 import java.util.Map.Entry;
