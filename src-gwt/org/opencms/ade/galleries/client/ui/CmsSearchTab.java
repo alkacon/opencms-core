@@ -46,7 +46,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -128,10 +127,6 @@ public class CmsSearchTab extends A_CmsTab {
     /** The include expired resources check-box. */
     @UiField
     protected CmsCheckBox m_includeExpiredCheckBox;
-
-    /** The include expired resources form row. */
-    @UiField
-    protected DivElement m_includeExpiredRow;
 
     /** The label for the language selection. */
     @UiField
@@ -242,16 +237,6 @@ public class CmsSearchTab extends A_CmsTab {
     }
 
     /**
-     * Enables the include expired resources form input.<p>
-     *
-     * @param enable <code>true</code> to enable the include expired resources form input
-     */
-    public void enableExpiredResourcesSearch(boolean enable) {
-
-        m_includeExpiredRow.getStyle().setDisplay(enable ? Display.BLOCK : Display.NONE);
-    }
-
-    /**
      * Sets the form fields to the values from the stored  gallery search.<p>
      *
      * @param search a previously stored gallery search
@@ -272,10 +257,6 @@ public class CmsSearchTab extends A_CmsTab {
         if (search.getDateModifiedEnd() > 0) {
             m_dateModifiedEndDateBox.setValue(new Date(search.getDateModifiedEnd()));
         }
-        //        m_searchInput.setFormValueAsString(search.getQuery());
-        //        if (search.getScope() != null) {
-        //            m_scopeSelection.setFormValue(search.getScope().name());
-        //        }
 
     }
 
@@ -370,7 +351,7 @@ public class CmsSearchTab extends A_CmsTab {
     @Override
     public int getRequiredHeight() {
 
-        return 255;
+        return 153;
     }
 
     /**

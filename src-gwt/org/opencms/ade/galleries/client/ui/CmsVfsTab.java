@@ -449,7 +449,8 @@ public class CmsVfsTab extends A_CmsListTab {
     @Override
     protected A_CmsSelectBox<?> createSelectBox(LinkedHashMap<String, String> options) {
 
-        return new CmsFilterSelectBox(options);
+        CmsFilterSelectBox box = new CmsFilterSelectBox(options);
+        return box;
     }
 
     /**

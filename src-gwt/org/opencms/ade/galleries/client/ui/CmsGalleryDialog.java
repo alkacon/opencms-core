@@ -308,7 +308,6 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
                         m_controller.getStartLocale(),
                         m_controller.getAvailableLocales(),
                         m_controller.getShowExpiredDefault());
-                    m_searchTab.enableExpiredResourcesSearch(true);
                     m_searchTab.setTabTextAccessor(getTabTextAccessor(i));
                     m_tabbedPanel.add(m_searchTab, Messages.get().key(Messages.GUI_TAB_TITLE_SEARCH_0));
                     break;

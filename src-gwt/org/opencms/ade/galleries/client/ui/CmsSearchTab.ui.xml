@@ -10,18 +10,19 @@
 	
 	<g:HTMLPanel styleName="{resources.tabbedPanelCss.tabPanel}">
 		<div class="{resources.generalCss.cornerAll} {galleryResources.galleryDialogCss.searchTabBorderLayer}">
-			<g:HTMLPanel ui:field="m_localeRow" addStyleNames="{galleryResources.galleryDialogCss.searchTabRow}">
-				<g:Label ui:field="m_localeLabel"  addStyleNames="{galleryResources.galleryDialogCss.searchTabLabelLeft}"></g:Label>
-				<div class="{galleryResources.galleryDialogCss.searchTabInputWide}">
-					<input:CmsSelectBox ui:field="m_localeSelection" />
-				</div>
+			<g:HTMLPanel ui:field="m_localeRow" addStyleNames="{galleryResources.galleryDialogCss.searchTabFlexRow}">
+                        <div class="{galleryResources.galleryDialogCss.column}">
+                            <div class="{galleryResources.galleryDialogCss.searchTabInputWide}">
+                                <input:CmsCheckBox ui:field="m_includeExpiredCheckBox" />
+                            </div>
+                        </div>
+                        <div class="{galleryResources.galleryDialogCss.column}">
+                        <g:Label addStyleNames="{galleryResources.galleryDialogCss.localeLabel}" ui:field="m_localeLabel"></g:Label>
+                <div class="{galleryResources.galleryDialogCss.searchTabInputWide}">
+                    <input:CmsSelectBox ui:field="m_localeSelection" />
+                </div>
+                        </div>
 			</g:HTMLPanel>
-			<div ui:field="m_includeExpiredRow" class="{galleryResources.galleryDialogCss.searchTabRow}">
-				<div  class="{galleryResources.galleryDialogCss.searchTabLabelLeft}">&nbsp;</div>
-				<div class="{galleryResources.galleryDialogCss.searchTabInputWide}">
-					<input:CmsCheckBox ui:field="m_includeExpiredCheckBox" />
-				</div>
-			</div>
 			<div class="{galleryResources.galleryDialogCss.searchTabRow}">
 				<g:Label ui:field="m_dateCreatedStartLabel"  addStyleNames="{galleryResources.galleryDialogCss.searchTabLabelLeft}"></g:Label>
 				<div class="{galleryResources.galleryDialogCss.searchTabInputLeft}">

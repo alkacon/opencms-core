@@ -42,7 +42,7 @@ div.parentPanel.previewVisible > div.gwt-TabLayoutPanel{
 }
 
 div.selectboxWidth {
-	width: 200px;
+	width: 350px;
 	display: inline-block;
 	margin-right: 3px;
 }
@@ -92,6 +92,26 @@ div.searchTabRow {
 	height: value("constants.css.inputHeight");
 	margin-bottom: 5px;
 }
+
+div.searchTabFlexRow {
+    clear: both;
+    height: value("constants.css.inputHeight");
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.localeLabel {
+    margin-right: 5px;
+}
+
+div.searchTabFlexRow > div.column {
+    flex: 1;
+    display: flex;
+    align-items: center;  
+}
+
+
 div.searchTabRow div.searchTabInputWide div.html-face{
 	font-weight: normal;
 }
@@ -118,8 +138,7 @@ div.searchTabInputRight {
 	float: right;
 }
 div.searchTabInputWide {
-	width: 497px;
-	float: right;
+    flex: 1;
 }
 
 div.searchTabInputWide.hasButton > div{
