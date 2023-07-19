@@ -573,6 +573,8 @@ div.formInfo {
 
 div.formLabel { 
 	width: 30%;
+	line-height: value("constants.css.inputHeight");
+    align-self: flex-start;
 }
 
 
