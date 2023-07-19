@@ -32,7 +32,7 @@ import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.ade.contenteditor.client.CmsContentEditor;
 import org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener;
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.input.CmsSelectBox;
+import org.opencms.gwt.client.ui.input.CmsFilterSelectBox;
 import org.opencms.util.CmsPair;
 
 import java.util.LinkedHashMap;
@@ -64,7 +64,7 @@ public class CmsDisplayTypeSelectWidget extends Composite implements I_CmsEditWi
     private static final String NO_FILTER = "###no-filter###";
 
     /** The global select box. */
-    protected CmsSelectBox m_selectBox = new CmsSelectBox();
+    protected CmsFilterSelectBox m_selectBox = new CmsFilterSelectBox();
 
     /** Flag indicating the widget is configured to match types. */
     boolean m_matchTypes;
