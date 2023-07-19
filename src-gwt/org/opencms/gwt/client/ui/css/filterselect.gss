@@ -1,4 +1,6 @@
 
+@external opencms-icon-triangle-right, opencms-icon-triangle-down ;
+
 .input-highTextBoxes .filterSelect input.filterInput.filterInput {
     height: value("constants.css.inputInnerHeight");
 }
@@ -6,7 +8,7 @@
 .filterSelect input.filterInput.filterInput {
     height: value("constants.css.inputInnerHeight");
     margin-left: 5px;
-    width: calc(100% - 25px);
+    width: calc(100% - 36px);
     position: relative;
     text-overflow: ellipsis;
     cursor: pointer;
@@ -20,3 +22,8 @@
 .filterSelect input.filterInput.filterInput[disabled] {
     pointer-events: none;
 }
+
+.filterSelect .opencms-icon-triangle-right::before, .filterSelect .opencms-icon-triangle-down::before {
+    content: "\e60c\e646";
+} 
+
