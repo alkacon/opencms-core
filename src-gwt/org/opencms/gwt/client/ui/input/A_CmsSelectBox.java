@@ -46,7 +46,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -79,6 +78,10 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import elemental2.dom.CSSProperties.MaxHeightUnionType;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 
 /**
  * Abstract superclass for select box widgets.<p>
@@ -871,7 +874,8 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
     private void setScrollingSelector(int availableHeight) {
 
         CmsScrollPanel panel = GWT.create(CmsScrollPanel.class);
-        panel.getElement().getStyle().setHeight(availableHeight, Unit.PX);
+        HTMLElement elem = Js.cast(panel.getElement());
+        elem.style.maxHeight = MaxHeightUnionType.of("" + availableHeight + "px");
         panel.setWidget(m_selector);
         m_popup.setWidget(panel);
     }
