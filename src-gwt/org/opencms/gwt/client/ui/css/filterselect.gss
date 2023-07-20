@@ -23,7 +23,11 @@
     pointer-events: none;
 }
 
-.filterSelect .opencms-icon-triangle-right::before, .filterSelect .opencms-icon-triangle-down::before {
+.filterSelect .opencms-icon-triangle-right::before {
     content: "\e60c\e646";
 } 
+
+ .filterSelect .opencms-icon-triangle-down::before {
+    content: "\e60c\e647";
+ }
 
