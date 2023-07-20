@@ -53,6 +53,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -1395,7 +1396,12 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
         if (!m_editableRequest && !showInContext) {
             return false;
         }
-        element.initResource(cms);
+        try {
+            element.initResource(cms);
+        } catch (CmsPermissionViolationException e) {
+            LOG.info(e.getLocalizedMessage(), e);
+            return false;
+        }
         if (!m_editableRequest && !element.isReleasedAndNotExpired()) {
             // do not render expired resources for the online project
             return false;

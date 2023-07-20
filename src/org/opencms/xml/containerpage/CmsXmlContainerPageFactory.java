@@ -459,6 +459,11 @@ public final class CmsXmlContainerPageFactory {
         if (xmlCntPage.getFile() instanceof I_CmsHistoryResource) {
             return;
         }
+        if (xmlCntPage.hasInvalidatedBrokenLinks()) {
+            // not caching container pages with broken links - they may be 'broken' for permission reasons,
+            // and the cache does not take the current user into account
+            return;
+        }
         boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
         getCache().setCacheContainerPage(
             getCache().getCacheKey(xmlCntPage.getFile().getStructureId(), keepEncoding),

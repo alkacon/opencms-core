@@ -2006,15 +2006,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     removedNodes.add(parentPath);
                 }
             }
-            if (!removedNodes.isEmpty()) {
-                needReinitialization = true;
-            }
             for (I_CmsXmlContentValue valueToRemove : valuesToRemove.values()) {
                 // detach the value node from the XML document
                 valueToRemove.getElement().detach();
+                needReinitialization = true;
             }
         }
         if (needReinitialization) {
+            document.m_hasInvalidatedBrokenLinks = true;
             // re-initialize the XML content
             document.initDocument();
         }
@@ -4279,31 +4278,56 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
             Throwable trace = e;
             if (e instanceof StackOverflowError) {
-                final String stackOverflowInfoMessage = "StackOverflowError thrown on pattern matching during xml" +
-                        " content validation. (Cause will be also logged in DEBUG level.)\n" +
-                        "Note 1.- Possible cause: The Java regex engine uses recursive method calls to implement" +
-                        " backtracking. When a repetition inside a regular expression contains multiple paths" +
-                        " (i.e. the body of the repetition contains an alternation (|), an optional element or another" +
-                        " repetition), trying to match the regular expression can cause a stack overflow on large inputs." +
-                        " This does not happen when using a possessive quantifier (such as *+ instead of *) or when using" +
-                        " a character class inside a repetition (e.g. [ab]* instead of (a|b)*).\n" +
-                        "Note 2.- On StackOverflowError, the size of the stacktraces could be limited by the JVM " +
-                        " and we could be missing information to identify the origin of the problem. To help in this" +
-                        " case, we create a new exception close to this origin. Alternatively, you can increase" +
-                        " the depth of the stack trace (for instance, '-XX:MaxJavaStackTraceDepth=1000000') to" +
-                        " identify it";
-                trace = LOG.isDebugEnabled() ? new Exception(stackOverflowInfoMessage, e) : new Exception(stackOverflowInfoMessage);
-                errorHandler.addError(value, Messages.get().getBundle(
-                        value.getLocale()).key(Messages.GUI_EDITOR_XMLCONTENT_CANNOT_VALIDATE_ERROR_3, ticket, regex, stringToBeMatched));
+                final String stackOverflowInfoMessage = "StackOverflowError thrown on pattern matching during xml"
+                    + " content validation. (Cause will be also logged in DEBUG level.)\n"
+                    + "Note 1.- Possible cause: The Java regex engine uses recursive method calls to implement"
+                    + " backtracking. When a repetition inside a regular expression contains multiple paths"
+                    + " (i.e. the body of the repetition contains an alternation (|), an optional element or another"
+                    + " repetition), trying to match the regular expression can cause a stack overflow on large inputs."
+                    + " This does not happen when using a possessive quantifier (such as *+ instead of *) or when using"
+                    + " a character class inside a repetition (e.g. [ab]* instead of (a|b)*).\n"
+                    + "Note 2.- On StackOverflowError, the size of the stacktraces could be limited by the JVM "
+                    + " and we could be missing information to identify the origin of the problem. To help in this"
+                    + " case, we create a new exception close to this origin. Alternatively, you can increase"
+                    + " the depth of the stack trace (for instance, '-XX:MaxJavaStackTraceDepth=1000000') to"
+                    + " identify it";
+                trace = LOG.isDebugEnabled()
+                ? new Exception(stackOverflowInfoMessage, e)
+                : new Exception(stackOverflowInfoMessage);
+                errorHandler.addError(
+                    value,
+                    Messages.get().getBundle(value.getLocale()).key(
+                        Messages.GUI_EDITOR_XMLCONTENT_CANNOT_VALIDATE_ERROR_3,
+                        ticket,
+                        regex,
+                        stringToBeMatched));
             } else {
-                errorHandler.addError(value, Messages.get().getBundle(
-                        value.getLocale()).key(Messages.GUI_EDITOR_XMLCONTENT_INVALID_RULE_3, ticket, regex, localizedMessage));
+                errorHandler.addError(
+                    value,
+                    Messages.get().getBundle(value.getLocale()).key(
+                        Messages.GUI_EDITOR_XMLCONTENT_INVALID_RULE_3,
+                        ticket,
+                        regex,
+                        localizedMessage));
             }
 
-            LOG.warn("Ticket " + ticket + " - " + localizedMessage + "\n"
-                    + " Regex='" + (matchSign ? "" : "!") + regex + "'\n"
-                    + " Path='" + value.getPath() + "'\n"
-                    + " Input='" + stringToBeMatched + "'", trace);
+            LOG.warn(
+                "Ticket "
+                    + ticket
+                    + " - "
+                    + localizedMessage
+                    + "\n"
+                    + " Regex='"
+                    + (matchSign ? "" : "!")
+                    + regex
+                    + "'\n"
+                    + " Path='"
+                    + value.getPath()
+                    + "'\n"
+                    + " Input='"
+                    + stringToBeMatched
+                    + "'",
+                trace);
 
             return errorHandler;
         }

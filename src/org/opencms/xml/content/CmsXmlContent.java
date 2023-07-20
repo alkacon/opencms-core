@@ -118,6 +118,9 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     /** Flag which records whether a version transformation was used when this content object was created. */
     private boolean m_isTransformedVersion;
 
+    /** Indicates whether any broken links have been invalidated in the content. */
+    protected boolean m_hasInvalidatedBrokenLinks;
+
     /**
      * Hides the public constructor.<p>
      */
@@ -693,6 +696,16 @@ public class CmsXmlContent extends A_CmsXmlDocument {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Checks if any broken links have been invalidated in this content.
+     *
+     * @return true if broken links have been invalidated
+     */
+    public boolean hasInvalidatedBrokenLinks() {
+
+        return m_hasInvalidatedBrokenLinks;
     }
 
     /**
