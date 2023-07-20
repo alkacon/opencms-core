@@ -74,6 +74,9 @@ public class CmsFilterSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> imple
     /** A map of titles for the select options which should  be displayed on mouseover. */
     private Map<String, String> m_titles = new HashMap<String, String>();
 
+    /** The last known filter box text. */
+    private String m_lastFilterText;
+
     /**
      * Creates a new instance.
      */
@@ -210,7 +213,7 @@ public class CmsFilterSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> imple
         clearItems();
         for (Map.Entry<String, String> entry : options.entrySet()) {
             String title = m_titles.get(entry.getKey());
-            addOption(new CmsLabelSelectCell(entry.getKey(), entry.getValue(), title));
+            addOption(new CmsLabelSelectCell(entry.getKey(), entry.getValue().trim(), title));
         }
     }
 
@@ -246,7 +249,9 @@ public class CmsFilterSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> imple
             }
         };
         blurTimer.schedule(0);
-        m_filterBox.setValue(getOptionText(getFormValueAsString()));
+        String text = getOptionText(getFormValueAsString());
+        m_lastFilterText = text;
+        m_filterBox.setValue(text);
         HTMLInputElement input = Js.cast(m_filterBox.getElement());
         input.scrollLeft = 0;
     }
@@ -303,7 +308,12 @@ public class CmsFilterSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> imple
 
                     m_filterTimer = null;
                     if (m_openClose.isDown()) {
-                        filterCells(m_filterBox.getValue());
+                        String newInputValue = m_filterBox.getValue();
+                        if (!newInputValue.equals(m_lastFilterText)) {
+                            m_lastFilterText = newInputValue;
+                            filterCells(newInputValue);
+                        }
+
                     }
 
                 }
@@ -352,8 +362,9 @@ public class CmsFilterSelectBox extends A_CmsSelectBox<CmsLabelSelectCell> imple
     @Override
     protected void updateOpener(String newValue) {
 
-        String text = getOptionText(getFormValueAsString());
+        String text = getOptionText(newValue);
         m_filterBox.setValue(text);
+        m_lastFilterText = text;
         String title = m_titles.get(newValue);
         if (title == null) {
             title = text;
