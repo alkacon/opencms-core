@@ -3028,6 +3028,15 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+        <description><![CDATA[
+            Special dummy value to replace parameters which would otherwise be XML-escaped. 
+        ]]></description>
+            <name>badValue</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        
     </tag>
 
     <tag>
