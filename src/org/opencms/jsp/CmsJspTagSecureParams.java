@@ -52,7 +52,7 @@ public class CmsJspTagSecureParams extends TagSupport {
     private String m_policy;
 
     /** The 'bad value'. */
-    private String m_badValue;
+    private String m_replaceInvalid;
 
     /** The comma-separated list of parameters for which XML characters will not be escaped. */
     private String m_allowXml;
@@ -68,14 +68,14 @@ public class CmsJspTagSecureParams extends TagSupport {
      * @param allowXml the comma-separated list of parameters for which XML characters will not be escaped
      * @param allowHtml the comma-separated list of parameters for which HTML will be allowed, but be escaped
      * @param policy  the site path of an AntiSamy policy file
-     * @param badValue if not null, replaces parameters that would otherwise be
+     * @param replaceInvalid if not null, replaces parameters that would otherwise be
      */
     public static void secureParamsTagAction(
         ServletRequest request,
         String allowXml,
         String allowHtml,
         String policy,
-        String badValue) {
+        String replaceInvalid) {
 
         if (request instanceof CmsFlexRequest) {
             CmsFlexRequest flexRequest = (CmsFlexRequest)request;
@@ -86,7 +86,7 @@ public class CmsJspTagSecureParams extends TagSupport {
             }
             flexRequest.enableParameterEscaping();
             flexRequest.getParameterEscaper().setExceptions(exceptions);
-            flexRequest.getParameterEscaper().setDummyValue(badValue);
+            flexRequest.getParameterEscaper().setDummyValue(replaceInvalid);
             Set<String> allowHtmlSet = Collections.emptySet();
             if (allowHtml != null) {
                 allowHtmlSet = new HashSet<String>(CmsStringUtil.splitAsList(allowHtml, ","));
@@ -101,7 +101,7 @@ public class CmsJspTagSecureParams extends TagSupport {
     @Override
     public int doStartTag() {
 
-        secureParamsTagAction(pageContext.getRequest(), m_allowXml, m_allowHtml, m_policy, m_badValue);
+        secureParamsTagAction(pageContext.getRequest(), m_allowXml, m_allowHtml, m_policy, m_replaceInvalid);
         return SKIP_BODY;
     }
 
@@ -128,11 +128,11 @@ public class CmsJspTagSecureParams extends TagSupport {
     /**
      * Sets the 'bad value', which, if set, is used as a replacement for values that would otherwise be XML-escaped.
      *
-     * @param badValue the bad value
+     * @param replaceInvalid the bad value
      */
-    public void setBadValue(String badValue) {
+    public void setReplaceInvalid(String replaceInvalid) {
 
-        m_badValue = badValue;
+        m_replaceInvalid = replaceInvalid;
 
     }
 

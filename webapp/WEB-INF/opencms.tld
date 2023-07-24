@@ -3032,7 +3032,7 @@
         <description><![CDATA[
             Special dummy value to replace parameters which would otherwise be XML-escaped. 
         ]]></description>
-            <name>badValue</name>
+            <name>replaceInvalid</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
