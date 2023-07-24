@@ -793,7 +793,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             int underscorePos = key.indexOf("_");
             if (underscorePos >= 0) {
                 String prefix = key.substring(0, underscorePos);
-                I_CmsFormatterBean formatter = config.findFormatter(prefix);
+                I_CmsFormatterBean formatter = config.findFormatter(prefix, /* noWarn = */true);
                 if (formatter != null) {
                     key = formatter.getKeyOrId() + key.substring(underscorePos);
                 }

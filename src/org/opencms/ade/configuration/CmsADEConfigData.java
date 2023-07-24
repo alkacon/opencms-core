@@ -399,6 +399,21 @@ public class CmsADEConfigData {
      */
     public I_CmsFormatterBean findFormatter(CmsUUID id) {
 
+        return findFormatter(id, false);
+    }
+
+    /**
+     * Gets the 'best' formatter for the given ID.<p>
+     *
+     * If the formatter with the ID has a key, then the active formatter with the same key is returned.  Otherwise, the
+     * formatter matching the ID is returned. So being active and having the same key is prioritized over an exact ID match.
+     *
+     * @param id the formatter ID
+     * @param noWarn if true, disables warnings
+     * @return the best formatter the given ID
+     */
+    public I_CmsFormatterBean findFormatter(CmsUUID id, boolean noWarn) {
+
         if (id == null) {
             return null;
         }
@@ -408,13 +423,13 @@ public class CmsADEConfigData {
         I_CmsFormatterBean result = originalResult;
         if ((result != null) && (result.getKey() != null)) {
             String key = result.getKey();
-            I_CmsFormatterBean resultForKey = getFormatterAndWarnIfAmbiguous(getActiveFormattersByKey(), key);
+            I_CmsFormatterBean resultForKey = getFormatterAndWarnIfAmbiguous(getActiveFormattersByKey(), key, noWarn);
             if (resultForKey != null) {
                 result = resultForKey;
             } else {
                 String parentKey = getParentFormatterKey(key);
                 if (parentKey != null) {
-                    resultForKey = getFormatterAndWarnIfAmbiguous(getActiveFormattersByKey(), parentKey);
+                    resultForKey = getFormatterAndWarnIfAmbiguous(getActiveFormattersByKey(), parentKey, noWarn);
                     if (resultForKey != null) {
                         result = resultForKey;
                     }
@@ -447,6 +462,22 @@ public class CmsADEConfigData {
      */
     public I_CmsFormatterBean findFormatter(String name) {
 
+        return findFormatter(name, false);
+    }
+
+    /**
+     * Gets the 'best' formatter for the given name.<p>
+     *
+     * The name can be either a formatter key, or a formatter UUID. If it's a key, an active formatter with that key is returned.
+     * If it's a UUID, and the formatter with that UUID has no key, it will be returned. If it does have a key, the active formatter
+     * with that key is returned (so being active and having the same key is prioritized over an exact ID match).
+     *
+     * @param name a formatter name (key or ID)
+     * @param noWarn if true, disables warnings
+     * @return the best formatter for that name, or null if no formatter could be found
+     */
+    public I_CmsFormatterBean findFormatter(String name, boolean noWarn) {
+
         if (name == null) {
             return null;
         }
@@ -459,7 +490,7 @@ public class CmsADEConfigData {
         }
 
         if (CmsUUID.isValidUUID(name)) {
-            return findFormatter(new CmsUUID(name));
+            return findFormatter(new CmsUUID(name), noWarn);
         }
 
         if (name.startsWith(CmsFormatterConfig.SCHEMA_FORMATTER_ID)) {
@@ -467,45 +498,49 @@ public class CmsADEConfigData {
         }
 
         Multimap<String, I_CmsFormatterBean> active = getActiveFormattersByKey();
-        I_CmsFormatterBean result = getFormatterAndWarnIfAmbiguous(active, name);
+        I_CmsFormatterBean result = getFormatterAndWarnIfAmbiguous(active, name, noWarn);
         if (result != null) {
             return result;
         }
 
         String parentName = getParentFormatterKey(name);
         if (parentName != null) {
-            result = getFormatterAndWarnIfAmbiguous(active, parentName);
+            result = getFormatterAndWarnIfAmbiguous(active, parentName, noWarn);
             if (result != null) {
                 return result;
             }
         }
 
-        String message1 = "No local formatter found for key '"
-            + name
-            + "' at '"
-            + getBasePath()
-            + "', trying inactive formatters";
-        LOG.warn(message1);
-        OpenCmsServlet.withRequestCache(rc -> rc.addLog(REQUEST_LOG_CHANNEL, "warn", REQ_LOG_PREFIX + message1));
+        if (!noWarn) {
+            String message1 = "No local formatter found for key '"
+                + name
+                + "' at '"
+                + getBasePath()
+                + "', trying inactive formatters";
+            LOG.warn(message1);
+            OpenCmsServlet.withRequestCache(rc -> rc.addLog(REQUEST_LOG_CHANNEL, "warn", REQ_LOG_PREFIX + message1));
+        }
 
         Multimap<String, I_CmsFormatterBean> all = getFormattersByKey();
-        result = getFormatterAndWarnIfAmbiguous(all, name);
+        result = getFormatterAndWarnIfAmbiguous(all, name, noWarn);
         if (result != null) {
             return result;
         }
 
         if (parentName != null) {
-            result = getFormatterAndWarnIfAmbiguous(all, parentName);
+            result = getFormatterAndWarnIfAmbiguous(all, parentName, noWarn);
             if (result != null) {
                 return result;
             }
         }
 
-        OpenCmsServlet.withRequestCache(
-            rc -> rc.addLog(
-                REQUEST_LOG_CHANNEL,
-                "warn",
-                REQ_LOG_PREFIX + "No formatter found for key '" + name + "' at '" + getBasePath() + "'"));
+        if (!noWarn) {
+            OpenCmsServlet.withRequestCache(
+                rc -> rc.addLog(
+                    REQUEST_LOG_CHANNEL,
+                    "warn",
+                    REQ_LOG_PREFIX + "No formatter found for key '" + name + "' at '" + getBasePath() + "'"));
+        }
         return null;
     }
 
@@ -1982,26 +2017,32 @@ public class CmsADEConfigData {
      *
      * @param formatterMap the formatter multimap
      * @param name the formatter key
+     * @param noWarn if true, disables warnings
      * @return the formatter for the key (null if none are found, the first one if multiple are found)
      */
     private I_CmsFormatterBean getFormatterAndWarnIfAmbiguous(
         Multimap<String, I_CmsFormatterBean> formatterMap,
-        String name) {
+        String name,
+        boolean noWarn) {
 
         I_CmsFormatterBean result;
         result = null;
         Collection<I_CmsFormatterBean> activeForKey = formatterMap.get(name);
         if (activeForKey.size() > 0) {
             if (activeForKey.size() > 1) {
-                String labels = "" + activeForKey.stream().map(this::getFormatterLabel).collect(Collectors.toList());
-                String message = "Ambiguous formatter for key '"
-                    + name
-                    + "' at '"
-                    + getBasePath()
-                    + "': found "
-                    + labels;
-                LOG.warn(message);
-                OpenCmsServlet.withRequestCache(rc -> rc.addLog(REQUEST_LOG_CHANNEL, "warn", REQ_LOG_PREFIX + message));
+                if (!noWarn) {
+                    String labels = ""
+                        + activeForKey.stream().map(this::getFormatterLabel).collect(Collectors.toList());
+                    String message = "Ambiguous formatter for key '"
+                        + name
+                        + "' at '"
+                        + getBasePath()
+                        + "': found "
+                        + labels;
+                    LOG.warn(message);
+                    OpenCmsServlet.withRequestCache(
+                        rc -> rc.addLog(REQUEST_LOG_CHANNEL, "warn", REQ_LOG_PREFIX + message));
+                }
             }
             result = activeForKey.iterator().next();
         }

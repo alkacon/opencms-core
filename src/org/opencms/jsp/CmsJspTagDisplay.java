@@ -330,7 +330,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
         }
         String prefix = settingKey.substring(0, underscoreIndex);
         String suffix = settingKey.substring(underscoreIndex + 1);
-        I_CmsFormatterBean dynamicFmt = config.findFormatter(prefix);
+        I_CmsFormatterBean dynamicFmt = config.findFormatter(prefix, /*noWarn=*/true);
         if (dynamicFmt == null) {
             return null;
         }
