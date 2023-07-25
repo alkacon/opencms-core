@@ -3025,7 +3025,7 @@
             URI of the AntiSamy policy file.
         ]]></description>
             <name>policy</name>
-            <required>false</required>
+            <required>false</required> 
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
@@ -3036,6 +3036,15 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description><![CDATA[
+            Comma-separated list of parameters which should be XML-escaped even if replaceInvalid is set. 
+        ]]></description>
+            <name>escapeInvalid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        
         
     </tag>
 

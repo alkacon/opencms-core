@@ -54,14 +54,29 @@ import org.owasp.validator.html.ScanException;
  */
 public class CmsParameterEscaper {
 
-    /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsParameterEscaper.class);
-
     /** The file name of the default policy. */
     public static final String DEFAULT_POLICY = "antisamy-opencms.xml";
 
     /** The default policy, which is used when no policy path is given. */
     protected static Policy defaultPolicy;
+
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsParameterEscaper.class);
+
+    /** The AntiSamy instance for cleaning HTML. */
+    private AntiSamy m_antiSamy;
+
+    /** The names of parameters which need to be HTML-cleaned. */
+    private Set<String> m_cleanHtml = new HashSet<String>();
+
+    /** The dummy value to replace invalid values with (if this is set, it replaces XML escaping). */
+    private String m_dummyValue;
+
+    /** Set of parameter names which should still replaced even if the dummy value is set. */
+    private Set<String> m_escapeInvalid = new HashSet<>();
+
+    /** The names of parameters which shouldn't be escaped. */
+    private Set<String> m_exceptions = new HashSet<String>();
 
     static {
         try {
@@ -75,18 +90,6 @@ public class CmsParameterEscaper {
             LOG.error(e.getLocalizedMessage(), e);
         }
     }
-
-    /** The dummy value to replace invalid values with (if this is set, it replaces XML escaping). */
-    private String m_dummyValue;
-
-    /** The names of parameters which shouldn't be escaped. */
-    private Set<String> m_exceptions = new HashSet<String>();
-
-    /** The names of parameters which need to be HTML-cleaned. */
-    private Set<String> m_cleanHtml = new HashSet<String>();
-
-    /** The AntiSamy instance for cleaning HTML. */
-    private AntiSamy m_antiSamy;
 
     /**
      * Helper method for reading an AntiSamy policy file from the VFS.<p>
@@ -258,6 +261,16 @@ public class CmsParameterEscaper {
     }
 
     /**
+     * Sets the parameters which should be escaped even if the dummy value is set.
+     *
+     * @param escapeInvalidList the collection of parameters which should be escaped even if the dummy value is set
+     */
+    public void setEscapeInvalid(Collection<String> escapeInvalidList) {
+
+        m_escapeInvalid = new HashSet<>(escapeInvalidList);
+    }
+
+    /**
      * Sets the set of names of parameters which shouldn't be escaped.<p>
      *
      * @param exceptions a set of parameter names
@@ -277,7 +290,7 @@ public class CmsParameterEscaper {
     protected String escapeSimple(String name, String value) {
 
         String result = CmsEncoder.escapeXml(value);
-        if ((m_dummyValue != null) && !result.equals(value)) {
+        if ((m_dummyValue != null) && !result.equals(value) && !m_escapeInvalid.contains(name)) {
             return name + "_" + m_dummyValue;
         } else {
             return result;
