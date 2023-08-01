@@ -626,6 +626,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
         LinkedHashMap<String, String> list = new LinkedHashMap<String, String>();
         list.put(SortParams.grouped.name(), Messages.get().key(Messages.GUI_SORT_LABEL_GROUPED_0));
+        list.put(SortParams.grouped_title.name(), Messages.get().key(Messages.GUI_SORT_LABEL_GROUPED_TITLE_0));
         list.put(SortParams.title_asc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TITLE_ASC_0));
         list.put(SortParams.title_desc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TITLE_DECS_0));
         list.put(SortParams.type_asc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TYPE_ASC_0));

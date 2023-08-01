@@ -1655,23 +1655,20 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         String rootPath = cms.getRequestContext().addSiteRoot(contextPath);
         CmsADEConfigData sitemapConfig = OpenCms.getADEManager().lookupConfigurationWithCache(cms, rootPath);
         String subsitePath = sitemapConfig.getBasePath();
-        String siteRoot = cms.getRequestContext().getSiteRoot();
+        CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(rootPath);
+
         List<CmsGalleryFolderBean> list = new ArrayList<CmsGalleryFolderBean>();
         if (galleryTypes == null) {
             return list;
         }
-        Iterator<Entry<String, CmsGalleryTypeInfo>> iGalleryTypes = galleryTypes.entrySet().iterator();
-        while (iGalleryTypes.hasNext()) {
-            Entry<String, CmsGalleryTypeInfo> ent = iGalleryTypes.next();
+        for (Entry<String, CmsGalleryTypeInfo> ent : galleryTypes.entrySet()) {
             CmsGalleryTypeInfo tInfo = ent.getValue();
             ArrayList<String> contentTypes = new ArrayList<String>();
             Iterator<I_CmsResourceType> it = tInfo.getContentTypes().iterator();
             while (it.hasNext()) {
                 contentTypes.add(String.valueOf(it.next().getTypeName()));
             }
-            Iterator<CmsResource> ir = tInfo.getGalleries().iterator();
-            while (ir.hasNext()) {
-                CmsResource res = ir.next();
+            for (CmsResource res : tInfo.getGalleries()) {
                 CmsGalleryFolderBean bean = new CmsGalleryFolderBean();
                 String sitePath = getCmsObject().getSitePath(res);
                 String title = "";
@@ -1694,9 +1691,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 bean.setTitle(title);
                 CmsGalleryGroup group = null;
                 String groupLabel = null;
-                if ((null != subsitePath)
+                if ((site != null)
+                    && (subsitePath != null)
                     && CmsStringUtil.isPrefixPath(subsitePath, res.getRootPath())
-                    && !new CmsPath(subsitePath).equals(new CmsPath(siteRoot))) {
+                    && !new CmsPath(subsitePath).equals(new CmsPath(site.getSiteRoot()))) {
                     // we are in a proper subsite, not just the site itself
                     group = CmsGalleryGroup.subsite;
 
@@ -1719,22 +1717,23 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     groupLabel = Messages.get().getBundle(wpLocale).key(
                         Messages.GUI_GALLERIES_GROUP_SUBSITE_1,
                         labelSuffix);
-                } else if (CmsStringUtil.isPrefixPath(siteRoot, res.getRootPath())) {
+                } else if ((site != null) && CmsStringUtil.isPrefixPath(site.getSiteRoot(), res.getRootPath())) {
                     group = CmsGalleryGroup.site;
-                    CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(cms.getRequestContext().getSiteRoot());
                     String labelSuffix;
-                    if (site != null) {
-                        labelSuffix = site.getTitle();
-                    } else {
-                        labelSuffix = CmsStringUtil.isEmptyOrWhitespaceOnly(siteRoot) ? "/" : siteRoot;
-
+                    labelSuffix = site.getTitle();
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(labelSuffix)) {
+                        labelSuffix = site.getSiteRoot();
                     }
                     groupLabel = Messages.get().getBundle(wpLocale).key(
                         Messages.GUI_GALLERIES_GROUP_SITE_1,
                         labelSuffix);
-                } else {
+                } else if (CmsStringUtil.isPrefixPath(CmsResource.VFS_FOLDER_SYSTEM, res.getRootPath())
+                    || OpenCms.getSiteManager().startsWithShared(res.getRootPath())) {
                     group = CmsGalleryGroup.shared;
                     groupLabel = Messages.get().getBundle(wpLocale).key(Messages.GUI_GALLERIES_GROUP_SHARED_0);
+                } else {
+                    group = CmsGalleryGroup.other;
+                    groupLabel = Messages.get().getBundle(wpLocale).key(Messages.GUI_GALLERIES_GROUP_OTHER_0);
                 }
                 bean.setGroup(group);
                 bean.setGroupLabel(groupLabel);

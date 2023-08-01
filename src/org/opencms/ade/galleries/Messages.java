@@ -50,6 +50,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXTERNAL_LINK_0 = "GUI_EXTERNAL_LINK_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERIES_GROUP_OTHER_0 = "GUI_GALLERIES_GROUP_OTHER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_GROUP_SHARED_0 = "GUI_GALLERIES_GROUP_SHARED_0";
 
     /** Message constant for key in the resource bundle. */

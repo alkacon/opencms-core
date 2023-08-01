@@ -1485,6 +1485,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                             b.getPath()).result());
                 grouped = true;
                 break;
+            case grouped_title:
+                Collections.sort(
+                    galleries,
+                    (
+                        a,
+                        b) -> ComparisonChain.start().compare(a.getGroup(), b.getGroup()).compare(
+                            a.getTitle(),
+                            b.getTitle()).result());
+                grouped = true;
+                break;
             case tree:
                 m_handler.onUpdateGalleryTree(galleryListToTree(galleries), m_searchObject.getGalleries());
                 return;

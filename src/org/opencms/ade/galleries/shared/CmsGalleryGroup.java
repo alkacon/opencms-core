@@ -38,5 +38,8 @@ public enum CmsGalleryGroup {
     site,
 
     /** Shared/system. */
-    shared;
+    shared,
+
+    /** Everything else. */
+    other;
 }

@@ -174,7 +174,10 @@ public interface I_CmsGalleryProviderConstants {
         score,
 
         /** Group galleries. */
-        grouped;
+        grouped,
+
+        /** Group galleries, sort by title. */
+        grouped_title;
     }
 
     /** The request attribute name for the close link. */

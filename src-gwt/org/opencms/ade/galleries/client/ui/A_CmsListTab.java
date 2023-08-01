@@ -28,7 +28,6 @@
 package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.Messages;
-import org.opencms.ade.galleries.client.ui.A_CmsListTab.I_CmsListTabUiBinder;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.I_CmsGalleryDialogCss;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
@@ -40,9 +39,9 @@ import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.I_CmsTruncable;
-import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.externallink.CmsEditExternalLinkDialog;
 import org.opencms.gwt.client.ui.input.A_CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
@@ -694,7 +693,6 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
             m_sortSelectBox = createSelectBox(sortList);
             m_sortSelectBox.addValueChangeHandler(this);
             m_sortSelectBox.addStyleName(DIALOG_CSS.selectboxWidth());
-            m_sortSelectBox.truncate(TM_GALLERY_SORT, 200);
             m_options.add(m_sortSelectBox);
             Label infoLabel = new Label();
             infoLabel.setStyleName(DIALOG_CSS.infoLabel());
