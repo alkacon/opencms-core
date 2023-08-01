@@ -2384,7 +2384,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     @SuppressWarnings("deprecation")
     private List<CmsResource> getGalleriesByType(int galleryTypeId) {
 
-        List<CmsResource> galleries = new ArrayList<CmsResource>();
+        Set<CmsResource> galleries = new HashSet<CmsResource>();
 
         // We swallow errors in this method because we don't  want a failure to read some folders (e.g. because of permission problems) to
         // cause an empty gallery list as a result
@@ -2430,7 +2430,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         } catch (Exception e) {
             LOG.info("Could not read shared galleries: " + e.getLocalizedMessage(), e);
         }
-        return galleries;
+        List<CmsResource> galleriesList = new ArrayList<>(galleries);
+        Collections.sort(
+            galleriesList,
+            (a, b) -> ComparisonChain.start().compare(a.getRootPath(), b.getRootPath()).result());
+        return galleriesList;
     }
 
     /**
