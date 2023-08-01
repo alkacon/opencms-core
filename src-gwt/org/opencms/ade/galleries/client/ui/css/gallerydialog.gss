@@ -190,3 +190,11 @@ div.quickFilterBox {
 	float: left; 
 }
 
+.groupHeader {
+    display: inline-block !important;
+    font-weight: bold;
+    font-size: 14px;
+    margin-left: 3px !important;
+    margin-top: 4px !important;
+    margin-bottom: 3px !important; 
+}

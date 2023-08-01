@@ -73,13 +73,15 @@ public interface I_CmsGalleryService extends RemoteService {
     /**
      * Returns the available galleries depending on the given resource types.<p>
      *
+     *
+     * @param context URI of the current page or subsite
      * @param resourceTypes the resource types
      *
      * @return the galleries
      *
      * @throws CmsRpcException if something goes wrong
      */
-    List<CmsGalleryFolderBean> getGalleries(List<String> resourceTypes) throws CmsRpcException;
+    List<CmsGalleryFolderBean> getGalleries(String context, List<String> resourceTypes) throws CmsRpcException;
 
     /**
      * Gets the gallery upload action information for the given path.

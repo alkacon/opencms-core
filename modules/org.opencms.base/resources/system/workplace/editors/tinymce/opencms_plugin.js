@@ -200,9 +200,14 @@ function createGalleryDialogUrl(path, typesParam, integrator, integratorArgs) {
    } else {
        galleryStoragePrefixParam += "linkselect";
        // leave the parameter empty  
-   } 
+   }
    
-   var result =  "<%= cms.link("/system/workplace/commons/gallery.jsp") %>?<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE+"="+org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode.editor.name() %>" + searchParam + resParam + galleryStoragePrefixParam + integratorParam + debugParam;
+   var pageIdParam = ""; 
+   if (top.ocmsRpcContext && top.ocmsRpcContext.pageId) {
+        pageIdParam = "&<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_PAGE_ID%>=" + top.ocmsRpcContext.pageId; 
+   }
+   
+   var result =  "<%= cms.link("/system/workplace/commons/gallery.jsp") %>?<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE+"="+org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode.editor.name() %>" + searchParam + resParam + galleryStoragePrefixParam + integratorParam + pageIdParam + debugParam;
    return result; 
 }
 

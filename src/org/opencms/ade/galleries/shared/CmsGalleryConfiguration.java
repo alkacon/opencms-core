@@ -102,6 +102,9 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     /** The use formats flag. */
     private boolean m_useFormats;
 
+    /** The page id. */
+    private String m_pageId;
+
     /**
      * Constructor.<p>
      */
@@ -212,6 +215,14 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     public String getLocale() {
 
         return m_locale;
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getPageId()
+     */
+    public String getPageId() {
+
+        return m_pageId;
     }
 
     /**
@@ -427,6 +438,16 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     public void setLocale(String locale) {
 
         m_locale = locale;
+    }
+
+    /**
+     * Sets the page id.
+     *
+     * @param pageId the page id
+     */
+    public void setPageId(String pageId) {
+
+        m_pageId = pageId;
     }
 
     /**

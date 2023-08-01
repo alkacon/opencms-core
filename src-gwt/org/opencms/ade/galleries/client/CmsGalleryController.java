@@ -78,6 +78,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -161,7 +162,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     /** The configured tabs. */
     private GalleryTabId[] m_tabIds;
 
-    /** Provides the template context information. */ 
+    /** Provides the template context information. */
     private Supplier<CmsTemplateContextInfo> m_templateContextInfoProvider = () -> null;
 
     /** The tree token for this gallery instance (determines which tree open state to use). */
@@ -1391,7 +1392,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
 
     /**
      * Sets the template context info provider.
-     * 
+     *
      * @param provider the template context info provider
      */
     public void setTemplateContextInfoProvider(Supplier<CmsTemplateContextInfo> provider) {
@@ -1454,6 +1455,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             galleries = m_dialogBean.getGalleries();
         }
         SortParams sort = SortParams.valueOf(sortParams);
+        boolean grouped = false;
         switch (sort) {
             case title_asc:
                 Collections.sort(galleries, new CmsComparatorTitle(true));
@@ -1473,6 +1475,16 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             case path_desc:
                 Collections.sort(galleries, new CmsComparatorPath(false));
                 break;
+            case grouped:
+                Collections.sort(
+                    galleries,
+                    (
+                        a,
+                        b) -> ComparisonChain.start().compare(a.getGroup(), b.getGroup()).compare(
+                            a.getPath(),
+                            b.getPath()).result());
+                grouped = true;
+                break;
             case tree:
                 m_handler.onUpdateGalleryTree(galleryListToTree(galleries), m_searchObject.getGalleries());
                 return;
@@ -1482,7 +1494,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                 // not supported
                 return;
         }
-        m_handler.onUpdateGalleries(galleries, m_searchObject.getGalleries());
+        m_handler.onUpdateGalleries(galleries, m_searchObject.getGalleries(), grouped);
     }
 
     /**
@@ -2014,14 +2026,15 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
                     types.add(type.getType());
                 }
 
-                getGalleryService().getGalleries(types, this);
+                // not sure if this ever gets called in practice
+                getGalleryService().getGalleries("/", types, this);
             }
 
             @Override
             protected void onResponse(List<CmsGalleryFolderBean> result) {
 
                 m_dialogBean.setGalleries(result);
-                m_handler.setGalleriesTabContent(result, m_searchObject.getGalleries());
+                m_handler.setGalleriesTabContent(result, m_searchObject.getGalleries(), false);
                 m_handler.onGalleriesTabSelection();
                 stop(false);
             }

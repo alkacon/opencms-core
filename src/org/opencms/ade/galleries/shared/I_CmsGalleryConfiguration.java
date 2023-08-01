@@ -100,6 +100,13 @@ public interface I_CmsGalleryConfiguration {
     String getLocale();
 
     /**
+     * Gets the page id.
+     *
+     * @return the page id
+     */
+    String getPageId();
+
+    /**
      * Returns the path of the edited resource.<p>
      *
      * @return the path of the edited resource
@@ -167,18 +174,18 @@ public interface I_CmsGalleryConfiguration {
     boolean isGalleriesSelectable();
 
     /**
-     * Returns false if the results should not be selectable.<p>
-     *
-     * @return false if the results should not be selectable
-     */
-    boolean isResultsSelectable();
-
-    /**
      * Returns if files are selectable.<p>
      *
      * @return <code>true</code> if files are selectable
      */
     boolean isIncludeFiles();
+
+    /**
+     * Returns false if the results should not be selectable.<p>
+     *
+     * @return false if the results should not be selectable
+     */
+    boolean isResultsSelectable();
 
     /**
      * Returns if the site selector should be shown.<p>

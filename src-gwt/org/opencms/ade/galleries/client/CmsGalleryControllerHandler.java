@@ -212,8 +212,14 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
         }
 
         if ((m_galleryDialog.getGalleriesTab() != null) && (dialogBean.getGalleries() != null)) {
-            Collections.sort(dialogBean.getGalleries(), new CmsComparatorTitle(true));
-            setGalleriesTabContent(dialogBean.getGalleries(), searchObj.getGalleries());
+            // select box may be initially set to grouped, we need to first change it to something else
+            // and then back to grouped to force the grouped view to render (triggered by change event)
+            m_galleryDialog.getGalleriesTab().setSortSelectBoxValue(
+                org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams.title_asc.name(),
+                false);
+            m_galleryDialog.getGalleriesTab().setSortSelectBoxValue(
+                org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams.grouped.name(),
+                true);
         }
 
         if ((m_galleryDialog.getTypesTab() != null) && (dialogBean.getTypes() != null)) {
@@ -399,10 +405,14 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      *
      * @param galleries the updated galleries list
      * @param selectedGalleries the list of galleries to select
+     * @param grouped true if the gallery list should be shown as groups
      */
-    public void onUpdateGalleries(List<CmsGalleryFolderBean> galleries, List<String> selectedGalleries) {
+    public void onUpdateGalleries(
+        List<CmsGalleryFolderBean> galleries,
+        List<String> selectedGalleries,
+        boolean grouped) {
 
-        m_galleryDialog.getGalleriesTab().updateListContent(galleries, selectedGalleries);
+        m_galleryDialog.getGalleriesTab().updateListContent(galleries, selectedGalleries, grouped);
     }
 
     /**
@@ -463,10 +473,14 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
      *
      * @param galleryInfos the gallery info beans
      * @param selectedGalleries the selected galleries
+     * @param useGroups true if the gallery list should be shown as groups
      */
-    public void setGalleriesTabContent(List<CmsGalleryFolderBean> galleryInfos, List<String> selectedGalleries) {
+    public void setGalleriesTabContent(
+        List<CmsGalleryFolderBean> galleryInfos,
+        List<String> selectedGalleries,
+        boolean useGroups) {
 
-        m_galleryDialog.getGalleriesTab().fillContent(galleryInfos, selectedGalleries);
+        m_galleryDialog.getGalleriesTab().fillContent(galleryInfos, selectedGalleries, useGroups);
     }
 
     /**
@@ -502,7 +516,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
         if ((m_galleryDialog.getGalleriesTab() != null) && (dialogBean.getGalleries() != null)) {
             Collections.sort(dialogBean.getGalleries(), new CmsComparatorTitle(true));
-            setGalleriesTabContent(dialogBean.getGalleries(), searchObj.getGalleries());
+            setGalleriesTabContent(dialogBean.getGalleries(), searchObj.getGalleries(), false);
         }
         if ((m_galleryDialog.getTypesTab() != null) && (dialogBean.getTypes() != null)) {
             setTypesTabContent(controller.getSearchTypes(), searchObj.getTypes());

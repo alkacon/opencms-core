@@ -35,6 +35,7 @@ import org.opencms.ade.galleries.shared.CmsGalleryActionInfo;
 import org.opencms.ade.galleries.shared.CmsGalleryConfiguration;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
+import org.opencms.ade.galleries.shared.CmsGalleryGroup;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.galleries.shared.CmsGalleryTabConfiguration;
@@ -93,9 +94,11 @@ import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.search.galleries.CmsGallerySearchResultList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionViolationException;
+import org.opencms.site.CmsSite;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.ui.components.CmsResourceIcon;
 import org.opencms.util.CmsDateUtil;
+import org.opencms.util.CmsPath;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -701,11 +704,11 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
-     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getGalleries(java.util.List)
+     * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#getGalleries(java.lang.String, java.util.List)
      */
-    public List<CmsGalleryFolderBean> getGalleries(List<String> resourceTypes) {
+    public List<CmsGalleryFolderBean> getGalleries(String context, List<String> resourceTypes) {
 
-        return buildGalleriesList(readGalleryInfosByTypeNames(resourceTypes));
+        return buildGalleriesList(context, readGalleryInfosByTypeNames(resourceTypes));
     }
 
     /**
@@ -938,7 +941,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             data.setReferenceSitePath(uri);
             data.setTypes(types);
             Map<String, CmsGalleryTypeInfo> adeGalleryTypeInfos = readGalleryInfosByTypeBeans(types);
-            data.setGalleries(buildGalleriesList(adeGalleryTypeInfos));
+            data.setGalleries(buildGalleriesList(uri, adeGalleryTypeInfos));
             data.setStartTab(GalleryTabId.cms_tab_types);
             Set<String> folderFilter = readFolderFilters();
             data.setStartFolderFilter(folderFilter);
@@ -1638,13 +1641,21 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * Returns the map with the available galleries.<p>
      *
      * The map uses gallery path as the key and stores the CmsGalleriesListInfoBean as the value.<p>
-     *
+     * @param contextPath the site path used as the current context
      * @param galleryTypes the galleries
      *
      * @return the map with gallery info beans
      */
-    private List<CmsGalleryFolderBean> buildGalleriesList(Map<String, CmsGalleryTypeInfo> galleryTypes) {
+    private List<CmsGalleryFolderBean> buildGalleriesList(
+        String contextPath,
+        Map<String, CmsGalleryTypeInfo> galleryTypes) {
 
+        CmsObject cms = getCmsObject();
+        Locale wpLocale = getWorkplaceLocale();
+        String rootPath = cms.getRequestContext().addSiteRoot(contextPath);
+        CmsADEConfigData sitemapConfig = OpenCms.getADEManager().lookupConfigurationWithCache(cms, rootPath);
+        String subsitePath = sitemapConfig.getBasePath();
+        String siteRoot = cms.getRequestContext().getSiteRoot();
         List<CmsGalleryFolderBean> list = new ArrayList<CmsGalleryFolderBean>();
         if (galleryTypes == null) {
             return list;
@@ -1681,7 +1692,52 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 bean.setContentTypes(contentTypes);
                 // title
                 bean.setTitle(title);
-                // gallery type name
+                CmsGalleryGroup group = null;
+                String groupLabel = null;
+                if ((null != subsitePath)
+                    && CmsStringUtil.isPrefixPath(subsitePath, res.getRootPath())
+                    && !new CmsPath(subsitePath).equals(new CmsPath(siteRoot))) {
+                    // we are in a proper subsite, not just the site itself
+                    group = CmsGalleryGroup.subsite;
+
+                    String labelSuffix = cms.getRequestContext().removeSiteRoot(subsitePath);
+                    try {
+                        Map<String, String> properties = CmsProperty.toMap(
+                            cms.readPropertyObjects(cms.getRequestContext().removeSiteRoot(subsitePath), false));
+                        for (String propName : new String[] {
+                            CmsPropertyDefinition.PROPERTY_TITLE,
+                            CmsPropertyDefinition.PROPERTY_NAVTEXT}) {
+                            String propValue = properties.get(propName);
+                            if (propValue != null) {
+                                labelSuffix = propValue;
+                                break;
+                            }
+                        }
+                    } catch (Exception e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                    groupLabel = Messages.get().getBundle(wpLocale).key(
+                        Messages.GUI_GALLERIES_GROUP_SUBSITE_1,
+                        labelSuffix);
+                } else if (CmsStringUtil.isPrefixPath(siteRoot, res.getRootPath())) {
+                    group = CmsGalleryGroup.site;
+                    CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(cms.getRequestContext().getSiteRoot());
+                    String labelSuffix;
+                    if (site != null) {
+                        labelSuffix = site.getTitle();
+                    } else {
+                        labelSuffix = CmsStringUtil.isEmptyOrWhitespaceOnly(siteRoot) ? "/" : siteRoot;
+
+                    }
+                    groupLabel = Messages.get().getBundle(wpLocale).key(
+                        Messages.GUI_GALLERIES_GROUP_SITE_1,
+                        labelSuffix);
+                } else {
+                    group = CmsGalleryGroup.shared;
+                    groupLabel = Messages.get().getBundle(wpLocale).key(Messages.GUI_GALLERIES_GROUP_SHARED_0);
+                }
+                bean.setGroup(group);
+                bean.setGroupLabel(groupLabel);
                 bean.setResourceType(tInfo.getResourceType().getTypeName());
                 bean.setUploadAction(tInfo.getResourceType().getConfiguration().get("gallery.upload.action"));
                 bean.setEditable(isEditable(getCmsObject(), res));
@@ -2387,6 +2443,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      */
     private CmsGalleryDataBean getInitialSettingsInternal(CmsGalleryConfiguration conf) throws CmsRpcException {
 
+        CmsObject cms = getCmsObject();
         CmsGalleryDataBean data = new CmsGalleryDataBean();
         data.setMode(conf.getGalleryMode());
         data.setResultViewType(readResultViewType());
@@ -2439,7 +2496,28 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     }
                     galleryTypeInfos = infos;
                 }
-                data.setGalleries(buildGalleriesList(galleryTypeInfos));
+
+                String uri = cms.getRequestContext().getUri();
+                String galleryContext = referencePath;
+                if (conf.getPageId() != null) {
+                    // This covers the case where the user is in the page editor,
+                    // then edits an element of the page with the content editor, and then
+                    // opens the gallery from a WYSIWYG field in the content editor.
+                    try {
+                        CmsResource page = cms.readResource(
+                            new CmsUUID(conf.getPageId()),
+                            CmsResourceFilter.IGNORE_EXPIRATION);
+                        galleryContext = cms.getSitePath(page);
+                    } catch (Exception e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                } else if (!uri.endsWith(".gwt") && !uri.endsWith(".jsp")) {
+                    galleryContext = uri;
+                }
+                if (galleryContext == null) {
+                    galleryContext = "/";
+                }
+                data.setGalleries(buildGalleriesList(galleryContext, galleryTypeInfos));
                 String startGallery = conf.getGalleryPath();
                 // check if the configured gallery path really is an existing gallery
                 boolean galleryAvailable = false;
@@ -2534,7 +2612,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                     conf.getSearchTypes());
                 data.setTypes(types);
                 Map<String, CmsGalleryTypeInfo> adeGalleryTypeInfos = readGalleryInfosByTypeBeans(types);
-                data.setGalleries(buildGalleriesList(adeGalleryTypeInfos));
+                data.setGalleries(buildGalleriesList(data.getReferenceSitePath(), adeGalleryTypeInfos));
                 data.setStartTab(GalleryTabId.cms_tab_types);
                 break;
             default:

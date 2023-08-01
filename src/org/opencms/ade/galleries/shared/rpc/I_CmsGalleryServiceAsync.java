@@ -78,11 +78,11 @@ public interface I_CmsGalleryServiceAsync {
 
     /**
      * Returns the available galleries depending on the given resource types.<p>
-     *
+     * @param context the current subsite
      * @param resourceTypes the resource types
      * @param callback the callback
      */
-    void getGalleries(List<String> resourceTypes, AsyncCallback<List<CmsGalleryFolderBean>> callback);
+    void getGalleries(String context, List<String> resourceTypes, AsyncCallback<List<CmsGalleryFolderBean>> callback);
 
     /**
      * Returns the resource info for a single resource.<p>

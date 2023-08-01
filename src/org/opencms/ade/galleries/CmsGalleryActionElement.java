@@ -193,6 +193,7 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
 
         CmsGalleryConfiguration conf = new CmsGalleryConfiguration();
         conf.setGalleryMode(galleryMode);
+        conf.setPageId(getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_PAGE_ID));
         conf.setReferencePath(getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_REFERENCE_PATH));
         conf.setGalleryPath(getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_GALLERY_PATH));
         conf.setCurrentElement(getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_CURRENT_ELEMENT));

@@ -39,6 +39,9 @@ import java.util.ArrayList;
  */
 public class CmsGalleryFolderBean extends CmsListInfoBean implements I_CmsHasPath {
 
+    /** The gallery group. */
+    private CmsGalleryGroup m_group;
+
     /** A list with content types corresponding to this gallery type. */
     private ArrayList<String> m_contentTypes;
 
@@ -51,6 +54,9 @@ public class CmsGalleryFolderBean extends CmsListInfoBean implements I_CmsHasPat
     /** The name of the JavaScript method to get an upload button provider object. */
     private String m_uploadAction;
 
+    /** The label for the gallery group. */
+    private String m_groupLabel;
+
     /**
      * Returns the content types which can be used within this gallery type.<p>
      *
@@ -59,6 +65,26 @@ public class CmsGalleryFolderBean extends CmsListInfoBean implements I_CmsHasPat
     public ArrayList<String> getContentTypes() {
 
         return m_contentTypes;
+    }
+
+    /**
+     * Gets the gallery group.
+     *
+     * @return the gallery group
+     */
+    public CmsGalleryGroup getGroup() {
+
+        return m_group;
+    }
+
+    /**
+     * Gets the label for the gallery group.
+     *
+     * @return the label for the gallery group
+     */
+    public String getGroupLabel() {
+
+        return m_groupLabel;
     }
 
     /**
@@ -80,6 +106,11 @@ public class CmsGalleryFolderBean extends CmsListInfoBean implements I_CmsHasPat
         return getPath();
     }
 
+    /**
+     * Gets the upload action.
+     *
+     * @return the upload action
+     */
     public String getUploadAction() {
 
         return m_uploadAction;
@@ -126,6 +157,26 @@ public class CmsGalleryFolderBean extends CmsListInfoBean implements I_CmsHasPat
     public void setEditable(boolean editable) {
 
         m_editable = editable;
+    }
+
+    /**
+     * Sets the gallery group.
+     *
+     * @param group the gallery group
+     */
+    public void setGroup(CmsGalleryGroup group) {
+
+        m_group = group;
+    }
+
+    /**
+     * Sets the gallery group label.
+     *
+     * @param groupLabel the gallery group label
+     */
+    public void setGroupLabel(String groupLabel) {
+
+        m_groupLabel = groupLabel;
     }
 
     /**

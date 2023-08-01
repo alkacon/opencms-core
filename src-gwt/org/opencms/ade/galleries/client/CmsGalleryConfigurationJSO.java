@@ -153,6 +153,14 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
     }
 
     /**
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getPageId()
+     */
+    public String getPageId() {
+
+        return getString(I_CmsGalleryProviderConstants.CONFIG_PAGE_ID);
+    }
+
+    /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getReferencePath()
      */
     public String getReferencePath() {

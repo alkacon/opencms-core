@@ -29,7 +29,9 @@ package org.opencms.ade.galleries.client.ui;
 
 import org.opencms.ade.galleries.client.CmsGalleriesTabHandler;
 import org.opencms.ade.galleries.client.Messages;
+import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsGalleryFolderBean;
+import org.opencms.ade.galleries.shared.CmsGalleryGroup;
 import org.opencms.ade.galleries.shared.CmsGallerySearchBean;
 import org.opencms.ade.galleries.shared.CmsGalleryTreeEntry;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
@@ -82,17 +84,22 @@ public class CmsGalleriesTab extends A_CmsListTab {
         /** The internal iterator over the gallery beans. */
         protected Iterator<CmsGalleryFolderBean> m_beanIterator;
 
+        /** True if output should be grouped. */
+        protected boolean m_useGroups;
+
         /**
          * Creates a new instance.<p>
          * @param folders the list of folders for which to generate list items
+         * @param grouped true if the list items should be displayed in groups (this assumes the items have already been sorted correctly)
          */
-        public ListItemGenerator(List<CmsGalleryFolderBean> folders) {
+        public ListItemGenerator(List<CmsGalleryFolderBean> folders, boolean grouped) {
 
             if (folders == null) {
                 folders = new ArrayList<CmsGalleryFolderBean>();
             }
 
             m_beanIterator = folders.iterator();
+            m_useGroups = grouped;
         }
 
         /**
@@ -109,7 +116,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
         public CmsTreeItem next() {
 
             CmsGalleryFolderBean gallery = m_beanIterator.next();
-            CmsTreeItem treeItem = createTreeItem(gallery, m_selectedGalleries, false);
+            CmsTreeItem treeItem = createTreeItem(gallery, m_selectedGalleries, false, m_useGroups);
             return treeItem;
         }
 
@@ -157,12 +164,21 @@ public class CmsGalleriesTab extends A_CmsListTab {
                 return false;
             } else {
                 CmsTreeItem treeItem = m_itemIterator.next();
+                CmsGalleryGroup group = (CmsGalleryGroup)treeItem.getData();
+                if ((group != null) && (group != m_lastGroup)) {
+                    m_lastGroup = group;
+                    CmsSimpleListItem header = new CmsSimpleListItem();
+                    header.getElement().setInnerText(getGroupName(group));
+                    String groupHeaderClass = I_CmsLayoutBundle.INSTANCE.galleryDialogCss().groupHeader();
+                    header.addStyleName(groupHeaderClass);
+                    addWidgetToList(header);
+                }
+
                 addWidgetToList(treeItem);
             }
             m_numItems -= 1;
             return true;
         }
-
     }
 
     /**
@@ -201,7 +217,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
         public CmsTreeItem next() {
 
             CmsGalleryTreeEntry gallery = m_beanIterator.next();
-            CmsTreeItem treeItem = createTreeItem(gallery, m_selectedGalleries, true);
+            CmsTreeItem treeItem = createTreeItem(gallery, m_selectedGalleries, true, false);
             addChildren(treeItem, gallery.getChildren(), m_selectedGalleries);
             treeItem.setOpen(true);
             return treeItem;
@@ -273,8 +289,14 @@ public class CmsGalleriesTab extends A_CmsListTab {
     /** The batch size for adding new elements to the tab.<p> */
     protected static final int LOAD_BATCH_SIZE = 50;
 
+    /** The labels to display for groups. */
+    protected Map<CmsGalleryGroup, String> m_groupLabels = new HashMap<>();
+
     /** An iterator which produces new list items which should be added to the tab.<p> */
     protected Iterator<CmsTreeItem> m_itemIterator;
+
+    /** The group of the gallery folder list item that was last rendered. */
+    protected CmsGalleryGroup m_lastGroup;
 
     /** List of selected galleries. */
     protected List<String> m_selectedGalleries;
@@ -318,17 +340,18 @@ public class CmsGalleriesTab extends A_CmsListTab {
      *
      * @param galleryInfos the gallery info beans
      * @param selectedGalleries the list of galleries to select
+     * @param grouped true if the items should be broken into groups
      */
-    public void fillContent(List<CmsGalleryFolderBean> galleryInfos, List<String> selectedGalleries) {
+    public void fillContent(List<CmsGalleryFolderBean> galleryInfos, List<String> selectedGalleries, boolean grouped) {
 
         clearList();
+        m_lastGroup = null;
         m_selectedGalleries = selectedGalleries;
         if (!galleryInfos.isEmpty()) {
             for (CmsGalleryFolderBean galleryInfo : galleryInfos) {
                 m_galleries.put(galleryInfo.getPath(), galleryInfo);
             }
-
-            m_itemIterator = new ListItemGenerator(galleryInfos);
+            m_itemIterator = new ListItemGenerator(galleryInfos, grouped);
             loadMoreItems();
         } else {
             showIsEmptyLabel();
@@ -419,11 +442,15 @@ public class CmsGalleriesTab extends A_CmsListTab {
      *
      * @param galleries the new gallery list
      * @param selectedGalleries the list of galleries to select
+     * @param useGroups true if the galleries should be broken into groups (this assumes the galleries have already been sorted correctly)
      */
-    public void updateListContent(List<CmsGalleryFolderBean> galleries, List<String> selectedGalleries) {
+    public void updateListContent(
+        List<CmsGalleryFolderBean> galleries,
+        List<String> selectedGalleries,
+        boolean useGroups) {
 
         clearList();
-        fillContent(galleries, selectedGalleries);
+        fillContent(galleries, selectedGalleries, useGroups);
     }
 
     /**
@@ -457,7 +484,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
         if (children != null) {
             for (CmsGalleryTreeEntry child : children) {
                 // set the category tree item and add to parent tree item
-                CmsTreeItem treeItem = createTreeItem(child, selectedGalleries, true);
+                CmsTreeItem treeItem = createTreeItem(child, selectedGalleries, true, false);
                 if ((selectedGalleries != null) && selectedGalleries.contains(child.getPath())) {
                     parent.setOpen(true);
                     openParents(parent);
@@ -474,13 +501,15 @@ public class CmsGalleriesTab extends A_CmsListTab {
      * @param galleryInfo the gallery folder bean
      * @param selectedGalleries the selected galleries
      * @param forTree <code>true</code> if the item is used within tree view
+     * @param useGroups true if the gallery tree items should be broken into groups
      *
      * @return the tree item
      */
     protected CmsTreeItem createTreeItem(
         CmsGalleryFolderBean galleryInfo,
         List<String> selectedGalleries,
-        boolean forTree) {
+        boolean forTree,
+        boolean useGroups) {
 
         CmsListItemWidget listItemWidget = new CmsListItemWidget(galleryInfo);
         listItemWidget.setUnselectable();
@@ -564,8 +593,29 @@ public class CmsGalleriesTab extends A_CmsListTab {
         }
 
         CmsTreeItem treeItem = new CmsTreeItem(forTree, checkBox, listItemWidget);
+        if (useGroups) {
+            treeItem.setData(galleryInfo.getGroup());
+        }
+        if (galleryInfo.getGroup() != null) {
+            m_groupLabels.putIfAbsent(galleryInfo.getGroup(), galleryInfo.getGroupLabel());
+        }
         treeItem.setId(galleryInfo.getPath());
         return treeItem;
+    }
+
+    /**
+     * Gets the label to display for a group.
+     *
+     * @param group the gallery group
+     * @return the label to display for the gallery group
+     */
+    protected String getGroupName(CmsGalleryGroup group) {
+
+        if (m_groupLabels.containsKey(group)) {
+            return m_groupLabels.get(group);
+        } else {
+            return "" + group;
+        }
     }
 
     /**
@@ -575,11 +625,13 @@ public class CmsGalleriesTab extends A_CmsListTab {
     protected LinkedHashMap<String, String> getSortList() {
 
         LinkedHashMap<String, String> list = new LinkedHashMap<String, String>();
+        list.put(SortParams.grouped.name(), Messages.get().key(Messages.GUI_SORT_LABEL_GROUPED_0));
         list.put(SortParams.title_asc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TITLE_ASC_0));
         list.put(SortParams.title_desc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TITLE_DECS_0));
         list.put(SortParams.type_asc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TYPE_ASC_0));
         list.put(SortParams.type_desc.name(), Messages.get().key(Messages.GUI_SORT_LABEL_TYPE_DESC_0));
         list.put(SortParams.tree.name(), Messages.get().key(Messages.GUI_SORT_LABEL_HIERARCHIC_0));
+
         return list;
     }
 

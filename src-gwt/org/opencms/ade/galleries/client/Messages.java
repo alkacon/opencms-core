@@ -337,6 +337,9 @@ public final class Messages {
     public static final String GUI_SORT_LABEL_DATELASTMODIFIED_DESC_0 = "GUI_SORT_LABEL_DATELASTMODIFIED_DESC_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_GROUPED_0 = "GUI_SORT_LABEL_GROUPED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SORT_LABEL_HIERARCHIC_0 = "GUI_SORT_LABEL_HIERARCHIC_0";
 
     /** Message constant for key in the resource bundle. */
