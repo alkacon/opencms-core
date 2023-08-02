@@ -55,14 +55,14 @@ public class CmsFormatterInfoWrapper implements I_CmsFormatterInfo {
     /** The CMS context to use. */
     private CmsObject m_cms;
 
+    /** The sitemap configuration for the current context. */
+    private CmsADEConfigData m_config;
+
     /** The wrapped formatter. */
     private I_CmsFormatterBean m_formatter;
 
     /** The macro resolver to use. */
     private CmsMacroResolver m_macroResolver;
-
-    /** The sitemap configuration for the current context. */
-    private CmsADEConfigData m_config;
 
     /**
      * Creates a new instance.
@@ -152,6 +152,49 @@ public class CmsFormatterInfoWrapper implements I_CmsFormatterInfo {
     }
 
     /**
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getDescriptionKey()
+     */
+    public String getDescriptionKey() {
+
+        return CmsKeyDummyMacroResolver.getKey(m_formatter.getDescription(null), m_macroResolver);
+    }
+
+    /**
+     * Gets the raw description, without resolving any macros.
+     *
+     * @return the raw description
+     */
+    public String getDescriptionRaw() {
+
+        return m_formatter.getDescription(null);
+
+    }
+
+    /**
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getIsActive()
+     */
+    public boolean getIsActive() {
+
+        return true;
+    }
+
+    /**
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getIsFormatter()
+     */
+    public boolean getIsFormatter() {
+
+        return m_formatter instanceof CmsFormatterBean;
+    }
+
+    /**
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getIsFunction()
+     */
+    public boolean getIsFunction() {
+
+        return m_formatter instanceof CmsFunctionFormatterBean;
+    }
+
+    /**
      * @see org.opencms.jsp.util.I_CmsFormatterInfo#getIsResourceType()
      */
     public boolean getIsResourceType() {
@@ -222,6 +265,26 @@ public class CmsFormatterInfoWrapper implements I_CmsFormatterInfo {
     }
 
     /**
+     * Gets the localization key for the nice name, if one was used, or null otherwise.
+     *
+     * @return the localization key
+     */
+    public String getNiceNameKey() {
+
+        return CmsKeyDummyMacroResolver.getKey(m_formatter.getNiceName(null), m_macroResolver);
+    }
+
+    /**
+     * Gets the raw nice name, without resolving any macros.
+     *
+     * @return the raw nice name
+     */
+    public String getNiceNameRaw() {
+
+        return m_formatter.getNiceName(null);
+    }
+
+    /**
      * Returns the rank of the formatter.
      *
      * @return the rank
@@ -261,30 +324,6 @@ public class CmsFormatterInfoWrapper implements I_CmsFormatterInfo {
         List<String> result = new ArrayList<>(m_formatter.getResourceTypeNames());
         Collections.sort(result);
         return result;
-    }
-
-    /**
-     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getIsActive()
-     */
-    public boolean getIsActive() {
-
-        return true;
-    }
-
-    /**
-     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getIsFormatter()
-     */
-    public boolean getIsFormatter() {
-
-        return m_formatter instanceof CmsFormatterBean;
-    }
-
-    /**
-     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getIsFunction()
-     */
-    public boolean getIsFunction() {
-
-        return m_formatter instanceof CmsFunctionFormatterBean;
     }
 
     /**

@@ -30,7 +30,9 @@ package org.opencms.jsp.util;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.file.CmsObject;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceMessages;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
 import java.util.ArrayList;
@@ -49,6 +51,15 @@ import com.google.common.collect.Multimap;
  */
 public class CmsResourceTypeInfoWrapper implements I_CmsFormatterInfo {
 
+    /** Whether the type is active in the sitemap configuration. */
+    private boolean m_active;
+
+    /** The active formatters. */
+    private List<I_CmsFormatterBean> m_activeFormatters = new ArrayList<>();
+
+    /** The active formatters grouped by container type. */
+    private Multimap<String, I_CmsFormatterBean> m_activeFormattersByContainerType = ArrayListMultimap.create();
+
     /** The current CMS context. */
     private CmsObject m_cms;
 
@@ -57,15 +68,6 @@ public class CmsResourceTypeInfoWrapper implements I_CmsFormatterInfo {
 
     /** The wrapped resource type. */
     private I_CmsResourceType m_type;
-
-    /** The active formatters. */
-    private List<I_CmsFormatterBean> m_activeFormatters = new ArrayList<>();
-
-    /** The active formatters grouped by container type. */
-    private Multimap<String, I_CmsFormatterBean> m_activeFormattersByContainerType = ArrayListMultimap.create();
-
-    /** Whether the type is active in the sitemap configuration. */
-    private boolean m_active;
 
     /**
      * Creates a new instance.
@@ -130,6 +132,24 @@ public class CmsResourceTypeInfoWrapper implements I_CmsFormatterInfo {
     }
 
     /**
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getDescriptionKey()
+     */
+    public String getDescriptionKey() {
+
+        CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+            m_type.getTypeName());
+        return explorerType.getInfo();
+    }
+
+    /**
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getDescriptionRaw()
+     */
+    public String getDescriptionRaw() {
+
+        return getDescriptionKey();
+    }
+
+    /**
      * Gets the set of container types configured for any active formatters for this resource type.
      *
      * @return the set of container types for formatters
@@ -148,6 +168,33 @@ public class CmsResourceTypeInfoWrapper implements I_CmsFormatterInfo {
 
         return wrapFormatters(m_activeFormatters);
 
+    }
+
+    /**
+     * Returns true if the type is active in the current sitemap configuration.
+     *
+     * @return true if the type is active
+     */
+    public boolean getIsActive() {
+
+        return m_active;
+
+    }
+
+    /**
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getIsFormatter()
+     */
+    public boolean getIsFormatter() {
+
+        return false;
+    }
+
+    /**
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getIsFunction()
+     */
+    public boolean getIsFunction() {
+
+        return false;
     }
 
     /**
@@ -179,30 +226,22 @@ public class CmsResourceTypeInfoWrapper implements I_CmsFormatterInfo {
     }
 
     /**
-     * Returns true if the type is active in the current sitemap configuration.
-     *
-     * @return true if the type is active
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getNiceNameKey()
      */
-    public boolean getIsActive() {
+    public String getNiceNameKey() {
 
-        return m_active;
+        CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+            m_type.getTypeName());
+        return explorerType.getKey();
 
     }
 
     /**
-     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getIsFormatter()
+     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getNiceNameRaw()
      */
-    public boolean getIsFormatter() {
+    public String getNiceNameRaw() {
 
-        return false;
-    }
-
-    /**
-     * @see org.opencms.jsp.util.I_CmsFormatterInfo#getIsFunction()
-     */
-    public boolean getIsFunction() {
-
-        return false;
+        return getNiceNameKey();
     }
 
     /**

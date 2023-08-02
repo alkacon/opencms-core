@@ -50,25 +50,18 @@ public interface I_CmsFormatterInfo {
     String getDescription();
 
     /**
-     * Checks if this wraps a resource type.
+     * Returns the localization key for the description if one was used, and null otherwise.
      *
-     * @return true if this is a resource type
+     * @return the localization key
      */
-    boolean getIsResourceType();
+    String getDescriptionKey();
 
     /**
-     * Gets the name.
+     * Gets the raw description, without resolving any macros.
      *
-     * @return the name
+     * @return the raw description
      */
-    String getName();
-
-    /**
-     * Gets the nice name for the current locale.
-     *
-     * @return the nice name for the current locale
-     */
-    String getNiceName();
+    String getDescriptionRaw();
 
     /**
      * Checks if this is active.
@@ -90,6 +83,41 @@ public interface I_CmsFormatterInfo {
      * @return true if this wraps a dynamic function
      */
     boolean getIsFunction();
+
+    /**
+     * Checks if this wraps a resource type.
+     *
+     * @return true if this is a resource type
+     */
+    boolean getIsResourceType();
+
+    /**
+     * Gets the name.
+     *
+     * @return the name
+     */
+    String getName();
+
+    /**
+     * Gets the nice name for the current locale.
+     *
+     * @return the nice name for the current locale
+     */
+    String getNiceName();
+
+    /**
+     * Gets the localization key for the nice name, if one was used, or null otherwise.
+     *
+     * @return the localization key
+     */
+    String getNiceNameKey();
+
+    /**
+     * Gets the raw nice name, without resolving any macros.
+     *
+     * @return the raw nice name
+     */
+    String getNiceNameRaw();
 
     /**
      * Gets the nice name in the given locale.

@@ -31,20 +31,15 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
 import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentProperty.Visibility;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -55,76 +50,8 @@ import org.apache.commons.logging.Log;
  */
 public class CmsSettingDefinitionWrapper {
 
-    /**
-     * Macro resolver used to temporarily replace localization message macros with random UUIDs and then replace the UUIDs
-     * with the original key after all other macro processing has happened.
-     *
-     * <p>We need this because we want to preserve the message key, but evaluate macros they may be nested in.
-     */
-    private class CmsKeyDummyMacroResolver extends CmsMacroResolver {
-
-        /** The macro resolver to delegate to. */
-        private CmsMacroResolver m_delegate;
-
-        /** The map containing the original string for each ID it was replaced with. */
-        private Map<CmsUUID, String> m_keys = new HashMap<>();
-
-        /**
-         * Creates a new instance
-         *
-         * @param delegate the macro resolver to delegate to
-         */
-        public CmsKeyDummyMacroResolver(CmsMacroResolver delegate) {
-
-            m_delegate = delegate;
-        }
-
-        /**
-         * @see org.opencms.util.CmsMacroResolver#getMacroValue(java.lang.String)
-         */
-        @Override
-        public String getMacroValue(String macro) {
-
-            if (macro.startsWith(CmsMacroResolver.KEY_LOCALIZED_PREFIX)) {
-                String key = macro.substring(CmsMacroResolver.KEY_LOCALIZED_PREFIX.length());
-                CmsUUID id = new CmsUUID();
-                m_keys.put(id, key);
-                return id.toString();
-            } else {
-                String result = m_delegate.getMacroValue(macro);
-                return result;
-            }
-        }
-
-        /**
-         * @see org.opencms.util.CmsMacroResolver#resolveMacros(java.lang.String)
-         */
-        @Override
-        public String resolveMacros(String input) {
-
-            String processedInput = super.resolveMacros(input);
-            @SuppressWarnings("synthetic-access")
-            String result = CmsStringUtil.substitute(UUID_PATTERN, processedInput, (s, matcher) -> {
-                CmsUUID id = new CmsUUID(matcher.group());
-                if (m_keys.containsKey(id)) {
-                    return "%(key." + m_keys.get(id) + ")";
-                } else {
-                    return matcher.group();
-                }
-            });
-            return result;
-        }
-
-    }
-
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSettingDefinitionWrapper.class);
-
-    /** Pattern to match message key macros. */
-    private static final Pattern PATTERN_MESSAGE = Pattern.compile("^%\\(key\\.([^\\)]++)\\)$");
-
-    /** Pattern to match UUIDs. */
-    private static final Pattern UUID_PATTERN = Pattern.compile(CmsUUID.UUID_REGEX);
 
     /** The definition. containing the original message keys.*/
     private CmsXmlContentProperty m_definitionWithKeys;
@@ -155,26 +82,6 @@ public class CmsSettingDefinitionWrapper {
     }
 
     /**
-     * Extracts the message from a string of the form %(key.{message}), or returns null if the input string
-     * does not have this form.
-     *
-     * @param s the input string
-     * @return the key the extracted message key
-     */
-    private static String getKey(String s) {
-
-        if (s == null) {
-            return null;
-        }
-        Matcher matcher = PATTERN_MESSAGE.matcher(s);
-        if (matcher.matches()) {
-            return matcher.group(1);
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * Gets the default value.
      *
      * @return the default value
@@ -201,7 +108,7 @@ public class CmsSettingDefinitionWrapper {
      */
     public String getDescriptionKey() {
 
-        return getKey(m_definitionWithKeys.getDescription());
+        return CmsKeyDummyMacroResolver.getKey(m_definitionWithKeys.getDescription());
     }
 
     /**
@@ -221,7 +128,7 @@ public class CmsSettingDefinitionWrapper {
      */
     public String getDisplayNameKey() {
 
-        return getKey(m_definitionWithKeys.getNiceName());
+        return CmsKeyDummyMacroResolver.getKey(m_definitionWithKeys.getNiceName());
     }
 
     /**
