@@ -349,6 +349,9 @@ public class CmsDeleteDialog extends CmsBasicDialog {
             List<CmsUUID> changedIds = Lists.newArrayList();
             CmsResourceDeleteMode mode = (CmsResourceDeleteMode)m_deleteSiblings.getValue();
             for (CmsResource resource : m_context.getResources()) {
+                if (resource.getState().isDeleted()) {
+                    continue;
+                }
                 changedIds.add(resource.getStructureId());
                 CmsLockActionRecord lockRecord = CmsLockUtil.ensureLock(cms, resource);
                 try {
