@@ -739,6 +739,17 @@ public class CmsFileTable extends CmsResourceTable {
     }
 
     /**
+     * Checks if the file table has a row for the resource with the given structure id.
+     *
+     * @param structureId a structure id
+     * @return true if the file table has a row for the resource with the given id
+     */
+    public boolean containsId(CmsUUID structureId) {
+
+        return m_fileTable.getContainerDataSource().getItem("" + structureId) != null;
+    }
+
+    /**
      * Returns if a file property is being edited.<p>
      * @return <code>true</code> if a file property is being edited
      */
