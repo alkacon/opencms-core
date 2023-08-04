@@ -34,6 +34,23 @@
   	height: 36px;
   }
   
+  .v-button.o-type-filter-button {
+    padding-left: 0px;
+    padding-right: 0px;
+    font-size: 18px;
+    margin-top: 1px; 
+    outline: none !important;
+    &:focus:after {
+        border-color: transparent;
+        box-shadow: none;
+    }
+    
+    
+    }
+    .o-type-filter-button-active {
+        color: $blue-light;        
+    }
+  
   .v-button.v-button-o-toolbar-button, .v-menubar.v-menubar-o-toolbar-button > .v-menubar-menuitem{
   	font-size: $app-icon-size;
     height: 40px;
@@ -162,6 +179,7 @@
   	  }
     }
   }
+  
   
   .o-button-site {
   	min-width: 200px;

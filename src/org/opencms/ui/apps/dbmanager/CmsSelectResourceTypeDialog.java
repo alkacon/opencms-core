@@ -55,6 +55,8 @@ public class CmsSelectResourceTypeDialog extends A_CmsSelectResourceTypeDialog {
     /** Element view selector. */
     protected ComboBox m_viewSelector;
 
+    protected Button m_modeToggle = new Button();
+
     /**
      * public constructor.<p>
      *
@@ -62,6 +64,7 @@ public class CmsSelectResourceTypeDialog extends A_CmsSelectResourceTypeDialog {
      * @param context dialog context
      */
     public CmsSelectResourceTypeDialog(CmsResource folderResource, I_CmsDialogContext context) {
+
         super(folderResource, context);
     }
 
@@ -72,6 +75,12 @@ public class CmsSelectResourceTypeDialog extends A_CmsSelectResourceTypeDialog {
     public Button getCancelButton() {
 
         return m_cancelButton;
+    }
+
+    @Override
+    public Button getModeToggle() {
+
+        return m_modeToggle;
     }
 
     /**

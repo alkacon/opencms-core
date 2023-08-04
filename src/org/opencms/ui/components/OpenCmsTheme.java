@@ -218,6 +218,9 @@ public final class OpenCmsTheme {
     /**Icon for OUs for web user. */
     public static final String ICON_OU_WEB = "oc-icon-24-webuser";
 
+    /** CSS style name.*/
+    public static final String ICON_PERSON_DATA = "oc-icon-32-person-data";
+
     /** The icon for all principal option (currently used in principal select).*/
     public static final String ICON_PRINCIPAL_ALL = "oc-icon-24-principal-all";
 
@@ -269,9 +272,6 @@ public final class OpenCmsTheme {
     /** The user icon CSS class.*/
     public static final String ICON_USER = "oc-icon-24-user";
 
-    /** CSS style name.*/
-    public static final String ICON_PERSON_DATA = "oc-icon-32-person-data";
-
     /** CSS style name. */
     public static final String IMAGE_GRADIENT = "o-image-gradient";
 
@@ -313,12 +313,12 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String NAVIGATOR_DROPDOWN = "o-navigator-dropdown";
+
     /** CSS style name. */
     public static final String NO_TRANSLATION_ICON = "o-notranslation";
 
     /** Path to the OpenCms logo theme resource. */
     public static final String OPENCMS_LOGO_PATH = "img/opencmsLogo.png";
-
     /** CSS style name. */
     public static final String PADDING_HORIZONTAL = "o-padding-horizontal";
 
@@ -327,6 +327,9 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String PROJECT_OTHER = "o-project-other";
+
+    /** CSS style name. */
+    public static final String QUICK_LAUNCH_EDITOR = "o-quicklaunch-editor";
 
     /** CSS style name. */
     public static final String REDUCED_MARGIN = "o-reduced-margin";
@@ -467,6 +470,12 @@ public final class OpenCmsTheme {
     public static final String TOOLS_BREADCRUMB = "o-tools-breadcrumb";
 
     /** CSS style name. */
+    public static final String TYPE_FILTER_BUTTON = "o-type-filter-button";
+
+    /** CSS style name. */
+    public static final String TYPE_FILTER_BUTTON_ACTIVE = "o-type-filter-button-active";
+
+    /** CSS style name. */
     public static final String USER_IMAGE = "o-user-image";
 
     /** CSS style name. */
@@ -483,9 +492,6 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     protected static final String QUICK_LAUNCH = "o-quicklaunch";
-
-    /** CSS style name. */
-    public static final String QUICK_LAUNCH_EDITOR = "o-quicklaunch-editor";
 
     /**
      * Hidden default constructor.

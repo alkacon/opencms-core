@@ -43,11 +43,14 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.CmsResourceInfo;
+import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.components.extensions.CmsMaxHeightExtension;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
@@ -73,13 +76,18 @@ import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.server.Resource;
 import com.vaadin.server.VaadinService;
+import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.declarative.Design;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.shared.ui.label.ContentMode;
@@ -107,8 +115,6 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
-    private Map<CmsResourceTypeBean, CmsResourceInfo> m_resourceInfoMap = new HashMap<CmsResourceTypeBean, CmsResourceInfo>();
-
     /** The created resource. */
     protected CmsResource m_createdResource;
 
@@ -117,6 +123,15 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
 
     /** The dialog context. */
     protected I_CmsDialogContext m_dialogContext;
+
+    /** The filter field, wrapped in an array to prevent the declarative layout mechanism from messing with it. */
+    protected TextField[] m_filterField = {new TextField()};
+
+    /** True if we are in filtering mode. */
+    protected boolean m_filterMode;
+
+    /** The filter string (null if not filtering). */
+    protected String m_filterString;
 
     /** The current folder. */
     protected CmsResource m_folderResource;
@@ -127,10 +142,12 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
     /** The type helper. */
     protected CmsAddDialogTypeHelper m_typeHelper;
 
-    private Runnable m_selectedRunnable;
-
     /** List of all types. */
     private List<CmsResourceTypeBean> m_allTypes;
+
+    private Map<CmsResourceTypeBean, CmsResourceInfo> m_resourceInfoMap = new HashMap<CmsResourceTypeBean, CmsResourceInfo>();
+
+    private Runnable m_selectedRunnable;
 
     /**
      * Creates a new instance.<p>
@@ -152,6 +169,9 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
                 return true;
             }
         });
+        getModeToggle().addStyleName(ValoTheme.BUTTON_BORDERLESS);
+        getModeToggle().addStyleName(OpenCmsTheme.TYPE_FILTER_BUTTON);
+
         CmsUUID initViewId = (CmsUUID)VaadinService.getCurrentRequest().getWrappedSession().getAttribute(
             SETTING_STANDARD_VIEW);
         if (initViewId == null) {
@@ -200,6 +220,21 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
                 }
             }
         });
+
+        m_filterField[0].setValueChangeMode(ValueChangeMode.LAZY);
+        m_filterField[0].setValueChangeTimeout(200);
+        m_filterField[0].setWidth("250px");
+        m_filterField[0].setIcon(FontOpenCms.FILTER);
+        m_filterField[0].setPlaceholder(
+            org.opencms.ui.apps.Messages.get().getBundle(UI.getCurrent().getLocale()).key(
+                org.opencms.ui.apps.Messages.GUI_EXPLORER_FILTER_0));
+        m_filterField[0].addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+        m_filterField[0].addValueChangeListener(event -> {
+            if (m_filterField[0].getParent() != null) {
+                init(m_currentView, useDefault(), event.getValue());
+            }
+        });
+        getModeToggle().addClickListener(e -> setFilterMode(!m_filterMode));
         setActionHandler(new CmsOkCancelActionHandler() {
 
             private static final long serialVersionUID = 1L;
@@ -216,7 +251,8 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
                 // nothing to do
             }
         });
-        init(initView, true);
+        init(initView, true, null);
+        setFilterModeStyle(false);
     }
 
     /**
@@ -237,8 +273,25 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
         }
     }
 
+    /**
+     * Gets the Cancel button.
+     *
+     * @return the cancel button
+     */
     public abstract Button getCancelButton();
 
+    /**
+     * Gets the mode toggle button.
+     *
+     * @return the mode toggle button
+     */
+    public abstract Button getModeToggle();
+
+    /**
+     * Gets the type info widget for the selected type.
+     *
+     * @return the type info widget for the selected type
+     */
     public CmsResourceInfo getTypeInfoLayout() {
 
         return m_selectedType != null ? m_resourceInfoMap.get(m_selectedType) : null;
@@ -261,9 +314,13 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
      * @param view the element view
      * @param useDefault true if we should use the default location for resource creation
      */
-    public void init(CmsElementView view, boolean useDefault) {
+    public void init(CmsElementView view, boolean useDefault, String filter) {
 
         m_currentView = view;
+        m_filterString = filter;
+        if (filter != null) {
+            filter = filter.toLowerCase();
+        }
         if (!view.getId().equals(getViewSelector().getValue())) {
             getViewSelector().setValue(view.getId());
         }
@@ -298,9 +355,18 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
             final String typeName = type.getType();
             String title = typeName;
             String subtitle = getSubtitle(type, useDefault);
+
             CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
 
             title = CmsVaadinUtils.getMessageText(explorerType.getKey());
+
+            if (filter != null) {
+                String filterable = (title + "\n" + typeName).toLowerCase();
+                if (!filterable.contains(filter)) {
+                    continue;
+                }
+            }
+
             CmsResourceInfo info = new CmsResourceInfo();
             info.getTopLine().setContentMode(ContentMode.HTML);
             String suffix = "";
@@ -367,6 +433,62 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
             subtitle = CmsVaadinUtils.getMessageText(Messages.GUI_NEW_CREATE_IN_PATH_1, path);
         }
         return subtitle;
+    }
+
+    /**
+     * Enables or disables filtering mode.
+     *
+     * @param filterMode true if filtering mode should be enabled
+     */
+    protected void setFilterMode(boolean filterMode) {
+
+        Component typePanel = getVerticalLayout().getParent();
+        Layout row = null;
+        if (m_filterField[0].isAttached()) {
+            row = (Layout)(m_filterField[0].getParent());
+        } else {
+            row = (Layout)(getViewSelector().getParent());
+        }
+
+        m_filterMode = filterMode;
+        setFilterModeStyle(filterMode);
+        if (filterMode) {
+            getViewSelector().setValue(A_CmsSelectResourceTypeDialog.ID_VIEW_ALL);
+            row.replaceComponent(getViewSelector(), m_filterField[0]);
+            m_filterField[0].focus();
+            typePanel.setHeight("400px");
+
+            // We have to disable this because it ultimately results in
+            // calls to setHeight in Horizontal/VerticalLayouts which
+            // can cause the focus on the filter field to be lost (apparently because
+            // the client-side implementations do some tricky DOM manipulation).
+            setMaxHeightEnabled(false);
+
+            CmsVaadinUtils.getWindow(this).center();
+        } else {
+            row.replaceComponent(m_filterField[0], getViewSelector());
+            m_filterField[0].clear();
+            typePanel.setHeight("100%");
+            setMaxHeightEnabled(true);
+            init(m_currentView, useDefault(), null);
+            CmsVaadinUtils.getWindow(this).center();
+        }
+    }
+
+    /**
+     * Sets the style of the filter mode toggle button.
+     *
+     * @param filterMode if true, changes the mode toggle to 'filtering' style
+     */
+    protected void setFilterModeStyle(boolean filterMode) {
+
+        if (filterMode) {
+            getModeToggle().addStyleName(OpenCmsTheme.TYPE_FILTER_BUTTON_ACTIVE);
+            getModeToggle().setIcon(FontOpenCms.FILTER);
+        } else {
+            getModeToggle().setIcon(FontOpenCms.FILTER);
+            getModeToggle().removeStyleName(OpenCmsTheme.TYPE_FILTER_BUTTON_ACTIVE);
+        }
     }
 
     /**
@@ -442,7 +564,7 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
                     selectedView = OpenCms.getADEManager().getElementViews(A_CmsUI.getCmsObject()).get(
                         event.getProperty().getValue());
                 }
-                init(selectedView, useDefault());
+                init(selectedView, useDefault(), null);
                 if (selectedView != VIEW_ALL) {
                     VaadinService.getCurrentRequest().getWrappedSession().setAttribute(
                         SETTING_STANDARD_VIEW,
@@ -455,6 +577,20 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
         } else {
             return OpenCms.getADEManager().getElementViews(A_CmsUI.getCmsObject()).get(startId);
         }
+    }
+
+    /**
+     * Enables or disables the max-height extension.
+     *
+     * @param enabled true if the extension should be enabled
+     */
+    private void setMaxHeightEnabled(boolean enabled) {
+
+        getExtensions().forEach(ext -> {
+            if (ext instanceof CmsMaxHeightExtension) {
+                ((CmsMaxHeightExtension)ext).setEnabled(enabled);
+            }
+        });
     }
 
 }

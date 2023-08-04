@@ -64,6 +64,9 @@ public class CmsMaxHeightExtension extends AbstractExtension implements I_CmsMax
     /** The list of height change handlers. */
     private List<I_HeightChangeHandler> m_heightChangeHandlers = Lists.newArrayList();
 
+    /** If false, disable automatic height changes. */
+    private boolean m_enabled = true;
+
     /**
      * Constructor.<p>
      *
@@ -71,6 +74,7 @@ public class CmsMaxHeightExtension extends AbstractExtension implements I_CmsMax
      * @param maxHeight the max height
      */
     public CmsMaxHeightExtension(AbstractComponent component, int maxHeight) {
+
         m_component = component;
         extend(component);
         registerRpc(this);
@@ -93,6 +97,9 @@ public class CmsMaxHeightExtension extends AbstractExtension implements I_CmsMax
      */
     public void fixHeight(int height) {
 
+        if (!m_enabled) {
+            return;
+        }
         if (height < 1) {
             m_component.setHeightUndefined();
         } else {
@@ -111,6 +118,16 @@ public class CmsMaxHeightExtension extends AbstractExtension implements I_CmsMax
     public void removeHeightChangeHandler(Runnable action) {
 
         m_heightChangeHandlers.remove(action);
+    }
+
+    /**
+     * Enables / disables automatic height changes.
+     *
+     * @param enabled if true, enable automatic height changes
+     */
+    public void setEnabled(boolean enabled) {
+
+        m_enabled = enabled;
     }
 
     /**

@@ -47,6 +47,9 @@ import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+
 /**
  * Dialog for changing the resource type.<p>
  */
@@ -70,7 +73,11 @@ public class CmsChangeTypeDialog extends CmsNewDialog {
 
         super(A_CmsUI.getCmsObject().readParentFolder(context.getResources().get(0).getStructureId()), context);
         displayResourceInfo(context.getResources());
-        m_defaultLocationCheckbox.setVisible(false);
+        HorizontalLayout layout = (HorizontalLayout)m_defaultLocationCheckbox.getParent();
+        Label l = new Label();
+        l.setWidth("100%");
+        layout.replaceComponent(m_defaultLocationCheckbox, l);
+        layout.setExpandRatio(l, 1.0f);
     }
 
     /**

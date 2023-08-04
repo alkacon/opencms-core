@@ -46,9 +46,9 @@ import java.util.ArrayList;
 
 import com.google.common.collect.Lists;
 import com.vaadin.annotations.DesignRoot;
+import com.vaadin.ui.Button;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
-import com.vaadin.ui.Button;
 import com.vaadin.v7.ui.CheckBox;
 import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.VerticalLayout;
@@ -71,6 +71,8 @@ public class CmsNewDialog extends A_CmsSelectResourceTypeDialog {
     /** The cancel button. */
     protected Button m_cancelButton;
 
+    protected Button m_modeToggle;
+
     /**
      * Creates a new instance.<p>
      *
@@ -78,7 +80,9 @@ public class CmsNewDialog extends A_CmsSelectResourceTypeDialog {
      * @param context the context
      */
     public CmsNewDialog(CmsResource folderResource, I_CmsDialogContext context) {
+
         super(folderResource, context);
+
         m_defaultLocationCheckbox.setValue(getInitialValueForUseDefaultLocationOption(folderResource));
         m_defaultLocationCheckbox.addValueChangeListener(new ValueChangeListener() {
 
@@ -87,7 +91,7 @@ public class CmsNewDialog extends A_CmsSelectResourceTypeDialog {
             public void valueChange(ValueChangeEvent event) {
 
                 try {
-                    init(m_currentView, ((Boolean)event.getProperty().getValue()).booleanValue());
+                    init(m_currentView, ((Boolean)event.getProperty().getValue()).booleanValue(), m_filterString);
                 } catch (Exception e) {
                     m_dialogContext.error(e);
                 }
@@ -101,6 +105,12 @@ public class CmsNewDialog extends A_CmsSelectResourceTypeDialog {
     public Button getCancelButton() {
 
         return m_cancelButton;
+    }
+
+    @Override
+    public Button getModeToggle() {
+
+        return m_modeToggle;
     }
 
     @Override
