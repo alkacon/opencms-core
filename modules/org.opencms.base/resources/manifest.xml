@@ -206,8 +206,7 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 				<param name="schema">/system/modules/org.opencms.ade.sitemap/schemas/redirect.xsd</param>
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeFolderSubSitemap" name="subsitemap" id="23"/>
-			<type class="org.opencms.file.types.CmsResourceTypeSubsitemapContentFolder" name="content_folder" id="24">
-			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeSubsitemapContentFolder" name="content_folder" id="24"/>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration" name="sitemap_config" id="14">
 				<properties>
 					<property>
@@ -434,56 +433,55 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/formatters/flex_formatter.xsd</param>
 			</type>
-            <type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration" name="ugc_config" id="309">
-                <properties>
-                    <property>
-                        <name>locale-available</name>
-                        <value><![CDATA[en]]></value>
-                    </property>
-                    <property>
-                        <name>locale</name>
-                        <value><![CDATA[en]]></value>
-                    </property>
-                </properties>
-                <param name="resource.flag.internal">true</param>
-                <param name="schema">/system/modules/org.opencms.ugc/schemas/ugc_config.xsd</param>
-            </type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration" name="ugc_config" id="309">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+				</properties>
+				<param name="resource.flag.internal">true</param>
+				<param name="schema">/system/modules/org.opencms.ugc/schemas/ugc_config.xsd</param>
+			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="jsp-search" id="311">
 				<param name="schema">/system/modules/org.opencms.jsp.search/schemas/jsp-search.xsd</param>
 			</type>
-            <type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration" name="site_plugin" id="323">
-                <properties>
-                    <property>
-                        <name>locale-available</name>
-                        <value><![CDATA[en]]></value>
-                    </property>
-                    <property>
-                        <name>locale</name>
-                        <value><![CDATA[en]]></value>
-                    </property>
-                </properties>
-                <param name="resource.flag.internal">true</param>
-                <param name="schema">/system/modules/org.opencms.ade.config/schemas/site_plugin.xsd</param>
-            </type>
-            <type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration" name="attr_editor_config" id="324">
-                <properties>
-                    <property>
-                        <name>locale-available</name>
-                        <value><![CDATA[en]]></value>
-                    </property>
-                    <property>
-                        <name>locale</name>
-                        <value><![CDATA[en]]></value>
-                    </property>
-                </properties>
-                <param name="resource.flag.internal">true</param>
-                <param name="schema">/system/modules/org.opencms.ade.config/schemas/attr_editor_config.xsd</param>
-            </type>
-			
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration" name="site_plugin" id="323">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+				</properties>
+				<param name="resource.flag.internal">true</param>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/site_plugin.xsd</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration" name="attr_editor_config" id="324">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+				</properties>
+				<param name="resource.flag.internal">true</param>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/attr_editor_config.xsd</param>
+			</type>
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="subsitemap" key="fileicon.subsitemap" smalliconstyle="oc-icon-16-subsitemap" bigiconstyle="oc-icon-24-subsitemap" reference="folder">
-				<newresource order="490" autosetnavigation="false" autosettitle="false" info="desc.subsitemap"/>
+				<newresource creatable="true" order="490" autosetnavigation="false" autosettitle="false" info="desc.subsitemap"/>
 			</explorertype>
 			<explorertype name="modelpage" key="fileicon.modelpage" smalliconstyle="oc-icon-16-modelpage" bigiconstyle="oc-icon-24-modelpage" reference="folder">
 				<newresource creatable="false" order="490" autosetnavigation="false" autosettitle="false" info=""/>
@@ -492,13 +490,13 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 				<newresource creatable="false" order="490" autosetnavigation="false" autosettitle="false" info=""/>
 			</explorertype>
 			<explorertype name="htmlredirect" key="fileicon.htmlredirect" smalliconstyle="oc-icon-16-htmlredirect" bigiconstyle="oc-icon-24-htmlredirect" reference="xmlcontent">
-				<newresource order="27" autosetnavigation="true" autosettitle="true" info="desc.htmlredirect"/>
+				<newresource creatable="true" order="27" autosetnavigation="true" autosettitle="true" info="desc.htmlredirect"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.EDITOR" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="containerpage" key="fileicon.containerpage" smalliconstyle="oc-icon-16-containerpage" bigiconstyle="oc-icon-24-containerpage" reference="xmlcontent">
-				<newresource order="25" autosetnavigation="false" autosettitle="false" info="desc.containerpage"/>
+				<newresource creatable="true" order="25" autosetnavigation="false" autosettitle="false" info="desc.containerpage"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.EDITOR" permissions="+r+v+w+c"/>
 					<accessentry principal="ROLE.ELEMENT_AUTHOR" permissions="+r+v+w"/>
@@ -512,46 +510,46 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 				</editoptions>
 			</explorertype>
 			<explorertype name="groupcontainer" key="fileicon.groupcontainer" smalliconstyle="oc-icon-16-elementgroup" bigiconstyle="oc-icon-24-elementgroup" reference="xmlcontent">
-				<newresource order="26" autosetnavigation="false" autosettitle="false" info="desc.groupcontainer"/>
+				<newresource creatable="true" order="26" autosetnavigation="false" autosettitle="false" info="desc.groupcontainer"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.ELEMENT_AUTHOR" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="elementview" key="fileicon.elementview" smalliconstyle="oc-icon-16-function" bigiconstyle="oc-icon-24-function" reference="xmlcontent">
-				<newresource order="999" autosetnavigation="false" autosettitle="false" info="desc.elementview"/>
+				<newresource creatable="true" order="999" autosetnavigation="false" autosettitle="false" info="desc.elementview"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v-w-c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="function" key="fileicon.function" smalliconstyle="oc-icon-16-function" bigiconstyle="oc-icon-24-function" reference="xmlcontent">
-				<newresource order="999" autosetnavigation="false" autosettitle="false" info="desc.function"/>
+				<newresource creatable="true" order="999" autosetnavigation="false" autosettitle="false" info="desc.function"/>
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v"/>
 					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="function_config" key="fileicon.function_config" smalliconstyle="oc-icon-16-function" bigiconstyle="oc-icon-24-function" reference="xmlcontent">
-				<newresource order="999" autosetnavigation="false" autosettitle="false" info="desc.function"/>
+				<newresource creatable="true" order="999" autosetnavigation="false" autosettitle="false" info="desc.function"/>
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v"/>
 					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="seo_file" key="fileicon.seo_file" reference="xmlcontent">
-				<newresource order="998" autosetnavigation="false" autosettitle="false" info="desc.seo_file"/>
+				<newresource creatable="true" order="998" autosetnavigation="false" autosettitle="false" info="desc.seo_file"/>
 			</explorertype>
 			<explorertype name="containerpage_template" key="fileicon.containerpage_template" smalliconstyle="oc-icon-16-containerpage_template" bigiconstyle="oc-icon-24-containerpage_template" reference="jsp">
-				<newresource order="22" autosetnavigation="false" autosettitle="false" info="desc.containerpage_template"/>
+				<newresource creatable="true" order="22" autosetnavigation="false" autosettitle="false" info="desc.containerpage_template"/>
 			</explorertype>
 			<explorertype name="content_folder" key="fileicon.configfolder" smalliconstyle="oc-icon-16-configfolder" bigiconstyle="oc-icon-24-configfolder" reference="folder">
-				<newresource order="491" autosetnavigation="false" autosettitle="false" info="desc.configfolder"/>
+				<newresource creatable="true" order="491" autosetnavigation="false" autosettitle="false" info="desc.configfolder"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.EDITOR" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="sitemap_config" key="fileicon.sitemap_config" smalliconstyle="oc-icon-16-sitemap_config" bigiconstyle="oc-icon-24-sitemap_config" reference="xmlcontent">
-				<newresource order="21" autosetnavigation="false" autosettitle="false" info="desc.sitemap_config"/>
+				<newresource creatable="true" order="21" autosetnavigation="false" autosettitle="false" info="desc.sitemap_config"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.EDITOR" permissions="+r+v+w+c"/>
 				</accesscontrol>
@@ -564,62 +562,62 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 				</editoptions>
 			</explorertype>
 			<explorertype name="module_config" key="fileicon.module_config" smalliconstyle="oc-icon-16-module_config" bigiconstyle="oc-icon-24-module_config" reference="xmlcontent">
-				<newresource order="22" autosetnavigation="false" autosettitle="false" info="desc.module_config"/>
+				<newresource creatable="true" order="22" autosetnavigation="false" autosettitle="false" info="desc.module_config"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="sitemap_master_config" key="fileicon.sitemap_master_config" smalliconstyle="oc-icon-16-module_config" bigiconstyle="oc-icon-24-module_config" reference="xmlcontent">
-				<newresource order="23" autosetnavigation="false" autosettitle="false" info="desc.sitemap_master_config"/>
+				<newresource creatable="true" order="23" autosetnavigation="false" autosettitle="false" info="desc.sitemap_master_config"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="formatter_config" key="fileicon.formatter_config" smalliconstyle="oc-icon-16-formatter_config" bigiconstyle="oc-icon-24-formatter_config" reference="xmlcontent">
-				<newresource order="23" autosetnavigation="false" autosettitle="false" info="desc.formatter_config"/>
+				<newresource creatable="true" order="23" autosetnavigation="false" autosettitle="false" info="desc.formatter_config"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="settings_config" key="fileicon.settings_config" smalliconstyle="oc-icon-16-formatter_config" bigiconstyle="oc-icon-24-formatter_config" reference="xmlcontent">
-				<newresource order="23" autosetnavigation="false" autosettitle="false" info="desc.settings_config"/>
+				<newresource creatable="true" order="23" autosetnavigation="false" autosettitle="false" info="desc.settings_config"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="inheritance_group" key="fileicon.inheritance_group" smalliconstyle="oc-icon-16-inheritancegroup" bigiconstyle="oc-icon-24-inheritancegroup" reference="xmlcontent">
-				<newresource order="27" autosetnavigation="false" autosettitle="false" info="desc.inheritance_group"/>
+				<newresource creatable="true" order="27" autosetnavigation="false" autosettitle="false" info="desc.inheritance_group"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.ELEMENT_AUTHOR" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="inheritance_config" key="fileicon.inheritance_config" smalliconstyle="oc-icon-16-inheritancegroup" bigiconstyle="oc-icon-24-inheritancegroup" reference="xmlcontent">
-				<newresource order="28" autosetnavigation="false" autosettitle="false" info="desc.inheritance_config"/>
+				<newresource creatable="true" order="28" autosetnavigation="false" autosettitle="false" info="desc.inheritance_config"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.ELEMENT_AUTHOR" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="xmlvfsbundle" key="fileicon.xmlvfsbundle" smalliconstyle="oc-icon-16-localization" bigiconstyle="oc-icon-24-localization" reference="xmlcontent">
-				<newresource page="otheroptions" uri="newresource_xmlcontent.jsp?newresourcetype=xmlvfsbundle" order="28" autosetnavigation="false" autosettitle="false" info="desc.xmlvfsbundle"/>
+				<newresource creatable="true" order="28" autosetnavigation="false" autosettitle="false" info="desc.xmlvfsbundle"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="propertyvfsbundle" key="fileicon.propertyvfsbundle" smalliconstyle="oc-icon-16-localization" bigiconstyle="oc-icon-24-localization" reference="plain">
-				<newresource order="30" autosetnavigation="false" autosettitle="false" info="desc.propertyvfsbundle"/>
+				<newresource creatable="true" order="30" autosetnavigation="false" autosettitle="false" info="desc.propertyvfsbundle"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="modelgroup" key="fileicon.modelgroup" smalliconstyle="oc-icon-16-modelgroup_reuse" bigiconstyle="oc-icon-24-modelgroup_reuse" reference="xmlcontent">
-				<newresource order="50" autosetnavigation="false" autosettitle="false" info="desc.modelgroup"/>
+				<newresource creatable="true" order="50" autosetnavigation="false" autosettitle="false" info="desc.modelgroup"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
 					<accessentry principal="ROLE.ELEMENT_AUTHOR" permissions="+r+v"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="macro_formatter" key="fileicon.macro_formatter" smalliconstyle="oc-icon-16-formatter_config" bigiconstyle="oc-icon-24-formatter_config" reference="xmlcontent">
-				<newresource order="24" autosetnavigation="false" autosettitle="false" info="desc.macro_formatter"/>
+				<newresource creatable="true" order="24" autosetnavigation="false" autosettitle="false" info="desc.macro_formatter"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
 					<accessentry principal="ROLE.ELEMENT_AUTHOR" permissions="+r+v"/>
@@ -650,49 +648,46 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="bundledescriptor" key="fileicon.bundledescriptor" smalliconstyle="oc-icon-16-localization_descriptor" bigiconstyle="oc-icon-24-localization_descriptor" reference="xmlcontent">
-				<newresource order="29" autosetnavigation="false" autosettitle="false" info="desc.bundledescriptor"/>
+				<newresource creatable="true" order="29" autosetnavigation="false" autosettitle="false" info="desc.bundledescriptor"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="listconfig" key="fileicon.listconfig" smalliconstyle="oc-icon-16-list" bigiconstyle="oc-icon-24-list" reference="xmlcontent">
-				<newresource order="29" autosetnavigation="false" autosettitle="false" info="desc.listconfig"/>
+				<newresource creatable="true" order="29" autosetnavigation="false" autosettitle="false" info="desc.listconfig"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.EDITOR" permissions="+r+v"/>
 					<accessentry principal="ROLE.LIST_EDITOR" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="flex_formatter" key="fileicon.flex_formatter" smalliconstyle="oc-icon-16-formatter_config" bigiconstyle="oc-icon-24-formatter_config" reference="xmlcontent">
-				<newresource order="24" autosetnavigation="false" autosettitle="false" info="desc.flex_formatter"/>
+				<newresource creatable="true" order="24" autosetnavigation="false" autosettitle="false" info="desc.flex_formatter"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
 					<accessentry principal="ROLE.ELEMENT_AUTHOR" permissions="+r+v"/>
 				</accesscontrol>
 			</explorertype>
-            <explorertype name="ugc_config" key="fileicon.ugc_config" smalliconstyle="oc-icon-16-module_config" bigiconstyle="oc-icon-24-module_config" reference="xmlcontent">
-                <newresource order="23" autosetnavigation="false" autosettitle="false" info="desc.ugc_config"/>
-                <accesscontrol>
-                    <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
-                </accesscontrol>
-            </explorertype>
-			<explorertype name="jsp-search" key="fileicon.jsp-search" smalliconstyle="oc-icon-16-jsp_search" bigiconstyle="oc-icon-24-jsp_search" reference="xmlcontent">
-				<newresource order="10" autosetnavigation="false" autosettitle="false" info="desc.jsp-search" key="title.jsp-search"/>
-			</explorertype>
-			
-     		<explorertype name="site_plugin" key="fileicon.site_plugin" smalliconstyle="oc-icon-16-formatter_config" bigiconstyle="oc-icon-24-formatter_config" reference="xmlcontent">
-				<newresource order="23" autosetnavigation="false" autosettitle="false" info="desc.site_plugin"/>
+			<explorertype name="ugc_config" key="fileicon.ugc_config" smalliconstyle="oc-icon-16-module_config" bigiconstyle="oc-icon-24-module_config" reference="xmlcontent">
+				<newresource creatable="true" order="23" autosetnavigation="false" autosettitle="false" info="desc.ugc_config"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			 <explorertype name="attr_editor_config" key="fileicon.attr_editor_config" smalliconstyle="oc-icon-16-formatter_config" bigiconstyle="oc-icon-24-formatter_config" reference="xmlcontent">
-                <newresource order="23" autosetnavigation="false" autosettitle="false" info="desc.attr_editor_config"/>
-                <accesscontrol>
-                    <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
-                </accesscontrol>
-            </explorertype>
-			
-			
+			<explorertype name="jsp-search" key="fileicon.jsp-search" smalliconstyle="oc-icon-16-jsp_search" bigiconstyle="oc-icon-24-jsp_search" reference="xmlcontent">
+				<newresource creatable="true" order="10" autosetnavigation="false" autosettitle="false" info="desc.jsp-search" key="title.jsp-search"/>
+			</explorertype>
+			<explorertype name="site_plugin" key="fileicon.site_plugin" smalliconstyle="oc-icon-16-formatter_config" bigiconstyle="oc-icon-24-formatter_config" reference="xmlcontent">
+				<newresource creatable="true" order="23" autosetnavigation="false" autosettitle="false" info="desc.site_plugin"/>
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="attr_editor_config" key="fileicon.attr_editor_config" smalliconstyle="oc-icon-16-formatter_config" bigiconstyle="oc-icon-24-formatter_config" reference="xmlcontent">
+				<newresource creatable="true" order="23" autosetnavigation="false" autosettitle="false" info="desc.attr_editor_config"/>
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
 		</explorertypes>
 	</module>
 	<files>
@@ -1333,7 +1328,7 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 			<properties>
 				<property>
 					<name>cache</name>
-					<value>ignore</value>
+					<value><![CDATA[ignore]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1360,23 +1355,23 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 			<relations/>
 			<accesscontrol/>
 		</file>
-        <file>
-            <source>system/modules/org.opencms.base/formatters/usergenerated-default.jsp</source>
-            <destination>system/modules/org.opencms.base/formatters/usergenerated-default.jsp</destination>
-            <type>jsp</type>
-            <uuidstructure>05d94da5-dfec-11e3-b2f0-005056b60ccd</uuidstructure>
-            <uuidresource>05d94da6-dfec-11e3-b2f0-005056b60ccd</uuidresource>
-            <datecreated>Tue, 20 May 2014 06:57:35 GMT</datecreated>
-            <flags>0</flags>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <value><![CDATA[Default formatter for UGC form elements]]></value>
-                </property>
-            </properties>
-            <relations/>
-            <accesscontrol/>
-        </file>
+		<file>
+			<source>system/modules/org.opencms.base/formatters/usergenerated-default.jsp</source>
+			<destination>system/modules/org.opencms.base/formatters/usergenerated-default.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>05d94da5-dfec-11e3-b2f0-005056b60ccd</uuidstructure>
+			<uuidresource>05d94da6-dfec-11e3-b2f0-005056b60ccd</uuidresource>
+			<datecreated>Tue, 20 May 2014 06:57:35 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Default formatter for UGC form elements]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
 		<file>
 			<destination>system/modules/org.opencms.base/pages</destination>
 			<type>folder</type>
@@ -2528,7 +2523,16 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 			<flags>0</flags>
 			<properties/>
 			<relations/>
-			<accesscontrol/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+					<flags>512</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<source>system/workplace/commons/direct_publish.jsp</source>
