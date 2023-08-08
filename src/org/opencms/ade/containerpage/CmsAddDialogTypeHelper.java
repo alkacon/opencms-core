@@ -37,7 +37,6 @@ import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean.Origin;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -256,8 +255,6 @@ public class CmsAddDialogTypeHelper {
         for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {
             m_allAdeTypes.add(typeConfig.getTypeName());
             typesFromConfig.add(typeConfig.getTypeName());
-            boolean isModelGroup = CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME.equals(
-                typeConfig.getTypeName());
             try {
                 AddMenuVisibility visibility = typeConfig.getAddMenuVisibility(elementView.getId(), m_menuType);
 
@@ -265,7 +262,7 @@ public class CmsAddDialogTypeHelper {
                     continue;
                 }
 
-                if (isModelGroup || (visibility == AddMenuVisibility.fromOtherView)) {
+                if (visibility == AddMenuVisibility.fromOtherView) {
                     typesAtTheEndOfTheList.add(typeConfig.getTypeName());
                 }
                 if (typeConfig.checkViewable(cms, checkViewableReferenceUri)) {
