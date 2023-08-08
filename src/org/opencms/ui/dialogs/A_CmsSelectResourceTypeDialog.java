@@ -456,7 +456,7 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
             getViewSelector().setValue(A_CmsSelectResourceTypeDialog.ID_VIEW_ALL);
             row.replaceComponent(getViewSelector(), m_filterField[0]);
             m_filterField[0].focus();
-            typePanel.setHeight("400px");
+            typePanel.setHeight("425px");
 
             // We have to disable this because it ultimately results in
             // calls to setHeight in Horizontal/VerticalLayouts which
