@@ -562,6 +562,16 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     }
 
     /**
+     * Returns the order as an object (or null if it's not set).
+     *
+     * @return the order
+     */
+    public Integer getOrderObject() {
+
+        return m_order;
+    }
+
+    /**
      * Gets the actual resource type for which this is a configuration.<p>
      *
      * @return the actual resource type
