@@ -112,6 +112,7 @@ public class CmsAddDialogTypeHelper {
      *
      * @param cms the CMS context
      * @param folderRootPath the current folder
+     * @param createContextPath the path to pass to CmsResourceTypeConfig#checkCreatable
      * @param checkViewableReferenceUri the reference uri to use for viewability check
      * @param elementView the element view
      * @param checkEnabled object to check whether resource types should be enabled
@@ -123,6 +124,7 @@ public class CmsAddDialogTypeHelper {
     public List<CmsResourceTypeBean> getResourceTypes(
         CmsObject cms,
         String folderRootPath,
+        String createContextPath,
         String checkViewableReferenceUri,
         CmsElementView elementView,
         I_CmsResourceTypeEnabledCheck checkEnabled)
@@ -163,6 +165,7 @@ public class CmsAddDialogTypeHelper {
         return internalGetResourceTypesFromConfig(
             cms,
             folderRootPath,
+            createContextPath,
             checkViewableReferenceUri,
             elementView,
             additionalTypes,
@@ -202,7 +205,7 @@ public class CmsAddDialogTypeHelper {
             try {
                 result.putAll(
                     view.getId(),
-                    getResourceTypes(cms, folderRootPath, checkViewableReferenceUri, view, check));
+                    getResourceTypes(cms, folderRootPath, null, checkViewableReferenceUri, view, check));
             } catch (Exception e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
@@ -227,6 +230,7 @@ public class CmsAddDialogTypeHelper {
      *
      * @param cms the CMS context
      * @param folderRootPath the current folder
+     * @param createContextPath the path to pass to CmsResourceTypeConfig#checkCreatable
      * @param checkViewableReferenceUri the reference uri to use for viewability check
      * @param elementView  the view id
      * @param additionalTypes the additional types to add
@@ -239,12 +243,16 @@ public class CmsAddDialogTypeHelper {
     private List<CmsResourceTypeBean> internalGetResourceTypesFromConfig(
         CmsObject cms,
         String folderRootPath,
+        String createContextPath,
         String checkViewableReferenceUri,
         CmsElementView elementView,
         List<I_CmsResourceType> additionalTypes,
         I_CmsResourceTypeEnabledCheck checkEnabled)
     throws CmsException {
 
+        if (createContextPath == null) {
+            createContextPath = folderRootPath;
+        }
         CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, folderRootPath);
         // String uri = cms.getRequestContext().removeSiteRoot(rootFolder);
         List<I_CmsResourceType> resourceTypes = new ArrayList<I_CmsResourceType>();
@@ -280,14 +288,14 @@ public class CmsAddDialogTypeHelper {
             }
         }
         Set<String> creatableTypes = new HashSet<String>();
-        for (CmsResourceTypeConfig typeConfig : config.getCreatableTypes(cms, folderRootPath)) {
+        for (CmsResourceTypeConfig typeConfig : config.getCreatableTypes(cms, createContextPath)) {
             AddMenuVisibility visibility = typeConfig.getAddMenuVisibility(elementView.getId(), m_menuType);
             if ((AddMenuVisibility.disabled == visibility)
                 || (AddMenuVisibility.createDisabled == visibility)
                 || disabledTypes.contains(typeConfig.getTypeName())) {
                 continue;
             }
-            createPaths.put(typeConfig.getTypeName(), typeConfig.getFolderPath(cms, folderRootPath));
+            createPaths.put(typeConfig.getTypeName(), typeConfig.getFolderPath(cms, createContextPath));
             namePatterns.put(typeConfig.getTypeName(), typeConfig.getNamePattern(false));
             String typeName = typeConfig.getTypeName();
             creatableTypes.add(typeName);

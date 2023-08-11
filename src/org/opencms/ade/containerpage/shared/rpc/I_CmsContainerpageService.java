@@ -98,6 +98,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * Returns a bean containing either the new element data or a list of model resources to select.<p>
      *
      * @param pageStructureId the container page structure id
+     * @param detailContentId the structure id of the detail content
      * @param clientId the client id of the new element (this will be the structure id of the configured new resource)
      * @param resourceType the resource tape of the new element
      * @param container the parent container
@@ -109,6 +110,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      */
     CmsCreateElementData checkCreateNewElement(
         CmsUUID pageStructureId,
+        CmsUUID detailContentId,
         String clientId,
         String resourceType,
         CmsContainer container,
@@ -142,6 +144,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * Creates a new element of the given type and returns the new element data containing structure id and site path.<p>
      *
      * @param pageStructureId the container page structure id
+     * @param detailContentId the structure id of the detail content
      * @param clientId the client id of the new element (this will be the structure id of the configured new resource)
      * @param resourceType the resource tape of the new element
      * @param modelResourceStructureId the model resource structure id
@@ -153,6 +156,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      */
     CmsContainerElement createNewElement(
         CmsUUID pageStructureId,
+        CmsUUID detailContentId,
         String clientId,
         String resourceType,
         CmsUUID modelResourceStructureId,
@@ -314,6 +318,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param containers the page containers
      * @param elementView the element view
      * @param uri the page URI
+     * @param detailContentId the detail content id
      * @param locale the content locale
      * @param contextInfo the template context information
      *
@@ -325,6 +330,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         List<CmsContainer> containers,
         CmsUUID elementView,
         String uri,
+        CmsUUID detailContentId,
         String locale,
         CmsTemplateContextInfo contextInfo)
     throws CmsRpcException;

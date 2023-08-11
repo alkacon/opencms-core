@@ -435,7 +435,7 @@ public final class CmsDetailOnlyContainerUtil {
      * @param content the content for which to save the detail-only page
      * @param locale the locale
      * @param page the container page data to save in the detail-only page
-    
+
      * @throws CmsException if something goes wrong
      * @return the container page that was saved
      */

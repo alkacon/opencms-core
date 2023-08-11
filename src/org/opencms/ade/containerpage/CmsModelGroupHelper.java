@@ -315,6 +315,7 @@ public class CmsModelGroupHelper {
      * @param page the page
      * @param alwaysCopy <code>true</code> to create element copies in case of non model groups and createNew is set
      * @param locale the content locale
+     * @param createContextPath the context path to pass to CmsResourceTypeConfig#createNewElement
      *
      * @return the adjusted page
      *
@@ -325,7 +326,8 @@ public class CmsModelGroupHelper {
         List<String> foundGroups,
         CmsContainerPageBean page,
         boolean alwaysCopy,
-        Locale locale)
+        Locale locale,
+        String createContextPath)
     throws CmsException {
 
         for (Entry<String, CmsContainerElementBean> entry : elements.entrySet()) {
@@ -348,7 +350,7 @@ public class CmsModelGroupHelper {
                     modelPage,
                     baseElement.isCopyModel());
                 if (!m_isEditingModelGroups && baseElement.isCopyModel()) {
-                    modelContainers = createNewElementsForModelGroup(m_cms, modelContainers, locale);
+                    modelContainers = createNewElementsForModelGroup(m_cms, modelContainers, locale, createContextPath);
                 }
                 modelContainers.addAll(page.getContainers().values());
                 page = new CmsContainerPageBean(modelContainers);
@@ -407,7 +409,7 @@ public class CmsModelGroupHelper {
                             CmsResource newResource = typeConfig.createNewElement(
                                 cloneCms,
                                 element.getResource(),
-                                m_configData.getBasePath());
+                                createContextPath);
 
                             element = new CmsContainerElementBean(
                                 newResource.getStructureId(),
@@ -458,7 +460,11 @@ public class CmsModelGroupHelper {
                                     containerByParent,
                                     true);
                                 if (alwaysCopy) {
-                                    modelContainers = createNewElementsForModelGroup(m_cms, modelContainers, locale);
+                                    modelContainers = createNewElementsForModelGroup(
+                                        m_cms,
+                                        modelContainers,
+                                        locale,
+                                        createContextPath);
                                 }
                                 foundGroups.add(element.editorHash());
                                 modelContainers.addAll(page.getContainers().values());
@@ -761,6 +767,7 @@ public class CmsModelGroupHelper {
      * @param cms the cms context
      * @param modelContainers the model containers
      * @param locale the content locale
+     * @param createContext the context path to pass to CmsResourceTypeConfig#createNewElement
      *
      * @return the updated model containers
      *
@@ -769,7 +776,8 @@ public class CmsModelGroupHelper {
     private List<CmsContainerBean> createNewElementsForModelGroup(
         CmsObject cms,
         List<CmsContainerBean> modelContainers,
-        Locale locale)
+        Locale locale,
+        String createContext)
     throws CmsException {
 
         Map<CmsUUID, CmsResource> newResources = new HashMap<CmsUUID, CmsResource>();
@@ -792,7 +800,7 @@ public class CmsModelGroupHelper {
                     CmsResource newResource = typeConfig.createNewElement(
                         cloneCms,
                         element.getResource(),
-                        m_configData.getBasePath());
+                        createContext);
                     newResources.put(element.getId(), newResource);
                 }
             }

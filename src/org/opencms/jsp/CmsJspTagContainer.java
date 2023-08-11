@@ -496,6 +496,10 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                         if (detailOnlyPage != null) {
                             container = detailOnlyPage.getContainers().get(getName());
                         }
+                        if (container == null && m_editableRequest && containerPage != null) {
+                            // this is for the case where the current container is the nested container of a model group which the user is dragging into a detail container 
+                            container = containerPage.getContainers().get(getName());
+                        }
                     }
                 } else if (containerPage != null) {
                     container = containerPage.getContainers().get(getName());

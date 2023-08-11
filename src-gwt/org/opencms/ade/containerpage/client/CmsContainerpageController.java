@@ -1040,6 +1040,7 @@ public final class CmsContainerpageController {
 
                 getContainerpageService().checkCreateNewElement(
                     CmsCoreProvider.get().getStructureId(),
+                    getData().getDetailId(),
                     element.getId(),
                     element.getNewType(),
                     container,
@@ -1081,6 +1082,7 @@ public final class CmsContainerpageController {
 
                 getContainerpageService().createNewElement(
                     CmsCoreProvider.get().getStructureId(),
+                    getData().getDetailId(),
                     element.getId(),
                     element.getNewType(),
                     modelResourceStructureId,
@@ -1116,6 +1118,7 @@ public final class CmsContainerpageController {
 
                 getContainerpageService().createNewElement(
                     CmsCoreProvider.get().getStructureId(),
+                    getData().getDetailId(),
                     element.getId(),
                     element.getNewType(),
                     null,
@@ -2692,7 +2695,6 @@ public final class CmsContainerpageController {
         Timer timer = new Timer() {
 
             @Override
-            @SuppressWarnings("synthetic-access")
             public void run() {
 
                 Window.Location.reload();
@@ -4008,6 +4010,7 @@ public final class CmsContainerpageController {
                     getEditableContainers(),
                     getElementView().getElementViewId(),
                     CmsCoreProvider.get().getUri(),
+                    getData().getDetailId(),
                     getData().getLocale(),
                     CmsContainerpageController.get().getData().getTemplateContextInfo(),
                     this);
