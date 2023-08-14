@@ -765,6 +765,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /** Timeout for abandoning indexing thread. */
     private long m_timeout;
 
+    /** Offline indexing pause requests */
+    private final Set<CmsUUID> m_pauseRequests = new HashSet<>();
+
     /**
      * Default constructor when called as cron job.<p>
      */
@@ -1875,16 +1878,27 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Pauses the offline indexing.<p>
+     * Pauses the offline indexing and returns a pause request id that has to be used for resuming offline indexing again.<p>
      * May take some time, because the indexes are updated first.<p>
+     *
+     *@return the pause request id. The id has to be given to the {@link #resumeOfflineIndexing(CmsUUID)} method to resume offline indexing.
      */
-    public void pauseOfflineIndexing() {
+    public CmsUUID pauseOfflineIndexing() {
 
-        if (m_offlineUpdateFrequency != Long.MAX_VALUE) {
-            m_configuredOfflineIndexingFrequency = m_offlineUpdateFrequency;
-            m_offlineUpdateFrequency = Long.MAX_VALUE;
-            updateOfflineIndexes(0);
+        CmsUUID pauseId = new CmsUUID();
+        synchronized (m_pauseRequests) {
+            if (m_pauseRequests.isEmpty()) {
+                LOG.info("Pausing offline indexing.");
+                m_configuredOfflineIndexingFrequency = m_offlineUpdateFrequency;
+                m_offlineUpdateFrequency = Long.MAX_VALUE;
+                updateOfflineIndexes(0);
+            }
+            m_pauseRequests.add(pauseId);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Added pause request with id " + pauseId);
+            }
         }
+        return pauseId;
     }
 
     /**
@@ -2276,15 +2290,35 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Resumes offline indexing if it was paused.<p>
+     * Resumes offline indexing if it was paused and no pause for another pauseId is still present.<p>
+     * @param pauseId the id of the pause request, which now allows for resuming.
      */
-    public void resumeOfflineIndexing() {
+    public void resumeOfflineIndexing(CmsUUID pauseId) {
 
-        if (m_offlineUpdateFrequency == Long.MAX_VALUE) {
-            setOfflineUpdateFrequency(
-                m_configuredOfflineIndexingFrequency > 0
-                ? m_configuredOfflineIndexingFrequency
-                : DEFAULT_OFFLINE_UPDATE_FREQNENCY);
+        synchronized (m_pauseRequests) {
+            if (!m_pauseRequests.contains(pauseId)) {
+                try {
+                    throw new IllegalArgumentException();
+                } catch (IllegalArgumentException e) {
+                    LOG.warn("Cannot resume for pause request " + pauseId + ". The request id is unknown.", e);
+                }
+            } else {
+                m_pauseRequests.remove(pauseId);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(
+                        "Removed pause request "
+                            + pauseId
+                            + " from pause requests. Remaining pauses are: "
+                            + m_pauseRequests);
+                }
+                if (m_pauseRequests.isEmpty()) {
+                    LOG.info("Resuming offline indexing.");
+                    setOfflineUpdateFrequency(
+                        m_configuredOfflineIndexingFrequency > 0
+                        ? m_configuredOfflineIndexingFrequency
+                        : DEFAULT_OFFLINE_UPDATE_FREQNENCY);
+                }
+            }
         }
     }
 

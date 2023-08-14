@@ -33,6 +33,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
+import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -90,11 +91,8 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
     public void run() {
 
         I_CmsReport report = getReport();
-        boolean indexingAlreadyPaused = OpenCms.getSearchManager().isOfflineIndexingPaused();
+        CmsUUID pauseId = OpenCms.getSearchManager().pauseOfflineIndexing();
         try {
-            if (!indexingAlreadyPaused) {
-                OpenCms.getSearchManager().pauseOfflineIndexing();
-            }
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_DELETE_THREAD_STARTED_0));
             }
@@ -121,9 +119,7 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
             report.println(e);
             LOG.error(Messages.get().getBundle().key(Messages.LOG_MODULE_DELETE_FAILED_1, m_moduleNames), e);
         } finally {
-            if (!indexingAlreadyPaused) {
-                OpenCms.getSearchManager().resumeOfflineIndexing();
-            }
+            OpenCms.getSearchManager().resumeOfflineIndexing(pauseId);
         }
     }
 }

@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,8 +122,8 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_REPLACE_THREAD_START_DELETE_0));
         }
 
+        CmsUUID pauseId = OpenCms.getSearchManager().pauseOfflineIndexing();
         try {
-            OpenCms.getSearchManager().pauseOfflineIndexing();
             // phase 1: delete the existing module
             m_phase = 1;
             m_deleteThread.start();
@@ -154,7 +155,7 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_REPLACE_THREAD_FINISHED_0));
             }
         } finally {
-            OpenCms.getSearchManager().resumeOfflineIndexing();
+            OpenCms.getSearchManager().resumeOfflineIndexing(pauseId);
         }
     }
 }

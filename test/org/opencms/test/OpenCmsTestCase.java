@@ -780,8 +780,8 @@ public class OpenCmsTestCase extends TestCase {
      */
     public static void importCoreModule(CmsObject cms, String coreModule) throws CmsException {
 
+        CmsUUID pauseId = OpenCms.getSearchManager().pauseOfflineIndexing();
         try {
-            OpenCms.getSearchManager().pauseOfflineIndexing();
             CmsShellReport report = new CmsShellReport(cms.getRequestContext().getLocale());
             OpenCms.getModuleManager().replaceModule(
                 cms,
@@ -792,7 +792,7 @@ public class OpenCmsTestCase extends TestCase {
                     "resources"),
                 report);
         } finally {
-            OpenCms.getSearchManager().resumeOfflineIndexing();
+            OpenCms.getSearchManager().resumeOfflineIndexing(pauseId);
         }
     }
 
@@ -914,12 +914,12 @@ public class OpenCmsTestCase extends TestCase {
                 + moduleName
                 + suffix;
         }
+        CmsUUID pauseId = OpenCms.getSearchManager().pauseOfflineIndexing();
         try {
-            OpenCms.getSearchManager().pauseOfflineIndexing();
             CmsShellReport report = new CmsShellReport(cms.getRequestContext().getLocale());
             OpenCms.getModuleManager().replaceModule(cms, path, report);
         } finally {
-            OpenCms.getSearchManager().resumeOfflineIndexing();
+            OpenCms.getSearchManager().resumeOfflineIndexing(pauseId);
         }
     }
 

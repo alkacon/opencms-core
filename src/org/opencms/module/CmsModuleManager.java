@@ -51,6 +51,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -923,25 +924,30 @@ public class CmsModuleManager {
 
         boolean hasModule = hasModule(module.getName());
         boolean usedNewUpdate = false;
-        if (hasModule) {
-            Optional<CmsModuleUpdater> optModuleUpdater;
-            if (m_moduleUpdateEnabled) {
-                optModuleUpdater = CmsModuleUpdater.create(cms, importFile, report);
+        CmsUUID pauseId = OpenCms.getSearchManager().pauseOfflineIndexing();
+        try {
+            if (hasModule) {
+                Optional<CmsModuleUpdater> optModuleUpdater;
+                if (m_moduleUpdateEnabled) {
+                    optModuleUpdater = CmsModuleUpdater.create(cms, importFile, report);
+                } else {
+                    optModuleUpdater = Optional.empty();
+                }
+                if (optModuleUpdater.isPresent()) {
+                    usedNewUpdate = true;
+                    optModuleUpdater.get().run();
+                } else {
+                    deleteModule(cms, module.getName(), true, report);
+                    CmsImportParameters params = new CmsImportParameters(importFile, "/", true);
+                    OpenCms.getImportExportManager().importData(cms, report, params);
+                }
+
             } else {
-                optModuleUpdater = Optional.empty();
-            }
-            if (optModuleUpdater.isPresent()) {
-                usedNewUpdate = true;
-                optModuleUpdater.get().run();
-            } else {
-                deleteModule(cms, module.getName(), true, report);
                 CmsImportParameters params = new CmsImportParameters(importFile, "/", true);
                 OpenCms.getImportExportManager().importData(cms, report, params);
             }
-
-        } else {
-            CmsImportParameters params = new CmsImportParameters(importFile, "/", true);
-            OpenCms.getImportExportManager().importData(cms, report, params);
+        } finally {
+            OpenCms.getSearchManager().resumeOfflineIndexing(pauseId);
         }
         return new CmsReplaceModuleInfo(module, usedNewUpdate);
     }

@@ -32,6 +32,7 @@ import org.opencms.importexport.CmsImportParameters;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
+import org.opencms.util.CmsUUID;
 
 import org.apache.commons.logging.Log;
 
@@ -82,11 +83,8 @@ public class CmsDatabaseImportThread extends A_CmsReportThread {
     public void run() {
 
         CmsImportParameters parameters = new CmsImportParameters(m_importFile, "/", m_keepPermissions);
-        boolean indexingAlreadyPaused = OpenCms.getSearchManager().isOfflineIndexingPaused();
+        CmsUUID pauseId = OpenCms.getSearchManager().pauseOfflineIndexing();
         try {
-            if (!indexingAlreadyPaused) {
-                OpenCms.getSearchManager().pauseOfflineIndexing();
-            }
             OpenCms.getImportExportManager().importData(getCms(), getReport(), parameters);
         } catch (Throwable e) {
             getReport().println(e);
@@ -94,9 +92,7 @@ public class CmsDatabaseImportThread extends A_CmsReportThread {
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_DB_IMPORT_0), e);
             }
         } finally {
-            if (!indexingAlreadyPaused) {
-                OpenCms.getSearchManager().resumeOfflineIndexing();
-            }
+            OpenCms.getSearchManager().resumeOfflineIndexing(pauseId);
         }
     }
 }
