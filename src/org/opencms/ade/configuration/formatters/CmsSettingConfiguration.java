@@ -146,7 +146,7 @@ public class CmsSettingConfiguration {
      *
      * @return the combined map of shared setting definitions
      */
-    private Map<CmsSharedSettingKey, CmsXmlContentProperty> combinareSharedSettingDefinitionMaps(List<CmsUUID> ids) {
+    private Map<CmsSharedSettingKey, CmsXmlContentProperty> combineSharedSettingDefinitionMaps(List<CmsUUID> ids) {
 
         Map<CmsSharedSettingKey, CmsXmlContentProperty> result = new HashMap<>();
         for (CmsUUID settingFileId : ids) {
@@ -202,9 +202,9 @@ public class CmsSettingConfiguration {
 
         Map<String, CmsXmlContentProperty> result = new LinkedHashMap<>();
 
-        Map<CmsSharedSettingKey, CmsXmlContentProperty> sharedSettingDefinitions = combinareSharedSettingDefinitionMaps(
+        Map<CmsSharedSettingKey, CmsXmlContentProperty> sharedSettingDefinitions = combineSharedSettingDefinitionMaps(
             m_sharedSettingsIdsFromFormatter);
-        Map<CmsSharedSettingKey, CmsXmlContentProperty> overrideSettingDefinitions = combinareSharedSettingDefinitionMaps(
+        Map<CmsSharedSettingKey, CmsXmlContentProperty> overrideSettingDefinitions = combineSharedSettingDefinitionMaps(
             overrideSharedSettingsIds);
 
         /*

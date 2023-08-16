@@ -163,11 +163,11 @@ public class CmsConfigurationReader {
     /** The disabled node name. */
     public static final String N_DISABLED = "Disabled";
 
-    /** The DisabledTypesMode node name. */
-    public static final String N_DISABLED_TYPES_MODE = "DisabledTypesMode";
-
     /** The DisabledFunctionsMode node name. */
     public static final String N_DISABLED_FUNCTIONS_MODE = "DisabledFunctionsMode";
+
+    /** The DisabledTypesMode node name. */
+    public static final String N_DISABLED_TYPES_MODE = "DisabledTypesMode";
 
     /** The discard model pages node name. */
     public static final String N_DISCARD_MODEL_PAGES = "DiscardModelPages";
@@ -271,6 +271,9 @@ public class CmsConfigurationReader {
     /** The property name node name. */
     public static final String N_PROPERTY_NAME = "PropertyName";
 
+    /** XML node name. */
+    public static final String N_PROPERTY_NAME_ALIAS = "PropertyNameAlias";
+
     /** Node name for the "Remove all formatters"-option. */
     public static final String N_REMOVE_ALL_FORMATTERS = "RemoveAllFormatters";
 
@@ -327,6 +330,9 @@ public class CmsConfigurationReader {
 
     /** The Value node name. */
     public static final String N_VALUE = "Value";
+
+    /** XML node name. */
+    public static final String N_VALUE_TRANSLATION = "ValueTranslation";
 
     /** The widget node name. */
     public static final String N_VISIBILITY = "Visibility";
@@ -411,6 +417,8 @@ public class CmsConfigurationReader {
         String niceName = getString(cms, field.getSubValue(N_DISPLAY_NAME));
         String description = getString(cms, field.getSubValue(N_DESCRIPTION));
         String preferFolder = getString(cms, field.getSubValue(N_PREFER_FOLDER));
+        String aliasName = getString(cms, field.getSubValue(N_PROPERTY_NAME_ALIAS));
+        String valueTranslations = getString(cms, field.getSubValue(N_VALUE_TRANSLATION));
 
         String disabledStr = getString(cms, field.getSubValue(N_DISABLED));
         boolean disabled = ((disabledStr != null) && Boolean.parseBoolean(disabledStr));
@@ -439,6 +447,7 @@ public class CmsConfigurationReader {
         }
         CmsXmlContentProperty prop = new CmsXmlContentProperty(
             name,
+            aliasName,
             "string",
             visibility,
             widget,
@@ -449,7 +458,8 @@ public class CmsConfigurationReader {
             niceName,
             description,
             error,
-            preferFolder).withIncludeName(includeName);
+            preferFolder,
+            valueTranslations).withIncludeName(includeName);
         // since these are real properties, using type vfslist makes no sense, so we always use the "string" type
         CmsPropertyConfig propConfig = new CmsPropertyConfig(prop, disabled, order);
         return propConfig;

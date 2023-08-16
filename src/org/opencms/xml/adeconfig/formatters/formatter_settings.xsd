@@ -15,6 +15,7 @@
     <xsd:complexType name="OpenCmsFormatterSetting">
         <xsd:sequence>
             <xsd:element name="PropertyName" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="PropertyNameAlias" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="IncludeName" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="DisplayName" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Description" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
@@ -25,6 +26,7 @@
             <xsd:element name="RuleRegex" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="RuleType" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Error" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="ValueTranslation" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>

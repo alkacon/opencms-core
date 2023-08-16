@@ -72,6 +72,7 @@ public class CmsNullIgnoringConcurrentMap<K, V> implements Map<K, V> {
      * @param otherMap the other map
      */
     public CmsNullIgnoringConcurrentMap(Map<K, V> otherMap) {
+
         for (Map.Entry<K, V> entry : otherMap.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
@@ -211,6 +212,15 @@ public class CmsNullIgnoringConcurrentMap<K, V> implements Map<K, V> {
     public int size() {
 
         return m_internalMap.size();
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        return "" + m_internalMap;
     }
 
     /**

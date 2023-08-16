@@ -315,7 +315,7 @@ public final class CmsXmlContainerPageFactory {
             return content;
         }
 
-        content = unmarshal(cms, cms.readFile(resource), true);
+        content = unmarshal(cms, cms.readFile(resource), true, true);
 
         // set the cache
         setCache(cms, content, true);

@@ -628,7 +628,8 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                         attributeEditorConfigurations);
                 }
                 try {
-                    OpenCms.getADEManager().getCache().flushContainerPages(false);
+                    OpenCms.getADEManager().getCache().flushContainerPages(
+                        m_cms.getRequestContext().getCurrentProject().isOnlineProject());
                 } catch (Exception e) {
                     LOG.info(e.getLocalizedMessage(), e);
                 }

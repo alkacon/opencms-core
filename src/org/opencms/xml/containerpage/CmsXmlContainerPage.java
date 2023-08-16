@@ -31,6 +31,7 @@ import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsFormatterUtils;
 import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.CmsModelGroupHelper;
+import org.opencms.ade.containerpage.CmsSettingTranslator;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.file.CmsFile;
@@ -508,8 +509,10 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         m_cntPages = new LinkedHashMap<Locale, CmsContainerPageBean>();
         clearBookmarks();
         CmsADEConfigData config = null;
+        CmsSettingTranslator settingTranslator = null;
         if ((getFile() != null) && (cms != null)) {
             config = OpenCms.getADEManager().lookupConfiguration(cms, getFile().getRootPath());
+            settingTranslator = new CmsSettingTranslator(config);
         }
 
         // initialize the bookmarks
@@ -643,6 +646,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                             propertiesMap.put(CmsFormatterConfig.FORMATTER_SETTINGS_KEY + containerName, formatterKey);
                         }
 
+                        I_CmsFormatterBean dynamicFormatter = null;
                         if (config != null) {
                             // make sure alias keys are replaced with main keys in the settings
                             String key1 = CmsFormatterConfig.FORMATTER_SETTINGS_KEY + containerName;
@@ -650,12 +654,17 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                             for (String key : new String[] {key1, key2}) {
                                 String value = propertiesMap.get(key);
                                 if (value != null) {
-                                    I_CmsFormatterBean dynFmt = config.findFormatter(value);
-                                    if (dynFmt != null) {
-                                        propertiesMap.put(key, dynFmt.getKeyOrId());
+                                    I_CmsFormatterBean temp = config.findFormatter(value);
+                                    if (temp != null) {
+                                        dynamicFormatter = temp;
+                                        propertiesMap.put(key, dynamicFormatter.getKeyOrId());
+                                        break;
                                     }
                                 }
                             }
+                        }
+                        if ((config != null) && (dynamicFormatter != null) && (settingTranslator != null)) {
+                            propertiesMap = settingTranslator.translateSettings(dynamicFormatter, propertiesMap);
                         }
 
                         if (elementInstanceId != null) {
@@ -677,9 +686,9 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                         if (config != null) {
                             // in the new container page format, new dynamic functions are not stored with their URIs in the page
                             String key = CmsFormatterUtils.getFormatterKey(containerName, propertiesMap);
-                            I_CmsFormatterBean dynFmt = config.findFormatter(key);
-                            if (dynFmt instanceof CmsFunctionFormatterBean) {
-                                elementId = new CmsUUID(dynFmt.getId());
+                            I_CmsFormatterBean maybeFunction = config.findFormatter(key);
+                            if (maybeFunction instanceof CmsFunctionFormatterBean) {
+                                elementId = new CmsUUID(maybeFunction.getId());
                             }
                         }
 

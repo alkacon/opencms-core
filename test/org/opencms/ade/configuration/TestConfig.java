@@ -28,6 +28,7 @@
 package org.opencms.ade.configuration;
 
 import org.opencms.ade.configuration.CmsConfigurationReader.DiscardPropertiesMode;
+import org.opencms.ade.containerpage.CmsSettingTranslator;
 import org.opencms.ade.detailpage.CmsDetailPageFilter;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsObject;
@@ -493,8 +494,18 @@ public class TestConfig extends OpenCmsTestCase {
         CmsDetailPageInfo bar = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a3", "a", "bar", "");
         CmsDetailPageInfo unqualified1 = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a4", "a", null, "");
         CmsDetailPageInfo unqualified2 = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a5", "a", null, "");
-        CmsDetailPageInfo unqualifiedDefault = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a6", "##DEFAULT##", null, "");
-        CmsDetailPageInfo fooDefault = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a7", "##DEFAULT##", "foo", "");
+        CmsDetailPageInfo unqualifiedDefault = new CmsDetailPageInfo(
+            new CmsUUID(),
+            "/sites/default/a6",
+            "##DEFAULT##",
+            null,
+            "");
+        CmsDetailPageInfo fooDefault = new CmsDetailPageInfo(
+            new CmsUUID(),
+            "/sites/default/a7",
+            "##DEFAULT##",
+            "foo",
+            "");
         final Set<String> qualifiersToMatch = new HashSet<>();
         // we use a dummy that doesn't check categories and just uses the set qualifierToMatch for testing qualifiers
         CmsDetailPageFilter filter = new CmsDetailPageFilter(getCmsObject(), (CmsResource)null) {
@@ -506,26 +517,41 @@ public class TestConfig extends OpenCmsTestCase {
             }
         };
 
-        List<CmsDetailPageInfo> infos2 = filter.filterDetailPages(Arrays.asList(fooDefault, unqualifiedDefault, unqualified1, unqualified2, bar, foo1, foo2)).collect(
-            Collectors.toList());
+        List<CmsDetailPageInfo> infos2 = filter.filterDetailPages(
+            Arrays.asList(fooDefault, unqualifiedDefault, unqualified1, unqualified2, bar, foo1, foo2)).collect(
+                Collectors.toList());
         assertEquals(Arrays.asList(unqualified1, unqualified2, unqualifiedDefault), infos2);
 
-        infos2 = filter.filterDetailPages(Arrays.asList(foo1, foo2, bar, unqualified1, unqualified2, unqualifiedDefault, fooDefault)).collect(Collectors.toList());
+        infos2 = filter.filterDetailPages(
+            Arrays.asList(foo1, foo2, bar, unqualified1, unqualified2, unqualifiedDefault, fooDefault)).collect(
+                Collectors.toList());
         assertEquals(Arrays.asList(unqualified1, unqualified2, unqualifiedDefault), infos2);
 
         qualifiersToMatch.add("foo");
-        infos2 = filter.filterDetailPages(Arrays.asList(fooDefault, unqualifiedDefault, unqualified1, unqualified2, bar, foo1, foo2)).collect(Collectors.toList());
+        infos2 = filter.filterDetailPages(
+            Arrays.asList(fooDefault, unqualifiedDefault, unqualified1, unqualified2, bar, foo1, foo2)).collect(
+                Collectors.toList());
         assertEquals(Arrays.asList(foo1, foo2, unqualified1, unqualified2, fooDefault, unqualifiedDefault), infos2);
 
-        infos2 = filter.filterDetailPages(Arrays.asList(foo1, foo2, bar, unqualified1, unqualified2, unqualifiedDefault, fooDefault)).collect(Collectors.toList());
+        infos2 = filter.filterDetailPages(
+            Arrays.asList(foo1, foo2, bar, unqualified1, unqualified2, unqualifiedDefault, fooDefault)).collect(
+                Collectors.toList());
         assertEquals(Arrays.asList(foo1, foo2, unqualified1, unqualified2, fooDefault, unqualifiedDefault), infos2);
 
         qualifiersToMatch.add("bar");
-        infos2 = filter.filterDetailPages(Arrays.asList(fooDefault, unqualifiedDefault, unqualified1, unqualified2, bar, foo1, foo2)).collect(Collectors.toList());
-        assertEquals(Arrays.asList(bar, foo1, foo2, unqualified1, unqualified2, fooDefault, unqualifiedDefault), infos2);
+        infos2 = filter.filterDetailPages(
+            Arrays.asList(fooDefault, unqualifiedDefault, unqualified1, unqualified2, bar, foo1, foo2)).collect(
+                Collectors.toList());
+        assertEquals(
+            Arrays.asList(bar, foo1, foo2, unqualified1, unqualified2, fooDefault, unqualifiedDefault),
+            infos2);
 
-        infos2 = filter.filterDetailPages(Arrays.asList(foo1, foo2, bar, unqualified1, unqualified2, unqualifiedDefault, fooDefault)).collect(Collectors.toList());
-        assertEquals(Arrays.asList(foo1, foo2, bar, unqualified1, unqualified2, fooDefault, unqualifiedDefault), infos2);
+        infos2 = filter.filterDetailPages(
+            Arrays.asList(foo1, foo2, bar, unqualified1, unqualified2, unqualifiedDefault, fooDefault)).collect(
+                Collectors.toList());
+        assertEquals(
+            Arrays.asList(foo1, foo2, bar, unqualified1, unqualified2, fooDefault, unqualifiedDefault),
+            infos2);
 
     }
 
@@ -1116,6 +1142,19 @@ public class TestConfig extends OpenCmsTestCase {
         assertEquals("ruletype1", prop1.getPropertyData().getRuleType());
         assertEquals("error1", prop1.getPropertyData().getError());
         assertEquals(true, prop1.getPropertyData().isPreferFolder());
+    }
+
+    /**
+     * Tests setting translation parsing.
+     */
+    public void testParseSettingTranslation() {
+
+        Map<String, String> map = CmsSettingTranslator.parseSettingTranslationMap(
+            "  foo:bar  |\nbaz:qux\n|qoo  :  xyzzy");
+        assertEquals(3, map.size());
+        assertEquals("foo", map.get("bar"));
+        assertEquals("baz", map.get("qux"));
+        assertEquals("qoo", map.get("xyzzy"));
     }
 
     /**

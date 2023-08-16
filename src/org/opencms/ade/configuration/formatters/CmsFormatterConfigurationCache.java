@@ -226,6 +226,10 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
                 }
                 m_state = m_state.createUpdatedCopy(formattersToUpdate);
             }
+            if (copiedIds.size() > 0) {
+                OpenCms.getADEManager().getCache().flushContainerPages(
+                    m_cms.getRequestContext().getCurrentProject().isOnlineProject());
+            }
             for (CmsWaitHandle handle : waitHandles) {
                 handle.release();
             }
