@@ -36,6 +36,7 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.types.CmsXmlCategoryValue;
 import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
+import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -254,7 +255,6 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
                     List<Element> roots = new ArrayList<Element>();
                     List<CmsXmlContentDefinition> rootCds = new ArrayList<CmsXmlContentDefinition>();
-                    List<Element> validElements = new ArrayList<Element>();
 
                     // gather all XML content definitions and their parent nodes
                     Iterator<I_CmsXmlContentValue> it = validValues.iterator();
@@ -262,7 +262,6 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
                         // collect all root elements, also for the nested content definitions
                         I_CmsXmlContentValue value = it.next();
                         Element element = value.getElement();
-                        validElements.add(element);
                         if (element.supportsParent()) {
                             // get the parent XML node
                             Element root = element.getParent();
@@ -282,6 +281,14 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
                                             value.getTypeName(),
                                             value.getPath()));
                                 }
+                            }
+                        }
+                        // the following also adds empty nested contents
+                        if (value instanceof CmsXmlNestedContentDefinition) {
+                            if (!roots.contains(element)) {
+                                CmsXmlContentDefinition contentDef = ((CmsXmlNestedContentDefinition)value).getNestedContentDefinition();
+                                roots.add(element);
+                                rootCds.add(contentDef);
                             }
                         }
                     }
