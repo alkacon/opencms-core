@@ -703,7 +703,7 @@ public class CmsElementUtil {
             int underscorePos = entry.getKey().indexOf("_");
             if ((underscorePos >= 0) && !isSystemSetting(entry.getKey())) {
                 String prefix = entry.getKey().substring(0, underscorePos);
-                I_CmsFormatterBean dynamicFmt = adeConfig.findFormatter(prefix);
+                I_CmsFormatterBean dynamicFmt = adeConfig.findFormatter(prefix, true);
 
                 if (CmsUUID.isValidUUID(prefix)) {
                     // If we already have a formatter referenced by name, we don't need to do anything
