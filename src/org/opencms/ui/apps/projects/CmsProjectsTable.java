@@ -513,6 +513,7 @@ public class CmsProjectsTable extends Table {
             m_container.addContainerFilter(
                 new Or(
                     new SimpleStringFilter(PROP_NAME, filter, true, false),
+                    new SimpleStringFilter(PROP_ORG_UNIT, filter, true, false),
                     new SimpleStringFilter(PROP_DESCRIPTION, filter, true, false)));
         }
         if ((getValue() != null) & !((Set<CmsUUID>)getValue()).isEmpty()) {
