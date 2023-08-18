@@ -1,3 +1,5 @@
+<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
+<cms:secureparams />
 <% if (request.getParameter("basePath")!=null){
 	String basePath=request.getParameter("basePath");
 	String baseContainerName=request.getParameter("baseContainerName");
