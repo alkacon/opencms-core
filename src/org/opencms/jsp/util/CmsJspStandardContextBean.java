@@ -1016,6 +1016,19 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Checks if the resource with the given path exists.
+     *
+     * @param path a path
+     * @return true if the resource exists
+     */
+    public boolean exists(String path) {
+
+        Boolean exists = getVfs().getExists().get(path);
+        return exists != null ? exists.booleanValue() : false;
+
+    }
+
+    /**
      * Returns the locales available for the currently requested URI.
      *
      * @return the locales available for the currently requested URI.
@@ -2372,16 +2385,7 @@ public final class CmsJspStandardContextBean {
      */
     public Map<Object, Object> getWrap() {
 
-        return CmsCollectionsGenericWrapper.createLazyMap(obj -> {
-
-            if ((obj instanceof A_CmsJspValueWrapper) || (obj instanceof CmsJspResourceWrapper)) {
-                return obj;
-            } else if (obj instanceof CmsResource) {
-                return CmsJspResourceWrapper.wrap(m_cms, (CmsResource)obj);
-            } else {
-                return CmsJspObjectValueWrapper.createWrapper(m_cms, obj);
-            }
-        });
+        return CmsCollectionsGenericWrapper.createLazyMap(obj -> wrap(obj));
     }
 
     /**
@@ -2499,6 +2503,40 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Gets the link wrapper for the given path.
+     *
+     * @param path the path
+     * @return the link wrapper
+     */
+    public CmsLinkWrapper link(String path) {
+
+        return CmsJspObjectValueWrapper.createWrapper(m_cms, path).getToLink();
+
+    }
+
+    /**
+     * Gets the resource wrapper for a given path or id.
+     *
+     * @param str a path or structure id
+     * @return the wrapper for the resource with the given path or id
+     */
+    public CmsJspResourceWrapper readResource(String str) {
+
+        return getVfs().getReadResource().get(str);
+
+    }
+
+    /**
+     * Reads an XML content and returns it as a content access bean
+     * @param str path or id
+     * @return the content access bean for the content with the given path or id
+     */
+    public CmsJspContentAccessBean readXml(String str) {
+
+        return getVfs().getReadXml().get(str);
+    }
+
+    /**
      * Renders the elements of container in a container page wrapper as HTML (without a surrounding element).
      *
      * @param page the page wrapper
@@ -2605,6 +2643,29 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Converts the given object to a resource wrapper and returns it, or returns null if the conversion fails
+     * @param obj the object to convert
+     * @return the resource wrapper
+     */
+    public CmsJspResourceWrapper toResource(Object obj) {
+
+        Object wrapper = wrap(obj);
+        try {
+            if (obj instanceof A_CmsJspValueWrapper) {
+                return ((A_CmsJspValueWrapper)obj).getToResource();
+            } else if (obj instanceof CmsJspResourceWrapper) {
+                return ((CmsJspResourceWrapper)obj).getToResource();
+            } else {
+                // in case we add another wrapper with a getToResource method that doesn't extend A_CmsJspValueWrapper
+                return (CmsJspResourceWrapper)wrapper.getClass().getMethod("getToResource").invoke(wrapper);
+            }
+        } catch (Exception e) {
+            LOG.debug(e.getLocalizedMessage(), e);
+            return null;
+        }
+    }
+
+    /**
      * Updates the internally stored OpenCms user context.<p>
      *
      * @param cms the new OpenCms user context
@@ -2634,7 +2695,38 @@ public final class CmsJspStandardContextBean {
         CmsResource detailRes = CmsDetailPageResourceHandler.getDetailResource(cmsFlexRequest);
         m_detailContentResource = detailRes;
         m_request = cmsFlexRequest;
+    }
 
+    /**
+     * Gets the path of either the detail content (if this is a detail request) or the current page if it's not a detail request.
+     *
+     * @return the URI of the page or detail content
+     */
+    public String uri() {
+
+        return isDetailRequest() ? getDetailContent().getSitePath() : getRequestContext().getUri();
+    }
+
+    /**
+     * Returns an EL access wrapper map for the given object.<p>
+     *
+     * If the object is a {@link CmsResource}, then a {@link CmsJspResourceWrapper} is returned.
+     * Otherwise the object is wrapped in a {@link CmsJspObjectValueWrapper}.<p>
+     *
+     * If the object is already is a wrapper, it is returned unchanged.<p>
+     *
+     * @param obj the object to wrap
+     * @return an EL access wrapper map for the given object
+     */
+    public Object wrap(Object obj) {
+
+        if ((obj instanceof A_CmsJspValueWrapper) || (obj instanceof CmsJspResourceWrapper)) {
+            return obj;
+        } else if (obj instanceof CmsResource) {
+            return CmsJspResourceWrapper.wrap(m_cms, (CmsResource)obj);
+        } else {
+            return CmsJspObjectValueWrapper.createWrapper(m_cms, obj);
+        }
     }
 
     /**
