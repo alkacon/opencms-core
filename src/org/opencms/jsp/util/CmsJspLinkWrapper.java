@@ -47,10 +47,10 @@ import org.apache.commons.logging.Log;
 /**
  * Wrapper for handling links in template/formatter JSP EL.
  */
-public class CmsLinkWrapper extends A_CmsJspValueWrapper {
+public class CmsJspLinkWrapper {
 
     /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsLinkWrapper.class);
+    private static final Log LOG = CmsLog.getLog(CmsJspLinkWrapper.class);
 
     /** Stored CMS context. */
     protected CmsObject m_cms;
@@ -76,34 +76,37 @@ public class CmsLinkWrapper extends A_CmsJspValueWrapper {
      * @param cms the CMS context
      * @param link the link to wrap
      */
-    public CmsLinkWrapper(CmsObject cms, String link) {
+    public CmsJspLinkWrapper(CmsObject cms, String link) {
 
         m_cms = cms;
         m_link = link;
     }
 
     /**
-     * @see org.opencms.jsp.util.A_CmsJspValueWrapper#getExists()
+     * Checks whether the link is not null.
+     *
+     * @return true if the link is not null
      */
-    @Override
     public boolean getExists() {
 
         return m_link != null;
     }
 
     /**
-     * @see org.opencms.jsp.util.A_CmsJspValueWrapper#getIsEmpty()
+     * Checks whether the link is empty.
+     *
+     * @return true if the link is empty
      */
-    @Override
     public boolean getIsEmpty() {
 
         return CmsStringUtil.isEmpty(m_link);
     }
 
     /**
-     * @see org.opencms.jsp.util.A_CmsJspValueWrapper#getIsEmptyOrWhitespaceOnly()
+     * Checks if the link is empty or consists only of whitespace.
+     *
+     * @return true if the link is empty or consists of whitespace
      */
-    @Override
     public boolean getIsEmptyOrWhitespaceOnly() {
 
         return CmsStringUtil.isEmptyOrWhitespaceOnly(m_link);
@@ -129,7 +132,7 @@ public class CmsLinkWrapper extends A_CmsJspValueWrapper {
      */
     public String getLink() {
 
-        return m_stringCache.computeIfAbsent("link", k -> substituteLink(m_cms, m_link));
+        return m_stringCache.computeIfAbsent("link", k -> A_CmsJspValueWrapper.substituteLink(m_cms, m_link));
     }
 
     /**
@@ -138,15 +141,6 @@ public class CmsLinkWrapper extends A_CmsJspValueWrapper {
      * @return the original link literal
      */
     public String getLiteral() {
-
-        return m_link;
-    }
-
-    /**
-     * @see org.opencms.jsp.util.A_CmsJspValueWrapper#getObjectValue()
-     */
-    @Override
-    public Object getObjectValue() {
 
         return m_link;
     }

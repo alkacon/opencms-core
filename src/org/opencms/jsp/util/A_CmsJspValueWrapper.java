@@ -169,7 +169,7 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
     private Map<Object, String> m_trimToSize;
 
     /** Cached link wrapper - use Optional to distinguish 'uncached' state from 'does not exist'. */
-    protected Optional<CmsLinkWrapper> m_linkObj;
+    protected Optional<CmsJspLinkWrapper> m_linkObj;
 
     /**
      * Returns the substituted link to the given target.<p>
@@ -179,7 +179,7 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
      *
      * @return the substituted link
      */
-    protected static String substituteLink(CmsObject cms, String target) {
+    public static String substituteLink(CmsObject cms, String target) {
 
         if (cms != null) {
             return OpenCms.getLinkManager().substituteLinkForUnknownTarget(
@@ -513,12 +513,12 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
      *
      * @return the link wrapper
      */
-    public CmsLinkWrapper getToLink() {
+    public CmsJspLinkWrapper getToLink() {
 
         if (m_linkObj == null) {
             String target = toString();
             if (target != null) {
-                m_linkObj = Optional.of(new CmsLinkWrapper(getCmsObject(), target));
+                m_linkObj = Optional.of(new CmsJspLinkWrapper(getCmsObject(), target));
             } else {
                 m_linkObj = Optional.empty();
             }

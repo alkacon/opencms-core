@@ -2508,7 +2508,7 @@ public final class CmsJspStandardContextBean {
      * @param path the path
      * @return the link wrapper
      */
-    public CmsLinkWrapper link(String path) {
+    public CmsJspLinkWrapper link(String path) {
 
         return CmsJspObjectValueWrapper.createWrapper(m_cms, path).getToLink();
 

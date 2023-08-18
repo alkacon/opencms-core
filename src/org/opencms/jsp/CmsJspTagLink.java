@@ -33,7 +33,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.jsp.util.CmsLinkWrapper;
+import org.opencms.jsp.util.CmsJspLinkWrapper;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -509,7 +509,7 @@ public class CmsJspTagLink extends BodyTagSupport {
                     }
                     CmsFlexController controller = CmsFlexController.getController(req);
                     CmsObject cms = prepareCmsObject(controller.getCmsObject(), params);
-                    pageContext.setAttribute(m_var, new CmsLinkWrapper(cms, link), scope);
+                    pageContext.setAttribute(m_var, new CmsJspLinkWrapper(cms, link), scope);
                 } else {
                     // Calculate the link substitution
                     String newlink = linkTagAction(params, req);
