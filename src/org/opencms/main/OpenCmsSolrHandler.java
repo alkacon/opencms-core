@@ -267,6 +267,26 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
                 context.m_params.remove(CommonParams.WT);
             }
         }
+        String[] qtValues = context.m_params.get(CommonParams.QT);
+        if ((null != qtValues) && (qtValues.length > 0)) {
+            String origQtValue = qtValues[0];
+            if (qtValues.length > 1) {
+                context.m_params.put(CommonParams.QT, new String[] {origQtValue});
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(
+                        "Called Solr handler with multiple 'qt' params. Keeping only the value '" + origQtValue + "'.");
+                }
+            }
+            if ((origQtValue != null) && origQtValue.startsWith("/")) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(
+                        "Called Solr handler with forbidden 'qt' parameter value '"
+                            + origQtValue
+                            + "'. The value is removed.");
+                }
+                context.m_params.remove(CommonParams.QT);
+            }
+        }
         context.m_index = CmsSearchManager.getIndexSolr(context.m_cms, context.m_params);
 
         if (context.m_index != null) {
