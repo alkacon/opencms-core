@@ -110,6 +110,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -118,6 +119,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -1514,6 +1516,30 @@ public final class CmsJspStandardContextBean {
         }
         return new CmsFormatterInfoWrapper(cms, config, formatter);
 
+    }
+
+    /**
+     * Gets the formatter bean for active formatters with a given container type.
+     *
+     * @param containerType the container type
+     * @return the wrapped formatters
+     */
+    public List<CmsFormatterInfoWrapper> getFormatterInfoForContainer(String containerType) {
+
+        return wrapFormatters(m_config.getActiveFormattersWithContainerType(containerType));
+
+    }
+
+    /**
+     * Gets the formatter beans for active formatters with a given display type.
+     *
+     * @param displayType the display type
+     * @return the wrapped formatters
+     */
+    public List<CmsFormatterInfoWrapper> getFormatterInfoForDisplay(String displayType) {
+
+        CmsADEConfigData config = m_config;
+        return wrapFormatters(config.getActiveFormattersWithDisplayType(displayType));
     }
 
     /**
@@ -3112,6 +3138,20 @@ public final class CmsJspStandardContextBean {
                 }
             }
         }
+    }
+
+    /**
+     * Wraps a list of formatter beans for use in JSPs.
+     *
+     * @param formatters the formatters to wrap
+     * @return the wrapped formatters
+     */
+    private List<CmsFormatterInfoWrapper> wrapFormatters(Collection<I_CmsFormatterBean> formatters) {
+
+        List<CmsFormatterInfoWrapper> result = formatters.stream().map(
+            formatter -> new CmsFormatterInfoWrapper(m_cms, m_config, formatter)).collect(Collectors.toList());
+        Collections.sort(result, (f1, f2) -> Integer.compare(f2.getRank(), f1.getRank()));
+        return result;
     }
 
 }

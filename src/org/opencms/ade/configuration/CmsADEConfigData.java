@@ -73,6 +73,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -230,6 +231,12 @@ public class CmsADEConfigData {
 
     /** The configuration sequence (contains the list of all sitemap configuration data beans to be used for inheritance). */
     private CmsADEConfigurationSequence m_configSequence;
+
+    /** Cache for formatters by container type. */
+    private Map<String, List<I_CmsFormatterBean>> m_formattersByContainerType = new HashMap<>();
+
+    /** Cache for formatters by display type. */
+    private Map<String, List<I_CmsFormatterBean>> m_formattersByDisplayType = new HashMap<>();
 
     /** Lazily initialized cache for formatters by JSP id. */
     private Multimap<CmsUUID, I_CmsFormatterBean> m_formattersByJspId;
@@ -560,6 +567,39 @@ public class CmsADEConfigData {
             m_activeFormatters = Collections.unmodifiableMap(formatterIndex.getFormattersWithAdditionalKeys());
         }
         return m_activeFormatters;
+    }
+
+    /**
+     * Gets the active formatters for a given container type.
+     *
+     * @param containerType a container type
+     *
+     * @return the active formatters for the container type
+     */
+    public List<I_CmsFormatterBean> getActiveFormattersWithContainerType(String containerType) {
+
+        return m_formattersByContainerType.computeIfAbsent(
+            containerType,
+            type -> Collections.unmodifiableList(
+                getActiveFormatters().values().stream().filter(
+                    formatter -> formatter.getContainerTypes().contains(type)).collect(Collectors.toList())));
+    }
+
+    /**
+     * Gets the active formatters for a given display type.
+     *
+     * @param displayType a display type
+     * @return the active formatters for the display type
+     */
+    public List<I_CmsFormatterBean> getActiveFormattersWithDisplayType(String displayType) {
+
+        return m_formattersByDisplayType.computeIfAbsent(
+            displayType,
+            type -> Collections.unmodifiableList(
+                getActiveFormatters().values().stream().filter(
+                    formatter -> Objects.equals(type, formatter.getDisplayType())).collect(Collectors.toList()))
+
+        );
     }
 
     /**

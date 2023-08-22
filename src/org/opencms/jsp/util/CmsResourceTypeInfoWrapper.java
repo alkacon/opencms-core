@@ -267,8 +267,10 @@ public class CmsResourceTypeInfoWrapper implements I_CmsFormatterInfo {
      */
     private List<CmsFormatterInfoWrapper> wrapFormatters(Collection<I_CmsFormatterBean> formatters) {
 
-        return formatters.stream().map(formatter -> new CmsFormatterInfoWrapper(m_cms, m_config, formatter)).collect(
-            Collectors.toList());
+        List<CmsFormatterInfoWrapper> result = formatters.stream().map(
+            formatter -> new CmsFormatterInfoWrapper(m_cms, m_config, formatter)).collect(Collectors.toList());
+        Collections.sort(result, (f1, f2) -> Integer.compare(f2.getRank(), f1.getRank()));
+        return result;
     }
 
 }
