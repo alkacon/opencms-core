@@ -90,9 +90,9 @@ public class CmsFormatterInfoWrapper implements I_CmsFormatterInfo {
 
         final CmsMacroResolver resolver = new CmsMacroResolver();
         resolver.setCmsObject(cms);
-        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        CmsMultiMessages messages = new CmsMultiMessages(wpLocale);
-        messages.addMessages(OpenCms.getWorkplaceManager().getMessages(wpLocale));
+        Locale locale = cms.getRequestContext().getLocale();
+        CmsMultiMessages messages = new CmsMultiMessages(locale);
+        messages.addMessages(OpenCms.getWorkplaceManager().getMessages(locale));
         for (String type : formatter.getResourceTypeNames()) {
             try {
                 I_CmsResourceType typeObj = OpenCms.getResourceManager().getResourceType(type);
@@ -101,7 +101,7 @@ public class CmsFormatterInfoWrapper implements I_CmsFormatterInfo {
                     null);
                 if (schema != null) {
                     CmsXmlContentDefinition contentDef = CmsXmlContentDefinition.unmarshal(cms, schema);
-                    CmsMessages schemaMessages = contentDef.getContentHandler().getMessages(wpLocale);
+                    CmsMessages schemaMessages = contentDef.getContentHandler().getMessages(locale);
                     messages.addMessages(schemaMessages);
 
                 }
