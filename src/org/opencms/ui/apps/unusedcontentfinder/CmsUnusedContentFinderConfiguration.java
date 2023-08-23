@@ -42,8 +42,7 @@ import java.util.Locale;
 import com.vaadin.server.Resource;
 
 /**
- * This class determines the app name, icon and the visibility to he current user.<p>
- * It can also be used to override a default app by using the same id and a higher priority.<p>
+ * Unused content finder configuration.
  */
 public class CmsUnusedContentFinderConfiguration extends A_CmsWorkplaceAppConfiguration {
 

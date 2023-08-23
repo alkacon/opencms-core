@@ -42,7 +42,7 @@ import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import java.util.List;
 
 /**
- * The unused content finder dialog action.
+ * The unused content finder action.
  */
 public class CmsUnusedContentFinderAction extends A_CmsWorkplaceAction {
 

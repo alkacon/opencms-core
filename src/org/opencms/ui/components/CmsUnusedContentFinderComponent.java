@@ -91,7 +91,7 @@ import com.vaadin.v7.ui.TextField;
 import com.vaadin.v7.ui.VerticalLayout;
 
 /**
- * Component that can be reused by the app and the dialog of the unused content finder.
+ * Component that realizes a unused content finder.
  */
 @SuppressWarnings("deprecation")
 public class CmsUnusedContentFinderComponent {
