@@ -83,6 +83,7 @@ import org.opencms.ui.actions.CmsUndeleteDialogAction;
 import org.opencms.ui.actions.CmsUndoDialogAction;
 import org.opencms.ui.actions.CmsUnlinkLocaleVariantAction;
 import org.opencms.ui.actions.CmsUnlockAction;
+import org.opencms.ui.actions.CmsUnusedContentFinderAction;
 import org.opencms.ui.actions.CmsViewInExplorerAction;
 import org.opencms.ui.actions.CmsViewOnlineAction;
 import org.opencms.ui.actions.CmsWorkplaceAction;
@@ -175,6 +176,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsChangeTypeDialogAction(), advanced.getId(), 700, 0),
             new CmsContextMenuActionItem(new CmsFormEditDialogAction(), advanced.getId(), 800, 0),
             new CmsContextMenuActionItem(new CmsEditCodeDialogAction(), advanced.getId(), 900, 0),
+            new CmsContextMenuActionItem(new CmsUnusedContentFinderAction(), advanced.getId(), 920, 0),
             new CmsContextMenuActionItem(new CmsReindexDialogAction(), advanced.getId(), 950, 0),
             new CmsContextMenuActionItem(new CmsRestoreDeletedAction(), advanced.getId(), 1000, 0),
 

@@ -887,7 +887,8 @@ public final class CmsVaadinUtils {
             CmsExplorerTypeSettings typeSetting = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                 type.getTypeName());
             Item typeItem = types.addItem(type);
-            typeItem.getItemProperty(PropertyId.caption).setValue(CmsVaadinUtils.getMessageText(typeSetting.getKey()));
+            String caption = CmsVaadinUtils.getMessageText(typeSetting.getKey()) + " (" + type.getTypeName() + ")";
+            typeItem.getItemProperty(PropertyId.caption).setValue(caption);
             typeItem.getItemProperty(PropertyId.icon).setValue(CmsResourceUtil.getSmallIconResource(typeSetting, null));
             typeItem.getItemProperty(PropertyId.isXmlContent).setValue(
                 Boolean.valueOf(type instanceof CmsResourceTypeXmlContent));

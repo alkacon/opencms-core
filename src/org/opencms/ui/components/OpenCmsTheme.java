@@ -245,6 +245,9 @@ public final class OpenCmsTheme {
     /** The role icon CSS class.*/
     public static final String ICON_ROLE = "oc-icon-24-role";
 
+    /** The search icon. */
+    public static final String ICON_SEARCH = "oc-icon-32-search";
+
     /**The session icon.*/
     public static final String ICON_SESSION = "oc-icon-24-session";
 

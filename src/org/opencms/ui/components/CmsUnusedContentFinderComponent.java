@@ -1,0 +1,875 @@
+/*
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.ui.components;
+
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.A_CmsResourceTypeFolderBase;
+import org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
+import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.CmsVaadinUtils.PropertyId;
+import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsDialogContext.ContextType;
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
+import org.opencms.ui.apps.I_CmsContextProvider;
+import org.opencms.ui.apps.Messages;
+import org.opencms.ui.apps.unusedcontentfinder.CmsUnusedContentFinderApp;
+import org.opencms.ui.apps.unusedcontentfinder.CmsUnusedContentFinderApp.StateBean;
+import org.opencms.ui.apps.unusedcontentfinder.CmsUnusedContentFinderConfiguration;
+import org.opencms.ui.components.fileselect.CmsPathSelectField;
+import org.opencms.ui.contextmenu.CmsResourceContextMenuBuilder;
+import org.opencms.ui.dialogs.CmsDeleteDialog;
+import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.explorer.CmsResourceUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.logging.Log;
+
+import com.vaadin.server.Resource;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.data.util.IndexedContainer;
+import com.vaadin.v7.data.util.filter.Or;
+import com.vaadin.v7.data.util.filter.SimpleStringFilter;
+import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
+import com.vaadin.v7.event.FieldEvents.TextChangeListener;
+import com.vaadin.v7.shared.ui.combobox.FilteringMode;
+import com.vaadin.v7.ui.ComboBox;
+import com.vaadin.v7.ui.HorizontalLayout;
+import com.vaadin.v7.ui.TextField;
+import com.vaadin.v7.ui.VerticalLayout;
+
+/**
+ * Component that can be reused by the app and the dialog of the unused content finder.
+ */
+@SuppressWarnings("deprecation")
+public class CmsUnusedContentFinderComponent {
+
+    /**
+     * The delete button of the unused content finder.
+     */
+    private class DeleteButtonComponent extends Button {
+
+        /** Serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Creates a new delete button.
+         */
+        DeleteButtonComponent() {
+
+            String caption = CmsVaadinUtils.getMessageText(Messages.GUI_UNUSED_CONTENT_FINDER_DELETE_ALL_0);
+            addStyleName(OpenCmsTheme.BUTTON_RED);
+            setCaption(caption + "...");
+            setVisible(false);
+            addClickListener(new ClickListener() {
+
+                private static final long serialVersionUID = 1L;
+
+                public void buttonClick(ClickEvent event) {
+
+                    m_resultComponent.getFileTable().selectAll();
+                    I_CmsDialogContext context = m_resultComponent.getFileTable().getContextProvider().getDialogContext();
+                    context.start(caption, new CmsDeleteDialog(context));
+                }
+            });
+        }
+    }
+
+    /**
+     * The form component of the unused content finder.
+     */
+    private class FormComponent extends VerticalLayout {
+
+        /** Serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        /** The form layout. */
+        private FormLayout m_formLayout;
+
+        /** The site selector. */
+        private ComboBox m_siteSelector;
+
+        /** The folder selector. */
+        private CmsPathSelectField m_folderSelector;
+
+        /** The type selector. */
+        private ComboBox m_typeSelector;
+
+        /** The search button. */
+        private Button m_searchButton;
+
+        /**
+         * Creates a new form component.
+         */
+        FormComponent() {
+
+            setMargin(true);
+            setSpacing(true);
+            m_formLayout = new FormLayout();
+            m_formLayout.setMargin(true);
+            m_formLayout.setSpacing(true);
+            m_formLayout.addStyleName("o-formlayout-narrow");
+            initSiteSelector();
+            initFolderSelector();
+            initTypeSelector();
+            m_formLayout.addComponent(new VerticalLayout()); // fix layout bug
+            addComponent(m_formLayout);
+            initSearchButton();
+            initDeleteButton();
+        }
+
+        /**
+         * Returns the selected folder value.
+         * @return the selected folder value
+         */
+        String getFolderValue() {
+
+            return m_folderSelector.getValue();
+        }
+
+        /**
+         * Returns the selected site value.
+         * @return the selected site value
+         */
+        String getSiteValue() {
+
+            return (String)m_siteSelector.getValue();
+        }
+
+        /**
+         * Returns the selected type value.
+         * @return the selected type value
+         */
+        I_CmsResourceType getTypeValue() {
+
+            return (I_CmsResourceType)m_typeSelector.getValue();
+        }
+
+        /**
+         * Sets the folder selector value.
+         * @param folder the folder to set
+         */
+        void setFolderValue(String folder) {
+
+            m_folderSelector.setValue(folder);
+        }
+
+        /**
+         * Sets the site selector value.
+         * @param site the site to set
+         */
+        void setSiteValue(String site) {
+
+            m_siteSelector.setValue(site);
+        }
+
+        /**
+         * Sets the type selector value.
+         * @param type the type to set
+         */
+        void setTypeValue(I_CmsResourceType type) {
+
+            m_typeSelector.setValue(type);
+        }
+
+        /**
+        * Updates the search root.
+        * @throws CmsException if initializing the CMS object fails
+        */
+        void updateSearchRoot() throws CmsException {
+
+            CmsObject newCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+            newCms.getRequestContext().setSiteRoot((String)m_siteSelector.getValue());
+            m_folderSelector.setCmsObject(newCms);
+            m_folderSelector.setValue("/");
+        }
+
+        /**
+         * Generates the resource types container.
+         * @return the resource types container
+         */
+        private IndexedContainer generateResourceTypesContainer() {
+
+            IndexedContainer types = new IndexedContainer();
+            types.addContainerProperty(PropertyId.caption, String.class, null);
+            types.addContainerProperty(PropertyId.icon, Resource.class, null);
+            types.addContainerProperty(PropertyId.isFolder, Boolean.class, null);
+            types.addContainerProperty(PropertyId.isXmlContent, Boolean.class, null);
+            for (I_CmsResourceType type : getAvailableTypes()) {
+                CmsExplorerTypeSettings typeSetting = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                    type.getTypeName());
+                Item typeItem = types.addItem(type);
+                String caption = CmsVaadinUtils.getMessageText(typeSetting.getKey()) + " (" + type.getTypeName() + ")";
+                typeItem.getItemProperty(PropertyId.caption).setValue(caption);
+                typeItem.getItemProperty(PropertyId.icon).setValue(
+                    CmsResourceUtil.getSmallIconResource(typeSetting, null));
+                typeItem.getItemProperty(PropertyId.isXmlContent).setValue(
+                    Boolean.valueOf(type instanceof CmsResourceTypeXmlContent));
+                typeItem.getItemProperty(PropertyId.isFolder).setValue(
+                    Boolean.valueOf(type instanceof A_CmsResourceTypeFolderBase));
+            }
+
+            return types;
+        }
+
+        /**
+         * Initializes the delete button.
+         */
+        private void initDeleteButton() {
+
+            HorizontalLayout layout = new HorizontalLayout();
+            layout.setMargin(true);
+            layout.setSpacing(true);
+            layout.setWidth("100%");
+            layout.setStyleName("o-dialog-button-bar");
+            layout.addComponent(m_deleteButtonComponent);
+            layout.setComponentAlignment(m_deleteButtonComponent, Alignment.TOP_RIGHT);
+            addComponent(layout);
+        }
+
+        /**
+         * Initializes the folder selector.
+         */
+        private void initFolderSelector() {
+
+            m_folderSelector = new CmsPathSelectField();
+            m_folderSelector.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_RESOURCE_PATH_0));
+            m_folderSelector.setDescription(
+                CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_RESOURCE_PATH_HELP_0));
+            m_folderSelector.disableSiteSwitch();
+            m_folderSelector.setResourceFilter(CmsResourceFilter.DEFAULT_FOLDERS);
+            m_folderSelector.requireFolder();
+            m_folderSelector.setValue("/");
+            m_folderSelector.setWidth("100%");
+            m_formLayout.addComponent(m_folderSelector);
+        }
+
+        /**
+         * Initializes the search button.
+         */
+        private void initSearchButton() {
+
+            HorizontalLayout layout = new HorizontalLayout();
+            layout.setMargin(true);
+            layout.setSpacing(true);
+            layout.setWidth("100%");
+            layout.setStyleName("o-dialog-button-bar");
+            m_searchButton = new Button(
+                CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_SEARCH_0),
+                new Button.ClickListener() {
+
+                    private static final long serialVersionUID = 1L;
+
+                    public void buttonClick(ClickEvent event) {
+
+                        search(true);
+
+                    }
+                });
+            m_searchButton.addStyleName(OpenCmsTheme.BUTTON_BLUE);
+            layout.addComponent(m_searchButton);
+            layout.setComponentAlignment(m_searchButton, Alignment.TOP_RIGHT);
+            addComponent(layout);
+        }
+
+        /**
+         * Initializes the site selector.
+         */
+        private void initSiteSelector() {
+
+            CmsObject cms = A_CmsUI.getCmsObject();
+            m_siteSelector = new ComboBox();
+            m_siteSelector.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_SITE_0));
+            m_siteSelector.setContainerDataSource(
+                CmsVaadinUtils.getAvailableSitesContainer(cms, CmsVaadinUtils.PROPERTY_LABEL));
+            m_siteSelector.setItemCaptionPropertyId(CmsVaadinUtils.PROPERTY_LABEL);
+            m_siteSelector.setTextInputAllowed(true);
+            m_siteSelector.setNullSelectionAllowed(false);
+            m_siteSelector.setFilteringMode(FilteringMode.CONTAINS);
+            m_siteSelector.setValue(cms.getRequestContext().getSiteRoot());
+            m_siteSelector.setWidth("100%");
+            m_siteSelector.addValueChangeListener(new ValueChangeListener() {
+
+                private static final long serialVersionUID = -1079794209679015125L;
+
+                public void valueChange(ValueChangeEvent event) {
+
+                    try {
+                        updateSearchRoot();
+                    } catch (CmsException e) {
+                        LOG.error("Unable to initialize CmsObject", e);
+                    }
+                }
+
+            });
+            m_formLayout.addComponent(m_siteSelector);
+        }
+
+        /**
+         * Initializes the type selector.
+         */
+        private void initTypeSelector() {
+
+            m_typeSelector = new ComboBox();
+            m_typeSelector.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_RESOURCE_TYPE_0));
+            m_typeSelector.setDescription(
+                CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_RESOURCE_TYPE_HELP_0));
+            IndexedContainer types = generateResourceTypesContainer();
+            types.addContainerFilter(CmsVaadinUtils.FILTER_NO_FOLDERS);
+            m_typeSelector.setContainerDataSource(types);
+            m_typeSelector.setItemCaptionPropertyId(PropertyId.caption);
+            m_typeSelector.setItemIconPropertyId(PropertyId.icon);
+            m_typeSelector.setFilteringMode(FilteringMode.CONTAINS);
+            m_typeSelector.setWidth("100%");
+            m_formLayout.addComponent(m_typeSelector);
+        }
+    }
+
+    /**
+     * The result component of the unused content finder.
+     */
+    private class ResultComponent extends VerticalLayout {
+
+        /** Serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        /** The file table. */
+        CmsFileTable m_fileTable;
+
+        /** Layout showing empty result message. */
+        private VerticalLayout m_infoEmptyResult;
+
+        /** Layout showing introduction message. */
+        private VerticalLayout m_infoIntroLayout;
+
+        /** Layout showing too many results message. */
+        private VerticalLayout m_infoTooManyResults;
+
+        /** Layout showing too invalid folder message. */
+        private VerticalLayout m_infoInvalidFolder;
+
+        /**
+         * Creates a new result component.
+         */
+        ResultComponent() {
+
+            setSizeFull();
+            initInfoIntroLayout();
+            initInfoEmptyResult();
+            initInfoTooManyResults();
+            initInfoInvalidFolder();
+            initFileTable();
+        }
+
+        /**
+         * Returns the file table.
+         * @return the file table
+         */
+        CmsFileTable getFileTable() {
+
+            return m_fileTable;
+        }
+
+        /**
+         * Updates the search result.
+         */
+        void updateResult() {
+
+            if (!isValidFolder()) {
+                showInfoInvalidFolder();
+                return;
+            }
+            CmsObject cms = getOfflineCms();
+            I_CmsResourceType type = m_formComponent.getTypeValue();
+            String folderName = m_formComponent.getFolderValue();
+            List<CmsResource> resourcesToShow = new ArrayList<CmsResource>();
+            boolean tooManyResults = false;
+            if (cms.existsResource(folderName)) {
+                try {
+                    List<I_CmsResourceType> resourceTypes = new ArrayList<>();
+                    if (type == null) {
+                        resourceTypes = getAvailableTypes();
+                    } else {
+                        resourceTypes.add(type);
+                    }
+                    for (I_CmsResourceType resourceType : resourceTypes) {
+                        CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE.addRequireType(resourceType);
+                        List<CmsResource> resources = cms.readResources(folderName, filter);
+                        for (CmsResource res : resources) {
+                            if (isNotUsedByOtherContents(res, false) && isNotUsedByOtherContents(res, true)) {
+                                resourcesToShow.add(res);
+                            }
+                            if (resourcesToShow.size() > MAX_RESULTS) {
+                                tooManyResults = true;
+                                break;
+                            }
+                        }
+                    }
+                    m_fileTable.fillTable(cms, resourcesToShow);
+                } catch (CmsException e) {
+                    CmsErrorDialog.showErrorDialog(e);
+                }
+            }
+            m_infoIntroLayout.setVisible(false);
+            if (resourcesToShow.isEmpty()) {
+                showInfoEmptyResult();
+                m_deleteButtonComponent.setVisible(false);
+            } else if (tooManyResults) {
+                showInfoTooManyResults();
+                m_deleteButtonComponent.setVisible(false);
+            } else {
+                showFileTable();
+                m_deleteButtonComponent.setVisible(true);
+            }
+        }
+
+        /**
+         * Initializes the file table.
+         */
+        private void initFileTable() {
+
+            m_fileTable = new CmsFileTable(null) {
+
+                private static final long serialVersionUID = 1L;
+
+                /**
+                 * Path, title, and type columns shall be visible and not collapsed.
+                 * @see org.opencms.ui.components.CmsFileTable#applyWorkplaceAppSettings()
+                 */
+                @Override
+                public void applyWorkplaceAppSettings() {
+
+                    super.applyWorkplaceAppSettings();
+                    m_fileTable.setColumnCollapsed(CmsResourceTableProperty.PROPERTY_SIZE, true);
+                    m_fileTable.setColumnCollapsed(CmsResourceTableProperty.PROPERTY_INTERNAL_RESOURCE_TYPE, false);
+                }
+
+                /**
+                 * Filter by path, title, and type names.
+                 * @see org.opencms.ui.components.CmsFileTable#filterTable(java.lang.String)
+                 */
+                @Override
+                public void filterTable(String search) {
+
+                    m_container.removeAllContainerFilters();
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(search)) {
+                        m_container.addContainerFilter(
+                            new Or(
+                                new SimpleStringFilter(
+                                    CmsResourceTableProperty.PROPERTY_SITE_PATH,
+                                    search,
+                                    true,
+                                    false),
+                                new SimpleStringFilter(CmsResourceTableProperty.PROPERTY_TITLE, search, true, false),
+                                new SimpleStringFilter(
+                                    CmsResourceTableProperty.PROPERTY_RESOURCE_TYPE,
+                                    search,
+                                    true,
+                                    false),
+                                new SimpleStringFilter(
+                                    CmsResourceTableProperty.PROPERTY_INTERNAL_RESOURCE_TYPE,
+                                    search,
+                                    true,
+                                    false)));
+                    }
+                    if ((m_fileTable.getValue() != null) & !((Set<?>)m_fileTable.getValue()).isEmpty()) {
+                        m_fileTable.setCurrentPageFirstItemId(((Set<?>)m_fileTable.getValue()).iterator().next());
+                    }
+                }
+
+                /**
+                 * Update the delete button on selection change.
+                 * @see org.opencms.ui.components.CmsFileTable#rebuildMenu()
+                 */
+                @Override
+                void rebuildMenu() {
+
+                    super.rebuildMenu();
+                    if (m_currentResources.size() == 0) {
+                        m_deleteButtonComponent.setVisible(true);
+                    } else {
+                        m_deleteButtonComponent.setVisible(false);
+                    }
+                }
+            };
+            m_fileTable.applyWorkplaceAppSettings();
+            m_fileTable.setContextProvider(new I_CmsContextProvider() {
+
+                /**
+                 * @see org.opencms.ui.apps.I_CmsContextProvider#getDialogContext()
+                 */
+                public I_CmsDialogContext getDialogContext() {
+
+                    CmsFileTableDialogContext context = new CmsFileTableDialogContext(
+                        CmsUnusedContentFinderConfiguration.APP_ID,
+                        ContextType.fileTable,
+                        m_fileTable,
+                        m_fileTable.getSelectedResources());
+                    return context;
+                }
+            });
+            m_fileTable.setSizeFull();
+            m_fileTable.setMenuBuilder(new CmsResourceContextMenuBuilder());
+            m_fileTable.setVisible(false);
+            addComponent(m_fileTable);
+            setExpandRatio(m_fileTable, 2);
+        }
+
+        /**
+         * Initializes the empty result info box.
+         */
+        private void initInfoEmptyResult() {
+
+            m_infoEmptyResult = CmsVaadinUtils.getInfoLayout(Messages.GUI_SOURCESEARCH_EMPTY_0);
+            m_infoEmptyResult.setVisible(false);
+            addComponent(m_infoEmptyResult);
+        }
+
+        /**
+         * Initializes the intro info box.
+         */
+        private void initInfoIntroLayout() {
+
+            m_infoIntroLayout = CmsVaadinUtils.getInfoLayout(Messages.GUI_SOURCESEARCH_INTRO_0);
+            m_infoIntroLayout.setVisible(true);
+            addComponent(m_infoIntroLayout);
+        }
+
+        /**
+         * Initializes the invalid folder info box.
+         */
+        private void initInfoInvalidFolder() {
+
+            m_infoInvalidFolder = CmsVaadinUtils.getInfoLayout(Messages.GUI_UNUSED_CONTENT_FINDER_INVALID_FOLDER_0);
+            m_infoInvalidFolder.setVisible(false);
+            addComponent(m_infoInvalidFolder);
+        }
+
+        /**
+         * Initializes the too many results info box.
+         */
+        private void initInfoTooManyResults() {
+
+            m_infoTooManyResults = CmsVaadinUtils.getInfoLayout(Messages.GUI_UNUSED_CONTENT_FINDER_TOO_MANY_RESULTS_0);
+            m_infoTooManyResults.setVisible(false);
+            addComponent(m_infoTooManyResults);
+        }
+
+        /**
+         * Shows the file table.
+         */
+        private void showFileTable() {
+
+            m_infoIntroLayout.setVisible(false);
+            m_infoTooManyResults.setVisible(false);
+            m_infoInvalidFolder.setVisible(false);
+            m_infoEmptyResult.setVisible(false);
+            m_fileTable.setVisible(true);
+        }
+
+        /**
+         * Shows the empty result info box.
+         */
+        private void showInfoEmptyResult() {
+
+            m_fileTable.setVisible(false);
+            m_infoIntroLayout.setVisible(false);
+            m_infoTooManyResults.setVisible(false);
+            m_infoInvalidFolder.setVisible(false);
+            m_infoEmptyResult.setVisible(true);
+        }
+
+        /**
+         * Shows the invalid folder info box.
+         */
+        private void showInfoInvalidFolder() {
+
+            m_fileTable.setVisible(false);
+            m_infoIntroLayout.setVisible(false);
+            m_infoTooManyResults.setVisible(false);
+            m_infoEmptyResult.setVisible(false);
+            m_infoInvalidFolder.setVisible(true);
+        }
+
+        /**
+         * Shows the empty result info box.
+         */
+        private void showInfoTooManyResults() {
+
+            m_fileTable.setVisible(false);
+            m_infoIntroLayout.setVisible(false);
+            m_infoEmptyResult.setVisible(false);
+            m_infoInvalidFolder.setVisible(false);
+            m_infoTooManyResults.setVisible(true);
+        }
+    }
+
+    /**
+     * Component to filter the result table.
+     */
+    private class ResultFilterComponent extends TextField {
+
+        /** Serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Creates a new result filter.
+         */
+        ResultFilterComponent() {
+
+            setIcon(FontOpenCms.FILTER);
+            setInputPrompt(Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
+            addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
+            setWidth("200px");
+            addTextChangeListener(new TextChangeListener() {
+
+                private static final long serialVersionUID = 1L;
+
+                public void textChange(TextChangeEvent event) {
+
+                    m_resultComponent.getFileTable().filterTable(event.getText());
+
+                }
+            });
+        }
+    }
+
+    /** The log object for this class. */
+    static final Log LOG = CmsLog.getLog(CmsUnusedContentFinderComponent.class);
+
+    /** The maximum number of results. */
+    static final int MAX_RESULTS = 5000;
+
+    /** The delete button of this unused content finder. */
+    DeleteButtonComponent m_deleteButtonComponent;
+
+    /** The form component of this unused content finder. */
+    FormComponent m_formComponent;
+
+    /** The result component of this unused content finder. */
+    ResultComponent m_resultComponent;
+
+    /** The result filter component of this unused content finder. */
+    ResultFilterComponent m_resultFilterComponent;
+
+    /**
+     * Creates a new component.
+     */
+    public CmsUnusedContentFinderComponent() {
+
+        m_deleteButtonComponent = new DeleteButtonComponent();
+        m_formComponent = new FormComponent();
+        m_resultComponent = new ResultComponent();
+        m_resultFilterComponent = new ResultFilterComponent();
+    }
+
+    /**
+     * Returns the delete button component of this unused content finder.
+     * @return the delete button component of this unused content finder
+     */
+    public Component getDeleteButtonComponent() {
+
+        return m_deleteButtonComponent;
+    }
+
+    /**
+     * Returns the form component of this unused content finder.
+     * @return the form component of this unused content finder
+     */
+    public Component getFormComponent() {
+
+        return m_formComponent;
+    }
+
+    /**
+     * Returns the result component of this unused content finder.
+     * @return the result component of this unused content finder
+     */
+    public Component getResultComponent() {
+
+        return m_resultComponent;
+    }
+
+    /**
+     * Returns the result filter component of this unused content finder.
+     * @return the result filter component of this unused content finder
+     */
+    public Component getResultFilterComponent() {
+
+        return m_resultFilterComponent;
+    }
+
+    /**
+     * Search for unused contents.
+     * @param updateState whether to also update the state when searching
+     */
+    public void search(boolean updateState) {
+
+        if (updateState) {
+            StateBean stateBean = new StateBean();
+            stateBean.setSite(m_formComponent.getSiteValue());
+            stateBean.setFolder(m_formComponent.getFolderValue());
+            stateBean.setResourceType(m_formComponent.getTypeValue());
+            String state = CmsUnusedContentFinderApp.generateStateString(stateBean);
+            CmsAppWorkplaceUi.get().changeCurrentAppState(state);
+        }
+        m_resultComponent.updateResult();
+    }
+
+    /**
+     * Initializes this component with data from a given state bean.
+     * @param stateBean the state bean
+     */
+    public void setState(StateBean stateBean) {
+
+        m_formComponent.setSiteValue(stateBean.getSite());
+        m_formComponent.setFolderValue(stateBean.getFolder());
+        m_formComponent.setTypeValue(stateBean.getResourceType());
+    }
+
+    /**
+     * Returns the list of all XML content types, except containerpage and module/sitemap configs.
+     * @return the list of all XML content types, except containerpage and module/sitemap configs.
+     */
+    List<I_CmsResourceType> getAvailableTypes() {
+
+        List<I_CmsResourceType> result = new ArrayList<>();
+        CmsObject cms = A_CmsUI.getCmsObject();
+        List<I_CmsResourceType> types = OpenCms.getResourceManager().getResourceTypes();
+        for (I_CmsResourceType type : types) {
+            if ((type instanceof CmsResourceTypeXmlContent)
+                && !((type instanceof CmsResourceTypeXmlContainerPage)
+                    || (type instanceof CmsResourceTypeXmlAdeConfiguration))) {
+                CmsResourceTypeXmlContent xmlType = (CmsResourceTypeXmlContent)type;
+                try {
+                    CmsFile schemaFile = cms.readFile(xmlType.getSchema());
+                    String fileContent = new String(schemaFile.getContents(), CmsFileUtil.getEncoding(cms, schemaFile));
+                    if (fileContent.contains("containerPageOnly=\"true\"")) { // false is the default
+                        result.add(type);
+                    }
+                } catch (Throwable t) {
+                    // This might happen for internal types.
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns the offline CMS.
+     * @return the offline CMS
+     */
+    CmsObject getOfflineCms() {
+
+        CmsObject offlineCms = null;
+        try {
+            offlineCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+            offlineCms.getRequestContext().setSiteRoot(m_formComponent.getSiteValue());
+            offlineCms.getRequestContext().setCurrentProject(offlineCms.readProject("Offline"));
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return offlineCms;
+    }
+
+    /**
+     * Return the online CMS.
+     * @return the online CMS
+     */
+    CmsObject getOnlineCms() {
+
+        CmsObject onlineCms = null;
+        try {
+            onlineCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
+            onlineCms.getRequestContext().setSiteRoot(m_formComponent.getSiteValue());
+            onlineCms.getRequestContext().setCurrentProject(onlineCms.readProject(CmsProject.ONLINE_PROJECT_ID));
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return onlineCms;
+    }
+
+    /**
+     * Get all contents that link to the provided resource.
+     * @param resource the resource of the content for which the resources linking to it are returned for
+     * @param online flag, indicating if the check should be performed online or offline
+     * @return flag, indicating if no resource at all is linking to the content
+     * @throws CmsException if reading related resources fails
+     */
+    boolean isNotUsedByOtherContents(final CmsResource resource, final boolean online) throws CmsException {
+
+        if (online && resource.getState().isNew()) {
+            return true;
+        }
+        CmsRelationFilter filter = CmsRelationFilter.SOURCES;
+        CmsObject cms = online ? getOnlineCms() : getOfflineCms();
+        List<CmsRelation> relations = cms.getRelationsForResource(resource, filter);
+        return relations.isEmpty();
+    }
+
+    /**
+     * Returns whether the current site and folder selection is valid.
+     * Only path levels greater or equal than 2 are allowed.
+     * @return whether the current site and folder selection is valid
+     */
+    boolean isValidFolder() {
+
+        String rootPath = CmsStringUtil.joinPaths(m_formComponent.getSiteValue(), m_formComponent.getFolderValue());
+        if (CmsResource.getPathLevel(rootPath) < 2) {
+            return false;
+        }
+        return true;
+    }
+}

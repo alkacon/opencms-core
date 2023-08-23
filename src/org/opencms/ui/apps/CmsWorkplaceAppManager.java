@@ -76,6 +76,7 @@ import org.opencms.ui.apps.searchindex.CmsSearchindexAppConfiguration;
 import org.opencms.ui.apps.sessions.CmsBroadCastConfigurtion;
 import org.opencms.ui.apps.shell.CmsShellAppConfiguration;
 import org.opencms.ui.apps.sitemanager.CmsSiteManagerConfiguration;
+import org.opencms.ui.apps.unusedcontentfinder.CmsUnusedContentFinderConfiguration;
 import org.opencms.ui.apps.user.CmsAccountsAppConfiguration;
 import org.opencms.ui.apps.userdata.CmsUserDataAppConfiguration;
 import org.opencms.ui.contextmenu.CmsContextMenuItemProviderGroup;
@@ -839,7 +840,8 @@ public class CmsWorkplaceAppManager {
                 new CmsAccountsAppConfiguration(),
                 new CmsShellAppConfiguration(),
                 new CmsResourceTypeAppConfiguration(),
-                new CmsUserDataAppConfiguration()));
+                new CmsUserDataAppConfiguration(),
+                new CmsUnusedContentFinderConfiguration()));
 
         return result;
     }

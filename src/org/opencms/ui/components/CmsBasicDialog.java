@@ -56,6 +56,8 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 import com.vaadin.ui.declarative.DesignContext;
+import com.vaadin.v7.shared.ui.label.ContentMode;
+import com.vaadin.v7.ui.Label;
 
 /**
  * Basic dialog class with a content panel and button bar.<p>
@@ -80,6 +82,9 @@ public class CmsBasicDialog extends VerticalLayout {
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
+
+    /** Maximum size of the resource list panel. */
+    private static final int RESOURCE_LIST_PANEL_MAX_SIZE = 1000;
 
     /** The window resize listener registration. */
     Registration m_resizeListenerRegistration;
@@ -295,8 +300,21 @@ public class CmsBasicDialog extends VerticalLayout {
         resourcePanel.addStyleName(OpenCmsTheme.REDUCED_SPACING);
         resourcePanel.setSpacing(true);
         resourcePanel.setMargin(true);
-        for (CmsResource resource : resources) {
-            resourcePanel.addComponent(new CmsResourceInfo(resource));
+        if (resources.size() <= RESOURCE_LIST_PANEL_MAX_SIZE) {
+            for (CmsResource resource : resources) {
+                resourcePanel.addComponent(new CmsResourceInfo(resource));
+            }
+        } else {
+            String message = CmsVaadinUtils.getMessageText(
+                Messages.get(),
+                Messages.GUI_TOO_MANY_RESOURCES_2,
+                String.valueOf(resources.size()),
+                String.valueOf(RESOURCE_LIST_PANEL_MAX_SIZE));
+            Label label = new Label(message);
+            label.setContentMode(ContentMode.HTML);
+            VerticalLayout verticalLayout = new VerticalLayout();
+            verticalLayout.addComponent(label);
+            resourcePanel.addComponent(verticalLayout);
         }
         return result;
     }

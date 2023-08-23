@@ -2838,6 +2838,21 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_TOOLBAR_PROJECT_SITE_INFO_2 = "GUI_TOOLBAR_PROJECT_SITE_INFO_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNUSED_CONTENT_FINDER_HELP_0 = "GUI_UNUSED_CONTENT_FINDER_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNUSED_CONTENT_FINDER_TITLE_0 = "GUI_UNUSED_CONTENT_FINDER_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNUSED_CONTENT_FINDER_TOO_MANY_RESULTS_0 = "GUI_UNUSED_CONTENT_FINDER_TOO_MANY_RESULTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNUSED_CONTENT_FINDER_INVALID_FOLDER_0 = "GUI_UNUSED_CONTENT_FINDER_INVALID_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNUSED_CONTENT_FINDER_DELETE_ALL_0 = "GUI_UNUSED_CONTENT_FINDER_DELETE_ALL_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_BUTTON_TITLE_0 = "GUI_UPLOAD_BUTTON_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
