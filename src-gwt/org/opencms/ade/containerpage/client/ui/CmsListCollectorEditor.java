@@ -417,7 +417,12 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
                 protected void onResponse(CmsListInfoBean result) {
 
                     stop(false);
-                    setUploadPopup(new CmsUploadPopup(m_editableData, context, result));
+                    setUploadPopup(
+                        new CmsUploadPopup(
+                            m_editableData.getExtensions().getUploadFolder(),
+                            m_editableData.getPostCreateHandler(),
+                            context,
+                            result));
                     m_uploadPopup.center();
 
                 }
@@ -425,7 +430,12 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
             };
             action.execute();
         } else {
-            setUploadPopup(new CmsUploadPopup(m_editableData, context, null));
+            setUploadPopup(
+                new CmsUploadPopup(
+                    m_editableData.getExtensions().getUploadFolder(),
+                    m_editableData.getPostCreateHandler(),
+                    context,
+                    null));
             m_uploadPopup.center();
 
         }

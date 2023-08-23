@@ -53,6 +53,9 @@ public class CmsListElementCreationDialogData implements IsSerializable {
     /** The post-create handler to use. */
     private String m_postCreateHandler;
 
+    /** The upload folder. */
+    private String m_uploadFolder;
+
     /**
      * Creates a new instance.
      */
@@ -119,6 +122,26 @@ public class CmsListElementCreationDialogData implements IsSerializable {
     }
 
     /**
+     * Gets the upload folder.
+     * 
+     * @return the upload folder
+     */
+    public String getUploadFolder() {
+
+        return m_uploadFolder;
+    }
+
+    /** 
+     * Checks if adding to the list should trigger upload mode.
+     * 
+     * @return true if this requires upload mode 
+     */
+    public boolean isUpload() {
+
+        return m_uploadFolder != null;
+    }
+
+    /**
      * Sets the caption.
      *
      * @param caption the new caption
@@ -156,6 +179,16 @@ public class CmsListElementCreationDialogData implements IsSerializable {
     public void setPostCreateHandler(String postCreateHandler) {
 
         m_postCreateHandler = postCreateHandler;
+    }
+
+    /**
+     * Sets the upload folder.
+     * 
+     * @param uploadFolder the upload folder
+     */
+    public void setUploadFolder(String uploadFolder) {
+
+        m_uploadFolder = uploadFolder;
     }
 
 }

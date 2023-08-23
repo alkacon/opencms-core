@@ -74,7 +74,10 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFunctionConfig;
+import org.opencms.file.types.CmsResourceTypeImage;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
@@ -115,6 +118,7 @@ import org.opencms.relations.CmsRelationType;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.CmsRole;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManagerImpl;
@@ -1291,52 +1295,84 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 beanFactory,
                 I_CmsListAddMetadata.class,
                 jsonConfig);
-
             CmsListElementCreationDialogData result = new CmsListElementCreationDialogData();
-            CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
-                cms,
-                cms.getRequestContext().getRootUri());
-            CmsResource listResource = cms.readResource(listId, CmsResourceFilter.IGNORE_EXPIRATION);
-            CmsListInfoBean listResourceInfo = CmsVfsService.getPageInfo(cms, listResource);
-
             result.setCaption(msg.key(Messages.GUI_LISTADD_CAPTION_0));
-            result.setListInfo(listResourceInfo);
             result.setPostCreateHandler(listAddData.as().getPostCreateHandler());
-            List<String> createTypes = listAddData.as().getTypes();
-            Map<String, CmsResourceTypeConfig> typeMap = adeConfig.getTypesByName();
-            for (String type : createTypes) {
-                try {
-                    CmsResourceTypeConfig currentType = typeMap.get(type);
-                    if (currentType != null) {
-                        if (adeConfig.getDirectEditPermissions(type).canCreate()
-                            && currentType.checkCreatable(cms, null)) {
-                            CmsListInfoBean typeInfo = new CmsListInfoBean();
-                            CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-                                type);
-                            String title = CmsWorkplaceMessages.getResourceTypeName(locale, type);
-                            typeInfo.setTitle(title);
-                            String description = CmsWorkplaceMessages.getResourceTypeDescription(locale, type);
-                            typeInfo.setSubTitle(description);
-                            typeInfo.setResourceType(type);
-                            typeInfo.setBigIconClasses(CmsIconUtil.getIconClasses(explorerType, null, false));
-                            String newLink = CmsJspTagEdit.getNewLink(
-                                cms,
-                                OpenCms.getResourceManager().getResourceType(type),
-                                cms.getRequestContext().getUri());
-                            CmsListElementCreationOption option = new CmsListElementCreationOption(
-                                type,
-                                typeInfo,
-                                newLink);
-                            result.add(option);
+            String uploadFolder = listAddData.as().getUploadFolder();
+            boolean isUpload = false;
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(uploadFolder) && !"none".equals(uploadFolder)) {
+                if (listAddData.as().getTypes().stream().anyMatch(
+                    type -> CmsResourceTypeBinary.getStaticTypeName().equals(type)
+                        || CmsResourceTypePlain.getStaticTypeName().equals(type)
+                        || CmsResourceTypeImage.getStaticTypeName().equals(type))) {
+
+                    CmsResource uploadFolderResource = null;
+                    try {
+                        uploadFolderResource = cms.readResource(uploadFolder, CmsResourceFilter.IGNORE_EXPIRATION);
+                        if (cms.hasPermissions(
+                            uploadFolderResource,
+                            CmsPermissionSet.ACCESS_WRITE,
+                            false,
+                            CmsResourceFilter.IGNORE_EXPIRATION)) {
+                            isUpload = true;
                         }
+                    } catch (CmsVfsResourceNotFoundException | CmsPermissionViolationException e) {
+                        LOG.debug(e.getLocalizedMessage(), e);
+                    } catch (Exception e) {
+                        LOG.error(e.getLocalizedMessage(), e);
                     }
-                } catch (Exception e) {
-                    LOG.error(e.getLocalizedMessage(), e);
                 }
             }
-            if (result.getOptions().size() == 0) {
-                result.setMessage(msg.key(Messages.GUI_LISTADD_NO_TYPES_0));
+            if (isUpload) {
+                result.setUploadFolder(uploadFolder);
+                CmsListInfoBean listResourceInfo = CmsVfsService.getPageInfo(
+                    cms,
+                    cms.readResource(uploadFolder, CmsResourceFilter.IGNORE_EXPIRATION));
+                result.setListInfo(listResourceInfo);
+            } else {
+                CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
+                    cms,
+                    cms.getRequestContext().getRootUri());
+                CmsResource listResource = cms.readResource(listId, CmsResourceFilter.IGNORE_EXPIRATION);
+                CmsListInfoBean listResourceInfo = CmsVfsService.getPageInfo(cms, listResource);
+                result.setListInfo(listResourceInfo);
+                List<String> createTypes = listAddData.as().getTypes();
+                Map<String, CmsResourceTypeConfig> typeMap = adeConfig.getTypesByName();
+                for (String type : createTypes) {
+                    try {
+                        CmsResourceTypeConfig currentType = typeMap.get(type);
+                        if (currentType != null) {
+                            if (adeConfig.getDirectEditPermissions(type).canCreate()
+                                && currentType.checkCreatable(cms, null)) {
+                                CmsListInfoBean typeInfo = new CmsListInfoBean();
+                                CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                                    type);
+                                String title = CmsWorkplaceMessages.getResourceTypeName(locale, type);
+                                typeInfo.setTitle(title);
+                                String description = CmsWorkplaceMessages.getResourceTypeDescription(locale, type);
+                                typeInfo.setSubTitle(description);
+                                typeInfo.setResourceType(type);
+                                typeInfo.setBigIconClasses(CmsIconUtil.getIconClasses(explorerType, null, false));
+                                String newLink = CmsJspTagEdit.getNewLink(
+                                    cms,
+                                    OpenCms.getResourceManager().getResourceType(type),
+                                    cms.getRequestContext().getUri());
+                                CmsListElementCreationOption option = new CmsListElementCreationOption(
+                                    type,
+                                    typeInfo,
+                                    newLink);
+                                result.add(option);
+                            }
+                        }
+                    } catch (Exception e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+                if (result.getOptions().size() == 0) {
+                    result.setMessage(msg.key(Messages.GUI_LISTADD_NO_TYPES_0));
+                }
             }
+
             return result;
         } catch (Exception e) {
             error(e);

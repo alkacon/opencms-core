@@ -28,6 +28,7 @@
 package org.opencms.jsp;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.I_CmsAutoBeanFactory;
@@ -35,7 +36,9 @@ import org.opencms.gwt.shared.I_CmsListAddMetadata;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigurationBean;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,11 +65,14 @@ public class CmsJspTagEnableListAdd extends SimpleTagSupport {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagEnableListAdd.class);
 
+    /** The post-create handler. */
+    private String m_postCreateHandler;
+
     /** The resource type names. */
     private List<String> m_types = new ArrayList<>();
 
-    /** The post-create handler. */
-    private String m_postCreateHandler;
+    /** The upload folder. */
+    private String m_uploadFolder;
 
     /**
      * @see javax.servlet.jsp.tagext.SimpleTagSupport#doTag()
@@ -86,6 +92,15 @@ public class CmsJspTagEnableListAdd extends SimpleTagSupport {
             AutoBean<I_CmsListAddMetadata> bean = beanFactory.createListAddMetadata();
             bean.as().setTypes(m_types);
             bean.as().setPostCreateHandler(m_postCreateHandler);
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_uploadFolder) && !"none".equals(m_uploadFolder)) {
+                try {
+                    // don't bother with enabling uploads if the upload folder doesn't exist
+                    cms.readResource(m_uploadFolder, CmsResourceFilter.IGNORE_EXPIRATION);
+                    bean.as().setUploadFolder(m_uploadFolder);
+                } catch (CmsException e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
+            }
             String jsonData = AutoBeanCodex.encode(bean).getPayload();
             StringBuilder buffer = new StringBuilder();
             buffer.append("<div style='display: none !important;' " + CmsGwtConstants.ATTR_DATA_LISTADD + "='");
@@ -127,6 +142,16 @@ public class CmsJspTagEnableListAdd extends SimpleTagSupport {
         } else {
             throw new JspException("Invalid type for types attribute of enable-list-add tag: " + typesObj);
         }
+    }
+
+    /**
+     * Sets the upload folder.
+     *
+     * @param uploadFolder the upload folder
+     */
+    public void setUploadFolder(String uploadFolder) {
+
+        m_uploadFolder = uploadFolder;
     }
 
 }

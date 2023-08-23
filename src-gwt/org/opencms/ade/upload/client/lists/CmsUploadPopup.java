@@ -28,7 +28,6 @@
 package org.opencms.ade.upload.client.lists;
 
 import org.opencms.ade.upload.client.I_CmsUploadContext;
-import org.opencms.gwt.client.I_CmsEditableData;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.shared.CmsListInfoBean;
 
@@ -49,13 +48,17 @@ public class CmsUploadPopup extends CmsPopup {
      * @param context the upload context
      * @param info the list info bean to display
      */
-    public CmsUploadPopup(I_CmsEditableData data, I_CmsUploadContext context, CmsListInfoBean info) {
+    public CmsUploadPopup(
+        String uploadFolder,
+        String postCreateHandler,
+        I_CmsUploadContext context,
+        CmsListInfoBean info) {
 
         super(CmsUploadMessages.dialogTitle());
         setModal(true);
         setGlassEnabled(true);
         addDialogClose(() -> {/*do nothing*/});
-        m_view = new CmsUploadView(data, context, info);
+        m_view = new CmsUploadView(uploadFolder, postCreateHandler, context, info);
         setMainContent(m_view);
         for (Widget widget : m_view.getButtons()) {
             addButton(widget);

@@ -43,6 +43,8 @@ import org.opencms.ade.containerpage.shared.CmsElementViewInfo;
 import org.opencms.ade.containerpage.shared.CmsLocaleLinkBean;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.ade.publish.shared.CmsPublishOptions;
+import org.opencms.ade.upload.client.I_CmsUploadContext;
+import org.opencms.ade.upload.client.lists.CmsUploadPopup;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsEditableData;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
@@ -91,6 +93,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -948,14 +951,33 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             protected void onResponse(CmsListElementCreationDialogData result) {
 
                 stop(false);
-                // "0 options" case is handled by the dialog
-                if (result.getOptions().size() == 1) {
+                final CmsUploadPopup[] popupArray = {null};
+                if (result.isUpload()) {
+                    I_CmsUploadContext context = new I_CmsUploadContext() {
+
+                        public void onUploadFinished(List<String> uploadedFiles) {
+
+                            popupArray[0].hide();
+                            CmsContainerpageController.get().reloadElements(
+                                Arrays.asList("" + structureId),
+                                DO_NOTHING);
+                        }
+                    };
+                    CmsUploadPopup popup = new CmsUploadPopup(
+                        result.getUploadFolder(),
+                        result.getPostCreateHandler(),
+                        context,
+                        result.getListInfo());
+                    popupArray[0] = popup;
+                    popup.center();
+                } else if (result.getOptions().size() == 1) {
                     // skip the selection dialog, immediately create and edit the content
                     openEditorForNewListContent(
                         result.getOptions().get(0),
                         "" + structureId,
                         result.getPostCreateHandler());
                 } else {
+                    // "0 options" case is handled by the dialog
                     CmsListAddDialog dialog = new CmsListAddDialog(
                         structureId,
                         result,

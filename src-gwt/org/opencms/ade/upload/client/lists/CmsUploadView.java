@@ -29,7 +29,6 @@ package org.opencms.ade.upload.client.lists;
 
 import org.opencms.ade.upload.client.I_CmsUploadContext;
 import org.opencms.ade.upload.client.ui.CmsDialogUploadButtonHandler;
-import org.opencms.gwt.client.I_CmsEditableData;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -75,22 +74,27 @@ public class CmsUploadView extends Composite {
     /**
      * Creates a new instance.
      *
-     * @param data the editable data
+     * @param uploadFolder the upload folder
+     * @param postCreateHandler the post-create handler
      * @param context the upload context
      * @param info the list info bean to display on top (may be null)
      */
-    public CmsUploadView(I_CmsEditableData data, I_CmsUploadContext context, CmsListInfoBean info) {
+    public CmsUploadView(
+        String uploadFolder,
+        String postCreateHandler,
+        I_CmsUploadContext context,
+        CmsListInfoBean info) {
 
         CmsDialogUploadButtonHandler handler = new CmsDialogUploadButtonHandler(() -> context);
-        handler.setPostCreateHandler(data.getPostCreateHandler());
-        handler.setTargetFolder(data.getExtensions().getUploadFolder());
+        handler.setPostCreateHandler(postCreateHandler);
+        handler.setTargetFolder(uploadFolder);
         m_uploadButton = new CmsUploadButton(handler);
         initWidget(uiBinder.createAndBindUi(this));
         if (info != null) {
             CmsListItemWidget infoWidget = new CmsListItemWidget(info);
             m_infoBoxContainer.add(infoWidget);
         }
-        m_mainLabel.setText(CmsUploadMessages.innerText(data.getExtensions().getUploadFolder()));
+        m_mainLabel.setText(CmsUploadMessages.innerText(uploadFolder));
 
     }
 

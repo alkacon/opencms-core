@@ -49,6 +49,13 @@ public interface I_CmsListAddMetadata {
     List<String> getTypes();
 
     /**
+     * Gets the upload folder.
+     *
+     * @return the upload folder
+     */
+    String getUploadFolder();
+
+    /**
      * Sets the post create handler.
      *
      * @param postCreateHandler the new post create handler
@@ -61,5 +68,12 @@ public interface I_CmsListAddMetadata {
      * @param types the new types
      */
     void setTypes(List<String> types);
+
+    /**
+     * Sets the upload folder.
+     *
+     * @param uploadFolder the upload folder
+     */
+    void setUploadFolder(String uploadFolder);
 
 }
