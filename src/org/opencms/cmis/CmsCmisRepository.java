@@ -54,7 +54,6 @@ import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrResultList;
 import org.opencms.util.CmsFileUtil;
-import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -1596,7 +1595,9 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
     CmsSolrResultList solrSearch(CmsObject cms, CmsSolrIndex index, String query, int start, int rows)
     throws CmsSearchException {
 
-        CmsSolrQuery q = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(query));
+        Map<String, String[]> params = new HashMap<>();
+        CmsSolrQuery q = new CmsSolrQuery(null, params);
+        q.setText(query);
         q.setStart(new Integer(start));
         q.setRows(new Integer(rows));
         CmsSolrResultList resultPage = index.search(cms, q, true);
