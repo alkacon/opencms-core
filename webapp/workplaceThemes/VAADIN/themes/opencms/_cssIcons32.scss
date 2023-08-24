@@ -1,6 +1,6 @@
 @mixin o-css-icons-32 {
-  
-[class^="oc-icon-32-"], 
+
+[class^="oc-icon-32-"],
 [class*=" oc-icon-32-"] {
   display: inline-block;
   background-repeat: no-repeat;
@@ -8,15 +8,15 @@
 }
 
 .v-disabled {
-  [class^="oc-icon-32-"], 
+  [class^="oc-icon-32-"],
   [class*=" oc-icon-32-"] {
     background-image: url(img/icon-sprite-32-disabled.svg);
   }
 }
 .v-button {
-  &:hover:not(.v-disabled), 
+  &:hover:not(.v-disabled),
   &:focus:not(.v-disabled) {
-    [class^="oc-icon-32-"], 
+    [class^="oc-icon-32-"],
     [class*=" oc-icon-32-"] {
       background-image: url(img/icon-sprite-32-hover.svg);
     }
@@ -153,5 +153,8 @@
   height: 32px;
   background-position: -432px -48px;
 }
-
+.oc-icon-32-delete-unused {
+  width: 32px;
+  height: 32px;
+  background-position: -480px -48px;
 }
