@@ -38,6 +38,7 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsVfsBundleManager;
+import org.opencms.jsp.util.CmsJspElFunctions;
 import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -1001,7 +1002,7 @@ public class CmsEditModuleForm extends CmsBasicDialog {
             }
         }
         m_info.get().getTopLine().setValue(top);
-        m_info.get().getBottomLine().setValue(bottom);
+        m_info.get().getBottomLine().setValue(CmsJspElFunctions.stripHtml(bottom));
 
         for (Component c : Arrays.asList(m_moduleResources, m_excludedResources)) {
             CmsVaadinUtils.visitDescendants(c, new Predicate<Component>() {

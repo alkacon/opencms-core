@@ -38,6 +38,7 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.jsp.util.CmsJspElFunctions;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
@@ -374,7 +375,7 @@ public abstract class A_CmsSelectResourceTypeDialog extends CmsBasicDialog {
                 suffix = " <span class='o-internal-type-name'>" + CmsEncoder.escapeHtml(type.getType()) + "</span>";
             }
             info.getTopLine().setValue(CmsEncoder.escapeHtml(title) + suffix);
-            info.getBottomLine().setValue(subtitle);
+            info.getBottomLine().setValue(CmsJspElFunctions.stripHtml(subtitle));
             Resource iconResource = CmsResourceUtil.getBigIconResource(explorerType, null);
             info.getResourceIcon().initContent(null, iconResource, null, false, true);
             info.setData(type);

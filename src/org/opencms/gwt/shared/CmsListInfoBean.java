@@ -122,7 +122,7 @@ public class CmsListInfoBean extends CmsIconBean implements I_CmsHasTitle, I_Cms
     public CmsListInfoBean(String title, String subtitle, List<CmsAdditionalInfoBean> additionalInfo) {
 
         m_title = title;
-        m_subTitle = subtitle;
+        setSubTitle(subtitle);
         m_additionalInfo = additionalInfo;
     }
 

@@ -39,7 +39,9 @@ import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsResourceStateUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
+import org.opencms.gwt.client.util.DOMParser;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
+import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsListInfoBean.LockIcon;
 import org.opencms.gwt.shared.CmsListInfoBean.StateIcon;
@@ -86,6 +88,9 @@ import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+
+import elemental2.dom.HTMLDocument;
+import jsinterop.base.Js;
 
 /**
  * Provides a UI list item.<p>
@@ -873,7 +878,16 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
      */
     public void setSubtitleLabel(String label) {
 
-        m_subtitle.setText(label);
+        if (label == null) {
+            label = "";
+        }
+        DOMParser parser = new DOMParser();
+        HTMLDocument doc = Js.cast(parser.parseFromString(label, "text/html"));
+        String stripped = doc.body.textContent;
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(stripped) && !CmsStringUtil.isEmptyOrWhitespaceOnly(label)) {
+            CmsGwtLog.log("Empty HTML stripping output for input: " + label);
+        }
+        m_subtitle.setText(stripped);
     }
 
     /**

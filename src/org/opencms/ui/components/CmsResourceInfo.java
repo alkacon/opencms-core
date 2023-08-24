@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.jsp.util.CmsJspElFunctions;
 import org.opencms.main.CmsLog;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
@@ -147,7 +148,7 @@ public class CmsResourceInfo extends CustomLayout {
         this();
         m_topText.setValue(top);
         m_topInput.setValue(top);
-        m_bottomText.setValue(bottom);
+        m_bottomText.setValue(CmsJspElFunctions.stripHtml(bottom));
         m_icon.initContent(null, iconResource, null, false, true);
     }
 
@@ -160,11 +161,7 @@ public class CmsResourceInfo extends CustomLayout {
      */
     public CmsResourceInfo(String top, String bottom, String iconPath) {
 
-        this();
-        m_topText.setValue(top);
-        m_topInput.setValue(top);
-        m_bottomText.setValue(bottom);
-        m_icon.initContent(null, new ExternalResource(iconPath), null, false, true);
+        this(top, bottom, new ExternalResource(iconPath));
     }
 
     /**
