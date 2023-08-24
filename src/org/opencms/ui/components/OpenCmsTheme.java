@@ -198,6 +198,9 @@ public final class OpenCmsTheme {
     public static final String ICON_DATABASE = "oc-icon-24-database";
 
     /** CSS style name.*/
+    public static final String DELETE_UNUSED = "oc-icon-32-delete-unused";
+
+    /** CSS style name.*/
     public static final String ICON_EXLPORER = "oc-icon-24-folder";
 
     /** CSS style name.*/

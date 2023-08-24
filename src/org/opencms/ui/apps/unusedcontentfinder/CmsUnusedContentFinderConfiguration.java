@@ -73,7 +73,7 @@ public class CmsUnusedContentFinderConfiguration extends A_CmsWorkplaceAppConfig
     @Override
     public Resource getIcon() {
 
-        return new CmsCssIcon(OpenCmsTheme.ICON_SEARCH);
+        return new CmsCssIcon(OpenCmsTheme.DELETE_UNUSED);
     }
 
     /**
@@ -100,7 +100,7 @@ public class CmsUnusedContentFinderConfiguration extends A_CmsWorkplaceAppConfig
     @Override
     public int getOrder() {
 
-        return 120;
+        return 12;
     }
 
     /**
