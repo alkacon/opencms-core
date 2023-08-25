@@ -34,6 +34,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsResourceInfo;
+import org.opencms.ui.components.CmsRichTextArea;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
@@ -92,7 +93,7 @@ public class CmsModuleInfoDialog extends CmsBasicDialog {
             CmsModuleApp.Icons.RESINFO_ICON);
         displayResourceInfoDirectly(Arrays.asList(resInfo));
         m_description.setContentMode(ContentMode.HTML);
-        m_description.setValue(module.getDescription());
+        m_description.setValue(CmsRichTextArea.cleanHtml(module.getDescription(), true));
         m_ok.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
