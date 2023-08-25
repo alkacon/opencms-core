@@ -120,7 +120,8 @@ public class CmsJspLinkWrapper {
     public boolean getIsInternal() {
 
         if (m_internal == null) {
-            m_internal = Boolean.valueOf(null != CmsXmlVarLinkValue.getInternalPathAndQuery(m_cms, m_link));
+            String serverLink = getServerLink();
+            m_internal = Boolean.valueOf(null != CmsXmlVarLinkValue.getInternalPathAndQuery(m_cms, serverLink));
         }
         return m_internal.booleanValue();
     }
@@ -174,7 +175,7 @@ public class CmsJspLinkWrapper {
 
         if (m_resource == null) {
             try {
-                String link = CmsXmlVarLinkValue.getInternalPathAndQuery(m_cms, m_link);
+                String link = CmsXmlVarLinkValue.getInternalPathAndQuery(m_cms, getServerLink());
                 if (link == null) {
                     m_resource = Optional.empty();
                 } else {
