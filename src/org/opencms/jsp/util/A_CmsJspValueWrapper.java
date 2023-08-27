@@ -249,7 +249,7 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
 
     /**
      * Returns <code>true</code> in case the wrapped value is empty or whitespace only,
-     * that is either <code>null</code> or String that contains only whitespace chars.<p>
+     * that is either <code>null</code> or a String that contains only whitespace chars.<p>
      *
      * @return <code>true</code> in case the wrapped value is empty or whitespace only
      */

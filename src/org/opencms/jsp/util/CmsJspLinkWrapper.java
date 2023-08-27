@@ -37,6 +37,8 @@ import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 
+import java.util.AbstractCollection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -47,7 +49,7 @@ import org.apache.commons.logging.Log;
 /**
  * Wrapper for handling links in template/formatter JSP EL.
  */
-public class CmsJspLinkWrapper {
+public class CmsJspLinkWrapper extends AbstractCollection<String> {
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspLinkWrapper.class);
@@ -83,9 +85,9 @@ public class CmsJspLinkWrapper {
     }
 
     /**
-     * Checks whether the link is not null.
+     * Returns <code>true</code> if the wrapped link has been somehow initialized.<p>
      *
-     * @return true if the link is not null
+     * @return <code>true</code> if the wrapped link has been somehow initialized
      */
     public boolean getExists() {
 
@@ -93,9 +95,9 @@ public class CmsJspLinkWrapper {
     }
 
     /**
-     * Checks whether the link is empty.
+     * Returns <code>true</code> in case the wrapped link is empty, that is either <code>null</code> or an empty String.<p>
      *
-     * @return true if the link is empty
+     * @return <code>true</code> in case the wrapped link is empty
      */
     public boolean getIsEmpty() {
 
@@ -103,9 +105,10 @@ public class CmsJspLinkWrapper {
     }
 
     /**
-     * Checks if the link is empty or consists only of whitespace.
+     * Returns <code>true</code> in case the wrapped link is empty or whitespace only,
+     * that is either <code>null</code> or a String that contains only whitespace chars.<p>
      *
-     * @return true if the link is empty or consists of whitespace
+     * @return <code>true</code> in case the wrapped link is empty or whitespace only
      */
     public boolean getIsEmptyOrWhitespaceOnly() {
 
@@ -113,9 +116,9 @@ public class CmsJspLinkWrapper {
     }
 
     /**
-     * Returns true if the link is internal.
+     * Returns <code>true</code> if the link is internal.
      *
-     * @return true if the link is internal
+     * @return <code>true</code> if the link is internal
      */
     public boolean getIsInternal() {
 
@@ -124,6 +127,16 @@ public class CmsJspLinkWrapper {
             m_internal = Boolean.valueOf(null != CmsXmlVarLinkValue.getInternalPathAndQuery(m_cms, serverLink));
         }
         return m_internal.booleanValue();
+    }
+
+    /**
+     * Returns <code>true</code> in case the wrapped link exists and is not empty or whitespace only.<p>
+     *
+     * @return <code>true</code> in case the wrapped link exists and is not empty or whitespace only
+     */
+    public boolean getIsSet() {
+
+        return !getIsEmptyOrWhitespaceOnly();
     }
 
     /**
@@ -207,6 +220,16 @@ public class CmsJspLinkWrapper {
     }
 
     /**
+     * Returns the wrapped link as a String as in {@link #toString()}.<p>
+     *
+     * @return the wrapped link as a String
+     */
+    public String getToString() {
+
+        return toString();
+    }
+
+    /**
      * @see org.opencms.jsp.util.A_CmsJspValueWrapper#hashCode()
      */
     @Override
@@ -216,7 +239,74 @@ public class CmsJspLinkWrapper {
     }
 
     /**
-     * @see java.util.AbstractCollection#toString()
+     * Supports the use of the <code>empty</code> operator in the JSP EL by implementing the Collection interface.<p>
+     *
+     * @return the value from {@link #getIsEmptyOrWhitespaceOnly()} which is the inverse of {@link #getIsSet()}.<p>
+     *
+     * @see java.util.AbstractCollection#isEmpty()
+     * @see #getIsEmptyOrWhitespaceOnly()
+     * @see #getIsSet()
+     */
+    @Override
+    public boolean isEmpty() {
+
+        return getIsEmptyOrWhitespaceOnly();
+    }
+
+    /**
+     * Supports the use of the <code>empty</code> operator in the JSP EL by implementing the Collection interface.<p>
+     *
+     * @return an empty Iterator in case {@link #isEmpty()} is <code>true</code>,
+     * otherwise an Iterator that will return the String value of this wrapper exactly once.<p>
+     *
+     * @see java.util.AbstractCollection#size()
+     */
+    @Override
+    public Iterator<String> iterator() {
+
+        Iterator<String> it = new Iterator<String>() {
+
+            private boolean isFirst = true;
+
+            @Override
+            public boolean hasNext() {
+
+                return isFirst && !isEmpty();
+            }
+
+            @Override
+            public String next() {
+
+                isFirst = false;
+                return toString();
+            }
+
+            @Override
+            public void remove() {
+
+                throw new UnsupportedOperationException();
+            }
+        };
+        return it;
+    }
+
+    /**
+     * Supports the use of the <code>empty</code> operator in the JSP EL by implementing the Collection interface.<p>
+     *
+     * @return returns 0 in case thiss link is empty, or 1 otherwise.<p>
+     *
+     * @see java.util.AbstractCollection#size()
+     */
+    @Override
+    public int size() {
+
+        return isEmpty() ? 0 : 1;
+    }
+
+    /**
+     * Returns the wrapped link as a String as in {@link #getLink()}.<p>
+     *
+     * @return the wrapped link as a String
      */
     @Override
     public String toString() {
