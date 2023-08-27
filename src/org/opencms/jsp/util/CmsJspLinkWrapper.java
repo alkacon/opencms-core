@@ -11,7 +11,7 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNUAbstractCollection<String>
  * Lesser General Public License for more details.
  *
  * For further information about Alkacon Software, please see the
@@ -37,10 +37,7 @@ import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 
-import java.util.AbstractCollection;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -49,7 +46,7 @@ import org.apache.commons.logging.Log;
 /**
  * Wrapper for handling links in template/formatter JSP EL.
  */
-public class CmsJspLinkWrapper extends AbstractCollection<String> {
+public class CmsJspLinkWrapper {
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspLinkWrapper.class);
@@ -82,6 +79,22 @@ public class CmsJspLinkWrapper extends AbstractCollection<String> {
 
         m_cms = cms;
         m_link = link;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if ((obj != null) && ((obj instanceof CmsJspLinkWrapper) || (obj instanceof String))) {
+            // if obj is a String compare with default String representation
+            return obj.toString().equals(toString());
+        }
+        return false;
     }
 
     /**
@@ -235,72 +248,10 @@ public class CmsJspLinkWrapper extends AbstractCollection<String> {
     @Override
     public int hashCode() {
 
-        return Objects.hashCode(m_link);
-    }
-
-    /**
-     * Supports the use of the <code>empty</code> operator in the JSP EL by implementing the Collection interface.<p>
-     *
-     * @return the value from {@link #getIsEmptyOrWhitespaceOnly()} which is the inverse of {@link #getIsSet()}.<p>
-     *
-     * @see java.util.AbstractCollection#isEmpty()
-     * @see #getIsEmptyOrWhitespaceOnly()
-     * @see #getIsSet()
-     */
-    @Override
-    public boolean isEmpty() {
-
-        return getIsEmptyOrWhitespaceOnly();
-    }
-
-    /**
-     * Supports the use of the <code>empty</code> operator in the JSP EL by implementing the Collection interface.<p>
-     *
-     * @return an empty Iterator in case {@link #isEmpty()} is <code>true</code>,
-     * otherwise an Iterator that will return the String value of this wrapper exactly once.<p>
-     *
-     * @see java.util.AbstractCollection#size()
-     */
-    @Override
-    public Iterator<String> iterator() {
-
-        Iterator<String> it = new Iterator<String>() {
-
-            private boolean isFirst = true;
-
-            @Override
-            public boolean hasNext() {
-
-                return isFirst && !isEmpty();
-            }
-
-            @Override
-            public String next() {
-
-                isFirst = false;
-                return toString();
-            }
-
-            @Override
-            public void remove() {
-
-                throw new UnsupportedOperationException();
-            }
-        };
-        return it;
-    }
-
-    /**
-     * Supports the use of the <code>empty</code> operator in the JSP EL by implementing the Collection interface.<p>
-     *
-     * @return returns 0 in case thiss link is empty, or 1 otherwise.<p>
-     *
-     * @see java.util.AbstractCollection#size()
-     */
-    @Override
-    public int size() {
-
-        return isEmpty() ? 0 : 1;
+        if (m_link == null) {
+            return 0;
+        }
+        return toString().hashCode();
     }
 
     /**
