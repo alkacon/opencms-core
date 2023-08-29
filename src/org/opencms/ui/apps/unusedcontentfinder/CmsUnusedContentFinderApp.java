@@ -149,8 +149,10 @@ public class CmsUnusedContentFinderApp extends A_CmsWorkplaceApp {
         stateBean.setFolder(A_CmsWorkplaceApp.getParamFromState(state, FOLDER).replace("%2F", "/"));
         try {
             String typeName = A_CmsWorkplaceApp.getParamFromState(state, RESOURCE_TYPE);
-            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(typeName);
-            stateBean.setResourceType(type);
+            if (typeName != null) {
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(typeName);
+                stateBean.setResourceType(type);
+            }
         } catch (CmsLoaderException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }

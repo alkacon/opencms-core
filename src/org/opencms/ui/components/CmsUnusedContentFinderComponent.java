@@ -59,10 +59,11 @@ import org.opencms.ui.apps.unusedcontentfinder.CmsUnusedContentFinderConfigurati
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.ui.contextmenu.CmsResourceContextMenuBuilder;
 import org.opencms.ui.dialogs.CmsDeleteDialog;
-import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.content.I_CmsXmlContentHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -450,9 +451,9 @@ public class CmsUnusedContentFinderComponent {
                         CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE.addRequireType(resourceType);
                         List<CmsResource> resources = cms.readResources(folderName, filter);
                         for (CmsResource resource : resources) {
-                            if ((isExcludedByProperties(resource, false) && isExcludedByProperties(resource, true))
+                            if (isExcludedByProperties(resource, false)
                                 || (isUsedByOtherContents(resource, false) && isUsedByOtherContents(resource, true))) {
-                                // resource is excluded by properties, both, in the online project and the offline project
+                                // resource is excluded by properties in the offline project
                                 // resource is used by other contents either in the online project or the offline project
                             } else {
                                 resourcesToShow.add(resource);
@@ -683,6 +684,12 @@ public class CmsUnusedContentFinderComponent {
     /** The maximum number of results. */
     static final int MAX_RESULTS = 5000;
 
+    /** Schema parameter name. */
+    static final String SCHEMA_PARAM_NAME = "unusedcontentfinder";
+
+    /** Schema parameter value. */
+    static final String SCHEMA_PARAM_VALUE = "include";
+
     /** The delete button of this unused content finder. */
     DeleteButtonComponent m_deleteButtonComponent;
 
@@ -771,8 +778,12 @@ public class CmsUnusedContentFinderComponent {
     }
 
     /**
-     * Returns the list of all XML content types, except containerpage and module/sitemap configs.
-     * @return the list of all XML content types, except containerpage and module/sitemap configs.
+     * Returns the list of all relevant XML content types. A content type is relevant
+     * if either there is a parameter "unusedcontentfinder" defined in the XML
+     * content schema and the value of this parameter is set to "include"; or, the
+     * "unusedcontentfinder" parameter is not defined at all but the containerPageOnly
+     * attribute of the searchsettings element is set to "true".
+     * @return the list of all relevant XML content types
      */
     List<I_CmsResourceType> getAvailableTypes() {
 
@@ -786,12 +797,20 @@ public class CmsUnusedContentFinderComponent {
                 CmsResourceTypeXmlContent xmlType = (CmsResourceTypeXmlContent)type;
                 try {
                     CmsFile schemaFile = cms.readFile(xmlType.getSchema());
-                    String fileContent = new String(schemaFile.getContents(), CmsFileUtil.getEncoding(cms, schemaFile));
-                    if (fileContent.contains("containerPageOnly=\"true\"")) { // false is the default
+                    CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(
+                        cms,
+                        schemaFile.getRootPath());
+                    I_CmsXmlContentHandler contentHandler = definition.getContentHandler();
+                    String parameter = contentHandler.getParameter(SCHEMA_PARAM_NAME);
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(parameter)) {
+                        if (parameter.equalsIgnoreCase(SCHEMA_PARAM_VALUE)) {
+                            result.add(type);
+                        }
+                    } else if (contentHandler.isContainerPageOnly()) {
                         result.add(type);
                     }
                 } catch (Throwable t) {
-                    // This might happen for internal types.
+                    // may happen for internal types
                 }
             }
         }
