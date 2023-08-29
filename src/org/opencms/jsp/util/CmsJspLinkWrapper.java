@@ -66,10 +66,13 @@ public class CmsJspLinkWrapper {
     /** Cached links (online, perma, server). */
     protected Map<String, String> m_stringCache = new ConcurrentHashMap<>();
 
+    /** If <code>true</code> then empty links are allowed. */
+    private boolean m_allowEmpty;
+
     /**
-     * Creates a new link wrapper.
+     * Creates a new link wrapper.<p>
      *
-     * <p>The link parameter should be in the same format that you enter in an XML content of field of type OpenCmsVarLink, i.e.
+     * The link parameter should be in the same format that you enter in an XML content of field of type OpenCmsVarLink, i.e.
      * either a full external URL or a site path with a query string attached.
      *
      * @param cms the CMS context
@@ -77,8 +80,24 @@ public class CmsJspLinkWrapper {
      */
     public CmsJspLinkWrapper(CmsObject cms, String link) {
 
+        this(cms, link, false);
+    }
+
+    /**
+     * Creates a new link wrapper.<p>
+     *
+     * The link parameter should be in the same format that you enter in an XML content of field of type OpenCmsVarLink, i.e.
+     * either a full external URL or a site path with a query string attached.
+     *
+     * @param cms the CMS context
+     * @param link the link to wrap
+     * @param allowEmpty if <code>true</code> then empty links are allowed
+     */
+    public CmsJspLinkWrapper(CmsObject cms, String link, boolean allowEmpty) {
+
         m_cms = cms;
         m_link = link;
+        m_allowEmpty = allowEmpty;
     }
 
     /**
@@ -90,42 +109,10 @@ public class CmsJspLinkWrapper {
         if (obj == this) {
             return true;
         }
-        if ((obj != null) && ((obj instanceof CmsJspLinkWrapper) || (obj instanceof String))) {
-            // if obj is a String compare with default String representation
+        if (obj instanceof CmsJspLinkWrapper) {
             return obj.toString().equals(toString());
         }
         return false;
-    }
-
-    /**
-     * Returns <code>true</code> if the wrapped link has been somehow initialized.<p>
-     *
-     * @return <code>true</code> if the wrapped link has been somehow initialized
-     */
-    public boolean getExists() {
-
-        return m_link != null;
-    }
-
-    /**
-     * Returns <code>true</code> in case the wrapped link is empty, that is either <code>null</code> or an empty String.<p>
-     *
-     * @return <code>true</code> in case the wrapped link is empty
-     */
-    public boolean getIsEmpty() {
-
-        return CmsStringUtil.isEmpty(m_link);
-    }
-
-    /**
-     * Returns <code>true</code> in case the wrapped link is empty or whitespace only,
-     * that is either <code>null</code> or a String that contains only whitespace chars.<p>
-     *
-     * @return <code>true</code> in case the wrapped link is empty or whitespace only
-     */
-    public boolean getIsEmptyOrWhitespaceOnly() {
-
-        return CmsStringUtil.isEmptyOrWhitespaceOnly(m_link);
     }
 
     /**
@@ -136,20 +123,14 @@ public class CmsJspLinkWrapper {
     public boolean getIsInternal() {
 
         if (m_internal == null) {
-            String serverLink = getServerLink();
-            m_internal = Boolean.valueOf(null != CmsXmlVarLinkValue.getInternalPathAndQuery(m_cms, serverLink));
+            if (isEmpty()) {
+                m_internal = Boolean.valueOf(
+                    null != CmsXmlVarLinkValue.getInternalPathAndQuery(m_cms, getServerLink()));
+            } else {
+                m_internal = Boolean.FALSE;
+            }
         }
         return m_internal.booleanValue();
-    }
-
-    /**
-     * Returns <code>true</code> in case the wrapped link exists and is not empty or whitespace only.<p>
-     *
-     * @return <code>true</code> in case the wrapped link exists and is not empty or whitespace only
-     */
-    public boolean getIsSet() {
-
-        return !getIsEmptyOrWhitespaceOnly();
     }
 
     /**
@@ -159,7 +140,9 @@ public class CmsJspLinkWrapper {
      */
     public String getLink() {
 
-        return m_stringCache.computeIfAbsent("link", k -> A_CmsJspValueWrapper.substituteLink(m_cms, m_link));
+        return m_stringCache.computeIfAbsent(
+            "link",
+            k -> (isEmpty() ? A_CmsJspValueWrapper.substituteLink(m_cms, m_link) : ""));
     }
 
     /**
@@ -179,7 +162,9 @@ public class CmsJspLinkWrapper {
      */
     public String getOnlineLink() {
 
-        return m_stringCache.computeIfAbsent("online", k -> OpenCms.getLinkManager().getOnlineLink(m_cms, m_link));
+        return m_stringCache.computeIfAbsent(
+            "online",
+            k -> (isEmpty() ? OpenCms.getLinkManager().getOnlineLink(m_cms, m_link) : ""));
     }
 
     /**
@@ -189,7 +174,9 @@ public class CmsJspLinkWrapper {
      */
     public String getPermaLink() {
 
-        return m_stringCache.computeIfAbsent("perma", k -> OpenCms.getLinkManager().getPermalink(m_cms, m_link));
+        return m_stringCache.computeIfAbsent(
+            "perma",
+            k -> (isEmpty() ? OpenCms.getLinkManager().getPermalink(m_cms, m_link) : ""));
     }
 
     /**
@@ -229,7 +216,9 @@ public class CmsJspLinkWrapper {
      */
     public String getServerLink() {
 
-        return m_stringCache.computeIfAbsent("server", k -> OpenCms.getLinkManager().getServerLink(m_cms, m_link));
+        return m_stringCache.computeIfAbsent(
+            "server",
+            k -> (isEmpty() ? OpenCms.getLinkManager().getServerLink(m_cms, m_link) : ""));
     }
 
     /**
@@ -258,6 +247,8 @@ public class CmsJspLinkWrapper {
      * Returns the wrapped link as a String as in {@link #getLink()}.<p>
      *
      * @return the wrapped link as a String
+     *
+     * @see #getLiteral()
      */
     @Override
     public String toString() {
@@ -265,4 +256,16 @@ public class CmsJspLinkWrapper {
         return getLink();
     }
 
+    /**
+     * Returns <code>true</code> if the wrapped link has been initialized.<p>
+     *
+     * @return <code>true</code> if the wrapped link has been initialized
+     */
+    private boolean isEmpty() {
+
+        if (m_allowEmpty) {
+            return m_link != null;
+        }
+        return !CmsStringUtil.isEmptyOrWhitespaceOnly(m_link);
+    }
 }

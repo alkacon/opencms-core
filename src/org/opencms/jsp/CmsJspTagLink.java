@@ -509,7 +509,7 @@ public class CmsJspTagLink extends BodyTagSupport {
                     }
                     CmsFlexController controller = CmsFlexController.getController(req);
                     CmsObject cms = prepareCmsObject(controller.getCmsObject(), params);
-                    pageContext.setAttribute(m_var, new CmsJspLinkWrapper(cms, link), scope);
+                    pageContext.setAttribute(m_var, new CmsJspLinkWrapper(cms, link, true), scope);
                 } else {
                     // Calculate the link substitution
                     String newlink = linkTagAction(params, req);
