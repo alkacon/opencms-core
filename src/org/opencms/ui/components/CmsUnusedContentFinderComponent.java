@@ -30,6 +30,8 @@ package org.opencms.ui.components;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.A_CmsResourceTypeFolderBase;
@@ -111,7 +113,7 @@ public class CmsUnusedContentFinderComponent {
 
             String caption = CmsVaadinUtils.getMessageText(Messages.GUI_UNUSED_CONTENT_FINDER_DELETE_ALL_0);
             addStyleName(OpenCmsTheme.BUTTON_RED);
-            setCaption(caption + "...");
+            setCaption(caption);
             setVisible(false);
             addClickListener(new ClickListener() {
 
@@ -447,9 +449,13 @@ public class CmsUnusedContentFinderComponent {
                     for (I_CmsResourceType resourceType : resourceTypes) {
                         CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE.addRequireType(resourceType);
                         List<CmsResource> resources = cms.readResources(folderName, filter);
-                        for (CmsResource res : resources) {
-                            if (isNotUsedByOtherContents(res, false) && isNotUsedByOtherContents(res, true)) {
-                                resourcesToShow.add(res);
+                        for (CmsResource resource : resources) {
+                            if ((isExcludedByProperties(resource, false) && isExcludedByProperties(resource, true))
+                                || (isUsedByOtherContents(resource, false) && isUsedByOtherContents(resource, true))) {
+                                // resource is excluded by properties, both, in the online project and the offline project
+                                // resource is used by other contents either in the online project or the offline project
+                            } else {
+                                resourcesToShow.add(resource);
                             }
                             if (resourcesToShow.size() > MAX_RESULTS) {
                                 tooManyResults = true;
@@ -526,21 +532,6 @@ public class CmsUnusedContentFinderComponent {
                     }
                     if ((m_fileTable.getValue() != null) & !((Set<?>)m_fileTable.getValue()).isEmpty()) {
                         m_fileTable.setCurrentPageFirstItemId(((Set<?>)m_fileTable.getValue()).iterator().next());
-                    }
-                }
-
-                /**
-                 * Update the delete button on selection change.
-                 * @see org.opencms.ui.components.CmsFileTable#rebuildMenu()
-                 */
-                @Override
-                void rebuildMenu() {
-
-                    super.rebuildMenu();
-                    if (m_currentResources.size() == 0) {
-                        m_deleteButtonComponent.setVisible(true);
-                    } else {
-                        m_deleteButtonComponent.setVisible(false);
                     }
                 }
             };
@@ -842,21 +833,44 @@ public class CmsUnusedContentFinderComponent {
     }
 
     /**
-     * Get all contents that link to the provided resource.
-     * @param resource the resource of the content for which the resources linking to it are returned for
-     * @param online flag, indicating if the check should be performed online or offline
-     * @return flag, indicating if no resource at all is linking to the content
+     * Returns whether a resource is excluded by a property. This is the case for properties:
+     * <li>element.model=true
+     * <li>NavInfo=keep
+     * @param resource the resource to check
+     * @param online whether to check in the online project
+     * @return whether the resource in not excluded by a property
+     * @throws CmsException if reading the properties fails
+     */
+    boolean isExcludedByProperties(CmsResource resource, boolean online) throws CmsException {
+
+        CmsObject cms = online ? getOnlineCms() : getOfflineCms();
+        CmsProperty navInfo = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_NAVINFO, true);
+        if (!navInfo.isNullProperty() && navInfo.getValue().equals("keep")) {
+            return true;
+        }
+        CmsProperty elementModel = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_ELEMENT_MODEL, true);
+        if (!elementModel.isNullProperty() && elementModel.getValue().equals("true")) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether a resource is used by other contents.
+     * @param resource the resource to check
+     * @param online whether the check should be performed online
+     * @return whether the resource is used by other contents
      * @throws CmsException if reading related resources fails
      */
-    boolean isNotUsedByOtherContents(final CmsResource resource, final boolean online) throws CmsException {
+    boolean isUsedByOtherContents(CmsResource resource, boolean online) throws CmsException {
 
         if (online && resource.getState().isNew()) {
-            return true;
+            return false;
         }
         CmsRelationFilter filter = CmsRelationFilter.SOURCES;
         CmsObject cms = online ? getOnlineCms() : getOfflineCms();
         List<CmsRelation> relations = cms.getRelationsForResource(resource, filter);
-        return relations.isEmpty();
+        return !relations.isEmpty();
     }
 
     /**
