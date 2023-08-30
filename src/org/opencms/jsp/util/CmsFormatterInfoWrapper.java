@@ -139,6 +139,16 @@ public class CmsFormatterInfoWrapper implements I_CmsFormatterInfo {
     }
 
     /**
+     * Gets the path of the formatter definition XML file.
+     *
+     * @return the path of the formatter definition XML file
+     */
+    public String getDefinition() {
+
+        return m_formatter.getLocation();
+    }
+
+    /**
      * Gets the localized description
      *
      * @return the description
