@@ -36,12 +36,10 @@ import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -69,18 +67,26 @@ public class CmsResourceTypeInfoWrapper implements I_CmsFormatterInfo {
     /** The wrapped resource type. */
     private I_CmsResourceType m_type;
 
+    private CmsJspStandardContextBean m_context;
+
     /**
      * Creates a new instance.
      *
+     * @param context the standard context bean
      * @param cms the current CMS context
      * @param config the current sitemap configuration
      * @param type the type to wrap
      */
-    public CmsResourceTypeInfoWrapper(CmsObject cms, CmsADEConfigData config, I_CmsResourceType type) {
+    public CmsResourceTypeInfoWrapper(
+        CmsJspStandardContextBean context,
+        CmsObject cms,
+        CmsADEConfigData config,
+        I_CmsResourceType type) {
 
         m_cms = cms;
         m_config = config;
         m_type = type;
+        m_context = context;
         for (I_CmsFormatterBean formatter : config.getActiveFormatters().values()) {
             if (!formatter.getResourceTypeNames().contains(type.getTypeName())) {
                 continue;
@@ -117,7 +123,7 @@ public class CmsResourceTypeInfoWrapper implements I_CmsFormatterInfo {
      */
     public List<CmsFormatterInfoWrapper> formatterInfoForContainer(String containerType) {
 
-        return wrapFormatters(m_activeFormattersByContainerType.get(containerType));
+        return m_context.wrapFormatters(m_activeFormattersByContainerType.get(containerType));
 
     }
 
@@ -166,7 +172,7 @@ public class CmsResourceTypeInfoWrapper implements I_CmsFormatterInfo {
      */
     public List<CmsFormatterInfoWrapper> getFormatterInfo() {
 
-        return wrapFormatters(m_activeFormatters);
+        return m_context.wrapFormatters(m_activeFormatters);
 
     }
 
@@ -257,20 +263,6 @@ public class CmsResourceTypeInfoWrapper implements I_CmsFormatterInfo {
         } catch (Throwable e) {
             return m_type.getTypeName();
         }
-    }
-
-    /**
-     * Wraps a list of formatter beans for use in JSPs.
-     *
-     * @param formatters the formatters to wrap
-     * @return the wrapped formatters
-     */
-    private List<CmsFormatterInfoWrapper> wrapFormatters(Collection<I_CmsFormatterBean> formatters) {
-
-        List<CmsFormatterInfoWrapper> result = formatters.stream().map(
-            formatter -> new CmsFormatterInfoWrapper(m_cms, m_config, formatter)).collect(Collectors.toList());
-        Collections.sort(result, (f1, f2) -> Integer.compare(f2.getRank(), f1.getRank()));
-        return result;
     }
 
 }

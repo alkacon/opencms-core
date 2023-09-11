@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 /**
  * Wrapper bean for querying information related to a container type in JSPs.
@@ -62,17 +61,24 @@ public class CmsContainerTypeInfoWrapper {
     /** The list of matching functions. */
     private List<CmsFunctionFormatterBean> m_matchingFunctions = new ArrayList<>();
 
+    private CmsJspStandardContextBean m_context;
+
     /**
      * Creates a new instance.
-     *
+     * @param context the standard context bean
      * @param cms the CMS context
      * @param config the sitemap configuration
      * @param type the container type to wrap
      */
-    public CmsContainerTypeInfoWrapper(CmsObject cms, CmsADEConfigData config, String type) {
+    public CmsContainerTypeInfoWrapper(
+        CmsJspStandardContextBean context,
+        CmsObject cms,
+        CmsADEConfigData config,
+        String type) {
 
         m_cms = cms;
         m_config = config;
+        m_context = context;
         m_containerType = type;
         for (I_CmsFormatterBean formatter : m_config.getActiveFormatters().values()) {
             if ((formatter.getContainerTypes() != null) && formatter.getContainerTypes().contains(m_containerType)) {
@@ -103,10 +109,9 @@ public class CmsContainerTypeInfoWrapper {
      *
      * @return the list of matching functions for the container type
      */
-    public List<I_CmsFormatterInfo> getAllowedFunctions() {
+    public List<CmsFormatterInfoWrapper> getAllowedFunctions() {
 
-        return m_matchingFunctions.stream().map(
-            function -> new CmsFormatterInfoWrapper(m_cms, m_config, function)).collect(Collectors.toList());
+        return m_context.wrapFormatters(m_matchingFunctions);
 
     }
 
@@ -121,7 +126,7 @@ public class CmsContainerTypeInfoWrapper {
         for (String name : m_matchingResourceTypes) {
             try {
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(name);
-                CmsResourceTypeInfoWrapper wrapper = new CmsResourceTypeInfoWrapper(m_cms, m_config, type);
+                CmsResourceTypeInfoWrapper wrapper = new CmsResourceTypeInfoWrapper(m_context, m_cms, m_config, type);
                 result.add(wrapper);
             } catch (CmsLoaderException e) {
                 // type not found, ignore and continue

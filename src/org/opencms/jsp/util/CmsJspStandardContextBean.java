@@ -30,6 +30,7 @@ package org.opencms.jsp.util;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.configuration.CmsFunctionReference;
+import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.configuration.plugins.CmsTemplatePlugin;
 import org.opencms.ade.configuration.plugins.CmsTemplatePluginFinder;
 import org.opencms.ade.containerpage.CmsContainerpageService;
@@ -112,6 +113,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -128,6 +130,7 @@ import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Multimap;
 
 /**
@@ -1310,7 +1313,7 @@ public final class CmsJspStandardContextBean {
      */
     public CmsContainerTypeInfoWrapper getContainerTypeInfo(String containerType) {
 
-        return new CmsContainerTypeInfoWrapper(m_cms, m_config, containerType);
+        return new CmsContainerTypeInfoWrapper(this, m_cms, m_config, containerType);
     }
 
     /**
@@ -2221,7 +2224,7 @@ public final class CmsJspStandardContextBean {
 
         try {
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(typeName);
-            return new CmsResourceTypeInfoWrapper(m_cms, m_config, type);
+            return new CmsResourceTypeInfoWrapper(this, m_cms, m_config, type);
         } catch (CmsLoaderException e) {
             LOG.info(e.getLocalizedMessage(), e);
             return null;
@@ -2917,6 +2920,62 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Wraps a list of formatter beans for use in JSPs.
+     *
+     * @param formatters the formatters to wrap
+     * @return the wrapped formatters
+     */
+    protected List<CmsFormatterInfoWrapper> wrapFormatters(Collection<? extends I_CmsFormatterBean> formatters) {
+
+        List<I_CmsFormatterBean> formattersToSort = new ArrayList<>(formatters);
+        List<CmsResourceTypeConfig> types = m_config.getResourceTypes();
+
+        // we want to 'group' the returned formatters by resource type, which is slightly
+        // complicated by the fact that formatters can support multiple resource types.
+
+        // first build a map that records the positions of the resource types configured in the sitemap configuration
+        Map<String, Integer> typePositionsByTypeName = new HashMap<>();
+        for (int i = 0; i < types.size(); i++) {
+            CmsResourceTypeConfig singleType = types.get(i);
+            typePositionsByTypeName.put(singleType.getTypeName(), Integer.valueOf(i));
+        }
+        // for each formatter, save the lowest position of any resource type it supports
+        Map<String, Integer> lowestResourceTypePositionsByFormatterId = new HashMap<>();
+        for (I_CmsFormatterBean formatter : formatters) {
+            int pos = Integer.MAX_VALUE;
+            for (String typeName : formatter.getResourceTypeNames()) {
+                Integer typeOrder = typePositionsByTypeName.get(typeName);
+                if (typeOrder != null) {
+                    pos = Math.min(pos, typeOrder.intValue());
+                }
+            }
+            lowestResourceTypePositionsByFormatterId.put(formatter.getId(), Integer.valueOf(pos));
+        }
+
+        // now we can group the formatters by types using sorting, and inside the groups we sort by formatter rank
+        Collections.sort(formattersToSort, new Comparator<I_CmsFormatterBean>() {
+
+            public int compare(I_CmsFormatterBean o1, I_CmsFormatterBean o2) {
+
+                return ComparisonChain.start().compare(getTypePosition(o1), getTypePosition(o2)).compare(
+                    o2.getRank(),
+                    o1.getRank()).result();
+            }
+
+            public int getTypePosition(I_CmsFormatterBean formatter) {
+
+                return lowestResourceTypePositionsByFormatterId.computeIfAbsent(
+                    formatter.getId(),
+                    id -> Integer.valueOf(Integer.MAX_VALUE));
+            }
+
+        });
+        return formattersToSort.stream().map(
+            formatter -> new CmsFormatterInfoWrapper(m_cms, m_config, formatter)).collect(Collectors.toList());
+
+    }
+
+    /**
      * Adds the mappings of the given formatter configuration.<p>
      *
      * @param formatterBean the formatter bean
@@ -3138,20 +3197,6 @@ public final class CmsJspStandardContextBean {
                 }
             }
         }
-    }
-
-    /**
-     * Wraps a list of formatter beans for use in JSPs.
-     *
-     * @param formatters the formatters to wrap
-     * @return the wrapped formatters
-     */
-    private List<CmsFormatterInfoWrapper> wrapFormatters(Collection<I_CmsFormatterBean> formatters) {
-
-        List<CmsFormatterInfoWrapper> result = formatters.stream().map(
-            formatter -> new CmsFormatterInfoWrapper(m_cms, m_config, formatter)).collect(Collectors.toList());
-        Collections.sort(result, (f1, f2) -> Integer.compare(f2.getRank(), f1.getRank()));
-        return result;
     }
 
 }
