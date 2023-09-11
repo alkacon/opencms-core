@@ -121,6 +121,12 @@ public class CmsXmlContentProperty implements Serializable {
     /** The serialization uid. */
     private static final long serialVersionUID = -7718747702874213381L;
 
+    /** The property visibility. */
+    protected Visibility m_visibility;
+
+    /** Alias names, separated by pipes, possibly null. */
+    private String m_aliasName;
+
     /** Default value. */
     private String m_default;
 
@@ -151,17 +157,11 @@ public class CmsXmlContentProperty implements Serializable {
     /** The value which indicates whether the user can influence how this property is going to be inherited. */
     private String m_selectInherit;
 
-    /** Alias names, separated by pipes, possibly null. */
-    private String m_aliasName;
-
     /** newvalue:oldvalue pairs separated by pipes. */
     private String m_translation;
 
     /** The property type. */
     private String m_type;
-
-    /** The property visibility. */
-    private Visibility m_visibility;
 
     /** The widget to use in the editor. */
     private String m_widget;
