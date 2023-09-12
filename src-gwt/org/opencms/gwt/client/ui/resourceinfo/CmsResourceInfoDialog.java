@@ -312,6 +312,7 @@ public class CmsResourceInfoDialog extends CmsPopup {
             @Override
             protected void onResponse(CmsResourceStatusBean result) {
 
+                stop(false);
                 reinitContent(result);
             }
         };
