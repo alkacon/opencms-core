@@ -37,7 +37,11 @@ import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 
+import java.util.AbstractCollection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -46,7 +50,7 @@ import org.apache.commons.logging.Log;
 /**
  * Wrapper for handling links in template/formatter JSP EL.
  */
-public class CmsJspLinkWrapper {
+public class CmsJspLinkWrapper extends AbstractCollection<String> {
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspLinkWrapper.class);
@@ -124,10 +128,10 @@ public class CmsJspLinkWrapper {
 
         if (m_internal == null) {
             if (isEmpty()) {
+                m_internal = Boolean.FALSE;
+            } else {
                 m_internal = Boolean.valueOf(
                     null != CmsXmlVarLinkValue.getInternalPathAndQuery(m_cms, getServerLink()));
-            } else {
-                m_internal = Boolean.FALSE;
             }
         }
         return m_internal.booleanValue();
@@ -142,7 +146,7 @@ public class CmsJspLinkWrapper {
 
         return m_stringCache.computeIfAbsent(
             "link",
-            k -> (isEmpty() ? A_CmsJspValueWrapper.substituteLink(m_cms, m_link) : ""));
+            k -> (!isEmpty() ? A_CmsJspValueWrapper.substituteLink(m_cms, m_link) : ""));
     }
 
     /**
@@ -164,7 +168,7 @@ public class CmsJspLinkWrapper {
 
         return m_stringCache.computeIfAbsent(
             "online",
-            k -> (isEmpty() ? OpenCms.getLinkManager().getOnlineLink(m_cms, m_link) : ""));
+            k -> (!isEmpty() ? OpenCms.getLinkManager().getOnlineLink(m_cms, m_link) : ""));
     }
 
     /**
@@ -176,7 +180,7 @@ public class CmsJspLinkWrapper {
 
         return m_stringCache.computeIfAbsent(
             "perma",
-            k -> (isEmpty() ? OpenCms.getLinkManager().getPermalink(m_cms, m_link) : ""));
+            k -> (!isEmpty() ? OpenCms.getLinkManager().getPermalink(m_cms, m_link) : ""));
     }
 
     /**
@@ -218,7 +222,7 @@ public class CmsJspLinkWrapper {
 
         return m_stringCache.computeIfAbsent(
             "server",
-            k -> (isEmpty() ? OpenCms.getLinkManager().getServerLink(m_cms, m_link) : ""));
+            k -> (!isEmpty() ? OpenCms.getLinkManager().getServerLink(m_cms, m_link) : ""));
     }
 
     /**
@@ -244,6 +248,38 @@ public class CmsJspLinkWrapper {
     }
 
     /**
+     * Returns <code>true</code> if the wrapped link has been initialized.<p>
+     *
+     * @return <code>true</code> if the wrapped link has been initialized
+     */
+    @Override
+    public boolean isEmpty() {
+
+        if (m_allowEmpty) {
+            return m_link == null;
+        }
+        return CmsStringUtil.isEmptyOrWhitespaceOnly(m_link);
+    }
+
+    /**
+     * @see java.util.AbstractCollection#iterator()
+     */
+    @Override
+    public Iterator<String> iterator() {
+
+        return isEmpty() ? Collections.emptyIterator() : Collections.singletonList(toString()).iterator();
+    }
+
+    /**
+     * @see java.util.AbstractCollection#size()
+     */
+    @Override
+    public int size() {
+
+        return isEmpty() ? 0 : 1;
+    }
+
+    /**
      * Returns the wrapped link as a String as in {@link #getLink()}.<p>
      *
      * @return the wrapped link as a String
@@ -254,18 +290,5 @@ public class CmsJspLinkWrapper {
     public String toString() {
 
         return getLink();
-    }
-
-    /**
-     * Returns <code>true</code> if the wrapped link has been initialized.<p>
-     *
-     * @return <code>true</code> if the wrapped link has been initialized
-     */
-    private boolean isEmpty() {
-
-        if (m_allowEmpty) {
-            return m_link != null;
-        }
-        return !CmsStringUtil.isEmptyOrWhitespaceOnly(m_link);
     }
 }
