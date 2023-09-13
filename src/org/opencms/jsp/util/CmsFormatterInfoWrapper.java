@@ -181,11 +181,41 @@ public class CmsFormatterInfoWrapper implements I_CmsFormatterInfo {
     }
 
     /**
+     * Gets the display type of the formatter.
+     *
+     * @return the display type of the formatter
+     */
+    public String getDisplay() {
+
+        return m_formatter.getDisplayType();
+    }
+
+    /**
      * @see org.opencms.jsp.util.I_CmsFormatterInfo#getIsActive()
      */
     public boolean getIsActive() {
 
         return true;
+    }
+
+    /**
+     * Checks if the formatter is a detail formatter.
+     *
+     * @return true if the formatter is a detail formatter
+     */
+    public boolean getIsDetailFormatter() {
+
+        return m_formatter.isDetailFormatter();
+    }
+
+    /**
+     * Checks if the formatter is a display formatter.
+     *
+     * @return true if the formatter is a display formatter
+     */
+    public boolean getIsDisplayFormatter() {
+
+        return m_formatter.isDisplayFormatter();
     }
 
     /**
