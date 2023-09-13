@@ -452,9 +452,11 @@ public class CmsUnusedContentFinderComponent {
                         List<CmsResource> resources = cms.readResources(folderName, filter);
                         for (CmsResource resource : resources) {
                             if (isExcludedByProperties(resource, false)
-                                || (isUsedByOtherContents(resource, false) && isUsedByOtherContents(resource, true))) {
+                                || isUsedByOtherContents(resource, false)
+                                || isUsedByOtherContents(resource, true)) {
                                 // resource is excluded by properties in the offline project
-                                // resource is used by other contents either in the online project or the offline project
+                                // resource is used by other contents in the offline project
+                                // resource is used by other contents in the online project
                             } else {
                                 resourcesToShow.add(resource);
                             }
