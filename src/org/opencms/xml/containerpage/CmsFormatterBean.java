@@ -48,6 +48,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 
@@ -520,7 +521,26 @@ public class CmsFormatterBean implements I_CmsFormatterBean, Cloneable {
         if (locale == null) {
             return m_description;
         }
-        CmsMacroResolver resolver = new CmsMacroResolver();
+        CmsMacroResolver resolver = new CmsMacroResolver() {
+
+            @Override
+            public String getMacroValue(String macro) {
+
+                if (macro.startsWith(CmsMacroResolver.KEY_LOCALIZED_PREFIX)) {
+                    String keyName = macro.substring(CmsMacroResolver.KEY_LOCALIZED_PREFIX.length());
+                    return m_messages.keyWithParams(keyName, key -> "");
+                } else {
+                    return super.getMacroValue(macro);
+                }
+            }
+
+            @Override
+            public String resolveMacros(String input) {
+
+                return StringUtils.trimToNull(super.resolveMacros(input));
+            }
+
+        };
         resolver.setMessages(OpenCms.getWorkplaceManager().getMessages(locale));
         return resolver.resolveMacros(m_description);
     }

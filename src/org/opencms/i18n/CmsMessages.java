@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 
 import org.apache.commons.logging.Log;
 
@@ -473,15 +474,34 @@ public class CmsMessages {
      */
     public String key(String key, Object[] args) {
 
-        if ((args == null) || (args.length == 0)) {
-            // no parameters available, use simple key method
-            return key(key);
+        return key(key, args, CmsMessages::formatUnknownKey);
+    }
+
+    /**
+     * Returns the selected localized message for the initialized resource bundle and locale.<p>
+     *
+     * If the key was found in the bundle, it will be formatted using
+     * a <code>{@link MessageFormat}</code> using the provided parameters.<p>
+     *
+     * If the key was not found in the bundle, the return value will be the result of passing the key to
+     * the unknownKeyFormatter function.
+     *
+     * @param key the message key
+     * @param args the message arguments
+     * @param unknownKeyFormatter the function for formatting unknown keys
+     *
+     * @return the selected localized message for the initialized resource bundle and locale
+     */
+    public String key(String key, Object[] args, Function<String, String> unknownKeyFormatter) {
+
+        if (args == null) {
+            args = new Object[] {};
         }
 
         String result = key(key, true);
         if (result == null) {
             // key was not found
-            result = formatUnknownKey(key);
+            result = unknownKeyFormatter.apply(key);
         } else {
             // key was found in the bundle - create and apply the formatter
             MessageFormat formatter = new MessageFormat(result, m_locale);
@@ -534,16 +554,45 @@ public class CmsMessages {
      */
     public String keyWithParams(String keyName) {
 
+        return keyWithParams(keyName, CmsMessages::formatUnknownKey);
+    }
+
+    /**
+     * Returns the localized resource string for a given message key,
+     * treating all values appended with "|" as replacement parameters.<p>
+     *
+     * If the key was found in the bundle, it will be formatted using
+     * a <code>{@link MessageFormat}</code> using the provided parameters.
+     * The parameters have to be appended to the key separated by a "|".
+     * For example, the keyName <code>error.message|First|Second</code>
+     * would use the key <code>error.message</code> with the parameters
+     * <code>First</code> and <code>Second</code>. This would be the same as calling
+     * <code>{@link CmsMessages#key(String, Object[])}</code>.<p>
+     *
+     * If no parameters are appended with "|", this is the same as calling
+     * <code>{@link CmsMessages#key(String)}</code>.<p>
+     *
+     * If the key was not found in the bundle, the function from the unknownKeyFormatter parameter is used to generate the return value.
+     *
+     * @param keyName the key for the desired string, optinally containing parameters appended with a "|"
+     * @param unknownKeyFormatter the function to use to generate the returned result for unknown keys
+     * @return the resource string for the given key
+     *
+     * @see #key(String, Object[])
+     * @see #key(String)
+     */
+    public String keyWithParams(String keyName, Function<String, String> unknownKeyFormatter) {
+
         if (keyName.indexOf('|') == -1) {
             // no separator found, key has no parameters
-            return key(keyName, false);
+            return key(keyName, null, unknownKeyFormatter);
         } else {
             // this key contains parameters
             String[] values = CmsStringUtil.splitAsArray(keyName, '|');
             String cutKeyName = values[0];
             String[] params = new String[values.length - 1];
             System.arraycopy(values, 1, params, 0, params.length);
-            return key(cutKeyName, params);
+            return key(cutKeyName, params, unknownKeyFormatter);
         }
     }
 
