@@ -58,24 +58,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsResourceInfoDialog extends CmsPopup {
 
-    /**
-     * Context menu handler for resource info boxes.<p>
-     */
-    public class ContextMenuHandler extends CmsDialogContextMenuHandler {
-
-        /**
-         * @see org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler#refreshResource(org.opencms.util.CmsUUID)
-         */
-        @Override
-        public void refreshResource(CmsUUID structureId) {
-
-            if (m_structureId.equals(structureId)) {
-                super.refreshResource(structureId);
-            }
-            reload();
-        }
-    }
-
     /** The scroll panel height. */
     protected static final int SCROLLPANEL_HEIGHT = 300;
 
@@ -112,7 +94,7 @@ public class CmsResourceInfoDialog extends CmsPopup {
         m_tabPanel = new CmsTabbedPanel<CmsTabContentWrapper>();
         m_tabPanel.setAutoResize(true);
         m_tabPanel.setAutoResizeHeightDelta(45);
-        ContextMenuHandler menuHandler = new ContextMenuHandler();
+        CmsDialogContextMenuHandler menuHandler = new CmsDialogContextMenuHandler();
         final List<CmsResourceRelationView> relationViews = new ArrayList<CmsResourceRelationView>();
         for (Map.Entry<CmsResourceStatusTabId, String> tabEntry : statusBean.getTabs().entrySet()) {
             switch (tabEntry.getKey()) {
