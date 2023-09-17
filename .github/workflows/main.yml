@@ -16,7 +16,7 @@ jobs:
         run:
           npx snyk auth ${{ secrets.SNYK_API_KEY }}
           
-          ! npx snyk code test --sarif-file-output=/home/runner/report.json ./
+          npx snyk code test --sarif-file-output=/home/runner/report.json ./
           
         shell: bash -l {0}
       - name: Mobb action step
