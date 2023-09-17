@@ -1,0 +1,27 @@
+on: [pull_request]
+permissions:
+  contents: read
+  checks: write
+  actions: write
+  statuses: write
+
+
+jobs:
+  test_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo to get code
+        uses: actions/checkout@v3
+      - name: Run Snyk SAST scan
+        run:
+          npx snyk auth ${{ secrets.SNYK_API_KEY }}
+          
+          ! npx snyk code test --sarif-file-output=/home/runner/report.json ./
+          
+        shell: bash -l {0}
+      - name: Mobb action step
+        uses: mobb-dev/action@v1
+        with:
+          report-file: "/home/runner/report.json"
+          api-key: ${{ secrets.MOBB_API_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
