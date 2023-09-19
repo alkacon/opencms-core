@@ -93,6 +93,7 @@
             <suffix key=".otf" />
             <suffix key=".ttc" />
             <suffix key=".ttf" />
+            <suffix key=".pkpass" />
         </defaultsuffixes>
         <rendersettings>
             <rfs-prefix>${CONTEXT_NAME}/export</rfs-prefix>
