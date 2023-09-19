@@ -879,7 +879,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
                         query,
                         getName()));
             }
-            query.addFilterQuery(CmsSearchField.FIELD_SEARCH_EXCLUDE + ":\"false\"");
+            String fqSearchExclude = CmsSearchField.FIELD_SEARCH_EXCLUDE + ":\"false\"";
+            query.removeFilterQuery(fqSearchExclude);
+            query.addFilterQuery(fqSearchExclude);
         }
 
         // get start parameter from the request
