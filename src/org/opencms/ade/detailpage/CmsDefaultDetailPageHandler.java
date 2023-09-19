@@ -236,6 +236,9 @@ public class CmsDefaultDetailPageHandler implements I_CmsDetailPageHandler {
 
         boolean online = cms.getRequestContext().getCurrentProject().isOnlineProject();
         String resType = manager.getParentFolderType(online, contentRootPath);
+        // resType may not actually be the resource type of the resource at contentRootPath. We determine
+        // the actual resource type further below, but if getParentFolderType() returns null here, we can stop
+        // without reading any resources.
         if (resType == null) {
             return null;
         }
@@ -261,6 +264,16 @@ public class CmsDefaultDetailPageHandler implements I_CmsDetailPageHandler {
             }
         }
 
+        try {
+            CmsObject rootCms = OpenCms.initCmsObject(cms);
+            rootCms.getRequestContext().setSiteRoot("");
+            CmsResource detailResource = rootCms.readResource(contentRootPath);
+            resType = OpenCms.getResourceManager().getResourceType(detailResource).getTypeName();
+        } catch (CmsVfsResourceNotFoundException e) {
+            LOG.info(e.getLocalizedMessage(), e);
+        } catch (Exception e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
         DetailPageConfigData context = lookupDetailPageConfigData(manager, cms, contentRootPath, originPath, resType);
         List<CmsDetailPageInfo> relevantPages = context.getDetailPages();
         if (context.getConfigForDetailPages() == null) {
