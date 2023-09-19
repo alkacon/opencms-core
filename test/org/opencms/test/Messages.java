@@ -52,6 +52,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MISSING_CLASSLOADER_RESOURCE_2 = "ERR_MISSING_CLASSLOADER_RESOURCE_2";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_CURLY_BRACES_TEST_1 = "LOG_CURLY_BRACES_TEST_1";
+
     /**
      * Hides the public constructor for this utility class.<p>
      */

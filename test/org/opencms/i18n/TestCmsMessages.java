@@ -28,6 +28,7 @@
 package org.opencms.i18n;
 
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.util.CmsMacroResolver;
 
 import java.util.Locale;
 
@@ -48,6 +49,21 @@ public class TestCmsMessages extends OpenCmsTestCase {
         CmsMessages messages = new CmsMessages("org.opencms.i18n.messages", Locale.GERMANY);
         String value = messages.key("LOG_LOCALE_MANAGER_FLUSH_CACHE_1", new Object[] {"TestParam"});
         assertEquals("Locale manager leerte die Caches nachdem Event TestParam empfangen wurde.", value);
+    }
+
+    /**
+     * Tests the behavior of message strings with curly braces in them.
+     *
+     * @throws Exception  if the test fails
+     */
+    public void testMessagesWhichAreInvalidMessageFormats() throws Exception {
+
+        CmsMacroResolver resolver = new CmsMacroResolver();
+        CmsMessages bundle = org.opencms.test.Messages.get().getBundle(Locale.ENGLISH);
+        resolver.setMessages(bundle);
+        assertEquals("{test}{0}", resolver.resolveMacros("%(key.LOG_CURLY_BRACES_TEST_1)"));
+        assertEquals("{test}{0}", resolver.resolveMacros("%(key.LOG_CURLY_BRACES_TEST_1|foo)"));
+        assertEquals("{test}{0}", bundle.key(org.opencms.test.Messages.LOG_CURLY_BRACES_TEST_1));
     }
 
     /**

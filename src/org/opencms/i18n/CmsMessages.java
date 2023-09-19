@@ -494,18 +494,26 @@ public class CmsMessages {
      */
     public String key(String key, Object[] args, Function<String, String> unknownKeyFormatter) {
 
-        if (args == null) {
-            args = new Object[] {};
-        }
-
         String result = key(key, true);
         if (result == null) {
             // key was not found
             result = unknownKeyFormatter.apply(key);
         } else {
-            // key was found in the bundle - create and apply the formatter
-            MessageFormat formatter = new MessageFormat(result, m_locale);
-            result = formatter.format(args);
+            if ((args == null) || (args.length == 0)) {
+                // A message string actually only needs to be a valid message format if it actually is used with parameters.
+                // In practice there are several message strings that contain text in curly braces and are thus not valid message formats.
+                // So we just return the message string as-is.
+                return result;
+            }
+            try {
+                // key was found in the bundle - create and apply the formatter
+                MessageFormat formatter = new MessageFormat(result, m_locale);
+                result = formatter.format(args);
+            } catch (Exception e) {
+                // illegal message format - don't propagate the exception, just return the message string, with unfilled placeholders
+                // (this is probably better than crashing)
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
         // return the result
         return result;
