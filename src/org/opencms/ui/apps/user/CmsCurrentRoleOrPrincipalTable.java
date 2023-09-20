@@ -167,6 +167,7 @@ public class CmsCurrentRoleOrPrincipalTable extends Table {
 
         m_container.addContainerProperty(PROP_REMOVE, com.vaadin.ui.Button.class, null);
         setContainerDataSource(m_container);
+        sort(new Object[] {PROP_NAME}, new boolean[] {true});
         setItemIconPropertyId(PROP_ICON);
         setColumnWidth(null, 40);
         setRowHeaderMode(RowHeaderMode.ICON_ONLY);
