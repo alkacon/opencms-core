@@ -61,6 +61,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -282,7 +283,7 @@ public class CmsResourceTable extends CustomComponent {
                     } else if (String.class.equals(prop.getType()) || ClassUtils.isPrimitiveOrWrapper(prop.getType())) {
                         Object value = prop.getValue();
                         if (value != null) {
-                            return "" + value;
+                            return CmsEncoder.escapeXml("" + value);
                         }
                     }
                 }
