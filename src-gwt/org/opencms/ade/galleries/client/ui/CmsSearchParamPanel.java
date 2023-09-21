@@ -41,6 +41,10 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 
+import elemental2.dom.DomGlobal;
+import elemental2.dom.Text;
+import jsinterop.base.Js;
+
 /**
  * A panel displaying search parameters associated with a gallery tab.<p>
  * Used in the result tab to display and remove these parameters.<p>
@@ -74,6 +78,9 @@ public class CmsSearchParamPanel extends Composite {
     /** The parameter key. */
     private String m_paramKey;
 
+    /** The element containing the actual search parameter text. */ 
+    private elemental2.dom.Element m_bElement;
+
     /**
      * Constructor.<p>
      *
@@ -87,6 +94,10 @@ public class CmsSearchParamPanel extends Composite {
         m_button.setImageClass(I_CmsButton.DELETE_SMALL);
         m_button.setSize(Size.small);
         m_title = title;
+        elemental2.dom.Element textElem = Js.cast(m_text.getElement());
+        m_bElement = DomGlobal.document.createElement("b");
+        Text nbsp = DomGlobal.document.createTextNode("\u00a0");
+        textElem.append(m_bElement, nbsp);
         m_tab = tab;
     }
 
@@ -98,9 +109,7 @@ public class CmsSearchParamPanel extends Composite {
      */
     public void setContent(String content, String paramKey) {
 
-        StringBuffer sb = new StringBuffer(128);
-        sb.append("<b>").append(m_title).append("</b>&nbsp;").append(content);
-        m_text.setHTML(sb.toString());
+        m_bElement.textContent = content;
         m_paramKey = paramKey;
     }
 
