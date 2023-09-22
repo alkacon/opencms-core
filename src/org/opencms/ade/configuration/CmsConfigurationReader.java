@@ -1174,6 +1174,9 @@ public class CmsConfigurationReader {
     private void parseProperty(I_CmsXmlContentLocation field, DiscardPropertiesMode mode) {
 
         CmsPropertyConfig propConfig = parseProperty(m_cms, field);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(propConfig.getName())) {
+            return;
+        }
         if (mode == DiscardPropertiesMode.top) {
             propConfig = propConfig.cloneWithTop(true);
         }
