@@ -11,6 +11,7 @@ dependencies {
     testCompile sourceSets.gwt.output
     testGwtCompile sourceSets.main.output
     testGwtCompile sourceSets.modules.output
+    testGwtCompile sourceSets.gwt.output
 
     compile group: 'javax.servlet.jsp', name: 'javax.servlet.jsp-api', version: '2.3.1'
     compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
@@ -248,7 +249,7 @@ dependencies {
     distribution group: 'xerces', name: 'xercesImpl', version: '2.12.2'
     distribution group: 'xml-apis', name: 'xml-apis', version: '1.4.01'
     distribution group: 'xml-resolver', name: 'xml-resolver', version: '1.2'
-    
+
     distribution group: 'dev.samstevens.totp', name:'totp', version:'1.7.1'
     distribution group: 'com.google.zxing', name: 'core', version: '3.4.0'
     distribution group: 'com.google.zxing', name: 'javase', version: '3.4.0'
