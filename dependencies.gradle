@@ -236,7 +236,6 @@ dependencies {
     distribution group: 'org.safehaus.jug', name: 'jug', version: '2.0.0', classifier: 'lgpl'
     distribution group: 'org.restlet.jee', name: 'org.restlet', version: '2.3.12'
     distribution group: 'org.rrd4j', name: 'rrd4j', version: '3.7'
-    distribution group: 'org.sejda.imageio', name: 'webp-imageio', version: '0.1.6'
     distribution group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
     distribution group: 'org.slf4j', name: 'jul-to-slf4j', version: '1.7.30'
     distribution group: 'org.tepi.filtertable', name: 'filteringtable', version: '1.0.1.v8'
