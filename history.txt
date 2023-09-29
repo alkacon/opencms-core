@@ -16,6 +16,51 @@ Legend:
 * Bug fixed
 
 
+OpenCms 16.0.0 - October 2, 2023
+
+! New app to find "Unused contents"
+! Category based detail pages
+! Grouping of galleries in the "Galleries" tab of the gallery dialog
+! Search for sites in the site selector on the "Folders" tab of the gallery dialog
+! Search for types in the "Create new resource" dialog in the explorer
+! Option to force all users to set a new password after login
+
+- Page editor: The element settings dialog layout has been improved
+- Page editor: The gallery dialog layout has been slightly improved
+- Workplace: The "Projects" app now allows filtering by OU
+- Workplace: Temporary instead of permanent redirects are used in the offline project for "HTML redirect" resources
+- Lists: cms:display for "binary" resources now supports adding new files with [+] on the list
+- JSP API: Extension of the cms:link tag to support var and type attributes
+- JSP API: OpenCms link object for the EL
+- JSP API: Added replaceInvalid option to cms:secureparams to replace invalid parameters with a default text
+- JSP API: Several shortcut methods have been added to the CmsJspStandardContextBean
+- Configuration: The element setting configuration now allows alternatives for values and property names
+- A possible update to Tomcat 10 has been evaluated
+- Pull request #769 implemented support for putting detail contents of different types in the same folder (https://github.com/alkacon/opencms-core/issues/769)
+- Pull request #773 added updated Spanish localization provided by rgaviras (https://github.com/alkacon/opencms-core/pull/773)
+- Pull request #767 added support for Apple Wallet .pkpass files (https://github.com/alkacon/opencms-core/pull/767)
+
+* Security: Fixed issues in several dependencies by bumping the affected dependencies to the latest version
+* Security: Fixed issue with the Solr Handler related to the qt parameter
+* Workplace: After "Undo changes" on a detail page element, the wait screen did sometimes not close
+* Workplace: The "About" dialog did not correctly display for users without role "Workplace User"
+* Workplace: The "Rename" option for images was shown in the gallery dialog even if user has no permissions for this action
+* XML: Content correction did not correct empty nested contents
+* Configuration: ResourceType configuration for "modelgroup" did ignore the order
+* Configuration: Content storage location for detail containers in storage mode "with page" did not work as expected
+* Search: Offline indexing results on module update during setup were sometimes incorrect
+* Caching: Incorrect caching for "Password reset" state was used for user lists
+* Caching: Container page caching did not take user permissions on container elements into account
+* Fixed issue with multiple OpenCms instances in one Tomcat all writing to the same log file
+* Fixed XSS issue with HTML-valued properties in the explorer
+* Fixed XSS issue with HTML in the gallery search field
+* Fixed issue #763 with XSS in module info dialog (https://github.com/alkacon/opencms-core/issues/763)
+* Fixed issue #764 where a filter query "search_exclude:false" would be set multiple times in CmsSolrQuery objects (https://github.com/alkacon/opencms-core/issues/764)
+* Fixed issue #772 in the "Show online" function for detail pages (https://github.com/alkacon/opencms-core/issues/772)
+* Fixed issue #779 with broken calendar widget in Czech locale (https://github.com/alkacon/opencms-core/issues/779)
+
+
+
 OpenCms 15.0.0 - April 25, 2023
 
 ! Restrict write access to sitemap .config file to a configured role
