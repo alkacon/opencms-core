@@ -164,11 +164,11 @@ public class CmsSiteSelectDialog extends CmsBasicDialog {
         FormLayout form = new FormLayout();
         form.setWidth("100%");
         m_siteComboBox = prepareSiteSelector(org.opencms.workplace.Messages.GUI_LABEL_SITE_0);
-        m_siteComboBox.setValue(
-            new CmsExtendedSiteSelector.SiteSelectorOption(
-                A_CmsUI.getCmsObject().getRequestContext().getSiteRoot(),
-                null,
-                null));
+        CmsExtendedSiteSelector.SiteSelectorOption optionForCurrentSite = m_siteComboBox.getOptionForSiteRoot(
+            A_CmsUI.getCmsObject().getRequestContext().getSiteRoot());
+        if (optionForCurrentSite != null) {
+            m_siteComboBox.setValue(optionForCurrentSite);
+        }
         form.addComponent(m_siteComboBox);
         ValueChangeListener changeListener = new ValueChangeListener() {
 

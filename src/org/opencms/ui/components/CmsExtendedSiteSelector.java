@@ -272,6 +272,25 @@ public class CmsExtendedSiteSelector extends ComboBox<SiteSelectorOption> {
     }
 
     /**
+     * Gets the option for the specific site root (without any subsite path).
+     *
+     * <p>If no option for the site is found, returns null.
+     *
+     * @param siteRoot the site root
+     * @return the option for the site root
+     */
+    public SiteSelectorOption getOptionForSiteRoot(String siteRoot) {
+
+        for (SiteSelectorOption option : m_options) {
+            if (Objects.equal(option.getSite(), siteRoot) && (option.getPath() == null)) {
+                return option;
+            }
+        }
+        return null;
+
+    }
+
+    /**
      * Initializes the select options.
      *
      * @param cms the CMS context
@@ -292,7 +311,11 @@ public class CmsExtendedSiteSelector extends ComboBox<SiteSelectorOption> {
      */
     public void selectSite(String siteRoot) {
 
-        setValue(new SiteSelectorOption(siteRoot, null, null));
+        SiteSelectorOption option = getOptionForSiteRoot(siteRoot);
+        if (option != null) {
+            setValue(option);
+        }
+
     }
 
 }
