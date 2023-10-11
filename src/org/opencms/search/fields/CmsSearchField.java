@@ -208,8 +208,6 @@ public class CmsSearchField implements Serializable {
     // TODO: Comments
     public static final String FIELD_TIMESTAMP = "timestamp";
     public static final String FIELD_PATH_HIERARCHY = "path_hierarchy";
-    /** Name of the field that contains the gallery index container information. */
-    public static final String FIELD_CONTAINER_TYPES = "container_types";
     public static final String FIELD_CATEGORY_EXACT = "category_exact";
     /** Name of the field that contains the gallery index additional information. */
     public static final String FIELD_ADDITIONAL_INFO = "additional_info";

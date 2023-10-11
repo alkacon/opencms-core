@@ -204,7 +204,6 @@
   <field name="category" type="text_general" multiValued="true" indexed="true" stored="true"/>
   <field name="category_exact" type="string" multiValued="true" indexed="true" stored="true"/>
   <field name="con_locales" type="string" multiValued="true" indexed="true" required="true" stored="true"/>
-  <field name="container_types" type="string" indexed="true" stored="true"/>
   <field name="content" type="text_general" multiValued="true" indexed="true" stored="true"/>
   <field name="contentblob" type="binary" indexed="false" stored="true"/>
   <field name="contentdate" type="date" indexed="true" required="true" stored="true"/>

@@ -204,9 +204,6 @@ public class CmsGallerySearchParameters {
     /** The categories to search in. */
     private List<String> m_categories;
 
-    /** The container types to search in. */
-    private List<String> m_containerTypes;
-
     /** The time range for the date of resource creation to consider in the search. */
     private CmsGallerySearchTimeRange m_dateCreatedTimeRange;
 
@@ -286,16 +283,6 @@ public class CmsGallerySearchParameters {
     public List<String> getCategories() {
 
         return m_categories;
-    }
-
-    /**
-     * Returns the container types that have been included in the search.<p>
-     *
-     * @return the container types that have been included in the search
-     */
-    public List<String> getContainerTypes() {
-
-        return m_containerTypes;
     }
 
     /**
@@ -414,11 +401,6 @@ public class CmsGallerySearchParameters {
 
         // set categories
         query.setCategories(m_categories);
-
-        // set container types
-        if (null != m_containerTypes) {
-            query.addFilterQuery(CmsSearchField.FIELD_CONTAINER_TYPES, m_containerTypes, false, false);
-        }
 
         // Set date created time filter
         query.addFilterQuery(
@@ -708,19 +690,6 @@ public class CmsGallerySearchParameters {
     public void setCategories(List<String> categories) {
 
         m_categories = categories;
-    }
-
-    /**
-     * Sets the container types for the search.<p>
-     *
-     * Results are found only if they are compatible with one of the given container types.
-     * If no container type is set, results compatible with any container will be returned in the search result.<p>
-     *
-     * @param containerTypes the container types to set
-     */
-    public void setContainerTypes(List<String> containerTypes) {
-
-        m_containerTypes = containerTypes;
     }
 
     /**

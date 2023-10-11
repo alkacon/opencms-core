@@ -276,12 +276,6 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         m_userLastModified = doc.getFieldValueAsString(CmsSearchField.FIELD_USER_LAST_MODIFIED);
 
         m_additonalInfo = doc.getFieldValueAsString(CmsSearchField.FIELD_ADDITIONAL_INFO);
-        final String s_containerTypes = doc.getFieldValueAsString(CmsSearchField.FIELD_CONTAINER_TYPES);
-        if (s_containerTypes != null) {
-            m_containerTypes = CmsStringUtil.splitAsList(s_containerTypes, ' ');
-        } else {
-            m_containerTypes = new ArrayList<String>(0);
-        }
 
         final String s_locales = doc.getFieldValueAsString(CmsSearchField.FIELD_RESOURCE_LOCALES);
         if (null != s_locales) {
@@ -317,7 +311,6 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
             m_requiredSolrFields[count++] = CmsSearchField.FIELD_ID;
             m_requiredSolrFields[count++] = CmsSearchField.FIELD_USER_LAST_MODIFIED;
             m_requiredSolrFields[count++] = CmsSearchField.FIELD_ADDITIONAL_INFO;
-            m_requiredSolrFields[count++] = CmsSearchField.FIELD_CONTAINER_TYPES;
             m_requiredSolrFields[count++] = CmsSearchField.FIELD_RESOURCE_LOCALES;
             for (Locale locale : locales) {
                 m_requiredSolrFields[count++] = CmsSearchFieldConfiguration.getLocaleExtendedName(
