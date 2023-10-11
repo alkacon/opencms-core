@@ -500,7 +500,6 @@ Have a look at the Solr **<tt>schema.xml</tt>** first. In the file **<tt>&lt;CAT
    <field name="contentblob"         type="binary"       indexed="false" stored="true"  />
    <field name="category"            type="text_general" indexed="true"  stored="true"  multiValued="true" />
    <field name="category_exact"      type="string"       indexed="true"  stored="false" multiValued="true" termVectors="true" />
-   <field name="additional_info"     type="string"       indexed="false" stored="true" />
    <field name="dependencyType"      type="string"       indexed="true"  stored="true" />
    <field name="place"               type="location"     indexed="true"  stored="true" />
    <field name="spell"               type="spell"        indexed="true"  stored="true"  multiValued="true"/>

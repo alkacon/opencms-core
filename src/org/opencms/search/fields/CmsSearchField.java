@@ -209,8 +209,6 @@ public class CmsSearchField implements Serializable {
     public static final String FIELD_TIMESTAMP = "timestamp";
     public static final String FIELD_PATH_HIERARCHY = "path_hierarchy";
     public static final String FIELD_CATEGORY_EXACT = "category_exact";
-    /** Name of the field that contains the gallery index additional information. */
-    public static final String FIELD_ADDITIONAL_INFO = "additional_info";
     public static final String FIELD_PLACE = "place";
     public static final String FIELD_SPELL = "spell";
     // TODO: concat those field names; "text" + locale, where needed like content fields or exceprt fields

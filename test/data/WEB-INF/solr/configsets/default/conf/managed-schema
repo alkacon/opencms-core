@@ -200,7 +200,6 @@
     </analyzer>
   </fieldType>
   <fieldType name="uuid" class="solr.UUIDField" indexed="true"/>
-  <field name="additional_info" type="string" indexed="false" stored="true"/>
   <field name="category" type="text_general" multiValued="true" indexed="true" stored="true"/>
   <field name="category_exact" type="string" multiValued="true" indexed="true" stored="true"/>
   <field name="con_locales" type="string" multiValued="true" indexed="true" required="true" stored="true"/>
