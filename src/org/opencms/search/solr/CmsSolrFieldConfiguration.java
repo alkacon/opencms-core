@@ -741,21 +741,6 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         sfield.addMapping(map);
         m_solrFields.put(sfield.getName(), sfield);
 
-        sfield = new CmsSolrField(CmsSearchField.FIELD_CONTAINER_TYPES, null, null, null);
-        map = new CmsSearchFieldMapping(
-            CmsSearchFieldMappingType.DYNAMIC,
-            "org.opencms.search.galleries.CmsGallerySearchFieldMapping");
-        map.setDefaultValue("container_types");
-        sfield.addMapping(map);
-        m_solrFields.put(sfield.getName(), sfield);
-
-        sfield = new CmsSolrField(CmsSearchField.FIELD_ADDITIONAL_INFO, null, null, null);
-        map = new CmsSearchFieldMapping(
-            CmsSearchFieldMappingType.DYNAMIC,
-            "org.opencms.search.galleries.CmsGallerySearchFieldMapping");
-        map.setDefaultValue("additional_info");
-        sfield.addMapping(map);
-        m_solrFields.put(sfield.getName(), sfield);
     }
 
     /**
