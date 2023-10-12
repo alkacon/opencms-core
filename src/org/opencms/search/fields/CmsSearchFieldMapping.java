@@ -33,11 +33,9 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.I_CmsResource;
-import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchUtil;
 import org.opencms.search.Messages;
 import org.opencms.search.extractors.I_CmsExtractionResult;
@@ -50,6 +48,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -81,6 +80,9 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
 
     /** Pre-calculated hash value. */
     private int m_hashCode;
+
+    /** The locale to extract content items in. */
+    protected Locale m_locale;
 
     /** The parameter for the mapping type. */
     private String m_param;
@@ -217,19 +219,10 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
                 break;
             case 3: // item (retrieve value for the given XPath from the content items)
                 if ((extractionResult != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParam())) {
-                    String[] paramParts = getParam().split("\\|");
-                    Map<String, String> localizedContentItems = null;
-                    String xpath = null;
-                    if (paramParts.length > 1) {
-                        OpenCms.getLocaleManager();
-                        localizedContentItems = extractionResult.getContentItems(
-                            CmsLocaleManager.getLocale(paramParts[0].trim()));
-                        xpath = paramParts[1].trim();
-                    } else {
-                        localizedContentItems = extractionResult.getContentItems();
-                        xpath = paramParts[0].trim();
-                    }
-                    content = getContentItemForXPath(localizedContentItems, xpath);
+                    Map<String, String> localizedContentItems = m_locale == null
+                    ? extractionResult.getContentItems()
+                    : extractionResult.getContentItems(m_locale);
+                    content = getContentItemForXPath(localizedContentItems, getParam().trim());
                 }
                 break;
             case 5: // attribute
@@ -384,6 +377,14 @@ public class CmsSearchFieldMapping implements I_CmsSearchFieldMapping {
         } else {
             m_defaultValue = null;
         }
+    }
+
+    /**
+     * @see org.opencms.search.fields.I_CmsSearchFieldMapping#setLocale(java.util.Locale)
+     */
+    public void setLocale(Locale locale) {
+
+        m_locale = locale;
     }
 
     /**
