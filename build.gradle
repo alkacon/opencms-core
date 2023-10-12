@@ -22,7 +22,11 @@ java {
   sourceCompatibility = JavaVersion.toVersion(java_target_version)
   targetCompatibility = JavaVersion.toVersion(java_target_version)
 }
+signing {
 
+    /* Uncomment if you want to use the external gpg command - this requires setting all of signing.gnupg.(keyName|passPhrase|useLegacyGpg) */
+    // useGpgCmd()
+}
 
 // use the same properties file as the OpenCms core does for the version information
 // please note that in a Jenkins CI build, this properties file should be dynamically generated
@@ -1235,6 +1239,7 @@ publishing {
                     username publish_user
                     password publish_password
                 }
+                url publish_repository
             }
         }
     }
@@ -1281,6 +1286,16 @@ publishing {
                             exclusionNode.appendNode('artifactId','*');
                             exclusionNode.appendNode('groupId','*');
                         }
+
+                        // for some reason Gradle incorrectly sets the scope to 'runtime' for some dependencies, so we fix it
+                        // (if we didn't do this, the dependencies would be missing in dependent projects)
+                        asNode().dependencies.'*'.each() { dep ->
+                            if (dep.scope.text() == 'runtime' && dep.artifactId.text() in ['javax.servlet-api', 'javax.servlet.jsp-api']) {
+                                println("Correcting scope for dependency ${dep.artifactId.text()}")
+                                dep.scope.first().setValue('compile')
+                            }
+                        }
+                        
                         // add additional repositories to search artifacts in
                         def repositoriesNode = asNode().appendNode('repositories')
                         def respositoryNode = repositoriesNode.appendNode('repository')
@@ -1349,17 +1364,40 @@ publishing {
                             url = 'https://www.alkacon.com'
                         }
                     }
-                    withXml {
-                        def hasDependencies = !asNode().dependencies.isEmpty()
-                        if (hasDependencies) {
-                            asNode().removeChild(asNode().dependencies)
+                    
+                    if (pub.key == 'gwt') {
+                        withXml { xml ->
+                            def deps = xml.asNode().appendNode('dependencies');
+                            def dependenciesGwt=project.configurations.gwtCompile.dependencies
+                            dependenciesGwt.each { dep ->
+                                if (dep instanceof ExternalModuleDependency) {
+                                    def dependency = deps.appendNode('dependency')
+                                    dependency.appendNode('groupId', dep.group)
+                                    dependency.appendNode('artifactId', dep.name)
+                                    dependency.appendNode('version', dep.version)
+                                }
+                            }
+                            def dependencyNode = deps.appendNode('dependency')
+                            dependencyNode.appendNode('artifactId','opencms-core')
+                            dependencyNode.appendNode('groupId','org.opencms')
+                            dependencyNode.appendNode('version',version)
+
                         }
-                        def dependenciesNode = asNode().appendNode('dependencies')
-                        def dependencyNode = dependenciesNode.appendNode('dependency')
-                        dependencyNode.appendNode('artifactId','opencms-core')
-                        dependencyNode.appendNode('groupId','org.opencms')
-                        dependencyNode.appendNode('version',version)
+                    } else {
+                        withXml {
+                            def hasDependencies = !asNode().dependencies.isEmpty()
+                            if (hasDependencies) {
+                                asNode().removeChild(asNode().dependencies)
+                            }
+                            def dependenciesNode = asNode().appendNode('dependencies')
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            dependencyNode.appendNode('artifactId','opencms-core')
+                            dependencyNode.appendNode('groupId','org.opencms')
+                            dependencyNode.appendNode('version',version)
+                        }
                     }
+                    
+                    
                 }
             }
         }
@@ -1439,5 +1477,14 @@ tasks.withType(Javadoc) {
 // all tasks implementing the CopySpec (Copy,Jar,Zip,...) should fail, in case they generate duplicate files
 tasks.withType(CopySpec) {
     duplicatesStrategy 'fail'
+}
+
+
+// The Gradle module metadata generation ignores the non-transitiveness of our dependencies, just as the POM generation normally does.
+// This leads to conflicts / build errors in dependent projects. 
+// We already manually fix it for the POM, but I don't know how to fix it for the module metadata generation.
+// So just disable the module metadata - there is no benefit from it right now. 
+tasks.withType(GenerateModuleMetadata) {
+    enabled = false
 }
 
