@@ -793,6 +793,11 @@ public class CmsUnusedContentFinderComponent {
         CmsObject cms = A_CmsUI.getCmsObject();
         List<I_CmsResourceType> types = OpenCms.getResourceManager().getResourceTypes();
         for (I_CmsResourceType type : types) {
+            CmsExplorerTypeSettings typeSetting = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                type.getTypeName());
+            if (typeSetting == null) {
+                continue;
+            }
             if ((type instanceof CmsResourceTypeXmlContent)
                 && !((type instanceof CmsResourceTypeXmlContainerPage)
                     || (type instanceof CmsResourceTypeXmlAdeConfiguration))) {
