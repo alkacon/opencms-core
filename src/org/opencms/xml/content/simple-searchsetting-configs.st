@@ -4,7 +4,9 @@ disptitle(name) ::= <<
 
 <searchsettings>
     <searchsetting element="$name$">
-        <solrfield targetfield="disptitle" sourcefield="*_sort" />
+        <solrfield targetfield="disptitle" sourcefield="*_sort">
+            <mapping type="item" class="org.opencms.search.fields.CmsMacroResolvingSearchFieldMapping"/>
+        </solrfield>
     </searchsetting>
 </searchsettings>
 
