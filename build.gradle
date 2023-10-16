@@ -7,7 +7,7 @@ apply plugin: 'eclipse'
 
 buildscript {
     dependencies {
-        classpath group: 'com.liferay', name: 'com.liferay.gradle.plugins.tlddoc.builder', version: '1.3.8'
+        classpath group: 'com.liferay', name: 'com.liferay.gradle.plugins.tlddoc.builder', version: '2.0.1'
     }
     repositories {
         mavenLocal()
@@ -25,7 +25,7 @@ java {
 signing {
 
     /* Uncomment if you want to use the external gpg command - this requires setting all of signing.gnupg.(keyName|passPhrase|useLegacyGpg) */
-    // useGpgCmd()
+    //useGpgCmd()
 }
 
 // use the same properties file as the OpenCms core does for the version information
@@ -236,7 +236,6 @@ if (project.hasProperty('external_directories')){
     }
 }
 
-
 eclipse.classpath.file {
     whenMerged { classpath ->
         classpath.entries.each {entry ->
@@ -336,14 +335,14 @@ javadoc {
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
+    archiveClassifier = 'javadoc'
     from "${buildDir}/docs/javadoc"
     archiveBaseName = 'opencms-core'
 }
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.java.srcDirs
-    classifier = 'sources'
+    archiveClassifier = 'sources'
     archiveBaseName = 'opencms-core'
 }
 
@@ -401,14 +400,14 @@ task javadocModules(type: Javadoc, dependsOn: jar) {
 }
 
 task javadocJarModules(type: Jar, dependsOn: javadocModules) {
-    classifier = 'javadoc'
+    archiveClassifier = 'javadoc'
     from "${buildDir}/docs/javadocModules"
     archiveBaseName = 'opencms-modules'
 }
 
 task sourcesJarModules(type: Jar) {
     from sourceSets.modules.java.srcDirs
-    classifier = 'sources'
+    archiveClassifier = 'sources'
     archiveBaseName = 'opencms-modules'
 }
 
@@ -438,7 +437,7 @@ task javadocGwt(type: Javadoc, dependsOn: jar) {
 }
 
 task javadocJarGwt(type: Jar, dependsOn: javadocGwt) {
-    classifier = 'javadoc'
+    archiveClassifier = 'javadoc'
     from "${buildDir}/docs/javadocGwt"
     archiveBaseName = 'opencms-gwt'
 }
@@ -457,7 +456,7 @@ task sourcesJarGwt(type: Jar) {
         include '**/workplace/editors/CmsTinyMceToolbarHelper.java'
     }
     includeEmptyDirs false
-    classifier = 'sources'
+    archiveClassifier = 'sources'
     archiveBaseName = 'opencms-gwt'
 }
 
@@ -611,7 +610,7 @@ gwtModuleNames.split(',').each{ gwtModule ->
                 // Generated resources
                 sourceSets.gwt.output.resourcesDir,
                 // Generated classes
-                sourceSets.gwt.java.outputDir,
+                sourceSets.gwt.java.classesDirectory,
                 // Dependecies
                 sourceSets.gwt.compileClasspath,
             ]
@@ -700,14 +699,14 @@ task javadocSetup(type: Javadoc, dependsOn: jar) {
 }
 
 task javadocJarSetup(type: Jar, dependsOn: javadocSetup) {
-    classifier = 'javadoc'
+    archiveClassifier = 'javadoc'
     from "${buildDir}/docs/javadocSetup"
     archiveBaseName = 'opencms-setup'
 }
 
 task sourcesJarSetup(type: Jar) {
     from sourceSets.setup.java.srcDirs
-    classifier = 'sources'
+    archiveClassifier = 'sources'
     archiveBaseName = 'opencms-setup'
 }
 
@@ -1150,14 +1149,14 @@ task javadocTest(type: Javadoc, dependsOn: jar) {
 }
 
 task javadocJarTest(type: Jar, dependsOn: javadocTest) {
-    classifier = 'javadoc'
+    archiveClassifier = 'javadoc'
     from "${buildDir}/docs/javadocTest"
     archiveBaseName = 'opencms-test'
 }
 
 task sourcesJarTest(type: Jar) {
     from sourceSets.test.java.srcDirs
-    classifier = 'sources'
+    archiveClassifier = 'sources'
     archiveBaseName = 'opencms-test'
 }
 
