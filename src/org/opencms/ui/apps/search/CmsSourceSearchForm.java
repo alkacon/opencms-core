@@ -60,6 +60,7 @@ import com.vaadin.server.StreamResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.data.util.IndexedContainer;
@@ -149,6 +150,9 @@ public class CmsSourceSearchForm extends VerticalLayout {
 
     /**Regex expression for finding all. */
     public static final String REGEX_ALL = ".*";
+
+    /** Special select option for resource types that only excludes types binary and image. */
+    public static final String RESOURCE_TYPES_ALL_NON_BINARY = "_NonBinary_";
 
     /** The log object for this class. */
     static final Log LOG = CmsLog.getLog(CmsSourceSearchForm.class);
@@ -281,11 +285,15 @@ public class CmsSourceSearchForm extends VerticalLayout {
             m_searchRoot.setValue(settings.getPaths().get(0));
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(settings.getTypes())) {
-            try {
-                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(settings.getTypes());
-                m_resourceType.setValue(type);
-            } catch (CmsLoaderException e) {
-                // nothing to do, skip setting the type
+            if (RESOURCE_TYPES_ALL_NON_BINARY.equals(settings.getTypes())) {
+                m_resourceType.setValue(RESOURCE_TYPES_ALL_NON_BINARY);
+            } else {
+                try {
+                    I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(settings.getTypes());
+                    m_resourceType.setValue(type);
+                } catch (CmsLoaderException e) {
+                    // nothing to do, skip setting the type
+                }
             }
         }
         m_searchPattern.setValue(settings.getSearchpattern());
@@ -397,9 +405,14 @@ public class CmsSourceSearchForm extends VerticalLayout {
         settings.setType((SearchType)m_searchType.getValue());
         settings.setPaths(Collections.singletonList(m_searchRoot.getValue()));
         settings.setIgnoreSubSites(m_ignoreSubSites.getValue().booleanValue());
-        I_CmsResourceType type = (I_CmsResourceType)m_resourceType.getValue();
-        if (type != null) {
-            settings.setTypes(type.getTypeName());
+        Object resTypeSelection = m_resourceType.getValue();
+        if (resTypeSelection != null) {
+            if (resTypeSelection instanceof String) {
+                settings.setTypes((String)resTypeSelection);
+            } else {
+                I_CmsResourceType type = (I_CmsResourceType)m_resourceType.getValue();
+                settings.setTypes(type.getTypeName());
+            }
         }
         if (SearchType.resourcetype.equals(m_searchType.getValue())
             | SearchType.renameContainer.equals(m_searchType.getValue())) {
@@ -628,6 +641,12 @@ public class CmsSourceSearchForm extends VerticalLayout {
 
         m_resourceType.setNullSelectionAllowed(true);
         IndexedContainer resTypes = CmsVaadinUtils.getResourceTypesContainer();
+        Item typeItem = resTypes.addItemAt(0, RESOURCE_TYPES_ALL_NON_BINARY);
+        String caption = CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_RESOURCE_TYPE_NON_BINARY_0);
+        typeItem.getItemProperty(PropertyId.caption).setValue(caption);
+        typeItem.getItemProperty(PropertyId.icon).setValue(null);
+        typeItem.getItemProperty(PropertyId.isXmlContent).setValue(Boolean.TRUE);
+        typeItem.getItemProperty(PropertyId.isFolder).setValue(Boolean.FALSE);
         resTypes.addContainerFilter(CmsVaadinUtils.FILTER_NO_FOLDERS);
 
         m_resourceType.setContainerDataSource(resTypes);

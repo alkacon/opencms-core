@@ -2769,6 +2769,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SOURCESEARCH_RESOURCE_TYPE_HELP_0 = "GUI_SOURCESEARCH_RESOURCE_TYPE_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SOURCESEARCH_RESOURCE_TYPE_NON_BINARY_0 = "GUI_SOURCESEARCH_RESOURCE_TYPE_NON_BINARY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SOURCESEARCH_SEARCH_0 = "GUI_SOURCESEARCH_SEARCH_0";
 
     /** Message constant for key in the resource bundle. */

@@ -268,7 +268,7 @@ public class CmsSearchReplaceSettings implements Serializable {
     }
 
     /**
-     * Returns the type.<p>
+     * Returns the resource type(s).<p>
      *
      * @return the type
      */
@@ -497,7 +497,7 @@ public class CmsSearchReplaceSettings implements Serializable {
     }
 
     /**
-     * Sets the type.<p>
+     * Sets the resource type(s).<p>
      *
      * @param types the type to set
      */

@@ -60,6 +60,7 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -859,7 +860,9 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                     rootPaths.add(path.startsWith(siteRoot) ? path : getCms().addSiteRoot(path));
                 }
                 query.setSearchRoots(rootPaths);
-                if ((m_settings.getTypesArray() != null) && (m_settings.getTypesArray().length > 0)) {
+                if (CmsSourceSearchForm.RESOURCE_TYPES_ALL_NON_BINARY.equals(m_settings.getTypes())) {
+                    query.addFilterQuery("type:-(\"image\" OR \"binary\")");
+                } else if ((m_settings.getTypesArray() != null) && (m_settings.getTypesArray().length > 0)) {
                     query.setResourceTypes(m_settings.getTypesArray());
                 }
                 query.setRows(new Integer(MAX_PROCESSED_SOLR_RESULTS));
@@ -875,7 +878,18 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
             CmsResourceFilter filter = CmsResourceFilter.ALL.addExcludeState(
                 CmsResource.STATE_DELETED).addRequireVisible();
             List<CmsResourceFilter> filterList = new ArrayList<CmsResourceFilter>();
-            if ((m_settings.getTypesArray() != null) && (m_settings.getTypesArray().length > 0)) {
+            List<Integer> filterByExcludeType = null;
+            if (CmsSourceSearchForm.RESOURCE_TYPES_ALL_NON_BINARY.equals(m_settings.getTypes())) {
+                try {
+                    int typeBinary = OpenCms.getResourceManager().getResourceType("binary").getTypeId();
+                    int typeImage = OpenCms.getResourceManager().getResourceType("image").getTypeId();
+                    filterByExcludeType = Arrays.asList(Integer.valueOf(typeBinary), Integer.valueOf(typeImage));
+                } catch (CmsLoaderException e) {
+                    // noop
+                } catch (NullPointerException e) {
+                    // noop
+                }
+            } else if ((m_settings.getTypesArray() != null) && (m_settings.getTypesArray().length > 0)) {
                 for (String resTypeName : m_settings.getTypesArray()) {
                     try {
                         int typeId = OpenCms.getResourceManager().getResourceType(resTypeName).getTypeId();
@@ -920,7 +934,9 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                         while (iterator.hasNext()) {
                             CmsResource r = iterator.next();
                             boolean remove = true;
-                            if (filterList.size() > 1) {
+                            if (null != filterByExcludeType) {
+                                remove = filterByExcludeType.contains(Integer.valueOf(r.getTypeId()));
+                            } else if (filterList.size() > 1) {
                                 for (CmsResourceFilter f : filterList) {
                                     if (f.isValid(getCms().getRequestContext(), r)) {
                                         remove = false;
