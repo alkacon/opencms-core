@@ -1058,6 +1058,8 @@ task updater (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type:
     }
     from ("${project.buildDir}/libs") {
         include '*.jar'
+        exclude 'opencms-test*.jar'
+        exclude 'opencms-gwt*.jar'
         exclude '*-sources.jar'
         exclude '*-javadoc.jar'
         into '/WEB-INF/lib'
