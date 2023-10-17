@@ -936,7 +936,13 @@ task war (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type: Zip
 }
 
 task updater (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type: Zip){
-
+    if (hasExtModules) {
+        // without this declaration, Gradle 8 complains about implicit dependencies
+        dependsOn {
+            ':extmodules:bindist'
+        }
+    }
+ 
     dependsOn {
         tasks.matching{dist_task -> dist_task.name.startsWith('dist_')}
     }
