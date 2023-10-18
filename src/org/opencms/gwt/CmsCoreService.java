@@ -1193,7 +1193,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             getCmsObject(),
             "/system/workplace/commons/about.jsp");
         String tinyMCE = CmsWorkplace.getStaticResourceUri("/editors/tinymce/jscripts/tinymce/tinymce.min.js");
-        boolean uploadDisabled = !OpenCms.getRoleManager().hasRole(cms, CmsRole.EDITOR);
+        boolean uploadDisabled = OpenCms.getWorkplaceManager().isAdeGalleryUploadDisabled(cms);
         CmsUploadRestrictionInfo uploadRestrictionInfo = OpenCms.getWorkplaceManager().getUploadRestriction().getUploadRestrictionInfo(
             cms);
         String categoryBaseFolder = CmsCategoryService.getInstance().getRepositoryBaseFolderName(cms);

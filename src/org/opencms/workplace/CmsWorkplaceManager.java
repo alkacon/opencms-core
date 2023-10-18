@@ -70,6 +70,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsRfsFileViewer;
 import org.opencms.util.CmsStringUtil;
@@ -213,6 +214,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The admin cms context. */
     private CmsObject m_adminCms;
 
+    /** If enabled, gives element authors more gallery-related permissions (mostly upload/replace). */
+    private boolean m_allowElementAuthorToWorkInGalleries;
+
     /** Indicates if auto-locking of resources is enabled or disabled. */
     private boolean m_autoLockResources;
 
@@ -333,6 +337,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** Indicates if the user management icon should be displayed in the workplace. */
     private boolean m_showUserGroupIcon;
 
+    /** The role required for editing the sitemap configuration. */
+    private String m_sitemapConfigEditRole;
+
     /** Exclude patterns for synchronization. */
     private ArrayList<Pattern> m_synchronizeExcludePatterns;
 
@@ -362,9 +369,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
     /** The XML content auto correction flag. */
     private boolean m_xmlContentAutoCorrect;
-
-    /** The role required for editing the sitemap configuration. */
-    private String m_sitemapConfigEditRole;
 
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
@@ -676,6 +680,17 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public boolean autoLockResources() {
 
         return m_autoLockResources;
+    }
+
+    /**
+     * Checks if the user in the given context has permissions for uploading.
+     *
+     * @param cms a CMS context
+     * @throws CmsSecurityException if the user doesn't have permission
+     */
+    public void checkAdeGalleryUpload(CmsObject cms) throws CmsSecurityException {
+
+        OpenCms.getRoleManager().checkRole(cms, getUploadRole());
     }
 
     /**
@@ -1080,8 +1095,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 }
             } else if (CmsResourceTypeFolder.getStaticTypeName().equals(explorerType.getName())
                 && "view_folders|view_basic".contains(viewName)) {
-                result.add(explorerType);
-            }
+                    result.add(explorerType);
+                }
 
         }
         return result;
@@ -1749,6 +1764,28 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
+     * Returns true if gallery upload is disabled for the user in the given context.
+     *
+     * @param cms a CMS context
+     * @return true if the upload is disabled
+     */
+    public boolean isAdeGalleryUploadDisabled(CmsObject cms) {
+
+        return !OpenCms.getRoleManager().hasRole(cms, getUploadRole());
+
+    }
+
+    /**
+     * Checks if element authors have special permission to work in galleries (upload/replace).
+     * @return true in the case above
+     */
+
+    public boolean isAllowElementAuthorToWorkInGalleries() {
+
+        return m_allowElementAuthorToWorkInGalleries;
+    }
+
+    /**
      * Returns the default property editing mode on resources.<p>
      *
      * @return the default property editing mode on resources
@@ -1884,6 +1921,15 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public void setAdditionalLogFolderConfiguration(CmsAdditionalLogFolderConfig logConfig) {
 
         m_logFolderConfig = logConfig;
+    }
+
+    /**
+     * Enables/disables special permissions for element authors to work with galleries (upload/replace).
+     * @param allowElementAuthorToWorkInGalleries true if the special permissions should be enabled for element authors
+      */
+    public void setAllowElementAuthorToWorkInGalleries(boolean allowElementAuthorToWorkInGalleries) {
+
+        m_allowElementAuthorToWorkInGalleries = allowElementAuthorToWorkInGalleries;
     }
 
     /**
@@ -2391,6 +2437,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 return keepOu ? group : CmsOrganizationalUnit.getSimpleName(group);
             }
         };
+    }
+
+    /**
+     * Returns the role required for enabling the upload functionality.
+     *
+     * @return the upload role
+     */
+    private CmsRole getUploadRole() {
+
+        return isAllowElementAuthorToWorkInGalleries() ? CmsRole.ELEMENT_AUTHOR : CmsRole.EDITOR;
     }
 
     /**

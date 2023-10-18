@@ -47,7 +47,8 @@
 	additional-log-folders?,
 	use-formatter-keys-for-new-sites?,
 	upload-restriction?,
-	sitemap-config-edit-role?
+	sitemap-config-edit-role?,
+	allow-element-author-to-work-in-galleries?
 	)>
 
 <!--
@@ -900,8 +901,10 @@
 -->
 <!ELEMENT sitemap-config-edit-role (#PCDATA)>
 
-
-
+<!-- 
+# Boolean flag (true/false) which allows element authors to upload in galleries and gives some additional permissions in gallery context menus if set.
+-->
+<!ELEMENT allow-element-author-to-work-in-galleries (#PCDATA)>
 
 <!--
 # Include the explorer types DTD.

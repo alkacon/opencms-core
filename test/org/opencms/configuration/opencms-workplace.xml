@@ -348,6 +348,6 @@
             <param name="/">enabled:true|types:pdf,doc,png,jpg</param>
         </upload-restriction>
         <sitemap-config-edit-role>DEVELOPER</sitemap-config-edit-role>
-		
+        <allow-element-author-to-work-in-galleries>false</allow-element-author-to-work-in-galleries>
 	</workplace>
 </opencms>

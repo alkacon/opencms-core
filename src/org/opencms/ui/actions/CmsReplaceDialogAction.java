@@ -29,8 +29,11 @@ package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsDialogContextWithAdeContext;
 import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
@@ -54,6 +57,10 @@ public class CmsReplaceDialogAction extends A_CmsWorkplaceAction implements I_Cm
     /** The action visibility. */
     public static final I_CmsHasMenuItemVisibility VISIBILITY = new CmsMenuItemVisibilitySingleOnly(
         CmsStandardVisibilityCheck.REPLACE);
+
+    /** The action visibility for element authors, if special permissions are enabled for them. */
+    public static final I_CmsHasMenuItemVisibility ELEMENT_AUTHOR_GALLERY_VISIBILITY = new CmsMenuItemVisibilitySingleOnly(
+        CmsStandardVisibilityCheck.REPLACE_AUTHOR);
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
@@ -113,6 +120,24 @@ public class CmsReplaceDialogAction extends A_CmsWorkplaceAction implements I_Cm
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
         return VISIBILITY.getVisibility(cms, resources);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getVisibility(org.opencms.ui.I_CmsDialogContext)
+     */
+    @Override
+    public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
+
+        if (context instanceof I_CmsDialogContextWithAdeContext) {
+            AdeContext adeContext = ((I_CmsDialogContextWithAdeContext)context).getAdeContext();
+            if (AdeContext.gallery.equals(adeContext)) {
+                if (OpenCms.getWorkplaceManager().isAllowElementAuthorToWorkInGalleries()) {
+                    return ELEMENT_AUTHOR_GALLERY_VISIBILITY.getVisibility(context.getCms(), context.getResources());
+                }
+            }
+        }
+        return VISIBILITY.getVisibility(context.getCms(), context.getResources());
+
     }
 
     /**

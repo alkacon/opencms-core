@@ -53,6 +53,7 @@ import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.publishpermissio
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.replacable;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.restrictedconfig;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.roleeditor;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.roleelementauthor;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.rolerootadmin;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.rolevfsmanager;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.rolewpuser;
@@ -105,6 +106,16 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
     /** Default visibility check for 'edit-like' operations on resources. */
     public static final CmsStandardVisibilityCheck DEFAULT = new CmsStandardVisibilityCheck(
         roleeditor,
+        notonline,
+        notdeleted,
+        writepermisssion,
+        inproject);
+
+    /**
+     * Default permissions but with 'element author' role requirement instead of 'editor'
+     */
+    public static final I_CmsHasMenuItemVisibility DEFAULT_AUTHOR = new CmsStandardVisibilityCheck(
+        roleelementauthor,
         notonline,
         notdeleted,
         writepermisssion,
@@ -208,6 +219,15 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         writepermisssion,
         inproject);
 
+    /** 'Replace' check, but with 'element author' role requirement instead of 'editor'. */
+    public static final CmsStandardVisibilityCheck REPLACE_AUTHOR = new CmsStandardVisibilityCheck(
+        replacable,
+        roleelementauthor,
+        notonline,
+        notdeleted,
+        writepermisssion,
+        inproject);
+
     /** Default check for 'locked resources' action. */
     public static final CmsStandardVisibilityCheck SHOW_LOCKS = new CmsStandardVisibilityCheck(
         notonline,
@@ -294,6 +314,12 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
             if (flag(roleeditor) && !OpenCms.getRoleManager().hasRoleForResource(cms, CmsRole.EDITOR, resource)) {
                 return VISIBILITY_INVISIBLE;
             }
+
+            if (flag(roleelementauthor)
+                && !OpenCms.getRoleManager().hasRoleForResource(cms, CmsRole.ELEMENT_AUTHOR, resource)) {
+                return VISIBILITY_INVISIBLE;
+            }
+
             if (flag(rolewpuser)
                 && !OpenCms.getRoleManager().hasRoleForResource(cms, CmsRole.WORKPLACE_USER, resource)) {
                 return VISIBILITY_INVISIBLE;

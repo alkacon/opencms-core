@@ -103,6 +103,9 @@ public enum CmsVisibilityCheckFlag {
     /** Check editor rule. */
     roleeditor,
 
+    /** Check element author role.*/
+    roleelementauthor,
+
     /** Check VFS manager role. */
     rolevfsmanager,
 

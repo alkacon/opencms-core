@@ -314,5 +314,6 @@
             <param name="/">enabled:true|types:*</param>
         </upload-restriction>
         <sitemap-config-edit-role>DEVELOPER</sitemap-config-edit-role>
+        <allow-element-author-to-work-in-galleries>false</allow-element-author-to-work-in-galleries>
     </workplace>
 </opencms>

@@ -207,6 +207,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The name of the account infos node. */
     public static final String N_ACCOUNTINFOS = "account-infos";
 
+    /** The "allow-element-author-to-work-in-galleries" element */
+    public static final String N_ALLOW_ELEMENT_AUTHOR_TO_WORK_IN_GALLERIES = "allow-element-author-to-work-in-galleries";
+
     /** The name of the "allow broken relations" node. */
     public static final String N_ALLOWBROKENRELATIONS = "allowbrokenrelations";
 
@@ -1068,6 +1071,16 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             }
         });
 
+        digester.addRule("*/" + N_WORKPLACE + "/" + N_ALLOW_ELEMENT_AUTHOR_TO_WORK_IN_GALLERIES, new Rule() {
+
+            @Override
+            public void body(String namespace, String name, String text) throws Exception {
+
+                CmsWorkplaceManager wpManager = (CmsWorkplaceManager)(digester.peek());
+                wpManager.setAllowElementAuthorToWorkInGalleries(Boolean.valueOf(text).booleanValue());
+            }
+        });
+
     }
 
     /**
@@ -1383,6 +1396,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         if (sitemapConfigEditRole != null) {
             workplaceElement.addElement(N_SITEMAP_CONFIG_EDIT_ROLE).addText(sitemapConfigEditRole);
         }
+
+        boolean allowElementAuthorToWorkInGalleries = m_workplaceManager.isAllowElementAuthorToWorkInGalleries();
+        workplaceElement.addElement(N_ALLOW_ELEMENT_AUTHOR_TO_WORK_IN_GALLERIES).addText(
+            "" + allowElementAuthorToWorkInGalleries);
 
         // return the configured node
         return workplaceElement;

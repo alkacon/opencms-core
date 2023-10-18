@@ -29,8 +29,11 @@ package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.main.OpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
+import org.opencms.ui.I_CmsDialogContextWithAdeContext;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
@@ -50,6 +53,9 @@ public class CmsDeleteDialogAction extends A_CmsWorkplaceAction implements I_Cms
 
     /** The action visibility. */
     public static final I_CmsHasMenuItemVisibility VISIBILITY = CmsStandardVisibilityCheck.DEFAULT;
+
+    /** The action visibility. */
+    public static final I_CmsHasMenuItemVisibility ELEMENT_AUTHOR_GALLERY_VISIBILITY = CmsStandardVisibilityCheck.DEFAULT_AUTHOR;
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
@@ -107,10 +113,20 @@ public class CmsDeleteDialogAction extends A_CmsWorkplaceAction implements I_Cms
     @Override
     public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
 
-        return (ContextType.sitemapToolbar.equals(context.getContextType())
-            || ContextType.containerpageToolbar.equals(context.getContextType()))
-            ? CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE
-            : super.getVisibility(context);
+        if (ContextType.sitemapToolbar.equals(context.getContextType())
+            || ContextType.containerpageToolbar.equals(context.getContextType())) {
+            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+        }
+
+        if (context instanceof I_CmsDialogContextWithAdeContext) {
+            AdeContext adeContext = ((I_CmsDialogContextWithAdeContext)context).getAdeContext();
+            if (AdeContext.gallery.equals(adeContext)) {
+                if (OpenCms.getWorkplaceManager().isAllowElementAuthorToWorkInGalleries()) {
+                    return ELEMENT_AUTHOR_GALLERY_VISIBILITY.getVisibility(context.getCms(), context.getResources());
+                }
+            }
+        }
+        return super.getVisibility(context);
     }
 
     /**
