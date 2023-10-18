@@ -951,6 +951,10 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                                     remove = true;
                                 }
                             }
+                            if (!remove && m_settings.getType().isContentValuesOnly()) {
+                                remove = !(OpenCms.getResourceManager().getResourceType(
+                                    r) instanceof CmsResourceTypeXmlContent);
+                            }
                             if (remove) {
                                 iterator.remove();
                             }
