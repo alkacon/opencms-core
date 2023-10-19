@@ -389,8 +389,8 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
                     f1.getTypePosition(),
                     f2.getTypePosition(),
                     Comparator.nullsLast(Comparator.naturalOrder())).compare(f1.m_typeName, f2.m_typeName).compare(
-                        f1.m_rank,
-                        f2.m_rank).compare(f1.m_label, f2.m_label).result()
+                        f2.m_rank,
+                        f1.m_rank).compare(f1.m_label, f2.m_label).result()
 
         );
         return options;
