@@ -613,7 +613,7 @@ public class CmsADEManager {
     }
 
     /**
-     * Returns the settings configured for the given formatter.<p>
+     * Returns the settings configured for the given formatter which should be editable via ADE.<p>
      *
      * @param cms the cms context
      * @param config the sitemap configuration

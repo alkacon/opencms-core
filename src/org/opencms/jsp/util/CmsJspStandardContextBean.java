@@ -539,7 +539,12 @@ public final class CmsJspStandardContextBean {
                         getLocale(),
                         m_request);
                 }
-                exists = m_formatterSettingsConfig.get(settingName) != null;
+
+                // the first condition is used to catch shared settings of nested formatters,
+                // the second condition is used to catch settings with visibility parentShared
+                // (just because you can't edit them on the child element doesn't mean they don't exist!)
+                exists = (m_formatterSettingsConfig.get(settingName) != null)
+                    || m_formatter.getSettings(m_config).containsKey(settingName);
             } else {
                 exists = m_transformElement.getSettings().get(settingName) != null;
             }
