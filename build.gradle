@@ -19,8 +19,8 @@ apply plugin: 'com.liferay.tlddoc.builder'
 buildDir = build_directory
 
 java {
-  sourceCompatibility = JavaVersion.toVersion(java_target_version)
-  targetCompatibility = JavaVersion.toVersion(java_target_version)
+    sourceCompatibility = JavaVersion.toVersion(java_target_version)
+    targetCompatibility = JavaVersion.toVersion(java_target_version)
 }
 signing {
 
@@ -90,6 +90,52 @@ if (!project.hasProperty('max_heap_size')){
 project.ext.allModuleNames = modules_list.split(',')
 project.ext.modulesDistsDir = file("${project.buildDir}/modulesZip")
 
+
+sourceSets{
+    main {
+        java.srcDirs=['src']
+        resources.srcDirs=['src']
+    }
+    modules {
+        java.srcDirs=['src-modules']
+        resources.srcDirs=['src-modules']
+    }
+    gwt {
+        java {
+            srcDirs=['src-gwt']
+            exclude '**/super_src/**'
+        }
+        resources {
+            srcDirs=['src-gwt']
+            exclude '**/super_src/**'
+        }
+    }
+    setup {
+        java.srcDirs=['src-setup']
+        resources.srcDirs=['src-setup']
+    }
+    test {
+        java {
+            srcDirs=['test']
+            exclude 'data/**'
+        }
+        resources {
+            srcDirs=['test']
+            exclude 'data/**'
+        }
+    }
+    testGwt {
+        java {
+            srcDirs=['test-gwt']
+            exclude '**/super_src/**'
+        }
+        resources {
+            srcDirs=['test-gwt']
+            exclude '**/super_src/**'
+        }
+    }
+}
+
 configurations {
 
     distribution {
@@ -137,7 +183,7 @@ configurations {
     // Default configuration of the java-library plugin
     // It corresponds to our compile configuration, that's why we have to use extendsFrom here
     testImplementation {
-      extendsFrom testCompile
+        extendsFrom testCompile
     }
 
     gwtCompile {
@@ -174,7 +220,6 @@ configurations {
     setupImplementation {
         extendsFrom setupCompile
     }
-
 }
 
 // We want no transitive dependencies
@@ -182,50 +227,6 @@ configurations.all {
     transitive = false;
 }
 
-sourceSets{
-    main {
-        java.srcDirs=['src']
-        resources.srcDirs=['src']
-    }
-    modules {
-        java.srcDirs=['src-modules']
-        resources.srcDirs=['src-modules']
-    }
-    gwt {
-        java {
-            srcDirs=['src-gwt']
-            exclude '**/super_src/**'
-        }
-        resources {
-            srcDirs=['src-gwt']
-            exclude '**/super_src/**'
-        }
-    }
-    setup {
-        java.srcDirs=['src-setup']
-        resources.srcDirs=['src-setup']
-    }
-    test {
-        java {
-            srcDirs=['test']
-            exclude 'data/**'
-        }
-        resources {
-            srcDirs=['test']
-            exclude 'data/**'
-        }
-    }
-    testGwt {
-        java {
-            srcDirs=['test-gwt']
-            exclude '**/super_src/**'
-        }
-        resources {
-            srcDirs=['test-gwt']
-            exclude '**/super_src/**'
-        }
-    }
-}
 
 // import dependencies
 apply from: 'dependencies.gradle'
@@ -243,8 +244,8 @@ eclipse.classpath.file {
                 entry.entryAttributes['test'] = 'true'
             }
             if (entry.kind == 'src' && entry.path == 'src') {
-                   entry.output='bin/main'
-                   entry.entryAttributes['test'] = 'false'
+                entry.output='bin/main'
+                entry.entryAttributes['test'] = 'false'
             }
         }
     }
@@ -298,7 +299,7 @@ jar {
     }
 
     doLast {
-       if (project.hasProperty('tomcat_update_target') && file(tomcat_update_target).exists()){
+        if (project.hasProperty('tomcat_update_target') && file(tomcat_update_target).exists()){
             println "copying ${project.buildDir}/libs/${archiveName} to ${tomcat_update_target}"
             copy {
                 from  "${project.buildDir}/libs/${archiveName}"
@@ -478,7 +479,6 @@ task workplaceTheme (type: JavaExec) {
     classpath {
         [
             sourceSets.gwt.compileClasspath
-
         ]
     }
 
@@ -507,7 +507,6 @@ task opencmsFonts (type: JavaExec) {
     classpath {
         [
             sourceSets.gwt.compileClasspath
-
         ]
     }
 
@@ -563,7 +562,7 @@ task resourcesJar(type: Jar, dependsOn: [workplaceTheme, opencmsFonts]){
     }
 
     doLast {
-       if (project.hasProperty('tomcat_update_target') && file(tomcat_update_target).exists()){
+        if (project.hasProperty('tomcat_update_target') && file(tomcat_update_target).exists()){
             println "copying ${project.buildDir}/libs/${archiveName} to ${tomcat_update_target}"
             copy {
                 from  "${project.buildDir}/libs/${archiveName}"
@@ -620,42 +619,45 @@ gwtModuleNames.split(',').each{ gwtModule ->
         if (project.hasProperty('gwtDraft')) {
             println "Using GWT draft mode for module $gwtModule"
             args =
-                [
-                    gwtModule,
-                    // Your GWT module
-                    '-war',
-                    buildDir,
-                    '-logLevel',
-                    'ERROR',
-                    '-localWorkers',
-                    '2',
-                    '-style',
-                    'obfuscated',
-                    '-extra',
-                    extraDir,
-                    '-draftCompile', // Speeds up compile with 25%
-                    '-setProperty',
-                    'locale=en'
-                ]
+                    [
+                        gwtModule,
+                        // Your GWT module
+                        '-war',
+                        buildDir,
+                        '-logLevel',
+                        'ERROR',
+                        '-localWorkers',
+                        '2',
+                        '-style',
+                        'obfuscated',
+                        '-extra',
+                        extraDir,
+                        '-draftCompile',
+                        // Speeds up compile with 25%
+                        '-setProperty',
+                        'locale=en'
+                    ]
         } else {
             args =
-                [
-                    gwtModule,
-                    // Your GWT module
-                    '-war',
-                    buildDir,
-                    '-logLevel',
-                    'ERROR',
-                    '-localWorkers',
-                    '2',
-                    '-style',
-                    'obfuscated',
-                    '-extra',
-                    extraDir,
-                    '-strict'
-                ]
+                    [
+                        gwtModule,
+                        // Your GWT module
+                        '-war',
+                        buildDir,
+                        '-logLevel',
+                        'ERROR',
+                        '-localWorkers',
+                        '2',
+                        '-style',
+                        'obfuscated',
+                        '-extra',
+                        extraDir,
+                        '-strict'
+                    ]
         }
-        jvmArgs = [ '-Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory']
+        jvmArgs = [
+            '-Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory'
+        ]
 
         maxHeapSize = max_heap_size
     }
@@ -716,11 +718,11 @@ tlddoc {
 
 
 task tlddocZip (type: Zip, dependsOn: tlddoc) {
-  archiveFileName = 'tld.zip'
-  from ("${project.docsDir}/tlddoc/") {
-    include '**/*'
-  }
-  destinationDirectory = file("${project.docsDir}")
+    archiveFileName = 'tld.zip'
+    from ("${project.java.docsDir}/tlddoc/") {
+        include '**/*'
+    }
+    destinationDirectory = file("${project.java.docsDir}")
 }
 
 def preserveLibModules = ''
@@ -764,7 +766,7 @@ allModuleNames.each{ moduleName ->
         if (project.hasProperty('noVersion')) {
             archiveVersion = ""
         } else {
-             archiveVersion = moduleVersion
+            archiveVersion = moduleVersion
         }
         destinationDirectory = modulesDistsDir
 
@@ -781,8 +783,8 @@ allModuleNames.each{ moduleName ->
             println "Building ZIP for $moduleName version $moduleVersion"
             println '======================================================'
         }
-       doLast {
-               if (project.hasProperty('module_copy_target') && file(module_copy_target).exists()){
+        doLast {
+            if (project.hasProperty('module_copy_target') && file(module_copy_target).exists()){
                 println "copying ${project.buildDir}/modulesZip/${archiveName} to ${module_copy_target}"
                 copy {
                     from  "${project.buildDir}/modulesZip/${archiveName}"
@@ -790,7 +792,6 @@ allModuleNames.each{ moduleName ->
                 }
             }
         }
-
     }
     if (workplacelocalization != null){
         task "jar_$moduleName" (type: Jar) {
@@ -835,7 +836,12 @@ task allModules(dependsOn: tasks.matching{ Task task -> task.name.startsWith('di
     }
 }
 
-task war (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type: Zip){
+task war (dependsOn: [
+    setupJar,
+    resourcesJar,
+    modulesJar,
+    allModules
+], type: Zip){
 
     if (hasExtModules) {
         dependsOn {
@@ -935,14 +941,19 @@ task war (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type: Zip
     }
 }
 
-task updater (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type: Zip){
+task updater (dependsOn: [
+    setupJar,
+    resourcesJar,
+    modulesJar,
+    allModules
+], type: Zip){
     if (hasExtModules) {
         // without this declaration, Gradle 8 complains about implicit dependencies
         dependsOn {
             ':extmodules:bindist'
         }
     }
- 
+
     dependsOn {
         tasks.matching{dist_task -> dist_task.name.startsWith('dist_')}
     }
@@ -998,23 +1009,23 @@ task updater (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type:
     }
 
     from("${projectDir}/webapp/WEB-INF/config/opencms-workplace.xml"){
-            into '/WEB-INF/config/defaults'
+        into '/WEB-INF/config/defaults'
     }
 
     from("${projectDir}/webapp/WEB-INF/config/opencms-vfs.xml"){
-           into '/WEB-INF/config/defaults'
+        into '/WEB-INF/config/defaults'
     }
 
     from("${projectDir}/webapp/WEB-INF/config/opencms-importexport.xml"){
-           into '/WEB-INF/config/defaults'
+        into '/WEB-INF/config/defaults'
     }
 
     from("${projectDir}/webapp/WEB-INF/config/opencms-system.xml"){
-           into '/WEB-INF/config/defaults'
+        into '/WEB-INF/config/defaults'
     }
 
     from("${projectDir}/webapp/WEB-INF/config/opencms-search.xml"){
-           into '/WEB-INF/config/defaults'
+        into '/WEB-INF/config/defaults'
     }
 
     from ("${projectDir}/webapp/WEB-INF/solr"){
@@ -1080,7 +1091,6 @@ task updater (dependsOn: [setupJar, resourcesJar, modulesJar, allModules], type:
         // copy the database drivers into the lib folder
         from (driverJar.path) { into '/WEB-INF/lib' }
     }
-
 }
 
 task bindist (dependsOn: war, type: Zip){
@@ -1119,7 +1129,7 @@ test {
 
 task testSingle(type: Test, dependsOn: [compileTestJava]) {
     description "Runs a specified test case set like this: -PtestCaseToRun=org/opencms/main/TestCmsSystemInfo*"
-    classpath +=sourceSets.test.compileClasspath
+    classpath = sourceSets.test.compileClasspath
     useJUnit()
     if (!project.hasProperty('testCaseToRun')){
         ext {
@@ -1297,12 +1307,15 @@ publishing {
                         // for some reason Gradle incorrectly sets the scope to 'runtime' for some dependencies, so we fix it
                         // (if we didn't do this, the dependencies would be missing in dependent projects)
                         asNode().dependencies.'*'.each() { dep ->
-                            if (dep.scope.text() == 'runtime' && dep.artifactId.text() in ['javax.servlet-api', 'javax.servlet.jsp-api']) {
+                            if (dep.scope.text() == 'runtime' && dep.artifactId.text() in [
+                                        'javax.servlet-api',
+                                        'javax.servlet.jsp-api'
+                                    ]) {
                                 println("Correcting scope for dependency ${dep.artifactId.text()}")
                                 dep.scope.first().setValue('compile')
                             }
                         }
-                        
+
                         // add additional repositories to search artifacts in
                         def repositoriesNode = asNode().appendNode('repositories')
                         def respositoryNode = repositoriesNode.appendNode('repository')
@@ -1316,26 +1329,45 @@ publishing {
             }
         }
         /*versionMapping {
-            usage('api') {
-                fromResolutionOf(configurations.distribution)
-            }
-            usage('runtime') {
-                fromResolutionOf(configurations.distribution)
-            }
-        }*/
+         usage('api') {
+         fromResolutionOf(configurations.distribution)
+         }
+         usage('runtime') {
+         fromResolutionOf(configurations.distribution)
+         }
+         }*/
         def furtherPubs = [
             "setup" : [
-                "artifacts" : addJavadoc ? [ setupJar, sourcesJarSetup, javadocJarSetup ] : [ setupJar, sourcesJarSetup ]
-                ],
+                "artifacts" : addJavadoc ? [
+                    setupJar,
+                    sourcesJarSetup,
+                    javadocJarSetup
+                ] : [setupJar, sourcesJarSetup]
+            ],
             "modules" : [
-                "artifacts" : addJavadoc ? [ modulesJar, sourcesJarModules, javadocJarModules ] : [ modulesJar, sourcesJarModules ]
-                ],
-            "gwt" : [
-                "artifacts" : addJavadoc ? [ gwtJar, sourcesJarGwt, javadocJarGwt ] : [ gwtJar, sourcesJarGwt ]
-                ],
-            "test" : [
-                "artifacts" : addJavadoc ? [ testJar, sourcesJarTest, javadocJarTest ] : [ testJar, sourcesJarTest ]
+                "artifacts" : addJavadoc ? [
+                    modulesJar,
+                    sourcesJarModules,
+                    javadocJarModules
+                ] : [
+                    modulesJar,
+                    sourcesJarModules
                 ]
+            ],
+            "gwt" : [
+                "artifacts" : addJavadoc ? [
+                    gwtJar,
+                    sourcesJarGwt,
+                    javadocJarGwt
+                ] : [gwtJar, sourcesJarGwt]
+            ],
+            "test" : [
+                "artifacts" : addJavadoc ? [
+                    testJar,
+                    sourcesJarTest,
+                    javadocJarTest
+                ] : [testJar, sourcesJarTest]
+            ]
         ]
         furtherPubs.each { pub ->
             pubs.create(pub.key, MavenPublication) {
@@ -1371,7 +1403,7 @@ publishing {
                             url = 'https://www.alkacon.com'
                         }
                     }
-                    
+
                     if (pub.key == 'gwt') {
                         withXml { xml ->
                             def deps = xml.asNode().appendNode('dependencies');
@@ -1388,7 +1420,6 @@ publishing {
                             dependencyNode.appendNode('artifactId','opencms-core')
                             dependencyNode.appendNode('groupId','org.opencms')
                             dependencyNode.appendNode('version',version)
-
                         }
                     } else {
                         withXml {
@@ -1403,8 +1434,6 @@ publishing {
                             dependencyNode.appendNode('version',version)
                         }
                     }
-                    
-                    
                 }
             }
         }
@@ -1488,9 +1517,9 @@ tasks.withType(CopySpec) {
 
 
 // The Gradle module metadata generation ignores the non-transitiveness of our dependencies, just as the POM generation normally does.
-// This leads to conflicts / build errors in dependent projects. 
+// This leads to conflicts / build errors in dependent projects.
 // We already manually fix it for the POM, but I don't know how to fix it for the module metadata generation.
-// So just disable the module metadata - there is no benefit from it right now. 
+// So just disable the module metadata - there is no benefit from it right now.
 tasks.withType(GenerateModuleMetadata) {
     enabled = false
 }
