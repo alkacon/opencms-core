@@ -278,9 +278,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     /** Memory percentage to reach to go to warning level. */
     private int m_maxUsagePercent;
 
-    /** Cache for resource OU data. */
-    private LoadingCache<ResourceOUCacheKey, ResourceOUMap> m_resourceOuCache;
-
     /** The average memory status. */
     private CmsMemoryStatus m_memoryAverage;
 
@@ -295,6 +292,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /** Buffer for publish jobs. */
     private Buffer m_publishQueue;
+
+    /** Cache for resource OU data. */
+    private LoadingCache<ResourceOUCacheKey, ResourceOUMap> m_resourceOuCache;
 
     /** Flag for memory warning mail send. */
     private boolean m_warningLoggedSinceLastStatus;
@@ -805,6 +805,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     public void cacheResourceList(String key, List<CmsResource> resourceList) {
 
         if (m_disabled.get(CacheType.RESOURCE_LIST) != null) {
+            return;
+        }
+        if ((resourceList instanceof CmsDriverManager.ResourceListWithCacheability)
+            && !((CmsDriverManager.ResourceListWithCacheability)resourceList).isCacheable()) {
             return;
         }
         m_cacheResourceList.put(key, resourceList);
@@ -2526,14 +2530,13 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             && (m_warningSendSinceLastStatus
                 && !((m_intervalEmail <= 0)
                     && (System.currentTimeMillis() < (m_lastEmailWarning + m_intervalWarning))))) {
-                        // send no warning email if no status email has been send since the last warning
-                        // if status is disabled, send no warn email if warn interval has not passed
-                        return;
-                    } else
-            if ((!warning) && (m_intervalEmail <= 0)) {
-                // if email iterval is <= 0 status email is disabled
-                return;
-            }
+            // send no warning email if no status email has been send since the last warning
+            // if status is disabled, send no warn email if warn interval has not passed
+            return;
+        } else if ((!warning) && (m_intervalEmail <= 0)) {
+            // if email iterval is <= 0 status email is disabled
+            return;
+        }
         String date = CmsDateUtil.getDateTimeShort(System.currentTimeMillis());
         String subject;
         String content = "";
@@ -2669,14 +2672,13 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             && (m_warningLoggedSinceLastStatus
                 && !(((m_intervalLog <= 0)
                     && (System.currentTimeMillis() < (m_lastLogWarning + m_intervalWarning)))))) {
-                        // write no warning log if no status log has been written since the last warning
-                        // if status is disabled, log no warn entry if warn interval has not passed
-                        return;
-                    } else
-            if ((!warning) && (m_intervalLog <= 0)) {
-                // if log interval is <= 0 status log is disabled
-                return;
-            }
+            // write no warning log if no status log has been written since the last warning
+            // if status is disabled, log no warn entry if warn interval has not passed
+            return;
+        } else if ((!warning) && (m_intervalLog <= 0)) {
+            // if log interval is <= 0 status log is disabled
+            return;
+        }
 
         if (warning) {
             m_lastLogWarning = System.currentTimeMillis();

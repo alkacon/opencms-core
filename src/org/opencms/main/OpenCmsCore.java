@@ -211,13 +211,6 @@ public final class OpenCmsCore {
     /** One instance to rule them all, one instance to find them... */
     private static OpenCmsCore m_instance;
 
-    static {
-        final String keyEntityExpansionLimit = "jdk.xml.entityExpansionLimit";
-        if (System.getProperty(keyEntityExpansionLimit) == null) {
-            System.setProperty(keyEntityExpansionLimit, "64000");
-        }
-    }
-
     /** The ADE manager instance. */
     private CmsADEManager m_adeManager;
 
@@ -365,6 +358,9 @@ public final class OpenCmsCore {
     /** The VFS bundle manager. */
     private CmsVfsBundleManager m_vfsBundleManager;
 
+    /** The default memory object cache instance. */
+    private CmsVfsMemoryObjectCache m_vfsMemoryObjectCache;
+
     /** The workflow manager instance. */
     private I_CmsWorkflowManager m_workflowManager;
 
@@ -376,9 +372,6 @@ public final class OpenCmsCore {
 
     /** The XML content type manager that contains the initialized XML content types. */
     private CmsXmlContentTypeManager m_xmlContentTypeManager;
-
-    /** The default memory object cache instance. */
-    private CmsVfsMemoryObjectCache m_vfsMemoryObjectCache;
 
     /**
      * Protected constructor that will initialize the singleton OpenCms instance
@@ -395,6 +388,13 @@ public final class OpenCmsCore {
         initMembers();
         m_instance = this;
         setRunLevel(OpenCms.RUNLEVEL_1_CORE_OBJECT);
+    }
+
+    static {
+        final String keyEntityExpansionLimit = "jdk.xml.entityExpansionLimit";
+        if (System.getProperty(keyEntityExpansionLimit) == null) {
+            System.setProperty(keyEntityExpansionLimit, "64000");
+        }
     }
 
     /**
@@ -2945,8 +2945,13 @@ public final class OpenCmsCore {
                 // resource to read it from
                 CmsResource alternativeResource = null;
                 try {
-                    // use null as the response to avoid side effects like redirects, etc.
-                    alternativeResource = initResource(adminCms, path, req, null);
+
+                    try {
+                        // use null as the response to avoid side effects like redirects, etc.
+                        alternativeResource = initResource(adminCms, path, req, null);
+                    } catch (Exception e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                    }
                     if (alternativeResource != null) {
                         propertyLoginForm = adminCms.readPropertyObject(
                             adminCms.getSitePath(alternativeResource),

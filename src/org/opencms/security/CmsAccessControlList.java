@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * An access control list contains the permission sets of all principals for a distinct resource
@@ -60,6 +61,9 @@ public class CmsAccessControlList implements Serializable {
 
     /** The serial version id. */
     private static final long serialVersionUID = -8772251229957990081L;
+    /** The principal IDs of users/groups which should have exclusive access to the content outside of its released/expired range. */
+    private Set<CmsUUID> m_exclusiveAccessPrincipals = Collections.emptySet();
+
     /**
      * Collected permissions of a principal on this resource .
      */
@@ -104,6 +108,16 @@ public class CmsAccessControlList implements Serializable {
             acl.m_permissions.put(id, (CmsPermissionSetCustom)(m_permissions.get(id)).clone());
         }
         return acl;
+    }
+
+    /**
+     * Gets the principal IDs of users/groups which should have exclusive access to the content outside of its released/expired range.
+     *
+     * @return the exclusive access principal IDs
+     */
+    public Set<CmsUUID> getExclusiveAccessPrincipals() {
+
+        return m_exclusiveAccessPrincipals;
     }
 
     /**
@@ -236,4 +250,15 @@ public class CmsAccessControlList implements Serializable {
         }
         p.setPermissions(p.getAllowedPermissions(), entry.getDeniedPermissions());
     }
+
+    /**
+     * Sets the exclusive access principal IDs.
+     *
+     * @param exclusiveAccessPrincipals the IDs of the exclusive access principals
+     */
+    public void setExclusiveAccessPrincipals(Set<CmsUUID> exclusiveAccessPrincipals) {
+
+        m_exclusiveAccessPrincipals = Collections.unmodifiableSet(exclusiveAccessPrincipals);
+    }
+
 }

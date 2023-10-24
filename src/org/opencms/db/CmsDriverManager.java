@@ -149,6 +149,7 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
@@ -175,6 +176,55 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         /** Normal login process. */
         standard
+    }
+
+    /**
+     * Resource list which additionally knows whether it should be cacheable in the resource list cache or not.
+     */
+    public static class ResourceListWithCacheability extends ArrayList<CmsResource> {
+
+        /** Serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        /** True if the list should be cacheable. */
+        private boolean m_cacheable = true;
+
+        /**
+         * Creates a new instance.
+         */
+        public ResourceListWithCacheability() {
+
+            super();
+        }
+
+        /**
+         * Creates a new instance.
+         * @param initialCapacity the initial capacity
+         */
+        public ResourceListWithCacheability(int initialCapacity) {
+
+            super(initialCapacity);
+        }
+
+        /**
+         * Returns true if the resource list is cacheable.
+         *
+         * @return true if the list is cacheable
+         */
+        public boolean isCacheable() {
+
+            return m_cacheable;
+        }
+
+        /**
+         * Enables/disables cacheability for the resource list.
+         * @param cacheable true if the list should be cacheable
+         */
+        public void setCacheable(boolean cacheable) {
+
+            m_cacheable = cacheable;
+        }
+
     }
 
     /**
@@ -374,8 +424,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
     }
 
+    /** Request context attribute used to override the time used for time-based exclusive access checks. */
+    public static final String ATTR_EXCLUSIVE_ACCESS_CLOCK = "ATTR_EXCLUSIVE_ACCESS_CLOCK";
+
     /** Attribute for signaling to the user driver that a specific OU should be initialized by fillDefaults. */
     public static final String ATTR_INIT_OU = "INIT_OU";
+
+    /** DB context attribute used to communicate information about resource cacheability between various methods. */
+    public static final String ATTR_PERMISSION_NOCACHE = "ATTR_PERMISSION_NOCACHE";
 
     /** Attribute login. */
     public static final String ATTRIBUTE_LOGIN = "A_LOGIN";
@@ -967,9 +1023,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     dbc.getRequestContext().getSitePath(resource)));
         } else if ((lockType == CmsLockType.EXCLUSIVE)
             && currentLock.isExclusiveOwnedInProjectBy(dbc.currentUser(), dbc.currentProject())) {
-                // the current lock requires no change
-                return;
-            }
+            // the current lock requires no change
+            return;
+        }
 
         // duplicate logic from CmsSecurityManager#hasPermissions() because lock state can't be ignored
         // if another user has locked the file, the current user can never get WRITE permissions with the default check
@@ -4546,7 +4602,39 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException {
 
         CmsAccessControlList acList = getAccessControlList(dbc, resource, false);
-        return acList.getPermissions(user, getGroupsOfUser(dbc, user.getName(), false), getRolesForUser(dbc, user));
+        List<CmsGroup> groups = getGroupsOfUser(dbc, user.getName(), false);
+        List<CmsRole> roles = getRolesForUser(dbc, user);
+        CmsPermissionSetCustom permissions = acList.getPermissions(user, groups, roles);
+
+        if (acList.getExclusiveAccessPrincipals().size() > 0) {
+            long now;
+            @SuppressWarnings("unchecked")
+            Supplier<Long> alternativeClock = (Supplier<Long>)(dbc.getRequestContext().getAttribute(
+                ATTR_EXCLUSIVE_ACCESS_CLOCK));
+            if (alternativeClock != null) {
+                // used for testing
+                now = alternativeClock.get().longValue();
+            } else {
+                // *NOT* using dbc.getRequestContext().getRequestTime(), even though that value is used for normal resource availability checks, because
+                // that value may be manipulated by some workplace classes, and we want the real time for permission checks
+                now = System.currentTimeMillis();
+            }
+            permissions.setCacheable(false); // resources going in/out of availability can change permissions - don't cache
+            if (!resource.isReleasedAndNotExpired(now)) {
+                boolean hasExclusiveAccess = false;
+                for (CmsGroup group : groups) {
+                    if (acList.getExclusiveAccessPrincipals().contains(group.getId())) {
+                        hasExclusiveAccess = true;
+                        break;
+                    }
+                }
+                hasExclusiveAccess |= acList.getExclusiveAccessPrincipals().contains(user.getId());
+                if (!hasExclusiveAccess) {
+                    permissions.denyPermissions(CmsPermissionSet.PERMISSION_FULL);
+                }
+            }
+        }
+        return permissions;
     }
 
     /**
@@ -11304,18 +11392,39 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // never check time range here - this must be done later in #updateContextDates(...)
             filter = filter.addExcludeTimerange();
         }
-        ArrayList<CmsResource> result = new ArrayList<CmsResource>(resourceList.size());
-        for (int i = 0; i < resourceList.size(); i++) {
-            // check the permission of all resources
-            CmsResource currentResource = resourceList.get(i);
-            if (m_securityManager.hasPermissions(
-                dbc,
-                currentResource,
-                CmsPermissionSet.ACCESS_READ,
-                LockCheck.yes,
-                filter).isAllowed()) {
-                // only return resources where permission was granted
-                result.add(currentResource);
+        ResourceListWithCacheability result = new ResourceListWithCacheability();
+        boolean nocacheWasSet = false;
+        if (null == dbc.getAttribute(ATTR_PERMISSION_NOCACHE)) {
+            // The attribute will be used by the permission handler to tell us that lists containing the resource
+            // should not be cached.
+            dbc.setAttribute(ATTR_PERMISSION_NOCACHE, new boolean[] {false});
+            // insurance against potential indirect recursive calls introduced by future code changes:
+            // make sure we only remove the attribute later if we were the one who set it
+            nocacheWasSet = true;
+        }
+        try {
+            for (int i = 0; i < resourceList.size(); i++) {
+                // check the permission of all resources
+                CmsResource currentResource = resourceList.get(i);
+                if (m_securityManager.hasPermissions(
+                    dbc,
+                    currentResource,
+                    CmsPermissionSet.ACCESS_READ,
+                    LockCheck.yes,
+                    filter).isAllowed()) {
+                    // only return resources where permission was granted
+                    result.add(currentResource);
+                }
+            }
+        } finally {
+            if (nocacheWasSet) {
+                boolean[] nocache = (boolean[])dbc.getAttribute(ATTR_PERMISSION_NOCACHE);
+                if (nocache != null) {
+                    dbc.removeAttribute(ATTR_PERMISSION_NOCACHE);
+                    if (nocache[0]) {
+                        result.setCacheable(false);
+                    }
+                }
             }
         }
         // return the result
@@ -11534,12 +11643,20 @@ public final class CmsDriverManager implements I_CmsEventListener {
             acl = new CmsAccessControlList();
         }
 
+        Set<CmsUUID> exclusiveAccessPrincipals = new HashSet<>();
         if (!((depth == 0) && inheritedOnly)) {
             Iterator<CmsAccessControlEntry> itAces = aces.iterator();
             while (itAces.hasNext()) {
                 CmsAccessControlEntry acEntry = itAces.next();
                 if (depth > 0) {
                     acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_INHERITED);
+                }
+                if ((depth == 0)
+                    && resource.isFile()
+                    && (0 != (acEntry.getFlags() & CmsAccessControlEntry.ACCESS_FLAGS_RESPONSIBLE))) {
+
+                    // 'responsible' flag is only interpreted as exclusive access if it's not inherited and set directly on a file
+                    exclusiveAccessPrincipals.add(acEntry.getPrincipal());
                 }
 
                 acl.add(acEntry);
@@ -11551,6 +11668,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
         }
+        if (exclusiveAccessPrincipals.size() > 0) {
+            acl.setExclusiveAccessPrincipals(exclusiveAccessPrincipals);
+        }
+
         if (dbc.getProjectId().isNullUUID()) {
             m_monitor.cacheACL(cacheKey, acl);
         }

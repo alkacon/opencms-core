@@ -39,6 +39,9 @@ public class CmsPermissionSetCustom extends CmsPermissionSet {
     /** The serial version id. */
     private static final long serialVersionUID = -8537313517987611085L;
 
+    /** True if the permissions should be cacheable. */
+    private boolean m_cacheable = true;
+
     /**
      * Constructor to create an empty permission set.<p>
      */
@@ -193,6 +196,26 @@ public class CmsPermissionSetCustom extends CmsPermissionSet {
     public void grantPermissions(int permissions) {
 
         m_allowed |= permissions;
+    }
+
+    /**
+     * Returns true if the permissions should be cacheable.
+     *
+     * @return true if the permissions should be cacheable
+     */
+    public boolean isCacheable() {
+
+        return m_cacheable;
+    }
+
+    /**
+     * Sets the 'cacheable' field.
+     *
+     * @param cacheable true if the permissions should be cacheable
+     */
+    public void setCacheable(boolean cacheable) {
+
+        m_cacheable = cacheable;
     }
 
     /**

@@ -217,8 +217,16 @@ public class CmsDefaultPermissionHandler implements I_CmsPermissionHandler {
                             permissions.getPermissionString()}));
             }
         }
-        if (dbc.getProjectId().isNullUUID()) {
+        if (dbc.getProjectId().isNullUUID() && permissions.isCacheable()) {
             OpenCms.getMemoryMonitor().cachePermission(cacheKey, result);
+        }
+        if (!permissions.isCacheable()) {
+            // if this method is used for checking permissions in resource lists, the resulting resource lists
+            // are not cacheable either if the permission check for this resource isn't
+            boolean[] nocacheArray = (boolean[])dbc.getAttribute(CmsDriverManager.ATTR_PERMISSION_NOCACHE);
+            if (nocacheArray != null) {
+                nocacheArray[0] = true;
+            }
         }
 
         return result;
