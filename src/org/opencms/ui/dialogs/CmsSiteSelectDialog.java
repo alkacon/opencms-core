@@ -27,7 +27,10 @@
 
 package org.opencms.ui.dialogs;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.gwt.CmsCoreService;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
@@ -35,23 +38,26 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsExtendedSiteSelector;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.server.Page;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.UI;
-import com.vaadin.v7.data.Property.ValueChangeEvent;
-import com.vaadin.v7.data.Property.ValueChangeListener;
 
 /**
  * The site select dialog.<p>
@@ -72,6 +78,9 @@ public class CmsSiteSelectDialog extends CmsBasicDialog {
 
     /** The site select. */
     private CmsExtendedSiteSelector m_siteComboBox;
+
+    /** Select box for changing the current project. */
+    private ComboBox<CmsUUID> m_projectSelector;
 
     /**
      * Constructor.<p>
@@ -107,7 +116,7 @@ public class CmsSiteSelectDialog extends CmsBasicDialog {
             @Override
             protected void ok() {
 
-                submit();
+                changeSite();
             }
         });
     }
@@ -147,7 +156,7 @@ public class CmsSiteSelectDialog extends CmsBasicDialog {
     /**
      * Submits the dialog action.<p>
      */
-    void submit() {
+    void changeSite() {
 
         CmsExtendedSiteSelector.SiteSelectorOption option = m_siteComboBox.getValue();
         I_CmsDialogContext context = m_context;
@@ -163,23 +172,55 @@ public class CmsSiteSelectDialog extends CmsBasicDialog {
 
         FormLayout form = new FormLayout();
         form.setWidth("100%");
+        CmsObject cms = A_CmsUI.getCmsObject();
         m_siteComboBox = prepareSiteSelector(org.opencms.workplace.Messages.GUI_LABEL_SITE_0);
         CmsExtendedSiteSelector.SiteSelectorOption optionForCurrentSite = m_siteComboBox.getOptionForSiteRoot(
-            A_CmsUI.getCmsObject().getRequestContext().getSiteRoot());
+            cms.getRequestContext().getSiteRoot());
         if (optionForCurrentSite != null) {
             m_siteComboBox.setValue(optionForCurrentSite);
         }
         form.addComponent(m_siteComboBox);
-        ValueChangeListener changeListener = new ValueChangeListener() {
+        m_siteComboBox.addValueChangeListener(evt -> changeSite());
 
-            private static final long serialVersionUID = 1L;
+        Map<CmsUUID, String> projects = CmsVaadinUtils.getProjectsMap(A_CmsUI.getCmsObject());
 
-            public void valueChange(ValueChangeEvent event) {
+        // switching to the Online project gives you no way to switch back unless you have access to the workplace
+        projects.remove(CmsProject.ONLINE_PROJECT_ID);
 
-                submit();
+        ListDataProvider<CmsUUID> projectsProvider = new ListDataProvider<>(projects.keySet());
+        m_projectSelector = new ComboBox<CmsUUID>();
+        m_projectSelector.setDataProvider(projectsProvider);
+        m_projectSelector.setItemCaptionGenerator(item -> projects.get(item));
+        m_projectSelector.setWidth("100%");
+        m_projectSelector.setEmptySelectionAllowed(false);
+        m_projectSelector.setCaption(CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_LABEL_PROJECT_0));
+        CmsUUID currentProjectId = m_context.getCms().getRequestContext().getCurrentProject().getUuid();
+        if (projects.containsKey(currentProjectId)) {
+            m_projectSelector.setValue(currentProjectId);
+        } else {
+            try {
+                CmsUUID ouProject = OpenCms.getOrgUnitManager().readOrganizationalUnit(
+                    m_context.getCms(),
+                    m_context.getCms().getRequestContext().getOuFqn()).getProjectId();
+                if (projects.containsKey(ouProject)) {
+                    m_projectSelector.setValue(ouProject);
+                }
+            } catch (CmsException e) {
+                LOG.error("Error while reading current OU.", e);
             }
-        };
-        m_siteComboBox.addValueChangeListener(evt -> submit());
+        }
+        form.addComponent(m_projectSelector);
+        m_projectSelector.addValueChangeListener(event -> {
+            try {
+                A_CmsUI.get().changeProject(cms.readProject(event.getValue()));
+
+                // Reload, to make sure that we don't have any project ids stored in client side code that differ
+                // from the new project
+                m_context.finish(Arrays.asList(CmsUUID.getNullUUID()));
+            } catch (Exception e) {
+                CmsErrorDialog.showErrorDialog(e, () -> m_context.finish(null));
+            }
+        });
         return form;
     }
 

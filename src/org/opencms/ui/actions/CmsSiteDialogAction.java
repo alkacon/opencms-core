@@ -114,6 +114,6 @@ public class CmsSiteDialogAction extends A_CmsToolbarAction implements I_CmsADEA
     @Override
     protected String getTitleKey() {
 
-        return Messages.GUI_ACTION_SWITCH_SITE_0;
+        return Messages.GUI_ACTION_SWITCH_PROJECT_AND_SITE_0;
     }
 }
