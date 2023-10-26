@@ -28,12 +28,19 @@
 package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.ui.I_CmsTruncable;
+import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
+
+import com.google.gwt.canvas.client.Canvas;
+import com.google.gwt.canvas.dom.client.Context2d;
 
 /**
  * This class represents a single select option in the selector of the select box.
  */
 public class CmsLabelSelectCell extends A_CmsSelectCell implements I_CmsTruncable {
+
+    /** Canvas used for measuring the option size. */
+    private static final Canvas canvas = Canvas.createIfSupported();
 
     /** The value of the select option. */
     protected String m_value;
@@ -91,6 +98,23 @@ public class CmsLabelSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
     public String getOpenerText() {
 
         return m_openerText;
+    }
+
+    /**
+     * Measures the required width for this cell.<p>
+     *
+     * @return the required width
+     */
+    @Override
+    public int getRequiredWidth() {
+
+        Context2d context = canvas.getContext2d();
+        String fontStr = I_CmsConstantsBundle.INSTANCE.css().fontSize()
+            + " "
+            + I_CmsConstantsBundle.INSTANCE.css().fontFamily();
+        context.setFont(fontStr);
+        double width = context.measureText(getText()).getWidth();
+        return (int)(Math.ceil(width));
     }
 
     /**

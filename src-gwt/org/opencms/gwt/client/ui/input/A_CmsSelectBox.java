@@ -153,7 +153,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
     private String m_firstValue;
 
     /** The maximum cell width. */
-    private int m_maxCellWidth;
+    private int m_preferredPopupWidth;
 
     /** The value to test the popup resize behaviour.*/
     private boolean m_resizePopup = true;
@@ -539,25 +539,28 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
     }
 
     /**
-     * Initializes the selector width.<p>
-     */
-    protected void initMaxCellWidth() {
-
-        m_maxCellWidth = m_opener.getOffsetWidth() - 2 /*border*/;
-        for (Widget widget : m_selector) {
-            if (widget instanceof A_CmsSelectCell) {
-                int cellWidth = ((A_CmsSelectCell)widget).getRequiredWidth();
-                if (cellWidth > m_maxCellWidth) {
-                    m_maxCellWidth = cellWidth;
-                }
-            }
-        }
-    }
-
-    /**
      * The implementation of this method should initialize the opener of the select box.<p>
      */
     protected abstract void initOpener();
+
+    /**
+     * Initializes the selector width.<p>
+     *
+     * @return the preferred popup width
+     */
+    protected int initPreferredPopupWidth() {
+
+        int width = m_opener.getOffsetWidth() - 2 /*border*/;
+        for (Widget widget : m_selector) {
+            if (widget instanceof A_CmsSelectCell) {
+                int cellWidth = ((A_CmsSelectCell)widget).getRequiredWidth();
+                if (cellWidth > width) {
+                    width = cellWidth;
+                }
+            }
+        }
+        return width;
+    }
 
     /**
      * @see com.google.gwt.user.client.ui.Composite#onDetach()
@@ -661,19 +664,20 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
             return;
         }
         m_openClose.setDown(true);
-        if (m_maxCellWidth == 0) {
-            initMaxCellWidth();
-        }
-        int selectorWidth = m_maxCellWidth;
-        // should not be any wider than the actual window
-        int windowWidth = Window.getClientWidth();
-        if (m_maxCellWidth > windowWidth) {
-            selectorWidth = windowWidth - 10;
-        }
+        int selectorWidth;
         // if the resize option is deactivated the popup should not be wider than the selectbox.
         // Default its true.
         if (!m_resizePopup) {
             selectorWidth = m_opener.getOffsetWidth() - 2;
+        } else {
+            if (m_preferredPopupWidth == 0) {
+                m_preferredPopupWidth = initPreferredPopupWidth();
+            }
+            selectorWidth = m_preferredPopupWidth;
+            int windowWidth = Window.getClientWidth();
+            if (m_preferredPopupWidth > windowWidth) {
+                selectorWidth = windowWidth - 10;
+            }
         }
         m_popup.setWidth(selectorWidth + "px");
         m_popup.setWidget(m_selector);
