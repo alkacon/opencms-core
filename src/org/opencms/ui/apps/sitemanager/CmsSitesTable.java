@@ -33,6 +33,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
@@ -127,6 +128,55 @@ public class CmsSitesTable extends Table implements I_CmsFilterableTable {
 
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
+    }
+
+    /**
+     * Context menu entry for site export.
+     */
+    public class ExportEntry implements I_CmsSimpleContextMenuEntry<Set<String>> {
+
+        /**
+         * Creates a new entry.
+         */
+        public ExportEntry() {
+
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#executeAction(java.lang.Object)
+         */
+        public void executeAction(Set<String> context) {
+
+            CmsExportSiteForm form = new CmsExportSiteForm(
+                A_CmsUI.getCmsObject(),
+                m_manager,
+                context.iterator().next());
+            m_manager.openDialog(form, CmsVaadinUtils.getMessageText(Messages.GUI_SITE_EXPORT_DIALOG_CAPTION_0));
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
+         */
+        public String getTitle(Locale locale) {
+
+            return Messages.get().getBundle(locale).key(Messages.GUI_SITE_EXPORT_0);
+        }
+
+        /**
+         * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getVisibility(java.lang.Object)
+         */
+        public CmsMenuItemVisibilityMode getVisibility(Set<String> data) {
+
+            if ((data == null) || (data.size() != 1)) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+
+            return m_manager.isExportEnabled()
+                && OpenCms.getRoleManager().hasRole(A_CmsUI.getCmsObject(), CmsRole.DATABASE_MANAGER)
+                ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE
+                : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+        }
+
     }
 
     /**Table properties. */
@@ -621,6 +671,7 @@ public class CmsSitesTable extends Table implements I_CmsFilterableTable {
             m_menuEntries.add(new DeleteEntry());
             m_menuEntries.add(new ExplorerEntry());
             m_menuEntries.add(new PageEditorEntry());
+            m_menuEntries.add(new ExportEntry());
         }
         return m_menuEntries;
     }

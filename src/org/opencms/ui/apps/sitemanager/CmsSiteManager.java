@@ -290,6 +290,16 @@ public class CmsSiteManager extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Cm
     }
 
     /**
+     * Checks if site export is enabled.
+     * @return true if site export is enabled
+     */
+    public boolean isExportEnabled() {
+
+        // Classes that extend CmsSiteManager must explicitly override this method if the feature should be enabled for them
+        return this.getClass() == CmsSiteManager.class;
+    }
+
+    /**
      * Opens the delete dialog for the given sites.<p>
      *
      * @param data the site roots

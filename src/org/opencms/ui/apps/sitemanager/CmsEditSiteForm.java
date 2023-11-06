@@ -91,7 +91,6 @@ import org.apache.commons.logging.Log;
 import com.google.common.base.Supplier;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
-import com.vaadin.server.Page;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
@@ -2020,7 +2019,6 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             m_site.getSiteRoot(),
             m_manager.getFavIcon(m_site.getSiteRoot()));
         resourceInfo.addStyleName("o-res-site-info");
-        Page.getCurrent().getStyles().add(".o-res-site-info img {max-width: 24px;}");
         displayResourceInfoDirectly(Collections.singletonList(resourceInfo));
 
         m_tab.removeTab(m_tab.getTab(5));

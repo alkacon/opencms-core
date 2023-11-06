@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	 	<meta name="package-mapping" content="u:org.opencms.ui" />
+	  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+	  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+	  	<meta name="package-mapping" content="p:org.opencms.ui.dialogs.permissions" />
+	</head>
+	<body>
+		<o-cms-basic-dialog>
+			<content>
+				<vaadin7-vertical-layout :center margin spacing>
+                    <v-label _id="m_projectLabel"></v-label>
+                    <v-label>%(key.GUI_SITE_EXPORT_DIALOG_TEXT_0)</v-label> 
+				</vaadin7-vertical-layout>
+			</content>
+			<buttons>
+				<v-button _id="m_ok" >%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+				<v-button _id="m_cancel" >%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+			</buttons>
+		</o-cms-basic-dialog>
+	</body>
+</html>
