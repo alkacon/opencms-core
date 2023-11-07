@@ -460,6 +460,8 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                         // cache entry has a timeout, set last modified to time of last creation
                         entry.setDateLastModifiedToPreviousTimeout(w_res.getCmsCacheKey().getTimeout());
                         entry.setDateExpiresToNextTimeout(w_res.getCmsCacheKey().getTimeout());
+                        // if expiration date from controller comes before timeout, don't wait until timeout
+                        entry.limitDateExpires(controller.getDateExpires());
                         controller.updateDates(entry.getDateLastModified(), entry.getDateExpires());
                     } else {
                         // no timeout, use last modified date from files in VFS

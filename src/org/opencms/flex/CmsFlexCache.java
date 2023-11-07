@@ -1092,9 +1092,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     private void put(CmsFlexCacheKey key, CmsFlexCacheEntry theCacheEntry, String variation) {
 
         CmsFlexCacheVariation o = m_keyCache.get(key.getResource());
-        if (key.getTimeout() > 0) {
-            theCacheEntry.setDateExpiresToNextTimeout(key.getTimeout());
-        }
         if (o != null) {
             // We already have a variation map for this resource
             Map<String, I_CmsLruCacheObject> m = o.m_map;

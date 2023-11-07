@@ -325,6 +325,18 @@ public class CmsFlexCacheEntry implements I_CmsLruCacheObject, I_CmsMemoryMonito
     }
 
     /**
+     * Ensures that the expiration date is at most 'limit'.
+     *
+     * @param limit the maximum allowed expiration date
+     */
+    public void limitDateExpires(long limit) {
+
+        if (m_dateExpires > limit) {
+            m_dateExpires = limit;
+        }
+    }
+
+    /**
      * @see org.opencms.cache.I_CmsLruCacheObject#removeFromLruCache()
      */
     public void removeFromLruCache() {
