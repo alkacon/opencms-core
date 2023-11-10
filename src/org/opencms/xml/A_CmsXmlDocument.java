@@ -37,7 +37,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.xml.types.CmsXmlCategoryValue;
 import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
-import org.opencms.xml.types.CmsXmlRestrictionValue;
+import org.opencms.xml.types.CmsXmlAccessRestrictionValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -353,7 +353,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
                     value.getElement().detach();
                     removedCategoryField = true;
                 }
-                if (value instanceof CmsXmlRestrictionValue) {
+                if (value instanceof CmsXmlAccessRestrictionValue) {
                     value.setStringValue(cms, "");
                 }
             }

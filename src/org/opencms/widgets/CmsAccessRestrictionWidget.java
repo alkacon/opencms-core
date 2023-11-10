@@ -39,7 +39,7 @@ import java.util.Locale;
  *
  * <p>For now, this does nothing different from a checkbox.
  */
-public class CmsRestrictionWidget extends CmsCheckboxWidget {
+public class CmsAccessRestrictionWidget extends CmsCheckboxWidget {
 
     /** Configuration key for the JSON configuration. */
     public static final String ATTR_GROUP = "group";
@@ -47,7 +47,7 @@ public class CmsRestrictionWidget extends CmsCheckboxWidget {
     /**
      * Creates a new instance.
      */
-    public CmsRestrictionWidget() {
+    public CmsAccessRestrictionWidget() {
 
     }
 
@@ -56,7 +56,7 @@ public class CmsRestrictionWidget extends CmsCheckboxWidget {
      *
      * @param configuration the configuration
      */
-    public CmsRestrictionWidget(String configuration) {
+    public CmsAccessRestrictionWidget(String configuration) {
 
         super(configuration);
     }
@@ -81,7 +81,7 @@ public class CmsRestrictionWidget extends CmsCheckboxWidget {
     @Override
     public I_CmsWidget newInstance() {
 
-        return new CmsRestrictionWidget(getConfiguration());
+        return new CmsAccessRestrictionWidget(getConfiguration());
     }
 
 }

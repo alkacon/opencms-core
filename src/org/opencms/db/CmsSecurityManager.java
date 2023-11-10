@@ -27,7 +27,7 @@
 
 package org.opencms.db;
 
-import org.opencms.ade.contenteditor.CmsRestrictionInfo;
+import org.opencms.ade.contenteditor.CmsAccessRestrictionInfo;
 import org.opencms.ade.publish.CmsTooManyPublishResourcesException;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
@@ -6288,7 +6288,7 @@ public final class CmsSecurityManager {
             }
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
 
-            if (!hasRole(context, context.getCurrentUser(), CmsRestrictionInfo.ROLE_CAN_IGNORE_GROUP)
+            if (!hasRole(context, context.getCurrentUser(), CmsAccessRestrictionInfo.ROLE_CAN_IGNORE_GROUP)
                 && !userInGroup(context, context.getCurrentUser().getName(), group.getName())) {
                 throw new RestrictionGroupMembershipException();
             }

@@ -28,7 +28,7 @@
 package org.opencms.xml.content;
 
 import org.opencms.ade.configuration.CmsConfigurationReader;
-import org.opencms.ade.contenteditor.CmsRestrictionInfo;
+import org.opencms.ade.contenteditor.CmsAccessRestrictionInfo;
 import org.opencms.ade.contenteditor.CmsWidgetUtil;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsParameterConfiguration;
@@ -103,7 +103,7 @@ import org.opencms.xml.types.CmsXmlCategoryValue;
 import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
 import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
-import org.opencms.xml.types.CmsXmlRestrictionValue;
+import org.opencms.xml.types.CmsXmlAccessRestrictionValue;
 import org.opencms.xml.types.CmsXmlStringValue;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
@@ -2116,8 +2116,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         CmsResource resource,
         Locale contentLocale) {
 
-        if (contentValue instanceof CmsXmlRestrictionValue) {
-            CmsRestrictionInfo restrictionInfo = CmsRestrictionInfo.getRestrictionInfo(cms, m_contentDefinition);
+        if (contentValue instanceof CmsXmlAccessRestrictionValue) {
+            CmsAccessRestrictionInfo restrictionInfo = CmsAccessRestrictionInfo.getRestrictionInfo(cms, m_contentDefinition);
             if (restrictionInfo == null) {
                 return false;
             }

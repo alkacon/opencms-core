@@ -115,7 +115,7 @@ import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.content.I_CmsXmlContentEditorChangeHandler;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
-import org.opencms.xml.types.CmsXmlRestrictionValue;
+import org.opencms.xml.types.CmsXmlAccessRestrictionValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -850,7 +850,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
                     }
                 }
-                CmsRestrictionInfo restrictionInfo = CmsRestrictionInfo.getRestrictionInfo(
+                CmsAccessRestrictionInfo restrictionInfo = CmsAccessRestrictionInfo.getRestrictionInfo(
                     cms,
                     content.getContentDefinition());
 
@@ -1908,8 +1908,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     getSessionCache().setDynamicValue(attributeName, dynamicConfigString);
                     return dynamicConfigString;
                 }
-            } else if (value.getTypeName().equals(CmsXmlRestrictionValue.TYPE_NAME)) {
-                CmsRestrictionInfo restrictionInfo = CmsRestrictionInfo.getRestrictionInfo(
+            } else if (value.getTypeName().equals(CmsXmlAccessRestrictionValue.TYPE_NAME)) {
+                CmsAccessRestrictionInfo restrictionInfo = CmsAccessRestrictionInfo.getRestrictionInfo(
                     getCmsObject(),
                     value.getDocument().getContentDefinition());
                 if (restrictionInfo != null) {

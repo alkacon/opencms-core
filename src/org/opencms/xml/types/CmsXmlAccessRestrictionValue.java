@@ -43,10 +43,10 @@ import org.dom4j.Element;
  *
  * @since 7.0.0
  */
-public class CmsXmlRestrictionValue extends A_CmsXmlContentValue {
+public class CmsXmlAccessRestrictionValue extends A_CmsXmlContentValue {
 
     /** The name of this type as used in the XML schema. */
-    public static final String TYPE_NAME = "OpenCmsRestriction";
+    public static final String TYPE_NAME = "OpenCmsAccessRestriction";
 
     /** The schema definition String is located in a text for easier editing. */
     private static String m_schemaDefinition;
@@ -54,7 +54,7 @@ public class CmsXmlRestrictionValue extends A_CmsXmlContentValue {
     /**
      * Creates a new, empty schema type descriptor of type "OpenCmsCategoryValue".<p>
      */
-    public CmsXmlRestrictionValue() {
+    public CmsXmlAccessRestrictionValue() {
 
         // empty constructor is required for class registration
     }
@@ -67,7 +67,7 @@ public class CmsXmlRestrictionValue extends A_CmsXmlContentValue {
      * @param locale the locale this value is created for
      * @param type the type instance to create the value for
      */
-    public CmsXmlRestrictionValue(I_CmsXmlDocument document, Element element, Locale locale, I_CmsXmlSchemaType type) {
+    public CmsXmlAccessRestrictionValue(I_CmsXmlDocument document, Element element, Locale locale, I_CmsXmlSchemaType type) {
 
         super(document, element, locale, type);
     }
@@ -79,7 +79,7 @@ public class CmsXmlRestrictionValue extends A_CmsXmlContentValue {
      * @param minOccurs minimum number of occurrences of this type according to the XML schema
      * @param maxOccurs maximum number of occurrences of this type according to the XML schema
      */
-    public CmsXmlRestrictionValue(String name, String minOccurs, String maxOccurs) {
+    public CmsXmlAccessRestrictionValue(String name, String minOccurs, String maxOccurs) {
 
         super(name, minOccurs, maxOccurs);
     }
@@ -89,7 +89,7 @@ public class CmsXmlRestrictionValue extends A_CmsXmlContentValue {
      */
     public I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
-        return new CmsXmlRestrictionValue(document, element, locale, this);
+        return new CmsXmlAccessRestrictionValue(document, element, locale, this);
     }
 
     /**
@@ -117,7 +117,7 @@ public class CmsXmlRestrictionValue extends A_CmsXmlContentValue {
     public String getSchemaDefinition() {
 
         if (m_schemaDefinition == null) {
-            m_schemaDefinition = readSchemaDefinition("org/opencms/xml/types/XmlRestrictionValue.xsd");
+            m_schemaDefinition = readSchemaDefinition("org/opencms/xml/types/XmlAccessRestrictionValue.xsd");
         }
         return m_schemaDefinition;
     }
@@ -153,7 +153,7 @@ public class CmsXmlRestrictionValue extends A_CmsXmlContentValue {
      */
     public I_CmsXmlSchemaType newInstance(String name, String minOccurs, String maxOccurs) {
 
-        return new CmsXmlRestrictionValue(name, minOccurs, maxOccurs);
+        return new CmsXmlAccessRestrictionValue(name, minOccurs, maxOccurs);
     }
 
     /**
