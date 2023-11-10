@@ -3988,6 +3988,23 @@ public final class CmsObject {
     }
 
     /**
+     * Sets/clears the 'restricted' status for the given resource and group.
+     *
+     * <p>The 'restricted' status causes files to be inaccessible to users not in the group if the file is expired or unreleased.
+     * <p>It is implemented as an access control entry with the 'responsible' flag, but the permission check for this method is different from the chacc() methods: It doesn't require control
+     * permissions on the target resource, but the user has to be a member of the given group and have write access to the resource.
+     *
+     * @param res the target resource
+     * @param group a group (current user must be a member)
+     * @param restricted true if the restriction status should be set
+     * @throws CmsException if something goes wrong
+     */
+    public void setRestricted(CmsResource res, String groupName, boolean restricted) throws CmsException {
+
+        m_securityManager.setRestricted(m_context, res, readGroup(groupName), restricted);
+    }
+
+    /**
      * Helper method to temporarily change the site root in a try-with-resources statement.
      *
      * @param siteRoot the site root to switch to

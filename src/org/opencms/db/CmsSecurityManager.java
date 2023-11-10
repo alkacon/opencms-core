@@ -27,6 +27,7 @@
 
 package org.opencms.db;
 
+import org.opencms.ade.contenteditor.CmsRestrictionInfo;
 import org.opencms.ade.publish.CmsTooManyPublishResourcesException;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
@@ -121,6 +122,44 @@ import org.apache.commons.logging.Log;
  * @since 6.0.0
  */
 public final class CmsSecurityManager {
+
+    /**
+     * Exception which indicates the user tried to call setRestricted while not being a member of the corresponding group.
+     */
+    private static class RestrictionGroupMembershipException extends Exception {
+
+        /** Serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Creates a new instance.
+         */
+        public RestrictionGroupMembershipException() {
+
+            super();
+
+        }
+
+    }
+
+    /**
+     * Exception which indicates the user tried to call setRestricted on a folder.
+     */
+    private static class RestrictionNotSupportedForFoldersException extends Exception {
+
+        /** Serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Creates a new instance.
+         */
+        public RestrictionNotSupportedForFoldersException() {
+
+            super();
+
+        }
+
+    }
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSecurityManager.class);
@@ -6223,6 +6262,80 @@ public final class CmsSecurityManager {
         } finally {
             dbc.clear();
         }
+    }
+
+    /**
+     * Sets/clears the 'restricted' status for the given resource and group.
+     *
+     * <p>The 'restricted' status causes files to be inaccessible to users who are not in the group if the file is expired or unreleased.
+     * <p>It is implemented as an access control entry with the 'responsible' flag, but the permission check for this method is different from the chacc() methods: It doesn't require control
+     * permissions on the target resource, but the user has to be a member of the given group and have write access to the resource.
+     *
+     * @param context the current request context
+     * @param resource the target resource
+     * @param group a group (current user must be a member)
+     * @param restricted true if the restriction status should be set
+     * @throws CmsException if something goes wrong
+     */
+    public void setRestricted(CmsRequestContext context, CmsResource resource, CmsGroup group, boolean restricted)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            checkOfflineProject(dbc);
+            if (!resource.isFile()) {
+                throw new RestrictionNotSupportedForFoldersException();
+            }
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
+
+            if (!hasRole(context, context.getCurrentUser(), CmsRestrictionInfo.ROLE_CAN_IGNORE_GROUP)
+                && !userInGroup(context, context.getCurrentUser().getName(), group.getName())) {
+                throw new RestrictionGroupMembershipException();
+            }
+            List<CmsAccessControlEntry> aces = getAccessControlEntries(context, resource, false);
+            CmsAccessControlEntry foundAce = null;
+            for (CmsAccessControlEntry ace : aces) {
+                if (ace.getPrincipal().equals(group.getId())) {
+                    foundAce = ace;
+                    break;
+                }
+            }
+            CmsAccessControlEntry aceToWrite = null;
+            if (foundAce != null) {
+                // make a copy so we can compare it to the original later
+                aceToWrite = new CmsAccessControlEntry(
+                    foundAce.getResource(),
+                    foundAce.getPrincipal(),
+                    foundAce.getAllowedPermissions(),
+                    foundAce.getDeniedPermissions(),
+                    foundAce.getFlags());
+                if (restricted) {
+                    aceToWrite.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_RESPONSIBLE);
+                } else {
+                    aceToWrite.resetFlags(CmsAccessControlEntry.ACCESS_FLAGS_RESPONSIBLE);
+                }
+                if ((aceToWrite.getAllowedPermissions() == 0)
+                    && (aceToWrite.getDeniedPermissions() == 0)
+                    && ((aceToWrite.getFlags() & ~CmsAccessControlEntry.ACCESS_FLAGS_GROUP) == 0)) {
+                    // an empty ACE (no permissions, no flags except group marker) is equivalent to no ACE at all - delete the existing one
+                    m_driverManager.removeAccessControlEntry(dbc, resource, group.getId());
+                } else if (!aceToWrite.equals(foundAce)) {
+                    m_driverManager.writeAccessControlEntry(dbc, resource, aceToWrite);
+                }
+            } else if (restricted) { // if restricted=false and no entry is found, we don't need to change anything
+                int flags = CmsAccessControlEntry.ACCESS_FLAGS_GROUP | CmsAccessControlEntry.ACCESS_FLAGS_RESPONSIBLE;
+                aceToWrite = new CmsAccessControlEntry(resource.getResourceId(), group.getId(), 0, 0, flags);
+                m_driverManager.writeAccessControlEntry(dbc, resource, aceToWrite);
+            }
+        } catch (Exception e) {
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_WRITE_ACL_ENTRY_1, context.getSitePath(resource)),
+                e);
+        } finally {
+            dbc.clear();
+        }
+
     }
 
     /**

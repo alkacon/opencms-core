@@ -56,7 +56,7 @@ public final class CmsRequestContext {
     /** Request context attribute for indicating the model file for a create resource operation. */
     public static final String ATTRIBUTE_MODEL = CmsRequestContext.class.getName() + ".ATTRIBUTE_MODEL";
 
-    /** Request context attribute for the ADE context path. */ 
+    /** Request context attribute for the ADE context path (should be a root path). */
     public static final String ATTRIBUTE_ADE_CONTEXT_PATH = CmsRequestContext.class.getName() + ".ADE_CONTEXT_PATH";
 
     /** Request context attribute for indicating content locale for a create resource operation. */

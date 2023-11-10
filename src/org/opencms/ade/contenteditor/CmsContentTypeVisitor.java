@@ -56,6 +56,7 @@ import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
+import org.opencms.xml.types.CmsXmlRestrictionValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
@@ -740,7 +741,8 @@ public class CmsContentTypeVisitor {
             && m_contentHandler.getSynchronizations().contains(path.substring(1)))
             || schemaType.getTypeName().equals(CmsXmlDynamicCategoryValue.TYPE_NAME);
 
-        boolean dynamicallyLoaded = schemaType instanceof CmsXmlDynamicCategoryValue;
+        boolean dynamicallyLoaded = (schemaType instanceof CmsXmlDynamicCategoryValue)
+            || (schemaType instanceof CmsXmlRestrictionValue);
 
         CmsAttributeConfiguration result = new CmsAttributeConfiguration(
             label,

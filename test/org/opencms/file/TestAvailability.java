@@ -373,6 +373,60 @@ public class TestAvailability extends OpenCmsTestCase {
         cms.unlockResource(folderName);
     }
 
+    public void testSetRestricted() throws Exception {
+
+        String testName = getName();
+        String folder = "/system/" + testName;
+        String path = folder + "/" + "file1.txt";
+        CmsObject cms = getCmsObject();
+        CmsVfsUtil.createFolder(cms, folder);
+        cms.lockResourceTemporary(folder);
+        CmsGroup goodGroup = cms.createGroup("group_" + testName, "", 0, null);
+        CmsUser badUser = createUserWithGroups("userNotInGroup_" + testName, "Users");
+        CmsUser goodUser = createUserWithGroups("userInGroup_" + testName, "Users", goodGroup.getName());
+        CmsObject goodCms = switchUser(cms, goodUser);
+
+        CmsResource resource = cms.createResource(
+            path,
+            OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()));
+        cms.chacc(folder, I_CmsPrincipal.PRINCIPAL_GROUP, "Users", "+r+w+i");
+        cms.chacc(
+            resource.getRootPath(),
+            I_CmsPrincipal.PRINCIPAL_GROUP,
+            CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME,
+            "+r+w");
+        CmsObject badCms = switchUser(cms, badUser);
+        cms.unlockResource(folder);
+        badCms.lockResource(resource);
+        try {
+
+            badCms.setRestricted(resource, goodGroup.getName(), true);
+            fail("Should not be allowed to call setRestricted for this group.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            badCms.unlockResource(resource);
+        }
+        goodCms.lockResourceTemporary(path);
+        goodCms.setRestricted(resource, goodGroup.getName(), true);
+
+        assertTrue(
+            "Responsible entry not found",
+            goodCms.getAccessControlEntries(path).stream().anyMatch(
+                ace -> ace.getPrincipal().equals(goodGroup.getId()) && ace.isResponsible()));
+
+        goodCms.setRestricted(resource, goodGroup.getName(), false);
+
+        assertFalse(
+            "Responsible entry found when it shouldn't exist",
+            goodCms.getAccessControlEntries(path).stream().anyMatch(
+                ace -> ace.getPrincipal().equals(goodGroup.getId()) && ace.isResponsible()));
+        assertFalse(
+            "Entry for the  good group shouldn't exist",
+            goodCms.getAccessControlEntries(path).stream().anyMatch(
+                ace -> ace.getPrincipal().equals(goodGroup.getId())));
+    }
+
     /**
      * Test to set expired date on a subfolder.<p>
      *

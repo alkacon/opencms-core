@@ -74,6 +74,7 @@ import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
+import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsRequestUtil;
@@ -114,6 +115,7 @@ import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.content.I_CmsXmlContentEditorChangeHandler;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
+import org.opencms.xml.types.CmsXmlRestrictionValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -848,6 +850,21 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
                     }
                 }
+                CmsRestrictionInfo restrictionInfo = CmsRestrictionInfo.getRestrictionInfo(
+                    cms,
+                    content.getContentDefinition());
+
+                if (restrictionInfo != null) {
+                    // the value from the editor is still stored in the content value object, so we can use it here, even if it is not written to the XML content file in the end.
+                    I_CmsXmlContentValue restrictionValue = content.getValue(
+                        restrictionInfo.getPath(),
+                        CmsLocaleManager.getLocale(lastEditedLocale));
+                    boolean restricted = false;
+                    if (restrictionValue != null) {
+                        restricted = Boolean.parseBoolean(restrictionValue.getStringValue(cms));
+                    }
+                    cms.setRestricted(content.getFile(), restrictionInfo.getGroup().getName(), restricted);
+                }
 
                 writeCategories(file, content, lastEditedEntity);
 
@@ -1213,6 +1230,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 I_CmsXmlContentValue value = content.getValue(path, locale, counter);
                 result.addAttributeValue(attributeName, value.getStringValue(cms));
             } else {
+                CmsEntity editedSubEntity = null;
+                if ((editedLocalEntity != null) && (editedLocalEntity.getAttribute(attributeName) != null)) {
+                    editedSubEntity = editedLocalEntity.getAttribute(attributeName).getComplexValue();
+                }
                 CmsEntity subEntity = readEntity(
                     content,
                     child,
@@ -1222,7 +1243,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     subTypeName,
                     visitor,
                     includeInvisible,
-                    editedLocalEntity);
+                    editedSubEntity);
                 result.addAttributeValue(attributeName, subEntity);
 
             }
@@ -1886,6 +1907,23 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     String dynamicConfigString = pathes.length() > 0 ? pathes.substring(0, pathes.length() - 1) : "";
                     getSessionCache().setDynamicValue(attributeName, dynamicConfigString);
                     return dynamicConfigString;
+                }
+            } else if (value.getTypeName().equals(CmsXmlRestrictionValue.TYPE_NAME)) {
+                CmsRestrictionInfo restrictionInfo = CmsRestrictionInfo.getRestrictionInfo(
+                    getCmsObject(),
+                    value.getDocument().getContentDefinition());
+                if (restrictionInfo != null) {
+                    try {
+                        List<CmsAccessControlEntry> aces = getCmsObject().getAccessControlEntries(
+                            getCmsObject().getSitePath(value.getDocument().getFile()));
+                        boolean hasEntry = aces.stream().anyMatch(
+                            ace -> ace.getPrincipal().equals(restrictionInfo.getGroup().getId())
+                                && ace.isResponsible());
+                        return "" + hasEntry;
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                    return "false";
                 }
             }
         }

@@ -601,6 +601,9 @@
                     <widget-alias>code</widget-alias>
                     <widget-alias>sourcecode</widget-alias>
                 </widget>
+                <widget class="org.opencms.widgets.CmsRestrictionWidget">
+                    <widget-alias>restriction</widget-alias>
+                </widget>
             </widgets>
             <schematypes>
                 <schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.widgets.CmsCheckboxWidget" />
@@ -616,6 +619,7 @@
                 <schematype class="org.opencms.xml.types.CmsXmlVfsImageValue" defaultwidget="org.opencms.widgets.CmsVfsImageWidget" />
                 <schematype class="org.opencms.xml.types.CmsXmlCategoryValue" defaultwidget="org.opencms.widgets.CmsCategoryWidget" />
                 <schematype class="org.opencms.xml.types.CmsXmlDynamicCategoryValue" defaultwidget="org.opencms.widgets.CmsCategoryWidget" />
+                <schematype class="org.opencms.xml.types.CmsXmlRestrictionValue" defaultwidget="org.opencms.widgets.CmsRestrictionWidget" />
                 <schematype class="org.opencms.xml.types.CmsXmlSerialDateValue" defaultwidget="org.opencms.widgets.CmsSerialDateWidget" />
             </schematypes>
         </xmlcontent>
