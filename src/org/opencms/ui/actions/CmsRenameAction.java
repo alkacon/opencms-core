@@ -30,9 +30,11 @@ package org.opencms.ui.actions;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.main.OpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
+import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.workplace.explorer.Messages;
 
 import java.util.List;
@@ -106,9 +108,12 @@ public class CmsRenameAction extends A_CmsWorkplaceAction implements I_CmsADEAct
             || AdeContext.resourceinfo.name().equals(context.getAppId());
 
         visible &= (context.getResources().size() == 1) && !(context.getResources().get(0).getState().isDeleted());
-        return visible
-        ? CmsStandardVisibilityCheck.DEFAULT.getVisibility(context)
-        : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+        I_CmsHasMenuItemVisibility check = CmsStandardVisibilityCheck.DEFAULT;
+        if (AdeContext.gallery.name().equals(context.getAppId())
+            && OpenCms.getWorkplaceManager().isAllowElementAuthorToWorkInGalleries()) {
+            check = CmsStandardVisibilityCheck.DEFAULT_AUTHOR;
+        }
+        return visible ? check.getVisibility(context) : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
     }
 
     /**

@@ -259,6 +259,16 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         inproject);
 
     /** Visibility check for the undo function. */
+    public static final CmsStandardVisibilityCheck UNDO_AUTHOR = new CmsStandardVisibilityCheck(
+        notunchangedfile,
+        notnew,
+        roleelementauthor,
+        notonline,
+        notdeleted,
+        writepermisssion,
+        inproject);
+
+    /** Visibility check for the undo function. */
     public static final CmsStandardVisibilityCheck UNLOCK = new CmsStandardVisibilityCheck(
         mylock,
         noinheritedlock,
@@ -266,6 +276,11 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
 
     /** Default visibility check for view operations on resources. */
     public static final CmsStandardVisibilityCheck VIEW = new CmsStandardVisibilityCheck(roleeditor, notdeleted);
+
+    /** Default visibility check for view operations on resources. */
+    public static final CmsStandardVisibilityCheck VIEW_AUTHOR = new CmsStandardVisibilityCheck(
+        roleelementauthor,
+        notdeleted);
 
     /** Always active. */
     public static final I_CmsHasMenuItemVisibility VISIBLE = new CmsStandardVisibilityCheck();
