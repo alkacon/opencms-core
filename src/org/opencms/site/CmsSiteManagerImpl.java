@@ -1956,7 +1956,10 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
      */
     private boolean isValidSiteRoot(String uri) {
 
-        if ("".equals(uri) || "/".equals(uri)) {
+        if ("".equals(uri)
+            || "/".equals(uri)
+            || CmsSiteManagerImpl.SITES_FOLDER.equals(uri)
+            || CmsSiteManagerImpl.SITES_FOLDER.equals(uri + "/")) {
             return false;
         }
         return true;
