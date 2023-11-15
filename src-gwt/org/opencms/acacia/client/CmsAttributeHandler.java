@@ -40,6 +40,7 @@ import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.util.CmsMoveAnimation;
+import org.opencms.gwt.shared.CmsGwtLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -867,10 +868,14 @@ public class CmsAttributeHandler extends CmsRootHandler {
         }
 
         if (attribute.isSingleValue() && !force) {
-
             reference.removeValue();
             if (!attribute.isSimpleValue()) {
                 removeHandlers(0);
+                List<CmsEntity> entityValues = attribute.getComplexValues();
+                if (entityValues.size() >= 1) { // this should be always 1, but make it conditional to be on the safe side
+                    CmsEntity entityToRemove = entityValues.get(0);
+                    m_entityBackEnd.removeEntity(entityToRemove.getId());
+                }
             }
             m_entity.removeAttribute(m_attributeName);
         } else {

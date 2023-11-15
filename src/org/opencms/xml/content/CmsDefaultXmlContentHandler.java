@@ -99,11 +99,11 @@ import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsGeoMappingConfiguration.Entry;
 import org.opencms.xml.content.CmsGeoMappingConfiguration.EntryType;
 import org.opencms.xml.content.CmsMappingResolutionContext.AttributeType;
+import org.opencms.xml.types.CmsXmlAccessRestrictionValue;
 import org.opencms.xml.types.CmsXmlCategoryValue;
 import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
 import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
-import org.opencms.xml.types.CmsXmlAccessRestrictionValue;
 import org.opencms.xml.types.CmsXmlStringValue;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
@@ -836,7 +836,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     protected String m_versionTransformation;
 
     /** The configured locale synchronization elements. */
-    protected List<String> m_synchronizations;
+    protected LinkedHashMap<String, SynchronizationMode> m_synchronizations = new LinkedHashMap<>();
 
     /** The configured tabs. */
     protected List<CmsXmlContentTab> m_tabs;
@@ -927,6 +927,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** The map of widget names by path. */
     private Map<String, String> m_widgetNames = new HashMap<>();
+
+    /** The cached map of combined synchronization information. */
+    protected LinkedHashMap<String, SynchronizationMode> m_combinedSynchronizations;
 
     /**
      * Creates a new instance of the default XML content handler.<p>
@@ -1696,11 +1699,20 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSynchronizations()
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSynchronizations(boolean)
      */
-    public List<String> getSynchronizations() {
+    public CmsSynchronizationSpec getSynchronizations(boolean recursive) {
 
-        return Collections.unmodifiableList(m_synchronizations);
+        if (!recursive) {
+            return new CmsSynchronizationSpec(m_synchronizations);
+        } else {
+            if (m_combinedSynchronizations == null) {
+                LinkedHashMap<String, SynchronizationMode> combinedSynchronizations = new LinkedHashMap<>();
+                combineSynchronizations(m_contentDefinition, "", combinedSynchronizations);
+                m_combinedSynchronizations = combinedSynchronizations;
+            }
+            return new CmsSynchronizationSpec(m_combinedSynchronizations);
+        }
     }
 
     /**
@@ -2117,7 +2129,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         Locale contentLocale) {
 
         if (contentValue instanceof CmsXmlAccessRestrictionValue) {
-            CmsAccessRestrictionInfo restrictionInfo = CmsAccessRestrictionInfo.getRestrictionInfo(cms, m_contentDefinition);
+            CmsAccessRestrictionInfo restrictionInfo = CmsAccessRestrictionInfo.getRestrictionInfo(
+                cms,
+                m_contentDefinition);
             if (restrictionInfo == null) {
                 return false;
             }
@@ -2912,7 +2926,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         m_allowedTemplates = new CmsDefaultSet<String>();
         m_allowedTemplates.setDefaultMembership(true);
         m_displayTypes = new HashMap<String, DisplayType>();
-        m_synchronizations = new ArrayList<String>();
         m_editorChangeHandlers = new ArrayList<I_CmsXmlContentEditorChangeHandler>();
         m_nestedFormatterElements = new HashSet<String>();
         try (
@@ -3083,9 +3096,18 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             }
         }
         String synchronization = elem.elementTextTrim(FieldSettingElems.Synchronization.name());
-        if (Boolean.parseBoolean(synchronization)) {
-            m_synchronizations.add(name);
+        if (synchronization != null) {
+            if ("strong".equals(synchronization)) {
+                m_synchronizations.put(name, SynchronizationMode.strong);
+            } else if (Boolean.parseBoolean(synchronization)) {
+                m_synchronizations.put(name, SynchronizationMode.standard);
+            } else {
+                // we use a distinct value rather than just leaving it empty because we want to be able to override the synchronization
+                // definition in a nested schema with the one in the top-level schema
+                m_synchronizations.put(name, SynchronizationMode.none);
+            }
         }
+
         for (Element relElem : elem.elements(FieldSettingElems.Relation.name())) {
             String type = relElem.elementTextTrim(FieldSettingElems.Type.name());
             String invalidate = relElem.elementTextTrim(FieldSettingElems.Invalidate.name());
@@ -3678,7 +3700,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         List<Element> elements = new ArrayList<Element>(CmsXmlGenericWrapper.elements(root, APPINFO_SYNCHRONIZATION));
         for (Element element : elements) {
             String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
-            m_synchronizations.add(elementName);
+            // 'strong' not supported in the old notation
+            m_synchronizations.put(elementName, SynchronizationMode.standard);
         }
     }
 
@@ -4522,6 +4545,36 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             content.setFile(file);
         }
         return file;
+    }
+
+    /**
+     * Helper method to combine synchronizations from a content definition and its nested content definitions.
+     *
+     * @param contentDefinition the content definition to start with
+     * @param path the the path to this content definition
+     * @param combinedSynchronizations the map in which the combined synchronizations should be stored
+     */
+    private void combineSynchronizations(
+        CmsXmlContentDefinition contentDefinition,
+        String path,
+        LinkedHashMap<String, SynchronizationMode> combinedSynchronizations) {
+
+        // put the synchronization definitions from nested contents in the map before the definitions from the current content definition,
+        // so the latter can override the former
+
+        for (String name : contentDefinition.getSchemaTypes()) {
+            I_CmsXmlSchemaType type = contentDefinition.getSchemaType(name);
+            if (type instanceof CmsXmlNestedContentDefinition) {
+                CmsXmlContentDefinition nestedDef = ((CmsXmlNestedContentDefinition)type).getNestedContentDefinition();
+                String subPath = "".equals(path) ? name : path + "/" + name;
+                combineSynchronizations(nestedDef, subPath, combinedSynchronizations);
+            }
+        }
+        CmsSynchronizationSpec synchs = contentDefinition.getContentHandler().getSynchronizations(false);
+        for (Map.Entry<String, SynchronizationMode> entry : synchs.asMap().entrySet()) {
+            String subPath = "".equals(path) ? entry.getKey() : path + "/" + entry.getKey();
+            combinedSynchronizations.put(subPath, entry.getValue());
+        }
     }
 
     /**

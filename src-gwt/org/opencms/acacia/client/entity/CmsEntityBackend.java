@@ -32,6 +32,7 @@ import org.opencms.acacia.shared.CmsEntityAttribute;
 import org.opencms.acacia.shared.CmsType;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.gwt.shared.CmsGwtLog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -292,9 +293,11 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
     public CmsEntity registerEntity(CmsEntity entity) {
 
         if (m_entities.containsKey(entity.getId())) {
+            CmsGwtLog.warn("CmsEntity " + entity.getId() + " is already registered");
             throw new IllegalArgumentException("CmsEntity " + entity.getId() + " is already registered");
         }
         if (!m_types.containsKey(entity.getTypeName())) {
+            CmsGwtLog.warn("Type " + entity.getTypeName() + " is not registered yet");
             throw new IllegalArgumentException("Type " + entity.getTypeName() + " is not registered yet");
         }
         for (CmsEntityAttribute attr : entity.getAttributes()) {

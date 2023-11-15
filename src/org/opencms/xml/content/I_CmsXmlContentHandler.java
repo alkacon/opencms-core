@@ -143,6 +143,16 @@ public interface I_CmsXmlContentHandler {
         PAGE
     }
 
+    /** Represents how values should be handled with regard to synchronization across locales in the editor. */
+    public static enum SynchronizationMode {
+        /** No synchronization. */
+        none,
+        /** Normal synchronization. */
+        standard,
+        /** Strong synchronization - a value will be synchronized even if the parent nodes are missing in the target locale. */
+        strong;
+    }
+
     /** Mapping name for the 'date expired' mapping. */
     String ATTRIBUTE_DATEEXPIRED = "dateexpired";
 
@@ -573,11 +583,12 @@ public interface I_CmsXmlContentHandler {
     Map<String, CmsXmlContentProperty> getSettings(CmsObject cms, CmsResource resource);
 
     /**
-     * Returns the elements that require a synchronization across all locales.<p>
+     * Returns the configuration for elements that require a synchronization across all locales.<p>
      *
-     * @return the element paths
+     * @param recursive if true, recursively combines all synchronization information from nested schemas, otherwise only returns the synchronizations for this schema
+     * @return the synchronization information
      */
-    List<String> getSynchronizations();
+    CmsSynchronizationSpec getSynchronizations(boolean recursive);
 
     /**
      * Returns the tabs to be displayed in the editor.<p>

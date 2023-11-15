@@ -28,6 +28,7 @@
 package org.opencms.acacia.shared;
 
 import org.opencms.acacia.shared.CmsEntityChangeEvent.ChangeType;
+import org.opencms.gwt.shared.CmsGwtLog;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -724,8 +725,8 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
 
     /**
      * Fires the change event for this entity.<p>
-     * 
-     * @param type the change type 
+     *
+     * @param type the change type
      */
     void fireChange(ChangeType type) {
 

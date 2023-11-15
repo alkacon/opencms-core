@@ -114,8 +114,8 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 import org.opencms.xml.content.I_CmsXmlContentEditorChangeHandler;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
-import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
 import org.opencms.xml.types.CmsXmlAccessRestrictionValue;
+import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -1779,7 +1779,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
         CmsObject cms = getCmsObject();
         for (Locale locale : content.getLocales()) {
-            for (String elementPath : content.getContentDefinition().getContentHandler().getSynchronizations()) {
+            for (String elementPath : content.getContentDefinition().getContentHandler().getSynchronizations(
+                true).getSynchronizationPaths()) {
                 for (I_CmsXmlContentValue contentValue : content.getSimpleValuesBelowPath(elementPath, locale)) {
                     String valuePath = contentValue.getPath();
                     boolean skip = false;

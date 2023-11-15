@@ -54,9 +54,9 @@ import org.opencms.xml.content.CmsXmlContentTab;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
+import org.opencms.xml.types.CmsXmlAccessRestrictionValue;
 import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
-import org.opencms.xml.types.CmsXmlAccessRestrictionValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
@@ -738,7 +738,7 @@ public class CmsContentTypeVisitor {
             m_hasInvisible = true;
         }
         boolean localeSynchronized = (m_contentHandler.hasSynchronizedElements()
-            && m_contentHandler.getSynchronizations().contains(path.substring(1)))
+            && m_contentHandler.getSynchronizations(true).getSynchronizationPaths().contains(path.substring(1)))
             || schemaType.getTypeName().equals(CmsXmlDynamicCategoryValue.TYPE_NAME);
 
         boolean dynamicallyLoaded = (schemaType instanceof CmsXmlDynamicCategoryValue)
