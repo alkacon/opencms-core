@@ -55,4 +55,14 @@ public class CmsGwtLog {
         // dummy implementation, do nothing
     }
 
+    /**
+     * Logs a warning to the browser console if possible.<p>
+     *
+     * @param message the message to log
+     */
+    public static void warn(String message) {
+        // dummy implementation, do nothing
+
+    }
+
 }

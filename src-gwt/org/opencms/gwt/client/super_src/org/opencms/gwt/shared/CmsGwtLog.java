@@ -43,6 +43,18 @@ public class CmsGwtLog {
             cns.log(message);
         }
     }-*/;
+    
+    /**
+     * Logs a message to the browser console if possible.<p>
+     *
+     * @param message the message to log
+     */
+    public static native void warn(String message) /*-{
+        var cns = $wnd.top.console;
+        if (cns && cns.warn) {
+            cns.warn(message);
+        }
+    }-*/;
 
     /**
      * Logs a message with the current stack trace to the browser console if possible.
