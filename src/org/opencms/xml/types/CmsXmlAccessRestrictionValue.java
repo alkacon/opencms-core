@@ -48,6 +48,8 @@ public class CmsXmlAccessRestrictionValue extends A_CmsXmlContentValue {
     /** The name of this type as used in the XML schema. */
     public static final String TYPE_NAME = "OpenCmsAccessRestriction";
 
+    public static final String N_ACCESS_RESTRICTION_VALUE = "access-restriction-value";
+
     /** The schema definition String is located in a text for easier editing. */
     private static String m_schemaDefinition;
 
@@ -67,7 +69,11 @@ public class CmsXmlAccessRestrictionValue extends A_CmsXmlContentValue {
      * @param locale the locale this value is created for
      * @param type the type instance to create the value for
      */
-    public CmsXmlAccessRestrictionValue(I_CmsXmlDocument document, Element element, Locale locale, I_CmsXmlSchemaType type) {
+    public CmsXmlAccessRestrictionValue(
+        I_CmsXmlDocument document,
+        Element element,
+        Locale locale,
+        I_CmsXmlSchemaType type) {
 
         super(document, element, locale, type);
     }
@@ -99,6 +105,7 @@ public class CmsXmlAccessRestrictionValue extends A_CmsXmlContentValue {
     public Element generateXml(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale) {
 
         Element element = root.addElement(getName());
+        element.addComment("Access restriction is dynamically read from permissions.");
         return element;
     }
 
@@ -127,7 +134,11 @@ public class CmsXmlAccessRestrictionValue extends A_CmsXmlContentValue {
      */
     public String getStringValue(CmsObject cms) throws CmsRuntimeException {
 
-        return m_element.getText();
+        Element categoryElement = valueElem(false);
+        if (categoryElement == null) {
+            return "";
+        }
+        return categoryElement.getText();
 
     }
 
@@ -161,7 +172,24 @@ public class CmsXmlAccessRestrictionValue extends A_CmsXmlContentValue {
      */
     public void setStringValue(CmsObject cms, String value) throws CmsIllegalArgumentException {
 
-        m_element.setText(value != null ? value : "");
+        valueElem(true).setText(value);
+    }
+
+    /**
+     * Gets the category-string subelement, creating it if necessary.
+     *
+     * @param create if true, the category string element is created if it doesn't exist; if false, null is returned in that case.
+     * @return the category-string subelement
+     */
+    Element valueElem(boolean create) {
+
+        Element result = m_element.element(N_ACCESS_RESTRICTION_VALUE);
+        if ((result == null) && create) {
+            result = m_element.addElement(N_ACCESS_RESTRICTION_VALUE);
+            result.detach();
+            m_element.elements().add(0, result);
+        }
+        return result;
     }
 
 }

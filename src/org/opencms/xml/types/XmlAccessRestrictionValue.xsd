@@ -1,3 +1,6 @@
-<xsd:simpleType name="OpenCmsAccessRestriction">
-    <xsd:restriction base="xsd:string"/>
-</xsd:simpleType>
+<xsd:complexType name="OpenCmsAccessRestriction">
+    <xsd:sequence>
+        <xsd:element name="access-restriction-value" type="xsd:string" minOccurs="0" maxOccurs="1" />
+    </xsd:sequence>
+</xsd:complexType>
+

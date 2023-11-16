@@ -34,10 +34,10 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.xml.types.CmsXmlAccessRestrictionValue;
 import org.opencms.xml.types.CmsXmlCategoryValue;
 import org.opencms.xml.types.CmsXmlDynamicCategoryValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
-import org.opencms.xml.types.CmsXmlAccessRestrictionValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -353,9 +353,6 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
                     value.getElement().detach();
                     removedCategoryField = true;
                 }
-                if (value instanceof CmsXmlAccessRestrictionValue) {
-                    value.setStringValue(cms, "");
-                }
             }
         }
         if (removedCategoryField) {
@@ -363,6 +360,9 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         }
 
         for (Node node : m_document.selectNodes("//" + CmsXmlDynamicCategoryValue.N_CATEGORY_STRING)) {
+            node.detach();
+        }
+        for (Node node : m_document.selectNodes("//" + CmsXmlAccessRestrictionValue.N_ACCESS_RESTRICTION_VALUE)) {
             node.detach();
         }
 
