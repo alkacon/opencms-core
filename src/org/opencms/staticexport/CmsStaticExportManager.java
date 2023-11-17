@@ -664,7 +664,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         while (it.hasNext()) {
             CmsStaticExportRfsRule rule = it.next();
             // normal case
-            boolean export = rule.getSource().matcher(siteRoot + vfsName).matches();
+
+            boolean export = rule.getSource().matcher(CmsStringUtil.joinPaths(siteRoot, vfsName)).matches();
             matched |= export;
             // system folder case
             export |= ((OpenCms.getSiteManager().startsWithShared(vfsName)
