@@ -28,6 +28,7 @@
 package org.opencms.ade.configuration;
 
 import org.opencms.ade.configuration.CmsADEConfigDataInternal.AttributeValue;
+import org.opencms.ade.configuration.CmsADEConfigDataInternal.ConfigReferenceMeta;
 import org.opencms.ade.configuration.formatters.CmsFormatterBeanParser;
 import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
@@ -1052,7 +1053,7 @@ public class CmsADEConfigData {
         }
         Collection<CmsUUID> enabledIds = m_data.getDynamicFunctions();
         Collection<CmsUUID> disabledIds = m_data.getFunctionsToRemove();
-        if (m_data.isRemoveAllFunctions()) {
+        if (m_data.isRemoveAllFunctions() && !m_configSequence.getMeta().isSkipRemovals()) {
             result.removeAll();
         }
         if (enabledIds != null) {
@@ -1102,6 +1103,9 @@ public class CmsADEConfigData {
         while (currentConfig != null) {
             CmsFormatterChangeSet changes = currentConfig.getOwnFormatterChangeSet();
             if (changes != null) {
+                if (currentConfig.getMeta().isSkipRemovals()) {
+                    changes = changes.cloneWithNoRemovals();
+                }
                 result.add(changes);
             }
             currentConfig = currentConfig.parent();
@@ -1264,7 +1268,8 @@ public class CmsADEConfigData {
 
         CmsADEConfigData parentData = parent();
         List<CmsPropertyConfig> parentProperties;
-        if ((parentData != null) && !m_data.isDiscardInheritedProperties()) {
+        boolean removeInherited = m_data.isDiscardInheritedProperties() && !getMeta().isSkipRemovals();
+        if ((parentData != null) && !removeInherited) {
             parentProperties = parentData.getPropertyConfiguration();
         } else {
             parentProperties = Collections.emptyList();
@@ -1397,7 +1402,8 @@ public class CmsADEConfigData {
         List<CmsADEConfigData> relevantConfigurations = new ArrayList<>();
         while (currentConfig != null) {
             relevantConfigurations.add(currentConfig);
-            if (currentConfig.m_data.isRemoveSharedSettingOverrides()) {
+            if (currentConfig.m_data.isRemoveSharedSettingOverrides()
+                && !currentConfig.m_configSequence.getMeta().isSkipRemovals()) {
                 // once we find a configuration where 'remove all shared setting overrides' is enabled,
                 // all parent configurations become irrelevant
                 break;
@@ -1429,7 +1435,7 @@ public class CmsADEConfigData {
 
         CmsADEConfigData parent = parent();
         Set<CmsUUID> result;
-        if ((parent == null) || m_data.isRemoveAllPlugins()) {
+        if ((parent == null) || (m_data.isRemoveAllPlugins() && !getMeta().isSkipRemovals())) {
             result = new HashSet<>();
         } else {
             result = parent.getSitePluginIds();
@@ -1633,6 +1639,11 @@ public class CmsADEConfigData {
         return m_data.isExcludeExternalDetailContents();
     }
 
+    /**
+     * Checks if dynamic functions not matching any containers should be hidden.
+     *
+     * @return true if dynamic functions not matching any containers should be hidden
+     */
     public boolean isHideNonMatchingFunctions() {
 
         return getDisabledFunctionsMode(CmsGalleryDisabledTypesMode.hide) == CmsGalleryDisabledTypesMode.hide;
@@ -1904,6 +1915,16 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Gets the metadata about how this configuration was referenced.
+     *
+     * @return the metadata
+     */
+    protected ConfigReferenceMeta getMeta() {
+
+        return m_configSequence.getMeta();
+    }
+
+    /**
      * Internal method for getting the function references.<p>
      *
      * @return the function references
@@ -1939,13 +1960,16 @@ public class CmsADEConfigData {
         } else {
             parentResourceTypes = Lists.newArrayList();
             for (CmsResourceTypeConfig typeConfig : parentData.internalGetResourceTypes(false)) {
-                CmsResourceTypeConfig copiedType = typeConfig.copy(m_data.isDiscardInheritedTypes());
+                CmsResourceTypeConfig copiedType = typeConfig.copy(
+                    m_data.isDiscardInheritedTypes() && !getMeta().isSkipRemovals());
                 parentResourceTypes.add(copiedType);
             }
         }
+        String template = getMeta().getTemplate();
         List<CmsResourceTypeConfig> result = combineConfigurationElements(
             parentResourceTypes,
-            m_data.getOwnResourceTypes(),
+            m_data.getOwnResourceTypes().stream().map(type -> type.markWithTemplate(template)).collect(
+                Collectors.toList()),
             true);
         if (m_data.isCreateContentsLocally()) {
             for (CmsResourceTypeConfig typeConfig : result) {

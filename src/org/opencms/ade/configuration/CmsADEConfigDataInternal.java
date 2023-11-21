@@ -45,6 +45,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.ComparisonChain;
@@ -113,6 +115,198 @@ public class CmsADEConfigDataInternal {
         }
     }
 
+    /**
+     * Represents a reference to a sitemap configuration with some associated metadata about that reference.
+     */
+    public static class ConfigReference {
+
+        /** The id of the referenced configuration. */
+        private CmsUUID m_config;
+
+        /** The metadata associated with the reference. */
+        private ConfigReferenceMeta m_meta = new ConfigReferenceMeta();
+
+        /**
+         * Creates a new instance.
+         *
+         * @param config the id of the target sitemap configuration
+         */
+        public ConfigReference(CmsUUID config) {
+
+            m_config = config;
+        }
+
+        /**
+         * Creates a new instance.
+         *
+         * @param config the id of the target sitemap configuration
+         * @param meta the metadata associated with the reference
+         */
+        public ConfigReference(CmsUUID config, ConfigReferenceMeta meta) {
+
+            m_config = config;
+            m_meta = meta;
+
+        }
+
+        /**
+         * Gets the id of the referenced sitemap configuration.
+         *
+         * @return the id of the referenced sitemap configuration
+         */
+        public CmsUUID getId() {
+
+            return m_config;
+
+        }
+
+        /**
+         * Gets the metadata for the configuration reference
+         *
+         * @return the metadata for the configuration reference
+         */
+        public ConfigReferenceMeta getMeta() {
+
+            return m_meta;
+        }
+
+    }
+
+    /**
+     * Contains a sitemap configuration bean together with some metadata about how it was referenced from other sitemap configurations.
+     */
+    public static class ConfigReferenceInstance {
+
+        /** The configuration object. */
+        private CmsADEConfigDataInternal m_config;
+
+        /** The metadata associated with the configuration reference. */
+        private ConfigReferenceMeta m_meta = new ConfigReferenceMeta();
+
+        /**
+         * Creates a new instance.
+         *
+         * @param config the configuration
+         */
+        public ConfigReferenceInstance(CmsADEConfigDataInternal config) {
+
+            m_config = config;
+        }
+
+        /**
+         * Creates a new instance.
+         *
+         * @param config the configuration
+         * @param meta the metadata associated with the reference to the configuration
+         */
+        public ConfigReferenceInstance(CmsADEConfigDataInternal config, ConfigReferenceMeta meta) {
+
+            m_config = config;
+            m_meta = meta;
+
+        }
+
+        /**
+         * Gets the configuration instance.
+         *
+         * @return the configuration
+         */
+        public CmsADEConfigDataInternal getConfig() {
+
+            return m_config;
+        }
+
+        /**
+         * Gets the metadata associated with the configuration reference.
+         *
+         * @return the reference metadata
+         */
+        public ConfigReferenceMeta getMeta() {
+
+            return m_meta;
+        }
+
+    }
+
+    /**
+     * Represents additional metadata from the query string of a master configuration link.
+     */
+    public static class ConfigReferenceMeta {
+
+        /** The 'template' parameter. */
+        public static final String PARAM_TEMPLATE = "template";
+
+        /** The template identifier. */
+        private String m_template;
+
+        /**
+         * Creates a new, empty instance.
+         */
+        public ConfigReferenceMeta() {
+            // do nothing
+
+        }
+
+        /**
+         * Creates a new instance from the parameters from a master configuration link.
+         *
+         * @param params the parameters for the metadata
+         */
+        public ConfigReferenceMeta(Map<String, String[]> params) {
+
+            String[] templateVals = params.get(PARAM_TEMPLATE);
+            if ((templateVals != null) && (templateVals.length > 0)) {
+                m_template = templateVals[0];
+            }
+        }
+
+        /**
+         * If this object is the metadata for a link to a master configuration M, and 'next' is the metadata
+         * for a link from M to some other master configuration N, combines the metadata into a single object and returns it.
+         *
+         * @param next the metadata to combine this object with
+         * @return the combined metadata
+         */
+        public ConfigReferenceMeta combine(ConfigReferenceMeta next) {
+
+            ConfigReferenceMeta result = new ConfigReferenceMeta();
+            result.m_template = m_template != null ? m_template : next.m_template;
+            return result;
+        }
+
+        /**
+         * Gets the template identifier.
+         *
+         * <p>The template identifier should be one of the template context keys provided by a template provider.
+         *
+         * @return the template identifier
+         */
+        public String getTemplate() {
+
+            return m_template;
+        }
+
+        /**
+         * Returns true if 'remove all' settings should be ignored in the referenced master configuration.
+         *
+         * @return if true, 'remove all' settings are ignored in the referenced master configuration
+         */
+        public boolean isSkipRemovals() {
+
+            return getTemplate() != null;
+        }
+
+        /**
+         * @see java.lang.Object#toString()
+         */
+        @Override
+        public String toString() {
+
+            return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        }
+
+    }
+
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEConfigDataInternal.class);
 
@@ -138,7 +332,7 @@ public class CmsADEConfigDataInternal {
     protected boolean m_isModuleConfig;
 
     /** The master configuration structure ids. */
-    protected List<CmsUUID> m_masterConfigs;
+    protected List<ConfigReference> m_masterConfigs;
 
     /** Mode for using formatter keys / the new container page format. */
     protected Boolean m_useFormatterKeys;
@@ -173,16 +367,17 @@ public class CmsADEConfigDataInternal {
     /** The functions to remove. */
     private Set<CmsUUID> m_functionsToRemove;
 
+    /** The mode determining how to deal with disabled functions. */
+    private CmsGalleryDisabledTypesMode m_galleryDisabledFunctionsMode;
+
+    /** The display mode for deactivated types in the gallery dialog. */
+    private CmsGalleryDisabledTypesMode m_galleryDisabledTypesMode;
+
     /** The internal detail page configuration. */
     private List<CmsDetailPageInfo> m_ownDetailPages = Lists.newArrayList();
 
     /** The internal model page entries. */
     private volatile List<CmsModelPageConfig> m_ownModelPageConfig = null;
-
-    /** The display mode for deactivated types in the gallery dialog. */
-    private CmsGalleryDisabledTypesMode m_galleryDisabledTypesMode;
-
-    private CmsGalleryDisabledTypesMode m_galleryDisabledFunctionsMode;
 
     /** Model page data with no resources. */
     private List<CmsModelPageConfigWithoutResource> m_ownModelPageConfigRaw = new ArrayList<>();
@@ -227,6 +422,7 @@ public class CmsADEConfigDataInternal {
      * @param masterConfigs structure ids of master configuration files
      * @param resourceTypeConfig the resource type configuration
      * @param galleryDisabledTypesMode  the display mode deactivated types in the gallery dialog
+     * @param galleryDisabledFunctionsMode the mode controlling how to deal with disabled functions
      * @param discardInheritedTypes the "discard inherited types" flag
      * @param propertyConfig the property configuration
      * @param discardPropertiesMode the "discard inherited properties" mode
@@ -258,7 +454,7 @@ public class CmsADEConfigDataInternal {
         CmsResource resource,
         boolean isModuleConfig,
         String basePath,
-        List<CmsUUID> masterConfigs,
+        List<ConfigReference> masterConfigs,
         List<CmsResourceTypeConfig> resourceTypeConfig,
         CmsGalleryDisabledTypesMode galleryDisabledTypesMode,
         CmsGalleryDisabledTypesMode galleryDisabledFunctionsMode,
@@ -349,7 +545,7 @@ public class CmsADEConfigDataInternal {
 
     /**
      * Creates a new configuration data instance.<p>
-    
+
      * @param resource the resource from which this configuration data was read
      * @param isModuleConfig true if this is a module configuration
      * @param basePath the base path
@@ -374,7 +570,7 @@ public class CmsADEConfigDataInternal {
         CmsResource resource,
         boolean isModuleConfig,
         String basePath,
-        List<CmsUUID> masterConfigs,
+        List<ConfigReference> masterConfigs,
         List<CmsResourceTypeConfig> resourceTypeConfig,
         boolean discardInheritedTypes,
         List<CmsPropertyConfig> propertyConfig,
@@ -541,6 +737,11 @@ public class CmsADEConfigDataInternal {
         return m_functionsToRemove;
     }
 
+    /**
+     * Gets the mode for how disabled functions should be handled.
+     *
+     * @return the mode for disabled functions
+     */
     public CmsGalleryDisabledTypesMode getGalleryDisabledFunctionsMode() {
 
         return m_galleryDisabledFunctionsMode;
@@ -551,7 +752,7 @@ public class CmsADEConfigDataInternal {
      *
      * @return the structure ids of the master configurations
      */
-    public List<CmsUUID> getMasterConfigs() {
+    public List<ConfigReference> getMasterConfigs() {
 
         return Collections.unmodifiableList(m_masterConfigs);
     }
@@ -770,6 +971,20 @@ public class CmsADEConfigDataInternal {
     public boolean isRemoveSharedSettingOverrides() {
 
         return m_removeSharedSettingOverrides;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        if (getBasePath() != null) {
+            return "[" + getBasePath() + "]";
+        } else {
+            return super.toString();
+        }
+
     }
 
     /**

@@ -28,6 +28,9 @@
 package org.opencms.ade.configuration;
 
 import org.opencms.ade.configuration.CmsADEConfigData.DetailInfo;
+import org.opencms.ade.configuration.CmsADEConfigDataInternal.ConfigReference;
+import org.opencms.ade.configuration.CmsADEConfigDataInternal.ConfigReferenceInstance;
+import org.opencms.ade.configuration.CmsADEConfigDataInternal.ConfigReferenceMeta;
 import org.opencms.ade.configuration.plugins.CmsSitePlugin;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsObject;
@@ -606,48 +609,38 @@ public class CmsADEConfigCacheState {
      * For a given master configuration, lists all directly and indirectly referenced master configurations, in sitemap config inheritance order (i.e. referenced master configurations preceding the
      * configurations from which they are referenced).
      *
-     * @param startMasterConfig the master configuration to start with
-     *
-     * @return the expanded list of master configurations
+     * @param result the list to append the results to
+     * @param current the configuration reference to start with
+     * @param seen the set of structure ids of sitemap configurations already visited
      */
-    private List<CmsADEConfigDataInternal> fillInReferencedMasterConfigurations(
-        CmsADEConfigDataInternal startMasterConfig) {
+    private void fillMasterConfigurations(
+        List<ConfigReferenceInstance> result,
+        ConfigReferenceInstance current,
+        Set<CmsUUID> seen) {
 
-        // depth-first traversal of master configurations using a stack
-
-        ArrayList<CmsADEConfigDataInternal> stack = new ArrayList<>();
-        ArrayList<CmsADEConfigDataInternal> result = new ArrayList<>();
-        Set<CmsUUID> alreadySeen = new HashSet<>();
-        stack.add(startMasterConfig);
-        while (!stack.isEmpty()) {
-            CmsADEConfigDataInternal current = stack.remove(stack.size() - 1);
-            if (alreadySeen.contains(current.getResource().getStructureId())) {
-
-                LOG.error(
-                    "The same master configuration is referenced multiple times from "
-                        + startMasterConfig.getResource()
-                        + ": "
-                        + current.getResource().getRootPath());
+        CmsUUID currentId = current.getConfig().getResource().getStructureId();
+        if (seen.contains(currentId)) {
+            LOG.warn("Loop in sitemap configuration references, target = " + current.getConfig().getBasePath());
+            return;
+        }
+        seen.add(currentId);
+        // Recursively add the referenced master configurations before adding the current configuration in the end
+        for (ConfigReference configRef : current.getConfig().getMasterConfigs()) {
+            CmsADEConfigDataInternal config = m_siteConfigurations.get(configRef.getId());
+            if (config != null) {
+                ConfigReferenceMeta combinedMeta = current.getMeta().combine(configRef.getMeta());
+                ConfigReferenceInstance combinedRef = new ConfigReferenceInstance(config, combinedMeta);
+                fillMasterConfigurations(result, combinedRef, seen);
             } else {
-                alreadySeen.add(current.getResource().getStructureId());
-                result.add(current);
-                for (CmsUUID referencedId : current.getMasterConfigs()) {
-                    CmsADEConfigDataInternal referencedMasterConfig = m_siteConfigurations.get(referencedId);
-                    if (referencedMasterConfig != null) {
-                        stack.add(referencedMasterConfig);
-                    } else {
-                        LOG.warn(
-                            "Master configuration with id "
-                                + referencedId
-                                + " not found, referenced by "
-                                + current.getResource().getRootPath());
-                    }
-
-                }
+                LOG.warn(
+                    "Master configuration with id "
+                        + configRef.getId()
+                        + " not found, referenced by "
+                        + current.getConfig().getResource().getRootPath());
             }
         }
-        return Lists.reverse(result);
-
+        result.add(current);
+        seen.remove(currentId);
     }
 
     /**
@@ -660,28 +653,13 @@ public class CmsADEConfigCacheState {
     private CmsADEConfigData wrap(CmsADEConfigDataInternal data) {
 
         String path = data.getBasePath();
-        List<CmsADEConfigDataInternal> configList = Lists.newArrayList();
-        configList.add(m_moduleConfiguration);
+        List<ConfigReferenceInstance> configList = Lists.newArrayList();
+        configList.add(new ConfigReferenceInstance(m_moduleConfiguration));
         if (path != null) {
             List<String> siteConfigPaths = getSiteConfigPaths(path);
             for (String siteConfigPath : siteConfigPaths) {
                 CmsADEConfigDataInternal currentConfig = m_siteConfigurationsByPath.get(siteConfigPath);
-                List<CmsUUID> masterConfigs = currentConfig.getMasterConfigs();
-                for (CmsUUID id : masterConfigs) {
-                    CmsADEConfigDataInternal masterConfig = m_siteConfigurations.get(id);
-                    if (masterConfig != null) {
-                        List<CmsADEConfigDataInternal> masterConfigWithDependencies = fillInReferencedMasterConfigurations(
-                            masterConfig);
-                        configList.addAll(masterConfigWithDependencies);
-                    } else {
-                        LOG.warn(
-                            "Master configuration "
-                                + id
-                                + " not found for sitemap configuration in "
-                                + currentConfig.getBasePath());
-                    }
-                }
-                configList.add(currentConfig);
+                fillMasterConfigurations(configList, new ConfigReferenceInstance(currentConfig), new HashSet<>());
             }
         }
         return new CmsADEConfigData(data, this, new CmsADEConfigurationSequence(configList));

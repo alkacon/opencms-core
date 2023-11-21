@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
 /**
  * This class represents the changes which can be made to formatters in a sitemap configuration file.<p>
  */
-public class CmsFormatterChangeSet {
+public class CmsFormatterChangeSet implements Cloneable {
 
     /** The prefix used for types in the Add/RemoveFormatter fields in the configuration. */
     public static final String PREFIX_TYPE = "type_";
@@ -196,6 +196,24 @@ public class CmsFormatterChangeSet {
                 types.remove(typeName);
             }
         }
+    }
+
+    /**
+     * Creates a clone of this object, but with the 'remove all functions/formatters' flags set to false.
+     *
+     * @return a clone which disables removall of all functions/formatters
+     */
+    public CmsFormatterChangeSet cloneWithNoRemovals() {
+
+        try {
+            CmsFormatterChangeSet result = (CmsFormatterChangeSet)clone();
+            result.m_removeAllNonExplicitlyAdded = false;
+            result.m_removeFunctions = false;
+            return result;
+        } catch (CloneNotSupportedException e) {
+            return null;
+        }
+
     }
 
     /**

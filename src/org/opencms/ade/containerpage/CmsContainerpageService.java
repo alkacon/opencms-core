@@ -245,19 +245,23 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
          *
          * @param defaultValue the default view id from the session cache
          * @param checkRes the resource used to check permissions
+         * @param info
          */
         @SuppressWarnings("synthetic-access")
-        public void init(CmsUUID defaultValue, CmsResource checkRes) {
+        public void init(CmsUUID defaultValue, CmsResource checkRes, CmsTemplateContextInfo info) {
 
             Map<CmsUUID, CmsElementViewInfo> result = new LinkedHashMap<CmsUUID, CmsElementViewInfo>();
             CmsObject cms = getCmsObject();
+            String templateKey = info != null ? info.getCurrentContext() : null;
 
             // collect the actually used element view ids
             CmsADEConfigData config = getConfigData(
                 cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri()));
             Set<CmsUUID> usedIds = new HashSet<CmsUUID>();
             for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {
-                usedIds.add(typeConfig.getElementView());
+                if (typeConfig.hasTemplate(templateKey)) {
+                    usedIds.add(typeConfig.getElementView());
+                }
             }
 
             Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
@@ -1175,9 +1179,26 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsGalleryDataBean data = null;
         try {
             CmsObject cms = getCmsObject();
-
-            CmsAddDialogTypeHelper typeHelper = new CmsAddDialogTypeHelper(CmsResourceTypeConfig.AddMenuType.ade);
             String pageFolderRootPath = cms.getRequestContext().addSiteRoot(uri);
+            CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, pageFolderRootPath);
+            Map<String, CmsResourceTypeConfig> typesByName = config.getTypesByName();
+            final String templateContextStr = (templateContextInfo != null)
+                && (templateContextInfo.getCurrentContext() != null) ? templateContextInfo.getCurrentContext() : null;
+            CmsAddDialogTypeHelper typeHelper = new CmsAddDialogTypeHelper(CmsResourceTypeConfig.AddMenuType.ade) {
+
+                @Override
+                protected boolean exclude(CmsResourceTypeBean type) {
+
+                    CmsResourceTypeConfig typeConfig = typesByName.get(type.getType());
+                    if ((typeConfig != null)
+                        && (templateContextStr != null)
+                        && !typeConfig.hasTemplate(templateContextStr)) {
+                        return true;
+                    }
+                    return false;
+
+                }
+            };
             if (detailContentId != null) {
                 try {
                     CmsResource page = cms.readResource(uri, CmsResourceFilter.IGNORE_EXPIRATION);
@@ -1202,12 +1223,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
                     public boolean checkEnabled(
                         CmsObject paramCms,
-                        CmsADEConfigData config,
+                        CmsADEConfigData config2,
                         I_CmsResourceType resType) {
 
                         boolean isModelGroup = CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME.equals(
                             resType.getTypeName());
-                        return isModelGroup || config.hasFormatters(paramCms, resType, containers);
+                        return isModelGroup || config2.hasFormatters(paramCms, resType, containers);
                     }
                 });
             CmsGalleryService srv = new CmsGalleryService();
@@ -1675,7 +1696,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 LOG.info("Invalid reuse mode : " + reuseModeString, e);
             }
             InitialElementViewProvider viewHelper = new InitialElementViewProvider();
-            viewHelper.init(getSessionCache().getElementView(), containerPage);
+            viewHelper.init(getSessionCache().getElementView(), containerPage, info);
             CmsLocaleGroup group = cms.getLocaleGroupService().readLocaleGroup(containerPage);
             Locale mainLocale = null;
 

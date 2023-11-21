@@ -27,6 +27,7 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.configuration.CmsADEConfigDataInternal.ConfigReferenceInstance;
 import org.opencms.ade.configuration.CmsConfigurationReader.DiscardPropertiesMode;
 import org.opencms.ade.containerpage.CmsSettingTranslator;
 import org.opencms.ade.detailpage.CmsDetailPageFilter;
@@ -1067,7 +1068,8 @@ public class TestConfig extends OpenCmsTestCase {
                 new HashMap<CmsUUID, CmsElementView>(),
                 new HashMap<>(),
                 new HashMap<>()),
-            new CmsADEConfigurationSequence(Collections.singletonList(configDataInternal)));
+            new CmsADEConfigurationSequence(
+                Collections.singletonList(new ConfigReferenceInstance(configDataInternal))));
         assertFalse(configData.isModuleConfiguration());
         assertEquals(1, configData.getResourceTypes().size());
         CmsResourceTypeConfig v8article = configData.getResourceType("v8article");
@@ -1116,7 +1118,8 @@ public class TestConfig extends OpenCmsTestCase {
                 new HashMap<CmsUUID, CmsElementView>(),
                 new HashMap<>(),
                 new HashMap<>()),
-            new CmsADEConfigurationSequence(Collections.singletonList(configDataInternal)));
+            new CmsADEConfigurationSequence(
+                Collections.singletonList(new ConfigReferenceInstance(configDataInternal))));
         assertTrue(configData.isModuleConfiguration());
         assertEquals(1, configData.getResourceTypes().size());
         CmsResourceTypeConfig anothertype = configData.getResourceType("anothertype");

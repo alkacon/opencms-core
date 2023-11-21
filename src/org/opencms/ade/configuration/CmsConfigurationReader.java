@@ -27,6 +27,8 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.configuration.CmsADEConfigDataInternal.ConfigReference;
+import org.opencms.ade.configuration.CmsADEConfigDataInternal.ConfigReferenceMeta;
 import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCache;
 import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementDeleteMode;
@@ -654,11 +656,17 @@ public class CmsConfigurationReader {
         boolean isModuleConfig = OpenCms.getResourceManager().getResourceType(
             content.getFile().getTypeId()).getTypeName().equals(CmsADEManager.MODULE_CONFIG_TYPE);
 
-        List<CmsUUID> masterConfigIds = new ArrayList<>();
+        List<ConfigReference> masterConfigIds = new ArrayList<>();
         for (I_CmsXmlContentValueLocation masterConfigLoc : root.getSubValues(N_MASTER_CONFIG)) {
+            CmsXmlVfsFileValue value = (CmsXmlVfsFileValue)masterConfigLoc.getValue();
+            CmsLink link = value.getUncheckedLink();
+            ConfigReferenceMeta meta = null;
+            if (link != null) {
+                meta = new ConfigReferenceMeta(link.getParameterMap());
+            }
             CmsUUID id = masterConfigLoc.asId(m_cms);
             if (id != null) {
-                masterConfigIds.add(id);
+                masterConfigIds.add(new ConfigReference(id, meta));
             }
         }
 

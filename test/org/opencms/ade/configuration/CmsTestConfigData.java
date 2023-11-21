@@ -27,6 +27,7 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.configuration.CmsADEConfigDataInternal.ConfigReferenceMeta;
 import org.opencms.ade.configuration.CmsConfigurationReader.DiscardPropertiesMode;
 import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
@@ -303,6 +304,12 @@ public class CmsTestConfigData extends CmsADEConfigData {
             result = super.getFormattersFromSchema(cms, res);
         }
         return result;
+    }
+
+    @Override
+    protected ConfigReferenceMeta getMeta() {
+
+        return new ConfigReferenceMeta();
     }
 
 }

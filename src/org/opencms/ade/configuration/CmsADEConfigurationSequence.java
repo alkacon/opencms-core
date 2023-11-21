@@ -27,6 +27,8 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.configuration.CmsADEConfigDataInternal.ConfigReferenceInstance;
+import org.opencms.ade.configuration.CmsADEConfigDataInternal.ConfigReferenceMeta;
 import org.opencms.file.CmsResource;
 
 import java.util.ArrayList;
@@ -44,7 +46,7 @@ import com.google.common.base.Optional;
 public class CmsADEConfigurationSequence {
 
     /** The list of configuration data. */
-    private List<CmsADEConfigDataInternal> m_configDatas;
+    private List<ConfigReferenceInstance> m_configDatas;
 
     /** The index for the current configuration. */
     private int m_configIndex;
@@ -54,7 +56,7 @@ public class CmsADEConfigurationSequence {
      *
      * @param configDatas the config data list
      */
-    public CmsADEConfigurationSequence(List<CmsADEConfigDataInternal> configDatas) {
+    public CmsADEConfigurationSequence(List<ConfigReferenceInstance> configDatas) {
 
         this(configDatas, configDatas.size() - 1);
     }
@@ -65,7 +67,7 @@ public class CmsADEConfigurationSequence {
      * @param configDatas the configuration data list
      * @param index the index into the list
      */
-    protected CmsADEConfigurationSequence(List<CmsADEConfigDataInternal> configDatas, int index) {
+    protected CmsADEConfigurationSequence(List<ConfigReferenceInstance> configDatas, int index) {
 
         assert (0 <= index) && (index < configDatas.size());
         m_configDatas = configDatas;
@@ -80,7 +82,7 @@ public class CmsADEConfigurationSequence {
      */
     public CmsADEConfigDataInternal getConfig() {
 
-        return m_configDatas.get(m_configIndex);
+        return m_configDatas.get(m_configIndex).getConfig();
     }
 
     /**
@@ -92,12 +94,22 @@ public class CmsADEConfigurationSequence {
 
         List<String> result = new ArrayList<>();
         for (int i = 0; i <= m_configIndex; i++) {
-            CmsResource res = m_configDatas.get(i).getResource();
+            CmsResource res = m_configDatas.get(i).getConfig().getResource();
             if (res != null) {
                 result.add(res.getRootPath());
             }
         }
         return Collections.unmodifiableList(result);
+    }
+
+    /**
+     * Gets the metadata associated with the path of master configuration references to the current configuration.
+     *
+     * @return the metadata associated with the path of master configuration references to the current configuration.
+     */
+    public ConfigReferenceMeta getMeta() {
+
+        return m_configDatas.get(m_configIndex).getMeta();
     }
 
     /**
