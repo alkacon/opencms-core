@@ -58,8 +58,6 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
-import com.google.common.collect.Sets;
-
 /**
  * The configuration for a single resource type.<p>
  */
@@ -786,7 +784,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             copyInModels,
             order,
             deleteMode);
-        result.m_templates = Sets.union(this.m_templates, childConfig.m_templates);
+        result.m_templates = new HashSet<>(this.m_templates);
+        result.m_templates.addAll(childConfig.m_templates);
         return result;
     }
 

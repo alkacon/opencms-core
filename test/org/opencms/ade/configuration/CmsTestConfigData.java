@@ -306,6 +306,9 @@ public class CmsTestConfigData extends CmsADEConfigData {
         return result;
     }
 
+    /**
+     * @see org.opencms.ade.configuration.CmsADEConfigData#getMeta()
+     */
     @Override
     protected ConfigReferenceMeta getMeta() {
 

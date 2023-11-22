@@ -245,14 +245,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
          *
          * @param defaultValue the default view id from the session cache
          * @param checkRes the resource used to check permissions
-         * @param info
+         * @param templateContextInfo the template context information
          */
         @SuppressWarnings("synthetic-access")
-        public void init(CmsUUID defaultValue, CmsResource checkRes, CmsTemplateContextInfo info) {
+        public void init(CmsUUID defaultValue, CmsResource checkRes, CmsTemplateContextInfo templateContextInfo) {
 
             Map<CmsUUID, CmsElementViewInfo> result = new LinkedHashMap<CmsUUID, CmsElementViewInfo>();
             CmsObject cms = getCmsObject();
-            String templateKey = info != null ? info.getCurrentContext() : null;
+            String templateKey = templateContextInfo != null ? templateContextInfo.getCurrentContext() : null;
 
             // collect the actually used element view ids
             CmsADEConfigData config = getConfigData(
