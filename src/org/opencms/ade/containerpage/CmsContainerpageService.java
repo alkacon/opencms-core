@@ -259,7 +259,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri()));
             Set<CmsUUID> usedIds = new HashSet<CmsUUID>();
             for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {
-                if (typeConfig.hasTemplate(templateKey)) {
+                if (typeConfig.isAvailableInTemplate(templateKey)) {
                     usedIds.add(typeConfig.getElementView());
                 }
             }
@@ -1192,7 +1192,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     CmsResourceTypeConfig typeConfig = typesByName.get(type.getType());
                     if ((typeConfig != null)
                         && (templateContextStr != null)
-                        && !typeConfig.hasTemplate(templateContextStr)) {
+                        && !typeConfig.isAvailableInTemplate(templateContextStr)) {
                         return true;
                     }
                     return false;

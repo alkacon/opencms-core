@@ -751,20 +751,20 @@ public class TestLiveConfig extends OpenCmsTestCase {
             config.getResourceTypes().stream().map(t -> t.getTypeName()).collect(Collectors.toSet()));
 
         // only in source
-        assertTrue(config.getTypesByName().get("A").hasTemplate("source"));
-        assertFalse(config.getTypesByName().get("A").hasTemplate("target"));
+        assertTrue(config.getTypesByName().get("A").isAvailableInTemplate("source"));
+        assertFalse(config.getTypesByName().get("A").isAvailableInTemplate("target"));
 
         // only in target
-        assertTrue(config.getTypesByName().get("C").hasTemplate("target"));
-        assertFalse(config.getTypesByName().get("C").hasTemplate("source"));
+        assertTrue(config.getTypesByName().get("C").isAvailableInTemplate("target"));
+        assertFalse(config.getTypesByName().get("C").isAvailableInTemplate("source"));
 
         // in both source and target
-        assertTrue(config.getTypesByName().get("B").hasTemplate("source"));
-        assertTrue(config.getTypesByName().get("B").hasTemplate("target"));
+        assertTrue(config.getTypesByName().get("B").isAvailableInTemplate("source"));
+        assertTrue(config.getTypesByName().get("B").isAvailableInTemplate("target"));
 
-        assertTrue(config.getTypesByName().get("A").hasTemplate(null));
-        assertTrue(config.getTypesByName().get("B").hasTemplate(null));
-        assertTrue(config.getTypesByName().get("C").hasTemplate(null));
+        assertTrue(config.getTypesByName().get("A").isAvailableInTemplate(null));
+        assertTrue(config.getTypesByName().get("B").isAvailableInTemplate(null));
+        assertTrue(config.getTypesByName().get("C").isAvailableInTemplate(null));
 
     }
 

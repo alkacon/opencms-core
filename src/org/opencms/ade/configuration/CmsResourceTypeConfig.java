@@ -607,7 +607,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * @param template the template key to check
      * @return true if the type should be available for the template
      */
-    public boolean hasTemplate(String template) {
+    public boolean isAvailableInTemplate(String template) {
 
         return (template == null) || (m_templates.size() == 0) || m_templates.contains(template);
     }
