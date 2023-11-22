@@ -45,9 +45,11 @@ import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.ui.components.CmsExtendedSiteSelector;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsVfsUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -630,6 +632,139 @@ public class TestLiveConfig extends OpenCmsTestCase {
         } finally {
             cms.deleteResource("/system/mastertest", CmsResource.DELETE_PRESERVE_SIBLINGS);
         }
+
+    }
+
+    /**
+     * Tests merging of master configurations via the ?template=... parameter.
+     *
+     * @throws Exception if something goes wrong
+     */
+    public void testMergedMasterConfigurations() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        String base = "/testMergedMasterConfigurations";
+        CmsVfsUtil.createFolder(cms, "/sites/default" + base + "/.content");
+        CmsResource reset = makeMasterConfig(
+            cms,
+            base + "/reset.xml",
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "\n"
+                + "<SitemapMasterConfigurations xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.config/schemas/sitemap_master_config.xsd\">\n"
+                + "  <SitemapMasterConfiguration language=\"en\">\n"
+                + "    <DiscardTypes>true</DiscardTypes>\n"
+                + "    <UseFormatterKeys>true</UseFormatterKeys>\n"
+                + "    <RemoveAllFormatters>true</RemoveAllFormatters>\n"
+                + "  </SitemapMasterConfiguration>\n"
+                + "</SitemapMasterConfigurations>\n"
+                + "");
+
+        CmsResource master1a = makeMasterConfig(
+            cms,
+            base + "/master1a.xml",
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "\n"
+                + "<SitemapMasterConfigurations xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.config/schemas/sitemap_master_config.xsd\">\n"
+                + "  <SitemapMasterConfiguration language=\"en\">\n"
+                + "    <DiscardTypes>true</DiscardTypes>\n"
+                + "    <ResourceType>\n"
+                + "      <TypeName><![CDATA[A]]></TypeName>\n"
+                + "    </ResourceType>\n"
+                + "    <ResourceType>\n"
+                + "      <TypeName><![CDATA[B]]></TypeName>\n"
+                + "    </ResourceType>\n"
+                + "  </SitemapMasterConfiguration>\n"
+                + "</SitemapMasterConfigurations>\n"
+                + "");
+        CmsResource master1 = makeMasterConfig(
+            cms,
+            base + "/master1.xml",
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "\n"
+                + "<SitemapMasterConfigurations xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.config/schemas/sitemap_master_config.xsd\">\n"
+                + "  <SitemapMasterConfiguration language=\"en\">\n"
+                + "    <MasterConfig>\n"
+                + "      <link type=\"WEAK\">\n"
+                + "        <uuid>"
+                + master1a.getStructureId()
+                + "</uuid>\n"
+                + "      </link>\n"
+                + "    </MasterConfig>\n"
+                + "  </SitemapMasterConfiguration>\n"
+                + "</SitemapMasterConfigurations>\n"
+                + "");
+        CmsResource master2 = makeMasterConfig(
+            cms,
+            base + "/master2.xml",
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "\n"
+                + "<SitemapMasterConfigurations xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.config/schemas/sitemap_master_config.xsd\">\n"
+                + "  <SitemapMasterConfiguration language=\"en\">\n"
+                + "    <DiscardTypes>true</DiscardTypes>\n"
+                + "    <ResourceType>\n"
+                + "      <TypeName><![CDATA[B]]></TypeName>\n"
+                + "    </ResourceType>\n"
+                + "    <ResourceType>\n"
+                + "      <TypeName><![CDATA[C]]></TypeName>\n"
+                + "    </ResourceType>\n"
+                + "  </SitemapMasterConfiguration>\n"
+                + "</SitemapMasterConfigurations>\n"
+                + "");
+        CmsResource configRes = makeConfig(
+            cms,
+            base + "/.content/.config",
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "\n"
+                + "<SitemapConfigurations xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"opencms://system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd\">\n"
+                + "  <SitemapConfiguration language=\"en\">\n"
+                + "    <MasterConfig>\n"
+                + "      <link type=\"WEAK\">\n"
+                + "        <uuid>"
+                + reset.getStructureId()
+                + "</uuid>\n"
+                + "      </link>\n"
+                + "    </MasterConfig>\n"
+
+                + "    <MasterConfig>\n"
+                + "      <link type=\"WEAK\">\n"
+                + "        <uuid>"
+                + master1.getStructureId()
+                + "</uuid>\n"
+                + "        <query><![CDATA[template=source]]></query>\n"
+                + "      </link>\n"
+                + "    </MasterConfig>\n"
+                + "    <MasterConfig>\n"
+                + "      <link type=\"WEAK\">\n"
+                + "        <uuid>"
+                + master2.getStructureId()
+                + "</uuid>\n"
+                + "        <query><![CDATA[template=target]]></query>\n"
+                + "      </link>\n"
+                + "    </MasterConfig>\n"
+                + "  </SitemapConfiguration>\n"
+                + "</SitemapConfigurations>\n"
+                + "");
+        OpenCms.getADEManager().waitForCacheUpdate(false);
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, "/sites/default" + base);
+        assertEquals(
+            new HashSet<>(Arrays.asList("A", "B", "C")),
+            config.getResourceTypes().stream().map(t -> t.getTypeName()).collect(Collectors.toSet()));
+
+        // only in source
+        assertTrue(config.getTypesByName().get("A").hasTemplate("source"));
+        assertFalse(config.getTypesByName().get("A").hasTemplate("target"));
+
+        // only in target
+        assertTrue(config.getTypesByName().get("C").hasTemplate("target"));
+        assertFalse(config.getTypesByName().get("C").hasTemplate("source"));
+
+        // in both source and target
+        assertTrue(config.getTypesByName().get("B").hasTemplate("source"));
+        assertTrue(config.getTypesByName().get("B").hasTemplate("target"));
+
+        assertTrue(config.getTypesByName().get("A").hasTemplate(null));
+        assertTrue(config.getTypesByName().get("B").hasTemplate(null));
+        assertTrue(config.getTypesByName().get("C").hasTemplate(null));
 
     }
 
@@ -1334,5 +1469,41 @@ public class TestLiveConfig extends OpenCmsTestCase {
             return matcher.group(1);
         }
         return null;
+    }
+
+    /**
+     * Creates a sitemap configuration with the specified content.
+     *
+     * @param cms
+     * @param path
+     * @param content
+     * @return
+     * @throws Exception
+     */
+    private CmsResource makeConfig(CmsObject cms, String path, String content) throws Exception {
+
+        return cms.createResource(
+            path,
+            OpenCms.getResourceManager().getResourceType("sitemap_config"),
+            content.getBytes(StandardCharsets.UTF_8),
+            new ArrayList<>());
+    }
+
+    /**
+     * Creates a master configuration with the specified content.
+     *
+     * @param cms
+     * @param path
+     * @param content
+     * @return
+     * @throws Exception
+     */
+    private CmsResource makeMasterConfig(CmsObject cms, String path, String content) throws Exception {
+
+        return cms.createResource(
+            path,
+            OpenCms.getResourceManager().getResourceType("sitemap_master_config"),
+            content.getBytes(StandardCharsets.UTF_8),
+            new ArrayList<>());
     }
 }
