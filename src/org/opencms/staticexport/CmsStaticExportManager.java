@@ -40,6 +40,7 @@ import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.loader.CmsDumpLoader;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsEvent;
@@ -627,6 +628,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         if (res != null) {
             wrapRes = new CmsStaticExportResponseWrapper(res);
         }
+        boolean exportWithResponse = true;
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_SE_RESOURCE_START_1, data));
         }
@@ -682,8 +684,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     locCms = OpenCms.initCmsObject(exportCms, ctxInfo);
                 }
                 // read the content in the matching locale
-                byte[] content = loader.export(locCms, new CmsFile(file), req, wrapRes);
+                byte[] content = loader.export(locCms, new CmsFile(file), req, exportWithResponse ? wrapRes : null);
                 if (content != null) {
+                    if (loader.getClass() == CmsDumpLoader.class /* NOT instanceof, doesn't work for image loader */) {
+                        // disable writing to response for static resources after the first rule match to avoid duplicate response data
+                        // when compression is enabled in Tomcat.
+                        exportWithResponse = false;
+                    }
                     // write to rfs
                     exported = true;
                     String locRfsName = rfsName;
@@ -698,7 +705,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         if (!matched) {
             // no rule matched
             String exportPath = getExportPath(siteRoot + vfsName);
-            byte[] content = loader.export(exportCms, new CmsFile(file), req, wrapRes);
+            byte[] content = loader.export(exportCms, new CmsFile(file), req, exportWithResponse ? wrapRes : null);
             if (content != null) {
                 exported = true;
                 writeResource(req, exportPath, rfsName, resource, content);
