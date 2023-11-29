@@ -28,25 +28,18 @@
 package org.opencms.ui.actions;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsGwtConstants;
-import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.actions.prefillpage.I_CmsPrefillPageHandler;
+import org.opencms.ui.actions.prefillpage.CmsStaticPrefillPageHandler;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
-import org.opencms.util.CmsMacroResolver;
 import org.opencms.workplace.CmsWorkplaceMessages;
-import org.opencms.xml.containerpage.CmsContainerBean;
-import org.opencms.xml.containerpage.CmsContainerPageBean;
-import org.opencms.xml.containerpage.CmsXmlContainerPage;
-import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
-import org.opencms.xml.containerpage.mutable.CmsMutableContainerPage;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -68,11 +61,8 @@ public class CmsPrefillPageAction extends A_CmsWorkplaceAction implements I_CmsA
     /** Message key for the context menu - this is not in a message bundle class because it is not defined by default. */
     public static final String GUI_EXPLORER_CONTEXT_PREFILL_PAGE_0 = "GUI_EXPLORER_CONTEXT_PREFILL_PAGE_0";
 
-    /** The sitemap attribute used to configure the container which should be filled. */
-    private static final String ATTR_PREFILL_CONTAINER = "template.prefill.container";
-
-    /** The sitemap attribute used to configure the prefill template. */
-    private static final String ATTR_PREFILL_TEMPLATE = "template.prefill.file";
+    /** The sitemap attribute used to configure the prefill handler. */
+    private static final String ATTR_PREFILL_HANDLER = "template.prefill.handler";
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
@@ -81,31 +71,33 @@ public class CmsPrefillPageAction extends A_CmsWorkplaceAction implements I_CmsA
 
         CmsObject cms = context.getCms();
         CmsResource resource = context.getResources().get(0);
-        try (AutoCloseable c = CmsLockUtil.withLockedResources(cms, resource)) {
-            CmsFile file = cms.readFile(resource);
-            CmsXmlContainerPage pageXml = CmsXmlContainerPageFactory.unmarshal(cms, file);
-            CmsContainerPageBean page = pageXml.getContainerPage(cms);
-            CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, resource.getRootPath());
-            String containerName = config.getAttribute(ATTR_PREFILL_CONTAINER, null);
-            CmsResource prefillTemplate = getPrefillTemplate(cms, resource);
-            if (prefillTemplate == null) {
-                // context menu option should not be available if prefill template is not available
-                throw new RuntimeException("Prefill template not found in subsitemap " + config.getBasePath());
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, resource.getRootPath());
+        String prefillHandler = config.getAttribute(ATTR_PREFILL_HANDLER, null);
+        I_CmsPrefillPageHandler handler = null;
+        if (null == prefillHandler) {
+            handler = new CmsStaticPrefillPageHandler();
+        } else {
+            Class<?> handlerClass;
+            try {
+                handlerClass = Class.forName(prefillHandler);
+                if (I_CmsPrefillPageHandler.class.isAssignableFrom(handlerClass)) {
+                    handler = (I_CmsPrefillPageHandler)handlerClass.newInstance();
+                }
+            } catch (InstantiationException | ClassNotFoundException | IllegalAccessException e) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e, e);
+                } else {
+                    LOG.error(e);
+                }
             }
-            CmsContainerBean container = page.getContainers().get(containerName);
-            if (container == null) {
-                CmsFile templatePageFile = cms.readFile(prefillTemplate);
-                CmsXmlContainerPage templatePageXml = CmsXmlContainerPageFactory.unmarshal(cms, templatePageFile);
-                CmsContainerPageBean templatePage = templatePageXml.getContainerPage(cms);
-                CmsMutableContainerPage pageToRewrite = CmsMutableContainerPage.fromImmutable(page);
-                CmsMutableContainerPage templatePageBean = CmsMutableContainerPage.fromImmutable(templatePage);
-                pageToRewrite.containers().addAll(templatePageBean.containers());
-                pageXml.save(cms, pageToRewrite.toImmutable());
-            }
-            context.reload();
-        } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            context.error(e);
+        }
+        if (handler != null) {
+            handler.execute(context);
+        } else {
+            LOG.error(
+                "Failed to execute prefill action with handler "
+                    + prefillHandler
+                    + ". The handler could not be initialized.");
         }
     }
 
@@ -185,38 +177,41 @@ public class CmsPrefillPageAction extends A_CmsWorkplaceAction implements I_CmsA
 
         CmsObject cms = context.getCms();
         CmsResource resource = resources.get(0);
-        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, resource.getRootPath());
-        String containerName = config.getAttribute(ATTR_PREFILL_CONTAINER, null);
-        if (containerName == null) {
-            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
-        }
-        CmsResource prefillTemplate = getPrefillTemplate(cms, resource);
-        if (prefillTemplate == null) {
-            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
-        }
 
         // check permissions
         if (!CmsStandardVisibilityCheck.DEFAULT.getVisibility(cms, Arrays.asList(resource)).isActive()) {
             return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
         }
 
-        try {
-            // check that the container doesn't exist yet in the container page
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, resource.getRootPath());
+        String prefillHandler = config.getAttribute(ATTR_PREFILL_HANDLER, null);
+        I_CmsPrefillPageHandler handler = null;
+        if (null == prefillHandler) {
+            handler = new CmsStaticPrefillPageHandler();
+        } else {
+            Class<?> handlerClass;
             try {
-                CmsFile file = cms.readFile(resource);
-                CmsXmlContainerPage pageXml = CmsXmlContainerPageFactory.unmarshal(cms, file);
-                CmsContainerPageBean page = pageXml.getContainerPage(cms);
-                CmsContainerBean container = page.getContainers().get(containerName);
-                if (container != null) {
-                    return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                handlerClass = Class.forName(prefillHandler);
+                if (I_CmsPrefillPageHandler.class.isAssignableFrom(handlerClass)) {
+                    handler = (I_CmsPrefillPageHandler)handlerClass.newInstance();
                 }
-                return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
-            } catch (Exception e) {
-                LOG.error(e.getLocalizedMessage(), e);
-                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            } catch (InstantiationException | ClassNotFoundException | IllegalAccessException e) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e, e);
+                } else {
+                    LOG.error(e);
+                }
             }
-        } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
+        }
+        if (handler != null) {
+            if (handler.isExecutable(context)) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+            }
+        } else {
+            LOG.error(
+                "Failed to execute prefill action with handler "
+                    + prefillHandler
+                    + ". The handler could not be initialized.");
         }
         return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
 
@@ -238,39 +233,6 @@ public class CmsPrefillPageAction extends A_CmsWorkplaceAction implements I_CmsA
 
         // not used - getTitle is implemented directly
         return null;
-    }
-
-    /**
-     * Gets the container page to use as a prefill template for the given page.
-     *
-     * @param cms the current CMS context
-     * @param resource the currently edited container page
-     * @return the prefill template resource, or null if none was configured or the configured one was not found
-     */
-    private CmsResource getPrefillTemplate(CmsObject cms, CmsResource resource) {
-
-        try {
-
-            CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, resource.getRootPath());
-            String prefillTemplateStr = config.getAttribute(ATTR_PREFILL_TEMPLATE, null);
-            if (prefillTemplateStr == null) {
-                return null;
-            }
-            CmsMacroResolver resolver = new CmsMacroResolver();
-            resolver.setCmsObject(cms);
-            String subsite = cms.getRequestContext().removeSiteRoot(
-                OpenCms.getADEManager().getSubSiteRoot(cms, resource.getRootPath()));
-            if (subsite != null) {
-                resolver.addMacro("subsite", subsite);
-            }
-            // remove duplicate slashes in case subsite macro contains a trailing slash and is used as %(subsite)/xyz
-            prefillTemplateStr = resolver.resolveMacros(prefillTemplateStr).replace("//", "/");
-            return cms.readResource(prefillTemplateStr, CmsResourceFilter.IGNORE_EXPIRATION);
-        } catch (Exception e) {
-            LOG.info(e.getLocalizedMessage(), e);
-            return null;
-        }
-
     }
 
 }
