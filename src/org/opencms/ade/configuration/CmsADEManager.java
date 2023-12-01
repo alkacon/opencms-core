@@ -410,6 +410,19 @@ public class CmsADEManager {
     }
 
     /**
+     * Gets the content types configured in any sitemap configuations.
+     *
+     * @param online true if the types for the Online project should be fetched
+     * @return the set of content types
+     */
+    public Set<String> getContentTypeNames(boolean online) {
+
+        CmsConfigurationCache cache = online ? m_onlineCache : m_offlineCache;
+        return cache.getState().getContentTypes();
+
+    }
+
+    /**
      * Reads the current element bean from the request.<p>
      *
      * @param req the servlet request

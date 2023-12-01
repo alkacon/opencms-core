@@ -108,6 +108,9 @@ public class CmsADEConfigCacheState {
     /** Cached list of subsites to be included in the site selector. */
     private volatile List<String> m_subsitesForSiteSelector;
 
+    /** Cached set of names of content types anywhere in the configuration. */
+    private volatile Set<String> m_contentTypes;
+
     /**
      * Creates a new configuration cache state.<p>
      *
@@ -263,6 +266,28 @@ public class CmsADEConfigCacheState {
     public CmsSitemapAttributeEditorConfiguration getAttributeEditorConfiguration(CmsUUID id) {
 
         return m_sitemapAttributeEditorConfigurations.get(id);
+    }
+
+    /**
+     * Gets the set of content types configured anywhere in sitemap configurations.
+     * 
+     * @return the set of content types 
+     */
+    public Set<String> getContentTypes() {
+
+        if (m_contentTypes == null) {
+            Set<String> contentTypes = new HashSet<>();
+            for (CmsADEConfigDataInternal config : m_siteConfigurations.values()) {
+                for (CmsResourceTypeConfig typeConfig : config.getOwnResourceTypes()) {
+                    contentTypes.add(typeConfig.getTypeName());
+                }
+            }
+            for (CmsResourceTypeConfig typeConfig : m_moduleConfiguration.getOwnResourceTypes()) {
+                contentTypes.add(typeConfig.getTypeName());
+            }
+            m_contentTypes = Collections.unmodifiableSet(contentTypes);
+        }
+        return m_contentTypes;
     }
 
     /**
