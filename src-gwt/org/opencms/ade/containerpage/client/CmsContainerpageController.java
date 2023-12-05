@@ -67,6 +67,7 @@ import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
+import org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
@@ -74,6 +75,7 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsGalleryContainerInfo;
 import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.gwt.shared.I_CmsAutoBeanFactory;
@@ -2095,6 +2097,10 @@ public final class CmsContainerpageController {
         CmsDNDHandler dndHandler,
         CmsContentEditorHandler contentEditorHandler,
         CmsContainerpageUtil containerpageUtil) {
+
+        if (getData().getDetailId() != null) {
+            CmsEmbeddedAction.PARAMS.put(CmsGwtConstants.PARAM_ADE_DETAIL_ID, "" + getData().getDetailId());
+        }
 
         Window.addResizeHandler(new ResizeHandler() {
 

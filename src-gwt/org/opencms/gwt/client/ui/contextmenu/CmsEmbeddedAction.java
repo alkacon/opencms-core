@@ -33,6 +33,8 @@ import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Context menu command to call workplace actions.<p>
@@ -40,6 +42,9 @@ import java.util.Collections;
  * When called the VAADIN UI will be embedded within an iFrame and the action dialog displayed within it.<p>
  */
 public class CmsEmbeddedAction implements I_CmsHasContextMenuCommand, I_CmsContextMenuCommand {
+
+    /** Parameters to send to server, filled in by other code. */
+    public static final Map<String, String> PARAMS = new HashMap<>();
 
     /**
      * Hidden utility class constructor.<p>
@@ -70,7 +75,8 @@ public class CmsEmbeddedAction implements I_CmsHasContextMenuCommand, I_CmsConte
         dialogHandler.openDialog(
             dialogId,
             handler.getContextType(),
-            structureId != null ? Collections.singletonList(structureId) : Collections.<CmsUUID> emptyList());
+            structureId != null ? Collections.singletonList(structureId) : Collections.<CmsUUID> emptyList(),
+            PARAMS);
     }
 
     /**

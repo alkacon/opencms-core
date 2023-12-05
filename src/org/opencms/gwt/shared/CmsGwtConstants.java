@@ -218,6 +218,9 @@ public final class CmsGwtConstants {
     /** Name of the meta tag used to set the editor stylesheet. */
     public static final String META_EDITOR_STYLESHEET = "cms-editor-stylesheet";
 
+    /** Parameter to pass detail id to page editor context menu actions. */
+    public static final String PARAM_ADE_DETAIL_ID = "adeDetailId";
+
     /** Parameter for the button left position. */
     public static final String PARAM_BUTTON_LEFT = "__buttonLeft";
 
