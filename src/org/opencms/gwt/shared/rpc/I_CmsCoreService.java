@@ -160,6 +160,24 @@ public interface I_CmsCoreService extends RemoteService {
     List<CmsContextMenuEntryBean> getContextMenuEntries(CmsUUID structureId, AdeContext context) throws CmsRpcException;
 
     /**
+     * Returns the context menu entries for the given URI.<p>
+     *
+     * @param structureId the currently requested structure id
+     * @param context the ade context (sitemap or containerpage)
+     * @param params additional context information the server side can use to determine menu item availability
+     *
+     * @return the context menu entries
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+
+    List<CmsContextMenuEntryBean> getContextMenuEntries(
+        CmsUUID structureId,
+        AdeContext context,
+        Map<String, String> params)
+    throws CmsRpcException;
+
+    /**
      * Given a return code, returns the link to the page which corresponds to the return code.<p>
      *
      * @param returnCode the return code

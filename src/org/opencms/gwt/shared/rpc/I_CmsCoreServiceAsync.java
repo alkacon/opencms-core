@@ -60,14 +60,14 @@ import com.google.gwt.user.client.rpc.SynchronizedRpcRequest;
 public interface I_CmsCoreServiceAsync {
 
     /**
-     * Changes the password of the current user.<p>
-     *
-     * @param oldPassword the old password
-     * @param newPassword the value entered for the new password
-     * @param newPasswordConfirm the value entered for the confirmation of the new password
-     *
-     * @param callback the callback for the result
-     */
+    * Changes the password of the current user.<p>
+    *
+    * @param oldPassword the old password
+    * @param newPassword the value entered for the new password
+    * @param newPasswordConfirm the value entered for the confirmation of the new password
+    *
+    * @param callback the callback for the result
+    */
     void changePassword(
         String oldPassword,
         String newPassword,
@@ -146,6 +146,20 @@ public interface I_CmsCoreServiceAsync {
     void getContextMenuEntries(
         CmsUUID structureId,
         AdeContext context,
+        AsyncCallback<List<CmsContextMenuEntryBean>> callback);
+
+    /**
+     * Returns a list of menu entry beans for the context menu.<p>
+     *
+     * @param structureId the structure id of the resource for which to get the context menu
+     * @param context the ade context (sitemap or containerpage)
+     * @param params additional context information that the server side can use to decide menu item availability
+     * @param callback the asynchronous callback
+     */
+    void getContextMenuEntries(
+        CmsUUID structureId,
+        AdeContext context,
+        Map<String, String> params,
         AsyncCallback<List<CmsContextMenuEntryBean>> callback);
 
     /**

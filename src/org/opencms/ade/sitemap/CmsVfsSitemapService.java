@@ -1016,7 +1016,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 CmsCoreService.getContextMenuEntries(
                     cms,
                     configData.getResource().getStructureId(),
-                    AdeContext.sitemapeditor),
+                    AdeContext.sitemapeditor,
+                    new HashMap<>()),
                 parentProperties,
                 allPropNames,
                 exportRfsPrefix,

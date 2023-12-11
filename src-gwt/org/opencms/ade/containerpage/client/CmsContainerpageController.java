@@ -75,7 +75,6 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsGalleryContainerInfo;
 import org.opencms.gwt.shared.CmsGwtConstants;
-import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.gwt.shared.I_CmsAutoBeanFactory;
@@ -2308,7 +2307,11 @@ public final class CmsContainerpageController {
             @Override
             public void execute() {
 
-                getCoreService().getContextMenuEntries(structureId, context, this);
+                Map<String, String> params = new HashMap<>();
+                if (getData().getDetailId() != null) {
+                    params.put(CmsGwtConstants.PARAM_ADE_DETAIL_ID, "" + getData().getDetailId());
+                }
+                getCoreService().getContextMenuEntries(structureId, context, params, this);
             }
 
             /**

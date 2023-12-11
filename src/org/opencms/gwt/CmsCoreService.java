@@ -223,13 +223,15 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      * @param cms the cms context
      * @param structureId the currently requested structure id
      * @param context the ade context (sitemap or containerpage)
+     * @param params the additional parameters
      *
      * @return the context menu entries
      */
     public static List<CmsContextMenuEntryBean> getContextMenuEntries(
         final CmsObject cms,
         CmsUUID structureId,
-        final AdeContext context) {
+        final AdeContext context,
+        Map<String, String> params) {
 
         Map<String, CmsContextMenuEntryBean> entries = new LinkedHashMap<String, CmsContextMenuEntryBean>();
         try {
@@ -243,6 +245,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 resources = Collections.singletonList(resource);
             }
             Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+            final Map<String, String> paramsFinal = params != null ? params : new HashMap<>();
             // context to check item visibility
             I_CmsDialogContext dcontext = new I_CmsDialogContextWithAdeContext() {
 
@@ -301,6 +304,11 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                             type = ContextType.fileTable;
                     }
                     return type;
+                }
+
+                public Map<String, String> getParameters() {
+
+                    return paramsFinal;
                 }
 
                 public List<CmsResource> getResources() {
@@ -386,14 +394,14 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                         : OpenCms.getWorkplaceManager().getMessages(locale).getString(visibility.getMessageKey()),
                         false,
                         null);
-                    Map<String, String> params = ((I_CmsADEAction)item).getParams();
-                    if (params != null) {
-                        params = new HashMap<String, String>(params);
-                        for (Entry<String, String> param : params.entrySet()) {
+                    Map<String, String> clientParams = ((I_CmsADEAction)item).getParams();
+                    if (clientParams != null) {
+                        clientParams = new HashMap<String, String>(clientParams);
+                        for (Entry<String, String> param : clientParams.entrySet()) {
                             String value = CmsVfsService.prepareFileNameForEditor(cms, resource, param.getValue());
                             param.setValue(value);
                         }
-                        itemBean.setParams(params);
+                        itemBean.setParams(clientParams);
                     }
                     entries.put(item.getId(), itemBean);
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(item.getParentId())) {
@@ -864,7 +872,25 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         List<CmsContextMenuEntryBean> result = null;
         try {
-            result = getContextMenuEntries(getCmsObject(), structureId, context);
+            result = getContextMenuEntries(getCmsObject(), structureId, context, new HashMap<>());
+        } catch (Throwable e) {
+            error(e);
+        }
+        return result;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getContextMenuEntries(org.opencms.util.CmsUUID, org.opencms.gwt.shared.CmsCoreData.AdeContext)
+     */
+    public List<CmsContextMenuEntryBean> getContextMenuEntries(
+        CmsUUID structureId,
+        AdeContext context,
+        Map<String, String> params)
+    throws CmsRpcException {
+
+        List<CmsContextMenuEntryBean> result = null;
+        try {
+            result = getContextMenuEntries(getCmsObject(), structureId, context, params);
         } catch (Throwable e) {
             error(e);
         }
