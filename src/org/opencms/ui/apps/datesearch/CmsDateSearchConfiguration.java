@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.apps.unusedcontentfinder;
+package org.opencms.ui.apps.datesearch;
 
 import org.opencms.file.CmsObject;
 import org.opencms.security.CmsRole;
@@ -35,19 +35,18 @@ import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.Messages;
-import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Locale;
 
 import com.vaadin.server.Resource;
 
 /**
- * Unused content finder configuration.
+ * Date search app configuration.
  */
-public class CmsUnusedContentFinderConfiguration extends A_CmsWorkplaceAppConfiguration {
+public class CmsDateSearchConfiguration extends A_CmsWorkplaceAppConfiguration {
 
     /** Id of the app. */
-    public static final String APP_ID = "unused-content-finder";
+    public static final String APP_ID = "date-search";
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppInstance()
@@ -55,7 +54,7 @@ public class CmsUnusedContentFinderConfiguration extends A_CmsWorkplaceAppConfig
     @Override
     public I_CmsWorkplaceApp getAppInstance() {
 
-        return new CmsUnusedContentFinderApp();
+        return new CmsDateSearchApp();
     }
 
     /**
@@ -64,7 +63,7 @@ public class CmsUnusedContentFinderConfiguration extends A_CmsWorkplaceAppConfig
     @Override
     public String getHelpText(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_UNUSED_CONTENT_FINDER_HELP_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_DATE_SEARCH_HELP_0);
     }
 
     /**
@@ -73,7 +72,7 @@ public class CmsUnusedContentFinderConfiguration extends A_CmsWorkplaceAppConfig
     @Override
     public Resource getIcon() {
 
-        return new CmsCssIcon(OpenCmsTheme.DELETE_UNUSED);
+        return new CmsCssIcon("oc-icon-32-search");
     }
 
     /**
@@ -91,7 +90,7 @@ public class CmsUnusedContentFinderConfiguration extends A_CmsWorkplaceAppConfig
     @Override
     public String getName(Locale locale) {
 
-        return Messages.get().getBundle(locale).key(Messages.GUI_UNUSED_CONTENT_FINDER_TITLE_0);
+        return Messages.get().getBundle(locale).key(Messages.GUI_DATE_SEARCH_TITLE_0);
     }
 
     /**
@@ -100,7 +99,7 @@ public class CmsUnusedContentFinderConfiguration extends A_CmsWorkplaceAppConfig
     @Override
     public int getOrder() {
 
-        return 12;
+        return 13;
     }
 
     /**

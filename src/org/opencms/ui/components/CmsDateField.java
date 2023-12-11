@@ -107,5 +107,4 @@ public class CmsDateField extends DateTimeField {
 
         setValue(dateToLocalDateTime(date));
     }
-
 }

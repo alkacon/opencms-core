@@ -878,15 +878,17 @@ public final class CmsVaadinUtils {
      */
     public static IndexedContainer getResourceTypesContainer() {
 
-        IndexedContainer types = new IndexedContainer();
-        types.addContainerProperty(PropertyId.caption, String.class, null);
-        types.addContainerProperty(PropertyId.icon, Resource.class, null);
-        types.addContainerProperty(PropertyId.isFolder, Boolean.class, null);
-        types.addContainerProperty(PropertyId.isXmlContent, Boolean.class, null);
-        for (I_CmsResourceType type : getResourceTypes()) {
+        IndexedContainer container = new IndexedContainer();
+        container.addContainerProperty(PropertyId.caption, String.class, null);
+        container.addContainerProperty(PropertyId.icon, Resource.class, null);
+        container.addContainerProperty(PropertyId.isFolder, Boolean.class, null);
+        container.addContainerProperty(PropertyId.isXmlContent, Boolean.class, null);
+        List<I_CmsResourceType> types = getResourceTypes();
+        sortResourceTypes(types);
+        for (I_CmsResourceType type : types) {
             CmsExplorerTypeSettings typeSetting = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                 type.getTypeName());
-            Item typeItem = types.addItem(type);
+            Item typeItem = container.addItem(type);
             String caption = CmsVaadinUtils.getMessageText(typeSetting.getKey()) + " (" + type.getTypeName() + ")";
             typeItem.getItemProperty(PropertyId.caption).setValue(caption);
             typeItem.getItemProperty(PropertyId.icon).setValue(CmsResourceUtil.getSmallIconResource(typeSetting, null));
@@ -896,7 +898,7 @@ public final class CmsVaadinUtils {
                 Boolean.valueOf(type instanceof A_CmsResourceTypeFolderBase));
         }
 
-        return types;
+        return container;
     }
 
     /**
@@ -1325,6 +1327,27 @@ public final class CmsVaadinUtils {
     }
 
     /**
+     * Sorts a list of resource types by their localized explorer type name.
+     * @param resourceTypes the resource types
+     */
+    public static void sortResourceTypes(List<I_CmsResourceType> resourceTypes) {
+
+        Collections.sort(resourceTypes, (type, other) -> {
+            CmsExplorerTypeSettings typeSetting = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                type.getTypeName());
+            CmsExplorerTypeSettings otherSetting = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                other.getTypeName());
+            if ((typeSetting != null) && (otherSetting != null)) {
+                String typeName = CmsVaadinUtils.getMessageText(typeSetting.getKey());
+                String otherName = CmsVaadinUtils.getMessageText(otherSetting.getKey());
+                return typeName.compareTo(otherName);
+            } else {
+                return -1;
+            }
+        });
+    }
+
+    /**
      * Creates a new option group builder.<p>
      *
      * @return a new option group builder
@@ -1413,7 +1436,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-
+    
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)

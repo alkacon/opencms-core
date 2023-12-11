@@ -32,9 +32,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
-import org.opencms.ui.apps.unusedcontentfinder.CmsUnusedContentFinderApp;
-import org.opencms.ui.apps.unusedcontentfinder.CmsUnusedContentFinderApp.StateBean;
 import org.opencms.ui.apps.unusedcontentfinder.CmsUnusedContentFinderConfiguration;
+import org.opencms.ui.components.CmsComponentState;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
@@ -61,11 +60,10 @@ public class CmsUnusedContentFinderAction extends A_CmsWorkplaceAction {
         CmsResource resource = context.getResources().get(0);
         String site = cms.getRequestContext().getSiteRoot();
         String folder = cms.getRequestContext().getSitePath(resource);
-        StateBean stateBean = new StateBean();
+        CmsComponentState stateBean = new CmsComponentState();
         stateBean.setSite(site);
         stateBean.setFolder(folder);
-        String state = CmsUnusedContentFinderApp.generateStateString(stateBean);
-        CmsAppWorkplaceUi.get().showApp(CmsUnusedContentFinderConfiguration.APP_ID, state);
+        CmsAppWorkplaceUi.get().showApp(CmsUnusedContentFinderConfiguration.APP_ID, stateBean.generateStateString());
     }
 
     /**

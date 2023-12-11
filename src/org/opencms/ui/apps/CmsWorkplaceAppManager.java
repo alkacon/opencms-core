@@ -47,6 +47,7 @@ import org.opencms.ui.apps.cacheadmin.CmsCacheAdminConfiguration;
 import org.opencms.ui.apps.cacheadmin.CmsCacheFolder;
 import org.opencms.ui.apps.cacheadmin.CmsCacheViewFlexConfiguration;
 import org.opencms.ui.apps.cacheadmin.CmsCacheViewImageConfiguration;
+import org.opencms.ui.apps.datesearch.CmsDateSearchConfiguration;
 import org.opencms.ui.apps.dbmanager.CmsDbExportConfiguration;
 import org.opencms.ui.apps.dbmanager.CmsDbImportHTTPConfiguration;
 import org.opencms.ui.apps.dbmanager.CmsDbImportServerConfiguration;
@@ -841,7 +842,8 @@ public class CmsWorkplaceAppManager {
                 new CmsShellAppConfiguration(),
                 new CmsResourceTypeAppConfiguration(),
                 new CmsUserDataAppConfiguration(),
-                new CmsUnusedContentFinderConfiguration()));
+                new CmsUnusedContentFinderConfiguration(),
+                new CmsDateSearchConfiguration()));
 
         return result;
     }

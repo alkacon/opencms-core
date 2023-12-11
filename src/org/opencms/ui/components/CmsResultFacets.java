@@ -25,13 +25,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.apps.lists;
+package org.opencms.ui.components;
 
 import org.opencms.file.CmsObject;
 import org.opencms.jsp.search.config.parser.CmsSimpleSearchConfigurationParser;
-import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetField;
-import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetRange;
-import org.opencms.jsp.search.result.CmsSearchResultWrapper;
 import org.opencms.main.CmsLog;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
@@ -39,7 +36,7 @@ import org.opencms.search.solr.CmsSolrResultList;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.Messages;
-import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.apps.lists.CmsListManager;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -85,8 +82,8 @@ public class CmsResultFacets extends VerticalLayout {
     /** The serial version id. */
     private static final long serialVersionUID = 7190928063356086124L;
 
-    /** The list manager instance. */
-    private CmsListManager m_manager;
+    /** The facet search manager instance. */
+    private I_CmsResultFacetsManager m_manager;
 
     /** The selected field facets. */
     private Map<String, List<String>> m_selectedFieldFacets;
@@ -103,9 +100,9 @@ public class CmsResultFacets extends VerticalLayout {
     /**
      * Constructor.<p>
      *
-     * @param manager the list manager instance
+     * @param manager the facet search manager instance
      */
-    public CmsResultFacets(CmsListManager manager) {
+    public CmsResultFacets(I_CmsResultFacetsManager manager) {
 
         m_manager = manager;
         m_selectedFieldFacets = new HashMap<String, List<String>>();
@@ -119,25 +116,52 @@ public class CmsResultFacets extends VerticalLayout {
 
     /**
      * Displays the result facets.<p>
-     *
      * @param solrResultList the search result
-     * @param resultWrapper the result wrapper
+     * @param checkedCategoryFacets checked category facets map
+     * @param checkedFolderFacets checked folder facets map
+     * @param checkedDateFacets checked date facets map
+     * @param cms the CMS context
      */
-    public void displayFacetResult(CmsSolrResultList solrResultList, CmsSearchResultWrapper resultWrapper) {
+    public void displayFacetResult(
+        CmsSolrResultList solrResultList,
+        Map<String, Boolean> checkedCategoryFacets,
+        Map<String, Boolean> checkedDateFacets,
+        Map<String, Boolean> checkedFolderFacets,
+        CmsObject cms) {
 
         removeAllComponents();
-        Component categories = prepareCategoryFacets(solrResultList, resultWrapper);
+        Component categories = prepareCategoryFacets(solrResultList, checkedCategoryFacets, cms);
         if (categories != null) {
             addComponent(categories);
         }
-        Component folders = prepareFolderFacets(solrResultList, resultWrapper);
+        Component folders = prepareFolderFacets(solrResultList, checkedFolderFacets, cms);
         if (folders != null) {
             addComponent(folders);
         }
-        Component dates = prepareDateFacets(solrResultList, resultWrapper);
+        Component dates = prepareDateFacets(solrResultList, checkedDateFacets);
         if (dates != null) {
             addComponent(dates);
         }
+    }
+
+    /**
+     * Returns the selected field facets.<p>
+     *
+     * @return the selected field facets
+     */
+    public Map<String, List<String>> getSelectedFieldFacets() {
+
+        return m_selectedFieldFacets;
+    }
+
+    /**
+     * Returns the selected range facets.<p>
+     *
+     * @return the selected range facets
+     */
+    public Map<String, List<String>> getSelectedRangeFactes() {
+
+        return m_selectedRangeFacets;
     }
 
     /**
@@ -150,23 +174,31 @@ public class CmsResultFacets extends VerticalLayout {
     }
 
     /**
-     * Returns the selected field facets.<p>
+     * Selects the given field facet.<p>
      *
-     * @return the selected field facets
+     * @param field the field name
+     * @param value the value
      */
-    protected Map<String, List<String>> getSelectedFieldFacets() {
+    public void selectFieldFacet(String field, String value) {
 
-        return m_selectedFieldFacets;
+        m_selectedFieldFacets.clear();
+        m_selectedRangeFacets.clear();
+        m_selectedFieldFacets.put(field, Collections.singletonList(value));
+        m_manager.search(m_selectedFieldFacets, m_selectedRangeFacets);
     }
 
     /**
-     * Returns the selected range facets.<p>
+     * Selects the given range facet.<p>
      *
-     * @return the selected range facets
+     * @param field the field name
+     * @param value the value
      */
-    protected Map<String, List<String>> getSelectedRangeFactes() {
+    public void selectRangeFacet(String field, String value) {
 
-        return m_selectedRangeFacets;
+        m_selectedFieldFacets.clear();
+        m_selectedRangeFacets.clear();
+        m_selectedRangeFacets.put(field, Collections.singletonList(value));
+        m_manager.search(m_selectedFieldFacets, m_selectedRangeFacets);
     }
 
     /**
@@ -191,43 +223,16 @@ public class CmsResultFacets extends VerticalLayout {
     }
 
     /**
-     * Selects the given field facet.<p>
-     *
-     * @param field the field name
-     * @param value the value
-     */
-    void selectFieldFacet(String field, String value) {
-
-        m_selectedFieldFacets.clear();
-        m_selectedRangeFacets.clear();
-        m_selectedFieldFacets.put(field, Collections.singletonList(value));
-        m_manager.search(m_selectedFieldFacets, m_selectedRangeFacets);
-    }
-
-    /**
-     * Selects the given range facet.<p>
-     *
-     * @param field the field name
-     * @param value the value
-     */
-    void selectRangeFacet(String field, String value) {
-
-        m_selectedFieldFacets.clear();
-        m_selectedRangeFacets.clear();
-        m_selectedRangeFacets.put(field, Collections.singletonList(value));
-        m_manager.search(m_selectedFieldFacets, m_selectedRangeFacets);
-    }
-
-    /**
      * Filters the available folder facets.<p>
      *
      * @param folderFacets the folder facets
+     * @param cms the CMS context
      *
      * @return the filtered facets
      */
-    private Collection<Count> filterFolderFacets(Collection<Count> folderFacets) {
+    private Collection<Count> filterFolderFacets(Collection<Count> folderFacets, CmsObject cms) {
 
-        String siteRoot = A_CmsUI.getCmsObject().getRequestContext().getSiteRoot();
+        String siteRoot = cms.getRequestContext().getSiteRoot();
         if (!siteRoot.endsWith("/")) {
             siteRoot += "/";
         }
@@ -253,24 +258,22 @@ public class CmsResultFacets extends VerticalLayout {
      * Returns the label for the given category.<p>
      *
      * @param categoryPath the category
+     * @param cms the CMS context
      *
      * @return the label
      */
-    private String getCategoryLabel(String categoryPath) {
+    private String getCategoryLabel(String categoryPath, CmsObject cms) {
 
-        CmsObject cms = A_CmsUI.getCmsObject();
         String result = "";
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(categoryPath)) {
             return result;
         }
         Locale locale = UI.getCurrent().getLocale();
         CmsCategoryService catService = CmsCategoryService.getInstance();
-
         try {
             if (m_useFullPathCategories) {
                 //cut last slash
                 categoryPath = categoryPath.substring(0, categoryPath.length() - 1);
-
                 String currentPath = "";
                 boolean isFirst = true;
                 for (String part : categoryPath.split("/")) {
@@ -288,7 +291,6 @@ public class CmsResultFacets extends VerticalLayout {
                 }
 
             } else {
-
                 CmsCategory cat = catService.localizeCategory(
                     cms,
                     catService.readCategory(cms, categoryPath, "/"),
@@ -298,7 +300,7 @@ public class CmsResultFacets extends VerticalLayout {
         } catch (Exception e) {
             LOG.error("Error reading category " + categoryPath + ".", e);
         }
-        return result;
+        return CmsStringUtil.isEmptyOrWhitespaceOnly(result) ? categoryPath : result;
     }
 
     /**
@@ -318,22 +320,24 @@ public class CmsResultFacets extends VerticalLayout {
      * Prepares the category facets for the given search result.<p>
      *
      * @param solrResultList the search result list
-     * @param resultWrapper the result wrapper
+     * @param checkedCategoryFacets checked category facets map
+     * @param cms the CMS context
      *
      * @return the category facets component
      */
-    private Component prepareCategoryFacets(CmsSolrResultList solrResultList, CmsSearchResultWrapper resultWrapper) {
+    private Component prepareCategoryFacets(
+        CmsSolrResultList solrResultList,
+        Map<String, Boolean> checkedCategoryFacets,
+        CmsObject cms) {
 
         FacetField categoryFacets = solrResultList.getFacetField(CmsSimpleSearchConfigurationParser.FIELD_CATEGORIES);
-        I_CmsSearchControllerFacetField facetController = resultWrapper.getController().getFieldFacets().getFieldFacetController().get(
-            CmsSimpleSearchConfigurationParser.FIELD_CATEGORIES);
         if ((categoryFacets != null) && (categoryFacets.getValueCount() > 0)) {
             VerticalLayout catLayout = new VerticalLayout();
             for (final Count value : categoryFacets.getValues()) {
-                Button cat = new Button(getCategoryLabel(value.getName()) + " (" + value.getCount() + ")");
+                Button cat = new Button(getCategoryLabel(value.getName(), cms) + " (" + value.getCount() + ")");
                 cat.addStyleName(ValoTheme.BUTTON_TINY);
                 cat.addStyleName(ValoTheme.BUTTON_BORDERLESS);
-                Boolean selected = facetController.getState().getIsChecked().get(value.getName());
+                Boolean selected = checkedCategoryFacets.get(value.getName());
                 if ((selected != null) && selected.booleanValue()) {
                     cat.addStyleName(SELECTED_STYLE);
                 }
@@ -364,18 +368,19 @@ public class CmsResultFacets extends VerticalLayout {
      * Prepares the date facets for the given search result.<p>
      *
      * @param solrResultList the search result list
-     * @param resultWrapper the result wrapper
+     * @param checkedDateFacets checked date facets map
      *
      * @return the date facets component
      */
-    private Component prepareDateFacets(CmsSolrResultList solrResultList, CmsSearchResultWrapper resultWrapper) {
+    private Component prepareDateFacets(CmsSolrResultList solrResultList, Map<String, Boolean> checkedDateFacets) {
 
-        RangeFacet<?, ?> dateFacets = resultWrapper.getRangeFacet().get(
-            CmsSimpleSearchConfigurationParser.FIELD_DATE_FACET_NAME);
-        I_CmsSearchControllerFacetRange facetController = resultWrapper.getController().getRangeFacets().getRangeFacetController().get(
-            CmsSimpleSearchConfigurationParser.FIELD_DATE_FACET_NAME);
+        RangeFacet<?, ?> dateFacets = null;
+        for (RangeFacet<?, ?> rangeFacet : solrResultList.getFacetRanges()) {
+            if (rangeFacet.getName().equals(CmsSimpleSearchConfigurationParser.FIELD_DATE_FACET_NAME)) {
+                dateFacets = rangeFacet;
+            }
+        }
         DateTimeFormatter isoFormat = ISODateTimeFormat.dateTimeNoMillis();
-
         if ((dateFacets != null) && (dateFacets.getCounts().size() > 0)) {
             GridLayout dateLayout = new GridLayout();
             dateLayout.setWidth("100%");
@@ -402,7 +407,7 @@ public class CmsResultFacets extends VerticalLayout {
                 Button date = new Button(CmsListManager.MONTHS[month] + " (" + value.getCount() + ")");
                 date.addStyleName(ValoTheme.BUTTON_TINY);
                 date.addStyleName(ValoTheme.BUTTON_BORDERLESS);
-                Boolean selected = facetController.getState().getIsChecked().get(value.getValue());
+                Boolean selected = checkedDateFacets.get(value.getValue());
                 if ((selected != null) && selected.booleanValue()) {
                     date.addStyleName(SELECTED_STYLE);
                 }
@@ -445,22 +450,24 @@ public class CmsResultFacets extends VerticalLayout {
      * Prepares the folder facets for the given search result.<p>
      *
      * @param solrResultList the search result list
-     * @param resultWrapper the result wrapper
+     * @param checkedFolderFacets checked facets map
+     * @param cms the CMS context
      *
      * @return the folder facets component
      */
-    private Component prepareFolderFacets(CmsSolrResultList solrResultList, CmsSearchResultWrapper resultWrapper) {
+    private Component prepareFolderFacets(
+        CmsSolrResultList solrResultList,
+        Map<String, Boolean> checkedFolderFacets,
+        CmsObject cms) {
 
         FacetField folderFacets = solrResultList.getFacetField(CmsSimpleSearchConfigurationParser.FIELD_PARENT_FOLDERS);
-        I_CmsSearchControllerFacetField facetController = resultWrapper.getController().getFieldFacets().getFieldFacetController().get(
-            CmsSimpleSearchConfigurationParser.FIELD_PARENT_FOLDERS);
         if ((folderFacets != null) && (folderFacets.getValueCount() > 0)) {
             VerticalLayout folderLayout = new VerticalLayout();
-            for (final Count value : filterFolderFacets(folderFacets.getValues())) {
+            for (final Count value : filterFolderFacets(folderFacets.getValues(), cms)) {
                 Button folder = new Button(getFolderLabel(value.getName()) + " (" + value.getCount() + ")");
                 folder.addStyleName(ValoTheme.BUTTON_TINY);
                 folder.addStyleName(ValoTheme.BUTTON_BORDERLESS);
-                Boolean selected = facetController.getState().getIsChecked().get(value.getName());
+                Boolean selected = checkedFolderFacets.get(value.getName());
                 if ((selected != null) && selected.booleanValue()) {
                     folder.addStyleName(SELECTED_STYLE);
                 }

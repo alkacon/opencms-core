@@ -248,35 +248,35 @@ public class CmsFileTable extends CmsResourceTable {
             } else if ((CmsResourceTableProperty.PROPERTY_TYPE_ICON.equals(propertyId)
                 || CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT.equals(propertyId))
                 && (item1.getItemProperty(CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION) != null)) {
-                int result;
-                Float pos1 = (Float)item1.getItemProperty(
-                    CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
-                Float pos2 = (Float)item2.getItemProperty(
-                    CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
-                if (pos1 == null) {
-                    result = pos2 == null
-                    ? compareProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, true, item1, item2)
-                    : 1;
-                } else {
-                    result = pos2 == null ? -1 : Float.compare(pos1.floatValue(), pos2.floatValue());
+                    int result;
+                    Float pos1 = (Float)item1.getItemProperty(
+                        CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
+                    Float pos2 = (Float)item2.getItemProperty(
+                        CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
+                    if (pos1 == null) {
+                        result = pos2 == null
+                        ? compareProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, true, item1, item2)
+                        : 1;
+                    } else {
+                        result = pos2 == null ? -1 : Float.compare(pos1.floatValue(), pos2.floatValue());
+                    }
+                    if (!sortDirection) {
+                        result = result * (-1);
+                    }
+                    return result;
+                } else if (((CmsResourceTableProperty)propertyId).getColumnType().equals(String.class)) {
+                    String value1 = (String)item1.getItemProperty(propertyId).getValue();
+                    String value2 = (String)item2.getItemProperty(propertyId).getValue();
+                    // Java collators obtained by java.text.Collator.getInstance(...) ignore spaces, and we don't want to ignore them, so we use
+                    // ICU collators instead
+                    com.ibm.icu.text.Collator collator = com.ibm.icu.text.Collator.getInstance(
+                        com.ibm.icu.util.ULocale.ROOT);
+                    int result = collator.compare(value1, value2);
+                    if (!sortDirection) {
+                        result = -result;
+                    }
+                    return result;
                 }
-                if (!sortDirection) {
-                    result = result * (-1);
-                }
-                return result;
-            } else if (((CmsResourceTableProperty)propertyId).getColumnType().equals(String.class)) {
-                String value1 = (String)item1.getItemProperty(propertyId).getValue();
-                String value2 = (String)item2.getItemProperty(propertyId).getValue();
-                // Java collators obtained by java.text.Collator.getInstance(...) ignore spaces, and we don't want to ignore them, so we use
-                // ICU collators instead
-                com.ibm.icu.text.Collator collator = com.ibm.icu.text.Collator.getInstance(
-                    com.ibm.icu.util.ULocale.ROOT);
-                int result = collator.compare(value1, value2);
-                if (!sortDirection) {
-                    result = -result;
-                }
-                return result;
-            }
             return super.compareProperty(propertyId, sortDirection, item1, item2);
             //@formatter:on
         }
@@ -463,12 +463,12 @@ public class CmsFileTable extends CmsResourceTable {
                     style += " " + OpenCmsTheme.HOVER_COLUMN;
                 } else if ((CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT == propertyId)
                     || (CmsResourceTableProperty.PROPERTY_TITLE == propertyId)) {
-                    if ((item.getItemProperty(CmsResourceTableProperty.PROPERTY_IN_NAVIGATION) != null)
-                        && ((Boolean)item.getItemProperty(
-                            CmsResourceTableProperty.PROPERTY_IN_NAVIGATION).getValue()).booleanValue()) {
-                        style += " " + OpenCmsTheme.IN_NAVIGATION;
+                        if ((item.getItemProperty(CmsResourceTableProperty.PROPERTY_IN_NAVIGATION) != null)
+                            && ((Boolean)item.getItemProperty(
+                                CmsResourceTableProperty.PROPERTY_IN_NAVIGATION).getValue()).booleanValue()) {
+                            style += " " + OpenCmsTheme.IN_NAVIGATION;
+                        }
                     }
-                }
                 for (Table.CellStyleGenerator generator : m_additionalStyleGenerators) {
                     String additional = generator.getStyle(source, itemId, propertyId);
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(additional)) {
@@ -575,6 +575,17 @@ public class CmsFileTable extends CmsResourceTable {
     }
 
     /**
+     * Checks if the file table has a row for the resource with the given structure id.
+     *
+     * @param structureId a structure id
+     * @return true if the file table has a row for the resource with the given id
+     */
+    public boolean containsId(CmsUUID structureId) {
+
+        return m_fileTable.getContainerDataSource().getItem("" + structureId) != null;
+    }
+
+    /**
     * Filters the displayed resources.<p>
     * Only resources where either the resource name, the title or the nav-text contains the given substring are shown.<p>
     *
@@ -670,6 +681,16 @@ public class CmsFileTable extends CmsResourceTable {
     }
 
     /**
+     * Returns the dialog context provider.<p>
+     *
+     * @return the dialog context provider
+     */
+    public I_CmsContextProvider getContextProvider() {
+
+        return m_contextProvider;
+    }
+
+    /**
      * Returns the index of the first visible item.<p>
      *
      * @return the first visible item
@@ -736,17 +757,6 @@ public class CmsFileTable extends CmsResourceTable {
             m_fileTable.setValue(null);
             m_fileTable.select(itemId);
         }
-    }
-
-    /**
-     * Checks if the file table has a row for the resource with the given structure id.
-     *
-     * @param structureId a structure id
-     * @return true if the file table has a row for the resource with the given id
-     */
-    public boolean containsId(CmsUUID structureId) {
-
-        return m_fileTable.getContainerDataSource().getItem("" + structureId) != null;
     }
 
     /**
@@ -993,16 +1003,6 @@ public class CmsFileTable extends CmsResourceTable {
             m_editHandler.cancel();
         }
         clearEdit();
-    }
-
-    /**
-     * Returns the dialog context provider.<p>
-     *
-     * @return the dialog context provider
-     */
-    I_CmsContextProvider getContextProvider() {
-
-        return m_contextProvider;
     }
 
     /**

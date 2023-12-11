@@ -98,7 +98,9 @@ import org.opencms.ui.components.CmsFileTableDialogContext;
 import org.opencms.ui.components.CmsResourceTable;
 import org.opencms.ui.components.CmsResourceTable.I_ResourcePropertyProvider;
 import org.opencms.ui.components.CmsResourceTableProperty;
+import org.opencms.ui.components.CmsResultFacets;
 import org.opencms.ui.components.CmsToolBar;
+import org.opencms.ui.components.I_CmsResultFacetsManager;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
@@ -157,7 +159,7 @@ import com.vaadin.v7.ui.TextField;
 @SuppressWarnings("deprecation")
 public class CmsListManager extends A_CmsWorkplaceApp
 implements I_ResourcePropertyProvider, I_CmsContextProvider, ViewChangeListener, I_CmsWindowCloseListener,
-I_CmsCachableApp {
+I_CmsCachableApp, I_CmsResultFacetsManager {
 
     /**
      * Extended dialog context.<p>
@@ -417,7 +419,7 @@ I_CmsCachableApp {
         110);
 
     /** The blacklisted table column property id. */
-    protected static final CmsResourceTableProperty INSTANCEDATE_PROPERTY = new CmsResourceTableProperty(
+    public static final CmsResourceTableProperty INSTANCEDATE_PROPERTY = new CmsResourceTableProperty(
         "INSTANCEDATE_PROPERTY",
         Date.class,
         null,
@@ -444,7 +446,7 @@ I_CmsCachableApp {
             Messages.GUI_LISTMANAGER_SORT_ORDER_DESC_0}};
 
     /** The month name abbreviations. */
-    static final String[] MONTHS = new String[] {
+    public static final String[] MONTHS = new String[] {
         "JAN",
         "FEB",
         "MAR",
@@ -545,6 +547,7 @@ I_CmsCachableApp {
     /**
      * @see org.opencms.ui.components.CmsResourceTable.I_ResourcePropertyProvider#addItemProperties(com.vaadin.v7.data.Item, org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.util.Locale)
      */
+    @SuppressWarnings("javadoc")
     @Override
     public void addItemProperties(Item resourceItem, CmsObject cms, CmsResource resource, Locale locale) {
 
@@ -1672,9 +1675,24 @@ I_CmsCachableApp {
                 CmsResourceFilter.IGNORE_EXPIRATION,
                 commonConfig.getMaxReturnedResults());
             displayResult(solrResultList);
+            CmsSearchResultWrapper searchResultWrapper = new CmsSearchResultWrapper(
+                controller,
+                solrResultList,
+                query,
+                cms,
+                null);
+            I_CmsSearchControllerFacetField categoriesFacetController = searchResultWrapper.getController().getFieldFacets().getFieldFacetController().get(
+                CmsSimpleSearchConfigurationParser.FIELD_CATEGORIES);
+            I_CmsSearchControllerFacetRange dateFacetController = searchResultWrapper.getController().getRangeFacets().getRangeFacetController().get(
+                CmsSimpleSearchConfigurationParser.FIELD_DATE_FACET_NAME);
+            I_CmsSearchControllerFacetField folderFacetController = searchResultWrapper.getController().getFieldFacets().getFieldFacetController().get(
+                CmsSimpleSearchConfigurationParser.FIELD_PARENT_FOLDERS);
             m_resultFacets.displayFacetResult(
                 solrResultList,
-                new CmsSearchResultWrapper(controller, solrResultList, query, cms, null));
+                categoriesFacetController.getState().getIsChecked(),
+                dateFacetController.getState().getIsChecked(),
+                folderFacetController.getState().getIsChecked(),
+                A_CmsUI.getCmsObject());
         } catch (CmsSearchException e) {
             CmsErrorDialog.showErrorDialog(e);
 

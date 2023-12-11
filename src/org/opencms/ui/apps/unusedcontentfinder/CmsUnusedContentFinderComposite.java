@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.components;
+package org.opencms.ui.apps.unusedcontentfinder;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -34,7 +34,6 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.A_CmsResourceTypeFolderBase;
 import org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
@@ -46,22 +45,25 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.CmsVaadinUtils.PropertyId;
-import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.I_CmsContextProvider;
 import org.opencms.ui.apps.Messages;
-import org.opencms.ui.apps.unusedcontentfinder.CmsUnusedContentFinderApp;
-import org.opencms.ui.apps.unusedcontentfinder.CmsUnusedContentFinderApp.StateBean;
-import org.opencms.ui.apps.unusedcontentfinder.CmsUnusedContentFinderConfiguration;
-import org.opencms.ui.components.fileselect.CmsPathSelectField;
+import org.opencms.ui.components.CmsComponentState;
+import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.components.CmsFileTable;
+import org.opencms.ui.components.CmsFileTableDialogContext;
+import org.opencms.ui.components.CmsFolderSelector;
+import org.opencms.ui.components.CmsResourceTableProperty;
+import org.opencms.ui.components.CmsResultFilterComponent;
+import org.opencms.ui.components.CmsSiteSelector;
+import org.opencms.ui.components.CmsTypeSelector;
+import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.contextmenu.CmsResourceContextMenuBuilder;
 import org.opencms.ui.dialogs.CmsDeleteDialog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
-import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 
@@ -71,33 +73,25 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.server.Resource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.themes.ValoTheme;
-import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
-import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.data.util.filter.Or;
 import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.v7.event.FieldEvents.TextChangeEvent;
 import com.vaadin.v7.event.FieldEvents.TextChangeListener;
-import com.vaadin.v7.shared.ui.combobox.FilteringMode;
-import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.HorizontalLayout;
-import com.vaadin.v7.ui.TextField;
 import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Component that realizes a unused content finder.
  */
 @SuppressWarnings("deprecation")
-public class CmsUnusedContentFinderComponent {
+public class CmsUnusedContentFinderComposite {
 
     /**
      * The delete button of the unused content finder.
@@ -142,13 +136,13 @@ public class CmsUnusedContentFinderComponent {
         private FormLayout m_formLayout;
 
         /** The site selector. */
-        private ComboBox m_siteSelector;
+        private CmsSiteSelector m_siteSelector;
 
         /** The folder selector. */
-        private CmsPathSelectField m_folderSelector;
+        private CmsFolderSelector m_folderSelector;
 
         /** The type selector. */
-        private ComboBox m_typeSelector;
+        private CmsTypeSelector m_typeSelector;
 
         /** The search button. */
         private Button m_searchButton;
@@ -228,43 +222,15 @@ public class CmsUnusedContentFinderComponent {
         }
 
         /**
-        * Updates the search root.
-        * @throws CmsException if initializing the CMS object fails
-        */
+         * Updates the search root.
+         * @throws CmsException if initializing the CMS object fails
+         */
         void updateSearchRoot() throws CmsException {
 
             CmsObject newCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
             newCms.getRequestContext().setSiteRoot((String)m_siteSelector.getValue());
             m_folderSelector.setCmsObject(newCms);
             m_folderSelector.setValue("/");
-        }
-
-        /**
-         * Generates the resource types container.
-         * @return the resource types container
-         */
-        private IndexedContainer generateResourceTypesContainer() {
-
-            IndexedContainer types = new IndexedContainer();
-            types.addContainerProperty(PropertyId.caption, String.class, null);
-            types.addContainerProperty(PropertyId.icon, Resource.class, null);
-            types.addContainerProperty(PropertyId.isFolder, Boolean.class, null);
-            types.addContainerProperty(PropertyId.isXmlContent, Boolean.class, null);
-            for (I_CmsResourceType type : getAvailableTypes()) {
-                CmsExplorerTypeSettings typeSetting = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-                    type.getTypeName());
-                Item typeItem = types.addItem(type);
-                String caption = CmsVaadinUtils.getMessageText(typeSetting.getKey()) + " (" + type.getTypeName() + ")";
-                typeItem.getItemProperty(PropertyId.caption).setValue(caption);
-                typeItem.getItemProperty(PropertyId.icon).setValue(
-                    CmsResourceUtil.getSmallIconResource(typeSetting, null));
-                typeItem.getItemProperty(PropertyId.isXmlContent).setValue(
-                    Boolean.valueOf(type instanceof CmsResourceTypeXmlContent));
-                typeItem.getItemProperty(PropertyId.isFolder).setValue(
-                    Boolean.valueOf(type instanceof A_CmsResourceTypeFolderBase));
-            }
-
-            return types;
         }
 
         /**
@@ -287,15 +253,7 @@ public class CmsUnusedContentFinderComponent {
          */
         private void initFolderSelector() {
 
-            m_folderSelector = new CmsPathSelectField();
-            m_folderSelector.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_RESOURCE_PATH_0));
-            m_folderSelector.setDescription(
-                CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_RESOURCE_PATH_HELP_0));
-            m_folderSelector.disableSiteSwitch();
-            m_folderSelector.setResourceFilter(CmsResourceFilter.DEFAULT_FOLDERS);
-            m_folderSelector.requireFolder();
-            m_folderSelector.setValue("/");
-            m_folderSelector.setWidth("100%");
+            m_folderSelector = new CmsFolderSelector();
             m_formLayout.addComponent(m_folderSelector);
         }
 
@@ -330,22 +288,12 @@ public class CmsUnusedContentFinderComponent {
         /**
          * Initializes the site selector.
          */
+        @SuppressWarnings("serial")
         private void initSiteSelector() {
 
-            CmsObject cms = A_CmsUI.getCmsObject();
-            m_siteSelector = new ComboBox();
-            m_siteSelector.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_SITE_0));
-            m_siteSelector.setContainerDataSource(
-                CmsVaadinUtils.getAvailableSitesContainer(cms, CmsVaadinUtils.PROPERTY_LABEL));
-            m_siteSelector.setItemCaptionPropertyId(CmsVaadinUtils.PROPERTY_LABEL);
-            m_siteSelector.setTextInputAllowed(true);
-            m_siteSelector.setNullSelectionAllowed(false);
-            m_siteSelector.setFilteringMode(FilteringMode.CONTAINS);
-            m_siteSelector.setValue(cms.getRequestContext().getSiteRoot());
-            m_siteSelector.setWidth("100%");
+            m_siteSelector = new CmsSiteSelector();
+            m_siteSelector.setWidthFull();
             m_siteSelector.addValueChangeListener(new ValueChangeListener() {
-
-                private static final long serialVersionUID = -1079794209679015125L;
 
                 public void valueChange(ValueChangeEvent event) {
 
@@ -365,17 +313,8 @@ public class CmsUnusedContentFinderComponent {
          */
         private void initTypeSelector() {
 
-            m_typeSelector = new ComboBox();
-            m_typeSelector.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_RESOURCE_TYPE_0));
-            m_typeSelector.setDescription(
-                CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_RESOURCE_TYPE_HELP_0));
-            IndexedContainer types = generateResourceTypesContainer();
-            types.addContainerFilter(CmsVaadinUtils.FILTER_NO_FOLDERS);
-            m_typeSelector.setContainerDataSource(types);
-            m_typeSelector.setItemCaptionPropertyId(PropertyId.caption);
-            m_typeSelector.setItemIconPropertyId(PropertyId.icon);
-            m_typeSelector.setFilteringMode(FilteringMode.CONTAINS);
-            m_typeSelector.setWidth("100%");
+            m_typeSelector = new CmsTypeSelector();
+            m_typeSelector.updateTypes(getAvailableTypes());
             m_formLayout.addComponent(m_typeSelector);
         }
     }
@@ -653,23 +592,16 @@ public class CmsUnusedContentFinderComponent {
     /**
      * Component to filter the result table.
      */
-    private class ResultFilterComponent extends TextField {
-
-        /** Serial version id. */
-        private static final long serialVersionUID = 1L;
+    @SuppressWarnings("serial")
+    private class ResultFilterComponent extends CmsResultFilterComponent {
 
         /**
          * Creates a new result filter.
          */
         ResultFilterComponent() {
 
-            setIcon(FontOpenCms.FILTER);
-            setInputPrompt(Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
-            addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
-            setWidth("200px");
+            super();
             addTextChangeListener(new TextChangeListener() {
-
-                private static final long serialVersionUID = 1L;
 
                 public void textChange(TextChangeEvent event) {
 
@@ -681,7 +613,7 @@ public class CmsUnusedContentFinderComponent {
     }
 
     /** The log object for this class. */
-    static final Log LOG = CmsLog.getLog(CmsUnusedContentFinderComponent.class);
+    static final Log LOG = CmsLog.getLog(CmsUnusedContentFinderComposite.class);
 
     /** The maximum number of results. */
     static final int MAX_RESULTS = 5000;
@@ -707,7 +639,7 @@ public class CmsUnusedContentFinderComponent {
     /**
      * Creates a new component.
      */
-    public CmsUnusedContentFinderComponent() {
+    public CmsUnusedContentFinderComposite() {
 
         m_deleteButtonComponent = new DeleteButtonComponent();
         m_formComponent = new FormComponent();
@@ -758,25 +690,24 @@ public class CmsUnusedContentFinderComponent {
     public void search(boolean updateState) {
 
         if (updateState) {
-            StateBean stateBean = new StateBean();
-            stateBean.setSite(m_formComponent.getSiteValue());
-            stateBean.setFolder(m_formComponent.getFolderValue());
-            stateBean.setResourceType(m_formComponent.getTypeValue());
-            String state = CmsUnusedContentFinderApp.generateStateString(stateBean);
-            CmsAppWorkplaceUi.get().changeCurrentAppState(state);
+            CmsComponentState componentState = new CmsComponentState();
+            componentState.setSite(m_formComponent.getSiteValue());
+            componentState.setFolder(m_formComponent.getFolderValue());
+            componentState.setResourceType(m_formComponent.getTypeValue());
+            CmsAppWorkplaceUi.get().changeCurrentAppState(componentState.generateStateString());
         }
         m_resultComponent.updateResult();
     }
 
     /**
      * Initializes this component with data from a given state bean.
-     * @param stateBean the state bean
+     * @param componentState the state bean
      */
-    public void setState(StateBean stateBean) {
+    public void setState(CmsComponentState componentState) {
 
-        m_formComponent.setSiteValue(stateBean.getSite());
-        m_formComponent.setFolderValue(stateBean.getFolder());
-        m_formComponent.setTypeValue(stateBean.getResourceType());
+        m_formComponent.setSiteValue(componentState.getSite());
+        m_formComponent.setFolderValue(componentState.getFolder());
+        m_formComponent.setTypeValue(componentState.getResourceType());
     }
 
     /**

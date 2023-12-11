@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.apps.unusedcontentfinder;
+package org.opencms.ui.apps.datesearch;
 
 import org.opencms.main.CmsLog;
 import org.opencms.ui.A_CmsUI;
@@ -46,15 +46,15 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalSplitPanel;
 
 /**
- * Vaadin app to find unused contents.<p>
+ * Date search Vaadin app.<p>
  */
-public class CmsUnusedContentFinderApp extends A_CmsWorkplaceApp {
+public class CmsDateSearchApp extends A_CmsWorkplaceApp {
 
     /** The log object for this class. */
-    static final Log LOG = CmsLog.getLog(CmsUnusedContentFinderApp.class);
+    static final Log LOG = CmsLog.getLog(CmsDateSearchApp.class);
 
-    /** The unused content finder composite. */
-    private CmsUnusedContentFinderComposite m_unusedContentFinderComposite;
+    /** The date search component */
+    private CmsDateSearchComposite m_dateSearchComposite;
 
     /**
      * @see org.opencms.ui.apps.A_CmsWorkplaceApp#initUI(org.opencms.ui.apps.I_CmsAppUIContext)
@@ -63,8 +63,8 @@ public class CmsUnusedContentFinderApp extends A_CmsWorkplaceApp {
     public void initUI(I_CmsAppUIContext context) {
 
         context.addPublishButton(changed -> {
-            if (m_unusedContentFinderComposite != null) {
-                m_unusedContentFinderComposite.search(false);
+            if (m_dateSearchComposite != null) {
+                m_dateSearchComposite.search(false, false);
             }
         });
         super.initUI(context);
@@ -77,9 +77,7 @@ public class CmsUnusedContentFinderApp extends A_CmsWorkplaceApp {
     protected LinkedHashMap<String, String> getBreadCrumbForState(String state) {
 
         LinkedHashMap<String, String> crumbs = new LinkedHashMap<>();
-        crumbs.put(
-            "",
-            Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_UNUSED_CONTENT_FINDER_TITLE_0));
+        crumbs.put("", Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_DATE_SEARCH_TITLE_0));
         return crumbs;
     }
 
@@ -92,15 +90,15 @@ public class CmsUnusedContentFinderApp extends A_CmsWorkplaceApp {
         m_rootLayout.setMainHeightFull(true);
         HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
         splitPanel.setSizeFull();
-        m_unusedContentFinderComposite = new CmsUnusedContentFinderComposite();
-        splitPanel.setFirstComponent(m_unusedContentFinderComposite.getFormComponent());
-        splitPanel.setSecondComponent(m_unusedContentFinderComposite.getResultComponent());
+        m_dateSearchComposite = new CmsDateSearchComposite();
+        splitPanel.setFirstComponent(m_dateSearchComposite.getFilterComponent());
+        splitPanel.setSecondComponent(m_dateSearchComposite.getResultComponent());
         splitPanel.setSplitPosition(CmsFileExplorer.LAYOUT_SPLIT_POSITION, Unit.PIXELS);
-        m_infoLayout.addComponent(m_unusedContentFinderComposite.getResultFilterComponent());
+        m_infoLayout.addComponents(m_dateSearchComposite.getResultFilterComponent());
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(state)) {
             CmsComponentState componentState = new CmsComponentState(state);
-            m_unusedContentFinderComposite.setState(componentState);
-            m_unusedContentFinderComposite.search(false);
+            m_dateSearchComposite.setState(componentState);
+            m_dateSearchComposite.search(false, false);
         }
         return splitPanel;
     }

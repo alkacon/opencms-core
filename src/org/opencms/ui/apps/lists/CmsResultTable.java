@@ -75,6 +75,7 @@ public class CmsResultTable extends CmsFileTable {
      * @param tableColumns the table columns
      */
     public CmsResultTable(I_CmsContextProvider contextProvider, Map<CmsResourceTableProperty, Integer> tableColumns) {
+
         super(contextProvider, tableColumns);
         m_fileTable.setConverter(CmsListManager.INSTANCEDATE_PROPERTY, new StringToDateConverter() {
 
@@ -96,6 +97,16 @@ public class CmsResultTable extends CmsFileTable {
     public String getCurrentPageFirstItemId() {
 
         return (String)m_fileTable.getCurrentPageFirstItemId();
+    }
+
+    /**
+     * Returns the date field key.<p>
+     *
+     * @return the date field key
+     */
+    public String getDateFieldKey() {
+
+        return m_dateFieldKey;
     }
 
     /**
@@ -191,16 +202,6 @@ public class CmsResultTable extends CmsFileTable {
         } else {
             super.fillItem(cms, resource, locale);
         }
-    }
-
-    /**
-     * Returns the date field key.<p>
-     *
-     * @return the date field key
-     */
-    protected String getDateFieldKey() {
-
-        return m_dateFieldKey;
     }
 
 }

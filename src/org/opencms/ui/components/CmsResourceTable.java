@@ -650,13 +650,43 @@ public class CmsResourceTable extends CustomComponent {
      */
     public void fillTable(CmsObject cms, List<CmsResource> resources, boolean clearFilter, boolean sort) {
 
+        fillTable(cms, resources, clearFilter, true, false);
+    }
+
+    /**
+     * Fills the resource table.<p>
+     *
+     * @param cms the current CMS context
+     * @param resources the resources which should be displayed in the table
+     * @param clearFilter <code>true</code> to clear the search filter
+     * @param sort <code>true</code> to sort the table entries
+     * @param distinctResources whether to only show distinct resources
+     */
+    public void fillTable(
+        CmsObject cms,
+        List<CmsResource> resources,
+        boolean clearFilter,
+        boolean sort,
+        boolean distinctResources) {
+
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         m_container.removeAllItems();
         if (clearFilter) {
             m_container.removeAllContainerFilters();
         }
-        for (CmsResource resource : resources) {
-            fillItem(cms, resource, wpLocale);
+        if (distinctResources) {
+            Map<String, String> ids = new HashMap<String, String>();
+            for (CmsResource resource : resources) {
+                String id = resource.getStructureId().getStringValue();
+                if (!ids.containsKey(id)) {
+                    fillItem(cms, resource, wpLocale);
+                    ids.put(id, "");
+                }
+            }
+        } else {
+            for (CmsResource resource : resources) {
+                fillItem(cms, resource, wpLocale);
+            }
         }
         if (sort) {
             m_fileTable.sort();
