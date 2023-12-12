@@ -30,6 +30,7 @@ package org.opencms.ade.containerpage;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
@@ -57,10 +58,13 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
@@ -228,8 +232,32 @@ public class CmsTypeAnalyzer {
         /** The site root. */
         protected String m_siteRoot;
 
+        /** The set of containers to exclude. */
+        protected Set<String> m_excludedContainers;
+
         /** True if detail only contents are skipped. */
         public boolean m_skipDetailOnly;
+
+        /** The map of (legacy) function usages. */
+        private Map<String, Set<String>> m_functionUsage = new HashMap<>();
+
+        /** The template regex. */
+        public String m_templateRegex;
+
+        public static long getSerialversionuid() {
+
+            return serialVersionUID;
+        }
+
+        /**
+         * Gets the container names to exclude.
+         *
+         * @return the top-level containers to exclude
+         */
+        public Set<String> getExcludedContainers() {
+
+            return m_excludedContainers;
+        }
 
         /**
          * Gets the formatters.
@@ -239,6 +267,16 @@ public class CmsTypeAnalyzer {
         public Map<CmsUUID, FormatterBean> getFormatters() {
 
             return m_formatters;
+        }
+
+        /**
+         * Gets the (legacy) dynamic function usages.
+         *
+         * @return the legacy function usages
+         */
+        public Map<String, Set<String>> getFunctionUsages() {
+
+            return m_functionUsage;
         }
 
         /**
@@ -299,6 +337,11 @@ public class CmsTypeAnalyzer {
             return formatterUsages.keySet().stream().sorted((f1, f2) -> {
                 return -Integer.compare(formatterUsages.get(f1).size(), formatterUsages.get(f2).size());
             }).map(id -> m_formatters.get(id)).collect(Collectors.toList());
+        }
+
+        public String getTemplateRegex() {
+
+            return m_templateRegex;
         }
 
         /**
@@ -438,6 +481,8 @@ public class CmsTypeAnalyzer {
     /** The m cms. */
     private CmsObject m_cms;
 
+    private Pattern m_templatePattern;
+
     /**
      * Creates a new instance.
      *
@@ -446,7 +491,13 @@ public class CmsTypeAnalyzer {
      * @param path the site path to analyze
      * @throws CmsException if something goes wrong
      */
-    public CmsTypeAnalyzer(CmsObject cms, String siteRoot, String path, boolean skipDetailOnly)
+    public CmsTypeAnalyzer(
+        CmsObject cms,
+        String siteRoot,
+        String path,
+        boolean skipDetailOnly,
+        Set<String> excludedContainers,
+        String templateRegex)
     throws CmsException {
 
         m_cms = OpenCms.initCmsObject(cms);
@@ -454,6 +505,9 @@ public class CmsTypeAnalyzer {
         m_state.m_path = path;
         m_state.m_siteRoot = siteRoot;
         m_state.m_skipDetailOnly = skipDetailOnly;
+        m_state.m_excludedContainers = excludedContainers;
+        m_state.m_templateRegex = templateRegex;
+        m_templatePattern = Pattern.compile(templateRegex);
         m_locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
     }
 
@@ -479,12 +533,35 @@ public class CmsTypeAnalyzer {
      * @param cms the CMS context
      * @param path the path
      * @param skipDetailOnly true if detail only pages should be skipped
+     * @param excludeContainersStr a comma-separated list of container names to exclude from analysis (only direct elements)
+     * @param templateRegex a regular expression such that only pages whose template matches that regex should be processed
      * @return the state
      * @throws CmsException if something goes wrong
      */
-    public static State run(CmsObject cms, String path, boolean skipDetailOnly) throws CmsException {
+    public static State run(
+        CmsObject cms,
+        String path,
+        boolean skipDetailOnly,
+        String excludeContainersStr,
+        String templateRegex)
+    throws CmsException {
 
-        return (new CmsTypeAnalyzer(cms, cms.getRequestContext().getSiteRoot(), path, skipDetailOnly)).processFolder();
+        Set<String> excludedContainers = new HashSet<>();
+        for (String token : excludeContainersStr.split(",")) {
+            token = token.trim();
+            if ("".equals(token)) {
+                continue;
+            }
+            excludedContainers.add(token);
+        }
+
+        return (new CmsTypeAnalyzer(
+            cms,
+            cms.getRequestContext().getSiteRoot(),
+            path,
+            skipDetailOnly,
+            excludedContainers,
+            templateRegex)).processFolder();
 
     }
 
@@ -533,6 +610,9 @@ public class CmsTypeAnalyzer {
             m_state.m_path,
             CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(pageType));
         for (CmsResource page : pages) {
+            if (!checkTemplate(page)) {
+                continue;
+            }
             if (m_state.m_skipDetailOnly && page.getRootPath().contains(".detailContainers")) {
                 continue;
             }
@@ -542,6 +622,9 @@ public class CmsTypeAnalyzer {
             m_state.m_path,
             CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(modelGroupType));
         for (CmsResource modelGroup : modelGroups) {
+            if (!checkTemplate(modelGroup)) {
+                continue;
+            }
             processPage(modelGroup);
         }
 
@@ -551,6 +634,9 @@ public class CmsTypeAnalyzer {
                 OpenCms.getResourceManager().getResourceType(
                     CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME)));
         for (CmsResource elementGroup : elementGroups) {
+            if (!checkTemplate(elementGroup)) {
+                continue;
+            }
             processElementGroup(elementGroup);
         }
         for (String type : OpenCms.getADEManager().getContentTypeNames(false)) {
@@ -627,6 +713,42 @@ public class CmsTypeAnalyzer {
     }
 
     /**
+     * If the container element is a (legacy) dynamic function, add it to map of function usages.
+     *
+     * @param pageResource the current page
+     * @param element the container element
+     */
+    private void checkFunction(CmsResource pageResource, CmsContainerElementBean element) {
+
+        if (OpenCms.getResourceManager().matchResourceType("function", element.getResource().getTypeId())) {
+            m_state.m_functionUsage.computeIfAbsent(element.getResource().getRootPath(), p -> new HashSet<>()).add(
+                m_cms.getSitePath(pageResource));
+
+        }
+    }
+
+    /**
+     * Checks that the template property of the page matches the template regex.<p>
+     *
+     * @param page the page to check
+     * @return true if the template matches the template regex
+     */
+    private boolean checkTemplate(CmsResource page) {
+
+        try {
+            CmsProperty templateProp = m_cms.readPropertyObject(page, "template", true);
+            String templateValue = templateProp.getValue();
+            if (templateValue == null) {
+                templateValue = "";
+            }
+            return m_templatePattern.matcher(templateValue).matches();
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return false;
+        }
+    }
+
+    /**
      * Process element group.
      *
      * @param groupResource the group resource
@@ -642,6 +764,7 @@ public class CmsTypeAnalyzer {
         for (CmsContainerElementBean element : group.getElements()) {
             try {
                 element.initResource(m_cms);
+                checkFunction(groupResource, element);
                 addEntry(element.getTypeName(), groupResource.getStructureId(), UNKNOWN_FORMATTER);
             } catch (Exception e) {
                 LOG.error(e.getLocalizedMessage(), e);
@@ -667,9 +790,13 @@ public class CmsTypeAnalyzer {
         CmsXmlContainerPage pageXml = CmsXmlContainerPageFactory.unmarshal(m_cms, m_cms.readFile(pageResource));
         CmsContainerPageBean page = pageXml.getContainerPage(m_cms);
         for (CmsContainerBean container : page.getContainers().values()) {
+            if (m_state.m_excludedContainers.contains(container.getName())) {
+                continue;
+            }
             for (CmsContainerElementBean element : container.getElements()) {
                 try {
                     element.initResource(m_cms);
+                    checkFunction(pageResource, element);
                     Map<String, String> settings = element.getIndividualSettings();
                     String formatterRef = settings.get(CmsFormatterConfig.FORMATTER_SETTINGS_KEY + container.getName());
                     if (formatterRef == null) {
