@@ -27,6 +27,7 @@
 
 package org.opencms.staticexport;
 
+import org.opencms.ade.configuration.CmsDetailNameCache;
 import org.opencms.ade.detailpage.I_CmsDetailPageHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -763,8 +764,13 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                 return null;
             }
             String name = CmsFileUtil.removeTrailingSeparator(CmsResource.getName(path));
-            CmsUUID detailId = OpenCms.getADEManager().getDetailIdCache(
-                cms.getRequestContext().getCurrentProject().isOnlineProject()).getDetailId(name);
+            CmsUUID detailId = null;
+            if (cms.getRequestContext().getAttribute(CmsDetailNameCache.ATTR_BYPASS) != null) {
+                detailId = cms.readIdForUrlName(name);
+            } else {
+                detailId = OpenCms.getADEManager().getDetailIdCache(
+                    cms.getRequestContext().getCurrentProject().isOnlineProject()).getDetailId(name);
+            }
             if (detailId == null) {
                 return null;
             }

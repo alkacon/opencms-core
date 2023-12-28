@@ -65,6 +65,9 @@ public class CmsDetailNameCache implements I_CmsGlobalConfigurationCache {
     /** The logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDetailNameCache.class);
 
+    /** Request attribute for telling the link substitution handler that it shouldn't use this cache. */
+    public static final String ATTR_BYPASS = "bypass-detail-name-cache";
+
     /** Object used to wait on for updates. */
     private Object m_updateLock = new Object();
 
