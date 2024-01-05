@@ -89,15 +89,6 @@ public final class CmsTinyMCEHelper {
 				options.imageGalleryConfig = config.imageGalleryConfig;
 			}
 
-			if (config.language) {
-                var languageMap = { "it": "it_IT", "cs": "cs_CZ", "ru": "ru_RU", "zh": "zh_CN"};
-                var translatedLanguage = languageMap[config.language];
-                if (translatedLanguage) {
-                    options.language = translatedLanguage;
-                } else {
-				    options.language = config.language;
-				}
-			}
 			if (config.content_css) {
 				options.content_css = config.content_css;
 			}

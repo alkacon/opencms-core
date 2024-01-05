@@ -140,7 +140,6 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
             List<String> toolbarItems = widgetOptions.getButtonBarShownItems();
             result.put("toolbar_items", toolbarItems);
             Locale workplaceLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-            result.put("language", workplaceLocale.getLanguage()); // note: some remapping of the editor language takes place in CmsTinyMCEHelper, which e.g. maps 'it' to 'it_IT'
             String editorHeight = widgetOptions.getEditorHeight();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(editorHeight)) {
                 editorHeight = editorHeight.replaceAll("px", "");

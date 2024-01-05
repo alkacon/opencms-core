@@ -724,6 +724,22 @@ public class CmsCoreData implements IsSerializable {
     }
 
     /**
+     * Gets the language part of the workplace locale.
+     *
+     * @return the language part of the workplace locale
+     */
+    public String getWpLanguage() {
+
+        String locale = getWpLocale();
+        String result = locale;
+        int underscorePos = locale.indexOf("_");
+        if (underscorePos > -1) {
+            result = locale.substring(0, underscorePos);
+        }
+        return result;
+    }
+
+    /**
      * Returns the current workplace locale.<p>
      *
      * @return the current workplace locale

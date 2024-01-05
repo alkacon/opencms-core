@@ -29,6 +29,7 @@ package org.opencms.acacia.client.widgets;
 
 import org.opencms.acacia.client.CmsEditorBase;
 import org.opencms.acacia.client.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
 
@@ -374,7 +375,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
                                 }
                             }, ClickEvent.getType());
                         }
-                        initNative();
+                        initNative(CmsCoreProvider.get().getWpLanguage());
                         if (!m_active) {
                             getElement().addClassName(I_CmsLayoutBundle.INSTANCE.form().inActive());
                         }
@@ -492,8 +493,10 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
     /**
      * Initializes the TinyMCE instance.
+     *
+     * @param locale the UI locale
      */
-    native void initNative() /*-{
+    native void initNative(String locale) /*-{
 
 		function merge() {
 			var result = {}, length = arguments.length;
@@ -506,6 +509,15 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 			}
 			return result;
 		}
+
+
+        var languageMap = { "it": "it_IT", "cs": "cs_CZ", "ru": "ru_RU", "zh": "zh_CN"};
+        var translatedLanguage = languageMap[locale];
+        if (translatedLanguage) {
+            locale = translatedLanguage;
+        }
+
+
 
 		var self = this;
 		var needsRefocus = self.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::shouldReceiveFocus()();
@@ -640,6 +652,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 		};
 
 		// initialize tinyMCE
+		defaults.language = locale;
 		$wnd.tinymce.init(defaults);
     }-*/;
 
