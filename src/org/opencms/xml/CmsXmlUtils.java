@@ -986,11 +986,10 @@ public final class CmsXmlUtils {
             }
             return;
         } catch (SAXException e) {
-            // should not happen since all errors are handled in the XML error handler
+            // some exceptions will still be thrown even if they are sent to the error handler
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_PARSE_SAX_EXC_0), e);
             }
-            return;
         }
 
         if (errorHandler.getErrors().elements().size() > 0) {
