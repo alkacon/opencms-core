@@ -29,6 +29,7 @@ package org.opencms.ui.apps.dbmanager;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.importexport.CmsExportParameters;
 import org.opencms.importexport.CmsVfsImportExportHandler;
 import org.opencms.main.CmsException;
@@ -103,7 +104,7 @@ public class CmsDbExportView extends VerticalLayout {
                     CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_EXPORT_INVALID_RESOURCE_EMPTY_0));
             }
 
-            if (!m_cms.existsResource(resourcePath)) {
+            if (!m_cms.existsResource(resourcePath, CmsResourceFilter.IGNORE_EXPIRATION)) {
                 throw new InvalidValueException(
                     CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_EXPORT_INVALID_RESOURCE_NOTFOUND_0));
             }
@@ -306,7 +307,7 @@ public class CmsDbExportView extends VerticalLayout {
         for (I_CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
             FormLayout layout = (FormLayout)(row.getComponent());
             CmsPathSelectField field = (CmsPathSelectField)layout.getComponent(0);
-            if (!m_cms.existsResource(field.getValue())) {
+            if (!m_cms.existsResource(field.getValue(), CmsResourceFilter.IGNORE_EXPIRATION)) {
                 rowsToRemove.add(row);
             }
         }
@@ -495,7 +496,7 @@ public class CmsDbExportView extends VerticalLayout {
                 // folders may have been entered without trailing slashes,
                 // but to correct that, we have to read the resources
                 try {
-                    CmsResource res = m_cms.readResource(line);
+                    CmsResource res = m_cms.readResource(line, CmsResourceFilter.IGNORE_EXPIRATION);
                     line = m_cms.getSitePath(res);
                 } catch (CmsException e) {
                     LOG.debug(e.getLocalizedMessage(), e);
