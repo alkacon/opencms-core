@@ -183,9 +183,6 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
         }
     }
 
-    /** The hidden field widget name. */
-    private static final String HIDDEN_FIELD_WIDGET = "hidden";
-
     /** The container page controller. */
     CmsContainerpageController m_controller;
 
@@ -585,7 +582,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
             String fieldId = field.getId();
             CmsXmlContentProperty propDef = settingsConfig.get(fieldId);
             // skip hidden fields
-            if (!HIDDEN_FIELD_WIDGET.equals(propDef.getWidget())) {
+            if (!CmsGwtConstants.HIDDEN_SETTINGS_WIDGET_NAME.equals(propDef.getWidget())) {
                 String initialValue = m_settings.get(fieldId);
                 if (initialValue == null) {
 

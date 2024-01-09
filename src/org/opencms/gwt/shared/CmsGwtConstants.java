@@ -198,6 +198,9 @@ public final class CmsGwtConstants {
     /** Sub-path for the session update handler. */
     public static final String HANDLER_UPDATE_SESSION = "/updateSession";
 
+    /** The settings widget name for hidden entries. */
+    public static final String HIDDEN_SETTINGS_WIDGET_NAME = "hidden";
+
     /** Element id for locale comparison view. */
     public static final String ID_LOCALE_COMPARISON = "cmsLocaleComparison";
 

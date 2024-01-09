@@ -33,6 +33,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -60,12 +61,14 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Function;
 
@@ -75,6 +78,7 @@ import org.apache.commons.logging.Log;
 
 import org.dom4j.Element;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Supplier;
 
 /**
@@ -462,17 +466,40 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         Map<String, CmsXmlContentProperty> propertyConfig,
         Map<String, String> properties) {
 
+        Set<String> hidden = new HashSet<>();
         Map<String, String> result = new HashMap<String, String>();
         if (propertyConfig != null) {
             for (Map.Entry<String, CmsXmlContentProperty> entry : propertyConfig.entrySet()) {
                 CmsXmlContentProperty prop = entry.getValue();
                 String value = getPropValueIds(cms, prop.getType(), prop.getDefault());
+                if (CmsGwtConstants.HIDDEN_SETTINGS_WIDGET_NAME.equals(prop.getWidget())) {
+                    hidden.add(entry.getKey());
+                }
                 if (value != null) {
                     result.put(entry.getKey(), value);
                 }
             }
         }
-        result.putAll(properties);
+        properties.forEach((key, value) -> {
+            if (!hidden.contains(key)) {
+                result.put(key, value);
+            } else {
+                // 'hidden' widget, but we still got a setting value. The setting value is probably left over
+                // from a previous formatter - ignore it. This can happen with list display formatters, because
+                // they are selected in the list configuration content, and editing the content itself doesn't affect
+                // the settings of the corresponding container page element(s).
+                if (!Objects.equal(value, result.get(key))) {
+                    LOG.info(
+                        "Discarding setting value because configured widget is 'hidden': key = "
+                            + key
+                            + ", value = "
+                            + value
+                            + ", original value = "
+                            + result.get(key));
+                }
+            }
+        });
+
         return result;
     }
 

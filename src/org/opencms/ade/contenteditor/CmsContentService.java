@@ -156,9 +156,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /** The type name prefix. */
     static final String TYPE_NAME_PREFIX = "http://opencms.org/types/";
 
-    /** The settings widget name for hidden entries. */
-    private static final String HIDDEN_SETTINGS_WIDGET_NAME = "hidden";
-
     /** The RDFA attributes string. */
     private static final String RDFA_ATTRIBUTES = CmsGwtConstants.ATTR_DATA_ID
         + "=\"%1$s\" "
@@ -1465,7 +1462,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 niceName = prop.getName();
             }
             attrName = getSettingsAttributeName(entry.getKey());
-            boolean visible = !HIDDEN_SETTINGS_WIDGET_NAME.equals(prop.getWidget())
+            boolean visible = !CmsGwtConstants.HIDDEN_SETTINGS_WIDGET_NAME.equals(prop.getWidget())
                 && !settingPresets.containsKey(prop.getName());
             if (visible) {
                 attributes.add(attrName);
@@ -1544,7 +1541,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             if (nestedFormatters != null) {
                 for (I_CmsFormatterBean formatter : nestedFormatters) {
                     if (entry.getKey().startsWith(formatter.getId())
-                        && !HIDDEN_SETTINGS_WIDGET_NAME.equals(entry.getValue().getWidget())) {
+                        && !CmsGwtConstants.HIDDEN_SETTINGS_WIDGET_NAME.equals(entry.getValue().getWidget())) {
                         CmsType parent = types.get(formatter.getId());
                         if (parent == null) {
                             parent = new CmsType(formatter.getId());
@@ -2489,12 +2486,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 }
             }
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)
-                && !HIDDEN_SETTINGS_WIDGET_NAME.equals(settingsEntry.getValue().getWidget())
+                && !CmsGwtConstants.HIDDEN_SETTINGS_WIDGET_NAME.equals(settingsEntry.getValue().getWidget())
                 && values.containsKey(settingsEntry.getKey())) {
                 values.remove(settingsEntry.getKey());
                 hasChangedSettings = true;
             } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)
-                && !HIDDEN_SETTINGS_WIDGET_NAME.equals(settingsEntry.getValue().getWidget())
+                && !CmsGwtConstants.HIDDEN_SETTINGS_WIDGET_NAME.equals(settingsEntry.getValue().getWidget())
                 && !value.equals(values.get(settingsEntry.getKey()))) {
                 values.put(settingsEntry.getKey(), value);
                 hasChangedSettings = true;

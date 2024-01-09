@@ -27,6 +27,7 @@
 
 package org.opencms.ade.configuration.formatters;
 
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -238,7 +239,7 @@ public class CmsSettingConfiguration {
             CmsXmlContentProperty displayType = new CmsXmlContentProperty(
                 CmsFormatterBeanParser.SETTING_DISPLAY_TYPE,
                 "string",
-                "hidden",
+                CmsGwtConstants.HIDDEN_SETTINGS_WIDGET_NAME,
                 null,
                 null,
                 null,
