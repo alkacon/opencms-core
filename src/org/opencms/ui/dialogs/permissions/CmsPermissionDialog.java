@@ -617,7 +617,7 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
     private void ensureLock() throws CmsException {
 
         if (m_lockActionRecord == null) {
-            m_lockActionRecord = CmsLockUtil.ensureLock(m_cms, m_resource);
+            m_lockActionRecord = CmsLockUtil.ensureLock(m_cms, m_resource, true);
         }
     }
 

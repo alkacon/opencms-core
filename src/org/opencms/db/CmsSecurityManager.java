@@ -6847,7 +6847,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkOfflineProject(dbc);
-            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_CONTROL, LockCheck.shallowOnly, CmsResourceFilter.ALL);
             if (ace.getPrincipal().equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID)) {
                 // only vfs managers can set the overwrite all ACE
                 checkRoleForResource(dbc, CmsRole.VFS_MANAGER, resource);
