@@ -305,24 +305,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CONTENT_EDITOR_TITLE_2 = "GUI_CONTENT_EDITOR_TITLE_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DATE_SEARCH_DATE_FROM_0 = "GUI_DATE_SEARCH_DATE_FROM_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DATE_SEARCH_DATE_TO_0 = "GUI_DATE_SEARCH_DATE_TO_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DATE_SEARCH_EMPTY_RESULT_0 = "GUI_DATE_SEARCH_EMPTY_RESULT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DATE_SEARCH_EMPTY_TYPE_0 = "GUI_DATE_SEARCH_EMPTY_TYPE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DATE_SEARCH_TITLE_0 = "GUI_DATE_SEARCH_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DATE_SEARCH_HELP_0 = "GUI_DATE_SEARCH_HELP_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASEAPP_ADMIN_TOOL_HELP_0 = "GUI_DATABASEAPP_ADMIN_TOOL_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -677,6 +659,24 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DATABASEAPP_SYNCH_THREAD_NAME_1 = "GUI_DATABASEAPP_SYNCH_THREAD_NAME_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_SEARCH_DATE_FROM_0 = "GUI_DATE_SEARCH_DATE_FROM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_SEARCH_DATE_TO_0 = "GUI_DATE_SEARCH_DATE_TO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_SEARCH_EMPTY_RESULT_0 = "GUI_DATE_SEARCH_EMPTY_RESULT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_SEARCH_EMPTY_TYPE_0 = "GUI_DATE_SEARCH_EMPTY_TYPE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_SEARCH_HELP_0 = "GUI_DATE_SEARCH_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATE_SEARCH_TITLE_0 = "GUI_DATE_SEARCH_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DB_PUBLOCKS_THREAD_NAME_0 = "GUI_DB_PUBLOCKS_THREAD_NAME_0";
 
     /** Message constant for key in the resource bundle. */
@@ -707,13 +707,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPIRED_SELECTOR_ALL_0 = "GUI_EXPIRED_SELECTOR_ALL_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EXPIRED_SELECTOR_WITHOUT_0 = "GUI_EXPIRED_SELECTOR_WITHOUT_0";
+    public static final String GUI_EXPIRED_SELECTOR_HELP_0 = "GUI_EXPIRED_SELECTOR_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPIRED_SELECTOR_ONLY_0 = "GUI_EXPIRED_SELECTOR_ONLY_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EXPIRED_SELECTOR_HELP_0 = "GUI_EXPIRED_SELECTOR_HELP_0";
+    public static final String GUI_EXPIRED_SELECTOR_WITHOUT_0 = "GUI_EXPIRED_SELECTOR_WITHOUT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CLICK_TO_EDIT_0 = "GUI_EXPLORER_CLICK_TO_EDIT_0";
@@ -1912,6 +1912,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_OWNER_0 = "GUI_PROJECTS_OWNER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROJECTS_PROJECT_WITH_SAME_NAME_EXISTS_0 = "GUI_PROJECTS_PROJECT_WITH_SAME_NAME_EXISTS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_PUBLISH_0 = "GUI_PROJECTS_PUBLISH_0";

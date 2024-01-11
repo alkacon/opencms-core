@@ -57,19 +57,21 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.v7.data.Property.ValueChangeEvent;
-import com.vaadin.v7.data.Property.ValueChangeListener;
-import com.vaadin.v7.data.Validator;
+import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.v7.ui.CheckBox;
 import com.vaadin.ui.Component;
-import com.vaadin.v7.ui.Field;
 import com.vaadin.ui.FormLayout;
-import com.vaadin.v7.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
+import com.vaadin.v7.data.Validator;
+import com.vaadin.v7.data.Validator.InvalidValueException;
+import com.vaadin.v7.ui.CheckBox;
+import com.vaadin.v7.ui.Field;
+import com.vaadin.v7.ui.TextField;
 
 /**
  * The edit project form component.<p>
@@ -198,6 +200,7 @@ public class CmsEditProjectForm extends CmsBasicDialog {
      * @param window the window this form is displayed in
      */
     public CmsEditProjectForm(CmsProjectsTable table, CmsUUID projectId, Window window) {
+
         this(table, window);
         CmsObject cms = A_CmsUI.getCmsObject();
         try {
@@ -239,6 +242,7 @@ public class CmsEditProjectForm extends CmsBasicDialog {
      * @param window the window this form is displayed in
      */
     public CmsEditProjectForm(CmsProjectsTable table, Window window) {
+
         m_window = window;
         m_table = table;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
@@ -260,12 +264,39 @@ public class CmsEditProjectForm extends CmsBasicDialog {
         }
         m_fieldOU.setImmediate(true);
         m_fieldOU.addValidator(new OUValidator());
+        if (m_project == null) {
+            m_fieldName.addValidator(new Validator() {
+
+                public void validate(Object value) throws InvalidValueException {
+                    m_fieldName.setComponentError(null);
+                    CmsObject cms = A_CmsUI.getCmsObject();
+                    String projectName = CmsStringUtil.joinPaths(m_fieldOU.getValue(), m_fieldName.getValue());
+                    try {
+                        cms.readProject(projectName);
+                        throw new InvalidValueException(CmsVaadinUtils.getMessageText(Messages.GUI_PROJECTS_PROJECT_WITH_SAME_NAME_EXISTS_0));
+
+                    } catch (CmsException e) {
+                        // ignore
+                    }
+                }
+            });
+        }
         m_fieldOU.addValueChangeListener(new ValueChangeListener() {
 
             private static final long serialVersionUID = 1L;
 
             public void valueChange(ValueChangeEvent event) {
 
+                if (m_project == null) {
+                    // the 'project exists' validation is attached to m_fieldName, but is also dependent on the value of the OU field,
+                    // so we trigger it here
+                    try {
+                        m_fieldName.setComponentError(null);
+                        m_fieldName.validate();
+                    } catch (InvalidValueException e) {
+                        m_fieldName.setComponentError(new UserError(e.getMessage()));
+                    }
+                }
                 validateResourceFields();
             }
         });
