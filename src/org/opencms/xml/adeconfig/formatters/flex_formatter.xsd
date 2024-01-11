@@ -52,7 +52,7 @@
                 <mapping element="NiceName" mapto="galleryName" />
             </mappings>
             <layouts>
-                <layout element="Type" widget="org.opencms.widgets.CmsTypeComboWidget"  />
+                <layout element="Type" widget="org.opencms.widgets.CmsTypeFilterWidget"  />
                 <layout element="StringTemplate" widget="TextareaWidgetPlaintext" configuration="20" />
                 <layout element="PlaceholderStringTemplate" widget="TextareaWidgetPlaintext" configuration="20" />
             </layouts>

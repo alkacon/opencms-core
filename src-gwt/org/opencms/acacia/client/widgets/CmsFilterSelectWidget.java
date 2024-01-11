@@ -208,12 +208,8 @@ public class CmsFilterSelectWidget extends Composite implements I_CmsEditWidget,
     public void setValue(String value, boolean fireEvents) {
 
         Map<String, String> items = m_selectBox.getItems();
-        if (items.containsKey(value)) {
-            m_selectBox.selectValue(value);
-            m_externalValue = value;
-        } else {
-            m_selectBox.selectValue(m_defaultValue);
-        }
+        m_selectBox.setFormValue(value, false);
+        m_externalValue = value;
         if (fireEvents) {
             fireChangeEvent();
         }

@@ -23,7 +23,7 @@
         <xsd:appinfo>
             <resourcebundle name="org.opencms.xml.containerpage.messages" />
             <layouts>
-            	<layout element="Type" widget="org.opencms.widgets.CmsTypeComboWidget"  />
+            	<layout element="Type" widget="org.opencms.widgets.CmsTypeFilterWidget"  />
             </layouts>
         </xsd:appinfo>
     </xsd:annotation>

@@ -34,7 +34,7 @@
         <xsd:appinfo>
             <resourcebundle name="org.opencms.xml.containerpage.messages"/>
             <layouts>
-                <layout element="TypeName" widget="org.opencms.widgets.CmsTypeComboWidget"  />
+                <layout element="TypeName" widget="org.opencms.widgets.CmsTypeFilterWidget"  />
                 <layout element="Disabled" widget="SelectorWidget" configuration="false*:%(key.disabled.false)|listsOnly:%(key.disabled.listOnly)|true:%(key.disabled.true)|add:%(key.disabled.add)|create:%(key.disabled.create)|createOrEdit:%(key.disabled.createOrEdit)" />
                 <layout element="ElementView" widget="org.opencms.widgets.CmsElementViewSelectWidget" configuration=""/>
                 <layout element="Localization" widget="VfsFileWidget" configuration="startsite=/|startfolder=/|showsiteselector|selectabletypes=xmlvfsbundle,propertyvfsbundle|searchtypes=xmlvfsbundle,propertyvfsbundle" />
