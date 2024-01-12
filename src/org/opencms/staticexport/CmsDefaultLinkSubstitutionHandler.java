@@ -35,6 +35,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeImage;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -785,6 +786,10 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                 cms.getRequestContext().setSiteRoot(origSiteRoot);
             }
             CmsResource detailResource = cms.readResource(detailId, CmsResourceFilter.ALL);
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(detailResource);
+            if (!OpenCms.getADEManager().getDetailPageTypes(cms).contains(type.getTypeName())) {
+                return null;
+            }
             return detailResource.getRootPath() + getSuffix(uri);
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
