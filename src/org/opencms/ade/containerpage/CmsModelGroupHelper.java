@@ -71,6 +71,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
+import org.springframework.web.util.HtmlUtils;
 
 /**
  * Handles all model group specific tasks.<p>
@@ -258,7 +259,9 @@ public class CmsModelGroupHelper {
                 }
 
                 if (resources.isEmpty()) {
-                    response.getWriter().println("No model group resources found at " + basePath + "<br />");
+                    // XSS issue fixed by Mobb
+                    // The vulnerable code before the fix: response.getWriter().println("No model group resources found at " + basePath + "<br />");
+                    response.getWriter().println("No model group resources found at " + HtmlUtils.htmlEscape(HtmlUtils.htmlUnescape(String.valueOf(basePath))) + "<br />");
                 } else {
                     for (CmsResource group : resources) {
                         boolean updated = updateModelGroupResource(cms, group, baseContainerName);
