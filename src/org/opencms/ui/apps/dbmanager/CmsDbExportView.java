@@ -30,6 +30,7 @@ package org.opencms.ui.apps.dbmanager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.importexport.CmsExportParameters;
 import org.opencms.importexport.CmsVfsImportExportHandler;
 import org.opencms.main.CmsException;
@@ -371,8 +372,23 @@ public class CmsDbExportView extends VerticalLayout {
         for (I_CmsEditableGroupRow row : m_resourcesGroup.getRows()) {
             FormLayout layout = (FormLayout)(row.getComponent());
             CmsPathSelectField field = (CmsPathSelectField)layout.getComponent(0);
-            if (!field.getValue().isEmpty() & !res.contains(field.getValue())) {
-                res.add(field.getValue());
+            String value = field.getValue();
+            if (!value.isEmpty()) {
+                if (!value.endsWith("/")) {
+                    try {
+                        CmsResource resource = m_cms.readResource(value, CmsResourceFilter.IGNORE_EXPIRATION);
+                        if (resource.isFolder()) {
+                            value = value + "/";
+                        }
+                    } catch (CmsException e) {
+                        if (!(e instanceof CmsVfsResourceNotFoundException)) {
+                            LOG.error(e.getLocalizedMessage());
+                        }
+                    }
+                }
+                if (!res.contains(value)) {
+                    res.add(value);
+                }
             }
         }
 
