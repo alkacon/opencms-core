@@ -140,6 +140,7 @@ public class CmsPatternPanelMonthlyView extends Composite implements I_CmsSerial
     public CmsPatternPanelMonthlyView(
         CmsPatternPanelMonthlyController controller,
         I_CmsObservableSerialDateValue model) {
+
         m_controller = controller;
         m_model = model;
         m_model.registerValueChangeObserver(this);
@@ -157,7 +158,7 @@ public class CmsPatternPanelMonthlyView extends Composite implements I_CmsSerial
 
             public void onValueChange(ValueChangeEvent<String> event) {
 
-                if (handleChange()) {
+                if (handleChange() && (event.getValue() != null)) {
                     m_controller.setPatternScheme(event.getValue().equals(m_weekDayMonthRadioButton.getName()), true);
                 }
             }
