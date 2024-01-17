@@ -32,6 +32,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.CmsClientVariantInfo;
 import org.opencms.gwt.shared.CmsGwtConstants;
@@ -296,7 +297,7 @@ public class CmsTemplateContextManager {
      */
     public I_CmsTemplateContextProvider getTemplateContextProvider(CmsObject cms, String path) throws CmsException {
 
-        CmsResource resource = cms.readResource(path);
+        CmsResource resource = cms.readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
         I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(resource);
         if (loader instanceof A_CmsXmlDocumentLoader) {
             String propertyName = ((A_CmsXmlDocumentLoader)loader).getTemplatePropertyDefinition();

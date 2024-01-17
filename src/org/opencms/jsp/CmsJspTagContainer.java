@@ -49,6 +49,7 @@ import org.opencms.jsp.util.CmsJspStandardContextBean.CmsContainerElementWrapper
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsTemplateContext;
 import org.opencms.loader.CmsTemplateContextManager;
+import org.opencms.loader.I_CmsTemplateContextProvider;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
@@ -496,8 +497,8 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                         if (detailOnlyPage != null) {
                             container = detailOnlyPage.getContainers().get(getName());
                         }
-                        if (container == null && m_editableRequest && containerPage != null) {
-                            // this is for the case where the current container is the nested container of a model group which the user is dragging into a detail container 
+                        if ((container == null) && m_editableRequest && (containerPage != null)) {
+                            // this is for the case where the current container is the nested container of a model group which the user is dragging into a detail container
                             container = containerPage.getContainers().get(getName());
                         }
                     }
@@ -1395,7 +1396,20 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 CmsTemplateContextManager.ATTR_RPC_CONTEXT_OVERRIDE);
             contextKey = rpcContextOverride;
         }
-        boolean showInContext = shouldShowInContext(element, context != null ? context.getKey() : null);
+        boolean ignoreTemplateContexts = false;
+        try {
+            I_CmsTemplateContextProvider templateProvider = null;
+            if (context != null) {
+                templateProvider = context.getProvider();
+            }
+            if (templateProvider == null) {
+                templateProvider = OpenCms.getTemplateContextManager().getTemplateContextProvider(cms, cms.getRequestContext().getUri());
+            }
+            ignoreTemplateContexts = (templateProvider != null) && templateProvider.isIgnoreTemplateContextsSetting();
+        } catch (CmsException e) {
+            LOG.info(e.getLocalizedMessage(), e);
+        }
+        boolean showInContext = ignoreTemplateContexts || shouldShowInContext(element, context != null ? context.getKey() : null);
         boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
         if (!m_editableRequest && !showInContext) {
             return false;
@@ -1453,7 +1467,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
 
                 try {
                     subelement.initResource(cms);
-                    boolean shouldShowSubElementInContext = shouldShowInContext(subelement, contextKey);
+                    boolean shouldShowSubElementInContext = ignoreTemplateContexts || shouldShowInContext(subelement, contextKey);
                     if (!m_editableRequest
                         && (!shouldShowSubElementInContext || !subelement.isReleasedAndNotExpired())) {
                         continue;

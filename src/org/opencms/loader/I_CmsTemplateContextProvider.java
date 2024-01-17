@@ -176,6 +176,15 @@ public interface I_CmsTemplateContextProvider {
     }
 
     /**
+     * Checks if the 'templateContexts' setting should be ignored when rendering container elements (i.e. they will be rendered by default, regardless of the setting value).
+     *
+     * @return true if the templateContexts setting should be ignored by the cms:container tag
+     */
+    default boolean isIgnoreTemplateContextsSetting() {
+        return false;
+    }
+
+    /**
      * Gets the value which should be used instead of a property which was read from the template resource.<p>
      *
      * This is needed because before template context providers, it was common to store template-specific configuration in

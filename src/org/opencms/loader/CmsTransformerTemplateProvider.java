@@ -408,6 +408,13 @@ public class CmsTransformerTemplateProvider implements I_CmsTemplateContextProvi
     }
 
     /**
+     * @see org.opencms.loader.I_CmsTemplateContextProvider#isIgnoreTemplateContextsSetting()
+     */
+    public boolean isIgnoreTemplateContextsSetting() {
+        return true;
+    }
+
+    /**
      * @see org.opencms.loader.I_CmsTemplateContextProvider#readCommonProperty(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
     public String readCommonProperty(CmsObject cms, String propertyName, String fallbackValue) {
