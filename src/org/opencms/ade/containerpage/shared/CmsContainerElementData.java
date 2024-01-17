@@ -38,6 +38,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
@@ -191,7 +192,7 @@ public class CmsContainerElementData extends CmsContainerElement {
                 keyOrId = getSettings().get(CmsFormatterConfig.getSettingsKeyForContainer(""));
             }
             CmsFormatterConfigCollection formattersForContainer = getFormatters().get(containerName);
-            if (keyOrId != null) {
+            if ((keyOrId != null) && (formattersForContainer != null)) {
                 formatterConfig = formattersForContainer.get(keyOrId);
                 if (formatterConfig == null) {
                     int separatorPos = keyOrId.lastIndexOf(CmsGwtConstants.FORMATTER_SUBKEY_SEPARATOR);
@@ -202,7 +203,13 @@ public class CmsContainerElementData extends CmsContainerElement {
                 }
             }
             if (formatterConfig == null) {
-                formatterConfig = getFormatters().get(containerName).getFirstFormatter();
+                if (getFormatters().containsKey(containerName)) {
+                    try {
+                        formatterConfig = getFormatters().get(containerName).getFirstFormatter();
+                    } catch (NoSuchElementException e) {
+                        // formatterConfig remains null
+                    }
+                }
             }
         }
         return formatterConfig;
