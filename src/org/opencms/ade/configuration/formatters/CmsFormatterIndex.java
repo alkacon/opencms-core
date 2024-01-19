@@ -79,7 +79,6 @@ public class CmsFormatterIndex {
         String id = formatter.getId();
         if (CmsUUID.isValidUUID(id)) {
             CmsUUID uuid = new CmsUUID(id);
-            m_formattersById.put(uuid, formatter);
 
             Set<String> relatedKeys = new HashSet<>();
             Set<CmsUUID> relatedIds = new HashSet<>();
@@ -92,6 +91,8 @@ public class CmsFormatterIndex {
             for (String relatedKey : relatedKeys) {
                 m_idsByKey.removeAll(relatedKey);
             }
+
+            m_formattersById.put(uuid, formatter);
             for (String relatedKey : relatedKeys) {
                 m_idsByKey.put(relatedKey, uuid);
             }
