@@ -24,7 +24,7 @@
         <xsd:appinfo>
             <resourcebundle name="org.opencms.xml.containerpage.messages"/>
             <layouts>
-                <layout element="Type" widget="org.opencms.widgets.CmsTypeFilterWidget" />
+                <layout element="Type" widget="org.opencms.widgets.CmsTypeComboWidget" />
             </layouts>
             <validationrules>
                 <rule element="Type" regex=".+" type="error" message="%(key.err.generic.notempty)"/>
