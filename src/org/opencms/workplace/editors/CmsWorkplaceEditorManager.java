@@ -213,7 +213,7 @@ public class CmsWorkplaceEditorManager {
                         editorConfigs = new TreeMap<Float, CmsWorkplaceEditorConfiguration>();
                     }
                     // put the current editor configuration to the resource map with ranking value as key
-                    editorConfigs.put(new Float(currentConfig.getRankingForResourceType(key)), currentConfig);
+                    editorConfigs.put(Float.valueOf(currentConfig.getRankingForResourceType(key)), currentConfig);
                     // put the resource map to the result map with resource type as key
                     configurableEditors.put(key, editorConfigs);
                 }
@@ -449,7 +449,7 @@ public class CmsWorkplaceEditorManager {
             if (currentConfig.matchesResourceType(resourceType)) {
                 float key = currentConfig.getRankingForResourceType(resourceType);
                 if (key >= 0) {
-                    filteredEditors.put(new Float(key), currentConfig);
+                    filteredEditors.put(Float.valueOf(key), currentConfig);
                 }
             }
         }

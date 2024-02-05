@@ -151,7 +151,7 @@ public class CmsAcceptLanguageHeaderParser {
     public static final String ACCEPT_LANGUAGE = "Accept-Language";
 
     /** The default m_quality value for an <code>AcceptLanguage</code> object. */
-    protected static final Float DEFAULT_QUALITY = new Float(1.0f);
+    protected static final Float DEFAULT_QUALITY = Float.valueOf(1.0f);
 
     /** Separates elements of the <code>Accept-Language</code> HTTP header. */
     private static final char LOCALE_SEPARATOR = ',';

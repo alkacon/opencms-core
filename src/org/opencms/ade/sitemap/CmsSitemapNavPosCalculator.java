@@ -292,7 +292,7 @@ public class CmsSitemapNavPosCalculator {
 
         for (int i = 0; i < steps; i++) {
             num += delta;
-            result.add(new Float(num));
+            result.add(Float.valueOf(num));
         }
         return result;
     }
@@ -320,13 +320,13 @@ public class CmsSitemapNavPosCalculator {
             }
             // we have determined the step size, now we generate the actual numbers
             for (int i = 0; i < steps; i++) {
-                result.add(new Float(base - ((i + 1) * stepSize)));
+                result.add(Float.valueOf(base - ((i + 1) * stepSize)));
             }
             Collections.reverse(result);
         } else {
             LOG.warn("Invalid navpos value: " + max);
             for (int i = 0; i < steps; i++) {
-                result.add(new Float(max - (i + 1)));
+                result.add(Float.valueOf(max - (i + 1)));
             }
             Collections.reverse(result);
         }
@@ -344,7 +344,7 @@ public class CmsSitemapNavPosCalculator {
 
         List<Float> result = new ArrayList<Float>();
         for (int i = 0; i < steps; i++) {
-            result.add(new Float(1 + i));
+            result.add(Float.valueOf(1 + i));
         }
         return result;
     }
@@ -398,7 +398,7 @@ public class CmsSitemapNavPosCalculator {
 
         List<Float> result = new ArrayList<Float>();
         for (int i = 0; i < steps; i++) {
-            result.add(new Float(min + 1 + i));
+            result.add(Float.valueOf(min + 1 + i));
         }
         return result;
     }

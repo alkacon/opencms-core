@@ -2356,7 +2356,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 Messages.get().getBundle().key(
                     Messages.LOG_PARSE_EXTRACTION_CACHE_AGE_FAILED_2,
                     extractionCacheMaxAge,
-                    new Float(DEFAULT_EXTRACTION_CACHE_MAX_AGE)),
+                    Float.valueOf(DEFAULT_EXTRACTION_CACHE_MAX_AGE)),
                 e);
             setExtractionCacheMaxAge(DEFAULT_EXTRACTION_CACHE_MAX_AGE);
         }

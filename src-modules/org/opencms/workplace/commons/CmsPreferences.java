@@ -739,7 +739,7 @@ public class CmsPreferences extends CmsTabDialog {
                 String currentResourceType = i.next();
                 CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
                     currentResourceType);
-                rankResources.put(new Float(settings.getNewResourceOrder()), currentResourceType);
+                rankResources.put(Float.valueOf(settings.getNewResourceOrder()), currentResourceType);
             }
 
             while (rankResources.size() > 0) {

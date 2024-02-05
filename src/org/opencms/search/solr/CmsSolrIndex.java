@@ -1165,7 +1165,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
             // adjust start, max score and hit count displayed in the result list.
             solrDocumentList.setStart(start);
-            Float finalMaxScore = sortByScoreDesc ? new Float(maxScore) : checkQueryResponse.getResults().getMaxScore();
+            Float finalMaxScore = sortByScoreDesc ? Float.valueOf(maxScore) : checkQueryResponse.getResults().getMaxScore();
             solrDocumentList.setMaxScore(finalMaxScore);
             solrDocumentList.setNumFound(visibleHitCount);
 

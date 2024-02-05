@@ -232,7 +232,7 @@ public final class CmsDataTypeUtil {
      */
     public static String format(float data) {
 
-        return new Float(data).toString();
+        return Float.valueOf(data).toString();
     }
 
     /**
@@ -450,7 +450,7 @@ public final class CmsDataTypeUtil {
      */
     public static Float parseFloat(String data) {
 
-        return new Float(data);
+        return Float.valueOf(data);
     }
 
     /**
