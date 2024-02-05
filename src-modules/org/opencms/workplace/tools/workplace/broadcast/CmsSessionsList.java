@@ -263,7 +263,7 @@ public class CmsSessionsList extends A_CmsListDialog {
             item.set(LIST_COLUMN_USER, user.getFullName());
             item.set(LIST_COLUMN_ORGUNIT, userOu.getDisplayName(getLocale()));
             item.set(LIST_COLUMN_CREATION, new Date(sessionInfo.getTimeCreated()));
-            item.set(LIST_COLUMN_INACTIVE, new Long(System.currentTimeMillis() - sessionInfo.getTimeUpdated()));
+            item.set(LIST_COLUMN_INACTIVE, Long.valueOf(System.currentTimeMillis() - sessionInfo.getTimeUpdated()));
             try {
                 item.set(LIST_COLUMN_PROJECT, getCms().readProject(sessionInfo.getProject()).getName());
             } catch (Exception e) {

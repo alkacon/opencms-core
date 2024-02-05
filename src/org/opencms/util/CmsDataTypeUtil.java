@@ -208,7 +208,7 @@ public final class CmsDataTypeUtil {
      */
     public static String format(Date data) {
 
-        return new Long(data.getTime()).toString();
+        return Long.valueOf(data.getTime()).toString();
     }
 
     /**
@@ -256,7 +256,7 @@ public final class CmsDataTypeUtil {
      */
     public static String format(long data) {
 
-        return new Long(data).toString();
+        return Long.valueOf(data).toString();
     }
 
     /**
@@ -474,7 +474,7 @@ public final class CmsDataTypeUtil {
      */
     public static Long parseLong(String data) {
 
-        return new Long(data);
+        return Long.valueOf(data);
     }
 
     /**

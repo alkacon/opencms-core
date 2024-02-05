@@ -224,7 +224,7 @@ public class CmsUpdateDBCmsUsers extends A_CmsUpdateDBPart {
             String setUserDateCreated = readQuery(QUERY_SET_USER_DATECREATED);
             List<Object> param = new ArrayList<Object>();
             // Set the creation date to the current time
-            param.add(new Long(System.currentTimeMillis()));
+            param.add(Long.valueOf(System.currentTimeMillis()));
 
             dbCon.updateSqlStatement(setUserDateCreated, null, param);
         } else {

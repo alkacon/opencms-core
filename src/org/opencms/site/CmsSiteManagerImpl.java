@@ -1518,7 +1518,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             if (session != null) {
                 session.setAttribute(
                     CmsContextInfo.ATTRIBUTE_REQUEST_TIME,
-                    new Long(System.currentTimeMillis() + matcher.getTimeOffset()));
+                    Long.valueOf(System.currentTimeMillis() + matcher.getTimeOffset()));
             }
         }
         CmsSite site = matchSite(matcher);

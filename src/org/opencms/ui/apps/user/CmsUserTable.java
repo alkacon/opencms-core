@@ -88,7 +88,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
     public enum TableProperty {
 
         /**Last login. */
-        Created(Messages.GUI_USERMANAGEMENT_USER_DATE_CREATED_0, Long.class, new Long(0L)),
+        Created(Messages.GUI_USERMANAGEMENT_USER_DATE_CREATED_0, Long.class, Long.valueOf(0L)),
         /**Is the user disabled? */
         DISABLED("", Boolean.class, Boolean.valueOf(false)),
         /**From Other ou?. */
@@ -100,7 +100,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
         /**IsIndirect?. */
         INDIRECT("", Boolean.class, Boolean.valueOf(false)),
         /**Last login. */
-        LastLogin(Messages.GUI_USERMANAGEMENT_USER_LAST_LOGIN_0, Long.class, new Long(0L)),
+        LastLogin(Messages.GUI_USERMANAGEMENT_USER_LAST_LOGIN_0, Long.class, Long.valueOf(0L)),
         /**Name. */
         Name(Messages.GUI_USERMANAGEMENT_USER_USER_0, String.class, ""),
         /**Is the user new? */
@@ -1055,8 +1055,8 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
         } catch (CmsException e) {
             LOG.error("Can't read OU", e);
         }
-        item.getItemProperty(TableProperty.LastLogin).setValue(new Long(user.getLastlogin()));
-        item.getItemProperty(TableProperty.Created).setValue(new Long(user.getDateCreated()));
+        item.getItemProperty(TableProperty.LastLogin).setValue(Long.valueOf(user.getLastlogin()));
+        item.getItemProperty(TableProperty.Created).setValue(Long.valueOf(user.getDateCreated()));
         item.getItemProperty(TableProperty.INDIRECT).setValue(Boolean.valueOf(m_indirects.contains(user)));
         item.getItemProperty(TableProperty.FROMOTHEROU).setValue(Boolean.valueOf(!user.getOuFqn().equals(m_ou)));
         item.getItemProperty(TableProperty.STATUS).setValue(getStatusInt(disabled, newUser));

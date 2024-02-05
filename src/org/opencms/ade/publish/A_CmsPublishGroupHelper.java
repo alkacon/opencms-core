@@ -141,7 +141,7 @@ public abstract class A_CmsPublishGroupHelper<RESOURCE, GROUP> {
                     "Resource "
                         + getRootPath(res)
                         + " is "
-                        + result.get(new Long(getDateLastModified(res)))
+                        + result.get(Long.valueOf(getDateLastModified(res)))
                         + " days old.");
             }
         }
@@ -220,7 +220,7 @@ public abstract class A_CmsPublishGroupHelper<RESOURCE, GROUP> {
 
         List<Long> result = new ArrayList<Long>();
         for (RESOURCE res : resources) {
-            result.add(new Long(getDateLastModified(res)));
+            result.add(Long.valueOf(getDateLastModified(res)));
         }
         return result;
     }
@@ -290,13 +290,13 @@ public abstract class A_CmsPublishGroupHelper<RESOURCE, GROUP> {
             return Collections.<List<RESOURCE>> emptyList();
         }
         RESOURCE firstRes = resources.get(0);
-        int lastDay = days.get(new Long(getDateLastModified(firstRes))).intValue();
+        int lastDay = days.get(Long.valueOf(getDateLastModified(firstRes))).intValue();
         List<List<RESOURCE>> result = new ArrayList<List<RESOURCE>>();
         List<RESOURCE> currentGroup = new ArrayList<RESOURCE>();
         result.add(currentGroup);
         for (RESOURCE res : resources) {
             LOG.debug("Processing medium-aged resource " + getRootPath(res));
-            int day = days.get(new Long(getDateLastModified(res))).intValue();
+            int day = days.get(Long.valueOf(getDateLastModified(res))).intValue();
             if (day != lastDay) {
                 LOG.debug("=== new group ===");
                 currentGroup = new ArrayList<RESOURCE>();
@@ -324,7 +324,7 @@ public abstract class A_CmsPublishGroupHelper<RESOURCE, GROUP> {
         List<RESOURCE> mediumRes = new ArrayList<RESOURCE>();
         List<RESOURCE> oldRes = new ArrayList<RESOURCE>();
         for (RESOURCE res : resources) {
-            int day = days.get(new Long(getDateLastModified(res))).intValue();
+            int day = days.get(Long.valueOf(getDateLastModified(res))).intValue();
             List<RESOURCE> listToAddTo = null;
             if (day < 7) {
                 listToAddTo = youngRes;

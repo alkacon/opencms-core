@@ -251,7 +251,7 @@ public class CmsLoginMessage {
         checkFrozen();
         if (timeEnd < 0) {
             throw new CmsIllegalArgumentException(
-                Messages.get().container(Messages.ERR_LOGIN_MESSAGE_BAD_TIME_1, new Long(timeEnd)));
+                Messages.get().container(Messages.ERR_LOGIN_MESSAGE_BAD_TIME_1, Long.valueOf(timeEnd)));
         }
         if (timeEnd == 0) {
             timeEnd = DEFAULT_TIME_END;
@@ -272,7 +272,7 @@ public class CmsLoginMessage {
         checkFrozen();
         if (timeStart < 0) {
             throw new CmsIllegalArgumentException(
-                Messages.get().container(Messages.ERR_LOGIN_MESSAGE_BAD_TIME_1, new Long(timeStart)));
+                Messages.get().container(Messages.ERR_LOGIN_MESSAGE_BAD_TIME_1, Long.valueOf(timeStart)));
         }
         if (timeStart == 0) {
             timeStart = DEFAULT_TIME_START;

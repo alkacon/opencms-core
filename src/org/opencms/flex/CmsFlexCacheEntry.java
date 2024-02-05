@@ -457,9 +457,9 @@ public class CmsFlexCacheEntry implements I_CmsLruCacheObject, I_CmsMemoryMonito
             LOG.debug(
                 Messages.get().getBundle().key(
                     Messages.LOG_FLEXCACHEENTRY_SET_EXPIRATION_DATE_3,
-                    new Long(m_dateExpires),
-                    new Long(now),
-                    new Long(m_dateExpires - now)));
+                    Long.valueOf(m_dateExpires),
+                    Long.valueOf(now),
+                    Long.valueOf(m_dateExpires - now)));
         }
     }
 

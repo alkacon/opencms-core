@@ -99,7 +99,7 @@ public final class CmsPublishListenerCollection extends Vector<I_CmsPublishEvent
         // popup the abort message
         String msgText = Messages.get().getBundle(publishJob.getLocale()).key(
             Messages.GUI_PUBLISH_JOB_ABORTED_2,
-            new Long(publishJob.getEnqueueTime()),
+            Long.valueOf(publishJob.getEnqueueTime()),
             m_publishEngine.getUser(userId).getName());
         m_publishEngine.sendMessage(publishJob.getUserId(), msgText, true);
     }
@@ -168,11 +168,11 @@ public final class CmsPublishListenerCollection extends Vector<I_CmsPublishEvent
         if (!publishJob.getReport().hasError() && !publishJob.getReport().hasWarning()) {
             msgText = Messages.get().getBundle(publishJob.getLocale()).key(
                 Messages.GUI_PUBLISH_JOB_FINISHED_1,
-                new Long(publishJob.getEnqueueTime()));
+                Long.valueOf(publishJob.getEnqueueTime()));
         } else {
             hasError = true;
             Object[] params = new Object[] {
-                new Long(publishJob.getEnqueueTime()),
+                Long.valueOf(publishJob.getEnqueueTime()),
                 new Integer(publishJob.getReport().getErrors().size()),
                 new Integer(publishJob.getReport().getWarnings().size())};
             msgText = Messages.get().getBundle(publishJob.getLocale()).key(
@@ -247,7 +247,7 @@ public final class CmsPublishListenerCollection extends Vector<I_CmsPublishEvent
         if (busyStart || bigJob) {
             String msgText = Messages.get().getBundle(publishJob.getLocale()).key(
                 Messages.GUI_PUBLISH_JOB_STARTED_1,
-                new Long(publishJob.getEnqueueTime()));
+                Long.valueOf(publishJob.getEnqueueTime()));
             m_publishEngine.sendMessage(publishJob.getUserId(), msgText, false);
         }
     }

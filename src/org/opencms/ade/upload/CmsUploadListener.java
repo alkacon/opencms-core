@@ -85,7 +85,7 @@ public class CmsUploadListener implements ProgressListener, Serializable {
     public CmsUploadListener(int requestSize) {
 
         m_id = new CmsUUID();
-        m_contentLength = new Long(requestSize).longValue();
+        m_contentLength = Long.valueOf(requestSize).longValue();
         startWatcher();
     }
 

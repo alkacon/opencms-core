@@ -213,9 +213,9 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
 
         // Test source field
         Date dateValue = res.getDateField("arelease_en_dt");
-        assertTrue("1308210520000".equals(new Long(dateValue.getTime()).toString()));
+        assertTrue("1308210520000".equals(Long.valueOf(dateValue.getTime()).toString()));
         dateValue = res.getDateField("arelease_de_dt");
-        assertTrue("1308210420000".equals(new Long(dateValue.getTime()).toString()));
+        assertTrue("1308210420000".equals(Long.valueOf(dateValue.getTime()).toString()));
 
         // test 'default' value for the whole field
         fieldValue = res.getField("ahomepage_de");

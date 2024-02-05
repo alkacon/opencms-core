@@ -1710,7 +1710,7 @@ public class CmsUserSettings {
         }
         // workplace user surf time (time warp)
         if (getTimeWarp() != CmsContextInfo.CURRENT_TIME) {
-            m_user.setAdditionalInfo(ADDITIONAL_INFO_TIMEWARP, new Long(getTimeWarp()));
+            m_user.setAdditionalInfo(ADDITIONAL_INFO_TIMEWARP, Long.valueOf(getTimeWarp()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(ADDITIONAL_INFO_TIMEWARP);
         }

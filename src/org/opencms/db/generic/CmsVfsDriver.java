@@ -4162,7 +4162,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             conditions.append(BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_STRUCTURE_SELECT_BY_DATE_EXPIRED_AFTER"));
             conditions.append(END_CONDITION);
-            params.add(new Long(startTime));
+            params.add(Long.valueOf(startTime));
         }
 
         if (endTime > 0L) {
@@ -4170,7 +4170,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             conditions.append(BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_STRUCTURE_SELECT_BY_DATE_EXPIRED_BEFORE"));
             conditions.append(END_CONDITION);
-            params.add(new Long(endTime));
+            params.add(Long.valueOf(endTime));
         }
     }
 
@@ -4368,7 +4368,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             conditions.append(BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_STRUCTURE_SELECT_BY_DATE_RELEASED_AFTER"));
             conditions.append(END_CONDITION);
-            params.add(new Long(startTime));
+            params.add(Long.valueOf(startTime));
         }
 
         if (endTime > 0L) {
@@ -4376,7 +4376,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             conditions.append(BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_STRUCTURE_SELECT_BY_DATE_RELEASED_BEFORE"));
             conditions.append(END_CONDITION);
-            params.add(new Long(endTime));
+            params.add(Long.valueOf(endTime));
         }
     }
 
@@ -4454,7 +4454,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             conditions.append(BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_DATE_LASTMODIFIED_AFTER"));
             conditions.append(END_CONDITION);
-            params.add(new Long(startTime));
+            params.add(Long.valueOf(startTime));
         }
 
         if (endTime > 0L) {
@@ -4462,7 +4462,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             conditions.append(BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_DATE_LASTMODIFIED_BEFORE"));
             conditions.append(END_CONDITION);
-            params.add(new Long(endTime));
+            params.add(Long.valueOf(endTime));
         }
     }
 

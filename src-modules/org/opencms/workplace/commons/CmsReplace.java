@@ -117,7 +117,7 @@ public class CmsReplace extends CmsDialog {
                     throw new CmsException(
                         Messages.get().container(
                             Messages.ERR_FILE_SIZE_TOO_LARGE_1,
-                            new Long((maxFileSizeBytes / 1024))));
+                            Long.valueOf((maxFileSizeBytes / 1024))));
                 }
                 byte[] content = fi.get();
                 fi.delete();

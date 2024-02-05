@@ -118,7 +118,7 @@ public class CmsUpdateDBHistoryPrincipals extends A_CmsUpdateDBPart {
         System.out.println(new Exception().getStackTrace()[0].toString());
         if (insertHistoryPrincipals(dbCon)) {
             List<Object> params = new ArrayList<Object>();
-            params.add(new Long(System.currentTimeMillis()));
+            params.add(Long.valueOf(System.currentTimeMillis()));
 
             dbCon.updateSqlStatement(readQuery(QUERY_UPDATE_DATEDELETED), null, params);
         }

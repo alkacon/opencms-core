@@ -232,7 +232,7 @@ public final class CmsFileUtil {
         filesize = Math.abs(filesize);
 
         if (Math.abs(filesize) < 1024) {
-            result = Messages.get().getBundle(locale).key(Messages.GUI_FILEUTIL_FILESIZE_BYTES_1, new Long(filesize));
+            result = Messages.get().getBundle(locale).key(Messages.GUI_FILEUTIL_FILESIZE_BYTES_1, Long.valueOf(filesize));
         } else if (Math.abs(filesize) < 1048576) {
             // 1048576 = 1024.0 * 1024.0
             result = Messages.get().getBundle(locale).key(

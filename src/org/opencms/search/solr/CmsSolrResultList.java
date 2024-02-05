@@ -281,7 +281,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
      */
     public Long getStart() {
 
-        return new Long(m_resultDocuments.getStart());
+        return Long.valueOf(m_resultDocuments.getStart());
     }
 
     /**

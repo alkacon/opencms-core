@@ -85,7 +85,7 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
         return Messages.get().key(
             Messages.GUI_UPLOAD_FILE_TOO_LARGE_2,
             CmsUploadButton.formatBytes(file.getFileSize()),
-            CmsUploadButton.formatBytes(new Long(CmsCoreProvider.get().getUploadFileSizeLimit()).intValue()));
+            CmsUploadButton.formatBytes(Long.valueOf(CmsCoreProvider.get().getUploadFileSizeLimit()).intValue()));
     }
 
     /**
@@ -117,7 +117,7 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
                 Messages.GUI_UPLOAD_SUMMARY_FILES_VALUE_3,
                 new Integer(getFilesToUpload().size()),
                 getFileText(),
-                CmsUploadButton.formatBytes(new Long(getContentLength()).intValue())));
+                CmsUploadButton.formatBytes(Long.valueOf(getContentLength()).intValue())));
         buffer.append("</p>");
         setSummaryHTML(buffer.toString());
     }
@@ -148,7 +148,7 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
         for (CmsFileInfo file : getFilesToUpload().values()) {
             result += file.getFileSize();
         }
-        return new Long(result).longValue();
+        return Long.valueOf(result).longValue();
     }
 
     /**

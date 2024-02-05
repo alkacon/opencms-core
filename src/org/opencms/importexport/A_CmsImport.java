@@ -568,7 +568,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                 }
 
                 InputStream stream = m_importZip.getInputStream(entry);
-                int size = new Long(entry.getSize()).intValue();
+                int size = Long.valueOf(entry.getSize()).intValue();
                 return CmsFileUtil.readFully(stream, size);
             } else {
                 // no - use directory

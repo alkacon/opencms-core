@@ -657,8 +657,8 @@ public class CmsSynchronize {
                         StringTokenizer tok = new StringTokenizer(line, ":");
                         String resName = tok.nextToken();
                         String tranResName = tok.nextToken();
-                        long modifiedVfs = new Long(tok.nextToken()).longValue();
-                        long modifiedFs = new Long(tok.nextToken()).longValue();
+                        long modifiedVfs = Long.valueOf(tok.nextToken()).longValue();
+                        long modifiedFs = Long.valueOf(tok.nextToken()).longValue();
                         CmsSynchronizeList sync = new CmsSynchronizeList(resName, tranResName, modifiedVfs, modifiedFs);
                         syncList.put(translate(resName), sync);
                     }

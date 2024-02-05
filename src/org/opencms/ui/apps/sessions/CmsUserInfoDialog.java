@@ -211,13 +211,13 @@ public class CmsUserInfoDialog extends CmsBasicDialog {
     private List<String> getFurtherInfoLines(CmsSessionInfo currentSession) {
 
         boolean neverActive = false;
-        Long inacTime = new Long(0L);
+        Long inacTime = Long.valueOf(0L);
         List<String> res = new ArrayList<String>();
         if (currentSession == null) {
-            inacTime = new Long(System.currentTimeMillis() - m_user.getLastlogin());
+            inacTime = Long.valueOf(System.currentTimeMillis() - m_user.getLastlogin());
             neverActive = m_user.getLastlogin() == 0L;
         } else {
-            inacTime = new Long(System.currentTimeMillis() - currentSession.getTimeLastAction());
+            inacTime = Long.valueOf(System.currentTimeMillis() - currentSession.getTimeLastAction());
         }
 
         String[] inactiveTime = CmsSessionInfo.getHourMinuteSecondTimeString(inacTime.longValue());

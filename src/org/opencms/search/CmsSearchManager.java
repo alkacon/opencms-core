@@ -2453,7 +2453,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 Messages.get().getBundle().key(
                     Messages.LOG_PARSE_MAX_INDEX_WAITTIME_FAILED_2,
                     maxIndexWaitTime,
-                    new Long(DEFAULT_MAX_INDEX_WAITTIME)),
+                    Long.valueOf(DEFAULT_MAX_INDEX_WAITTIME)),
                 e);
             setMaxIndexWaitTime(DEFAULT_MAX_INDEX_WAITTIME);
         }
@@ -2514,7 +2514,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 Messages.get().getBundle().key(
                     Messages.LOG_PARSE_OFFLINE_UPDATE_FAILED_2,
                     offlineUpdateFrequency,
-                    new Long(DEFAULT_OFFLINE_UPDATE_FREQNENCY)),
+                    Long.valueOf(DEFAULT_OFFLINE_UPDATE_FREQNENCY)),
                 e);
             setOfflineUpdateFrequency(DEFAULT_OFFLINE_UPDATE_FREQNENCY);
         }
@@ -2551,7 +2551,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             setTimeout(Long.parseLong(value));
         } catch (Exception e) {
             LOG.error(
-                Messages.get().getBundle().key(Messages.LOG_PARSE_TIMEOUT_FAILED_2, value, new Long(DEFAULT_TIMEOUT)),
+                Messages.get().getBundle().key(Messages.LOG_PARSE_TIMEOUT_FAILED_2, value, Long.valueOf(DEFAULT_TIMEOUT)),
                 e);
             setTimeout(DEFAULT_TIMEOUT);
         }

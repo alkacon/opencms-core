@@ -2686,7 +2686,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             LOG.warn(
                 Messages.get().getBundle().key(
                     Messages.LOG_MM_WARNING_MEM_CONSUME_2,
-                    new Long(m_memoryCurrent.getUsage()),
+                    Long.valueOf(m_memoryCurrent.getUsage()),
                     new Integer(m_maxUsagePercent)));
         } else {
             m_warningLoggedSinceLastStatus = false;
@@ -2698,11 +2698,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 Messages.get().getBundle().key(
                     Messages.LOG_MM_WARNING_MEM_STATUS_6,
                     new Object[] {
-                        new Long(m_memoryCurrent.getMaxMemory()),
-                        new Long(m_memoryCurrent.getTotalMemory()),
-                        new Long(m_memoryCurrent.getFreeMemory()),
-                        new Long(m_memoryCurrent.getUsedMemory()),
-                        new Long(m_memoryCurrent.getUsage()),
+                        Long.valueOf(m_memoryCurrent.getMaxMemory()),
+                        Long.valueOf(m_memoryCurrent.getTotalMemory()),
+                        Long.valueOf(m_memoryCurrent.getFreeMemory()),
+                        Long.valueOf(m_memoryCurrent.getUsedMemory()),
+                        Long.valueOf(m_memoryCurrent.getUsage()),
                         new Integer(m_maxUsagePercent)}));
         } else {
             m_logCount++;
@@ -2740,25 +2740,25 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 Messages.get().getBundle().key(
                     Messages.LOG_MM_WARNING_MEM_STATUS_6,
                     new Object[] {
-                        new Long(m_memoryCurrent.getMaxMemory()),
-                        new Long(m_memoryCurrent.getTotalMemory()),
-                        new Long(m_memoryCurrent.getFreeMemory()),
-                        new Long(m_memoryCurrent.getUsedMemory()),
-                        new Long(m_memoryCurrent.getUsage()),
+                        Long.valueOf(m_memoryCurrent.getMaxMemory()),
+                        Long.valueOf(m_memoryCurrent.getTotalMemory()),
+                        Long.valueOf(m_memoryCurrent.getFreeMemory()),
+                        Long.valueOf(m_memoryCurrent.getUsedMemory()),
+                        Long.valueOf(m_memoryCurrent.getUsage()),
                         new Integer(m_maxUsagePercent),
-                        new Long(totalSize),
-                        new Long(totalSize / 1048576)})
+                        Long.valueOf(totalSize),
+                        Long.valueOf(totalSize / 1048576)})
 
             );
             LOG.info(
                 Messages.get().getBundle().key(
                     Messages.LOG_MM_WARNING_MEM_STATUS_AVG_6,
                     new Object[] {
-                        new Long(m_memoryAverage.getMaxMemory()),
-                        new Long(m_memoryAverage.getTotalMemory()),
-                        new Long(m_memoryAverage.getFreeMemory()),
-                        new Long(m_memoryAverage.getUsedMemory()),
-                        new Long(m_memoryAverage.getUsage()),
+                        Long.valueOf(m_memoryAverage.getMaxMemory()),
+                        Long.valueOf(m_memoryAverage.getTotalMemory()),
+                        Long.valueOf(m_memoryAverage.getFreeMemory()),
+                        Long.valueOf(m_memoryAverage.getUsedMemory()),
+                        Long.valueOf(m_memoryAverage.getUsage()),
                         new Integer(m_memoryAverage.getCount())}));
 
             CmsSessionManager sm = OpenCms.getSessionManager();

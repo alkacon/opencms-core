@@ -353,7 +353,7 @@ public class CmsImportFolder {
             if (!isFolder) {
                 // import file into cms
                 int type = OpenCms.getResourceManager().getDefaultTypeForName(path[path.length - 1]).getTypeId();
-                size = new Long(entry.getSize()).intValue();
+                size = Long.valueOf(entry.getSize()).intValue();
                 if (size == -1) {
                     buffer = CmsFileUtil.readFully(zipStreamIn, false);
                 } else {

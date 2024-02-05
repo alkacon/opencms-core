@@ -6950,7 +6950,7 @@ public final class CmsSecurityManager {
                         new Integer(publishTag),
                         dbc.currentProject().getName(),
                         dbc.currentProject().getUuid(),
-                        new Long(publishDate)}),
+                        Long.valueOf(publishDate)}),
                 e);
         } finally {
             dbc.clear();

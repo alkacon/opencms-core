@@ -1372,7 +1372,7 @@ public class CmsHtmlImport {
         try {
             fileStream = new FileInputStream(file);
             charsRead = 0;
-            size = new Long(file.length()).intValue();
+            size = Long.valueOf(file.length()).intValue();
             buffer = new byte[size];
             while (charsRead < size) {
                 charsRead += fileStream.read(buffer, charsRead, size - charsRead);
@@ -1647,7 +1647,7 @@ public class CmsHtmlImport {
                         importFile.mkdirs();
                     } else {
                         // create a file and read the content
-                        int size = new Long(entry.getSize()).intValue();
+                        int size = Long.valueOf(entry.getSize()).intValue();
                         if (size == -1) {
                             buffer = CmsFileUtil.readFully(importZip, false);
                         } else {

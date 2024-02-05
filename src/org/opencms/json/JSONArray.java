@@ -783,7 +783,7 @@ public class JSONArray {
      */
     public JSONArray put(int index, long value) throws JSONException {
 
-        put(index, new Long(value));
+        put(index, Long.valueOf(value));
         return this;
     }
 
@@ -841,7 +841,7 @@ public class JSONArray {
      */
     public JSONArray put(long value) {
 
-        put(new Long(value));
+        put(Long.valueOf(value));
         return this;
     }
 

@@ -256,7 +256,7 @@ public class CmsDisplayResource extends CmsDialog {
             }
             if (timeWarp != CmsContextInfo.CURRENT_TIME) {
                 // let's do the time warp again...
-                getSession().setAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME, new Long(timeWarp));
+                getSession().setAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME, Long.valueOf(timeWarp));
             }
         } else {
             // resource is not vaild in the time window set by the user,

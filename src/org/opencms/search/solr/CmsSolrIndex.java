@@ -1184,7 +1184,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
             // Fill in the time, the overall query took, including processing and permission check.
             checkQueryResponse.getResponseHeader().setVal(
                 checkQueryResponse.getResponseHeader().indexOf(QUERY_TIME_NAME, 0),
-                new Integer(new Long(System.currentTimeMillis() - startTime).intValue()));
+                new Integer(Long.valueOf(System.currentTimeMillis() - startTime).intValue()));
 
             // Fill in the highlighting information from the result query.
             if (query.getHighlight()) {
@@ -1216,11 +1216,11 @@ public class CmsSolrIndex extends CmsSearchIndex {
                 System.currentTimeMillis());
             if (LOG.isDebugEnabled()) {
                 Object[] logParams = new Object[] {
-                    new Long(System.currentTimeMillis() - startTime),
-                    new Long(result.getNumFound()),
-                    new Long(solrPermissionTime + solrResultTime),
-                    new Long(processTime),
-                    new Long(result.getHighlightEndTime() != 0 ? result.getHighlightEndTime() - startTime : 0)};
+                    Long.valueOf(System.currentTimeMillis() - startTime),
+                    Long.valueOf(result.getNumFound()),
+                    Long.valueOf(solrPermissionTime + solrResultTime),
+                    Long.valueOf(processTime),
+                    Long.valueOf(result.getHighlightEndTime() != 0 ? result.getHighlightEndTime() - startTime : 0)};
                 LOG.debug(
                     query.toString()
                         + "\n"

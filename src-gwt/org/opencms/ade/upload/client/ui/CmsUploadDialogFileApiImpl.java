@@ -51,7 +51,7 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
             return Messages.get().key(
                 Messages.GUI_UPLOAD_FILE_MAX_SIZE_REACHED_2,
                 CmsUploadButton.formatBytes(file.getFileSize()),
-                CmsUploadButton.formatBytes(new Long(MAX_UPLOAD_SIZE).intValue()));
+                CmsUploadButton.formatBytes(Long.valueOf(MAX_UPLOAD_SIZE).intValue()));
         }
         return super.getFileSizeTooLargeMessage(file);
     }
@@ -78,8 +78,8 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
         if (!getFilesToUpload().isEmpty() && (getContentLength() > MAX_UPLOAD_SIZE)) {
             String message = Messages.get().key(
                 Messages.GUI_UPLOAD_MAX_SIZE_REACHED_2,
-                CmsUploadButton.formatBytes(new Long(getContentLength()).intValue()),
-                CmsUploadButton.formatBytes(new Long(MAX_UPLOAD_SIZE).intValue()));
+                CmsUploadButton.formatBytes(Long.valueOf(getContentLength()).intValue()),
+                CmsUploadButton.formatBytes(Long.valueOf(MAX_UPLOAD_SIZE).intValue()));
             disableOKButton(message);
             StringBuffer buffer = new StringBuffer(64);
             buffer.append("<p class=\"");

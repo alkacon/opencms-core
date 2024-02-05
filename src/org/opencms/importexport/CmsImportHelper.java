@@ -144,7 +144,7 @@ public class CmsImportHelper {
 
                 ZipEntry entry = getZipEntry(filename);
                 InputStream stream = getZipFile().getInputStream(entry);
-                int size = new Long(entry.getSize()).intValue();
+                int size = Long.valueOf(entry.getSize()).intValue();
                 return CmsFileUtil.readFully(stream, size);
             } else {
                 // no - use directory

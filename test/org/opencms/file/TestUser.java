@@ -247,7 +247,7 @@ public class TestUser extends OpenCmsTestCase {
 
         Map map = new HashMap();
         map.put("one", new Integer(1));
-        map.put("two", new Long(2));
+        map.put("two", Long.valueOf(2));
         map.put("true", Boolean.TRUE);
 
         CmsUser user = cms.createUser("test", "test", "test", null);
@@ -260,7 +260,7 @@ public class TestUser extends OpenCmsTestCase {
         user = cms.readUser("test");
         map = (Map)user.getAdditionalInfo("map");
         assertEquals(new Integer(1), map.get("one"));
-        assertEquals(new Long(2), map.get("two"));
+        assertEquals(Long.valueOf(2), map.get("two"));
         assertEquals(Boolean.TRUE, map.get("true"));
         assertEquals(new Integer(2), user.getAdditionalInfo("int"));
         assertEquals(Boolean.TRUE, user.getAdditionalInfo("boolean"));

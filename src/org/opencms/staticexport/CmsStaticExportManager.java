@@ -2987,7 +2987,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         Messages.get().getBundle().key(
                             Messages.LOG_SET_LAST_MODIFIED_2,
                             exportFile.getName(),
-                            new Long((dateLastModified.longValue() / 1000) * 1000)));
+                            Long.valueOf((dateLastModified.longValue() / 1000) * 1000)));
                 }
             }
         } else {

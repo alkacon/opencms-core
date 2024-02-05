@@ -439,9 +439,9 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
             params.add(userId.toString());
             params.add(groupId.toString());
             params.add(groupId.toString());
-            params.add(new Long(System.currentTimeMillis()));
+            params.add(Long.valueOf(System.currentTimeMillis()));
             params.add(new Integer(pubTag));
-            params.add(new Long(System.currentTimeMillis()));
+            params.add(Long.valueOf(System.currentTimeMillis()));
             params.add(userId.toString());
             params.add(CmsOrganizationalUnit.SEPARATOR);
 
@@ -529,10 +529,10 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
                 params.add(db.getResultSet().getString("USER_ID"));
                 params.add(db.getResultSet().getString("GROUP_ID"));
                 params.add(db.getResultSet().getString("MANAGERGROUP_ID"));
-                params.add(new Long(db.getResultSet().getLong("DATE_CREATED")));
+                params.add(Long.valueOf(db.getResultSet().getLong("DATE_CREATED")));
                 params.add(new Integer(db.getResultSet().getInt("PUBLISH_TAG")));
                 Date date = db.getResultSet().getDate("PROJECT_PUBLISHDATE");
-                params.add(new Long(date.getTime()));
+                params.add(Long.valueOf(date.getTime()));
                 params.add(db.getResultSet().getString("PROJECT_PUBLISHED_BY"));
                 params.add(db.getResultSet().getString("PROJECT_OU"));
 

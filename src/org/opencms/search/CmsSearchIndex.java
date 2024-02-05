@@ -1115,10 +1115,10 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
         if (LOG.isDebugEnabled()) {
             timeTotal += System.currentTimeMillis();
             Object[] logParams = new Object[] {
-                new Long(hits == null ? 0 : hits.totalHits.value),
-                new Long(timeTotal),
-                new Long(timeLucene),
-                new Long(timeResultProcessing)};
+                Long.valueOf(hits == null ? 0 : hits.totalHits.value),
+                Long.valueOf(timeTotal),
+                Long.valueOf(timeLucene),
+                Long.valueOf(timeResultProcessing)};
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_STAT_RESULTS_TIME_4, logParams));
         }
 

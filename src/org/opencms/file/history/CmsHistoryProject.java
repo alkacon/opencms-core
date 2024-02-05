@@ -238,7 +238,7 @@ public class CmsHistoryProject extends CmsProject {
     @Override
     public int hashCode() {
 
-        return (new Long(m_datePublished)).hashCode();
+        return (Long.valueOf(m_datePublished)).hashCode();
     }
 
     /**

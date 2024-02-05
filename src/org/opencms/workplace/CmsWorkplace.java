@@ -2310,7 +2310,7 @@ public abstract class CmsWorkplace {
         } else {
             // this is dominant: if configured we will use it
             if (timeWarpSet != timeWarpConf) {
-                session.setAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME, new Long(timeWarpConf));
+                session.setAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME, Long.valueOf(timeWarpConf));
             }
         }
     }

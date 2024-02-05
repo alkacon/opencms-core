@@ -1033,7 +1033,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                         // this is a non "on-demand" static export request, don't write to the response stream
                         req.setAttribute(
                             CmsRequestUtil.HEADER_OPENCMS_EXPORT,
-                            new Long(controller.getDateLastModified()));
+                            Long.valueOf(controller.getDateLastModified()));
                     } else if (controller.isTop()) {
                         // process headers and write output if this is the "top" request/response
                         res.setContentLength(result.length);

@@ -61,7 +61,7 @@ public class CmsSolrIndexWriter implements I_CmsSolrIndexWriter {
     protected static final Log LOG = CmsLog.getLog(CmsSolrIndexWriter.class);
 
     /** The time to wait before a commit is sent to the Solr index.  */
-    private int m_commitMs = new Long(
+    private int m_commitMs = Long.valueOf(
         OpenCms.getSearchManager().getSolrServerConfiguration().getSolrCommitMs()).intValue();
 
     /** The Solr index. */

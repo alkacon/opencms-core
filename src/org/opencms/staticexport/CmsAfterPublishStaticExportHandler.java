@@ -473,7 +473,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
     //                    LOG.debug(Messages.get().getBundle().key(
     //                        Messages.LOG_IF_MODIFIED_SINCE_SET_2,
     //                        exportFile.getName(),
-    //                        new Long((dateLastModified / 1000) * 1000)));
+    //                        Long.valueOf((dateLastModified / 1000) * 1000)));
     //                }
     //                if (cookies.length() > 0) {
     //                    // set the cookies, included the session id to keep the same session
@@ -578,7 +578,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                 Messages.get().getBundle().key(
                     Messages.LOG_IF_MODIFIED_SINCE_SET_2,
                     exportFile.getName(),
-                    new Long((dateLastModified / 1000) * 1000)));
+                    Long.valueOf((dateLastModified / 1000) * 1000)));
         }
         if (cookies.length() > 0) {
             // set the cookies, included the session id to keep the same session

@@ -1296,7 +1296,7 @@ public class JSONObject {
      */
     public JSONObject put(String key, long value) throws JSONException {
 
-        put(key, new Long(value));
+        put(key, Long.valueOf(value));
         return this;
     }
 
