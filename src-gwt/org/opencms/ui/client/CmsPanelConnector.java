@@ -81,7 +81,7 @@ public class CmsPanelConnector extends PanelConnector {
 
         super.updateFromUIDL(uidl, client);
         if (isRealUpdate(uidl)) {
-            m_scrollTop = new Integer(getState().scrollTop);
+            m_scrollTop = Integer.valueOf(getState().scrollTop);
         }
     }
 

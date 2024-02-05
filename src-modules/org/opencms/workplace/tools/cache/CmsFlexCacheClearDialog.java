@@ -149,7 +149,7 @@ public class CmsFlexCacheClearDialog extends CmsWidgetDialog {
             OpenCms.fireCmsEvent(
                 new CmsEvent(
                     I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
-                    Collections.<String, Object> singletonMap(CmsFlexCache.CACHE_ACTION, new Integer(action))));
+                    Collections.<String, Object> singletonMap(CmsFlexCache.CACHE_ACTION, Integer.valueOf(action))));
         } catch (Exception e) {
             setCommitErrors(Collections.singletonList((Throwable)e));
         }
@@ -167,7 +167,7 @@ public class CmsFlexCacheClearDialog extends CmsWidgetDialog {
         OpenCms.fireCmsEvent(
             new CmsEvent(
                 I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
-                Collections.<String, Object> singletonMap("action", new Integer(CmsFlexCache.CLEAR_ENTRIES))));
+                Collections.<String, Object> singletonMap("action", Integer.valueOf(CmsFlexCache.CLEAR_ENTRIES))));
 
         setAction(CmsDialog.ACTION_CANCEL);
         actionCloseDialog();

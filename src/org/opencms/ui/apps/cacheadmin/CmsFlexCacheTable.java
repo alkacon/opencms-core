@@ -162,7 +162,7 @@ public class CmsFlexCacheTable extends Table {
         m_container.addContainerProperty(PROP_RESOURCENAME, String.class, "");
         m_container.addContainerProperty(PROP_PROJECT, String.class, "");
         m_container.addContainerProperty(PROP_KEY, String.class, "");
-        m_container.addContainerProperty(PROP_VARIATIONS, Integer.class, new Integer(0));
+        m_container.addContainerProperty(PROP_VARIATIONS, Integer.class, Integer.valueOf(0));
 
         setContainerDataSource(m_container);
 
@@ -331,7 +331,7 @@ public class CmsFlexCacheTable extends Table {
             item.getItemProperty(PROP_PROJECT).setValue(project);
             item.getItemProperty(PROP_KEY).setValue(key);
             item.getItemProperty(PROP_VARIATIONS).setValue(
-                new Integer(m_cache.getCachedVariations(resource, A_CmsUI.getCmsObject()).size()));
+                Integer.valueOf(m_cache.getCachedVariations(resource, A_CmsUI.getCmsObject()).size()));
         }
     }
 }

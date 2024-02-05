@@ -157,8 +157,8 @@ public class CmsGlobalConfigurationCacheEventHandler implements I_CmsEventListen
         CmsResource resource = null;
         List<CmsResource> resources = null;
         List<Object> irrelevantChangeTypes = new ArrayList<Object>();
-        irrelevantChangeTypes.add(new Integer(CmsDriverManager.NOTHING_CHANGED));
-        irrelevantChangeTypes.add(new Integer(CmsDriverManager.CHANGED_PROJECT));
+        irrelevantChangeTypes.add(Integer.valueOf(CmsDriverManager.NOTHING_CHANGED));
+        irrelevantChangeTypes.add(Integer.valueOf(CmsDriverManager.CHANGED_PROJECT));
         //System.out.println();
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED:

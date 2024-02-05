@@ -259,8 +259,8 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                 thread.setDescription(
                     org.opencms.workplace.commons.Messages.get().getBundle(thread.getLocale()).key(
                         org.opencms.workplace.commons.Messages.GUI_PROGRESS_PUBLISH_STEP3_2,
-                        new Integer(count),
-                        new Integer(resourceNames.size())));
+                        Integer.valueOf(count),
+                        Integer.valueOf(resourceNames.size())));
             }
 
             CmsListItem item = itResourceNames.next();

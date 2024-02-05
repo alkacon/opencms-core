@@ -403,7 +403,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
             CmsLog.INIT.info(
                 Messages.get().getBundle().key(
                     Messages.INIT_VFS_DEFAULT_FILE_2,
-                    new Integer(m_defaultFiles.size()),
+                    Integer.valueOf(m_defaultFiles.size()),
                     defaultFile));
         }
     }

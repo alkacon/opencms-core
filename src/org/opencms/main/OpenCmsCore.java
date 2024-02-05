@@ -488,7 +488,7 @@ public final class OpenCmsCore {
             LOG.warn(
                 Messages.get().getBundle().key(
                     Messages.LOG_INIT_INVALID_ERROR_2,
-                    new Integer(m_instance.getRunLevel()),
+                    Integer.valueOf(m_instance.getRunLevel()),
                     errorCondition.key()));
         }
     }
@@ -2324,7 +2324,7 @@ public final class OpenCmsCore {
                             Messages.INIT_SHUTDOWN_START_1,
                             getSystemInfo().getVersionNumber() + " [" + getSystemInfo().getVersionId() + "]"));
                     CmsLog.INIT.info(
-                        Messages.get().getBundle().key(Messages.INIT_CURRENT_RUNLEVEL_1, new Integer(getRunLevel())));
+                        Messages.get().getBundle().key(Messages.INIT_CURRENT_RUNLEVEL_1, Integer.valueOf(getRunLevel())));
                     CmsLog.INIT.info(
                         Messages.get().getBundle().key(
                             Messages.INIT_SHUTDOWN_TIME_1,
@@ -2567,8 +2567,8 @@ public final class OpenCmsCore {
                 CmsLog.INIT.error(
                     Messages.get().getBundle().key(
                         Messages.LOG_WRONG_INIT_SEQUENCE_2,
-                        new Integer(3),
-                        new Integer(getRunLevel())));
+                        Integer.valueOf(3),
+                        Integer.valueOf(getRunLevel())));
                 return m_instance;
             }
 
@@ -2607,8 +2607,8 @@ public final class OpenCmsCore {
                 CmsLog.INIT.error(
                     Messages.get().getBundle().key(
                         Messages.LOG_WRONG_INIT_SEQUENCE_2,
-                        new Integer(4),
-                        new Integer(getRunLevel())));
+                        Integer.valueOf(4),
+                        Integer.valueOf(getRunLevel())));
                 return m_instance;
             }
 
@@ -3395,8 +3395,8 @@ public final class OpenCmsCore {
                     CmsLog.INIT.info(
                         Messages.get().getBundle().key(
                             Messages.INIT_RUNLEVEL_CHANGE_2,
-                            new Integer(m_instance.m_runLevel),
-                            new Integer(level)));
+                            Integer.valueOf(m_instance.m_runLevel),
+                            Integer.valueOf(level)));
                 }
             }
             m_instance.m_runLevel = level;

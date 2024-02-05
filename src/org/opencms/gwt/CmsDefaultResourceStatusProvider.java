@@ -585,7 +585,7 @@ public class CmsDefaultResourceStatusProvider {
                     j += 1;
                 }
 
-                m_rankCache.put(r.getSiteRoot(), new Integer(result));
+                m_rankCache.put(r.getSiteRoot(), Integer.valueOf(result));
                 return result;
             }
         });

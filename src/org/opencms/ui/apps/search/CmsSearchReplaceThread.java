@@ -306,7 +306,7 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                 report.println(
                     Messages.get().container(
                         Messages.RPT_SOURCESEARCH_NR_OF_FILES_TO_SEARCH_IN_1,
-                        new Integer(resources.size())),
+                        Integer.valueOf(resources.size())),
                     I_CmsReport.FORMAT_NOTE);
                 if (m_replace) {
                     // start searching and replacing
@@ -721,29 +721,29 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
         report.println(
             Messages.get().container(
                 Messages.RPT_SOURCESEARCH_NR_OF_FILES_TO_SEARCH_IN_1,
-                new Integer(nrOfFiles).toString()),
+                Integer.valueOf(nrOfFiles).toString()),
             I_CmsReport.FORMAT_NOTE);
         report.println(
             Messages.get().container(
                 Messages.RPT_SOURCESEARCH_NR_OF_FILES_MATCHED_1,
-                new Integer(m_matchedResources.size()).toString()),
+                Integer.valueOf(m_matchedResources.size()).toString()),
             I_CmsReport.FORMAT_NOTE);
         report.println(
             Messages.get().container(
                 Messages.RPT_SOURCESEARCH_SEARCH_ERROR_COUNT_1,
-                new Integer(m_errorSearch).toString()),
+                Integer.valueOf(m_errorSearch).toString()),
             I_CmsReport.FORMAT_NOTE);
         if (m_replace) {
             // replace report entries
             report.println(
                 Messages.get().container(
                     Messages.RPT_SOURCESEARCH_REPLACE_ERROR_COUNT_1,
-                    new Integer(m_errorUpdate).toString()),
+                    Integer.valueOf(m_errorUpdate).toString()),
                 I_CmsReport.FORMAT_NOTE);
             report.println(
                 Messages.get().container(
                     Messages.RPT_SOURCESEARCH_LOCKED_FILES_1,
-                    new Integer(m_lockedFiles).toString()),
+                    Integer.valueOf(m_lockedFiles).toString()),
                 I_CmsReport.FORMAT_NOTE);
             if (m_matchedResources.size() == 0) {
                 report.println(
@@ -865,7 +865,7 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                 } else if ((m_settings.getTypesArray() != null) && (m_settings.getTypesArray().length > 0)) {
                     query.setResourceTypes(m_settings.getTypesArray());
                 }
-                query.setRows(new Integer(MAX_PROCESSED_SOLR_RESULTS));
+                query.setRows(Integer.valueOf(MAX_PROCESSED_SOLR_RESULTS));
                 query.ensureParameters();
                 try {
                     resources.addAll(

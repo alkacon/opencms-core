@@ -162,7 +162,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         // facet.query=Title_prop:OpenCms
         query.addFacetQuery("Title_prop:OpenCms");
         // rows=0
-        query.setRows(new Integer(0));
+        query.setRows(Integer.valueOf(0));
 
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
         CmsSolrResultList results = index.search(getCmsObject(), query);
@@ -878,7 +878,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         query.setTextSearchFields("pla");
         query.setLocales(Locale.GERMAN);
         query.setFields("pla,plub");
-        query.setRows(new Integer(1000));
+        query.setRows(Integer.valueOf(1000));
         query.setRequestHandler("lucene");
         query.setResourceTypes("article");
         String ex = "q={!q.op=OR type=lucene qf=text_de}test&fl=pla,plub&qt=lucene&rows=1000&fq=parent-folders:\"/\"&fq=expired:[NOW TO *]&fq=released:[* TO NOW]&fq=con_locales:de&fq=type:article";
@@ -942,7 +942,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         // third run use date last modified
         long lastTime = 0;
         q = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(query));
-        q.setRows(new Integer(100));
+        q.setRows(Integer.valueOf(100));
         orders = new LinkedHashMap<String, ORDER>();
         orders.put("lastmodified", ORDER.desc);
         q.addSortFieldOrders(orders);

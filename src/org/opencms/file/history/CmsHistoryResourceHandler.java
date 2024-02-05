@@ -173,7 +173,7 @@ public class CmsHistoryResourceHandler implements I_CmsResourceInit {
 
                             // extract the "real" resourcename
                             uri = uri.substring(HISTORY_HANDLER.length(), uri.length());
-                            int id = new Integer(version).intValue();
+                            int id = Integer.valueOf(version).intValue();
                             if (id == CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION) {
                                 resource = new CmsHistoryFile(cms.readFile(uri, CmsResourceFilter.IGNORE_EXPIRATION));
                             } else {

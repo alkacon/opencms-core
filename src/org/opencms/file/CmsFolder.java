@@ -157,7 +157,7 @@ public class CmsFolder extends CmsResource {
             return OpenCms.getResourceManager().getResourceType(typeId).isFolder();
         } catch (CmsLoaderException e) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(Messages.ERR_UNKNOWN_RESOURCE_TYPE_1, new Integer(typeId)), e);
+                LOG.warn(Messages.get().getBundle().key(Messages.ERR_UNKNOWN_RESOURCE_TYPE_1, Integer.valueOf(typeId)), e);
             }
         }
         return false;

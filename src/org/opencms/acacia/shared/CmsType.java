@@ -97,8 +97,8 @@ public class CmsType implements Serializable {
 
         m_names.add(attributeName);
         m_types.put(attributeName, attributeType);
-        m_mins.put(attributeName, new Integer(minOccurrence));
-        m_maxs.put(attributeName, new Integer(maxOccurrence));
+        m_mins.put(attributeName, Integer.valueOf(minOccurrence));
+        m_maxs.put(attributeName, Integer.valueOf(maxOccurrence));
     }
 
     /**

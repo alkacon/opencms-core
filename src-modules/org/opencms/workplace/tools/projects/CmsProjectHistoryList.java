@@ -163,7 +163,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
             CmsListItem item = (CmsListItem)itProjects.next();
             try {
                 if (detailId.equals(LIST_DETAIL_RESOURCES)) {
-                    CmsHistoryProject project = getCms().readHistoryProject(new Integer(item.getId()).intValue());
+                    CmsHistoryProject project = getCms().readHistoryProject(Integer.valueOf(item.getId()).intValue());
                     StringBuffer html = new StringBuffer(512);
                     Iterator resources = project.getProjectResources().iterator();
                     while (resources.hasNext()) {
@@ -190,7 +190,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
         Iterator itProjects = projects.iterator();
         while (itProjects.hasNext()) {
             CmsHistoryProject project = (CmsHistoryProject)itProjects.next();
-            CmsListItem item = getList().newItem(new Integer(project.getPublishTag()).toString());
+            CmsListItem item = getList().newItem(Integer.valueOf(project.getPublishTag()).toString());
             item.set(LIST_COLUMN_NAME, project.getName());
             item.set(LIST_COLUMN_DESCRIPTION, project.getDescription());
             try {

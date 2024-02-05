@@ -120,7 +120,7 @@ public abstract class A_CmsPublishGroupHelper<RESOURCE, GROUP> {
             long dayDifference = getDayDifference(lastDate, date);
             dayCounter += dayDifference;
             lastDate = date;
-            days.put(dateObj, new Integer(dayCounter));
+            days.put(dateObj, Integer.valueOf(dayCounter));
         }
         return days;
     }

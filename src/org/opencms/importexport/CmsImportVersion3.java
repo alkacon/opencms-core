@@ -503,7 +503,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                 destination,
                 resType.getTypeId(),
                 resType.isFolder(),
-                new Integer(flags).intValue(),
+                Integer.valueOf(flags).intValue(),
                 m_cms.getRequestContext().getCurrentProject().getUuid(),
                 CmsResource.STATE_NEW,
                 datecreated,

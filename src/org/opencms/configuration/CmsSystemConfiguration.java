@@ -1475,8 +1475,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         // version history
         Element historyElement = systemElement.addElement(N_VERSIONHISTORY);
         historyElement.addAttribute(A_ENABLED, String.valueOf(m_historyEnabled));
-        historyElement.addAttribute(A_COUNT, new Integer(m_historyVersions).toString());
-        historyElement.addAttribute(A_DELETED, new Integer(m_historyVersionsAfterDeletion).toString());
+        historyElement.addAttribute(A_COUNT, Integer.valueOf(m_historyVersions).toString());
+        historyElement.addAttribute(A_DELETED, Integer.valueOf(m_historyVersionsAfterDeletion).toString());
 
         // resourceinit
         Element resourceinitElement = systemElement.addElement(N_RESOURCEINIT);
@@ -2616,8 +2616,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 Messages.get().getBundle().key(
                     Messages.INIT_HISTORY_SETTINGS_3,
                     Boolean.valueOf(m_historyEnabled),
-                    new Integer(m_historyVersions),
-                    new Integer(m_historyVersionsAfterDeletion)));
+                    Integer.valueOf(m_historyVersions),
+                    Integer.valueOf(m_historyVersionsAfterDeletion)));
         }
     }
 
@@ -2705,8 +2705,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             CmsLog.INIT.info(
                 Messages.get().getBundle().key(
                     Messages.INIT_LOGINMANAGER_3,
-                    new Integer(disableMinutes),
-                    new Integer(maxBadAttempts),
+                    Integer.valueOf(disableMinutes),
+                    Integer.valueOf(maxBadAttempts),
                     Boolean.valueOf(enableSecurity)));
         }
     }
@@ -2746,9 +2746,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     public void setNotificationTime(String notificationTime) {
 
         try {
-            m_notificationTime = new Integer(notificationTime);
+            m_notificationTime = Integer.valueOf(notificationTime);
         } catch (Throwable t) {
-            m_notificationTime = new Integer(-1);
+            m_notificationTime = Integer.valueOf(-1);
         }
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_NOTIFICATION_TIME_1, m_notificationTime));
@@ -2936,7 +2936,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         }
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(
-                Messages.get().getBundle().key(Messages.INIT_TEMPFILE_PROJECT_ID_1, new Integer(m_tempFileProjectId)));
+                Messages.get().getBundle().key(Messages.INIT_TEMPFILE_PROJECT_ID_1, Integer.valueOf(m_tempFileProjectId)));
         }
     }
 

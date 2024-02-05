@@ -163,8 +163,8 @@ public final class CmsDbPoolV11 {
                             new Object[] {
                                 getPoolUrl(),
                                 m_dataSource.getJdbcUrl(),
-                                new Integer(connectionTests),
-                                new Integer(connectionsWait)}));
+                                Integer.valueOf(connectionTests),
+                                Integer.valueOf(connectionsWait)}));
                 }
                 Thread.sleep(connectionsWait);
             } finally {

@@ -563,7 +563,7 @@ public class CmsXmlContentTypeManager {
             CmsLog.INIT.info(
                 Messages.get().getBundle().key(
                     Messages.INIT_NUM_ST_INITIALIZED_1,
-                    new Integer(m_registeredTypes.size())));
+                    Integer.valueOf(m_registeredTypes.size())));
         }
     }
 

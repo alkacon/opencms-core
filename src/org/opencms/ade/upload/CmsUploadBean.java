@@ -708,15 +708,15 @@ public class CmsUploadBean extends CmsJspBean {
             return CmsCollectionsGenericWrapper.list(fu.parseRequest(getRequest()));
         } catch (SizeLimitExceededException e) {
             // request size is larger than maximum allowed request size, throw an error
-            Integer actualSize = new Integer((int)(e.getActualSize() / 1024));
-            Integer maxSize = new Integer((int)(e.getPermittedSize() / 1024));
+            Integer actualSize = Integer.valueOf((int)(e.getActualSize() / 1024));
+            Integer maxSize = Integer.valueOf((int)(e.getPermittedSize() / 1024));
             throw new CmsUploadException(
                 m_bundle.key(org.opencms.ade.upload.Messages.ERR_UPLOAD_REQUEST_SIZE_LIMIT_2, actualSize, maxSize),
                 e);
         } catch (FileSizeLimitExceededException e) {
             // file size is larger than maximum allowed file size, throw an error
-            Integer actualSize = new Integer((int)(e.getActualSize() / 1024));
-            Integer maxSize = new Integer((int)(e.getPermittedSize() / 1024));
+            Integer actualSize = Integer.valueOf((int)(e.getActualSize() / 1024));
+            Integer maxSize = Integer.valueOf((int)(e.getPermittedSize() / 1024));
             throw new CmsUploadException(
                 m_bundle.key(
                     org.opencms.ade.upload.Messages.ERR_UPLOAD_FILE_SIZE_LIMIT_3,

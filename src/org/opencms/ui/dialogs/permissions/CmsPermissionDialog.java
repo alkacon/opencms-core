@@ -497,7 +497,7 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
         Label label = new Label(
             CmsVaadinUtils.getMessageText(
                 Messages.GUI_PERMISSION_COUNT_1,
-                new Integer(table.getContainerDataSource().size())));
+                Integer.valueOf(table.getContainerDataSource().size())));
         label.addStyleName("o-report");
         hl.addComponent(label);
         TextField tableFilter = new TextField();

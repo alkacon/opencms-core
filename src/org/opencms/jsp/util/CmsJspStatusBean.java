@@ -552,7 +552,7 @@ public class CmsJspStatusBean extends CmsJspActionElement {
                 if (!"none".equals(jkStatusCode) && !"none".equals(jkUri)) {
                     m_servletName = jkServletName;
                     m_requestUri = jkUri;
-                    m_statusCode = new Integer(jkStatusCode);
+                    m_statusCode = Integer.valueOf(jkStatusCode);
                 }
             } catch (NullPointerException e) {
                 // attibute not set, ignore

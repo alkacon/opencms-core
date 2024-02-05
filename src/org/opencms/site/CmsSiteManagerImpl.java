@@ -1256,7 +1256,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             CmsLog.INIT.info(
                 Messages.get().getBundle().key(
                     Messages.INIT_NUM_SITE_ROOTS_CONFIGURED_1,
-                    new Integer((m_siteMatcherSites.size() + ((m_defaultUri != null) ? 1 : 0)))));
+                    Integer.valueOf((m_siteMatcherSites.size() + ((m_defaultUri != null) ? 1 : 0)))));
         }
 
         try {

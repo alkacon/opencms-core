@@ -177,7 +177,7 @@ public enum CmsLogEntryType {
         throw new CmsIllegalArgumentException(
             org.opencms.db.Messages.get().container(
                 org.opencms.db.Messages.ERR_MODE_ENUM_PARSE_2,
-                new Integer(id),
+                Integer.valueOf(id),
                 CmsLogEntryType.class.getName()));
     }
 

@@ -65,7 +65,7 @@ public class CmsNewsletterContent implements I_CmsNewsletterContent {
      */
     public int compareTo(I_CmsNewsletterContent o) {
 
-        return new Integer(m_order).compareTo(new Integer(((CmsNewsletterContent)o).getOrder()));
+        return Integer.valueOf(m_order).compareTo(Integer.valueOf(((CmsNewsletterContent)o).getOrder()));
     }
 
     /**

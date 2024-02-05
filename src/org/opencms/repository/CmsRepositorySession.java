@@ -382,7 +382,7 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_LIST_ITEMS_SUCESS_1, new Integer(ret.size())));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_LIST_ITEMS_SUCESS_1, Integer.valueOf(ret.size())));
         }
 
         return ret;

@@ -536,7 +536,7 @@ public class CmsSessionsTable extends Table {
                         }
                         return CmsVaadinUtils.getMessageText(
                             Messages.GUI_MESSAGES_LAST_ACTIVITY_MINUTES_1,
-                            new Integer(ret[1]));
+                            Integer.valueOf(ret[1]));
                     }
                     return null;
                 }

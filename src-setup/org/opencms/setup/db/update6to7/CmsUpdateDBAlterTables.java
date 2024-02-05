@@ -225,7 +225,7 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
                         String structureId = db.getResultSet().getString("STRUCTURE_ID");
                         int version = db.getResultSet().getInt("STRUCTURE_VERSION");
                         List<Object> params = new ArrayList<Object>();
-                        params.add(new Integer(version)); // add the version
+                        params.add(Integer.valueOf(version)); // add the version
                         params.add(structureId);
                         dbCon.updateSqlStatement(updateQuery, replacer, params);
                     }
@@ -298,7 +298,7 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
                         String resourceId = db.getResultSet().getString("RESOURCE_ID");
                         int version = db.getResultSet().getInt("RESOURCE_VERSION");
                         List<Object> params = new ArrayList<Object>();
-                        params.add(new Integer(version)); // add the version
+                        params.add(Integer.valueOf(version)); // add the version
                         params.add(resourceId);
                         dbCon.updateSqlStatement(updateQuery, replacer, params);
                     }

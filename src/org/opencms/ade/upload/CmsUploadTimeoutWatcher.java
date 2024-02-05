@@ -99,7 +99,7 @@ public class CmsUploadTimeoutWatcher extends Thread implements Serializable {
                     m_listener.cancelUpload(new CmsUploadException(
                         Messages.get().getBundle().key(
                             Messages.ERR_UPLOAD_FROZEN_1,
-                            new Integer(CmsUploadBean.DEFAULT_UPLOAD_TIMEOUT / 1000))));
+                            Integer.valueOf(CmsUploadBean.DEFAULT_UPLOAD_TIMEOUT / 1000))));
                 } else {
                     run();
                 }

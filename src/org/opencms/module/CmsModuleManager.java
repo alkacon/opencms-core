@@ -117,7 +117,7 @@ public class CmsModuleManager {
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(
-                Messages.get().getBundle().key(Messages.INIT_NUM_MODS_CONFIGURED_1, new Integer(m_modules.size())));
+                Messages.get().getBundle().key(Messages.INIT_NUM_MODS_CONFIGURED_1, Integer.valueOf(m_modules.size())));
         }
         m_moduleExportPoints = Collections.emptySet();
     }
@@ -440,7 +440,7 @@ public class CmsModuleManager {
         } else {
             // invalid mode selected
             throw new CmsRuntimeException(
-                Messages.get().container(Messages.ERR_CHECK_DEPENDENCY_INVALID_MODE_1, new Integer(mode)));
+                Messages.get().container(Messages.ERR_CHECK_DEPENDENCY_INVALID_MODE_1, Integer.valueOf(mode)));
         }
 
         return result;
@@ -901,7 +901,7 @@ public class CmsModuleManager {
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(
-                Messages.get().getBundle().key(Messages.INIT_NUM_CLASSES_INITIALIZED_1, new Integer(count)));
+                Messages.get().getBundle().key(Messages.INIT_NUM_CLASSES_INITIALIZED_1, Integer.valueOf(count)));
         }
     }
 
@@ -1003,7 +1003,7 @@ public class CmsModuleManager {
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(
-                Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_NUM_MOD_CLASSES_1, new Integer(count)));
+                Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_NUM_MOD_CLASSES_1, Integer.valueOf(count)));
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {

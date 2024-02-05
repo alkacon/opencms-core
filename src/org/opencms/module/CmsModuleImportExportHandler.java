@@ -724,10 +724,10 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                             org.opencms.loader.Messages.ERR_CONFLICTING_MODULE_RESOURCE_TYPES_5,
                             new Object[] {
                                 type.getTypeName(),
-                                new Integer(type.getTypeId()),
+                                Integer.valueOf(type.getTypeId()),
                                 importedModule.getName(),
                                 conflictingType.getTypeName(),
-                                new Integer(conflictingType.getTypeId())}));
+                                Integer.valueOf(conflictingType.getTypeId())}));
                 }
             }
             // now check against the other resource types of the imported module
@@ -740,9 +740,9 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                         new Object[] {
                             importedModule.getName(),
                             type.getTypeName(),
-                            new Integer(type.getTypeId()),
+                            Integer.valueOf(type.getTypeId()),
                             conflictingType.getTypeName(),
-                            new Integer(conflictingType.getTypeId())}));
+                            Integer.valueOf(conflictingType.getTypeId())}));
             }
             // add the resource type for the next check
             checkedTypes.add(type);

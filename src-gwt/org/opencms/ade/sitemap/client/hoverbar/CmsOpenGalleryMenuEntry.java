@@ -67,7 +67,7 @@ public class CmsOpenGalleryMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsGalleryConfiguration configuration = new CmsGalleryConfiguration();
         List<String> typeNames = controller.getGalleryType(
-            new Integer(entry.getResourceTypeId())).getContentTypeNames();
+            Integer.valueOf(entry.getResourceTypeId())).getContentTypeNames();
         configuration.setSearchTypes(typeNames);
         configuration.setResourceTypes(typeNames);
         configuration.setGalleryMode(GalleryMode.adeView);

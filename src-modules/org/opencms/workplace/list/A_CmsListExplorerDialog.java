@@ -471,7 +471,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
      */
     protected boolean isColumnVisible(int colFlag) {
 
-        Integer key = new Integer(colFlag);
+        Integer key = Integer.valueOf(colFlag);
         if (m_colVisibilities.containsKey(key)) {
             return m_colVisibilities.get(key).booleanValue();
         }
@@ -692,13 +692,13 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
         setColumnVisibility(CmsUserSettings.FILELIST_STATE, preferences);
         setColumnVisibility(CmsUserSettings.FILELIST_LOCKEDBY, preferences);
         // set explorer no configurable column visibilities
-        m_colVisibilities.put(new Integer(LIST_COLUMN_TYPEICON.hashCode()), Boolean.TRUE);
-        m_colVisibilities.put(new Integer(LIST_COLUMN_LOCKICON.hashCode()), Boolean.TRUE);
-        m_colVisibilities.put(new Integer(LIST_COLUMN_PROJSTATEICON.hashCode()), Boolean.TRUE);
-        m_colVisibilities.put(new Integer(LIST_COLUMN_NAME.hashCode()), Boolean.TRUE);
-        m_colVisibilities.put(new Integer(LIST_COLUMN_EDIT.hashCode()), Boolean.FALSE);
+        m_colVisibilities.put(Integer.valueOf(LIST_COLUMN_TYPEICON.hashCode()), Boolean.TRUE);
+        m_colVisibilities.put(Integer.valueOf(LIST_COLUMN_LOCKICON.hashCode()), Boolean.TRUE);
+        m_colVisibilities.put(Integer.valueOf(LIST_COLUMN_PROJSTATEICON.hashCode()), Boolean.TRUE);
+        m_colVisibilities.put(Integer.valueOf(LIST_COLUMN_NAME.hashCode()), Boolean.TRUE);
+        m_colVisibilities.put(Integer.valueOf(LIST_COLUMN_EDIT.hashCode()), Boolean.FALSE);
         m_colVisibilities.put(
-            new Integer(LIST_COLUMN_SITE.hashCode()),
+            Integer.valueOf(LIST_COLUMN_SITE.hashCode()),
             Boolean.valueOf(OpenCms.getSiteManager().getSites().size() > 1));
     }
 
@@ -710,7 +710,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
      */
     protected void setColumnVisibility(int colFlag, int prefs) {
 
-        Integer key = new Integer(colFlag);
+        Integer key = Integer.valueOf(colFlag);
         Boolean value = Boolean.valueOf((prefs & colFlag) > 0);
         m_colVisibilities.put(key, value);
     }

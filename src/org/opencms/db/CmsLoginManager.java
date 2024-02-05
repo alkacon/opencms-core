@@ -89,7 +89,7 @@ public class CmsLoginManager {
          */
         protected Integer getInvalidLoginCount() {
 
-            return new Integer(m_invalidLoginCount);
+            return Integer.valueOf(m_invalidLoginCount);
         }
 
         /**

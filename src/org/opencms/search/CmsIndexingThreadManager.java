@@ -171,8 +171,8 @@ public class CmsIndexingThreadManager {
                     LOG.warn(
                         Messages.get().getBundle().key(
                             Messages.LOG_WAITING_ABANDONED_THREADS_2,
-                            new Integer(m_abandonedCounter),
-                            new Integer((m_startedCounter - m_returnedCounter))));
+                            Integer.valueOf(m_abandonedCounter),
+                            Integer.valueOf((m_startedCounter - m_returnedCounter))));
                 }
                 m_lastLogWarnTime = currentTime;
             }
@@ -181,8 +181,8 @@ public class CmsIndexingThreadManager {
                 LOG.error(
                     Messages.get().getBundle().key(
                         Messages.LOG_WAITING_ABANDONED_THREADS_2,
-                        new Integer(m_abandonedCounter),
-                        new Integer((m_startedCounter - m_returnedCounter))));
+                        Integer.valueOf(m_abandonedCounter),
+                        Integer.valueOf((m_startedCounter - m_returnedCounter))));
                 m_lastLogErrorTime = currentTime;
             }
         }
@@ -211,9 +211,9 @@ public class CmsIndexingThreadManager {
             CmsMessageContainer message = Messages.get().container(
                 Messages.RPT_SEARCH_INDEXING_STATS_4,
                 new Object[] {
-                    new Integer(m_startedCounter),
-                    new Integer(m_returnedCounter),
-                    new Integer(m_abandonedCounter),
+                    Integer.valueOf(m_startedCounter),
+                    Integer.valueOf(m_returnedCounter),
+                    Integer.valueOf(m_abandonedCounter),
                     report.formatRuntime()});
 
             report.println(message);

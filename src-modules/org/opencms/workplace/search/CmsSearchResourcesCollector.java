@@ -251,7 +251,7 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
     @Override
     protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
-        item.set(CmsSearchResultsList.LIST_COLUMN_SCORE, new Integer(getSearchResult(item.getId()).getScore()));
+        item.set(CmsSearchResultsList.LIST_COLUMN_SCORE, Integer.valueOf(getSearchResult(item.getId()).getScore()));
     }
 
     /**

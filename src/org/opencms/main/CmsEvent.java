@@ -64,7 +64,7 @@ public class CmsEvent {
      */
     public CmsEvent(int type, Map<String, Object> data) {
 
-        m_type = new Integer(type);
+        m_type = Integer.valueOf(type);
         m_data = data;
         if (m_data == null) {
             m_data = new HashMap<String, Object>();

@@ -199,7 +199,7 @@ public class CmsTestConfigData extends CmsADEConfigData {
      */
     public void registerSchemaFormatters(int typeId, CmsFormatterConfiguration formatters) {
 
-        m_schemaFormatterConfiguration.put(new Integer(typeId), formatters);
+        m_schemaFormatterConfiguration.put(Integer.valueOf(typeId), formatters);
     }
 
     /**
@@ -298,7 +298,7 @@ public class CmsTestConfigData extends CmsADEConfigData {
     @Override
     protected CmsFormatterConfiguration getFormattersFromSchema(CmsObject cms, CmsResource res) {
 
-        Integer key = new Integer(res.getTypeId());
+        Integer key = Integer.valueOf(res.getTypeId());
         CmsFormatterConfiguration result = m_schemaFormatterConfiguration.get(key);
         if (result == null) {
             result = super.getFormattersFromSchema(cms, res);

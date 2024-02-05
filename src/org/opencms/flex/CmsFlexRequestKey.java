@@ -352,7 +352,7 @@ public class CmsFlexRequestKey {
      */
     public Integer getPort() {
 
-        return new Integer(m_request.getServerPort());
+        return Integer.valueOf(m_request.getServerPort());
     }
 
     /**

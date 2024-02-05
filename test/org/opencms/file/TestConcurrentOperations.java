@@ -113,7 +113,7 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
         int val = value[0].intValue();
         String name = "/testfolder/sub1/sub2/sub3/subtestfolder" + val;
         CmsResource res = cms.createResource(name, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
-        value[0] = new Integer(++val);
+        value[0] = Integer.valueOf(++val);
         System.out.println(
             "++++++++++++++++++ Finished creation of folder " + res.getRootPath() + " - count: " + count.intValue());
     }
@@ -132,7 +132,7 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
         System.out.println("Running doConcurrentPublishProjectOperation() method call - count: " + count.intValue());
         int val = value[0].intValue();
         OpenCms.getPublishManager().publishProject(cms);
-        value[0] = new Integer(++val);
+        value[0] = Integer.valueOf(++val);
         System.out.println("++++++++++++++++++ Finished publish project - count: " + count.intValue());
     }
 
@@ -152,7 +152,7 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
 
         OpenCms.getPublishManager().publishResource(cms, "index.html");
 
-        value[0] = new Integer(++val);
+        value[0] = Integer.valueOf(++val);
         System.out.println("++++++++++++++++++ Finished publish resource - count: " + count.intValue());
     }
 
@@ -190,7 +190,7 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
             new CmsShellReport(cms.getRequestContext().getLocale()),
             publishList);
 
-        value[0] = new Integer(++val);
+        value[0] = Integer.valueOf(++val);
         System.out.println("thread " + count + ": finished");
     }
 
@@ -213,7 +213,7 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
 
         String name = "doConcurrentCreationOperation";
         Integer[] value = new Integer[1];
-        value[0] = new Integer(0);
+        value[0] = Integer.valueOf(0);
 
         Object[] parameters = new Object[] {
             OpenCmsThreadedTestCaseSuite.PARAM_CMSOBJECT,
@@ -313,7 +313,7 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
         // publish directly with a single resource
         String name = "doConcurrentPublishProjectOperation";
         Integer[] value = new Integer[1];
-        value[0] = new Integer(0);
+        value[0] = Integer.valueOf(0);
 
         Object[] parameters = new Object[] {
             OpenCmsThreadedTestCaseSuite.PARAM_CMSOBJECT,
@@ -368,7 +368,7 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
         // publish directly with a single resource
         String name = "doConcurrentPublishResourceOperation";
         Integer[] value = new Integer[1];
-        value[0] = new Integer(0);
+        value[0] = Integer.valueOf(0);
 
         Object[] parameters = new Object[] {
             OpenCmsThreadedTestCaseSuite.PARAM_CMSOBJECT,
@@ -430,7 +430,7 @@ public class TestConcurrentOperations extends OpenCmsTestCase {
         // publish directly with a single resource
         String name = "doConcurrentPublishResourceWithRelatedOperation";
         Integer[] value = new Integer[1];
-        value[0] = new Integer(0);
+        value[0] = Integer.valueOf(0);
 
         Object[] parameters = new Object[] {
             OpenCmsThreadedTestCaseSuite.PARAM_CMSOBJECT,

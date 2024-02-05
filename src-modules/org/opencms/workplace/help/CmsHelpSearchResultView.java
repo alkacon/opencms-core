@@ -235,7 +235,7 @@ public class CmsHelpSearchResultView {
                     if (pageNumber != search.getSearchPage()) {
                         result.append("<a href=\"").append(
                             getSearchPageLink(
-                                m_jsp.link(new StringBuffer(pageLinks.get(new Integer(pageNumber))).append('&').append(
+                                m_jsp.link(new StringBuffer(pageLinks.get(Integer.valueOf(pageNumber))).append('&').append(
                                     CmsLocaleManager.PARAMETER_LOCALE).append("=").append(
                                         m_jsp.getRequestContext().getLocale()).toString())));
                         result.append("\" target=\"_self\">").append(pageNumber).append("</a>\n");

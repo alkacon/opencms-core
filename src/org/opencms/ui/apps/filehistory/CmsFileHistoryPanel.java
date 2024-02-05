@@ -447,12 +447,12 @@ public class CmsFileHistoryPanel extends VerticalLayout {
 
         //Add default values to ComboBox
         for (int i = 0; i < 10; i++) {
-            m_numberVersionsToKeep.addItem(new Integer(i));
-            items.add(new Integer(i));
+            m_numberVersionsToKeep.addItem(Integer.valueOf(i));
+            items.add(Integer.valueOf(i));
         }
         for (int i = 10; i <= VERSIONS_MAX; i += 5) {
-            m_numberVersionsToKeep.addItem(new Integer(i));
-            items.add(new Integer(i));
+            m_numberVersionsToKeep.addItem(Integer.valueOf(i));
+            items.add(Integer.valueOf(i));
         }
         m_numberVersionsToKeep.setPageLength(m_numberVersionsToKeep.size());
         m_numberVersionsToKeep.setNullSelectionAllowed(false);
@@ -467,9 +467,9 @@ public class CmsFileHistoryPanel extends VerticalLayout {
             public void addNewItem(String newItemCaption) {
 
                 int num = CmsStringUtil.getIntValue(newItemCaption, -1, "user entered version number is not a number");
-                if ((num > 1) && !items.contains(new Integer(num))) {
-                    m_numberVersionsToKeep.addItem(new Integer(num));
-                    m_numberVersionsToKeep.select(new Integer(num));
+                if ((num > 1) && !items.contains(Integer.valueOf(num))) {
+                    m_numberVersionsToKeep.addItem(Integer.valueOf(num));
+                    m_numberVersionsToKeep.select(Integer.valueOf(num));
                 }
             }
         });
@@ -482,7 +482,7 @@ public class CmsFileHistoryPanel extends VerticalLayout {
         if (numberHistoryVersions == CmsFileHistoryApp.NUMBER_VERSIONS_UNLIMITED) {
             numberHistoryVersions = VERSIONS_MAX;
         }
-        m_numberVersionsToKeep.select(new Integer(numberHistoryVersions));
+        m_numberVersionsToKeep.select(Integer.valueOf(numberHistoryVersions));
     }
 
 }

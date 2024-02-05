@@ -216,7 +216,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                     Messages.ERR_CONFIG_FROZEN_3,
                     this.getClass().getName(),
                     getTypeName(),
-                    new Integer(getTypeId())));
+                    Integer.valueOf(getTypeId())));
         }
 
         // create the copy resource object an add it to the list
@@ -245,7 +245,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                     Messages.ERR_CONFIG_FROZEN_3,
                     this.getClass().getName(),
                     getTypeName(),
-                    new Integer(getTypeId())));
+                    Integer.valueOf(getTypeId())));
         }
 
         m_defaultProperties.add(property);
@@ -662,7 +662,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                     org.opencms.file.types.Messages.ERR_CONFIG_FROZEN_3,
                     className,
                     getTypeName(),
-                    new Integer(getTypeId())));
+                    Integer.valueOf(getTypeId())));
         }
 
         // freeze the configuration
@@ -690,7 +690,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                     Messages.ERR_INVALID_RESTYPE_CONFIG_3,
                     className,
                     m_typeName,
-                    new Integer(m_typeId)));
+                    Integer.valueOf(m_typeId)));
         }
 
         m_defaultProperties = Collections.unmodifiableList(m_defaultProperties);

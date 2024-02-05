@@ -116,7 +116,7 @@ public final class CmsSqlConsoleExecutor {
                             int res = executeUpdate(sentence, pool);
                             message = Messages.get().container(
                                 Messages.RPT_SQLCONSOLE_ROWS_AFFECTED_1,
-                                new Integer(res));
+                                Integer.valueOf(res));
                             report.println(message);
                             if (LOG.isInfoEnabled()) {
                                 LOG.info(message);
@@ -126,7 +126,7 @@ public final class CmsSqlConsoleExecutor {
                             // writeTable(report, res);
                             message = Messages.get().container(
                                 Messages.RPT_SQLCONSOLE_NUM_ROWS_RETRIEVED_1,
-                                new Integer(res.getData().size()));
+                                Integer.valueOf(res.getData().size()));
                             report.println(message);
                             if (LOG.isInfoEnabled()) {
                                 LOG.info(message);

@@ -428,7 +428,7 @@ public class CmsMergePages extends CmsReport {
         int size = folderResources.size();
         // now loop through all resources and check them against those in the target merge folder
         m_report.println(
-            Messages.get().container(Messages.RPT_SCAN_PAGES_IN_FOLDER_BEGIN_2, sourceMergeFolder, new Integer(size)),
+            Messages.get().container(Messages.RPT_SCAN_PAGES_IN_FOLDER_BEGIN_2, sourceMergeFolder, Integer.valueOf(size)),
             I_CmsReport.FORMAT_HEADLINE);
         int count = 1;
         while (i.hasNext()) {
@@ -753,7 +753,7 @@ public class CmsMergePages extends CmsReport {
         int size = collected.size();
         // now loop through all collected resources
         m_report.println(
-            Messages.get().container(Messages.RPT_NUM_PAGES_1, new Integer(size)),
+            Messages.get().container(Messages.RPT_NUM_PAGES_1, Integer.valueOf(size)),
             I_CmsReport.FORMAT_HEADLINE);
         if (doReport) {
             int count = 1;

@@ -100,7 +100,7 @@ public final class CmsListOrderEnum {
         throw new CmsIllegalArgumentException(
             Messages.get().container(
                 Messages.ERR_LIST_ENUM_PARSE_2,
-                new Integer(value),
+                Integer.valueOf(value),
                 CmsListOrderEnum.class.getName()));
     }
 

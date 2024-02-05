@@ -85,7 +85,7 @@ public class CmsUploadDialogImpl extends A_CmsUploadDialog {
         buffer.append(
             Messages.get().key(
                 Messages.GUI_UPLOAD_SUMMARY_FILES_VALUE_2,
-                new Integer(getFilesToUpload().size()),
+                Integer.valueOf(getFilesToUpload().size()),
                 getFileText()));
         buffer.append("</p>");
         setSummaryHTML(buffer.toString());

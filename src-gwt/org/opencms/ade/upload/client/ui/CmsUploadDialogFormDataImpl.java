@@ -115,7 +115,7 @@ public class CmsUploadDialogFormDataImpl extends A_CmsUploadDialog {
         buffer.append(
             Messages.get().key(
                 Messages.GUI_UPLOAD_SUMMARY_FILES_VALUE_3,
-                new Integer(getFilesToUpload().size()),
+                Integer.valueOf(getFilesToUpload().size()),
                 getFileText(),
                 CmsUploadButton.formatBytes(Long.valueOf(getContentLength()).intValue())));
         buffer.append("</p>");

@@ -169,7 +169,7 @@ public class CmsContentCheck {
             org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0),
             I_CmsReport.FORMAT_HEADLINE);
         m_report.println(
-            Messages.get().container(Messages.RPT_CONTENT_COLLECT_END_1, new Integer(m_resources.size())),
+            Messages.get().container(Messages.RPT_CONTENT_COLLECT_END_1, Integer.valueOf(m_resources.size())),
             I_CmsReport.FORMAT_HEADLINE);
 
         // now process all resources
@@ -186,8 +186,8 @@ public class CmsContentCheck {
             m_report.print(
                 Messages.get().container(
                     Messages.RPT_CONTENT_PROCESS_2,
-                    new Integer(count++),
-                    new Integer(m_resources.size())),
+                    Integer.valueOf(count++),
+                    Integer.valueOf(m_resources.size())),
                 I_CmsReport.FORMAT_NOTE);
             m_report.print(
                 Messages.get().container(Messages.RPT_CONTENT_PROCESS_RESOURCE_1, res.getResourceName()),

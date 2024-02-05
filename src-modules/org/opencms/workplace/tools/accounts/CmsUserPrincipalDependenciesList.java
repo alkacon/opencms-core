@@ -218,7 +218,7 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
                         }
                         item = getList().newItem(resource.getResourceId().toString());
                         item.set(LIST_COLUMN_NAME, resource.getRootPath());
-                        item.set(LIST_COLUMN_TYPE, new Integer(resource.getTypeId()));
+                        item.set(LIST_COLUMN_TYPE, Integer.valueOf(resource.getTypeId()));
                         item.set(LIST_COLUMN_CREATED, userCreated);
                         item.set(LIST_COLUMN_LASTMODIFIED, userLastmodified);
                         Iterator<CmsAccessControlEntry> itAces = getCms().getAccessControlEntries(

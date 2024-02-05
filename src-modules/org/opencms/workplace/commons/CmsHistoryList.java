@@ -101,7 +101,7 @@ public class CmsHistoryList extends A_CmsListDialog {
          */
         public CmsVersionWrapper(int version) {
 
-            m_version = new Integer(version);
+            m_version = Integer.valueOf(version);
         }
 
         /**
@@ -118,10 +118,10 @@ public class CmsHistoryList extends A_CmsListDialog {
                 Integer v1 = m_version;
                 Integer v2 = version.getVersion();
                 if (v1.intValue() < 0) {
-                    v1 = new Integer(-1 * v1.intValue());
+                    v1 = Integer.valueOf(-1 * v1.intValue());
                 }
                 if (v2.intValue() < 0) {
-                    v2 = new Integer(-1 * v2.intValue());
+                    v2 = Integer.valueOf(-1 * v2.intValue());
                 }
                 return v1.compareTo(v2);
             }
@@ -445,9 +445,9 @@ public class CmsHistoryList extends A_CmsListDialog {
             // path
             item.set(LIST_COLUMN_RESOURCE_PATH, getCms().getRequestContext().removeSiteRoot(histRes.getRootPath()));
             // size
-            item.set(LIST_COLUMN_SIZE, new Integer(histRes.getLength()).toString());
+            item.set(LIST_COLUMN_SIZE, Integer.valueOf(histRes.getLength()).toString());
             // invisible publish tag (for reading history project in fillDetails)
-            item.set(LIST_COLUMN_PUBLISH_TAG, new Integer(publishTag));
+            item.set(LIST_COLUMN_PUBLISH_TAG, Integer.valueOf(publishTag));
             // invisible structure id
             item.set(LIST_COLUMN_STRUCTURE_ID, histRes.getStructureId().toString());
             // invisible version flag: true if history version has content and actions should be enabled, false otherwise
@@ -487,7 +487,7 @@ public class CmsHistoryList extends A_CmsListDialog {
                 }
                 item.set(LIST_COLUMN_USER, user);
                 // size
-                item.set(LIST_COLUMN_SIZE, new Integer(onlineResource.getLength()).toString());
+                item.set(LIST_COLUMN_SIZE, Integer.valueOf(onlineResource.getLength()).toString());
                 // path
                 item.set(LIST_COLUMN_RESOURCE_PATH, getCms().getSitePath(onlineResource));
                 // invisible structure id
@@ -531,7 +531,7 @@ public class CmsHistoryList extends A_CmsListDialog {
             }
             item.set(LIST_COLUMN_USER, user);
             // size
-            item.set(LIST_COLUMN_SIZE, new Integer(offlineResource.getLength()).toString());
+            item.set(LIST_COLUMN_SIZE, Integer.valueOf(offlineResource.getLength()).toString());
             // path
             item.set(LIST_COLUMN_RESOURCE_PATH, getCms().getSitePath(offlineResource));
             // invisible structure id

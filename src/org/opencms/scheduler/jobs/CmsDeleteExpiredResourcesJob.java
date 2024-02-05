@@ -270,7 +270,7 @@ public class CmsDeleteExpiredResourcesJob implements I_CmsScheduledJob {
                         report.println(
                             Messages.get().container(
                                 Messages.RPT_DELETE_EXPIRED_NOT_EXPIRED_1,
-                                new Integer[] {new Integer(expirationDaysPropertyOverride)}));
+                                new Integer[] {Integer.valueOf(expirationDaysPropertyOverride)}));
                     }
                 } catch (Exception e) {
                     report.println(

@@ -176,7 +176,7 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
 
         if (OpenCms.getSearchManager().getSolrServerConfiguration().getSolrSchema().hasExplicitField(
             CmsSearchField.FIELD_SIZE)) {
-            m_doc.addField(CmsSearchField.FIELD_SIZE, new Integer(length));
+            m_doc.addField(CmsSearchField.FIELD_SIZE, Integer.valueOf(length));
         }
     }
 

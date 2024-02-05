@@ -164,7 +164,7 @@ public class CmsSearchConfigurationPagination implements I_CmsSearchConfiguratio
 
         List<Integer> pageSizes = new ArrayList<>(m_pageSizes.size());
         for (Integer pageSize : m_pageSizes) {
-            pageSizes.add(new Integer(pageSize.intValue()));
+            pageSizes.add(Integer.valueOf(pageSize.intValue()));
         }
         return pageSizes;
     }

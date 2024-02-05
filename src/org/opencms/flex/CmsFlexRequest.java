@@ -163,7 +163,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                             I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
                             Collections.<String, Object> singletonMap(
                                 "action",
-                                new Integer(CmsFlexCache.CLEAR_ENTRIES))));
+                                Integer.valueOf(CmsFlexCache.CLEAR_ENTRIES))));
                     dorecompile = false;
                 } else if ((paramList.contains("clearcache") || dorecompile) && firstCall) {
                     if (!(p_on || p_off)) {
@@ -172,7 +172,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                                 I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
                                 Collections.<String, Object> singletonMap(
                                     "action",
-                                    new Integer(CmsFlexCache.CLEAR_ALL))));
+                                    Integer.valueOf(CmsFlexCache.CLEAR_ALL))));
                     } else {
                         if (p_on) {
                             OpenCms.fireCmsEvent(
@@ -180,7 +180,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                                     I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
                                     Collections.<String, Object> singletonMap(
                                         "action",
-                                        new Integer(CmsFlexCache.CLEAR_ONLINE_ALL))));
+                                        Integer.valueOf(CmsFlexCache.CLEAR_ONLINE_ALL))));
                         }
                         if (p_off) {
                             OpenCms.fireCmsEvent(
@@ -188,7 +188,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                                     I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
                                     Collections.<String, Object> singletonMap(
                                         "action",
-                                        new Integer(CmsFlexCache.CLEAR_OFFLINE_ALL))));
+                                        Integer.valueOf(CmsFlexCache.CLEAR_OFFLINE_ALL))));
                         }
                     }
                 } else if (paramList.contains("clearvariations") && firstCall) {
@@ -198,7 +198,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                                 I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
                                 Collections.<String, Object> singletonMap(
                                     "action",
-                                    new Integer(CmsFlexCache.CLEAR_ENTRIES))));
+                                    Integer.valueOf(CmsFlexCache.CLEAR_ENTRIES))));
                     } else {
                         if (p_on) {
                             OpenCms.fireCmsEvent(
@@ -206,7 +206,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                                     I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
                                     Collections.<String, Object> singletonMap(
                                         "action",
-                                        new Integer(CmsFlexCache.CLEAR_ONLINE_ENTRIES))));
+                                        Integer.valueOf(CmsFlexCache.CLEAR_ONLINE_ENTRIES))));
                         }
                         if (p_off) {
                             OpenCms.fireCmsEvent(
@@ -214,7 +214,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                                     I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
                                     Collections.<String, Object> singletonMap(
                                         "action",
-                                        new Integer(CmsFlexCache.CLEAR_OFFLINE_ENTRIES))));
+                                        Integer.valueOf(CmsFlexCache.CLEAR_OFFLINE_ENTRIES))));
                         }
                     }
                 }

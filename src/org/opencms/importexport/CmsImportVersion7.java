@@ -1708,7 +1708,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                 Messages.get().container(
                     Messages.RPT_IMPORTING_RELATIONS_FOR_2,
                     resourcePath,
-                    new Integer(relations.size())),
+                    Integer.valueOf(relations.size())),
                 I_CmsReport.FORMAT_NOTE);
             getReport().print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 

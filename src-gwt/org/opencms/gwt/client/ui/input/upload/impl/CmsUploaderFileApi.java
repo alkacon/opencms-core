@@ -174,7 +174,7 @@ public class CmsUploaderFileApi extends CmsUploaderFormData {
      */
     private void onBrowserError(I_CmsUploadDialog dialog, String errorCode) {
 
-        int code = new Integer(errorCode).intValue();
+        int code = Integer.valueOf(errorCode).intValue();
         String errMsg = org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.ERR_UPLOAD_BROWSER_0);
 
         switch (code) {

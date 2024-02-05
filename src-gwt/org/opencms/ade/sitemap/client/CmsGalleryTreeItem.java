@@ -189,7 +189,7 @@ public class CmsGalleryTreeItem extends CmsTreeItem {
 
         CmsGalleryConfiguration configuration = new CmsGalleryConfiguration();
         List<String> typeNames = CmsSitemapView.getInstance().getController().getGalleryType(
-            new Integer(entry.getResourceTypeId())).getContentTypeNames();
+            Integer.valueOf(entry.getResourceTypeId())).getContentTypeNames();
         configuration.setSearchTypes(typeNames);
         configuration.setResourceTypes(typeNames);
         configuration.setGalleryMode(GalleryMode.adeView);

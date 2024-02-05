@@ -1184,7 +1184,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
             // Fill in the time, the overall query took, including processing and permission check.
             checkQueryResponse.getResponseHeader().setVal(
                 checkQueryResponse.getResponseHeader().indexOf(QUERY_TIME_NAME, 0),
-                new Integer(Long.valueOf(System.currentTimeMillis() - startTime).intValue()));
+                Integer.valueOf(Long.valueOf(System.currentTimeMillis() - startTime).intValue()));
 
             // Fill in the highlighting information from the result query.
             if (query.getHighlight()) {
@@ -1207,7 +1207,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
                 solrDocumentList,
                 resourceDocumentList,
                 start,
-                new Integer(rows),
+                Integer.valueOf(rows),
                 Math.min(end, (start + solrDocumentList.size())),
                 rows > 0 ? (start / rows) + 1 : 0, //page - but matches only in case of equally sized pages and is zero for rows=0 (because this was this way before!?!)
                 visibleHitCount,

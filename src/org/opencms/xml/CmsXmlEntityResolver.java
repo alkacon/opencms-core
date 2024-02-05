@@ -312,7 +312,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 break;
             case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
                 Object change = event.getData().get(I_CmsEventListener.KEY_CHANGE);
-                if ((change != null) && change.equals(new Integer(CmsDriverManager.NOTHING_CHANGED))) {
+                if ((change != null) && change.equals(Integer.valueOf(CmsDriverManager.NOTHING_CHANGED))) {
                     // skip lock & unlock
                     return;
                 }

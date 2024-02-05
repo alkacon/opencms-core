@@ -310,7 +310,7 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
         if (files2Transform != null) {
             file2Transform = files2Transform.size();
             report.println(
-                Messages.get().container(Messages.RPT_CONVERTXML_FOUND_FILES_1, new Integer(file2Transform).toString()),
+                Messages.get().container(Messages.RPT_CONVERTXML_FOUND_FILES_1, Integer.valueOf(file2Transform).toString()),
                 I_CmsReport.FORMAT_OK);
         } else {
             report.println(Messages.get().container(Messages.RPT_CONVERTXML_NO_FILES_FOUND_0), I_CmsReport.FORMAT_OK);
@@ -344,20 +344,20 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
         // output from the results
         report.println(Messages.get().container(Messages.RPT_CONVERTXML_RESULT_0), I_CmsReport.FORMAT_NOTE);
         report.println(
-            Messages.get().container(Messages.RPT_CONVERTXML_FOUND_FILES_1, new Integer(file2Transform).toString()),
+            Messages.get().container(Messages.RPT_CONVERTXML_FOUND_FILES_1, Integer.valueOf(file2Transform).toString()),
             I_CmsReport.FORMAT_NOTE);
         report.println(
             Messages.get().container(
                 Messages.RPT_CONVERTXML_FILES_ALREADY_TRANSFORMED_1,
-                new Integer(m_alreadyTransformed).toString()),
+                Integer.valueOf(m_alreadyTransformed).toString()),
             I_CmsReport.FORMAT_NOTE);
         report.println(
             Messages.get().container(
                 Messages.RPT_CONVERTXML_TRANSFORM_NUMBER_ERRORS_1,
-                new Integer(m_errorTransform).toString()),
+                Integer.valueOf(m_errorTransform).toString()),
             I_CmsReport.FORMAT_NOTE);
         report.println(
-            Messages.get().container(Messages.RPT_CONVERTXML_LOCKED_FILES_1, new Integer(m_lockedFiles).toString()),
+            Messages.get().container(Messages.RPT_CONVERTXML_LOCKED_FILES_1, Integer.valueOf(m_lockedFiles).toString()),
             I_CmsReport.FORMAT_NOTE);
         if ((m_lockedFiles > 0) || (m_errorTransform > 0)) {
             report.println(

@@ -1132,7 +1132,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
         Set<String> modules = OpenCms.getModuleManager().getModuleNames();
         m_shell.getOut().println(
-            "\n" + getMessages().key(Messages.GUI_SHELL_LIST_MODULES_1, new Integer(modules.size())));
+            "\n" + getMessages().key(Messages.GUI_SHELL_LIST_MODULES_1, Integer.valueOf(modules.size())));
         Iterator<String> i = modules.iterator();
         while (i.hasNext()) {
             String moduleName = i.next();
@@ -1176,7 +1176,7 @@ class CmsShellCommands implements I_CmsShellCommands {
         String folder = CmsResource.getFolderPath(m_cms.getRequestContext().getUri());
         List<CmsResource> resources = m_cms.getResourcesInFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
         m_shell.getOut().println(
-            "\n" + getMessages().key(Messages.GUI_SHELL_LS_2, folder, new Integer(resources.size())));
+            "\n" + getMessages().key(Messages.GUI_SHELL_LS_2, folder, Integer.valueOf(resources.size())));
         Iterator<CmsResource> i = resources.iterator();
         while (i.hasNext()) {
             CmsResource r = i.next();

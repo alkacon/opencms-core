@@ -105,7 +105,7 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
                     Messages.ERR_CONFIG_FROZEN_3,
                     this.getClass().getName(),
                     getStaticTypeName(),
-                    new Integer(getStaticTypeId())));
+                    Integer.valueOf(getStaticTypeId())));
         }
 
         if (!RESOURCE_TYPE_NAME.equals(name)) {

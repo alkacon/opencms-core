@@ -148,7 +148,7 @@ public class CmsResourceState implements Serializable {
     @Override
     public int hashCode() {
 
-        return new Integer(m_state).hashCode();
+        return Integer.valueOf(m_state).hashCode();
     }
 
     /**

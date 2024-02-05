@@ -93,7 +93,7 @@ public class CmsEventManager {
             }
             for (int i = 0; i < eventTypes.length; i++) {
                 // register the listener for all configured event types
-                Integer eventType = new Integer(eventTypes[i]);
+                Integer eventType = Integer.valueOf(eventTypes[i]);
                 List<I_CmsEventListener> listeners = m_eventListeners.get(eventType);
                 if (listeners == null) {
                     listeners = new ArrayList<I_CmsEventListener>();
@@ -212,7 +212,7 @@ public class CmsEventManager {
                         Messages.get().getBundle().key(
                             Messages.LOG_DEBUG_EVENT_LISTENERS_3,
                             list[j],
-                            new Integer(j),
+                            Integer.valueOf(j),
                             event.toString()));
                 }
                 // loop through all registered event listeners
@@ -221,7 +221,7 @@ public class CmsEventManager {
                         Messages.get().getBundle().key(
                             Messages.LOG_DEBUG_EVENT_START_LISTENER_3,
                             list[i],
-                            new Integer(i),
+                            Integer.valueOf(i),
                             event.toString()));
                     try {
                         // fire the event
@@ -238,7 +238,7 @@ public class CmsEventManager {
                         Messages.get().getBundle().key(
                             Messages.LOG_DEBUG_EVENT_END_LISTENER_3,
                             list[i],
-                            new Integer(i),
+                            Integer.valueOf(i),
                             event.toString()));
                 }
             } else {

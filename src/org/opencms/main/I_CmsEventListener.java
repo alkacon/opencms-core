@@ -452,7 +452,7 @@ public interface I_CmsEventListener {
     String KEY_USER_NAME = "userName";
 
     /** Marker for "all events". */
-    Integer LISTENERS_FOR_ALL_EVENTS = new Integer(-1);
+    Integer LISTENERS_FOR_ALL_EVENTS = Integer.valueOf(-1);
 
     /** Value for the "group modified" action. */
     String VALUE_GROUP_MODIFIED_ACTION_CREATE = "createGroup";

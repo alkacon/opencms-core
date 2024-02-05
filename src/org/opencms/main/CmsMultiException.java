@@ -59,7 +59,7 @@ public class CmsMultiException extends CmsException {
      */
     public CmsMultiException() {
 
-        this(Messages.get().container(Messages.ERR_MULTI_EXCEPTION_1, new Integer(0)));
+        this(Messages.get().container(Messages.ERR_MULTI_EXCEPTION_1, Integer.valueOf(0)));
     }
 
     /**
@@ -253,7 +253,7 @@ public class CmsMultiException extends CmsException {
     protected void updateMessage() {
 
         if (!hasIndividualMessage()) {
-            m_message = Messages.get().container(Messages.ERR_MULTI_EXCEPTION_1, new Integer(m_exceptions.size()));
+            m_message = Messages.get().container(Messages.ERR_MULTI_EXCEPTION_1, Integer.valueOf(m_exceptions.size()));
         }
     }
 }

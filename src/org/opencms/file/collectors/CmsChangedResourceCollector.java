@@ -229,7 +229,7 @@ public class CmsChangedResourceCollector extends A_CmsResourceCollector {
                             Messages.get().getBundle().key(
                                 Messages.LOG_RESTYPE_INTID_2,
                                 resourceType.getTypeName(),
-                                new Integer(resourceType.getTypeId())));
+                                Integer.valueOf(resourceType.getTypeId())));
                     }
                 } catch (NumberFormatException e2) {
                     // bad number format used for type

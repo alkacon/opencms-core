@@ -108,7 +108,7 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
         /**OU. */
         OU(Messages.GUI_USERMANAGEMENT_USER_OU_0, String.class, ""),
         /**Status. */
-        STATUS("", Integer.class, new Integer(0)),
+        STATUS("", Integer.class, Integer.valueOf(0)),
         /**Full system Name. */
         SystemName("", String.class, "");
 
@@ -1392,12 +1392,12 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
     Integer getStatusInt(boolean disabled, boolean newUser) {
 
         if (disabled) {
-            return new Integer(2);
+            return Integer.valueOf(2);
         }
         if (newUser) {
-            return new Integer(1);
+            return Integer.valueOf(1);
         }
-        return new Integer(0);
+        return Integer.valueOf(0);
     }
 
     /**

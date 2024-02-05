@@ -183,13 +183,13 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
         report.println(
             org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
             I_CmsReport.FORMAT_OK);
-        Integer size = new Integer(resources.size());
+        Integer size = Integer.valueOf(resources.size());
         Iterator itResources = resources.iterator();
         CmsResource resource;
         int count = 1;
         while (itResources.hasNext()) {
             resource = (CmsResource)itResources.next();
-            replaceTags(resource, size, new Integer(count));
+            replaceTags(resource, size, Integer.valueOf(count));
             count++;
         }
     }

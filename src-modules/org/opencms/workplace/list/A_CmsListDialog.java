@@ -339,7 +339,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
                 Messages.get().getBundle().key(
                     Messages.LOG_START_ACTION_LIST_2,
                     getListId(),
-                    new Integer(getAction())));
+                    Integer.valueOf(getAction())));
         }
         switch (getAction()) {
             //////////////////// ACTION: default actions
@@ -373,7 +373,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug(
-                Messages.get().getBundle().key(Messages.LOG_END_ACTION_LIST_2, getListId(), new Integer(getAction())));
+                Messages.get().getBundle().key(Messages.LOG_END_ACTION_LIST_2, getListId(), Integer.valueOf(getAction())));
         }
         refreshList();
     }

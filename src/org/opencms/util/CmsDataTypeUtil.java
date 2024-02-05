@@ -244,7 +244,7 @@ public final class CmsDataTypeUtil {
      */
     public static String format(int data) {
 
-        return new Integer(data).toString();
+        return Integer.valueOf(data).toString();
     }
 
     /**
@@ -462,7 +462,7 @@ public final class CmsDataTypeUtil {
      */
     public static Integer parseInt(String data) {
 
-        return new Integer(data);
+        return Integer.valueOf(data);
     }
 
     /**

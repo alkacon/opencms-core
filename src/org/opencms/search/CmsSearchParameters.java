@@ -983,7 +983,7 @@ public class CmsSearchParameters {
         // for use with widgets the exception is thrown here to enforce the error message next to the widget
         if (query.trim().length() < getQueryLength()) {
             throw new CmsIllegalArgumentException(
-                Messages.get().container(Messages.ERR_QUERY_TOO_SHORT_1, new Integer(getQueryLength())));
+                Messages.get().container(Messages.ERR_QUERY_TOO_SHORT_1, Integer.valueOf(getQueryLength())));
         }
         m_query = query;
     }

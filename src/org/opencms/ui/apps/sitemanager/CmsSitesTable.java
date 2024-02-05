@@ -201,7 +201,7 @@ public class CmsSitesTable extends Table implements I_CmsFilterableTable {
         /**Description. */
         Server(Messages.GUI_SITE_SERVER_0, String.class, ""),
         /**From Other ou?. */
-        SSL("", Integer.class, new Integer(1)),
+        SSL("", Integer.class, Integer.valueOf(1)),
         /**Name. */
         Title(Messages.GUI_SITE_TITLE_0, String.class, ""),
         /**Is the user new? */

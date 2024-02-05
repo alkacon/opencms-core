@@ -2330,7 +2330,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
         m_galleryTypes.clear();
         for (CmsGalleryType type : galleryTypes) {
-            m_galleryTypes.put(new Integer(type.getTypeId()), type);
+            m_galleryTypes.put(Integer.valueOf(type.getTypeId()), type);
         }
     }
 

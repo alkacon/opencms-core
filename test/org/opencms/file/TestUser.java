@@ -246,23 +246,23 @@ public class TestUser extends OpenCmsTestCase {
         echo("Testing operations with additional user info");
 
         Map map = new HashMap();
-        map.put("one", new Integer(1));
+        map.put("one", Integer.valueOf(1));
         map.put("two", Long.valueOf(2));
         map.put("true", Boolean.TRUE);
 
         CmsUser user = cms.createUser("test", "test", "test", null);
         user.setAdditionalInfo("map", map);
-        user.setAdditionalInfo("int", new Integer(2));
+        user.setAdditionalInfo("int", Integer.valueOf(2));
         user.setAdditionalInfo("boolean", Boolean.TRUE);
         user.setAdditionalInfo("double", Double.valueOf(45.23));
 
         cms.writeUser(user);
         user = cms.readUser("test");
         map = (Map)user.getAdditionalInfo("map");
-        assertEquals(new Integer(1), map.get("one"));
+        assertEquals(Integer.valueOf(1), map.get("one"));
         assertEquals(Long.valueOf(2), map.get("two"));
         assertEquals(Boolean.TRUE, map.get("true"));
-        assertEquals(new Integer(2), user.getAdditionalInfo("int"));
+        assertEquals(Integer.valueOf(2), user.getAdditionalInfo("int"));
         assertEquals(Boolean.TRUE, user.getAdditionalInfo("boolean"));
         assertEquals(Double.valueOf(45.23), user.getAdditionalInfo("double"));
     }

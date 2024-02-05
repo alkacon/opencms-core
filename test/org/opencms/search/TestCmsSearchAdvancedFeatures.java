@@ -460,10 +460,10 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         // result must be all 3 categories plus 1 for "unknown"
         assertEquals(4, categories.size());
         // assert result count
-        assertEquals(new Integer(7), categories.get(cat1.getValue()));
-        assertEquals(new Integer(4), categories.get(cat2.getValue()));
-        assertEquals(new Integer(1), categories.get(cat3.getValue()));
-        assertEquals(new Integer(1), categories.get(CmsSearchCategoryCollector.UNKNOWN_CATEGORY));
+        assertEquals(Integer.valueOf(7), categories.get(cat1.getValue()));
+        assertEquals(Integer.valueOf(4), categories.get(cat2.getValue()));
+        assertEquals(Integer.valueOf(1), categories.get(cat3.getValue()));
+        assertEquals(Integer.valueOf(1), categories.get(CmsSearchCategoryCollector.UNKNOWN_CATEGORY));
 
         // count the category results
         searchBean.setCalculateCategories(false);

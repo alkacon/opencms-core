@@ -518,7 +518,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
         String handlerUri = (new StringBuffer(64)).append(HANDLE_VFS_PATH).append(errorCode).append(
             HANDLE_VFS_SUFFIX).toString();
         // provide the original error code in a request attribute
-        req.setAttribute(CmsRequestUtil.ATTRIBUTE_ERRORCODE, new Integer(errorCode));
+        req.setAttribute(CmsRequestUtil.ATTRIBUTE_ERRORCODE, Integer.valueOf(errorCode));
         CmsObject cms;
         CmsFile file;
         try {
@@ -529,7 +529,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             // unlikely to happen as the OpenCms "Guest" context can always be initialized
             CmsMessageContainer container = Messages.get().container(
                 Messages.LOG_INIT_CMSOBJECT_IN_HANDLER_2,
-                new Integer(errorCode),
+                Integer.valueOf(errorCode),
                 handlerUri);
             if (LOG.isWarnEnabled()) {
                 LOG.warn(org.opencms.jsp.Messages.getLocalizedMessage(container, req), e);
@@ -553,7 +553,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             // unable to load error page handler VFS resource
             CmsMessageContainer container = Messages.get().container(
                 Messages.ERR_SHOW_ERR_HANDLER_RESOURCE_2,
-                new Integer(errorCode),
+                Integer.valueOf(errorCode),
                 handlerUri);
             throw new ServletException(org.opencms.jsp.Messages.getLocalizedMessage(container, req), e);
         }

@@ -1546,7 +1546,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
             case undelete:
             case create:
                 String typeName = m_controller.getGalleryType(
-                    new Integer(change.getNewResourceTypeId())).getResourceType();
+                    Integer.valueOf(change.getNewResourceTypeId())).getResourceType();
                 if (typeName != null) {
                     CmsGalleryFolderEntry galleryFolder = new CmsGalleryFolderEntry();
                     galleryFolder.setSitePath(change.getSitePath());
@@ -1554,7 +1554,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                     galleryFolder.setStructureId(change.getEntryId());
                     galleryFolder.setOwnProperties(change.getOwnProperties());
                     galleryFolder.setIconClasses(
-                        m_controller.getGalleryType(new Integer(change.getNewResourceTypeId())).getBigIconClasses());
+                        m_controller.getGalleryType(Integer.valueOf(change.getNewResourceTypeId())).getBigIconClasses());
                     CmsGalleryTreeItem folderItem = new CmsGalleryTreeItem(galleryFolder);
                     CmsSitemapHoverbar.installOn(m_controller, folderItem, galleryFolder.getStructureId());
                     m_galleryTypeItems.get(typeName).addChild(folderItem);
@@ -1608,7 +1608,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
             case undelete:
             case create:
                 String typeName = m_controller.getGalleryType(
-                    new Integer(change.getNewResourceTypeId())).getResourceType();
+                    Integer.valueOf(change.getNewResourceTypeId())).getResourceType();
                 if (typeName != null) {
                     CmsModelPageEntry modelPage = new CmsModelPageEntry();
                     modelPage.setSitePath(change.getSitePath());

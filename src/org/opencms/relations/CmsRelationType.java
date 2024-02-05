@@ -460,7 +460,7 @@ public final class CmsRelationType implements Serializable {
         throw new CmsIllegalArgumentException(
             org.opencms.db.Messages.get().container(
                 org.opencms.db.Messages.ERR_MODE_ENUM_PARSE_2,
-                new Integer(id),
+                Integer.valueOf(id),
                 CmsRelationType.class.getName()));
     }
 

@@ -126,7 +126,7 @@ public class OpenCmsThreadedTestCaseSuite {
                     params[j] = testCase.getCmsObject();
                 } else if (parameters[j] == PARAM_COUNTER) {
                     // add a new counter parameter
-                    params[j] = new Integer(i);
+                    params[j] = Integer.valueOf(i);
                 } else {
                     // just use the given parameter
                     params[j] = parameters[j];

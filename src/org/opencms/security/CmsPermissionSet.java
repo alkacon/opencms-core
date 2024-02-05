@@ -161,13 +161,13 @@ public class CmsPermissionSet implements Serializable {
 
         if (m_permissions == null) {
             LinkedHashMap<String, Integer> permissions = new LinkedHashMap<String, Integer>();
-            permissions.put("GUI_PERMISSION_TYPE_READ_0", new Integer(CmsPermissionSet.PERMISSION_READ));
-            permissions.put("GUI_PERMISSION_TYPE_WRITE_0", new Integer(CmsPermissionSet.PERMISSION_WRITE));
-            permissions.put("GUI_PERMISSION_TYPE_VIEW_0", new Integer(CmsPermissionSet.PERMISSION_VIEW));
-            permissions.put("GUI_PERMISSION_TYPE_CONTROL_0", new Integer(CmsPermissionSet.PERMISSION_CONTROL));
+            permissions.put("GUI_PERMISSION_TYPE_READ_0", Integer.valueOf(CmsPermissionSet.PERMISSION_READ));
+            permissions.put("GUI_PERMISSION_TYPE_WRITE_0", Integer.valueOf(CmsPermissionSet.PERMISSION_WRITE));
+            permissions.put("GUI_PERMISSION_TYPE_VIEW_0", Integer.valueOf(CmsPermissionSet.PERMISSION_VIEW));
+            permissions.put("GUI_PERMISSION_TYPE_CONTROL_0", Integer.valueOf(CmsPermissionSet.PERMISSION_CONTROL));
             permissions.put(
                 "GUI_PERMISSION_TYPE_DIRECT_PUBLISH_0",
-                new Integer(CmsPermissionSet.PERMISSION_DIRECT_PUBLISH));
+                Integer.valueOf(CmsPermissionSet.PERMISSION_DIRECT_PUBLISH));
             m_permissions = Collections.unmodifiableMap(permissions);
         }
         return m_permissions;

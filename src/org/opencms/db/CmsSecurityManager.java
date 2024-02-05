@@ -1490,8 +1490,8 @@ public final class CmsSecurityManager {
                     Messages.ERR_DELETE_HISTORY_4,
                     new Object[] {
                         "/",
-                        new Integer(versionsToKeep),
-                        new Integer(versionsDeleted),
+                        Integer.valueOf(versionsToKeep),
+                        Integer.valueOf(versionsDeleted),
                         new Date(timeDeleted)}),
                 e);
         } finally {
@@ -3511,7 +3511,7 @@ public final class CmsSecurityManager {
                         firstname,
                         lastname,
                         email,
-                        new Integer(flags),
+                        Integer.valueOf(flags),
                         new Date(dateCreated),
                         additionalInfos}),
                 e);
@@ -4438,7 +4438,7 @@ public final class CmsSecurityManager {
                     Messages.get().container(
                         Messages.ERR_READ_FILE_HISTORY_2,
                         context.getSitePath(resource),
-                        new Integer(resource.getVersion())),
+                        Integer.valueOf(resource.getVersion())),
                     e);
             } else {
                 dbc.report(null, Messages.get().container(Messages.ERR_READ_FILE_1, context.getSitePath(resource)), e);
@@ -4630,7 +4630,7 @@ public final class CmsSecurityManager {
                 null,
                 Messages.get().container(
                     Messages.ERR_READ_HISTORY_PROJECT_2,
-                    new Integer(publishTag),
+                    Integer.valueOf(publishTag),
                     dbc.currentProject().getName()),
                 e);
         } finally {
@@ -5141,7 +5141,7 @@ public final class CmsSecurityManager {
                 Messages.get().container(
                     Messages.ERR_READING_RESOURCE_VERSION_2,
                     dbc.removeSiteRoot(resource.getRootPath()),
-                    new Integer(version)),
+                    Integer.valueOf(version)),
                 e);
         } finally {
             dbc.clear();
@@ -6023,7 +6023,7 @@ public final class CmsSecurityManager {
                 Messages.get().container(
                     Messages.ERR_RESTORE_RESOURCE_2,
                     context.getSitePath(resource),
-                    new Integer(version)),
+                    Integer.valueOf(version)),
                 e);
         } finally {
             dbc.clear();
@@ -6053,7 +6053,7 @@ public final class CmsSecurityManager {
             m_driverManager.saveAliases(dbc, context.getCurrentProject(), resource.getStructureId(), aliases);
             Map<String, Object> eventData = new HashMap<String, Object>();
             eventData.put(I_CmsEventListener.KEY_RESOURCE, resource);
-            eventData.put(I_CmsEventListener.KEY_CHANGE, new Integer(CmsDriverManager.CHANGED_RESOURCE));
+            eventData.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(CmsDriverManager.CHANGED_RESOURCE));
             OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, eventData));
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_DB_OPERATION_0), e);
@@ -6947,7 +6947,7 @@ public final class CmsSecurityManager {
                 Messages.get().container(
                     Messages.ERR_HISTORY_PROJECT_4,
                     new Object[] {
-                        new Integer(publishTag),
+                        Integer.valueOf(publishTag),
                         dbc.currentProject().getName(),
                         dbc.currentProject().getUuid(),
                         Long.valueOf(publishDate)}),

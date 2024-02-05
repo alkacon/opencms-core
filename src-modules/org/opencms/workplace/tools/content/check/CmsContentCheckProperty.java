@@ -345,7 +345,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
                 propObject.setFilename(filename.equals("true"));
             }
             if (CmsStringUtil.isNotEmpty(length)) {
-                propObject.setLength(new Integer(length).intValue());
+                propObject.setLength(Integer.valueOf(length).intValue());
             }
             if (values > 0) {
                 List valueList = new ArrayList();
@@ -364,8 +364,8 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
                 LOG.debug(
                     Messages.get().getBundle().key(
                         Messages.LOG_DEBUG_PROPERTY_CONFIG_PROPERTY_3,
-                        new Integer(i),
-                        new Integer(size),
+                        Integer.valueOf(i),
+                        Integer.valueOf(size),
                         propObject));
             }
 
@@ -471,8 +471,8 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
                             LOG.debug(
                                 Messages.get().getBundle().key(
                                     Messages.LOG_DEBUG_PROPERTY_CHECKLENGTH_2,
-                                    new Integer(propObject.getLength()),
-                                    new Integer(prop.length())));
+                                    Integer.valueOf(propObject.getLength()),
+                                    Integer.valueOf(prop.length())));
                         }
                         // test if the minmal property length is valid
                         if (propObject.getLength() > -1) {
@@ -482,14 +482,14 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
                                         Messages.ERR_CHECK_TOO_SHORT_3,
                                         propObject.getPropertyname(),
                                         prop,
-                                        new Integer(prop.length())));
+                                        Integer.valueOf(prop.length())));
                                 if (LOG.isDebugEnabled()) {
                                     LOG.debug(
                                         Messages.get().getBundle().key(
                                             Messages.ERR_CHECK_TOO_SHORT_3,
                                             propObject.getPropertyname(),
                                             prop,
-                                            new Integer(prop.length())));
+                                            Integer.valueOf(prop.length())));
                                 }
                             }
                         }

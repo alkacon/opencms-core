@@ -200,7 +200,7 @@ public class CmsGroupPrincipalDependenciesList extends A_CmsListDialog {
                     if (item == null) {
                         item = getList().newItem(resource.getResourceId().toString());
                         item.set(LIST_COLUMN_NAME, resource.getRootPath());
-                        item.set(LIST_COLUMN_TYPE, new Integer(resource.getTypeId()));
+                        item.set(LIST_COLUMN_TYPE, Integer.valueOf(resource.getTypeId()));
                         Iterator<CmsAccessControlEntry> itAces = getCms().getAccessControlEntries(
                             resource.getRootPath(),
                             false).iterator();

@@ -165,7 +165,7 @@ public class CmsProjectHistoryTable extends Table {
         try {
             List<CmsHistoryProject> projects = cms.getAllHistoricalProjects();
             for (CmsHistoryProject project : projects) {
-                Item item = m_container.addItem(new Integer(project.getPublishTag()));
+                Item item = m_container.addItem(Integer.valueOf(project.getPublishTag()));
                 if (item != null) {
                     item.getItemProperty(CmsProjectsTable.PROP_ID).setValue(project.getUuid());
                     item.getItemProperty(CmsProjectsTable.PROP_NAME).setValue(project.getSimpleName());

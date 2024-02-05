@@ -91,7 +91,7 @@ public class CmsCreateGalleryDialog extends CmsPopup {
         m_resourceTypeId = resourceTypeId;
         m_parentId = parentId;
         m_controller = controller;
-        CmsGalleryType type = m_controller.getGalleryType(new Integer(resourceTypeId));
+        CmsGalleryType type = m_controller.getGalleryType(Integer.valueOf(resourceTypeId));
         m_dialogContent = new CmsFieldsetFormFieldPanel(type, null);
         m_dialogContent.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().highTextBoxes());
         m_dialogContent.getFieldSet().setOpenerVisible(false);

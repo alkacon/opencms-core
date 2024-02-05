@@ -1598,8 +1598,8 @@ public class CmsCmisRepository extends A_CmsCmisRepository {
         Map<String, String[]> params = new HashMap<>();
         CmsSolrQuery q = new CmsSolrQuery(null, params);
         q.setText(query);
-        q.setStart(new Integer(start));
-        q.setRows(new Integer(rows));
+        q.setStart(Integer.valueOf(start));
+        q.setRows(Integer.valueOf(rows));
         CmsSolrResultList resultPage = index.search(cms, q, true);
         return resultPage;
     }

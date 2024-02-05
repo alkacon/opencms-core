@@ -953,7 +953,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                 }
             } else {
                 throw new CmsDbEntryNotFoundException(
-                    Messages.get().container(Messages.ERR_NO_HISTORY_PROJECT_WITH_TAG_ID_1, new Integer(publishTag)));
+                    Messages.get().container(Messages.ERR_NO_HISTORY_PROJECT_WITH_TAG_ID_1, Integer.valueOf(publishTag)));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(
@@ -1564,7 +1564,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                         Messages.get().container(
                             Messages.ERR_UNKNOWN_PROPERTY_VALUE_MAPPING_3,
                             resource.getRootPath(),
-                            new Integer(mappingType),
+                            Integer.valueOf(mappingType),
                             propertyKey));
             }
         } else {
@@ -1588,7 +1588,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                         Messages.get().container(
                             Messages.ERR_UNKNOWN_PROPERTY_VALUE_MAPPING_3,
                             resource.getRootPath(),
-                            new Integer(mappingType),
+                            Integer.valueOf(mappingType),
                             propertyKey));
             }
             propertyMap.put(propertyKey, property);

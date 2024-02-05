@@ -57,7 +57,7 @@ public abstract class A_CmsModuleAction implements I_CmsModuleAction {
                 Messages.get().getBundle().key(
                     Messages.LOG_EVENT_CAUGHT_2,
                     this.getClass().getName(),
-                    new Integer(event.getType())));
+                    Integer.valueOf(event.getType())));
         }
     }
 

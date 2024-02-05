@@ -1282,7 +1282,7 @@ public class JSONObject {
      */
     public JSONObject put(String key, int value) throws JSONException {
 
-        put(key, new Integer(value));
+        put(key, Integer.valueOf(value));
         return this;
     }
 

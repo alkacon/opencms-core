@@ -169,7 +169,7 @@ public class CmsRenameImages extends CmsDialog {
             // ignore this exception
         }
 
-        Object[] args = new Object[] {getParamResource(), new Integer(count)};
+        Object[] args = new Object[] {getParamResource(), Integer.valueOf(count)};
         return key(Messages.GUI_RENAMEIMAGES_INFO_IMAGECOUNT_2, args);
     }
 

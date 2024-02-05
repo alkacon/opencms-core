@@ -273,7 +273,7 @@ public class CmsConvertXmlDialog extends CmsWidgetDialog {
             // only xml resource types
             if (type.isDirectEditable() && !type.getTypeName().toUpperCase().equals("JSP")) {
                 CmsSelectWidgetOption option = new CmsSelectWidgetOption(
-                    new Integer(type.getTypeId()).toString(),
+                    Integer.valueOf(type.getTypeId()).toString(),
                     false,
                     type.getTypeName());
                 fileFormats.add(option);

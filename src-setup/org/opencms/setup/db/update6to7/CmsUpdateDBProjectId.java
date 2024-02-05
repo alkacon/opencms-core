@@ -435,12 +435,12 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
             params.add(new CmsUUID().toString());
             params.add("updateWizardDummyProject");
             params.add("dummy project just for having an entry");
-            params.add(new Integer(1));
+            params.add(Integer.valueOf(1));
             params.add(userId.toString());
             params.add(groupId.toString());
             params.add(groupId.toString());
             params.add(Long.valueOf(System.currentTimeMillis()));
-            params.add(new Integer(pubTag));
+            params.add(Integer.valueOf(pubTag));
             params.add(Long.valueOf(System.currentTimeMillis()));
             params.add(userId.toString());
             params.add(CmsOrganizationalUnit.SEPARATOR);
@@ -525,12 +525,12 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
                 params.add(db.getResultSet().getString("PROJECT_UUID"));
                 params.add(db.getResultSet().getString("PROJECT_NAME"));
                 params.add(db.getResultSet().getString("PROJECT_DESCRIPTION"));
-                params.add(new Integer(db.getResultSet().getInt("PROJECT_TYPE")));
+                params.add(Integer.valueOf(db.getResultSet().getInt("PROJECT_TYPE")));
                 params.add(db.getResultSet().getString("USER_ID"));
                 params.add(db.getResultSet().getString("GROUP_ID"));
                 params.add(db.getResultSet().getString("MANAGERGROUP_ID"));
                 params.add(Long.valueOf(db.getResultSet().getLong("DATE_CREATED")));
-                params.add(new Integer(db.getResultSet().getInt("PUBLISH_TAG")));
+                params.add(Integer.valueOf(db.getResultSet().getInt("PUBLISH_TAG")));
                 Date date = db.getResultSet().getDate("PROJECT_PUBLISHDATE");
                 params.add(Long.valueOf(date.getTime()));
                 params.add(db.getResultSet().getString("PROJECT_PUBLISHED_BY"));
@@ -598,7 +598,7 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
             replacer.put(REPLACEMENT_OLDID, oldid);
             List<Object> params = new ArrayList<Object>();
             params.add(newvalue);
-            params.add(new Integer(tempValue)); // Change type to integer
+            params.add(Integer.valueOf(tempValue)); // Change type to integer
 
             dbCon.updateSqlStatement(query, replacer, params);
         } else {
@@ -635,7 +635,7 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
                     boolean hasNullId = false;
                     while (db.getResultSet().next()) {
                         int id = db.getResultSet().getInt("PROJECT_ID");
-                        params.add(new Integer(id)); // Add the number
+                        params.add(Integer.valueOf(id)); // Add the number
                         CmsUUID uuid = new CmsUUID();
 
                         // Check for 0 project id
@@ -657,7 +657,7 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
 
                     // If no project id with value 0 was found
                     if (!hasNullId) {
-                        params.add(new Integer(0));
+                        params.add(Integer.valueOf(0));
                         params.add(CmsUUID.getNullUUID().toString());
                         dbCon.updateSqlStatement(updateQuery, null, params);
                     }

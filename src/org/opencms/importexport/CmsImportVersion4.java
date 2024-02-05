@@ -375,7 +375,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 destination,
                 type.getTypeId(),
                 type.isFolder(),
-                new Integer(flags).intValue(),
+                Integer.valueOf(flags).intValue(),
                 m_cms.getRequestContext().getCurrentProject().getUuid(),
                 CmsResource.STATE_NEW,
                 datecreated,

@@ -539,8 +539,8 @@ public class CmsUserQueryBuilder {
 
         return new CmsSimpleQueryFragment(
             users.column(colFlags()) + " & ? = ? ",
-            new Integer(flags),
-            new Integer(flags));
+            Integer.valueOf(flags),
+            Integer.valueOf(flags));
     }
 
     /**

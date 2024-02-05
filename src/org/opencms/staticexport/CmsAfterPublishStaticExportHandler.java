@@ -206,7 +206,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_NUM_RESOURCES_1, new Integer(resources.size())));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_NUM_RESOURCES_1, Integer.valueOf(resources.size())));
         }
         return resources;
     }
@@ -304,7 +304,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
             LOG.debug(
                 Messages.get().getBundle().key(
                     Messages.LOG_EXPORTING_NON_TEMPLATE_1,
-                    new Integer(publishedResources.size())));
+                    Integer.valueOf(publishedResources.size())));
         }
 
         CmsStaticExportManager manager = OpenCms.getStaticExportManager();
@@ -314,7 +314,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
         int count = 1;
         int size = resourcesToExport.size();
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_NUM_EXPORT_1, new Integer(size)));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_NUM_EXPORT_1, Integer.valueOf(size)));
         }
         // now do the export
         Iterator<CmsStaticExportData> i = resourcesToExport.iterator();
@@ -331,8 +331,8 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
             report.print(
                 org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    new Integer(count++),
-                    new Integer(size)),
+                    Integer.valueOf(count++),
+                    Integer.valueOf(size)),
                 I_CmsReport.FORMAT_NOTE);
             report.print(Messages.get().container(Messages.RPT_EXPORTING_0), I_CmsReport.FORMAT_NOTE);
             report.print(
@@ -363,7 +363,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                 Object[] arguments = new Object[] {
                     exportData.getVfsName(),
                     exportData.getRfsName(),
-                    new Integer(status)};
+                    Integer.valueOf(status)};
                 LOG.info(Messages.get().getBundle().key(Messages.LOG_EXPORT_FILE_STATUS_3, arguments));
             }
             //don't lock up the CPU exclusively - allow other Threads to run as well
@@ -497,7 +497,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
     //                        Messages.LOG_REQUEST_RESULT_3,
     //                        rfsName,
     //                        exportUrlStr,
-    //                        new Integer(status)));
+    //                        Integer.valueOf(status)));
     //                }
     //                return status;
     //            }
@@ -603,7 +603,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                     Messages.LOG_REQUEST_RESULT_3,
                     rfsName,
                     exportUrlStr,
-                    new Integer(status)));
+                    Integer.valueOf(status)));
         }
         return status;
     }
@@ -622,7 +622,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
         int count = 1;
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_EXPORT_TEMPLATES_1, new Integer(size)));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_EXPORT_TEMPLATES_1, Integer.valueOf(size)));
         }
         report.println(
             Messages.get().container(Messages.RPT_STATICEXPORT_TEMPLATE_RESOURCES_BEGIN_0),
@@ -658,8 +658,8 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                 report.print(
                     org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_SUCCESSION_2,
-                        new Integer(count++),
-                        new Integer(size)),
+                        Integer.valueOf(count++),
+                        Integer.valueOf(size)),
                     I_CmsReport.FORMAT_NOTE);
                 report.print(Messages.get().container(Messages.RPT_EXPORTING_0), I_CmsReport.FORMAT_NOTE);
                 report.print(
@@ -706,7 +706,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                     report.println(
                         org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_ARGUMENT_1,
-                            new Integer(status)),
+                            Integer.valueOf(status)),
                         I_CmsReport.FORMAT_OK);
                 }
             } catch (IOException e) {

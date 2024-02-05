@@ -93,34 +93,34 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
         private static final long serialVersionUID = 1L;
 
         {
-            put("folder", new Integer(50));
-            put("plain", new Integer(200));
-            put("jsp", new Integer(300));
-            put("htmlredirect", new Integer(400));
-            put("containerpage", new Integer(500));
+            put("folder", Integer.valueOf(50));
+            put("plain", Integer.valueOf(200));
+            put("jsp", Integer.valueOf(300));
+            put("htmlredirect", Integer.valueOf(400));
+            put("containerpage", Integer.valueOf(500));
 
-            put("imagegallery", new Integer(100));
-            put("downloadgallery", new Integer(200));
-            put("linkgallery", new Integer(300));
-            put("subsitemap", new Integer(400));
-            put("content_folder", new Integer(500));
-            put("formatter_config", new Integer(100));
+            put("imagegallery", Integer.valueOf(100));
+            put("downloadgallery", Integer.valueOf(200));
+            put("linkgallery", Integer.valueOf(300));
+            put("subsitemap", Integer.valueOf(400));
+            put("content_folder", Integer.valueOf(500));
+            put("formatter_config", Integer.valueOf(100));
 
-            put("xmlvfsbundle", new Integer(200));
-            put("propertyvfsbundle", new Integer(300));
-            put("bundledescriptor", new Integer(350));
-            put("sitemap_config", new Integer(400));
-            put("sitemap_master_config", new Integer(500));
-            put("module_config", new Integer(600));
-            put("elementview", new Integer(700));
-            put("seo_file", new Integer(800));
-            put("containerpage_template", new Integer(900));
-            put("inheritance_config", new Integer(1000));
+            put("xmlvfsbundle", Integer.valueOf(200));
+            put("propertyvfsbundle", Integer.valueOf(300));
+            put("bundledescriptor", Integer.valueOf(350));
+            put("sitemap_config", Integer.valueOf(400));
+            put("sitemap_master_config", Integer.valueOf(500));
+            put("module_config", Integer.valueOf(600));
+            put("elementview", Integer.valueOf(700));
+            put("seo_file", Integer.valueOf(800));
+            put("containerpage_template", Integer.valueOf(900));
+            put("inheritance_config", Integer.valueOf(1000));
 
-            put(CmsResourceTypeXmlContent.getStaticTypeName(), new Integer(100));
-            put("pointer", new Integer(200));
+            put(CmsResourceTypeXmlContent.getStaticTypeName(), Integer.valueOf(100));
+            put("pointer", Integer.valueOf(200));
 
-            put("modelgroup", new Integer(100));
+            put("modelgroup", Integer.valueOf(100));
         }
     };
 
@@ -214,7 +214,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
         m_propertiesEnabled = false;
         m_showNavigation = false;
         m_addititionalModuleExplorerType = false;
-        m_newResourceOrder = new Integer(0);
+        m_newResourceOrder = Integer.valueOf(0);
         m_iconRules = new HashMap<String, CmsIconRule>();
 
     }
@@ -513,7 +513,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
             if (defaultViewOrder != null) {
                 result = defaultViewOrder;
             } else {
-                result = new Integer(9999);
+                result = Integer.valueOf(9999);
             }
         }
         return result;
@@ -817,7 +817,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
             if (LOG.isInfoEnabled()) {
                 LOG.info(e.getLocalizedMessage(), e);
             }
-            m_newResourceOrder = new Integer(0);
+            m_newResourceOrder = Integer.valueOf(0);
         }
     }
 

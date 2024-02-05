@@ -116,7 +116,7 @@ public class CmsTextareaWidget extends A_CmsWidget implements I_CmsADEWidget {
         StringBuffer result = new StringBuffer(16);
         int rows = DEFAULT_ROWS_NUMBER;
         try {
-            rows = new Integer(getConfiguration()).intValue();
+            rows = Integer.valueOf(getConfiguration()).intValue();
         } catch (Exception e) {
             // ignore
         }

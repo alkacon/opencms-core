@@ -80,7 +80,7 @@ public class CmsPublishHistory {
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(
-                Messages.get().getBundle().key(Messages.INIT_PUBLISH_HISTORY_SIZE_SET_1, new Integer(size)));
+                Messages.get().getBundle().key(Messages.INIT_PUBLISH_HISTORY_SIZE_SET_1, Integer.valueOf(size)));
         }
 
         return BufferUtils.synchronizedBuffer(TypedBuffer.decorate(new CircularFifoBuffer(size) {

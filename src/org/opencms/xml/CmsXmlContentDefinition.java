@@ -603,8 +603,8 @@ public class CmsXmlContentDefinition implements Cloneable {
                 Messages.get().container(
                     Messages.ERR_EL_ATTRIBUTE_TOOFEW_3,
                     element.getUniquePath(),
-                    new Integer(requiredAttributes.length),
-                    new Integer(element.attributeCount())));
+                    Integer.valueOf(requiredAttributes.length),
+                    Integer.valueOf(element.attributeCount())));
         }
 
         if (element.attributeCount() > (requiredAttributes.length + optionalAttributes.length)) {
@@ -612,8 +612,8 @@ public class CmsXmlContentDefinition implements Cloneable {
                 Messages.get().container(
                     Messages.ERR_EL_ATTRIBUTE_TOOMANY_3,
                     element.getUniquePath(),
-                    new Integer(requiredAttributes.length + optionalAttributes.length),
-                    new Integer(element.attributeCount())));
+                    Integer.valueOf(requiredAttributes.length + optionalAttributes.length),
+                    Integer.valueOf(element.attributeCount())));
         }
 
         for (int i = 0; i < requiredAttributes.length; i++) {
@@ -763,8 +763,8 @@ public class CmsXmlContentDefinition implements Cloneable {
                 Messages.get().container(
                     Messages.ERR_TS_SUBELEMENT_TOOFEW_3,
                     typeSequenceElement.getUniquePath(),
-                    new Integer(1),
-                    new Integer(typeSequenceElements.size())));
+                    Integer.valueOf(1),
+                    Integer.valueOf(typeSequenceElements.size())));
         }
 
         // now add all type definitions from the schema
@@ -962,7 +962,7 @@ public class CmsXmlContentDefinition implements Cloneable {
                 Messages.get().container(
                     Messages.ERR_CD_ROOT_ELEMENT_COUNT_1,
                     XSD_INCLUDE_OPENCMS,
-                    new Integer(elements.size())));
+                    Integer.valueOf(elements.size())));
         }
 
         // collect the data from the root element node
@@ -974,7 +974,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         if (complexTypes.size() != 2) {
             // exactly two complex types are required
             throw new CmsXmlException(
-                Messages.get().container(Messages.ERR_CD_COMPLEX_TYPE_COUNT_1, new Integer(complexTypes.size())));
+                Messages.get().container(Messages.ERR_CD_COMPLEX_TYPE_COUNT_1, Integer.valueOf(complexTypes.size())));
         }
 
         // get the outer element sequence, this must be the first element

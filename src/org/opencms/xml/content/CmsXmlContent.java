@@ -303,7 +303,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
                 throw new CmsRuntimeException(
                     Messages.get().container(
                         Messages.ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_CHOICE_3,
-                        new Integer(index),
+                        Integer.valueOf(index),
                         elementName,
                         parentElement.getUniquePath()));
             }
@@ -322,7 +322,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
                         Messages.get().container(
                             Messages.ERR_XMLCONTENT_ELEM_MAXOCCURS_2,
                             elementName,
-                            new Integer(type.getMaxOccurs())));
+                            Integer.valueOf(type.getMaxOccurs())));
                 }
 
                 if (index > siblings.size()) {
@@ -330,8 +330,8 @@ public class CmsXmlContent extends A_CmsXmlDocument {
                     throw new CmsRuntimeException(
                         Messages.get().container(
                             Messages.ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_3,
-                            new Integer(index),
-                            new Integer(siblings.size())));
+                            Integer.valueOf(index),
+                            Integer.valueOf(siblings.size())));
                 }
 
                 // check for offset required to append beyond last position
@@ -348,7 +348,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
                     throw new CmsRuntimeException(
                         Messages.get().container(
                             Messages.ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_2,
-                            new Integer(index),
+                            Integer.valueOf(index),
                             elementName));
                 }
 
@@ -782,7 +782,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
                     Messages.get().container(
                         Messages.ERR_XMLCONTENT_ELEM_MINOCCURS_2,
                         name,
-                        new Integer(value.getMinOccurs())));
+                        Integer.valueOf(value.getMinOccurs())));
             }
         }
 

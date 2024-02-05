@@ -485,7 +485,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
                 CmsLog.INIT.info(
                     Messages.get().getBundle().key(
                         Messages.INIT_I18N_CONFIG_DEFAULT_LOCALE_2,
-                        new Integer(m_defaultLocales.size()),
+                        Integer.valueOf(m_defaultLocales.size()),
                         locale));
 
             }

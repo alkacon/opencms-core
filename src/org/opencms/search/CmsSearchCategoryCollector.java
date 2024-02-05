@@ -88,7 +88,7 @@ public class CmsSearchCategoryCollector extends SimpleCollector {
          */
         Integer toInteger() {
 
-            return new Integer(m_count);
+            return Integer.valueOf(m_count);
         }
     }
 
@@ -158,7 +158,7 @@ public class CmsSearchCategoryCollector extends SimpleCollector {
             // category will be null
             if (LOG.isDebugEnabled()) {
                 LOG.debug(
-                    Messages.get().getBundle().key(Messages.LOG_READ_CATEGORY_FAILED_1, new Integer(rebasedId)),
+                    Messages.get().getBundle().key(Messages.LOG_READ_CATEGORY_FAILED_1, Integer.valueOf(rebasedId)),
                     e);
             }
 

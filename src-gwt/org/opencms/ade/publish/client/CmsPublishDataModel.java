@@ -176,10 +176,10 @@ public class CmsPublishDataModel {
                 allStates.addState(stateToAdd);
 
             }
-            stateMap.put(new Integer(i), groupStates);
+            stateMap.put(Integer.valueOf(i), groupStates);
             i += 1;
         }
-        stateMap.put(new Integer(-1), allStates);
+        stateMap.put(Integer.valueOf(-1), allStates);
         return stateMap;
     }
 

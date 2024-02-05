@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
 public class CmsStaticExportRfsRule {
 
     /** Name for the default work path. */
-    public static final Integer EXPORT_DEFAULT_BACKUPS = new Integer(0);
+    public static final Integer EXPORT_DEFAULT_BACKUPS = Integer.valueOf(0);
 
     /** Description of the rule. */
     private String m_description;

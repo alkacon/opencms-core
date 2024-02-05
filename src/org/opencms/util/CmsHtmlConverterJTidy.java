@@ -202,7 +202,7 @@ public class CmsHtmlConverterJTidy extends A_CmsHtmlConverter {
                     Messages.get().getBundle().key(
                         Messages.LOG_PARSING_RUNS_2,
                         this.getClass().getName(),
-                        new Integer(count)));
+                        Integer.valueOf(count)));
             }
             htmlInput = workHtml;
         }

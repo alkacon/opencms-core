@@ -201,7 +201,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 case I_CmsEventListener.EVENT_RESOURCE_CREATED:
                 case I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED:
                 case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
-                    if ((change != null) && change.equals(new Integer(CmsDriverManager.NOTHING_CHANGED))) {
+                    if ((change != null) && change.equals(Integer.valueOf(CmsDriverManager.NOTHING_CHANGED))) {
                         // skip lock & unlock
                         return;
                     }
@@ -2423,7 +2423,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 Messages.get().getBundle().key(
                     Messages.LOG_PARSE_EXCERPT_LENGTH_FAILED_2,
                     maxExcerptLength,
-                    new Integer(DEFAULT_EXCERPT_LENGTH)),
+                    Integer.valueOf(DEFAULT_EXCERPT_LENGTH)),
                 e);
             setMaxExcerptLength(DEFAULT_EXCERPT_LENGTH);
         }
@@ -2483,7 +2483,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 Messages.get().getBundle().key(
                     Messages.LOG_PARSE_MAXCOMMIT_FAILED_2,
                     value,
-                    new Integer(DEFAULT_MAX_MODIFICATIONS_BEFORE_COMMIT)),
+                    Integer.valueOf(DEFAULT_MAX_MODIFICATIONS_BEFORE_COMMIT)),
                 e);
             setMaxModificationsBeforeCommit(DEFAULT_MAX_MODIFICATIONS_BEFORE_COMMIT);
         }

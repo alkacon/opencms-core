@@ -550,7 +550,7 @@ public class CmsReport extends CmsMultiDialog {
                 // can usually be ignored
                 if (LOG.isInfoEnabled()) {
                     LOG.info(
-                        Messages.get().getBundle().key(Messages.LOG_THREAD_CREATION_FAILED_1, new Integer(value)),
+                        Messages.get().getBundle().key(Messages.LOG_THREAD_CREATION_FAILED_1, Integer.valueOf(value)),
                         e);
                 }
             }

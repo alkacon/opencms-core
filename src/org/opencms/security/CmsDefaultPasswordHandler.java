@@ -356,7 +356,7 @@ implements I_CmsPasswordHandler, I_CmsPasswordSecurityEvaluator, I_CmsPasswordGe
 
         if ((password == null) || (password.length() < PASSWORD_MIN_LENGTH)) {
             throw new CmsSecurityException(
-                Messages.get().container(Messages.ERR_PASSWORD_TOO_SHORT_1, new Integer(PASSWORD_MIN_LENGTH)));
+                Messages.get().container(Messages.ERR_PASSWORD_TOO_SHORT_1, Integer.valueOf(PASSWORD_MIN_LENGTH)));
         }
     }
 }

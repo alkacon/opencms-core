@@ -222,7 +222,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                 LOG.debug(
                     Messages.get().getBundle().key(
                         Messages.LOG_FLEXREQUESTDISPATCHER_LOADING_RESOURCE_TYPE_1,
-                        new Integer(resource.getTypeId())));
+                        Integer.valueOf(resource.getTypeId())));
             }
             loader = OpenCms.getResourceManager().getLoader(resource);
         } catch (CmsException e) {
@@ -414,7 +414,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                         LOG.debug(
                             Messages.get().getBundle().key(
                                 Messages.LOG_FLEXREQUESTDISPATCHER_LOADING_RESOURCE_TYPE_1,
-                                new Integer(resource.getTypeId())));
+                                Integer.valueOf(resource.getTypeId())));
                     }
                     loader = OpenCms.getResourceManager().getLoader(resource);
                 } catch (ClassCastException e) {

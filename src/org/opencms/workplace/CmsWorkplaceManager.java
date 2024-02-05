@@ -2151,7 +2151,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 CmsLog.INIT.info(
                     Messages.get().getBundle().key(
                         Messages.INIT_MAX_FILE_UPLOAD_SIZE_1,
-                        new Integer(m_fileMaxUploadSize)));
+                        Integer.valueOf(m_fileMaxUploadSize)));
             } else {
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_MAX_FILE_UPLOAD_SIZE_UNLIMITED_0));
             }

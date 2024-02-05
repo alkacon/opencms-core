@@ -114,8 +114,8 @@ public class CmsLruCache extends java.lang.Object {
                 LOG.info(
                     Messages.get().getBundle().key(
                         Messages.LOG_CACHE_COSTS_TOO_HIGH_2,
-                        new Integer(theCacheObject.getLruCacheCosts()),
-                        new Integer(m_maxObjectCosts)));
+                        Integer.valueOf(theCacheObject.getLruCacheCosts()),
+                        Integer.valueOf(m_maxObjectCosts)));
             }
             return false;
         }
@@ -281,8 +281,8 @@ public class CmsLruCache extends java.lang.Object {
                 LOG.info(
                     Messages.get().getBundle().key(
                         Messages.LOG_CACHE_COSTS_TOO_HIGH_2,
-                        new Integer(theCacheObject.getLruCacheCosts()),
-                        new Integer(m_maxObjectCosts)));
+                        Integer.valueOf(theCacheObject.getLruCacheCosts()),
+                        Integer.valueOf(m_maxObjectCosts)));
             }
             remove(theCacheObject);
             return false;

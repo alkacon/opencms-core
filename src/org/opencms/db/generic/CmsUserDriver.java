@@ -216,7 +216,7 @@ public class CmsUserDriver implements I_CmsUserDriver {
                 // fire a resource modification event
                 Map<String, Object> data = new HashMap<String, Object>(2);
                 data.put(I_CmsEventListener.KEY_RESOURCE, ouResource);
-                data.put(I_CmsEventListener.KEY_CHANGE, new Integer(CmsDriverManager.CHANGED_RESOURCE));
+                data.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(CmsDriverManager.CHANGED_RESOURCE));
                 OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
             }
         } catch (CmsException e) {
@@ -1764,7 +1764,7 @@ public class CmsUserDriver implements I_CmsUserDriver {
             } finally {
                 Map<String, Object> data = new HashMap<String, Object>(2);
                 data.put(I_CmsEventListener.KEY_RESOURCE, ouResource);
-                data.put(I_CmsEventListener.KEY_CHANGE, new Integer(CmsDriverManager.CHANGED_RESOURCE));
+                data.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(CmsDriverManager.CHANGED_RESOURCE));
                 OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
             }
         } catch (CmsException e) {

@@ -122,7 +122,7 @@ public class CmsScheduleManager implements Job {
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SCHEDULER_CREATED_1, new Integer(size)));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SCHEDULER_CREATED_1, Integer.valueOf(size)));
         }
     }
 
@@ -427,7 +427,7 @@ public class CmsScheduleManager implements Job {
                         Messages.get().getBundle().key(
                             Messages.LOG_JOB_SCHEDULED_4,
                             new Object[] {
-                                new Integer(m_jobs.size()),
+                                Integer.valueOf(m_jobs.size()),
                                 jobInfo.getJobName(),
                                 jobInfo.getClassName(),
                                 jobInfo.getContextInfo().getUserName()}));

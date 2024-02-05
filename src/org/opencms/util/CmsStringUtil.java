@@ -291,7 +291,7 @@ public final class CmsStringUtil {
                 && (constraints.indexOf(c) < 0)) {
 
                 throw new CmsIllegalArgumentException(
-                    bundle.container(key, new Object[] {name, new Character(c), new Integer(i), constraints}));
+                    bundle.container(key, new Object[] {name, new Character(c), Integer.valueOf(i), constraints}));
             }
         }
     }
@@ -1873,7 +1873,7 @@ public final class CmsStringUtil {
             matcher = pattern.matcher(oldFormat);
             while (matcher.find()) {
                 int start = matcher.start() + 1;
-                oldValues.add(oldNumber, new Integer(start));
+                oldValues.add(oldNumber, Integer.valueOf(start));
                 oldNumber += 1;
             }
         } catch (PatternSyntaxException e) {
@@ -1893,7 +1893,7 @@ public final class CmsStringUtil {
             matcher = pattern.matcher(newFormat);
             while (matcher.find()) {
                 int start = matcher.start() + 1;
-                newValues.add(newNumber, new Integer(start));
+                newValues.add(newNumber, Integer.valueOf(start));
                 newNumber += 1;
             }
         } catch (PatternSyntaxException e) {

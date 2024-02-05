@@ -388,7 +388,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                                     Messages.LOG_HTML_DECORATOR_DECORATION_FOUND_FWL_3,
                                     decObj,
                                     word,
-                                    new Integer(j)));
+                                    Integer.valueOf(j)));
                             }
                             if (decObj != null) {
                                 if (LOG.isDebugEnabled()) {

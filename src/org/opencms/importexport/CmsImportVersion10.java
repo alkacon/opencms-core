@@ -1965,7 +1965,7 @@ public class CmsImportVersion10 implements I_CmsImport {
                     Messages.get().container(
                         Messages.RPT_IMPORTING_RELATIONS_FOR_2,
                         src.getRootPath(),
-                        new Integer(m_relationData.keySet().size())),
+                        Integer.valueOf(m_relationData.keySet().size())),
                     I_CmsReport.FORMAT_NOTE);
                 getReport().print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
                 boolean withErrors = false;

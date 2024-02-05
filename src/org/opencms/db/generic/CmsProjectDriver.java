@@ -2031,7 +2031,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             }
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_READ_LOCKS_1, new Integer(locks.size())));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_READ_LOCKS_1, Integer.valueOf(locks.size())));
         }
         return locks;
     }
@@ -2728,7 +2728,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCE_LOCKS_DELETEALL");
             int deleted = stmt.executeUpdate();
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_CLEAR_LOCKS_1, new Integer(deleted)));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_CLEAR_LOCKS_1, Integer.valueOf(deleted)));
             }
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCE_LOCK_WRITE");
             if (LOG.isDebugEnabled()) {
@@ -2761,7 +2761,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 }
             }
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_WRITE_LOCKS_1, new Integer(count)));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_DBG_WRITE_LOCKS_1, Integer.valueOf(count)));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(

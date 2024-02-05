@@ -176,7 +176,7 @@ public class CmsFlushCache extends Panel {
                             I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
                             Collections.<String, Object> singletonMap(
                                 "action",
-                                new Integer(CmsFlexCache.CLEAR_ENTRIES))));
+                                Integer.valueOf(CmsFlexCache.CLEAR_ENTRIES))));
                     clickedRunnable.run();
                 }
             });

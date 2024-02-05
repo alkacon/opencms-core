@@ -440,7 +440,7 @@ public class CmsGallerySearchParameters {
         }
 
         // set matches per page
-        query.setRows(new Integer(m_matchesPerPage));
+        query.setRows(Integer.valueOf(m_matchesPerPage));
 
         // set resource types
         if (null != m_resourceTypes) {
@@ -453,7 +453,7 @@ public class CmsGallerySearchParameters {
         }
 
         // set result page
-        query.setStart(new Integer((m_resultPage - 1) * m_matchesPerPage));
+        query.setStart(Integer.valueOf((m_resultPage - 1) * m_matchesPerPage));
 
         // set search locale
         if (null != m_locale) {

@@ -202,7 +202,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
 
         CmsSolrQuery squery = new CmsSolrQuery(getCmsObject(), null);
         squery.setSearchRoots("/sites/default/");
-        squery.setRows(new Integer(100));
+        squery.setRows(Integer.valueOf(100));
         CmsSolrResultList results = index.search(getCmsObject(), squery);
         AllTests.printResults(getCmsObject(), results, true);
         assertEquals(59, results.getNumFound());
@@ -279,7 +279,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         List<Locale> locles = Collections.emptyList();
         query.setLocales(locles);
         query.setSearchRoots("/");
-        query.setRows(new Integer(10));
+        query.setRows(Integer.valueOf(10));
 
         // Offline and Online both siblings should be found for the new content
         CmsSolrIndex oindex = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);

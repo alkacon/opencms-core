@@ -444,7 +444,7 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
                     Messages.get().getBundle().key(
                         Messages.LOG_SEARCH_PRIORITY_TOO_LOW_2,
                         value,
-                        new Integer(Thread.MIN_PRIORITY)));
+                        Integer.valueOf(Thread.MIN_PRIORITY)));
 
             } else if (m_priority > Thread.MAX_PRIORITY) {
                 m_priority = Thread.MAX_PRIORITY;
@@ -452,7 +452,7 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
                     Messages.get().getBundle().key(
                         Messages.LOG_SEARCH_PRIORITY_TOO_HIGH_2,
                         value,
-                        new Integer(Thread.MAX_PRIORITY)));
+                        Integer.valueOf(Thread.MAX_PRIORITY)));
             }
         }
 

@@ -294,7 +294,7 @@ public class CmsUpdateDBCmsUsers extends A_CmsUpdateDBPart {
         params.add("allWebusersFromUpgrade6to7");
         params.add(
             "This group was created by the OpenCms Upgrade Wizard to facilitate the handling of former called WebUsers, can be deleted if needed.");
-        params.add(new Integer(0));
+        params.add(Integer.valueOf(0));
         params.add("/");
         dbCon.updateSqlStatement(sql, null, params);
         return id;

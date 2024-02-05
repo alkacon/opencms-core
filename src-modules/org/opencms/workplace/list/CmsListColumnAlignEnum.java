@@ -100,7 +100,7 @@ public final class CmsListColumnAlignEnum {
         throw new CmsIllegalArgumentException(
             Messages.get().container(
                 Messages.ERR_LIST_ENUM_PARSE_2,
-                new Integer(value),
+                Integer.valueOf(value),
                 CmsListColumnAlignEnum.class.getName()));
     }
 

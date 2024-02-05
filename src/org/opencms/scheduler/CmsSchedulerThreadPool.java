@@ -341,7 +341,7 @@ public class CmsSchedulerThreadPool implements ThreadPool {
                         try {
                             if (LOG.isDebugEnabled()) {
                                 LOG.debug(
-                                    Messages.get().getBundle().key(Messages.LOG_THREAD_POOL_WAITING_1, new Integer(i)));
+                                    Messages.get().getBundle().key(Messages.LOG_THREAD_POOL_WAITING_1, Integer.valueOf(i)));
                             }
 
                             // note: with waiting infinite - join(0) - the application
@@ -359,7 +359,7 @@ public class CmsSchedulerThreadPool implements ThreadPool {
             int activeCount = m_threadGroup.activeCount();
             if ((activeCount > 0) && LOG.isInfoEnabled()) {
                 LOG.info(
-                    Messages.get().getBundle().key(Messages.LOG_THREAD_POOL_STILL_ACTIVE_1, new Integer(activeCount)));
+                    Messages.get().getBundle().key(Messages.LOG_THREAD_POOL_STILL_ACTIVE_1, Integer.valueOf(activeCount)));
             }
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_THREAD_POOL_SHUTDOWN_0));

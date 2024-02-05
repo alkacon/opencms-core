@@ -1258,7 +1258,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void cmsEvent(CmsEvent event) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_CMS_EVENT_1, new Integer(event.getType())));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_CMS_EVENT_1, Integer.valueOf(event.getType())));
         }
 
         I_CmsReport report;
@@ -1384,7 +1384,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // fire a resource modification event
         Map<String, Object> data = new HashMap<String, Object>(2);
         data.put(I_CmsEventListener.KEY_RESOURCE, destination);
-        data.put(I_CmsEventListener.KEY_CHANGE, new Integer(CHANGED_ACCESSCONTROL));
+        data.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(CHANGED_ACCESSCONTROL));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
@@ -2740,7 +2740,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         report.println(Messages.get().container(Messages.RPT_START_DELETE_VERSIONS_0), I_CmsReport.FORMAT_HEADLINE);
         if (versionsToKeep >= 0) {
             report.println(
-                Messages.get().container(Messages.RPT_START_DELETE_ACT_VERSIONS_1, new Integer(versionsToKeep)),
+                Messages.get().container(Messages.RPT_START_DELETE_ACT_VERSIONS_1, Integer.valueOf(versionsToKeep)),
                 I_CmsReport.FORMAT_HEADLINE);
 
             List<I_CmsHistoryResource> resources = getHistoryDriver(dbc).getAllNotDeletedEntries(dbc);
@@ -2769,7 +2769,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     int deleted = getHistoryDriver(dbc).deleteEntries(dbc, histResource, versionsToKeep, -1);
 
                     report.print(
-                        Messages.get().container(Messages.RPT_VERSION_DELETING_1, new Integer(deleted)),
+                        Messages.get().container(Messages.RPT_VERSION_DELETING_1, Integer.valueOf(deleted)),
                         I_CmsReport.FORMAT_NOTE);
                     report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
                     report.println(
@@ -2797,12 +2797,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 report.println(
                     Messages.get().container(
                         Messages.RPT_START_DELETE_DEL_VERSIONS_2,
-                        new Integer(versionsDeleted),
+                        Integer.valueOf(versionsDeleted),
                         new Date(timeDeleted)),
                     I_CmsReport.FORMAT_HEADLINE);
             } else {
                 report.println(
-                    Messages.get().container(Messages.RPT_START_DELETE_DEL_VERSIONS_1, new Integer(versionsDeleted)),
+                    Messages.get().container(Messages.RPT_START_DELETE_DEL_VERSIONS_1, Integer.valueOf(versionsDeleted)),
                     I_CmsReport.FORMAT_HEADLINE);
             }
             List<I_CmsHistoryResource> resources = getHistoryDriver(dbc).getAllDeletedEntries(dbc);
@@ -2831,7 +2831,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     int deleted = getHistoryDriver(dbc).deleteEntries(dbc, histResource, versionsDeleted, timeDeleted);
 
                     report.print(
-                        Messages.get().container(Messages.RPT_VERSION_DELETING_1, new Integer(deleted)),
+                        Messages.get().container(Messages.RPT_VERSION_DELETING_1, Integer.valueOf(deleted)),
                         I_CmsReport.FORMAT_NOTE);
                     report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
                     report.println(
@@ -4766,8 +4766,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 thread.setDescription(
                     org.opencms.workplace.commons.Messages.get().getBundle().key(
                         org.opencms.workplace.commons.Messages.GUI_PROGRESS_PUBLISH_STEP1_2,
-                        new Integer(count),
-                        new Integer(publishResources.size())));
+                        Integer.valueOf(count),
+                        Integer.valueOf(publishResources.size())));
             }
 
             CmsResource checkResource = itCheckList.next();
@@ -5788,7 +5788,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         data.put(I_CmsEventListener.KEY_RESOURCE, resource);
         data.put(
             I_CmsEventListener.KEY_CHANGE,
-            new Integer(changedProjectLastModified ? CHANGED_PROJECT : NOTHING_CHANGED));
+            Integer.valueOf(changedProjectLastModified ? CHANGED_PROJECT : NOTHING_CHANGED));
         data.put(I_CmsEventListener.KEY_SKIPINDEX, Boolean.TRUE);
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
@@ -8619,7 +8619,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // fire a resource modification event
         Map<String, Object> data = new HashMap<String, Object>(2);
         data.put(I_CmsEventListener.KEY_RESOURCE, resource);
-        data.put(I_CmsEventListener.KEY_CHANGE, new Integer(CHANGED_ACCESSCONTROL));
+        data.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(CHANGED_ACCESSCONTROL));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
@@ -8898,7 +8898,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // only the resource was modified
             Map<String, Object> data = new HashMap<String, Object>(2);
             data.put(I_CmsEventListener.KEY_RESOURCE, resource);
-            data.put(I_CmsEventListener.KEY_CHANGE, new Integer(CHANGED_RESOURCE | CHANGED_CONTENT));
+            data.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(CHANGED_RESOURCE | CHANGED_CONTENT));
             OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
         }
     }
@@ -9110,7 +9110,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // fire the event
         Map<String, Object> data = new HashMap<String, Object>(2);
         data.put(I_CmsEventListener.KEY_RESOURCE, resource);
-        data.put(I_CmsEventListener.KEY_CHANGE, new Integer(CHANGED_RESOURCE | CHANGED_CONTENT));
+        data.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(CHANGED_RESOURCE | CHANGED_CONTENT));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
@@ -9220,7 +9220,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         Map<String, Object> data = new HashMap<String, Object>(2);
         data.put(I_CmsEventListener.KEY_RESOURCE, resource);
-        data.put(I_CmsEventListener.KEY_CHANGE, new Integer(CHANGED_RESOURCE | CHANGED_CONTENT));
+        data.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(CHANGED_RESOURCE | CHANGED_CONTENT));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
@@ -9325,7 +9325,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // fire the event
         Map<String, Object> data = new HashMap<String, Object>(2);
         data.put(I_CmsEventListener.KEY_RESOURCE, resource);
-        data.put(I_CmsEventListener.KEY_CHANGE, new Integer(CHANGED_TIMEFRAME));
+        data.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(CHANGED_TIMEFRAME));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
@@ -9370,7 +9370,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // fire the event
         Map<String, Object> data = new HashMap<String, Object>(2);
         data.put(I_CmsEventListener.KEY_RESOURCE, resource);
-        data.put(I_CmsEventListener.KEY_CHANGE, new Integer(CHANGED_LASTMODIFIED));
+        data.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(CHANGED_LASTMODIFIED));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
@@ -9414,7 +9414,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // fire the event
         Map<String, Object> data = new HashMap<String, Object>(2);
         data.put(I_CmsEventListener.KEY_RESOURCE, resource);
-        data.put(I_CmsEventListener.KEY_CHANGE, new Integer(CHANGED_TIMEFRAME));
+        data.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(CHANGED_TIMEFRAME));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
@@ -9589,7 +9589,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // fire change event
         Map<String, Object> data = new HashMap<String, Object>(2);
         data.put(I_CmsEventListener.KEY_RESOURCE, resource);
-        data.put(I_CmsEventListener.KEY_CHANGE, new Integer(CHANGED_RESOURCE));
+        data.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(CHANGED_RESOURCE));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
@@ -9706,7 +9706,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // fire resource modification event
         Map<String, Object> data = new HashMap<String, Object>(2);
         data.put(I_CmsEventListener.KEY_RESOURCE, resource);
-        data.put(I_CmsEventListener.KEY_CHANGE, new Integer(NOTHING_CHANGED));
+        data.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(NOTHING_CHANGED));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
@@ -10112,7 +10112,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // fire a resource modification event
         Map<String, Object> data = new HashMap<String, Object>(2);
         data.put(I_CmsEventListener.KEY_RESOURCE, resource);
-        data.put(I_CmsEventListener.KEY_CHANGE, new Integer(CHANGED_ACCESSCONTROL));
+        data.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(CHANGED_ACCESSCONTROL));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
@@ -10301,7 +10301,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         Map<String, Object> data = new HashMap<String, Object>(2);
         data.put(I_CmsEventListener.KEY_RESOURCE, resource);
-        data.put(I_CmsEventListener.KEY_CHANGE, new Integer(CHANGED_CONTENT));
+        data.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(CHANGED_CONTENT));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
 
         return resource;
@@ -10644,7 +10644,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_monitor.clearResourceCache();
         Map<String, Object> data = new HashMap<String, Object>(2);
         data.put(I_CmsEventListener.KEY_RESOURCE, resource);
-        data.put(I_CmsEventListener.KEY_CHANGE, new Integer(CHANGED_RESOURCE));
+        data.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(CHANGED_RESOURCE));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
     }
 
@@ -11844,13 +11844,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         Set<Integer> roleFlags = new HashSet<Integer>();
         // add role flag
-        Integer flags = new Integer(role.getVirtualGroupFlags());
+        Integer flags = Integer.valueOf(role.getVirtualGroupFlags());
         roleFlags.add(flags);
         // collect all child role flags
         Iterator<CmsRole> itChildRoles = role.getChildren(true).iterator();
         while (itChildRoles.hasNext()) {
             CmsRole child = itChildRoles.next();
-            flags = new Integer(child.getVirtualGroupFlags());
+            flags = Integer.valueOf(child.getVirtualGroupFlags());
             roleFlags.add(flags);
         }
         // iterate all groups matching the flags
@@ -11860,7 +11860,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsGroup group = it.next();
             if (group.isVirtual()) {
                 CmsRole r = CmsRole.valueOf(group);
-                if (roleFlags.contains(new Integer(r.getVirtualGroupFlags()))) {
+                if (roleFlags.contains(Integer.valueOf(r.getVirtualGroupFlags()))) {
                     groups.add(group);
                 }
             }
@@ -12155,7 +12155,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 data.put(I_CmsEventListener.KEY_RESOURCE, resource);
                 data.put(
                     I_CmsEventListener.KEY_CHANGE,
-                    new Integer(((attrModified) ? CHANGED_RESOURCE : 0) | ((aceModified) ? CHANGED_ACCESSCONTROL : 0)));
+                    Integer.valueOf(((attrModified) ? CHANGED_RESOURCE : 0) | ((aceModified) ? CHANGED_ACCESSCONTROL : 0)));
                 OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
             }
         }

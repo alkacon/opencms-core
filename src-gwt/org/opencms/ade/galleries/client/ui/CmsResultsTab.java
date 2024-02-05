@@ -969,8 +969,8 @@ public class CmsResultsTab extends A_CmsListTab {
 
         String message = Messages.get().key(
             Messages.GUI_LABEL_NUM_RESULTS_2,
-            new Integer(displayed),
-            new Integer(total));
+            Integer.valueOf(displayed),
+            Integer.valueOf(total));
         m_infoLabel.setText(message);
     }
 

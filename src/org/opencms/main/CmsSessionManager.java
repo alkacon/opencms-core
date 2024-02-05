@@ -896,8 +896,8 @@ public class CmsSessionManager {
                     tid
                         + Messages.get().getBundle().key(
                             Messages.LOG_SESSION_CREATED_2,
-                            new Integer(m_sessionCountTotal),
-                            new Integer(m_sessionCountCurrent)));
+                            Integer.valueOf(m_sessionCountTotal),
+                            Integer.valueOf(m_sessionCountCurrent)));
             }
         }
 
@@ -929,8 +929,8 @@ public class CmsSessionManager {
                 LOG.info(
                     Messages.get().getBundle().key(
                         Messages.LOG_SESSION_DESTROYED_2,
-                        new Integer(m_sessionCountTotal),
-                        new Integer(m_sessionCountCurrent)));
+                        Integer.valueOf(m_sessionCountTotal),
+                        Integer.valueOf(m_sessionCountCurrent)));
             }
         }
 

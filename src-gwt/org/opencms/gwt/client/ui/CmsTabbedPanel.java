@@ -374,7 +374,7 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Cms
      */
     public void disableTab(E tabContent, String reason) {
 
-        Integer index = new Integer(m_tabPanel.getWidgetIndex(tabContent));
+        Integer index = Integer.valueOf(m_tabPanel.getWidgetIndex(tabContent));
         Element tab = getTabElement(index.intValue());
         if ((tab != null) && !m_disabledTabIndexes.containsKey(index)) {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(tab.getTitle())) {
@@ -394,7 +394,7 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Cms
      */
     public void enableTab(E tabContent) {
 
-        Integer index = new Integer(m_tabPanel.getWidgetIndex(tabContent));
+        Integer index = Integer.valueOf(m_tabPanel.getWidgetIndex(tabContent));
         Element tab = getTabElement(index.intValue());
         if ((tab != null) && m_disabledTabIndexes.containsKey(index)) {
             tab.removeClassName(I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().tabDisabled());
@@ -553,7 +553,7 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Cms
      */
     public boolean isDisabledTab(int tabIndex) {
 
-        return m_disabledTabIndexes.containsKey(new Integer(tabIndex));
+        return m_disabledTabIndexes.containsKey(Integer.valueOf(tabIndex));
     }
 
     /**

@@ -244,7 +244,7 @@ public class CmsUpdateXmlThread extends A_CmsReportThread {
         // number of files to update
         int nrOfFiles = files2Update.size();
         report.println(
-            Messages.get().container(Messages.RPT_UPDATEXML_FILES_TO_UPDATE_1, new Integer(nrOfFiles).toString()),
+            Messages.get().container(Messages.RPT_UPDATEXML_FILES_TO_UPDATE_1, Integer.valueOf(nrOfFiles).toString()),
             I_CmsReport.FORMAT_NOTE);
         // the file counter
         int fileCounter = 0;
@@ -342,15 +342,15 @@ public class CmsUpdateXmlThread extends A_CmsReportThread {
         // the results are written in the report
         report.println(Messages.get().container(Messages.RPT_UPDATEXML_RESULT_0), I_CmsReport.FORMAT_HEADLINE);
         report.println(
-            Messages.get().container(Messages.RPT_UPDATEXML_FILES_TO_UPDATE_1, new Integer(nrOfFiles).toString()),
+            Messages.get().container(Messages.RPT_UPDATEXML_FILES_TO_UPDATE_1, Integer.valueOf(nrOfFiles).toString()),
             I_CmsReport.FORMAT_NOTE);
         report.println(
             Messages.get().container(
                 Messages.RPT_UPDATEXML_UPDATE_NUMBER_ERRORS_1,
-                new Integer(m_errorUpdate).toString()),
+                Integer.valueOf(m_errorUpdate).toString()),
             I_CmsReport.FORMAT_NOTE);
         report.println(
-            Messages.get().container(Messages.RPT_UPDATEXML_LOCKED_FILES_1, new Integer(m_lockedFiles).toString()),
+            Messages.get().container(Messages.RPT_UPDATEXML_LOCKED_FILES_1, Integer.valueOf(m_lockedFiles).toString()),
             I_CmsReport.FORMAT_NOTE);
         if (m_lockedFiles > 0) {
             report.println(Messages.get().container(Messages.RPT_UPDATEXML_UPDATE_FAILED_0), I_CmsReport.FORMAT_ERROR);

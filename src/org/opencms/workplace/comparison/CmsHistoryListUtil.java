@@ -67,7 +67,7 @@ public final class CmsHistoryListUtil {
         if (ver < 0) {
             ver *= -1;
             if (locale != null) {
-                return Messages.get().getBundle(locale).key(Messages.GUI_PROJECT_ONLINE_1, new Integer(ver));
+                return Messages.get().getBundle(locale).key(Messages.GUI_PROJECT_ONLINE_1, Integer.valueOf(ver));
             }
         }
         return "" + ver;

@@ -414,7 +414,7 @@ public class CmsContentNotification extends A_CmsNotification {
             result.append(
                 m_messages.key(
                     Messages.GUI_UNCHANGED_SINCE_1,
-                    new Object[] {new Integer(CmsDateUtil.getDaysPassedSince(notificationCause.getDate()))}));
+                    new Object[] {Integer.valueOf(CmsDateUtil.getDaysPassedSince(notificationCause.getDate()))}));
             result.append("</div></td>");
             appendConfirmLink(result, notificationCause);
             appendEditLink(result, notificationCause);

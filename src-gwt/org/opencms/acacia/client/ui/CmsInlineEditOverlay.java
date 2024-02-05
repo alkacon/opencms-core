@@ -382,7 +382,7 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
                 }
             }
         }
-        m_buttons.put(widget, new Integer(absoluteTop));
+        m_buttons.put(widget, Integer.valueOf(absoluteTop));
         return absoluteTop;
     }
 

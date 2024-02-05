@@ -216,8 +216,8 @@ public class CmsRelationSystemValidator {
                 report.print(
                     org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_SUCCESSION_2,
-                        new Integer(index + 1),
-                        new Integer(size)),
+                        Integer.valueOf(index + 1),
+                        Integer.valueOf(size)),
                     I_CmsReport.FORMAT_NOTE);
                 report.print(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATING_0), I_CmsReport.FORMAT_NOTE);
                 report.print(

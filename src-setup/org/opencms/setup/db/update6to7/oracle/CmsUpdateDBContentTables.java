@@ -104,7 +104,7 @@ public class CmsUpdateDBContentTables extends org.opencms.setup.db.update6to7.Cm
         dbCon.updateSqlStatement(query, null, null);
 
         query = readQuery(QUERY_UPDATE_ONLINE_CONTENTS_PUBLISH_TAG_FROM2);
-        dbCon.updateSqlStatement(query, null, Collections.<Object> singletonList(new Integer(pubTag)));
+        dbCon.updateSqlStatement(query, null, Collections.<Object> singletonList(Integer.valueOf(pubTag)));
 
         query = readQuery(QUERY_UPDATE_ONLINE_CONTENTS_PUBLISH_TAG_TO);
         dbCon.updateSqlStatement(query, null, null);

@@ -363,7 +363,7 @@ public final class CmsSiteMatcher implements Cloneable, Serializable {
     public int hashCode() {
 
         if (m_hashCode == null) {
-            m_hashCode = new Integer(toString().hashCode());
+            m_hashCode = Integer.valueOf(toString().hashCode());
         }
         return m_hashCode.intValue();
     }

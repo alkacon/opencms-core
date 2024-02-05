@@ -272,7 +272,7 @@ public class CmsUserInfoDialog extends CmsBasicDialog {
         if (days == 1) {
             return CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_LAST_LOGIN_YESTERDAY_0);
         }
-        return CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_LAST_LOGIN_DAYS_AGO_1, new Integer(days));
+        return CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_LAST_LOGIN_DAYS_AGO_1, Integer.valueOf(days));
     }
 
     /**

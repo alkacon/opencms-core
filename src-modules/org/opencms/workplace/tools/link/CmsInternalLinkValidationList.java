@@ -136,7 +136,7 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
             result.append(
                 key(
                     Messages.GUI_BROKENLINKS_NOT_VISIBLE_RESOURCES_1,
-                    new Object[] {new Integer(getValidator().getNotVisibleResourcesCount())}));
+                    new Object[] {Integer.valueOf(getValidator().getNotVisibleResourcesCount())}));
             result.append("\n");
             result.append(dialogBlockEnd());
         }

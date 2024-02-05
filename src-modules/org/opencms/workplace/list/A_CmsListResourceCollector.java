@@ -213,7 +213,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                 LOG.debug(
                     Messages.get().getBundle().key(
                         Messages.LOG_COLLECTOR_PROCESS_ITEMS_START_1,
-                        new Integer(resources.size())));
+                        Integer.valueOf(resources.size())));
             }
             getWp().applyColumnVisibilities();
             CmsHtmlList list = getWp().getList();
@@ -273,8 +273,8 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                     thread.setDescription(
                         org.opencms.workplace.commons.Messages.get().getBundle(thread.getLocale()).key(
                             org.opencms.workplace.commons.Messages.GUI_PROGRESS_PUBLISH_STEP2_2,
-                            new Integer(count),
-                            new Integer(resources.size())));
+                            Integer.valueOf(count),
+                            Integer.valueOf(resources.size())));
                 }
 
                 Object obj = itRes.next();
@@ -325,7 +325,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                 LOG.debug(
                     Messages.get().getBundle().key(
                         Messages.LOG_COLLECTOR_PROCESS_ITEMS_END_1,
-                        new Integer(ret.size())));
+                        Integer.valueOf(ret.size())));
             }
             return ret;
         }
@@ -435,7 +435,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                 LOG.debug(
                     Messages.get().getBundle().key(
                         Messages.LOG_COLLECTOR_GET_RESULTS_END_1,
-                        new Integer(resources.size())));
+                        Integer.valueOf(resources.size())));
             }
             return resources;
         }

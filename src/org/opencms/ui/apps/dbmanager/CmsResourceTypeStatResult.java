@@ -92,12 +92,12 @@ public class CmsResourceTypeStatResult {
         String res;
         CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(m_siteRoot);
         if (site == null) {
-            res = CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_STATS_RESULTS_ROOT_1, new Integer(m_count));
+            res = CmsVaadinUtils.getMessageText(Messages.GUI_DATABASEAPP_STATS_RESULTS_ROOT_1, Integer.valueOf(m_count));
         } else {
             res = CmsVaadinUtils.getMessageText(
                 Messages.GUI_DATABASEAPP_STATS_RESULTS_2,
                 site.getTitle(),
-                new Integer(m_count));
+                Integer.valueOf(m_count));
         }
         return res;
     }

@@ -213,7 +213,7 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
 
         report.println(Messages.get().container(Messages.RPT_IMAGE_SIZE_END_0), I_CmsReport.FORMAT_HEADLINE);
 
-        return Messages.get().getBundle().key(Messages.LOG_IMAGE_SIZE_UPDATE_COUNT_1, new Integer(count));
+        return Messages.get().getBundle().key(Messages.LOG_IMAGE_SIZE_UPDATE_COUNT_1, Integer.valueOf(count));
     }
 
     /**

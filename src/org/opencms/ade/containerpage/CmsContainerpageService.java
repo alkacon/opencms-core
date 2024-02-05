@@ -1883,7 +1883,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      */
     public void saveClipboardTab(int tabIndex) {
 
-        getRequest().getSession().setAttribute(ATTR_CLIPBOARD_TAB, new Integer(tabIndex));
+        getRequest().getSession().setAttribute(ATTR_CLIPBOARD_TAB, Integer.valueOf(tabIndex));
     }
 
     /**

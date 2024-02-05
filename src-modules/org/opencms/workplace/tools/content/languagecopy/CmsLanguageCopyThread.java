@@ -125,7 +125,7 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
         report.println(
             Messages.get().container(
                 Messages.GUI_REPORT_LANGUAGEC0PY_START_3,
-                new Object[] {new Integer(totalFiles), sourceLocale, targetLocale}),
+                new Object[] {Integer.valueOf(totalFiles), sourceLocale, targetLocale}),
             I_CmsReport.FORMAT_HEADLINE);
 
         try {
@@ -143,7 +143,7 @@ public class CmsLanguageCopyThread extends A_CmsReportThread {
         report.println(
             Messages.get().container(
                 Messages.GUI_REPORT_LANGUAGEC0PY_END_2,
-                new Object[] {new Integer(warnings.size()), new Integer(errors.size())}),
+                new Object[] {Integer.valueOf(warnings.size()), Integer.valueOf(errors.size())}),
             I_CmsReport.FORMAT_HEADLINE);
         for (Object f : warnings) {
             if (f instanceof CmsMessageContainer) {

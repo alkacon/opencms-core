@@ -107,8 +107,8 @@ public class CmsUploadProgressInfo extends FlowPanel {
             1,
             Messages.get().key(
                 Messages.GUI_UPLOAD_FINISH_UPLOADED_VALUE_4,
-                new Integer(fileCount),
-                new Integer(fileCount),
+                Integer.valueOf(fileCount),
+                Integer.valueOf(fileCount),
                 getFileText(),
                 length));
     }
@@ -162,8 +162,8 @@ public class CmsUploadProgressInfo extends FlowPanel {
             1,
             Messages.get().key(
                 Messages.GUI_UPLOAD_PROGRESS_CURRENT_VALUE_3,
-                new Integer(currFileIndex + 1),
-                new Integer(fileCount),
+                Integer.valueOf(currFileIndex + 1),
+                Integer.valueOf(fileCount),
                 getFileText()));
         m_fileinfo.setText(
             2,

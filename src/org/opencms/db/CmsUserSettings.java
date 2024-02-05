@@ -1316,7 +1316,7 @@ public class CmsUserSettings {
                 PREFERENCES
                     + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
                     + CmsWorkplaceConfiguration.N_BUTTONSTYLE,
-                new Integer(getWorkplaceButtonStyle()));
+                Integer.valueOf(getWorkplaceButtonStyle()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(
                 PREFERENCES
@@ -1472,7 +1472,7 @@ public class CmsUserSettings {
                 PREFERENCES
                     + CmsWorkplaceConfiguration.N_EXPLORERGENERALOPTIONS
                     + CmsWorkplaceConfiguration.N_BUTTONSTYLE,
-                new Integer(getExplorerButtonStyle()));
+                Integer.valueOf(getExplorerButtonStyle()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(
                 PREFERENCES
@@ -1483,7 +1483,7 @@ public class CmsUserSettings {
         if (getExplorerFileEntries() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getExplorerFileEntries()) {
             m_user.setAdditionalInfo(
                 PREFERENCES + CmsWorkplaceConfiguration.N_EXPLORERGENERALOPTIONS + CmsWorkplaceConfiguration.N_ENTRIES,
-                new Integer(getExplorerFileEntries()));
+                Integer.valueOf(getExplorerFileEntries()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(
                 PREFERENCES + CmsWorkplaceConfiguration.N_EXPLORERGENERALOPTIONS + CmsWorkplaceConfiguration.N_ENTRIES);
@@ -1494,7 +1494,7 @@ public class CmsUserSettings {
                 PREFERENCES
                     + CmsWorkplaceConfiguration.N_EXPLORERGENERALOPTIONS
                     + CmsWorkplaceConfiguration.N_EXPLORERDISPLAYOPTIONS,
-                new Integer(getExplorerSettings()));
+                Integer.valueOf(getExplorerSettings()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(
                 PREFERENCES
@@ -1505,7 +1505,7 @@ public class CmsUserSettings {
         if (getDialogCopyFileMode() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogCopyFileMode()) {
             m_user.setAdditionalInfo(
                 PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_FILECOPY,
-                new Integer(getDialogCopyFileMode().getMode()));
+                Integer.valueOf(getDialogCopyFileMode().getMode()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(
                 PREFERENCES
@@ -1518,7 +1518,7 @@ public class CmsUserSettings {
                 PREFERENCES
                     + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
                     + CmsWorkplaceConfiguration.N_FOLDERCOPY,
-                new Integer(getDialogCopyFolderMode().getMode()));
+                Integer.valueOf(getDialogCopyFolderMode().getMode()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(
                 PREFERENCES
@@ -1531,7 +1531,7 @@ public class CmsUserSettings {
                 PREFERENCES
                     + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
                     + CmsWorkplaceConfiguration.N_FILEDELETION,
-                new Integer(getDialogDeleteFileMode().getMode()));
+                Integer.valueOf(getDialogDeleteFileMode().getMode()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(
                 PREFERENCES
@@ -1607,7 +1607,7 @@ public class CmsUserSettings {
                 PREFERENCES
                     + CmsWorkplaceConfiguration.N_EDITORGENERALOPTIONS
                     + CmsWorkplaceConfiguration.N_BUTTONSTYLE,
-                new Integer(getEditorButtonStyle()));
+                Integer.valueOf(getEditorButtonStyle()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(
                 PREFERENCES
@@ -1620,7 +1620,7 @@ public class CmsUserSettings {
                 PREFERENCES
                     + CmsWorkplaceConfiguration.N_EDITORGENERALOPTIONS
                     + CmsWorkplaceConfiguration.N_DIRECTEDITSTYLE,
-                new Integer(getDirectEditButtonStyle()));
+                Integer.valueOf(getDirectEditButtonStyle()));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(
                 PREFERENCES

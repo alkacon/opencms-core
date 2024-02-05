@@ -160,8 +160,8 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
             m_report.print(
                 org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_SUCCESSION_1,
-                    new Integer(i),
-                    new Integer(links.size())),
+                    Integer.valueOf(i),
+                    Integer.valueOf(links.size())),
                 I_CmsReport.FORMAT_NOTE);
             m_report.print(Messages.get().container(Messages.RPT_VALIDATE_LINK_0), I_CmsReport.FORMAT_NOTE);
             m_report.print(
@@ -187,8 +187,8 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
         m_report.println(
             Messages.get().container(
                 Messages.RPT_LINK_VALIDATION_STAT_2,
-                new Integer(links.size()),
-                new Integer(brokenLinks.size())),
+                Integer.valueOf(links.size()),
+                Integer.valueOf(brokenLinks.size())),
             I_CmsReport.FORMAT_HEADLINE);
         m_report.println(
             Messages.get().container(Messages.RPT_VALIDATE_EXTERNAL_LINKS_END_0),

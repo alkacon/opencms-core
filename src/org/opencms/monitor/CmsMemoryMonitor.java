@@ -1879,15 +1879,15 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(
-                Messages.get().getBundle().key(Messages.LOG_MM_INTERVAL_LOG_1, new Integer(m_intervalLog / 1000)));
+                Messages.get().getBundle().key(Messages.LOG_MM_INTERVAL_LOG_1, Integer.valueOf(m_intervalLog / 1000)));
             CmsLog.INIT.info(
-                Messages.get().getBundle().key(Messages.LOG_MM_INTERVAL_EMAIL_1, new Integer(m_intervalEmail / 1000)));
+                Messages.get().getBundle().key(Messages.LOG_MM_INTERVAL_EMAIL_1, Integer.valueOf(m_intervalEmail / 1000)));
             CmsLog.INIT.info(
                 Messages.get().getBundle().key(
                     Messages.LOG_MM_INTERVAL_WARNING_1,
-                    new Integer(m_intervalWarning / 1000)));
+                    Integer.valueOf(m_intervalWarning / 1000)));
             CmsLog.INIT.info(
-                Messages.get().getBundle().key(Messages.LOG_MM_INTERVAL_MAX_USAGE_1, new Integer(m_maxUsagePercent)));
+                Messages.get().getBundle().key(Messages.LOG_MM_INTERVAL_MAX_USAGE_1, Integer.valueOf(m_maxUsagePercent)));
 
             if ((m_configuration.getEmailReceiver() == null) || (m_configuration.getEmailSender() == null)) {
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.LOG_MM_EMAIL_DISABLED_0));
@@ -1898,7 +1898,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 int n = 0;
                 while (i.hasNext()) {
                     CmsLog.INIT.info(
-                        Messages.get().getBundle().key(Messages.LOG_MM_EMAIL_RECEIVER_2, new Integer(n + 1), i.next()));
+                        Messages.get().getBundle().key(Messages.LOG_MM_EMAIL_RECEIVER_2, Integer.valueOf(n + 1), i.next()));
                     n++;
                 }
             }
@@ -2687,7 +2687,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 Messages.get().getBundle().key(
                     Messages.LOG_MM_WARNING_MEM_CONSUME_2,
                     Long.valueOf(m_memoryCurrent.getUsage()),
-                    new Integer(m_maxUsagePercent)));
+                    Integer.valueOf(m_maxUsagePercent)));
         } else {
             m_warningLoggedSinceLastStatus = false;
             m_lastLogStatus = System.currentTimeMillis();
@@ -2703,7 +2703,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                         Long.valueOf(m_memoryCurrent.getFreeMemory()),
                         Long.valueOf(m_memoryCurrent.getUsedMemory()),
                         Long.valueOf(m_memoryCurrent.getUsage()),
-                        new Integer(m_maxUsagePercent)}));
+                        Integer.valueOf(m_maxUsagePercent)}));
         } else {
             m_logCount++;
             LOG.info(
@@ -2745,7 +2745,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                         Long.valueOf(m_memoryCurrent.getFreeMemory()),
                         Long.valueOf(m_memoryCurrent.getUsedMemory()),
                         Long.valueOf(m_memoryCurrent.getUsage()),
-                        new Integer(m_maxUsagePercent),
+                        Integer.valueOf(m_maxUsagePercent),
                         Long.valueOf(totalSize),
                         Long.valueOf(totalSize / 1048576)})
 
@@ -2759,7 +2759,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                         Long.valueOf(m_memoryAverage.getFreeMemory()),
                         Long.valueOf(m_memoryAverage.getUsedMemory()),
                         Long.valueOf(m_memoryAverage.getUsage()),
-                        new Integer(m_memoryAverage.getCount())}));
+                        Integer.valueOf(m_memoryAverage.getCount())}));
 
             CmsSessionManager sm = OpenCms.getSessionManager();
 

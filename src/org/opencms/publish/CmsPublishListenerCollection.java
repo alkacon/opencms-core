@@ -173,8 +173,8 @@ public final class CmsPublishListenerCollection extends Vector<I_CmsPublishEvent
             hasError = true;
             Object[] params = new Object[] {
                 Long.valueOf(publishJob.getEnqueueTime()),
-                new Integer(publishJob.getReport().getErrors().size()),
-                new Integer(publishJob.getReport().getWarnings().size())};
+                Integer.valueOf(publishJob.getReport().getErrors().size()),
+                Integer.valueOf(publishJob.getReport().getWarnings().size())};
             msgText = Messages.get().getBundle(publishJob.getLocale()).key(
                 Messages.GUI_PUBLISH_JOB_FINISHED_WITH_WARNS_3,
                 params);

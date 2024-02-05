@@ -176,7 +176,7 @@ public class CmsModuleVersion implements Comparable<Object>, Serializable {
 
                 if ((number > 999) || (number < 0)) {
                     throw new CmsIllegalArgumentException(
-                        Messages.get().container(Messages.ERR_INVALID_VERSION_SUBNUMBER_1, new Integer(number)));
+                        Messages.get().container(Messages.ERR_INVALID_VERSION_SUBNUMBER_1, Integer.valueOf(number)));
                 }
                 m_number = ((long)Math.pow(1000.0, i) * number) + m_number;
             } catch (NumberFormatException e) {

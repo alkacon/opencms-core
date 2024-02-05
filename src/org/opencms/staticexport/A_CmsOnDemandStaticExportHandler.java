@@ -65,8 +65,8 @@ public abstract class A_CmsOnDemandStaticExportHandler extends A_CmsStaticExport
                         Messages.get().getBundle().key(
                             Messages.LOG_WAITING_STATIC_EXPORT_3,
                             getClass().getName(),
-                            new Integer(count),
-                            new Integer(CmsStaticExportManager.HANDLER_FINISH_TIME)));
+                            Integer.valueOf(count),
+                            Integer.valueOf(CmsStaticExportManager.HANDLER_FINISH_TIME)));
                 }
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -79,7 +79,7 @@ public abstract class A_CmsOnDemandStaticExportHandler extends A_CmsStaticExport
             // if the handler is still busy write a warning to the log and exit
             Object[] arguments = new Object[] {
                 publishHistoryId,
-                new Integer(CmsStaticExportManager.HANDLER_FINISH_TIME)};
+                Integer.valueOf(CmsStaticExportManager.HANDLER_FINISH_TIME)};
             LOG.error(Messages.get().getBundle().key(Messages.LOG_SCRUBBING_FOLDER_FAILED_2, arguments));
 
             return;

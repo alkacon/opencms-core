@@ -553,7 +553,7 @@ public class CmsParameterConfiguration extends AbstractMap<String, String> imple
             return ((Integer)value).intValue();
 
         } else if (value instanceof String) {
-            Integer i = new Integer((String)value);
+            Integer i = Integer.valueOf((String)value);
             m_configurationObjects.put(key, i);
             return i.intValue();
 

@@ -250,7 +250,7 @@ public class CmsImportVersion5 extends A_CmsImport {
                 Messages.get().container(
                     Messages.RPT_IMPORTING_RELATIONS_FOR_2,
                     resourcePath,
-                    new Integer(relations.size())),
+                    Integer.valueOf(relations.size())),
                 I_CmsReport.FORMAT_NOTE);
             m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
@@ -424,7 +424,7 @@ public class CmsImportVersion5 extends A_CmsImport {
                 destination,
                 type.getTypeId(),
                 type.isFolder(),
-                new Integer(flags).intValue(),
+                Integer.valueOf(flags).intValue(),
                 m_cms.getRequestContext().getCurrentProject().getUuid(),
                 CmsResource.STATE_NEW,
                 datecreated,

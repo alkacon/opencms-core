@@ -298,7 +298,7 @@ public final class CmsThreadStore extends Thread {
             LOG.debug(
                 Messages.get().getBundle().key(
                     Messages.LOG_THREADSTORE_POOL_CONTENT_2,
-                    new Integer(m_threads.size()),
+                    Integer.valueOf(m_threads.size()),
                     b.toString()));
         }
     }

@@ -487,7 +487,7 @@ public class CmsResourceManager {
                 Messages.get().getBundle().key(
                     Messages.INIT_ADD_LOADER_2,
                     loader.getClass().getName(),
-                    new Integer(pos)));
+                    Integer.valueOf(pos)));
         }
     }
 
@@ -583,9 +583,9 @@ public class CmsResourceManager {
                     Messages.ERR_CONFLICTING_RESOURCE_TYPES_4,
                     new Object[] {
                         resourceType.getTypeName(),
-                        new Integer(resourceType.getTypeId()),
+                        Integer.valueOf(resourceType.getTypeId()),
                         conflictingType.getTypeName(),
-                        new Integer(conflictingType.getTypeId())}));
+                        Integer.valueOf(conflictingType.getTypeId())}));
         }
 
         m_resourceTypesFromXml.add(resourceType);
@@ -920,7 +920,7 @@ public class CmsResourceManager {
         I_CmsResourceType result = m_configuration.getResourceTypeById(typeId);
         if (result == null) {
             throw new CmsLoaderException(
-                Messages.get().container(Messages.ERR_UNKNOWN_RESTYPE_ID_REQ_1, new Integer(typeId)));
+                Messages.get().container(Messages.ERR_UNKNOWN_RESTYPE_ID_REQ_1, Integer.valueOf(typeId)));
         }
         return result;
     }
@@ -1400,7 +1400,7 @@ public class CmsResourceManager {
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(
-                Messages.get().getBundle().key(Messages.INIT_NUM_MIMETYPES_1, new Integer(m_mimeTypes.size())));
+                Messages.get().getBundle().key(Messages.INIT_NUM_MIMETYPES_1, Integer.valueOf(m_mimeTypes.size())));
         }
     }
 
@@ -1422,7 +1422,7 @@ public class CmsResourceManager {
                 Messages.get().getBundle().key(
                     Messages.INIT_ADD_RESTYPE_3,
                     resourceType.getTypeName(),
-                    new Integer(resourceType.getTypeId()),
+                    Integer.valueOf(resourceType.getTypeId()),
                     resourceType.getClass().getName()));
         }
 
@@ -1463,7 +1463,7 @@ public class CmsResourceManager {
             CmsLog.INIT.info(
                 Messages.get().getBundle().key(
                     Messages.INIT_ADD_RESTYPE_FROM_FILE_2,
-                    new Integer(m_resourceTypesFromXml.size()),
+                    Integer.valueOf(m_resourceTypesFromXml.size()),
                     CmsVfsConfiguration.DEFAULT_XML_FILE_NAME));
         }
 
@@ -1487,7 +1487,7 @@ public class CmsResourceManager {
                         CmsLog.INIT.info(
                             Messages.get().getBundle().key(
                                 Messages.INIT_ADD_NUM_RESTYPES_FROM_MOD_2,
-                                new Integer(module.getResourceTypes().size()),
+                                Integer.valueOf(module.getResourceTypes().size()),
                                 module.getName()));
                     }
 
@@ -1523,10 +1523,10 @@ public class CmsResourceManager {
                                     Messages.ERR_CONFLICTING_MODULE_RESOURCE_TYPES_5,
                                     new Object[] {
                                         resourceType.getTypeName(),
-                                        new Integer(resourceType.getTypeId()),
+                                        Integer.valueOf(resourceType.getTypeId()),
                                         module.getName(),
                                         conflictingType.getTypeName(),
-                                        new Integer(conflictingType.getTypeId())}));
+                                        Integer.valueOf(conflictingType.getTypeId())}));
                         }
                         initResourceType(resourceType, newConfiguration);
                     }

@@ -116,7 +116,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public static final String EXPORT_BACKUP_FOLDER_NAME = "backup";
 
     /** Name for the default work path. */
-    public static final Integer EXPORT_DEFAULT_BACKUPS = new Integer(0);
+    public static final Integer EXPORT_DEFAULT_BACKUPS = Integer.valueOf(0);
 
     /** Name for the folder default index file. */
     public static final String EXPORT_DEFAULT_FILE = "index_export.html";
@@ -639,7 +639,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // check loader id for resource
         I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(file);
         if ((loader == null) || (!loader.isStaticExportEnabled())) {
-            Object[] arguments = new Object[] {vfsName, new Integer(file.getTypeId())};
+            Object[] arguments = new Object[] {vfsName, Integer.valueOf(file.getTypeId())};
             throw new CmsStaticExportException(
                 Messages.get().container(Messages.ERR_EXPORT_NOT_SUPPORTED_2, arguments));
         }
@@ -2173,7 +2173,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public void setExportBackups(String backup) {
 
-        m_staticExportBackups = new Integer(backup);
+        m_staticExportBackups = Integer.valueOf(backup);
     }
 
     /**
@@ -2408,7 +2408,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         m_cacheExportLinks.clear();
         m_exportnameResources = null;
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLUSHED_CACHES_1, new Integer(event.getType())));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLUSHED_CACHES_1, Integer.valueOf(event.getType())));
         }
     }
 
@@ -2434,14 +2434,14 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 backupFolderName = backupFolderName + EXPORT_BACKUP_FOLDER_NAME;
             }
             for (int i = exportBackups; i > 0; i--) {
-                File staticExportBackupOld = new File(backupFolderName + new Integer(i).toString());
+                File staticExportBackupOld = new File(backupFolderName + Integer.valueOf(i).toString());
                 if (staticExportBackupOld.exists()) {
                     if ((i + 1) > exportBackups) {
                         // delete folder if it is the last backup folder
                         CmsFileUtil.purgeDirectory(staticExportBackupOld);
                     } else {
                         // set backup folder to the next backup folder name
-                        staticExportBackupOld.renameTo(new File(backupFolderName + new Integer(i + 1).toString()));
+                        staticExportBackupOld.renameTo(new File(backupFolderName + Integer.valueOf(i + 1).toString()));
                     }
                 }
                 // old export folder rename to first backup folder
@@ -2856,7 +2856,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
         synchronized (m_lockScrubExportFolders) {
             int count = 0;
-            Integer size = new Integer(m_rfsRules.size() + 1);
+            Integer size = Integer.valueOf(m_rfsRules.size() + 1);
             // default case
             String exportFolderName = CmsFileUtil.normalizePath(m_staticExportPath + '/');
             try {
@@ -2870,7 +2870,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     report.println(
                         Messages.get().container(
                             Messages.RPT_DELETE_EXPORT_FOLDER_3,
-                            new Integer(count),
+                            Integer.valueOf(count),
                             size,
                             exportFolderName),
                         I_CmsReport.FORMAT_NOTE);
@@ -2904,7 +2904,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         report.println(
                             Messages.get().container(
                                 Messages.RPT_DELETE_EXPORT_FOLDER_3,
-                                new Integer(count),
+                                Integer.valueOf(count),
                                 size,
                                 exportFolderName),
                             I_CmsReport.FORMAT_NOTE);

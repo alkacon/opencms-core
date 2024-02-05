@@ -1076,7 +1076,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
             SortedMap<Integer, String> mappedDatabases = new TreeMap<Integer, String>();
             for (int i = 0; i < databases.size(); i++) {
                 String key = databases.get(i);
-                Integer ranking = new Integer(0);
+                Integer ranking = Integer.valueOf(0);
                 try {
                     ranking = Integer.valueOf(getDbProperty(key + ".ranking"));
                 } catch (Exception e) {

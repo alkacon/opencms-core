@@ -417,7 +417,7 @@ public class CmsSearch {
 
         // build the sorted tree map of page links
         for (int i = startIndex; i <= endIndex; i++) {
-            links.put(new Integer(i), (link + i));
+            links.put(Integer.valueOf(i), (link + i));
         }
         return links;
     }
@@ -521,7 +521,7 @@ public class CmsSearch {
                                 m_lastException = new CmsSearchException(
                                     Messages.get().container(
                                         Messages.ERR_QUERY_TOO_SHORT_1,
-                                        new Integer(getQueryLength())));
+                                        Integer.valueOf(getQueryLength())));
 
                                 return null;
                             }
@@ -531,7 +531,7 @@ public class CmsSearch {
                 } else if (m_parameters.getQuery().trim().length() < getQueryLength()) {
 
                     m_lastException = new CmsSearchException(
-                        Messages.get().container(Messages.ERR_QUERY_TOO_SHORT_1, new Integer(getQueryLength())));
+                        Messages.get().container(Messages.ERR_QUERY_TOO_SHORT_1, Integer.valueOf(getQueryLength())));
 
                     return null;
                 }

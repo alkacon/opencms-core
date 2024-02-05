@@ -220,7 +220,7 @@ public class CmsJspBean {
     public void setStatus(int status) {
 
         // use the request attribute to store the status
-        m_request.setAttribute(CmsRequestUtil.ATTRIBUTE_ERRORCODE, new Integer(status));
+        m_request.setAttribute(CmsRequestUtil.ATTRIBUTE_ERRORCODE, Integer.valueOf(status));
     }
 
     /**

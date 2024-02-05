@@ -178,7 +178,7 @@ public final class CmsDocumentDependency {
         if (matcher.find()) {
             docName = matcher.group(1);
             try {
-                Integer partNumber = new Integer(Integer.parseInt(matcher.group(2)));
+                Integer partNumber = Integer.valueOf(Integer.parseInt(matcher.group(2)));
                 setAttachmentNumber(partNumber);
             } catch (NumberFormatException e) {
                 // ignore, can happen if the second group of the matcher is larger than Integer.MAX_VALUE
@@ -726,7 +726,7 @@ public final class CmsDocumentDependency {
 
         Map<Integer, CmsDocumentDependency> attachments = new HashMap<Integer, CmsDocumentDependency>();
         if (isAttachment()) {
-            attachments.put(new Integer(getAttachmentNumber()), this);
+            attachments.put(Integer.valueOf(getAttachmentNumber()), this);
         }
 
         // iterate all resources in the folder to check if this is a language version
@@ -751,7 +751,7 @@ public final class CmsDocumentDependency {
                             if (getAttachmentNumber() == dep.getAttachmentNumber()) {
                                 dep.setMainDocument(dep);
                             } else {
-                                Integer attNum = new Integer(dep.getAttachmentNumber());
+                                Integer attNum = Integer.valueOf(dep.getAttachmentNumber());
                                 CmsDocumentDependency att = attachments.get(attNum);
                                 if (att != null) {
                                     att.addVariant(dep);

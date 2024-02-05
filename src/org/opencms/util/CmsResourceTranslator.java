@@ -130,7 +130,7 @@ public class CmsResourceTranslator {
             LOG.info(
                 Messages.get().getBundle().key(
                     Messages.LOG_NUM_TRANSLATION_RULES_INITIALIZED_1,
-                    new Integer(translations.length)));
+                    Integer.valueOf(translations.length)));
         }
     }
 
@@ -183,7 +183,7 @@ public class CmsResourceTranslator {
                             LOG.debug(
                                 Messages.get().getBundle().key(
                                     Messages.LOG_TRANSLATION_MATCH_3,
-                                    new Integer(i),
+                                    Integer.valueOf(i),
                                     resourceName,
                                     result));
                         }

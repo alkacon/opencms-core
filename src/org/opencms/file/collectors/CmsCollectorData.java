@@ -130,7 +130,7 @@ public class CmsCollectorData {
                             Messages.get().getBundle().key(
                                 Messages.LOG_RESTYPE_INTID_2,
                                 resourceType.getTypeName(),
-                                new Integer(resourceType.getTypeId())));
+                                Integer.valueOf(resourceType.getTypeId())));
                     }
                 } catch (CmsLoaderException | NumberFormatException e1) {
                     // this resource type does not exist

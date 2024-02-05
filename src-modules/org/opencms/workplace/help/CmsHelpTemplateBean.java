@@ -378,7 +378,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
             submitAction.append(
                 Messages.get().getBundle(getLocale()).key(
                     Messages.GUI_HELP_ERR_SEARCH_WORD_LENGTH_1,
-                    new Integer(3))).append("\');");
+                    Integer.valueOf(3))).append("\');");
 
             result.append("<form style=\"margin: 0;\" name=\"searchform\" method=\"post\" action=\"");
             String searchLink = getJsp().link(

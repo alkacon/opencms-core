@@ -140,7 +140,7 @@ public class CmsFlexCacheCleanDialog extends CmsBasicDialog implements I_Closeab
         OpenCms.fireCmsEvent(
             new CmsEvent(
                 I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
-                Collections.<String, Object> singletonMap(CmsFlexCache.CACHE_ACTION, new Integer(action))));
+                Collections.<String, Object> singletonMap(CmsFlexCache.CACHE_ACTION, Integer.valueOf(action))));
     }
 
     /**

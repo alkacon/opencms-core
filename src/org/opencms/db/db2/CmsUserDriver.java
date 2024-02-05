@@ -58,8 +58,8 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
                 return new CmsSimpleQueryFragment(
                     "BITAND(" + users.column("USER_FLAGS") + ", ?) = ? ",
-                    new Integer(flags),
-                    new Integer(flags));
+                    Integer.valueOf(flags),
+                    Integer.valueOf(flags));
             }
 
             /**
