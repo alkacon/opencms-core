@@ -184,7 +184,7 @@ public final class CmsDataTypeUtil {
      */
     public static String format(byte data) {
 
-        return new Byte(data).toString();
+        return Byte.valueOf(data).toString();
     }
 
     /**
@@ -196,7 +196,7 @@ public final class CmsDataTypeUtil {
      */
     public static String format(char data) {
 
-        return new Character(data).toString();
+        return Character.valueOf(data).toString();
     }
 
     /**
@@ -287,7 +287,7 @@ public final class CmsDataTypeUtil {
      */
     public static String format(short data) {
 
-        return new Short(data).toString();
+        return Short.valueOf(data).toString();
     }
 
     /**
@@ -402,7 +402,7 @@ public final class CmsDataTypeUtil {
      */
     public static Byte parseByte(String data) {
 
-        return new Byte(data);
+        return Byte.valueOf(data);
     }
 
     /**
@@ -414,7 +414,7 @@ public final class CmsDataTypeUtil {
      */
     public static Character parseChar(String data) {
 
-        return new Character(data.charAt(0));
+        return Character.valueOf(data.charAt(0));
     }
 
     /**
@@ -486,7 +486,7 @@ public final class CmsDataTypeUtil {
      */
     public static Short parseShort(String data) {
 
-        return new Short(data);
+        return Short.valueOf(data);
     }
 
     /**

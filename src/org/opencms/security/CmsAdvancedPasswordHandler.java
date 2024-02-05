@@ -161,8 +161,8 @@ public class CmsAdvancedPasswordHandler extends CmsDefaultPasswordHandler {
             }
             if ((descending > 1) || (ascending > 1) || (equals > 1)) {
                 Object[] msgArgs = new Object[] {
-                    new Character(last),
-                    new Character(current),
+                    Character.valueOf(last),
+                    Character.valueOf(current),
                     Integer.valueOf(descending),
                     Integer.valueOf(ascending),
                     Integer.valueOf(equals)};

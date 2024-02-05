@@ -291,7 +291,7 @@ public final class CmsStringUtil {
                 && (constraints.indexOf(c) < 0)) {
 
                 throw new CmsIllegalArgumentException(
-                    bundle.container(key, new Object[] {name, new Character(c), Integer.valueOf(i), constraints}));
+                    bundle.container(key, new Object[] {name, Character.valueOf(c), Integer.valueOf(i), constraints}));
             }
         }
     }
@@ -784,7 +784,7 @@ public final class CmsStringUtil {
                 byte[] mac = network.getHardwareAddress();
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < mac.length; i++) {
-                    sb.append(String.format("%02X%s", new Byte(mac[i]), (i < (mac.length - 1)) ? ":" : ""));
+                    sb.append(String.format("%02X%s", Byte.valueOf(mac[i]), (i < (mac.length - 1)) ? ":" : ""));
                 }
                 return sb.toString();
             }
