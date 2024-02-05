@@ -1,0 +1,4511 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>16.0</opencms_version>
+		<createdate>Tue, 16 Jan 2024 15:18:57 GMT</createdate>
+		<infoproject>Offline</infoproject>
+		<export_version>10</export_version>
+	</info>
+	<module>
+		<name>org.opencms.locales.fr</name>
+		<nicename><![CDATA[OpenCms French localization for the workplace]]></nicename>
+		<group>OpenCms Localization</group>
+		<class/>
+		<site>/</site>
+		<export-mode name="default"/>
+		<description><![CDATA[This module contains the French language localization files for the OpenCms workplace. Some important keywords in english are kept , like 'Explorer', 'Launchpad', 'Workplace', 'Online', 'Offline' , 'Workflow', 'Formatter' ...]]></description>
+		<version>1.0.0</version>
+		<authorname/>
+		<authoremail/>
+		<datecreated>Mon, 15 Jan 2024 17:38:13 GMT</datecreated>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints>
+			<exportpoint uri="/system/workplace/locales/fr/messages/" destination="WEB-INF/classes/"/>
+		</exportpoints>
+		<resources>
+			<resource uri="/system/workplace/locales/fr/messages/"/>
+		</resources>
+		<excluderesources/>
+		<parameters/>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>2ddceb04-9291-11ee-88a0-f09e4a37616c</uuidstructure>
+			<datelastmodified>Mon, 04 Dec 2023 10:37:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Dec 2023 10:37:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace</destination>
+			<type>folder</type>
+			<uuidstructure>46f57b24-9291-11ee-88a0-f09e4a37616c</uuidstructure>
+			<datelastmodified>Mon, 04 Dec 2023 10:38:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Dec 2023 10:38:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[/system/login/index.html]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/locales</destination>
+			<type>folder</type>
+			<uuidstructure>01db24c9-abea-11ee-9b3f-f09e4a37616c</uuidstructure>
+			<datelastmodified>Mon, 15 Jan 2024 17:38:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Feb 2008 13:13:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr</destination>
+			<type>folder</type>
+			<uuidstructure>01ddbcdb-abea-11ee-9b3f-f09e4a37616c</uuidstructure>
+			<datelastmodified>Mon, 15 Jan 2024 17:38:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Feb 2008 13:13:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages</destination>
+			<type>folder</type>
+			<uuidstructure>91225f1f-ad58-11ee-8dbe-f09e4a37616c</uuidstructure>
+			<datelastmodified>Mon, 15 Jan 2024 17:38:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 15 Jan 2024 17:38:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org</destination>
+			<type>folder</type>
+			<uuidstructure>912459f1-ad58-11ee-8dbe-f09e4a37616c</uuidstructure>
+			<datelastmodified>Mon, 15 Jan 2024 17:38:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 15 Jan 2024 17:38:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms</destination>
+			<type>folder</type>
+			<uuidstructure>2b40a95d-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade</destination>
+			<type>folder</type>
+			<uuidstructure>2b431a5f-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ade/clientmessages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/clientmessages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b458b61-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b458b62-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[clientmessages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/containerpage</destination>
+			<type>folder</type>
+			<uuidstructure>2b47d554-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ade/containerpage/clientmessages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/containerpage/clientmessages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b4a6d66-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b4a6d67-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[clientmessages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ade/containerpage/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/containerpage/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b4cde69-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b4cde6a-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/contenteditor</destination>
+			<type>folder</type>
+			<uuidstructure>2b4f285c-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ade/contenteditor/clientmessages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/contenteditor/clientmessages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b51c06e-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b51c06f-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[clientmessages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ade/contenteditor/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/contenteditor/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b540a61-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b540a62-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/detailpage</destination>
+			<type>folder</type>
+			<uuidstructure>2b565454-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ade/detailpage/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/detailpage/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b565456-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b565457-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/galleries</destination>
+			<type>folder</type>
+			<uuidstructure>2b5988a9-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ade/galleries/clientmessages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/galleries/clientmessages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b5b5d6b-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b5b5d6c-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[clientmessages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ade/galleries/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/galleries/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b5b5d6e-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b5b5d6f-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/postupload</destination>
+			<type>folder</type>
+			<uuidstructure>2b5df581-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ade/postupload/clientmessages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/postupload/clientmessages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b601863-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b601864-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[clientmessages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ade/postupload/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/postupload/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b626256-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b626257-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/publish</destination>
+			<type>folder</type>
+			<uuidstructure>2b626259-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ade/publish/clientmessages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/publish/clientmessages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b64d35b-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b64d35c-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[clientmessages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ade/publish/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/publish/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b67445e-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b67445f-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/sitemap</destination>
+			<type>folder</type>
+			<uuidstructure>2b69b561-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ade/sitemap/clientmessages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/sitemap/clientmessages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b69dc73-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b69dc74-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[clientmessages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ade/sitemap/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/sitemap/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b6c2666-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b6c2667-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/upload</destination>
+			<type>folder</type>
+			<uuidstructure>2b6c2669-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ade/upload/clientmessages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/upload/clientmessages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b6e976b-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b6e976c-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[clientmessages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ade/upload/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ade/upload/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b6e976e-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b6e976f-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/base</destination>
+			<type>folder</type>
+			<uuidstructure>2b70e161-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/base/workplace_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/base/workplace_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b735263-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b735264-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[workplace_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/cache</destination>
+			<type>folder</type>
+			<uuidstructure>2b735266-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/cache/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/cache/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b759c58-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b759c59-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/configuration</destination>
+			<type>folder</type>
+			<uuidstructure>2b759c5b-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/configuration/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/configuration/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b78346d-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b78346e-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/db</destination>
+			<type>folder</type>
+			<uuidstructure>2b7a7d60-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/db/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/db/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b7f5f6c-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b7f5f6d-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/db/generic</destination>
+			<type>folder</type>
+			<uuidstructure>2b7a7d62-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/db/generic/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/db/generic/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b7cee64-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b7cee65-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/db/log</destination>
+			<type>folder</type>
+			<uuidstructure>2b7cee67-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/db/log/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/db/log/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b7f5f69-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b7f5f6a-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/defaults</destination>
+			<type>folder</type>
+			<uuidstructure>2b81a95f-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/defaults/master</destination>
+			<type>folder</type>
+			<uuidstructure>2b81a961-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/defaults/master/genericsql</destination>
+			<type>folder</type>
+			<uuidstructure>2b844173-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/defaults/master/genericsql/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/defaults/master/genericsql/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b844175-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b844176-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/editors</destination>
+			<type>folder</type>
+			<uuidstructure>2b8775c8-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/editors/codemirror</destination>
+			<type>folder</type>
+			<uuidstructure>2b8775ca-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/editors/codemirror/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/editors/codemirror/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b894a8c-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b894a8d-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/file</destination>
+			<type>folder</type>
+			<uuidstructure>2b8b6d6f-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/file/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/file/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b8e0586-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b8e0587-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/file/collectors</destination>
+			<type>folder</type>
+			<uuidstructure>2b8b6d71-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/file/collectors/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/file/collectors/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b8e0583-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b8e0584-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/file/types</destination>
+			<type>folder</type>
+			<uuidstructure>2b904f79-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/file/types/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/file/types/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b92996b-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b92996c-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/file/wrapper</destination>
+			<type>folder</type>
+			<uuidstructure>2b92996e-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/file/wrapper/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/file/wrapper/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b96b820-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b96b821-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/flex</destination>
+			<type>folder</type>
+			<uuidstructure>2b977b73-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/flex/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/flex/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b99ec75-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b99ec76-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/frontend</destination>
+			<type>folder</type>
+			<uuidstructure>2b99ec78-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/frontend/layoutpage</destination>
+			<type>folder</type>
+			<uuidstructure>2b9c366a-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/frontend/layoutpage/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/frontend/layoutpage/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2b9ea76c-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2b9ea76d-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/frontend/templateone</destination>
+			<type>folder</type>
+			<uuidstructure>2b9ea76f-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/frontend/templateone/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/frontend/templateone/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2ba38976-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2ba38977-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/frontend/templateone/form</destination>
+			<type>folder</type>
+			<uuidstructure>2ba0f161-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/frontend/templateone/form/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/frontend/templateone/form/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2ba38973-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2ba38974-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/frontend/templateone/modules</destination>
+			<type>folder</type>
+			<uuidstructure>2ba64899-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/frontend/templateone/modules/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/frontend/templateone/modules/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2ba8446b-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2ba8446c-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/gwt</destination>
+			<type>folder</type>
+			<uuidstructure>2ba8446e-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/gwt/clientmessages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/gwt/clientmessages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2baab570-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2baab571-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[clientmessages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/gwt/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/gwt/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2baab573-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2baab574-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/gwt/seo</destination>
+			<type>folder</type>
+			<uuidstructure>2bacff66-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/gwt/seo/clientmessages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/gwt/seo/clientmessages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2baf7068-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2baf7069-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[clientmessages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/i18n</destination>
+			<type>folder</type>
+			<uuidstructure>2baf706b-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/i18n/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/i18n/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2bb1e16d-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2bb1e16e-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/importexport</destination>
+			<type>folder</type>
+			<uuidstructure>2bb1e170-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/importexport/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/importexport/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2bb42b62-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2bb42b63-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/jsp</destination>
+			<type>folder</type>
+			<uuidstructure>2bb53cd5-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/jsp/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/jsp/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2bb90d6c-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2bb90d6d-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/jsp/decorator</destination>
+			<type>folder</type>
+			<uuidstructure>2bb69c67-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/jsp/decorator/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/jsp/decorator/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2bb786c9-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2bb786ca-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/jsp/search</destination>
+			<type>folder</type>
+			<uuidstructure>2bbb7e6f-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/jsp/search/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/jsp/search/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2bbb7e71-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2bbb7e72-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/jsp/userdata</destination>
+			<type>folder</type>
+			<uuidstructure>2bbdef74-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/jsp/userdata/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/jsp/userdata/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2bc03966-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2bc03967-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/jsp/util</destination>
+			<type>folder</type>
+			<uuidstructure>2bc03969-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/jsp/util/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/jsp/util/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2bc2aa6c-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2bc2aa6d-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/legacy</destination>
+			<type>folder</type>
+			<uuidstructure>2bc47f2f-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/legacy/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/legacy/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2bc51b71-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2bc51b72-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/loader</destination>
+			<type>folder</type>
+			<uuidstructure>2bc78c74-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/loader/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/loader/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2bc78c76-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2bc78c77-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/lock</destination>
+			<type>folder</type>
+			<uuidstructure>2bcc4769-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/lock/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/lock/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2bceb86b-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2bceb86c-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/mail</destination>
+			<type>folder</type>
+			<uuidstructure>2bceb86e-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/mail/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/mail/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2bd12970-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2bd12971-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/main</destination>
+			<type>folder</type>
+			<uuidstructure>2bd12973-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/main/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/main/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2bd3e895-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2bd3e896-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/module</destination>
+			<type>folder</type>
+			<uuidstructure>2bd3e898-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/module/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/module/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2bd60b7a-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2bd60b7b-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/monitor</destination>
+			<type>folder</type>
+			<uuidstructure>2bdbfeed-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/monitor/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/monitor/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2bddd3af-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2bddd3b0-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/notification</destination>
+			<type>folder</type>
+			<uuidstructure>2bdfa872-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/notification/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/notification/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2be092d4-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2be092d5-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/publish</destination>
+			<type>folder</type>
+			<uuidstructure>2be21977-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/publish/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/publish/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2be32ae9-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2be32aea-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/relations</destination>
+			<type>folder</type>
+			<uuidstructure>2be48a7c-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/relations/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/relations/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2be4ffae-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2be4ffaf-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/report</destination>
+			<type>folder</type>
+			<uuidstructure>2be749a1-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/report/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/report/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2be749a3-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2be749a4-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/report/wrapper</destination>
+			<type>folder</type>
+			<uuidstructure>2be96c86-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/report/wrapper/defaultreportmessages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/report/wrapper/defaultreportmessages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2be96c88-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2be96c89-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[defaultreportmessages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/repository</destination>
+			<type>folder</type>
+			<uuidstructure>2bebdd8b-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/repository/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/repository/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2becc7ed-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2becc7ee-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/scheduler</destination>
+			<type>folder</type>
+			<uuidstructure>2bee4e90-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/scheduler/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/scheduler/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2bf26d47-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2bf26d48-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/scheduler/jobs</destination>
+			<type>folder</type>
+			<uuidstructure>2bee4e92-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/scheduler/jobs/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/scheduler/jobs/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2bf09884-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2bf09885-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/search</destination>
+			<type>folder</type>
+			<uuidstructure>2bf3098a-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/search/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/search/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2bfa3586-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2bfa3587-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/search/documents</destination>
+			<type>folder</type>
+			<uuidstructure>2bf57a8c-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/search/documents/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/search/documents/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2bf57a8e-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2bf57a8f-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/search/extractors</destination>
+			<type>folder</type>
+			<uuidstructure>2bf7eb91-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/search/extractors/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/search/extractors/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2bfa3583-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2bfa3584-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/search/replace</destination>
+			<type>folder</type>
+			<uuidstructure>2bfca689-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/search/replace/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/search/replace/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2bff178b-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2bff178c-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/search/solr</destination>
+			<type>folder</type>
+			<uuidstructure>2bff178e-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/search/solr/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/search/solr/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c01afa0-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c01afa1-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/security</destination>
+			<type>folder</type>
+			<uuidstructure>2c03f993-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/security/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/security/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c0691a5-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c0691a6-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/setup</destination>
+			<type>folder</type>
+			<uuidstructure>2c0691a8-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/setup/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/setup/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c08b48a-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c08b48b-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/setup/xml</destination>
+			<type>folder</type>
+			<uuidstructure>2c08b48d-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/setup/xml/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/setup/xml/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c0b258f-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c0b2590-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/site</destination>
+			<type>folder</type>
+			<uuidstructure>2c0b2592-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/site/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/site/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c0d9694-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c0d9695-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/staticexport</destination>
+			<type>folder</type>
+			<uuidstructure>2c0d9697-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/staticexport/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/staticexport/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c10f1f9-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c10f1fa-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/synchronize</destination>
+			<type>folder</type>
+			<uuidstructure>2c12518c-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/synchronize/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/synchronize/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c12518e-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c12518f-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ugc</destination>
+			<type>folder</type>
+			<uuidstructure>2c14c191-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ugc/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ugc/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c173293-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c173294-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ui</destination>
+			<type>folder</type>
+			<uuidstructure>2c197c86-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ui/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ui/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c31bf9b-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c31bf9c-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ui/apps</destination>
+			<type>folder</type>
+			<uuidstructure>2c197c88-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ui/apps/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ui/apps/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c20334f-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c203350-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ui/apps/git</destination>
+			<type>folder</type>
+			<uuidstructure>2c1bed8a-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ui/apps/git/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ui/apps/git/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c1bed8c-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c1bed8d-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ui/components</destination>
+			<type>folder</type>
+			<uuidstructure>2c20cf92-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ui/components/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ui/components/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c234094-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c234095-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ui/contextmenu</destination>
+			<type>folder</type>
+			<uuidstructure>2c25b197-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ui/contextmenu/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ui/contextmenu/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c25b199-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c25b19a-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ui/dialogs</destination>
+			<type>folder</type>
+			<uuidstructure>2c28229c-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ui/dialogs/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ui/dialogs/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c2a6c8e-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c2a6c8f-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ui/editors</destination>
+			<type>folder</type>
+			<uuidstructure>2c2a6c91-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ui/editors/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ui/editors/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c2f75a8-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c2f75a9-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ui/editors/messagebundle</destination>
+			<type>folder</type>
+			<uuidstructure>2c2cdd93-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ui/editors/messagebundle/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ui/editors/messagebundle/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c2f75a5-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c2f75a6-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/util</destination>
+			<type>folder</type>
+			<uuidstructure>2c34098e-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/util/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/util/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c340990-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c340991-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/webdav</destination>
+			<type>folder</type>
+			<uuidstructure>2c367a93-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/webdav/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/webdav/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c38eb95-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c38eb96-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/widgets</destination>
+			<type>folder</type>
+			<uuidstructure>2c38eb98-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/widgets/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/widgets/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c3b358a-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c3b358b-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/widgets/serialdate</destination>
+			<type>folder</type>
+			<uuidstructure>2c3da68d-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/widgets/serialdate/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/widgets/serialdate/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c3edf0f-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c3edf10-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workflow</destination>
+			<type>folder</type>
+			<uuidstructure>2c401792-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workflow/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workflow/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c428894-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c428895-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace</destination>
+			<type>folder</type>
+			<uuidstructure>2c44f997-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c81188b-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c81188c-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/administration</destination>
+			<type>folder</type>
+			<uuidstructure>2c44f999-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/administration/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/administration/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c476a9b-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c476a9c-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/commons</destination>
+			<type>folder</type>
+			<uuidstructure>2c49db9e-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/commons/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/commons/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c49dba0-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c49dba1-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/comparison</destination>
+			<type>folder</type>
+			<uuidstructure>2c4e2163-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/comparison/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/comparison/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c4e9695-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c4e9696-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/demos</destination>
+			<type>folder</type>
+			<uuidstructure>2c510798-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/demos/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/demos/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c55c28f-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c55c290-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/demos/list</destination>
+			<type>folder</type>
+			<uuidstructure>2c53789a-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/demos/list/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/demos/list/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c55c28c-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c55c28d-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/demos/widget</destination>
+			<type>folder</type>
+			<uuidstructure>2c583392-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/demos/widget/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/demos/widget/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c5aa494-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c5aa495-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/editors</destination>
+			<type>folder</type>
+			<uuidstructure>2c5d1597-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/editors/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/editors/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c6b6d8c-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c6b6d8d-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/editors/ade</destination>
+			<type>folder</type>
+			<uuidstructure>2c5d8aca-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/editors/ade/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/editors/ade/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c5fadac-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c5fadad-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/editors/ade/messagesADE_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/editors/ade/messagesADE_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c61f79f-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c61f7a0-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messagesADE_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/editors/directedit</destination>
+			<type>folder</type>
+			<uuidstructure>2c644192-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/editors/directedit/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/editors/directedit/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c644194-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c644195-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/editors/fckeditor</destination>
+			<type>folder</type>
+			<uuidstructure>2c66b297-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/editors/fckeditor/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/editors/fckeditor/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c692399-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c69239a-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/editors/sitemap</destination>
+			<type>folder</type>
+			<uuidstructure>2c6ca60f-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/editors/sitemap/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/editors/sitemap/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c6dde91-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c6dde92-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/editors/sitemap/messagesSitemap_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/editors/sitemap/messagesSitemap_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c7076a4-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c7076a5-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messagesSitemap_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/explorer</destination>
+			<type>folder</type>
+			<uuidstructure>2c72c097-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/explorer/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/explorer/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c72c099-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c72c09a-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/galleries</destination>
+			<type>folder</type>
+			<uuidstructure>2c75319c-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/galleries/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/galleries/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c777b8e-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c777b8f-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/help</destination>
+			<type>folder</type>
+			<uuidstructure>2c79ec91-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/help/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/help/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c7c5d93-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c7c5d94-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/list</destination>
+			<type>folder</type>
+			<uuidstructure>2c7c5d96-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/list/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/list/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c7ea788-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c7ea789-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/search</destination>
+			<type>folder</type>
+			<uuidstructure>2c83898e-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/search/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/search/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c85d380-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c85d381-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/threads</destination>
+			<type>folder</type>
+			<uuidstructure>2c85d383-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/threads/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/threads/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c886b95-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c886b96-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools</destination>
+			<type>folder</type>
+			<uuidstructure>2c8b2ab8-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2cbd377b-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2cbd377c-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/accounts</destination>
+			<type>folder</type>
+			<uuidstructure>2c8e10ea-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/accounts/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/accounts/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c8fe5ac-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c8fe5ad-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/administration</destination>
+			<type>folder</type>
+			<uuidstructure>2c91e17f-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/administration/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/administration/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c945281-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c945282-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/cache</destination>
+			<type>folder</type>
+			<uuidstructure>2c945284-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/cache/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/cache/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c975fc6-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c975fc7-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/content</destination>
+			<type>folder</type>
+			<uuidstructure>2c990d79-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/content/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/content/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2ca51b7a-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2ca51b7b-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/content/check</destination>
+			<type>folder</type>
+			<uuidstructure>2c9a6d0b-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/content/check/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/content/check/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2c9b7e7d-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2c9b7e7e-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/content/convertxml</destination>
+			<type>folder</type>
+			<uuidstructure>2c9def80-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/content/convertxml/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/content/convertxml/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2ca06082-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2ca06083-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/content/languagecopy</destination>
+			<type>folder</type>
+			<uuidstructure>2ca06085-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/content/languagecopy/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/content/languagecopy/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2ca2aa77-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2ca2aa78-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/content/propertyviewer</destination>
+			<type>folder</type>
+			<uuidstructure>2ca78c7d-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/content/propertyviewer/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/content/propertyviewer/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2ca9fd7f-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2ca9fd80-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/content/updatexml</destination>
+			<type>folder</type>
+			<uuidstructure>2cac4772-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/content/updatexml/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/content/updatexml/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2cac4774-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2cac4775-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/database</destination>
+			<type>folder</type>
+			<uuidstructure>2caeb877-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/database/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/database/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2cb12979-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2cb1297a-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/galleryoverview</destination>
+			<type>folder</type>
+			<uuidstructure>2cb3c18c-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/galleryoverview/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/galleryoverview/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2cb3c18e-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2cb3c18f-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/history</destination>
+			<type>folder</type>
+			<uuidstructure>2cb63291-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/history/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/history/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2cb8caa3-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2cb8caa4-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/link</destination>
+			<type>folder</type>
+			<uuidstructure>2cb918c6-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/link/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/link/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2cbaed88-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2cbaed89-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/modules</destination>
+			<type>folder</type>
+			<uuidstructure>2cbfa87e-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/modules/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/modules/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2cbfa880-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2cbfa881-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/projects</destination>
+			<type>folder</type>
+			<uuidstructure>2cc35203-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/projects/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/projects/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2cc46375-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2cc46376-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/publishqueue</destination>
+			<type>folder</type>
+			<uuidstructure>2cc6d478-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/publishqueue/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/publishqueue/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2cc85b1a-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2cc85b1b-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/scheduler</destination>
+			<type>folder</type>
+			<uuidstructure>2cc9457d-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/scheduler/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/scheduler/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2ccbb67f-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2ccbb680-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/searchindex</destination>
+			<type>folder</type>
+			<uuidstructure>2ccdff72-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/searchindex/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/searchindex/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2ccdff74-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2ccdff75-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/searchindex/sourcesearch</destination>
+			<type>folder</type>
+			<uuidstructure>2cd2ba67-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/searchindex/sourcesearch/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/searchindex/sourcesearch/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2cd52b69-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2cd52b6a-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/sites</destination>
+			<type>folder</type>
+			<uuidstructure>2cd79c6c-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/sites/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/sites/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2cda0d6e-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2cda0d6f-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/workplace</destination>
+			<type>folder</type>
+			<uuidstructure>2cda0d71-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/workplace/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/workplace/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2ce6debd-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2ce6debe-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/workplace/broadcast</destination>
+			<type>folder</type>
+			<uuidstructure>2cdc5763-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/workplace/broadcast/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/workplace/broadcast/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2cdec865-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2cdec866-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/workplace/logging</destination>
+			<type>folder</type>
+			<uuidstructure>2ce13968-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/workplace/logging/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/workplace/logging/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2ce4e2ea-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2ce4e2eb-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/workplace/rfsfile</destination>
+			<type>folder</type>
+			<uuidstructure>2ce86560-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/workplace/tools/workplace/rfsfile/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/workplace/tools/workplace/rfsfile/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2ce86562-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2ce86563-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/xml</destination>
+			<type>folder</type>
+			<uuidstructure>2cead665-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/xml/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/xml/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2cf47366-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2cf47367-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/xml/adeconfig</destination>
+			<type>folder</type>
+			<uuidstructure>2cead667-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/xml/adeconfig/xmlvfsbundle_messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/xml/adeconfig/xmlvfsbundle_messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2ced4769-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2ced476a-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[xmlvfsbundle_messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/xml/containerpage</destination>
+			<type>folder</type>
+			<uuidstructure>2ced476c-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/xml/containerpage/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/xml/containerpage/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2cefb86e-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2cefb86f-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/xml/content</destination>
+			<type>folder</type>
+			<uuidstructure>2cf20261-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/xml/content/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/xml/content/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2cf47363-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2cf47364-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/xml/page</destination>
+			<type>folder</type>
+			<uuidstructure>2cf6e46a-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/xml/page/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/xml/page/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2cf6e46c-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2cf6e46d-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/fr/messages/org/opencms/xml/types</destination>
+			<type>folder</type>
+			<uuidstructure>2cf92e5f-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/xml/types/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/xml/types/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2cfb9f61-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
+			<uuidresource>2cfb9f62-b482-11ee-9bbb-f09e4a37616c</uuidresource>
+			<datelastmodified>Tue, 16 Jan 2024 15:16:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 16 Jan 2024 15:16:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_fr]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>
