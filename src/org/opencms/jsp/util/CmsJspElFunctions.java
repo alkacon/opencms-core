@@ -813,7 +813,7 @@ public final class CmsJspElFunctions {
             result = convertDouble(def);
         }
         if (result == null) {
-            result = new Double(-1.0);
+            result = Double.valueOf(-1.0);
         }
         return result;
     }

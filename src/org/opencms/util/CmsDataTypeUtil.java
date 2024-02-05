@@ -220,7 +220,7 @@ public final class CmsDataTypeUtil {
      */
     public static String format(double data) {
 
-        return new Double(data).toString();
+        return Double.valueOf(data).toString();
     }
 
     /**
@@ -438,7 +438,7 @@ public final class CmsDataTypeUtil {
      */
     public static Double parseDouble(String data) {
 
-        return new Double(data);
+        return Double.valueOf(data);
     }
 
     /**

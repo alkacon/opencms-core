@@ -796,7 +796,7 @@ public class CmsShell {
                 List<String> parameters = new ArrayList<String>();
                 while (st.nextToken() != StreamTokenizer.TT_EOF) {
                     if (st.ttype == StreamTokenizer.TT_NUMBER) {
-                        parameters.add(Integer.toString(new Double(st.nval).intValue()));
+                        parameters.add(Integer.toString(Double.valueOf(st.nval).intValue()));
                     } else {
                         if (null != st.sval) {
                             parameters.add(st.sval);

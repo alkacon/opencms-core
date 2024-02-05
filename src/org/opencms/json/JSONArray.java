@@ -688,7 +688,7 @@ public class JSONArray {
      */
     public JSONArray put(double value) throws JSONException {
 
-        Double d = new Double(value);
+        Double d = Double.valueOf(value);
         JSONObject.testValidity(d);
         put(d);
         return this;
@@ -751,7 +751,7 @@ public class JSONArray {
      */
     public JSONArray put(int index, double value) throws JSONException {
 
-        put(index, new Double(value));
+        put(index, Double.valueOf(value));
         return this;
     }
 

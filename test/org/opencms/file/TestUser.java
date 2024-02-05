@@ -254,7 +254,7 @@ public class TestUser extends OpenCmsTestCase {
         user.setAdditionalInfo("map", map);
         user.setAdditionalInfo("int", new Integer(2));
         user.setAdditionalInfo("boolean", Boolean.TRUE);
-        user.setAdditionalInfo("double", new Double(45.23));
+        user.setAdditionalInfo("double", Double.valueOf(45.23));
 
         cms.writeUser(user);
         user = cms.readUser("test");
@@ -264,7 +264,7 @@ public class TestUser extends OpenCmsTestCase {
         assertEquals(Boolean.TRUE, map.get("true"));
         assertEquals(new Integer(2), user.getAdditionalInfo("int"));
         assertEquals(Boolean.TRUE, user.getAdditionalInfo("boolean"));
-        assertEquals(new Double(45.23), user.getAdditionalInfo("double"));
+        assertEquals(Double.valueOf(45.23), user.getAdditionalInfo("double"));
     }
 
     /**

@@ -158,7 +158,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
     public static String formatBytes(long filesize) {
 
         double kByte = Math.ceil(filesize / KILOBYTE);
-        String formated = NumberFormat.getDecimalFormat().format(new Double(kByte));
+        String formated = NumberFormat.getDecimalFormat().format(Double.valueOf(kByte));
         return formated + " KB";
     }
 

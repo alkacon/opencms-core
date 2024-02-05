@@ -497,7 +497,7 @@ public class JSONTokener {
                     return new Long(s);
                 } catch (Exception f) {
                     try {
-                        return new Double(s);
+                        return Double.valueOf(s);
                     } catch (Exception g) {
                         return s;
                     }

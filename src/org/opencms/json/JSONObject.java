@@ -1095,7 +1095,7 @@ public class JSONObject {
 
         try {
             Object o = opt(key);
-            return o instanceof Number ? ((Number)o).doubleValue() : new Double((String)o).doubleValue();
+            return o instanceof Number ? ((Number)o).doubleValue() : Double.valueOf((String)o).doubleValue();
         } catch (Exception e) {
             return defaultValue;
         }
@@ -1268,7 +1268,7 @@ public class JSONObject {
      */
     public JSONObject put(String key, double value) throws JSONException {
 
-        put(key, new Double(value));
+        put(key, Double.valueOf(value));
         return this;
     }
 

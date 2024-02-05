@@ -237,16 +237,16 @@ public final class CmsFileUtil {
             // 1048576 = 1024.0 * 1024.0
             result = Messages.get().getBundle(locale).key(
                 Messages.GUI_FILEUTIL_FILESIZE_KBYTES_1,
-                new Double(filesize / 1024.0));
+                Double.valueOf(filesize / 1024.0));
         } else if (Math.abs(filesize) < 1073741824) {
             // 1024.0^3 =  1073741824
             result = Messages.get().getBundle(locale).key(
                 Messages.GUI_FILEUTIL_FILESIZE_MBYTES_1,
-                new Double(filesize / 1048576.0));
+                Double.valueOf(filesize / 1048576.0));
         } else {
             result = Messages.get().getBundle(locale).key(
                 Messages.GUI_FILEUTIL_FILESIZE_GBYTES_1,
-                new Double(filesize / 1073741824.0));
+                Double.valueOf(filesize / 1073741824.0));
         }
         return result;
     }

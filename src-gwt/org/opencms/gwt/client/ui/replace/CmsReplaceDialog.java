@@ -215,7 +215,7 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
             // the content length is unknown. For that reason take the request size to show how
             // much bytes were uploaded.
             double size = jsonObject.get(I_CmsUploadConstants.KEY_REQUEST_SIZE).isNumber().doubleValue();
-            long requestSize = new Double(size).longValue();
+            long requestSize = Double.valueOf(size).longValue();
             if (m_contentLength == 0) {
                 m_contentLength = requestSize;
             }
