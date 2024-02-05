@@ -42,7 +42,7 @@ public class OpenCmsThreadedTestCaseSuite {
     public static final CmsObject PARAM_CMSOBJECT = new CmsObject(null, null);
 
     /** A not-initialized OpenCms user context. */
-    public static final Integer PARAM_COUNTER = new Integer(Integer.MIN_VALUE + 1);
+    public static final Object PARAM_COUNTER = new Object();
 
     /** The maximum allowed runtime for this test suite. */
     private long m_allowedRuntime;
@@ -82,7 +82,11 @@ public class OpenCmsThreadedTestCaseSuite {
             // generate class array - required for reflection
             Class[] clazz = new Class[parameters.length];
             for (int i = 0; i < parameters.length; i++) {
-                clazz[i] = parameters[i].getClass();
+                if (parameters[i] == PARAM_COUNTER) {
+                    clazz[i] = Integer.class;
+                } else {
+                    clazz[i] = parameters[i].getClass();
+                }
             }
             // get the method we want to use from the test case
             Method m = testCase.getClass().getMethod(method, clazz);
