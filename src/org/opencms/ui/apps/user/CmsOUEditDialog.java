@@ -216,8 +216,8 @@ public class CmsOUEditDialog extends CmsBasicDialog {
                 m_name.setValue(m_ou.getName());
                 m_description.setValue(m_ou.getDescription());
                 m_parentOu.setValue(m_ou.getParentFqn().equals("") ? "/" : m_ou.getParentFqn());
-                m_hideLogin.setValue(new Boolean(m_ou.hasFlagHideLogin()));
-                m_webuser.setValue(new Boolean(m_ou.hasFlagWebuser()));
+                m_hideLogin.setValue(Boolean.valueOf(m_ou.hasFlagHideLogin()));
+                m_webuser.setValue(Boolean.valueOf(m_ou.hasFlagWebuser()));
                 m_webuser.setEnabled(false);
                 for (CmsResource resource : OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
                     m_cms,

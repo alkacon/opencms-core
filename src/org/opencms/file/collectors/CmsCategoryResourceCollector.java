@@ -239,7 +239,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
                     }
                     setCount(count);
                 } else if (PARAM_EXCLUDETIMERANGE.equalsIgnoreCase(key)) {
-                    setExcludeTimerange(new Boolean(value).booleanValue());
+                    setExcludeTimerange(Boolean.valueOf(value).booleanValue());
                 } else {
                     LOG.error("Unknow key found in collector parameters.");
                 }

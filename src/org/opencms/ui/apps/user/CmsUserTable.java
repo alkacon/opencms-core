@@ -90,21 +90,21 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
         /**Last login. */
         Created(Messages.GUI_USERMANAGEMENT_USER_DATE_CREATED_0, Long.class, new Long(0L)),
         /**Is the user disabled? */
-        DISABLED("", Boolean.class, new Boolean(false)),
+        DISABLED("", Boolean.class, Boolean.valueOf(false)),
         /**From Other ou?. */
-        FROMOTHEROU("", Boolean.class, new Boolean(false)),
+        FROMOTHEROU("", Boolean.class, Boolean.valueOf(false)),
         /**Description. */
         FullName(Messages.GUI_USERMANAGEMENT_USER_NAME_0, String.class, ""),
         /**Icon. */
         Icon(null, Resource.class, new CmsCssIcon("oc-icon-24-user")),
         /**IsIndirect?. */
-        INDIRECT("", Boolean.class, new Boolean(false)),
+        INDIRECT("", Boolean.class, Boolean.valueOf(false)),
         /**Last login. */
         LastLogin(Messages.GUI_USERMANAGEMENT_USER_LAST_LOGIN_0, Long.class, new Long(0L)),
         /**Name. */
         Name(Messages.GUI_USERMANAGEMENT_USER_USER_0, String.class, ""),
         /**Is the user new? */
-        NEWUSER("", Boolean.class, new Boolean(false)),
+        NEWUSER("", Boolean.class, Boolean.valueOf(false)),
         /**OU. */
         OU(Messages.GUI_USERMANAGEMENT_USER_OU_0, String.class, ""),
         /**Status. */
@@ -1045,9 +1045,9 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
         item.getItemProperty(TableProperty.FullName).setValue(user.getFullName());
         item.getItemProperty(TableProperty.SystemName).setValue(user.getName());
         boolean disabled = !user.isEnabled();
-        item.getItemProperty(TableProperty.DISABLED).setValue(new Boolean(disabled));
+        item.getItemProperty(TableProperty.DISABLED).setValue(Boolean.valueOf(disabled));
         boolean newUser = user.getLastlogin() == 0L;
-        item.getItemProperty(TableProperty.NEWUSER).setValue(new Boolean(newUser));
+        item.getItemProperty(TableProperty.NEWUSER).setValue(Boolean.valueOf(newUser));
         try {
             item.getItemProperty(TableProperty.OU).setValue(
                 OpenCms.getOrgUnitManager().readOrganizationalUnit(m_cms, user.getOuFqn()).getDisplayName(
@@ -1057,8 +1057,8 @@ public class CmsUserTable extends Table implements I_CmsFilterableTable, I_CmsTo
         }
         item.getItemProperty(TableProperty.LastLogin).setValue(new Long(user.getLastlogin()));
         item.getItemProperty(TableProperty.Created).setValue(new Long(user.getDateCreated()));
-        item.getItemProperty(TableProperty.INDIRECT).setValue(new Boolean(m_indirects.contains(user)));
-        item.getItemProperty(TableProperty.FROMOTHEROU).setValue(new Boolean(!user.getOuFqn().equals(m_ou)));
+        item.getItemProperty(TableProperty.INDIRECT).setValue(Boolean.valueOf(m_indirects.contains(user)));
+        item.getItemProperty(TableProperty.FROMOTHEROU).setValue(Boolean.valueOf(!user.getOuFqn().equals(m_ou)));
         item.getItemProperty(TableProperty.STATUS).setValue(getStatusInt(disabled, newUser));
     }
 

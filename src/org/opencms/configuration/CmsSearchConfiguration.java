@@ -398,7 +398,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
         if (m_searchManager.getSolrServerConfiguration() != null) {
             Element solr = searchElement.addElement(N_SOLR);
             CmsSolrConfiguration conf = m_searchManager.getSolrServerConfiguration();
-            solr.addAttribute(A_ENABLED, new Boolean(conf.isEnabled()).toString());
+            solr.addAttribute(A_ENABLED, Boolean.valueOf(conf.isEnabled()).toString());
             if (conf.getServerUrl() != null) {
                 solr.addAttribute(A_SERVER_URL, conf.getServerUrl().toString());
             }

@@ -451,7 +451,7 @@ public class CmsHistoryList extends A_CmsListDialog {
             // invisible structure id
             item.set(LIST_COLUMN_STRUCTURE_ID, histRes.getStructureId().toString());
             // invisible version flag: true if history version has content and actions should be enabled, false otherwise
-            item.set(LIST_COLUMN_VERSION_ENABLE, new Boolean(isEnabled));
+            item.set(LIST_COLUMN_VERSION_ENABLE, Boolean.valueOf(isEnabled));
 
             result.add(item);
         }
@@ -493,7 +493,7 @@ public class CmsHistoryList extends A_CmsListDialog {
                 // invisible structure id
                 item.set(LIST_COLUMN_STRUCTURE_ID, onlineResource.getStructureId().toString());
                 // invisible version flag: true
-                item.set(LIST_COLUMN_VERSION_ENABLE, new Boolean(true));
+                item.set(LIST_COLUMN_VERSION_ENABLE, Boolean.valueOf(true));
 
                 result.add(item);
             } catch (CmsVfsResourceNotFoundException e) {
@@ -537,7 +537,7 @@ public class CmsHistoryList extends A_CmsListDialog {
             // invisible structure id
             item.set(LIST_COLUMN_STRUCTURE_ID, offlineResource.getStructureId().toString());
             // invisible version flag: true
-            item.set(LIST_COLUMN_VERSION_ENABLE, new Boolean(true));
+            item.set(LIST_COLUMN_VERSION_ENABLE, Boolean.valueOf(true));
 
             result.add(item);
         }

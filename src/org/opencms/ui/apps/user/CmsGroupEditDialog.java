@@ -116,7 +116,7 @@ public class CmsGroupEditDialog extends CmsBasicDialog {
 
                 m_description.setValue(m_group.getDescription());
 
-                m_enabled.setValue(new Boolean(m_group.isEnabled()));
+                m_enabled.setValue(Boolean.valueOf(m_group.isEnabled()));
 
             }
 
@@ -182,7 +182,7 @@ public class CmsGroupEditDialog extends CmsBasicDialog {
 
         this(cms, null, window, app);
         m_ou.setValue(ou);
-        m_enabled.setValue(new Boolean(true));
+        m_enabled.setValue(Boolean.valueOf(true));
     }
 
     /**

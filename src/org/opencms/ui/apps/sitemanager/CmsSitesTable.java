@@ -183,7 +183,7 @@ public class CmsSitesTable extends Table implements I_CmsFilterableTable {
     protected enum TableProperty {
 
         /**Status. */
-        Changed("", Boolean.class, new Boolean(false)),
+        Changed("", Boolean.class, Boolean.valueOf(false)),
         /**Status. */
         CmsSite("", CmsSite.class, null),
         /**OU. */
@@ -191,11 +191,11 @@ public class CmsSitesTable extends Table implements I_CmsFilterableTable {
         /**Icon. */
         Icon(null, Label.class, new Label(new CmsCssIcon(OpenCmsTheme.ICON_SITE).getHtml(), ContentMode.HTML)),
         /**Last login. */
-        Is_Webserver("", Boolean.class, new Boolean(true)),
+        Is_Webserver("", Boolean.class, Boolean.valueOf(true)),
         /**IsIndirect?. */
-        New("", Boolean.class, new Boolean(false)),
+        New("", Boolean.class, Boolean.valueOf(false)),
         /**Is the user disabled? */
-        OK("", Boolean.class, new Boolean(true)),
+        OK("", Boolean.class, Boolean.valueOf(true)),
         /**Path. */
         Path(Messages.GUI_SITE_PATH_0, String.class, ""),
         /**Description. */
@@ -205,7 +205,7 @@ public class CmsSitesTable extends Table implements I_CmsFilterableTable {
         /**Name. */
         Title(Messages.GUI_SITE_TITLE_0, String.class, ""),
         /**Is the user new? */
-        Under_Other_Site("", Boolean.class, new Boolean(false));
+        Under_Other_Site("", Boolean.class, Boolean.valueOf(false));
 
         /**Default value for column.*/
         private Object m_defaultValue;
@@ -703,10 +703,10 @@ public class CmsSitesTable extends Table implements I_CmsFilterableTable {
                 item.getItemProperty(TableProperty.CmsSite).setValue(site);
                 item.getItemProperty(TableProperty.Server).setValue(site.getUrl());
                 item.getItemProperty(TableProperty.Title).setValue(site.getTitle());
-                item.getItemProperty(TableProperty.Is_Webserver).setValue(new Boolean(site.isWebserver()));
+                item.getItemProperty(TableProperty.Is_Webserver).setValue(Boolean.valueOf(site.isWebserver()));
                 item.getItemProperty(TableProperty.Path).setValue(site.getSiteRoot());
                 if (OpenCms.getSiteManager().isOnlyOfflineSite(site)) {
-                    item.getItemProperty(TableProperty.New).setValue(new Boolean(true));
+                    item.getItemProperty(TableProperty.New).setValue(Boolean.valueOf(true));
                     item.getItemProperty(TableProperty.Icon).setValue(
                         new Label(icon.getHtmlWithOverlay(), ContentMode.HTML));
                 } else {
@@ -726,12 +726,12 @@ public class CmsSitesTable extends Table implements I_CmsFilterableTable {
                 item.getItemProperty(TableProperty.Icon).setValue(new Label(icon.getHtml(), ContentMode.HTML));
                 item.getItemProperty(TableProperty.Server).setValue(site.getUrl());
                 item.getItemProperty(TableProperty.Title).setValue(site.getTitle());
-                item.getItemProperty(TableProperty.Is_Webserver).setValue(new Boolean(site.isWebserver()));
+                item.getItemProperty(TableProperty.Is_Webserver).setValue(Boolean.valueOf(site.isWebserver()));
                 item.getItemProperty(TableProperty.Path).setValue(site.getSiteRoot());
-                item.getItemProperty(TableProperty.OK).setValue(new Boolean(false));
+                item.getItemProperty(TableProperty.OK).setValue(Boolean.valueOf(false));
                 if (!site.getSiteRootUUID().isNullUUID()) {
                     if (m_manager.getRootCmsObject().existsResource(site.getSiteRootUUID())) {
-                        item.getItemProperty(TableProperty.Changed).setValue(new Boolean(true));
+                        item.getItemProperty(TableProperty.Changed).setValue(Boolean.valueOf(true));
                         item.getItemProperty(TableProperty.Icon).setValue(
                             new Label(icon.getHtmlWithOverlay(), ContentMode.HTML));
                     }

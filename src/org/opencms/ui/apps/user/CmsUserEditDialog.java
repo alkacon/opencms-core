@@ -439,7 +439,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
                 m_selfmanagement.setValue(Boolean.FALSE);
                 m_isWebOU = true;
             } else {
-                m_selfmanagement.setValue(new Boolean(true));
+                m_selfmanagement.setValue(Boolean.valueOf(true));
             }
 
             displayResourceInfoDirectly(Collections.singletonList(CmsAccountsApp.getPrincipalInfo(m_user)));
@@ -450,8 +450,8 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             m_ou.setValue(m_user.getOuFqn().isEmpty() ? "/" : m_user.getOuFqn());
 
             m_description.setValue(m_user.getDescription());
-            m_selfmanagement.setValue(new Boolean(!m_user.isManaged()));
-            m_enabled.setValue(new Boolean(m_user.isEnabled()));
+            m_selfmanagement.setValue(Boolean.valueOf(!m_user.isManaged()));
+            m_enabled.setValue(Boolean.valueOf(m_user.isEnabled()));
             CmsUserSettings settings = new CmsUserSettings(m_user);
             init(window, app, settings, m_editParams.isEditEnabled());
             m_sendEmail.setEnabled(false);
@@ -525,7 +525,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             } else {
                 iniRole(m_cms, ou, m_role, LOG, true);
                 m_role.select(CmsRole.EDITOR.forOrgUnit(ou));
-                m_selfmanagement.setValue(new Boolean(true));
+                m_selfmanagement.setValue(Boolean.valueOf(true));
 
             }
         } catch (CmsException e) {
@@ -1572,7 +1572,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
         } else {
             user.deleteAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_PASSWORD_RESET);
         }
-        m_app.getPasswordResetStateCache().put(user.getId(), new Boolean(reset));
+        m_app.getPasswordResetStateCache().put(user.getId(), Boolean.valueOf(reset));
     }
 
     /**

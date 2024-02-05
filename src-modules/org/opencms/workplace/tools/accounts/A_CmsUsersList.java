@@ -724,7 +724,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         item.set(LIST_COLUMN_NAME, user.getFullName());
         item.set(LIST_COLUMN_EMAIL, user.getEmail());
         item.set(LIST_COLUMN_LASTLOGIN, new Date(user.getLastlogin()));
-        item.set(LIST_COLUMN_ENABLED, new Boolean(user.isEnabled()));
+        item.set(LIST_COLUMN_ENABLED, Boolean.valueOf(user.isEnabled()));
     }
 
     /**

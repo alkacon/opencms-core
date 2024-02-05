@@ -80,7 +80,7 @@ public class CmsGroupTable extends Table implements I_CmsFilterableTable, I_CmsT
         /**Icon column.*/
         Icon(null, Resource.class, new CmsCssIcon(OpenCmsTheme.ICON_GROUP)),
         /**IsIndirect?. */
-        INDIRECT("", Boolean.class, new Boolean(false)),
+        INDIRECT("", Boolean.class, Boolean.valueOf(false)),
         /**Name column. */
         Name(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_GROUP_NAME_0), String.class, ""),
         /**OU column. */

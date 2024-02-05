@@ -114,7 +114,7 @@ public class CmsDefaultSet<T> implements IsSerializable {
     public void setContains(T value, boolean isMember) {
 
         checkNotFrozen();
-        m_membershipMap.put(value, new Boolean(isMember));
+        m_membershipMap.put(value, Boolean.valueOf(isMember));
     }
 
     /**

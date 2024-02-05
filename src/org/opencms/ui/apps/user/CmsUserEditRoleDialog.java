@@ -269,11 +269,11 @@ public class CmsUserEditRoleDialog extends A_CmsEditUserGroupRoleDialog {
             IndexedContainer container = new IndexedContainer();
             container.addContainerProperty(propName, String.class, "");
             container.addContainerProperty(propIcon, CmsCssIcon.class, new CmsCssIcon(OpenCmsTheme.ICON_ROLE));
-            container.addContainerProperty(propStatus, Boolean.class, new Boolean(true));
+            container.addContainerProperty(propStatus, Boolean.class, Boolean.valueOf(true));
             for (CmsRole role : userRoles) {
                 Item item = container.addItem(role);
                 item.getItemProperty(propName).setValue(role.getDisplayName(m_cms, A_CmsUI.get().getLocale()));
-                item.getItemProperty(propStatus).setValue(new Boolean(directRoles.contains(role)));
+                item.getItemProperty(propStatus).setValue(Boolean.valueOf(directRoles.contains(role)));
             }
             return container;
         } catch (CmsException e) {

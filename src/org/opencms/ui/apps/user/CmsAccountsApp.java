@@ -541,7 +541,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         IndexedContainer container = new IndexedContainer();
         container.addContainerProperty(propName, String.class, "");
         container.addContainerProperty(CmsUserEditGroupsDialog.ID_OU, String.class, "");
-        container.addContainerProperty(propStatus, Boolean.class, new Boolean(true));
+        container.addContainerProperty(propStatus, Boolean.class, Boolean.valueOf(true));
         container.addContainerProperty(propIcon, CmsCssIcon.class, new CmsCssIcon("oc-icon-group-24"));
         try {
             for (CmsGroup group : m_cms.getGroupsOfUser(user.getName(), true)) {

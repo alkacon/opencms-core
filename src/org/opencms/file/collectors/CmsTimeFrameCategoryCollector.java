@@ -446,7 +446,7 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
                 } else if (PARAM_KEY_RESULT_LIMIT.equals(key)) {
                     m_count = Integer.parseInt(value);
                 } else if (PARAM_KEY_SORT_DESCENDING.equals(key)) {
-                    m_sortDescending = new Boolean(value).booleanValue();
+                    m_sortDescending = Boolean.valueOf(value).booleanValue();
                 } else if (PARAM_KEY_TIMEFRAME_START.equals(key)) {
                     m_timeFrameStart = DATEFORMAT_SQL.parse(value).getTime();
                 } else if (PARAM_KEY_TIMEFRAME_END.equals(key)) {
@@ -458,7 +458,7 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
                 } else if (PARAM_KEY_PPROPERTY_CATEGORIES.equals(key)) {
                     m_propertyCategories.setName(value);
                 } else if (PARAM_EXCLUDETIMERANGE.equalsIgnoreCase(key)) {
-                    setExcludeTimerange(new Boolean(value).booleanValue());
+                    setExcludeTimerange(Boolean.valueOf(value).booleanValue());
                 } else {
                     // nop, one could accept additional filter properties here...
                 }

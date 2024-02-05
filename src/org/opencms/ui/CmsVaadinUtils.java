@@ -572,7 +572,7 @@ public final class CmsVaadinUtils {
         IndexedContainer container = new IndexedContainer();
         container.addContainerProperty(caption, String.class, "");
         container.addContainerProperty(ou, String.class, "");
-        container.addContainerProperty(propStatus, Boolean.class, new Boolean(true));
+        container.addContainerProperty(propStatus, Boolean.class, Boolean.valueOf(true));
         if (iconProvider != null) {
             container.addContainerProperty(iconProp, CmsCssIcon.class, null);
         }

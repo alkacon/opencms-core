@@ -99,7 +99,7 @@ public class CmsExtendedPublishResourceFormatter extends CmsDefaultPublishResour
 
                 try {
                     CmsProject project = m_cms.readProject(projectId);
-                    return new Boolean(project.isWorkflowProject());
+                    return Boolean.valueOf(project.isWorkflowProject());
                 } catch (CmsException e) {
                     getLog().warn(e.getLocalizedMessage(), e);
                     return Boolean.FALSE;

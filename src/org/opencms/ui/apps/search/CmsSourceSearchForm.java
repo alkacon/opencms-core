@@ -279,7 +279,7 @@ public class CmsSourceSearchForm extends VerticalLayout {
     public void initFormValues(CmsSearchReplaceSettings settings) {
 
         m_siteSelect.setValue(settings.getSiteRoot());
-        m_ignoreSubSites.setValue(new Boolean(settings.ignoreSubSites()));
+        m_ignoreSubSites.setValue(Boolean.valueOf(settings.ignoreSubSites()));
         m_searchType.setValue(settings.getType());
         if (!settings.getPaths().isEmpty()) {
             m_searchRoot.setValue(settings.getPaths().get(0));
@@ -297,7 +297,7 @@ public class CmsSourceSearchForm extends VerticalLayout {
             }
         }
         m_searchPattern.setValue(settings.getSearchpattern());
-        m_ignoreSubSites.setValue(new Boolean(settings.ignoreSubSites()));
+        m_ignoreSubSites.setValue(Boolean.valueOf(settings.ignoreSubSites()));
         if (settings.getType().isContentValuesOnly()) {
             if (settings.getLocale() != null) {
                 OpenCms.getLocaleManager();

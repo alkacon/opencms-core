@@ -411,10 +411,10 @@ public class CmsDbExportView extends VerticalLayout {
      */
     private void setupCheckBoxes() {
 
-        m_includeResource.setValue(new Boolean(true));
-        m_includeUnchanged.setValue(new Boolean(true));
-        m_includeSystem.setValue(new Boolean(true));
-        m_recursive.setValue(new Boolean(true));
+        m_includeResource.setValue(Boolean.valueOf(true));
+        m_includeUnchanged.setValue(Boolean.valueOf(true));
+        m_includeSystem.setValue(Boolean.valueOf(true));
+        m_recursive.setValue(Boolean.valueOf(true));
     }
 
     /**

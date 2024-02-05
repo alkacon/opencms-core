@@ -163,11 +163,11 @@ public class CmsOUHandler {
         }
         for (String ou : m_managableOU) {
             if (ou.startsWith(name)) {
-                m_isParentOfOU.put(name, new Boolean(true));
+                m_isParentOfOU.put(name, Boolean.valueOf(true));
                 return true;
             }
         }
-        m_isParentOfOU.put(name, new Boolean(false));
+        m_isParentOfOU.put(name, Boolean.valueOf(false));
         return false;
     }
 

@@ -267,7 +267,7 @@ public class CmsSessionsTable extends Table {
         IS_ACTIVE(Messages.GUI_MESSAGES_BROADCAST_COLS_STATUS_0, Long.class, new Long(0L), false),
 
         /**Is Broadcast send but not displayed.*/
-        IS_WAITING(null, Boolean.class, new Boolean(false), false),
+        IS_WAITING(null, Boolean.class, Boolean.valueOf(false), false),
 
         /**Date of expiration column. */
         OrgUnit(Messages.GUI_MESSAGES_BROADCAST_COLS_ORGUNIT_0, String.class, "", false),
@@ -665,7 +665,7 @@ public class CmsSessionsTable extends Table {
             item.getItemProperty(TableProperty.Site).setValue(siteTitle);
 
             item.getItemProperty(TableProperty.IS_WAITING).setValue(
-                new Boolean(!session.getBroadcastQueue().isEmpty()));
+                Boolean.valueOf(!session.getBroadcastQueue().isEmpty()));
 
         }
 

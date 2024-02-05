@@ -2707,7 +2707,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                     Messages.INIT_LOGINMANAGER_3,
                     new Integer(disableMinutes),
                     new Integer(maxBadAttempts),
-                    new Boolean(enableSecurity)));
+                    Boolean.valueOf(enableSecurity)));
         }
     }
 

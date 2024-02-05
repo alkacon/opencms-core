@@ -1373,7 +1373,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             // notify the app. that the published file and it's properties have been modified offline
             Map<String, Object> data = new HashMap<String, Object>(2);
             data.put(I_CmsEventListener.KEY_RESOURCE, offlineResource);
-            data.put(I_CmsEventListener.KEY_SKIPINDEX, new Boolean(true));
+            data.put(I_CmsEventListener.KEY_SKIPINDEX, Boolean.valueOf(true));
 
             OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, data));
         }

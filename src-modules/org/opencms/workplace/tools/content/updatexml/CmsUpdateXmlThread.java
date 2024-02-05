@@ -204,7 +204,7 @@ public class CmsUpdateXmlThread extends A_CmsReportThread {
         report.println(
             Messages.get().container(
                 Messages.RPT_UPDATEXML_PARAMETERS_INC_SUBFOLDERS_1,
-                new Boolean(inclSubFolder).toString()),
+                Boolean.valueOf(inclSubFolder).toString()),
             I_CmsReport.FORMAT_NOTE);
 
         // check for valid parameters (vfs folder)

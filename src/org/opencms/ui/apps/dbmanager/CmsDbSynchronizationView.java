@@ -417,7 +417,7 @@ public class CmsDbSynchronizationView extends VerticalLayout {
      */
     private void initUI() {
 
-        m_enabled.setValue(new Boolean(m_synchronizeSettings.isEnabled()));
+        m_enabled.setValue(Boolean.valueOf(m_synchronizeSettings.isEnabled()));
         if (m_synchronizeSettings.getDestinationPathInRfs() != null) {
             m_target.setValue(m_synchronizeSettings.getDestinationPathInRfs());
         }

@@ -273,7 +273,7 @@ public class CmsLinkInFolderValidationApp extends A_CmsWorkplaceApp implements I
          */
         public String getState() {
 
-            return getResourceString() + STATE_SEPERATOR + new Boolean(m_reverse).toString();
+            return getResourceString() + STATE_SEPERATOR + Boolean.valueOf(m_reverse).toString();
 
         }
 

@@ -233,7 +233,7 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
         report.println(
             Messages.get().container(
                 Messages.RPT_CONVERTXML_PARAMETERS_INC_SUBFOLDERS_1,
-                new Boolean(inclSubFolder).toString()),
+                Boolean.valueOf(inclSubFolder).toString()),
             I_CmsReport.FORMAT_NOTE);
         report.println(
             Messages.get().container(Messages.RPT_CONVERTXML_PARAMETERS_XSLT_FILE_1, xsltFile),
@@ -241,7 +241,7 @@ public class CmsConvertXmlThread extends A_CmsReportThread {
         report.println(
             Messages.get().container(
                 Messages.RPT_CONVERTXML_PARAMETERS_ONLY_COUNT_1,
-                new Boolean(countFilesToTransformOnly).toString()),
+                Boolean.valueOf(countFilesToTransformOnly).toString()),
             I_CmsReport.FORMAT_NOTE);
         // check if xslt file is available
         if (CmsStringUtil.isEmpty(xsltFile)) {

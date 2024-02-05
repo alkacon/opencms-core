@@ -271,7 +271,7 @@ public class CmsContainerConfigurationWriter {
         for (CmsContainerElementBean elementBean : elements) {
             CmsInheritanceInfo info = elementBean.getInheritanceInfo();
             if (info.isVisible() != info.isParentVisible()) {
-                visibility.put(info.getKey(), new Boolean(info.isVisible()));
+                visibility.put(info.getKey(), Boolean.valueOf(info.isVisible()));
             }
         }
 
