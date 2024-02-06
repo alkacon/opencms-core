@@ -884,6 +884,14 @@ public class CmsSolrIndex extends CmsSearchIndex {
             query.addFilterQuery(fqSearchExclude);
         }
 
+        if (CmsProject.ONLINE_PROJECT_NAME.equals(getProject())) {
+            query.addFilterQuery(
+                "-"
+                    + CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE_ONLINE
+                    + CmsSearchField.FIELD_DYNAMIC_PROPERTIES
+                    + ":\"true\"");
+        }
+
         // get start parameter from the request
         int start = null == query.getStart() ? 0 : query.getStart().intValue();
 

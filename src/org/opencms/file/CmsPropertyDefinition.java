@@ -225,6 +225,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property to boost certain search results. */
     public static final String PROPERTY_SEARCH_PRIORITY = "search.priority";
 
+    /** Property to exclude individual resources from search results online (Solr only). */
+    public static final String PROPERTY_SEARCH_EXCLUDE_ONLINE = "search.exclude.online";
+
     /** Property for secondary locales for use in the locale compare view in the sitemap editor. */
     public static final String PROPERTY_SECONDARY_LOCALES = "locale.secondary";
 
