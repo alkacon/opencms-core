@@ -223,8 +223,8 @@ configurations {
 }
 
 // We want no transitive dependencies
-configurations.all {
-    transitive = false;
+configurations.configureEach {
+    transitive = false
 }
 
 
@@ -1128,13 +1128,13 @@ test {
 }
 
 task testSingle(type: Test, dependsOn: [compileTestJava]) {
-    description "Runs a specified test case set like this: -PtestCaseToRun=org/opencms/main/TestCmsSystemInfo*"
-    classpath = sourceSets.test.compileClasspath
+    description "Runs a specified test case set like this: -PtestCaseToRun=org.opencms.main.TestCmsSystemInfo*"
+    inputs.dir "${projectDir}/test/data"
+    inputs.dir "${projectDir}/webapp"
+
     useJUnit()
     if (!project.hasProperty('testCaseToRun')){
-        ext {
-            testCaseToRun='org/opencms/main/TestCmsSystemInfo*'
-        }
+        project.ext.testCaseToRun='org.opencms.main.TestCmsSystemInfo*'
     }
     doFirst{
         println "Running test case : ${testCaseToRun}"
