@@ -40,6 +40,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategoryService;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.ui.components.CmsExtendedSiteSelector;
@@ -283,6 +284,25 @@ public class TestLiveConfig extends OpenCmsTestCase {
         String link = OpenCms.getLinkManager().getOnlineLink(cms, rootPath);
         assertEquals("http://foo.org" + getVfsPrefix() + "/main/blog/" + res.getStructureId() + "/", link);
         System.out.println(link);
+    }
+
+    /**
+     * Tests cross-site detail page links.<p>
+     *
+     * @throws Exception -
+     */
+    public void testCrossSiteDetailPageLinkUtilityFunctions() throws Exception {
+
+        // Link from site foo to site bar, where a detail page exists in foo
+
+        CmsObject cms = getCmsObject();
+        cms.getRequestContext().setSiteRoot("/sites/foo");
+        String rootPath = "/sites/bar/.content/blogentries/be_00001.xml";
+        CmsResource res = rootCms().readResource(rootPath);
+        String link = OpenCms.getLinkManager().getOnlineLink(cms, rootPath);
+        assertEquals(null, CmsLinkManager.getLinkSubsite(cms , "https://www.dummy.invalid/foo/bar/baz"));
+        assertEquals("/sites/foo/", CmsLinkManager.getLinkSubsite(cms, link));
+        assertEquals("/sites/bar/", CmsLinkManager.getLinkSubsite(cms, OpenCms.getLinkManager().getOnlineLink(cms, "/sites/bar/")));
     }
 
     /**

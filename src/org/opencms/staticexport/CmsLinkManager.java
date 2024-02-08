@@ -68,19 +68,6 @@ public class CmsLinkManager {
     /** Base URL to calculate absolute links. */
     private static URL m_baseUrl;
 
-    /**
-     * Static initializer for the base URL.<p>
-     */
-    static {
-        m_baseUrl = null;
-        try {
-            m_baseUrl = new URL("http://127.0.0.1");
-        } catch (MalformedURLException e) {
-            // this won't happen
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-    }
-
     /** The configured link substitution handler. */
     private I_CmsLinkSubstitutionHandler m_linkSubstitutionHandler;
 
@@ -98,6 +85,19 @@ public class CmsLinkManager {
         if (m_linkSubstitutionHandler == null) {
             // just make very sure that this is not null
             m_linkSubstitutionHandler = new CmsDefaultLinkSubstitutionHandler();
+        }
+    }
+
+    /**
+     * Static initializer for the base URL.<p>
+     */
+    static {
+        m_baseUrl = null;
+        try {
+            m_baseUrl = new URL("http://127.0.0.1");
+        } catch (MalformedURLException e) {
+            // this won't happen
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 
@@ -135,6 +135,60 @@ public class CmsLinkManager {
             LOG.debug(e.getLocalizedMessage(), e);
             return relativeUri;
         }
+    }
+
+
+    /**
+     * Gets the absolute path for the subsite a link links to.
+     *
+     * <p>For detail links, the subsite of the detail page is returned, not the subsite of the detail content
+     * <p>If the link is not internal, null will be returned.
+     *
+     * @param cms a CMS context
+     * @param link the link to check
+     * @return the subsite path for the link target, or null if not applicable
+     */
+    public static  String getLinkSubsite(CmsObject cms, String link) {
+
+        try {
+
+            URI uri = new URI(link);
+            String path = uri.getPath();
+            String name = CmsResource.getName(path);
+            name = CmsFileUtil.removeTrailingSeparator(name);
+            String rootPath = OpenCms.getLinkManager().getRootPath(cms, link);
+            if (rootPath == null) {
+                return null;
+            }
+            String parentRootPath = null;
+            try {
+                CmsUUID detailId = cms.readIdForUrlName(name);
+                if (detailId != null) {
+                    CmsResource detailRes = cms.readResource(detailId, CmsResourceFilter.IGNORE_EXPIRATION);
+                    // When the last part of the path, interpreted as a detail name, resolves to the same root path returned by CmsLinkManager.getRootPath(), it is a detail page URL
+                    if (detailRes.getRootPath().equals(rootPath)) {
+                        URI parentUri = new URI(
+                            uri.getScheme(),
+                            uri.getAuthority(),
+                            CmsResource.getParentFolder(uri.getPath()),
+                            null,
+                            null);
+                        parentRootPath = OpenCms.getLinkManager().getRootPath(cms, parentUri.toASCIIString());
+                    }
+                }
+            } catch (CmsException e) {
+                LOG.info(e.getLocalizedMessage(), e);
+            }
+            if (parentRootPath != null) {
+                return OpenCms.getADEManager().getSubSiteRoot(cms, parentRootPath);
+            } else {
+                return OpenCms.getADEManager().getSubSiteRoot(cms, rootPath);
+            }
+        } catch (URISyntaxException  e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return null;
+        }
+
     }
 
     /**
@@ -266,6 +320,7 @@ public class CmsLinkManager {
 
         return (uri != null) && uri.getPath().startsWith(OpenCms.getSystemInfo().getWorkplaceContext());
     }
+
 
     /**
      * Given a path to a VFS resource, the method removes the OpenCms context,
@@ -675,7 +730,7 @@ public class CmsLinkManager {
      *
      * @param cms the current OpenCms user context
      * @param link the link to process which is assumed to point to a VFS resource, with optional parameters
-    
+
      * @return a link <i>from</i> the URI stored in the provided OpenCms user context
      *      <i>to</i> the VFS resource indicated by the given <code>link</code> in the current site
      */

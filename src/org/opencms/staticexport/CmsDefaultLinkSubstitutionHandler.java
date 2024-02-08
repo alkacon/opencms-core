@@ -769,8 +769,12 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             if (cms.getRequestContext().getAttribute(CmsDetailNameCache.ATTR_BYPASS) != null) {
                 detailId = cms.readIdForUrlName(name);
             } else {
-                detailId = OpenCms.getADEManager().getDetailIdCache(
-                    cms.getRequestContext().getCurrentProject().isOnlineProject()).getDetailId(name);
+                if (CmsUUID.isValidUUID(name)) {
+                    detailId = new CmsUUID(name);
+                } else {
+                    detailId = OpenCms.getADEManager().getDetailIdCache(
+                        cms.getRequestContext().getCurrentProject().isOnlineProject()).getDetailId(name);
+                }
             }
             if (detailId == null) {
                 return null;
