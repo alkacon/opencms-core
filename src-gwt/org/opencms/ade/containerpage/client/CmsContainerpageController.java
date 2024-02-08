@@ -75,6 +75,7 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsGalleryContainerInfo;
 import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.gwt.shared.I_CmsAutoBeanFactory;
@@ -784,7 +785,7 @@ public final class CmsContainerpageController {
                     window.sessionStorage.setItem(entry.getKey(), entry.getValue());
                 }
             } catch (Exception e) {
-                DomGlobal.console.log("can't use webstorage API");
+                CmsGwtLog.log("can't use webstorage API");
             }
         } catch (SerializationException e) {
             CmsErrorDialog.handleException(
