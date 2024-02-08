@@ -9,5 +9,5 @@ java.home=
 jvm.arguments=
 offline.mode=false
 override.workspace.settings=false
-show.console.view=false
-show.executions.view=false
+show.console.view=true
+show.executions.view=true

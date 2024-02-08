@@ -213,7 +213,7 @@ public class CmsSolrConfiguration {
                     loader,
                     getSolrConfigFile().getName(),
                     true,
-                    loader.getCoreProperties());
+                    null); // the former loader.getCoreProperties() yielded null anyway
             } catch (FileNotFoundException e) {
                 CmsConfigurationException ex = new CmsConfigurationException(
                     Messages.get().container(Messages.LOG_SOLR_ERR_CONFIG_XML_NOT_FOUND_1, getSolrConfigFile()),

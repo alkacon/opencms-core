@@ -210,6 +210,19 @@ configurations {
         extendsFrom testGwtCompile
     }
 
+    // Fix the jetty incompatibility for the version from distribution used by Solr and the one for the GWT test cases.
+    testGwtRuntimeClasspath{
+        resolutionStrategy {
+            force 'org.eclipse.jetty:jetty-client:9.4.50.v20221201'
+            force 'org.eclipse.jetty:jetty-http:9.4.50.v20221201'
+            force 'org.eclipse.jetty:jetty-io:9.4.50.v20221201'
+            force 'org.eclipse.jetty:jetty-util:9.4.50.v20221201'
+            force 'org.eclipse.jetty.http2:http2-common:9.4.50.v20221201'
+            force 'org.eclipse.jetty.http2:http2-client:9.4.50.v20221201'
+            force 'org.eclipse.jetty.http2:http2-http-client-transport:9.4.50.v20221201'
+        }
+    }
+
     setupCompile {
         transitive = false
         extendsFrom modulesCompile
@@ -252,6 +265,8 @@ eclipse.classpath.file {
 }
 
 eclipse.classpath.plusConfigurations = configurations.findAll { it.name.endsWith('Compile') }
+
+eclipse.classpath.downloadSources=true
 
 wrapper {
     gradleVersion = '7.5.1'

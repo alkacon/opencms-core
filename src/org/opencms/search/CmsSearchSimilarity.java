@@ -106,18 +106,6 @@ public class CmsSearchSimilarity extends Similarity {
     }
 
     /**
-     * Sets whether overlap tokens (Tokens with 0 position increment) are
-     * ignored when computing norm.  By default this is true, meaning overlap
-     * tokens do not count when computing norms.
-     *
-     * @param v if true, tokens with position increment 0 are ignored when computing the norm, otherwise they are not ignored.
-     */
-    public void setDiscountOverlaps(boolean v) {
-
-        m_bm25Sim.setDiscountOverlaps(v);
-    }
-
-    /**
      * Special implementation for "compute norm" to reduce the significance of this factor
      * for the <code>{@link org.opencms.search.fields.CmsLuceneField#FIELD_CONTENT}</code> field, while
      * keeping the Lucene default for all other fields.<p>

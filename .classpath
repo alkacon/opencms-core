@@ -14,6 +14,13 @@
 			<attribute name="test" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry excluding="**/super_src/**" kind="src" output="bin/gwt" path="src-gwt">
+		<attributes>
+			<attribute name="gradle_scope" value="gwt"/>
+			<attribute name="gradle_used_by_scope" value="test,gwt,testGwt"/>
+			<attribute name="test" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="src" output="bin/modules" path="src-modules">
 		<attributes>
 			<attribute name="gradle_scope" value="modules"/>
@@ -26,13 +33,6 @@
 			<attribute name="gradle_used_by_scope" value="test,setup"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry excluding="**/super_src/**" kind="src" output="bin/gwt" path="src-gwt">
-		<attributes>
-			<attribute name="gradle_scope" value="gwt"/>
-			<attribute name="gradle_used_by_scope" value="test,gwt,testGwt"/>
-			<attribute name="test" value="true"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry excluding="**/super_src/**" kind="src" output="bin/testGwt" path="test-gwt">
 		<attributes>
 			<attribute name="gradle_scope" value="testGwt"/>
@@ -40,7 +40,7 @@
 			<attribute name="test" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8/"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11/"/>
 	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer"/>
 	<classpathentry kind="output" path="bin/default"/>
 </classpath>
