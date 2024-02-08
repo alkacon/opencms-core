@@ -78,6 +78,8 @@ import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.search.galleries.CmsGalleryNameMacroResolver;
 import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteMatcher;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.A_CmsWorkplaceApp;
 import org.opencms.ui.apps.CmsEditor;
@@ -109,6 +111,8 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -2512,6 +2516,48 @@ public final class CmsJspStandardContextBean {
     public boolean isForceDisableEditMode() {
 
         return m_forceDisableEditMode;
+    }
+
+    /**
+     * Checks if the link is a link to a path in a different OpenCms site from the current one.
+     *
+     * @param link the link to check
+     * @return true if the link is a link to different subsite
+     */
+    public boolean isLinkToDifferentSite(String link) {
+
+        CmsObject cms = getControllerCms();
+        try {
+            URI uri = new URI(link);
+            if (uri.getScheme() != null) {
+                String sitePart = uri.getScheme() + "://" + uri.getAuthority();
+                CmsSiteMatcher matcher = new CmsSiteMatcher(sitePart);
+                CmsSite site = OpenCms.getSiteManager().matchSite(matcher);
+                return ((site != null) && !site.getSiteRoot().equals(cms.getRequestContext().getSiteRoot()));
+            } else {
+                return false;
+            }
+        } catch (URISyntaxException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Checks if the link is a link to a path in a different OpenCms subsite from the current one.
+     *
+     * <p>For detail links, this checks the subsite of the detail page, not the subsite of the detail content.
+     *
+     * @param link the link to check
+     * @return true if the link is a link to different site
+     */
+    public boolean isLinkToDifferentSubSite(String link) {
+
+        CmsObject cms = getControllerCms();
+        String subSite = CmsLinkManager.getLinkSubsite(cms, link);
+        String currentRootPath = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri());
+        boolean result = (subSite != null)
+            && !subSite.equals(OpenCms.getADEManager().getSubSiteRoot(cms, currentRootPath));
+        return result;
     }
 
     /**
