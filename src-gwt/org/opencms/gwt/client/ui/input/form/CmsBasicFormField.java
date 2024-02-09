@@ -167,7 +167,7 @@ public class CmsBasicFormField implements I_CmsFormField {
             description = "";
         }
 
-        Map<String, String> widgetConfig = CmsStringUtil.splitAsMap(widgetConfigStr, "|", ":");
+        Map<String, String> widgetConfig = CmsStringUtil.splitOptions(widgetConfigStr);
         widgetConfig.putAll(additionalParams);
         String widgetType = propertyConfig.getWidget();
         I_CmsFormWidget widget = factory.createFormWidget(

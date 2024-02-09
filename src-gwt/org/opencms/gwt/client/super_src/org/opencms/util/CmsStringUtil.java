@@ -430,6 +430,111 @@ public final class CmsStringUtil {
     }
     
     /**
+     * Specialized version of splitAsMap used for splitting option lists for select box.
+     *
+     * <p>This used the separator characters (':' for key/value, '|' for entries), but also allows escaping of
+     * these characters with backslashes ('\'), to enable use of colons/pipes in keys and values. Backslashes themselves
+     * can also be escaped.
+     *
+     * @param optionsStr the string representing the option list
+     * @return the options map
+     */
+    public static Map<String, String> splitOptions(String optionsStr) {
+
+        // state machine with 4 states - combination of whether we are currently either in the key or the value of an entry, and whether the last character was the escape character '\' or not
+        // (could be done more simply with java.util.regex.Pattern in the JVM, but we want to keep the implementation the same as in the GWT code, where we don't have it.)
+        final int S_KEY = 0;
+        final int S_VALUE = 1;
+        final int S_KEY_ESC = 2;
+        final int S_VALUE_ESC = 3;
+
+        boolean nextEntry = false;
+        StringBuilder keyBuffer = new StringBuilder();
+        StringBuilder valueBuffer = new StringBuilder();
+        Map<String, String> result = new LinkedHashMap<>();
+        int length = optionsStr.length();
+        int state = S_KEY;
+        // one more iteration than the number of characters, to flush the buffers
+        for (int i = 0; i < (length + 1); i++) {
+            nextEntry = false;
+            char ch = 0;
+            if (i < length) {
+                ch = optionsStr.charAt(i);
+            }
+            switch (state) {
+                case S_KEY:
+                    if ((ch == '|') || (ch == 0)) {
+                        nextEntry = true;
+                        valueBuffer = null; // we have to keep track of whether a value was found to trim the key correctly, and we set the value buffer to null to do this
+                        state = S_KEY;
+                    } else if (ch == '\\') {
+                        state = S_KEY_ESC;
+                    } else if (ch == ':') {
+                        state = S_VALUE;
+                    } else {
+                        keyBuffer.append(ch);
+                    }
+                    break;
+                case S_KEY_ESC:
+                    if (ch == 0) {
+                        nextEntry = true;
+                        valueBuffer = null;
+                    } else {
+                        keyBuffer.append(ch);
+                        state = S_KEY;
+                    }
+                    break;
+                case S_VALUE:
+                    if ((ch == '|') || (ch == 0)) {
+                        nextEntry = true;
+                        state = S_KEY;
+                    } else if (ch == '\\') {
+                        state = S_VALUE_ESC;
+                    } else {
+                        if (valueBuffer != null) {
+                            valueBuffer.append(ch);
+                        }
+                    }
+                    break;
+                case S_VALUE_ESC:
+                    if (ch == 0) {
+                        nextEntry = true;
+                        state = S_KEY;
+                    } else  {
+                        if (valueBuffer != null) {
+                            valueBuffer.append(ch);
+                        }
+                        state = S_VALUE;
+                    }
+                    break;
+                default:
+            }
+            if (nextEntry) {
+                nextEntry = false;
+                String key = keyBuffer.toString();
+                // trim leading whitespace in key and trailing whitespace in value, for compatibility with splitAsMap
+                key = key.replaceFirst("^\\s+", "");
+                String value;
+                if (valueBuffer != null) {
+                    value = valueBuffer.toString();
+                    value = value.replaceFirst("\\s+$", "");
+                } else {
+                    // we just have a key, so we trim it on the right as well to get the same result as splitAsMap
+                    value ="";
+                    key = key.replaceFirst("\\s+$", "");
+                }
+                if (key.length() > 0) {
+                    result.put(key, value);
+                }
+                keyBuffer = new StringBuilder();
+                valueBuffer = new StringBuilder();
+            }
+        }
+        return result;
+    }
+
+    
+    /**
      * Checks whether one path is a prefix path of another, i.e. its path components are 
      * the initial path components of the second path.<p>
      * 

@@ -392,7 +392,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
                 contextsFieldset.setLegend(m_contextInfo.getSettingDefinition().getNiceName());
                 contextsFieldset.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
                 m_contextsWidget = new CmsMultiCheckBox(
-                    CmsStringUtil.splitAsMap(m_contextInfo.getSettingDefinition().getWidgetConfiguration(), "|", ":"));
+                    CmsStringUtil.splitOptions(m_contextInfo.getSettingDefinition().getWidgetConfiguration()));
                 for (CmsCheckBox checkbox : m_contextsWidget.getCheckboxes()) {
                     Style checkboxStyle = checkbox.getElement().getStyle();
                     checkbox.getButton().getElement().getStyle().setFontWeight(Style.FontWeight.NORMAL);

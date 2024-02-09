@@ -31,7 +31,9 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.test.OpenCmsTestCase;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.base.Optional;
 
@@ -406,6 +408,27 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
     }
 
     /**
+     * Test for the splitAsMap() method.
+     */
+    public void testSplitAsMap() throws Exception {
+        String config ="\n"
+            + "        A:Label for A|\n"
+            + "        B:Label for B|\n"
+            + "        C:Label for C|\n"
+            + "        foo  |\n"
+            + "        none:Label for none\n"
+            + "    ";
+        Map<String, String> options = CmsStringUtil.splitAsMap(config, "|", ":");
+        Map<String, String> expected = new HashMap<>();
+        expected.put("A", "Label for A");
+        expected.put("B", "Label for B");
+        expected.put("C", "Label for C");
+        expected.put("foo", "");
+        expected.put("none", "Label for none");
+        assertEquals(expected, options);
+    }
+
+    /**
      * Tests <code>{@link CmsStringUtil#splitAsArray(String, char)}</code>.<p>
      */
     public void testSplitCharDelimiter() {
@@ -503,6 +526,30 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
         assertEquals("", listResult.get(1));
         assertEquals("b", listResult.get(2));
         assertEquals("c", listResult.get(3));
+    }
+
+
+    /**
+     * Test for the splitOptions() method.
+     */
+    public void testSplitOptions() throws Exception {
+        String config ="\n"
+            + "        A:Label for A|\n"
+            + "        B:Label for B|\n"
+            + "        C:Label for C \\\\|\n"
+            + "        foo  |\n"
+            + "        none:Label for none|\n"
+            + "        a\\:a\\|b\\:b:c\\:c\\|d\\:d|\n"
+            + "    ";
+        Map<String, String> options = CmsStringUtil.splitOptions(config);
+        Map<String, String> expected = new HashMap<>();
+        expected.put("A", "Label for A");
+        expected.put("B", "Label for B");
+        expected.put("C", "Label for C \\");
+        expected.put("foo", "");
+        expected.put("none", "Label for none");
+        expected.put("a:a|b:b", "c:c|d:d");
+        assertEquals(expected, options);
     }
 
     /**
