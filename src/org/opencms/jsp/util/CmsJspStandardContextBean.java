@@ -3163,20 +3163,22 @@ public final class CmsJspStandardContextBean {
                 CmsResourceFilter filter = getIsEditMode()
                 ? CmsResourceFilter.IGNORE_EXPIRATION
                 : CmsResourceFilter.DEFAULT;
-                for (CmsContainerBean container : m_page.getContainers().values()) {
-                    for (CmsContainerElementBean element : container.getElements()) {
-                        String settingsKey = CmsFormatterConfig.getSettingsKeyForContainer(container.getName());
-                        String formatterConfigId = element.getSettings() != null
-                        ? element.getSettings().get(settingsKey)
-                        : null;
-                        I_CmsFormatterBean formatterBean = null;
-                        formatterBean = m_config.findFormatter(formatterConfigId);
-                        if ((formatterBean != null)
-                            && formatterBean.useMetaMappingsForNormalElements()
-                            && m_cms.existsResource(element.getId(), filter)) {
-                            addMappingsForFormatter(formatterBean, element.getId(), resolver, false);
-                        }
+                if (m_page != null) {
+                    for (CmsContainerBean container : m_page.getContainers().values()) {
+                        for (CmsContainerElementBean element : container.getElements()) {
+                            String settingsKey = CmsFormatterConfig.getSettingsKeyForContainer(container.getName());
+                            String formatterConfigId = element.getSettings() != null
+                            ? element.getSettings().get(settingsKey)
+                            : null;
+                            I_CmsFormatterBean formatterBean = null;
+                            formatterBean = m_config.findFormatter(formatterConfigId);
+                            if ((formatterBean != null)
+                                && formatterBean.useMetaMappingsForNormalElements()
+                                && m_cms.existsResource(element.getId(), filter)) {
+                                addMappingsForFormatter(formatterBean, element.getId(), resolver, false);
+                            }
 
+                        }
                     }
                 }
                 if (getDetailContentId() != null) {
