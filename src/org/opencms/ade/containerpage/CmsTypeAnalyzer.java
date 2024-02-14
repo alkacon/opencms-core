@@ -703,12 +703,12 @@ public class CmsTypeAnalyzer {
                 CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(OpenCms.getResourceManager().getResourceType(type)),
                 true);
             count = resources.size();
+            String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type).getKey();
+            String label = OpenCms.getWorkplaceManager().getMessages(m_locale).key(key);
+            m_state.m_types.put(type, new TypeBean(type, label, count));
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
-        String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type).getKey();
-        String label = OpenCms.getWorkplaceManager().getMessages(m_locale).key(key);
-        m_state.m_types.put(type, new TypeBean(type, label, count));
 
     }
 
