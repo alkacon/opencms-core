@@ -185,6 +185,9 @@ public final class CmsQuickLaunchProvider {
                             cms,
                             CmsADEManager.PATH_SITEMAP_EDITOR_JSP);
                         String page = locationCache.getPageEditorLocation(cms, cms.getRequestContext().getSiteRoot());
+                        if ((page != null) && page.contains(CmsADEManager.CONTENT_FOLDER_NAME)) {
+                            page = cms.getRequestContext().getUri();
+                        }
                         link = sitemapLink + "?path=" + page;
                     }
                 } else {
