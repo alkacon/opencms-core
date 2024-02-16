@@ -43,6 +43,7 @@ import org.opencms.file.CmsResourceBuilder;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
@@ -3591,6 +3592,14 @@ public class CmsImportVersion10 implements I_CmsImport {
         if (m_resourceBuilder.getStructureId() == null) {
             // if null generate a new structure id
             m_resourceBuilder.setStructureId(new CmsUUID());
+        }
+
+        if ((m_resourceBuilder.getResourceId() == null) && (m_resourceBuilder.getType() != null) && !m_resourceBuilder.getType().isFolder()) {
+            try {
+                m_resourceBuilder.setType(OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()));
+            } catch (CmsLoaderException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
 
         // get UUIDs for the resource
