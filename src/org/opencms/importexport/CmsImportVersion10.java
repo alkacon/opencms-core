@@ -589,6 +589,9 @@ public class CmsImportVersion10 implements I_CmsImport {
     /** True if the resource id has not been set. */
     private boolean m_resourceIdWasNull;
 
+    /** Flag which indicates whether the resource type name from the manifest was not found. */
+    private boolean m_unknownType;
+
     /**
      * Public constructor.<p>
      */
@@ -936,6 +939,7 @@ public class CmsImportVersion10 implements I_CmsImport {
                 m_relationsForResource = new ArrayList<>();
                 m_hasStructureId = false;
                 m_hasDateLastModified = false;
+                m_unknownType = false;
             }
         });
 
@@ -3065,6 +3069,7 @@ public class CmsImportVersion10 implements I_CmsImport {
             try {
                 m_resourceBuilder.setType(OpenCms.getResourceManager().getResourceType(typeName));
             } catch (@SuppressWarnings("unused") CmsLoaderException e) {
+                m_unknownType = true;
                 // TODO: what happens if the resource type is a specialized folder and is not configured??
                 try {
                     m_resourceBuilder.setType(
@@ -3594,11 +3599,17 @@ public class CmsImportVersion10 implements I_CmsImport {
             m_resourceBuilder.setStructureId(new CmsUUID());
         }
 
-        if ((m_resourceBuilder.getResourceId() == null) && (m_resourceBuilder.getType() != null) && !m_resourceBuilder.getType().isFolder()) {
+        if ((m_resourceBuilder.getResourceId() == null) && m_unknownType) {
             try {
                 m_resourceBuilder.setType(OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()));
             } catch (CmsLoaderException e) {
                 LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        if (m_resourceBuilder.getType().isFolder()) {
+            // ensure folders end with a "/"
+            if (!CmsResource.isFolder(m_destination)) {
+                m_destination += "/";
             }
         }
 
