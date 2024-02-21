@@ -2312,6 +2312,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     tabInfos.add(
                         new CmsTabInfo(
                             Messages.get().getBundle(workplaceLocale).key(Messages.GUI_CONTENT_TAB_LABEL_0),
+                            Messages.GUI_CONTENT_TAB_LABEL_0,
                             "content",
                             firstContentAttributeName.substring(entity.getTypeName().length() + 1),
                             false,
@@ -2321,6 +2322,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     tabInfos.add(
                         new CmsTabInfo(
                             Messages.get().getBundle(workplaceLocale).key(Messages.GUI_SETTINGS_TAB_LABEL_0),
+                            Messages.GUI_SETTINGS_TAB_LABEL_0,
                             CmsContentDefinition.SETTINGS_TAB_ID,
                             CmsFileUtil.removeLeadingSeparator(addedVisibleAttrs.iterator().next()),
                             false,

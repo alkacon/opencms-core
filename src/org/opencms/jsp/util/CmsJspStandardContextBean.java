@@ -92,6 +92,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.galleries.CmsAjaxDownloadGallery;
 import org.opencms.workplace.galleries.CmsAjaxImageGallery;
+import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -2238,6 +2239,27 @@ public final class CmsJspStandardContextBean {
             LOG.info(e.getLocalizedMessage(), e);
             return null;
         }
+    }
+
+    /**
+     * Gets the schema information bean for the given type or XSD.
+     *
+     * @param typeOrXsd either the name of a resource type, or the VFS path to an XSD schema
+     * @return the schema information bean
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public CmsSchemaInfo getSchemaInfo(String typeOrXsd) throws CmsException {
+        CmsXmlContentDefinition contentDef = null;
+        if (OpenCms.getResourceManager().hasResourceType(typeOrXsd)) {
+            contentDef = CmsXmlContentDefinition.getContentDefinitionForType(m_cms, typeOrXsd);
+        } else if (typeOrXsd.startsWith("/")) {
+            contentDef = CmsXmlContentDefinition.unmarshal(m_cms, typeOrXsd);
+        } else {
+            throw new IllegalArgumentException("Invalid getSchemaInfo argument: " + typeOrXsd);
+        }
+        CmsSchemaInfo info = new CmsSchemaInfo(m_cms, contentDef);
+        return info;
     }
 
     /**
