@@ -542,7 +542,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
                         errors.put(source, e);
                         LOG.error(
                             "Error while executing "
-                                + m_actionCombo.getValue().toString()
+                                + action
                                 + " on resource "
                                 + source.getRootPath(),
                             e);
@@ -565,8 +565,14 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
             }
 
             if (!errors.isEmpty()) {
-                m_context.finish(m_updateResources);
-                m_context.error(errors.values().iterator().next());
+                if (m_context instanceof CmsEmbeddedDialogContext) {
+                    // In ADE, finish() would trigger a reload and cause the error message to not be displayed,
+                    // and we can only trigger the dialog for a single resource there anyway
+                    m_context.error(errors.values().iterator().next());
+                } else {
+                    m_context.finish(m_updateResources);
+                    m_context.error(errors.values().iterator().next());
+                }
             } else {
                 m_context.finish(m_updateResources);
             }

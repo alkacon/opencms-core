@@ -29,31 +29,38 @@ package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsDialogContextWithAdeContext;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.ui.dialogs.CmsCopyMoveDialog;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
 /**
  * The copy move dialog action.<p>
  */
-public class CmsMoveDialogAction extends A_CmsWorkplaceAction {
-
-    /** The logger for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsMoveDialogAction.class);
+public class CmsMoveDialogAction extends A_CmsWorkplaceAction implements I_CmsADEAction {
 
     /** The action id. */
     public static final String ACTION_ID = "move";
 
     /** The action visibility. */
     public static final I_CmsHasMenuItemVisibility VISIBILITY = CmsStandardVisibilityCheck.DEFAULT;
+
+    /** The logger for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsMoveDialogAction.class);
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
@@ -78,6 +85,14 @@ public class CmsMoveDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getCommandClassName()
+     */
+    public String getCommandClassName() {
+
+        return "org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction";
+    }
+
+    /**
      * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getDialogTitleKey()
      */
     @Override
@@ -95,11 +110,57 @@ public class CmsMoveDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getJspPath()
+     */
+    public String getJspPath() {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getParams()
+     */
+    public Map<String, String> getParams() {
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(CmsGwtConstants.ACTION_PARAM_DIALOG_ID, this.getClass().getName());
+        return params;
+
+    }
+
+    /**
      * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
         return VISIBILITY.getVisibility(cms, resources);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getVisibility(org.opencms.ui.I_CmsDialogContext)
+     */
+    @Override
+    public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
+
+        if (context instanceof I_CmsDialogContextWithAdeContext) {
+            AdeContext adeContext = ((I_CmsDialogContextWithAdeContext)context).getAdeContext();
+            if (adeContext == AdeContext.resourceinfo) {
+                if (OpenCms.getRoleManager().hasRole(context.getCms(), CmsRole.DEVELOPER)) {
+                    return VISIBILITY.getVisibility(context.getCms(), context.getResources());
+                }
+            }
+            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+        } else {
+            return VISIBILITY.getVisibility(context.getCms(), context.getResources());
+        }
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#isAdeSupported()
+     */
+    public boolean isAdeSupported() {
+
+        return true;
     }
 
     /**
