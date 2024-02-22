@@ -466,8 +466,8 @@ public class CmsShell {
 
             // initialize the shell
             initShell(additionalShellCommands, out, err);
-        } catch (Throwable t) {
-            t.printStackTrace(m_err);
+        } catch (Exception e) {
+            throw new RuntimeException("Error initializing CmsShell: " + e.getLocalizedMessage(), e);
         }
     }
 
@@ -573,8 +573,8 @@ public class CmsShell {
 
             // initialize the shell
             initShell(additionalShellCommands, out, err);
-        } catch (Throwable t) {
-            t.printStackTrace(err);
+        } catch (Exception e) {
+            throw new RuntimeException("Error initializing CmsShell: " + e.getLocalizedMessage(), e);
         }
     }
 

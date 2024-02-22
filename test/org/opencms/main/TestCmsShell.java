@@ -27,6 +27,7 @@
 
 package org.opencms.main;
 
+import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 import org.opencms.file.CmsObject;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsFileUtil;
@@ -87,6 +88,8 @@ public class TestCmsShell extends OpenCmsTestCase {
 
         // create a new database first
         setupDatabase();
+        // turn off exceptions on error logging during setup (won't work otherwise due to non-existing "offline" project)
+        OpenCmsTestLogAppender.setBreakOnError(false);
 
         // create a shell instance
         CmsShell shell = new CmsShell(

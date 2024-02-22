@@ -932,7 +932,7 @@ public class OpenCmsTestCase extends TestCase {
         if (m_testDataPath == null) {
             m_testDataPath = new ArrayList<String>(4);
 
-            // test wether we are instantiated within the
+            // test whether we are instantiated within the
             // AllTest suite and therefore the OpenCmsTestProperties are
             // already set up:
             try {
