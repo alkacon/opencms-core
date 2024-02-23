@@ -572,6 +572,9 @@ public class CmsJspTagLink extends BodyTagSupport {
      * @param detailPage the target detail page path
      */
     public void setDetailPage(String detailPage) {
+        if ("".equals(detailPage)) {
+            detailPage = null;
+        }
 
         m_detailPage = detailPage;
     }
