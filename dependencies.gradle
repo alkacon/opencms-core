@@ -5,7 +5,6 @@ dependencies {
     setupCompile sourceSets.main.output
     gwtCompile sourceSets.main.output
     gwtCompile sourceSets.modules.output
-    testCompile fileTree('webapp/setup/database'){ include '**/*.jar' }
     testCompile sourceSets.setup.output
     testCompile sourceSets.modules.output
     testCompile sourceSets.gwt.output
