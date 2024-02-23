@@ -69,11 +69,11 @@ public class TestConfiguration extends OpenCmsTestCase {
     public void testLoadXmlConfiguration() throws Exception {
 
         // get the file name of the input resource
-        String inputFile = CmsResource.getParentFolder(
+        String configurationDirName = CmsResource.getParentFolder(
             OpenCmsTestProperties.getResourcePathFromClassloader("org/opencms/configuration/opencms.xml"));
 
         // generate the configuration manager
-        CmsConfigurationManager manager = new CmsConfigurationManager(inputFile);
+        CmsConfigurationManager manager = new CmsConfigurationManager(configurationDirName);
 
         // now digest the XML
         manager.loadXmlConfiguration();
@@ -89,7 +89,7 @@ public class TestConfiguration extends OpenCmsTestCase {
         Iterator<I_CmsXmlConfiguration> i = allConfigurations.iterator();
         while (i.hasNext()) {
             I_CmsXmlConfiguration config = i.next();
-            String xmlOrigFile = inputFile + config.getXmlFileName();
+            String xmlOrigFile = configurationDirName + config.getXmlFileName();
             System.out.println("\n\nConfiguration instance: " + config + ":\n");
 
             // generate XML document for the configuration
