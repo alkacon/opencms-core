@@ -68,13 +68,13 @@ import java.util.TreeMap;
  * repository without the Workplace.<p>
  *
  * The CmsShell has direct access to all methods in the "command objects".
- * Currently the following classes are used as command objects:
+ * Currently, the following classes are used as command objects:
  * <code>{@link org.opencms.main.CmsShellCommands}</code>,
  * <code>{@link org.opencms.file.CmsRequestContext}</code> and
  * <code>{@link org.opencms.file.CmsObject}</code>.<p>
  *
  * It is also possible to add a custom command object when calling the script API,
- * like in {@link CmsShell#CmsShell(String, String, String, String, I_CmsShellCommands, PrintStream, PrintStream, boolean)}.<p>
+ * like in {@link CmsShell#CmsShell(String, String, String, String, List, PrintStream, PrintStream, boolean)}.<p>
  *
  * Only public methods in the command objects that use supported data types
  * as parameters can be called from the shell. Supported data types are:
@@ -408,7 +408,7 @@ public class CmsShell {
     protected PrintStream m_out;
 
     /** Additional shell commands object. */
-    private I_CmsShellCommands m_additionalShellCommands;
+    private List<I_CmsShellCommands> m_additionalShellCommands;
 
     /** All shell callable objects. */
     private List<CmsCommandObject> m_commandObjects;
@@ -445,14 +445,14 @@ public class CmsShell {
      *
      * @param cms the user context to run the shell from
      * @param prompt the prompt format to set
-     * @param additionalShellCommands optional object for additional shell commands, or null
+     * @param additionalShellCommands optional objects for additional shell commands, or null
      * @param out stream to write the regular output messages to
      * @param err stream to write the error messages output to
      */
     public CmsShell(
         CmsObject cms,
         String prompt,
-        I_CmsShellCommands additionalShellCommands,
+        List<I_CmsShellCommands> additionalShellCommands,
         PrintStream out,
         PrintStream err) {
 
@@ -478,14 +478,14 @@ public class CmsShell {
      * @param servletMapping the mapping of the servlet (or <code>null</code> to use the default <code>"/opencms/*"</code>)
      * @param defaultWebAppName the name of the default web application (or <code>null</code> to use the default <code>"ROOT"</code>)
      * @param prompt the prompt format to set
-     * @param additionalShellCommands optional object for additional shell commands, or null
+     * @param additionalShellCommands optional objects for additional shell commands, or null
      */
     public CmsShell(
         String webInfPath,
         String servletMapping,
         String defaultWebAppName,
         String prompt,
-        I_CmsShellCommands additionalShellCommands) {
+        List<I_CmsShellCommands> additionalShellCommands) {
 
         this(
             webInfPath,
@@ -505,7 +505,7 @@ public class CmsShell {
      * @param servletMapping the mapping of the servlet (or <code>null</code> to use the default <code>"/opencms/*"</code>)
      * @param defaultWebAppName the name of the default web application (or <code>null</code> to use the default <code>"ROOT"</code>)
      * @param prompt the prompt format to set
-     * @param additionalShellCommands optional object for additional shell commands, or null
+     * @param additionalShellCommands optional list of objects for additional shell commands, or null
      * @param out stream to write the regular output messages to
      * @param err stream to write the error messages output to
      * @param interactive if <code>true</code> this is an interactive session with a user sitting on a console
@@ -515,7 +515,7 @@ public class CmsShell {
         String servletMapping,
         String defaultWebAppName,
         String prompt,
-        I_CmsShellCommands additionalShellCommands,
+        List<I_CmsShellCommands> additionalShellCommands,
         PrintStream out,
         PrintStream err,
         boolean interactive) {
@@ -616,7 +616,7 @@ public class CmsShell {
         String script = null;
         String servletMapping = null;
         String defaultWebApp = null;
-        String additional = null;
+        String additionalCommandsNames = null;
         int errorCode = -1;
         if (args.length > 4) {
             wrongUsage = true;
@@ -632,7 +632,7 @@ public class CmsShell {
                 } else if (arg.startsWith(SHELL_PARAM_DEFAULT_WEB_APP)) {
                     defaultWebApp = arg.substring(SHELL_PARAM_DEFAULT_WEB_APP.length());
                 } else if (arg.startsWith(SHELL_PARAM_ADDITIONAL_COMMANDS)) {
-                    additional = arg.substring(SHELL_PARAM_ADDITIONAL_COMMANDS.length());
+                    additionalCommandsNames = arg.substring(SHELL_PARAM_ADDITIONAL_COMMANDS.length());
                 } else if (arg.startsWith(SHELL_PARAM_ERROR_CODE)) {
                     errorCode = Integer.valueOf(arg.substring(SHELL_PARAM_ERROR_CODE.length())).intValue();
                 } else if (arg.startsWith(SHELL_PARAM_JLAN)) {
@@ -647,16 +647,32 @@ public class CmsShell {
             System.out.println(Messages.get().getBundle().key(Messages.GUI_SHELL_USAGE_1, CmsShell.class.getName()));
         } else {
 
-            I_CmsShellCommands additionalCommands = null;
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(additional)) {
-                try {
-                    Class<?> commandClass = Class.forName(additional);
-                    additionalCommands = (I_CmsShellCommands)commandClass.newInstance();
-                } catch (Exception e) {
-                    System.out.println(
-                        Messages.get().getBundle().key(Messages.GUI_SHELL_ERR_ADDITIONAL_COMMANDS_1, additional));
-                    e.printStackTrace();
-                    return;
+            List<I_CmsShellCommands> additionalCommands = new ArrayList<>();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(additionalCommandsNames)) {
+                String[] classNames = additionalCommandsNames.split(",");
+                for (String className : classNames) {
+                    try {
+                        className = className.trim();
+
+                        Class<?> commandClass = Class.forName(className);
+                        if (I_CmsShellCommands.class.isAssignableFrom(commandClass)) {
+                            additionalCommands.add((I_CmsShellCommands) commandClass.getDeclaredConstructor().newInstance());
+                            System.out.println("Class " + className + " has been loaded and added to additional commands.");
+                        } else {
+                            // The class does not implement the required interface
+                            System.err.println(Messages.get().getBundle().key(
+                                    Messages.GUI_SHELL_ERR_ADDITIONAL_COMMANDS_NOT_CMSSHELLCOMMANDS_1, className));
+                            return;
+                        }
+                    } catch (ClassNotFoundException e) {
+                        System.out.println(Messages.get().getBundle().key(
+                                Messages.GUI_SHELL_ERR_ADDITIONAL_COMMANDS_CLASS_NOT_FOUND_1, className));
+                        return;
+                    } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                        System.out.println(Messages.get().getBundle().key(
+                                Messages.GUI_SHELL_ERR_ADDITIONAL_COMMANDS_DURING_INSTANTIATION_2, className, e.getLocalizedMessage()));
+                        return;
+                    }
                 }
             }
             boolean interactive = true;
@@ -908,8 +924,12 @@ public class CmsShell {
         }
         m_exitCalled = true;
         try {
-            if (m_additionalShellCommands != null) {
-                m_additionalShellCommands.shellExit();
+            if (m_additionalShellCommands != null && !m_additionalShellCommands.isEmpty()) {
+                for (I_CmsShellCommands shellCommands : m_additionalShellCommands) {
+                    if (shellCommands != null) {
+                        shellCommands.shellExit();
+                    }
+                }
             } else if (null != m_shellCommands) {
                 m_shellCommands.shellExit();
             }
@@ -1048,11 +1068,11 @@ public class CmsShell {
     /**
      * Initializes the CmsShell.<p>
      *
-     * @param additionalShellCommands optional object for additional shell commands, or null
+     * @param additionalShellCommands optional objects for additional shell commands, or null
      * @param out stream to write the regular output messages to
      * @param err stream to write the error messages output to
      */
-    public void initShell(I_CmsShellCommands additionalShellCommands, PrintStream out, PrintStream err) {
+    public void initShell(List<I_CmsShellCommands> additionalShellCommands, PrintStream out, PrintStream err) {
 
         // set the output streams
         m_out = out;
@@ -1066,18 +1086,27 @@ public class CmsShell {
         m_shellCommands.initShellCmsObject(m_cms, this);
 
         // initialize additional shell command object
-        if (additionalShellCommands != null) {
+        if (additionalShellCommands != null && !additionalShellCommands.isEmpty()) {
             m_additionalShellCommands = additionalShellCommands;
-            m_additionalShellCommands.initShellCmsObject(m_cms, this);
-            m_additionalShellCommands.shellStart();
+            for (I_CmsShellCommands shellCommands : additionalShellCommands) {
+                if (shellCommands != null) {
+                    shellCommands.shellExit(); // XXX: AG 2024-02-09 - The shellCommands has not been init yet!!! Why shellExit before initShelCmsObject??
+                    shellCommands.initShellCmsObject(m_cms, this);
+                    shellCommands.shellStart();
+                }
+            }
         } else {
             m_shellCommands.shellStart();
         }
 
         m_commandObjects = new ArrayList<CmsCommandObject>();
-        if (m_additionalShellCommands != null) {
-            // get all shell callable methods from the additional shell command object
-            m_commandObjects.add(new CmsCommandObject(m_additionalShellCommands));
+        if (m_additionalShellCommands != null && !m_additionalShellCommands.isEmpty()) {
+             for (I_CmsShellCommands shellCommands : m_additionalShellCommands) {
+                 if (shellCommands != null) {
+                     // get all shell callable methods from the additional shell command object
+                     m_commandObjects.add(new CmsCommandObject(shellCommands));
+                 }
+             }
         }
         // get all shell callable methods from the CmsShellCommands
         m_commandObjects.add(new CmsCommandObject(m_shellCommands));
@@ -1226,12 +1255,6 @@ public class CmsShell {
         m_settings = new CmsUserSettings(m_cms);
         return m_settings;
     }
-
-    /**
-     * Executes all commands read from the given reader.<p>
-     *
-     * @param reader a Reader from which the commands are read
-     */
 
     /**
      * Sets the echo status.<p>

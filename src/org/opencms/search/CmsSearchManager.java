@@ -1748,7 +1748,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /**
      * Initializes all configured document types, index sources and search indexes.<p>
      *
-     * This methods needs to be called if after a change in the index configuration has been made.
+     * This method needs to be called if after a change in the index configuration has been made.
      */
     public void initializeIndexes() {
 

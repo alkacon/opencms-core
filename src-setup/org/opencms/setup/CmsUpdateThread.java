@@ -35,6 +35,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 
 /**
  * Used for the OpenCms workplace update wizard.<p>
@@ -145,7 +146,7 @@ public class CmsUpdateThread extends Thread {
                 m_updateBean.getServletMapping(),
                 m_updateBean.getDefaultWebApplication(),
                 "${user}@${project}>",
-                m_updateBean);
+                Arrays.asList(m_updateBean));
 
             try {
                 try {
