@@ -86,16 +86,18 @@ public class CmsModuleExportDialog extends CmsBasicDialog {
             }
 
         });
-        FileDownloader downloadContext = new FileDownloader(getDownloadResource());
 
         download.setEnabled(false);
-        downloadContext.extend(download);
         addButton(download, true);
         addButton(close, true);
 
         final CmsReportWidget report = new CmsReportWidget(thread);
         report.addReportFinishedHandler(() -> {
-            download.setEnabled(thread.getErrors().size() == 0);
+            if (thread.getErrors().size() == 0) {
+                FileDownloader downloadContext = new FileDownloader(getDownloadResource());
+                downloadContext.extend(download);
+                download.setEnabled(true);
+            }
         });
         setHeight("100%");
         report.setWidth("100%");
