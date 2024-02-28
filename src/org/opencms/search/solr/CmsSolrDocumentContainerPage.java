@@ -152,6 +152,13 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
                                         shouldExtractElement = formatter.isSearchContent();
                                     }
                                 }
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.debug(
+                                        "Should extract element "
+                                            + element.getResource().getRootPath()
+                                            + ": "
+                                            + shouldExtractElement);
+                                }
                                 if (shouldExtractElement) {
                                     all.add(
                                         CmsSolrDocumentXmlContent.extractXmlContent(
