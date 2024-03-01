@@ -94,11 +94,12 @@ public class CmsLocalePrefixLinkSubstitutionHandler extends CmsDefaultLinkSubsti
     }
 
     /**
-     * @see org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler#generateCacheKey(org.opencms.file.CmsObject, java.lang.String, java.lang.String, java.lang.String)
+     * @see org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler#generateCacheKey(org.opencms.file.CmsObject, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     protected String generateCacheKey(
         CmsObject cms,
+        String sourceSiteRoot,
         String targetSiteRoot,
         String detailPagePart,
         String absoluteLink) {
@@ -107,6 +108,8 @@ public class CmsLocalePrefixLinkSubstitutionHandler extends CmsDefaultLinkSubsti
             + cms.getRequestContext().getCurrentUser().getId()
             + ":"
             + cms.getRequestContext().getSiteRoot()
+            + ":"
+            + sourceSiteRoot
             + ":"
             + targetSiteRoot
             + ":"
