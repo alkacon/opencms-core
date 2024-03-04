@@ -6489,7 +6489,12 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkOfflineProject(dbc);
-            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
+            checkPermissions(
+                dbc,
+                resource,
+                CmsPermissionSet.ACCESS_WRITE,
+                mode.isRecursive() || (mode == CmsResource.UNDO_MOVE_CONTENT) ? LockCheck.yes : LockCheck.shallowOnly,
+                CmsResourceFilter.ALL);
             checkSystemLocks(dbc, resource);
 
             m_driverManager.undoChanges(dbc, resource, mode);
@@ -6847,7 +6852,12 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkOfflineProject(dbc);
-            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_CONTROL, LockCheck.shallowOnly, CmsResourceFilter.ALL);
+            checkPermissions(
+                dbc,
+                resource,
+                CmsPermissionSet.ACCESS_CONTROL,
+                LockCheck.shallowOnly,
+                CmsResourceFilter.ALL);
             if (ace.getPrincipal().equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID)) {
                 // only vfs managers can set the overwrite all ACE
                 checkRoleForResource(dbc, CmsRole.VFS_MANAGER, resource);
