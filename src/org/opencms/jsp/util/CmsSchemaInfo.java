@@ -287,6 +287,82 @@ public class CmsSchemaInfo {
         }
 
         /**
+         * Gets the validation error message.
+         *
+         * @return the validation error message
+         */
+        @SuppressWarnings("synthetic-access")
+        public String getValidationError() {
+
+            if (m_field == null) {
+                return null;
+            }
+            I_CmsXmlContentHandler handler = m_field.getContentDefinition().getContentHandler();
+            if (!(handler instanceof CmsDefaultXmlContentHandler)) {
+                return null;
+            }
+            CmsDefaultXmlContentHandler defaultHandler = (CmsDefaultXmlContentHandler)handler;
+            return defaultHandler.getValidationWarningOrErrorMessage(m_cms, m_locale, m_field.getName(), false, false);
+        }
+
+        /**
+         * Gets the validation error localization key.
+         *
+         * @return the validation error localization key
+         */
+        @SuppressWarnings("synthetic-access")
+        public String getValidationErrorKey() {
+
+            if (m_field == null) {
+                return null;
+            }
+            I_CmsXmlContentHandler handler = m_field.getContentDefinition().getContentHandler();
+            if (!(handler instanceof CmsDefaultXmlContentHandler)) {
+                return null;
+            }
+            CmsDefaultXmlContentHandler defaultHandler = (CmsDefaultXmlContentHandler)handler;
+            return defaultHandler.getValidationWarningOrErrorMessage(m_cms, m_locale, m_field.getName(), false, true);
+        }
+
+        /**
+         * Gets the validation warning message.
+         *
+         * @return the validation warning message
+         */
+        @SuppressWarnings({"synthetic-access"})
+        public String getValidationWarning() {
+
+            if (m_field == null) {
+                return null;
+            }
+            I_CmsXmlContentHandler handler = m_field.getContentDefinition().getContentHandler();
+            if (!(handler instanceof CmsDefaultXmlContentHandler)) {
+                return null;
+            }
+            CmsDefaultXmlContentHandler defaultHandler = (CmsDefaultXmlContentHandler)handler;
+            return defaultHandler.getValidationWarningOrErrorMessage(m_cms, m_locale, m_field.getName(), true, false);
+        }
+
+        /**
+         * Gets the validation warning message key.
+         *
+         * @return the validation warning message key
+         */
+        @SuppressWarnings("synthetic-access")
+        public String getValidationWarningKey() {
+
+            if (m_field == null) {
+                return null;
+            }
+            I_CmsXmlContentHandler handler = m_field.getContentDefinition().getContentHandler();
+            if (!(handler instanceof CmsDefaultXmlContentHandler)) {
+                return null;
+            }
+            CmsDefaultXmlContentHandler defaultHandler = (CmsDefaultXmlContentHandler)handler;
+            return defaultHandler.getValidationWarningOrErrorMessage(m_cms, m_locale, m_field.getName(), true, true);
+        }
+
+        /**
          * Gets the widget.
          *
          * @return the widget
@@ -472,6 +548,12 @@ public class CmsSchemaInfo {
         /** The display name key. */
         private String m_displayNameKey;
 
+        /** The description. */
+        private String m_description;
+
+        /** The description key. */
+        private String m_descriptionKey;
+
         /** The fields. */
         private List<Field> m_fields = new ArrayList<>();
 
@@ -483,6 +565,26 @@ public class CmsSchemaInfo {
         public void add(Field field) {
 
             m_fields.add(field);
+        }
+
+        /**
+         * Gets the description.
+         *
+         * @return the description
+         */
+        public String getDescription() {
+
+            return m_description;
+        }
+
+        /**
+         * Gets the description key.
+         *
+         * @return the description key
+         */
+        public String getDescriptionKey() {
+
+            return m_descriptionKey;
         }
 
         /**
@@ -513,6 +615,26 @@ public class CmsSchemaInfo {
         public List<Field> getFields() {
 
             return m_fields;
+        }
+
+        /**
+         * Sets the description.
+         *
+         * @param description the new description
+         */
+        public void setDescription(String description) {
+
+            m_description = description;
+        }
+
+        /**
+         * Sets the description key.
+         *
+         * @param descriptionKey the new description key
+         */
+        public void setDescriptionKey(String descriptionKey) {
+
+            m_descriptionKey = descriptionKey;
         }
 
         /**
@@ -648,8 +770,11 @@ public class CmsSchemaInfo {
             for (Field node : m_root.getChildren()) {
                 if ((index < tabs.size()) && node.getName().equals(tabs.get(index).getStartName())) {
                     Tab tab = new Tab();
+
                     tab.setDisplayName(tabs.get(index).getTabName());
                     tab.setDisplayNameKey(tabs.get(index).getTabNameKey());
+                    tab.setDescriptionKey(tabs.get(index).getDescriptionKey());
+                    tab.setDescription(tabs.get(index).getDescription());
                     result.add(tab);
                     index += 1;
                 }

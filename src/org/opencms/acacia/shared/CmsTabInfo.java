@@ -52,6 +52,9 @@ public class CmsTabInfo implements IsSerializable {
     /** The tab localization key. */
     private String m_tabKey;
 
+    /** Localization key for the description. */
+    private String m_descriptionKey;
+
     /**
      * Constructor.<p>
      *
@@ -61,8 +64,9 @@ public class CmsTabInfo implements IsSerializable {
      * @param startName the start element name
      * @param collapsed if the labels should be collapsed
      * @param description the description HTML
+     * @param descriptionKey the description key
      */
-    public CmsTabInfo(String tabName, String tabKey,  String tabId, String startName, boolean collapsed, String description) {
+    public CmsTabInfo(String tabName, String tabKey,  String tabId, String startName, boolean collapsed, String description, String descriptionKey) {
 
         m_tabName = tabName;
         m_tabKey  = tabKey;
@@ -70,6 +74,7 @@ public class CmsTabInfo implements IsSerializable {
         m_startName = startName;
         m_collapsed = collapsed;
         m_description = description;
+        m_descriptionKey = descriptionKey;
     }
 
     /**
@@ -88,6 +93,15 @@ public class CmsTabInfo implements IsSerializable {
     public String getDescription() {
 
         return m_description;
+    }
+
+    /**
+     * Gets the localization key for the description.
+     *
+     * @return the localization key for the description
+     */
+    public String getDescriptionKey() {
+        return m_descriptionKey;
     }
 
     /**
@@ -119,10 +133,9 @@ public class CmsTabInfo implements IsSerializable {
 
         return m_tabName;
     }
-
     /**
      * Gets the localization key for the tab name.
-     * 
+     *
      * @return the tab name localization key
      */
     public String getTabNameKey() {

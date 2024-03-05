@@ -314,7 +314,10 @@ public class CmsContentTypeVisitor {
      *
      * @return the tab informations
      */
-    public static List<CmsTabInfo> collectTabInfos(CmsObject cms, CmsXmlContentDefinition definition, CmsMessages messages) {
+    public static List<CmsTabInfo> collectTabInfos(
+        CmsObject cms,
+        CmsXmlContentDefinition definition,
+        CmsMessages messages) {
 
         List<CmsTabInfo> result = new ArrayList<CmsTabInfo>();
         CmsMacroResolver resolver = new CmsMacroResolver();
@@ -339,6 +342,12 @@ public class CmsContentTypeVisitor {
                     tabKey = A_CmsWidget.LABEL_PREFIX + definition.getInnerName() + "." + xmlTab.getTabName();
                 }
 
+                String descriptionKey = null;
+                if (xmlTab.getDescription() != null) {
+                    descriptionKey = CmsKeyDummyMacroResolver.getKey(
+                        keyResolver.resolveMacros(xmlTab.getDescription()));
+                }
+
                 result.add(
                     new CmsTabInfo(
                         tabName,
@@ -346,7 +355,8 @@ public class CmsContentTypeVisitor {
                         xmlTab.getIdName(),
                         xmlTab.getStartName(),
                         xmlTab.isCollapsed(),
-                        resolver.resolveMacros(xmlTab.getDescription())));
+                        resolver.resolveMacros(xmlTab.getDescription()),
+                        descriptionKey));
             }
         }
         return result;

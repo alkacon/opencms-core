@@ -2316,7 +2316,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                             "content",
                             firstContentAttributeName.substring(entity.getTypeName().length() + 1),
                             false,
-                            null));
+                            null, null));
                 }
                 if (addedVisibleAttrs.size() > 0) {
                     tabInfos.add(
@@ -2326,7 +2326,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                             CmsContentDefinition.SETTINGS_TAB_ID,
                             CmsFileUtil.removeLeadingSeparator(addedVisibleAttrs.iterator().next()),
                             false,
-                            Messages.get().getBundle(workplaceLocale).key(Messages.GUI_SETTINGS_TAB_DESCRIPTION_0)));
+                            Messages.get().getBundle(workplaceLocale).key(Messages.GUI_SETTINGS_TAB_DESCRIPTION_0), null));
                 }
             }
 

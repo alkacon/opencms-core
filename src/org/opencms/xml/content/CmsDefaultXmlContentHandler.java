@@ -51,6 +51,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.i18n.CmsMultiMessages.I_KeyFallbackHandler;
 import org.opencms.i18n.CmsResourceBundleLoader;
+import org.opencms.jsp.util.CmsKeyDummyMacroResolver;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -1754,6 +1755,57 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             }
         }
         return result;
+    }
+
+    /**
+     * Gets the validation error message configured in the schema for the element.
+     *
+     * @param elementName the name of the element
+     * @return the validation message
+     */
+    public String getValidationError(String elementName) {
+        return m_validationErrorMessages.get(elementName);
+    }
+
+    /**
+     * Gets the validation warning message configured in the schema for the element.
+     *
+     * @param elementName the name of the element
+     * @return the validation message
+     */
+    public String getValidationWarning(String elementName) {
+        return m_validationWarningMessages.get(elementName);
+    }
+
+
+
+    /**
+     * Helper method for reading a validation message or the corresponding message key.
+     *
+     * @param cms the current CMS context
+     * @param locale the locale
+     * @param elementName the element name
+     * @param isWarning true if we want the warning message, false for the error message
+     * @param keyOnly true if we want the key rather than the message
+     *
+     * @return the message or message key
+     */
+    public String getValidationWarningOrErrorMessage(CmsObject cms, Locale locale, String elementName, boolean isWarning, boolean keyOnly) {
+        String rawValue = (isWarning ? m_validationWarningMessages  : m_validationErrorMessages).get(elementName);
+        if (rawValue == null) {
+            return null;
+        }
+        CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms).setMessages(
+            getMessages(locale));
+        if (keyOnly) {
+            resolver = new CmsKeyDummyMacroResolver(resolver);
+        }
+        String resolved = resolver.resolveMacros(rawValue);
+        if (keyOnly) {
+            return CmsKeyDummyMacroResolver.getKey(resolved);
+        } else {
+            return resolved;
+        }
     }
 
     /**
