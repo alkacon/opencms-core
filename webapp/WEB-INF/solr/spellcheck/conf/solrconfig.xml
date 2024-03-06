@@ -52,7 +52,7 @@
         <maxWarmingSearchers>2</maxWarmingSearchers>
     </query>
     <requestDispatcher>
-        <requestParsers enableRemoteStreaming="true"
+        <requestParsers
             multipartUploadLimitInKB="2048000" />
         <httpCaching never304="true" />
     </requestDispatcher>
