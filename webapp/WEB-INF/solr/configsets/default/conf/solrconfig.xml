@@ -18,11 +18,11 @@
             In consequence you can never request more the maxBooleanClauses results at a time.
         -->
         <maxBooleanClauses>${solr.max.booleanClauses:1024}</maxBooleanClauses>
-        <filterCache class="solr.FastLRUCache" size="512"
+        <filterCache class="solr.CaffeineCache" size="512"
             initialSize="512" autowarmCount="0" />
-        <queryResultCache class="solr.LRUCache" size="512"
+        <queryResultCache class="solr.CaffeineCache" size="512"
             initialSize="512" autowarmCount="0" />
-        <documentCache class="solr.LRUCache" size="512"
+        <documentCache class="solr.CaffeineCache" size="512"
             initialSize="512" autowarmCount="0" />
         <enableLazyFieldLoading>true</enableLazyFieldLoading>
         <queryResultWindowSize>20</queryResultWindowSize>
