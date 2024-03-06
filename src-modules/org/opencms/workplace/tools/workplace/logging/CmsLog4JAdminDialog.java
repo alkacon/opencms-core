@@ -280,7 +280,7 @@ public class CmsLog4JAdminDialog extends A_CmsListDialog {
         if (newLogchannelLevel != null) {
             isparentlogger(logchannel);
             if (newLogchannelLevel.equals(logchannel.getParent().getLevel())) {
-                Configurator.setLevel(logchannnelName, null);
+                Configurator.setLevel(logchannnelName, (Level)null);
             } else {
                 Configurator.setLevel(logchannnelName, newLogchannelLevel);
             }
