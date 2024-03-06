@@ -251,6 +251,9 @@ public final class CmsGwtConstants {
     /** Tab id for the preference dialog. */
     public static final String TAB_HIDDEN = "hidden";
 
+    /** Tag name for the edit button bars injected into the page HTML in the container page editor. */
+    public static final String TAG_OC_EDITPOINT = "oc-editpoint";
+
     /** Action placeholder for the template contexts menu option. */
     public static final String TEMPLATECONTEXT_MENU_PLACEHOLDER = "templatecontexts";
 

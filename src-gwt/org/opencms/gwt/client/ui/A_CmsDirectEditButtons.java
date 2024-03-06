@@ -182,7 +182,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem, I_C
      * @param parentId the parent element id
      */
     public A_CmsDirectEditButtons(Element editable, String parentId) {
-
+        super(CmsGwtConstants.TAG_OC_EDITPOINT);
         try {
             setStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.directEditCss().directEditButtons());
             addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.directEditCss().optionBar());

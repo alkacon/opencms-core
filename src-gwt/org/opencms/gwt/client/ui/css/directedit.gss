@@ -4,7 +4,13 @@
 	position: absolute;
 	text-align: right;
 }
-div.oc-option-bar.directEditButtons .cmsState{
+
+oc-editpoint {
+	display: block;
+}
+
+
+oc-editpoint.oc-option-bar.directEditButtons .cmsState{
 	display: inline-block;
 }
 
@@ -12,7 +18,7 @@ div.oc-option-bar.directEditButtons .cmsState{
 .showButtons {} 
 
 
-div.oc-option-bar{
+oc-editpoint.oc-option-bar{
 	border: 1px solid transparent;
 	position: absolute;
 	top: 2px;
@@ -34,12 +40,12 @@ div.oc-option-bar{
 	min-width: 0;
 	max-width: none;
 }
-div.oc-option-bar, div.oc-option-bar *{
+oc-editpoint.oc-option-bar, oc-editpoint.oc-option-bar *{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 }
 
-div.oc-option-bar div, div.oc-option-bar span {
+oc-editpoint.oc-option-bar div, oc-editpoint.oc-option-bar span {
 	margin: 0;
 	padding: 0;
 	border: none;

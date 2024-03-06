@@ -33,12 +33,16 @@
 
 html.fullWindowDrag {}
 
-.oc-edit-buttons-invisible div.oc-option-bar {
+oc-editpoint {
+	display: block;
+}
+
+.oc-edit-buttons-invisible oc-editpoint.oc-option-bar {
 	display: none !important;
 }
 
 
-.oc-edit-buttons-visible div.oc-option-bar{
+.oc-edit-buttons-visible oc-editpoint.oc-option-bar{
 	border: 1px solid transparent;
 	position: absolute !important;
 	top: 2px;
@@ -62,11 +66,11 @@ html.fullWindowDrag {}
 	transform-origin: top right; 
 }
 
-body.oc-touch-only.oc-edit-buttons-visible div.oc-option-bar {
+body.oc-touch-only.oc-edit-buttons-visible oc-editpoint.oc-option-bar {
 	transform: scale(1.5);
 } 
 
-.oc-drag-element div.oc-option-bar, .oc-drag-element div.oc-option-bar *{
+.oc-drag-element oc-editpoint.oc-option-bar, .oc-drag-element oc-editpoint.oc-option-bar *{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 }
@@ -114,7 +118,7 @@ div.toolbarToggle{
 	z-index: value("constants.css.zIndexPopup");
 }
 
-div.oc-option-bar .cmsState, div.oc-option-bar .html-face, div.oc-option-bar span{
+oc-editpoint.oc-option-bar .cmsState, oc-editpoint.oc-option-bar .html-face, oc-editpoint.oc-option-bar span{
 	margin: 0;
 	padding: 0;
 	border: none;
@@ -129,7 +133,7 @@ div.oc-option-bar .cmsState, div.oc-option-bar .html-face, div.oc-option-bar spa
 	max-width: none;
 }
 
-.oc-edit-buttons-visible div.oc-option-bar.cmsHovering{
+.oc-edit-buttons-visible oc-editpoint.oc-option-bar.cmsHovering{
 	height: auto;
 	border: 1px solid value("constants.css.borderColor");
 	border-radius: value("constants.css.borderRadius");
@@ -183,7 +187,7 @@ div.groupcontainerPlaceholder{
 	display: block;
 }
 
-.groupcontainerEditing .emptyGroupContainer, .oc-edit-buttons-visible .dragging div.oc-option-bar.cmsHovering{
+.groupcontainerEditing .emptyGroupContainer, .oc-edit-buttons-visible .dragging oc-editpoint.oc-option-bar.cmsHovering{
 	background: transparent;
 	border: none;
 }

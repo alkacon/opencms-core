@@ -34,6 +34,7 @@ import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.A_CmsHoverHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.I_CmsUniqueActiveItem;
+import org.opencms.gwt.shared.CmsGwtConstants;
 
 import java.util.Iterator;
 
@@ -117,7 +118,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem, I_C
      */
     public CmsElementOptionBar(CmsContainerPageElementPanel containerElement) {
 
-        m_panel = new FlowPanel();
+        m_panel = new FlowPanel(CmsGwtConstants.TAG_OC_EDITPOINT);
         m_containerElement = containerElement;
         initWidget(m_panel);
         HoverHandler handler = new HoverHandler();
