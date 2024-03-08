@@ -30,6 +30,8 @@ IMPORTANT: The upgrade wizard will replace all VFS resources of the updated modu
            Administration to export all the changes you have done after installing
            OpenCms.
 
+IMPORTANT: If you use OCEE, remove OCEE configurations before the update and enable them after the update again.
+
 Follow the following steps to update from OpenCms 10.x, 11.x, 12.x 13.x or 14.x to @OPENCMS_VERSION@:
 
 
@@ -40,7 +42,9 @@ Broadcast message tool in the 'Administration' view to inform users before the
 server is shut down.
 
 
-2. Extract the OpenCms upgrade file 'opencms-upgrade-to-@OPENCMS_VERSION_NUMBER@.zip' to
+2. If you had already updated your OpenCms installation before, ensure to delete the folder 'WEB-INF/updatedata' in your webapp directory.
+
+3. Extract the OpenCms upgrade file 'opencms-upgrade-to-@OPENCMS_VERSION_NUMBER@.zip' to
    your web application directory
 
 If you extracted the file to an external directory, copy the folder 'WEB-INF' to the OpenCms webapp directory. Be sure that the files 'opencms.tld'
@@ -61,6 +65,9 @@ in the config file WEB-INF/config/opencms.properties.
 4. Restart your OpenCms servlet container
 
 OpenCms will not start because the wizard in enabled.
+
+Ensure that no requests other than the one to the update wizard reach your OpenCms instance,
+otherwise the wizard might not start correctly and you get an error 500.
 
 
 5. Execute the OpenCms update wizard
@@ -126,7 +133,7 @@ You should now be able to log into the OpenCms workplace as before.
 As the search libraries and configuration may have changed, it is necessary to rebuild all search indexes.
 Log into OpenCms and navigate to Launchpad > Database -> Search Indexes and rebuild all indexes.
 
-If you update from OpenCms 10.x, you must delete the files under WEB-INF/index/ first and restart your 
+If you update from OpenCms 10.x, you must delete the files under WEB-INF/index/ first and restart your
 servlet container and then reindex your search indexes as shown above.
 
 
