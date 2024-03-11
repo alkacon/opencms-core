@@ -5716,7 +5716,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkOfflineProject(dbc);
-            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_CONTROL, LockCheck.shallowOnly, CmsResourceFilter.ALL);
             m_driverManager.removeAccessControlEntry(dbc, resource, principal);
         } catch (Exception e) {
             dbc.report(
