@@ -3,7 +3,7 @@
     <schemaFactory class="ClassicIndexSchemaFactory" />
     <abortOnConfigurationError>${solr.abortOnConfigurationError:true}
     </abortOnConfigurationError>
-    <luceneMatchVersion>9.8</luceneMatchVersion>
+    <luceneMatchVersion>9.9</luceneMatchVersion>
     <dataDir>${solr.data.dir:}</dataDir>
     <directoryFactory name="DirectoryFactory"
         class="${solr.directoryFactory:solr.StandardDirectoryFactory}" />
