@@ -105,7 +105,6 @@ public class CmsUndoDialog extends CmsBasicDialog {
      * Creates a new instance.<p>
      *
      * @param context the dialog context
-     * @param hasBlockingLocksOnSubResources flag, indicating if there are blocking locks on sub-resources
      */
     public CmsUndoDialog(I_CmsDialogContext context, boolean hasBlockingLocksOnSubResources) {
 
