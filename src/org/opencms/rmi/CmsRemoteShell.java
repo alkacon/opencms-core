@@ -34,12 +34,15 @@ import org.opencms.main.CmsShell;
 import org.opencms.main.CmsShellCommandException;
 import org.opencms.main.I_CmsShellCommands;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -129,29 +132,42 @@ public class CmsRemoteShell extends UnicastRemoteObject implements I_CmsRemoteSh
     /**
      * Creates a new instance.<p>
      *
-     * @param additionalCommandsName a class name for an additional shell commands class (may be null)
+     * @param additionalCommandsNames comma separated list of full qualified names of classes with additional shell
+     *                               commands (may be null)
      * @param port the port to use
      *
      * @throws CmsException if something goes wrong
      * @throws RemoteException if RMI stuff goes wrong
      */
-    public CmsRemoteShell(String additionalCommandsName, int port)
+    public CmsRemoteShell(String additionalCommandsNames, int port)
     throws CmsException, RemoteException {
 
         super(port);
         m_id = RandomStringUtils.randomAlphanumeric(8);
-        I_CmsShellCommands additionalCommands = null;
-        if (additionalCommandsName != null) {
-            try {
-                Class<?> commandsCls = Class.forName(additionalCommandsName);
-                if (I_CmsShellCommands.class.isAssignableFrom(commandsCls)) {
-                    additionalCommands = (I_CmsShellCommands)(commandsCls.newInstance());
+        List<I_CmsShellCommands> additionalCommands = new ArrayList<>();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(additionalCommandsNames)) {
+            String[] classNames = additionalCommandsNames.split(",");
+            for (String className : classNames) {
+                try {
+                    className = className.trim();
+
+                    Class<?> commandsCls = Class.forName(className);
+                    if (I_CmsShellCommands.class.isAssignableFrom(commandsCls)) {
+                        additionalCommands.add((I_CmsShellCommands) commandsCls.getDeclaredConstructor().newInstance());
+                        LOG.info("Class " + className + " has been loaded and added to additional commands.");
+                    } else {
+                        LOG.error("Error: Class " + className + " does not implement I_CmsShellCommands");
+                    }
+                } catch (ClassNotFoundException e) {
+                    final String errMsg = "Error: Could not find the class " + className;
+                    LOG.error(errMsg, e);
+                    throw new IllegalArgumentException(errMsg, e);
+                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                         InvocationTargetException e) {
+                    final String errMsg = "Error instantiating the class " + className + ". " + e.getLocalizedMessage();
+                    LOG.error(errMsg, e);
+                    throw new IllegalArgumentException(errMsg, e);
                 }
-            } catch (Exception e) {
-                LOG.error(e.getLocalizedMessage(), e);
-                throw new IllegalArgumentException(
-                    "Could not create command class instance for " + additionalCommandsName,
-                    e);
             }
         }
 

@@ -56,16 +56,14 @@ public class CmsRemoteShellProvider implements I_CmsRemoteShellProvider {
     /**
      * @see org.opencms.rmi.I_CmsRemoteShellProvider#createShell(java.lang.String)
      */
-    public I_CmsRemoteShell createShell(String additionalCommandsName) throws RemoteException {
-
+    @Override
+    public I_CmsRemoteShell createShell(String additionalCommandsNames) throws RemoteException {
         try {
-            CmsRemoteShell shell = new CmsRemoteShell(additionalCommandsName, m_port);
+            CmsRemoteShell shell = new CmsRemoteShell(additionalCommandsNames, m_port);
             return shell;
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
             throw new RemoteException("Remote error: " + e.getLocalizedMessage());
         }
-
     }
-
 }

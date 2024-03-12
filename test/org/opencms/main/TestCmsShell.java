@@ -27,12 +27,18 @@
 
 package org.opencms.main;
 
+import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 import org.opencms.file.CmsObject;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsFileUtil;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Test cases for the OpenCms shell.<p>
@@ -40,6 +46,8 @@ import java.io.FileInputStream;
  * @since 6.0.0
  */
 public class TestCmsShell extends OpenCmsTestCase {
+
+    public static final String PROMPT = "${user}@${project}>";
 
     /**
      * Default JUnit constructor.<p>
@@ -87,13 +95,15 @@ public class TestCmsShell extends OpenCmsTestCase {
 
         // create a new database first
         setupDatabase();
+        // turn off exceptions on error logging during setup (won't work otherwise due to non-existing "offline" project)
+        OpenCmsTestLogAppender.setBreakOnError(false);
 
         // create a shell instance
         CmsShell shell = new CmsShell(
             getTestDataPath("WEB-INF" + File.separator),
             null,
             null,
-            "${user}@${project}>",
+            PROMPT,
             null,
             System.out,
             System.err,
@@ -140,5 +150,99 @@ public class TestCmsShell extends OpenCmsTestCase {
 
         // remove the backup configuration files
         CmsFileUtil.purgeDirectory(configBackupDir);
+    }
+
+    private static I_CmsShellCommands createCmsShellCommands(String identifier, final String markInit, final String markShellExit, final String markShellStart, String markInErrOutputStream) {
+        return new I_CmsShellCommands() {
+            private CmsShell shell;
+
+            @Override
+            public void initShellCmsObject(CmsObject cms, CmsShell shell) {
+                this.shell = shell;
+                shell.getOut().println(markInit + identifier);
+            }
+
+            @Override
+            public void shellExit() {
+                // shellExit can (and in fact is) invoked before initShellCmsObject
+                if (shell != null) {
+                    shell.getOut().println(markShellExit + identifier);
+                }
+            }
+
+            @Override
+            public void shellStart() {
+                shell.getOut().println(markShellStart + identifier);
+                shell.getErr().println(markInErrOutputStream + identifier);
+            }
+        };
+    }
+
+    /**
+     * Tests the CmsShell and setup procedure.<p>
+     *
+     */
+    public void testShouldLoadCmsShellWithAllAdditionalCommandsClasses() {
+
+        // create a new database first
+        setupDatabase();
+        // turn off exceptions on error logging during setup (won't work otherwise due to non-existing "offline" project)
+        OpenCmsTestLogAppender.setBreakOnError(false);
+
+        final ByteArrayOutputStream baosOut = new ByteArrayOutputStream();
+        final PrintStream out = new PrintStream(baosOut);
+        final ByteArrayOutputStream baosErr = new ByteArrayOutputStream();
+        final PrintStream err = new PrintStream(baosErr);
+
+
+        final String MARK_INIT = "initShellCmsObject on ";
+        final String MARK_SHELL_EXIT = "shellExit on ";
+        final String MARK_SHELL_START = "shellStart on ";
+        final String MARK_IN_ERR_OUTPUT_STREAM = "mark in error OutputStream on ";
+        List<String> commandsIds = Arrays.asList("0001", "0002", "0003");
+        List<I_CmsShellCommands> cmsShellCommands = commandsIds.stream()
+                .map(id -> createCmsShellCommands(id, MARK_INIT, MARK_SHELL_EXIT, MARK_SHELL_START, MARK_IN_ERR_OUTPUT_STREAM))
+                .collect(Collectors.toList());
+
+        // create a shell instance
+        final CmsShell shell = new CmsShell(
+                getTestDataPath("WEB-INF" + File.separator),
+            null,
+            null,
+                PROMPT,
+                cmsShellCommands,
+            out,
+            err,
+            false);
+
+        // get the name of the folder for the backup configuration files
+        File configBackupDir = new File(getTestDataPath("WEB-INF/" + CmsSystemInfo.FOLDER_CONFIG_DEFAULT + "backup/"));
+
+        // exit the shell
+        shell.exit();
+
+        // remove the database
+        removeDatabase();
+
+        // remove the backup configuration files
+        CmsFileUtil.purgeDirectory(configBackupDir);
+
+        final String resultOut = baosOut.toString();
+        final String resultErr = baosErr.toString();
+        System.out.println("out: ----------------------------");
+        System.out.println(resultOut);
+        System.out.println("---------------------------------");
+        System.out.println("err: ----------------------------");
+        System.out.println(resultErr);
+        System.out.println("---------------------------------");
+
+        assertContains(resultOut, "OpenCms WEB-INF path:");
+        assertContains(resultOut, "OpenCms property file:");
+        for (String id: commandsIds) {
+            assertContains(resultOut, MARK_INIT + id);
+            assertContains(resultOut, MARK_SHELL_EXIT + id);
+            assertContains(resultOut, MARK_SHELL_START + id);
+            assertContains(resultErr, MARK_IN_ERR_OUTPUT_STREAM + id);
+        }
     }
 }

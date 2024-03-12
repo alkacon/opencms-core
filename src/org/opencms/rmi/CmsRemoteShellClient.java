@@ -63,8 +63,8 @@ public class CmsRemoteShellClient {
     /** Command parameter for passing a shell script file name. */
     public static final String PARAM_SCRIPT = "script";
 
-    /** The name of the additional commands class. */
-    private String m_additionalCommands;
+    /** The name of the additional commands classes. */
+    private final String m_additionalCommands;
 
     /** True if echo mode is turned on. */
     private boolean m_echo;

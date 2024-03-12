@@ -36,13 +36,13 @@ import java.rmi.RemoteException;
 public interface I_CmsRemoteShellProvider extends Remote {
 
     /**
-     * Creates a new shell instance with the given additional commands class.<p>
+     * Creates a new shell instance with the given additional commands classes.<p>
      *
-     * @param additionalCommandsName the name of the additional commands class
+     * @param additionalCommandsNames comma separated list of full qualified names of classes with additional commands
      * @return the new shell instance
      *
      * @throws RemoteException if RMI stuff goes wrong
      */
-    I_CmsRemoteShell createShell(String additionalCommandsName) throws RemoteException;
+    I_CmsRemoteShell createShell(String additionalCommandsNames) throws RemoteException;
 
 }
