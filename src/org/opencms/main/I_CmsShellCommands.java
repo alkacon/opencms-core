@@ -45,19 +45,18 @@ public interface I_CmsShellCommands {
     void initShellCmsObject(CmsObject cms, CmsShell shell);
 
     /**
-     * May be called after shell exit, can e.g. be used to ouput a goodbye message.<p>
+     * May be called after shell exit, can e.g. be used to output a goodbye message.<p>
      *
-     * Please note: This method is not guaranteed to be called. For a shell that has more then
-     * one shell command object initialized, only the exit method of one of thouse will be called.<p>
+     * Please note: This method is not guaranteed to be called. For a shell that has more than
+     * one shell command object initialized, only the exit method of one of those will be called.<p>
      */
     void shellExit();
 
     /**
-     * May be called before shell startup, can e.g. be used to ouput a welcome message.<p>
+     * May be called before shell startup, can e.g. be used to output a welcome message.<p>
      *
-     * Please note: This method is not guaranteed to be called. For a shell that has more then
-     * one shell command object initialized, only the start method of one of thouse will be called.<p>
+     * Please note: This method is not guaranteed to be called. For a shell that has more than
+     * one shell command object initialized, only the start method of one of those will be called.<p>
      */
     void shellStart();
-
 }

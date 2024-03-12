@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.util.Arrays;
 
 /**
  * Used for the workplace setup in the OpenCms setup wizard.<p>
@@ -88,7 +89,7 @@ public class CmsVaadinSetupWorkplaceImportThread extends Thread {
                 m_setupBean.getServletMapping(),
                 m_setupBean.getDefaultWebApplication(),
                 "${user}@${project}>",
-                m_setupBean,
+                Arrays.asList(m_setupBean),
                 m_out,
                 m_out,
                 false);
