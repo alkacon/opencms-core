@@ -1119,7 +1119,6 @@ test {
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
     systemProperties['test.project.path'] = "${projectDir}"
     systemProperties['test.build.folder'] =sourceSets.test.output.resourcesDir
-    jvmArgs '-XX:MaxPermSize=256m'
     testLogging.showStandardStreams = true
     ignoreFailures true
     filter {
@@ -1148,7 +1147,6 @@ task testSingle(type: Test, dependsOn: [compileTestJava]) {
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
     systemProperties['test.build.folder'] =sourceSets.test.output.resourcesDir
     maxHeapSize = max_heap_size
-    jvmArgs '-XX:MaxPermSize=256m'
     testLogging.showStandardStreams = true
     ignoreFailures true
 }
@@ -1193,7 +1191,6 @@ task testGwt(type: Test, dependsOn: [compileTestGwtJava]) {
     systemProperties['gwt.args'] = "-logLevel WARN -setProperty locale=en"
     systemProperties['java.awt.headless'] = "true"
     maxHeapSize = max_heap_size
-    jvmArgs '-XX:MaxPermSize=256m'
     testLogging.showStandardStreams = true
     ignoreFailures true
 }
