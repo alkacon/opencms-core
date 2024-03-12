@@ -656,21 +656,31 @@ public class CmsShell {
 
                         Class<?> commandClass = Class.forName(className);
                         if (I_CmsShellCommands.class.isAssignableFrom(commandClass)) {
-                            additionalCommands.add((I_CmsShellCommands) commandClass.getDeclaredConstructor().newInstance());
-                            System.out.println("Class " + className + " has been loaded and added to additional commands.");
+                            additionalCommands.add(
+                                (I_CmsShellCommands)commandClass.getDeclaredConstructor().newInstance());
+                            System.out.println(
+                                "Class " + className + " has been loaded and added to additional commands.");
                         } else {
                             // The class does not implement the required interface
-                            System.err.println(Messages.get().getBundle().key(
-                                    Messages.GUI_SHELL_ERR_ADDITIONAL_COMMANDS_NOT_CMSSHELLCOMMANDS_1, className));
+                            System.err.println(
+                                Messages.get().getBundle().key(
+                                    Messages.GUI_SHELL_ERR_ADDITIONAL_COMMANDS_NOT_CMSSHELLCOMMANDS_1,
+                                    className));
                             return;
                         }
                     } catch (ClassNotFoundException e) {
-                        System.out.println(Messages.get().getBundle().key(
-                                Messages.GUI_SHELL_ERR_ADDITIONAL_COMMANDS_CLASS_NOT_FOUND_1, className));
+                        System.out.println(
+                            Messages.get().getBundle().key(
+                                Messages.GUI_SHELL_ERR_ADDITIONAL_COMMANDS_CLASS_NOT_FOUND_1,
+                                className));
                         return;
-                    } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                        System.out.println(Messages.get().getBundle().key(
-                                Messages.GUI_SHELL_ERR_ADDITIONAL_COMMANDS_DURING_INSTANTIATION_2, className, e.getLocalizedMessage()));
+                    } catch (InstantiationException | IllegalAccessException | NoSuchMethodException
+                    | InvocationTargetException e) {
+                        System.out.println(
+                            Messages.get().getBundle().key(
+                                Messages.GUI_SHELL_ERR_ADDITIONAL_COMMANDS_DURING_INSTANTIATION_2,
+                                className,
+                                e.getLocalizedMessage()));
                         return;
                     }
                 }
@@ -924,7 +934,7 @@ public class CmsShell {
         }
         m_exitCalled = true;
         try {
-            if (m_additionalShellCommands != null && !m_additionalShellCommands.isEmpty()) {
+            if ((m_additionalShellCommands != null) && !m_additionalShellCommands.isEmpty()) {
                 for (I_CmsShellCommands shellCommands : m_additionalShellCommands) {
                     if (shellCommands != null) {
                         shellCommands.shellExit();
@@ -1086,11 +1096,10 @@ public class CmsShell {
         m_shellCommands.initShellCmsObject(m_cms, this);
 
         // initialize additional shell command object
-        if (additionalShellCommands != null && !additionalShellCommands.isEmpty()) {
+        if ((additionalShellCommands != null) && !additionalShellCommands.isEmpty()) {
             m_additionalShellCommands = additionalShellCommands;
             for (I_CmsShellCommands shellCommands : additionalShellCommands) {
                 if (shellCommands != null) {
-                    shellCommands.shellExit(); // XXX: AG 2024-02-09 - The shellCommands has not been init yet!!! Why shellExit before initShelCmsObject??
                     shellCommands.initShellCmsObject(m_cms, this);
                     shellCommands.shellStart();
                 }
@@ -1100,13 +1109,13 @@ public class CmsShell {
         }
 
         m_commandObjects = new ArrayList<CmsCommandObject>();
-        if (m_additionalShellCommands != null && !m_additionalShellCommands.isEmpty()) {
-             for (I_CmsShellCommands shellCommands : m_additionalShellCommands) {
-                 if (shellCommands != null) {
-                     // get all shell callable methods from the additional shell command object
-                     m_commandObjects.add(new CmsCommandObject(shellCommands));
-                 }
-             }
+        if ((m_additionalShellCommands != null) && !m_additionalShellCommands.isEmpty()) {
+            for (I_CmsShellCommands shellCommands : m_additionalShellCommands) {
+                if (shellCommands != null) {
+                    // get all shell callable methods from the additional shell command object
+                    m_commandObjects.add(new CmsCommandObject(shellCommands));
+                }
+            }
         }
         // get all shell callable methods from the CmsShellCommands
         m_commandObjects.add(new CmsCommandObject(m_shellCommands));
