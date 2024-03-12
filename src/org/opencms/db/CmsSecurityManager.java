@@ -6489,7 +6489,12 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkOfflineProject(dbc);
-            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
+            checkPermissions(
+                dbc,
+                resource,
+                CmsPermissionSet.ACCESS_WRITE,
+                resource.isFile() || mode.isRecursive() || (mode == CmsResource.UNDO_MOVE_CONTENT) ? LockCheck.yes : LockCheck.shallowOnly,
+                CmsResourceFilter.ALL);
             checkSystemLocks(dbc, resource);
 
             m_driverManager.undoChanges(dbc, resource, mode);

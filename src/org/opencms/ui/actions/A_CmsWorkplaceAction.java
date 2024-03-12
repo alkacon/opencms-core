@@ -68,29 +68,12 @@ public abstract class A_CmsWorkplaceAction implements I_CmsWorkplaceAction {
     }
 
     /**
-     * Returns the workplace message bundle key of the action dialog title.<p>
-     *
-     * @return the dialog title message bundle key
-     */
-    protected String getDialogTitleKey() {
-
-        return getTitleKey();
-    }
-
-    /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle(java.util.Locale)
      */
     public String getTitle(Locale locale) {
 
         return OpenCms.getWorkplaceManager().getMessages(locale).key(getTitleKey());
     }
-
-    /**
-     * Returns the workplace message bundle key of the action title.<p>
-     *
-     * @return the title message bundle key
-     */
-    protected abstract String getTitleKey();
 
     /**
      * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.ui.I_CmsDialogContext)
@@ -101,6 +84,31 @@ public abstract class A_CmsWorkplaceAction implements I_CmsWorkplaceAction {
     }
 
     /**
+     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#isActive(org.opencms.ui.I_CmsDialogContext)
+     */
+    public boolean isActive(I_CmsDialogContext context) {
+
+        return getVisibility(context).isActive();
+    }
+
+    /**
+     * Returns the workplace message bundle key of the action dialog title.<p>
+     *
+     * @return the dialog title message bundle key
+     */
+    protected String getDialogTitleKey() {
+
+        return getTitleKey();
+    }
+
+    /**
+     * Returns the workplace message bundle key of the action title.<p>
+     *
+     * @return the title message bundle key
+     */
+    protected abstract String getTitleKey();
+
+    /**
      * Returns if there are any blocking locks within the context resources.<p>
      * Will open the blocking locks dialog if required.<p>
      *
@@ -109,6 +117,20 @@ public abstract class A_CmsWorkplaceAction implements I_CmsWorkplaceAction {
      * @return <code>true</code> in case of blocking locks
      */
     protected boolean hasBlockingLocks(final I_CmsDialogContext context) {
+
+        return hasBlockingLocks(context, true);
+    }
+
+    /**
+     * Returns if there are any blocking locks within the context resources.<p>
+     * Will open the blocking locks dialog if required.<p>
+     *
+     * @param context the dialog context
+     * @param showDialog flag, indicating if the dialog should be displayed, hinting to the locked resources.
+     *
+     * @return <code>true</code> in case of blocking locks
+     */
+    protected boolean hasBlockingLocks(final I_CmsDialogContext context, boolean showDialog) {
 
         CmsObject cms = context.getCms();
         List<CmsResource> resources = context.getResources();
@@ -122,7 +144,7 @@ public abstract class A_CmsWorkplaceAction implements I_CmsWorkplaceAction {
         }
         if (blocked.isEmpty()) {
             return false;
-        } else {
+        } else if (showDialog) {
 
             CmsLockedResourcesList dialog = new CmsLockedResourcesList(
                 cms,
@@ -141,17 +163,9 @@ public abstract class A_CmsWorkplaceAction implements I_CmsWorkplaceAction {
             context.start(
                 CmsVaadinUtils.getMessageText(org.opencms.workplace.explorer.Messages.GUI_EXPLORER_CONTEXT_LOCKS_0),
                 dialog);
+        }
             return true;
         }
-    }
-
-    /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#isActive(org.opencms.ui.I_CmsDialogContext)
-     */
-    public boolean isActive(I_CmsDialogContext context) {
-
-        return getVisibility(context).isActive();
-    }
 
     /**
      * Opens the given dialog in a new overlay window.<p>

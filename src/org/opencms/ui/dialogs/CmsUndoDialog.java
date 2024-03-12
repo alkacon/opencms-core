@@ -41,6 +41,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
@@ -56,9 +57,11 @@ import org.apache.commons.logging.Log;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.CheckBox;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.OptionGroup;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Dialog used to change resource modification times.<p>
@@ -92,12 +95,20 @@ public class CmsUndoDialog extends CmsBasicDialog {
     /** The date selection field. */
     private CheckBox m_undoMoveField;
 
+    /** The lock warning to display if sub-resources are locked. */
+    private VerticalLayout m_lockWarning;
+
+    /** The warning icon */
+    private Label m_icon;
+
     /**
      * Creates a new instance.<p>
      *
      * @param context the dialog context
+     * @param hasBlockingLocksOnSubResources flag, indicating if there are blocking locks on sub-resources
      */
-    public CmsUndoDialog(I_CmsDialogContext context) {
+    public CmsUndoDialog(I_CmsDialogContext context, boolean hasBlockingLocksOnSubResources) {
+
         m_context = context;
         CmsVaadinUtils.readAndLocalizeDesign(
             this,
@@ -145,6 +156,14 @@ public class CmsUndoDialog extends CmsBasicDialog {
         m_modifySubresourcesField.setValue("false");
 
         m_undoMoveField.setVisible(hasFolders || hasMoved);
+        if (hasBlockingLocksOnSubResources) {
+            m_modifySubresourcesField.setItemEnabled("true", false);
+            m_undoMoveField.setEnabled(false);
+            m_icon.setContentMode(ContentMode.HTML);
+            m_icon.setValue(FontOpenCms.WARNING.getHtml());
+            m_lockWarning.setVisible(true);
+        }
+
         m_cancelButton.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
@@ -204,7 +223,10 @@ public class CmsUndoDialog extends CmsBasicDialog {
                 }
                 CmsLockActionRecord actionRecord = null;
                 try {
-                    actionRecord = CmsLockUtil.ensureLock(m_context.getCms(), resource);
+                    actionRecord = CmsLockUtil.ensureLock(
+                        m_context.getCms(),
+                        resource,
+                        !(resource.isFile() || recursive || undoMove));
                     CmsResourceUndoMode mode = CmsResourceUndoMode.getUndoMode(undoMove, recursive);
                     cms.undoChanges(cms.getSitePath(resource), mode);
                     if (undoMove) {

@@ -596,6 +596,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_UNDO_UNDOMOVE_0 = "GUI_UNDO_UNDOMOVE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDO_LOCKS_ON_SUBRESOURCES_WARNING_0 = "GUI_UNDO_LOCKS_ON_SUBRESOURCES_WARNING_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_UNUSED_CONTENT_FINDER_0 = "GUI_UNUSED_CONTENT_FINDER_0";
 
     /** Message constant for key in the resource bundle. */

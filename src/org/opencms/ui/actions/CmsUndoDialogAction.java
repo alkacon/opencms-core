@@ -57,9 +57,7 @@ public class CmsUndoDialogAction extends A_CmsWorkplaceAction implements I_CmsAD
      */
     public void executeAction(I_CmsDialogContext context) {
 
-        if (!hasBlockingLocks(context)) {
-            openDialog(new CmsUndoDialog(context), context);
-        }
+        openDialog(new CmsUndoDialog(context, hasBlockingLocks(context, false)), context);
     }
 
     /**

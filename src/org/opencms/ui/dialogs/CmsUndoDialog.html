@@ -1,23 +1,28 @@
 <!DOCTYPE html>
 <html>
-<head>
-  	  	<meta name="package-mapping" content="u:org.opencms.ui" />
-  	  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  <head>
+    <meta name="package-mapping" content="o:org.opencms.ui.components" />
   </head>
   <body>
-  		<o-cms-basic-dialog>
-  			<content>
-	  			<v-form-layout>
-	  				<vaadin7-label _id="m_modifiedText" visible="false"/>
-	  				<vaadin7-label _id="m_infoText" />
-	  				<vaadin7-option-group _id="m_modifySubresourcesField" />
-	  				<vaadin7-check-box _id="m_undoMoveField" caption="%(key.GUI_UNDO_UNDOMOVE_0)" />
-	  			</v-form-layout>
-  			</content>
-  			<buttons>
-	  			<v-button _id="m_okButton" >%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
-				<v-button _id="m_cancelButton" >%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
-  			</buttons>
-  		</o-cms-basic-dialog>
+    <o-cms-basic-dialog>
+        <content>
+            <v-form-layout>
+                <vaadin7-vertical-layout width="100%" _id="m_lockWarning" style-name="o-error-dialog" visible="false">
+                    <vaadin7-horizontal-layout height="70px" width="100%">
+                      <vaadin7-label _id="m_icon" width="60px" style-name="o-warning-icon" :middle />
+                      <vaadin7-label :expand style-name="o-error-message" :middle>%(key.GUI_UNDO_LOCKS_ON_SUBRESOURCES_WARNING_0)</vaadin7-label>
+                    </vaadin7-horizontal-layout>
+                </vaadin7-vertical-layout>
+                <vaadin7-label _id="m_modifiedText" visible="false"/>
+                <vaadin7-label _id="m_infoText" />
+                <vaadin7-option-group _id="m_modifySubresourcesField" />
+                <vaadin7-check-box _id="m_undoMoveField" caption="%(key.GUI_UNDO_UNDOMOVE_0)" />
+            </v-form-layout>
+        </content>
+        <buttons>
+            <v-button _id="m_okButton" >%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+          <v-button _id="m_cancelButton" >%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+        </buttons>
+    </o-cms-basic-dialog>
   </body>
 </html>
