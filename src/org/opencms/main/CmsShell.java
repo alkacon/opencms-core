@@ -55,7 +55,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -478,6 +480,30 @@ public class CmsShell {
      * @param servletMapping the mapping of the servlet (or <code>null</code> to use the default <code>"/opencms/*"</code>)
      * @param defaultWebAppName the name of the default web application (or <code>null</code> to use the default <code>"ROOT"</code>)
      * @param prompt the prompt format to set
+     * @param additionalShellCommands optional object for additional shell commands, or null
+     */
+    public CmsShell(
+        String webInfPath,
+        String servletMapping,
+        String defaultWebAppName,
+        String prompt,
+        I_CmsShellCommands additionalShellCommands) {
+
+        this(
+            webInfPath,
+            servletMapping,
+            defaultWebAppName,
+            prompt,
+            additionalShellCommands != null ? Arrays.asList(additionalShellCommands) : Collections.emptyList());
+    }
+
+    /**
+     * Creates a new CmsShell using System.out and System.err for output of the messages.<p>
+     *
+     * @param webInfPath the path to the 'WEB-INF' folder of the OpenCms installation
+     * @param servletMapping the mapping of the servlet (or <code>null</code> to use the default <code>"/opencms/*"</code>)
+     * @param defaultWebAppName the name of the default web application (or <code>null</code> to use the default <code>"ROOT"</code>)
+     * @param prompt the prompt format to set
      * @param additionalShellCommands optional objects for additional shell commands, or null
      */
     public CmsShell(
@@ -497,6 +523,7 @@ public class CmsShell {
             System.err,
             false);
     }
+
 
     /**
      * Creates a new CmsShell.<p>
