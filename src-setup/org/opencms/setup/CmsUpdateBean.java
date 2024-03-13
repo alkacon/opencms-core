@@ -693,7 +693,7 @@ public class CmsUpdateBean extends CmsSetupBean {
             getServletMapping(),
             getDefaultWebApplication(),
             "${user}@${project}>",
-            null);
+            Collections.emptyList());
         boolean validUser = shell.validateUser(getAdminUser(), getAdminPwd(), CmsRole.ROOT_ADMIN);
         shell.exit();
         return validUser;
