@@ -2,134 +2,9 @@
 
 @def TOOLBAR_HEIGHT 52px;
 
-@keyframes toolbarfadeaway {
-	from {
-		background-color: rgba(255,255,255,1);
-		border-width: 1px;
-		border-color: rgba(201,201,201,1);
-		height: TOOLBAR_HEIGHT;
-	}
-	99% {
-		background-color: rgba(255,255,255,0);
-		border-width: 1px;
-		border-color: rgba(201,201,201,0);
-		height: TOOLBAR_HEIGHT;
-	}
-	to {
-		background-color: rgba(255,255,255,0);
-		border-width: 0;
-		border-color: transparent;
-		height: 0;
-	}
-}
-@keyframes buttonfadein {
-	to {
-		opacity: 1;
-		height: 40px;
-		visibility: visible;
-	}
-	99% {
-		opacity: 0;
-		height: 40px;
-		visibility: visible;
-	}
-	from {
-		opacity: 0;
-		height: 0;
-		visibility: hidden;
-	}
-}
-	
-@keyframes toolbarfadein {
-	to {
-		background-color: rgba(255,255,255,1);
-		border-width: 1px;
-		border-color: rgba(201,201,201,1);
-	}
-	1% {
-		background-color: rgba(255,255,255,0);
-		border-width: 1px;
-		border-color: rgba(201,201,201,0);
-	}
-	from {
-		background-color: rgba(255,255,255,0);
-		border-width: 0;
-		border-color: transparent;
-	}
-}
-@keyframes buttonfadeaway {
-	from {
-		opacity: 1;
-		height: 40px;
-		visibility: visible;
-		overflow: visible;
-	}
-	99% {
-		opacity: 0;
-		height: 40px;
-		visibility: visible;
-		overflow: visible;
-	}
-	to {
-		opacity: 0;
-		height: 0;
-		visibility: hidden;
-		overflow: hidden;
-	}
-}
 
-@keyframes logofadein {
-	to {
-		opacity: 1;
-		display:block;
-	}
-	1% {
-		opacity: 0;
-		display:block;
-	}
-	from {
-		opacity: 0;
-		display:none;
-	}
-}
-@keyframes logofadeaway {
-	from {
-		opacity: 1;
-		display:block;
-	}
-	99% {
-		opacity: 0;
-		display:block;
-	}
-	to {
-		opacity: 0;
-		display:none;
-	}
-}
-
-@keyframes buttonfadein {
-	to {
-		opacity: 1;
-		height: 40px;
-		visibility: visible;
-	}
-	1% {
-		opacity: 0;
-		height: 40px;
-		visibility: visible;
-	}
-	from {
-		opacity: 0;
-		height: 0;
-		visibility: hidden;
-	}
-}
 
 .toolbarHide.oc-toolbar .toolbarBackground{
-	animation-name: toolbarfadeaway;
-	animation-duration: 1s;
-	animation-iteration-count: 1;
-	animation-timing-function: ease;
 	background-color: transparent;
 	border-width: 0;
 	border-color: transparent;
@@ -145,26 +20,17 @@
 
 .toolbarHide.oc-toolbar .toolbarCenter{
 	display: none;
-	animation-name: logofadeaway;
-	animation-duration: 1s;
-	animation-iteration-count: 1;
-	animation-timing-function: ease;
 }
 
 .oc-toolbar .toolbarButtonsRight > div, .oc-toolbar .toolbarButtonsLeft > div{
-	animation-name: buttonfadein;
-	animation-duration: 1s;
-	animation-iteration-count: 1;
-	animation-timing-function: ease;
+	opacity: 1;
+	height: 40px;
+	visibility: visible;
 	display: inline-block;
 	vertical-align: middle;
 }
 
 .toolbarHide.oc-toolbar .toolbarButtonsRight > div, .toolbarHide.oc-toolbar .toolbarButtonsLeft > div {
-	animation-name: buttonfadeaway;
-	animation-duration: 1s;
-	animation-iteration-count: 1;
-	animation-timing-function: ease;
 	height: 0;
 	overflow: hidden;
 	visibility: hidden;
@@ -175,7 +41,6 @@
 }
 
 .toolbarHide.oc-toolbar .toolbarButtonsRight > div.toolbarShow, .toolbarHide.oc-toolbar .toolbarButtonsLeft > div.toolbarShow {
-	animation: none;
 	height: 40px;
 	overflow: show;
 	visibility: visible;
@@ -221,10 +86,6 @@
 
 
 div.toolbarBackground{
-	animation-name: toolbarfadein;
-	animation-duration: 1s;
-	animation-iteration-count: 1;
-	animation-timing-function: ease;
 	height: 52px;
 	position:absolute;
 	top:0px;
@@ -235,6 +96,9 @@ div.toolbarBackground{
 	padding:0px;
 	margin:0px;
 	background-color: value("constants.css.backgroundColorDialog");
+	border-width: 1px;
+	border-color: rgba(201,201,201,1);
+	
 }
 
 div.toolbarBackground .toolbarCenter{
@@ -244,10 +108,7 @@ div.toolbarBackground .toolbarCenter{
   	right:0;
   	top: 4px;
   	text-align: center;
-  	animation-name: logofadein;
-	animation-duration: 1s;
-	animation-iteration-count: 1;
-	animation-timing-function: ease;
+	opacity: 1;
 }
 
 div.toolbarBackground .toolbarLogo{

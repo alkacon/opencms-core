@@ -1,5 +1,5 @@
 /**
-	All CSS-selectors containing .oc-option-bar are specific for the container-page editor. 
+	All CSS-selectors containing oc-editpoint are specific for the container-page editor. 
 	The following logic applies to buttons within the option-bars:
 	They are only visible, if their specific class like .toolbarMove or .toolbarEdit is also assigned to the body element and 
 	not only to the button itself. This allows to show and hide all occurrences of them by a single DOM operation.
