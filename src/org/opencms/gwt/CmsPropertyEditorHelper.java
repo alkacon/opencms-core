@@ -239,6 +239,10 @@ public class CmsPropertyEditorHelper {
             List<CmsPropertyDefinition> propDefs = cms.readAllPropertyDefinitions();
             List<String> propNames = new ArrayList<String>();
             for (CmsPropertyDefinition propDef : propDefs) {
+                if (CmsStringUtil.isEmpty(propDef.getName())) {
+                    LOG.warn("Empty property definition name: " + propDef);
+                    continue;
+                }
                 propNames.add(propDef.getName());
             }
             CmsTemplateFinder templateFinder = new CmsTemplateFinder(cms);
