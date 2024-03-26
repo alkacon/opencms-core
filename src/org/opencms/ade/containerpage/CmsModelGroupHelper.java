@@ -42,6 +42,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -258,7 +259,7 @@ public class CmsModelGroupHelper {
                 }
 
                 if (resources.isEmpty()) {
-                    response.getWriter().println("No model group resources found at " + basePath + "<br />");
+                    response.getWriter().println("No model group resources found at " + CmsEncoder.escapeXml(basePath) + "<br />");
                 } else {
                     for (CmsResource group : resources) {
                         boolean updated = updateModelGroupResource(cms, group, baseContainerName);
