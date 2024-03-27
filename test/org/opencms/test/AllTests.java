@@ -90,6 +90,7 @@ public final class AllTests {
         suite.addTest(org.opencms.ade.sitemap.AllTests.suite());
         suite.addTest(org.opencms.cache.AllTests.suite());
         suite.addTest(org.opencms.configuration.AllTests.suite());
+        suite.addTest(org.opencms.crypto.AllTests.suite());
         suite.addTest(org.opencms.db.AllTests.suite());
         suite.addTest(org.opencms.file.AllTests.suite());
         suite.addTest(org.opencms.file.collectors.AllTests.suite());
