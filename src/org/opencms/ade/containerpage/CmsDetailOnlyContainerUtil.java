@@ -384,6 +384,8 @@ public final class CmsDetailOnlyContainerUtil {
             containerpage = rootCms.createResource(
                 detailOnlyRootPath,
                 OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlContainerPage.getStaticTypeName()));
+            // after creation, the file has a non-temporary exclusive lock. Unlock it so we can lock it with a temporary lock after this.
+            CmsLockUtil.tryUnlock(rootCms, containerpage);
         }
         CmsLockUtil.ensureLock(rootCms, containerpage);
         try {
