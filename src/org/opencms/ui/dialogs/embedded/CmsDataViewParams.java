@@ -29,6 +29,7 @@ package org.opencms.ui.dialogs.embedded;
 
 import org.opencms.file.CmsObject;
 import org.opencms.gwt.shared.CmsDataViewConstants;
+import org.opencms.gwt.shared.CmsDataViewParamEncoder;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -75,7 +76,7 @@ public class CmsDataViewParams {
 
         if (context.getParameters().get(CmsDataViewConstants.PARAM_CONFIG) != null) {
             try {
-                JSONObject json = new JSONObject(context.getParameters().get(CmsDataViewConstants.PARAM_CONFIG));
+                JSONObject json = new JSONObject(CmsDataViewParamEncoder.decodeString(context.getParameters().get(CmsDataViewConstants.PARAM_CONFIG)));
                 m_callback = json.optString(CmsDataViewConstants.PARAM_CALLBACK);
                 m_callbackArg = json.optString(CmsDataViewConstants.PARAM_CALLBACK_ARG);
                 m_viewClass = json.optString(CmsDataViewConstants.CONFIG_VIEW_CLASS);
