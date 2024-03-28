@@ -17,7 +17,7 @@ writeProperty '/system/workplace/locales/da/' 'locale' 'da']]></import-script>
 		<description><![CDATA[<p>This module contains the Danish language localization files for the OpenCms workplace.</p>
 <p>Install this module if you want to use the Danish version of the OpenCms Workplace.</p>
 <p><i>&copy; by CodeDroids ApS (http://www.codedroids.dk).</i></p>]]></description>
-		<version>16.0.0</version>
+		<version>17.0.0</version>
 		<authorname><![CDATA[CodeDroids ApS]]></authorname>
 		<authoremail><![CDATA[support@codedroids.dk]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>

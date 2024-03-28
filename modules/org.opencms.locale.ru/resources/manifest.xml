@@ -11,7 +11,7 @@
 		<class/>
 		<export-mode name="reduced"/>
 		<description><![CDATA[OpenCms Localization]]></description>
-		<version>16.0.0</version>
+		<version>17.0.0</version>
 		<authorname><![CDATA[ITDT Ltd.]]></authorname>
 		<authoremail><![CDATA[support@itdt.ru]]></authoremail>
 		<datecreated/>

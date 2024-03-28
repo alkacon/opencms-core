@@ -12,7 +12,7 @@
 		<class/>
 		<export-mode name="reduced"/>
 		<description><![CDATA[OpenCms Localization]]></description>
-		<version>16.0.0</version>
+		<version>17.0.0</version>
 		<authorname><![CDATA[NELASOFT Technologies, s.r.o.]]></authorname>
 		<authoremail><![CDATA[info@nelasoft.cz]]></authoremail>
 		<datecreated/>

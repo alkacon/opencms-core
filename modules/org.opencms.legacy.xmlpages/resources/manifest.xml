@@ -13,7 +13,7 @@
         <site>/sites/default</site>
         <export-mode name="reduced" />
         <description><![CDATA[<p>Legacy module for creating/editing XML pages ("page with free text").</p>]]></description>
-        <version>16.0.0</version>
+        <version>17.0.0</version>
         <authorname><![CDATA[OpenCms community]]></authorname>
         <authoremail><![CDATA[opencms-dev@opencms.org]]></authoremail>
         <datecreated />
