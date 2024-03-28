@@ -205,9 +205,6 @@ public class CmsAutoSetup {
                     }
                 }
             }
-            if (CmsStringUtil.isEmpty(m_bean.getDatabaseConfigPage(m_props.getDbProduct()))) {
-                throw new Exception("DB product: " + m_props.getDbProduct() + " not supported.");
-            }
             System.out.println("System requirements tested successfully.");
 
             initSetupBean();
