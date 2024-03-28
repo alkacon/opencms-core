@@ -1196,7 +1196,6 @@ task testGwt(type: Test, dependsOn: [compileTestGwtJava]) {
 }
 
 artifacts {
-    archives jar
     archives sourcesJar
 
     if (project.hasProperty('publish_repository')) {
