@@ -183,11 +183,6 @@ public class CmsGwtService extends RemoteServiceServlet {
      */
     @Override
     public void log(String msg) {
-
-        if (getResponse() != null) {
-            super.log(msg);
-        }
-        // also log to opencms.log
         LOG.info(msg);
     }
 
@@ -196,11 +191,6 @@ public class CmsGwtService extends RemoteServiceServlet {
      */
     @Override
     public void log(String message, Throwable t) {
-
-        if (getResponse() != null) {
-            super.log(message, t);
-        }
-        // also log to opencms.log
         LOG.info(message, t);
     }
 
