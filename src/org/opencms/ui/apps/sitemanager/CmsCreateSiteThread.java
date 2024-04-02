@@ -41,6 +41,7 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeFolderSubSitemap;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
@@ -193,11 +194,11 @@ public class CmsCreateSiteThread extends A_CmsReportThread {
 
             if (m_oldSite == null) {
                 getReport().println(
-                    Messages.get().container(Messages.RPT_SITE_START_NEW_1, m_site.getTitle()),
+                    Messages.get().container(Messages.RPT_SITE_START_NEW_1, CmsEncoder.escapeXml(m_site.getTitle())),
                     I_CmsReport.FORMAT_HEADLINE);
             } else {
                 getReport().println(
-                    Messages.get().container(Messages.RPT_SITE_START_EDIT_1, m_site.getTitle()),
+                    Messages.get().container(Messages.RPT_SITE_START_EDIT_1, CmsEncoder.escapeXml(m_site.getTitle())),
                     I_CmsReport.FORMAT_HEADLINE);
             }
             CmsResource siteRootResource = null;

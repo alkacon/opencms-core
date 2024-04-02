@@ -28,6 +28,7 @@
 package org.opencms.ui.apps.sitemanager;
 
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -134,14 +135,14 @@ public class CmsDeleteSiteDialog extends CmsBasicDialog {
         if (m_sitesToDelete.size() == 1) {
             message = CmsVaadinUtils.getMessageText(
                 Messages.GUI_SITE_CONFIRM_DELETE_SITE_1,
-                m_sitesToDelete.get(0).getTitle());
+                CmsEncoder.escapeXml(m_sitesToDelete.get(0).getTitle()));
         } else {
             message = "";
             for (CmsSite site : m_sitesToDelete) {
                 if (message.length() > 0) {
                     message += ", ";
                 }
-                message += site.getTitle();
+                message += CmsEncoder.escapeXml(site.getTitle());
             }
             message = CmsVaadinUtils.getMessageText(Messages.GUI_SITE_CONFIRM_DELETE_SITES_1, message);
         }
