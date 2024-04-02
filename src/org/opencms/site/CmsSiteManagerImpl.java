@@ -1266,13 +1266,19 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             m_clone.getRequestContext().setCurrentProject(m_clone.readProject(CmsProject.ONLINE_PROJECT_NAME));
 
             CmsObject cms_offline = OpenCms.initCmsObject(m_clone);
-            CmsProject tempProject = cms_offline.createProject(
-                "tempProjectSites",
-                "",
-                "/Users",
-                "/Users",
-                CmsProject.PROJECT_TYPE_TEMPORARY);
-            cms_offline.getRequestContext().setCurrentProject(tempProject);
+            CmsProject tempProject = null;
+            try {
+                tempProject = cms_offline.createProject(
+                    "tempProjectSites",
+                    "",
+                    "/Users",
+                    "/Users",
+                    CmsProject.PROJECT_TYPE_TEMPORARY);
+                cms_offline.getRequestContext().setCurrentProject(tempProject);
+
+            } catch (Exception e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
 
             m_siteUUIDs = new HashMap<CmsUUID, CmsSite>();
             // check the presence of sites in VFS
@@ -1280,7 +1286,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             m_onlyOfflineSites = new ArrayList<CmsSite>();
 
             for (CmsSite site : m_siteMatcherSites.values()) {
-                checkUUIDOfSiteRoot(site, m_clone, cms_offline);
+                checkUUIDOfSiteRoot(site, m_clone, tempProject != null ? cms_offline : null);
                 try {
                     CmsResource siteRes = m_clone.readResource(site.getSiteRoot());
                     site.setSiteRootUUID(siteRes.getStructureId());
@@ -1302,7 +1308,9 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
                     }
                 }
             }
-            cms_offline.deleteProject(tempProject.getUuid());
+            if (tempProject != null) {
+                cms_offline.deleteProject(tempProject.getUuid());
+            }
 
             // check the presence of the default site in VFS
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_defaultUri)) {
@@ -1837,7 +1845,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             //Ok, site root not available for online repository.
         }
 
-        if (id == null) {
+        if ((id == null) && (cms_offline != null)) {
             try {
                 id = cms_offline.readResource(site.getSiteRoot()).getStructureId();
                 m_onlyOfflineSites.add(site);
@@ -1847,6 +1855,7 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         }
         if (id != null) {
             site.setSiteRootUUID(id);
+            LOG.debug("Initializing site id: " + site + " => " + id);
             m_siteUUIDs.put(id, site);
         }
     }
