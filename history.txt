@@ -16,6 +16,52 @@ Legend:
 * Bug fixed
 
 
+OpenCms 17.0.0 - April 9, 2024
+
+! New app "Date search" to find contents changed in a date range
+! Export complete site contents for archiving in the "Websites" app
+! Option to hide contents with restricted "availability" date even in the Offline project
+! Support for Java 17 and 21 (in addition to Java 8 and 11)
+
+- Page editor: The "Project" switch is now available in the toolbar
+- Page editor: The "Move" Dialog is available from the edit point "info" context menu
+- Page editor: The fade animation on the toolbar has been removed
+- "Element Author" users can now upload images
+- "Element Author" users can now access 'Rename', 'Undo changes' and 'Properties' in the galleries dialog
+- Source search app: New type restriction "All except images and binaries"
+- Source search app: Improved search when using "XML content values only"
+- Explorer: The real deletion date is shown when restoring deleted resources
+- Folder with locked resources: Allow "Undo Changes" on the folders itself
+- Folder with locked resources: Allow access to the "Permissions" dialog
+- Settings: Translations for renamed values and / or properties
+- Settings: Support escaping of chars in Default and WidgetConfig nodes
+- Configuration: Add filter options for two select widgets in master sitemap configuration
+- Localization: Added french workplace localization
+- Build using Gradle 8
+- Pull request #792 extended #792: extend shell with multiple classes (https://github.com/alkacon/opencms-core/pull/792)  
+- Pull request #784 Remove unnecessary logs to the Servlet Container (https://github.com/alkacon/opencms-core/pull/784) 
+- Pull request #794 Code review (https://github.com/alkacon/opencms-core/pull/794)
+
+* The site selectbox sometimes does not show all options when using a filter
+* <Synchronization> nodes now work in nested XSD schemas
+* Added several missing DB indices for MS SQL Server
+* Macros in <Search>listtitle</Search> are now resolved
+* Unused content finder: Fixed NPE if explorer type configuration is missing for a type
+* Sorting for display type in lists is now using the rank correctly
+* CmsJspElementSettingValueWrapper#getExists wrongly returned false in some cases
+* It is not longer possible to create two projects with the same name in the "Projects" app
+* Expired resources are now correctly handled in the "Database export" app
+* Fixed wrong module version in the zip file name for auto-incremented version numbers
+* Fixed issue where the link dialog in inline editor mode sometimes showed the wrong locale
+* Fixed issue where switching display formatters in a list did not work as expected
+* Fixed issue when configuring a serial date for monthly events
+* Fixed issue with NPE in element setting dialog for formatters that do not fit the container
+* Fixed issue with incorrect detail page link generated for contents in a foreign site
+* Fixed issue !#782 where CmsShell command "replaceModuleFromDefault" did not work (https://github.com/alkacon/opencms-core/issues/782)
+* Fixed issue !#796 with data view widget (https://github.com/alkacon/opencms-core/issues/796)
+* Fixed issue !#768 with detail-only pages not being properly unlocked on logout (https://github.com/alkacon/opencms-core/issues/768)
+
+
 OpenCms 16.0.0 - October 2, 2023
 
 ! New app to find "Unused contents"
@@ -58,7 +104,6 @@ OpenCms 16.0.0 - October 2, 2023
 * Fixed issue #764 where a filter query "search_exclude:false" would be set multiple times in CmsSolrQuery objects (https://github.com/alkacon/opencms-core/issues/764)
 * Fixed issue #772 in the "Show online" function for detail pages (https://github.com/alkacon/opencms-core/issues/772)
 * Fixed issue #779 with broken calendar widget in Czech locale (https://github.com/alkacon/opencms-core/issues/779)
-
 
 
 OpenCms 15.0.0 - April 25, 2023
