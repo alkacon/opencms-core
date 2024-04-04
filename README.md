@@ -75,7 +75,7 @@ Receive updates about the OpenCms development and get in touch with the core dev
 
 ## Compatibility
 
-OpenCms has been written and tested for Java 11 and Java 8. We have tested with OpenJDK as well as ORACLEs JDK. OpenCms should run with all compliant JVMs.
+OpenCms has been written and tested for Java 21, 17, 11 and 8. We have tested with OpenJDK as well as ORACLEs JDK. OpenCms should run with all compliant JVMs.
 
 We have tested this release on the Tomcat 9 servlet engine, which we recommend. OpenCms works "out of the box" with Tomcat 9 and 8.5. Others have reported deploying OpenCms successfully on other servlet containers like JBoss, WildFly, WebLogic, WebSphere, GlassFish and Resin.
 
