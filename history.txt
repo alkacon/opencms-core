@@ -22,6 +22,7 @@ OpenCms 17.0.0 - April 9, 2024
 ! Export complete site contents for archiving in the "Websites" app
 ! Option to hide contents with restricted "availability" date even in the Offline project
 ! Support for Java 17 and 21 (in addition to Java 8 and 11)
+! This is the last OpenCms release that keeps Java 8 compatibility, future releases will require at least Java 11
 
 - Page editor: The "Project" switch is now available in the toolbar
 - Page editor: The "Move" Dialog is available from the edit point "info" context menu
@@ -38,8 +39,8 @@ OpenCms 17.0.0 - April 9, 2024
 - Configuration: Add filter options for two select widgets in master sitemap configuration
 - Localization: Added french workplace localization
 - Build using Gradle 8
-- Pull request #792 extended #792: extend shell with multiple classes (https://github.com/alkacon/opencms-core/pull/792)  
-- Pull request #784 Remove unnecessary logs to the Servlet Container (https://github.com/alkacon/opencms-core/pull/784) 
+- Pull request #792 extended shell with multiple classes (https://github.com/alkacon/opencms-core/pull/792)
+- Pull request #784 Remove unnecessary logs to the Servlet Container (https://github.com/alkacon/opencms-core/pull/784)
 - Pull request #794 Code review (https://github.com/alkacon/opencms-core/pull/794)
 
 * The site selectbox sometimes does not show all options when using a filter
@@ -57,9 +58,9 @@ OpenCms 17.0.0 - April 9, 2024
 * Fixed issue when configuring a serial date for monthly events
 * Fixed issue with NPE in element setting dialog for formatters that do not fit the container
 * Fixed issue with incorrect detail page link generated for contents in a foreign site
-* Fixed issue !#782 where CmsShell command "replaceModuleFromDefault" did not work (https://github.com/alkacon/opencms-core/issues/782)
-* Fixed issue !#796 with data view widget (https://github.com/alkacon/opencms-core/issues/796)
-* Fixed issue !#768 with detail-only pages not being properly unlocked on logout (https://github.com/alkacon/opencms-core/issues/768)
+* Fixed issue #782 where CmsShell command "replaceModuleFromDefault" did not work (https://github.com/alkacon/opencms-core/issues/782)
+* Fixed issue #796 with data view widget (https://github.com/alkacon/opencms-core/issues/796)
+* Fixed issue #768 with detail-only pages not being properly unlocked on logout (https://github.com/alkacon/opencms-core/issues/768)
 
 
 OpenCms 16.0.0 - October 2, 2023

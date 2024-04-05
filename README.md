@@ -69,17 +69,19 @@ The [OpenCms Documentation Central](https://documentation.opencms.org/) is the p
 
 Receive updates about the OpenCms development and get in touch with the core developers and community members.
 
-- Subscribe to the [OpenCms Maining list](http://www.opencms.org/en/development/mailinglist.html) for all questions, comments and suggestions regarding OpenCms.
+- Subscribe to the [OpenCms mailing list](http://www.opencms.org/en/development/mailinglist.html) for all questions, comments and suggestions regarding OpenCms.
 - Follow [@OpenCms on Twitter](https://twitter.com/opencms/) or [OpenCms on Facebook](https://www.facebook.com/opencms/).
 
 
 ## Compatibility
 
-OpenCms has been written and tested for Java 21, 17, 11 and 8. We have tested with OpenJDK as well as ORACLEs JDK. OpenCms should run with all compliant JVMs.
+OpenCms 17 is compatible with Java 21, 17, 11 and 8.
 
-We have tested this release on the Tomcat 9 servlet engine, which we recommend. OpenCms works "out of the box" with Tomcat 9 and 8.5. Others have reported deploying OpenCms successfully on other servlet containers like JBoss, WildFly, WebLogic, WebSphere, GlassFish and Resin.
+_Please note that OpenCms 17 will be the last major OpenCms release that keeps Java 8 compatibility. Future OpenCms Versions will require at least Java 11._
 
-For the database, we provide support for MariaDB, MySQL, Oracle, PostgreSQL, MS SQL Server, DB2 and HSQLDB.
+OpenCms 17 requires a Java Servlet 4.0 compatible web container. We have tested this release using Jetty and Tomcat. It works "out of the box" with Jetty 12 or Tomcat 9. Others have reported deploying OpenCms successfully on other web servlet containers like WildFly, GlassFish, WebLogic, WebSphere and Resin.
+
+On the database side, we provide support for MySQL, MariaDB, Oracle, PostgreSQL, MS SQL Server, DB2 and HSQLDB.
 
 
 ## Installing OpenCms
