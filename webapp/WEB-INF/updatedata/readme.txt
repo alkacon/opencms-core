@@ -32,7 +32,7 @@ IMPORTANT: The upgrade wizard will replace all VFS resources of the updated modu
 
 IMPORTANT: If you use OCEE, remove OCEE configurations before the update and enable them after the update again.
 
-Follow the following steps to update from OpenCms 10.x, 11.x, 12.x 13.x or 14.x to @OPENCMS_VERSION@:
+Follow the following steps to update from OpenCms 10 or higher to @OPENCMS_VERSION@:
 
 
 1. Shutdown your OpenCms servlet container
@@ -133,7 +133,7 @@ You should now be able to log into the OpenCms workplace as before.
 As the search libraries and configuration may have changed, it is necessary to rebuild all search indexes.
 Log into OpenCms and navigate to Launchpad > Database -> Search Indexes and rebuild all indexes.
 
-If you update from OpenCms 10.x, you must delete the files under WEB-INF/index/ first and restart your
+If you update from OpenCms 10.x or 11.x, you must delete the files under WEB-INF/index/ first and restart your
 servlet container and then reindex your search indexes as shown above.
 
 
