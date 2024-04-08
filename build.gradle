@@ -719,10 +719,10 @@ tlddoc {
 
 task tlddocZip (type: Zip, dependsOn: tlddoc) {
     archiveFileName = 'tld.zip'
-    from ("${project.java.docsDir}/tlddoc/") {
+    from ("${project.docsDir}/tlddoc/") {
         include '**/*'
     }
-    destinationDirectory = file("${project.java.docsDir}")
+    destinationDirectory = file("${project.docsDir}")
 }
 
 def preserveLibModules = ''
