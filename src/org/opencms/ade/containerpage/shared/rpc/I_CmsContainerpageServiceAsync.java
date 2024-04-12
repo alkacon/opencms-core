@@ -40,6 +40,7 @@ import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
+import org.opencms.ade.containerpage.shared.CmsReuseInfo;
 import org.opencms.gwt.shared.CmsListElementCreationDialogData;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsUUID;
@@ -373,6 +374,16 @@ public interface I_CmsContainerpageServiceAsync {
      * @param callback the asynchronous callback to execute with the results
      */
     void getRemovedElementStatus(String id, CmsUUID containerpageId, AsyncCallback<CmsRemovedElementStatus> callback);
+
+    /**
+     * Loads reuse information for a container element.
+     *
+     * @param pageId the id of the current page
+     * @param detailId the detail id for the current page
+     * @param elementId the id of the container element
+     * @param callback the callback to call with the result
+     */
+    void getReuseInfo(CmsUUID pageId, CmsUUID detailId, CmsUUID elementId, AsyncCallback<CmsReuseInfo> callback);
 
     /**
      * Handles the element deletion.<p>

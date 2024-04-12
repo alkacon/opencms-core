@@ -100,7 +100,9 @@ public class CmsToolbarEditButton extends A_CmsToolbarOptionButton {
             if (!CmsContainerpageController.get().getData().isModelGroup() && element.isModelGroup()) {
                 new CmsShowPage().execute(element.getModelGroupId(), null, null);
             } else {
-                openEditor(element);
+                CmsContainerpageController.get().checkReuse(element, () -> {
+                    openEditor(element);
+                });
             }
         } else {
             openLockReport(element);

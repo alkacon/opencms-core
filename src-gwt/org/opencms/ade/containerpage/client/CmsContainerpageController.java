@@ -33,6 +33,7 @@ import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsRemovedElementDeletionDialog;
+import org.opencms.ade.containerpage.client.ui.CmsReuseInfoDialog;
 import org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler;
 import org.opencms.ade.containerpage.client.ui.I_CmsDropContainer;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
@@ -54,6 +55,7 @@ import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
+import org.opencms.ade.containerpage.shared.CmsReuseInfo;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
 import org.opencms.ade.contenteditor.client.CmsContentEditor;
@@ -696,6 +698,9 @@ public final class CmsContainerpageController {
     /** The drag targets within this page. */
     Map<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> m_targetContainers;
 
+    /** The UUIDs for which reuse status has already been checked. */
+    private Set<CmsUUID> m_checkedReuse = new HashSet<>();
+
     /** The container page drag and drop controller. */
     private I_CmsDNDController m_cntDndController;
 
@@ -961,6 +966,65 @@ public final class CmsContainerpageController {
         };
         action.execute();
 
+    }
+
+    /**
+     * Checks reuse status of a container element, then shows a warning dialog if it is reused, and finally executes an action.
+     *
+     * @param elementWidget the container element for which to check the reuse status
+     * @param action the action to execute after the reuse warning dialog is closed
+     */
+    public void checkReuse(CmsContainerPageElementPanel elementWidget, Runnable action) {
+
+        Runnable wrappedAction = () -> {
+            m_checkedReuse.add(elementWidget.getStructureId());
+            action.run();
+        };
+        if (elementWidget.isReused()
+            && CmsCoreProvider.get().isWarnWhenEditingReusedElement()
+            && !m_checkedReuse.contains(elementWidget.getStructureId())) {
+            CmsUUID id = elementWidget.getStructureId();
+            CmsUUID detailId = CmsContainerpageController.get().getData().getDetailId();
+            CmsUUID pageId = CmsCoreProvider.get().getStructureId();
+            CmsRpcAction<CmsReuseInfo> rpc = new CmsRpcAction<CmsReuseInfo>() {
+
+                @Override
+                public void execute() {
+
+                    start(0, true);
+                    getContainerpageService().getReuseInfo(pageId, detailId, id, this);
+                }
+
+                @Override
+                protected void onResponse(CmsReuseInfo result) {
+
+                    stop(false);
+                    if (result.getCount() == 0) {
+                        wrappedAction.run();
+                    } else {
+                        CmsReuseInfoDialog dialog = new CmsReuseInfoDialog(result, status -> {
+                            if (status.booleanValue()) {
+                                wrappedAction.run();
+                            }
+                        });
+                        dialog.show();
+                        // without delayed center(), positioning is inconsistent
+                        Timer timer = new Timer() {
+
+                            @Override
+                            public void run() {
+
+                                dialog.center();
+                            }
+                        };
+                        timer.schedule(100);
+                    }
+                }
+            };
+            rpc.execute();
+        } else {
+            action.run();
+        }
     }
 
     /**

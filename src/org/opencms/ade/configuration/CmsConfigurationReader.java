@@ -144,6 +144,9 @@ public class CmsConfigurationReader {
     /** Node name for the attribute editor configuration reference. */
     public static final String N_ATTRIBUTE_EDITOR_CONFIG = "AttributeEditorConfig";
 
+    /** Node name for the 'Check reuse' option. */
+    public static final String N_CHECK_REUSE = "CheckReuse";
+
     /** The CopyInModels node name. */
     public static final String N_COPY_IN_MODELS = "CopyInModels";
 
@@ -960,6 +963,16 @@ public class CmsConfigurationReader {
             }
         }
 
+        I_CmsXmlContentValueLocation checkReuseLoc = node.getSubValue(N_CHECK_REUSE);
+        Boolean checkReuse = null;
+        if (checkReuseLoc != null) {
+            try {
+                checkReuse = Boolean.valueOf(checkReuseLoc.getValue().getStringValue(m_cms));
+            } catch (Exception e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+        }
+
         List<I_CmsFormatterBean> formatters = new ArrayList<I_CmsFormatterBean>();
         for (I_CmsXmlContentValueLocation formatterLoc : node.getSubValues(N_FORMATTER)) {
             CmsFormatterBean formatter = parseFormatter(typeName, formatterLoc);
@@ -982,7 +995,8 @@ public class CmsConfigurationReader {
             showInDefaultView,
             copyInModels,
             order,
-            elementDeleteMode);
+            elementDeleteMode,
+            checkReuse);
         m_resourceTypeConfigs.add(typeConfig);
     }
 

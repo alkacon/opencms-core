@@ -302,3 +302,4 @@ div.quickLaunchContainer span.v-button-caption {
 div.quickLaunchContainer .v-disabled .v-button-wrap{
 	opacity: 0.5;
 }
+

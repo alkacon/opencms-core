@@ -26,6 +26,7 @@
             <xsd:element name="ShowInDefaultView" type="OpenCmsBoolean" minOccurs="0" />
             <xsd:element name="CopyInModels" type="OpenCmsBoolean" minOccurs="0" />
             <xsd:element name="ElementDeleteMode" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="CheckReuse" type="OpenCmsBoolean" minOccurs="0" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>

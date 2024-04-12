@@ -134,7 +134,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
             null,
             false,
             elementView,
-            iconClasses);
+            iconClasses, false);
         m_resourceType = resourceType;
     }
 

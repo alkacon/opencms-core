@@ -360,35 +360,38 @@ public final class Messages {
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.contenteditor.clientmessages";
 
-    /** Name of the used resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_CAPTION_0 = "GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_CAPTION_0";
 
-    /** Name of the used resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SERIALDATE_CONFIRM_DIALOG_YES_BUTTON_0 = "GUI_SERIALDATE_CONFIRM_DIALOG_YES_BUTTON_0";
 
-    /** Name of the used resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SERIALDATE_CONFIRM_DIALOG_NO_BUTTON_0 = "GUI_SERIALDATE_CONFIRM_DIALOG_NO_BUTTON_0";
 
-    /** Name of the used resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_MESSAGE_0 = "GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_MESSAGE_0";
 
-    /** Name of the used resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SERIALDATE_OVERVIEW_POPUP_TITLE_0 = "GUI_SERIALDATE_OVERVIEW_POPUP_TITLE_0";
 
-    /** Name of the used resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SERIALDATE_CONFIRM_SERIES_BINDING_DIALOG_CAPTION_0 = "GUI_SERIALDATE_CONFIRM_SERIES_BINDING_DIALOG_CAPTION_0";
 
-    /** Name of the used resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SERIALDATE_CONFIRM_SERIES_BINDING_DIALOG_MESSAGE_0 = "GUI_SERIALDATE_CONFIRM_SERIES_BINDING_DIALOG_MESSAGE_0";
 
-    /** Name of the used resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SERIALDATE_FROM_SERIES_INFORMATION_0 = "GUI_SERIALDATE_FROM_SERIES_INFORMATION_0";
 
-    /** Name of the used resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SERIALDATE_CURRENT_TILL_END_CHECKBOX_0 = "GUI_SERIALDATE_CURRENT_TILL_END_CHECKBOX_0";
 
-    /** Name of the used resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SERIALDATE_CURRENT_TILL_END_CHECKBOX_HELP_0 = "GUI_SERIALDATE_CURRENT_TILL_END_CHECKBOX_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONTENT_EDITOR_REUSE_MARKER_0 = "GUI_CONTENT_EDITOR_REUSE_MARKER_0";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

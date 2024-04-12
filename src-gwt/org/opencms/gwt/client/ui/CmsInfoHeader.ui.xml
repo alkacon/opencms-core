@@ -12,5 +12,6 @@
 		</div>
 		<div style="float:none; clear:left; height:0px;"></div>
 		<div ui:field="m_buttonBar" class="{resources.generalCss.headerButtons}"></div>
+		<div ui:field="m_additionalWidgets"></div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

@@ -83,6 +83,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOCKED_FOR_PUBLISH_0 = "GUI_LOCKED_FOR_PUBLISH_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_REUSE_CHECK_TITLE_0 = "GUI_REUSE_CHECK_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_REUSE_CHECK_WARNING_TEXT_1 = "GUI_REUSE_CHECK_WARNING_TEXT_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SCHEMA_FORMATTER_LABEL_0 = "GUI_SCHEMA_FORMATTER_LABEL_0";
 
     /** Message constant for key in the resource bundle. */

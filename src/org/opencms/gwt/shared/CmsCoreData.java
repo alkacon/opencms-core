@@ -329,6 +329,9 @@ public class CmsCoreData implements IsSerializable {
     /** The OpenCms VFS prefix. */
     private String m_vfsPrefix;
 
+    /** Flag which indicates whether the user should be warned when editing a reused element. */
+    private boolean m_warnWhenEditingReusedElement;
+
     /** The workplaces resources path prefix. */
     private String m_workplaceResourcesPrefix;
 
@@ -380,7 +383,8 @@ public class CmsCoreData implements IsSerializable {
             clone.m_adeParameters,
             clone.m_uploadRestriction,
             clone.m_categoryBaseFolder,
-            clone.m_hideDisabledGalleryTypes);
+            clone.m_hideDisabledGalleryTypes,
+            clone.m_warnWhenEditingReusedElement);
         setTinymce(clone.getTinymce());
     }
 
@@ -417,6 +421,7 @@ public class CmsCoreData implements IsSerializable {
      * @param uploadRestriction the upload restriction data
      * @param categoryBaseFolder the category base folder
      * @param hideDisabledGalleryTypes true if deactivated types should be hidden in the gallery dialog
+     * @param warnWhenEditingReusedElement true if a warning dialog should be shown when editing a reused element
      */
     public CmsCoreData(
         String contentEditorUrl,
@@ -448,7 +453,8 @@ public class CmsCoreData implements IsSerializable {
         Map<String, String> adeParameters,
         CmsUploadRestrictionInfo uploadRestriction,
         String categoryBaseFolder,
-        boolean hideDisabledGalleryTypes) {
+        boolean hideDisabledGalleryTypes,
+        boolean warnWhenEditingReusedElement) {
 
         m_contentEditorUrl = contentEditorUrl;
         m_contentEditorBacklinkUrl = contentEditorBacklinkUrl;
@@ -480,6 +486,7 @@ public class CmsCoreData implements IsSerializable {
         m_sharedFolder = sharedFolder;
         m_categoryBaseFolder = categoryBaseFolder;
         m_hideDisabledGalleryTypes = hideDisabledGalleryTypes;
+        m_warnWhenEditingReusedElement = warnWhenEditingReusedElement;
     }
 
     /**
@@ -801,6 +808,16 @@ public class CmsCoreData implements IsSerializable {
     }
 
     /**
+     * Checks if a warning dialog should be shown when a reused element is edited.
+     *
+     * @return true if a warning dialog should be shown when editing reused elements
+     */
+    public boolean isWarnWhenEditingReusedElement() {
+
+        return m_warnWhenEditingReusedElement;
+    }
+
+    /**
      * Sets the data for the TinyMCE editor.<p>
      *
      * @param tinyMceData the data for TinyMCE
@@ -808,6 +825,16 @@ public class CmsCoreData implements IsSerializable {
     public void setTinymce(CmsTinyMCEData tinyMceData) {
 
         m_tinymce = tinyMceData;
+    }
+
+    /**
+     * Enables/disables warning dialog when editing reused elements.
+     *
+     * @param warnWhenEditingReusedElement true if a warning dialog should be shown when editing reused elements
+     */
+    public void setWarnWhenEditingReusedElement(boolean warnWhenEditingReusedElement) {
+
+        m_warnWhenEditingReusedElement = warnWhenEditingReusedElement;
     }
 
     /**

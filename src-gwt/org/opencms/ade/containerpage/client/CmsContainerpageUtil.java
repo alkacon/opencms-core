@@ -513,7 +513,8 @@ public class CmsContainerpageUtil {
             elementData.getModelGroupId(),
             elementData.isWasModelGroup(),
             elementData.getElementView(),
-            elementData.getBigIconClasses());
+            elementData.getBigIconClasses(),
+            elementData.isReused());
         dragElement.setCreateNew(elementData.isCreateNew());
         if (m_controller.requiresOptionBar(dragElement, dragParent)) {
             addOptionBar(dragElement);

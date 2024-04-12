@@ -1,0 +1,63 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:input="urn:import:org.opencms.gwt.client.ui.input"
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:with field="inputstyle" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
+	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
+	<ui:style>
+		.mainLabel {	
+			padding: 12px; 
+		} 
+		
+		.infoIconDiv {
+			width: 32px;
+			height: 32px; 
+			font-size: 32px;
+			margin-top: 10px;
+		}
+		
+		.border {
+			border: 1px solid #c9c9c9;
+			
+		}
+		
+		.scrollpanel {
+			margin-top: 6px;
+			margin-left: 6px;
+			margin-right: 6px;
+			margin-bottom: 6px;
+		}
+		
+		.labelbox { 
+			padding: 6px;
+			margin-top: 5px;
+			margin-bottom: 5px;
+			display: flex;
+			align-items: center;
+		}
+		
+		.labelbox > span {
+			margin-left: 5px; 
+			margin-right: 14px;
+		}
+		
+		.labelbox > .label {
+			flex: 1;
+		}
+	</ui:style>
+	<g:FlowPanel>
+		<g:SimplePanel ui:field="m_infoBoxContainer"></g:SimplePanel>
+		<g:FlowPanel ui:field="m_labelBox" addStyleNames="{resources.generalCss.cornerAll} {style.border} {style.labelbox}">
+			<g:Label ui:field="m_label" addStyleNames="{style.label}" />
+		</g:FlowPanel>
+		<g:FlowPanel addStyleNames="{resources.generalCss.cornerAll} {style.border}" >
+			<cms:CmsScrollPanel addStyleNames="{style.scrollpanel}">
+				<cms:CmsList ui:field="m_listPanel"  />
+			</cms:CmsScrollPanel>
+		</g:FlowPanel>
+		<g:FlowPanel visible="false">
+			<cms:CmsPushButton useMinWidth="true" ui:field="m_okButton" />
+		</g:FlowPanel>
+	</g:FlowPanel>
+</ui:UiBinder>

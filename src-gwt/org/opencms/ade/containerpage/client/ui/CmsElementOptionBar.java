@@ -126,6 +126,13 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem, I_C
         addMouseOutHandler(handler);
         setStyleName(I_CmsElementToolbarContext.ELEMENT_OPTION_BAR_CSS_CLASS);
         addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().opencms());
+        if (containerElement.isReused()) {
+            addStyleName(
+                org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().reusedElement());
+        } else {
+            removeStyleName(
+                org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().reusedElement());
+        }
     }
 
     /**

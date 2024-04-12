@@ -106,6 +106,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -296,6 +297,13 @@ public class CmsElementUtil {
         return !Sets.intersection(CmsContainer.splitType(containerType), groupContainer.getTypes()).isEmpty();
     }
 
+    /**
+     * Converts a client container bean to a server container bean.
+     *
+     * @param container the client container
+     * @param elements the elements of the container
+     * @return the server container bean
+     */
     public static CmsContainerBean clientToServerContainer(
         CmsContainer container,
         List<CmsContainerElementBean> elements) {
@@ -400,6 +408,25 @@ public class CmsElementUtil {
             formatter = getStartFormatter(cms, container, config, element, cache);
         }
         return formatter;
+    }
+
+    /**
+     * Gets the ids for the current page and potentially detail-only containers.
+     * @param cms the CMS context
+     * @param pageId the id for the current page
+     * @param detailContent the current detail content
+     * @return the set of ids for the current page and detail-only containers
+     */
+    public static Set<CmsUUID> getPageAndDetailOnlyIds(CmsObject cms, CmsUUID pageId, CmsResource detailContent) {
+
+        Set<CmsUUID> result = new HashSet<>();
+        result.add(pageId);
+        if (detailContent != null) {
+            for (CmsResource detailOnlyRes : CmsDetailOnlyContainerUtil.getDetailOnlyResources(cms, detailContent)) {
+                result.add(detailOnlyRes.getStructureId());
+            }
+        }
+        return result;
     }
 
     /**
@@ -642,7 +669,6 @@ public class CmsElementUtil {
                             cnt.getWidth());
                         for (Entry<String, I_CmsFormatterBean> formatterEntry : formatterSelection.entrySet()) {
                             I_CmsFormatterBean formatter = formatterEntry.getValue();
-                            String id = formatterEntry.getKey();
                             if (element.getFormatterId().equals(formatter.getJspStructureId())) {
                                 elementData.getSettings().put(
                                     CmsFormatterConfig.getSettingsKeyForContainer(cnt.getName()),
@@ -999,7 +1025,15 @@ public class CmsElementUtil {
         CmsResourceTypeConfig typeConfig = getConfigData().getResourceType(typeName);
         if (typeConfig != null) {
             result.setCopyInModels(typeConfig.isCopyInModels());
+            if (typeConfig.isCheckReuse()) {
+                final Set<CmsUUID> pageAndAttachments = getPageAndDetailOnlyIds();
+                boolean reused = OpenCms.getADEManager().isElementReused(
+                    resource,
+                    res -> pageAndAttachments.contains(res.getStructureId()));
+                result.setReused(reused);
+            }
         }
+
         Map<CmsUUID, CmsElementView> viewMap = OpenCms.getADEManager().getElementViews(m_cms);
 
         boolean isModelGroupEditing = CmsModelGroupHelper.isModelGroupResource(m_page);
@@ -1252,6 +1286,25 @@ public class CmsElementUtil {
             LOG.error(e.getLocalizedMessage(), e);
             return new CmsElementLockInfo(null, false);
         }
+    }
+
+    /**
+     * Gets the ids for the current page and potentially detail-only containers.
+     *
+     * @return the set of ids for the current page and detail-only containers
+     */
+    private Set<CmsUUID> getPageAndDetailOnlyIds() {
+
+        Set<CmsUUID> result = new HashSet<>();
+        result.add(m_page.getStructureId());
+        CmsResource detailContent = (CmsResource)m_req.getAttribute(
+            CmsDetailPageResourceHandler.ATTR_DETAIL_CONTENT_RESOURCE);
+        if (detailContent != null) {
+            for (CmsResource detailOnlyRes : CmsDetailOnlyContainerUtil.getDetailOnlyResources(m_cms, detailContent)) {
+                result.add(detailOnlyRes.getStructureId());
+            }
+        }
+        return result;
     }
 
     /**

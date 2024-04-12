@@ -162,6 +162,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String nonDefaultView();
 
         /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        @ClassName("oc-reused-element")
+        String reusedElement();
+
+        /** Access method.<p>
          *
          * @return the CSS class name
          */

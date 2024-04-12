@@ -56,6 +56,7 @@ import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.ade.containerpage.shared.CmsLocaleLinkBean;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
+import org.opencms.ade.containerpage.shared.CmsReuseInfo;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
@@ -93,6 +94,7 @@ import org.opencms.gwt.shared.CmsListElementCreationDialogData;
 import org.opencms.gwt.shared.CmsListElementCreationOption;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
+import org.opencms.gwt.shared.CmsResourceListInfo;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.gwt.shared.I_CmsAutoBeanFactory;
 import org.opencms.gwt.shared.I_CmsListAddMetadata;
@@ -169,6 +171,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -327,6 +330,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /** Serial version UID. */
     private static final long serialVersionUID = -6188370638303594280L;
 
+    /** Maximum number of reuse locations to display in the reuse warning dialog. */
+    public static final int MAX_VISIBLE_ELEMENT_USES = 10;
+
     /** The configuration data of the current container page context. */
     private CmsADEConfigData m_configData;
 
@@ -476,6 +482,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * @param response the current response
      * @throws Exception if something goes wrong
      */
+    @SuppressWarnings("resource")
     public static void unlockPage(CmsObject cms, HttpServletRequest request, HttpServletResponse response)
     throws Exception {
 
@@ -489,6 +496,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             LOG.debug("can't unlock page in online project");
             return;
         }
+
         byte[] byteData = CmsFileUtil.readFully(request.getInputStream(), false);
 
         String encoding = request.getCharacterEncoding();
@@ -1508,6 +1516,61 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsUUID structureId = convertToServerId(id);
             return internalGetRemovedElementStatus(structureId, containerpageId);
         } catch (CmsException e) {
+            error(e);
+            return null;
+        }
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getReuseInfo(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     */
+    public CmsReuseInfo getReuseInfo(CmsUUID pageId, CmsUUID detailId, CmsUUID elementId) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+            CmsResource detailResource = null;
+            CmsResource element = cms.readResource(elementId, CmsResourceFilter.IGNORE_EXPIRATION);
+            if (detailId != null) {
+                detailResource = cms.readResource(detailId, CmsResourceFilter.IGNORE_EXPIRATION);
+            }
+            Set<CmsUUID> idsForCurrentPage = CmsElementUtil.getPageAndDetailOnlyIds(
+                getCmsObject(),
+                pageId,
+                detailResource);
+            List<CmsResource> allUses = OpenCms.getADEManager().getOfflineElementUses(element).filter(
+                res -> !idsForCurrentPage.contains(res.getStructureId())).collect(Collectors.toList());
+            List<CmsResourceListInfo> infos = new ArrayList<>();
+            int visibleCount = 0;
+            for (CmsResource use : allUses) {
+                try {
+                    // make sure resource is visible to current user, otherwise continue with next resource
+                    cms.readResource(use.getStructureId(), CmsResourceFilter.IGNORE_EXPIRATION.addRequireVisible());
+                    visibleCount += 1;
+                    CmsResourceListInfo info = new CmsResourceListInfo();
+                    CmsVfsService.addPageInfo(cms, use, info);
+                    info.setStructureId(use.getStructureId());
+                    infos.add(info);
+                    if (visibleCount >= MAX_VISIBLE_ELEMENT_USES) {
+                        break;
+                    }
+                } catch (CmsVfsResourceNotFoundException | CmsPermissionViolationException e) {
+                    // ignore
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            CmsListInfoBean elementInfo = CmsVfsService.getPageInfo(cms, element);
+            String message;
+            if (allUses.size() > 0) {
+                message = Messages.get().getBundle(locale).key(Messages.GUI_REUSE_CHECK_WARNING_TEXT_1, "" + allUses.size());
+            } else {
+                message = "";
+            }
+            String title = Messages.get().getBundle(locale).key(Messages.GUI_REUSE_CHECK_TITLE_0);
+            CmsReuseInfo result = new CmsReuseInfo(elementInfo, infos, message, title, allUses.size());
+            return result;
+        } catch (Exception e) {
             error(e);
             return null;
         }

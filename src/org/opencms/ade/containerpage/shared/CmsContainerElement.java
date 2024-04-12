@@ -190,6 +190,9 @@ public class CmsContainerElement implements IsSerializable, I_CmsHasIconClasses 
     /** The former copy model status. */
     private boolean m_wasModelGroup;
 
+    /** True if the element is marked as 'reused'. */
+    private boolean m_reused;
+
     /**
      * Default constructor.<p>
      */
@@ -225,8 +228,8 @@ public class CmsContainerElement implements IsSerializable, I_CmsHasIconClasses 
         result.m_modelGroupId = m_modelGroupId;
         result.m_wasModelGroup = m_wasModelGroup;
         result.m_isModelGroupAlwaysReplace = m_isModelGroupAlwaysReplace;
+        result.m_reused = m_reused;
         return result;
-
     }
 
     /**
@@ -479,6 +482,16 @@ public class CmsContainerElement implements IsSerializable, I_CmsHasIconClasses 
     }
 
     /**
+     * True if the element is marked as reused.
+     *
+     * @return true if the element is marked as reused
+     */
+    public boolean isReused() {
+
+        return m_reused;
+    }
+
+    /**
      * Returns the former copy model status.<p>
      *
      * @return the former copy model status
@@ -641,6 +654,16 @@ public class CmsContainerElement implements IsSerializable, I_CmsHasIconClasses 
     public void setResourceType(String resourceType) {
 
         m_resourceType = resourceType;
+    }
+
+    /**
+     * Sets the 'reused' status.
+     *
+     * @param reused the 'reused' status
+     */
+    public void setReused(boolean reused) {
+
+        m_reused = reused;
     }
 
     /**

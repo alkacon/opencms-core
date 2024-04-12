@@ -95,6 +95,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeConfig.class);
 
+    /** The parameter for setting the default value for 'check reuse'. */
+    private static final Object PARAM_CHECK_REUSE_DEFAULT = "checkReuseDefault";
+
     /** The CMS object used for VFS operations. */
     protected CmsObject m_cms;
 
@@ -103,6 +106,9 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
     /** True if availability has not been set in the configuration file.*/
     private boolean m_availabilityNotSet;
+
+    /** 'Check reuse' value (may be null). */
+    private Boolean m_checkReuse;
 
     /** Elements of this type when used in models should be copied instead of reused. */
     private Boolean m_copyInModels;
@@ -175,6 +181,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             null,
             null,
             Integer.valueOf(I_CmsConfigurationObject.DEFAULT_ORDER),
+            null,
             null);
     }
 
@@ -197,7 +204,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      * @param copyInModels if elements of this type when used in models should be copied instead of reused
      * @param order the display order
      * @param elementDeleteMode the element delete mode
-     *
+     * @param checkReuse indicates whether element reuse should be checked for this type
      */
     public CmsResourceTypeConfig(
         String typeName,
@@ -215,7 +222,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         Boolean showInDefaultView,
         Boolean copyInModels,
         Integer order,
-        ElementDeleteMode elementDeleteMode) {
+        ElementDeleteMode elementDeleteMode,
+        Boolean checkReuse) {
 
         m_typeName = typeName;
         m_disabled = disabled;
@@ -233,6 +241,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         m_copyInModels = copyInModels;
         m_order = order;
         m_elementDeleteMode = elementDeleteMode;
+        m_checkReuse = checkReuse;
     }
 
     /**
@@ -473,6 +482,18 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     }
 
     /**
+     * Gets the 'check reuse' value, without applying the default value.
+     *
+     * <p>The return value may be null if this is not set.
+     *
+     * @return the value of the 'check reuse' option
+     */
+    public Boolean getCheckReuseObj() {
+
+        return m_checkReuse;
+    }
+
+    /**
      * Returns the bundle that is configured as workplace bundle for the resource type, or <code>null</code> if none is configured.
      * @return the bundle that is configured as workplace bundle for the resource type, or <code>null</code> if none is configured.
      */
@@ -599,20 +620,6 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     }
 
     /**
-     * Checks if the type can be used for the given template context key.
-     *
-     * <p>If this type isn't specifically associated with one or more template keys, this returns true,
-     * otherwise it will check if the 'template' argument is among the template keys
-     *
-     * @param template the template key to check
-     * @return true if the type should be available for the template
-     */
-    public boolean isAvailableInTemplate(String template) {
-
-        return (template == null) || (m_templates.size() == 0) || m_templates.contains(template);
-    }
-
-    /**
      * Initializes this instance.<p>
      *
      * @param cms the CMS context to use
@@ -631,6 +638,36 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     public boolean isAddDisabled() {
 
         return m_addDisabled;
+    }
+
+    /**
+     * Checks if the type can be used for the given template context key.
+     *
+     * <p>If this type isn't specifically associated with one or more template keys, this returns true,
+     * otherwise it will check if the 'template' argument is among the template keys
+     *
+     * @param template the template key to check
+     * @return true if the type should be available for the template
+     */
+    public boolean isAvailableInTemplate(String template) {
+
+        return (template == null) || (m_templates.size() == 0) || m_templates.contains(template);
+    }
+
+    /**
+     * Returns true if reuse should be checked for elements of this type.
+     *
+     * <p>This tries to use the value configured for this type first, and if it doesn't have one, returns the global default.
+     *
+     * @return true if reuse should be checked for this type
+     */
+    public boolean isCheckReuse() {
+
+        if (m_checkReuse != null) {
+            return m_checkReuse.booleanValue();
+        }
+        String defaultStr = OpenCms.getADEManager().getParameters(null).get(PARAM_CHECK_REUSE_DEFAULT);
+        return Boolean.parseBoolean(defaultStr);
     }
 
     /**
@@ -765,6 +802,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
         boolean mergedEnableInLists = childConfig.m_availabilityNotSet ? m_enableInLists : childConfig.m_enableInLists;
         boolean mergedDisableEdit = childConfig.m_availabilityNotSet ? m_editDisabled : childConfig.m_editDisabled;
+        Boolean checkReuse = childConfig.m_checkReuse != null ? childConfig.m_checkReuse : m_checkReuse;
 
         CmsResourceTypeConfig result = new CmsResourceTypeConfig(
             m_typeName,
@@ -783,7 +821,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             showInDefaultView,
             copyInModels,
             order,
-            deleteMode);
+            deleteMode,
+            checkReuse);
         result.m_templates = new HashSet<>(this.m_templates);
         result.m_templates.addAll(childConfig.m_templates);
         return result;
@@ -833,7 +872,8 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             m_showInDefaultView,
             m_copyInModels,
             m_order,
-            m_elementDeleteMode);
+            m_elementDeleteMode,
+            m_checkReuse);
         result.m_templates = m_templates;
         return result;
     }

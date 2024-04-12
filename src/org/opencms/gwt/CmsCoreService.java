@@ -30,6 +30,7 @@ package org.opencms.gwt;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsGalleryDisabledTypesMode;
 import org.opencms.db.CmsResourceState;
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
@@ -87,6 +88,7 @@ import org.opencms.util.CmsTreeNode;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceLoginHandler;
+import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 
 import java.util.ArrayList;
@@ -131,6 +133,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /** Serialization uid. */
     private static final long serialVersionUID = 5915848952948986278L;
+
+    /** The workplace settings. */
+    private CmsWorkplaceSettings m_workplaceSettings;
 
     /**
      * Builds the tree structure for the given categories.<p>
@@ -1226,6 +1231,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsGalleryDisabledTypesMode disabledTypesMode = sitemapConfig.getDisabledTypeMode(
             CmsGalleryDisabledTypesMode.mark);
         boolean hideDisabledTypes = disabledTypesMode == CmsGalleryDisabledTypesMode.hide;
+        getWorkplaceSettings().getUserSettings();
+        String checkReuseWarning = CmsUserSettings.getAdditionalPreference(cms, "checkReuseWarning", true);
+        boolean warnWhenEditingReusedElement = Boolean.parseBoolean(checkReuseWarning);
 
         CmsCoreData data = new CmsCoreData(
             EDITOR_URI,
@@ -1257,7 +1265,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             OpenCms.getADEManager().getParameters(getCmsObject()),
             uploadRestrictionInfo,
             categoryBaseFolder,
-            hideDisabledTypes);
+            hideDisabledTypes,
+            warnWhenEditingReusedElement);
         CmsTinyMCEData tinyMCEData = new CmsTinyMCEData();
         tinyMCEData.setLink(tinyMCE);
         data.setTinymce(tinyMCEData);
@@ -1469,6 +1478,19 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         }
         CmsUser owner = cms.readUser(lock.getUserId());
         return CmsLockInfo.forLockedResource(owner.getName());
+    }
+
+    /**
+     * Returns the workplace settings of the current user.<p>
+     *
+     * @return the workplace settings
+     */
+    private CmsWorkplaceSettings getWorkplaceSettings() {
+
+        if (m_workplaceSettings == null) {
+            m_workplaceSettings = CmsWorkplace.getWorkplaceSettings(getCmsObject(), getRequest());
+        }
+        return m_workplaceSettings;
     }
 
     /**

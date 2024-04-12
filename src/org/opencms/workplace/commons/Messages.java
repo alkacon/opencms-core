@@ -52,6 +52,7 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHACC_MODIFY_ENTRY_0 = "ERR_CHACC_MODIFY_ENTRY_0";
 
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHANGE_LINK_TARGET_0 = "ERR_CHANGE_LINK_TARGET_0";
 
@@ -141,19 +142,19 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROGRESS_INTERRUPTED_0 = "ERR_PROGRESS_INTERRUPTED_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROGRESS_START_INVALID_LIST_0 = "ERR_PROGRESS_START_INVALID_LIST_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROGRESS_START_THREAD_EXISTS_0 = "ERR_PROGRESS_START_THREAD_EXISTS_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PUBLISH_LIST_CREATION_0 = "ERR_PUBLISH_LIST_CREATION_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PUBLISH_SCHEDULED_DATE_IN_PAST_1 = "ERR_PUBLISH_SCHEDULED_DATE_IN_PAST_1";
-
     /** Message constant for key in the resource bundle. */
     public static final String ERR_REDIRECT_INDEXPAGE_DIALOG_1 = "ERR_REDIRECT_INDEXPAGE_DIALOG_1";
-
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_DELETED_2 = "ERR_RESOURCE_DELETED_2";
 
@@ -1034,6 +1035,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PREF_BUTTONSTYLE_TXT_0 = "GUI_PREF_BUTTONSTYLE_TXT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_CHECK_REUSE_WARNING_OPTION_FALSE_0="GUI_PREF_CHECK_REUSE_WARNING_OPTION_FALSE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_CHECK_REUSE_WARNING_OPTION_TRUE_0="GUI_PREF_CHECK_REUSE_WARNING_OPTION_TRUE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_CHOOSE_UPLOAD_VARIANT_0 = "GUI_PREF_CHOOSE_UPLOAD_VARIANT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1176,6 +1183,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_SHOW_PUBLISHNOTIFICATION_0 = "GUI_PREF_SHOW_PUBLISHNOTIFICATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String  GUI_PREF_SHOW_REUSE_WARNING_0          ="GUI_PREF_SHOW_REUSE_WARNING_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_STARTGALLERY_NONE_0 = "GUI_PREF_STARTGALLERY_NONE_0";

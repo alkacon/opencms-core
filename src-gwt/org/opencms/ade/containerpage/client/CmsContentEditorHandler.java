@@ -499,6 +499,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 if (inline && CmsContentEditor.hasEditable(element.getElement())) {
                     addEditingHistoryItem(true);
                     CmsEditorContext context = getEditorContext();
+                    context.setReusedElement(element.isReused());
                     context.setHtmlContextInfo(getContextInfo(element));
                     // remove expired style before initializing the editor
                     element.setReleasedAndNotExpired(true);
@@ -516,6 +517,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                     addEditingHistoryItem(false);
                     Map<String, String> settingPresets = new HashMap<String, String>();
                     CmsEditorContext context = getEditorContext();
+                    context.setReusedElement(element.isReused());
                     I_CmsDropContainer dropContainer = element.getParentTarget();
                     if (dropContainer instanceof CmsContainerPageContainer) {
                         CmsContainerPageContainer container = (CmsContainerPageContainer)dropContainer;

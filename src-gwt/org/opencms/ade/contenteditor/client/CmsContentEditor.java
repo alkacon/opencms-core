@@ -845,6 +845,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         m_clientId = clientId;
         initEventPreviewHandler();
         final CmsUUID structureId = new CmsUUID(elementId);
+        m_context = context;
 
         I_CmsSimpleCallback<Boolean> callback = new I_CmsSimpleCallback<Boolean>() {
 
@@ -907,6 +908,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         I_CmsEditorCloseHandler onClose) {
 
         initEventPreviewHandler();
+        m_context = context;
         final String entityId = CmsContentDefinition.uuidToEntityId(elementId, locale);
         m_locale = locale;
         m_onClose = onClose;
@@ -1777,6 +1779,13 @@ public final class CmsContentEditor extends CmsEditorBase {
         setNativeResourceInfo(m_sitePath, m_locale);
         m_contentInfoHeader = new CmsInfoHeader(m_title, null, m_sitePath, m_locale, m_iconClasses);
         m_basePanel.add(m_contentInfoHeader);
+        if (m_context.isReusedElement()) {
+            String message = Messages.get().key(Messages.GUI_CONTENT_EDITOR_REUSE_MARKER_0);
+            Label label = new Label(message);
+
+            label.addStyleName("oc-editor-reuse-marker");
+            m_contentInfoHeader.addWidget(label);
+        }
         SimplePanel content = new SimplePanel();
         content.setStyleName(org.opencms.acacia.client.css.I_CmsLayoutBundle.INSTANCE.form().formParent());
         m_basePanel.add(content);

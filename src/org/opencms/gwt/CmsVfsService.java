@@ -211,6 +211,63 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * Gets page information of a resource and adds it to the given list info bean.<p>
+     *
+     * @param cms the CMS context
+     * @param resource the resource
+     * @param listInfo the list info bean to add the information to
+     *
+     * @return the list info bean
+     *
+     * @throws CmsException if the resource info can not be read
+     */
+    public static CmsListInfoBean addPageInfo(CmsObject cms, CmsResource resource, CmsListInfoBean listInfo)
+    throws CmsException {
+
+        listInfo.setResourceState(resource.getState());
+
+        String title = cms.readPropertyObject(
+            resource,
+            CmsPropertyDefinition.PROPERTY_TITLE,
+            false,
+            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).getValue();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
+            listInfo.setTitle(title);
+        } else {
+            listInfo.setTitle(resource.getName());
+        }
+        listInfo.setSubTitle(cms.getSitePath(resource));
+        listInfo.setIsFolder(Boolean.valueOf(resource.isFolder()));
+        String resTypeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
+        CmsExplorerTypeSettings cmsExplorerTypeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+            resTypeName);
+        if (null == cmsExplorerTypeSettings) {
+            CmsMessageContainer errMsg = Messages.get().container(
+                Messages.ERR_EXPLORER_TYPE_SETTINGS_FOR_RESOURCE_TYPE_NOT_FOUND_3,
+                resource.getRootPath(),
+                resTypeName,
+                Integer.valueOf(resource.getTypeId()));
+            throw new CmsConfigurationException(errMsg);
+        }
+        String key = cmsExplorerTypeSettings.getKey();
+        Locale currentLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(currentLocale);
+        String resTypeNiceName = messages.key(key);
+        listInfo.addAdditionalInfo(
+            messages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TYPE_0),
+            resTypeNiceName);
+        listInfo.setResourceType(resTypeName);
+        listInfo.setBigIconClasses(
+            CmsIconUtil.getIconClasses(CmsIconUtil.getDisplayType(cms, resource), resource.getName(), false));
+        // set the default file and detail type info
+        String detailType = CmsResourceIcon.getDefaultFileOrDetailType(cms, resource);
+        if (detailType != null) {
+            listInfo.setSmallIconClasses(CmsIconUtil.getIconClasses(detailType, null, true));
+        }
+        return listInfo;
+    }
+
+    /**
      * Formats a date given the current user's workplace locale.<p>
      *
      * @param cms the current CMS context
@@ -312,63 +369,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         resolver.addMacro("file", cms.getSitePath(res));
         String path = resolver.resolveMacros(pathWithMacros).replaceAll("/+", "/");
         return path;
-    }
-
-    /**
-     * Gets page information of a resource and adds it to the given list info bean.<p>
-     *
-     * @param cms the CMS context
-     * @param resource the resource
-     * @param listInfo the list info bean to add the information to
-     *
-     * @return the list info bean
-     *
-     * @throws CmsException if the resource info can not be read
-     */
-    protected static CmsListInfoBean addPageInfo(CmsObject cms, CmsResource resource, CmsListInfoBean listInfo)
-    throws CmsException {
-
-        listInfo.setResourceState(resource.getState());
-
-        String title = cms.readPropertyObject(
-            resource,
-            CmsPropertyDefinition.PROPERTY_TITLE,
-            false,
-            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).getValue();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
-            listInfo.setTitle(title);
-        } else {
-            listInfo.setTitle(resource.getName());
-        }
-        listInfo.setSubTitle(cms.getSitePath(resource));
-        listInfo.setIsFolder(Boolean.valueOf(resource.isFolder()));
-        String resTypeName = OpenCms.getResourceManager().getResourceType(resource).getTypeName();
-        CmsExplorerTypeSettings cmsExplorerTypeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-            resTypeName);
-        if (null == cmsExplorerTypeSettings) {
-            CmsMessageContainer errMsg = Messages.get().container(
-                Messages.ERR_EXPLORER_TYPE_SETTINGS_FOR_RESOURCE_TYPE_NOT_FOUND_3,
-                resource.getRootPath(),
-                resTypeName,
-                Integer.valueOf(resource.getTypeId()));
-            throw new CmsConfigurationException(errMsg);
-        }
-        String key = cmsExplorerTypeSettings.getKey();
-        Locale currentLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(currentLocale);
-        String resTypeNiceName = messages.key(key);
-        listInfo.addAdditionalInfo(
-            messages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TYPE_0),
-            resTypeNiceName);
-        listInfo.setResourceType(resTypeName);
-        listInfo.setBigIconClasses(
-            CmsIconUtil.getIconClasses(CmsIconUtil.getDisplayType(cms, resource), resource.getName(), false));
-        // set the default file and detail type info
-        String detailType = CmsResourceIcon.getDefaultFileOrDetailType(cms, resource);
-        if (detailType != null) {
-            listInfo.setSmallIconClasses(CmsIconUtil.getIconClasses(detailType, null, true));
-        }
-        return listInfo;
     }
 
     /**

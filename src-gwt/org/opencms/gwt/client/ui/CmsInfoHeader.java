@@ -78,6 +78,9 @@ public class CmsInfoHeader extends Composite {
     @UiField
     protected DivElement m_typeIcon;
 
+    @UiField
+    protected DivElement m_additionalWidgets;
+
     /** The button bar. */
     @UiField
     protected Element m_buttonBar;
@@ -122,5 +125,9 @@ public class CmsInfoHeader extends Composite {
     public void addButtonTopRight(Widget button) {
 
         m_main.add(button, m_buttonBar);
+    }
+
+    public void addWidget(Widget widget) {
+        m_main.add(widget, m_additionalWidgets);
     }
 }

@@ -177,14 +177,14 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     }
 
+    /** Property used to mark an element as belonging to this widget. */
+    public static final String PROP_ELEMENT_OBJECT_ID = "element_object_id";
+
     /** The is model group property key. */
     public static final String PROP_IS_MODEL_GROUP = "is_model_group";
 
     /** The former copy model property. */
     public static final String PROP_WAS_MODEL_GROUP = "was_model_group";
-
-    /** Property used to mark an element as belonging to this widget. */
-    public static final String PROP_ELEMENT_OBJECT_ID = "element_object_id";
 
     /** Highlighting border for this element. */
     protected CmsHighlightingBorder m_highlighting;
@@ -227,8 +227,14 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     /** Indicates whether this element has settings to edit. */
     private boolean m_hasSettings;
 
+    /** The resource type icon CSS classes. */
+    private String m_iconClasses;
+
     /** The inheritance info for this element. */
     private CmsInheritanceInfo m_inheritanceInfo;
+
+    /** The lock information. */
+    private CmsElementLockInfo m_lockInfo;
 
     /** The model group id. */
     private CmsUUID m_modelGroupId;
@@ -241,6 +247,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /** The no edit reason, if empty editing is allowed. */
     private String m_noEditReason;
+
+    /** A random id, which is also stored as a property on the HTML element for this widget. */
+    private String m_objectId;
 
     /** The parent drop target. */
     private I_CmsDropContainer m_parent;
@@ -257,9 +266,11 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     /** The resource type. */
     private String m_resourceType;
 
+    /** True if this element is marked as 'reused'. */
+    private boolean m_reused;
+
     /** The element resource site-path. */
     private String m_sitePath;
-
     /** The sub title. */
     private String m_subTitle;
 
@@ -274,20 +285,12 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /** The former copy model status. */
     private boolean m_wasModelGroup;
+
     /**
      * Indicates if the current user has write permissions on the element resource.
      * Without write permissions, the element can not be edited.
      **/
     private boolean m_writePermission;
-
-    /** A random id, which is also stored as a property on the HTML element for this widget. */
-    private String m_objectId;
-
-    /** The resource type icon CSS classes. */
-    private String m_iconClasses;
-
-    /** The lock information. */
-    private CmsElementLockInfo m_lockInfo;
 
     /**
      * Constructor.<p>
@@ -311,6 +314,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      * @param wasModelGroup in case of a former copy model group
      * @param elementView the element view of the element
      * @param iconClasses the resource type icon CSS classes
+     * @param isReused true if this element is marked as reused
      */
     public CmsContainerPageElementPanel(
         Element element,
@@ -331,7 +335,8 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         CmsUUID modelGroupId,
         boolean wasModelGroup,
         CmsUUID elementView,
-        String iconClasses) {
+        String iconClasses,
+        boolean isReused) {
 
         super(element);
         m_clientId = clientId;
@@ -356,6 +361,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         getElement().setPropertyBoolean(PROP_WAS_MODEL_GROUP, wasModelGroup);
         getElement().setPropertyString(PROP_ELEMENT_OBJECT_ID, m_objectId);
         m_iconClasses = iconClasses;
+        m_reused = isReused;
     }
 
     /**
@@ -729,13 +735,16 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
                                     && !target.getTagName().equalsIgnoreCase("a")
                                     && (target != getElement())) {
                                     if (CmsContentEditor.isEditable(target)) {
-                                        CmsEditorBase.markForInlineFocus(target);
-                                        controller.getHandler().openEditorForElement(
-                                            CmsContainerPageElementPanel.this,
-                                            true,
-                                            isNew());
-                                        removeEditorHandler();
+                                        final Element finalTarget = target;
                                         event.cancel();
+                                        CmsContainerpageController.get().checkReuse(CmsContainerPageElementPanel.this, () -> {
+                                            CmsEditorBase.markForInlineFocus(finalTarget);
+                                            controller.getHandler().openEditorForElement(
+                                                CmsContainerPageElementPanel.this,
+                                                true,
+                                                isNew());
+                                            removeEditorHandler();
+                                        });
                                         break;
                                     } else {
                                         target = target.getParentElement();
@@ -787,6 +796,16 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     public boolean isNewEditorDisabled() {
 
         return m_disableNewEditor;
+    }
+
+    /**
+     * Checks if this element is marked as reused.
+     *
+     * @return true if the element is marked as reused
+     */
+    public boolean isReused() {
+
+        return m_reused;
     }
 
     /**

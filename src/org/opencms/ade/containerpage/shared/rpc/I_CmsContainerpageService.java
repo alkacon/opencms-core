@@ -40,6 +40,7 @@ import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
+import org.opencms.ade.containerpage.shared.CmsReuseInfo;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsListElementCreationDialogData;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
@@ -413,6 +414,17 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     CmsRemovedElementStatus getRemovedElementStatus(String id, CmsUUID containerpageId) throws CmsRpcException;
+
+    /**
+     * Loads the reuse information for a container element.
+     *
+     * @param pageId the current page id
+     * @param detailId the current detail id
+     * @param elementId the id of the element to check
+     * @return the reuse information for the element
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsReuseInfo getReuseInfo(CmsUUID pageId, CmsUUID detailId, CmsUUID elementId) throws CmsRpcException;
 
     /**
      * Handles the element deletion.<p>

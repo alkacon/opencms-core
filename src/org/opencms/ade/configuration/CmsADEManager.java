@@ -72,6 +72,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsServlet;
 import org.opencms.monitor.CmsMemoryMonitor;
+import org.opencms.relations.CmsRelation;
+import org.opencms.relations.CmsRelationFilter;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsRequestUtil;
@@ -106,7 +108,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -795,6 +799,42 @@ public class CmsADEManager {
     }
 
     /**
+     * Creates a stream that produces the pages/groups referencing a given element.
+     *
+     *  <p>Note that this method doesn't take a CmsObject and just generates all resources referencing the element regardless of whether
+     *  the current user can read them. So readResource calls for the ids of these resources may fail.
+     *
+     * @param resource the element resource
+     * @return the stream of resources which use the element
+     */
+    public Stream<CmsResource> getOfflineElementUses(CmsResource resource) {
+
+        try {
+            List<CmsRelation> relations = m_offlineCms.readRelations(
+                CmsRelationFilter.relationsToStructureId(resource.getStructureId()));
+
+            return relations.stream().flatMap(rel -> {
+                try {
+                    CmsResource source = rel.getSource(m_offlineCms, CmsResourceFilter.ALL);
+                    return Stream.of(source);
+                } catch (Exception e) {
+                    LOG.debug(e.getLocalizedMessage(), e);
+                    return Stream.of();
+                }
+            }).filter(source -> {
+                return (CmsResourceTypeXmlContainerPage.isContainerPage(source)
+                    || CmsResourceTypeXmlContainerPage.isModelGroup(source)
+                    || OpenCms.getResourceManager().matchResourceType(
+                        CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME,
+                        source.getTypeId()));
+            });
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return Stream.of();
+        }
+    }
+
+    /**
      * Gets ADE parameters.<p>
      *
      * @param cms the current CMS context
@@ -1257,6 +1297,18 @@ public class CmsADEManager {
             }
         }
         return false;
+    }
+
+    /**
+     * Checks if an element is reused in a page or group that is not excluded by a given predicate.
+     *
+     * @param resource the resource to check
+     * @param exclude predicate used to ignore reuses which match it
+     * @return true if the element is reused
+     */
+    public boolean isElementReused(CmsResource resource, Predicate<CmsResource> exclude) {
+
+        return getOfflineElementUses(resource).anyMatch(source -> !exclude.test(source));
     }
 
     /**

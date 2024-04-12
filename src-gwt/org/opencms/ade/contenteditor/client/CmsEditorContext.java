@@ -36,7 +36,7 @@ import java.util.Map;
  */
 public class CmsEditorContext {
 
-    /** The path of the style sheet to use for the WYSIWYG editor. */ 
+    /** The path of the style sheet to use for the WYSIWYG editor. */
     private String m_editorStylesheet;
 
     /** The HTML context info. */
@@ -44,6 +44,9 @@ public class CmsEditorContext {
 
     /** The parameters for the publish function in the Acacia editor. */
     private Map<String, String> m_publishParameters = new HashMap<String, String>();
+
+    /** True if the edited element is reused. */
+    private boolean m_reusedElement;
 
     /** The setting presets. */
     private Map<String, String> m_settingPresets = Collections.emptyMap();
@@ -56,10 +59,10 @@ public class CmsEditorContext {
         // do nothing
     }
 
-    /** 
+    /**
      * Gets the path of the style sheet to use for the WYSIWYG editor.
-     * 
-     * @return the style sheet path 
+     *
+     * @return the style sheet path
      */
     public String getEditorStylesheet() {
 
@@ -97,9 +100,20 @@ public class CmsEditorContext {
     }
 
     /**
+     * Returns true if the edited element is reused.
+     *
+     * @return true if the edited element is reused
+     */
+    public boolean isReusedElement() {
+
+        return m_reusedElement;
+
+    }
+
+    /**
      * Sets the path of the style sheet to use for the WYSIWYG editor.
-     * 
-     * @param stylesheetPath the style sheet path 
+     *
+     * @param stylesheetPath the style sheet path
      */
     public void setEditorStylesheet(String stylesheetPath) {
 
@@ -124,6 +138,16 @@ public class CmsEditorContext {
     public void setPublishParameters(Map<String, String> publishParams) {
 
         m_publishParameters = publishParams;
+    }
+
+    /**
+     * Sets the 'reused' status for the currently edited element.
+     *
+     * @param reusedElement the new reuse status
+     */
+    public void setReusedElement(boolean reusedElement) {
+
+        m_reusedElement = reusedElement;
     }
 
     /**

@@ -1,3 +1,5 @@
+@external oc-editor-reuse-marker;
+
 .contentEditor iframe{
 	height: 100%;
 	width: 100%;
@@ -20,3 +22,17 @@
 .dataViewItem > *:nth-child(2) {
 	flex: 1;
 }
+
+.oc-editor-reuse-marker {
+	position: absolute;
+	background-color: rgba(179,27,52,0.5) !important;
+	font-size: 17px !important;
+	color: white !important;
+	right: 5px;
+	top: 5px;
+	padding: 5px !important;
+	border-radius: 3px;
+	font-weight: bold !important;
+}
+
+	

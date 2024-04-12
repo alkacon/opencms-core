@@ -592,6 +592,7 @@ public class TestConfig extends OpenCmsTestCase {
                 true,
                 false,
                 1,
+                null,
                 null));
 
         CmsTestConfigData config1 = new CmsTestConfigData(
@@ -1339,6 +1340,7 @@ public class TestConfig extends OpenCmsTestCase {
                 true,
                 false,
                 1,
+                null,
                 null));
 
         List<CmsResourceTypeConfig> childTypes = new ArrayList<CmsResourceTypeConfig>();
@@ -1359,6 +1361,7 @@ public class TestConfig extends OpenCmsTestCase {
                 true,
                 false,
                 1,
+                null,
                 null));
 
         CmsTestConfigData config1 = new CmsTestConfigData(
