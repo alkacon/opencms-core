@@ -86,16 +86,16 @@ public final class CmsJspObjectValueWrapper extends A_CmsJspValueWrapper {
     /**
      * Factory method to create a new XML content value wrapper.<p>
      *
-     * In case both parameters are <code>null</code>, the {@link #NULL_VALUE_WRAPPER} is returned.<p>
+     * In case either parameter is <code>null</code>, the {@link #NULL_VALUE_WRAPPER} is returned.<p>
      *
      * @param cms the current users OpenCms context
-     * @param value the object to wrap
+     * @param value the object to warp
      *
-     * @return a new content value wrapper instance, or <code>null</code> if both parameters are <code>null</code>
+     * @return a new content value wrapper instance, or <code>null</code> if any parameter is <code>null</code>
      */
     public static CmsJspObjectValueWrapper createWrapper(CmsObject cms, Object value) {
 
-        if ((value != null) || (cms != null)) {
+        if ((value != null) && (cms != null)) {
             return new CmsJspObjectValueWrapper(cms, value);
         }
         // if no value is available,
