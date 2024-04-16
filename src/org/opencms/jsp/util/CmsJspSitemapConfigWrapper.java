@@ -61,6 +61,11 @@ public class CmsJspSitemapConfigWrapper {
             Map<String, AttributeValue> attrs = m_context.getSitemapConfigInternal().getAttributes();
             AttributeValue value = attrs.get(key);
             String strValue = value == null ? null : value.getValue();
+            if (strValue == null) {
+                // CmsJspObjectValueWrapper#createWrapper returns CmsJspObjectValueWrapper#NULL_VALUE_WRAPPER when it receives a null argument,
+                // but that object doesn't support getUseDefault(), so we use an empty string here instead of null.
+                strValue = "";
+            }
             CmsJspObjectValueWrapper wrapper = CmsJspObjectValueWrapper.createWrapper(
                 m_context.getCmsObject(),
                 strValue);
