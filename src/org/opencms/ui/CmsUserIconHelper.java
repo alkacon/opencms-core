@@ -67,11 +67,11 @@ public class CmsUserIconHelper {
     private enum IconSize {
 
         /**The big icon size. */
-        Big(96, BIG_ICON_SUFFIX),
+        Big(192, BIG_ICON_SUFFIX),
         /**The small icon size.*/
-        Small(32, SMALL_ICON_SUFFIX),
+        Small(64, SMALL_ICON_SUFFIX),
         /**The tiny icon size. */
-        Tiny(23, TINY_ICON_SUFFIX);
+        Tiny(46, TINY_ICON_SUFFIX);
 
         /**Size in pixel.*/
         private int m_size;
