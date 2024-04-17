@@ -150,6 +150,15 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         String docTypeName = "xmlcontent-solr";
         I_CmsDocumentFactory factory = OpenCms.getSearchManager().getDocumentFactoryForName(docTypeName);
         CmsExtractionResultCache cache = factory.getCache();
+        assertNull(cache);
+
+        res = cms.createSibling("/helloworld.pdf", "/sibling_helloworld.pdf", null);
+        // publish the project and update the search index
+        OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
+        docTypeName = "pdf";
+        factory = OpenCms.getSearchManager().getDocumentFactoryForName(docTypeName);
+        cache = factory.getCache();
         String cacheName = cache.getCacheName(res, null, docTypeName);
         CmsExtractionResult result = cache.getCacheObject(cacheName);
         assertNotNull(result);
@@ -205,17 +214,17 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         squery.setRows(Integer.valueOf(100));
         CmsSolrResultList results = index.search(getCmsObject(), squery);
         AllTests.printResults(getCmsObject(), results, true);
-        assertEquals(59, results.getNumFound());
+        assertEquals(60, results.getNumFound());
 
         CmsObject cms = OpenCms.initCmsObject(getCmsObject(), new CmsContextInfo("test1"));
         results = index.search(cms, squery);
         AllTests.printResults(cms, results, false);
-        assertEquals(53, results.getNumFound());
+        assertEquals(54, results.getNumFound());
 
         cms = OpenCms.initCmsObject(getCmsObject(), new CmsContextInfo("test2"));
         results = index.search(cms, squery);
         AllTests.printResults(cms, results, true);
-        assertEquals(55, results.getNumFound());
+        assertEquals(56, results.getNumFound());
     }
 
     /**

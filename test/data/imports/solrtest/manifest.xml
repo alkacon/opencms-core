@@ -234,6 +234,21 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>sites/default/helloworld.pdf</source>
+			<destination>sites/default/helloworld.pdf</destination>
+			<type>binary</type>
+			<uuidstructure>7d6c22cd-4e3a-11db-9016-5bf59c6009c3</uuidstructure>
+			<uuidresource>a7b5d298-b3ab-11d8-b3e3-514d35713ffd</uuidresource>
+			<datelastmodified>Thu, 16 Apr 2024 14:58:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Apr 2024 14:58:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>sites/default/extractLinked</destination>
 			<type>folder</type>
 			<uuidstructure>ea12e320-bccb-11e9-83e2-00505631098c</uuidstructure>

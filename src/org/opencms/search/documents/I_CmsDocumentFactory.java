@@ -119,6 +119,16 @@ public interface I_CmsDocumentFactory extends I_CmsSearchExtractor {
     boolean isLocaleDependend();
 
     /**
+     * Returns <code>true</code> if the extraction result dependent on the resources content itself, i.e., has not to be re-extracted if the content date is unchanged.<p>
+     *
+     * @return  <code>true</code> if the extraction result dependent on the resources content itself, i.e., has not to be re-extracted if the content date is unchanged.
+     */
+    default boolean isOnlyDependentOnContent() {
+
+        return true;
+    }
+
+    /**
      * Returns <code>true</code> if result caching is supported for this factory.<p>
      *
      * @return <code>true</code> if result caching is supported for this factory

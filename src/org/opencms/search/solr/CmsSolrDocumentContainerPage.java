@@ -213,12 +213,4 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
         return true;
     }
 
-    /**
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#isUsingCache()
-     */
-    @Override
-    public boolean isUsingCache() {
-
-        return true;
-    }
 }

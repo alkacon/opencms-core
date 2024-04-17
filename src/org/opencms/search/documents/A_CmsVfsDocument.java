@@ -103,7 +103,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
     }
 
     /**
-     * Generates a new lucene document instance from contents of the given resource for the provided index.<p>
+     * {@inheritDoc}
      *
      * @see org.opencms.search.documents.I_CmsDocumentFactory#createDocument(CmsObject, CmsResource, I_CmsSearchIndex)
      */
@@ -127,12 +127,19 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
                     isLocaleDependend() ? index.getLocaleForResource(cms, resource, null) : null,
                     getName());
                 content = cache.getCacheObject(cacheName);
+                if ((content != null) && LOG.isDebugEnabled()) {
+                    LOG.debug("Not re-extracting. Using cached content for '" + resource.getRootPath() + "'.");
+                }
             }
 
-            if (content == null) {
+            if ((content == null) && isOnlyDependentOnContent()) {
                 // extraction result has not been found in the cache
                 // use the currently indexed content, if it is still up to date.
                 content = index.getContentIfUnchanged(resource);
+                if ((content != null) && LOG.isDebugEnabled()) {
+                    LOG.debug(
+                        "Not re-extracting. Using previously indexed content for '" + resource.getRootPath() + "'.");
+                }
             }
 
             if (content == null) {
