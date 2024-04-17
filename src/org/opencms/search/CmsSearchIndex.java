@@ -551,7 +551,9 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
         if ((oldDoc != null) && (oldDoc.getFieldValueAsDate(CmsSearchField.FIELD_DATE_CONTENT) != null)) {
             long contentDateIndex = oldDoc.getFieldValueAsDate(CmsSearchField.FIELD_DATE_CONTENT).getTime();
             // now compare the date with the date stored in the resource
-            if (contentDateIndex == resource.getDateContent()) {
+            // we truncate to seconds, since the index stores no milliseconds
+            // and it seems practically irrelevant that a content is updated twice in a second.
+            if ((contentDateIndex / 1000L) == (resource.getDateContent() / 1000L)) {
                 // extract stored content blob from index
                 return CmsExtractionResult.fromBytes(oldDoc.getContentBlob());
             }
@@ -1888,18 +1890,18 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
                 doScoring = true;
             } else if ((sort == CmsSearchParameters.SORT_DATE_CREATED)
                 || (sort == CmsSearchParameters.SORT_DATE_LASTMODIFIED)) {
-                // these default sorts don't need score calculation
-                doScoring = false;
-            } else {
-                // for all non-defaults: check if the score field is present, in that case we must calculate the score
-                SortField[] fields = sort.getSort();
-                for (SortField field : fields) {
-                    if (field == SortField.FIELD_SCORE) {
-                        doScoring = true;
-                        break;
+                    // these default sorts don't need score calculation
+                    doScoring = false;
+                } else {
+                    // for all non-defaults: check if the score field is present, in that case we must calculate the score
+                    SortField[] fields = sort.getSort();
+                    for (SortField field : fields) {
+                        if (field == SortField.FIELD_SCORE) {
+                            doScoring = true;
+                            break;
+                        }
                     }
                 }
-            }
         }
         return doScoring;
     }
