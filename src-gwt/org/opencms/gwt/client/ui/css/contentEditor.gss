@@ -25,7 +25,7 @@
 
 .oc-editor-reuse-marker {
 	position: absolute;
-	background-color: rgba(179,27,52,0.5) !important;
+	background-color: rgba(255,39,75,0.6) !important;
 	font-size: 17px !important;
 	color: white !important;
 	right: 5px;

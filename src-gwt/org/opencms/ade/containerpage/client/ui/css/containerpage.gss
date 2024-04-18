@@ -250,17 +250,13 @@ div.groupcontainerPlaceholder{
 	visibility: hidden; 
 }
 
-oc-editpoint.oc-reused-element::after {
-	content: '';
-	position: absolute;
-	display: block;
-	width: 12px;
-	height: 12px;
-	right: 1px;
-	pointer-events: none;
-	top: 1px;
-	border-radius: 3px;
-	background-color: rgba(179,27,52,0.5);
-} 
-
+oc-editpoint.oc-reused-element > div:last-of-type .html-face::after {
+    content: '';
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    pointer-events: none;
+    border-radius: 50%;
+    background-color: #ff264a;
+}
 

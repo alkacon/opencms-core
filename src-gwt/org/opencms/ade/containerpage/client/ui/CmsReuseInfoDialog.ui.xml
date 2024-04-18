@@ -44,6 +44,7 @@
 		
 		.labelbox > .label {
 			flex: 1;
+			white-space: pre-line;
 		}
 	</ui:style>
 	<g:FlowPanel>
