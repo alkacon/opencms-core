@@ -21,6 +21,12 @@
 }
 
 .dialog-popup.elementSettingsDialog > .dialog-popupContent .input-formLabel {
+	min-height: 30px;
+	line-height: normal;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-right: 5px;
 }
 
 .dialog-popup.elementSettingsDialog > .dialog-popupContent .input-formWidgetContainer {
