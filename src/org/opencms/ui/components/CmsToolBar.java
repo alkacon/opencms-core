@@ -319,7 +319,7 @@ public class CmsToolBar extends CssLayout implements BrowserWindowResizeListener
             + OpenCmsTheme.TOOLBAR_BUTTON
             + " v-button-"
             + OpenCmsTheme.TOOLBAR_BUTTON
-            + "\"><span class=\"v-button-wrap\"><img class=\"v-icon\" src=\""
+            + "\"><span class=\"v-button-wrap\"><img width=\"32\" height=\"32\" class=\"v-icon\" src=\""
             + icon.getURL()
             + "\" /></span></div>";
     }
