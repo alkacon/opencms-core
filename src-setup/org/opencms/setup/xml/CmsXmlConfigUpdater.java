@@ -27,6 +27,7 @@
 
 package org.opencms.setup.xml;
 
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.util.CmsFileUtil;
@@ -43,8 +44,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
@@ -104,11 +108,11 @@ public class CmsXmlConfigUpdater {
      */
     private class TransformEntry {
 
-        /** Name of the XSLT file. */
-        private String m_xslt;
-
         /** Name of the config file. */
         private String m_configFile;
+
+        /** Name of the XSLT file. */
+        private String m_xslt;
 
         /**
          * Creates a new entry.
@@ -163,17 +167,17 @@ public class CmsXmlConfigUpdater {
         }
     };
 
-    /**Flag to indicate if transformation was done.*/
-    private boolean m_isDone = false;
-
     /** Directory for the config files. */
     private File m_configDir;
 
-    /** The transformer factory. */
-    private TransformerFactory m_transformerFactory = TransformerFactory.newInstance();
+    /**Flag to indicate if transformation was done.*/
+    private boolean m_isDone = false;
 
     /** The parser factory. */
     private SAXParserFactory m_parserFactory = SAXParserFactory.newInstance();
+
+    /** The transformer factory. */
+    private TransformerFactory m_transformerFactory = new org.apache.xalan.processor.TransformerFactoryImpl();
 
     /** The directory containing the XSLT transforms. */
     private File m_xsltDir;
@@ -191,6 +195,43 @@ public class CmsXmlConfigUpdater {
         m_parserFactory.setNamespaceAware(true);
         m_parserFactory.setValidating(false);
         m_transformerFactory.setURIResolver(new EntityIgnoringUriResolver());
+    }
+
+    /**
+     * Helper method for determining the position for a top-level configuration element in opencms-system.xml.
+     *
+     * <p>This can be used by XSL transformations to insert optional nodes for new features on the top level.
+     * @param name the element name
+     * @return the position for the element name, or -1 if the position could not be determined
+     *
+     * @throws Exception if something goes wrong
+     */
+    public static int getSystemConfigPosition(String name) throws Exception {
+
+        byte[] fileData = CmsFileUtil.readFully(
+            CmsConfigurationManager.class.getResourceAsStream("opencms-system.dtd"),
+            true);
+        String dtdText = new String(fileData, StandardCharsets.UTF_8);
+        // Assumption: declaration of 'system' in the DTD is just a list of elements (with +/*/? suffixes), and doesn't have nested expressions
+        String regex = "(?s)<!ELEMENT +system +\\(([^()]*?)\\)>";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(dtdText);
+        List<String> elementNames = new ArrayList<>();
+        if (m.find()) {
+            String items = m.group(1);
+            for (String token : items.split("(?:\\s|,)+")) {
+                token = token.trim();
+                if (token.length() == 0) {
+                    continue;
+                }
+                if (token.endsWith("*") || token.endsWith("?") || token.endsWith("+")) {
+                    token = token.substring(0, token.length() - 1);
+                }
+                elementNames.add(token);
+            }
+            return elementNames.indexOf(name);
+        }
+        return -1;
     }
 
     /**

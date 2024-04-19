@@ -31,6 +31,7 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
+import org.opencms.setup.xml.CmsXmlConfigUpdater;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsFileUtil;
 
@@ -53,6 +54,21 @@ public class TestCmsSetupXmlHelper extends OpenCmsTestCase {
     public TestCmsSetupXmlHelper(String arg0) {
 
         super(arg0);
+    }
+
+    /**
+     * Tests the getSystemConfigPosition method.
+     *
+     * @throws Exception if something goes wrong
+     */
+    public void testSystemConfigPosition() throws Exception {
+        String[] elements = {"internationalization", "mail", "memorymonitor", "flexcache", "userdata"};
+        int prev = -1;
+        for (String elem: elements) {
+            int pos = CmsXmlConfigUpdater.getSystemConfigPosition(elem);
+            assertTrue("Wrong order for opencms-system.xml elements", prev < pos);
+            prev = pos;
+        }
     }
 
     /**
