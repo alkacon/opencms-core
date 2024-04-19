@@ -94,6 +94,9 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
     /** The resource type name. */
     private String m_resourceType;
 
+    /** True if the element should be marked as 'reused' in the content editor. */
+    private boolean m_reusedElement;
+
     /** The site path. */
     private String m_sitePath;
 
@@ -631,6 +634,16 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
     }
 
     /**
+     * Checks if the element should be marked as 'reused' in the editor.
+     *
+     * @return true if the element should be marked as 'reused' in the editor
+     */
+    public boolean isReusedElement() {
+
+        return m_reusedElement;
+    }
+
+    /**
      * Sets if the resource needs to removed on cancel.<p>
      *
      * @param deleteOnCancel <code>true</code> if the resource needs to removed on cancel
@@ -648,5 +661,16 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
     public void setDirectEdit(boolean isDirectEdit) {
 
         m_isDirectEdit = isDirectEdit;
+    }
+
+    /**
+     * Enables / disables marking of the element as 'reused' in the content editor.
+     *
+     * @param reused true if the element should be shown as 'reused'
+     */
+    public void setReusedElement(boolean reused) {
+
+        m_reusedElement = reused;
+
     }
 }

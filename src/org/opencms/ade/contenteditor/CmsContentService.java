@@ -35,6 +35,7 @@ import org.opencms.acacia.shared.CmsTabInfo;
 import org.opencms.acacia.shared.CmsType;
 import org.opencms.acacia.shared.CmsValidationResult;
 import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.CmsElementUtil;
 import org.opencms.ade.containerpage.shared.CmsCntPageData;
@@ -708,6 +709,22 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                             org.opencms.ade.contenteditor.Messages.ERR_EDITOR_RESTRICTED_0));
                 }
                 if (CmsResourceTypeXmlContent.isXmlContent(resource) || createNew) {
+                    CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, resource.getRootPath());
+                    boolean reused = false;
+                    try {
+                        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
+                        if (type != null) {
+                            String typeStr = type.getTypeName();
+                            CmsResourceTypeConfig typeConfig = config.getResourceType(typeStr);
+                            if ((typeConfig != null) && typeConfig.isCheckReuse()) {
+                                if (OpenCms.getADEManager().getOfflineElementUses(resource).limit(2).count() > 1) {
+                                    reused = true;
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        LOG.info(e.getLocalizedMessage(), e);
+                    }
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramLocale)) {
                         locale = CmsLocaleManager.getLocale(paramLocale);
                     }
@@ -760,6 +777,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                             null);
                     }
                     result.setDirectEdit(isDirectEdit);
+                    result.setReusedElement(reused);
                     return result;
                 }
             } catch (Throwable e) {

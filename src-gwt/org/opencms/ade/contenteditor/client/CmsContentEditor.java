@@ -958,6 +958,7 @@ public final class CmsContentEditor extends CmsEditorBase {
             RootPanel.get().add(new Label(e.getMessage()));
             return;
         }
+        context.setReusedElement(definition.isReusedElement());
         m_isStandAlone = true;
         if (definition.isModelInfo()) {
             openModelSelectDialog(context, definition);
@@ -1782,7 +1783,6 @@ public final class CmsContentEditor extends CmsEditorBase {
         if (m_context.isReusedElement()) {
             String message = Messages.get().key(Messages.GUI_CONTENT_EDITOR_REUSE_MARKER_0);
             Label label = new Label(message);
-
             label.addStyleName("oc-editor-reuse-marker");
             m_contentInfoHeader.addWidget(label);
         }
