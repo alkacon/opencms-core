@@ -253,8 +253,8 @@ div.groupcontainerPlaceholder{
 oc-editpoint.oc-reused-element > div:last-of-type .html-face::after {
     content: '';
     position: absolute;
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
     pointer-events: none;
     border-radius: 50%;
     background-color: #ff264a;
