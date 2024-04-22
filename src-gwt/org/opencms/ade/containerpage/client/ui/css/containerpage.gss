@@ -260,3 +260,9 @@ oc-editpoint.oc-reused-element > div:last-of-type .html-face::after {
     background-color: #ff264a;
 }
 
+oc-editpoint div.buttons-cmsFontIconButton div.html-face {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+

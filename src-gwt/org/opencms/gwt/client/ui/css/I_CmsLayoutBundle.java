@@ -102,6 +102,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     }
 
     /** Button CSS. */
+    @Shared
     @ImportedWithPrefix("buttons")
     interface I_CmsButtonCss extends I_CmsStateCss {
 

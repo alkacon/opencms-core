@@ -29,10 +29,12 @@ package org.opencms.ade.containerpage.client.ui.css;
 
 import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 import org.opencms.gwt.client.ui.css.I_CmsDirectEditCss;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsButtonCss;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.CssResource.Import;
 import com.google.gwt.resources.client.CssResource.Shared;
 
 /**
@@ -323,6 +325,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      * @return the container-page CSS
      */
     @Source("containerpage.gss")
+    @Import(I_CmsButtonCss.class)
     I_CmsContainerpageCss containerpageCss();
 
     /**

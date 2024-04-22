@@ -356,8 +356,3 @@ div.cmsFontIconButton.helpIcon {
     position: static;
 }
 
-div.cmsFontIconButton div.html-face {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
