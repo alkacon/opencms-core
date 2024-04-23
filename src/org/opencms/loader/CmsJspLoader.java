@@ -38,6 +38,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.flex.CmsFlexController.RedirectInfo;
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.flex.CmsFlexResponse;
 import org.opencms.gwt.shared.CmsGwtConstants;
@@ -312,6 +313,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             if ((oldController != null) && (controller != null)) {
                 // update "date last modified"
                 oldController.updateDates(controller.getDateLastModified(), controller.getDateExpires());
+                if (controller.getRedirectInfo() != null) {
+                    oldController.setRedirectInfo(controller.getRedirectInfo());
+                }
                 // reset saved controller
                 CmsFlexController.setController(req, oldController);
             }
@@ -1077,8 +1081,15 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 // uncritical, might happen if client (browser) does not wait until end of page delivery
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_IGNORING_EXC_1, e.getClass().getName()), e);
             }
+        } else if (controller.isTop() && (controller.getRedirectInfo() != null)) {
+            RedirectInfo info = controller.getRedirectInfo();
+            if (info.isPermanent()) {
+                res.setHeader(CmsRequestUtil.HEADER_LOCATION, info.getTarget());
+                res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+            } else {
+                res.sendRedirect(info.getTarget());
+            }
         }
-
         return result;
     }
 

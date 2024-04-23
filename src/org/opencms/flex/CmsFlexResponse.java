@@ -27,6 +27,7 @@
 
 package org.opencms.flex;
 
+import org.opencms.flex.CmsFlexController.RedirectInfo;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -151,6 +152,23 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         }
 
         /**
+         * @see javax.servlet.ServletOutputStream#isReady()
+         */
+        @Override
+        public boolean isReady() {
+
+            return null != m_stream;
+        }
+
+        /**
+         * @see javax.servlet.ServletOutputStream#setWriteListener(javax.servlet.WriteListener)
+         */
+        @Override
+        public void setWriteListener(WriteListener writeListener) {
+
+        }
+
+        /**
          * @see java.io.OutputStream#write(byte[], int, int)
          */
         @Override
@@ -172,23 +190,6 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             if (m_servletStream != null) {
                 m_servletStream.write(b);
             }
-        }
-
-        /**
-         * @see javax.servlet.ServletOutputStream#isReady()
-         */
-        @Override
-        public boolean isReady() {
-
-            return null != m_stream;
-        }
-
-        /**
-         * @see javax.servlet.ServletOutputStream#setWriteListener(javax.servlet.WriteListener)
-         */
-        @Override
-        public void setWriteListener(WriteListener writeListener) {
-
         }
     }
 
@@ -700,14 +701,9 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
 
             // use top response for redirect
             HttpServletResponse topRes = m_controller.getTopResponse();
-            // add all headers found to make sure cookies can be set before redirect
             processHeaders(getHeaders(), topRes);
-            if (permanent) {
-                topRes.setHeader(CmsRequestUtil.HEADER_LOCATION, location);
-                topRes.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-            } else {
-                topRes.sendRedirect(location);
-            }
+            // sendRedirect() on the top response does not work in Jetty while we are in an include, so save that information for later
+            m_controller.setRedirectInfo(new RedirectInfo(location, permanent));
         }
         m_controller.suspendFlexResponse();
     }

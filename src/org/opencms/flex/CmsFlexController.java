@@ -53,6 +53,52 @@ import org.apache.commons.logging.Log;
  */
 public class CmsFlexController {
 
+    /**
+     * Information about where to redirect to.
+     */
+    public static class RedirectInfo {
+
+        /** True if a permanent redirect should be used. */
+        private boolean m_permanent;
+
+        /** The redirect target. */
+        private String m_target;
+
+        /**
+         * Creates a new instance.
+         *
+         * @param target the redirect target
+         * @param permanent true if a permanent redirect should be used
+         */
+        public RedirectInfo(String target, boolean permanent) {
+
+            m_target = target;
+            m_permanent = permanent;
+
+        }
+
+        /**
+         * Gets the redirect target.
+         *
+         * @return the redirect target
+         */
+        public String getTarget() {
+
+            return m_target;
+        }
+
+        /**
+         * Returns true if a permanent redirect should be used.
+         *
+         * @return true if a permanent redirect should be used
+         */
+        public boolean isPermanent() {
+
+            return m_permanent;
+        }
+
+    }
+
     /** Constant for the controller request attribute name. */
     public static final String ATTRIBUTE_NAME = "org.opencms.flex.CmsFlexController";
 
@@ -79,6 +125,9 @@ public class CmsFlexController {
 
     /** Indicates if this controller is currently in "forward" mode. */
     private boolean m_forwardMode;
+
+    /** Information about where to redirect to. */
+    private RedirectInfo m_redirectInfo;
 
     /** Wrapped top request. */
     private HttpServletRequest m_req;
@@ -121,6 +170,7 @@ public class CmsFlexController {
         m_flexContextInfoList = base.m_flexContextInfoList;
         m_forwardMode = base.m_forwardMode;
         m_throwableResourceUri = base.m_throwableResourceUri;
+        m_redirectInfo = base.m_redirectInfo;
     }
 
     /**
@@ -490,6 +540,16 @@ public class CmsFlexController {
     }
 
     /**
+     * Gets the information about where to redirect to.
+     *
+     * @return the redirect information
+     */
+    public RedirectInfo getRedirectInfo() {
+
+        return m_redirectInfo;
+    }
+
+    /**
      * Returns the size of the response stack.<p>
      *
      * @return the size of the response stack
@@ -645,6 +705,16 @@ public class CmsFlexController {
     public void setForwardMode(boolean value) {
 
         m_forwardMode = value;
+    }
+
+    /**
+     * Sets the information about where to redirect to.
+     *
+     * @param redirectInfo the redirect information
+     */
+    public void setRedirectInfo(RedirectInfo redirectInfo) {
+
+        m_redirectInfo = redirectInfo;
     }
 
     /**
