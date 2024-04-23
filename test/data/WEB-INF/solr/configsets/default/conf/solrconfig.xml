@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <config>
+    <schemaFactory class="ClassicIndexSchemaFactory" />
     <abortOnConfigurationError>${solr.abortOnConfigurationError:true}
     </abortOnConfigurationError>
     <luceneMatchVersion>9.9</luceneMatchVersion>
@@ -7,16 +8,21 @@
     <directoryFactory name="DirectoryFactory"
         class="${solr.directoryFactory:solr.StandardDirectoryFactory}" />
     <indexConfig>
+       <lockType>${solr.lock.type:none}</lockType>
     </indexConfig>
     <updateHandler class="solr.DirectUpdateHandler2">
     </updateHandler>
     <query>
-        <maxBooleanClauses>1024</maxBooleanClauses>
-        <filterCache class="solr.FastLRUCache" size="512"
+        <!--
+            NOTE: For permission check reasons, OpenCms will implicitely send a query with fq=solr_id:(id1 OR id2 ... idn) where n is the number of rows you request.
+            In consequence you can never request more the maxBooleanClauses results at a time.
+        -->
+        <maxBooleanClauses>${solr.max.booleanClauses:1024}</maxBooleanClauses>
+        <filterCache class="solr.CaffeineCache" size="512"
             initialSize="512" autowarmCount="0" />
-        <queryResultCache class="solr.LRUCache" size="512"
+        <queryResultCache class="solr.CaffeineCache" size="512"
             initialSize="512" autowarmCount="0" />
-        <documentCache class="solr.LRUCache" size="512"
+        <documentCache class="solr.CaffeineCache" size="512"
             initialSize="512" autowarmCount="0" />
         <enableLazyFieldLoading>true</enableLazyFieldLoading>
         <queryResultWindowSize>20</queryResultWindowSize>
@@ -25,7 +31,7 @@
         <maxWarmingSearchers>2</maxWarmingSearchers>
     </query>
     <requestDispatcher>
-        <requestParsers enableRemoteStreaming="true"
+        <requestParsers
             multipartUploadLimitInKB="2048000" />
         <httpCaching never304="true" />
     </requestDispatcher>
@@ -75,9 +81,43 @@
         <lst name="spellchecker">
             <str name="name">default</str>
             <str name="field">spell</str> <!-- Replace with field name as per your scheme -->
-            <str name="spellcheckIndexDir">./spellchecker</str>
-            <str name="buildOnOptimize">true</str>
+            <str name="classname">solr.DirectSolrSpellChecker</str>
+            <str name="distanceMeasure">internal</str>
+            <float name="accuracy">0.5</float>
+            <int name="maxEdits">2</int>
+            <int name="minPrefix">1</int>
+            <int name="maxInspections">5</int>
+            <int name="minQueryLength">5</int>
+            <float name="maxQueryFrequency">0.001</float>
+            <float name="thresholdTokenFrequency">.001</float>
         </lst>
+        <lst name="spellchecker">
+            <str name="name">de</str>
+            <str name="field">de_spell</str> <!-- Replace with field name as per your scheme -->
+            <str name="classname">solr.DirectSolrSpellChecker</str>
+            <str name="distanceMeasure">internal</str>
+            <float name="accuracy">0.5</float>
+            <int name="maxEdits">2</int>
+            <int name="minPrefix">1</int>
+            <int name="maxInspections">5</int>
+            <int name="minQueryLength">5</int>
+            <float name="maxQueryFrequency">0.001</float>
+            <float name="thresholdTokenFrequency">.001</float>
+        </lst>
+                <lst name="spellchecker">
+            <str name="name">en</str>
+            <str name="field">en_spell</str> <!-- Replace with field name as per your scheme -->
+            <str name="classname">solr.DirectSolrSpellChecker</str>
+            <str name="distanceMeasure">internal</str>
+            <float name="accuracy">0.5</float>
+            <int name="maxEdits">2</int>
+            <int name="minPrefix">1</int>
+            <int name="maxInspections">5</int>
+            <int name="minQueryLength">5</int>
+            <float name="maxQueryFrequency">0.001</float>
+            <float name="thresholdTokenFrequency">.001</float>
+        </lst>
+
     </searchComponent>
     <requestHandler name="/spell" class="solr.SearchHandler"
         startup="lazy">
