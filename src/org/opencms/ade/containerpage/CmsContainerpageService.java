@@ -331,7 +331,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     private static final long serialVersionUID = -6188370638303594280L;
 
     /** Maximum number of reuse locations to display in the reuse warning dialog. */
-    public static final int MAX_VISIBLE_ELEMENT_USES = 10;
+    public static final int MAX_VISIBLE_ELEMENT_USES = 100;
 
     /** The configuration data of the current container page context. */
     private CmsADEConfigData m_configData;
@@ -1562,13 +1562,17 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
             CmsListInfoBean elementInfo = CmsVfsService.getPageInfo(cms, element);
             String message;
+            CmsMessages messages = Messages.get().getBundle(locale);
             if (allUses.size() > 0) {
-                message = Messages.get().getBundle(locale).key(Messages.GUI_REUSE_CHECK_WARNING_TEXT_1, "" + allUses.size());
+                message = messages.key(Messages.GUI_REUSE_CHECK_WARNING_TEXT_1, "" + allUses.size());
             } else {
                 message = "";
             }
-            String title = Messages.get().getBundle(locale).key(Messages.GUI_REUSE_CHECK_TITLE_0);
-            CmsReuseInfo result = new CmsReuseInfo(elementInfo, infos, message, title, allUses.size());
+            String title = messages.key(Messages.GUI_REUSE_CHECK_TITLE_0);
+            if (allUses.size() > infos.size()) {
+                message  = message + "\n" + messages.key(Messages.GUI_REUSE_CHECK_ONLY_SHOW_N_1, infos.size());
+            }
+            CmsReuseInfo result = new CmsReuseInfo(elementInfo, infos, message,  title, allUses.size());
             return result;
         } catch (Exception e) {
             error(e);

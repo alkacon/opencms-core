@@ -82,6 +82,7 @@ public class CmsReuseInfoDialog extends CmsPopup {
     @UiField
     protected Label m_label;
 
+
     /** The list item container for the element usages. */
     @UiField
     protected CmsList<CmsListItem> m_listPanel;
