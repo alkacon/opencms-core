@@ -275,6 +275,9 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         OpenCms.getPublishManager().waitWhileRunning();
 
         // modify and publish only the source
+        // but wait a second, since otherwise the formerly extracted content will be reindexed
+        // see CmsSeachIndex#getContentIfUnchanged(CmsResource) and the caching mechanisms from A_CmsVfsDocument.createDocument(...)
+        Thread.sleep(1000L);
         CmsFile file = cms.readFile(resource);
         file.setContents("OpenCms Enterprise Content Management System".getBytes());
         cms.lockResource(file);
