@@ -37,8 +37,8 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
-import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
@@ -252,12 +252,13 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
     public void testReindexPublishedSiblings() throws Throwable {
 
         echo("Test result count for changed content of two siblings");
+
         CmsObject cms = getCmsObject();
 
         // create a folder with two siblings and publish them together
         String folder = "/reindexPublishedSiblings/";
         cms.createResource(folder, CmsResourceTypeFolder.getStaticTypeId());
-        String brother = folder + "test_brother.txt";
+        String brother = folder + "test_brother.pdf";
         CmsProperty firstTitleProperty = new CmsProperty(
             CmsPropertyDefinition.PROPERTY_TITLE,
             "BROTHER AND SISTER",
@@ -266,10 +267,10 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         props.add(firstTitleProperty);
         CmsResource resource = cms.createResource(
             brother,
-            CmsResourceTypePlain.getStaticTypeId(),
-            "Solr Enterprise Serach".getBytes(),
+            CmsResourceTypeBinary.getStaticTypeId(),
+            generatePdf("Solr Enterprise Serach").getBytes(),
             props);
-        String sister = folder + "test_sister.txt";
+        String sister = folder + "test_sister.pdf";
         cms.createSibling(brother, sister, props);
         OpenCms.getPublishManager().publishResource(cms, folder);
         OpenCms.getPublishManager().waitWhileRunning();
@@ -279,7 +280,7 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         // see CmsSeachIndex#getContentIfUnchanged(CmsResource) and the caching mechanisms from A_CmsVfsDocument.createDocument(...)
         Thread.sleep(1000L);
         CmsFile file = cms.readFile(resource);
-        file.setContents("OpenCms Enterprise Content Management System".getBytes());
+        file.setContents(generatePdf("OpenCms Enterprise Content Management System").getBytes());
         cms.lockResource(file);
         cms.writeFile(file);
         OpenCms.getPublishManager().publishResource(cms, brother, false, null);
@@ -303,17 +304,17 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
 
         assertEquals(
             "Brother must be there",
-            "/sites/default/reindexPublishedSiblings/test_brother.txt",
+            "/sites/default/reindexPublishedSiblings/test_brother.pdf",
             brotherDoc.getRootPath());
         assertEquals(
             "Sister must be there",
-            "/sites/default/reindexPublishedSiblings/test_sister.txt",
+            "/sites/default/reindexPublishedSiblings/test_sister.pdf",
             sisterDoc.getRootPath());
 
         assertEquals(
             "The content must be",
             "OpenCms Enterprise Content Management System",
-            brotherDoc.getField("content"));
+            brotherDoc.getField("content").trim());
 
         assertEquals(
             "The content of the found documents must be equal",
@@ -380,5 +381,48 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
             m_vfsPrefix = OpenCms.getStaticExportManager().getVfsPrefix();
         }
         return m_vfsPrefix;
+    }
+
+    /**
+     * Generate a small, (nearly) valid PDF file with the text provided.
+     * It is suitable enough to get content extracted and we need PDFs to test the extraction cache. Plain text does not use it.
+     *
+     * @param text the PDF text
+     * @return the PDF content
+     */
+    private String generatePdf(String text) {
+
+        return String.join(
+            "\n",
+            "%PDF-1.7",
+            "1 0 obj  % entry point",
+            "<</Type /Catalog /Pages 2 0 R>>",
+            "endobj",
+            "2 0 obj <</Type /Pages /MediaBox [ 0 0 200 200 ] /Count 1 /Kids [ 3 0 R ]>> endobj",
+            "3 0 obj << /Type /Page /Parent 2 0 R /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >> endobj",
+            "4 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Times-Roman >> endobj",
+            "5 0 obj  % page content",
+            "<< /Length 44 >>",
+            "stream",
+            "BT",
+            "70 50 TD",
+            "/F1 12 Tf",
+            "(" + text + ") Tj",
+            "ET",
+            "endstream",
+            "endobj",
+            "xref",
+            "0 6",
+            "0000000000 65535 f ",
+            "0000000010 00000 n ",
+            "0000000079 00000 n ",
+            "0000000173 00000 n ",
+            "0000000301 00000 n ",
+            "0000000380 00000 n ",
+            "trailer",
+            "<< /Size 6 /Root 1 0 R >>",
+            "startxref",
+            "492",
+            "%%EOF");
     }
 }
