@@ -60,6 +60,7 @@
 		</g:FlowPanel>
 		<g:FlowPanel visible="false">
 			<cms:CmsPushButton useMinWidth="true" ui:field="m_okButton" />
+			<cms:CmsPushButton useMinWidth="true" ui:field="m_cancelButton" />
 		</g:FlowPanel>
 	</g:FlowPanel>
 </ui:UiBinder>

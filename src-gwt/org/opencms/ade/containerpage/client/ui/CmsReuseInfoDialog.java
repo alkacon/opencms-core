@@ -91,6 +91,11 @@ public class CmsReuseInfoDialog extends CmsPopup {
     @UiField
     protected CmsPushButton m_okButton;
 
+    /** The cancel button. */
+    @UiField
+    protected CmsPushButton m_cancelButton;
+
+
     /** The callback for the dialog. */
     private Consumer<Boolean> m_callback;
 
@@ -119,6 +124,7 @@ public class CmsReuseInfoDialog extends CmsPopup {
         }
         CmsDialogContextMenuHandler menuHandler = new CmsDialogContextMenuHandler();
         m_okButton.setText(org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_OK_0));
+        m_cancelButton.setText(org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_CANCEL_0));
         m_label.setText(reuseInfo.getMessage());
 
         for (CmsResourceListInfo bean : reuseInfo.getUsageInfos()) {
@@ -128,9 +134,15 @@ public class CmsReuseInfoDialog extends CmsPopup {
             liw.addButton(button);
             m_listPanel.add(li);
         }
+
         m_okButton.addClickHandler(event -> {
             CmsReuseInfoDialog.this.hide();
             m_callback.accept(Boolean.TRUE);
+        });
+
+        m_cancelButton.addClickHandler(event -> {
+            CmsReuseInfoDialog.this.hide();
+            m_callback.accept(Boolean.FALSE);
         });
 
     }
@@ -142,7 +154,7 @@ public class CmsReuseInfoDialog extends CmsPopup {
      */
     private List<CmsPushButton> getDialogButtons() {
 
-        return Arrays.asList(m_okButton);
+        return Arrays.asList(m_cancelButton, m_okButton);
     }
 
 }
