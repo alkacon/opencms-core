@@ -90,6 +90,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Splitter;
@@ -218,6 +219,30 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             new int[] {EVENT_CLEAR_CACHES, EVENT_CLEAR_OFFLINE_CACHES, EVENT_CLEAR_ONLINE_CACHES});
         m_fileLocks = CmsMemoryMonitor.createLRUCacheMap(10000);
         initCaches(1000);
+    }
+
+    /**
+     * This method tries to determine whether an exception is thrown by the JSP compiler.
+     *
+     * @param exception the exception to check
+     * @return true if this is likely a Jasper JSP compiler exception
+     */
+    public static boolean isJasperCompilerException(Throwable exception) {
+
+        if (exception == null) {
+            return false;
+        }
+
+        for (Throwable t: ExceptionUtils.getThrowableList(exception)) {
+            if (t.getClass().getName().equals("org.apache.jasper.JasperException")) {
+                for (StackTraceElement elem : t.getStackTrace()) {
+                    if (elem.getClassName().startsWith("org.apache.jasper.compiler.")) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**

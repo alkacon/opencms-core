@@ -81,6 +81,7 @@ import org.opencms.jsp.jsonpart.CmsJsonPartFilter;
 import org.opencms.jsp.userdata.CmsUserDataRequestManager;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.letsencrypt.CmsLetsEncryptConfiguration;
+import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.loader.I_CmsFlexCacheEnabledLoader;
@@ -210,6 +211,13 @@ public final class OpenCmsCore {
 
     /** One instance to rule them all, one instance to find them... */
     private static OpenCmsCore m_instance;
+
+    static {
+        final String keyEntityExpansionLimit = "jdk.xml.entityExpansionLimit";
+        if (System.getProperty(keyEntityExpansionLimit) == null) {
+            System.setProperty(keyEntityExpansionLimit, "64000");
+        }
+    }
 
     /** The ADE manager instance. */
     private CmsADEManager m_adeManager;
@@ -388,13 +396,6 @@ public final class OpenCmsCore {
         initMembers();
         m_instance = this;
         setRunLevel(OpenCms.RUNLEVEL_1_CORE_OBJECT);
-    }
-
-    static {
-        final String keyEntityExpansionLimit = "jdk.xml.entityExpansionLimit";
-        if (System.getProperty(keyEntityExpansionLimit) == null) {
-            System.setProperty(keyEntityExpansionLimit, "64000");
-        }
     }
 
     /**
@@ -2324,7 +2325,9 @@ public final class OpenCmsCore {
                             Messages.INIT_SHUTDOWN_START_1,
                             getSystemInfo().getVersionNumber() + " [" + getSystemInfo().getVersionId() + "]"));
                     CmsLog.INIT.info(
-                        Messages.get().getBundle().key(Messages.INIT_CURRENT_RUNLEVEL_1, Integer.valueOf(getRunLevel())));
+                        Messages.get().getBundle().key(
+                            Messages.INIT_CURRENT_RUNLEVEL_1,
+                            Integer.valueOf(getRunLevel())));
                     CmsLog.INIT.info(
                         Messages.get().getBundle().key(
                             Messages.INIT_SHUTDOWN_TIME_1,
@@ -2804,7 +2807,11 @@ public final class OpenCmsCore {
             if (s.getRootCause() != null) {
                 t = s.getRootCause();
             }
-            LOG.error(t.getLocalizedMessage() + " rendering URL " + req.getRequestURL(), t);
+            if (CmsJspLoader.isJasperCompilerException(t)) {
+                LOG.error(t.getLocalizedMessage());
+            } else {
+                LOG.error(t.getLocalizedMessage(), t);
+            }
         } else if (t instanceof CmsSecurityException) {
             LOG.warn(t.getLocalizedMessage() + " rendering URL " + req.getRequestURL(), t);
             // access error - display login dialog

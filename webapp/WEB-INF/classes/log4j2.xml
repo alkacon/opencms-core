@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn">
+    <Properties>
+        <Property name="exceptionFormat">%xEx{full}{filters(org.apache.catalina,org.apache.tomcat,org.eclipse.jetty,org.apache.coyote,org.apache.jasper)}</Property>
+    </Properties>
 	<Appenders>
 	    <Console name="CONSOLE" target="SYSTEM_OUT">
 	      <PatternLayout pattern="%d{DATE} %5p [%30.30C:%4L] %X %m%n" />
@@ -8,8 +11,8 @@
 		<RollingFile name="OC" fileName="${sys:opencms.logfile}"
 			filePattern="${sys:opencms.logfile}.%i.log.gz">
 			<PatternLayout>
-				<LevelPatternSelector defaultPattern="%d{DATE} [r:%6X{request_id}] %5p [%30.30C:%4L] %m %n">
-					<PatternMatch key="ERROR" pattern="%d{DATE} [r:%6X{request_id}] %5p [%30.30C:%4L] %m %X %n" />
+				<LevelPatternSelector defaultPattern="%d{DATE} [r:%6X{request_id}] %5p [%30.30C:%4L] %m %n ${exceptionFormat}">
+					<PatternMatch key="ERROR" pattern="%d{DATE} [r:%6X{request_id}] %5p [%30.30C:%4L] %m %X %n ${exceptionFormat}" />
 				</LevelPatternSelector>
 			</PatternLayout>
 			<Policies>
@@ -21,8 +24,8 @@
 		<RollingFile name="OCSearch" fileName="${sys:opencms.logfolder}opencms-search.log"
 			filePattern="${sys:opencms.logfolder}opencms-search.log.%i.log.gz">
 			<PatternLayout>
-				<LevelPatternSelector defaultPattern="%d{DATE} [r:%6X{request_id}] %5p [%30.30C:%4L] %m %n">
-					<PatternMatch key="ERROR" pattern="%d{DATE} [r:%6X{request_id}] %5p [%30.30C:%4L] %m %X %n" />
+				<LevelPatternSelector defaultPattern="%d{DATE} [r:%6X{request_id}] %5p [%30.30C:%4L] %m %n ${exceptionFormat}">
+					<PatternMatch key="ERROR" pattern="%d{DATE} [r:%6X{request_id}] %5p [%30.30C:%4L] %m %X %n ${exceptionFormat}" />
 				</LevelPatternSelector>
 			</PatternLayout>
 
@@ -44,8 +47,8 @@
 		<RollingFile name="OCMemoryMonitor" fileName="${sys:opencms.logfolder}opencms-memory.log"
 			filePattern="${sys:opencms.logfolder}opencms-memory.log.%i.log.gz">
 			<PatternLayout>
-				<LevelPatternSelector defaultPattern="%d{DATE} [r:%6X{request_id}] %5p [%30.30C:%4L] %m %n">
-					<PatternMatch key="ERROR" pattern="%d{DATE} [r:%6X{request_id}] %5p [%30.30C:%4L] %m %X %n" />
+				<LevelPatternSelector defaultPattern="%d{DATE} [r:%6X{request_id}] %5p [%30.30C:%4L] %m %n ${exceptionFormat}">
+					<PatternMatch key="ERROR" pattern="%d{DATE} [r:%6X{request_id}] %5p [%30.30C:%4L] %m %X %n ${exceptionFormat}" />
 				</LevelPatternSelector>
 			</PatternLayout>
 

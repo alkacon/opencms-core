@@ -46,6 +46,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspTagAddParams.ParamState;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.jsp.util.CmsJspStandardContextBean.CmsContainerElementWrapper;
+import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsTemplateContext;
 import org.opencms.loader.CmsTemplateContextManager;
@@ -1403,13 +1404,16 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 templateProvider = context.getProvider();
             }
             if (templateProvider == null) {
-                templateProvider = OpenCms.getTemplateContextManager().getTemplateContextProvider(cms, cms.getRequestContext().getUri());
+                templateProvider = OpenCms.getTemplateContextManager().getTemplateContextProvider(
+                    cms,
+                    cms.getRequestContext().getUri());
             }
             ignoreTemplateContexts = (templateProvider != null) && templateProvider.isIgnoreTemplateContextsSetting();
         } catch (CmsException e) {
             LOG.info(e.getLocalizedMessage(), e);
         }
-        boolean showInContext = ignoreTemplateContexts || shouldShowInContext(element, context != null ? context.getKey() : null);
+        boolean showInContext = ignoreTemplateContexts
+            || shouldShowInContext(element, context != null ? context.getKey() : null);
         boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
         if (!m_editableRequest && !showInContext) {
             return false;
@@ -1467,7 +1471,8 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
 
                 try {
                     subelement.initResource(cms);
-                    boolean shouldShowSubElementInContext = ignoreTemplateContexts || shouldShowInContext(subelement, contextKey);
+                    boolean shouldShowSubElementInContext = ignoreTemplateContexts
+                        || shouldShowInContext(subelement, contextKey);
                     if (!m_editableRequest
                         && (!shouldShowSubElementInContext || !subelement.isReleasedAndNotExpired())) {
                         continue;
@@ -1536,12 +1541,21 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                         }
                     } catch (Exception e) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.error(
-                                Messages.get().getBundle().key(
-                                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                                    subelement.getSitePath(),
-                                    subElementFormatterConfig),
-                                e);
+                            if (CmsJspLoader.isJasperCompilerException(e)) {
+                                LOG.error(
+                                    Messages.get().getBundle().key(
+                                        Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                                        subelement.getSitePath(),
+                                        subElementFormatterConfig) + "\n" + e.getMessage());
+                                LOG.debug("Full stack trace for error", e);
+                            } else {
+                                LOG.error(
+                                    Messages.get().getBundle().key(
+                                        Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                                        subelement.getSitePath(),
+                                        subElementFormatterConfig),
+                                    e);
+                            }
                         }
                         printElementErrorTag(subelement.getSitePath(), subElementFormatterConfig.getJspRootPath(), e);
                     }
@@ -1633,12 +1647,21 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                     }
                 } catch (Exception e) {
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(
-                            Messages.get().getBundle().key(
-                                Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                                element.getSitePath(),
-                                formatter),
-                            e);
+                        if (CmsJspLoader.isJasperCompilerException(e)) {
+                            LOG.error(
+                                Messages.get().getBundle().key(
+                                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                                    element.getSitePath(),
+                                    formatter) + "\n" + e.getMessage());
+                            LOG.debug("Full stack trace for error", e);
+                        } else {
+                            LOG.error(
+                                Messages.get().getBundle().key(
+                                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                                    element.getSitePath(),
+                                    formatter),
+                                e);
+                        }
                     }
                     printElementErrorTag(element.getSitePath(), formatter, e);
                 }

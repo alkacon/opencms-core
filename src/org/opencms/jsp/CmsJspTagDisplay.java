@@ -38,6 +38,7 @@ import org.opencms.file.collectors.I_CmsCollectorPostCreateHandler;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.jsp.util.CmsJspContentAccessValueWrapper;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
+import org.opencms.loader.CmsJspLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -221,7 +222,11 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                             request,
                             response);
                     } catch (Exception e) {
-                        LOG.error(e.getLocalizedMessage(), e);
+                        if (CmsJspLoader.isJasperCompilerException(e)) {
+                            LOG.error(e.getLocalizedMessage());
+                        } else {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
                     }
                     if (openedEditable) {
                         CmsJspTagEdit.insertDirectEditEnd(context);
