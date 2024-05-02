@@ -2334,7 +2334,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                             "content",
                             firstContentAttributeName.substring(entity.getTypeName().length() + 1),
                             false,
-                            null, null));
+                            null,
+                            null));
                 }
                 if (addedVisibleAttrs.size() > 0) {
                     tabInfos.add(
@@ -2344,7 +2345,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                             CmsContentDefinition.SETTINGS_TAB_ID,
                             CmsFileUtil.removeLeadingSeparator(addedVisibleAttrs.iterator().next()),
                             false,
-                            Messages.get().getBundle(workplaceLocale).key(Messages.GUI_SETTINGS_TAB_DESCRIPTION_0), null));
+                            Messages.get().getBundle(workplaceLocale).key(Messages.GUI_SETTINGS_TAB_DESCRIPTION_0),
+                            null));
                 }
             }
 
@@ -2513,9 +2515,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)
                 && !CmsGwtConstants.HIDDEN_SETTINGS_WIDGET_NAME.equals(settingsEntry.getValue().getWidget())
                 && !value.equals(values.get(settingsEntry.getKey()))) {
-                values.put(settingsEntry.getKey(), value);
-                hasChangedSettings = true;
-            }
+                    values.put(settingsEntry.getKey(), value);
+                    hasChangedSettings = true;
+                }
         }
         if (hasChangedSettings) {
             containerElement.updateIndividualSettings(values);
@@ -2827,7 +2829,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         }
                         String checkedCategories = "";
                         if (null != entity) {
-                            checkedCategories = CmsEntity.getValueForPath(entity, new String[] {value.getPath()});
+                            checkedCategories = CmsEntity.getValueForPath(entity, value.getPath().split("/"));
                         }
                         List<String> checkedCategoryList = Arrays.asList(checkedCategories.split(","));
                         for (String category : checkedCategoryList) {
