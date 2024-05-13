@@ -42,16 +42,14 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsFileUtil;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.logging.Log;
 
 /**
@@ -82,8 +80,8 @@ public class CmsImportFolder {
     /** Will be true if the import resource is a valid ZIP file. */
     private boolean m_validZipFile;
 
-    /** The import resource ZIP stream to load resources from. */
-    private ZipInputStream m_zipStreamIn;
+    /** The import resource ZIP to load resources from. */
+    private ZipFile m_zipFile;
 
     /**
      * Default Constructor.<p>
@@ -154,10 +152,10 @@ public class CmsImportFolder {
             // first lock the destination path
             m_cms.lockResource(m_importPath);
             // import the resources
-            if (m_zipStreamIn == null) {
+            if (m_zipFile == null) {
                 importResources(m_importResource, m_importPath);
             } else {
-                importZipResource(m_zipStreamIn, m_importPath, false);
+                importZipResource(m_zipFile, m_importPath, false);
             }
             // all is done, unlock the resources
             m_cms.unlockResource(m_importPath);
@@ -166,9 +164,9 @@ public class CmsImportFolder {
                 Messages.get().container(Messages.ERR_IMPORT_FOLDER_2, importFolderName, importPath),
                 e);
         } finally {
-            if (m_zipStreamIn != null) {
+            if (m_zipFile != null) {
                 try {
-                    m_zipStreamIn.close();
+                    m_zipFile.close();
                 } catch (Exception e) {
                     LOG.info(e.getLocalizedMessage(), e);
                 }
@@ -193,17 +191,16 @@ public class CmsImportFolder {
         m_importPath = importPath;
         m_cms = cms;
         try {
-            // open the import resource
-            m_zipStreamIn = new ZipInputStream(new ByteArrayInputStream(content));
+            m_zipFile = ZipFile.builder().setByteArray(content).setBufferSize(65536).get();
             m_cms.readFolder(importPath, CmsResourceFilter.IGNORE_EXPIRATION);
             // import the resources
-            importZipResource(m_zipStreamIn, m_importPath, noSubFolder);
+            importZipResource(m_zipFile, m_importPath, noSubFolder);
         } catch (Exception e) {
             throw new CmsVfsException(Messages.get().container(Messages.ERR_IMPORT_FOLDER_1, importPath), e);
         } finally {
-            if (m_zipStreamIn != null) {
+            if (m_zipFile != null) {
                 try {
-                    m_zipStreamIn.close();
+                    m_zipFile.close();
                 } catch (Exception e) {
                     LOG.info(e.getLocalizedMessage());
                 }
@@ -233,7 +230,7 @@ public class CmsImportFolder {
         // check if this is a folder or a ZIP file
         if (m_importResource.isFile()) {
             try {
-                m_zipStreamIn = new ZipInputStream(new FileInputStream(m_importResource));
+                m_zipFile = ZipFile.builder().setFile(m_importResource).setBufferSize(65536).get();
             } catch (IOException e) {
                 // if file but no ZIP file throw an exception
                 throw new CmsVfsException(
@@ -293,8 +290,7 @@ public class CmsImportFolder {
      *
      * @throws Exception if something goes wrong during file IO
      */
-    private void importZipResource(ZipInputStream zipStreamIn, String importPath, boolean noSubFolder)
-    throws Exception {
+    private void importZipResource(ZipFile zipFile, String importPath, boolean noSubFolder) throws Exception {
 
         // HACK: this method looks very crude, it should be re-written sometime...
 
@@ -303,16 +299,10 @@ public class CmsImportFolder {
         int entries = 0;
         byte[] buffer = null;
         boolean resourceExists;
-
-        while (true) {
+        for (ZipArchiveEntry entry : (Iterable<ZipArchiveEntry>)() -> zipFile.getEntries().asIterator()) {
             // handle the single entries ...
             j = 0;
             stop = 0;
-            // open the entry ...
-            ZipEntry entry = zipStreamIn.getNextEntry();
-            if (entry == null) {
-                break;
-            }
             entries++; // count number of entries in zip
             String actImportPath = importPath;
             String title = CmsResource.getName(entry.getName());
@@ -353,14 +343,9 @@ public class CmsImportFolder {
             if (!isFolder) {
                 // import file into cms
                 int type = OpenCms.getResourceManager().getDefaultTypeForName(path[path.length - 1]).getTypeId();
+                buffer = CmsFileUtil.readFully(zipFile.getInputStream(entry), true);
                 size = Long.valueOf(entry.getSize()).intValue();
-                if (size == -1) {
-                    buffer = CmsFileUtil.readFully(zipStreamIn, false);
-                } else {
-                    buffer = CmsFileUtil.readFully(zipStreamIn, size, false);
-                }
                 filename = actImportPath + path[path.length - 1];
-
                 try {
                     m_cms.lockResource(filename);
                     m_cms.readResource(filename);
@@ -415,11 +400,7 @@ public class CmsImportFolder {
                     }
                 }
             }
-
-            // close the entry ...
-            zipStreamIn.closeEntry();
         }
-        zipStreamIn.close();
         if (entries > 0) {
             // at least one entry, got a valid zip file ...
             m_validZipFile = true;
