@@ -76,10 +76,12 @@ public class CmsFileInfo extends JavaScriptObject {
      * @return the file size
      */
     public final native int getFileSize() /*-{
-
-                                          return this.size ? this.size : this.fileSize;
-
-                                          }-*/;
+        if (typeof this.size === 'undefined') {
+            return this.fileSize;
+        } else {
+            return this.size;
+        }
+    }-*/;
 
     /**
      * Returns the suffix of the file name with the dot at the beginning e.g. <code>".zip"</code>.<p>

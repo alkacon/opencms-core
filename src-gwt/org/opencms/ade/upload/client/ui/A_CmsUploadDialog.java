@@ -593,7 +593,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
                 }
 
                 // add those files to the list of files to upload that potential candidates
-                if (!isTooLarge(file) && (file.getFileSize() != 0) && !restricted) {
+                if (!isTooLarge(file) && !restricted) {
                     m_filesToUpload.put(file.getFileName(), file);
                 }
 
