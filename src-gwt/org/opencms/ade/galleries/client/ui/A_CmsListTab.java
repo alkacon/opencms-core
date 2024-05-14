@@ -736,6 +736,9 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
         if (resultItem == null) {
             // if list is not empty
             for (int i = 0; i < list.getWidgetCount(); i++) {
+                if (!(list.getWidget(i) instanceof CmsTreeItem)) {
+                    continue;
+                }
                 CmsTreeItem listItem = (CmsTreeItem)list.getWidget(i);
                 if (listItem.getChildCount() == 0) {
                     continue;
