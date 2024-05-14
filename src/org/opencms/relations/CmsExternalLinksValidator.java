@@ -33,6 +33,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
@@ -44,10 +45,21 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Class to validate pointer links.<p>
@@ -55,6 +67,9 @@ import java.util.Map;
  * @since 6.0.0
  */
 public class CmsExternalLinksValidator implements I_CmsScheduledJob {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsExternalLinksValidator.class);
 
     /** The report for the output. */
     private I_CmsReport m_report;
@@ -79,23 +94,78 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
         try {
             if (!uri.isAbsolute()) {
                 return cms.existsResource(cms.getRequestContext().removeSiteRoot(uri.getPath()));
-            } else {
-                URL url = uri.toURL();
-                if ("http".equals(url.getProtocol())) {
-                    // ensure that file is encoded properly
-                    HttpURLConnection httpcon = (HttpURLConnection)url.openConnection();
-                    int responseCode = httpcon.getResponseCode();
-                    // accepting all status codes 2xx success and 3xx - redirect
-                    return ((responseCode >= 200) && (responseCode < 400));
-                } else {
-                    return true;
-                }
             }
+            URL url = uri.toURL();
+            String protocol = url.getProtocol();
+            if ("http".equals(protocol) || "https".equals(protocol)) {
+                // ensure that file is encoded properly
+                HttpURLConnection httpcon = (HttpURLConnection)url.openConnection();
+                adjustConnection(httpcon);
+                int responseCode = httpcon.getResponseCode();
+                // accepting all status codes 2xx success and 3xx - redirect
+                return ((responseCode >= 200) && (responseCode < 400));
+            }
+            return true;
         } catch (MalformedURLException mue) {
             return false;
         } catch (Exception ex) {
             return false;
         }
+    }
+
+    /**
+     * Adjust the connection to retrieve the newsletter. Currently, SSL-Certificate verification can be disabled.
+     *
+     * @param con the connection to manipulate
+     */
+    private static void adjustConnection(HttpURLConnection con) {
+
+        con.setConnectTimeout(2000); // wait at most two second for the connection
+        con.setReadTimeout(8000); // wait at most 8 seconds for reading
+        if (con instanceof HttpsURLConnection) {
+            HttpsURLConnection httpsUrlConnection = (HttpsURLConnection)con;
+            // Create a trust manager that does not validate certificate chains
+            TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
+
+                @Override
+                public void checkClientTrusted(X509Certificate[] certs, String authType) {
+
+                    // do nothing
+                }
+
+                @Override
+                public void checkServerTrusted(X509Certificate[] certs, String authType) {
+
+                    // do nothing
+                }
+
+                @Override
+                public X509Certificate[] getAcceptedIssuers() {
+
+                    return null;
+                }
+            }};
+
+            // Set the all-trusting trust manager for the connection
+            try {
+                SSLContext sc = SSLContext.getInstance("TLS");
+                sc.init(null, trustAllCerts, new SecureRandom());
+                httpsUrlConnection.setSSLSocketFactory(sc.getSocketFactory());
+            } catch (Exception e) {
+                LOG.warn(e, e);
+            }
+
+            // do not verify hostnames
+            httpsUrlConnection.setHostnameVerifier(new HostnameVerifier() {
+
+                @Override
+                public boolean verify(String arg0, SSLSession arg1) {
+
+                    return true;
+                }
+            });
+        }
+
     }
 
     /**
@@ -196,4 +266,5 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
 
         OpenCms.getLinkManager().setPointerLinkValidationResult(new CmsExternalLinksValidationResult(brokenLinks));
     }
+
 }
