@@ -303,6 +303,16 @@ public interface I_CmsVfsServiceAsync {
     void getSitePath(CmsUUID structureId, AsyncCallback<String> callback);
 
     /**
+     * Gets the site paths corresponding to a list of structure ids.
+     *
+     * <p>If for any of the structure ids in the input list the corresponding resource can not be read, it will be skipped.
+     *
+     * @param ids a list of structure ids
+     * @param callback the result callback
+     */
+    void getSitePaths(List<CmsUUID> ids, AsyncCallback<List<String>> callback);
+
+    /**
      * Gets the structure id for the given site path.
      *
      * @param vfsPath a site path

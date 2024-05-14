@@ -67,6 +67,7 @@ import org.opencms.gwt.shared.I_CmsUploadConstants;
 import org.opencms.gwt.shared.rpc.I_CmsUploadService;
 import org.opencms.gwt.shared.rpc.I_CmsUploadServiceAsync;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,6 +77,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.common.base.Supplier;
 import com.google.gwt.core.client.GWT;
@@ -95,6 +97,7 @@ import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
@@ -438,8 +441,27 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
                         public void onClose(CloseEvent<PopupPanel> event) {
 
+
+
                             if (context != null) {
-                                context.onUploadFinished(m_uploadedFiles);
+                                List<CmsUUID> actualIds = uploadedFileIds.stream().map(id -> new CmsUUID(id)).collect(Collectors.toList());
+                                CmsCoreProvider.getVfsService().getSitePaths(actualIds, new AsyncCallback<List<String>>() {
+
+                                    @Override
+                                    public void onFailure(Throwable caught) {
+                                    }
+
+                                    @Override
+                                    public void onSuccess(List<String> result) {
+                                        for (int i = 0; i < result.size(); i++) {
+                                            String path = result.get(i);
+                                            if (path.startsWith(m_targetFolder)) {
+                                                result.set(i, path.substring(m_targetFolder.length()));
+                                            }
+                                        }
+                                        context.onUploadFinished(result);
+                                    }
+                                });
                             }
                         }
                     };
