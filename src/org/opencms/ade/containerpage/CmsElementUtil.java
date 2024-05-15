@@ -1023,7 +1023,7 @@ public class CmsElementUtil {
 
         result.setCreateNew(elementBean.isCreateNew());
         CmsResourceTypeConfig typeConfig = getConfigData().getResourceType(typeName);
-        if (typeConfig != null) {
+        if (!elementBean.isInMemoryOnly() && (typeConfig != null)) {
             result.setCopyInModels(typeConfig.isCopyInModels());
             if (typeConfig.isCheckReuse()) {
                 final Set<CmsUUID> pageAndAttachments = getPageAndDetailOnlyIds();

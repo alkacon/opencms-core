@@ -809,6 +809,9 @@ public class CmsADEManager {
      */
     public Stream<CmsResource> getOfflineElementUses(CmsResource resource) {
 
+        if ((resource == null) || resource.getStructureId().isNullUUID()) {
+            return Stream.of();
+        }
         try {
             List<CmsRelation> relations = m_offlineCms.readRelations(
                 CmsRelationFilter.relationsToStructureId(resource.getStructureId()));
