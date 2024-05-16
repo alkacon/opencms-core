@@ -126,6 +126,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /** The original position of the draggable. */
     private int m_originalIndex;
 
+    /** Tracks whether an element has been added to the page (rather than just moved around). */
+    private boolean m_added;
+
     /**
      * Constructor.<p>
      *
@@ -275,6 +278,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             m_imageDndController = null;
             return;
         }
+        m_added = (draggable instanceof CmsListItem) && (target instanceof CmsContainerPageContainer);
+
         if (target != m_initialDropTarget) {
             if (target instanceof I_CmsDropContainer) {
                 final I_CmsDropContainer container = (I_CmsDropContainer)target;
@@ -426,6 +431,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     container.insert((CmsContainerPageElementPanel)draggable, container.getPlaceholderIndex());
                 }
                 m_controller.addToRecentList(m_draggableId, null);
+                m_controller.sendElementMoved((CmsContainerPageElementPanel)draggable);
                 // changes are only relevant to the container page if not group-container editing
                 if (!m_controller.isGroupcontainerEditing()) {
                     m_controller.setPageChanged();
@@ -697,6 +703,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     String containerId = container.getContainerId();
                     Map<String, String> settings = elementData.getSettings();
                     m_controller.updateServerElementFormatter(clientId, containerId, settings);
+                }
+                if (m_added) {
+                    m_controller.sendElementAdded(containerElement);
+                } else {
+                    m_controller.sendElementMoved(containerElement);
                 }
             }
             if (m_controller.isGroupcontainerEditing()) {
