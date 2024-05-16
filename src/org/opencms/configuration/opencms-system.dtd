@@ -96,6 +96,7 @@
 <!ELEMENT mailfrom (#PCDATA)>
 <!ELEMENT mailhost EMPTY>
 <!ATTLIST mailhost
+	id CDATA #IMPLIED
 	name CDATA #REQUIRED
 	order CDATA #IMPLIED
 	port CDATA #IMPLIED

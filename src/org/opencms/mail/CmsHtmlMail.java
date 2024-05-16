@@ -57,7 +57,7 @@ public class CmsHtmlMail extends HtmlEmail {
     }
 
     /**
-     * Constructor of a CmsHtmlMail where the mail host is explicitly chosen..<p>
+     * Constructor of a CmsHtmlMail where the mail host is explicitly chosen.<p>
      *
      * The mail from address is set to the OpenCms
      * default values of the configuration.<p>

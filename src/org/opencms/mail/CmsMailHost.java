@@ -55,9 +55,13 @@ public class CmsMailHost implements Comparable<CmsMailHost> {
     /** The security setting. */
     private String m_security;
 
+    /** The id of the mail host. */
+    private String m_id;
+
     /**
      * Creates a new mail host.<p>
      *
+     * @param id the id of the mail host
      * @param hostname the name of the mail host
      * @param order the order in which the host is tried
      * @param protocol the protocol to use (default "smtp")
@@ -73,7 +77,8 @@ public class CmsMailHost implements Comparable<CmsMailHost> {
         String protocol,
         String security,
         String username,
-        String password) {
+        String password,
+        String id) {
 
         m_hostname = hostname;
         int portInt = port.intValue();
@@ -83,6 +88,7 @@ public class CmsMailHost implements Comparable<CmsMailHost> {
         m_password = password;
         m_security = security;
         m_order = order;
+        m_id = id;
     }
 
     /**
@@ -122,6 +128,16 @@ public class CmsMailHost implements Comparable<CmsMailHost> {
     public String getHostname() {
 
         return m_hostname;
+    }
+
+    /**
+     * Returns the id of this mail host.<p>
+     *
+     * @return the id of this mail host
+     */
+    public String getId() {
+
+        return m_id;
     }
 
     /**
@@ -231,6 +247,8 @@ public class CmsMailHost implements Comparable<CmsMailHost> {
             buf.append(" password=");
             buf.append(getPassword());
         }
+        buf.append(" id=");
+        buf.append(getId());
         return buf.toString();
     }
 }

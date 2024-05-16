@@ -106,6 +106,31 @@ public class CmsMailSettings {
         String username,
         String password) {
 
+        addMailHost(hostname, "25", order, protocol, null, username, password, null);
+    }
+
+    /**
+       * Adds a new mail host to the internal list of mail hosts.<p>
+       *
+       * @param id the id of the mail host
+       * @param hostname the name of the mail host
+       * @param port the port of the mail host
+       * @param order the order in which the host is tried
+       * @param protocol the protocol to use (default "smtp")
+       * @param security the security mode
+       * @param username the user name to use for authentication
+       * @param password the password to use for authentication
+       */
+    public void addMailHost(
+        String hostname,
+        String port,
+        String order,
+        String protocol,
+        String security,
+        String username,
+        String password,
+        String id) {
+
         Integer thePort;
         try {
             thePort = Integer.valueOf(port);
@@ -123,7 +148,7 @@ public class CmsMailSettings {
             // valueOf: use jdk int cache if possible and not new operator:
             theOrder = Integer.valueOf(m_orderDefault);
         }
-        CmsMailHost host = new CmsMailHost(hostname, thePort, theOrder, protocol, security, username, password);
+        CmsMailHost host = new CmsMailHost(hostname, thePort, theOrder, protocol, security, username, password, id);
         m_mailHosts.add(host);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.LOG_ADD_HOST_1, host));
@@ -149,6 +174,31 @@ public class CmsMailSettings {
     public String getMailFromDefault() {
 
         return m_mailFromDefault;
+    }
+
+    /**
+     * Returns a mail host for a given id.<p>
+     *
+     * @param id the id
+     * @return the mail host
+     */
+    public CmsMailHost getMailHost(String id) {
+
+        if (id == null) {
+            return null;
+        }
+        List<CmsMailHost> filtered = new ArrayList<CmsMailHost>();
+        for (CmsMailHost mailHost : m_mailHosts) {
+            if ((mailHost.getId() != null) && mailHost.getId().equals(id)) {
+                filtered.add(mailHost);
+            }
+        }
+        if (filtered.isEmpty()) {
+            return null;
+        } else {
+            Collections.sort(filtered);
+            return filtered.get(filtered.size() - 1);
+        }
     }
 
     /**
