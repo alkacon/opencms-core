@@ -209,6 +209,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The "errorPage" attribute. */
     public static final String A_ERROR_PAGE = "errorPage";
 
+    /** The "id" attribute. */
+    public static final String A_ID = "id";
+
     /** The "exclusive" attribute. */
     public static final String A_EXCLUSIVE = "exclusive";
 
@@ -1454,7 +1457,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         Iterator<CmsMailHost> hosts = m_mailSettings.getMailHosts().iterator();
         while (hosts.hasNext()) {
             CmsMailHost host = hosts.next();
-            Element hostElement = mailElement.addElement(N_MAILHOST).addAttribute(
+            Element hostElement = mailElement.addElement(N_MAILHOST).addAttribute(A_ID, host.getId()).addAttribute(
                 A_NAME,
                 host.getHostname()).addAttribute(A_PORT, Integer.toString(host.getPort())).addAttribute(
                     A_ORDER,
