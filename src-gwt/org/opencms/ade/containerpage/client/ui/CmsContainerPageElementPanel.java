@@ -58,7 +58,6 @@ import java.util.Map.Entry;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
@@ -81,6 +80,14 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
+
+import elemental2.core.JsArray;
+import elemental2.core.JsObject;
+import elemental2.dom.MutationObserver;
+import elemental2.dom.MutationObserver.MutationObserverCallbackFn;
+import elemental2.dom.MutationObserverInit;
+import elemental2.dom.MutationRecord;
+import jsinterop.base.Js;
 
 /**
  * Content element within a container-page.<p>
@@ -242,8 +249,8 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     /** The is new element type. */
     private String m_newType;
 
-    /** The registered node insert event handler. */
-    private JavaScriptObject m_nodeInsertHandler;
+    /** The registered mutation observer. */
+    private MutationObserver m_mutationObserver;
 
     /** The no edit reason, if empty editing is allowed. */
     private String m_noEditReason;
@@ -737,14 +744,16 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
                                     if (CmsContentEditor.isEditable(target)) {
                                         final Element finalTarget = target;
                                         event.cancel();
-                                        CmsContainerpageController.get().checkReuse(CmsContainerPageElementPanel.this, () -> {
-                                            CmsEditorBase.markForInlineFocus(finalTarget);
-                                            controller.getHandler().openEditorForElement(
-                                                CmsContainerPageElementPanel.this,
-                                                true,
-                                                isNew());
-                                            removeEditorHandler();
-                                        });
+                                        CmsContainerpageController.get().checkReuse(
+                                            CmsContainerPageElementPanel.this,
+                                            () -> {
+                                                CmsEditorBase.markForInlineFocus(finalTarget);
+                                                controller.getHandler().openEditorForElement(
+                                                    CmsContainerPageElementPanel.this,
+                                                    true,
+                                                    isNew());
+                                                removeEditorHandler();
+                                            });
                                         break;
                                     } else {
                                         target = target.getParentElement();
@@ -1059,7 +1068,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         }
 
         m_checkingEditables = false;
-        resetNodeInsertedHandler();
+        initMutationObserver();
     }
 
     /**
@@ -1299,6 +1308,24 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     }
 
     /**
+     * Initializes the mutation observer used for updating the edit buttons after DOM changes (e.g. pagination).
+     */
+    private void initMutationObserver() {
+
+        if (m_mutationObserver == null) {
+            MutationObserverCallbackFn callback = (JsArray<MutationRecord> records, MutationObserver obs) -> {
+                checkForEditableChanges();
+                return null;
+            };
+            m_mutationObserver = new MutationObserver(callback);
+            MutationObserverInit options = Js.cast(new JsObject());
+            options.setSubtree(true);
+            options.setChildList(true);
+            m_mutationObserver.observe(Js.cast(getElement()), options);
+        }
+    }
+
+    /**
      * Returns if the option bar position collides with any iframe child elements.<p>
      *
      * @param optionTop the option bar absolute top
@@ -1324,34 +1351,6 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         }
         return false;
     }
-
-    /**
-     * Resets the node inserted handler.<p>
-     */
-    private native void resetNodeInsertedHandler()/*-{
-		var $this = this;
-		var element = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::getElement()();
-		var handler = $this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler;
-		if (handler == null) {
-			handler = function(event) {
-				$this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::checkForEditableChanges()();
-			};
-			$this.@org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel::m_nodeInsertHandler = handler;
-		} else {
-			if (element.removeEventLister) {
-				element.removeEventListener("DOMNodeInserted", handler);
-			} else if (element.detachEvent) {
-				// IE specific
-				element.detachEvent("onDOMNodeInserted", handler);
-			}
-		}
-		if (element.addEventListener) {
-			element.addEventListener("DOMNodeInserted", handler, false);
-		} else if (element.attachEvent) {
-			// IE specific
-			element.attachEvent("onDOMNodeInserted", handler);
-		}
-    }-*/;
 
     /**
      * This method removes the option-bar widget from DOM and re-attaches it at it's original position.<p>
