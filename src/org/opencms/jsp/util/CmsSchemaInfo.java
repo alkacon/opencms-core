@@ -34,6 +34,7 @@ import org.opencms.ade.contenteditor.CmsWidgetUtil.WidgetInfo;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
+import org.opencms.jsp.util.I_CmsFormatterInfo.ResolveMode;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
@@ -64,7 +65,7 @@ public class CmsSchemaInfo {
     /**
      * Represents information about a single field in a content schema.
      */
-    public class Field {
+    public class Field implements I_CmsInfoWrapper {
 
         /** The nested fields. */
         private LinkedHashMap<String, Field> m_children = new LinkedHashMap<>();
@@ -153,7 +154,7 @@ public class CmsSchemaInfo {
          */
         public String getDescription() {
 
-            return getDescription(false);
+            return getDescription(ResolveMode.text);
         }
 
         /**
@@ -163,7 +164,17 @@ public class CmsSchemaInfo {
          */
         public String getDescriptionKey() {
 
-            return getDescription(true);
+            return getDescription(ResolveMode.key);
+        }
+
+        /**
+         * Gets the raw configured description.
+         *
+         * @return the raw configured description
+         */
+        public String getDescriptionRaw() {
+
+            return getDescription(ResolveMode.raw);
         }
 
         /**
@@ -173,7 +184,7 @@ public class CmsSchemaInfo {
          */
         public String getDisplayName() {
 
-            return getDisplayName(false);
+            return getDisplayName(ResolveMode.text);
         }
 
         /**
@@ -183,7 +194,18 @@ public class CmsSchemaInfo {
          */
         public String getDisplayNameKey() {
 
-            return getDisplayName(true);
+            return getDisplayName(ResolveMode.key);
+        }
+
+        /**
+         * Gets the raw configured string for the display name.
+         *
+         * @return the raw display name
+         */
+        public String getDisplayNameRaw() {
+
+            return getDisplayName(ResolveMode.raw);
+
         }
 
         /**
@@ -410,7 +432,7 @@ public class CmsSchemaInfo {
          * @return the description or localization key
          */
         @SuppressWarnings("synthetic-access")
-        private String getDescription(boolean keyOnly) {
+        private String getDescription(ResolveMode resolveMode) {
 
             if (m_field == null) {
                 return null;
@@ -422,28 +444,35 @@ public class CmsSchemaInfo {
                 String help = defaultHandler.getFieldHelp().get(m_field.getName());
                 if (help != null) {
                     CmsMacroResolver resolver = new CmsMacroResolver();
-                    if (keyOnly) {
-                        resolver = new CmsKeyDummyMacroResolver(resolver);
-                    }
-                    resolver.setCmsObject(m_cms);
-                    resolver.setKeepEmptyMacros(true);
-                    resolver.setMessages(m_messages);
-
-                    String val = resolver.resolveMacros(help);
-                    if (keyOnly) {
-                        return CmsKeyDummyMacroResolver.getKey(val);
+                    if (resolveMode == ResolveMode.raw) {
+                        return help;
                     } else {
-                        return val;
+                        if (resolveMode == ResolveMode.key) {
+                            resolver = new CmsKeyDummyMacroResolver(resolver);
+                        }
+                        resolver.setCmsObject(m_cms);
+                        resolver.setKeepEmptyMacros(true);
+                        resolver.setMessages(m_messages);
+
+                        String val = resolver.resolveMacros(help);
+                        if (resolveMode == ResolveMode.key) {
+                            return CmsKeyDummyMacroResolver.getKey(val);
+                        } else {
+                            return val;
+                        }
                     }
                 }
             }
             result.append(A_CmsWidget.LABEL_PREFIX);
             result.append(getTypeKey(m_field));
             result.append(A_CmsWidget.HELP_POSTFIX);
-            if (keyOnly) {
-                return result.toString();
-            } else {
-                return m_messages.keyDefault(result.toString(), null);
+            switch (resolveMode) {
+                case key:
+                case raw:
+                    return result.toString();
+                case text:
+                default:
+                    return m_messages.keyDefault(result.toString(), null);
             }
         }
 
@@ -454,7 +483,7 @@ public class CmsSchemaInfo {
          * @return the display name or localization key
          */
         @SuppressWarnings("synthetic-access")
-        private String getDisplayName(boolean keyOnly) {
+        private String getDisplayName(ResolveMode resolveMode) {
 
             if (m_field == null) {
                 return null;
@@ -464,30 +493,36 @@ public class CmsSchemaInfo {
                 CmsDefaultXmlContentHandler defaultHandler = (CmsDefaultXmlContentHandler)handler;
                 String label = defaultHandler.getFieldLabels().get(m_field.getName());
                 if (label != null) {
-                    CmsMacroResolver resolver = new CmsMacroResolver();
-                    if (keyOnly) {
-                        resolver = new CmsKeyDummyMacroResolver(resolver);
-                    }
-                    resolver.setCmsObject(m_cms);
-                    resolver.setKeepEmptyMacros(true);
-                    resolver.setMessages(m_messages);
-                    String val = resolver.resolveMacros(label);
-                    if (keyOnly) {
-                        return CmsKeyDummyMacroResolver.getKey(val);
+                    if (resolveMode == ResolveMode.raw) {
+                        return label;
                     } else {
-                        return val;
+                        CmsMacroResolver resolver = new CmsMacroResolver();
+                        if (resolveMode == ResolveMode.key) {
+                            resolver = new CmsKeyDummyMacroResolver(resolver);
+                        }
+                        resolver.setCmsObject(m_cms);
+                        resolver.setKeepEmptyMacros(true);
+                        resolver.setMessages(m_messages);
+                        String val = resolver.resolveMacros(label);
+                        if (resolveMode == ResolveMode.key) {
+                            return CmsKeyDummyMacroResolver.getKey(val);
+                        } else {
+                            return val;
+                        }
                     }
                 }
             }
             StringBuffer result = new StringBuffer(64);
             result.append(A_CmsWidget.LABEL_PREFIX);
             result.append(getTypeKey(m_field));
-            if (keyOnly) {
-                return result.toString();
-            } else {
-                return m_messages.keyDefault(result.toString(), m_field.getName());
+            switch (resolveMode) {
+                case raw:
+                case key:
+                    return result.toString();
+                case text:
+                default:
+                    return m_messages.keyDefault(result.toString(), m_field.getName());
             }
-
         }
 
         /**
@@ -540,13 +575,19 @@ public class CmsSchemaInfo {
     /**
      * Represents the a single editor tab and its fields.
      */
-    public class Tab {
+    public class Tab implements I_CmsInfoWrapper {
 
         /** The display name. */
         private String m_displayName;
 
         /** The display name key. */
         private String m_displayNameKey;
+
+        /** The raw display name string. */
+        private String m_displayNameRaw;
+
+        /** The raw description string. */
+        private String m_descriptionRaw;
 
         /** The description. */
         private String m_description;
@@ -588,6 +629,16 @@ public class CmsSchemaInfo {
         }
 
         /**
+         * Gets the raw description string.
+         *
+         * @return the raw description
+         */
+        public String getDescriptionRaw() {
+
+            return m_descriptionRaw;
+        }
+
+        /**
          * Gets the display name.
          *
          * @return the display name
@@ -605,6 +656,16 @@ public class CmsSchemaInfo {
         public String getDisplayNameKey() {
 
             return m_displayNameKey;
+        }
+
+        /**
+         * Gets the raw display name string.
+         *
+         * @return the raw display name string
+         */
+        public String getDisplayNameRaw() {
+
+            return m_displayNameRaw;
         }
 
         /**
@@ -638,6 +699,16 @@ public class CmsSchemaInfo {
         }
 
         /**
+         * Sets the raw description string.
+         *
+         * @param descriptionRaw the raw description string
+         */
+        public void setDescriptionRaw(String descriptionRaw) {
+
+            m_descriptionRaw = descriptionRaw;
+        }
+
+        /**
          * Sets the display name.
          *
          * @param displayName the new display name
@@ -655,6 +726,16 @@ public class CmsSchemaInfo {
         public void setDisplayNameKey(String displayNameKey) {
 
             m_displayNameKey = displayNameKey;
+        }
+
+        /**
+         * Sets the raw display name string.
+         *
+         * @param displayNameRaw the raw display name string
+         */
+        public void setDisplayNameRaw(String displayNameRaw) {
+
+            m_displayNameRaw = displayNameRaw;
         }
 
     }
@@ -773,8 +854,11 @@ public class CmsSchemaInfo {
 
                     tab.setDisplayName(tabs.get(index).getTabName());
                     tab.setDisplayNameKey(tabs.get(index).getTabNameKey());
+                    tab.setDisplayNameRaw(tabs.get(index).getTabNameRaw());
                     tab.setDescriptionKey(tabs.get(index).getDescriptionKey());
+                    tab.setDescriptionRaw(tabs.get(index).getDescriptionRaw());
                     tab.setDescription(tabs.get(index).getDescription());
+
                     result.add(tab);
                     index += 1;
                 }

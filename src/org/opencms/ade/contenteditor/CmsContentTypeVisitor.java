@@ -339,6 +339,7 @@ public class CmsContentTypeVisitor {
                     tabName = messages.keyDefault(
                         A_CmsWidget.LABEL_PREFIX + definition.getInnerName() + "." + xmlTab.getTabName(),
                         xmlTab.getTabName());
+
                     tabKey = A_CmsWidget.LABEL_PREFIX + definition.getInnerName() + "." + xmlTab.getTabName();
                 }
 
@@ -352,11 +353,13 @@ public class CmsContentTypeVisitor {
                     new CmsTabInfo(
                         tabName,
                         tabKey,
+                        xmlTab.getTabName(),
                         xmlTab.getIdName(),
                         xmlTab.getStartName(),
                         xmlTab.isCollapsed(),
                         resolver.resolveMacros(xmlTab.getDescription()),
-                        descriptionKey));
+                        descriptionKey,
+                        xmlTab.getDescription()));
             }
         }
         return result;

@@ -55,6 +55,12 @@ public class CmsTabInfo implements IsSerializable {
     /** Localization key for the description. */
     private String m_descriptionKey;
 
+    /** The raw configured tab name string. */
+    private String m_tabRaw;
+
+    /** The raw configured description string. */
+    private String m_descriptionRaw;
+
     /**
      * Constructor.<p>
      *
@@ -66,15 +72,26 @@ public class CmsTabInfo implements IsSerializable {
      * @param description the description HTML
      * @param descriptionKey the description key
      */
-    public CmsTabInfo(String tabName, String tabKey,  String tabId, String startName, boolean collapsed, String description, String descriptionKey) {
+    public CmsTabInfo(
+        String tabName,
+        String tabKey,
+        String tabRaw,
+        String tabId,
+        String startName,
+        boolean collapsed,
+        String description,
+        String descriptionKey,
+        String descriptionRaw) {
 
         m_tabName = tabName;
-        m_tabKey  = tabKey;
+        m_tabKey = tabKey;
+        m_tabRaw = tabRaw;
         m_tabId = tabId;
         m_startName = startName;
         m_collapsed = collapsed;
         m_description = description;
         m_descriptionKey = descriptionKey;
+        m_descriptionRaw = descriptionRaw;
     }
 
     /**
@@ -101,7 +118,19 @@ public class CmsTabInfo implements IsSerializable {
      * @return the localization key for the description
      */
     public String getDescriptionKey() {
+
         return m_descriptionKey;
+    }
+
+    /**
+     * Gets the raw configured description string.
+     *
+     * @return the raw description
+     */
+    public String getDescriptionRaw() {
+
+        return m_descriptionRaw;
+
     }
 
     /**
@@ -133,13 +162,25 @@ public class CmsTabInfo implements IsSerializable {
 
         return m_tabName;
     }
+
     /**
      * Gets the localization key for the tab name.
      *
      * @return the tab name localization key
      */
     public String getTabNameKey() {
+
         return m_tabKey;
+    }
+
+    /**
+     * Gets the raw configured tab name.
+     *
+     * @return the raw configured tab name
+     */
+    public String getTabNameRaw() {
+
+        return m_tabRaw;
     }
 
     /**

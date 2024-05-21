@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
 /**
  * Wrapper used to access element setting definition information in JSP code.
  */
-public class CmsSettingDefinitionWrapper {
+public class CmsSettingDefinitionWrapper implements I_CmsInfoWrapper {
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSettingDefinitionWrapper.class);
@@ -112,6 +112,16 @@ public class CmsSettingDefinitionWrapper {
     }
 
     /**
+     * Gets the raw description configured for the setting.
+     *
+     * @return the raw description
+     */
+    public String getDescriptionRaw() {
+
+        return m_rawDefinition.getDescription();
+    }
+
+    /**
      * Gets the display name.
      *
      * @return the display name
@@ -129,6 +139,15 @@ public class CmsSettingDefinitionWrapper {
     public String getDisplayNameKey() {
 
         return CmsKeyDummyMacroResolver.getKey(m_definitionWithKeys.getNiceName());
+    }
+
+    /**
+     * Gets the raw configured display name.
+     *
+     * @return the raw display name
+     */
+    public String getDisplayNameRaw() {
+        return m_rawDefinition.getNiceName();
     }
 
     /**

@@ -149,7 +149,7 @@ public class CmsFormatterInfoWrapper implements I_CmsFormatterInfo {
     }
 
     /**
-     * Gets the localized description
+     * Gets the localized description.
      *
      * @return the description
      */

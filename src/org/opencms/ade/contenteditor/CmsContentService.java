@@ -2331,9 +2331,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         new CmsTabInfo(
                             Messages.get().getBundle(workplaceLocale).key(Messages.GUI_CONTENT_TAB_LABEL_0),
                             Messages.GUI_CONTENT_TAB_LABEL_0,
+                            Messages.GUI_CONTENT_TAB_LABEL_0,
                             "content",
                             firstContentAttributeName.substring(entity.getTypeName().length() + 1),
                             false,
+                            null,
                             null,
                             null));
                 }
@@ -2342,10 +2344,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         new CmsTabInfo(
                             Messages.get().getBundle(workplaceLocale).key(Messages.GUI_SETTINGS_TAB_LABEL_0),
                             Messages.GUI_SETTINGS_TAB_LABEL_0,
+                            Messages.GUI_SETTINGS_TAB_LABEL_0,
                             CmsContentDefinition.SETTINGS_TAB_ID,
                             CmsFileUtil.removeLeadingSeparator(addedVisibleAttrs.iterator().next()),
                             false,
                             Messages.get().getBundle(workplaceLocale).key(Messages.GUI_SETTINGS_TAB_DESCRIPTION_0),
+                            null,
                             null));
                 }
             }
@@ -2515,9 +2519,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)
                 && !CmsGwtConstants.HIDDEN_SETTINGS_WIDGET_NAME.equals(settingsEntry.getValue().getWidget())
                 && !value.equals(values.get(settingsEntry.getKey()))) {
-                    values.put(settingsEntry.getKey(), value);
-                    hasChangedSettings = true;
-                }
+                values.put(settingsEntry.getKey(), value);
+                hasChangedSettings = true;
+            }
         }
         if (hasChangedSettings) {
             containerElement.updateIndividualSettings(values);

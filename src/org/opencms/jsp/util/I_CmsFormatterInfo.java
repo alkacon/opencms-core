@@ -32,7 +32,21 @@ import java.util.Locale;
 /**
  * Common interface for accessing formatter / resource type infos in JSPs.
  */
-public interface I_CmsFormatterInfo {
+public interface I_CmsFormatterInfo extends I_CmsInfoWrapper {
+
+    /**
+     * Mode which controls whether / how localized strings should be resolved.
+     */
+    enum ResolveMode {
+        /** Fully resolve localized string. */
+        text,
+
+        /** Tries to get the localization key itself. */
+        key,
+
+        /** Get the whole raw configured string including macro characters. */
+        raw;
+    }
 
     /**
      * Gets the description in the given locale.
@@ -41,27 +55,6 @@ public interface I_CmsFormatterInfo {
      * @return the description
      */
     String description(Locale l);
-
-    /**
-     * Gets the description in the current locale.
-     *
-     * @return the locale to use
-     */
-    String getDescription();
-
-    /**
-     * Returns the localization key for the description if one was used, and null otherwise.
-     *
-     * @return the localization key
-     */
-    String getDescriptionKey();
-
-    /**
-     * Gets the raw description, without resolving any macros.
-     *
-     * @return the raw description
-     */
-    String getDescriptionRaw();
 
     /**
      * Checks if this is active.
