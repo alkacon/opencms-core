@@ -745,10 +745,25 @@ public final class CmsContainerpageController {
     public static final String EVENT_ELEMENT_ADDED = "ocElementAdded";
 
     /** Custom event name. */
+    public static final String EVENT_DRAG = "ocDrag";
+
+    /** Custom event name. */
+    public static final String EVENT_DRAG_STARTED = "ocDragStarted";
+
+    /** Custom event name. */
+    public static final String EVENT_DRAG_FINISHED = "ocDragFinished";
+
+    /** Custom event name. */
     public static final String EVENT_ELEMENT_DELETED = "ocElementDeleted";
 
     /** Custom event name. */
     public static final String EVENT_ELEMENT_EDITED = "ocElementEdited";
+
+    /** Custom event name. */
+    public static final String EVENT_ELEMENT_EDITED_CONTENT = "ocElementEditedContent";
+
+    /** Custom event name. */
+    public static final String EVENT_ELEMENT_EDITED_SETTINGS = "ocElementEditedSettings";
 
     /** Custom event name. */
     public static final String EVENT_ELEMENT_MODIFIED = "ocElementModified";
@@ -3513,6 +3528,42 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Sends the ocDragFinished event.
+     *
+     * @param dragElement the drag element
+     * @param target the target element
+     */
+    public void sendDragFinished(Element dragElement, Element target) {
+
+
+        I_EventDetails details = Js.cast(new JsObject());
+        if (dragElement != null) {
+            details.setElement(Js.cast(dragElement));
+        }
+        if (target != null) {
+            final Element parentContainerElement = CmsDomUtil.getAncestor(target, CmsContainerElement.CLASS_CONTAINER);
+            details.setContainer(Js.cast(parentContainerElement));
+        }
+        sendEvent(EVENT_DRAG_FINISHED, details);
+        I_EventDetails details2 = copyEventDetails(details);
+        details2.setType("finish");
+        sendEvent(EVENT_DRAG, details2);
+    }
+
+
+    /**
+     * Sends the ocDragStarted event.
+     */
+    public void sendDragStarted() {
+
+        I_EventDetails details = Js.cast(new JsObject());
+        sendEvent(EVENT_DRAG_STARTED, details);
+        I_EventDetails details2 = copyEventDetails(details);
+        details2.setType("start");
+        sendEvent(EVENT_DRAG, details2);
+    }
+
+    /**
      * Sends the custom 'ocElementAdded' event for added container elements.
      *
      * @param widget the container element
@@ -3538,16 +3589,32 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Sends the custom 'ocElementEdited' event for an edited container element.
+     * Sends the custom 'ocElementEditedContent' event for an edited container element.
      *
      * @param widget the container element
      */
-    public void sendElementEdited(CmsContainerPageElementPanel widget) {
+    public void sendElementEditedContent(CmsContainerPageElementPanel widget) {
 
         if (widget != null) {
             I_EventDetails details = createEventDetails(widget);
+            sendEvent(EVENT_ELEMENT_EDITED_CONTENT, details);
             sendEvent(EVENT_ELEMENT_EDITED, details);
-            sendEvent(EVENT_ELEMENT_MODIFIED, addTypeToDetails(details, "edit"));
+            sendEvent(EVENT_ELEMENT_MODIFIED, addTypeToDetails(details, "editContent"));
+        }
+    }
+
+    /**
+     * Sends the custom 'ocElementEditedSettings' event for an edited container element.
+     *
+     * @param widget the container element
+     */
+    public void sendElementEditedSettings(CmsContainerPageElementPanel widget) {
+
+        if (widget != null) {
+            I_EventDetails details = createEventDetails(widget);
+            sendEvent(EVENT_ELEMENT_EDITED_SETTINGS, details);
+            sendEvent(EVENT_ELEMENT_EDITED, details);
+            sendEvent(EVENT_ELEMENT_MODIFIED, addTypeToDetails(details, "editSettings"));
         }
     }
 

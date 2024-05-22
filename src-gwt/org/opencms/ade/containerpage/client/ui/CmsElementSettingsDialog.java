@@ -714,7 +714,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
                     if (m_modelGroupSelect != null) {
                         m_controller.setModelGroupElementId(changeModelGroupId);
                     }
-                    m_controller.sendElementEdited(result);
+                    m_controller.sendElementEditedSettings(result);
                 }
             });
     }

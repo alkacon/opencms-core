@@ -1172,6 +1172,9 @@ public final class CmsDomUtil {
      * @return the matching element
      */
     public static Element getAncestor(Element element, String className) {
+        if (element == null) {
+            return null;
+        }
 
         if (hasClass(className, element)) {
             return element;

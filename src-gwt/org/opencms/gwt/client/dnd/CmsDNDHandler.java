@@ -803,6 +803,7 @@ public class CmsDNDHandler implements MouseDownHandler {
                 controller.onDragCancel(draggable, null, CmsDNDHandler.this);
                 draggable.onDragCancel();
                 clear();
+                controller.postClear(draggable, null);
             }
         };
         showEndAnimation(callback, m_startTop, m_startLeft, false);
@@ -828,11 +829,11 @@ public class CmsDNDHandler implements MouseDownHandler {
              * @see com.google.gwt.user.client.Command#execute()
              */
             public void execute() {
-
                 controller.onDrop(draggable, target, CmsDNDHandler.this);
                 target.onDrop(draggable);
                 draggable.onDrop(target);
                 clear();
+                controller.postClear(draggable, target);
             }
         };
         CmsPositionBean placeholderPosition = CmsPositionBean.getBoundingClientRect(m_placeholder);

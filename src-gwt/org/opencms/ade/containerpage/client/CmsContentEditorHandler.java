@@ -141,7 +141,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
             allWidgets.addAll(widgets);
             reloadCounter[0] -= 1;
             if (reloadCounter[0] <= 0) {
-                allWidgets.forEach(widget -> m_handler.m_controller.sendElementEdited(widget));
+                allWidgets.forEach(widget -> m_handler.m_controller.sendElementEditedContent(widget));
             }
         };
 

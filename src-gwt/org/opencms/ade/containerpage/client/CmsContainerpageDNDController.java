@@ -53,6 +53,7 @@ import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -63,6 +64,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Function;
 
 import com.google.common.base.Objects;
 import com.google.gwt.core.client.Scheduler;
@@ -263,6 +265,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         if (!(target instanceof CmsContainerPageContainer)) {
             handler.setStartPosition(-1, 0);
         }
+        m_controller.sendDragStarted();
         return true;
 
     }
@@ -421,29 +424,29 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         } else if ((target instanceof I_CmsDropContainer)
             && (draggable instanceof CmsContainerPageElementPanel)
             && isChangedPosition(target)) {
-                CmsDomUtil.showOverlay(draggable.getElement(), false);
-                I_CmsDropContainer container = (I_CmsDropContainer)target;
-                int count = container.getWidgetCount();
-                handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
-                if (container.getPlaceholderIndex() >= count) {
-                    container.add((CmsContainerPageElementPanel)draggable);
-                } else {
-                    container.insert((CmsContainerPageElementPanel)draggable, container.getPlaceholderIndex());
-                }
-                m_controller.addToRecentList(m_draggableId, null);
-                m_controller.sendElementMoved((CmsContainerPageElementPanel)draggable);
-                // changes are only relevant to the container page if not group-container editing
-                if (!m_controller.isGroupcontainerEditing()) {
-                    m_controller.setPageChanged();
-                }
-            } else if (draggable instanceof CmsContainerPageElementPanel) {
-                CmsDomUtil.showOverlay(draggable.getElement(), false);
-                // to reset mouse over state remove and attach the option bar
-                CmsContainerPageElementPanel containerElement = (CmsContainerPageElementPanel)draggable;
-                CmsElementOptionBar optionBar = containerElement.getElementOptionBar();
-                optionBar.removeFromParent();
-                containerElement.setElementOptionBar(optionBar);
+            CmsDomUtil.showOverlay(draggable.getElement(), false);
+            I_CmsDropContainer container = (I_CmsDropContainer)target;
+            int count = container.getWidgetCount();
+            handler.getPlaceholder().getStyle().setDisplay(Display.NONE);
+            if (container.getPlaceholderIndex() >= count) {
+                container.add((CmsContainerPageElementPanel)draggable);
+            } else {
+                container.insert((CmsContainerPageElementPanel)draggable, container.getPlaceholderIndex());
             }
+            m_controller.addToRecentList(m_draggableId, null);
+            m_controller.sendElementMoved((CmsContainerPageElementPanel)draggable);
+            // changes are only relevant to the container page if not group-container editing
+            if (!m_controller.isGroupcontainerEditing()) {
+                m_controller.setPageChanged();
+            }
+        } else if (draggable instanceof CmsContainerPageElementPanel) {
+            CmsDomUtil.showOverlay(draggable.getElement(), false);
+            // to reset mouse over state remove and attach the option bar
+            CmsContainerPageElementPanel containerElement = (CmsContainerPageElementPanel)draggable;
+            CmsElementOptionBar optionBar = containerElement.getElementOptionBar();
+            optionBar.removeFromParent();
+            containerElement.setElementOptionBar(optionBar);
+        }
         stopDrag(handler);
     }
 
@@ -513,6 +516,23 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             }
         }
         updateHighlighting(false);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDNDController#postClear(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget)
+     */
+    @Override
+    public void postClear(I_CmsDraggable draggable, I_CmsDropTarget target) {
+
+        Element dragElem = null;
+        if (draggable != null) {
+            dragElem = draggable.getElement();
+        }
+        Element targetElem = null;
+        if (target != null) {
+            targetElem = target.getElement();
+        }
+        m_controller.sendDragFinished(dragElem, targetElem);
     }
 
     /**

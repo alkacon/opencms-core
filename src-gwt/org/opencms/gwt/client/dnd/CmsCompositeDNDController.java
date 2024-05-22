@@ -145,4 +145,15 @@ public class CmsCompositeDNDController implements I_CmsDNDController {
         }
     }
 
+    /**
+     * @see org.opencms.gwt.client.dnd.I_CmsDNDController#postClear(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget)
+     */
+    @Override
+    public void postClear(I_CmsDraggable draggable, I_CmsDropTarget target) {
+        m_controllers.forEach(controller -> {
+            controller.postClear(draggable, target);
+
+        });
+    }
+
 }
