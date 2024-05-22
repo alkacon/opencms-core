@@ -37,11 +37,12 @@ import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.AbstractCollection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -236,6 +237,17 @@ public class CmsJspLinkWrapper extends AbstractCollection<String> {
     }
 
     /**
+     * Converts the wrapped string to an URI object and returns it.
+     *
+     * <p>If the wrapped string cannont be converted, returns null.
+     *
+     * @return the URI object for the wrapped string, or null if conversion fails
+     */
+    public URI getToURI() {
+        return toURI();
+    }
+
+    /**
      * @see org.opencms.jsp.util.A_CmsJspValueWrapper#hashCode()
      */
     @Override
@@ -290,5 +302,24 @@ public class CmsJspLinkWrapper extends AbstractCollection<String> {
     public String toString() {
 
         return getLink();
+    }
+
+    /**
+     * Converts the wrapped string to an URI object and returns it.
+     *
+     * <p>If the wrapped string cannont be converted, returns null.
+     *
+     * @return the URI object for the wrapped string, or null if conversion fails
+     */
+    public URI toURI() {
+
+        if (m_link == null) {
+            return null;
+        }
+        try {
+            return new URI(m_link);
+        } catch (URISyntaxException e) {
+            return null;
+        }
     }
 }
