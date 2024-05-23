@@ -102,6 +102,12 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** The name of the VFS property that controls the caching. */
     public static final String PROPERTY_CACHE = "cache";
 
+    /** Property used to hide categories from the category widgets in the page/content editor.
+     *
+     * <p>If this property is set to 'true' on a category, it should never be set to 'false' on one of its subcategory.
+     * */
+    public static final String PROPERTY_CATEGORY_HIDDEN = "category.hidden";
+
     /** The property to read an additional category folder from.  */
     public static final String PROPERTY_CATEGORY_REPOSITORY = "category.repository";
 
@@ -222,11 +228,11 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** Property to exclude individual resources from search index generation. */
     public static final String PROPERTY_SEARCH_EXCLUDE = "search.exclude";
 
-    /** Property to boost certain search results. */
-    public static final String PROPERTY_SEARCH_PRIORITY = "search.priority";
-
     /** Property to exclude individual resources from search results online (Solr only). */
     public static final String PROPERTY_SEARCH_EXCLUDE_ONLINE = "search.exclude.online";
+
+    /** Property to boost certain search results. */
+    public static final String PROPERTY_SEARCH_PRIORITY = "search.priority";
 
     /** Property for secondary locales for use in the locale compare view in the sitemap editor. */
     public static final String PROPERTY_SECONDARY_LOCALES = "locale.secondary";

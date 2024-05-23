@@ -101,17 +101,17 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget, I_C
     /** Configuration parameter to set the category to display. */
     private static final String CONFIGURATION_CATEGORY = "category";
 
-    /** Set the reference url relative to which category repositories are shown. */
-    private static final String CONFIGURATION_REFPATH = "refpath";
+    /** Configuration parameter to set the collapsing state when opening the selection. */
+    private static final String CONFIGURATION_COLLAPSED = "collapsed";
 
     /** Configuration parameter to set the 'selection type' parameter. */
     private static final String CONFIGURATION_PARENTSELECTION = "parentselection";
 
+    /** Set the reference url relative to which category repositories are shown. */
+    private static final String CONFIGURATION_REFPATH = "refpath";
+
     /** Configuration parameter to set the 'selection type' parameter. */
     private static final String CONFIGURATION_SELECTIONTYPE = "selectiontype";
-
-    /** Configuration parameter to set the collapsing state when opening the selection. */
-    private static final String CONFIGURATION_COLLAPSED = "collapsed";
 
     /** Configuration parameter to set flag, indicating if categories should be shown separated by repository. */
     private static final String CONFIGURATION_SHOW_WITH_REPOSITORY = "showwithrepository";
@@ -161,17 +161,17 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget, I_C
     /** Single category folder. */
     private String m_category = "";
 
-    /** List of all possible category folder. */
-    private String m_refPath;
-
     /** Sets the value if the parent should be selected with the children. */
     private boolean m_children;
+
+    /** If true, the category selection opens with collapsed category trees. */
+    private boolean m_collapsed;
 
     /** Is true if only one value is set in xml. */
     private boolean m_isSingleValue;
 
-    /** If true, the category selection opens with collapsed category trees. */
-    private boolean m_collapsed;
+    /** List of all possible category folder. */
+    private String m_refPath;
 
     /** If true, the categories are shown separate for each repository. */
     private boolean m_showWithRepository;
@@ -444,7 +444,13 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget, I_C
                     @Override
                     public void execute() {
 
-                        CmsCoreProvider.getService().getCategories(category, true, refPath, showWithRepository, this);
+                        CmsCoreProvider.getService().getCategories(
+                            category,
+                            true,
+                            refPath,
+                            showWithRepository,
+                            m_selected,
+                            this);
 
                     }
 

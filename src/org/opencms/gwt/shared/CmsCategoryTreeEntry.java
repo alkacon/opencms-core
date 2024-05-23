@@ -44,6 +44,9 @@ public class CmsCategoryTreeEntry extends CmsCategoryBean {
     /** The children. */
     private List<CmsCategoryTreeEntry> m_children = Lists.newArrayList();
 
+    /** 'Forced visible' state. */
+    private Boolean m_forcedVisible;
+
     /**
      * Clone constructor.<p>
      *
@@ -83,6 +86,18 @@ public class CmsCategoryTreeEntry extends CmsCategoryBean {
     }
 
     /**
+     * Gets the 'forced visible' status.
+     *
+     * <p>A category tree entry with this status set to 'true' should be shown even if it is marked as hidden.
+     *
+     * @return the 'forced visible' status
+     */
+    public Boolean getForcedVisible() {
+
+        return m_forcedVisible;
+    }
+
+    /**
      * Gets the title of the category, or the name if the title is not set.<p>
      *
      * @return the title or name
@@ -104,5 +119,15 @@ public class CmsCategoryTreeEntry extends CmsCategoryBean {
     public void setChildren(List<CmsCategoryTreeEntry> children) {
 
         m_children = children;
+    }
+
+    /**
+     * Sets the 'forced visible' status.
+     *
+     * @param visibility the new value
+     */
+    public void setForcedVisible(Boolean visibility) {
+
+        m_forcedVisible = visibility;
     }
 }
