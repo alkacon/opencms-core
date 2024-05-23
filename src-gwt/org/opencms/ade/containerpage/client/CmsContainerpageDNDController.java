@@ -53,7 +53,6 @@ import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
-import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -64,7 +63,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.function.Function;
 
 import com.google.common.base.Objects;
 import com.google.gwt.core.client.Scheduler;
@@ -265,7 +263,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         if (!(target instanceof CmsContainerPageContainer)) {
             handler.setStartPosition(-1, 0);
         }
-        m_controller.sendDragStarted();
+        m_controller.sendDragStarted(m_isNew);
         return true;
 
     }
@@ -528,11 +526,13 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         if (draggable != null) {
             dragElem = draggable.getElement();
         }
+
         Element targetElem = null;
         if (target != null) {
             targetElem = target.getElement();
         }
-        m_controller.sendDragFinished(dragElem, targetElem);
+        m_controller.sendDragFinished(dragElem, targetElem, m_isNew);
+        m_isNew = false;
     }
 
     /**
@@ -975,7 +975,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         m_copyGroupId = null;
         m_currentTarget = null;
         m_currentIndex = -1;
-        m_isNew = false;
         m_controller.getHandler().deactivateMenuButton();
         final List<I_CmsDropTarget> dragTargets = new ArrayList<I_CmsDropTarget>(m_dragInfos.keySet());
         m_dragInfos.clear();

@@ -28,6 +28,7 @@
 package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
+import org.opencms.ade.containerpage.client.CmsContainerpageController.I_ReloadHandler;
 import org.opencms.ade.containerpage.client.Messages;
 import org.opencms.ade.containerpage.client.ui.groupeditor.CmsInheritanceContainerEditor;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
@@ -62,7 +63,6 @@ import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetMultiFactory;
 import org.opencms.gwt.client.util.CmsDomUtil;
-import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsGwtConstants;
@@ -689,34 +689,46 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
             }
         }
         final String changeModelGroupId = modelGroupId;
+        I_ReloadHandler reloadHandler = new I_ReloadHandler() {
+
+            CmsContainerPageElementPanel m_oldElement;
+            CmsContainerPageElementPanel m_newElement;
+
+            @Override
+            public void finish() {
+
+                if (isTemplateContextChanged()) {
+                    // if the context multiselect box isn't displayed, of course it can't change values,
+                    // and this code won't be executed.
+                    CmsContainerpageController.get().handleChangeTemplateContext(
+                        m_newElement,
+                        filteredFieldValues.get(CmsTemplateContextInfo.SETTING));
+                }
+                if (hasFormatterChanges) {
+                    updateCss();
+                }
+                if (m_newElement.getElement().getInnerHTML().contains(CmsGwtConstants.FORMATTER_RELOAD_MARKER)
+                    && !CmsContainerpageController.get().isGroupcontainerEditing()) {
+                    CmsContainerpageController.get().reloadPage();
+                }
+                if (m_modelGroupSelect != null) {
+                    m_controller.setModelGroupElementId(changeModelGroupId);
+                }
+                m_controller.sendElementEditedSettings(m_newElement, m_oldElement);
+            }
+
+            @Override
+            public void onReload(CmsContainerPageElementPanel oldElement, CmsContainerPageElementPanel newElement) {
+                m_oldElement = oldElement;
+                m_newElement = newElement;
+            }
+
+        } ;
         m_controller.reloadElementWithSettings(
             m_elementWidget,
             m_elementBean.getClientId(),
             filteredFieldValues,
-            new I_CmsSimpleCallback<CmsContainerPageElementPanel>() {
-
-                public void execute(CmsContainerPageElementPanel result) {
-
-                    if (isTemplateContextChanged()) {
-                        // if the context multiselect box isn't displayed, of course it can't change values,
-                        // and this code won't be executed.
-                        CmsContainerpageController.get().handleChangeTemplateContext(
-                            result,
-                            filteredFieldValues.get(CmsTemplateContextInfo.SETTING));
-                    }
-                    if (hasFormatterChanges) {
-                        updateCss();
-                    }
-                    if (result.getElement().getInnerHTML().contains(CmsGwtConstants.FORMATTER_RELOAD_MARKER)
-                        && !CmsContainerpageController.get().isGroupcontainerEditing()) {
-                        CmsContainerpageController.get().reloadPage();
-                    }
-                    if (m_modelGroupSelect != null) {
-                        m_controller.setModelGroupElementId(changeModelGroupId);
-                    }
-                    m_controller.sendElementEditedSettings(result);
-                }
-            });
+            reloadHandler);
     }
 
     /**
