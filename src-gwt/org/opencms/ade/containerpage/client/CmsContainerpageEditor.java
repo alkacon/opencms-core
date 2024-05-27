@@ -63,6 +63,7 @@ import org.opencms.gwt.client.util.CmsEmbeddedDialogFrame;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsGwtConstants.QuickLaunch;
+import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.gwt.shared.CmsQuickLaunchParams;
 import org.opencms.util.CmsStringUtil;
 
@@ -72,11 +73,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import elemental2.dom.DomGlobal;
 
 /**
  * The container page editor.<p>
@@ -386,13 +386,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         favLocButton.addClickHandler(clickHandler);
         m_toolbar.insertRight(favLocButton, 1);
 
-        Window.addCloseHandler(new CloseHandler<Window>() {
-
-            public void onClose(CloseEvent<Window> event) {
-
-                controller.onWindowClose();
-            }
-
+        DomGlobal.window.addEventListener("pagehide", event -> {
+            controller.onWindowClose();
         });
 
         containerpageHandler.activateSelection();

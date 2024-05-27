@@ -235,7 +235,7 @@ public class CmsAttributesDialog extends CmsFormDialog {
     private void handleAttach(AttachEvent event) {
 
         if (event.isAttached()) {
-            m_windowCloseRegistration = Window.addCloseHandler(closeEvent -> sendUnlockRequest());
+            m_windowCloseRegistration = Window.addWindowClosingHandler(closingEvent -> sendUnlockRequest());
         } else {
             m_windowCloseRegistration.removeHandler();
         }
