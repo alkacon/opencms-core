@@ -395,6 +395,10 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
 
                 public void execute(String uniqueName) {
 
+                    String suffix = "";
+                    if ((sitemapEntry.getSitePath() != null) && sitemapEntry.getSitePath().endsWith("/")) {
+                        suffix = "/";
+                    }
                     if (!uniqueName.equals(entry.getName()) && isChangedPosition(sitemapEntry, target, false)) {
                         m_controller.editAndChangeName(
                             entry,
@@ -402,9 +406,9 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
                             Collections.<CmsPropertyModification> emptyList(),
                             entry.isNew(),
                             CmsReloadMode.none);
-                        m_controller.move(entry, m_insertPath + uniqueName + "/", m_insertIndex);
+                        m_controller.move(entry, m_insertPath + uniqueName + suffix, m_insertIndex);
                     } else {
-                        m_controller.move(entry, m_insertPath + entry.getName() + "/", m_insertIndex);
+                        m_controller.move(entry, m_insertPath + entry.getName() + suffix, m_insertIndex);
                     }
                 }
             });

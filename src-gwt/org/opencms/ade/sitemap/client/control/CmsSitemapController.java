@@ -2347,9 +2347,11 @@ public class CmsSitemapController implements I_CmsSitemapController {
         for (CmsClientSitemapEntry entry : entries) {
             if (entry.getSitePath().startsWith(oldSitepath)) {
                 String currentPath = entry.getSitePath();
-                String updatedSitePath = CmsStringUtil.joinPaths(
+                String partAfterOldSitePath = currentPath.substring(oldSitepath.length());
+
+                String updatedSitePath = "".equals(partAfterOldSitePath) ? newSitepath : CmsStringUtil.joinPaths(
                     newSitepath,
-                    currentPath.substring(oldSitepath.length()));
+                    partAfterOldSitePath);
                 entry.updateSitePath(updatedSitePath, this);
             }
         }
