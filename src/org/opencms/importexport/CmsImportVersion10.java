@@ -2059,10 +2059,15 @@ public class CmsImportVersion10 implements I_CmsImport {
             String translatedName = getRequestContext().addSiteRoot(
                 CmsStringUtil.joinPaths(m_parameters.getDestinationPath(), m_destination));
 
-            boolean resourceImmutable = checkImmutable(translatedName);
+            boolean skipResource = checkImmutable(translatedName);
             translatedName = getRequestContext().removeSiteRoot(translatedName);
             // if the resource is not immutable and not on the exclude list, import it
-            if (!resourceImmutable) {
+            if (!skipResource) {
+                if (!m_hasStructureId && isFolderType(m_typeName) && getCms().existsResource(translatedName, CmsResourceFilter.ALL)) {
+                    skipResource = true;
+                }
+            }
+            if (!skipResource) {
                 // print out the information to the report
                 getReport().print(Messages.get().container(Messages.RPT_IMPORTING_0), I_CmsReport.FORMAT_NOTE);
                 getReport().print(
@@ -3584,6 +3589,23 @@ public class CmsImportVersion10 implements I_CmsImport {
             }
         }
         return m_immutables;
+    }
+
+    /**
+     * Checks if the given type name refers to a folder type.
+     *
+     * @param typeName the type name
+     * @return the type name
+     */
+    protected boolean isFolderType(String typeName) {
+        if (OpenCms.getResourceManager().hasResourceType(typeName)) {
+            try {
+                return OpenCms.getResourceManager().getResourceType(typeName).isFolder();
+            } catch (CmsLoaderException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return false;
     }
 
     /**

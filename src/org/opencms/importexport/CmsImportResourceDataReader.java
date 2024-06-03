@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -123,7 +124,8 @@ public class CmsImportResourceDataReader extends CmsImportVersion10 {
             String translatedName = getRequestContext().addSiteRoot(m_parameters.getDestinationPath() + m_destination);
             boolean resourceImmutable = checkImmutable(translatedName);
             translatedName = getRequestContext().removeSiteRoot(translatedName);
-            if (!resourceImmutable) {
+            boolean isExistingParent = !m_hasStructureId && isFolderType(m_typeName) && getCms().existsResource(translatedName, CmsResourceFilter.ALL);
+            if (!resourceImmutable && !isExistingParent) {
                 byte[] content = null;
                 if (m_source != null) {
                     content = m_helper.getFileBytes(m_source);
