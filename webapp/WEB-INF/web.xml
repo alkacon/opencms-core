@@ -110,6 +110,11 @@
         <param-name>productionMode</param-name>
         <param-value>true</param-value>
     </context-param>
+    
+    <context-param>
+    	<param-name>org.eclipse.jetty.servlet.Default.dirAllowed</param-name>
+    	<param-value>false</param-value>
+	</context-param>
 
     <!-- Disable automatic start of log4j2: when started automatically, the opencms system properties
          that allows the customization of the logging paths don't get default values. If these are not set and
