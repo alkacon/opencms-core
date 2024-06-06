@@ -55,20 +55,47 @@ public class CmsMailHost implements Comparable<CmsMailHost> {
     /** The security setting. */
     private String m_security;
 
-    /** The id of the mail host. */
+    /** The id of this mail host. */
     private String m_id;
+
+    /** The mail from address of this host. */
+    private String m_mailfrom;
 
     /**
      * Creates a new mail host.<p>
      *
-     * @param id the id of the mail host
      * @param hostname the name of the mail host
+     * @param port the port, if < 0 then 25 is used
      * @param order the order in which the host is tried
      * @param protocol the protocol to use (default "smtp")
      * @param security the security setting
      * @param username the user name to use for authentication
      * @param password the password to use for authentication
+     */
+    public CmsMailHost(
+        String hostname,
+        Integer port,
+        Integer order,
+        String protocol,
+        String security,
+        String username,
+        String password) {
+
+        this(hostname, port, order, protocol, security, username, password, null, null);
+    }
+
+    /**
+     * Creates a new mail host.<p>
+     *
+     * @param hostname the name of the mail host
      * @param port the port, if < 0 then 25 is used
+     * @param order the order in which the host is tried
+     * @param protocol the protocol to use (default "smtp")
+     * @param security the security setting
+     * @param username the user name to use for authentication
+     * @param password the password to use for authentication
+     * @param id the id of the mail host
+     * @param mailfrom the mail-from address of the mail host
      */
     public CmsMailHost(
         String hostname,
@@ -78,7 +105,8 @@ public class CmsMailHost implements Comparable<CmsMailHost> {
         String security,
         String username,
         String password,
-        String id) {
+        String id,
+        String mailfrom) {
 
         m_hostname = hostname;
         int portInt = port.intValue();
@@ -89,6 +117,7 @@ public class CmsMailHost implements Comparable<CmsMailHost> {
         m_security = security;
         m_order = order;
         m_id = id;
+        m_mailfrom = mailfrom;
     }
 
     /**
@@ -138,6 +167,15 @@ public class CmsMailHost implements Comparable<CmsMailHost> {
     public String getId() {
 
         return m_id;
+    }
+
+    /**
+     * Returns the mail from address of this host.
+     * @return the mail from address of this host
+     */
+    public String getMailfrom() {
+
+        return m_mailfrom;
     }
 
     /**
@@ -249,6 +287,8 @@ public class CmsMailHost implements Comparable<CmsMailHost> {
         }
         buf.append(" id=");
         buf.append(getId());
+        buf.append(" mailfrom=");
+        buf.append(getMailfrom());
         return buf.toString();
     }
 }

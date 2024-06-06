@@ -106,13 +106,12 @@ public class CmsMailSettings {
         String username,
         String password) {
 
-        addMailHost(hostname, "25", order, protocol, null, username, password, null);
+        addMailHost(hostname, "25", order, protocol, null, username, password, null, null);
     }
 
     /**
        * Adds a new mail host to the internal list of mail hosts.<p>
        *
-       * @param id the id of the mail host
        * @param hostname the name of the mail host
        * @param port the port of the mail host
        * @param order the order in which the host is tried
@@ -120,6 +119,8 @@ public class CmsMailSettings {
        * @param security the security mode
        * @param username the user name to use for authentication
        * @param password the password to use for authentication
+       * @param id the id of the mail host
+       * @param mailfrom the mail-from address of the mail host
        */
     public void addMailHost(
         String hostname,
@@ -129,7 +130,8 @@ public class CmsMailSettings {
         String security,
         String username,
         String password,
-        String id) {
+        String id,
+        String mailfrom) {
 
         Integer thePort;
         try {
@@ -148,7 +150,16 @@ public class CmsMailSettings {
             // valueOf: use jdk int cache if possible and not new operator:
             theOrder = Integer.valueOf(m_orderDefault);
         }
-        CmsMailHost host = new CmsMailHost(hostname, thePort, theOrder, protocol, security, username, password, id);
+        CmsMailHost host = new CmsMailHost(
+            hostname,
+            thePort,
+            theOrder,
+            protocol,
+            security,
+            username,
+            password,
+            id,
+            mailfrom);
         m_mailHosts.add(host);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.LOG_ADD_HOST_1, host));

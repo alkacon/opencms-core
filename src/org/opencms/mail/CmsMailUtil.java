@@ -53,6 +53,7 @@ public final class CmsMailUtil {
      * Hidden default constructor.<p>
      */
     private CmsMailUtil() {
+
         // hidden default constructor
     }
 
@@ -84,7 +85,10 @@ public final class CmsMailUtil {
 
         try {
             // set default mail from address
-            mail.setFrom(OpenCms.getSystemInfo().getMailSettings().getMailFromDefault());
+            String mailFrom = host.getMailfrom() != null
+            ? host.getMailfrom()
+            : OpenCms.getSystemInfo().getMailSettings().getMailFromDefault();
+            mail.setFrom(mailFrom);
         } catch (EmailException e) {
             // default email address is not valid, log error
             LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_SENDER_ADDRESS_0), e);

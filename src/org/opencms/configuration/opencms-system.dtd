@@ -103,7 +103,8 @@
 	protocol CDATA #IMPLIED
 	security CDATA #IMPLIED
 	user CDATA  #IMPLIED
-	password CDATA #IMPLIED>
+	password CDATA #IMPLIED
+	mailfrom CDATA #IMPLIED>
 
 <!--
 # Resource initializer settings.
