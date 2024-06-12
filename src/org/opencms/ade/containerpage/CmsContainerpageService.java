@@ -2415,10 +2415,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             if (idString != null) {
                 // the formatter setting has changed
                 I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(elementBean.getResource());
-                getSessionCache().addRecentFormatter(resType.getTypeName(), idString);
+                if (!(resType instanceof CmsResourceTypeFunctionConfig)) {
+                    getSessionCache().addRecentFormatter(resType.getTypeName(), idString);
+                }
             }
         }
-
     }
 
     /**
