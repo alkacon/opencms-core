@@ -82,7 +82,7 @@ public final class AllTests {
     public static Test suite() {
 
         TestSuite suite = new TestSuite("OpenCms complete tests");
-
+        suite.addTest(org.opencms.test.TestTests.suite());
         suite.addTest(org.opencms.setup.AllTests.suite());
         suite.addTest(org.opencms.ade.configuration.AllTests.suite());
         suite.addTest(org.opencms.ade.containerpage.inherited.AllTests.suite());

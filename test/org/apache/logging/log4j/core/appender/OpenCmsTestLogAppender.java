@@ -142,6 +142,10 @@ public class OpenCmsTestLogAppender extends AbstractOutputStreamAppender<OutputS
         }
 
         if (m_breakOnError) {
+            if (Thread.currentThread().getClass().getName().endsWith("CmsPublishThread")) {
+                return;
+            }
+
             int logLevel = logEvent.getLevel().intLevel();
             if ((logLevel == Level.ERROR.intLevel()) || (logLevel == Level.FATAL.intLevel())) {
                 if (logEvent.getThrownProxy() != null) {
