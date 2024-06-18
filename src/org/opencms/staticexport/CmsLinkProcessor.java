@@ -30,6 +30,7 @@ package org.opencms.staticexport;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.wrapper.CmsObjectWrapper;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -92,10 +93,10 @@ public class CmsLinkProcessor extends CmsHtmlParser {
     /** List of attributes that may contain links for the object tag ("codebase" has to be first). */
     private static final String[] OBJECT_TAG_LINKED_ATTRIBS = new String[] {"codebase", "data", "datasrc"};
 
-    /** Processing mode "process links". */
+    /** Processing mode "process links" (macros to links). */
     private static final int PROCESS_LINKS = 1;
 
-    /** Processing mode "replace links". */
+    /** Processing mode "replace links" (links to macros).  */
     private static final int REPLACE_LINKS = 0;
 
     /** The current users OpenCms context, containing the users permission and site root context. */
@@ -317,6 +318,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
             return;
         }
         CmsLink link = null;
+
         switch (m_mode) {
             case PROCESS_LINKS:
                 // macros are replaced with links
@@ -338,6 +340,20 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                     }
                     // set the real target
                     tag.setAttribute(attr, CmsEncoder.escapeXml(l));
+
+                    // In the Online project, remove href attributes with broken links from A tags.
+                    if (tag.getTagName().equalsIgnoreCase("A")
+                        && m_cms.getRequestContext().isOnlineOrEditDisabled()
+                        && link.isInternal()
+                        && (link.getResource() == null)) {
+                        // getResource() == null could either mean checkConsistency has not been called, or that the link is broken.
+                        // so we have to call checkConsistency to eliminate the first possibility.
+                        link.checkConsistency(m_cms);
+                        if (link.getResource() == null) {
+                            tag.removeAttribute(ATTRIBUTE_HREF);
+                            tag.setAttribute(CmsGwtConstants.ATTR_DEAD_LINK_MARKER, "true");
+                        }
+                    }
                 }
                 break;
             case REPLACE_LINKS:

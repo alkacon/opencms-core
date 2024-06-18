@@ -128,6 +128,9 @@ public final class CmsGwtConstants {
 
     public static final String ATTR_DATA_LISTADD = "data-oc-listadd";
 
+    /** Marker attribute for dead links. */
+    public static final String ATTR_DEAD_LINK_MARKER = "data-oc-broken-link";
+
     /** Key for the element id attribute. */
     public static final String ATTR_ELEMENT_ID = "ATTR_ELEMENT_ID";
 

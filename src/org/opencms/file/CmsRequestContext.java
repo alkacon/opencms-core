@@ -27,6 +27,7 @@
 
 package org.opencms.file;
 
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
@@ -47,6 +48,9 @@ import java.util.Map;
  */
 public final class CmsRequestContext {
 
+    /** Request context attribute for the ADE context path (should be a root path). */
+    public static final String ATTRIBUTE_ADE_CONTEXT_PATH = CmsRequestContext.class.getName() + ".ADE_CONTEXT_PATH";
+
     /** Request context attribute for indicating that an editor is currently open. */
     public static final String ATTRIBUTE_EDITOR = CmsRequestContext.class.getName() + ".ATTRIBUTE_EDITOR";
 
@@ -55,9 +59,6 @@ public final class CmsRequestContext {
 
     /** Request context attribute for indicating the model file for a create resource operation. */
     public static final String ATTRIBUTE_MODEL = CmsRequestContext.class.getName() + ".ATTRIBUTE_MODEL";
-
-    /** Request context attribute for the ADE context path (should be a root path). */
-    public static final String ATTRIBUTE_ADE_CONTEXT_PATH = CmsRequestContext.class.getName() + ".ADE_CONTEXT_PATH";
 
     /** Request context attribute for indicating content locale for a create resource operation. */
     public static final String ATTRIBUTE_NEW_RESOURCE_LOCALE = CmsRequestContext.class.getName()
@@ -492,6 +493,23 @@ public final class CmsRequestContext {
     public boolean isForceAbsoluteLinks() {
 
         return m_forceAbsoluteLinks;
+    }
+
+    /**
+     * Checks if we are currently either in the Online project or the 'direct edit disabled' mode.
+     *
+     * @return true if we are online or in 'direct edit enabled' mode
+     */
+    public boolean isOnlineOrEditDisabled() {
+
+        if (getCurrentProject().isOnlineProject()) {
+            return true;
+        }
+        Object directEdit = getAttribute(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT);
+        if (Boolean.TRUE.equals(directEdit)) {
+            return true;
+        }
+        return false;
     }
 
     /**
