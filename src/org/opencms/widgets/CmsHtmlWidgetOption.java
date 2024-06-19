@@ -101,7 +101,7 @@ public class CmsHtmlWidgetOption {
         + "[;bold;italic;underline;strikethrough;];"
         + "[;subscript;superscript;];"
         + "[;orderedlist;unorderedlist;];"
-        + "[;alignleft;aligncenter;alignright;justify;];"
+        + "[;alignleft;aligncenter;alignright;justify;typography;];"
         + "[;outdent;indent;-;blockquote;];"
         + "[;link;unlink;-;anchor;];"
         + "[;fontselect;-;fontsizeselect;];"
@@ -170,6 +170,9 @@ public class CmsHtmlWidgetOption {
     /** Option for the "mark text as deletion" button. */
     public static final String OPTION_DEL = "del";
 
+    /** If this is set, the contents of the path following the ':' will be interpreted as JSON and passed to TinyMCE directly. */
+    public static final String OPTION_EDITORCONFIG = "editorconfig:";
+
     /** Option for the "editor link" dialog (editor specific). */
     public static final String OPTION_EDITORLINK = "editorlink";
 
@@ -226,6 +229,9 @@ public class CmsHtmlWidgetOption {
 
     /** Option for the "link" dialog. */
     public static final String OPTION_LINK = "link";
+
+    /** Option for the default protocol for links */
+    public static final String OPTION_LINKDEFAULTPROTOCOL = "linkdefaultprotocol:";
 
     /** Option for the "left to right text" button. */
     public static final String OPTION_LTR = "ltr";
@@ -287,6 +293,9 @@ public class CmsHtmlWidgetOption {
     /** Option for the "insert predefined template content" button. */
     public static final String OPTION_TEMPLATE = "template";
 
+    /** Typography button. */ 
+    public static final String OPTION_TYPOGRAPHY = "typography";
+
     /** Option for the "unlink" button. */
     public static final String OPTION_UNLINK = "unlink";
 
@@ -295,9 +304,6 @@ public class CmsHtmlWidgetOption {
 
     /** Option for the "show/hide visual control characters" button. */
     public static final String OPTION_VISUALCHARS = "visualchars";
-
-    /** Option for the default protocol for links */
-    public static final String OPTION_LINKDEFAULTPROTOCOL = "linkdefaultprotocol:";
 
     /** The optional buttons that can be additionally added to the button bar. */
     public static final String[] OPTIONAL_BUTTONS = {
@@ -357,9 +363,6 @@ public class CmsHtmlWidgetOption {
     public static final Pattern PATTERN_EMBEDDED_GALLERY_CONFIG = Pattern.compile(
         "(?<![a-zA-Z0-9_])(imagegallery|downloadgallery)(\\{.*?\\})");
 
-    /** If this is set, the contents of the path following the ':' will be interpreted as JSON and passed to TinyMCE directly. */
-    public static final String OPTION_EDITORCONFIG = "editorconfig:";
-
     /** Holds the global button bar configuration options to increase performance. */
     private static List<String> m_globalButtonBarOption;
 
@@ -384,6 +387,9 @@ public class CmsHtmlWidgetOption {
     /** The CSS style sheet path. */
     private String m_cssPath;
 
+    /** Path to an external TinyMCE JSON config file. */
+    private String m_editorConfigPath;
+
     /** The editor height. */
     private String m_editorHeight;
 
@@ -402,6 +408,9 @@ public class CmsHtmlWidgetOption {
     /** True if styles from stylesheet should be imported into the style selector. */
     private boolean m_importCss;
 
+    /** The link default protocol */
+    private String m_linkDefaultProtocol;
+
     /**
     private boolean m_allowScripts;
 
@@ -410,12 +419,6 @@ public class CmsHtmlWidgetOption {
 
     /** The style XML path. */
     private String m_stylesXmlPath;
-
-    /** Path to an external TinyMCE JSON config file. */
-    private String m_editorConfigPath;
-
-    /** The link default protocol */
-    private String m_linkDefaultProtocol;
 
     /**
      * Creates a new empty HTML widget object object.<p>

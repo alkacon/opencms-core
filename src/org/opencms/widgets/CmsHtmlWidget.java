@@ -213,7 +213,8 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
 
                 result.put("spellcheck_language", contentLocale.getLanguage());
             }
-
+            String typografLocale = CmsTextareaWidget.getTypografLocale(contentLocale);
+            result.put("typograf_locale", typografLocale);
             String linkDefaultProtocol = widgetOptions.getLinkDefaultProtocol();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(linkDefaultProtocol)) {
                 result.put("link_default_protocol", linkDefaultProtocol);

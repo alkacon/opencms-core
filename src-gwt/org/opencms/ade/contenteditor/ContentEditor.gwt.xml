@@ -5,6 +5,7 @@
 	<inherits name="org.opencms.ade.galleries.Gallery" />
 	<inherits name="org.opencms.ade.publish.PublishDialog" />
 	<inherits name="org.opencms.ade.contenteditor.WidgetRegistry" />
+	<script src="../../editors/tinymce/jscripts/tinymce/plugins/typograf/dist/typograf.all.min.js" />
 	<script src="../../editors/tinymce/jscripts/tinymce/tinymce.min.js" />
 	<source path="client" />
 	<source path="shared" />

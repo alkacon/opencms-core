@@ -69,6 +69,9 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 
+import elemental2.dom.HTMLInputElement;
+import jsinterop.base.Js;
+
 /**
  * Basic text area widget for forms.<p>
  *
@@ -256,6 +259,16 @@ I_CmsHasResizeOnShow, I_CmsHasGhostValue {
     }
 
     /**
+     * Gets the cursor position.
+     *
+     * @return the cursor position
+     */
+    public int getPosition() {
+        HTMLInputElement elem = Js.uncheckedCast(m_textArea.getElement()); // wrong class, but works
+        return elem.selectionStart;
+    }
+
+    /**
      * Returns the text contained in the text area.<p>
      *
      * @return the text in the text area
@@ -434,6 +447,16 @@ I_CmsHasResizeOnShow, I_CmsHasGhostValue {
 
         m_textArea.setName(name);
 
+    }
+
+    /**
+     * Sets the cursor position.
+     *
+     * @param position the cursor position
+     */
+    public void setPosition(int position) {
+        HTMLInputElement elem = Js.uncheckedCast(m_textArea.getElement()); // wrong class, but works
+        elem.setSelectionRange(position, position);
     }
 
     /**

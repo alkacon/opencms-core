@@ -653,6 +653,11 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
 		// initialize tinyMCE
 		defaults.language = locale;
+		if (defaults.typograf && $wnd.Typograf && !$wnd.Typograf.hasLocale(defaults.typograf.locale[0])) {
+		    delete defaults.typograf;
+		    defaults.toolbar1 = defaults.toolbar1.replace("typograf","");
+		}
+
 		$wnd.tinymce.init(defaults);
     }-*/;
 

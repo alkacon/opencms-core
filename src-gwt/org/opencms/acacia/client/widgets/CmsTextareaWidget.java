@@ -30,6 +30,8 @@ package org.opencms.acacia.client.widgets;
 import org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle;
 import org.opencms.gwt.client.I_CmsHasResizeOnShow;
 import org.opencms.gwt.client.ui.input.CmsTextArea;
+import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.dom.client.Element;
@@ -43,17 +45,47 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 
+import elemental2.core.Global;
+import elemental2.core.JsArray;
+import elemental2.core.JsObject;
+import jsinterop.annotations.JsConstructor;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
+
 /**
  * Provides a display only widget, for use on a widget dialog.<p>
  *
  * */
 public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, HasResizeHandlers, I_CmsHasResizeOnShow {
 
+    /**
+     * Native type for the Typograf class provided by the library of the same name.
+     */
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL)
+    public static class Typograf {
+
+        @JsConstructor
+        public Typograf(JsPropertyMap<Object> options) { /* must be empty */ }
+
+        public static native boolean hasLocale(String locale);
+
+        public native void disableRule(String rule);
+
+        public native void enableRule(String rule);
+
+        public native String execute(String input);
+    }
+
     /** The monospace style key. */
     public static final String STYLE_MONSPACE = "monospace";
 
     /** The proportional style key. */
     public static final String STYLE_PROPORTIONAL = "proportional";
+
+    /** Configuration option to enable automatic typographic formatting using the Typograf library. */
+    public static final String CONF_TYPOGRAPHY = "typography";
 
     /** Default number of rows to display. */
     private static final int DEFAULT_ROWS_NUMBER = 5;
@@ -64,15 +96,25 @@ public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, Has
     /** The input test area.*/
     private CmsTextArea m_textarea = new CmsTextArea();
 
+    private Typograf m_typograf;
+
+    /** Flag to keep track of whether typographic formatting is currently happening. */
+    private boolean m_rewriting;
+
     /**
      * Creates a new display widget.<p>
      *
      * @param config the widget configuration string
      */
-    public CmsTextareaWidget(String config) {
+    public CmsTextareaWidget(String configJson) {
 
         // All composites must call initWidget() in their constructors.
         initWidget(m_textarea);
+        CmsGwtLog.log("configJson = " + configJson);
+        JsPropertyMap<String> configMap = Js.cast(Global.JSON.parse(configJson));
+        String config = configMap.get(CmsGwtConstants.JSON_TEXTAREA_CONFIG);
+        String locale = configMap.get(CmsGwtConstants.JSON_TEXTAREA_LOCALE);
+
         int configheight = DEFAULT_ROWS_NUMBER;
         boolean useProportional = false;
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(config)) {
@@ -81,6 +123,19 @@ public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, Has
                     useProportional = true;
                 } else if (STYLE_MONSPACE.equals(conf)) {
                     useProportional = false;
+                } else if (CONF_TYPOGRAPHY.equals(conf)) {
+                    if ((m_typograf == null) && Typograf.hasLocale(locale)) {
+                        try {
+                            JsPropertyMap<Object> options = Js.cast(new JsObject());
+                            options.set("locale", new JsArray<>(locale, "en-US"));
+                            options.set("live", Boolean.TRUE);
+                            m_typograf = new Typograf(options);
+                            m_typograf.disableRule("common/nbsp/*");
+                            m_typograf.disableRule("common/punctuation/delDoublePunctuation");
+                        } catch (Exception e) {
+                            CmsGwtLog.log("failed to init typograf: " + e);
+                        }
+                    }
                 } else {
                     try {
                         int rows = Integer.parseInt(conf);
@@ -102,8 +157,25 @@ public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, Has
 
             public void onValueChange(ValueChangeEvent<String> event) {
 
-                fireChangeEvent();
-
+                // If typograf library is present, try to apply it to the textarea value. If this would result in a change,
+                // we set the text area content to the new value, which causes a new change event. We prevent an infinite recursion
+                // using the m_rewriting member.
+                if ((m_typograf != null) && !m_rewriting) {
+                    String newContent = m_typograf.execute(event.getValue());
+                    if (!newContent.equals(event.getValue())) {
+                        m_rewriting = true;
+                        int savedPosition = m_textarea.getPosition();
+                        m_textarea.setFormValueAsString(newContent);
+                        m_textarea.setPosition(savedPosition);
+                    } else {
+                        fireChangeEvent();
+                    }
+                } else {
+                    if (m_rewriting) {
+                        m_rewriting = false;
+                    }
+                    fireChangeEvent();
+                }
             }
         });
         m_textarea.addResizeHandler(new ResizeHandler() {
@@ -114,7 +186,6 @@ public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, Has
 
             }
         });
-
     }
 
     /**

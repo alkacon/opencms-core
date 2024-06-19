@@ -210,6 +210,12 @@ public final class CmsGwtConstants {
     /** Id of the element ussed to  display the sitemap header from Vaadin code. */
     public static final String ID_LOCALE_HEADER_CONTAINER = "locale-header-container";
 
+    /** Field name for the internal textarea configuration. */  
+    public static final String JSON_TEXTAREA_CONFIG = "config";
+
+    /** Field name for the internal textarea configuration. */
+    public static final String JSON_TEXTAREA_LOCALE = "locale";
+
     /**
      * Session storage key for memorizing the last opened container page.
      */

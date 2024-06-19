@@ -29,8 +29,10 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.json.JSONObject;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
@@ -79,6 +81,22 @@ public class CmsTextareaWidget extends A_CmsWidget implements I_CmsADEWidget {
     }
 
     /**
+     * Converts locale to the necessary format for the Typograf library.
+     * @param contentLocale the locale
+     * @return the locale for Typograf
+     */
+    public static  String getTypografLocale(Locale contentLocale) {
+
+        String localeStr = contentLocale.toString();
+        if (contentLocale.getLanguage().equals("en")) {
+            localeStr = "en-US";
+        } else {
+            localeStr = contentLocale.getLanguage();
+        }
+        return localeStr;
+    }
+
+    /**
      * @see org.opencms.widgets.I_CmsADEWidget#getConfiguration(org.opencms.file.CmsObject, org.opencms.xml.types.A_CmsXmlContentValue, org.opencms.i18n.CmsMessages, org.opencms.file.CmsResource, java.util.Locale)
      */
     public String getConfiguration(
@@ -88,7 +106,17 @@ public class CmsTextareaWidget extends A_CmsWidget implements I_CmsADEWidget {
         CmsResource resource,
         Locale contentLocale) {
 
-        return getConfiguration();
+        JSONObject json = new JSONObject();
+        try {
+            json.put(CmsGwtConstants.JSON_TEXTAREA_CONFIG, getConfiguration());
+            String localeStr = getTypografLocale(contentLocale);
+            json.put(CmsGwtConstants.JSON_TEXTAREA_LOCALE, localeStr);
+        } catch (Exception e) {
+
+        }
+        String result = json.toString();
+        System.out.println(result);
+        return result;
     }
 
     /**
