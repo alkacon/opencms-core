@@ -32,6 +32,7 @@ import org.opencms.util.CmsStringUtil;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
 
@@ -271,6 +272,21 @@ public final class CmsSiteMatcher implements Cloneable, Serializable {
         return (m_serverPort == other.m_serverPort)
             && m_serverName.equalsIgnoreCase(other.m_serverName)
             && m_serverProtocol.equals(other.m_serverProtocol);
+    }
+
+    /**
+     * Checks if this site matcher equals another site matcher, ignoring the scheme.
+     *
+     * @param matcher the matcher to compare
+     * @return true if the site matchers are equal
+     */
+    public boolean equalsIgnoreScheme(CmsSiteMatcher matcher) {
+        for (String scheme: Arrays.asList("http", "https")) {
+            if (this.forDifferentScheme(scheme).equals(matcher)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

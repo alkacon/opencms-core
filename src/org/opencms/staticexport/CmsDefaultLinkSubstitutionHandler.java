@@ -548,11 +548,11 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
         if (uri.isAbsolute()) {
             CmsSiteMatcher targetMatcher = new CmsSiteMatcher(targetUri);
             if (OpenCms.getSiteManager().isMatching(targetMatcher)
-                || targetMatcher.equals(cms.getRequestContext().getRequestMatcher())) {
+                || targetMatcher.equalsIgnoreScheme(cms.getRequestContext().getRequestMatcher())) {
 
                 path = CmsLinkManager.removeOpenCmsContext(path);
                 boolean isWorkplaceServer = OpenCms.getSiteManager().isWorkplaceRequest(targetMatcher)
-                    || targetMatcher.equals(cms.getRequestContext().getRequestMatcher());
+                    || targetMatcher.equalsIgnoreScheme(cms.getRequestContext().getRequestMatcher());
                 if (isWorkplaceServer) {
                     String selectedPath;
                     String targetSiteRoot = OpenCms.getSiteManager().getSiteRoot(path);
