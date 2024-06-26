@@ -141,9 +141,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /** Serialization id. */
     private static final long serialVersionUID = -383483666952834348L;
 
-    /** A helper object containing the implementations of the alias-related service methods. */
-    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
-
     /** Initialize the preview mime types. */
     static {
         CollectionUtils.addAll(
@@ -155,6 +152,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 "application/mspowerpoint",
                 "application/zip"}));
     }
+
+    /** A helper object containing the implementations of the alias-related service methods. */
+    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
 
     /**
      * Adds the lock state information to the resource info bean.<p>
@@ -1724,6 +1724,13 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
                     cms,
                     CmsHistoryListUtil.getHistoryLink(cms, resource.getStructureId(), "" + version));
+            } else if (resource.getRootPath().contains(CmsDetailOnlyContainerUtil.DETAIL_CONTAINERS_FOLDER_NAME)) {
+                String detailContentPath = cms.getRequestContext().removeSiteRoot(CmsDetailOnlyContainerUtil.getDetailContentPath(resource.getRootPath()));
+                if (cms.existsResource(detailContentPath, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                    link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, detailContentPath);
+                } else {
+                    link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath());
+                }
             } else {
                 link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath());
             }
