@@ -6,7 +6,7 @@
 		<workplace-server>http://localhost:8080</workplace-server>
 		<default-uri>/sites/default/</default-uri>
 		<shared-folder>/shared/</shared-folder>
-		<site server="http://localhost:8080" uri="/sites/default/">
+		<site server="http://localhost:8080" uri="/sites/default/" position="100">
 			<parameters>
 				<param name="locale.main">en</param>
 				<param name="locale.secondary">de</param>
