@@ -589,17 +589,4 @@ public interface I_CmsContainerpageServiceAsync {
      */
     void setLastPage(CmsUUID pageId, CmsUUID detailId, AsyncCallback<Void> callback);
 
-    /**
-     * Updates the formatter setting for an element in the server-side element cache.
-     *
-     * @param clientId the client id of the element
-     * @param containerId the id of the container containing the element
-     * @param settings the settings of the element
-     * @param callback the result callback
-     */
-    void updateServerElementFormatter(
-        String clientId,
-        String containerId,
-        Map<String, String> settings,
-        AsyncCallback<Void> callback);
 }

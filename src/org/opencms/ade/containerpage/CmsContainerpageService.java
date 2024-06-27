@@ -1570,9 +1570,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
             String title = messages.key(Messages.GUI_REUSE_CHECK_TITLE_0);
             if (allUses.size() > infos.size()) {
-                message  = message + "\n" + messages.key(Messages.GUI_REUSE_CHECK_ONLY_SHOW_N_1, infos.size());
+                message = message + "\n" + messages.key(Messages.GUI_REUSE_CHECK_ONLY_SHOW_N_1, infos.size());
             }
-            CmsReuseInfo result = new CmsReuseInfo(elementInfo, infos, message,  title, allUses.size());
+            CmsReuseInfo result = new CmsReuseInfo(elementInfo, infos, message, title, allUses.size());
             return result;
         } catch (Exception e) {
             error(e);
@@ -2292,30 +2292,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#updateServerElementFormatter(java.lang.String, java.lang.String, java.util.Map)
-     */
-    public void updateServerElementFormatter(String clientId, String containerId, Map<String, String> clientSettings)
-    throws CmsRpcException {
-
-        try {
-            CmsContainerElementBean elementBean = getSessionCache().getCacheContainerElement(clientId);
-            if (elementBean != null) {
-                HashMap<String, String> newSettings = new HashMap<>(elementBean.getIndividualSettings());
-                String key = CmsFormatterConfig.getSettingsKeyForContainer(containerId);
-                String formatterId = clientSettings.get(key);
-                if (formatterId != null) {
-                    newSettings.put(key, formatterId);
-                }
-                elementBean = CmsContainerElementBean.cloneWithSettings(elementBean, newSettings);
-                getSessionCache().setCacheContainerElement(elementBean.editorHash(), elementBean);
-            }
-
-        } catch (Exception e) {
-            error(e);
-        }
-    }
-
-    /**
      * Gets the settings which should be updated for an element in the DND case.<p>
      *
      * @param config the sitemap configuration
@@ -2334,6 +2310,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         String dndContainer) {
 
         Map<String, String> result = Maps.newHashMap();
+
         if (dndContainer == null) {
             return result;
         }
@@ -2820,6 +2797,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 if (!dndSettings.isEmpty()) {
                     CmsContainerElementBean dndElementBean = overrideSettings(element, dndSettings);
                     getSessionCache().setCacheContainerElement(dndElementBean.editorHash(), dndElementBean);
+                    element = dndElementBean;
                     dndId = dndElementBean.editorHash();
                     Map<String, CmsContainerElementData> dndResults = getElements(
                         config,
@@ -2840,7 +2818,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             if (elementData == null) {
                 continue;
             }
-            // make sure the element with it's current settings is cached
             getSessionCache().setCacheContainerElement(element.editorHash(), element);
             elementData.setDndId(dndId);
             result.put(entry.getKey(), elementData);

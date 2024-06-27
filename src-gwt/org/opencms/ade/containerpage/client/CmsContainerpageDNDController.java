@@ -722,7 +722,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     String clientId = elementData.getClientId();
                     String containerId = container.getContainerId();
                     Map<String, String> settings = elementData.getSettings();
-                    m_controller.updateServerElementFormatter(clientId, containerId, settings);
                 }
                 if (m_added) {
                     m_controller.sendElementAdded(containerElement);

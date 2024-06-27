@@ -644,14 +644,4 @@ public interface I_CmsContainerpageService extends RemoteService {
      */
     void setLastPage(CmsUUID pageId, CmsUUID detailId) throws CmsRpcException;
 
-    /**
-     * Updates the formatter setting for an element in the server-side element cache.
-     *
-     * @param clientId the client id of the element
-     * @param containerId the id of the container containing the element
-     * @param settings the settings of the element
-     * @throws CmsRpcException if something goes wrong
-     */
-    void updateServerElementFormatter(String clientId, String containerId, Map<String, String> settings)
-    throws CmsRpcException;
 }
