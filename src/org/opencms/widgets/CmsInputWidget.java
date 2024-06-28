@@ -33,11 +33,14 @@ import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONObject;
+import org.opencms.main.CmsLog;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.util.List;
 import java.util.Locale;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provides a standard HTML form input widget, for use on a widget dialog.<p>
@@ -45,6 +48,9 @@ import java.util.Locale;
  * @since 6.0.0
  */
 public class CmsInputWidget extends A_CmsWidget implements I_CmsADEWidget {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsInputWidget.class);
 
     /**
      * Creates a new input widget.<p>
@@ -76,6 +82,9 @@ public class CmsInputWidget extends A_CmsWidget implements I_CmsADEWidget {
         Locale contentLocale) {
 
         String configStr = getConfiguration();
+        if (configStr == null) {
+            configStr = "";
+        }
         String[] tokens = configStr.split("\\|");
         JSONObject json = new JSONObject();
         String typografLocale = CmsTextareaWidget.getTypografLocale(contentLocale);
@@ -86,6 +95,7 @@ public class CmsInputWidget extends A_CmsWidget implements I_CmsADEWidget {
                     json.put(CmsGwtConstants.JSON_INPUT_LOCALE, typografLocale);
 
                 } catch (Exception e) {
+                    LOG.debug(e.getMessage(), e);
 
                 }
             }
