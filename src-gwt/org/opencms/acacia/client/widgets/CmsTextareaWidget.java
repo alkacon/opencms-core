@@ -28,10 +28,10 @@
 package org.opencms.acacia.client.widgets;
 
 import org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle;
+import org.opencms.acacia.client.widgets.CmsTypografUtil.Typograf;
 import org.opencms.gwt.client.I_CmsHasResizeOnShow;
 import org.opencms.gwt.client.ui.input.CmsTextArea;
 import org.opencms.gwt.shared.CmsGwtConstants;
-import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.dom.client.Element;
@@ -46,11 +46,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 
 import elemental2.core.Global;
-import elemental2.core.JsArray;
-import elemental2.core.JsObject;
-import jsinterop.annotations.JsConstructor;
-import jsinterop.annotations.JsPackage;
-import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
@@ -59,24 +54,6 @@ import jsinterop.base.JsPropertyMap;
  *
  * */
 public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, HasResizeHandlers, I_CmsHasResizeOnShow {
-
-    /**
-     * Native type for the Typograf class provided by the library of the same name.
-     */
-    @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-    public static class Typograf {
-
-        @JsConstructor
-        public Typograf(JsPropertyMap<Object> options) { /* must be empty */ }
-
-        public static native boolean hasLocale(String locale);
-
-        public native void disableRule(String rule);
-
-        public native void enableRule(String rule);
-
-        public native String execute(String input);
-    }
 
     /** The monospace style key. */
     public static final String STYLE_MONSPACE = "monospace";
@@ -110,7 +87,6 @@ public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, Has
 
         // All composites must call initWidget() in their constructors.
         initWidget(m_textarea);
-        CmsGwtLog.log("configJson = " + configJson);
         JsPropertyMap<String> configMap = Js.cast(Global.JSON.parse(configJson));
         String config = configMap.get(CmsGwtConstants.JSON_TEXTAREA_CONFIG);
         String locale = configMap.get(CmsGwtConstants.JSON_TEXTAREA_LOCALE);
@@ -124,17 +100,8 @@ public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, Has
                 } else if (STYLE_MONSPACE.equals(conf)) {
                     useProportional = false;
                 } else if (CONF_TYPOGRAPHY.equals(conf)) {
-                    if ((m_typograf == null) && Typograf.hasLocale(locale)) {
-                        try {
-                            JsPropertyMap<Object> options = Js.cast(new JsObject());
-                            options.set("locale", new JsArray<>(locale, "en-US"));
-                            options.set("live", Boolean.TRUE);
-                            m_typograf = new Typograf(options);
-                            m_typograf.disableRule("common/nbsp/*");
-                            m_typograf.disableRule("common/punctuation/delDoublePunctuation");
-                        } catch (Exception e) {
-                            CmsGwtLog.log("failed to init typograf: " + e);
-                        }
+                    if (m_typograf == null) {
+                        m_typograf = CmsTypografUtil.createLiveInstance(locale);
                     }
                 } else {
                     try {

@@ -28,20 +28,20 @@
 package org.opencms.acacia.client.widgets;
 
 import org.opencms.acacia.client.css.I_CmsLayoutBundle;
+import org.opencms.acacia.client.widgets.CmsTypografUtil.Typograf;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Objects;
+
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -52,6 +52,11 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.TextBox;
+
+import elemental2.core.Global;
+import elemental2.dom.HTMLInputElement;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * Provides a display only widget, for use on a widget dialog.<p>
@@ -89,6 +94,9 @@ public class CmsTextboxWidget extends Composite implements I_CmsEditWidget {
     /** The previous value. */
     private String m_previousValue;
 
+    /** Typograf instance used for typography, if configured. */
+    private Typograf m_typograf;
+
     /** The value changed handler initialized flag. */
     private boolean m_valueChangeHandlerInitialized;
 
@@ -100,6 +108,19 @@ public class CmsTextboxWidget extends Composite implements I_CmsEditWidget {
     public CmsTextboxWidget(String config) {
 
         m_mainPanel = uiBinder.createAndBindUi(this);
+        if (config != null) {
+            try {
+                JsPropertyMap<String> configMap = Js.cast(Global.JSON.parse(config));
+                String locale = configMap.get(CmsGwtConstants.JSON_INPUT_LOCALE);
+                boolean typografEnabled = configMap.getAsAny(CmsGwtConstants.JSON_INPUT_TYPOGRAF).asBoolean();
+                if ((locale != null) && typografEnabled && Typograf.hasLocale(locale)) {
+                    m_typograf = CmsTypografUtil.createLiveInstance(locale);
+                }
+            } catch (Exception e) {
+                CmsGwtLog.log(e.getMessage());
+            }
+        }
+
         initWidget(m_mainPanel);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(config)) {
             parseConfig(config);
@@ -122,27 +143,23 @@ public class CmsTextboxWidget extends Composite implements I_CmsEditWidget {
         // Initialization code
         if (!m_valueChangeHandlerInitialized) {
             m_valueChangeHandlerInitialized = true;
-            addDomHandler(new KeyUpHandler() {
-
-                public void onKeyUp(KeyUpEvent event) {
-
-                    // schedule the change event, so the key press can take effect
-                    Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-                        public void execute() {
-
-                            fireValueChange(false);
+            HTMLInputElement inputElem = Js.cast(m_textbox.getElement());
+            inputElem.addEventListener("input", event -> {
+                if (m_typograf != null) {
+                    try {
+                        String oldValue = inputElem.value;
+                        String newValue = m_typograf.execute(oldValue);
+                        if (!Objects.equals(oldValue, newValue)) {
+                            int pos = inputElem.selectionStart;
+                            inputElem.value = newValue;
+                            inputElem.setSelectionRange(pos, pos);
                         }
-                    });
+                    } catch (Exception e) {
+                        CmsGwtLog.log(e.getMessage());
+                    }
                 }
-            }, KeyUpEvent.getType());
-            addDomHandler(new BlurHandler() {
-
-                public void onBlur(BlurEvent event) {
-
-                    fireValueChange(false);
-                }
-            }, BlurEvent.getType());
+                fireValueChange(false);
+            });
         }
         return addHandler(handler, ValueChangeEvent.getType());
     }

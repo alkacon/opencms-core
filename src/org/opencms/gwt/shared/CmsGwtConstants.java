@@ -210,7 +210,13 @@ public final class CmsGwtConstants {
     /** Id of the element ussed to  display the sitemap header from Vaadin code. */
     public static final String ID_LOCALE_HEADER_CONTAINER = "locale-header-container";
 
-    /** Field name for the internal textarea configuration. */  
+    /** Json field name for typograf locale passed to input widget. */
+    public static final String JSON_INPUT_LOCALE = "locale";
+
+    /** Json field name for enabling typograf, passed to input widget. */
+    public static final String JSON_INPUT_TYPOGRAF = "typograf";
+
+    /** Field name for the internal textarea configuration. */
     public static final String JSON_TEXTAREA_CONFIG = "config";
 
     /** Field name for the internal textarea configuration. */

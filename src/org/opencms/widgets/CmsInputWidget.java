@@ -29,8 +29,10 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.json.JSONObject;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
@@ -73,7 +75,22 @@ public class CmsInputWidget extends A_CmsWidget implements I_CmsADEWidget {
         CmsResource resource,
         Locale contentLocale) {
 
-        return getConfiguration();
+        String configStr = getConfiguration();
+        String[] tokens = configStr.split("\\|");
+        JSONObject json = new JSONObject();
+        String typografLocale = CmsTextareaWidget.getTypografLocale(contentLocale);
+        for (String token : tokens) {
+            if ("typography".equals(token)) {
+                try {
+                    json.put(CmsGwtConstants.JSON_INPUT_TYPOGRAF, true);
+                    json.put(CmsGwtConstants.JSON_INPUT_LOCALE, typografLocale);
+
+                } catch (Exception e) {
+
+                }
+            }
+        }
+        return json.toString();
     }
 
     /**
