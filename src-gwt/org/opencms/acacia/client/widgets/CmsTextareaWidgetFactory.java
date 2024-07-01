@@ -30,8 +30,15 @@ package org.opencms.acacia.client.widgets;
 import org.opencms.acacia.client.I_CmsWidgetFactory;
 import org.opencms.ade.contenteditor.widgetregistry.client.WidgetRegistry;
 import org.opencms.gwt.client.I_CmsHasInit;
+import org.opencms.gwt.client.util.CmsDebugLog;
+import org.opencms.gwt.shared.CmsGwtConstants;
 
 import com.google.gwt.dom.client.Element;
+
+import elemental2.core.Global;
+import jsinterop.base.Any;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * Factory to generate basic input widget.<p>
@@ -62,7 +69,23 @@ public class CmsTextareaWidgetFactory implements I_CmsWidgetFactory, I_CmsHasIni
      */
     public I_CmsEditWidget createInlineWidget(String configuration, Element element) {
 
-        return new CmsTinyMCEWidget(element, CmsTinyMCEWidget.NO_HTML_EDIT);
+        String typografLocale = null;
+        try {
+            JsPropertyMap<Object> configObj = Js.cast(Global.JSON.parse(configuration));
+
+            Any config = configObj.getAsAny(CmsGwtConstants.JSON_TEXTAREA_CONFIG);
+            Any locale = configObj.getAsAny(CmsGwtConstants.JSON_TEXTAREA_LOCALE);
+            if ((config != null) && config.asString().contains(CmsTextareaWidget.CONF_TYPOGRAPHY)) {
+                if ((locale != null) && CmsTypografUtil.Typograf.hasLocale(locale.asString())) {
+                    typografLocale = locale.asString();
+                }
+            }
+        } catch (Exception e) {
+            CmsDebugLog.consoleLog(e.getMessage());
+        }
+        CmsTinyMCEWidget result = new CmsTinyMCEWidget(element, CmsTinyMCEWidget.NO_HTML_EDIT);
+        result.setTypografLocale(typografLocale);
+        return result;
     }
 
 }

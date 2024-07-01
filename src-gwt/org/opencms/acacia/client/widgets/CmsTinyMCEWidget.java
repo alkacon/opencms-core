@@ -106,6 +106,8 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
     /** The editor options. */
     private Object m_options;
 
+    private String m_typografLocale;
+
     /**
      * Creates a new instance for the given element. Use this constructor for in line editing.<p>
      *
@@ -242,6 +244,14 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
         // no input field so nothing to do
 
+    }
+
+    /**
+     * Sets the Typograf locale for inline editing mode.
+     */
+    public void setTypografLocale(String typografLocale) {
+
+        m_typografLocale = typografLocale;
     }
 
     /**
@@ -537,17 +547,27 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 		var defaults;
 		if (@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::NO_HTML_EDIT == options) {
 			// disallow any formatting
+
 			defaults = {
 				selector : mainElement.tagName + "#" + elementId,
 				entity_encoding : "raw",
 				mode : "exact",
 				theme : "silver",
-				plugins : "paste",
+				plugins : "paste emoticons charmap",
 				paste_as_text : true,
-				toolbar : "undo redo",
+				toolbar : "undo redo | emoticons charmap",
 				menubar : false,
 				forced_root_block : false
 			};
+			var typografLocale = this.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_typografLocale;
+			if (typografLocale) {
+                defaults.plugins = "paste emoticons typograf charmap";
+                defaults.toolbar = "undo redo | typograf | emoticons charmap";
+                defaults.typograf = {
+                    disableRule: ["common/nbsp/*", "common/punctuation/delDoublePunctuation"],
+                    locale: [typografLocale, "en-US"]
+                };
+            }
 			options = null;
 		} else {
 			defaults = {

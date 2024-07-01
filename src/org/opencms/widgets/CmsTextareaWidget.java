@@ -33,11 +33,14 @@ import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.json.JSONObject;
+import org.opencms.main.CmsLog;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
 import java.util.List;
 import java.util.Locale;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provides a standard HTML form textarea widget, for use on a widget dialog.<p>
@@ -47,6 +50,9 @@ import java.util.Locale;
  * @since 6.0.0
  */
 public class CmsTextareaWidget extends A_CmsWidget implements I_CmsADEWidget {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsTextareaWidget.class);
 
     /** Default number of rows to display. */
     private static final int DEFAULT_ROWS_NUMBER = 4;
@@ -112,10 +118,9 @@ public class CmsTextareaWidget extends A_CmsWidget implements I_CmsADEWidget {
             String localeStr = getTypografLocale(contentLocale);
             json.put(CmsGwtConstants.JSON_TEXTAREA_LOCALE, localeStr);
         } catch (Exception e) {
-
+            LOG.error(e.getLocalizedMessage(), e);
         }
         String result = json.toString();
-        System.out.println(result);
         return result;
     }
 
