@@ -1710,7 +1710,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 request.getSession());
             CmsUUID detailContainerPageId = null;
             if (detailResource != null) {
-                locationCache.setPageEditorResource(cms.getRequestContext().getSiteRoot(), detailResource);
+                locationCache.setPageEditorResource(cms, cms.getRequestContext().getSiteRoot(), detailResource);
                 CmsObject rootCms = OpenCms.initCmsObject(cms);
                 rootCms.getRequestContext().setSiteRoot("");
                 String detailResourcePath = detailResource.getRootPath();
@@ -1739,7 +1739,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 }
             } else {
                 if (!isModelPage && !isEditingModelGroup) {
-                    locationCache.setPageEditorResource(cms.getRequestContext().getSiteRoot(), containerPage);
+                    locationCache.setPageEditorResource(cms, cms.getRequestContext().getSiteRoot(), containerPage);
                     sessionStorageData.put(
                         CmsGwtConstants.LAST_CONTAINER_PAGE_ID,
                         containerPage.getStructureId().toString());
