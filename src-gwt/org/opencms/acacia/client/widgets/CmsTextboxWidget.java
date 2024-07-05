@@ -32,7 +32,6 @@ import org.opencms.acacia.client.widgets.CmsTypografUtil.Typograf;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsGwtLog;
-import org.opencms.util.CmsStringUtil;
 
 import java.util.Objects;
 
@@ -88,9 +87,6 @@ public class CmsTextboxWidget extends Composite implements I_CmsEditWidget {
     /** The token to control activation. */
     private boolean m_active = true;
 
-    /** Default value. */
-    private String m_defaultValue = "";
-
     /** The previous value. */
     private String m_previousValue;
 
@@ -122,9 +118,6 @@ public class CmsTextboxWidget extends Composite implements I_CmsEditWidget {
         }
 
         initWidget(m_mainPanel);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(config)) {
-            parseConfig(config);
-        }
     }
 
     /**
@@ -225,14 +218,12 @@ public class CmsTextboxWidget extends Composite implements I_CmsEditWidget {
         if (m_active) {
             getElement().removeClassName(I_CmsLayoutBundle.INSTANCE.form().inActive());
             getElement().focus();
-            m_textbox.setText(m_defaultValue);
         } else {
             getElement().addClassName(I_CmsLayoutBundle.INSTANCE.form().inActive());
         }
         if (active) {
             fireChangeEvent();
         }
-
     }
 
     /**
@@ -338,16 +329,6 @@ public class CmsTextboxWidget extends Composite implements I_CmsEditWidget {
     void onTextboxValueChange(ValueChangeEvent<String> event) {
 
         fireValueChange(false);
-    }
-
-    /**
-     * Parse the configuration String.<p>
-     * @param config the configuration String
-     */
-    private void parseConfig(String config) {
-
-        m_defaultValue = config;
-        setValue(m_defaultValue);
     }
 
 }
