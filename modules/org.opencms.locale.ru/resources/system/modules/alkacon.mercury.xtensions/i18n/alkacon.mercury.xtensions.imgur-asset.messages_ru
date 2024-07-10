@@ -1,0 +1,8 @@
+msg.page.imgur-section.link=Показать на Imgur
+msg.setting.imgur-section.usetitle=Использовать заголовок Imgur
+type.m-imgur-asset.description=Изображение, загруженное из онлайн-сервиса Imgur.
+type.m-imgur-asset.name=Подключение ресурса > Imgur
+type.m-imgur-asset.formatter.default=Подключение ресурса по умолчанию > Imgur
+label.ImgurSection.Item=Изображение Imgur
+label.ImgurSection.Text=Текст
+type.m-imgur-asset.title=Новое подключение ресурса > Imgur
