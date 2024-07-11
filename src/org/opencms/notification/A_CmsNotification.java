@@ -38,6 +38,7 @@ import org.opencms.mail.CmsHtmlMail;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsHtml2TextConverter;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
@@ -51,6 +52,8 @@ import javax.mail.MessagingException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.mail.EmailException;
+
+import org.htmlparser.util.ParserException;
 
 /**
  * Abstract class to create a notfication which will be send as a html mail to
@@ -225,6 +228,14 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
                     m_mailContent.getStringValue(m_cms, "Subject", m_locale),
                     m_macroResolver));
             setHtmlMsg(msg.toString());
+            try {
+                String textMsg = CmsHtml2TextConverter.html2text(msg.toString(), mailCharset);
+                setTextMsg(textMsg);
+            } catch (ParserException e) {
+                LOG.error("Failed to process the text version of a HTML message.", e);
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
 
             // send mail
             super.send();

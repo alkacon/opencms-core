@@ -39,6 +39,12 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
     /** The last stored, but not appended line break count. */
     private int m_storedBrCount;
 
+    /** List of tags where to ignore the text. */
+    private final List<String> IGNORE_TEXT = List.of("SCRIPT", "STYLE", "TEMPLATE");
+
+    /** Flag indicating whether we are in a ignore text tag. */
+    private boolean m_ignoreText;
+
     /**
      * Creates a new instance of the html converter.<p>
      */
@@ -73,6 +79,7 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
     public void visitEndTag(Tag tag) {
 
         m_appendBr = false;
+        m_ignoreText = false;
         appendLinebreaks(tag, false);
         String attribute = m_attributeMap.remove(tag.getParent());
         if (attribute != null) {
@@ -86,7 +93,10 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
     @Override
     public void visitStringNode(Text text) {
 
-        appendText(text.toPlainTextString());
+        if (!m_ignoreText) {
+            appendText(text.toPlainTextString());
+        }
+        m_ignoreText = false;
     }
 
     /**
@@ -96,12 +106,14 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
     public void visitTag(Tag tag) {
 
         m_appendBr = true;
+        m_ignoreText = false;
         appendLinebreaks(tag, true);
-
+        if (IGNORE_TEXT.contains(tag.getTagName())) {
+            m_ignoreText = true;
+        }
         if (tag.getTagName().equals("IMG")) {
             appendText("##IMG##");
         }
-
         String href = tag.getAttribute("href");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(href)) {
             appendAttribute(tag, " [" + href.trim() + "]");
