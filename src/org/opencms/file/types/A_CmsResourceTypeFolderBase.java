@@ -39,6 +39,7 @@ import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
@@ -50,7 +51,7 @@ import java.util.List;
  */
 public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
-    /** Attribute to control shallow copying. */ 
+    /** Attribute to control shallow copying. */
     public static final String ATTR_SHALLOW_FOLDER_COPY = "shallow_folder_copy";
 
     /** The serial version id. */
@@ -184,12 +185,17 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
         // check the destination
         try {
-            securityManager.readResource(cms.getRequestContext(), dest, CmsResourceFilter.ALL);
+            String destinationWithoutTrailingSlash = dest;
+            if (destinationWithoutTrailingSlash.length() > 1) {
+                // we also want to catch the case where a file (not folder) with the destination path already exists
+                destinationWithoutTrailingSlash = CmsFileUtil.removeTrailingSeparator(dest);
+            }
+            securityManager.readResource(cms.getRequestContext(), destinationWithoutTrailingSlash, CmsResourceFilter.ALL);
             throw new CmsVfsException(
                 org.opencms.file.Messages.get().container(
                     org.opencms.file.Messages.ERR_OVERWRITE_RESOURCE_2,
                     cms.getRequestContext().removeSiteRoot(resource.getRootPath()),
-                    destination));
+                    destinationWithoutTrailingSlash));
         } catch (CmsVfsResourceNotFoundException e) {
             // ok
         }
