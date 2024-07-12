@@ -63,6 +63,9 @@ import org.htmlparser.util.ParserException;
  */
 public abstract class A_CmsNotification extends CmsHtmlMail {
 
+    /** ID of the system mail host. */
+    public static final String SYSTEM_MAIL_HOST = "system";
+
     /** Path to optional config file containing header and footer. */
     public static final String HEADER_FOOTER_CONFIG_PATH = "notification-header-footer.html";
 
@@ -101,9 +104,9 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
      */
     public A_CmsNotification(CmsObject cms, CmsUser receiver) {
 
+        super(SYSTEM_MAIL_HOST);
         m_cms = cms;
         m_receiver = receiver;
-
         m_macroResolver = new CmsNotificationMacroResolver(cms, receiver);
         m_macroResolver.setCmsObject(cms);
     }

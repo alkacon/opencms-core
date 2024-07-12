@@ -72,4 +72,19 @@ public class CmsHtmlMail extends HtmlEmail {
         CmsMailUtil.configureMail(mailHost, this);
     }
 
+    /**
+     * Constructor of a CmsHtmlMail where the id of the mail host is explicitly chosen.<p>
+     *
+     * If the mail host with the chosen id is not available, fall back to the default mail host.
+     *
+     * @param mailHostId the mail host id
+     */
+    public CmsHtmlMail(String mailHostId) {
+
+        super();
+        CmsMailSettings mailSettings = OpenCms.getSystemInfo().getMailSettings();
+        CmsMailHost mailHost = mailSettings.getMailHost(mailHostId);
+        CmsMailHost defaultMailHost = mailSettings.getDefaultMailHost();
+        CmsMailUtil.configureMail(mailHost != null ? mailHost : defaultMailHost, this);
+    }
 }
