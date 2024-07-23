@@ -48,11 +48,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
-
-import com.google.common.collect.HashMultimap;
 
 /**
  * Validates relations of resources in the OpenCms VFS.<p>
@@ -106,7 +103,8 @@ public class CmsRelationSystemValidator {
     public Map<String, List<CmsRelation>> validateResources(
         CmsDbContext dbc,
         CmsPublishList publishList,
-        I_CmsReport report) throws Exception {
+        I_CmsReport report)
+    throws Exception {
 
         // check if progress should be set in the thread
         A_CmsProgressThread thread = null;
@@ -184,6 +182,7 @@ public class CmsRelationSystemValidator {
 
             CmsResource resource = itResources.next();
             offlineFilesLookup.put(resource.getRootPath(), resource);
+            offlineFilesLookup.put(resource.getStructureId().toString(), resource);
         }
         CmsProject project = dbc.currentProject();
         if (interProject) {
@@ -270,18 +269,14 @@ public class CmsRelationSystemValidator {
     protected boolean checkLinkForDeletedLinkTarget(
         CmsRelation relation,
         String link,
-        Map<String, CmsResource> fileLookup,
-        HashMultimap<String, String> relationTargets) {
+        Map<String, CmsResource> fileLookup) {
 
         boolean isValidLink = false;
         // since we are going to delete the resource
         // check if the linked resource is also to be deleted
-        if (fileLookup.containsKey(link)) {
-            CmsResource offlineResource = fileLookup.get(link);
-            Set<String> relationTargetsForLink = relationTargets.get(link);
-            boolean hasNoRelations = !relationTargetsForLink.contains(relation.getTargetPath())
-                && !relationTargetsForLink.contains(relation.getTargetId().toString());
-            isValidLink = offlineResource.getState().isDeleted() || hasNoRelations;
+        if (fileLookup.containsKey(link) || fileLookup.containsKey(relation.getSourceId().toString())) {
+            // Technically, if the relation source is going to be published too and is not deleted, the link is not valid. But in that case, validateLinks will also be called for that resource and detect broken the broken link there.
+            isValidLink = true;
         }
         return isValidLink;
     }
@@ -312,11 +307,8 @@ public class CmsRelationSystemValidator {
             // ... if the linked resource exists in the online project
             // search the target of link in the online project
             try {
-                link = m_driverManager.getVfsDriver(dbc).readResource(
-                    dbc,
-                    project.getUuid(),
-                    relation.getTargetId(),
-                    true).getRootPath();
+                link = m_driverManager.getVfsDriver(
+                    dbc).readResource(dbc, project.getUuid(), relation.getTargetId(), true).getRootPath();
             } catch (CmsVfsResourceNotFoundException e) {
                 // reading by id failed, this means that the link variable still equals relation.getTargetPath()
                 if (LOG.isDebugEnabled()) {
@@ -415,14 +407,6 @@ public class CmsRelationSystemValidator {
         List<CmsRelation> relations = new ArrayList<CmsRelation>();
         relations.addAll(incomingRelationsOnline);
         relations.addAll(outgoingRelationsOffline);
-        HashMultimap<String, String> outgoingRelationTargets = HashMultimap.create();
-        for (CmsRelation outRelation : outgoingRelationsOffline) {
-            String sourcePath = outRelation.getSourcePath();
-            String targetId = outRelation.getTargetId().toString();
-            String targetPath = outRelation.getTargetPath();
-            outgoingRelationTargets.put(sourcePath, targetId);
-            outgoingRelationTargets.put(sourcePath, targetPath);
-        }
         // check the relations
         boolean first = true;
         Iterator<CmsRelation> itRelations = relations.iterator();
@@ -448,7 +432,7 @@ public class CmsRelationSystemValidator {
             }
             boolean result;
             if (resource.getState().isDeleted()) {
-                result = checkLinkForDeletedLinkTarget(relation, link, fileLookup, outgoingRelationTargets);
+                result = checkLinkForDeletedLinkTarget(relation, link, fileLookup);
             } else {
                 result = checkLinkForNewOrChangedLinkSource(dbc, resource, relation, link, project, fileLookup);
 
