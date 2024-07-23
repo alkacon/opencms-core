@@ -2251,6 +2251,8 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          */
         String toolbarHide();
 
+        String toolbarPlacementMode();
+
         /**
          * Access method.<p>
          *

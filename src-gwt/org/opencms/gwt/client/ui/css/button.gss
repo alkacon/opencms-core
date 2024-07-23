@@ -1,4 +1,4 @@
-@external opencms-icon, html-face, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled, resizeButton-up-hovering;
+@external opencms-icon, html-face, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled, resizeButton-up-hovering, bsFontIconButton;
 
 .cmsState, .cmsState-up, .gray, .cmsHovering {}
 .cmsState.cmsState-down-disabled, .cmsState.cmsState-up-disabled { cursor:auto; }
@@ -344,7 +344,7 @@ div.resizeButton{
 	background-image: linear-gradient(135deg, rgba(119,136,170,0) 0%, rgba(119,136,170,0) 48%, rgba(119,136,170,1) 54%, rgba(119,136,170,0) 60%, rgba(119,136,170,0) 67%, rgba(119,136,170,1) 73%, rgba(119,136,170,0) 79%, rgba(119,136,170,0) 85%, rgba(119,136,170,1) 90%, rgba(119,136,170,0) 92%, rgba(119,136,170,0) 100%);
 }
 
-.cmsFontIconButton.hoverBlack:hover {
+.cmsFontIconButton.hoverBlack:hover, .bsFontIconButton.hoverBlack:hover {
 	color: value("constants.css.textColor") !important 
 }
 

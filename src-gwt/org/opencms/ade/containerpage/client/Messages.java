@@ -45,6 +45,11 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOCK_TITLE_RESOURCE_CHANGED_0 = "ERR_LOCK_TITLE_RESOURCE_CHANGED_0";
 
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_PLACE_ELEMENT_0 = "GUI_TOOLBAR_PLACE_ELEMENT_0";
+
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOCK_TITLE_RESOURCE_LOCKED_0 = "ERR_LOCK_TITLE_RESOURCE_LOCKED_0";
 

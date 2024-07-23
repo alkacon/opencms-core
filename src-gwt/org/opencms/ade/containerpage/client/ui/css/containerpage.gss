@@ -1,4 +1,4 @@
-@external oc-edit-buttons-visible, oc-ignore-small-element, oc-small-element, oc-enlarge-small-elements, oc-drag-element, oc-option-bar, oc-touch-only, opencms-icon, opencms-icon-edit-point, html-face, oc-groupcontainer, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled, gwt-TabLayoutPanel, opencms-icon-upload-selection;
+@external oc-edit-buttons-visible, oc-ignore-small-element, oc-small-element, oc-enlarge-small-elements, oc-drag-element, oc-option-bar, oc-touch-only, opencms-icon, opencms-icon-edit-point, html-face, oc-groupcontainer, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled, gwt-TabLayoutPanel, opencms-icon-upload-selection, oc-placement-mode, oc-placement-layer, oc-placement-button, oc-placement-up, oc-placement-down, oc-placement-middle, oc-placement-placeholder, oc-placement-start;
 
 .showButtons, .hideButtons, .elementInfoChanged, .elementInfoUnchanged, .editableElement {}
 
@@ -265,4 +265,63 @@ oc-editpoint div.buttons-cmsFontIconButton div.html-face {
     justify-content: center;
     align-items: center;
 }
+
+body.oc-placement-mode {
+	position: relative; 
+}
+
+.oc-placement-layer { 
+	top: 0;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	right: 0; 
+	z-index: 199999;
+}	
+
+.oc-placement-button { 
+	position: absolute;
+	cursor: pointer;
+	font-size: 21px;
+	width: 21px;
+	height: 21px;
+	background-color: value("constants.css.textColor");
+	border-radius: 4px;
+	color: white; 
+}
+
+.oc-placement-button:hover { 
+	background-color: value("constants.css.textColorHighlight");
+}
+
+.oc-placement-button::before { 
+  display: block;
+  font-family: bootstrap-icons !important; 
+  font-style: normal;
+  font-weight: normal !important;
+  
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.oc-placement-up::before {
+ 	content: "\f145";
+}
+
+.oc-placement-down::before {
+	content: "\f124";
+}
+
+.oc-placement-middle::before {
+	content: "\f4fe";
+
+}
+	
+.oc-placement-placeholder { 
+	min-height: 50px;
+}
+	
 

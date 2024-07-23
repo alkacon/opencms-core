@@ -134,7 +134,8 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
             null,
             false,
             elementView,
-            iconClasses, false);
+            iconClasses,
+            false);
         m_resourceType = resourceType;
     }
 
@@ -283,15 +284,17 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
     /**
      * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#highlightContainer()
      */
-    public void highlightContainer() {
+    public void highlightContainer(boolean addSeparators) {
 
-        highlightContainer(CmsPositionBean.getBoundingClientRect(getElement()));
+        // separators neither needed nor implemented
+        highlightContainer(CmsPositionBean.getBoundingClientRect(getElement()), addSeparators);
     }
 
     /**
      * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#highlightContainer(org.opencms.gwt.client.util.CmsPositionBean)
      */
-    public void highlightContainer(CmsPositionBean positionInfo) {
+    public void highlightContainer(CmsPositionBean positionInfo, boolean separators) {
+        // separators neither needed nor implemented
 
         // remove any remaining highlighting
         if (m_highlighting != null) {

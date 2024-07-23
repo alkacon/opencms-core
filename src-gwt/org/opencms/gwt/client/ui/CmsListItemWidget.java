@@ -310,6 +310,8 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     /** Widget for the overlay icon in the top-right corner. */
     private HTML m_topRightIcon;
 
+    private CmsListInfoBean m_infoBean;
+
     /**
      * Constructor. Using a 'li'-tag as default root element.<p>
      *
@@ -323,6 +325,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         m_shortExtraInfoLabel = new InlineLabel();
         init(infoBean);
     }
+
 
     /**
      * Adds an additional info item to the list.<p>
@@ -520,6 +523,15 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     public FlowPanel getContentPanel() {
 
         return m_contentPanel;
+    }
+
+    public CmsListInfoBean getInfoBean() {
+
+        return m_infoBean;
+    }
+
+    public CmsPushButton getOpenClose() {
+        return m_openClose;
     }
 
     /**
@@ -1110,6 +1122,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
      */
     protected void init(CmsListInfoBean infoBean) {
 
+        m_infoBean = infoBean;
         m_iconPanel.setVisible(false);
         m_title.setText(infoBean.getTitle());
         setSubtitleLabel(infoBean.getSubTitle());

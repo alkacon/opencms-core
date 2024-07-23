@@ -123,4 +123,9 @@ public interface I_CmsDNDController {
     default void postClear(I_CmsDraggable draggable, I_CmsDropTarget target) {
         // do nothing
     }
+
+    default void initPlacementButton(I_CmsDraggable listItem) {
+            // do nothing
+    }
+
 }

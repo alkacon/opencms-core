@@ -63,7 +63,6 @@ import org.opencms.gwt.client.util.CmsEmbeddedDialogFrame;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsGwtConstants.QuickLaunch;
-import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.gwt.shared.CmsQuickLaunchParams;
 import org.opencms.util.CmsStringUtil;
 
@@ -381,6 +380,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_context = new CmsToolbarContextButton(containerpageHandler);
         m_context.addClickHandler(clickHandler);
         m_toolbar.insertRight(m_context, 0);
+
+
 
         CmsToolbarFavLocationButton favLocButton = new CmsToolbarFavLocationButton(containerpageHandler);
         favLocButton.addClickHandler(clickHandler);

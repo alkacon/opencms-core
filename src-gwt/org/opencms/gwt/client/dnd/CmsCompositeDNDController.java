@@ -156,4 +156,12 @@ public class CmsCompositeDNDController implements I_CmsDNDController {
         });
     }
 
+    @Override
+    public void initPlacementButton(I_CmsDraggable listItem) {
+        for (I_CmsDNDController controller : m_controllers) {
+            controller.initPlacementButton(listItem);
+        }
+
+    }
+
 }

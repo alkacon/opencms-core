@@ -452,6 +452,7 @@ public class CmsContainerpageUtil {
         }
         if (!containerElement.isAddDisabled()) {
             listItem.initMoveHandle(m_controller.getDndHandler(), true);
+            m_controller.getDndHandler().getController().initPlacementButton(listItem);
         }
         return listItem;
     }

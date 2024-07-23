@@ -132,6 +132,7 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
                 titleWidget.setText(newText);
                 item.getListItemWidget().setStateIcon(StateIcon.copy);
             }
+            getDndHandler().getController().initPlacementButton(item);
         }
 
     }

@@ -22,6 +22,15 @@
 	display: none;
 }
 
+.toolbarPlacementMode.oc-toolbar .toolbarCenter {
+	display: none;
+}
+
+.toolbarPlacementMode.oc-toolbar .toolbarButtonsLeft {
+	height: 42px;
+}
+
+
 .oc-toolbar .toolbarButtonsRight > div, .oc-toolbar .toolbarButtonsLeft > div{
 	opacity: 1;
 	height: 40px;

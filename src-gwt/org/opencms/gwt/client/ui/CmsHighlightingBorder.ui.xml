@@ -6,5 +6,6 @@
 		<div ui:field="m_borderRight" class="{resources.highlightCss.borderRight}"></div>
 		<div ui:field="m_borderBottom" class="{resources.highlightCss.borderBottom}"></div>
 		<div ui:field="m_borderLeft" class="{resources.highlightCss.borderLeft}"></div>	
+		<div ui:field="m_midpoints"></div>
 	</g:HTML>
 </ui:UiBinder>
