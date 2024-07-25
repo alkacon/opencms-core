@@ -29,6 +29,7 @@ package org.opencms.ade.detailpage;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -213,7 +214,8 @@ public class CmsDetailPageFilter {
             if (m_resource != null) {
                 categories = CmsCategoryService.getInstance().readResourceCategories(m_cms, m_resource);
             } else {
-                categories = CmsCategoryService.getInstance().readResourceCategories(m_cms, m_path);
+                CmsResource resource = m_cms.readResource(m_path, CmsResourceFilter.IGNORE_EXPIRATION);
+                categories = CmsCategoryService.getInstance().readResourceCategories(m_cms, resource);
             }
             Set<CmsPath> result = new HashSet<>();
             for (CmsCategory category : categories) {
