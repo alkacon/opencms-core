@@ -75,6 +75,9 @@ public class CmsDefaultLogDownloadProvider implements I_CmsLogDownloadProvider {
 
         Set<String> result = new HashSet<>();
         for (File file : CmsLogFileOptionProvider.getLogFiles()) {
+            if (file.isDirectory()) {
+                continue;
+            }
             String path = file.getAbsolutePath();
             if (!path.endsWith(".zip") && !path.endsWith(".gz")) {
                 result.add(file.getAbsolutePath());
