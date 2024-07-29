@@ -196,8 +196,11 @@ public final class CmsCntPageData implements IsSerializable {
     /** The detail container page id (may be null). */
     private CmsUUID m_detailContainerPageId;
 
-    /** Key-value pairs to store in the sessionStorage. */ 
+    /** Key-value pairs to store in the sessionStorage. */
     private Map<String, String> m_sessionStorageData = new HashMap<>();
+
+    /** Indicates if placement mode is enabled. */
+    private boolean m_placementModeEnabled;
 
     /**
      * Constructor.<p>
@@ -530,8 +533,8 @@ public final class CmsCntPageData implements IsSerializable {
 
     /**
      * Gets the key-value pairs to store in the session storage of the browser.
-     * 
-     * @return the map of entries to store in the session storage 
+     *
+     * @return the map of entries to store in the session storage
      */
     public Map<String, String> getSessionStorageData() {
 
@@ -589,6 +592,15 @@ public final class CmsCntPageData implements IsSerializable {
     }
 
     /**
+     * Returns true if placement mode is enabled.
+     *
+     * @return true if placement mode is enabled
+     */
+    public boolean isPlacementModeEnabled() {
+        return m_placementModeEnabled;
+    }
+
+    /**
      * Returns if the current user has the sitemap manager role.<p>
      *
      * @return if the current user has the sitemap manager role
@@ -619,6 +631,15 @@ public final class CmsCntPageData implements IsSerializable {
     }
 
     /**
+     * Sets the 'placement mode enabled' flag.
+     *
+     * @param placementModeEnabled the new value for the 'placement mode enabled' flag
+     */
+    public void setPlacementModeEnabled(boolean placementModeEnabled) {
+        m_placementModeEnabled = placementModeEnabled;
+    }
+
+    /**
      * Sets the RPC context.<p>
      *
      * @param context the RPC context
@@ -630,8 +651,8 @@ public final class CmsCntPageData implements IsSerializable {
 
     /**
      * Sets the entries to store in the browser's session storage.
-     * 
-     * @param sessionStorageData the entries to store in the browser's session storage  
+     *
+     * @param sessionStorageData the entries to store in the browser's session storage
      */
     public void setSessionStorageData(Map<String, String> sessionStorageData) {
 

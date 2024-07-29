@@ -480,6 +480,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      */
     @Override
     public void initPlacementButton(I_CmsDraggable draggable) {
+        if (!m_controller.getData().isPlacementModeEnabled()) {
+            return;
+        }
 
         if (draggable instanceof CmsListItem) {
             CmsListItem item = (CmsListItem)draggable;

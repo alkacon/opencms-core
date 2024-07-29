@@ -312,6 +312,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         }
     }
 
+    /** Runtime property key to enable / disable placement mode. */
+    public static final String PARAM_PAGE_EDITOR_PLACEMENT_MODE_ENABLED = "pageEditor.placementMode.enabled";
+
     /** Additional info key for storing the "edit small elements" setting on the user. */
     public static final String ADDINFO_EDIT_SMALL_ELEMENTS = "EDIT_SMALL_ELEMENTS";
 
@@ -1862,6 +1865,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     || Boolean.valueOf(param).booleanValue();
             }
             data.setAllowSettingsInEditor(allowSettingsInEditor);
+            String placementModeEnabledStr = (String)OpenCms.getRuntimeProperty(PARAM_PAGE_EDITOR_PLACEMENT_MODE_ENABLED);
+            boolean placementModeEnabled = Boolean.parseBoolean(placementModeEnabledStr);
+            data.setPlacementModeEnabled(placementModeEnabled);
             data.setSessionStorageData(sessionStorageData);
         } catch (Throwable e) {
             error(e);
