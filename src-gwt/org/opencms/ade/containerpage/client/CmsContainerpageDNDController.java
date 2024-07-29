@@ -243,7 +243,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
             m_toolbar = new CmsToolbar();
             m_toolbar.setAppTitle(
-                Messages.get().key(org.opencms.ade.containerpage.client.Messages.GUI_TOOLBAR_PLACE_ELEMENT_0));
+                org.opencms.ade.containerpage.client.Messages.get().key(org.opencms.ade.containerpage.client.Messages.GUI_TOOLBAR_PLACE_ELEMENT_0));
             m_toolbar.addLeft(m_toolbarWidget);
 
             CmsPushButton cancelButton = createButton(
@@ -488,7 +488,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             button.setImageClass("bi-arrows-move oc-bootstrap-fonticon");
             button.setButtonStyle(ButtonStyle.FONT_ICON, null);
             button.setTitle(
-                Messages.get().key(org.opencms.ade.containerpage.client.Messages.GUI_TOOLBAR_PLACE_ELEMENT_0));
+                org.opencms.ade.containerpage.client.Messages.get().key(org.opencms.ade.containerpage.client.Messages.GUI_TOOLBAR_PLACE_ELEMENT_0));
             itemWidget.getButtonPanel().insert(button, 1);
             button.addClickHandler(event -> {
                 event.getNativeEvent().stopPropagation();
@@ -1512,8 +1512,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         Map<I_CmsDropContainer, CmsPositionBean> containers = new HashMap<I_CmsDropContainer, CmsPositionBean>();
         for (I_CmsDropTarget target : m_dragInfos.keySet()) {
             if ((target instanceof I_CmsDropContainer)
-                && !Display.NONE.getCssName().equalsIgnoreCase(
-                    CmsDomUtil.getCurrentStyle(target.getElement(), CmsDomUtil.Style.display))) {
+                && (target.getElement().getOffsetParent() != null)) {
                 if (initial && (target != m_initialDropTarget)) {
                     ((I_CmsDropContainer)target).highlightContainer(addSeparators);
                 } else {
