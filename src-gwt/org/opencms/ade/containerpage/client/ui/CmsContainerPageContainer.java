@@ -728,7 +728,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         } else {
             // CmsGwtLog.trace("addSeparators = false");
         }
-        RootPanel.get().add(m_highlighting);
+        if (getElement().getOffsetParent() != null) {
+            RootPanel.get().add(m_highlighting);
+        }
     }
 
     /**
@@ -1012,7 +1014,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             rects[i] = nativeElem.getBoundingClientRect();
         }
         for (int i = 1; i < rects.length; i++) {
-            if (rects[i].top <= rects[i-1].top) {
+            if (rects[i].top <= rects[i - 1].top) {
                 // return empty list - don't show midpoints if top coordinates not ascending
                 return result;
             }

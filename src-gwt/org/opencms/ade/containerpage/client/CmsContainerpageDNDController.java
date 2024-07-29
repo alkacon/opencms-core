@@ -202,6 +202,10 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             Map<String, CmsContainerPageContainer> containerMap = m_controller.getContainerTargets();
             for (CmsContainerPageContainer container : containerMap.values()) {
                 if (m_containers.contains(container.getContainerId())) {
+                    if (container.getElement().getOffsetParent() == null) {
+                        // offsetParent == null means element or its ancestor has display: none
+                        continue;
+                    }
                     List<CmsContainerPageElementPanel> elements = container.getAllDragElements();
                     if (elements.size() == 0) {
                         installPlacementElement(container);
