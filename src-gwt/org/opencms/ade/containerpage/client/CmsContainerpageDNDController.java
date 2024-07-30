@@ -115,17 +115,17 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         /** The placement button width. */
         public static final int BUTTON_WIDTH = 21;
 
-        /** The container page handler. */
-        private CmsContainerpageHandler m_pageHandler;
-
-        /** The special layer used to display placement buttons and block click events for the rest of the page. */
-        private FlowPanel m_layer;
-
         /** The callback to call when an element is placed. */
         private I_PlacementCallback m_callback;
 
         /** The set of available container names. */
         private Set<String> m_containers;
+
+        /** The special layer used to display placement buttons and block click events for the rest of the page. */
+        private FlowPanel m_layer;
+
+        /** The container page handler. */
+        private CmsContainerpageHandler m_pageHandler;
 
         /** The placement mode toolbar. */
         private CmsToolbar m_toolbar;
@@ -243,7 +243,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
             m_toolbar = new CmsToolbar();
             m_toolbar.setAppTitle(
-                org.opencms.ade.containerpage.client.Messages.get().key(org.opencms.ade.containerpage.client.Messages.GUI_TOOLBAR_PLACE_ELEMENT_0));
+                org.opencms.ade.containerpage.client.Messages.get().key(
+                    org.opencms.ade.containerpage.client.Messages.GUI_TOOLBAR_PLACE_ELEMENT_0));
             m_toolbar.addLeft(m_toolbarWidget);
 
             CmsPushButton cancelButton = createButton(
@@ -375,20 +376,17 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         }
     }
 
-    /** CSS class. */
-    private static final String OC_PLACEMENT_MIDDLE = "oc-placement-middle";
-
-    /** CSS class. */
-    public static final String OC_PLACEMENT_LAYER = "oc-placement-layer";
-
-    /** CSS class. */
-    public static final String OC_PLACEMENT_DOWN = "oc-placement-down";
+    /** The container highlighting offset. */
+    public static final int HIGHLIGHTING_OFFSET = 4;
 
     /** CSS class. */
     public static final String OC_PLACEMENT_BUTTON = "oc-placement-button";
 
     /** CSS class. */
-    public static final String OC_PLACEMENT_UP = "oc-placement-up";
+    public static final String OC_PLACEMENT_DOWN = "oc-placement-down";
+
+    /** CSS class. */
+    public static final String OC_PLACEMENT_LAYER = "oc-placement-layer";
 
     /** CSS class. */
     public static final String OC_PLACEMENT_MODE = "oc-placement-mode";
@@ -396,11 +394,17 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /** CSS class. */
     public static final String OC_PLACEMENT_PLACEHOLDER = "oc-placement-placeholder";
 
-    /** The container highlighting offset. */
-    public static final int HIGHLIGHTING_OFFSET = 4;
+    /** CSS class. */
+    public static final String OC_PLACEMENT_UP = "oc-placement-up";
 
     /** The minimum margin set to empty containers. */
     private static final int MINIMUM_CONTAINER_MARGIN = 10;
+
+    /** Class for the buttons used to initiate placement mode. */
+    private static final String OC_LISTITEM_PLACEMENT = "oc-listitem-placement";
+
+    /** CSS class. */
+    private static final String OC_PLACEMENT_MIDDLE = "oc-placement-middle";
 
     /** The container page controller. */
     protected CmsContainerpageController m_controller;
@@ -410,6 +414,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
     /** The id of the container from which an element was dragged. */
     String m_originalContainerId;
+
+    /** Tracks whether an element has been added to the page (rather than just moved around). */
+    private boolean m_added;
 
     /** The copy group id. */
     private String m_copyGroupId;
@@ -437,9 +444,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
     /** The original position of the draggable. */
     private int m_originalIndex;
-
-    /** Tracks whether an element has been added to the page (rather than just moved around). */
-    private boolean m_added;
 
     private CmsPlacementModeContext m_placementContext;
 
@@ -480,6 +484,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      */
     @Override
     public void initPlacementButton(I_CmsDraggable draggable) {
+
         if (!m_controller.getData().isPlacementModeEnabled()) {
             return;
         }
@@ -488,10 +493,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             CmsListItem item = (CmsListItem)draggable;
             CmsListItemWidget itemWidget = item.getListItemWidget();
             CmsPushButton button = new CmsPushButton();
-            button.setImageClass("bi-arrows-move oc-bootstrap-fonticon");
+            button.setImageClass("bi-arrows-move oc-bootstrap-fonticon " + OC_LISTITEM_PLACEMENT);
             button.setButtonStyle(ButtonStyle.FONT_ICON, null);
             button.setTitle(
-                org.opencms.ade.containerpage.client.Messages.get().key(org.opencms.ade.containerpage.client.Messages.GUI_TOOLBAR_PLACE_ELEMENT_0));
+                org.opencms.ade.containerpage.client.Messages.get().key(
+                    org.opencms.ade.containerpage.client.Messages.GUI_TOOLBAR_PLACE_ELEMENT_0));
             itemWidget.getButtonPanel().insert(button, 1);
             button.addClickHandler(event -> {
                 event.getNativeEvent().stopPropagation();
@@ -1514,8 +1520,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
         Map<I_CmsDropContainer, CmsPositionBean> containers = new HashMap<I_CmsDropContainer, CmsPositionBean>();
         for (I_CmsDropTarget target : m_dragInfos.keySet()) {
-            if ((target instanceof I_CmsDropContainer)
-                && (target.getElement().getOffsetParent() != null)) {
+            if ((target instanceof I_CmsDropContainer) && (target.getElement().getOffsetParent() != null)) {
                 if (initial && (target != m_initialDropTarget)) {
                     ((I_CmsDropContainer)target).highlightContainer(addSeparators);
                 } else {

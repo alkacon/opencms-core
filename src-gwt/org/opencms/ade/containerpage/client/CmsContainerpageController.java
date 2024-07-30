@@ -619,11 +619,11 @@ public final class CmsContainerpageController {
      */
     private class ReloadElementAction extends CmsRpcAction<Map<String, CmsContainerElementData>> {
 
-        /** The callback to execute after the reload. */
-        private I_ReloadHandler m_reloadHandler;
-
         /** The requested client id's. */
         private Set<String> m_clientIds;
+
+        /** The callback to execute after the reload. */
+        private I_ReloadHandler m_reloadHandler;
 
         /**
          * Constructor.<p>
@@ -790,16 +790,16 @@ public final class CmsContainerpageController {
     public static final String CLIENT_ID_SEPERATOR = "#";
 
     /** Custom event name. */
-    public static final String EVENT_ELEMENT_ADDED = "ocElementAdded";
+    public static final String EVENT_DRAG = "ocDrag";
 
     /** Custom event name. */
-    public static final String EVENT_DRAG = "ocDrag";
+    public static final String EVENT_DRAG_FINISHED = "ocDragFinished";
 
     /** Custom event name. */
     public static final String EVENT_DRAG_STARTED = "ocDragStarted";
 
     /** Custom event name. */
-    public static final String EVENT_DRAG_FINISHED = "ocDragFinished";
+    public static final String EVENT_ELEMENT_ADDED = "ocElementAdded";
 
     /** Custom event name. */
     public static final String EVENT_ELEMENT_DELETED = "ocElementDeleted";
@@ -818,6 +818,9 @@ public final class CmsContainerpageController {
 
     /** Custom event name. */
     public static final String EVENT_ELEMENT_MOVED = "ocElementMoved";
+
+    /** CSS class on the body to signal whether we are currently editing a group container. */
+    public static final String OC_EDITING_GROUPCONTAINER = "oc-editing-groupcontainer";
 
     /** Parameter name. */
     public static final String PARAM_REMOVEMODE = "removemode";
@@ -3875,6 +3878,7 @@ public final class CmsContainerpageController {
                 }
             }
         };
+        RootPanel.get().addStyleName(OC_EDITING_GROUPCONTAINER);
         if ((m_groupEditor == null) && (groupContainer.isNew())) {
             callback.execute(Boolean.TRUE);
         } else {
@@ -3921,6 +3925,7 @@ public final class CmsContainerpageController {
     public void stopEditingGroupcontainer() {
 
         m_groupEditor = null;
+        RootPanel.get().removeStyleName(OC_EDITING_GROUPCONTAINER);
     }
 
     /**
