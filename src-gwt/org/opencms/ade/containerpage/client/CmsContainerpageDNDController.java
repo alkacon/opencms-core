@@ -98,7 +98,9 @@ import elemental2.dom.DOMRect;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.NodeList;
+import jsinterop.base.Any;
 import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * The container-page editor drag and drop controller.<p>
@@ -114,6 +116,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
         /** The placement button width. */
         public static final int BUTTON_WIDTH = 21;
+
+
 
         /** The callback to call when an element is placed. */
         private I_PlacementCallback m_callback;
@@ -282,30 +286,49 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             if ((elemRect.width == 0) || (elemRect.height == 0)) {
                 return;
             }
-            PlacementButton up = new PlacementButton();
-            up.addStyleName(OC_PLACEMENT_UP);
-            up.addStyleName(OC_PLACEMENT_BUTTON);
-            PlacementButton down = new PlacementButton();
-            down.addStyleName(OC_PLACEMENT_DOWN);
-            down.addStyleName(OC_PLACEMENT_BUTTON);
-            m_layer.add(up);
-            m_layer.add(down);
-            double top = elemRect.top - layerRect.top;
-            double left = elemRect.left - layerRect.left;
-            double bottom = -elemRect.bottom + layerRect.bottom;
-            double offset = 0;
-            if (elemRect.height < (2 * BUTTON_HEIGHT)) {
-                offset = 1 + (BUTTON_WIDTH / 2);
+            PlacementButton before = new PlacementButton();
+            PlacementButton after = new PlacementButton();
+            before.addClickHandler(e -> m_callback.place(container, element, 0));
+            after.addClickHandler(e -> m_callback.place(container, element, 1));
+            m_layer.add(before);
+            m_layer.add(after);
+            before.addStyleName(OC_PLACEMENT_BUTTON);
+            after.addStyleName(OC_PLACEMENT_BUTTON);
+            before.addStyleName(OC_PLACEMENT_UP);
+            after.addStyleName(OC_PLACEMENT_DOWN);
+            boolean leftRight = false;
+            JsPropertyMap<Object> window = Js.cast(DomGlobal.window);
+            Any testLrPlacement = window.getAsAny("ocTestLrPlacement");
+            if (testLrPlacement != null) {
+                leftRight = testLrPlacement.asBoolean();
             }
-            up.getElement().getStyle().setLeft(((left - offset) + (elemRect.width / 2)), Unit.PX);
-            up.getElement().getStyle().setTop(top, Unit.PX);
+            if (!leftRight) {
+                leftRight = CmsDomUtil.hasClass(OC_PLACEMENT_LR, element.getElement());
+            }
+            if (leftRight) {
+                rotateLeft(before);
+                rotateLeft(after);
+                double top = ((elemRect.top - layerRect.top) + (elemRect.height / 2.0)) - (BUTTON_HEIGHT / 2.0);
+                double left = elemRect.left - layerRect.left;
+                double right = layerRect.right - elemRect.right;
+                before.getElement().getStyle().setLeft(left, Unit.PX);
+                before.getElement().getStyle().setTop(top, Unit.PX);
+                after.getElement().getStyle().setRight(right, Unit.PX);
+                after.getElement().getStyle().setTop(top, Unit.PX);
+            } else {
+                double top = elemRect.top - layerRect.top;
+                double left = elemRect.left - layerRect.left;
+                double bottom = -elemRect.bottom + layerRect.bottom;
+                double offset = 0;
+                if (elemRect.height < (2 * BUTTON_HEIGHT)) {
+                    offset = 1 + (BUTTON_WIDTH / 2);
+                }
+                before.getElement().getStyle().setLeft(((left - offset) + (elemRect.width / 2)), Unit.PX);
+                before.getElement().getStyle().setTop(top, Unit.PX);
 
-            down.getElement().getStyle().setLeft((left + offset + (elemRect.width / 2)), Unit.PX);
-            down.getElement().getStyle().setBottom(bottom, Unit.PX);
-
-            up.addClickHandler(e -> m_callback.place(container, element, 0));
-            down.addClickHandler(e -> m_callback.place(container, element, 1));
-
+                after.getElement().getStyle().setLeft((left + offset + (elemRect.width / 2)), Unit.PX);
+                after.getElement().getStyle().setBottom(bottom, Unit.PX);
+            }
         }
 
         /**
@@ -334,6 +357,16 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             plus.getElement().getStyle().setTop(top, Unit.PX);
             plus.addClickHandler(e -> m_callback.place(container, null, 0));
 
+        }
+
+        /**
+         * Applies style to rotate the button to the left.
+         *
+         * @param button the button to rotate
+         */
+        private void rotateLeft(PlacementButton button) {
+
+            button.getElement().getStyle().setProperty("transform", "rotate(-90deg)");
         }
 
     }
@@ -375,6 +408,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             return addDomHandler(handler, ClickEvent.getType());
         }
     }
+
+    public static final String OC_PLACEMENT_LR = "oc-placement-lr";
 
     /** The container highlighting offset. */
     public static final int HIGHLIGHTING_OFFSET = 4;
