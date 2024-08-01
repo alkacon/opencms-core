@@ -1866,7 +1866,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
             data.setAllowSettingsInEditor(allowSettingsInEditor);
             String placementModeEnabledStr = (String)OpenCms.getRuntimeProperty(PARAM_PAGE_EDITOR_PLACEMENT_MODE_ENABLED);
-            boolean placementModeEnabled = Boolean.parseBoolean(placementModeEnabledStr);
+            boolean placementModeEnabled = (placementModeEnabledStr == null) || Boolean.parseBoolean(placementModeEnabledStr);
             data.setPlacementModeEnabled(placementModeEnabled);
             data.setSessionStorageData(sessionStorageData);
         } catch (Throwable e) {
