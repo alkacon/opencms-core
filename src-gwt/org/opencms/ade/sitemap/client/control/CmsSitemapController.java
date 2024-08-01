@@ -92,6 +92,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -2175,6 +2176,14 @@ public class CmsSitemapController implements I_CmsSitemapController {
                     start(0, true);
                     getService().save(getEntryPoint(), change, this);
 
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    // An error after a drag/drop operation can cause click events to get sent to the sitemap entry's move handle
+                    // instead of the error dialog's buttons. We use releaseCapture() to fix this.
+                    DOM.releaseCapture(DOM.getCaptureElement());
+                    super.onFailure(t);
                 }
 
                 /**
