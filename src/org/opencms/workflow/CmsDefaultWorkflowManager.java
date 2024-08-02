@@ -44,6 +44,7 @@ import org.opencms.ade.publish.shared.CmsWorkflowResponse;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -179,7 +180,10 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
             token.getOptions(),
             false,
             true).getWorkflowResources();
-        return executeAction(cms, action, token.getOptions(), resources);
+        // We only automatically clean up the invalid resources in the case where the list of publish resources was too long to display (i.e. where we use a publish list token),
+        // in the other case it's already handled by CmsPublishService#executeAction.
+        List<CmsResource> filteredResources = cleanUpInvalidResourcesFromUserPublishList(cms, resources);
+        return executeAction(cms, action, token.getOptions(), filteredResources);
     }
 
     /**
@@ -483,5 +487,40 @@ public class CmsDefaultWorkflowManager extends A_CmsWorkflowManager {
             LOG.error(e.getLocalizedMessage());
             return null;
         }
+    }
+
+    /**
+     * Removes invalid publish resources (those that are unchanged, or can't be found) from the user's publish list, and only returns those which are not invalid.
+     *
+     * @param cms the CMS context
+     * @param resources the resources to filter
+     * @return the valid resources to publish
+     */
+    protected List<CmsResource> cleanUpInvalidResourcesFromUserPublishList(CmsObject cms, List<CmsResource> resources) {
+
+        List<CmsResource> filteredResources = new ArrayList<>();
+
+        List<CmsUUID> removeIds = new ArrayList<>();
+        for (CmsResource resource : resources) {
+            try {
+                if (resource.getState().isUnchanged()
+                    || !cms.existsResource(resource.getStructureId(), CmsResourceFilter.ALL)) {
+                    removeIds.add(resource.getStructureId());
+                } else {
+                    filteredResources.add(resource);
+                }
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        if (removeIds.size() > 0) {
+            try {
+                OpenCms.getPublishManager().removeResourceFromUsersPubList(cms, removeIds);
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+
+        return filteredResources;
     }
 }
