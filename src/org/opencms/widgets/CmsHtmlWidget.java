@@ -27,9 +27,11 @@
 
 package org.opencms.widgets;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
@@ -73,6 +75,9 @@ import com.google.common.collect.Sets;
  * @since 6.0.1
  */
 public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
+
+    /** Sitemap attribute key for configuring the TinyMCE JSON configuration. */
+    public static final String ATTR_TEMPLATE_EDITOR_CONFIGFILE = "template.editor.configfile";
 
     /** Labels for the default block format options. */
     public static final Map<String, String> TINYMCE_DEFAULT_BLOCK_FORMAT_LABELS = Collections.unmodifiableMap(
@@ -221,11 +226,11 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
             }
 
             String editorOptions = widgetOptions.getEditorConfigPath();
+            editorOptions = getEditorConfigPath(cms, resource, widgetOptions);
             if (editorOptions != null) {
                 try {
                     CmsResource editorOptionsRes = cms.readResource(editorOptions, CmsResourceFilter.IGNORE_EXPIRATION);
                     CmsFile editorOptionsFile = cms.readFile(editorOptionsRes);
-                    OpenCms.getLocaleManager();
                     String encoding = CmsLocaleManager.getResourceEncoding(cms, editorOptionsRes);
                     String contentAsString = new String(editorOptionsFile.getContents(), encoding);
                     JSONObject directOptions = new JSONObject(contentAsString);
@@ -276,6 +281,42 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
         }
         String result = CmsStringUtil.listAsString(resultParts, ";");
         return result;
+    }
+
+    /**
+     * Determines the TinyMCE configuration JSON path for the given widget configuration and edited resource.
+     *
+     * @param cms the CMS context
+     * @param resource the edited resource
+     * @param widgetOptions the widget configuration
+     * @return
+     */
+    private static String getEditorConfigPath(CmsObject cms, CmsResource resource, CmsHtmlWidgetOption widgetOptions) {
+
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(widgetOptions.getEditorConfigPath())) {
+            return widgetOptions.getEditorConfigPath();
+        }
+        String adeContextPath = (String)cms.getRequestContext().getAttribute(
+            CmsRequestContext.ATTRIBUTE_ADE_CONTEXT_PATH);
+        String pathToCheck = null;
+        if (adeContextPath != null) {
+            pathToCheck = adeContextPath;
+        } else if (resource != null) {
+            pathToCheck = resource.getRootPath();
+        } else {
+            return null;
+        }
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(cms, pathToCheck);
+        String valueFromSitemapConfig = config.getAttribute(ATTR_TEMPLATE_EDITOR_CONFIGFILE, null);
+        if (valueFromSitemapConfig != null) {
+            valueFromSitemapConfig = valueFromSitemapConfig.trim();
+            if ("none".equals(valueFromSitemapConfig)) {
+                return null;
+            }
+            return valueFromSitemapConfig;
+        } else {
+            return null;
+        }
     }
 
     /**
