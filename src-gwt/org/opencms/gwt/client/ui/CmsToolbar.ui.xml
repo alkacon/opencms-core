@@ -8,9 +8,9 @@
 		<cms:CmsNotificationWidget />
 		<g:FlowPanel styleName="{resources.toolbarCss.toolbarBackground}">
 			<g:FlowPanel styleName="{resources.toolbarCss.toolbarContent}" >
-				<g:HTMLPanel styleName="{resources.toolbarCss.toolbarCenter}">
-					<span class="{resources.toolbarCss.toolbarLogo}"></span>
-	  			</g:HTMLPanel>
+				<g:FlowPanel ui:field="m_toolbarCenter" styleName="{resources.toolbarCss.toolbarCenter}">
+					<g:InlineLabel styleName="{resources.toolbarCss.toolbarLogo}" />
+	  			</g:FlowPanel>
 				<g:FlowPanel ui:field="m_buttonPanelLeft" styleName="{resources.toolbarCss.toolbarButtonsLeft}"></g:FlowPanel>
 			 	<g:FlowPanel ui:field="m_buttonPanelRight" styleName="{resources.toolbarCss.toolbarButtonsRight}"><cms:CmsQuickLauncher ui:field="m_quickLauncher" /><cms:CmsUserInfo ui:field="m_userInfo" /></g:FlowPanel>
 			</g:FlowPanel>

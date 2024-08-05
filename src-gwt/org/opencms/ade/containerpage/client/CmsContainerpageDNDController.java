@@ -249,7 +249,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             m_toolbar.setAppTitle(
                 org.opencms.ade.containerpage.client.Messages.get().key(
                     org.opencms.ade.containerpage.client.Messages.GUI_TOOLBAR_PLACE_ELEMENT_0));
-            m_toolbar.addLeft(m_toolbarWidget);
+            m_toolbar.getToolbarCenter().clear();
+            m_toolbar.getToolbarCenter().add(m_toolbarWidget);
+
 
             CmsPushButton cancelButton = createButton(
                 Messages.get().key(Messages.GUI_TOOLBAR_RESET_0),

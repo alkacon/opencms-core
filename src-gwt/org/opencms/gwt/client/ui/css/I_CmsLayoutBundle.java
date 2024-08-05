@@ -2251,14 +2251,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          */
         String toolbarHide();
 
-        String toolbarPlacementMode();
-
         /**
          * Access method.<p>
          *
          * @return the CSS class name
          */
         String toolbarLogo();
+
+        String toolbarPlacementMode();
 
         /**
          * Access method.<p>

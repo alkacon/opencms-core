@@ -23,7 +23,8 @@
 }
 
 .toolbarPlacementMode.oc-toolbar .toolbarCenter {
-	display: none;
+	display: flex;
+	justify-content: center;
 }
 
 .toolbarPlacementMode.oc-toolbar .toolbarButtonsLeft {
@@ -311,4 +312,5 @@ div.quickLaunchContainer span.v-button-caption {
 div.quickLaunchContainer .v-disabled .v-button-wrap{
 	opacity: 0.5;
 }
+
 

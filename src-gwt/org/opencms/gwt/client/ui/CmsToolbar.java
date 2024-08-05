@@ -69,6 +69,12 @@ public class CmsToolbar extends Composite {
     @UiField
     protected FlowPanel m_buttonPanelRight;
 
+    /**
+     * Center of the toolbar, normally for displaying the logo, but the content can be changed.
+     */
+    @UiField
+    protected FlowPanel m_toolbarCenter;
+
     /** The quick launcher (initially invisible). */
     @UiField
     protected CmsQuickLauncher m_quickLauncher;
@@ -177,6 +183,15 @@ public class CmsToolbar extends Composite {
     public CmsQuickLauncher getQuickLauncher() {
 
         return m_quickLauncher;
+    }
+
+    /**
+     * Gets the center area of the toolbar, which normally contains the logo.
+     *
+     * @return the center toolbar area
+     */
+    public FlowPanel getToolbarCenter() {
+        return m_toolbarCenter;
     }
 
     /**
