@@ -29,7 +29,9 @@ package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsDialogContextWithAdeContext;
 import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
@@ -38,7 +40,9 @@ import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.Messages;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.vaadin.ui.UI;
@@ -46,7 +50,7 @@ import com.vaadin.ui.UI;
 /**
  * The direct publish dialog action.<p>
  */
-public class CmsDirectPublishDialogAction extends A_CmsWorkplaceAction {
+public class CmsDirectPublishDialogAction extends A_CmsWorkplaceAction implements I_CmsADEAction {
 
     /** The action id. */
     public static final String ACTION_ID = "directpublish";
@@ -71,10 +75,20 @@ public class CmsDirectPublishDialogAction extends A_CmsWorkplaceAction {
                             updatedIds.add(new CmsUUID(item));
                         }
                         context.finish(updatedIds);
+
                     }
                 });
             extension.openPublishDialog(context.getResources());
         }
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getCommandClassName()
+     */
+    @Override
+    public String getCommandClassName() {
+
+        return "org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction";
     }
 
     /**
@@ -86,11 +100,55 @@ public class CmsDirectPublishDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getJspPath()
+     */
+    @Override
+    public String getJspPath() {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#getParams()
+     */
+    @Override
+    public Map<String, String> getParams() {
+
+        Map<String, String> result = new HashMap<String, String>();
+        result.put("dialogId", CmsDirectPublishDialogAction.class.getName());
+        return result;
+    }
+
+    /**
      * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
         return VISIBILITY.getVisibility(cms, resources);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getVisibility(org.opencms.ui.I_CmsDialogContext)
+     */
+    @Override
+    public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
+
+        if (context instanceof I_CmsDialogContextWithAdeContext) {
+            AdeContext adeContext = ((I_CmsDialogContextWithAdeContext)context).getAdeContext();
+            if ((adeContext == AdeContext.publish) || (adeContext == AdeContext.sitemapeditor)) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+        }
+        return super.getVisibility(context);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsADEAction#isAdeSupported()
+     */
+    @Override
+    public boolean isAdeSupported() {
+
+        return true;
     }
 
     /**
