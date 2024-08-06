@@ -1455,7 +1455,17 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
                 Set<String> containerIds = new HashSet<>();
                 for (String containerId : elem.getContents().keySet()) {
-                    if (elem.getContents().get(containerId) != null) {
+                    String content = elem.getContents().get(containerId);
+                    // check if content is valid HTML
+                    Element testElement = null;
+                    if (content != null) {
+                        try {
+                            testElement = CmsDomUtil.createElement(content);
+                        } catch (Exception e) {
+                            CmsGwtLog.log("Invalid formatter output for element of type " + elem.getResourceType() + ": [" + content+ "]");
+                        }
+                    }
+                    if (testElement != null) {
                         containerIds.add(containerId);
                     }
                 }
@@ -1489,7 +1499,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             m_isNew = true;
             m_controller.getNewElement(clientId, callback);
         } else {
-            m_controller.getElementForDragAndDropFromContainer(clientId, m_originalContainerId, false, callback);
+            m_controller.getElementForDragAndDropFromContainer(clientId, CmsContainerElement.MENU_CONTAINER_ID, false, callback);
         }
     }
 
