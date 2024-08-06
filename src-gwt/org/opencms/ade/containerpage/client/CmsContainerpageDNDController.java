@@ -210,6 +210,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         // offsetParent == null means element or its ancestor has display: none
                         continue;
                     }
+                    if (container.isDetailView()) {
+                        continue;
+                    }
                     List<CmsContainerPageElementPanel> elements = container.getAllDragElements();
                     if (elements.size() == 0) {
                         installPlacementElement(container);
