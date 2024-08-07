@@ -121,10 +121,10 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     class CmsPlacementModeContext {
 
         /** The placement button height. */
-        public static final int BUTTON_HEIGHT = 21;
+        public static final int BUTTON_HEIGHT = 20;
 
         /** The placement button width. */
-        public static final int BUTTON_WIDTH = 21;
+        public static final int BUTTON_WIDTH = 20;
 
         /** Single-element array holding the currently visible highlighting element. */
         private CmsHighlightingBorder[] m_activeBorder = {null};
@@ -348,8 +348,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             m_layer.add(after);
             before.addStyleName(OC_PLACEMENT_BUTTON);
             after.addStyleName(OC_PLACEMENT_BUTTON);
-            before.addStyleName(OC_PLACEMENT_UP);
-            after.addStyleName(OC_PLACEMENT_DOWN);
             for (PlacementButton button : Arrays.asList(before, after)) {
                 addHighlightingMouseHandlers(container, button);
             }
@@ -364,8 +362,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 leftRight = CmsDomUtil.hasClass(OC_PLACEMENT_LR, element.getElement());
             }
             if (leftRight) {
-                rotateLeft(before);
-                rotateLeft(after);
+                before.addStyleName(OC_PLACEMENT_LEFT);
+                after.addStyleName(OC_PLACEMENT_RIGHT);
                 double top = ((elemRect.top - layerRect.top) + (elemRect.height / 2.0)) - (BUTTON_HEIGHT / 2.0);
                 double left = elemRect.left - layerRect.left;
                 double right = layerRect.right - elemRect.right;
@@ -374,6 +372,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 after.getElement().getStyle().setRight(right, Unit.PX);
                 after.getElement().getStyle().setTop(top, Unit.PX);
             } else {
+                before.addStyleName(OC_PLACEMENT_UP);
+                after.addStyleName(OC_PLACEMENT_DOWN);
                 double top = elemRect.top - layerRect.top;
                 double left = ((elemRect.left - layerRect.left) + (0.5 * elemRect.width)) - (0.5 * BUTTON_WIDTH);
                 double offset = 0;
@@ -483,15 +483,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
         }
 
-        /**
-         * Applies style to rotate the button to the left.
-         *
-         * @param button the button to rotate
-         */
-        private void rotateLeft(PlacementButton button) {
-
-            button.getElement().getStyle().setProperty("transform", "rotate(-90deg)");
-        }
 
     }
 
@@ -561,6 +552,12 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
     /** CSS class. */
     public static final String OC_PLACEMENT_DOWN = "oc-placement-down";
+
+    /** CSS class. */
+    public static final String OC_PLACEMENT_LEFT = "oc-placement-left";
+
+    /** CSS class. */
+    public static final String OC_PLACEMENT_RIGHT = "oc-placement-right";
 
     /** CSS class. */
     public static final String OC_PLACEMENT_LAYER = "oc-placement-layer";
