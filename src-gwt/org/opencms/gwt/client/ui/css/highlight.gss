@@ -22,6 +22,10 @@
 	height: 2px
 }
 
+.highlightBox .midpointSeparator {
+	height: 1px;
+}
+
 .animated .borderLeft{
 	animation: moveDown 1s linear normal infinite;
 }
@@ -30,7 +34,7 @@
 	animation: moveDown 1s linear reverse infinite;
 }
 	
-.animated .borderTop{
+.animated .borderTop, .animated .midpointSeparator {
 	animation: moveRight 1s linear reverse infinite;
 }
 	
@@ -63,7 +67,7 @@
 	background-size: 100% 16px;
 }
 
-.colorGrey .borderTop, .colorGrey .borderBottom{
+.colorGrey .borderTop, .colorGrey .borderBottom, .colorGrey .midpointSeparator {
 	background: linear-gradient(
   		to right,
   		rgba(181,189,200,1) ,
@@ -86,7 +90,7 @@
 	background-size: 100% 16px;
 }
 
-.colorRed .borderTop, .colorRed .borderBottom{
+.colorRed .borderTop, .colorRed .borderBottom, .colorRed .midpointSeparator {
 	background: linear-gradient(
   		to right,
   		rgba(179,27,52,1),
@@ -108,7 +112,7 @@
 	background-size: 100% 16px;
 }
 
-.colorBlue .borderTop, .colorBlue .borderBottom{
+.colorBlue .borderTop, .colorBlue .borderBottom, .colorBlue .midpointSeparator {
 	background: linear-gradient(
   		to right,
   		rgba(135,224,253,1),

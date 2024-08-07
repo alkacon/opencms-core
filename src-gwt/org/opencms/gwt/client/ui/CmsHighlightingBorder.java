@@ -31,11 +31,13 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
@@ -48,6 +50,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 
 import elemental2.dom.DomGlobal;
+import jsinterop.base.Js;
 
 /**
  * A Widget to display a highlighting border around a specified position.<p>
@@ -108,6 +111,9 @@ public class CmsHighlightingBorder extends Composite {
 
     /** The ui-binder instance. */
     private static I_CmsHighlightingBorderUiBinder uiBinder = GWT.create(I_CmsHighlightingBorderUiBinder.class);
+
+    /** Horizontal offset of the midpoint separators. */
+    public static final int SEPARATOR_OFFSET = 15;
 
     /** The bottom border. */
     @UiField
@@ -236,6 +242,28 @@ public class CmsHighlightingBorder extends Composite {
     }
 
     /**
+     * Gets the vertical offsets (relative to the viewport) of the horizontal lines (top, midpoints, bottom, in this order).
+     *
+     * @return the vertical offsets of the horizonral lines
+     */
+    public List<Integer> getClientVerticalOffsets() {
+
+        List<Integer> result = new ArrayList<>();
+        List<DivElement> elements = new ArrayList<>();
+        elements.add(m_borderTop);
+        for (int i = 0; i < m_midpoints.getChildCount(); i++) {
+            elements.add((DivElement)m_midpoints.getChild(i));
+        }
+        elements.add(m_borderBottom);
+        for (DivElement elem : elements) {
+            elemental2.dom.Element elem0 = Js.cast(elem);
+            int top = (int)Math.round(elem0.getBoundingClientRect().top);
+            result.add(Integer.valueOf(top));
+        }
+        return result;
+    }
+
+    /**
      * Hides the border.<p>
      */
     public void hide() {
@@ -270,15 +298,17 @@ public class CmsHighlightingBorder extends Composite {
      *
      * @param verticalOffsets the list of midpoint offsets
      */
-    public void setMidpoints(List<Double> verticalOffsets) {
+    public void setMidpoints(List<Integer> verticalOffsets) {
 
         m_midpoints.removeAllChildren();
         if (verticalOffsets == null) {
             verticalOffsets = Collections.emptyList();
         }
-        for (Double midpoint : verticalOffsets) {
-            DivElement midpointLine = (DivElement)m_borderTop.cloneNode(false);
-            midpointLine.getStyle().setTop(midpoint.doubleValue(), Unit.PX);
+        for (Integer midpoint : verticalOffsets) {
+            DivElement midpointLine = Document.get().createDivElement();
+            midpointLine.addClassName(I_CmsLayoutBundle.INSTANCE.highlightCss().midpointSeparator());
+            midpointLine.getStyle().setTop(midpoint.doubleValue() + BORDER_OFFSET, Unit.PX);
+            midpointLine.getStyle().setLeft(SEPARATOR_OFFSET, Unit.PX);
             m_midpoints.appendChild(midpointLine);
 
         }
@@ -364,7 +394,7 @@ public class CmsHighlightingBorder extends Composite {
         NodeList<Node> midpoints = m_midpoints.getChildNodes();
         for (int i = 0; i < midpoints.getLength(); i++) {
             DivElement midpoint = (DivElement)midpoints.getItem(i);
-            midpoint.getStyle().setWidth(width + BORDER_WIDTH, Unit.PX);
+            midpoint.getStyle().setWidth((width + BORDER_WIDTH) - (2 * SEPARATOR_OFFSET), Unit.PX);
         }
     }
 

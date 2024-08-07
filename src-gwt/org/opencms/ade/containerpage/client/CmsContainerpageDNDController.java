@@ -48,6 +48,7 @@ import org.opencms.gwt.client.dnd.I_CmsDNDController;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
+import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
@@ -67,6 +68,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -83,9 +85,16 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.HasMouseOutHandlers;
+import com.google.gwt.event.dom.client.HasMouseOverHandlers;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
@@ -117,7 +126,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         /** The placement button width. */
         public static final int BUTTON_WIDTH = 21;
 
-
+        /** Single-element array holding the currently visible highlighting element. */
+        private CmsHighlightingBorder[] m_activeBorder = {null};
 
         /** The callback to call when an element is placed. */
         private I_PlacementCallback m_callback;
@@ -213,16 +223,55 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     if (container.isDetailView()) {
                         continue;
                     }
+                    List<Integer> offsets = null;
+                    if (container.getHighlighting() != null) {
+                        offsets = container.getHighlighting().getClientVerticalOffsets();
+                    }
                     List<CmsContainerPageElementPanel> elements = container.getAllDragElements();
                     if (elements.size() == 0) {
                         installPlacementElement(container);
                     } else {
+                        boolean lr = false;
                         for (int i = 0; i < elements.size(); i++) {
-                            installButtons(container, i, elements.get(i));
+                            if (elements.get(i).getElement().hasClassName(OC_PLACEMENT_LR)) {
+                                lr = true;
+                            }
+
+                        }
+                        if ((offsets == null) || lr || (offsets.size() != (elements.size() + 1))) {
+                            for (int i = 0; i < elements.size(); i++) {
+                                installButtons(container, i, elements.get(i));
+                            }
+                        } else {
+                            installPlacementButtonsWithMidpoints(container, offsets);
                         }
                     }
                 }
             }
+        }
+
+        /**
+         * Adds mouse handlers for showing/hiding container borders when hovering over placement buttons.
+         *
+         * @param container the container to which the button belongs
+         * @param button the button
+         */
+        private void addHighlightingMouseHandlers(CmsContainerPageContainer container, PlacementButton button) {
+
+            button.addMouseOverHandler(event -> {
+                if (m_activeBorder[0] != null) {
+                    m_activeBorder[0].getElement().getStyle().setVisibility(Visibility.HIDDEN);
+                }
+                m_activeBorder[0] = container.getHighlighting();
+                m_activeBorder[0].getElement().getStyle().setVisibility(Visibility.VISIBLE);
+            });
+            button.addMouseOutHandler(event -> {
+                if (m_activeBorder[0] != null) {
+                    m_activeBorder[0].getElement().getStyle().setVisibility(Visibility.HIDDEN);
+                    m_activeBorder[0] = null;
+                }
+                container.getHighlighting().getElement().getStyle().setVisibility(Visibility.HIDDEN);
+            });
         }
 
         /**
@@ -255,7 +304,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             m_toolbar.getToolbarCenter().clear();
             m_toolbar.getToolbarCenter().add(m_toolbarWidget);
 
-
             CmsPushButton cancelButton = createButton(
                 Messages.get().key(Messages.GUI_TOOLBAR_RESET_0),
                 I_CmsButton.ButtonData.RESET_BUTTON.getIconClass());
@@ -284,6 +332,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             int position,
             CmsContainerPageElementPanel element) {
 
+            container.getHighlighting().getElement().getStyle().setVisibility(Visibility.HIDDEN);
             elemental2.dom.Element elem = Js.cast(element.getElement());
             elemental2.dom.Element layerElem = Js.cast(m_layer.getElement());
             DOMRect layerRect = layerElem.getBoundingClientRect();
@@ -301,6 +350,10 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             after.addStyleName(OC_PLACEMENT_BUTTON);
             before.addStyleName(OC_PLACEMENT_UP);
             after.addStyleName(OC_PLACEMENT_DOWN);
+            for (PlacementButton button : Arrays.asList(before, after)) {
+                addHighlightingMouseHandlers(container, button);
+            }
+
             boolean leftRight = false;
             JsPropertyMap<Object> window = Js.cast(DomGlobal.window);
             Any testLrPlacement = window.getAsAny("ocTestLrPlacement");
@@ -322,17 +375,78 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 after.getElement().getStyle().setTop(top, Unit.PX);
             } else {
                 double top = elemRect.top - layerRect.top;
-                double left = elemRect.left - layerRect.left;
-                double bottom = -elemRect.bottom + layerRect.bottom;
+                double left = ((elemRect.left - layerRect.left) + (0.5 * elemRect.width)) - (0.5 * BUTTON_WIDTH);
                 double offset = 0;
                 if (elemRect.height < (2 * BUTTON_HEIGHT)) {
                     offset = 1 + (BUTTON_WIDTH / 2);
                 }
-                before.getElement().getStyle().setLeft(((left - offset) + (elemRect.width / 2)), Unit.PX);
+
+                before.getElement().getStyle().setLeft(left - offset, Unit.PX);
                 before.getElement().getStyle().setTop(top, Unit.PX);
 
-                after.getElement().getStyle().setLeft((left + offset + (elemRect.width / 2)), Unit.PX);
-                after.getElement().getStyle().setBottom(bottom, Unit.PX);
+                after.getElement().getStyle().setLeft(Math.round(left + offset), Unit.PX);
+                after.getElement().getStyle().setTop(Math.round((top + elemRect.height) - BUTTON_HEIGHT), Unit.PX);
+            }
+        }
+
+        /**
+         * Installs placement buttons aligned with the highlighting separators between container elements (except for the first and last button).
+         *
+         * @param container the container for which to install the buttons
+         * @param offsets the offsets relative to the viewport of the midpoints
+         */
+        private void installPlacementButtonsWithMidpoints(CmsContainerPageContainer container, List<Integer> offsets) {
+
+            List<CmsContainerPageElementPanel> elements = container.getAllDragElements();
+            elemental2.dom.Element layerElem = Js.cast(m_layer.getElement());
+            DOMRect layerRect = layerElem.getBoundingClientRect();
+            container.getHighlighting().getElement().getStyle().setVisibility(Visibility.HIDDEN);
+
+            for (int j = 0; j < offsets.size(); j++) {
+                PlacementButton button = new PlacementButton();
+                addHighlightingMouseHandlers(container, button);
+
+                button.addStyleName(OC_PLACEMENT_BUTTON);
+                m_layer.add(button);
+                if (j == 0) {
+                    CmsContainerPageElementPanel element = elements.get(0);
+                    elemental2.dom.Element realElement = Js.cast(element.getElement());
+                    button.addClickHandler(e -> m_callback.place(container, element, 0));
+                    button.addStyleName(OC_PLACEMENT_UP);
+                    DOMRect elemRect = realElement.getBoundingClientRect();
+
+                    double top = (elemRect.top - layerRect.top);
+                    double left = elemRect.left - layerRect.left;
+                    button.getElement().getStyle().setLeft(
+                        Math.round((left + (elemRect.width / 2)) - (0.5 * BUTTON_WIDTH)),
+                        Unit.PX);
+                    button.getElement().getStyle().setTop(top, Unit.PX);
+                } else if (j == (offsets.size() - 1)) {
+                    CmsContainerPageElementPanel element = elements.get(elements.size() - 1);
+                    elemental2.dom.Element realElement = Js.cast(element.getElement());
+                    button.addClickHandler(e -> m_callback.place(container, element, 1));
+                    button.addStyleName(OC_PLACEMENT_DOWN);
+                    DOMRect elemRect = realElement.getBoundingClientRect();
+                    double top = Math.round((elemRect.top + elemRect.height) - layerRect.top - BUTTON_HEIGHT);
+                    double left = elemRect.left - layerRect.left;
+                    button.getElement().getStyle().setLeft(
+                        Math.round((left + (elemRect.width / 2)) - (0.5 * BUTTON_WIDTH)),
+                        Unit.PX);
+                    button.getElement().getStyle().setTop(top, Unit.PX);
+                } else {
+                    CmsContainerPageElementPanel element = elements.get(j);
+                    elemental2.dom.Element realElement = Js.cast(element.getElement());
+                    button.addClickHandler(e -> m_callback.place(container, element, 0));
+                    button.addStyleName(OC_PLACEMENT_MIDDLE);
+                    DOMRect elemRect = realElement.getBoundingClientRect();
+
+                    double top = Math.round(offsets.get(j) - layerRect.top - (0.5 * BUTTON_HEIGHT));
+                    double left = Math.round(
+                        ((elemRect.left - layerRect.left) + (0.5 * elemRect.width)) - (0.5 * BUTTON_WIDTH));
+                    button.getElement().getStyle().setLeft(left, Unit.PX);
+                    button.getElement().getStyle().setTop(top, Unit.PX);
+
+                }
             }
         }
 
@@ -347,17 +461,22 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             placeholder.classList.add(OC_PLACEMENT_PLACEHOLDER);
             elemental2.dom.Element layerElem = Js.cast(m_layer.getElement());
             elemental2.dom.Element containerElem = Js.cast(container.getElement());
+            container.getHighlighting().getElement().getStyle().setVisibility(Visibility.HIDDEN);
             DOMRect containerRect = containerElem.getBoundingClientRect();
             if (containerRect.height < 50.0) {
                 containerElem.appendChild(placeholder);
             }
             DOMRect layerRect = layerElem.getBoundingClientRect();
             PlacementButton plus = new PlacementButton();
+            addHighlightingMouseHandlers(container, plus);
+
             plus.addStyleName(OC_PLACEMENT_MIDDLE); // from Bootstrap icons
             plus.addStyleName(OC_PLACEMENT_BUTTON);
             m_layer.add(plus);
-            double top = (containerRect.top - layerRect.top) + (0.5 * containerRect.height);
-            double left = (containerRect.left - layerRect.left) + (0.5 * containerRect.width);
+            double top = Math.round(
+                ((containerRect.top - layerRect.top) + (0.5 * containerRect.height)) - (0.5 * BUTTON_HEIGHT));
+            double left = Math.round(
+                ((containerRect.left - layerRect.left) + (0.5 * containerRect.width)) - (0.5 * BUTTON_WIDTH));
             plus.getElement().getStyle().setLeft(left, Unit.PX);
             plus.getElement().getStyle().setTop(top, Unit.PX);
             plus.addClickHandler(e -> m_callback.place(container, null, 0));
@@ -393,7 +512,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /**
      * Just a clickable div as a GWT widget.
      */
-    static class PlacementButton extends FlowPanel implements HasClickHandlers {
+    static class PlacementButton extends FlowPanel
+    implements HasClickHandlers, HasMouseOverHandlers, HasMouseOutHandlers {
 
         /**
          * Creates a new instance.
@@ -412,9 +532,26 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
             return addDomHandler(handler, ClickEvent.getType());
         }
-    }
 
-    public static final String OC_PLACEMENT_LR = "oc-placement-lr";
+        /**
+         * @see com.google.gwt.event.dom.client.HasMouseOutHandlers#addMouseOutHandler(com.google.gwt.event.dom.client.MouseOutHandler)
+         */
+        @Override
+        public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
+
+            return addDomHandler(handler, MouseOutEvent.getType());
+        }
+
+        /**
+         * @see com.google.gwt.event.dom.client.HasMouseOverHandlers#addMouseOverHandler(com.google.gwt.event.dom.client.MouseOverHandler)
+         */
+        @Override
+        public HandlerRegistration addMouseOverHandler(MouseOverHandler handler) {
+
+            return addDomHandler(handler, MouseOverEvent.getType());
+
+        }
+    }
 
     /** The container highlighting offset. */
     public static final int HIGHLIGHTING_OFFSET = 4;
@@ -427,6 +564,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
     /** CSS class. */
     public static final String OC_PLACEMENT_LAYER = "oc-placement-layer";
+
+    /** CSS class. */
+    public static final String OC_PLACEMENT_LR = "oc-placement-lr";
 
     /** CSS class. */
     public static final String OC_PLACEMENT_MODE = "oc-placement-mode";
@@ -1462,7 +1602,12 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         try {
                             testElement = CmsDomUtil.createElement(content);
                         } catch (Exception e) {
-                            CmsGwtLog.log("Invalid formatter output for element of type " + elem.getResourceType() + ": [" + content+ "]");
+                            CmsGwtLog.log(
+                                "Invalid formatter output for element of type "
+                                    + elem.getResourceType()
+                                    + ": ["
+                                    + content
+                                    + "]");
                         }
                     }
                     if (testElement != null) {
@@ -1499,7 +1644,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             m_isNew = true;
             m_controller.getNewElement(clientId, callback);
         } else {
-            m_controller.getElementForDragAndDropFromContainer(clientId, CmsContainerElement.MENU_CONTAINER_ID, false, callback);
+            m_controller.getElementForDragAndDropFromContainer(
+                clientId,
+                CmsContainerElement.MENU_CONTAINER_ID,
+                false,
+                callback);
         }
     }
 
@@ -1565,41 +1714,46 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      * Updates the drag target highlighting.<p>
      *
      * @param initial <code>true</code> when initially highlighting the drop containers
+     * @param placementMode when we're in placement mode
      */
-    private void updateHighlighting(boolean initial, boolean addSeparators) {
+    private void updateHighlighting(boolean initial, boolean placementMode) {
 
         Map<I_CmsDropContainer, CmsPositionBean> containers = new HashMap<I_CmsDropContainer, CmsPositionBean>();
         for (I_CmsDropTarget target : m_dragInfos.keySet()) {
             if ((target instanceof I_CmsDropContainer) && (target.getElement().getOffsetParent() != null)) {
                 if (initial && (target != m_initialDropTarget)) {
-                    ((I_CmsDropContainer)target).highlightContainer(addSeparators);
+                    ((I_CmsDropContainer)target).highlightContainer(placementMode);
                 } else {
                     ((I_CmsDropContainer)target).updatePositionInfo();
                 }
                 containers.put((I_CmsDropContainer)target, ((I_CmsDropContainer)target).getPositionInfo());
             }
         }
+
         List<I_CmsDropContainer> containersToMatch = new ArrayList<I_CmsDropContainer>(containers.keySet());
-        for (I_CmsDropContainer contA : containers.keySet()) {
-            containersToMatch.remove(contA);
-            for (I_CmsDropContainer contB : containersToMatch) {
-                CmsPositionBean posA = containers.get(contA);
-                CmsPositionBean posB = containers.get(contB);
-                if (CmsPositionBean.checkCollision(posA, posB, HIGHLIGHTING_OFFSET * 3)) {
-                    if (contA.hasDnDChildren() && contA.getDnDChildren().contains(contB)) {
-                        if (!posA.isInside(posB, HIGHLIGHTING_OFFSET)) {
-                            // the nested container is not completely inside the other
-                            // increase the size of the outer container
-                            posA.ensureSurrounds(posB, HIGHLIGHTING_OFFSET);
+        if (!placementMode) {
+            // in placement mode, only one container is highlighted at a time, so we don't need to run the collision avoidance
+            for (I_CmsDropContainer contA : containers.keySet()) {
+                containersToMatch.remove(contA);
+                for (I_CmsDropContainer contB : containersToMatch) {
+                    CmsPositionBean posA = containers.get(contA);
+                    CmsPositionBean posB = containers.get(contB);
+                    if (CmsPositionBean.checkCollision(posA, posB, HIGHLIGHTING_OFFSET * 3)) {
+                        if (contA.hasDnDChildren() && contA.getDnDChildren().contains(contB)) {
+                            if (!posA.isInside(posB, HIGHLIGHTING_OFFSET)) {
+                                // the nested container is not completely inside the other
+                                // increase the size of the outer container
+                                posA.ensureSurrounds(posB, HIGHLIGHTING_OFFSET);
+                            }
+                        } else if (contB.hasDnDChildren() && contB.getDnDChildren().contains(contA)) {
+                            if (!posB.isInside(posA, HIGHLIGHTING_OFFSET)) {
+                                // the nested container is not completely inside the other
+                                // increase the size of the outer container
+                                posB.ensureSurrounds(posA, HIGHLIGHTING_OFFSET);
+                            }
+                        } else {
+                            CmsPositionBean.avoidCollision(posA, posB, HIGHLIGHTING_OFFSET * 3);
                         }
-                    } else if (contB.hasDnDChildren() && contB.getDnDChildren().contains(contA)) {
-                        if (!posB.isInside(posA, HIGHLIGHTING_OFFSET)) {
-                            // the nested container is not completely inside the other
-                            // increase the size of the outer container
-                            posB.ensureSurrounds(posA, HIGHLIGHTING_OFFSET);
-                        }
-                    } else {
-                        CmsPositionBean.avoidCollision(posA, posB, HIGHLIGHTING_OFFSET * 3);
                     }
                 }
             }

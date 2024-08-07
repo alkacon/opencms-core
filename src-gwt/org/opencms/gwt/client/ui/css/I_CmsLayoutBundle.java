@@ -1062,6 +1062,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String highlightBox();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String midpointSeparator();
     }
 
     /** Link warning panel CSS. */

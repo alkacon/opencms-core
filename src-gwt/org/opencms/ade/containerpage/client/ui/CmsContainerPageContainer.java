@@ -620,6 +620,16 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     }
 
     /**
+     * Gets the highlighting widget for the container.
+     *
+     * @return the highlighting widget
+     */
+    public CmsHighlightingBorder getHighlighting() {
+
+        return m_highlighting;
+    }
+
+    /**
      * Returns the parent container id.<p>
      *
      * @return the container parent id
@@ -1002,10 +1012,10 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
      *
      * @return the list of midpoints between container elements
      */
-    List<Double> getMidpoints() {
+    List<Integer> getMidpoints() {
 
         List<CmsContainerPageElementPanel> elems = getAllDragElements();
-        List<Double> result = new ArrayList<>();
+        List<Integer> result = new ArrayList<>();
         DOMRect[] rects = new DOMRect[elems.size()];
         elemental2.dom.Element containerElem = Js.cast(getElement());
         double myTop = containerElem.getBoundingClientRect().top;
@@ -1020,10 +1030,10 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             }
         }
         for (int i = 0; i < (rects.length - 1); i++) {
-            double currentBottom = rects[i].bottom;
+            double currentBottom = rects[i].top + rects[i].height;
             double nextTop = rects[i + 1].top;
-            Double middle = Double.valueOf((nextTop + currentBottom) / 2);
-            result.add(middle - myTop);
+            Double middle = Double.valueOf(Math.round((nextTop + currentBottom) / 2));
+            result.add(Integer.valueOf((int)(middle.doubleValue() - myTop)));
         }
         return result;
     }
