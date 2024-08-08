@@ -113,7 +113,7 @@ public class CmsHighlightingBorder extends Composite {
     private static I_CmsHighlightingBorderUiBinder uiBinder = GWT.create(I_CmsHighlightingBorderUiBinder.class);
 
     /** Horizontal offset of the midpoint separators. */
-    public static final int SEPARATOR_OFFSET = 15;
+    public static final int SEPARATOR_OFFSET = 30;
 
     /** The bottom border. */
     @UiField
