@@ -151,8 +151,10 @@ public class CmsAttributeDNDController implements I_CmsDNDController {
      */
     private void clearTargets(final CmsDNDHandler handler) {
 
-        ((CmsValuePanel)handler.getCurrentTarget()).removeHighlighting();
-        handler.getCurrentTarget().getElement().getStyle().clearPosition();
+        if (handler.getCurrentTarget() != null) {
+            ((CmsValuePanel)handler.getCurrentTarget()).removeHighlighting();
+            handler.getCurrentTarget().getElement().getStyle().clearPosition();
+        }
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
             /**

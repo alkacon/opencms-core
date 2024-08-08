@@ -1672,7 +1672,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 ((I_CmsDropContainer)target).removeHighlighting();
             }
         }
-        if (handler != null) {
+        if ((handler != null) && (handler.getDragHelper() != null)) {
             handler.getDragHelper().removeFromParent();
         }
         m_copyGroupId = null;
