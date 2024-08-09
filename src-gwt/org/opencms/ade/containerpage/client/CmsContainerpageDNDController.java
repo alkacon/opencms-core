@@ -483,7 +483,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
         }
 
-
     }
 
     /**
@@ -577,9 +576,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /** The minimum margin set to empty containers. */
     private static final int MINIMUM_CONTAINER_MARGIN = 10;
 
-    /** Class for the buttons used to initiate placement mode. */
-    private static final String OC_LISTITEM_PLACEMENT = "oc-listitem-placement";
-
     /** CSS class. */
     private static final String OC_PLACEMENT_MIDDLE = "oc-placement-middle";
 
@@ -654,34 +650,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             id = id.substring(0, id.indexOf("#"));
         }
         return !CmsUUID.isValidUUID(id);
-    }
-
-    /**
-     * @see org.opencms.gwt.client.dnd.I_CmsDNDController#initPlacementButton(org.opencms.gwt.client.dnd.I_CmsDraggable)
-     */
-    @Override
-    public void initPlacementButton(I_CmsDraggable draggable) {
-
-        if (!m_controller.getData().isPlacementModeEnabled()) {
-            return;
-        }
-
-        if (draggable instanceof CmsListItem) {
-            CmsListItem item = (CmsListItem)draggable;
-            CmsListItemWidget itemWidget = item.getListItemWidget();
-            CmsPushButton button = new CmsPushButton();
-            button.setImageClass("bi-arrows-move oc-bootstrap-fonticon " + OC_LISTITEM_PLACEMENT);
-            button.setButtonStyle(ButtonStyle.FONT_ICON, null);
-            button.setTitle(
-                org.opencms.ade.containerpage.client.Messages.get().key(
-                    org.opencms.ade.containerpage.client.Messages.GUI_TOOLBAR_PLACE_ELEMENT_0));
-            itemWidget.getButtonPanel().insert(button, 1);
-            button.addClickHandler(event -> {
-                event.getNativeEvent().stopPropagation();
-                itemWidget.forceMouseOut();
-                startPlacementMode(draggable);
-            });
-        }
     }
 
     /**
@@ -1063,6 +1031,101 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         }
         m_controller.sendDragFinished(dragElem, targetElem, isNew(draggable));
         m_isNew = false;
+    }
+
+    /**
+     * Starts placement mode for the given draggable.
+     *
+     *  @param draggable the draggable element
+     *
+     */
+    public boolean startPlacementMode(I_CmsDraggable draggable, CmsDNDHandler handler) {
+
+        if (draggable instanceof CmsListItem) {
+            // ensure button doesn't remain visible
+            ((CmsListItem)draggable).getListItemWidget().forceMouseOut();
+
+        }
+
+        if (!m_controller.getData().isPlacementModeEnabled()) {
+            return false;
+        }
+
+        if (isImage(draggable)) {
+            return false;
+        }
+
+        if (m_controller.isGroupcontainerEditing()) {
+            return false;
+        }
+
+        final I_CmsSimpleCallback<CmsContainerElementData> callback = new I_CmsSimpleCallback<CmsContainerElementData>() {
+
+            /**
+             * Execute on success.<p>
+             *
+             * @param elem the container element data
+             */
+            public void execute(CmsContainerElementData elem) {
+
+                Set<String> containerIds = new HashSet<>();
+                for (String containerId : elem.getContents().keySet()) {
+                    String content = elem.getContents().get(containerId);
+                    // check if content is valid HTML
+                    Element testElement = null;
+                    if (content != null) {
+                        try {
+                            testElement = CmsDomUtil.createElement(content);
+                        } catch (Exception e) {
+                            CmsGwtLog.log(
+                                "Invalid formatter output for element of type "
+                                    + elem.getResourceType()
+                                    + ": ["
+                                    + content
+                                    + "]");
+                        }
+                    }
+                    if (testElement != null) {
+                        containerIds.add(containerId);
+                    }
+                }
+                if (draggable instanceof CmsListItem) {
+                    CmsListItem item = (CmsListItem)draggable;
+                    CmsListInfoBean info = item.getListItemWidget().getInfoBean();
+                    CmsListItemWidget newItem = new CmsListItemWidget(info);
+                    newItem.setWidth("500px");
+                    if (newItem.getOpenClose() != null) {
+                        newItem.getOpenClose().removeFromParent();
+                    }
+                    prepareHelperElements(elem, null, draggable);
+                    setPlacementContext(new CmsPlacementModeContext(containerIds, newItem, (cnt, reference, offset) -> {
+                        if (reference != null) {
+                            placeElement(draggable, elem, reference, offset);
+                        } else {
+                            placeNewElement(draggable, elem, cnt);
+                        }
+
+                    }));
+                }
+
+            }
+
+        };
+        // we need to reset this so highlighting works correctly
+        m_initialDropTarget = null;
+        String clientId = draggable.getId();
+        if (isNewId(clientId)) {
+            // for new content elements dragged from the gallery menu, the given id contains the resource type name
+            m_isNew = true;
+            m_controller.getNewElement(clientId, callback);
+        } else {
+            m_controller.getElementForDragAndDropFromContainer(
+                clientId,
+                CmsContainerElement.MENU_CONTAINER_ID,
+                false,
+                callback);
+        }
+        return true;
     }
 
     /**
@@ -1563,89 +1626,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         m_placementContext = newContext;
         if (m_placementContext != null) {
             m_placementContext.init();
-        }
-    }
-
-    /**
-     * Starts placement mode for the given draggable.
-     *
-     *  @param draggable the draggable element
-     *
-     */
-    private void startPlacementMode(I_CmsDraggable draggable) {
-
-        if (isImage(draggable)) {
-            return;
-        }
-        if (m_controller.isGroupcontainerEditing()) {
-            return;
-        }
-
-        final I_CmsSimpleCallback<CmsContainerElementData> callback = new I_CmsSimpleCallback<CmsContainerElementData>() {
-
-            /**
-             * Execute on success.<p>
-             *
-             * @param elem the container element data
-             */
-            public void execute(CmsContainerElementData elem) {
-
-                Set<String> containerIds = new HashSet<>();
-                for (String containerId : elem.getContents().keySet()) {
-                    String content = elem.getContents().get(containerId);
-                    // check if content is valid HTML
-                    Element testElement = null;
-                    if (content != null) {
-                        try {
-                            testElement = CmsDomUtil.createElement(content);
-                        } catch (Exception e) {
-                            CmsGwtLog.log(
-                                "Invalid formatter output for element of type "
-                                    + elem.getResourceType()
-                                    + ": ["
-                                    + content
-                                    + "]");
-                        }
-                    }
-                    if (testElement != null) {
-                        containerIds.add(containerId);
-                    }
-                }
-                if (draggable instanceof CmsListItem) {
-                    CmsListItem item = (CmsListItem)draggable;
-                    CmsListInfoBean info = item.getListItemWidget().getInfoBean();
-                    CmsListItemWidget newItem = new CmsListItemWidget(info);
-                    newItem.setWidth("500px");
-                    if (newItem.getOpenClose() != null) {
-                        newItem.getOpenClose().removeFromParent();
-                    }
-                    prepareHelperElements(elem, null, draggable);
-                    setPlacementContext(new CmsPlacementModeContext(containerIds, newItem, (cnt, reference, offset) -> {
-                        if (reference != null) {
-                            placeElement(draggable, elem, reference, offset);
-                        } else {
-                            placeNewElement(draggable, elem, cnt);
-                        }
-
-                    }));
-                }
-
-            }
-
-        };
-        // we need to reset this so highlighting works correctly
-        m_initialDropTarget = null;
-        String clientId = draggable.getId();
-        if (isNewId(clientId)) {
-            // for new content elements dragged from the gallery menu, the given id contains the resource type name
-            m_isNew = true;
-            m_controller.getNewElement(clientId, callback);
-        } else {
-            m_controller.getElementForDragAndDropFromContainer(
-                clientId,
-                CmsContainerElement.MENU_CONTAINER_ID,
-                false,
-                callback);
         }
     }
 

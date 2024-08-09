@@ -263,7 +263,10 @@ public class CmsDNDHandler implements MouseDownHandler {
                         onMove(nativeEvent);
                         break;
                     case Event.ONMOUSEUP:
-                        cancel();
+                        stopDragging();
+                        if (!m_controller.startPlacementMode(m_draggable, CmsDNDHandler.this)) {
+                            cancel();
+                        }
                         break;
                     default:
                         // do nothing
@@ -663,7 +666,7 @@ public class CmsDNDHandler implements MouseDownHandler {
             // this should never be the case
             CmsDebugLog.getInstance().printLine("Preview handler already registered!!!");
             m_previewHandlerRegistration.removeHandler();
-        
+
         }
         CmsDebugLog.getInstance().printLine("Registering preview handler");
         m_previewHandlerRegistration = Event.addNativePreviewHandler(m_previewHandler);

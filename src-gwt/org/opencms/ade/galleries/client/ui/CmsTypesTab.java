@@ -193,7 +193,6 @@ public class CmsTypesTab extends A_CmsListTab {
 
                 if (typeBean.isCreatableType() && (m_dndHandler != null)) {
                     listItem.initMoveHandle(m_dndHandler, true);
-                    m_dndHandler.getController().initPlacementButton(listItem);
                     listItem.getMoveHandle().setTitle(Messages.get().key(Messages.GUI_TAB_TYPES_CREATE_NEW_0));
                 }
             }

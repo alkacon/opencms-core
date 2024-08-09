@@ -121,11 +121,20 @@ public interface I_CmsDNDController {
      * @param target the drag target (null if drag cancelled)
      */
     default void postClear(I_CmsDraggable draggable, I_CmsDropTarget target) {
+
         // do nothing
     }
 
-    default void initPlacementButton(I_CmsDraggable listItem) {
-            // do nothing
+    /**
+     * Maybe starts placement mode, and returns true if it does so.
+     *
+     * @param draggable the item for which placement mode should be activated
+     * @param handler the DnD handler
+     * @return true if placement mode has been activated
+     */
+    default boolean startPlacementMode(I_CmsDraggable draggable, CmsDNDHandler handler) {
+
+        return false;
     }
 
 }
