@@ -421,6 +421,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             DOMRect layerRect = layerElem.getBoundingClientRect();
             container.getHighlighting().getElement().getStyle().setVisibility(Visibility.HIDDEN);
 
+            elemental2.dom.Element containerElem = Js.cast(container.getElement());
+            DOMRect containerRect = containerElem.getBoundingClientRect();
+            double middle = (containerRect.left - layerRect.left) + (0.5 * containerRect.width);
             for (int j = 0; j < offsets.size(); j++) {
                 PlacementButton button = new PlacementButton();
                 addHighlightingMouseHandlers(container, button);
@@ -435,9 +438,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     DOMRect elemRect = realElement.getBoundingClientRect();
 
                     double top = (elemRect.top - layerRect.top);
-                    double left = elemRect.left - layerRect.left;
-                    button.getElement().getStyle().setLeft(
-                        Math.round((left + (elemRect.width / 2)) - (0.5 * BUTTON_WIDTH)),
+                    button.getElement().getStyle().setLeft(middle - (0.5 * BUTTON_WIDTH),
                         Unit.PX);
                     button.getElement().getStyle().setTop(top, Unit.PX);
                 } else if (j == (offsets.size() - 1)) {
@@ -447,21 +448,16 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     button.addStyleName(OC_PLACEMENT_DOWN);
                     DOMRect elemRect = realElement.getBoundingClientRect();
                     double top = Math.round((elemRect.top + elemRect.height) - layerRect.top - BUTTON_HEIGHT);
-                    double left = elemRect.left - layerRect.left;
                     button.getElement().getStyle().setLeft(
-                        Math.round((left + (elemRect.width / 2)) - (0.5 * BUTTON_WIDTH)),
+                        Math.round(middle - (0.5 * BUTTON_WIDTH)),
                         Unit.PX);
                     button.getElement().getStyle().setTop(top, Unit.PX);
                 } else {
                     CmsContainerPageElementPanel element = elements.get(j);
-                    elemental2.dom.Element realElement = Js.cast(element.getElement());
                     button.addClickHandler(e -> m_callback.place(container, element, 0));
                     button.addStyleName(OC_PLACEMENT_MIDDLE);
-                    DOMRect elemRect = realElement.getBoundingClientRect();
-
                     double top = Math.round(offsets.get(j) - layerRect.top - (0.5 * BUTTON_HEIGHT));
-                    double left = Math.round(
-                        ((elemRect.left - layerRect.left) + (0.5 * elemRect.width)) - (0.5 * BUTTON_WIDTH));
+                    double left = Math.round(middle - (0.5 * BUTTON_WIDTH));
                     button.getElement().getStyle().setLeft(left, Unit.PX);
                     button.getElement().getStyle().setTop(top, Unit.PX);
 
