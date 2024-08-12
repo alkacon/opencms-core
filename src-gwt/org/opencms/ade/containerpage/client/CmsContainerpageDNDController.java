@@ -139,7 +139,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         private CmsDNDHandler m_dndHandler;
 
         /** The special layer used to display placement buttons and block click events for the rest of the page. */
-        private FlowPanel m_layer;
+        private PlacementLayer m_layer;
 
         /** The container page handler. */
         private CmsContainerpageHandler m_pageHandler;
@@ -229,9 +229,12 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             if (m_layer != null) {
                 m_layer.removeFromParent();
             }
-            m_layer = new FlowPanel();
+            m_layer = new PlacementLayer();
             m_layer.addStyleName(OC_PLACEMENT_LAYER);
             RootPanel.get().add(m_layer);
+            m_layer.addClickHandler(event -> {
+                stopDrag(m_dndHandler);
+            });
             Map<String, CmsContainerPageContainer> containerMap = m_controller.getContainerTargets();
             for (CmsContainerPageContainer container : containerMap.values()) {
                 if (m_containers.contains(container.getContainerId())) {
@@ -534,8 +537,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
          */
         @Override
         public HandlerRegistration addClickHandler(ClickHandler handler) {
-
-            return addDomHandler(handler, ClickEvent.getType());
+            ClickHandler handler2 = event -> {
+                event.stopPropagation();
+                handler.onClick(event);
+            };
+            return addDomHandler(handler2, ClickEvent.getType());
         }
 
         /**
@@ -556,6 +562,22 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             return addDomHandler(handler, MouseOverEvent.getType());
 
         }
+    }
+
+    /**
+     * Layer for displaying placement buttons, covering everything else on the page.
+     */
+    static class PlacementLayer extends FlowPanel implements HasClickHandlers {
+
+        /**
+         * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
+         */
+        @Override
+        public HandlerRegistration addClickHandler(ClickHandler handler) {
+            return addDomHandler(handler, ClickEvent.getType());
+        }
+
+
     }
 
     /** The container highlighting offset. */
