@@ -213,13 +213,14 @@ public class CmsDNDHandler implements MouseDownHandler {
          */
         public void onPreviewNativeEvent(NativePreviewEvent event) {
 
+            Event nativeEvent = Event.as(event.getNativeEvent());
+
             if (m_state == State.off) {
                 // this should never happen, as the preview handler should be removed after the dragging stopped
                 CmsDebugLog.getInstance().printLine("Preview handler still registered, even though dragging stopped.");
                 stopDragging();
                 return;
             }
-            Event nativeEvent = Event.as(event.getNativeEvent());
             if (m_state == State.dragging) {
                 switch (DOM.eventGetType(nativeEvent)) {
                     case Event.ONMOUSEMOVE:
@@ -252,7 +253,7 @@ public class CmsDNDHandler implements MouseDownHandler {
                             return;
                         }
                         m_draggable.onStartDrag(m_currentTarget);
-                        m_state = State.dragging;
+                        setState(State.dragging);
                         // add marker css class to enable drag and drop dependent styles
                         Document.get().getBody().addClassName(
                             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dragdropCss().dragStarted());
@@ -264,7 +265,10 @@ public class CmsDNDHandler implements MouseDownHandler {
                         break;
                     case Event.ONMOUSEUP:
                         stopDragging();
-                        if (!m_controller.startPlacementMode(m_draggable, CmsDNDHandler.this)) {
+                        DOM.releaseCapture(DOM.getCaptureElement());
+                        if (m_controller.startPlacementMode(m_draggable, CmsDNDHandler.this)) {
+                            m_placementMode = true;
+                        } else {
                             cancel();
                         }
                         break;
@@ -386,14 +390,14 @@ public class CmsDNDHandler implements MouseDownHandler {
      *
      */
     enum State {
-        /** Nothing is happening. */
-        off,
-
         /** Currently dragging something. */
         dragging,
 
         /** Mouse button has been pressed but not released, so we don't know if we are going to do drag/drop or placement mode next. */
-        mousedown;
+        mousedown,
+
+        /** Nothing is happening. */
+        off;
     }
 
     /** Animation enabled flag. */
@@ -423,16 +427,20 @@ public class CmsDNDHandler implements MouseDownHandler {
     /** The draggable. */
     private I_CmsDraggable m_draggable;
 
-    private State m_state = State.off;
-
     /** The drag helper. */
     private Element m_dragHelper;
+
+    /** Flag indicating whether the CTRL key was pressed when drag started. */
+    private boolean m_modifierCTRL;
 
     /** The drag and drop orientation. Default is <code>ALL</code>. */
     private Orientation m_orientation = Orientation.ALL;
 
     /** The placeholder. */
     private Element m_placeholder;
+
+    /** True if we are in placement mode. */
+    private boolean m_placementMode;
 
     /** The event preview handler. */
     private DNDEventPreviewHandler m_previewHandler;
@@ -458,11 +466,11 @@ public class CmsDNDHandler implements MouseDownHandler {
     /** The starting position absolute top. */
     private int m_startTop;
 
+    /** The current state. */
+    private State m_state = State.off;
+
     /** The registered drop targets. */
     private List<I_CmsDropTarget> m_targets;
-
-    /** Flag indicating whether the CTRL key was pressed when drag started. */
-    private boolean m_modifierCTRL;
 
     /**
      * Constructor.<p>
@@ -492,6 +500,14 @@ public class CmsDNDHandler implements MouseDownHandler {
     public void cancel() {
 
         animateCancel(m_draggable, m_controller);
+    }
+
+    /**
+     * Resets the members used for placement mode.
+     */
+    public void clearPlacement() {
+
+        m_placementMode = false;
     }
 
     /**
@@ -626,6 +642,16 @@ public class CmsDNDHandler implements MouseDownHandler {
     }
 
     /**
+     * Checks if we are in placement mode.
+     *
+     * @return true if we are in placement mode
+     */
+    public boolean isPlacementMode() {
+
+        return m_placementMode;
+    }
+
+    /**
      * Returns if automated scrolling is enabled.<p>
      *
      * @return if automated scrolling is enabled
@@ -640,6 +666,7 @@ public class CmsDNDHandler implements MouseDownHandler {
      */
     public void onMouseDown(MouseDownEvent event) {
 
+        m_placementMode = false;
         if ((event.getNativeButton() != NativeEvent.BUTTON_LEFT)
             || (m_state != State.off)
             || (m_currentAnimation != null)) {
@@ -648,7 +675,6 @@ public class CmsDNDHandler implements MouseDownHandler {
             return;
 
         }
-     
 
         Object source = event.getSource();
         if (!(source instanceof I_CmsDragHandle)) {
@@ -661,7 +687,7 @@ public class CmsDNDHandler implements MouseDownHandler {
             // cancel dragging
             return;
         }
-        m_state = State.mousedown;
+        setState(State.mousedown);
         if (m_previewHandlerRegistration != null) {
             // this should never be the case
             CmsDebugLog.getInstance().printLine("Preview handler already registered!!!");
@@ -1004,7 +1030,7 @@ public class CmsDNDHandler implements MouseDownHandler {
     protected void stopDragging() {
 
         clearScrollTimer();
-        m_state = State.off;
+        setState(State.off);
         if (m_previewHandlerRegistration != null) {
             m_previewHandlerRegistration.removeHandler();
             m_previewHandlerRegistration = null;
@@ -1123,18 +1149,6 @@ public class CmsDNDHandler implements MouseDownHandler {
         }
     }
 
-    private void registerPreviewHandler() {
-
-        if (m_previewHandlerRegistration != null) {
-            // this should never be the case
-            CmsDebugLog.getInstance().printLine("Preview handler already registered!!!");
-            m_previewHandlerRegistration.removeHandler();
-
-        }
-        CmsDebugLog.getInstance().printLine("Registering preview handler");
-        m_previewHandlerRegistration = Event.addNativePreviewHandler(m_previewHandler);
-    }
-
     /**
      * Handles automated scrolling.<p>
      */
@@ -1156,6 +1170,16 @@ public class CmsDNDHandler implements MouseDownHandler {
 
             m_scrollDirection = direction;
         }
+    }
+
+    /**
+     * Sets the internal state.
+     *
+     * @param state the new state value
+     */
+    private void setState(State state) {
+
+        m_state = state;
     }
 
     /**

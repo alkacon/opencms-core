@@ -1439,6 +1439,15 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 detailContentId,
                 containers,
                 locale);
+
+            CmsListInfoBean info = new CmsListInfoBean();
+            // type title and subtitle
+            String realType = getServerIdString(resourceType);
+            Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
+            info.setTitle(CmsWorkplaceMessages.getResourceTypeName(wpLocale, realType));
+            info.setSubTitle(CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, realType));
+            info.setBigIconClasses(CmsIconUtil.getIconClasses(realType, null, false));
+            result.setListInfo(info);
         } catch (Throwable e) {
             error(e);
         }

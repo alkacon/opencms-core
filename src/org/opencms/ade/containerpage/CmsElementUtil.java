@@ -57,7 +57,9 @@ import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsDefaultResourceStatusProvider;
 import org.opencms.gwt.CmsIconUtil;
+import org.opencms.gwt.CmsVfsService;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
@@ -645,7 +647,6 @@ public class CmsElementUtil {
             elementData.setInheritanceInfos(inheritanceInfos);
             elementData.setInheritanceName(name);
         } else {
-
             for (CmsContainer cnt : containers) {
                 boolean missesFormatterSetting = !elementData.getSettings().containsKey(
                     CmsFormatterConfig.getSettingsKeyForContainer(cnt.getName()));
@@ -683,6 +684,8 @@ public class CmsElementUtil {
             Map<String, String> contentsByName = getContentsByContainerName(element, containers);
             contents = contentsByName;
         }
+        CmsListInfoBean listInfo = CmsVfsService.getPageInfo(m_cms, element.getResource());
+        elementData.setListInfo(listInfo);
         elementData.setContents(contents);
         m_cms.getRequestContext().setLocale(requestLocale);
         return elementData;

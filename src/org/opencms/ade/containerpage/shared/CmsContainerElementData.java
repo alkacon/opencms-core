@@ -29,6 +29,7 @@ package org.opencms.ade.containerpage.shared;
 
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -50,6 +51,8 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /** The contents by container type. */
     private Map<String, String> m_contents;
+
+    private CmsListInfoBean m_listInfo;
 
     /** The group-container description. */
     private String m_description;
@@ -267,6 +270,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     public long getLastModifiedDate() {
 
         return m_lastModifiedDate;
+    }
+
+    /**
+     * Gets the list info bean.
+     *
+     * @return the list info bean
+     */
+    public CmsListInfoBean getListInfo() {
+
+        return m_listInfo;
     }
 
     /**
@@ -539,6 +552,16 @@ public class CmsContainerElementData extends CmsContainerElement {
     public void setLastModifiedDate(long lastModifiedDate) {
 
         m_lastModifiedDate = lastModifiedDate;
+    }
+
+    /**
+     * Sets the list info bean.
+     *
+     * @param listInfo the list info bean
+     */
+    public void setListInfo(CmsListInfoBean listInfo) {
+
+        m_listInfo = listInfo;
     }
 
     /**
