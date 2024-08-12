@@ -74,11 +74,11 @@ public final class CmsCoreProvider extends CmsCoreData {
     /** AutoBean factory instance. */
     public static final I_CmsAutoBeanFactory AUTO_BEAN_FACTORY = GWT.create(I_CmsAutoBeanFactory.class);
 
+    /** Media query do detect device with no hover capability. */
+    public static final CmsMediaQuery TOUCH_ONLY = CmsMediaQuery.parse("(hover: none)");
+
     /** Path to system folder. */
     public static final String VFS_PATH_SYSTEM = "/system/";
-
-    /** Media query do detect device with no hover capability. */
-    private static final CmsMediaQuery TOUCH_ONLY = CmsMediaQuery.parse("(hover: none)");
 
     /** Internal instance. */
     private static CmsCoreProvider INSTANCE;

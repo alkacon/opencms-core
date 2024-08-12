@@ -42,6 +42,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.contenteditor.client.Messages;
 import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
 import org.opencms.ade.galleries.client.ui.CmsResultListItem;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDNDController;
@@ -120,14 +121,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
     class CmsPlacementModeContext {
 
-        /** The placement button height. */
-        public static final int BUTTON_HEIGHT = 20;
-
-        /** The placement button width. */
-        public static final int BUTTON_WIDTH = 20;
-
         /** Single-element array holding the currently visible highlighting element. */
         private CmsHighlightingBorder[] m_activeBorder = {null};
+
+        /** The placemenet button size (width or height). */
+        private int m_buttonSize;
 
         /** The callback to call when an element is placed. */
         private I_PlacementCallback m_callback;
@@ -194,7 +192,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             for (CmsContainerPageContainer container : containerMap.values()) {
                 container.checkEmptyContainers();
             }
-
         }
 
         /**
@@ -218,6 +215,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             initToolbar();
             m_pageHandler.setEditButtonsVisible(false);
             RootPanel.get().addStyleName(OC_PLACEMENT_MODE);
+            if (CmsCoreProvider.TOUCH_ONLY.matches()) {
+                m_buttonSize = PLACEMENT_BUTTON_BIG;
+            } else {
+                m_buttonSize = PLACEMENT_BUTTON_SMALL;
+            }
             initPlacementLayer();
         }
 
@@ -270,6 +272,16 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     }
                 }
             }
+        }
+
+        /**
+         * Gets the placement button size (Width or height).
+         *
+         * @return the placement button size
+         */
+        int getPlacementButtonSize() {
+
+            return m_buttonSize;
         }
 
         /**
@@ -354,6 +366,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             int position,
             CmsContainerPageElementPanel element) {
 
+            int bw = getPlacementButtonSize();
+
             container.getHighlighting().getElement().getStyle().setVisibility(Visibility.HIDDEN);
             elemental2.dom.Element elem = Js.cast(element.getElement());
             elemental2.dom.Element layerElem = Js.cast(m_layer.getElement());
@@ -386,7 +400,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             if (leftRight) {
                 before.addStyleName(OC_PLACEMENT_LEFT);
                 after.addStyleName(OC_PLACEMENT_RIGHT);
-                double top = ((elemRect.top - layerRect.top) + (elemRect.height / 2.0)) - (BUTTON_HEIGHT / 2.0);
+                double top = ((elemRect.top - layerRect.top) + (elemRect.height / 2.0)) - (bw / 2.0);
                 double left = elemRect.left - layerRect.left;
                 double right = layerRect.right - elemRect.right;
                 before.getElement().getStyle().setLeft(left, Unit.PX);
@@ -397,17 +411,17 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 before.addStyleName(OC_PLACEMENT_UP);
                 after.addStyleName(OC_PLACEMENT_DOWN);
                 double top = elemRect.top - layerRect.top;
-                double left = ((elemRect.left - layerRect.left) + (0.5 * elemRect.width)) - (0.5 * BUTTON_WIDTH);
+                double left = ((elemRect.left - layerRect.left) + (0.5 * elemRect.width)) - (0.5 * bw);
                 double offset = 0;
-                if (elemRect.height < (2 * BUTTON_HEIGHT)) {
-                    offset = 1 + (BUTTON_WIDTH / 2);
+                if (elemRect.height < (2 * bw)) {
+                    offset = 1 + (bw / 2);
                 }
 
                 before.getElement().getStyle().setLeft(left - offset, Unit.PX);
                 before.getElement().getStyle().setTop(top, Unit.PX);
 
                 after.getElement().getStyle().setLeft(Math.round(left + offset), Unit.PX);
-                after.getElement().getStyle().setTop(Math.round((top + elemRect.height) - BUTTON_HEIGHT), Unit.PX);
+                after.getElement().getStyle().setTop(Math.round((top + elemRect.height) - bw), Unit.PX);
             }
         }
 
@@ -418,6 +432,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
          * @param offsets the offsets relative to the viewport of the midpoints
          */
         private void installPlacementButtonsWithMidpoints(CmsContainerPageContainer container, List<Integer> offsets) {
+
+            int bw = getPlacementButtonSize();
 
             List<CmsContainerPageElementPanel> elements = container.getAllDragElements();
             elemental2.dom.Element layerElem = Js.cast(m_layer.getElement());
@@ -441,8 +457,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     DOMRect elemRect = realElement.getBoundingClientRect();
 
                     double top = (elemRect.top - layerRect.top);
-                    button.getElement().getStyle().setLeft(middle - (0.5 * BUTTON_WIDTH),
-                        Unit.PX);
+                    button.getElement().getStyle().setLeft(middle - (0.5 * bw), Unit.PX);
                     button.getElement().getStyle().setTop(top, Unit.PX);
                 } else if (j == (offsets.size() - 1)) {
                     CmsContainerPageElementPanel element = elements.get(elements.size() - 1);
@@ -450,17 +465,15 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     button.addClickHandler(e -> m_callback.place(container, element, 1));
                     button.addStyleName(OC_PLACEMENT_DOWN);
                     DOMRect elemRect = realElement.getBoundingClientRect();
-                    double top = Math.round((elemRect.top + elemRect.height) - layerRect.top - BUTTON_HEIGHT);
-                    button.getElement().getStyle().setLeft(
-                        Math.round(middle - (0.5 * BUTTON_WIDTH)),
-                        Unit.PX);
+                    double top = Math.round((elemRect.top + elemRect.height) - layerRect.top - bw);
+                    button.getElement().getStyle().setLeft(Math.round(middle - (0.5 * bw)), Unit.PX);
                     button.getElement().getStyle().setTop(top, Unit.PX);
                 } else {
                     CmsContainerPageElementPanel element = elements.get(j);
                     button.addClickHandler(e -> m_callback.place(container, element, 0));
                     button.addStyleName(OC_PLACEMENT_MIDDLE);
-                    double top = Math.round(offsets.get(j) - layerRect.top - (0.5 * BUTTON_HEIGHT));
-                    double left = Math.round(middle - (0.5 * BUTTON_WIDTH));
+                    double top = Math.round(offsets.get(j) - layerRect.top - (0.5 * bw));
+                    double left = Math.round(middle - (0.5 * bw));
                     button.getElement().getStyle().setLeft(left, Unit.PX);
                     button.getElement().getStyle().setTop(top, Unit.PX);
 
@@ -474,6 +487,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
          * @param container the container
          */
         private void installPlacementElement(CmsContainerPageContainer container) {
+
+            int bw = getPlacementButtonSize();
 
             HTMLDivElement placeholder = Js.cast(DomGlobal.document.createElement("div"));
             placeholder.classList.add(OC_PLACEMENT_PLACEHOLDER);
@@ -491,10 +506,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             plus.addStyleName(OC_PLACEMENT_MIDDLE); // from Bootstrap icons
             plus.addStyleName(OC_PLACEMENT_BUTTON);
             m_layer.add(plus);
-            double top = Math.round(
-                ((containerRect.top - layerRect.top) + (0.5 * containerRect.height)) - (0.5 * BUTTON_HEIGHT));
+            double top = Math.round(((containerRect.top - layerRect.top) + (0.5 * containerRect.height)) - (0.5 * bw));
             double left = Math.round(
-                ((containerRect.left - layerRect.left) + (0.5 * containerRect.width)) - (0.5 * BUTTON_WIDTH));
+                ((containerRect.left - layerRect.left) + (0.5 * containerRect.width)) - (0.5 * bw));
             plus.getElement().getStyle().setLeft(left, Unit.PX);
             plus.getElement().getStyle().setTop(top, Unit.PX);
             plus.addClickHandler(e -> m_callback.place(container, null, 0));
@@ -515,7 +529,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
          * @param offset the offset (0 means insert before the reference element, 1 means after)
          */
         void place(CmsContainerPageContainer container, CmsContainerPageElementPanel referenceElement, int offset);
-    }
+    };
 
     /**
      * Just a clickable div as a GWT widget.
@@ -537,6 +551,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
          */
         @Override
         public HandlerRegistration addClickHandler(ClickHandler handler) {
+
             ClickHandler handler2 = event -> {
                 event.stopPropagation();
                 handler.onClick(event);
@@ -574,9 +589,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
          */
         @Override
         public HandlerRegistration addClickHandler(ClickHandler handler) {
+
             return addDomHandler(handler, ClickEvent.getType());
         }
-
 
     }
 
@@ -609,6 +624,12 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
     /** CSS class. */
     public static final String OC_PLACEMENT_UP = "oc-placement-up";
+
+    /** The bigger size for the placement buttons. */
+    public static final int PLACEMENT_BUTTON_BIG = 30;
+
+    /** The smaller size for the placement buttons. */
+    public static final int PLACEMENT_BUTTON_SMALL = 20;
 
     /** The minimum margin set to empty containers. */
     private static final int MINIMUM_CONTAINER_MARGIN = 10;
@@ -671,6 +692,16 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 stopDrag(m_placementContext.getDNDHandler());
             }
         });
+    }
+
+    public static final String placementButtonBig() {
+
+        return PLACEMENT_BUTTON_BIG + "px";
+    }
+
+    public static final String placementButtonSmall() {
+
+        return PLACEMENT_BUTTON_SMALL + "px";
     }
 
     /**

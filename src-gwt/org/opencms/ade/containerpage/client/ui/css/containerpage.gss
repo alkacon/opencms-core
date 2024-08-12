@@ -277,15 +277,20 @@ body.oc-placement-mode {
 	left: 0;
 	right: 0; 
 	z-index: 199999;
-}	
+}
 
 .oc-placement-button {
 	opacity: 0.45; 
 	position: absolute;
 	cursor: pointer;
-	width: 20px;
-	height: 20px;
-	background-size: 20px 20px;
+	width: eval("org.opencms.ade.containerpage.client.CmsContainerpageDNDController.placementButtonSmall()");
+	height: eval("org.opencms.ade.containerpage.client.CmsContainerpageDNDController.placementButtonSmall()");
+	background-size: 100% 100%;
+}
+
+body.oc-touch-only .oc-placement-button {
+	width: eval("org.opencms.ade.containerpage.client.CmsContainerpageDNDController.placementButtonBig()");
+	height: eval("org.opencms.ade.containerpage.client.CmsContainerpageDNDController.placementButtonBig()");
 }
 
 .oc-placement-button:hover {
