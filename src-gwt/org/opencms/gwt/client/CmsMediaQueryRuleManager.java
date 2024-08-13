@@ -46,7 +46,7 @@ public class CmsMediaQueryRuleManager {
      */
     protected CmsMediaQueryRuleManager() {
 
-        addRule("oc-touch-only", "(hover: none)");
+        addRule("oc-touch-only", CmsCoreProvider.TOUCH_ONLY_RULE);
         addRule("oc-screensize-small", "(max-width: " + CmsWidthConstants.smallHigh() + ")");
         addRule(
             "oc-screensize-medium",
