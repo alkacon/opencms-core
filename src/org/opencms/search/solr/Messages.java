@@ -122,6 +122,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_SOLR_ERR_MAPPING_UNREADABLE_CONTENT_3 = "LOG_SOLR_ERR_MAPPING_UNREADABLE_CONTENT_3";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_WARN_DETAIL_ONLY_PAGE_MAPPINGS_FOR_PAGE_2 = "LOG_SOLR_WARN_DETAIL_ONLY_PAGE_MAPPINGS_FOR_PAGE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SOLR_WARN_DETAIL_ONLY_PAGE_MAPPINGS_1 = "LOG_SOLR_WARN_DETAIL_ONLY_PAGE_MAPPINGS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_HANDLER_REQUEST_NOT_ALLOWED_0 = "GUI_HANDLER_REQUEST_NOT_ALLOWED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -140,8 +146,8 @@ public final class Messages extends A_CmsMessageBundle {
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
-     * Hides the public constructor for this utility class.<p>
-     */
+    * Hides the public constructor for this utility class.<p>
+    */
     private Messages() {
 
         // hide the constructor

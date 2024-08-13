@@ -31,6 +31,7 @@
 
 package org.opencms.search.solr;
 
+import org.opencms.ade.containerpage.CmsDetailOnlyContainerUtil;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -349,7 +350,31 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         // add field mappings from elements of a container page
         if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
             document = appendFieldMappingsFromElementsOnThePage(document, cms, resource, systemFields);
-
+        } else {
+            try {
+                for (CmsResource detailOnlyPage : CmsDetailOnlyContainerUtil.getDetailOnlyResources(cms, resource)) {
+                    try {
+                        document = appendFieldMappingsFromElementsOnThePage(
+                            document,
+                            cms,
+                            detailOnlyPage,
+                            systemFields);
+                    } catch (Throwable t) {
+                        LOG.warn(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_SOLR_WARN_DETAIL_ONLY_PAGE_MAPPINGS_FOR_PAGE_2,
+                                null == resource ? "null" : resource.getRootPath(),
+                                null == detailOnlyPage ? "null" : detailOnlyPage.getRootPath()),
+                            t);
+                    }
+                }
+            } catch (Throwable t) {
+                LOG.warn(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_SOLR_WARN_DETAIL_ONLY_PAGE_MAPPINGS_1,
+                        null == resource ? "null" : resource.getRootPath()),
+                    t);
+            }
         }
 
         for (CmsSolrField field : m_solrFields.values()) {
