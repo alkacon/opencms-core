@@ -732,7 +732,7 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             m_ownPosition.getTop(),
             CmsHighlightingBorder.BorderColor.red,
             CmsContainerpageDNDController.HIGHLIGHTING_OFFSET,
-            true);
+            addSeparators);
         if (addSeparators) {
             m_highlighting.setMidpoints(getMidpoints());
         } else {
