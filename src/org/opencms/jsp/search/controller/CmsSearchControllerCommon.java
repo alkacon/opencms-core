@@ -124,15 +124,13 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
             String currentLocale = (null == cms
             ? CmsLocaleManager.getDefaultLocale()
             : cms.getRequestContext().getLocale()).toString();
-            Map<String, String[]> extraParamsMap = CmsRequestUtil.createParameterMap(
-                m_config.getExtraSolrParams(),
-                true,
-                null);
+            String extraParams = m_config.getExtraSolrParams();
+            extraParams = resolveMacro(extraParams, MACRO_SITE_ROOT, currentSiteRoot);
+            extraParams = resolveMacro(extraParams, MACRO_LOCALE, currentLocale);
+            extraParams = resolveMacro(extraParams, MACRO_QUERY, queryString);
+            Map<String, String[]> extraParamsMap = CmsRequestUtil.createParameterMap(extraParams, true, null);
             for (String key : extraParamsMap.keySet()) {
                 for (String value : Arrays.asList(extraParamsMap.get(key))) {
-                    value = resolveMacro(value, MACRO_SITE_ROOT, currentSiteRoot);
-                    value = resolveMacro(value, MACRO_LOCALE, currentLocale);
-                    value = resolveMacro(value, MACRO_QUERY, queryString);
                     if (SET_VARIABLES.contains(key)) {
                         if (key.equals(CommonParams.FL)) {
                             query.setReturnFields(value);
