@@ -69,7 +69,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -78,6 +78,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.ComparisonChain;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
@@ -107,10 +108,9 @@ import com.google.gwt.user.client.ui.Widget;
 import elemental2.dom.DOMRect;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
+import elemental2.dom.Node;
 import elemental2.dom.NodeList;
-import jsinterop.base.Any;
 import jsinterop.base.Js;
-import jsinterop.base.JsPropertyMap;
 
 /**
  * The container-page editor drag and drop controller.<p>
@@ -119,16 +119,25 @@ import jsinterop.base.JsPropertyMap;
  */
 public class CmsContainerpageDNDController implements I_CmsDNDController {
 
+    /**
+     * The Class CmsPlacementModeContext.
+     */
     class CmsPlacementModeContext {
 
         /** Single-element array holding the currently visible highlighting element. */
         private CmsHighlightingBorder[] m_activeBorder = {null};
+
+        /** The list of active buttons. */
+        private List<PlacementButton> m_buttons = new ArrayList<>();
 
         /** The placemenet button size (width or height). */
         private int m_buttonSize;
 
         /** The callback to call when an element is placed. */
         private I_PlacementCallback m_callback;
+
+        /** Numeric rank for containers, used for resolving button collisions. */
+        private Map<String, Integer> m_containerIndexes = new HashMap<>();
 
         /** The set of available container names. */
         private Set<String> m_containers;
@@ -238,6 +247,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 stopDrag(m_dndHandler);
             });
             Map<String, CmsContainerPageContainer> containerMap = m_controller.getContainerTargets();
+            List<CmsContainerPageContainer> usedContainers = new ArrayList<>();
             for (CmsContainerPageContainer container : containerMap.values()) {
                 if (m_containers.contains(container.getContainerId())) {
                     if (container.getElement().getOffsetParent() == null) {
@@ -247,30 +257,132 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     if (container.isDetailView()) {
                         continue;
                     }
-                    List<Integer> offsets = null;
-                    if (container.getHighlighting() != null) {
-                        offsets = container.getHighlighting().getClientVerticalOffsets();
-                    }
-                    List<CmsContainerPageElementPanel> elements = container.getAllDragElements();
-                    if (elements.size() == 0) {
-                        installPlacementElement(container);
-                    } else {
-                        boolean notVertical = false;
-                        for (int i = 0; i < elements.size(); i++) {
-                            if (elements.get(i).getElement().hasClassName(OC_PLACEMENT_LR)) {
-                                notVertical = true;
-                            }
+                    usedContainers.add(container);
+                }
 
-                        }
-                        if ((offsets == null) || notVertical || (offsets.size() != (elements.size() + 1))) {
-                            for (int i = 0; i < elements.size(); i++) {
-                                installButtons(container, i, elements.get(i));
-                            }
-                        } else {
-                            installPlacementButtonsWithMidpoints(container, offsets);
-                        }
+            }
+            // Sort containers in DOM pre-order. That means parents come before their children.
+            // The indexes of that list are used later for adjusting positions of colliding buttons.
+            usedContainers.sort(new Comparator<CmsContainerPageContainer>() {
+
+                @Override
+                public int compare(CmsContainerPageContainer o1, CmsContainerPageContainer o2) {
+
+                    if (o1 == o2) {
+                        return 0;
+                    }
+
+                    elemental2.dom.Element e1 = Js.cast(o1.getElement());
+                    elemental2.dom.Element e2 = Js.cast(o2.getElement());
+                    int cmpResult = e1.compareDocumentPosition(e2);
+                    if ((cmpResult & Node.DOCUMENT_POSITION_PRECEDING) != 0) {
+                        return 1;
+                    } else {
+                        return -1;
                     }
                 }
+            });
+            int containerIndex = 0;
+            for (CmsContainerPageContainer container : usedContainers) {
+                m_containerIndexes.put(container.getContainerId(), Integer.valueOf(containerIndex));
+                containerIndex += 1;
+            }
+
+            for (CmsContainerPageContainer container : usedContainers) {
+
+                List<Integer> offsets = null;
+                if (container.getHighlighting() != null) {
+                    offsets = container.getHighlighting().getClientVerticalOffsets();
+                }
+                List<CmsContainerPageElementPanel> elements = container.getAllDragElements();
+                if (elements.size() == 0) {
+                    installPlacementElement(container);
+                } else {
+                    if ((offsets == null) || (offsets.size() != (elements.size() + 1))) {
+                        for (int i = 0; i < elements.size(); i++) {
+                            installButtons(container, i, elements.get(i));
+                        }
+                    } else {
+                        installPlacementButtonsWithMidpoints(container, offsets);
+                    }
+                }
+
+            }
+            positionButtons(m_buttons);
+        }
+
+        /**
+         * Positions buttons so that they don't collide.
+         *
+         * @param originalButtons the list of buttons to position
+         */
+        public void positionButtons(List<PlacementButton> originalButtons) {
+
+            List<PlacementButton> buttons = new ArrayList<>(originalButtons);
+            int iterations = 0;
+            while ((buttons.size() > 1) && (iterations < 1000)) {
+                // In each iteration of the main loop, try to find and resolve one collision. Resolving one collision may cause further collisions in later iterations of the loop.
+
+                iterations += 1;
+                // Sort buttons by increasing x coordinate of left corner, so we can limit the potential candidates for collisions with a given button.
+                buttons.sort((a, b) -> {
+                    return Integer.compare(a.getLeft(), b.getLeft());
+                });
+                int collisionIndex = -1;
+                PlacementButton[] collisionPair = null;
+                for (int i = 0; i < buttons.size(); i++) {
+                    collisionPair = null;
+                    PlacementButton first = buttons.get(i);
+                    int j = i + 1;
+                    for (j = i + 1; j < buttons.size(); j++) {
+                        PlacementButton second = buttons.get(j);
+                        if (second.getLeft() >= (first.getLeft() + first.getWidth())) {
+                            break;
+                        }
+                        if (first.intersects(second)) {
+                            collisionPair = new PlacementButton[] {first, second};
+                            collisionIndex = i;
+                            break;
+                        }
+                    }
+                    if (collisionPair != null) {
+                        break;
+                    }
+                }
+                int moveAmount = 0;
+                if (collisionIndex != -1) {
+                    PlacementButton buttonToMove = null;
+
+                    PlacementButton first = collisionPair[0];
+                    PlacementButton second = collisionPair[1];
+                    int ci1 = m_containerIndexes.get(first.getContainer().getContainerId()).intValue();
+                    int ci2 = m_containerIndexes.get(second.getContainer().getContainerId()).intValue();
+                    /*
+                     * By using the combination of document position of the container and button index of the button, we impose a complete total ordering on the buttons
+                     * so that buttons which are lower in the ordering are moved when they collide with buttons that are higher in the ordering. This means that for a button
+                     * involved in any collisions, if it has the highest position in that ordering, all other buttons involved in collisions with it will move to its right, and
+                     * after that, will never collide with it again. This means we can't run into 'infinite loops' where groups of elements keep pushing each other to the right ad infinitum.
+                     */
+                    if (ComparisonChain.start().compare(ci1, ci2).compare(
+                        second.getIndex(), /* Use reverse order for index - prefer moving 'insert after' buttons rather than 'insert before' for a single container if they collide */
+                        first.getIndex()).result() == -1) {
+                        buttonToMove = first;
+                        moveAmount = (second.getLeft() + second.getWidth()) - first.getLeft();
+                    } else {
+                        buttonToMove = second;
+                        moveAmount = (first.getLeft() + first.getWidth()) - second.getLeft();
+                    }
+
+                    buttonToMove.setLeft(buttonToMove.getLeft() + moveAmount);
+                    // everything before first collision becomes irrelevant for the next iteration; we only move stuff to the right
+                    buttons = new ArrayList<>(buttons.subList(collisionIndex, buttons.size()));
+                } else {
+                    // no collisions; we're done
+                    buttons = new ArrayList<>();
+                }
+            }
+            for (PlacementButton button : originalButtons) {
+                button.setPosition();
             }
         }
 
@@ -282,6 +394,23 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         int getPlacementButtonSize() {
 
             return m_buttonSize;
+        }
+
+        /**
+         * Adds a new placement button.
+         *
+         * @param container the container
+         * @return the placement button
+         */
+        private PlacementButton addButton(CmsContainerPageContainer container) {
+
+            PlacementButton button = new PlacementButton(m_buttonSize);
+            m_buttons.add(button);
+            m_layer.add(button);
+            button.setContainer(container);
+            addHighlightingMouseHandlers(container, button);
+            return button;
+
         }
 
         /**
@@ -376,52 +505,32 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             if ((elemRect.width == 0) || (elemRect.height == 0)) {
                 return;
             }
-            PlacementButton before = new PlacementButton();
-            PlacementButton after = new PlacementButton();
+            PlacementButton before = addButton(container);
+            PlacementButton after = addButton(container);
             before.addClickHandler(e -> m_callback.place(container, element, 0));
             after.addClickHandler(e -> m_callback.place(container, element, 1));
-            m_layer.add(before);
-            m_layer.add(after);
             before.addStyleName(OC_PLACEMENT_BUTTON);
             after.addStyleName(OC_PLACEMENT_BUTTON);
-            for (PlacementButton button : Arrays.asList(before, after)) {
-                addHighlightingMouseHandlers(container, button);
-            }
-
-            boolean leftRight = false;
-            JsPropertyMap<Object> window = Js.cast(DomGlobal.window);
-            Any testLrPlacement = window.getAsAny("ocTestLrPlacement");
-            if (testLrPlacement != null) {
-                leftRight = testLrPlacement.asBoolean();
-            }
-            if (!leftRight) {
-                leftRight = CmsDomUtil.hasClass(OC_PLACEMENT_LR, element.getElement());
-            }
+            boolean leftRight = !CmsDomUtil.hasClass(OC_PLACEMENT_BUTTONS_VERTICAL, container.getElement());
             if (leftRight) {
                 before.addStyleName(OC_PLACEMENT_LEFT);
                 after.addStyleName(OC_PLACEMENT_RIGHT);
                 double top = ((elemRect.top - layerRect.top) + (elemRect.height / 2.0)) - (bw / 2.0);
                 double left = elemRect.left - layerRect.left;
-                double right = layerRect.right - elemRect.right;
-                before.getElement().getStyle().setLeft(left, Unit.PX);
-                before.getElement().getStyle().setTop(top, Unit.PX);
-                after.getElement().getStyle().setRight(right, Unit.PX);
-                after.getElement().getStyle().setTop(top, Unit.PX);
+                before.setLeft((int)left);
+                before.setTop((int)top);
+                after.setLeft((int)Math.round((left + elemRect.width) - m_buttonSize));
+                after.setTop((int)top);
             } else {
                 before.addStyleName(OC_PLACEMENT_UP);
                 after.addStyleName(OC_PLACEMENT_DOWN);
-                double top = elemRect.top - layerRect.top;
-                double left = ((elemRect.left - layerRect.left) + (0.5 * elemRect.width)) - (0.5 * bw);
-                double offset = 0;
-                if (elemRect.height < (2 * bw)) {
-                    offset = 1 + (bw / 2);
-                }
+                int top = (int)Math.round(elemRect.top - layerRect.top);
+                int left = (int)Math.round(((elemRect.left - layerRect.left) + (0.5 * elemRect.width)) - (0.5 * bw));
+                before.setLeft(left);
+                before.setTop(top);
 
-                before.getElement().getStyle().setLeft(left - offset, Unit.PX);
-                before.getElement().getStyle().setTop(top, Unit.PX);
-
-                after.getElement().getStyle().setLeft(Math.round(left + offset), Unit.PX);
-                after.getElement().getStyle().setTop(Math.round((top + elemRect.height) - bw), Unit.PX);
+                after.setLeft(left);
+                after.setTop((int)Math.round(((top + elemRect.height) - bw)));
             }
         }
 
@@ -444,11 +553,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             DOMRect containerRect = containerElem.getBoundingClientRect();
             double middle = (containerRect.left - layerRect.left) + (0.5 * containerRect.width);
             for (int j = 0; j < offsets.size(); j++) {
-                PlacementButton button = new PlacementButton();
-                addHighlightingMouseHandlers(container, button);
+                PlacementButton button = addButton(container);
 
                 button.addStyleName(OC_PLACEMENT_BUTTON);
-                m_layer.add(button);
                 if (j == 0) {
                     CmsContainerPageElementPanel element = elements.get(0);
                     elemental2.dom.Element realElement = Js.cast(element.getElement());
@@ -456,27 +563,28 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     button.addStyleName(OC_PLACEMENT_UP);
                     DOMRect elemRect = realElement.getBoundingClientRect();
 
-                    double top = (elemRect.top - layerRect.top);
-                    button.getElement().getStyle().setLeft(middle - (0.5 * bw), Unit.PX);
-                    button.getElement().getStyle().setTop(top, Unit.PX);
+                    int top = (int)Math.round(elemRect.top - layerRect.top);
+                    int left = (int)Math.round(middle - (0.5 * bw));
+                    button.setLeft(left);
+                    button.setTop(top);
                 } else if (j == (offsets.size() - 1)) {
                     CmsContainerPageElementPanel element = elements.get(elements.size() - 1);
                     elemental2.dom.Element realElement = Js.cast(element.getElement());
                     button.addClickHandler(e -> m_callback.place(container, element, 1));
                     button.addStyleName(OC_PLACEMENT_DOWN);
                     DOMRect elemRect = realElement.getBoundingClientRect();
-                    double top = Math.round((elemRect.top + elemRect.height) - layerRect.top - bw);
-                    button.getElement().getStyle().setLeft(Math.round(middle - (0.5 * bw)), Unit.PX);
-                    button.getElement().getStyle().setTop(top, Unit.PX);
+                    int top = (int)Math.round((elemRect.top + elemRect.height) - layerRect.top - bw);
+                    int left = (int)Math.round(middle - (0.5 * bw));
+                    button.setLeft(left);
+                    button.setTop(top);
                 } else {
                     CmsContainerPageElementPanel element = elements.get(j);
                     button.addClickHandler(e -> m_callback.place(container, element, 0));
                     button.addStyleName(OC_PLACEMENT_MIDDLE);
-                    double top = Math.round(offsets.get(j) - layerRect.top - (0.5 * bw));
-                    double left = Math.round(middle - (0.5 * bw));
-                    button.getElement().getStyle().setLeft(left, Unit.PX);
-                    button.getElement().getStyle().setTop(top, Unit.PX);
-
+                    int top = (int)Math.round(offsets.get(j) - layerRect.top - (0.5 * bw));
+                    int left = (int)Math.round(middle - (0.5 * bw));
+                    button.setLeft(left);
+                    button.setTop(top);
                 }
             }
         }
@@ -500,17 +608,17 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 containerElem.appendChild(placeholder);
             }
             DOMRect layerRect = layerElem.getBoundingClientRect();
-            PlacementButton plus = new PlacementButton();
-            addHighlightingMouseHandlers(container, plus);
+            PlacementButton plus = addButton(container);
 
             plus.addStyleName(OC_PLACEMENT_MIDDLE); // from Bootstrap icons
             plus.addStyleName(OC_PLACEMENT_BUTTON);
-            m_layer.add(plus);
-            double top = Math.round(((containerRect.top - layerRect.top) + (0.5 * containerRect.height)) - (0.5 * bw));
-            double left = Math.round(
+
+            int top = (int)Math.round(
+                ((containerRect.top - layerRect.top) + (0.5 * containerRect.height)) - (0.5 * bw));
+            int left = (int)Math.round(
                 ((containerRect.left - layerRect.left) + (0.5 * containerRect.width)) - (0.5 * bw));
-            plus.getElement().getStyle().setLeft(left, Unit.PX);
-            plus.getElement().getStyle().setTop(top, Unit.PX);
+            plus.setLeft(left);
+            plus.setTop(top);
             plus.addClickHandler(e -> m_callback.place(container, null, 0));
 
         }
@@ -529,20 +637,50 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
          * @param offset the offset (0 means insert before the reference element, 1 means after)
          */
         void place(CmsContainerPageContainer container, CmsContainerPageElementPanel referenceElement, int offset);
-    };
+    }
 
     /**
-     * Just a clickable div as a GWT widget.
+     * Buttons used to place elements in placement mode.
      */
     static class PlacementButton extends FlowPanel
     implements HasClickHandlers, HasMouseOverHandlers, HasMouseOutHandlers {
 
+        /** The associated container. */
+        private CmsContainerPageContainer m_container;
+
+        /** The height. */
+        private int m_height;
+
+        /** The internal index (used for sorting). */
+        private int m_index;
+
+        /** The left. */
+        private int m_left;
+
+        /** Thetop. */
+        private int m_top;
+
+        /** The width. */
+        private int m_width;
+
         /**
          * Creates a new instance.
+         *
+         * @param size the size
          */
-        public PlacementButton() {
+        public PlacementButton(int size) {
 
             addStyleName(OC_PLACEMENT_BUTTON);
+            String alpha = "abcdefghijklmnopqrstuvwxyz";
+            String id = "pb_";
+            for (int i = 0; i < 5; i++) {
+                int index = (int)Math.floor(Math.random() * alpha.length());
+                id = id + alpha.charAt(index);
+            }
+            getElement().setId(id);
+            m_width = size;
+            m_height = size;
+            m_index = m_buttonCounter++;
 
         }
 
@@ -577,7 +715,126 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             return addDomHandler(handler, MouseOverEvent.getType());
 
         }
-    }
+
+        /**
+         * Gets the associated container.
+         *
+         * @return the associated container
+         */
+        public CmsContainerPageContainer getContainer() {
+
+            return m_container;
+        }
+
+        /**
+         * Gets the height.
+         *
+         * @return the height
+         */
+        public int getHeight() {
+
+            return m_height;
+        }
+
+        /**
+         * Gets the index.
+         *
+         * @return the index
+         */
+        public int getIndex() {
+
+            return m_index;
+        }
+
+        /**
+         * Gets the left.
+         *
+         * @return the left
+         */
+        public int getLeft() {
+
+            return m_left;
+        }
+
+        /**
+         * Gets the top.
+         *
+         * @return the top
+         */
+        public int getTop() {
+
+            return m_top;
+        }
+
+        /**
+         * Gets the width.
+         *
+         * @return the width
+         */
+        public int getWidth() {
+
+            return m_width;
+        }
+
+        /**
+         * Checks if other placement button's position intersects this one's.
+         *
+         * @param other the other placement button
+         * @return true if the buttons intersect
+         */
+        public boolean intersects(PlacementButton other) {
+
+            return segmentIntersect(m_left, m_width, other.m_left, other.m_width)
+                && segmentIntersect(m_top, m_height, other.m_top, other.m_height);
+        }
+
+        /**
+         * Sets the container.
+         *
+         * @param container the new container
+         */
+        public void setContainer(CmsContainerPageContainer container) {
+
+            m_container = container;
+        }
+
+        /**
+         * Sets the left.
+         *
+         * @param left the new left
+         */
+        public void setLeft(int left) {
+
+            m_left = left;
+        }
+
+        /**
+         * Actually sets the position on the DOM element.
+         */
+        public void setPosition() {
+
+            getElement().getStyle().setLeft(m_left, Unit.PX);
+            getElement().getStyle().setTop(m_top, Unit.PX);
+        }
+
+        /**
+         * Sets the top.
+         *
+         * @param top the new top
+         */
+        public void setTop(int top) {
+
+            m_top = top;
+        }
+
+        /**
+         * @see com.google.gwt.user.client.ui.UIObject#toString()
+         */
+        public String toString() {
+
+            return getElement().getId() + ":(" + getLeft() + ", " + getTop() + ")";
+        }
+    };
 
     /**
      * Layer for displaying placement buttons, covering everything else on the page.
@@ -602,6 +859,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     public static final String OC_PLACEMENT_BUTTON = "oc-placement-button";
 
     /** CSS class. */
+    public static final String OC_PLACEMENT_BUTTONS_VERTICAL = "oc-placement-buttons-vertical";
+
+    /** CSS class. */
     public static final String OC_PLACEMENT_DOWN = "oc-placement-down";
 
     /** CSS class. */
@@ -609,9 +869,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
     /** CSS class. */
     public static final String OC_PLACEMENT_LEFT = "oc-placement-left";
-
-    /** CSS class. */
-    public static final String OC_PLACEMENT_LR = "oc-placement-lr";
 
     /** CSS class. */
     public static final String OC_PLACEMENT_MODE = "oc-placement-mode";
@@ -630,6 +887,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
     /** The smaller size for the placement buttons. */
     public static final int PLACEMENT_BUTTON_SMALL = 20;
+
+    /** The button counter for placement mode. */
+    private static int m_buttonCounter;
 
     /** The minimum margin set to empty containers. */
     private static final int MINIMUM_CONTAINER_MARGIN = 10;
@@ -676,6 +936,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /** The original position of the draggable. */
     private int m_originalIndex;
 
+    /** The placement context. */
     private CmsPlacementModeContext m_placementContext;
 
     /**
@@ -694,14 +955,51 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         });
     }
 
+    /**
+     * Placement button big.
+     *
+     * @return the string
+     */
     public static final String placementButtonBig() {
 
         return PLACEMENT_BUTTON_BIG + "px";
     }
 
+    /**
+     * Placement button small.
+     *
+     * @return the string
+     */
     public static final String placementButtonSmall() {
 
         return PLACEMENT_BUTTON_SMALL + "px";
+    }
+
+    /**
+     * Checks if a 1D line segment comes before a position.
+     *
+     * @param start the start position of the segment
+     * @param size the width of the segment
+     * @param pos the position to check
+     * @return true, if successful
+     */
+    public static boolean segmentBefore(int start, int size, int pos) {
+
+        return (start + size) <= pos;
+    }
+
+    /**
+     * Checks if two 1D line segments with given start positions and sizes intersect.
+     *
+     * @param start1 start position of the first segment
+     * @param size1 size of the first segment
+     * @param start2 start position of the second segment
+     * @param size2 size of the second segment
+     * @return true, if successful
+     */
+    public static boolean segmentIntersect(int start1, int size1, int start2, int size2) {
+
+        return !segmentBefore(start1, size1, start2) && !segmentBefore(start2, size2, start1);
     }
 
     /**
@@ -741,8 +1039,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     }
 
     /**
-    * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onDragCancel(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
-    */
+     * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onDragCancel(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
+     */
     public void onDragCancel(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
         if (m_imageDndController != null) {
@@ -848,8 +1146,8 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     }
 
     /**
-    * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onDrop(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
-    */
+     * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onDrop(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
+     */
     public void onDrop(final I_CmsDraggable draggable, final I_CmsDropTarget target, CmsDNDHandler handler) {
 
         if (m_imageDndController != null) {
@@ -1103,8 +1401,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /**
      * Starts placement mode for the given draggable.
      *
-     *  @param draggable the draggable element
-     *
+     * @param draggable the draggable element
+     * @param handler the handler
+     * @return true, if successful
      */
     public boolean startPlacementMode(I_CmsDraggable draggable, CmsDNDHandler handler) {
 
@@ -1222,7 +1521,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      * @param elementData the element data
      * @param handler the drag and drop handler
      * @param draggable the draggable
-     * @param placementMode if we are in placement mode, i.e. not real DnD
      */
     protected void prepareHelperElements(
         CmsContainerElementData elementData,
@@ -1429,7 +1727,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      * @param elementData the element data
      * @param placeholder the previous placeholder
      * @param containerId the container id
-     * @return
+     * @return the element
      */
     private Element createPlaceholderFromHtmlForContainer(
         CmsContainerElementData elementData,
@@ -1558,6 +1856,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /**
      * Checks if the given draggable is new.
      *
+     * @param draggable the draggable
      * @return true if the given draggable is new
      */
     private boolean isNew(I_CmsDraggable draggable) {
@@ -1587,10 +1886,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     }
 
     /**
-     *
      * Placces an element relative to an existing element in placement mode.
      *
-     *
+     * @param handler the handler
      * @param draggable the element to be placed
      * @param elem the data for the element
      * @param reference the element relative to which the placed element should be inserted
@@ -1618,6 +1916,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /**
      * Places an element into an empty container in placement mode.
      *
+     * @param handler the handler
      * @param draggable the draggable for the element
      * @param elem the data for the element
      * @param cnt the target container
