@@ -180,7 +180,8 @@ public final class CmsTinyMCEHelper {
 					options.contextmenu = contextmenu;
 				}
 				options.typograf = {
-				    disableRule: ["common/nbsp/*", "common/punctuation/delDoublePunctuation"],
+				    disableRule: ["*"],
+				    enableRule2: ["common/punctuation/quote"],
 				    locale: [config.typograf_locale, "en-US"]
 				};
 				if (config.pasteOptions) {

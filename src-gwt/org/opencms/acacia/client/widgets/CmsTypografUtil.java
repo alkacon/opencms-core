@@ -82,8 +82,8 @@ public final class CmsTypografUtil {
                 options.set("locale", new JsArray<>(typografLocale, "en-US"));
                 options.set("live", Boolean.TRUE);
                 typograf = new Typograf(options);
-                typograf.disableRule("common/nbsp/*");
-                typograf.disableRule("common/punctuation/delDoublePunctuation");
+                typograf.disableRule("*");
+                typograf.enableRule("common/punctuation/quote");
             } catch (Exception e) {
                 CmsGwtLog.log(e.getLocalizedMessage());
             }

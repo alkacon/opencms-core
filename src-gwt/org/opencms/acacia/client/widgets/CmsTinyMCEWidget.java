@@ -564,7 +564,8 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
                 defaults.plugins = "paste emoticons typograf charmap";
                 defaults.toolbar = "undo redo | typograf | emoticons charmap";
                 defaults.typograf = {
-                    disableRule: ["common/nbsp/*", "common/punctuation/delDoublePunctuation"],
+                    disableRule: ["*"],
+                    enableRule2: ["common/punctuation/quote"],
                     locale: [typografLocale, "en-US"]
                 };
             }
