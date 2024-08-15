@@ -978,9 +978,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /** The ionitial drop target. */
     private I_CmsDropTarget m_initialDropTarget;
 
-    /** Creating new flag. */
-    private boolean m_isNew;
-
     /** The original position of the draggable. */
     private int m_originalIndex;
 
@@ -1109,7 +1106,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         m_currentTarget = null;
         m_currentIndex = -1;
         m_draggableId = draggable.getId();
-        m_isNew = false;
         m_originalIndex = -1;
         m_initialDropTarget = target;
         handler.setOrientation(Orientation.ALL);
@@ -1180,7 +1176,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         };
         if (isNewId(clientId)) {
             // for new content elements dragged from the gallery menu, the given id contains the resource type name
-            m_isNew = true;
             m_controller.getNewElement(clientId, callback);
         } else {
             m_controller.getElementForDragAndDropFromContainer(clientId, m_originalContainerId, false, callback);
@@ -1443,7 +1438,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             targetElem = target.getElement();
         }
         m_controller.sendDragFinished(dragElem, targetElem, isNew(draggable));
-        m_isNew = false;
     }
 
     /**
@@ -1544,7 +1538,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         String clientId = draggable.getId();
         if (isNewId(clientId)) {
             // for new content elements dragged from the gallery menu, the given id contains the resource type name
-            m_isNew = true;
             if (draggable instanceof CmsContainerPageElementPanel) {
                 CmsContainerPageElementPanel containerElement = ((CmsContainerPageElementPanel)draggable);
                 containerElement.addStyleName(OC_PLACEMENT_SELECTED_ELEMENT);
@@ -1916,9 +1909,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     private boolean isNew(I_CmsDraggable draggable) {
 
         boolean result = isNewId(draggable.getId());
-        if (result != m_isNew) {
-            CmsGwtLog.trace("isNew inconsistency");
-        }
         return result;
     }
 
