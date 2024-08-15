@@ -42,6 +42,7 @@ import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -58,6 +59,7 @@ import org.opencms.search.fields.CmsSearchFieldMapping;
 import org.opencms.search.fields.CmsSearchFieldMappingType;
 import org.opencms.search.fields.I_CmsSearchFieldMapping;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsVfsUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
@@ -188,6 +190,8 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         }
 
         document = appendFieldsForListSortOptions(document);
+
+        document = appendFieldsForListSearch(document, cms, resource);
 
         if (resource.getRootPath().startsWith(OpenCms.getSiteManager().getSharedFolder())
             || (null != OpenCms.getSiteManager().getSiteRoot(resource.getRootPath()))) {
@@ -769,6 +773,50 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
     }
 
     /**
+     * Adds multiple fields to the document that are used to search in by the list app.
+     *
+     * <p>The fields are:
+     * <ul>
+     *  <li>description_{locale}</li>
+     *  <li>keywords_{locale}</li>
+     * </ul>
+     * for each of the locales the document is available in.</p>
+     *
+     * @param document the document to index with all other fields already added.
+     * @param cms the current context
+     * @param resource the resource that is indexed
+     * @param properties the direct properties of the resource
+     * @return the document extended by the fields used by the list.
+     */
+
+    private I_CmsSearchDocument appendFieldsForListSearch(
+        I_CmsSearchDocument document,
+        CmsObject cms,
+        CmsResource resource) {
+
+        List<String> locales = document.getMultivaluedFieldAsStringList(CmsSearchField.FIELD_CONTENT_LOCALES);
+        for (String locale : locales) {
+            fillLocalizedFieldWithPropertyFallbacks(
+                cms,
+                document,
+                resource,
+                locale,
+                CmsSearchField.FIELD_DESCRIPTION,
+                CmsPropertyDefinition.PROPERTY_DESCRIPTION);
+            fillLocalizedFieldWithPropertyFallbacks(
+                cms,
+                document,
+                resource,
+                locale,
+                CmsSearchField.FIELD_KEYWORDS,
+                CmsPropertyDefinition.PROPERTY_KEYWORDS);
+        }
+
+        return document;
+
+    }
+
+    /**
      * Adds multiple fields to the document that are used for the sort options in the list app.
      *
      * <p>The fields are:
@@ -947,6 +995,43 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                     + "\n"
                     + title);
         }
+    }
+
+    /**
+     * Fills the field with the name extended by "_{locale}" with the property value, if the field is not already present in the document.
+     *
+     * If the localized property is not present, the default property value is used to get the value.
+     * Properties set on the indexed resource itself are always preferred. If no suitable property is present, the parent properties are used when given.
+     *
+     * @param cms the current context
+     * @param document the document to add the field to.
+     * @param resource the currently indexed resource.
+     * @param locale the locale to add the field for.
+     * @param fieldName the name of the field to add (without locale postfix)
+     * @param propertyName the property name of the property to get the value from (without locale postfix)
+     */
+    private void fillLocalizedFieldWithPropertyFallbacks(
+        CmsObject cms,
+        I_CmsSearchDocument document,
+        CmsResource resource,
+        String locale,
+        String fieldName,
+        String propertyName) {
+
+        Locale l = CmsLocaleManager.getLocale(locale);
+        String descriptionField = getLocaleExtendedName(fieldName, locale);
+
+        if (!document.getFieldNames().contains(fieldName)) {
+            String value = CmsVfsUtil.readPropertyValueWithFolderFallbackForDefaultFiles(
+                cms,
+                resource,
+                propertyName,
+                l);
+            if (value != null) {
+                document.addSearchField(new CmsSolrField(descriptionField, null, null, null), value);
+            }
+        }
+
     }
 
     /**

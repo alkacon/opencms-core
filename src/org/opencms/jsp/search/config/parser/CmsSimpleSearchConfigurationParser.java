@@ -506,6 +506,14 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
                 + " "
                 + CmsPropertyDefinition.PROPERTY_DESCRIPTION_HTML
                 + CmsSearchField.FIELD_DYNAMIC_PROPERTIES_DIRECT
+                + " "
+                + CmsSearchField.FIELD_DESCRIPTION
+                + "_"
+                + getSearchLocale().toString()
+                + " "
+                + CmsSearchField.FIELD_KEYWORDS
+                + "_"
+                + getSearchLocale().toString()
                 + "\"}%(query)";
         }
         return modifier;
