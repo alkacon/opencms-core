@@ -545,8 +545,12 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
          */
         private int getTolerance() {
 
-            JsPropertyMap<?> wnd = Js.cast(DomGlobal.window);
-            Any tolerance = wnd.getAsAny("ocPlacementButtonTolerance");
+
+            if (CmsCoreProvider.TOUCH_ONLY.matches()) {
+                return 0;
+            }
+            JsPropertyMap<?> window = Js.cast(DomGlobal.window);
+            Any tolerance = window.getAsAny("ocPlacementButtonTolerance");
             if (tolerance != null) {
                 return tolerance.asInt();
             } else {
