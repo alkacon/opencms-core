@@ -145,6 +145,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         /** The DND handler. */
         private CmsDNDHandler m_dndHandler;
 
+        /** The current draggable. */
+        private I_CmsDraggable m_draggable;
+
         /** The special layer used to display placement buttons and block click events for the rest of the page. */
         private PlacementLayer m_layer;
 
@@ -163,12 +166,14 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
          * @param containers the set of ids of available containers
          * @param toolbarWidget the additional widget to display in the toolbar
          * @param dndHandler the drag/drop handler
+         * @param draggable the current draggable
          * @param callback the callback to call when placing an element
          */
         public CmsPlacementModeContext(
             Set<String> containers,
             Widget toolbarWidget,
             CmsDNDHandler dndHandler,
+            I_CmsDraggable draggable,
             I_PlacementCallback callback) {
 
             m_containers = containers;
@@ -176,6 +181,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             m_pageHandler = m_controller.getHandler();
             m_dndHandler = dndHandler;
             m_toolbarWidget = toolbarWidget;
+            m_draggable = draggable;
 
         }
 
@@ -305,7 +311,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 } else {
                     if ((offsets == null) || (offsets.size() != (elements.size() + 1))) {
                         for (int i = 0; i < elements.size(); i++) {
-                            installButtons(container, i, elements.get(i));
+                            if (!isMovedElement(elements.get(i))) {
+                                installButtons(container, i, elements.get(i));
+                            }
                         }
                     } else {
                         installPlacementButtonsWithMidpoints(container, offsets);
@@ -558,38 +566,45 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             DOMRect containerRect = containerElem.getBoundingClientRect();
             double middle = (containerRect.left - layerRect.left) + (0.5 * containerRect.width);
             for (int j = 0; j < offsets.size(); j++) {
-                PlacementButton button = addButton(container);
-
-                button.addStyleName(OC_PLACEMENT_BUTTON);
                 if (j == 0) {
                     CmsContainerPageElementPanel element = elements.get(0);
-                    elemental2.dom.Element realElement = Js.cast(element.getElement());
-                    button.addClickHandler(e -> m_callback.place(container, element, 0));
-                    button.addStyleName(OC_PLACEMENT_UP);
-                    DOMRect elemRect = realElement.getBoundingClientRect();
+                    if (!isMovedElement(element)) {
+                        PlacementButton button = addButton(container);
+                        elemental2.dom.Element realElement = Js.cast(element.getElement());
+                        button.addClickHandler(e -> m_callback.place(container, element, 0));
+                        button.addStyleName(OC_PLACEMENT_UP);
+                        DOMRect elemRect = realElement.getBoundingClientRect();
 
-                    int top = (int)Math.round(elemRect.top - layerRect.top);
-                    int left = (int)Math.round(middle - (0.5 * bw));
-                    button.setLeft(left);
-                    button.setTop(top);
+                        int top = (int)Math.round(elemRect.top - layerRect.top);
+                        int left = (int)Math.round(middle - (0.5 * bw));
+                        button.setLeft(left);
+                        button.setTop(top);
+                    }
                 } else if (j == (offsets.size() - 1)) {
                     CmsContainerPageElementPanel element = elements.get(elements.size() - 1);
-                    elemental2.dom.Element realElement = Js.cast(element.getElement());
-                    button.addClickHandler(e -> m_callback.place(container, element, 1));
-                    button.addStyleName(OC_PLACEMENT_DOWN);
-                    DOMRect elemRect = realElement.getBoundingClientRect();
-                    int top = (int)Math.round((elemRect.top + elemRect.height) - layerRect.top - bw);
-                    int left = (int)Math.round(middle - (0.5 * bw));
-                    button.setLeft(left);
-                    button.setTop(top);
+                    if (!isMovedElement(element)) {
+                        PlacementButton button = addButton(container);
+                        elemental2.dom.Element realElement = Js.cast(element.getElement());
+                        button.addClickHandler(e -> m_callback.place(container, element, 1));
+                        button.addStyleName(OC_PLACEMENT_DOWN);
+                        DOMRect elemRect = realElement.getBoundingClientRect();
+                        int top = (int)Math.round((elemRect.top + elemRect.height) - layerRect.top - bw);
+                        int left = (int)Math.round(middle - (0.5 * bw));
+                        button.setLeft(left);
+                        button.setTop(top);
+                    }
                 } else {
                     CmsContainerPageElementPanel element = elements.get(j);
-                    button.addClickHandler(e -> m_callback.place(container, element, 0));
-                    button.addStyleName(OC_PLACEMENT_MIDDLE);
-                    int top = (int)Math.round(offsets.get(j) - layerRect.top - (0.5 * bw));
-                    int left = (int)Math.round(middle - (0.5 * bw));
-                    button.setLeft(left);
-                    button.setTop(top);
+                    CmsContainerPageElementPanel previousElement = elements.get(j - 1);
+                    if (!isMovedElement(element) && !isMovedElement(previousElement)) {
+                        PlacementButton button = addButton(container);
+                        button.addClickHandler(e -> m_callback.place(container, element, 0));
+                        button.addStyleName(OC_PLACEMENT_MIDDLE);
+                        int top = (int)Math.round(offsets.get(j) - layerRect.top - (0.5 * bw));
+                        int left = (int)Math.round(middle - (0.5 * bw));
+                        button.setLeft(left);
+                        button.setTop(top);
+                    }
                 }
             }
         }
@@ -615,8 +630,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             DOMRect layerRect = layerElem.getBoundingClientRect();
             PlacementButton plus = addButton(container);
 
-            plus.addStyleName(OC_PLACEMENT_MIDDLE); // from Bootstrap icons
-            plus.addStyleName(OC_PLACEMENT_BUTTON);
+            plus.addStyleName(OC_PLACEMENT_MIDDLE);
 
             int top = (int)Math.round(
                 ((containerRect.top - layerRect.top) + (0.5 * containerRect.height)) - (0.5 * bw));
@@ -626,6 +640,17 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             plus.setTop(top);
             plus.addClickHandler(e -> m_callback.place(container, null, 0));
 
+        }
+
+        /**
+         * Checks if a container element is the container element for which placement mode was initially started.
+         * 
+         * @param element a container element
+         * @return true if the given element is the element for which placement mode was started 
+         */
+        private boolean isMovedElement(CmsContainerPageElementPanel element) {
+
+            return element == m_draggable;
         }
 
     }
@@ -1490,7 +1515,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 }
                 prepareHelperElements(elem, handler, draggable);
                 setPlacementContext(
-                    new CmsPlacementModeContext(containerIds, newItem, handler, (cnt, reference, offset) -> {
+                    new CmsPlacementModeContext(containerIds, newItem, handler, draggable, (cnt, reference, offset) -> {
                         if (reference != null) {
                             placeElement(handler, draggable, elem, reference, offset);
                         } else {
