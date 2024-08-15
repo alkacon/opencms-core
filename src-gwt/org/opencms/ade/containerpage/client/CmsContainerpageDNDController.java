@@ -331,67 +331,81 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
          */
         public void positionButtons(List<PlacementButton> originalButtons) {
 
-            List<PlacementButton> buttons = new ArrayList<>(originalButtons);
-            int iterations = 0;
-            while ((buttons.size() > 1) && (iterations < 1000)) {
-                // In each iteration of the main loop, try to find and resolve one collision. Resolving one collision may cause further collisions in later iterations of the loop.
-
-                iterations += 1;
-                // Sort buttons by increasing x coordinate of left corner, so we can limit the potential candidates for collisions with a given button.
-                buttons.sort((a, b) -> {
-                    return Integer.compare(a.getLeft(), b.getLeft());
-                });
-                int collisionIndex = -1;
-                PlacementButton[] collisionPair = null;
-                for (int i = 0; i < buttons.size(); i++) {
-                    collisionPair = null;
-                    PlacementButton first = buttons.get(i);
-                    int j = i + 1;
-                    for (j = i + 1; j < buttons.size(); j++) {
-                        PlacementButton second = buttons.get(j);
-                        if (second.getLeft() >= (first.getLeft() + first.getWidth())) {
-                            break;
-                        }
-                        if (first.intersects(second)) {
-                            collisionPair = new PlacementButton[] {first, second};
-                            collisionIndex = i;
-                            break;
-                        }
-                    }
-                    if (collisionPair != null) {
-                        break;
-                    }
+            // First split buttons into vertically separated groups. Since we only move things around horizontally, we can do it independently for each of these groups, reducing the total amount of collision tests.
+            originalButtons.sort((a, b) -> Integer.compare(a.getTop(), b.getTop()));
+            List<List<PlacementButton>> groups = new ArrayList<>();
+            groups.add(new ArrayList<>());
+            PlacementButton lastButton = null;
+            for (PlacementButton button : originalButtons) {
+                if ((lastButton != null) && ((lastButton.getTop() + lastButton.getHeight()) <= button.getTop())) {
+                    groups.add(new ArrayList<>());
                 }
-                int moveAmount = 0;
-                if (collisionIndex != -1) {
-                    PlacementButton buttonToMove = null;
+                groups.get(groups.size() - 1).add(button);
+                lastButton = button;
+            }
+            for (List<PlacementButton> group : groups) {
+                int iterations = 0;
+                while ((group.size() > 1) && (iterations < 1000)) {
+                    // In each iteration of the main loop, try to find and resolve one collision. Resolving one collision may cause further collisions in later iterations of the loop.
 
-                    PlacementButton first = collisionPair[0];
-                    PlacementButton second = collisionPair[1];
-                    int ci1 = m_containerIndexes.get(first.getContainer().getContainerId()).intValue();
-                    int ci2 = m_containerIndexes.get(second.getContainer().getContainerId()).intValue();
-                    /*
-                     * By using the combination of document position of the container and button index of the button, we impose a complete total ordering on the buttons
-                     * so that buttons which are lower in the ordering are moved when they collide with buttons that are higher in the ordering. This means that for a button
-                     * involved in any collisions, if it has the highest position in that ordering, all other buttons involved in collisions with it will move to its right, and
-                     * after that, will never collide with it again. This means we can't run into 'infinite loops' where groups of elements keep pushing each other to the right ad infinitum.
-                     */
-                    if (ComparisonChain.start().compare(ci1, ci2).compare(
-                        second.getIndex(), /* Use reverse order for index - prefer moving 'insert after' buttons rather than 'insert before' for a single container if they collide */
-                        first.getIndex()).result() == -1) {
-                        buttonToMove = first;
-                        moveAmount = (second.getLeft() + second.getWidth()) - first.getLeft();
-                    } else {
-                        buttonToMove = second;
-                        moveAmount = (first.getLeft() + first.getWidth()) - second.getLeft();
+                    iterations += 1;
+                    // Sort buttons by increasing x coordinate of left corner, so we can limit the potential candidates for collisions with a given button.
+                    group.sort((a, b) -> {
+                        return Integer.compare(a.getLeft(), b.getLeft());
+                    });
+                    int collisionIndex = -1;
+                    PlacementButton[] collisionPair = null;
+                    for (int i = 0; i < group.size(); i++) {
+                        collisionPair = null;
+                        PlacementButton first = group.get(i);
+                        int j = i + 1;
+                        for (j = i + 1; j < group.size(); j++) {
+                            PlacementButton second = group.get(j);
+                            if (second.getLeft() >= (first.getLeft() + first.getWidth())) {
+                                break;
+                            }
+                            if (first.intersects(second)) {
+                                collisionPair = new PlacementButton[] {first, second};
+                                collisionIndex = i;
+                                break;
+                            }
+                        }
+                        if (collisionPair != null) {
+                            break;
+                        }
                     }
+                    int moveAmount = 0;
+                    if (collisionIndex != -1) {
+                        PlacementButton buttonToMove = null;
 
-                    buttonToMove.setLeft(buttonToMove.getLeft() + moveAmount);
-                    // everything before first collision becomes irrelevant for the next iteration; we only move stuff to the right
-                    buttons = new ArrayList<>(buttons.subList(collisionIndex, buttons.size()));
-                } else {
-                    // no collisions; we're done
-                    buttons = new ArrayList<>();
+                        PlacementButton first = collisionPair[0];
+                        PlacementButton second = collisionPair[1];
+                        int ci1 = m_containerIndexes.get(first.getContainer().getContainerId()).intValue();
+                        int ci2 = m_containerIndexes.get(second.getContainer().getContainerId()).intValue();
+                        /*
+                         * By using the combination of document position of the container and button index of the button, we impose a complete total ordering on the buttons
+                         * so that buttons which are lower in the ordering are moved when they collide with buttons that are higher in the ordering. This means that for a button
+                         * involved in any collisions, if it has the highest position in that ordering, all other buttons involved in collisions with it will move to its right, and
+                         * after that, will never collide with it again. The same reasoning can be applied to the element with next-highest position now to its right, and so on.
+                         * This means we can't run into 'infinite loops' where groups of elements keep pushing each other to the right ad infinitum.
+                         */
+                        if (ComparisonChain.start().compare(ci1, ci2).compare(
+                            second.getIndex(), /* Use reverse order for index - prefer moving 'insert after' buttons rather than 'insert before' for a single container if they collide */
+                            first.getIndex()).result() == -1) {
+                            buttonToMove = first;
+                            moveAmount = (second.getLeft() + second.getWidth()) - first.getLeft();
+                        } else {
+                            buttonToMove = second;
+                            moveAmount = (first.getLeft() + first.getWidth()) - second.getLeft();
+                        }
+
+                        buttonToMove.setLeft(buttonToMove.getLeft() + moveAmount);
+                        // everything before first collision becomes irrelevant for the next iteration; we only move stuff to the right
+                        group = new ArrayList<>(group.subList(collisionIndex, group.size()));
+                    } else {
+                        // no collisions; we're done
+                        group = new ArrayList<>();
+                    }
                 }
             }
             for (PlacementButton button : originalButtons) {
@@ -644,9 +658,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
         /**
          * Checks if a container element is the container element for which placement mode was initially started.
-         * 
+         *
          * @param element a container element
-         * @return true if the given element is the element for which placement mode was started 
+         * @return true if the given element is the element for which placement mode was started
          */
         private boolean isMovedElement(CmsContainerPageElementPanel element) {
 
@@ -816,6 +830,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
             return segmentIntersect(m_left, m_width, other.m_left, other.m_width)
                 && segmentIntersect(m_top, m_height, other.m_top, other.m_height);
+
         }
 
         /**
