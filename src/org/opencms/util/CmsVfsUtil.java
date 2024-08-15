@@ -28,7 +28,9 @@
 package org.opencms.util;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsException;
@@ -37,6 +39,8 @@ import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
@@ -98,6 +102,95 @@ public final class CmsVfsUtil {
             } catch (CmsVfsResourceAlreadyExistsException e) {
                 // nop
             }
+        }
+    }
+
+    /**
+     * Checks if the provided resource is a default file.
+     * @param cms the context
+     * @param resource the resource to check
+     * @return true, if the file is an default file. False if the file is no default file or an exception occurred.
+     */
+    public static boolean isDefaultFile(CmsObject cms, CmsResource resource) {
+
+        if ((null == resource) || resource.isFolder()) {
+            return false;
+        }
+        try {
+            CmsResource defaultFile = cms.readDefaultFile(
+                CmsResource.getFolderPath(cms.getSitePath(resource)),
+                CmsResourceFilter.ALL);
+            return (null != defaultFile) && defaultFile.getRootPath().equals(resource.getRootPath());
+        } catch (Throwable t) {
+            String message = "Failed to check if \""
+                + resource.getRootPath()
+                + "\" is a default file. Assuming it is not.";
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message, t);
+            } else {
+                LOG.error(message);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Reads the property value for the provided name and resource.
+     * The locale specific properties are read first, with fallback to the default property.
+     *
+     * In case the resource is a default file and the property is not found on the file itself,
+     * the property is read (again locale specific) on the folder as fallback.
+     *
+     * @param cms the context
+     * @param resource the resource to read the property from
+     * @param propertyName the name of the property to read
+     * @param locale the locale to read the property in.
+     * @return the property value or null, if the property is not set at all or a exception occurred.
+     */
+    public static String readPropertyValueWithFolderFallbackForDefaultFiles(
+        CmsObject cms,
+
+        CmsResource resource,
+        String propertyName,
+        Locale locale) {
+
+        try {
+            List<CmsProperty> resourcePropsList = cms.readPropertyObjects(resource, false);
+            Map<String, CmsProperty> resourceProps = CmsProperty.getPropertyMap(resourcePropsList);
+            String value = CmsProperty.getLocaleSpecificPropertyValue(resourceProps, propertyName, locale);
+            if ((value == null) && isDefaultFile(cms, resource)) {
+                try {
+                    List<CmsProperty> folderPropsList = cms.readPropertyObjects(
+                        CmsResource.getFolderPath(cms.getSitePath(resource)),
+                        false);
+                    Map<String, CmsProperty> folderProps = CmsProperty.getPropertyMap(folderPropsList);
+                    value = CmsProperty.getLocaleSpecificPropertyValue(folderProps, propertyName, locale);
+                } catch (Throwable e) {
+                    String message = "Failed to read folder property \""
+                        + propertyName
+                        + "\" for resource \""
+                        + resource.getRootPath()
+                        + "\".";
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(message, e);
+                    } else {
+                        LOG.error(message);
+                    }
+                }
+            }
+            return value;
+        } catch (Throwable e) {
+            String message = "Failed to read property \""
+                + propertyName
+                + "\" for resource \""
+                + (null == resource ? "null" : resource.getRootPath())
+                + "\".";
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message, e);
+            } else {
+                LOG.error(message);
+            }
+            return null;
         }
     }
 

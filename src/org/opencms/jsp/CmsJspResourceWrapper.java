@@ -51,6 +51,7 @@ import org.opencms.relations.CmsRelationFilter;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsUUID;
+import org.opencms.util.CmsVfsUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -598,6 +599,21 @@ public class CmsJspResourceWrapper extends CmsResource {
     }
 
     /**
+     * Returns the locale specific evaluated "Keywords" property for the resource.
+     * In case the resource is a default file, also the parent folders "Keywords" property is read as fallback.
+     *
+     * @return the locale specific description property for the resource.
+     */
+    public String getPropertKeywords() {
+
+        return CmsVfsUtil.readPropertyValueWithFolderFallbackForDefaultFiles(
+            m_cms,
+            this,
+            CmsPropertyDefinition.PROPERTY_KEYWORDS,
+            m_cms.getRequestContext().getLocale());
+    }
+
+    /**
      * Returns the direct properties of this resource in a map.<p>
      *
      * This is without "search", so it will not include inherited properties from the parent folders.<p>
@@ -617,6 +633,21 @@ public class CmsJspResourceWrapper extends CmsResource {
             }
         }
         return m_properties;
+    }
+
+    /**
+     * Returns the locale specific evaluated "Description" property for the resource.
+     * In case the resource is a default file, also the parent folders "Description" property is read as fallback.
+     *
+     * @return the locale specific description property for the resource.
+     */
+    public String getPropertyDescription() {
+
+        return CmsVfsUtil.readPropertyValueWithFolderFallbackForDefaultFiles(
+            m_cms,
+            this,
+            CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+            m_cms.getRequestContext().getLocale());
     }
 
     /**
@@ -959,6 +990,11 @@ public class CmsJspResourceWrapper extends CmsResource {
         return (sitePath != null)
             && ((getSitePath().indexOf(sitePath) == 0))
             && (sitePath.length() < getSitePath().length());
+    }
+
+    public boolean isNavigationDefaultFile() {
+
+        return CmsVfsUtil.isDefaultFile(m_cms, this);
     }
 
     /**
