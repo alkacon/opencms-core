@@ -110,7 +110,9 @@ import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.Node;
 import elemental2.dom.NodeList;
+import jsinterop.base.Any;
 import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * The container-page editor drag and drop controller.<p>
@@ -124,6 +126,226 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
      */
     class CmsPlacementModeContext {
 
+        /**
+         * Buttons used to place elements in placement mode.
+         */
+        class PlacementButton extends FlowPanel implements HasClickHandlers, HasMouseOverHandlers, HasMouseOutHandlers {
+
+            /** The associated container. */
+            private CmsContainerPageContainer m_container;
+
+            /** The height. */
+            private int m_height;
+
+            /** The internal index (used for sorting). */
+            private int m_index;
+
+            /** The left. */
+            private int m_left;
+
+            /** Thetop. */
+            private int m_top;
+
+            /** The width. */
+            private int m_width;
+
+            /**
+             * Creates a new instance.
+             *
+             * @param size the size
+             */
+            public PlacementButton(int size) {
+
+                addStyleName(OC_PLACEMENT_BUTTON);
+                String alpha = "abcdefghijklmnopqrstuvwxyz";
+                String id = "pb_";
+                for (int i = 0; i < 5; i++) {
+                    int index = (int)Math.floor(Math.random() * alpha.length());
+                    id = id + alpha.charAt(index);
+                }
+                getElement().setId(id);
+                m_width = size;
+                m_height = size;
+                m_index = m_buttonCounter++;
+
+            }
+
+            /**
+             * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
+             */
+            @Override
+            public HandlerRegistration addClickHandler(ClickHandler handler) {
+
+                ClickHandler handler2 = event -> {
+                    event.stopPropagation();
+                    handler.onClick(event);
+                };
+                return addDomHandler(handler2, ClickEvent.getType());
+            }
+
+            /**
+             * @see com.google.gwt.event.dom.client.HasMouseOutHandlers#addMouseOutHandler(com.google.gwt.event.dom.client.MouseOutHandler)
+             */
+            @Override
+            public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
+
+                return addDomHandler(handler, MouseOutEvent.getType());
+            }
+
+            /**
+             * @see com.google.gwt.event.dom.client.HasMouseOverHandlers#addMouseOverHandler(com.google.gwt.event.dom.client.MouseOverHandler)
+             */
+            @Override
+            public HandlerRegistration addMouseOverHandler(MouseOverHandler handler) {
+
+                return addDomHandler(handler, MouseOverEvent.getType());
+
+            }
+
+            /**
+             * Gets the associated container.
+             *
+             * @return the associated container
+             */
+            public CmsContainerPageContainer getContainer() {
+
+                return m_container;
+            }
+
+            /**
+             * Gets the height.
+             *
+             * @return the height
+             */
+            public int getHeight() {
+
+                return m_height;
+            }
+
+            /**
+             * Gets the index.
+             *
+             * @return the index
+             */
+            public int getIndex() {
+
+                return m_index;
+            }
+
+            /**
+             * Gets the left.
+             *
+             * @return the left
+             */
+            public int getLeft() {
+
+                return m_left;
+            }
+
+            /**
+             * Gets the top.
+             *
+             * @return the top
+             */
+            public int getTop() {
+
+                return m_top;
+            }
+
+            /**
+             * Gets the width.
+             *
+             * @return the width
+             */
+            public int getWidth() {
+
+                return m_width;
+            }
+
+            /**
+             * Checks if other placement button's position intersects this one's.
+             *
+             * @param other the other placement button
+             * @return true if the buttons intersect
+             */
+            public boolean intersects(PlacementButton other) {
+
+                int t = m_collisionTolerance;
+                return segmentIntersect(m_left + t, m_width - (2 * t), other.m_left + t, other.m_width - (2 * t))
+                    && segmentIntersect(m_top + t, m_height - (2 * t), other.m_top + t, other.m_height - (2 * t));
+
+            }
+
+            /**
+             * Checks if this button is fully before another (taking into account the tolerance zones of both).
+             *
+             * @param second the other button
+             * @return true if this button (except tolerance zones) is fully before the other button (except for its tolerance zones)
+             *
+             */
+            public boolean isFullyBefore(PlacementButton second) {
+
+                return ((getLeft() + getWidth()) - m_collisionTolerance) <= (second.getLeft() + m_collisionTolerance);
+            }
+
+            /**
+             * Moves this button to the right of another button.
+             *
+             * @param second the other button
+             */
+            public void moveToRightOf(PlacementButton second) {
+
+                m_left = (second.getLeft() + second.getWidth()) - (2 * m_collisionTolerance);
+            }
+
+            /**
+             * Sets the container.
+             *
+             * @param container the new container
+             */
+            public void setContainer(CmsContainerPageContainer container) {
+
+                m_container = container;
+            }
+
+            /**
+             * Sets the left.
+             *
+             * @param left the new left
+             */
+            public void setLeft(int left) {
+
+                m_left = left;
+            }
+
+            /**
+             * Actually sets the position on the DOM element.
+             */
+            public void setPosition() {
+
+                getElement().getStyle().setLeft(m_left, Unit.PX);
+                getElement().getStyle().setTop(m_top, Unit.PX);
+            }
+
+            /**
+             * Sets the top.
+             *
+             * @param top the new top
+             */
+            public void setTop(int top) {
+
+                m_top = top;
+            }
+
+            /**
+             * @see com.google.gwt.user.client.ui.UIObject#toString()
+             */
+            public String toString() {
+
+                return getElement().getId() + ":(" + getLeft() + ", " + getTop() + ")";
+            }
+        }
+
         /** Single-element array holding the currently visible highlighting element. */
         private CmsHighlightingBorder[] m_activeBorder = {null};
 
@@ -135,6 +357,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
         /** The callback to call when an element is placed. */
         private I_PlacementCallback m_callback;
+
+        /** The tolerance for button collisions. */
+        private int m_collisionTolerance;
 
         /** Numeric rank for containers, used for resolving button collisions. */
         private Map<String, Integer> m_containerIndexes = new HashMap<>();
@@ -182,6 +407,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             m_dndHandler = dndHandler;
             m_toolbarWidget = toolbarWidget;
             m_draggable = draggable;
+            m_collisionTolerance = getTolerance();
 
         }
 
@@ -215,16 +441,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         }
 
         /**
-         * Gets the drag-and-drop handler.
-         *
-         * @return the drag and drop handler
-         */
-        public CmsDNDHandler getDNDHandler() {
-
-            return m_dndHandler;
-        }
-
-        /**
          * Initializes the placement mode.
          */
         public void init() {
@@ -244,9 +460,104 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         }
 
         /**
+         * Adds a new placement button.
+         *
+         * @param container the container
+         * @return the placement button
+         */
+        private PlacementButton addButton(CmsContainerPageContainer container) {
+
+            PlacementButton button = new PlacementButton(m_buttonSize);
+            m_buttons.add(button);
+            m_layer.add(button);
+            button.setContainer(container);
+            addHighlightingMouseHandlers(container, button);
+            return button;
+
+        }
+
+        /**
+         * Adds mouse handlers for showing/hiding container borders when hovering over placement buttons.
+         *
+         * @param container the container to which the button belongs
+         * @param button the button
+         */
+        private void addHighlightingMouseHandlers(CmsContainerPageContainer container, PlacementButton button) {
+
+            button.addMouseOverHandler(event -> {
+                if (m_activeBorder[0] != null) {
+                    m_activeBorder[0].getElement().getStyle().setVisibility(Visibility.HIDDEN);
+                }
+                m_activeBorder[0] = container.getHighlighting();
+                m_activeBorder[0].getElement().getStyle().setVisibility(Visibility.VISIBLE);
+            });
+            button.addMouseOutHandler(event -> {
+                if (m_activeBorder[0] != null) {
+                    m_activeBorder[0].getElement().getStyle().setVisibility(Visibility.HIDDEN);
+                    m_activeBorder[0] = null;
+                }
+                container.getHighlighting().getElement().getStyle().setVisibility(Visibility.HIDDEN);
+            });
+        }
+
+        /**
+         * Creates a push button for the edit tool-bar.<p>
+         *
+         * @param title the button title
+         * @param imageClass the image class
+         *
+         * @return the button
+         */
+        private CmsPushButton createButton(String title, String imageClass) {
+
+            CmsPushButton result = new CmsPushButton();
+            result.setTitle(title);
+            result.setImageClass(imageClass);
+            result.setButtonStyle(ButtonStyle.FONT_ICON, null);
+            result.setSize(Size.big);
+            return result;
+        }
+
+        /**
+         * Gets the drag-and-drop handler.
+         *
+         * @return the drag and drop handler
+         */
+        private CmsDNDHandler getDNDHandler() {
+
+            return m_dndHandler;
+        }
+
+        /**
+         * Gets the placement button size (Width or height).
+         *
+         * @return the placement button size
+         */
+        private int getPlacementButtonSize() {
+
+            return m_buttonSize;
+        }
+
+        /**
+         * Gets the width of the 'tolerance zone' in pixels around the sides of the placement button which does not count for collision detection.
+         *
+         * @return the width of the tolerance zone
+         */
+        private int getTolerance() {
+
+            JsPropertyMap<?> wnd = Js.cast(DomGlobal.window);
+            Any tolerance = wnd.getAsAny("ocPlacementButtonTolerance");
+            if (tolerance != null) {
+                return tolerance.asInt();
+            } else {
+                return 1;
+            }
+        }
+
+        /**
          * Does all placement mode initializations related to the button layer.
          */
-        public void initPlacementLayer() {
+        private void initPlacementLayer() {
 
             if (m_layer != null) {
                 m_layer.removeFromParent();
@@ -322,164 +633,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
             }
             positionButtons(m_buttons);
-        }
-
-        /**
-         * Positions buttons so that they don't collide.
-         *
-         * @param originalButtons the list of buttons to position
-         */
-        public void positionButtons(List<PlacementButton> originalButtons) {
-
-            // First split buttons into vertically separated groups. Since we only move things around horizontally, we can do it independently for each of these groups, reducing the total amount of collision tests.
-            originalButtons.sort((a, b) -> Integer.compare(a.getTop(), b.getTop()));
-            List<List<PlacementButton>> groups = new ArrayList<>();
-            groups.add(new ArrayList<>());
-            PlacementButton lastButton = null;
-            for (PlacementButton button : originalButtons) {
-                if ((lastButton != null) && ((lastButton.getTop() + lastButton.getHeight()) <= button.getTop())) {
-                    groups.add(new ArrayList<>());
-                }
-                groups.get(groups.size() - 1).add(button);
-                lastButton = button;
-            }
-            for (List<PlacementButton> group : groups) {
-                int iterations = 0;
-                while ((group.size() > 1) && (iterations < 1000)) {
-                    // In each iteration of the main loop, try to find and resolve one collision. Resolving one collision may cause further collisions in later iterations of the loop.
-
-                    iterations += 1;
-                    // Sort buttons by increasing x coordinate of left corner, so we can limit the potential candidates for collisions with a given button.
-                    group.sort((a, b) -> {
-                        return Integer.compare(a.getLeft(), b.getLeft());
-                    });
-                    int collisionIndex = -1;
-                    PlacementButton[] collisionPair = null;
-                    for (int i = 0; i < group.size(); i++) {
-                        collisionPair = null;
-                        PlacementButton first = group.get(i);
-                        int j = i + 1;
-                        for (j = i + 1; j < group.size(); j++) {
-                            PlacementButton second = group.get(j);
-                            if (second.getLeft() >= (first.getLeft() + first.getWidth())) {
-                                break;
-                            }
-                            if (first.intersects(second)) {
-                                collisionPair = new PlacementButton[] {first, second};
-                                collisionIndex = i;
-                                break;
-                            }
-                        }
-                        if (collisionPair != null) {
-                            break;
-                        }
-                    }
-                    int moveAmount = 0;
-                    if (collisionIndex != -1) {
-                        PlacementButton buttonToMove = null;
-
-                        PlacementButton first = collisionPair[0];
-                        PlacementButton second = collisionPair[1];
-                        int ci1 = m_containerIndexes.get(first.getContainer().getContainerId()).intValue();
-                        int ci2 = m_containerIndexes.get(second.getContainer().getContainerId()).intValue();
-                        /*
-                         * By using the combination of document position of the container and button index of the button, we impose a complete total ordering on the buttons
-                         * so that buttons which are lower in the ordering are moved when they collide with buttons that are higher in the ordering. This means that for a button
-                         * involved in any collisions, if it has the highest position in that ordering, all other buttons involved in collisions with it will move to its right, and
-                         * after that, will never collide with it again. The same reasoning can be applied to the element with next-highest position now to its right, and so on.
-                         * This means we can't run into 'infinite loops' where groups of elements keep pushing each other to the right ad infinitum.
-                         */
-                        if (ComparisonChain.start().compare(ci1, ci2).compare(
-                            second.getIndex(), /* Use reverse order for index - prefer moving 'insert after' buttons rather than 'insert before' for a single container if they collide */
-                            first.getIndex()).result() == -1) {
-                            buttonToMove = first;
-                            moveAmount = (second.getLeft() + second.getWidth()) - first.getLeft();
-                        } else {
-                            buttonToMove = second;
-                            moveAmount = (first.getLeft() + first.getWidth()) - second.getLeft();
-                        }
-
-                        buttonToMove.setLeft(buttonToMove.getLeft() + moveAmount);
-                        // everything before first collision becomes irrelevant for the next iteration; we only move stuff to the right
-                        group = new ArrayList<>(group.subList(collisionIndex, group.size()));
-                    } else {
-                        // no collisions; we're done
-                        group = new ArrayList<>();
-                    }
-                }
-            }
-            for (PlacementButton button : originalButtons) {
-                button.setPosition();
-            }
-        }
-
-        /**
-         * Gets the placement button size (Width or height).
-         *
-         * @return the placement button size
-         */
-        int getPlacementButtonSize() {
-
-            return m_buttonSize;
-        }
-
-        /**
-         * Adds a new placement button.
-         *
-         * @param container the container
-         * @return the placement button
-         */
-        private PlacementButton addButton(CmsContainerPageContainer container) {
-
-            PlacementButton button = new PlacementButton(m_buttonSize);
-            m_buttons.add(button);
-            m_layer.add(button);
-            button.setContainer(container);
-            addHighlightingMouseHandlers(container, button);
-            return button;
-
-        }
-
-        /**
-         * Adds mouse handlers for showing/hiding container borders when hovering over placement buttons.
-         *
-         * @param container the container to which the button belongs
-         * @param button the button
-         */
-        private void addHighlightingMouseHandlers(CmsContainerPageContainer container, PlacementButton button) {
-
-            button.addMouseOverHandler(event -> {
-                if (m_activeBorder[0] != null) {
-                    m_activeBorder[0].getElement().getStyle().setVisibility(Visibility.HIDDEN);
-                }
-                m_activeBorder[0] = container.getHighlighting();
-                m_activeBorder[0].getElement().getStyle().setVisibility(Visibility.VISIBLE);
-            });
-            button.addMouseOutHandler(event -> {
-                if (m_activeBorder[0] != null) {
-                    m_activeBorder[0].getElement().getStyle().setVisibility(Visibility.HIDDEN);
-                    m_activeBorder[0] = null;
-                }
-                container.getHighlighting().getElement().getStyle().setVisibility(Visibility.HIDDEN);
-            });
-        }
-
-        /**
-         * Creates a push button for the edit tool-bar.<p>
-         *
-         * @param title the button title
-         * @param imageClass the image class
-         *
-         * @return the button
-         */
-        private CmsPushButton createButton(String title, String imageClass) {
-
-            CmsPushButton result = new CmsPushButton();
-            result.setTitle(title);
-            result.setImageClass(imageClass);
-            result.setButtonStyle(ButtonStyle.FONT_ICON, null);
-            result.setSize(Size.big);
-            return result;
         }
 
         /**
@@ -667,6 +820,90 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             return element == m_draggable;
         }
 
+        /**
+         * Positions buttons so that they don't collide.
+         *
+         * @param originalButtons the list of buttons to position
+         */
+        private void positionButtons(List<PlacementButton> originalButtons) {
+
+            // First split buttons into vertically separated groups. Since we only move things around horizontally, we can do it independently for each of these groups, reducing the total amount of collision tests.
+            originalButtons.sort((a, b) -> Integer.compare(a.getTop(), b.getTop()));
+            List<List<PlacementButton>> groups = new ArrayList<>();
+            groups.add(new ArrayList<>());
+            PlacementButton lastButton = null;
+            for (PlacementButton button : originalButtons) {
+                // ignoring collision tolerance here, because the point of collision tolerance is mostly controlling horizontal separation
+                if ((lastButton != null) && ((lastButton.getTop() + lastButton.getHeight()) <= button.getTop())) { // because all buttons have the same height, we only need to check the last one
+                    groups.add(new ArrayList<>());
+                }
+                groups.get(groups.size() - 1).add(button);
+                lastButton = button;
+            }
+            for (List<PlacementButton> group : groups) {
+                int iterations = 0;
+                while ((group.size() > 1) && (iterations < 1000)) {
+                    // In each iteration of the main loop, try to find and resolve one collision. Resolving one collision may cause further collisions in later iterations of the loop.
+
+                    iterations += 1;
+                    // Sort buttons by increasing x coordinate of left corner, so we can limit the potential candidates for collisions with a given button.
+                    group.sort((a, b) -> {
+                        return Integer.compare(a.getLeft(), b.getLeft());
+                    });
+                    int collisionIndex = -1;
+                    PlacementButton[] collisionPair = null;
+                    for (int i = 0; i < group.size(); i++) {
+                        collisionPair = null;
+                        PlacementButton first = group.get(i);
+                        int j = i + 1;
+                        for (j = i + 1; j < group.size(); j++) {
+                            PlacementButton second = group.get(j);
+                            if (first.isFullyBefore(second)) {
+                                break;
+                            }
+                            if (first.intersects(second)) {
+                                collisionPair = new PlacementButton[] {first, second};
+                                collisionIndex = i;
+                                break;
+                            }
+                        }
+                        if (collisionPair != null) {
+                            break;
+                        }
+                    }
+                    if (collisionIndex != -1) {
+
+                        PlacementButton first = collisionPair[0];
+                        PlacementButton second = collisionPair[1];
+                        int ci1 = m_containerIndexes.get(first.getContainer().getContainerId()).intValue();
+                        int ci2 = m_containerIndexes.get(second.getContainer().getContainerId()).intValue();
+                        /*
+                         * By using the combination of document position of the container and button index of the button, we impose a complete total ordering on the buttons
+                         * so that buttons which are lower in the ordering are moved when they collide with buttons that are higher in the ordering. This means that for a button
+                         * involved in any collisions, if it has the highest position in that ordering, all other buttons involved in collisions with it will move to its right, and
+                         * after that, will never collide with it again. The same reasoning can be applied to the element with next-highest position now to its right, and so on.
+                         * This means we can't run into 'infinite loops' where groups of elements keep pushing each other to the right ad infinitum.
+                         */
+                        if (ComparisonChain.start().compare(ci1, ci2).compare(
+                            second.getIndex(), /* Use reverse order for index - prefer moving 'insert after' buttons rather than 'insert before' for a single container if they collide */
+                            first.getIndex()).result() == -1) {
+                            first.moveToRightOf(second);
+                        } else {
+                            second.moveToRightOf(first);
+                        }
+                        // everything before first collision becomes irrelevant for the next iteration; we only move stuff to the right
+                        group = new ArrayList<>(group.subList(collisionIndex, group.size()));
+                    } else {
+                        // no collisions; we're done
+                        group = new ArrayList<>();
+                    }
+                }
+            }
+            for (PlacementButton button : originalButtons) {
+                button.setPosition();
+            }
+        }
+
     }
 
     /**
@@ -681,204 +918,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
          * @param offset the offset (0 means insert before the reference element, 1 means after)
          */
         void place(CmsContainerPageContainer container, CmsContainerPageElementPanel referenceElement, int offset);
-    }
-
-    /**
-     * Buttons used to place elements in placement mode.
-     */
-    static class PlacementButton extends FlowPanel
-    implements HasClickHandlers, HasMouseOverHandlers, HasMouseOutHandlers {
-
-        /** The associated container. */
-        private CmsContainerPageContainer m_container;
-
-        /** The height. */
-        private int m_height;
-
-        /** The internal index (used for sorting). */
-        private int m_index;
-
-        /** The left. */
-        private int m_left;
-
-        /** Thetop. */
-        private int m_top;
-
-        /** The width. */
-        private int m_width;
-
-        /**
-         * Creates a new instance.
-         *
-         * @param size the size
-         */
-        public PlacementButton(int size) {
-
-            addStyleName(OC_PLACEMENT_BUTTON);
-            String alpha = "abcdefghijklmnopqrstuvwxyz";
-            String id = "pb_";
-            for (int i = 0; i < 5; i++) {
-                int index = (int)Math.floor(Math.random() * alpha.length());
-                id = id + alpha.charAt(index);
-            }
-            getElement().setId(id);
-            m_width = size;
-            m_height = size;
-            m_index = m_buttonCounter++;
-
-        }
-
-        /**
-         * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
-         */
-        @Override
-        public HandlerRegistration addClickHandler(ClickHandler handler) {
-
-            ClickHandler handler2 = event -> {
-                event.stopPropagation();
-                handler.onClick(event);
-            };
-            return addDomHandler(handler2, ClickEvent.getType());
-        }
-
-        /**
-         * @see com.google.gwt.event.dom.client.HasMouseOutHandlers#addMouseOutHandler(com.google.gwt.event.dom.client.MouseOutHandler)
-         */
-        @Override
-        public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
-
-            return addDomHandler(handler, MouseOutEvent.getType());
-        }
-
-        /**
-         * @see com.google.gwt.event.dom.client.HasMouseOverHandlers#addMouseOverHandler(com.google.gwt.event.dom.client.MouseOverHandler)
-         */
-        @Override
-        public HandlerRegistration addMouseOverHandler(MouseOverHandler handler) {
-
-            return addDomHandler(handler, MouseOverEvent.getType());
-
-        }
-
-        /**
-         * Gets the associated container.
-         *
-         * @return the associated container
-         */
-        public CmsContainerPageContainer getContainer() {
-
-            return m_container;
-        }
-
-        /**
-         * Gets the height.
-         *
-         * @return the height
-         */
-        public int getHeight() {
-
-            return m_height;
-        }
-
-        /**
-         * Gets the index.
-         *
-         * @return the index
-         */
-        public int getIndex() {
-
-            return m_index;
-        }
-
-        /**
-         * Gets the left.
-         *
-         * @return the left
-         */
-        public int getLeft() {
-
-            return m_left;
-        }
-
-        /**
-         * Gets the top.
-         *
-         * @return the top
-         */
-        public int getTop() {
-
-            return m_top;
-        }
-
-        /**
-         * Gets the width.
-         *
-         * @return the width
-         */
-        public int getWidth() {
-
-            return m_width;
-        }
-
-        /**
-         * Checks if other placement button's position intersects this one's.
-         *
-         * @param other the other placement button
-         * @return true if the buttons intersect
-         */
-        public boolean intersects(PlacementButton other) {
-
-            return segmentIntersect(m_left, m_width, other.m_left, other.m_width)
-                && segmentIntersect(m_top, m_height, other.m_top, other.m_height);
-
-        }
-
-        /**
-         * Sets the container.
-         *
-         * @param container the new container
-         */
-        public void setContainer(CmsContainerPageContainer container) {
-
-            m_container = container;
-        }
-
-        /**
-         * Sets the left.
-         *
-         * @param left the new left
-         */
-        public void setLeft(int left) {
-
-            m_left = left;
-        }
-
-        /**
-         * Actually sets the position on the DOM element.
-         */
-        public void setPosition() {
-
-            getElement().getStyle().setLeft(m_left, Unit.PX);
-            getElement().getStyle().setTop(m_top, Unit.PX);
-        }
-
-        /**
-         * Sets the top.
-         *
-         * @param top the new top
-         */
-        public void setTop(int top) {
-
-            m_top = top;
-        }
-
-        /**
-         * @see com.google.gwt.user.client.ui.UIObject#toString()
-         */
-        public String toString() {
-
-            return getElement().getId() + ":(" + getLeft() + ", " + getTop() + ")";
-        }
     }
 
     /**
