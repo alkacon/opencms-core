@@ -1545,6 +1545,10 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         if (isNewId(clientId)) {
             // for new content elements dragged from the gallery menu, the given id contains the resource type name
             m_isNew = true;
+            if (draggable instanceof CmsContainerPageElementPanel) {
+                CmsContainerPageElementPanel containerElement = ((CmsContainerPageElementPanel)draggable);
+                containerElement.addStyleName(OC_PLACEMENT_SELECTED_ELEMENT);
+            }
             m_controller.getNewElement(clientId, callback);
         } else {
             String originContainer = CmsContainerElement.MENU_CONTAINER_ID;

@@ -325,7 +325,7 @@ body.oc-touch-only .oc-placement-button {
 	min-height: 50px;
 }
 
-.oc-placement-selected-element {
+.oc-placement-selected-element.oc-placement-selected-element.oc-placement-selected-element {
 	background-image: repeating-linear-gradient(135deg,transparent,transparent 10px,rgba(0,0,0,.1) 10px,rgba(0,0,0,.1) 20px) !important;
 }
 
