@@ -347,7 +347,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         }
 
         /** Single-element array holding the currently visible highlighting element. */
-        private CmsHighlightingBorder[] m_activeBorder = {null};
+        private CmsHighlightingBorder m_activeBorder;
 
         /** The list of active buttons. */
         private List<PlacementButton> m_buttons = new ArrayList<>();
@@ -485,16 +485,16 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         private void addHighlightingMouseHandlers(CmsContainerPageContainer container, PlacementButton button) {
 
             button.addMouseOverHandler(event -> {
-                if (m_activeBorder[0] != null) {
-                    m_activeBorder[0].getElement().getStyle().setVisibility(Visibility.HIDDEN);
+                if (m_activeBorder != null) {
+                    m_activeBorder.getElement().getStyle().setVisibility(Visibility.HIDDEN);
                 }
-                m_activeBorder[0] = container.getHighlighting();
-                m_activeBorder[0].getElement().getStyle().setVisibility(Visibility.VISIBLE);
+                m_activeBorder = container.getHighlighting();
+                m_activeBorder.getElement().getStyle().setVisibility(Visibility.VISIBLE);
             });
             button.addMouseOutHandler(event -> {
-                if (m_activeBorder[0] != null) {
-                    m_activeBorder[0].getElement().getStyle().setVisibility(Visibility.HIDDEN);
-                    m_activeBorder[0] = null;
+                if (m_activeBorder != null) {
+                    m_activeBorder.getElement().getStyle().setVisibility(Visibility.HIDDEN);
+                    m_activeBorder = null;
                 }
                 container.getHighlighting().getElement().getStyle().setVisibility(Visibility.HIDDEN);
             });
