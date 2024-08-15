@@ -193,6 +193,11 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 elemental2.dom.Element placeholder = placeholders.getAt(i);
                 placeholder.remove();
             }
+            NodeList<elemental2.dom.Element> selectedContainerElements = DomGlobal.document.querySelectorAll(
+                "." + OC_PLACEMENT_SELECTED_ELEMENT);
+            for (int i = 0; i < selectedContainerElements.length; i++) {
+                selectedContainerElements.getAt(i).classList.remove(OC_PLACEMENT_SELECTED_ELEMENT);
+            }
             RootPanel.get().removeStyleName(OC_PLACEMENT_MODE);
             m_pageHandler.setEditButtonsVisible(true);
             m_controller.getHandler().enableToolbarButtons();
@@ -834,7 +839,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
             return getElement().getId() + ":(" + getLeft() + ", " + getTop() + ")";
         }
-    };
+    }
 
     /**
      * Layer for displaying placement buttons, covering everything else on the page.
@@ -850,7 +855,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             return addDomHandler(handler, ClickEvent.getType());
         }
 
-    }
+    };
 
     /** The container highlighting offset. */
     public static final int HIGHLIGHTING_OFFSET = 4;
@@ -878,6 +883,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
     /** CSS class. */
     public static final String OC_PLACEMENT_RIGHT = "oc-placement-right";
+
+    /** CSS class. */
+    public static final String OC_PLACEMENT_SELECTED_ELEMENT = "oc-placement-selected-element";
 
     /** CSS class. */
     public static final String OC_PLACEMENT_UP = "oc-placement-up";
@@ -1501,7 +1509,9 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         } else {
             String originContainer = CmsContainerElement.MENU_CONTAINER_ID;
             if (draggable instanceof CmsContainerPageElementPanel) {
-                I_CmsDropContainer dropContainer = ((CmsContainerPageElementPanel)draggable).getParentTarget();
+                CmsContainerPageElementPanel containerElement = ((CmsContainerPageElementPanel)draggable);
+                containerElement.addStyleName(OC_PLACEMENT_SELECTED_ELEMENT);
+                I_CmsDropContainer dropContainer = containerElement.getParentTarget();
                 if (dropContainer instanceof CmsContainerPageContainer) {
                     String realOrigin = ((CmsContainerPageContainer)dropContainer).getContainerId();
                     if (realOrigin != null) {
