@@ -74,7 +74,7 @@ public class CmsDependencyIndexer extends CmsVfsIndexer {
                 // check all published resources if they match this indexer / source
                 CmsPublishedResource pubRes = i.next();
                 // VFS resources will always have a structure id
-                if (!pubRes.getStructureId().isNullUUID() && pubRes.isFile()) {
+                if (!pubRes.getStructureId().isNullUUID()) {
                     // use utility method from CmsProject to check if published resource is "inside" this index source
                     if (CmsProject.isInsideProject(source.getResourcesNames(), pubRes.getRootPath())) {
                         // the resource is "inside" this index source

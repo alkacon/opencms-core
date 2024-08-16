@@ -2551,7 +2551,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             setTimeout(Long.parseLong(value));
         } catch (Exception e) {
             LOG.error(
-                Messages.get().getBundle().key(Messages.LOG_PARSE_TIMEOUT_FAILED_2, value, Long.valueOf(DEFAULT_TIMEOUT)),
+                Messages.get().getBundle().key(
+                    Messages.LOG_PARSE_TIMEOUT_FAILED_2,
+                    value,
+                    Long.valueOf(DEFAULT_TIMEOUT)),
                 e);
             setTimeout(DEFAULT_TIMEOUT);
         }
@@ -2988,8 +2991,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
             List<CmsPublishedResource> updateResources = new ArrayList<CmsPublishedResource>();
             for (CmsPublishedResource res : publishedResources) {
-                if (res.isFolder() || res.getState().isUnchanged()) {
-                    // folders and unchanged resources don't need to be indexed after publish
+                if (res.getState().isUnchanged()) {
+                    // unchanged resources don't need to be indexed after publish
                     continue;
                 }
                 if (res.getState().isDeleted() || res.getState().isNew() || res.getState().isChanged()) {

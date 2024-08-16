@@ -308,6 +308,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_INDEXER_CREATION_FAILED_1 = "LOG_INDEXER_CREATION_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_INDEXING_DEFAULT_FILE_FOR_FOLDER_3 = "LOG_INDEXING_DEFAULT_FILE_FOR_FOLDER_3";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_INDEXING_TIMEOUT_1 = "LOG_INDEXING_TIMEOUT_1";
 
     /** Message constant for key in the resource bundle. */
@@ -437,6 +440,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_THREADS_FINISHED_0 = "LOG_THREADS_FINISHED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_UNABLE_TO_READ_DEFAULT_FILE_FOR_FOLDER_2 = "LOG_UNABLE_TO_READ_DEFAULT_FILE_FOR_FOLDER_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_UNABLE_TO_READ_PROPERTY_1 = "LOG_UNABLE_TO_READ_PROPERTY_1";

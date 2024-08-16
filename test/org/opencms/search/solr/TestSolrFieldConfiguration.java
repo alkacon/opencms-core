@@ -589,6 +589,24 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
                     break;
             }
         }
+        // The update is more a test for the CmsVfsIndexer, but it's mostly relevant here, so we put it here
+        CmsResource folderToAdjust = cms.readResource("/sites/default/containerpages");
+        cms.lockResource(folderToAdjust);
+        cms.writePropertyObjects(
+            folderToAdjust,
+            Collections.singletonList(
+                new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, "Adjusted description from folder", null)));
+        cms.unlockResource(folderToAdjust);
+        OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
+        String queryForChangedResource = "q=*:*&fq=path:\"/sites/default/containerpages/index.html\"&rows=1";
+        CmsSolrResultList changedResults = index.search(cms, queryForChangedResource);
+        assertEquals(1, changedResults.size());
+        CmsSearchResource defaultFile = changedResults.get(0);
+        checkIndexedListSearchFields(
+            defaultFile,
+            "Adjusted description from folder",
+            "Container pages keywords set via the sitemap editor");
     }
 
     /**

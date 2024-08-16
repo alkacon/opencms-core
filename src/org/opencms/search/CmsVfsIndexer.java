@@ -35,6 +35,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.report.I_CmsReport;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsUUID;
 
 import java.io.IOException;
@@ -263,12 +264,39 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                             e);
                     }
                 }
-
                 if (resource != null) {
                     if (!resourcesAlreadyUpdated.contains(resource.getRootPath())) {
                         // ensure resources are only indexed once per update
                         resourcesAlreadyUpdated.add(resource.getRootPath());
                         updateResource(writer, threadManager, resource);
+                    }
+                    if (resource.isFolder()) {
+                        try {
+                            CmsResource defaultFile = m_cms.readDefaultFile(
+                                resource,
+                                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+                            if ((defaultFile != null) && !resourcesAlreadyUpdated.contains(defaultFile.getRootPath())) {
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.warn(
+                                        Messages.get().getBundle().key(
+                                            Messages.LOG_INDEXING_DEFAULT_FILE_FOR_FOLDER_3,
+                                            defaultFile.getRootPath(),
+                                            res.getRootPath(),
+                                            m_index.getName()));
+                                }
+                                updateResource(writer, threadManager, defaultFile);
+                            }
+                        } catch (CmsSecurityException e) {
+                            if (LOG.isWarnEnabled()) {
+                                LOG.warn(
+                                    Messages.get().getBundle().key(
+                                        Messages.LOG_UNABLE_TO_READ_DEFAULT_FILE_FOR_FOLDER_2,
+                                        res.getRootPath(),
+                                        m_index.getName()),
+                                    e);
+                            }
+                        }
+
                     }
                 }
             }
