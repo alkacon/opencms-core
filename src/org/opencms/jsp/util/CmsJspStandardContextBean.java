@@ -1556,6 +1556,36 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Gets a lazy map which can be used to access element setting defaults for a specific formatter key and setting name.
+     *
+     * @return the lazy map
+     */
+    public Map<String, Map<String, CmsJspObjectValueWrapper>> getFormatterSettingDefault() {
+
+        return CmsCollectionsGenericWrapper.createLazyMap(input -> {
+            String formatterKey = (String)input;
+            I_CmsFormatterBean formatter = m_config.findFormatter(formatterKey);
+            if (formatter == null) {
+                return CmsCollectionsGenericWrapper.createLazyMap(input2 -> {
+                    return CmsJspObjectValueWrapper.NULL_VALUE_WRAPPER;
+                });
+            } else {
+                final Map<String, CmsXmlContentProperty> settingDefs = formatter.getSettings(m_config);
+                return CmsCollectionsGenericWrapper.createLazyMap(input2 -> {
+                    String settingName = (String)input2;
+                    CmsXmlContentProperty settingDef = settingDefs.get(settingName);
+                    if (settingDef == null) {
+                        return CmsJspObjectValueWrapper.NULL_VALUE_WRAPPER;
+                    } else {
+                        String settingDefault = settingDef.getDefault();
+                        return CmsJspObjectValueWrapper.createWrapper(m_cms, settingDefault);
+                    }
+                });
+            }
+        });
+    }
+
+    /**
      * Returns a lazy initialized Map which allows access to the dynamic function beans using the JSP EL.<p>
      *
      * When given a key, the returned map will look up the corresponding dynamic function bean in the module configuration.<p>
@@ -2250,6 +2280,7 @@ public final class CmsJspStandardContextBean {
      * @throws CmsException if something goes wrong
      */
     public CmsSchemaInfo getSchemaInfo(String typeOrXsd) throws CmsException {
+
         CmsXmlContentDefinition contentDef = null;
         if (OpenCms.getResourceManager().hasResourceType(typeOrXsd)) {
             contentDef = CmsXmlContentDefinition.getContentDefinitionForType(m_cms, typeOrXsd);
