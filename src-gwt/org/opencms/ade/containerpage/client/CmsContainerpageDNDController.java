@@ -93,12 +93,14 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasMouseOutHandlers;
 import com.google.gwt.event.dom.client.HasMouseOverHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -438,6 +440,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             for (CmsContainerPageContainer container : containerMap.values()) {
                 container.checkEmptyContainers();
             }
+            m_controller.setPreviewHandler(null);
         }
 
         /**
@@ -457,6 +460,21 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 m_buttonSize = PLACEMENT_BUTTON_SMALL;
             }
             initPlacementLayer();
+            m_controller.setPreviewHandler(event -> {
+                Event nativeEvent = Event.as(event.getNativeEvent());
+                if (event.getTypeInt() == Event.ONKEYDOWN) {
+                    int keyCode = nativeEvent.getKeyCode();
+                    if ((keyCode == KeyCodes.KEY_CTRL) || (keyCode == KeyCodes.KEY_SHIFT) || (keyCode == KeyCodes.KEY_ALT)) {
+                        // In a VM, when the user presses Ctrl+E, the keydown event for the Ctrl event may or may not wait to be fired until the E key is pressed, depending on the settings.
+                        // To get consistent behavior, we ignore keydown events with keycodes that are just modifier keys.
+                        return;
+                    } else {
+                        stopDrag(m_dndHandler);
+                    }
+                }
+
+            });
+
         }
 
         /**

@@ -918,6 +918,9 @@ public final class CmsContainerpageController {
     /** Handler for small elements. */
     private CmsSmallElementsHandler m_smallElementsHandler;
 
+    /** Alternative preview handler for events. */
+    private NativePreviewHandler m_previewHandler;
+
     /**
      * Constructor.<p>
      */
@@ -3823,6 +3826,15 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Sets an alternative event preview handler.
+     *
+     * @param handler the alternative preview handler to use
+     */
+    public void setPreviewHandler(NativePreviewHandler handler) {
+        m_previewHandler = handler;
+    }
+
+    /**
      * Method to determine whether a container element should be shown in the current template context.<p>
      *
      * @param elementData the element data
@@ -4202,6 +4214,10 @@ public final class CmsContainerpageController {
     * @param event the native event
     */
     protected void previewNativeEvent(NativePreviewEvent event) {
+        if (m_previewHandler != null) {
+            m_previewHandler.onPreviewNativeEvent(event);
+            return;
+        }
 
         Event nativeEvent = Event.as(event.getNativeEvent());
 
