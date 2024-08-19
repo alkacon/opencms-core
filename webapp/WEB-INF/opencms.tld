@@ -2529,7 +2529,7 @@
 
     <tag>
         <description><![CDATA[
-            <p>This tag can be used only inside <code>&lt;cms:display&gt;</code>. It specifies which formatter should be used to format a content of a special resource type.
+            <p>This tag can be used only inside <code>&lt;cms:display&gt;</code>. It specifies which formatter should be used to format a content of a special resource type, either using a formatter key, or the path of the formatter configuration file.
             </p>
             <p>Note that alternatively, the attribute <code>displayFormatters</code> of the tag <code>&lt;cms:display&gt;</code> can be used to specify these formatters.</p>
         ]]></description>
@@ -2547,11 +2547,29 @@
         <attribute>
             <description><![CDATA[
                 The path to the formatter configuration of the formatter that should be used.
+                <br><em>Deprecated.</em> Use the formatter attribute.
             ]]></description>
             <name>path</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description><![CDATA[
+                The key of the formatter that should be used. 
+            ]]></description>
+            <name>formatterKey</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+        <description><![CDATA[
+                The path to the formatter configuration of the formatter that should be used.
+            ]]></description>
+            <name>formatter</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        
     </tag>
 
     <tag>

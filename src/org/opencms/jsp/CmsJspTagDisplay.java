@@ -362,6 +362,16 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
     }
 
     /**
+     * Adds a display formatter key for a type.
+     *
+     * @param type the resource type
+     * @param key the display formatter key
+     */
+    public void addDisplayFormatterKey(String type, String key) {
+        m_displayFormatterIds.put(type, key);
+    }
+
+    /**
      * @see org.opencms.jsp.I_CmsJspTagParamParent#addParameter(java.lang.String, java.lang.String)
      */
     public void addParameter(String name, String value) {

@@ -42,11 +42,14 @@ public class CmsJspTagDisplayFormatter extends TagSupport {
     /** The serial version id. */
     private static final long serialVersionUID = -7268191204617852330L;
 
-    /** The resource type name. */
-    private String m_type;
+    /** The formatter key. */
+    private String m_key;
 
     /** The path to the formatter configuration file. */
     private String m_path;
+
+    /** The resource type name. */
+    private String m_type;
 
     /**
      * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
@@ -56,16 +59,40 @@ public class CmsJspTagDisplayFormatter extends TagSupport {
 
         Tag t = findAncestorWithClass(this, CmsJspTagDisplay.class);
         if (t == null) {
-            throw new JspTagException(Messages.get().getBundle(pageContext.getRequest().getLocale()).key(
-                Messages.ERR_PARENTLESS_TAG_1,
-                new Object[] {"displayFormatter"}));
+            throw new JspTagException(
+                Messages.get().getBundle(pageContext.getRequest().getLocale()).key(
+                    Messages.ERR_PARENTLESS_TAG_1,
+                    new Object[] {"displayFormatter"}));
         }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_type) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_path)) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_type) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_key)) {
+            ((CmsJspTagDisplay)t).addDisplayFormatterKey(m_type, m_key);
+        } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_type)
+            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_path)) {
             // only act if type and path are set
             ((CmsJspTagDisplay)t).addDisplayFormatter(m_type, m_path);
         }
 
         return EVAL_PAGE;
+    }
+
+    /**
+     * Sets the path to the formatter configuration file.<p>
+     *
+     * @param path the path to set
+     */
+    public void setFormatter(String path) {
+
+        setPath(path);
+    }
+
+    /**
+     * Sets the key of the formatter to use.
+     *
+     * @param key the formatter key
+     */
+    public void setFormatterKey(String key) {
+
+        m_key = key;
     }
 
     /**
