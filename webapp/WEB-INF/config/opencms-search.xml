@@ -261,7 +261,16 @@
             <fieldconfiguration class="org.opencms.search.solr.CmsSolrFieldConfiguration">
                 <name>solr_fields</name>
                 <description>The Solr search index field configuration.</description>
-                <fields />
+                <fields>
+                    <!--
+                        We map the property search.boost to the search field search.boost_mvs.
+                        The Mercury template uses this field to boost documents in the internal website search.
+                        Currently values 'keywords' and 'always' are supported in the Mercury template.
+                    -->
+                    <field name="search.boost_mvs">
+                        <mapping type="property">search.boost</mapping>
+                    </field>
+                </fields>
             </fieldconfiguration>
         </fieldconfigurations>
     </search>
