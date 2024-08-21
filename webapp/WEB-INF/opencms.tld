@@ -2319,6 +2319,16 @@
         </attribute>
         <attribute>
             <description><![CDATA[
+            	A container type used to select a formatter.
+            	<p>When a content is to be displayed, and no formatter has been specified for its type, then if this attribute is set, an active formatter for its resource type which matches the given container type 
+            	will be selected (formatters with higher rank will be prioritized).</p>
+            ]]></description>
+            <name>containerType</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
                 <p>If set to <code>true</code>, the "Edit" button is added to the edit buttons.</p>
                 <p><em>Default: <code>false</code></em></p>
             ]]></description>
