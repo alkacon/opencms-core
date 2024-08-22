@@ -1019,16 +1019,16 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         String propertyName) {
 
         Locale l = CmsLocaleManager.getLocale(locale);
-        String descriptionField = getLocaleExtendedName(fieldName, locale);
+        String localeExtendedFieldName = getLocaleExtendedName(fieldName, locale);
 
-        if (!document.getFieldNames().contains(fieldName)) {
+        if (!document.getFieldNames().contains(localeExtendedFieldName)) {
             String value = CmsVfsUtil.readPropertyValueWithFolderFallbackForDefaultFiles(
                 cms,
                 resource,
                 propertyName,
                 l);
             if (value != null) {
-                document.addSearchField(new CmsSolrField(descriptionField, null, null, null), value);
+                document.addSearchField(new CmsSolrField(localeExtendedFieldName, null, null, null), value);
             }
         }
 
