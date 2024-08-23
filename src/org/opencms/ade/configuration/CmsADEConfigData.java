@@ -2011,8 +2011,18 @@ public class CmsADEConfigData {
 
         List<CmsDetailPageInfo> result = new ArrayList<CmsDetailPageInfo>();
         Map<String, List<CmsDetailPageInfo>> resultDetailPageMap = Maps.newHashMap();
-        resultDetailPageMap.putAll(getDetailPagesMap(parentDetailPageCopies));
-        resultDetailPageMap.putAll(getDetailPagesMap(ownDetailPages));
+        Map<String, List<CmsDetailPageInfo>> parentPagesGroupedByType = getDetailPagesMap(parentDetailPageCopies);
+        Map<String, List<CmsDetailPageInfo>> childPagesGroupedByType = getDetailPagesMap(ownDetailPages);
+        Set<String> allTypes = new HashSet<>();
+        allTypes.addAll(parentPagesGroupedByType.keySet());
+        allTypes.addAll(childPagesGroupedByType.keySet());
+        for (String type : allTypes) {
+
+            List<CmsDetailPageInfo> parentPages = parentPagesGroupedByType.get(type);
+            List<CmsDetailPageInfo> childPages = childPagesGroupedByType.get(type);
+            List<CmsDetailPageInfo> merged = mergeDetailPagesForType(parentPages, childPages);
+            resultDetailPageMap.put(type, merged);
+        }
         result = new ArrayList<CmsDetailPageInfo>();
         for (List<CmsDetailPageInfo> pages : resultDetailPageMap.values()) {
             result.addAll(pages);
@@ -2158,6 +2168,42 @@ public class CmsADEConfigData {
             m_formattersByKey = formattersByKey;
         }
         return m_formattersByKey;
+    }
+
+    /**
+     * Merges detail pages for a specific resource type from a parent and child sitemap.
+     *
+     * @param parentPages the detail pages from the parent sitemap
+     * @param childPages the detail pages from the child sitemap
+     * @return the merged detail pages
+     */
+    private List<CmsDetailPageInfo> mergeDetailPagesForType(
+        List<CmsDetailPageInfo> parentPages,
+        List<CmsDetailPageInfo> childPages) {
+
+        List<CmsDetailPageInfo> merged = null;
+        if ((parentPages != null) && (childPages != null)) {
+            // the only nontrivial case. If the child detail pages contain one with an unqualified type, they completely override the parent detail pages.
+            // otherwise they only override the parent detail pages for each matching qualifier.
+
+            if (childPages.stream().anyMatch(page -> page.getQualifier() == null)) {
+                merged = childPages;
+            } else {
+                Map<String, List<CmsDetailPageInfo>> pagesGroupedByQualifiedType = parentPages.stream().collect(
+                    Collectors.groupingBy(page -> page.getQualifiedType()));
+                pagesGroupedByQualifiedType.putAll(
+                    childPages.stream().collect(Collectors.groupingBy(page -> page.getQualifiedType())));
+                merged = pagesGroupedByQualifiedType.entrySet().stream().flatMap(
+                    entry -> entry.getValue().stream()).collect(Collectors.toList());
+            }
+        } else if (parentPages != null) {
+            merged = parentPages;
+        } else if (childPages != null) {
+            merged = childPages;
+        } else {
+            merged = new ArrayList<>();
+        }
+        return merged;
     }
 
 }
