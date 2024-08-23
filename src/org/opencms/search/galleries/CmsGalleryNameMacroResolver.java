@@ -139,6 +139,9 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
     public CmsGalleryNameMacroResolver(CmsObject cms, A_CmsXmlDocument content, Locale locale) {
 
         setCmsObject(cms);
+        if (null == locale) {
+            locale = OpenCms.getLocaleManager().getBestAvailableLocaleForXmlContent(cms, content.getFile(), content);
+        }
         CmsMultiMessages message = new CmsMultiMessages(locale);
         message.addMessages(OpenCms.getWorkplaceManager().getMessages(locale));
         message.addMessages(content.getContentDefinition().getContentHandler().getMessages(locale));
