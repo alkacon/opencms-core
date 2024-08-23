@@ -31,11 +31,6 @@
 
 package org.opencms.search.solr;
 
-import org.apache.commons.logging.Log;
-import org.apache.solr.common.SolrDocument;
-import org.apache.solr.common.SolrException;
-import org.apache.solr.common.SolrInputDocument;
-import org.apache.solr.schema.*;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
@@ -50,7 +45,21 @@ import org.opencms.util.CmsUUID;
 
 import java.nio.ByteBuffer;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.commons.logging.Log;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrException;
+import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.schema.DatePointField;
+import org.apache.solr.schema.FieldType;
+import org.apache.solr.schema.IndexSchema;
+import org.apache.solr.schema.SchemaField;
 
 /**
  * A search document implementation for Solr indexes.<p>
@@ -244,11 +253,13 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
             try {
                 List<String> splitedValues = new ArrayList<String>();
                 boolean multi = false;
+                boolean overrideValue = false;
 
                 try {
                     SchemaField f = schema.getField(fieldName);
                     if ((f != null) && (!field.getName().startsWith(CmsSearchField.FIELD_CONTENT))) {
                         multi = f.multiValued();
+                        overrideValue = !multi;
                     }
                 } catch (@SuppressWarnings("unused") SolrException e) {
                     LOG.warn(Messages.get().getBundle().key(Messages.LOG_SOLR_FIELD_NOT_FOUND_1, field.toString()));
@@ -264,8 +275,9 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
                             FieldType fieldType = schema.getFieldType(fieldName);
                             if (fieldType instanceof DatePointField) {
                                 //sometime,the val is already Iso8601 formated
-                                if(!val.contains("Z"))
+                                if (!val.contains("Z")) {
                                     val = CmsSearchUtil.getDateAsIso8601(Long.valueOf(val).longValue());
+                                }
                             }
                         } catch (SolrException e) {
                             LOG.debug(e.getMessage(), e);
@@ -275,7 +287,11 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
                             // TODO: make the length and the area configurable
                             val = CmsStringUtil.trimToSize(val, 1000, 50, "");
                         }
-                        m_doc.addField(fieldName, val);
+                        if (overrideValue) {
+                            m_doc.setField(fieldName, val);
+                        } else {
+                            m_doc.addField(fieldName, val);
+                        }
                     }
                 }
             } catch (SolrException e) {
@@ -426,7 +442,6 @@ public class CmsSolrDocument implements I_CmsSearchDocument {
 
         return getFieldValueAsString(CmsSearchField.FIELD_TYPE);
     }
-
 
     /**
      * Sets the id of this document.<p>
