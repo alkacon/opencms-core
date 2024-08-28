@@ -75,7 +75,7 @@ public final class CmsCoreProvider extends CmsCoreData {
     public static final I_CmsAutoBeanFactory AUTO_BEAN_FACTORY = GWT.create(I_CmsAutoBeanFactory.class);
 
     /** The media query string to detect touch only devices. */
-    public static final String TOUCH_ONLY_RULE  = "(hover: none) or (pointer: coarse)";
+    public static final String TOUCH_ONLY_RULE = "(hover: none) or (pointer: coarse)";
 
     /** Media query do detect device with no hover capability. */
     public static final CmsMediaQuery TOUCH_ONLY = CmsMediaQuery.parse(TOUCH_ONLY_RULE);
@@ -411,6 +411,34 @@ public final class CmsCoreProvider extends CmsCoreData {
 
         String typeName = null;
         typeName = getIconMapping().get(file.getFileSuffix().toLowerCase());
+        if (typeName == null) {
+            typeName = getIconMapping().get("");
+        }
+        return typeName;
+    }
+
+    /**
+     * Gets the resource type icon for the given path.
+     *
+     * @param path a path
+     * @return the resource type icon
+     */
+    public String getResourceTypeIcon(String path) {
+
+        String typeName = null;
+        String name = null;
+        int slashPos = path.lastIndexOf("/");
+        if (slashPos >= 0) {
+            name = path.substring(slashPos + 1);
+        } else {
+            name = path;
+        }
+        int dotPos = name.lastIndexOf(".");
+        String ext = "";
+        if (dotPos >= 0) {
+            ext = name.substring(dotPos).toLowerCase();
+        }
+        typeName = getIconMapping().get(ext);
         if (typeName == null) {
             typeName = getIconMapping().get("");
         }

@@ -313,6 +313,7 @@
         <upload-restriction class="org.opencms.ade.upload.CmsDefaultUploadRestriction">
             <param name="/">enabled:true|types:*</param>
         </upload-restriction>
+        <virus-scanner />
         <sitemap-config-edit-role>DEVELOPER</sitemap-config-edit-role>
         <allow-element-author-to-work-in-galleries>false</allow-element-author-to-work-in-galleries>
     </workplace>

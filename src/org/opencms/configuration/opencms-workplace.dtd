@@ -47,6 +47,7 @@
 	additional-log-folders?,
 	use-formatter-keys-for-new-sites?,
 	upload-restriction?,
+	virus-scanner?,
 	sitemap-config-edit-role?,
 	allow-element-author-to-work-in-galleries?
 	)>
@@ -895,6 +896,9 @@
 
 <!ELEMENT upload-restriction (param*)>
 <!ATTLIST upload-restriction class CDATA #REQUIRED>
+
+<!ELEMENT virus-scanner (param*)>
+<!ATTLIST virus-scanner class CDATA #IMPLIED enabled CDATA #IMPLIED>
 
 <!-- 
 # Element containing the role necessary to edit sitemap configurations

@@ -45,6 +45,9 @@ public interface I_CmsUploadConstants extends IsSerializable {
     /** The request attribute name for the dialog mode. */
     String ATTR_DIALOG_MODE = "dialogMode";
 
+    /** The field name for the virus scanner results. */
+    String ATTR_VIRUS_WARNINGS = "upload_virus_warnings";
+
     /** The explorer URI for the back link. */
     String EXPLORER_URI = "/system/workplace/views/explorer/explorer_files.jsp?mode=explorerview";
 
@@ -89,6 +92,9 @@ public interface I_CmsUploadConstants extends IsSerializable {
 
     /** Upload JSP URI. */
     String UPLOAD_JSP_URI = "/system/workplace/commons/upload.jsp";
+
+    /** The encoded file name field name suffix. */
+    String UPLOAD_ORIGINAL_FILENAME_ENCODED_SUFFIX = "_original_filename_encoded";
 
     /** The name of the form field that stores the target folder for the upload. */
     String UPLOAD_TARGET_FOLDER_FIELD_NAME = "upload_target_folder";

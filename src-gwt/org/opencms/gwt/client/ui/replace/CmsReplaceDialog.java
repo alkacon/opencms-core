@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.client.ui.replace;
 
+import org.opencms.ade.upload.client.ui.CmsVirusReport;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.Messages;
@@ -55,6 +56,8 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -220,9 +223,24 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
                 m_contentLength = requestSize;
             }
             if (success) {
-                m_mainPanel.displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_FINISHING_0), false);
                 m_progressInfo.finish();
-                closeOnSuccess();
+                m_mainPanel.displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_FINISHING_0), false);
+                Map<String, List<String>> viruses = CmsVirusReport.getVirusWarnings(jsonObject);
+                if (viruses.isEmpty()) {
+                    closeOnSuccess();
+                } else {
+                    if (m_handlerReg != null) {
+                        m_handlerReg.removeHandler();
+                    }
+                    CmsPopup popup = CmsVirusReport.createPopup(viruses, () -> {
+                        // do nothing
+                    });
+                    if (m_closeHandler != null) {
+                        popup.addCloseHandler(m_closeHandler);
+                    }
+                    hide();
+                    popup.center();
+                }
             } else {
                 String message = jsonObject.get(I_CmsUploadConstants.KEY_MESSAGE).isString().stringValue();
                 String stacktrace = jsonObject.get(I_CmsUploadConstants.KEY_STACKTRACE).isString().stringValue();

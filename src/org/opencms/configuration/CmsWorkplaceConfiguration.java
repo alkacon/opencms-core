@@ -29,6 +29,7 @@ package org.opencms.configuration;
 
 import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementDeleteMode;
 import org.opencms.ade.upload.I_CmsUploadRestriction;
+import org.opencms.ade.upload.I_CmsVirusScanner;
 import org.opencms.configuration.preferences.I_CmsPreference;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.file.types.CmsResourceTypeSubsitemapContentFolder;
@@ -564,6 +565,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The node name of the user lastmodified node. */
     public static final String N_USERLASTMODIFIED = "show-userlastmodified";
 
+    /** The node name of the virus-scanner node. */
+    public static final String N_VIRUS_SCANNER = "virus-scanner";
+
     /** The subname of the rfsfilesettings/windowSize node. */
     public static final String N_WINDOWSIZE = "windowSize";
 
@@ -1039,6 +1043,39 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             }
         });
 
+        digester.addRule("*/" + N_WORKPLACE + "/" + N_VIRUS_SCANNER, new Rule() {
+
+            private boolean m_enabled;
+
+            @Override
+            public void begin(String namespace, String name, Attributes attributes) throws Exception {
+
+                String className = attributes.getValue(A_CLASS);
+                m_enabled = false;
+                if (className != null) {
+                    m_enabled = Boolean.parseBoolean(attributes.getValue(A_ENABLED));
+                    Class<? extends I_CmsVirusScanner> cls = Class.forName(
+                        className,
+                        false,
+                        getClass().getClassLoader()).asSubclass(I_CmsVirusScanner.class);
+                    digester.push(cls.newInstance());
+                }
+            }
+
+            @Override
+            public void end(String namespace, String name) throws Exception {
+
+                if (digester.peek() instanceof I_CmsVirusScanner) { // there may be no virus scanner on the stack if the class name was empty or invalid
+                    I_CmsVirusScanner scanner = (I_CmsVirusScanner)(digester.pop());
+                    scanner.initConfiguration();
+                    CmsWorkplaceManager wpMan = ((CmsWorkplaceManager)digester.peek());
+                    wpMan.setVirusScanner(scanner);
+                    wpMan.setVirusScannerEnabled(m_enabled);
+                }
+            }
+
+        });
+
         // add explorer type rules
         addExplorerTypeXmlRules(digester);
         addDefaultAccessControlRules(digester);
@@ -1391,6 +1428,16 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         Element uploadRestrictionElem = workplaceElement.addElement(N_UPLOAD_RESTRICTION);
         uploadRestrictionElem.addAttribute(A_CLASS, restriction.getClass().getName());
         restriction.getConfiguration().appendToXml(uploadRestrictionElem);
+
+        I_CmsVirusScanner virusScanner = m_workplaceManager.getVirusScanner();
+        Element virusScannerElem = workplaceElement.addElement(N_VIRUS_SCANNER);
+        boolean enabled = false;
+        if (virusScanner != null) {
+            virusScannerElem.addAttribute(A_CLASS, virusScanner.getClass().getName());
+            enabled = m_workplaceManager.isVirusScannerEnabled();
+            virusScanner.getConfiguration().appendToXml(virusScannerElem);
+        }
+        virusScannerElem.addAttribute(A_ENABLED, "" + enabled);
 
         String sitemapConfigEditRole = m_workplaceManager.getSitemapConfigEditRole();
         if (sitemapConfigEditRole != null) {

@@ -347,6 +347,10 @@
 		<upload-restriction class="org.opencms.ade.upload.CmsDefaultUploadRestriction">
             <param name="/">enabled:true|types:pdf,doc,png,jpg</param>
         </upload-restriction>
+        <virus-scanner class="org.opencms.configuration.CmsDummyVirusScanner" enabled="true">
+        	<param name="key1">value1</param>
+        	<param name="key2">value2</param>
+        </virus-scanner>
         <sitemap-config-edit-role>DEVELOPER</sitemap-config-edit-role>
         <allow-element-author-to-work-in-galleries>false</allow-element-author-to-work-in-galleries>
 	</workplace>

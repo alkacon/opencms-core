@@ -58,7 +58,10 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -71,6 +74,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase.FileSizeLimitExceededException;
 import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
@@ -78,6 +83,8 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.HashMultimap;
 
 /**
  * Bean to be used in JSP scriptlet code that provides
@@ -98,6 +105,9 @@ public class CmsUploadBean extends CmsJspBean {
 
     /** A static map of all listeners. */
     private static Map<CmsUUID, CmsUploadListener> m_listeners = new HashMap<CmsUUID, CmsUploadListener>();
+
+    /** The virus scanner instance to use for uploads. */
+    private I_CmsVirusScanner m_scanner;
 
     /** The gwt message bundle. */
     private CmsMessages m_bundle = org.opencms.ade.upload.Messages.get().getBundle();
@@ -125,6 +135,9 @@ public class CmsUploadBean extends CmsJspBean {
 
     private CmsUploadRestrictionInfo m_uploadRestrictionInfo;
 
+    /** The viruses found while processing the uploads, with the file names as keys. */ 
+    private HashMultimap<String, String> m_viruses = HashMultimap.create();
+
     /**
      * Constructor, with parameters.<p>
      *
@@ -144,6 +157,9 @@ public class CmsUploadBean extends CmsJspBean {
         m_rootCms.getRequestContext().setSiteRoot("");
         m_uploadRestrictionInfo = OpenCms.getWorkplaceManager().getUploadRestriction().getUploadRestrictionInfo(
             m_rootCms);
+        if (OpenCms.getWorkplaceManager().isVirusScannerEnabled()) {
+            m_scanner = OpenCms.getWorkplaceManager().getVirusScanner();
+        }
     }
 
     /**
@@ -261,6 +277,9 @@ public class CmsUploadBean extends CmsJspBean {
         // get the target folder
         String targetFolder = getTargetFolder(cms);
         m_uploadHook = OpenCms.getWorkplaceManager().getUploadHook(cms, targetFolder);
+        if (m_scanner != null) {
+            m_scanner.test();
+        }
 
         List<String> filesToUnzip = getFilesToUnzip();
 
@@ -274,25 +293,58 @@ public class CmsUploadBean extends CmsJspBean {
                 // determine the new resource name
                 String fileName = m_parameterMap.get(
                     fileItem.getFieldName() + I_CmsUploadConstants.UPLOAD_FILENAME_ENCODED_SUFFIX)[0];
-                fileName = URLDecoder.decode(fileName, "UTF-8");
+                String originalFileName = m_parameterMap.get(
+                    fileItem.getFieldName() + I_CmsUploadConstants.UPLOAD_ORIGINAL_FILENAME_ENCODED_SUFFIX)[0];
+                List<String> viruses = scan(originalFileName, content);
 
-                if (filesToUnzip.contains(CmsResource.getName(fileName.replace('\\', '/')))) {
-                    // import the zip
-                    CmsImportFolder importZip = new CmsImportFolder();
-                    try {
-                        importZip.importZip(content, targetFolder, cms, false);
-                    } finally {
-                        // get the created resource names
-                        for (CmsResource importedResource : importZip.getImportedResources()) {
+                fileName = URLDecoder.decode(fileName, "UTF-8");
+                originalFileName = URLDecoder.decode(originalFileName, "UTF-8");
+                if (viruses.size() > 0) {
+                    LOG.info("Found viruses in uploaded file " + originalFileName + ": " + viruses);
+                    m_viruses.putAll(originalFileName, viruses);
+                } else {
+                    if (filesToUnzip.contains(CmsResource.getName(fileName.replace('\\', '/')))) {
+
+                        // scan all contents of ZIP before creating anything in the VFS
+                        boolean foundVirus = false;
+                        try {
+                            ZipFile zip = ZipFile.builder().setByteArray(content).get();
+                            for (ZipArchiveEntry entry : (Iterable<ZipArchiveEntry>)() -> zip.getEntries().asIterator()) {
+                                if (entry.isDirectory() || entry.isUnixSymlink()) {
+                                    continue;
+                                }
+                                viruses = scan(originalFileName + " >> " + entry.getName(), zip, entry);
+                                if (viruses.size() > 0) {
+                                    LOG.info("Found viruses in uploaded file " + originalFileName + ": " + viruses);
+                                    foundVirus = true;
+                                    m_viruses.putAll(originalFileName, viruses);
+                                    break;
+                                }
+                            }
+                        } catch (IOException e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                        if (foundVirus) {
+                            continue;
+                        }
+
+                        // import the zip
+                        CmsImportFolder importZip = new CmsImportFolder();
+                        try {
+                            importZip.importZip(content, targetFolder, cms, false);
+                        } finally {
+                            // get the created resource names
+                            for (CmsResource importedResource : importZip.getImportedResources()) {
+                                m_resourcesCreated.put(importedResource.getStructureId(), importedResource.getName());
+                            }
+                        }
+                    } else {
+                        // create the resource
+                        CmsResource importedResource = createSingleResource(cms, fileName, targetFolder, content);
+                        if (importedResource != null) {
+                            // add the name of the created resource to the list of successful created resources
                             m_resourcesCreated.put(importedResource.getStructureId(), importedResource.getName());
                         }
-                    }
-                } else {
-                    // create the resource
-                    CmsResource importedResource = createSingleResource(cms, fileName, targetFolder, content);
-                    if (importedResource != null) {
-                        // add the name of the created resource to the list of successful created resources
-                        m_resourcesCreated.put(importedResource.getStructureId(), importedResource.getName());
                     }
                 }
 
@@ -517,6 +569,14 @@ public class CmsUploadBean extends CmsJspBean {
             result.put(I_CmsUploadConstants.KEY_UPLOADED_FILES, new JSONArray(m_resourcesCreated.keySet()));
 
             result.put(I_CmsUploadConstants.KEY_UPLOADED_FILE_NAMES, new JSONArray(m_resourcesCreated.values()));
+
+            JSONObject virusWarnings = new JSONObject();
+            for (String filename : m_viruses.keys()) {
+                JSONArray viruses = new JSONArray(new ArrayList<>(m_viruses.get(filename)));
+                virusWarnings.put(filename, viruses);
+            }
+            result.put(I_CmsUploadConstants.ATTR_VIRUS_WARNINGS, virusWarnings);
+
             if (m_uploadHook != null) {
                 result.put(I_CmsUploadConstants.KEY_UPLOAD_HOOK, m_uploadHook);
             }
@@ -737,4 +797,52 @@ public class CmsUploadBean extends CmsJspBean {
         getRequest().getSession().removeAttribute(SESSION_ATTRIBUTE_LISTENER_ID);
         m_listeners.remove(listenerId);
     }
+
+    /**
+     * Scans a byte buffer for viruses if possible.
+     * @param data the file data
+     * @return the list of detected viruses
+     */
+    private List<String> scan(String context, byte[] data) {
+
+        if (m_scanner != null) {
+            long t1 = System.currentTimeMillis();
+            try (InputStream stream = new ByteArrayInputStream(data)) {
+                return m_scanner.scan(stream);
+            } catch (IOException e) {
+                // shouldn't happen
+                return Collections.emptyList();
+            } finally {
+                long t2 = System.currentTimeMillis();
+                LOG.debug("Scanning " + context + " took " + (t2 - t1) + "ms");
+            }
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    /**
+     * Scans a zip file entry for viruses if possible.
+     * @param zip the zip file
+     * @param entry the entry
+     * @return the list of detected viruses
+     */
+    private List<String> scan(String context, ZipFile zip, ZipArchiveEntry entry) {
+
+        if (m_scanner != null) {
+            long t1 = System.currentTimeMillis();
+            try (InputStream stream = zip.getInputStream(entry)) {
+                return m_scanner.scan(stream);
+            } catch (IOException e) {
+                // shouldn't happen, Zip file is in memory
+                return Collections.emptyList();
+            } finally {
+                long t2 = System.currentTimeMillis();
+                LOG.debug("Scanning " + context + " took " + (t2 - t1) + "ms");
+            }
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
 }

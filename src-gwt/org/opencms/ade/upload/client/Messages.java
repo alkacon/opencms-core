@@ -117,6 +117,12 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_UNZIP_FILE_0 = "GUI_UPLOAD_UNZIP_FILE_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_VIRUSES_FOUND_TITLE_0 = "GUI_UPLOAD_VIRUSES_FOUND_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_VIRUSES_FOUND_WARNING_0 = "GUI_UPLOAD_VIRUSES_FOUND_WARNING_0";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.upload.clientmessages";
 

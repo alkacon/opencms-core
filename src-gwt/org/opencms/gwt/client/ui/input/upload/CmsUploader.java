@@ -27,11 +27,9 @@
 
 package org.opencms.gwt.client.ui.input.upload;
 
-import org.opencms.gwt.client.ui.input.upload.impl.CmsUploaderDefault;
+import org.opencms.gwt.client.ui.input.upload.impl.CmsUploaderFormData;
 
 import java.util.List;
-
-import com.google.gwt.core.client.GWT;
 
 /**
  * File uploader utility class. Takes care of the browser specifics when uploading files asynchronously.<p>
@@ -46,7 +44,7 @@ public class CmsUploader implements I_CmsUploader {
      */
     public CmsUploader() {
 
-        m_impl = GWT.create(CmsUploaderDefault.class);
+        m_impl = new CmsUploaderFormData();
     }
 
     /**

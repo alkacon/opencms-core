@@ -65,10 +65,6 @@
 	<replace-with class="org.opencms.ade.upload.client.ui.CmsUploadDialogFormDataImpl">
 		<when-type-is class="org.opencms.ade.upload.client.ui.CmsUploadDialogImpl" />
 	</replace-with>
-	
-	<replace-with class="org.opencms.gwt.client.ui.input.upload.impl.CmsUploaderFormData">
-		<when-type-is class="org.opencms.gwt.client.ui.input.upload.impl.CmsUploaderDefault" />
-	</replace-with>
 
     <replace-with class="org.opencms.gwt.client.ui.CmsScrollPanelImpl">
     	<when-type-assignable class="org.opencms.gwt.client.ui.CmsScrollPanel"/>

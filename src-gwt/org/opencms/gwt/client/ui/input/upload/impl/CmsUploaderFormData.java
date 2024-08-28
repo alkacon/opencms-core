@@ -113,6 +113,10 @@ public class CmsUploaderFormData implements I_CmsUploader {
                             fieldName
                                     + @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_FILENAME_ENCODED_SUFFIX,
                             encodeURI(fileName));
+
+
+           data.append(fieldName + @org.opencms.gwt.shared.I_CmsUploadConstants::UPLOAD_ORIGINAL_FILENAME_ENCODED_SUFFIX, file.name || file.fileName);
+
         }
         data
                 .append(
