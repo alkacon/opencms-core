@@ -25,17 +25,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ade.upload.client.ui;
+package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.ui.CmsFieldSet;
-import org.opencms.gwt.client.ui.CmsList;
-import org.opencms.gwt.client.ui.CmsListItem;
-import org.opencms.gwt.client.ui.CmsListItemWidget;
-import org.opencms.gwt.client.ui.CmsMessageWidget;
-import org.opencms.gwt.client.ui.CmsPopup;
-import org.opencms.gwt.client.ui.CmsPushButton;
-import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.I_CmsUploadConstants;
 
@@ -92,8 +84,8 @@ public class CmsVirusReport extends Composite {
         m_fieldset.add(scroll);
         scroll.add(list);
         m_message.setMessageText(
-            org.opencms.ade.upload.client.Messages.get().key(
-                org.opencms.ade.upload.client.Messages.GUI_UPLOAD_VIRUSES_FOUND_WARNING_0));
+            org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_UPLOAD_VIRUSES_FOUND_WARNING_0));
 
         for (Map.Entry<String, List<String>> entry : viruses.entrySet()) {
             String commaSeparatedViruses = Joiner.on(", ").join(entry.getValue());
@@ -118,8 +110,8 @@ public class CmsVirusReport extends Composite {
         popup.setGlassEnabled(true);
         popup.setMainContent(new CmsVirusReport(viruses));
         popup.setCaption(
-            org.opencms.ade.upload.client.Messages.get().key(
-                org.opencms.ade.upload.client.Messages.GUI_UPLOAD_VIRUSES_FOUND_TITLE_0));
+            org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_UPLOAD_VIRUSES_FOUND_TITLE_0));
         CmsPushButton ok = new CmsPushButton();
         ok.setText(org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_OK_0));
         ok.addClickHandler(event -> {
