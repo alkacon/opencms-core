@@ -561,9 +561,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** Constant for the "parameters" appinfo element name. */
     public static final String APPINFO_PARAMETERS = "parameters";
 
-    /** version-transformation node name. */
-    public static final String APPINFO_VERSION_TRANSFORMATION = "versiontransformation";
-
     /** Constant for the "preview" appinfo element name. */
     public static final String APPINFO_PREVIEW = "preview";
 
@@ -649,6 +646,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** Constant for the "page" value of the appinfo attribute "addto". */
     public static final String APPINFO_VALUE_ADD_TO_PAGE = "page";
+
+    /** version-transformation node name. */
+    public static final String APPINFO_VERSION_TRANSFORMATION = "versiontransformation";
 
     /** Constant for the "visibilities" appinfo element name. */
     public static final String APPINFO_VISIBILITIES = "visibilities";
@@ -773,6 +773,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The set of allowed templates. */
     protected CmsDefaultSet<String> m_allowedTemplates = new CmsDefaultSet<String>();
 
+    /** The cached map of combined synchronization information. */
+    protected LinkedHashMap<String, SynchronizationMode> m_combinedSynchronizations;
+
     /** The configuration values for the element widgets (as defined in the annotations). */
     protected Map<String, String> m_configurationValues;
 
@@ -833,9 +836,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /** The configured settings for the formatters (as defined in the annotations). */
     protected Map<String, CmsXmlContentProperty> m_settings;
 
-    /** Path to XSL transform in VFS to use for version transformation. */
-    protected String m_versionTransformation;
-
     /** The configured locale synchronization elements. */
     protected LinkedHashMap<String, SynchronizationMode> m_synchronizations = new LinkedHashMap<>();
 
@@ -859,6 +859,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** The validation rules that cause a warning (as defined in the annotations). */
     protected Map<String, String> m_validationWarningRules;
+
+    /** Path to XSL transform in VFS to use for version transformation. */
+    protected String m_versionTransformation;
 
     /** Change handler configurations. */
     private List<CmsChangeHandlerConfig> m_changeHandlerConfigs = new ArrayList<>();
@@ -928,9 +931,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** The map of widget names by path. */
     private Map<String, String> m_widgetNames = new HashMap<>();
-
-    /** The cached map of combined synchronization information. */
-    protected LinkedHashMap<String, SynchronizationMode> m_combinedSynchronizations;
 
     /**
      * Creates a new instance of the default XML content handler.<p>
@@ -1819,6 +1819,25 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     public String getVersionTransformation() {
 
         return m_versionTransformation;
+    }
+
+    /**
+     * Returns the configured visibility parameter string for the given field if the content handler itself is the
+     * visibility handler, and null otherwise.
+     *
+     * @param field a field name
+     * @return the visibility parameter
+     */
+    public String getVisibilityConfigString(String field) {
+
+        VisibilityConfiguration visConfig = m_visibilityConfigurations.get(field);
+        if (visConfig == null) {
+            return null;
+        }
+        if (visConfig.getHandler() == this) {
+            return visConfig.getParams();
+        }
+        return null;
     }
 
     /**
@@ -4696,10 +4715,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         fieldMapping.setDefaultValue(element.attributeValue(APPINFO_ATTR_DEFAULT));
         return fieldMapping;
     }
+
     /**
-     * Gets the localized error message for a specific field. 
-     * @param cms the CMS context 
-     * @param element the field name 
+     * Gets the localized error message for a specific field.
+     * @param cms the CMS context
+     * @param element the field name
      */
     private String getErrorMessage(CmsObject cms, String element) {
 

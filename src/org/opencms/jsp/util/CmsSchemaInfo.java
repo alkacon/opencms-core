@@ -385,6 +385,20 @@ public class CmsSchemaInfo {
         }
 
         /**
+         * Gets the visibility configuration string for the field.
+         *
+         * @return the visibility configuration string
+         */
+        public String getVisibility() {
+
+            I_CmsXmlContentHandler handler = m_root.getContentDefinition().getContentHandler();
+            if (handler instanceof CmsDefaultXmlContentHandler) {
+                return ((CmsDefaultXmlContentHandler)handler).getVisibilityConfigString(m_path);
+            }
+            return null;
+        }
+
+        /**
          * Gets the widget.
          *
          * @return the widget
@@ -577,6 +591,15 @@ public class CmsSchemaInfo {
      */
     public class Tab implements I_CmsInfoWrapper {
 
+        /** The description. */
+        private String m_description;
+
+        /** The description key. */
+        private String m_descriptionKey;
+
+        /** The raw description string. */
+        private String m_descriptionRaw;
+
         /** The display name. */
         private String m_displayName;
 
@@ -585,15 +608,6 @@ public class CmsSchemaInfo {
 
         /** The raw display name string. */
         private String m_displayNameRaw;
-
-        /** The raw description string. */
-        private String m_descriptionRaw;
-
-        /** The description. */
-        private String m_description;
-
-        /** The description key. */
-        private String m_descriptionKey;
 
         /** The fields. */
         private List<Field> m_fields = new ArrayList<>();
