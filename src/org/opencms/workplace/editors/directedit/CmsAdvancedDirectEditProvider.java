@@ -186,7 +186,9 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
      */
     public String endDirectEditEnabled() {
 
-        return "<div class=\"" + CmsGwtConstants.CLASS_EDITABLE_END + "\"></div>\n";
+        String tag = CmsGwtConstants.CLASS_EDITABLE_END;
+
+        return "<" + tag + " class=\"" + CmsGwtConstants.CLASS_EDITABLE_END + "\"></" + tag + ">\n";
     }
 
     /**
@@ -304,13 +306,14 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         AutoBean<I_CmsContentLoadCollectorInfo> collectorInfoAutoBean = collectorInfoFactory.wrapCollectorInfo(info);
         String serializedCollectorInfo = AutoBeanCodex.encode(collectorInfoAutoBean).getPayload();
 
-        String marker = "<div class='"
+        String tag = CmsGwtConstants.CLASS_COLLECTOR_INFO;
+        String marker = "<"+tag+" class='"
             + CmsGwtConstants.CLASS_COLLECTOR_INFO
             + "' style='display: none !important;' "
             + CmsGwtConstants.ATTR_DATA_COLLECTOR
             + "='"
             + CmsEncoder.escapeXml(serializedCollectorInfo)
-            + "'></div>";
+            + "'></"+tag+">";
         print(context, marker);
     }
 
@@ -556,21 +559,27 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
 
         StringBuffer result = new StringBuffer(512);
         if (m_useIds) {
+            String tag = CmsGwtConstants.CLASS_EDITABLE;
             result.append(
-                "<div id=\""
+                "<"
+                    + tag
+                    + " id=\"" // use custom tag
                     + getRandomId()
                     + "\" class='"
                     + CmsGwtConstants.CLASS_EDITABLE
                     + "' "
                     + CmsGwtConstants.ATTR_DATA_EDITABLE
-                    + "='").append(editableData.toString()).append("'></div>\n");
+                    + "='").append(editableData.toString()).append("'></" + tag + ">\n");
         } else {
+            String tag = CmsGwtConstants.CLASS_EDITABLE;
             result.append(
-                "<div class='"
+                "<"
+                    + tag
+                    + " class='"
                     + CmsGwtConstants.CLASS_EDITABLE
                     + "' "
                     + CmsGwtConstants.ATTR_DATA_EDITABLE
-                    + "='").append(editableData.toString()).append("'></div>\n");
+                    + "='").append(editableData.toString()).append("'></" + tag + ">\n");
         }
         return result.toString();
     }

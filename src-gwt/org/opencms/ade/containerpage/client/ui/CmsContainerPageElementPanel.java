@@ -1157,7 +1157,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      */
     protected List<Element> getEditableElements() {
 
-        List<Element> elems = CmsDomUtil.getElementsByClass(CmsGwtConstants.CLASS_EDITABLE, Tag.div, getElement());
+        List<Element> elems = CmsDomUtil.getElementsByClass(CmsGwtConstants.CLASS_EDITABLE, Tag.ALL, getElement());
         List<Element> result = Lists.newArrayList();
         for (Element currentElem : elems) {
             // don't return elements which are contained in nested containers

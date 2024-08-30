@@ -126,6 +126,7 @@ public final class CmsGwtConstants {
     /** Entity id data attribute name. */
     public static final String ATTR_DATA_ID = "data-oc-id";
 
+    /** Name for the attribute used to store list-add metadata. */
     public static final String ATTR_DATA_LISTADD = "data-oc-listadd";
 
     /** Marker attribute for dead links. */
@@ -268,6 +269,9 @@ public final class CmsGwtConstants {
 
     /** Tag name for the edit button bars injected into the page HTML in the container page editor. */
     public static final String TAG_OC_EDITPOINT = "oc-editpoint";
+
+    /** Tag name for the list-add metadata injected into the page. */
+    public static final String TAG_OC_LISTADD = "oc-listadd";
 
     /** Action placeholder for the template contexts menu option. */
     public static final String TEMPLATECONTEXT_MENU_PLACEHOLDER = "templatecontexts";

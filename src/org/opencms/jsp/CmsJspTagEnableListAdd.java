@@ -103,9 +103,10 @@ public class CmsJspTagEnableListAdd extends SimpleTagSupport {
             }
             String jsonData = AutoBeanCodex.encode(bean).getPayload();
             StringBuilder buffer = new StringBuilder();
-            buffer.append("<div style='display: none !important;' " + CmsGwtConstants.ATTR_DATA_LISTADD + "='");
+            String tag = CmsGwtConstants.TAG_OC_LISTADD;
+            buffer.append("<" + tag + " style='display: none !important;' " + CmsGwtConstants.ATTR_DATA_LISTADD + "='");
             buffer.append(CmsEncoder.escapeXml(jsonData));
-            buffer.append("'></div>");
+            buffer.append("'></" + tag + ">");
             pageContext.getOut().println(buffer.toString());
         }
     }

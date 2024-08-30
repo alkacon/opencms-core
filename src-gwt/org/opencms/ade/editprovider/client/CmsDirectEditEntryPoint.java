@@ -91,7 +91,7 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
      */
     public void initializeButtons() {
 
-        List<Element> editableElements = CmsDomUtil.getElementsByClass(CmsGwtConstants.CLASS_EDITABLE, Tag.div);
+        List<Element> editableElements = CmsDomUtil.getElementsByClass(CmsGwtConstants.CLASS_EDITABLE, Tag.ALL);
         List<CmsDirectEditButtons> editables = Lists.newArrayList();
 
         for (Element elem : editableElements) {

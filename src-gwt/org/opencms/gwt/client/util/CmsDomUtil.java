@@ -1151,7 +1151,7 @@ public final class CmsDomUtil {
      */
     public static List<CmsEditableDataJSO> getAllEditableDataForPage() {
 
-        List<Element> elems = CmsDomUtil.getElementsByClass(CmsGwtConstants.CLASS_EDITABLE, Tag.div);
+        List<Element> elems = CmsDomUtil.getElementsByClass(CmsGwtConstants.CLASS_EDITABLE, Tag.ALL);
         List<CmsEditableDataJSO> result = Lists.newArrayList();
         for (Element elem : elems) {
             String jsonData = elem.getAttribute(CmsGwtConstants.ATTR_DATA_EDITABLE);
@@ -1172,6 +1172,7 @@ public final class CmsDomUtil {
      * @return the matching element
      */
     public static Element getAncestor(Element element, String className) {
+
         if (element == null) {
             return null;
         }
