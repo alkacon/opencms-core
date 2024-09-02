@@ -111,6 +111,15 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_CmsHasSh
         boolean m_tabsVisible = true;
 
         /**
+         * Returns the font size.
+         * @return the font size.
+         */
+        public String getFontSize() {
+
+            return m_fontSize;
+        }
+
+        /**
          * @see org.opencms.ui.apps.I_CmsAppSettings#getSettingsString()
          */
         public String getSettingsString() {
@@ -128,6 +137,42 @@ implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener, I_CmsHasSh
             }
 
             return json.toString();
+        }
+
+        /**
+         * Returns a flag, indicating if automatically closing brackets is activated.
+         * @return a flag, indicating if automatically closing brackets is activated.
+         */
+        public boolean isCloseBracketsActive() {
+
+            return m_closeBrackets;
+        }
+
+        /**
+         * Returns a flag, indicating if highlighting is activated.
+         * @return a flag, indicating if highlighting is activated.
+         */
+        public boolean isHighlightingActive() {
+
+            return m_highlighting;
+        }
+
+        /**
+         * Returns a flag, indicating if line wrapping is activated.
+         * @return a flag, indicating if line wrapping is activated.
+         */
+        public boolean isLineWrappingActive() {
+
+            return m_lineWrapping;
+        }
+
+        /**
+         * Returns a flag, indicating if tabs should be visible.
+         * @return a flag, indicating if tabs should be visible.
+         */
+        public boolean isTabsVisibleActive() {
+
+            return m_tabsVisible;
         }
 
         /**
