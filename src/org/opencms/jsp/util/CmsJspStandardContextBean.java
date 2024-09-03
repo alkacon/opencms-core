@@ -120,6 +120,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -1190,7 +1191,30 @@ public final class CmsJspStandardContextBean {
      */
     public String getBundleEditorLink(String messageKey, String backLinkAnchor, String backLinkParams) {
 
-        return getBundleEditorLink(messageKey, backLinkAnchor, backLinkParams, null);
+        return getBundleEditorLink(messageKey, backLinkAnchor, backLinkParams, null, null);
+    }
+
+    /**
+     * Generates a link to the bundle editor to edit the provided message key.
+     * The back link for the editor is the current uri with the provided backLinkAnchor added as anchor.
+     *
+     * If the bundle resource for the key could not be found, <code>null</code> is returned.
+     *
+     * @param messageKey the message key to open the bundle editor for.
+     * @param backLinkAnchor the anchor id to add to the backlink to the page. If <code>null</code> no anchor is added to the backlink.
+     * @param backLinkParams request parameters to add to the backlink without leading '?', e.g. "param1=a&param2=b".
+     * @param bundleFilters substrings of names of bundles to be preferred when multiple bundles contain the key.
+     *
+     * @return a link to the bundle editor for editing the provided key, or <code>null</code> if the bundle for the key could not be found.
+     */
+    public String getBundleEditorLink(
+        String messageKey,
+        String backLinkAnchor,
+        String backLinkParams,
+        List<String> bundleFilters) {
+
+        return getBundleEditorLink(messageKey, backLinkAnchor, backLinkParams, null, bundleFilters);
+
     }
 
     /**
@@ -1206,77 +1230,32 @@ public final class CmsJspStandardContextBean {
      *
      * @return a link to the bundle editor for editing the provided key, or <code>null</code> if the bundle for the key could not be found.
      */
-    public String getBundleEditorLink(
+    public String getBundleEditorLinkForBundle(
         String messageKey,
         String backLinkAnchor,
         String backLinkParams,
         String bundleName) {
 
-        if (!m_cms.getRequestContext().getCurrentProject().isOnlineProject()) {
-            String filePath = null;
-            if (null == bundleName) {
-                filePath = getBundleRootPath(messageKey);
-            } else {
-                ResourceBundle bundle = CmsResourceBundleLoader.getBundle(
-                    bundleName,
-                    m_cms.getRequestContext().getLocale());
-                if (bundle instanceof CmsVfsResourceBundle) {
-                    CmsVfsResourceBundle vfsBundle = (CmsVfsResourceBundle)bundle;
-                    filePath = vfsBundle.getParameters().getBasePath();
-                }
-            }
-            try {
-                if (null == filePath) {
-                    throw new Exception("Could not determine the VFS root path of the bundle.");
-                }
-                CmsUUID structureId = m_cms.readResource(filePath).getStructureId();
-                String backLink = OpenCms.getLinkManager().getServerLink(m_cms, m_cms.getRequestContext().getUri());
-                if (!((null == backLinkParams) || backLinkParams.isEmpty())) {
-                    backLink = backLink + "?" + backLinkParams;
-                }
-                if (!((null == backLinkAnchor) || backLinkAnchor.isEmpty())) {
-                    backLink = backLink + "#" + backLinkAnchor;
-                }
-                String appState = CmsEditor.getEditState(structureId, false, backLink);
-                if (null != messageKey) {
-                    appState = A_CmsWorkplaceApp.addParamToState(
-                        appState,
-                        CmsMessageBundleEditor.PARAM_KEYFILTER,
-                        messageKey);
-                }
-                String link = CmsVaadinUtils.getWorkplaceLink(CmsEditorConfiguration.APP_ID, appState);
-                return link;
-            } catch (Throwable t) {
-                if (LOG.isWarnEnabled()) {
-                    String message = "Failed to open bundle editor for key '"
-                        + messageKey
-                        + "' and bundle with name '"
-                        + bundleName
-                        + "'.";
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(message, t);
-                    } else {
-                        LOG.warn(message);
-                    }
-                }
-            }
-        }
-        return null;
+        return getBundleEditorLink(messageKey, backLinkAnchor, backLinkParams, bundleName, null);
+
     }
 
     /**
      * Gets the root path for the VFS-based message bundle containing the given message key.
      *
      * <p>If no VFS-based message bundle contains the given key, null is returned. If multiple message bundles contain it,
-     * one of them is arbitrarily chosen (but a warning is logged).
+     * the name filters are applied in the given order until at least one bundle matches a filter.
+     * If multiple bundles match, one of them is arbitrarily chosen (but a warning is logged).
+     * If no bundle matches, an arbitrary bundle is chosen (but also a warning is logged).
      *
      * <p>Note: This uses the online (published) state of message bundles, so if you have unpublished bundle changes, they will not be reflected in
      * the result.
      *
      * @param messageKey the message key
+     * @param bundleFilters substrings of names of bundles to be preferred when multiple bundles contain the key.
      * @return the root path of the bundle containing the message key
      */
-    public String getBundleRootPath(String messageKey) {
+    public String getBundleRootPath(String messageKey, List<String> bundleFilters) {
 
         CmsObject cms = getCmsObject();
         try {
@@ -1297,7 +1276,38 @@ public final class CmsJspStandardContextBean {
             } else {
                 bundleIndex = CmsMessageToBundleIndex.read(getCmsObject());
             }
-            return bundleIndex.getBundlePathForKey(messageKey);
+            Collection<String> bundles = bundleIndex.getBundlesPathForKey(messageKey);
+            switch (bundles.size()) {
+                case 0:
+                    return null;
+                case 1:
+                    return bundles.iterator().next();
+                default:
+                    if (!((null == bundleFilters) || bundleFilters.isEmpty())) {
+                        for (String filter : bundleFilters) {
+                            Set<String> matchingBundles = new HashSet<>(bundles.size());
+                            for (String bundle : bundles) {
+                                if (bundle.contains(filter)) {
+                                    matchingBundles.add(bundle);
+                                }
+                            }
+                            if (matchingBundles.size() > 0) {
+                                if (matchingBundles.size() > 1) {
+                                    LOG.warn(
+                                        "Ambiguous message bundle for key "
+                                            + messageKey
+                                            + " and filter "
+                                            + filter
+                                            + ":"
+                                            + matchingBundles);
+                                }
+                                return matchingBundles.iterator().next();
+                            }
+                        }
+                    }
+                    LOG.warn("Ambiguous message bundle for key " + messageKey + ":" + bundles);
+                    return bundles.iterator().next();
+            }
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
             return null;
@@ -3155,6 +3165,81 @@ public final class CmsJspStandardContextBean {
             }
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
+        }
+        return null;
+    }
+
+    /**
+     * Generates a link to the bundle editor to edit the provided message key.
+     * The back link for the editor is the current uri with the provided backLinkAnchor added as anchor.
+     *
+     * If the bundle resource for the key could not be found, <code>null</code> is returned.
+     *
+     * @param messageKey the message key to open the bundle editor for.
+     * @param backLinkAnchor the anchor id to add to the backlink to the page. If <code>null</code> no anchor is added to the backlink.
+     * @param backLinkParams request parameters to add to the backlink without leading '?', e.g. "param1=a&param2=b".
+     * @param bundleName the name of the bundle to search the key in. If <code>null</code> the bundle is detected automatically.
+     * @param nameFilters if more than one bundle is matched, bundles that match (substring matching) at least one of the provided strings are preferred.
+     *  This option is only useful, if the bundleName is not provided.
+     *
+     * @return a link to the bundle editor for editing the provided key, or <code>null</code> if the bundle for the key could not be found.
+     */
+    private String getBundleEditorLink(
+        String messageKey,
+        String backLinkAnchor,
+        String backLinkParams,
+        String bundleName,
+        List<String> nameFilters) {
+
+        if (!m_cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            String filePath = null;
+            if (null == bundleName) {
+                filePath = getBundleRootPath(messageKey, nameFilters);
+            } else {
+                ResourceBundle bundle = CmsResourceBundleLoader.getBundle(
+                    bundleName,
+                    m_cms.getRequestContext().getLocale());
+                if (bundle instanceof CmsVfsResourceBundle) {
+                    CmsVfsResourceBundle vfsBundle = (CmsVfsResourceBundle)bundle;
+                    filePath = vfsBundle.getParameters().getBasePath();
+                }
+            }
+            try {
+                if (null == filePath) {
+                    throw new Exception("Could not determine the VFS root path of the bundle.");
+                }
+                CmsUUID structureId = m_cms.readResource(
+                    m_cms.getRequestContext().removeSiteRoot(filePath)).getStructureId();
+                String backLink = OpenCms.getLinkManager().getServerLink(m_cms, m_cms.getRequestContext().getUri());
+                if (!((null == backLinkParams) || backLinkParams.isEmpty())) {
+                    backLink = backLink + "?" + backLinkParams;
+                }
+                if (!((null == backLinkAnchor) || backLinkAnchor.isEmpty())) {
+                    backLink = backLink + "#" + backLinkAnchor;
+                }
+                String appState = CmsEditor.getEditState(structureId, false, backLink);
+                if (null != messageKey) {
+                    appState = A_CmsWorkplaceApp.addParamToState(
+                        appState,
+                        CmsMessageBundleEditor.PARAM_KEYFILTER,
+                        messageKey);
+                }
+                String link = CmsVaadinUtils.getWorkplaceLink(CmsEditorConfiguration.APP_ID, appState);
+                return link;
+            } catch (Throwable t) {
+                if (LOG.isWarnEnabled()) {
+                    String message = "Failed to open bundle editor for key '"
+                        + messageKey
+                        + "' and bundle with name '"
+                        + bundleName
+                        + "'.";
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(message, t);
+                    } else {
+                        LOG.warn(message);
+                    }
+                }
+            }
         }
         return null;
     }

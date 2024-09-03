@@ -123,23 +123,10 @@ public class CmsMessageToBundleIndex {
      * @param key the message key
      * @return the bundle root path
      */
-    public String getBundlePathForKey(String key) {
+    public Collection<String> getBundlesPathForKey(String key) {
 
         Collection<CmsVfsBundleParameters> params = m_map.get(key);
-        if (params.size() == 0) {
-            return null;
-        } else {
-            if (params.size() > 1) {
-                LOG.warn(
-                    "Ambiguous message bundle for key "
-                        + key
-                        + ":"
-                        + params.stream().map(p -> p.getBasePath()).collect(Collectors.toList()));
-            }
-            CmsVfsBundleParameters param = params.iterator().next();
-            return param.getBasePath();
-        }
-
+        return params.stream().map(CmsVfsBundleParameters::getBasePath).collect(Collectors.toSet());
     }
 
 }
