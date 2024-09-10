@@ -166,6 +166,9 @@ public final class CmsJspStandardContextBean {
         /** Cache for the wrapped element settings. */
         private Map<String, CmsJspElementSettingValueWrapper> m_wrappedSettings;
 
+        /** Cached formatter key - use array to distinguish between uncached and cached, but null. */
+        private String[] m_formatterKey;
+
         /**
          * Constructor.<p>
          *
@@ -211,6 +214,24 @@ public final class CmsJspStandardContextBean {
         public CmsUUID getFormatterId() {
 
             return m_wrappedElement.getFormatterId();
+        }
+
+        /**
+         * Returns the formatter key, if possible, otherwise the formatter configuration id, or null if nothing at all can be found.
+         *
+         * @return the formatter key
+         */
+        public String getFormatterKey() {
+
+            if (m_formatterKey == null) {
+                String key = null;
+                I_CmsFormatterBean formatter = getElementFormatter(m_wrappedElement);
+                if (formatter != null) {
+                    key = formatter.getKeyOrId();
+                }
+                m_formatterKey = new String[] {key};
+            }
+            return m_formatterKey[0];
         }
 
         /**
