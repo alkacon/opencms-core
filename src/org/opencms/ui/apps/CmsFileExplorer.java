@@ -63,11 +63,14 @@ import org.opencms.ui.contextmenu.CmsResourceContextMenuBuilder;
 import org.opencms.ui.dialogs.CmsCopyMoveDialog;
 import org.opencms.ui.dialogs.CmsDeleteDialog;
 import org.opencms.ui.dialogs.CmsNewDialog;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -100,6 +103,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
@@ -985,6 +989,12 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         context.setAppInfo(inf);
 
         initToolbarButtons(context);
+        try {
+            JavaScript.getCurrent().execute(
+                new String(
+                    CmsFileUtil.readFully(getClass().getResourceAsStream("update-crumb-wrapper-parent.js")),
+                    StandardCharsets.UTF_8));
+        } catch (IOException e) {}
         m_fileTable.updateColumnWidths(A_CmsUI.get().getPage().getBrowserWindowWidth() - LAYOUT_SPLIT_POSITION);
     }
 
@@ -1071,18 +1081,18 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
                 changeSite(siteRoot, path, true);
             } else if ((siteRoot != null)
                 && !CmsStringUtil.comparePaths(siteRoot, cms.getRequestContext().getSiteRoot())) {
-                    String saveState = m_currentState;
-                    changeSite(siteRoot, path);
-                    if (!getSelectionFromState(saveState).isEmpty()) {
-                        m_fileTable.setValue(Collections.singleton(getSelectionFromState(saveState)));
-                    }
-                } else {
-                    String saveState = m_currentState;
-                    openPath(path, true);
-                    if (!getSelectionFromState(saveState).isEmpty()) {
-                        m_fileTable.setValue(Collections.singleton(getSelectionFromState(saveState)));
-                    }
+                String saveState = m_currentState;
+                changeSite(siteRoot, path);
+                if (!getSelectionFromState(saveState).isEmpty()) {
+                    m_fileTable.setValue(Collections.singleton(getSelectionFromState(saveState)));
                 }
+            } else {
+                String saveState = m_currentState;
+                openPath(path, true);
+                if (!getSelectionFromState(saveState).isEmpty()) {
+                    m_fileTable.setValue(Collections.singleton(getSelectionFromState(saveState)));
+                }
+            }
         }
     }
 
