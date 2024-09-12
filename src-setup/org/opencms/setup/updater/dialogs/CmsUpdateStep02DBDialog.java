@@ -90,7 +90,7 @@ public class CmsUpdateStep02DBDialog extends A_CmsUpdateDialog {
         } catch (NullPointerException en) {
             CmsSetupErrorDialog.showErrorDialog(
                 "Database error",
-                "Your database version is not compatible with OpenCms 11.");
+                "Your database version is not compatible with this version of OpenCms.");
             return false;
         }
     }
