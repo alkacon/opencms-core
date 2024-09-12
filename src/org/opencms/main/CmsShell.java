@@ -914,12 +914,14 @@ public class CmsShell {
             return;
         }
 
+
         if (m_echo) {
             // echo the command to STDOUT
             m_out.print(command);
+            boolean censorParams = Arrays.asList("login", "loginUser", "changePassword").contains(command);
             for (int i = 0; i < parameters.size(); i++) {
                 m_out.print(" '");
-                m_out.print(parameters.get(i));
+                m_out.print(censorParams ? "******" : parameters.get(i));
                 m_out.print("'");
             }
             m_out.println();
