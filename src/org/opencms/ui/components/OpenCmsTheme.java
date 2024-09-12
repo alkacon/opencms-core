@@ -125,6 +125,9 @@ public final class OpenCmsTheme {
     /** CSS style name. */
     public static final String CRUMBS = "o-crumbs";
 
+    /** CSS style name.*/
+    public static final String DELETE_UNUSED = "oc-icon-32-delete-unused";
+
     /** CSS style name. */
     public static final String DIALOG = "o-dialog";
 
@@ -196,9 +199,6 @@ public final class OpenCmsTheme {
 
     /** The database icon CSS class. */
     public static final String ICON_DATABASE = "oc-icon-24-database";
-
-    /** CSS style name.*/
-    public static final String DELETE_UNUSED = "oc-icon-32-delete-unused";
 
     /** CSS style name.*/
     public static final String ICON_EXLPORER = "oc-icon-24-folder";
@@ -482,6 +482,9 @@ public final class OpenCmsTheme {
     public static final String TYPE_FILTER_BUTTON_ACTIVE = "o-type-filter-button-active";
 
     /** CSS style name. */
+    public static final String TYPE_SELECT = "o-type-select-box";
+
+    /** CSS style name. */
     public static final String USER_IMAGE = "o-user-image";
 
     /** CSS style name. */
@@ -497,7 +500,7 @@ public final class OpenCmsTheme {
     public static final String WORKPLACE_MAXWIDTH = "o-workplace-maxwidth";
 
     /** CSS style name. */
-    protected static final String QUICK_LAUNCH = "o-quicklaunch";
+    protected static final String QUICK_LAUNCH = "o-quicklaunch";;
 
     /**
      * Hidden default constructor.

@@ -62,6 +62,7 @@ public class CmsTypeSelector extends ComboBox {
         setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_RESOURCE_TYPE_0));
         setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_SOURCESEARCH_RESOURCE_TYPE_HELP_0));
         setWidthFull();
+        addStyleName(OpenCmsTheme.TYPE_SELECT);
     }
 
     /**

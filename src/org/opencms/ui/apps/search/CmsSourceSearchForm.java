@@ -45,6 +45,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.CmsVaadinUtils.PropertyId;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -653,6 +654,7 @@ public class CmsSourceSearchForm extends VerticalLayout {
         m_resourceType.setItemCaptionPropertyId(PropertyId.caption);
         m_resourceType.setItemIconPropertyId(PropertyId.icon);
         m_resourceType.setFilteringMode(FilteringMode.CONTAINS);
+        m_resourceType.addStyleName(OpenCmsTheme.TYPE_SELECT);
 
         m_workProject.setNullSelectionAllowed(false);
         IndexedContainer projects = CmsVaadinUtils.getProjectsContainer(A_CmsUI.getCmsObject(), "caption");

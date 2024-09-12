@@ -1541,6 +1541,27 @@
     }
     
     .o-res-site-info img {max-width: 24px;}
+    
+    .o-type-select-box {
+		& > .v-icon {
+			max-width: 16px;
+			max-height: 16px;
+		}
+	}
+    
+    .v-filterselect-suggestpopup-o-type-select-box {
+		
+		.gwt-MenuItem {
+			display: flex;
+			align-items: center;
+		}
+		
+		.gwt-MenuItem .v-icon {
+			max-width: 16px;
+			max-height: 16px;
+		}
+		
+	}
 	
 }
 
