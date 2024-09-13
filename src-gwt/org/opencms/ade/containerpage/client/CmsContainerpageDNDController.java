@@ -464,15 +464,34 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 Event nativeEvent = Event.as(event.getNativeEvent());
                 if (event.getTypeInt() == Event.ONKEYDOWN) {
                     int keyCode = nativeEvent.getKeyCode();
-                    if ((keyCode == KeyCodes.KEY_CTRL) || (keyCode == KeyCodes.KEY_SHIFT) || (keyCode == KeyCodes.KEY_ALT)) {
+                    if ((keyCode == KeyCodes.KEY_CTRL)
+                        || (keyCode == KeyCodes.KEY_SHIFT)
+                        || (keyCode == KeyCodes.KEY_ALT)) {
                         // In a VM, when the user presses Ctrl+E, the keydown event for the Ctrl event may or may not wait to be fired until the E key is pressed, depending on the settings.
                         // To get consistent behavior, we ignore keydown events with keycodes that are just modifier keys.
                         return;
                     } else {
                         stopDrag(m_dndHandler);
                     }
-                }
+                } else if ((event.getTypeInt() == Event.ONMOUSEOVER)
+                    || (event.getTypeInt() == Event.ONMOUSEDOWN)
+                    || (event.getTypeInt() == Event.ONCLICK)
+                    || (event.getTypeInt() == Event.ONMOUSEUP)) {
+                    // ignore likely mouse events on floating headers etc.
+                    try {
+                        boolean isChildOfLayer = (m_layer != null)
+                            && m_layer.getElement().isOrHasChild(Element.as(event.getNativeEvent().getEventTarget()));
+                        boolean isChildOfToolbar = (m_toolbar != null)
+                            && m_toolbar.getElement().isOrHasChild(Element.as(event.getNativeEvent().getEventTarget()));
+                        if (!isChildOfLayer && !isChildOfToolbar) {
+                            event.cancel();
+                            event.getNativeEvent().preventDefault();
+                            event.getNativeEvent().stopPropagation();
+                        }
+                    } catch (Exception e) {
 
+                    }
+                }
             });
 
         }
@@ -562,7 +581,6 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
          * @return the width of the tolerance zone
          */
         private int getTolerance() {
-
 
             if (CmsCoreProvider.TOUCH_ONLY.matches()) {
                 return 0;

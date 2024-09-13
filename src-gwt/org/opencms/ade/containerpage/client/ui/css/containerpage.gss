@@ -276,7 +276,7 @@ body.oc-placement-mode {
 	position: absolute;
 	left: 0;
 	right: 0; 
-	z-index: 199999;
+	z-index: value("constants.css.zIndexPlacementLayer"); 
 }
 
 .oc-placement-button {

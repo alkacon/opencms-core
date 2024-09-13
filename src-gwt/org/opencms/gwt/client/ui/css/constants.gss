@@ -227,10 +227,10 @@
 /** Used during drag and drop. */
 @def zIndexDND 250000;
 /** Used for highlighting. */
-@def zIndexHighlighting 150000;
+@def zIndexHighlighting 140000;
 /** Used for positioned UI elements. */
 @def zIndexInline 100000;
-
+@def zIndexPlacementLayer 100000; 
 /** For the menu. */ 
 @def zIndexMenu 160000;
 
