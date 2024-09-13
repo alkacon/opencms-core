@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps.resourcetypes;
 
+import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -214,7 +215,7 @@ public class CmsResourceTypesTable extends Table {
                 Iterator<String> it = data.iterator();
                 while (it.hasNext()) {
                     I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(it.next());
-                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(type.getModuleName())) {
+                    if (isCoreType(type)) {
                         return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
                             Messages.GUI_RESOURCETYPE_APP_TABLE_NOT_AVAILABLE_CORE_0);
                     }
@@ -265,7 +266,7 @@ public class CmsResourceTypesTable extends Table {
             String typeName = data.iterator().next();
             try {
                 I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(typeName);
-                return CmsStringUtil.isEmptyOrWhitespaceOnly(type.getModuleName())
+                return isCoreType(type)
                 ? CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
                     Messages.GUI_RESOURCETYPE_APP_TABLE_NOT_AVAILABLE_CORE_0)
                 : CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
@@ -320,7 +321,7 @@ public class CmsResourceTypesTable extends Table {
                 Iterator<String> it = data.iterator();
                 while (it.hasNext()) {
                     I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(it.next());
-                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(type.getModuleName())) {
+                    if (isCoreType(type)) {
                         return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
                             Messages.GUI_RESOURCETYPE_APP_TABLE_NOT_AVAILABLE_CORE_0);
                     }
@@ -331,6 +332,7 @@ public class CmsResourceTypesTable extends Table {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
             }
         }
+
     }
 
     /**
@@ -464,17 +466,17 @@ public class CmsResourceTypesTable extends Table {
         /**Icon.*/
         Icon(null, Resource.class, null, false),
 
-        /**Icon column.*/
-        Name(Messages.GUI_RESOURCETYPE_EDIT_DISPLAY_NAME_0, String.class, "", false),
-
-        /**Icon column.*/
-        ShortName(Messages.GUI_RESOURCETYPE_EDIT_SHORT_NAME_0, String.class, "", false),
-
         /**Is Broadcast send but not displayed.*/
         ID(Messages.GUI_RESOURCETYPE_ID_0, Integer.class, null, false),
 
         /**Icon column.*/
-        Module(Messages.GUI_RESOURCETYPE_MODULE_0, String.class, "", false);
+        Module(Messages.GUI_RESOURCETYPE_MODULE_0, String.class, "", false),
+
+        /**Icon column.*/
+        Name(Messages.GUI_RESOURCETYPE_EDIT_DISPLAY_NAME_0, String.class, "", false),
+
+        /**Icon column.*/
+        ShortName(Messages.GUI_RESOURCETYPE_EDIT_SHORT_NAME_0, String.class, "", false);
 
         /**Indicates if column is collapsable.*/
         private boolean m_collapsable;
@@ -566,25 +568,25 @@ public class CmsResourceTypesTable extends Table {
 
     }
 
-    private static final long serialVersionUID = 1L;
-
     /** Logger instance for this class. */
     static final Log LOG = CmsLog.getLog(CmsResourceTypesTable.class);
 
+    private static final long serialVersionUID = 1L;
+
+    /**Resource type app instance. */
+    CmsResourceTypeApp m_app;
+
     /** CmsObject.*/
     CmsObject m_cms;
+
+    /**Container holding table data.*/
+    private IndexedContainer m_container;
 
     /** The context menu. */
     private CmsContextMenu m_menu;
 
     /** The available menu entries. */
     private List<I_CmsSimpleContextMenuEntry<Set<String>>> m_menuEntries;
-
-    /**Container holding table data.*/
-    private IndexedContainer m_container;
-
-    /**Resource type app instance. */
-    CmsResourceTypeApp m_app;
 
     /**
      * Public constructor.<p>
@@ -617,6 +619,18 @@ public class CmsResourceTypesTable extends Table {
 
         });
 
+    }
+
+    /**
+     * Checks if the given type is a core type that shouldn't be edited.
+     *
+     * @param type the type to check
+     * @return true if the type shouldn't be edited
+     */
+    private static boolean isCoreType(I_CmsResourceType type) {
+
+        return CmsStringUtil.isEmptyOrWhitespaceOnly(type.getModuleName())
+            || CmsADEManager.MODULE_NAME_ADE_CONFIG.equals(type.getModuleName());
     }
 
     /**
