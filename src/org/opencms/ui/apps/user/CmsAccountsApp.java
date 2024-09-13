@@ -207,6 +207,9 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     /**CmsObject. */
     protected CmsObject m_cms;
 
+    /** Toolbar button for CSV import/export in OUs. */
+    protected Button m_importExport;
+
     /**vaadin component. */
     protected CmsInfoButton m_infoButton;
 
@@ -243,7 +246,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     /** The folder tree. */
     private CmsOuTree m_ouTree;
 
-    /** Map for the cached password reset states. */ 
+    /** Map for the cached password reset states. */
     private Map<CmsUUID, Boolean> m_passwordResetStateCache = new ConcurrentHashMap<>();
 
     /**vaadin component.*/
@@ -497,11 +500,11 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         return new CmsCssIcon("oc-icon-24-group");
     }
 
-    /** 
+    /**
      * Gets the cache for the password reset states.
      * <p>The cache keys are user ids.
-     * 
-     * @return the cache for the password reset states 
+     *
+     * @return the cache for the password reset states
      */
     public Map<CmsUUID, Boolean> getPasswordResetStateCache() {
 
@@ -964,6 +967,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         m_newButton.setVisible((m_stateBean.getGroupID() == null) & isOUManagable(m_stateBean.getPath()));
         m_toggleButtonRole.setVisible(m_stateBean.getType().isRole() && (m_stateBean.getGroupID() != null));
         m_toggleButtonUser.setVisible(m_stateBean.getType().isUser());
+        m_importExport.setVisible(m_stateBean.getType().isOrgUnit());
 
         m_toggleButtonGroups.setVisible(m_stateBean.getType().isGroup() && (m_stateBean.getGroupID() == null));
         m_infoButton.setVisible(
@@ -1133,6 +1137,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         // do nothing
     }
 
+
     /**
      * Opens a dialog for a new item (ou, group or user).<p>
      */
@@ -1144,7 +1149,6 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ADD_ELEMENT_0));
         A_CmsUI.get().addWindow(window);
     }
-
     /**
      * opens a principle select dialog.<p>
      */
@@ -1238,6 +1242,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
             }
 
         });
+
         m_infoButton.setAdditionalButton(csvButton);
 
         m_addElementButton = CmsToolBar.createButton(
@@ -1253,6 +1258,12 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
 
             }
         });
+
+        m_importExport = CmsToolBar.createButton(FontOpenCms.DOWNLOAD, CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_IMEXPORT_CONTEXTMENUNAME_0));
+        m_importExport.addClickListener(event -> {
+            CmsOUTable.openImportExportDialog(A_CmsUI.getCmsObject(), m_stateBean.getPath());
+        });
+
 
         m_toggleButtonRole = CmsToolBar.createButton(
             FontOpenCms.USERS,
@@ -1306,6 +1317,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         m_uiContext.addToolbarButton(m_toggleButtonRole);
         m_uiContext.addToolbarButton(m_toggleButtonUser);
         m_uiContext.addToolbarButton(m_toggleButtonGroups);
+        m_uiContext.addToolbarButton(m_importExport);
 
         for (Button button : getAdditionalButtons()) {
             m_uiContext.addToolbarButton(button);

@@ -170,23 +170,10 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
          */
         public void executeAction(Set<String> context) {
 
-            boolean includeTechnicalFields = false;
-            try {
-                OpenCms.getRoleManager().checkRole(m_cms, CmsRole.ADMINISTRATOR);
-                includeTechnicalFields = true;
-            } catch (CmsRoleViolationException e) {
-                // ok
-            }
-            Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
-            window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_IMEXPORT_DIALOGNAME_0));
-            window.setContent(
-                CmsImportExportUserDialog.getExportUserDialogForOU(
-                    context.iterator().next(),
-                    window,
-                    includeTechnicalFields));
-
-            A_CmsUI.get().addWindow(window);
+            openImportExportDialog(m_cms, context.iterator().next());
         }
+
+
 
         /**
          * @see org.opencms.ui.contextmenu.I_CmsSimpleContextMenuEntry#getTitle(java.util.Locale)
@@ -439,6 +426,32 @@ public class CmsOUTable extends Table implements I_CmsFilterableTable {
 
         m_app = app;
         init(ou);
+    }
+
+    /**
+     * Opens the import/export dialog for a specific OU.
+     *
+     * @param cms the CMS context
+     * @param ou the OU
+     */
+    public static void openImportExportDialog(CmsObject cms, String ou) {
+
+        boolean includeTechnicalFields = false;
+        try {
+            OpenCms.getRoleManager().checkRole(cms, CmsRole.ADMINISTRATOR);
+            includeTechnicalFields = true;
+        } catch (CmsRoleViolationException e) {
+            // ok
+        }
+        Window window = CmsBasicDialog.prepareWindow(DialogWidth.wide);
+        window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_IMEXPORT_DIALOGNAME_0));
+        window.setContent(
+            CmsImportExportUserDialog.getExportUserDialogForOU(
+                ou,
+                window,
+                includeTechnicalFields));
+
+        A_CmsUI.get().addWindow(window);
     }
 
     /**
