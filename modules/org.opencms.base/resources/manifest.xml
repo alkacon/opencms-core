@@ -536,7 +536,7 @@ chacc '/system/workplace/editors/' 'ROLE' 'ELEMENT_AUTHOR' '+I+O+R+V']]></import
 					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="seo_file" key="fileicon.seo_file" reference="xmlcontent">
+			<explorertype name="seo_file" key="fileicon.seo_file" smalliconstyle="oc-icon-16-jsp_search" bigiconstyle="oc-icon-24-jsp_search" reference="xmlcontent">
 				<newresource creatable="true" order="998" autosetnavigation="false" autosettitle="false" info="desc.seo_file"/>
 			</explorertype>
 			<explorertype name="containerpage_template" key="fileicon.containerpage_template" smalliconstyle="oc-icon-16-containerpage_template" bigiconstyle="oc-icon-24-containerpage_template" reference="jsp">
