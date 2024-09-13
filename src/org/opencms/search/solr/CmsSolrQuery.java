@@ -669,8 +669,8 @@ public class CmsSolrQuery extends SolrQuery {
         if ((requestedReturnFields != null) && (requestedReturnFields.length > 0)) {
             List<String> result = new ArrayList<String>();
             for (String field : requestedReturnFields) {
-                String commasep = field.replaceAll(" ", ",");
-                List<String> list = CmsStringUtil.splitAsList(commasep, ',');
+                List<String> list = CmsStringUtil.splitAsList(field, ',');
+                list.forEach(e -> e.trim());
                 if (!list.contains("*")) {
                     for (String reqField : CmsStringUtil.splitAsList(MINIMUM_FIELDS, ",")) {
                         if (!list.contains(reqField)) {
