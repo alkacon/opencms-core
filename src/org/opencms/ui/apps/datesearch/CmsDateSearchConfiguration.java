@@ -72,7 +72,7 @@ public class CmsDateSearchConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public Resource getIcon() {
 
-        return new CmsCssIcon("oc-icon-32-search");
+        return new CmsCssIcon("oc-icon-32-date-search");
     }
 
     /**
