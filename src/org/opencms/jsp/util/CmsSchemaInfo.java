@@ -564,7 +564,7 @@ public class CmsSchemaInfo {
         private WidgetInfo getWidgetInfo() {
 
             if (m_widgetInfo == null) {
-                m_widgetInfo = CmsWidgetUtil.collectWidgetInfo(m_cms, m_root.getContentDefinition(), m_path, null);
+                m_widgetInfo = CmsWidgetUtil.collectWidgetInfo(m_cms, m_root.getContentDefinition(), m_path, null, m_cms.getRequestContext().getLocale());
             }
             return m_widgetInfo;
 

@@ -38,8 +38,8 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsAccessRestrictionWidget;
 import org.opencms.xml.CmsXmlContentDefinition;
-import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlAccessRestrictionValue;
+import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.HashMap;
@@ -122,7 +122,7 @@ public class CmsAccessRestrictionInfo {
             I_CmsXmlSchemaType type = entry.getValue();
             try {
                 if (type instanceof CmsXmlAccessRestrictionValue) {
-                    WidgetInfo widgetInfo = CmsWidgetUtil.collectWidgetInfo(cms, contentDef, entry.getKey(), null);
+                    WidgetInfo widgetInfo = CmsWidgetUtil.collectWidgetInfo(cms, contentDef, entry.getKey(), null, null);
                     String widgetConfig = widgetInfo.getWidget().getConfiguration();
                     if (widgetConfig != null) {
                         JSONObject json = new JSONObject(widgetConfig);

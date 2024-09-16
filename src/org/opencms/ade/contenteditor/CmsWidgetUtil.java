@@ -143,6 +143,7 @@ public final class CmsWidgetUtil {
      * @param rootContentDefinition the content definition
      * @param path the path relative to the given content definition
      * @param messages the message bundle to use
+     * @param overrideLocale the explicit locale to use for resolving message keys (if null, use the workplace locale of the user)
      *
      * @return the widget information for the given path
      */
@@ -150,7 +151,8 @@ public final class CmsWidgetUtil {
         CmsObject cms,
         CmsXmlContentDefinition rootContentDefinition,
         String path,
-        CmsMessages messages) {
+        CmsMessages messages,
+        Locale overrideLocale) {
 
         String widgetConfig = null;
         DisplayType configuredType = DisplayType.none;
@@ -163,11 +165,11 @@ public final class CmsWidgetUtil {
         final List<String> widgetConfigs = new ArrayList<>();
         final List<DisplayType> configuredDisplayTypes = new ArrayList<>();
         final List<I_CmsComplexWidget> configuredComplexWidgets = new ArrayList<>();
+        Locale locale = overrideLocale != null ? overrideLocale : OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         if (messages == null) {
-            Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-            CmsMultiMessages multi = new CmsMultiMessages(wpLocale);
-            multi.addMessages(OpenCms.getWorkplaceManager().getMessages(wpLocale));
-            CmsMessages contentHandlerMessages = rootContentDefinition.getContentHandler().getMessages(wpLocale);
+            CmsMultiMessages multi = new CmsMultiMessages(locale);
+            multi.addMessages(OpenCms.getWorkplaceManager().getMessages(locale));
+            CmsMessages contentHandlerMessages = rootContentDefinition.getContentHandler().getMessages(locale);
             if (contentHandlerMessages != null) {
                 // Note: the default content handler class will always return a non-null messages object
                 multi.addMessages(contentHandlerMessages);
@@ -248,7 +250,7 @@ public final class CmsWidgetUtil {
 
         CmsXmlContentDefinition contentDef = value.getDocument().getContentDefinition();
         String path = value.getPath();
-        return collectWidgetInfo(cms, contentDef, path, null);
+        return collectWidgetInfo(cms, contentDef, path, null, null);
     }
 
     /**

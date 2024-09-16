@@ -687,7 +687,12 @@ public class CmsContentTypeVisitor {
                     CmsRequestContext.ATTRIBUTE_ADE_CONTEXT_PATH,
                     m_file.getRootPath());
             }
-            WidgetInfo widgetInfo = CmsWidgetUtil.collectWidgetInfo(cms, m_rootContentDefinition, path, m_messages);
+            WidgetInfo widgetInfo = CmsWidgetUtil.collectWidgetInfo(
+                cms,
+                m_rootContentDefinition,
+                path,
+                m_messages,
+                null);
             I_CmsWidget widget = widgetInfo.getWidget();
             I_CmsComplexWidget complexWidget = widgetInfo.getComplexWidget();
             configuredType = widgetInfo.getDisplayType();
