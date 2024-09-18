@@ -33,6 +33,9 @@
             <defaults>
                  <default element="Type" value="307" />
             </defaults>
+            <relations>
+                <relation element="Link" type="weak" invalidate="false" />
+            </relations>
         </xsd:appinfo>
     </xsd:annotation>
 
