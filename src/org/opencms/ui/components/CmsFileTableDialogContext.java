@@ -100,8 +100,12 @@ public class CmsFileTableDialogContext extends A_CmsDialogContext implements I_C
         super.finish(ids);
         m_fileTable.clearSelection();
         if (ids != null) {
-            ids = ids.stream().filter(id -> m_fileTable.containsId(id)).collect(Collectors.toList());
-            m_fileTable.update(ids, false);
+            if (ids.stream().anyMatch(CmsUUID::isNullUUID)) {
+                m_fileTable.update(m_fileTable.getAllIds(), false);
+            } else {
+                ids = ids.stream().filter(id -> m_fileTable.containsId(id)).collect(Collectors.toList());
+                m_fileTable.update(ids, false);
+            }
         }
     }
 
