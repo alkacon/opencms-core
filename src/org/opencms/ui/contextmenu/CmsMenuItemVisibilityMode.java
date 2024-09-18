@@ -45,6 +45,9 @@ public final class CmsMenuItemVisibilityMode extends A_CmsModeIntEnumeration {
     /** Menu item visibility: invisible.  */
     public static final CmsMenuItemVisibilityMode VISIBILITY_INVISIBLE = new CmsMenuItemVisibilityMode(3);
 
+    /** Menu item visibility: invisible, use next best menu item with same ID.  */
+    public static final CmsMenuItemVisibilityMode VISIBILITY_USE_NEXT = new CmsMenuItemVisibilityMode(4);
+
     /** Serializable version id. */
     private static final long serialVersionUID = 2526260041565757791L;
 
@@ -165,13 +168,13 @@ public final class CmsMenuItemVisibilityMode extends A_CmsModeIntEnumeration {
     }
 
     /**
-     * Returns if the mode is set to {@link #VISIBILITY_INVISIBLE}.<p>
+     * Returns if the mode is set to {@link #VISIBILITY_INVISIBLE} or {@link #VISIBILITY_USE_NEXT}.<p>
      *
-     * @return true if the mode is set to {@link #VISIBILITY_INVISIBLE}, otherwise false
+     * @return true if the mode is set to {@link #VISIBILITY_INVISIBLE} or {@link #VISIBILITY_USE_NEXT}, otherwise false
      */
     public boolean isInVisible() {
 
-        return getMode() == VISIBILITY_INVISIBLE.getMode();
+        return (getMode() == VISIBILITY_INVISIBLE.getMode()) || (getMode() == VISIBILITY_USE_NEXT.getMode());
     }
 
     /**
@@ -182,6 +185,16 @@ public final class CmsMenuItemVisibilityMode extends A_CmsModeIntEnumeration {
     public boolean isPrioritized() {
 
         return m_prioritized;
+    }
+
+    /**
+     * Returns true if this item is invisible, but the next best item with the same ID should be used instead.
+     *
+     * @return true if this item is invisible, but the next best item with the same ID should be used instead
+     */
+    public boolean isUseNext() {
+
+        return getMode() == VISIBILITY_USE_NEXT.getMode();
     }
 
     /**

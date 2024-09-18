@@ -39,14 +39,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -73,6 +72,7 @@ public class CmsContextMenuTreeBuilder {
      * @param context the dialog context
      */
     public CmsContextMenuTreeBuilder(I_CmsDialogContext context) {
+
         m_context = context;
     }
 
@@ -104,34 +104,26 @@ public class CmsContextMenuTreeBuilder {
 
         items = new ArrayList<I_CmsContextMenuItem>(items);
 
-        // First sort by priority and then use a map with the id as the key to store the items,
-        // eliminating items with the same id but a lower priority than another item
-
-        Collections.sort(items, new Comparator<I_CmsContextMenuItem>() {
-
-            public int compare(I_CmsContextMenuItem a, I_CmsContextMenuItem b) {
-
-                return Integer.compare(a.getPriority(), b.getPriority());
+        Map<String, List<I_CmsContextMenuItem>> itemsById = items.stream().collect(
+            Collectors.groupingBy(item -> item.getId()));
+        List<I_CmsContextMenuItem> uniqueItems = itemsById.values().stream().map(itemsForCurrentId -> {
+            Collections.sort(itemsForCurrentId, Comparator.comparing(item -> -item.getPriority())); // highest priority first
+            int i;
+            for (i = 0; i < (itemsForCurrentId.size() - 1); i++) { // the last entry is *not* part of the iteration
+                CmsMenuItemVisibilityMode visibility = getVisibility(itemsForCurrentId.get(i));
+                if (!visibility.isUseNext()) {
+                    break;
+                }
             }
-        });
-        LinkedHashMap<String, I_CmsContextMenuItem> itemsById = Maps.newLinkedHashMap();
-        for (I_CmsContextMenuItem item : items) {
-            String id = item.getId();
-            I_CmsContextMenuItem prevItem = itemsById.get(id);
-            if (prevItem != null) {
-                LOG.info(
-                    "Discarding overridden context menu item " + prevItem + " because of higher priority item " + item);
-            }
-            itemsById.put(id, item);
+            return itemsForCurrentId.get(i); // i is the first index that didn't return USE_NEXT (it may be the index of the last item, which we didn't ask for its visibility)
+        }).filter(item -> !getVisibility(item).isInVisible()).collect(Collectors.toList());
+
+        if (m_context.getResources().size() == 1) {
+            m_defaultActionItem = findDefaultAction(uniqueItems);
         }
 
         // Now sort by order. Since all children of a node should be processed in one iteration of the following loop,
         // this order also applies to the child order of each tree node built in the next step
-        List<I_CmsContextMenuItem> uniqueItems = Lists.newArrayList(itemsById.values());
-        uniqueItems = filterVisible(uniqueItems);
-        if (m_context.getResources().size() == 1) {
-            m_defaultActionItem = findDefaultAction(uniqueItems);
-        }
 
         Collections.sort(uniqueItems, new Comparator<I_CmsContextMenuItem>() {
 
@@ -145,7 +137,7 @@ public class CmsContextMenuTreeBuilder {
         Map<String, CmsTreeNode<I_CmsContextMenuItem>> treesById = Maps.newHashMap();
 
         // Create childless tree node for each item
-        for (I_CmsContextMenuItem item : itemsById.values()) {
+        for (I_CmsContextMenuItem item : uniqueItems) {
             CmsTreeNode<I_CmsContextMenuItem> node = new CmsTreeNode<I_CmsContextMenuItem>();
             node.setData(item);
             treesById.put(item.getId(), node);
@@ -176,25 +168,6 @@ public class CmsContextMenuTreeBuilder {
             processedIds.addAll(currentLevel);
         }
         return root;
-    }
-
-    /**
-     * Filters out invisible context menu items from a given list.<p>
-     *
-     * @param items the items
-     *
-     * @return the list of context menu items
-     */
-    public List<I_CmsContextMenuItem> filterVisible(List<I_CmsContextMenuItem> items) {
-
-        List<I_CmsContextMenuItem> result = Lists.newArrayList();
-        for (I_CmsContextMenuItem item : items) {
-            CmsMenuItemVisibilityMode visibility = getVisibility(item);
-            if (!visibility.isInVisible()) {
-                result.add(item);
-            }
-        }
-        return result;
     }
 
     /**
