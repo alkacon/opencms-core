@@ -35,6 +35,7 @@ import org.opencms.file.types.CmsResourceTypeUnknownFile;
 import org.opencms.file.types.CmsResourceTypeUnknownFolder;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.CmsVfsService;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -276,9 +277,17 @@ public class CmsRestoreDeletedDialog extends CmsBasicDialog {
 
         }
         for (I_CmsHistoryResource deleted : deletedResources) {
-            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(deleted.getTypeId());
-            String typeName = resType.getTypeName();
-            CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
+            CmsExplorerTypeSettings explorerType;
+            try {
+                I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(deleted.getTypeId());
+                String typeName = resType.getTypeName();
+                explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
+            } catch (CmsLoaderException e) {
+                explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                    deleted.isFile()
+                    ? CmsResourceTypeUnknownFile.getStaticTypeName()
+                    : CmsResourceTypeUnknownFolder.getStaticTypeName());
+            }
             String title = cms.getRequestContext().removeSiteRoot(deleted.getRootPath());
 
             long deletionDate = 0;
