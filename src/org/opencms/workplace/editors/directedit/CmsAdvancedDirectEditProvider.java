@@ -37,6 +37,7 @@ import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.I_CmsAutoBeanFactory;
@@ -307,13 +308,17 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         String serializedCollectorInfo = AutoBeanCodex.encode(collectorInfoAutoBean).getPayload();
 
         String tag = CmsGwtConstants.CLASS_COLLECTOR_INFO;
-        String marker = "<"+tag+" class='"
+        String marker = "<"
+            + tag
+            + " class='"
             + CmsGwtConstants.CLASS_COLLECTOR_INFO
             + "' style='display: none !important;' "
             + CmsGwtConstants.ATTR_DATA_COLLECTOR
             + "='"
             + CmsEncoder.escapeXml(serializedCollectorInfo)
-            + "'></"+tag+">";
+            + "'></"
+            + tag
+            + ">";
         print(context, marker);
     }
 
@@ -479,7 +484,8 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         boolean hasNew = false;
         editableData.put(
             "hasEdit",
-            params.getButtonSelection().isShowEdit() && CmsResourceTypeXmlContent.isXmlContent(resource));
+            params.getButtonSelection().isShowEdit()
+                && (CmsResourceTypeXmlContent.isXmlContent(resource) || CmsResourceTypeXmlPage.isXmlPage(resource)));
         editableData.put(
             "hasDelete",
             params.getButtonSelection().isShowDelete() && writable && sitemapConfigPermissions.canEdit());
