@@ -1335,34 +1335,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
-     * Removes unnecessary locales from a container page.<p>
-     *
-     * @param containerPage the container page which should be changed
-     * @param localeRes the resource used to determine the locale
-     *
-     * @throws CmsException if something goes wrong
-     */
-    void ensureSingleLocale(CmsXmlContainerPage containerPage, CmsResource localeRes) throws CmsException {
-
-        CmsObject cms = getCmsObject();
-        Locale mainLocale = CmsLocaleManager.getMainLocale(cms, localeRes);
-        OpenCms.getLocaleManager();
-        Locale defaultLocale = CmsLocaleManager.getDefaultLocale();
-        if (containerPage.hasLocale(mainLocale)) {
-            removeAllLocalesExcept(containerPage, mainLocale);
-            // remove other locales
-        } else if (containerPage.hasLocale(defaultLocale)) {
-            containerPage.copyLocale(defaultLocale, mainLocale);
-            removeAllLocalesExcept(containerPage, mainLocale);
-        } else if (containerPage.getLocales().size() > 0) {
-            containerPage.copyLocale(containerPage.getLocales().get(0), mainLocale);
-            removeAllLocalesExcept(containerPage, mainLocale);
-        } else {
-            containerPage.addLocale(cms, mainLocale);
-        }
-    }
-
-    /**
      * Gets the properties of a resource as a map of client properties.<p>
      *
      * @param cms the CMS context to use
@@ -1959,7 +1931,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         cms.readFile(copyPage),
                         true,
                         true);
-                    ensureSingleLocale(page, entryFolder);
                     CmsContainerPageWrapper wrapper = new CmsContainerPageWrapper(cms, page);
                     if (isFunctionDetail) {
                         String functionDetailContainer = getFunctionDetailContainerName(parentFolder);
@@ -3067,7 +3038,6 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         moveDest));
             }
 
-
             updateProperties(cms, ownRes, defaultFileRes, change.getPropertyChanges());
             if (change.hasChangedPosition()) {
                 updateNavPos(ownRes, change);
@@ -3076,9 +3046,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             if (moveDest != null) {
                 cms.moveResource(moveSrc, moveDest);
             }
-            entryFolder = cms.readResource(
-                entryFolder.getStructureId(),
-                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+            entryFolder = cms.readResource(entryFolder.getStructureId(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
 
         } finally {
             if (entryPage != null) {
