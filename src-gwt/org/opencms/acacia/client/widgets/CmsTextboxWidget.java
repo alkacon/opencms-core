@@ -108,7 +108,8 @@ public class CmsTextboxWidget extends Composite implements I_CmsEditWidget {
             try {
                 JsPropertyMap<String> configMap = Js.cast(Global.JSON.parse(config));
                 String locale = configMap.get(CmsGwtConstants.JSON_INPUT_LOCALE);
-                boolean typografEnabled = configMap.getAsAny(CmsGwtConstants.JSON_INPUT_TYPOGRAF).asBoolean();
+                String typograf = configMap.get(CmsGwtConstants.JSON_INPUT_TYPOGRAF);
+                boolean typografEnabled = "auto".equals(typograf);
                 if ((locale != null) && typografEnabled && Typograf.hasLocale(locale)) {
                     m_typograf = CmsTypografUtil.createLiveInstance(locale);
                 }

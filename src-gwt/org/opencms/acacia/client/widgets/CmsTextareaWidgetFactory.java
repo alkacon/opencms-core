@@ -33,6 +33,10 @@ import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.shared.CmsGwtConstants;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
+
 import com.google.gwt.dom.client.Element;
 
 import elemental2.core.Global;
@@ -47,6 +51,14 @@ public class CmsTextareaWidgetFactory implements I_CmsWidgetFactory, I_CmsHasIni
 
     /** The widget name. */
     private static final String WIDGET_NAME = "org.opencms.widgets.CmsTextareaWidget";
+
+    /** Configuration for enabling typography button in inline mode only. */
+    public static final String CONF_TYPOGRAPHY = "typography";
+
+    /** Array of both possible typography options. */
+    public static final List<String> TYPOGRAPHY_OPTIONS = Arrays.asList(
+        CONF_TYPOGRAPHY,
+        CmsTextareaWidget.CONF_AUTO_TYPOGRAPHY);
 
     /**
      * Initializes this class.<p>
@@ -75,7 +87,7 @@ public class CmsTextareaWidgetFactory implements I_CmsWidgetFactory, I_CmsHasIni
 
             Any config = configObj.getAsAny(CmsGwtConstants.JSON_TEXTAREA_CONFIG);
             Any locale = configObj.getAsAny(CmsGwtConstants.JSON_TEXTAREA_LOCALE);
-            if ((config != null) && config.asString().contains(CmsTextareaWidget.CONF_TYPOGRAPHY)) {
+            if ((config != null) && hasTypography(config.asString())) {
                 if ((locale != null) && CmsTypografUtil.Typograf.hasLocale(locale.asString())) {
                     typografLocale = locale.asString();
                 }
@@ -85,6 +97,18 @@ public class CmsTextareaWidgetFactory implements I_CmsWidgetFactory, I_CmsHasIni
         }
         CmsTinyMCEWidget result = new CmsTinyMCEWidget(element, CmsTinyMCEWidget.NO_HTML_EDIT);
         result.setTypografLocale(typografLocale);
+        return result;
+    }
+
+    /**
+     * Checks if a typography option is set.
+     *
+     * @param config the config string
+     * @return true if a typography option is set
+     */
+    private boolean hasTypography(String config) {
+
+        boolean result = Stream.of(config.split("\\|")).anyMatch(token -> TYPOGRAPHY_OPTIONS.contains(token.trim()));
         return result;
     }
 

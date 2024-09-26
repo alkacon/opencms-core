@@ -62,7 +62,7 @@ public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, Has
     public static final String STYLE_PROPORTIONAL = "proportional";
 
     /** Configuration option to enable automatic typographic formatting using the Typograf library. */
-    public static final String CONF_TYPOGRAPHY = "typography";
+    public static final String CONF_AUTO_TYPOGRAPHY = "auto-typography";
 
     /** Default number of rows to display. */
     private static final int DEFAULT_ROWS_NUMBER = 5;
@@ -99,7 +99,7 @@ public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, Has
                     useProportional = true;
                 } else if (STYLE_MONSPACE.equals(conf)) {
                     useProportional = false;
-                } else if (CONF_TYPOGRAPHY.equals(conf)) {
+                } else if (CONF_AUTO_TYPOGRAPHY.equals(conf)) {
                     if (m_typograf == null) {
                         m_typograf = CmsTypografUtil.createLiveInstance(locale);
                     }

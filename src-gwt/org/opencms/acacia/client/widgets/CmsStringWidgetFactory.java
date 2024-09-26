@@ -36,6 +36,7 @@ import org.opencms.gwt.shared.CmsGwtConstants;
 import com.google.gwt.dom.client.Element;
 
 import elemental2.core.Global;
+import elemental2.dom.DomGlobal;
 import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
@@ -73,13 +74,13 @@ public class CmsStringWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit 
         try {
             JsPropertyMap<Object> configObj = Js.cast(Global.JSON.parse(configuration));
             Any typograf = configObj.getAsAny(CmsGwtConstants.JSON_INPUT_TYPOGRAF);
+
             Any locale = configObj.getAsAny(CmsGwtConstants.JSON_INPUT_LOCALE);
-            if ((typograf != null)
-                && typograf.asBoolean()
-                && (locale != null)
-                && CmsTypografUtil.Typograf.hasLocale(locale.asString())) {
+            if ((typograf != null) && (locale != null) && CmsTypografUtil.Typograf.hasLocale(locale.asString())) {
+                // for the inline widget, both 'true' and 'auto' as value of the typograf attribute cause the typography button to appear
                 typografLocale = locale.asString();
             }
+
         } catch (Exception e) {
             CmsDebugLog.consoleLog(e.getMessage());
         }

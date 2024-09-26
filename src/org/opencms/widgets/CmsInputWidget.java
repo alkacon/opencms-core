@@ -37,6 +37,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.A_CmsXmlContentValue;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -48,6 +49,12 @@ import org.apache.commons.logging.Log;
  * @since 6.0.0
  */
 public class CmsInputWidget extends A_CmsWidget implements I_CmsADEWidget {
+
+    /** Config value. */
+    public static final String CONF_AUTO_TYPOGRAPHY = "auto-typography";
+
+    /** Config value. */
+    public static final String CONF_TYPOGRAPHY = "typography";
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsInputWidget.class);
@@ -89,11 +96,10 @@ public class CmsInputWidget extends A_CmsWidget implements I_CmsADEWidget {
         JSONObject json = new JSONObject();
         String typografLocale = CmsTextareaWidget.getTypografLocale(contentLocale);
         for (String token : tokens) {
-            if ("typography".equals(token)) {
+            if (Arrays.asList(CONF_TYPOGRAPHY, CONF_AUTO_TYPOGRAPHY).contains(token)) {
                 try {
-                    json.put(CmsGwtConstants.JSON_INPUT_TYPOGRAF, true);
+                    json.put(CmsGwtConstants.JSON_INPUT_TYPOGRAF, CONF_AUTO_TYPOGRAPHY.equals(token) ? "auto" : "true");
                     json.put(CmsGwtConstants.JSON_INPUT_LOCALE, typografLocale);
-
                 } catch (Exception e) {
                     LOG.debug(e.getMessage(), e);
 
