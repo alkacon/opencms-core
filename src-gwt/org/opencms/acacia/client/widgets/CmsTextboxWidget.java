@@ -142,7 +142,7 @@ public class CmsTextboxWidget extends Composite implements I_CmsEditWidget {
                 if (m_typograf != null) {
                     try {
                         String oldValue = inputElem.value;
-                        String newValue = m_typograf.execute(oldValue);
+                        String newValue = CmsTypografUtil.transform(m_typograf, oldValue);
                         if (!Objects.equals(oldValue, newValue)) {
                             int pos = inputElem.selectionStart;
                             inputElem.value = newValue;

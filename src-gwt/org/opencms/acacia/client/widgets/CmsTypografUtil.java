@@ -29,6 +29,8 @@ package org.opencms.acacia.client.widgets;
 
 import org.opencms.gwt.shared.CmsGwtLog;
 
+import com.google.gwt.regexp.shared.RegExp;
+
 import elemental2.core.JsArray;
 import elemental2.core.JsObject;
 import jsinterop.annotations.JsConstructor;
@@ -53,6 +55,8 @@ public final class CmsTypografUtil {
 
         public static native boolean hasLocale(String locale);
 
+        public native void addSafeTag(String beginRegex, String endRegex);
+
         public native void disableRule(String rule);
 
         public native void enableRule(String rule);
@@ -60,10 +64,23 @@ public final class CmsTypografUtil {
         public native String execute(String input);
     }
 
+    /** Pattern to match entities. */
+    public static final RegExp ENTITY_PATTERN = RegExp.compile("(&[#a-z0-9]+;)", "gi");
+
+    /** Pattern to match safe tags. */
+    public static final RegExp SAFE_TAG_PATTERN = RegExp.compile("%OC(BEGIN|END)ENTITY%", "g");
+
+    /** Tag to insert before an entity. */
+    private static final String OC_BEGIN_ENTITY = "%OCBEGINENTITY%";
+
+    /** Tag to insert after an entity. */
+    private static final String OC_END_ENTITY = "%OCENDENTITY%";
+
     /**
      * Hidden default constructor.
      */
     private CmsTypografUtil() {
+
         // empty
     }
 
@@ -84,11 +101,50 @@ public final class CmsTypografUtil {
                 typograf = new Typograf(options);
                 typograf.disableRule("*");
                 typograf.enableRule("common/punctuation/quote");
+                typograf.addSafeTag(OC_BEGIN_ENTITY, OC_END_ENTITY);
             } catch (Exception e) {
                 CmsGwtLog.log(e.getLocalizedMessage());
             }
         }
         return typograf;
+    }
+
+    /**
+     * Wraps entities in safe tags.
+     *
+     * @param input the input string
+     * @return the string with wrapped entities
+     */
+    public static String protectEntities(String input) {
+
+        return ENTITY_PATTERN.replace(input, OC_BEGIN_ENTITY + "$1" + OC_END_ENTITY);
+    }
+
+    /**
+     * Removes the safe tags around entities.
+     *
+     * @param input the input string
+     * @return the transformed string
+     */
+    public static String restoreEntities(String input) {
+
+        return SAFE_TAG_PATTERN.replace(input, "");
+
+    }
+
+    /**
+     * Transforms things with typograf, preserving all entities.
+     *
+     * @param typograf the typograf instance
+     * @param value the value to transform
+     * @return the transformed value
+     */
+    public static String transform(Typograf typograf, String value) {
+
+        value = protectEntities(value);
+        value = typograf.execute(value);
+        value = restoreEntities(value);
+        return value;
     }
 
 }

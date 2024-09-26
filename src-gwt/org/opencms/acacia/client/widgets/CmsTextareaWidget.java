@@ -128,7 +128,7 @@ public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, Has
                 // we set the text area content to the new value, which causes a new change event. We prevent an infinite recursion
                 // using the m_rewriting member.
                 if ((m_typograf != null) && !m_rewriting) {
-                    String newContent = m_typograf.execute(event.getValue());
+                    String newContent = CmsTypografUtil.transform(m_typograf, event.getValue());
                     if (!newContent.equals(event.getValue())) {
                         m_rewriting = true;
                         int savedPosition = m_textarea.getPosition();
