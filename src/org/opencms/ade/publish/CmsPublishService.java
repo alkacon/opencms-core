@@ -498,7 +498,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         if (includeSiblings) {
             addSiblings(publishResources);
         }
-        Set<CmsResource> visibleResources = resources.stream().filter(
+        Set<CmsResource> visibleResources = publishResources.stream().filter(
             resource -> getCmsObject().existsResource(
                 resource.getStructureId(),
                 CmsResourceFilter.ALL.addRequireVisible())
@@ -515,7 +515,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
             result = relationFinder.getPublishRelatedResources();
         } else {
             result = new ResourceMap();
-            for (CmsResource resource : publishResources) {
+            for (CmsResource resource : visibleResources) {
                 if (keepOriginalUnchangedResources || !resource.getState().isUnchanged()) {
                     result.put(resource, new HashSet<CmsResource>());
                 }
