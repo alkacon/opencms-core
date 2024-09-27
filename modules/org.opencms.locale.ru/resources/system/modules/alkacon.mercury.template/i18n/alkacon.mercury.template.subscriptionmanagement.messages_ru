@@ -1,0 +1,5 @@
+GUI_FAILED_SENDING_CONFIRM_SUBSCRIPTION_MAIL_2=Не удалось отправить письмо с подтверждением подписки на "{1}" на "{0}". 
+GUI_FAILED_SENDING_CONFIRM_UNSUBSCRIPTION_MAIL_2=Не удалось отправить письмо с подтверждением отписки от "{1}" на "{0}". 
+GUI_FAILED_SUBSCRIPTION_ACTIVATION_FOR_2=Не удалось активировать подписку на "{1}" для пользователя "{0}". 
+GUI_FAILED_UNSUBSCRIPTION_FOR_2=Не удалось отписать "{0}" от "{1}".
+GUI_INVALID_PARAMETERS_0=Действие подписки не может быть выполнено, так как параметры недействительны для запрашиваемого действия.
