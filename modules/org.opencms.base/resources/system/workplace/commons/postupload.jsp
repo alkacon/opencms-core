@@ -1,7 +1,7 @@
 <%@page import="org.opencms.ade.postupload.*" %><%
 CmsPostUploadDialogActionElement dialog = new CmsPostUploadDialogActionElement(pageContext, request, response);
 %><!DOCTYPE html>
-<html>
+<html style="overflow: hidden;">
   <head>
   	<%= dialog.exportAll() %>
   	<title>Properties</title>

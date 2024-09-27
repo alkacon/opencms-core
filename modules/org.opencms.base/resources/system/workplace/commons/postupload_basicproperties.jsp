@@ -3,7 +3,7 @@ CmsPostUploadDialogActionElement dialog = new CmsPostUploadDialogActionElement(p
 dialog.setUsePropertyConfiguration(true);
 dialog.setAddBasicProperties(true);
 %><!DOCTYPE html>
-<html>
+<html style="overflow: hidden;">
   <head>
   	<%= dialog.exportAll() %>
   	<title>Properties</title>
