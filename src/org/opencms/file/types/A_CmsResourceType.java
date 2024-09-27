@@ -309,7 +309,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         // change type
         securityManager.chtype(cms.getRequestContext(), resource, type);
         // type may have changed from non link parseable to link parseable
-        createRelations(cms, securityManager, resource.getRootPath());
+        createRelations(cms, securityManager, resource.getRootPath(), true);
     }
 
     /**
@@ -329,7 +329,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             cms.getRequestContext().addSiteRoot(destination),
             siblingMode);
         // create the relations for the new resource, this could be improved by an sql query for copying relations
-        createRelations(cms, securityManager, cms.getRequestContext().addSiteRoot(destination));
+        createRelations(cms, securityManager, cms.getRequestContext().addSiteRoot(destination), false);
     }
 
     /**
@@ -373,7 +373,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         processCopyResources(cms, resourcename, resolver);
 
         // create the relations for the new resource
-        createRelations(cms, securityManager, cms.getRequestContext().addSiteRoot(resourcename));
+        createRelations(cms, securityManager, cms.getRequestContext().addSiteRoot(resourcename), false);
 
         // return the created resource
         return result;
@@ -396,7 +396,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             cms.getRequestContext().addSiteRoot(destination),
             properties);
         // create the relations for the new resource, this could be improved by an sql query for copying relations
-        createRelations(cms, securityManager, sibling.getRootPath());
+        createRelations(cms, securityManager, sibling.getRootPath(), false);
         return sibling;
     }
 
@@ -833,7 +833,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         securityManager.replaceResource(cms.getRequestContext(), resource, type, content, properties);
         // type may have changed from non link parseable to link parseable
-        createRelations(cms, securityManager, resource.getRootPath());
+        createRelations(cms, securityManager, resource.getRootPath(), true);
     }
 
     /**
@@ -844,7 +844,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         securityManager.restoreResource(cms.getRequestContext(), resource, version);
         // type may have changed from non link parseable to link parseable
-        createRelations(cms, securityManager, resource.getRootPath());
+        createRelations(cms, securityManager, resource.getRootPath(), false);
     }
 
     /**
@@ -978,7 +978,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                 links = ((I_CmsLinkParseable)type).parseLinks(cms, file);
             }
             // this has to be always executed, even if not link parseable to remove old links
-            securityManager.updateRelationsForResource(cms.getRequestContext(), file, links);
+            securityManager.updateRelationsForResource(cms.getRequestContext(), file, links, true);
             return file;
         }
         // folders can never be written like a file
@@ -1018,12 +1018,13 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * @param cms the cms context
      * @param securityManager the security manager
      * @param resourceName the resource name of the resource to update the relations for
+     * @param updateSiblingState if true, sets the state of siblings with changed relations to 'changed' (unless they are new or deleted)
      *
      * @return the fresh read resource
      *
      * @throws CmsException if something goes wrong
      */
-    protected CmsResource createRelations(CmsObject cms, CmsSecurityManager securityManager, String resourceName)
+    protected CmsResource createRelations(CmsObject cms, CmsSecurityManager securityManager, String resourceName, boolean updateSiblingState)
     throws CmsException {
 
         CmsResource resource = securityManager.readResource(
@@ -1036,7 +1037,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;
             links = linkParseable.parseLinks(cms, cms.readFile(resource));
         }
-        securityManager.updateRelationsForResource(cms.getRequestContext(), resource, links);
+        securityManager.updateRelationsForResource(cms.getRequestContext(), resource, links, updateSiblingState);
         return resource;
     }
 
@@ -1274,7 +1275,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         CmsResource undoneResource1 = null;
         try {
             // first try to locate the resource by path
-            undoneResource1 = createRelations(cms, securityManager, resource.getRootPath());
+            undoneResource1 = createRelations(cms, securityManager, resource.getRootPath(), false);
         } catch (CmsVfsResourceNotFoundException e) {
             // ignore, undone move operation
         }
@@ -1302,7 +1303,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                     }
                 }
             }
-            securityManager.updateRelationsForResource(cms.getRequestContext(), undoneResource2, links);
+            securityManager.updateRelationsForResource(cms.getRequestContext(), undoneResource2, links, false);
         }
     }
 }

@@ -394,7 +394,7 @@ public class CmsResourceTypeXmlContainerPage extends CmsResourceTypeXmlContent {
             links = ((I_CmsLinkParseable)type).parseLinks(cms, file);
         }
         // this has to be always executed, even if not link parseable to remove old links
-        securityManager.updateRelationsForResource(cms.getRequestContext(), file, links);
+        securityManager.updateRelationsForResource(cms.getRequestContext(), file, links, true);
         return file;
     }
 }

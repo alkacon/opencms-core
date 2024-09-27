@@ -6738,17 +6738,18 @@ public final class CmsSecurityManager {
      * @param context the current user context
      * @param resource the resource to update the relations for
      * @param relations the relations to update
+     * @param updateSiblingState if true, sets the state of siblings with changed relations to 'changed' (unless they are new or deleted)
      *
      * @throws CmsException if something goes wrong
      *
      * @see CmsDriverManager#updateRelationsForResource(CmsDbContext, CmsResource, List)
      */
-    public void updateRelationsForResource(CmsRequestContext context, CmsResource resource, List<CmsLink> relations)
+    public void updateRelationsForResource(CmsRequestContext context, CmsResource resource, List<CmsLink> relations, boolean updateSiblingState)
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            m_driverManager.updateRelationsForResource(dbc, resource, relations);
+            m_driverManager.updateRelationsForResource(dbc, resource, relations, updateSiblingState);
         } catch (Exception e) {
             dbc.report(
                 null,
