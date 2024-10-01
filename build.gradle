@@ -936,7 +936,7 @@ task war (dependsOn: [
     from (modulesDistsDir) {
         into '/WEB-INF/packages/modules'
         localeModules.each{ localeModule ->
-            exclude "$localeModule-*.zip"
+            exclude "${localeModule}*.zip"
         }
     }
 
