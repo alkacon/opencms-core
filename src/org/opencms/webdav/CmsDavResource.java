@@ -29,6 +29,7 @@ package org.opencms.webdav;
 
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.repository.CmsPropertyName;
@@ -666,10 +667,22 @@ public class CmsDavResource implements DavResource {
                 m_item = Optional.of(item);
 
             } catch (Exception e) {
-                if (!(e instanceof CmsVfsResourceNotFoundException)) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                } else {
+                boolean isFiltered = false;
+                if (e instanceof CmsException) {
+                    CmsMessageContainer messageContainer = ((CmsException)e).getMessageContainer();
+                    if (messageContainer != null) {
+                        String messageKey = messageContainer.getKey();
+                        if (org.opencms.repository.Messages.ERR_ITEM_FILTERED_1.equals(messageKey)) {
+                            isFiltered = true;
+                        }
+                    }
+                }
+                if (e instanceof CmsVfsResourceNotFoundException) {
                     LOG.info(e.getLocalizedMessage(), e);
+                } else if (isFiltered) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                } else {
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
                 m_item = Optional.empty();
 
