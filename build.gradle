@@ -1097,7 +1097,7 @@ task updater (dependsOn: [
     from (modulesDistsDir) {
         into '/WEB-INF/updatedata/modules'
         localeModules.each{ localeModule ->
-            exclude "$localeModule-*.zip"
+            exclude "${localeModule}*.zip"
         }
         exclude "*mercury*.zip"
     }
