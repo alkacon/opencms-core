@@ -16,7 +16,7 @@
 		<site>/</site>
 		<export-mode name="default"/>
 		<description><![CDATA[This module contains the French language localization files for the OpenCms workplace. Some important keywords in english are kept , like 'Explorer', 'Launchpad', 'Workplace', 'Online', 'Offline' , 'Workflow', 'Formatter' ...]]></description>
-		<version>17.0.0</version>
+		<version>18.0.0</version>
 		<authorname/>
 		<authoremail/>
 		<datecreated>Mon, 15 Jan 2024 17:38:13 GMT</datecreated>
