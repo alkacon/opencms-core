@@ -15,6 +15,60 @@ Legend:
 - Minor improvement or general comment
 * Bug fixed
 
+OpenCms 18.0.0 - October 8, 2024
+
+! New "Place element" mode in the page editor as alternative to drag & drop
+! Reused content in the page and form editor is now clearly marked
+! Automatic typographical correction of quotation marks in Editors
+! "Dead links" in content from a WYSIWYG editor are now automatically disabled
+! Support for the Jetty 12 servlet container as an alternative for Tomcat
+
+- Page editor: Use custom <oc-...> tags instead of <div> for inserted 'edit points' in lists
+- Page editor: Added improved JavaScript events for page editor actions
+- Workplace: Added CSV user import/export dialog option for root OU
+- Workplace: 'Direct publish' added to context menu of gallery dialog
+- Workplace: Improved file list update behavior in apps after direct publish
+- Workplace: Improved 'Open page' option in context menus for elements on detail pages
+- Workplace: Optimized element settings dialog for multiline labels
+- Workplace: Added option to hide specific categories in category select widget
+- Configuration: Added sitemap attribute for loading of external TinyMCE configuration file
+- Configuration: Added option to use custom error messages in XSDs for built-in widgets like 'datetime'
+- Configuration: Added API fallback option for context menu items
+- JSP API: Added .toURI method to CmsJspLinkWrapper
+- JSP API: Added cms.formatterSettingDefault to get the default formatter setting
+- JSP API: Added cms.formatterKey to read the currently used formatter key
+- JSP API: Added support for formatter keys in <cms:displayFormatter> tag
+- JSP API: Added 'containerType' attribute to <cms:display> tag
+- Optimized log output for JSP compiler errors
+- Using UTF-8 for all resource bundle @.properties@ files instead of ISO-8859-1
+- Updated SOLR to version 9.5
+- Pull request #799 updated Russian translation org.opencms.locale.ru. (https://github.com/alkacon/opencms-core/pull/799)
+
+* Security: Do not log password on failed user login attempts
+* Fixed issue with updater not adding required nodes in @opencms-system.xml@ for the 'personal data search' app
+* Fixed issue with caching for search > document factories > content
+* Fixed issue when moving a redirect in the sitemap editor
+* Fixed issue with renaming the image when uploading an image in a content
+* Fixed issue with uploading files of size 0 bytes
+* Fixed issue with module import overwriting parent folders that are not part of the module
+* Fixed issue with wrong functions being inserted when multiple functions are placed directly after another
+* Fixed issue where moving a page in the sitemap editor to a folder containing a same-named redirect could cause DB corruption
+* Fixed issue with category detail pages not resolving correctly for expired resources
+* Fixed issue in the publish dialog where 'My changes' are not cleared when more than 1000 changes are present
+* Fixed issue where selecting a folder in the log download dialog resulted in an NPE
+* Fixed issue with 404 error after leaving the sitemap editor
+* Fixed issue where publishing a page after moving it is not possible when contents use "store with page" setting
+* Fixed issue where a sitemap configuration using a combination of category specific detail pages is not working correctly
+* Fixed issue with explorer folder location input sometimes showing a scrollbar
+* Fixed issue where editor for legacy 'xmlpage' type content could not be accessed from page editor
+* Fixed issue with 'Undelete' operation failing for resources that are of an unknown type
+* Fixed issue with dynamic functions not usable in template pages if the page locale is not 'en'
+* Fixed hardcoded version number in updater
+* Fixed deprecation warning for 'DOMNodeInserted mutation' event in Chrome console
+* Fixed deprecation warning for 'unload' event in Chrome console
+* Fixed issue #805 with unpublished relations on siblings (https://github.com/alkacon/opencms-core/issues/805)
+* Fixed issue #804 with missing edit markers in AJAX lists (https://github.com/alkacon/opencms-core/issues/804)
+
 
 OpenCms 17.0.0 - April 9, 2024
 
