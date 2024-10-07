@@ -36,6 +36,7 @@ import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -79,13 +80,20 @@ public class CmsLocalePrefixLinkSubstitutionHandler extends CmsDefaultLinkSubsti
                     }
                 }
             }
+            Locale requestedLocale = null == localeFromParameter
+            ? cms.getRequestContext().getLocale()
+            : localeFromParameter;
+            List<Locale> defaultLocales = OpenCms.getLocaleManager().getDefaultLocales(cms, vfsName);
+            List<Locale> availableLocales = OpenCms.getLocaleManager().getAvailableLocales(cms, vfsName);
+            Locale servedLocale = OpenCms.getLocaleManager().getBestMatchingLocale(
+                requestedLocale,
+                defaultLocales,
+                availableLocales);
             // inject the current locale as a virtual path element
             return new CmsPair<String, String>(
                 CmsStringUtil.joinPaths(
                     OpenCms.getStaticExportManager().getVfsPrefix(),
-                    null != localeFromParameter
-                    ? localeFromParameter.toString()
-                    : cms.getRequestContext().getLocale().toString(),
+                    servedLocale.toString(),
                     vfsName),
                 parameters);
         } else {
