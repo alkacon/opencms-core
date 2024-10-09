@@ -110,6 +110,15 @@ implements I_CmsEmbeddedDialogClientRPC, I_CmsEmbeddedDialogLoader {
     }
 
     /**
+     * @see org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC#sendNotification(boolean, java.lang.String)
+     */
+    @Override
+    public void sendNotification(boolean error, String notification) {
+
+        CmsEmbedWrapper.connector.sendNotification(error, notification);
+    }
+
+    /**
      * @see com.vaadin.client.extensions.AbstractExtensionConnector#extend(com.vaadin.client.ServerConnector)
      */
     @Override

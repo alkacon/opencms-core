@@ -72,4 +72,12 @@ public interface I_CmsEmbeddedDialogClientRPC extends ClientRpc {
      * @param str the string
      */
     void selectString(String str);
+
+    /**
+     * Send a notification to the client to display.
+     *
+     * @param error true if this is an error notification
+     * @param notification the notification HTML
+     */
+    void sendNotification(boolean error, String notification);
 }

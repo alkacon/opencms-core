@@ -69,4 +69,12 @@ public interface I_CmsEmbeddedDialogHandlerJsCallbacks {
      */
     public void selectString(String principle);
 
+    /**
+     * Displays a notification.
+     *
+     * @param error true if it's an error
+     * @param notification the notification HTML
+     */
+    public void sendNotification(boolean error, String notification);
+
 }

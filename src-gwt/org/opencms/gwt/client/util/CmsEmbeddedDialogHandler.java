@@ -29,6 +29,8 @@ package org.opencms.gwt.client.util;
 
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsHasInit;
+import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsActionHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsStringSelectHandler;
 import org.opencms.gwt.shared.CmsGwtConstants;
@@ -347,6 +349,20 @@ public class CmsEmbeddedDialogHandler implements I_CmsHasInit, I_CmsEmbeddedDial
         if (m_onCloseCommand != null) {
             m_onCloseCommand.execute();
         }
+    }
+
+    /**
+     * @see org.opencms.gwt.client.util.I_CmsEmbeddedDialogHandlerJsCallbacks#sendNotification(boolean, java.lang.String)
+     */
+    @Override
+    public void sendNotification(boolean error, String notification) {
+
+        if (error) {
+            CmsNotification.get().send(Type.ERROR, notification);
+        } else {
+            CmsNotification.get().send(Type.NORMAL, notification);
+        }
+
     }
 
     /**

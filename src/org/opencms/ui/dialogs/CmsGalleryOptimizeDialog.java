@@ -127,7 +127,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
         /**
          * Creates a new instance.
-        
+
          * @param dataItem the data item
          */
         public ContextMenu(DataItem dataItem) {
@@ -178,14 +178,14 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         /** The data binder of this editable gallery item. */
         private Binder<DataItem> m_binder = new Binder<DataItem>();
 
-        /** The form composite of this editable gallery item. */
-        private FormComposite m_compositeForm;
-
         /** The file composite of this editable gallery item. */
         private FileComposite m_compositeFile;
 
         /** The file delete composite of this editable gallery item. */
         private FileDeleteComposite m_compositeFileDelete;
+
+        /** The form composite of this editable gallery item. */
+        private FormComposite m_compositeForm;
 
         /** The copyright information of this editable gallery item. */
         private String m_copyright;
@@ -1397,6 +1397,10 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             DataItem::getDateLastModified).reversed()::compare;
 
         /** Comparator. */
+        final SerializableComparator<DataItem> SORT_NOCOPYRIGHT_FIRST = Comparator.comparing(
+            DataItem::getNoCopyright)::compare;
+
+        /** Comparator. */
         final SerializableComparator<DataItem> SORT_PATH_ASCENDING = Comparator.comparing(
             DataItem::getPath,
             String.CASE_INSENSITIVE_ORDER)::compare;
@@ -1418,10 +1422,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
         /** Comparator. */
         final SerializableComparator<DataItem> SORT_UNUSED_FIRST = Comparator.comparing(DataItem::getIsUsed)::compare;
-
-        /** Comparator. */
-        final SerializableComparator<DataItem> SORT_NOCOPYRIGHT_FIRST = Comparator.comparing(
-            DataItem::getNoCopyright)::compare;
 
         /**
          * Create a new provider for a given data item list.
@@ -1611,9 +1611,9 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                             m_deletedCurrentResource.add(dataItem.getResource());
                         } else if ((dataItem.getDeleteFlag().booleanValue() == false)
                             && m_deletedCurrent.contains(dataItem)) {
-                                m_deletedCurrent.remove(dataItem);
-                                m_deletedCurrentResource.remove(dataItem.getResource());
-                            }
+                            m_deletedCurrent.remove(dataItem);
+                            m_deletedCurrentResource.remove(dataItem.getResource());
+                        }
                     } catch (ValidationException e) {
                         LOG.warn(e.getLocalizedMessage(), e);
                     }
@@ -1657,20 +1657,23 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     /** The save and exit button. */
     private Button m_buttonSaveAndExit;
 
-    /** The dialog context. */
-    private I_CmsDialogContext m_context;
-
     /** The UI composite representing the gallery item list header view. */
     private Object m_compositeDataListHeader;
+
+    /** The dialog context. */
+    private I_CmsDialogContext m_context;
 
     /** The UI component representing the gallery item list header view. */
     private VerticalLayout m_dataListHeaderView;
 
+    /** The UI component representing the gallery item list view. */
+    private GridLayout m_dataListView;
+
     /** The UI component representing the scrollable wrapper around the gallery item list view. */
     private Panel m_dataListViewScrollable;
 
-    /** The UI component representing the gallery item list view. */
-    private GridLayout m_dataListView;
+    /** The filter handler. */
+    private FilterHandler m_filterHandler = new FilterHandler();
 
     /** The gallery */
     private CmsResource m_gallery;
@@ -1683,6 +1686,9 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
     /** Localized message. */
     private String m_messageSortDateLastModifiedDescending;
+
+    /** Localized message. */
+    private String m_messageSortNoCopyrightFirst;
 
     /** Localized message. */
     private String m_messageSortPathAscending;
@@ -1698,12 +1704,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
     /** Localized message. */
     private String m_messageSortUnusedFirst;
-
-    /** Localized message. */
-    private String m_messageSortNoCopyrightFirst;
-
-    /** The filter handler. */
-    private FilterHandler m_filterHandler = new FilterHandler();
 
     /** The page handler. */
     private PageHandler m_pageHandler = new PageHandler();
@@ -1853,7 +1853,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                 @Override
                 public void run() {
 
-                    persist();
+                    persist(exit);
                     m_saveHandler.setFlagCancelSave(false);
                     if (exit) {
                         finishDialog(m_saveHandler.getChangedIds());
@@ -1873,7 +1873,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                 m_saveHandler.getDeletedCurrentResource(),
                 org.opencms.ui.Messages.GUI_SELECTED_0);
         } else {
-            persist();
+            persist(exit);
             if (exit) {
                 finishDialog(m_saveHandler.getChangedIds());
             }
@@ -2182,25 +2182,42 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     /**
      * Persists all data changes that have not been saved yet. Refreshes the UI.
      * Informs the user about failed updates, failed renames and failed deletes.<p>
+     *
+     * @param exit true if we exit the dialog after saving
      */
-    private void persist() {
+    private void persist(boolean exit) {
 
         StringBuilder errorMessageList = new StringBuilder();
         persistUpdateAndRename(errorMessageList);
         persistDelete(errorMessageList);
+
+        // In the embedded dialog case, using the Vaadin notifications when exiting the dialog doesn't work (the iframe
+        // is hidden before the notifications show up).
+        // We don't really need notifications for the successful case, but when errors occur, we send them to the
+        // ADE notification mechanism.
+        boolean embeddedExit = (m_context instanceof CmsEmbeddedDialogContext) && exit;
+
         if (errorMessageList.length() == 0) {
-            String message = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_LABEL_SUCCESSFULLY_SAVED_0);
-            Notification notification = new Notification(message, "", Notification.Type.HUMANIZED_MESSAGE);
-            notification.setPosition(Position.TOP_CENTER);
-            notification.show(Page.getCurrent());
+
+            if (!embeddedExit) {
+                String message = CmsVaadinUtils.getMessageText(
+                    Messages.GUI_GALLERY_OPTIMIZE_LABEL_SUCCESSFULLY_SAVED_0);
+                Notification notification = new Notification(message, "", Notification.Type.HUMANIZED_MESSAGE);
+                notification.setPosition(Position.TOP_CENTER);
+                notification.show(Page.getCurrent());
+            }
         } else {
-            Notification notification = new Notification(
-                "",
-                errorMessageList.toString(),
-                Notification.Type.ERROR_MESSAGE);
-            notification.setHtmlContentAllowed(true);
-            notification.setPosition(Position.TOP_CENTER);
-            notification.show(Page.getCurrent());
+            if (embeddedExit) {
+                ((CmsEmbeddedDialogContext)m_context).sendNotification(true, errorMessageList.toString());
+            } else {
+                Notification notification = new Notification(
+                    "",
+                    errorMessageList.toString(),
+                    Notification.Type.ERROR_MESSAGE);
+                notification.setHtmlContentAllowed(true);
+                notification.setPosition(Position.TOP_CENTER);
+                notification.show(Page.getCurrent());
+            }
         }
     }
 

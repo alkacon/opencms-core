@@ -80,20 +80,20 @@ public class CmsEmbeddedDialogContext implements I_CmsDialogContext {
     /** The context type. */
     private ContextType m_contextType;
 
+    /** The extension used for communicating with the client. */
+    private CmsEmbeddedDialogExtension m_extension;
+
     /** Keeps the dialog frame on window close. */
     private boolean m_keepFrameOnClose;
+
+    /** The parameters. */
+    private Map<String, String> m_parameters;
 
     /** The list of resources. */
     private List<CmsResource> m_resources;
 
     /** The window used to display the dialog. */
     private Window m_window;
-
-    /** The extension used for communicating with the client. */
-    private CmsEmbeddedDialogExtension m_extension;
-
-    /** The parameters. */
-    private Map<String, String> m_parameters;
 
     /**
      * Constructor.<p>
@@ -348,6 +348,17 @@ public class CmsEmbeddedDialogContext implements I_CmsDialogContext {
     public void selectString(String principalName) {
 
         getClientRPC().selectString(principalName);
+    }
+
+    /**
+     * Send a notification to the client to display.
+     *
+     * @param error true if this is an error notification
+     * @param notification the notification HTML
+     */
+    public void sendNotification(boolean error, String notification) {
+
+        getClientRPC().sendNotification(error, notification);
     }
 
     /**
