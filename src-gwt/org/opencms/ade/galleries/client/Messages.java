@@ -376,6 +376,9 @@ public final class Messages {
     public static final String GUI_TAB_GALLERIES_IS_EMPTY_0 = "GUI_TAB_GALLERIES_IS_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAB_GALLERIES_OPTIMIZE_BUTTON_0 = "GUI_TAB_GALLERIES_OPTIMIZE_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_SEARCH_BUTTON_CLEAR_0 = "GUI_TAB_SEARCH_BUTTON_CLEAR_0";
 
     /** Message constant for key in the resource bundle. */

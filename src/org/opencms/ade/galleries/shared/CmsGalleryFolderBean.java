@@ -29,6 +29,7 @@ package org.opencms.ade.galleries.shared;
 
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.sort.I_CmsHasPath;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 
@@ -39,23 +40,26 @@ import java.util.ArrayList;
  */
 public class CmsGalleryFolderBean extends CmsListInfoBean implements I_CmsHasPath {
 
-    /** The gallery group. */
-    private CmsGalleryGroup m_group;
-
     /** A list with content types corresponding to this gallery type. */
     private ArrayList<String> m_contentTypes;
 
     /** Flag to indicate if the user has write permissions to the gallery folder. */
     private boolean m_editable;
 
+    /** The gallery group. */
+    private CmsGalleryGroup m_group;
+
+    /** The label for the gallery group. */
+    private String m_groupLabel;
+
+    /** The structure id of the gallery. */
+    private CmsUUID m_id;
+
     /** The folder site-path. */
     private String m_path;
 
     /** The name of the JavaScript method to get an upload button provider object. */
     private String m_uploadAction;
-
-    /** The label for the gallery group. */
-    private String m_groupLabel;
 
     /**
      * Returns the content types which can be used within this gallery type.<p>
@@ -85,6 +89,16 @@ public class CmsGalleryFolderBean extends CmsListInfoBean implements I_CmsHasPat
     public String getGroupLabel() {
 
         return m_groupLabel;
+    }
+
+    /**
+     * Gets the structure id.
+     *
+     * @return the structure id
+     */
+    public CmsUUID getId() {
+
+        return m_id;
     }
 
     /**
@@ -177,6 +191,17 @@ public class CmsGalleryFolderBean extends CmsListInfoBean implements I_CmsHasPat
     public void setGroupLabel(String groupLabel) {
 
         m_groupLabel = groupLabel;
+    }
+
+    /**
+     * Sets the structure id.
+     *
+     * @param structureId the structure id
+     */
+    public void setId(CmsUUID structureId) {
+
+        m_id = structureId;
+
     }
 
     /**

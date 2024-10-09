@@ -1685,6 +1685,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 }
                 // sitepath as gallery id
                 bean.setPath(sitePath);
+                bean.setId(res.getStructureId());
                 // content types
                 bean.setContentTypes(contentTypes);
                 // title

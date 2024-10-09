@@ -44,15 +44,18 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.contextmenu.I_CmsActionHandler;
 import org.opencms.gwt.client.ui.externallink.CmsEditExternalLinkDialog;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.client.util.CmsEmbeddedDialogHandler;
 import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -336,6 +339,36 @@ public class CmsGalleriesTab extends A_CmsListTab {
     }
 
     /**
+     * Opens the 'optimize gallery' dialog for the given structure id of a gallery
+     *
+     * @param id the structure id of a gallery
+     */
+    public static void openOptimizeGalleryDialog(CmsUUID id) {
+
+        CmsEmbeddedDialogHandler dialogHandler = new CmsEmbeddedDialogHandler(new I_CmsActionHandler() {
+
+            public void leavePage(String targetUri) {
+
+                // not supported
+            }
+
+            public void onSiteOrProjectChange(String sitePath, String serverLink) {
+
+                // not supported
+            }
+
+            public void refreshResource(CmsUUID structureId) {
+
+            }
+        });
+        dialogHandler.openDialog(
+            "org.opencms.ui.actions.CmsGalleryOptimizeDialogAction",
+            CmsGwtConstants.CONTEXT_TYPE_FILE_TABLE,
+            Collections.singletonList(id));
+
+    }
+
+    /**
      * Fill the content of the galleries tab panel.<p>
      *
      * @param galleryInfos the gallery info beans
@@ -522,6 +555,17 @@ public class CmsGalleriesTab extends A_CmsListTab {
         }
 
         if (galleryInfo.isEditable()) {
+
+            CmsPushButton optimizeButton = new CmsPushButton(I_CmsButton.EDIT_SMALL);
+            optimizeButton.setText(null);
+            optimizeButton.setTitle(Messages.get().key(Messages.GUI_TAB_GALLERIES_OPTIMIZE_BUTTON_0));
+            optimizeButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
+            optimizeButton.addClickHandler(event -> {
+                event.stopPropagation(); // click event on gallery box triggers search, we don't want that
+                CmsUUID id = galleryInfo.getId();
+                openOptimizeGalleryDialog(id);
+            });
+
             String uploadAction = galleryInfo.getUploadAction();
 
             if (null != uploadAction) {
@@ -581,6 +625,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
                     }
                 }
             }
+            listItemWidget.addButton(optimizeButton);
         }
         listItemWidget.addButton(createSelectButton(selectionHandler));
         if (m_tabHandler.hasGalleriesSelectable()) {
