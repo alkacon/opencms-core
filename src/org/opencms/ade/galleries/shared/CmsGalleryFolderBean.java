@@ -55,6 +55,9 @@ public class CmsGalleryFolderBean extends CmsListInfoBean implements I_CmsHasPat
     /** The structure id of the gallery. */
     private CmsUUID m_id;
 
+    /** Can use the 'optimize gallery' dialog. */
+    private boolean m_optimizable;
+
     /** The folder site-path. */
     private String m_path;
 
@@ -141,6 +144,18 @@ public class CmsGalleryFolderBean extends CmsListInfoBean implements I_CmsHasPat
     }
 
     /**
+     * User can use the 'optimize gallery' dialog.
+     *
+     * <p>This does not necessarily mean the user has write permissions on the gallery.
+     *
+     * @return true if the user can use the 'optimize gallery' dialog
+     */
+    public boolean isOptimizable() {
+
+        return m_optimizable;
+    }
+
+    /**
      * Returns if the gallery matches the given filter.<p>
      *
      * @param filter the filter to match
@@ -201,6 +216,17 @@ public class CmsGalleryFolderBean extends CmsListInfoBean implements I_CmsHasPat
     public void setId(CmsUUID structureId) {
 
         m_id = structureId;
+
+    }
+
+    /**
+     * Enables / disables 'optimize gallery' dialog.
+     *
+     * @param optimizable true if the 'optimize gallery' dialog should be enabled
+     */
+    public void setOptimizable(boolean optimizable) {
+
+        m_optimizable = optimizable;
 
     }
 

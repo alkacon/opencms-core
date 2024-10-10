@@ -625,7 +625,9 @@ public class CmsGalleriesTab extends A_CmsListTab {
                     }
                 }
             }
-            listItemWidget.addButton(optimizeButton);
+            if (galleryInfo.isOptimizable()) {
+                listItemWidget.addButton(optimizeButton);
+            }
         }
         listItemWidget.addButton(createSelectButton(selectionHandler));
         if (m_tabHandler.hasGalleriesSelectable()) {

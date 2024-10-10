@@ -94,6 +94,7 @@ import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.search.galleries.CmsGallerySearchResultList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionViolationException;
+import org.opencms.security.CmsRole;
 import org.opencms.site.CmsSite;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.ui.components.CmsResourceIcon;
@@ -1740,6 +1741,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 bean.setGroupLabel(groupLabel);
                 bean.setResourceType(tInfo.getResourceType().getTypeName());
                 bean.setUploadAction(tInfo.getResourceType().getConfiguration().get("gallery.upload.action"));
+
+                // For performance reasons, we only do a general role check for EDITOR which does not take the concrete gallery path or context path into account.
+                bean.setOptimizable(OpenCms.getRoleManager().hasRole(getCmsObject(), CmsRole.EDITOR));
+
                 bean.setEditable(isEditable(getCmsObject(), res));
                 bean.setBigIconClasses(
                     CmsIconUtil.getIconClasses(CmsIconUtil.getDisplayType(getCmsObject(), res), sitePath, false));
