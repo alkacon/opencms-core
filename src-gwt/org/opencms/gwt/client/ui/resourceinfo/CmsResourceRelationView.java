@@ -47,6 +47,7 @@ import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsLogout;
+import org.opencms.gwt.client.ui.contextmenu.CmsShowPage;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
@@ -298,14 +299,15 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
                 }
 
                 if (isContainerpage) {
-                    if (relationBean.getLink() != null) {
-                        final String link = relationBean.getLink();
+                    CmsUUID id = relationBean.getStructureId();
+                    if ((relationBean.getLink() != null) && (id != null)) {
                         itemWidget.setIconCursor(Cursor.POINTER);
                         itemWidget.addIconClickHandler(new ClickHandler() {
 
                             public void onClick(ClickEvent e) {
 
-                                Window.open(link, "_blank", "");
+                                CmsShowPage showPage = new CmsShowPage();
+                                showPage.execute(id);
                             }
                         });
                     }

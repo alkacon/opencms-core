@@ -52,9 +52,11 @@ public class CmsShowPage implements I_CmsHasContextMenuCommand, I_CmsContextMenu
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#execute(org.opencms.util.CmsUUID, org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler, org.opencms.gwt.shared.CmsContextMenuEntryBean)
+     * Execute method for use outside of the context menu.
+     *
+     * @param structureId the structure id to open
      */
-    public void execute(final CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
+    public void execute(final CmsUUID structureId) {
 
         CmsRpcAction<CmsPreviewInfo> previewAction = new CmsRpcAction<CmsPreviewInfo>() {
 
@@ -78,6 +80,14 @@ public class CmsShowPage implements I_CmsHasContextMenuCommand, I_CmsContextMenu
             }
         };
         previewAction.execute();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#execute(org.opencms.util.CmsUUID, org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler, org.opencms.gwt.shared.CmsContextMenuEntryBean)
+     */
+    public void execute(final CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
+
+        execute(structureId);
     }
 
     /**
