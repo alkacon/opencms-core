@@ -252,6 +252,14 @@ public interface I_CmsCoreServiceAsync {
     void prefetch(AsyncCallback<CmsCoreData> callback);
 
     /**
+     * Saves a category used by the current user.
+     *
+     * @param category the category
+     * @param callback the callback to call when finished
+     */
+    void saveUsedCategory(String category, AsyncCallback<Void> callback);
+
+    /**
      * Saves the user settings for the current user.<p>
      *
      * @param userSettings the new values for the user settings

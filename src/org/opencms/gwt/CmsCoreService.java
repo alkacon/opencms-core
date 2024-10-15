@@ -151,8 +151,13 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     public static List<CmsCategoryTreeEntry> buildCategoryTree(CmsObject cms, List<CmsCategory> categories) {
 
         List<CmsCategoryTreeEntry> result = new ArrayList<CmsCategoryTreeEntry>();
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        CmsUsedCategoriesList usedCategoriesBean = CmsUsedCategoriesList.fromJson(
+            (String)user.getAdditionalInfo(CmsUsedCategoriesList.ADDINFO_USED_CATEGORIES));
+        Set<String> usedCategories = usedCategoriesBean.getCategories();
         for (CmsCategory category : categories) {
             CmsCategoryTreeEntry current = new CmsCategoryTreeEntry(category);
+            current.setUsed(usedCategories.contains(category.getPath()));
             current.setSitePath(cms.getRequestContext().removeSiteRoot(category.getRootPath()));
             String parentPath = CmsResource.getParentFolder(current.getPath());
             CmsCategoryTreeEntry parent = null;
@@ -1337,6 +1342,21 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#saveUsedCategory(java.lang.String)
+     */
+    @Override
+    public void saveUsedCategory(String category) throws CmsRpcException {
+
+        try {
+            CmsObject cms = getCmsObject();
+            CmsUsedCategoriesList.addUsedCategoryForCurrentUser(cms, category);
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            error(e);
+        }
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#saveUserSettings(java.util.Map, java.util.Set)
      */
     public void saveUserSettings(Map<String, String> userSettings, Set<String> edited) throws CmsRpcException {
@@ -1555,7 +1575,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      * @return the resource categories
      *
      * @throws CmsRpcException if something goes wrong
-    
+
      *
      * @return
      * @throws CmsRpcException

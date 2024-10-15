@@ -739,7 +739,9 @@ public final class Messages {
     public static final String GUI_SORT_LABEL_TITLE_DECS_0 = "GUI_SORT_LABEL_TITLE_DECS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_USED_0 = "GUI_SORT_LABEL_USED_0";
 
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TARGETS_EMPTY_0 = "GUI_TARGETS_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
@@ -899,6 +901,12 @@ public final class Messages {
     public static final String GUI_UPLOAD_PROGRESS_UPLOADING_VALUE_2 = "GUI_UPLOAD_PROGRESS_UPLOADING_VALUE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_VIRUSES_FOUND_TITLE_0 = "GUI_UPLOAD_VIRUSES_FOUND_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_VIRUSES_FOUND_WARNING_0 = "GUI_UPLOAD_VIRUSES_FOUND_WARNING_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_URLNAME_CANT_BE_EMPTY_0 = "GUI_URLNAME_CANT_BE_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
@@ -927,12 +935,6 @@ public final class Messages {
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UPLOAD_VIRUSES_FOUND_TITLE_0 = "GUI_UPLOAD_VIRUSES_FOUND_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UPLOAD_VIRUSES_FOUND_WARNING_0 = "GUI_UPLOAD_VIRUSES_FOUND_WARNING_0";
 
     /**
      * Hides the public constructor for this utility class.<p>

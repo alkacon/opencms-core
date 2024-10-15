@@ -297,6 +297,15 @@ public interface I_CmsCoreService extends RemoteService {
     CmsCoreData prefetch() throws CmsRpcException;
 
     /**
+     * Saves a category used by the current user.
+     *
+     * @param category the category
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    void saveUsedCategory(String category) throws CmsRpcException;
+
+    /**
      * Saves the user settings for the current user.<p>
      *
      * @param userSettings the new values for the user settings

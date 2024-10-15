@@ -33,6 +33,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.gwt.CmsUsedCategoriesList;
 import org.opencms.main.OpenCms;
 import org.opencms.test.I_CmsLogHandler;
 import org.opencms.test.OpenCmsTestCase;
@@ -113,6 +114,7 @@ public class TestCategories extends OpenCmsTestCase {
         suite.addTest(new TestCategories("testMoveParentFolder"));
 
         suite.addTest(new TestCategories("testAdditionalRepository"));
+        suite.addTest(new TestCategories("testUsedCategoriesList"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -1157,6 +1159,27 @@ public class TestCategories extends OpenCmsTestCase {
             OpenCmsTestLogAppender.setBreakOnError(false);
             OpenCmsTestLogAppender.setHandler((I_CmsLogHandler)null);
         }
+    }
+
+    /**
+     * Simple test for the used category list data structure.
+     *
+     * @throws Exception
+     */
+    public void testUsedCategoriesList() throws Exception {
+
+        CmsUsedCategoriesList list = new CmsUsedCategoriesList();
+        list.add("foo"); // foo
+        list.add("bar"); // foo bar
+        list.add("baz"); // foo bar baz
+        list.add("bar"); // foo baz bar
+        list.add("qux"); // foo | baz bar qux
+        list.add("xyzzy"); // foo baz | bar qux xyzzy
+        list.limit(3);
+        assertEquals(new HashSet<>(Arrays.asList("bar", "qux", "xyzzy")), list.getCategories());
+        String json = list.toJson();
+        list = CmsUsedCategoriesList.fromJson(json);
+        assertEquals(new HashSet<>(Arrays.asList("bar", "qux", "xyzzy")), list.getCategories());
     }
 
 }
