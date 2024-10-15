@@ -370,6 +370,9 @@ public final class Messages {
     public static final String GUI_HOVERBAR_OPEN_GALLERY_0 = "GUI_HOVERBAR_OPEN_GALLERY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_HOVERBAR_OPTIMIZE_GALLERY_0 = "GUI_HOVERBAR_OPTIMIZE_GALLERY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_HOVERBAR_PARENT_0 = "GUI_HOVERBAR_PARENT_0";
 
     /** Message constant for key in the resource bundle. */
