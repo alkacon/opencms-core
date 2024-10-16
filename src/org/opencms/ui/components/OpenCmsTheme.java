@@ -230,9 +230,6 @@ public final class OpenCmsTheme {
     /** CSS style name.*/
     public static final String ICON_PERSON_DATA = "oc-icon-32-person-data";
 
-    /** CSS class for a redirect app icon (app is not part of core). */
-    public static final String ICON_REDIRECT = "oc-icon-32-redirect";
-
     /** The icon for all principal option (currently used in principal select).*/
     public static final String ICON_PRINCIPAL_ALL = "oc-icon-24-principal-all";
 
@@ -250,6 +247,9 @@ public final class OpenCmsTheme {
 
     /** Path to the project publish theme resource. */
     public static final String ICON_PUBLISH = "oc-icon-24-publish";
+
+    /** CSS class for a redirect app icon (app is not part of core). */
+    public static final String ICON_REDIRECT = "oc-icon-32-redirect";
 
     /** CSS style name.*/
     public static final String ICON_RESOURCE_TYPES = "oc-icon-32-resource-types";
@@ -334,6 +334,10 @@ public final class OpenCmsTheme {
 
     /** Path to the OpenCms logo theme resource. */
     public static final String OPENCMS_LOGO_PATH = "img/opencmsLogo.png";
+
+    /** CSS style name. */
+    public static final String  OPTIMIZE_GALLERY_WARNING = "o-optimize-gallery-warning";
+
     /** CSS style name. */
     public static final String PADDING_HORIZONTAL = "o-padding-horizontal";
 

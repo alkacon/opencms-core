@@ -108,10 +108,14 @@
 		}
 	}
 	
-	.o-gallery-alert-in-use {
+	.o-gallery-alert-in-use, .o-optimize-gallery-warning {
 		color: white;
         background-color: $alkacon-red;
         background-image: linear-gradient(to bottom, $alkacon-red 0%, $alkacon-red 100%);
+	}
+	
+	.o-optimize-gallery-warning {
+		border-radius: 4px;
 	}
 	
 	.o-gallery-form .v-formlayout-contentcell, .o-gallery-form .v-formlayout-captioncell {

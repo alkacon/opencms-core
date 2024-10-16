@@ -182,6 +182,12 @@ public class Messages extends A_CmsMessageBundle {
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_NO_UNUSED_0 = "GUI_GALLERY_OPTIMIZE_NO_UNUSED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_NUM_UNUSED_1 = "GUI_GALLERY_OPTIMIZE_NUM_UNUSED_1";
+
     /**
      * Hides the public constructor for this utility class.<p>
      */

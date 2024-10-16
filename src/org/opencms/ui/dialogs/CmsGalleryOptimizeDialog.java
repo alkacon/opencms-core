@@ -1714,6 +1714,9 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     /** The save handler. */
     private SaveHandler m_saveHandler = new SaveHandler();
 
+    /** Contains information about unused images. */
+    private CssLayout m_unusedInfo = new CssLayout();
+
     /**
      * Creates a new instance of a gallery optimize dialog.<p>
      *
@@ -1728,6 +1731,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         initDialog();
         initLock();
         initEvents();
+        m_unusedInfo.setWidth("100%");
         dataListLoad();
         displayDataListHeaderView();
         displayDataListViewSorted(getSessionSortOrder());
@@ -1889,6 +1893,8 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
      */
     private HorizontalLayout createDisplayGalleryInUse() throws CmsException {
 
+        String galleryTitle = getGalleryTitle();
+        String text = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_DIRECTLY_USED_1, galleryTitle);
         HorizontalLayout layout1 = new HorizontalLayout();
         layout1.setWidthFull();
         layout1.addStyleNames("v-panel", "o-error-dialog", OpenCmsTheme.GALLERY_ALERT_IN_USE);
@@ -1898,8 +1904,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         icon.setContentMode(ContentMode.HTML);
         icon.setWidthUndefined();
         icon.setStyleName("o-warning-icon");
-        String galleryTitle = getGalleryTitle();
-        Label message = new Label(CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_DIRECTLY_USED_1, galleryTitle));
+        Label message = new Label(text);
         message.setContentMode(ContentMode.HTML);
         message.setWidthUndefined();
         layout2.addComponent(icon);
@@ -1917,15 +1922,28 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
      */
     private HorizontalLayout createDisplayInOnlineProject() {
 
+        String text = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_LABEL_IN_ONLINE_PROJECT_0);
+        return createNote(text);
+    }
+
+    /**
+     * Creates an info box.
+     *
+     * @param text the text (HTML) to display in the box
+     * @param styles the additional CSS styles for the info box
+     * @return
+     */
+    private HorizontalLayout createNote(String text, String... styles) {
+
         HorizontalLayout layout = new HorizontalLayout();
         layout.setWidthFull();
         layout.addStyleNames("v-panel", "o-error-dialog");
+        layout.addStyleNames(styles);
         Label icon = new Label(FontOpenCms.WARNING.getHtml());
         icon.setContentMode(ContentMode.HTML);
         icon.setWidthUndefined();
         icon.setStyleName("o-warning-icon");
-        Label message = new Label(
-            CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_LABEL_IN_ONLINE_PROJECT_0));
+        Label message = new Label(text);
         message.setContentMode(ContentMode.HTML);
         message.setWidthUndefined();
         layout.addComponent(icon);
@@ -1989,7 +2007,9 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             }
         }
         m_compositeDataListHeader = new DataListHeaderComposite();
+
         m_dataListHeaderView.addComponent((Component)m_compositeDataListHeader);
+        m_dataListHeaderView.addComponent(m_unusedInfo);
     }
 
     /**
@@ -2023,6 +2043,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             m_dataListView.addComponent(dataItem.getCompositeForm(), 2, i);
             i++;
         }
+        updateUnusedInfo();
         if (scrollToTop) {
             m_dataListViewScrollable.setScrollTop(0);
         }
@@ -2310,6 +2331,28 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                 LOG.warn(e.getLocalizedMessage(), e);
             }
         }
+    }
+
+    /**
+     * Updates the 'unused elements' information.
+     */
+    private void updateUnusedInfo() {
+
+        if (m_provider.getSortComparator() == m_provider.SORT_UNUSED_FIRST) {
+            m_unusedInfo.setVisible(true);
+            m_unusedInfo.removeAllComponents();
+            long unusedCount = m_provider.getItems().stream().filter(item -> !item.getIsUsed()).count();
+            if (unusedCount == 0) {
+                String text  = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_NO_UNUSED_0);
+                m_unusedInfo.addComponent(createNote(text, OpenCmsTheme.OPTIMIZE_GALLERY_WARNING));
+            } else {
+                String text  = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_NUM_UNUSED_1, unusedCount);
+                m_unusedInfo.addComponent(createNote(text));
+            }
+        } else {
+            m_unusedInfo.setVisible(false);
+        }
+
     }
 
 }
