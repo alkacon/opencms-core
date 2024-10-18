@@ -249,6 +249,9 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
     /** Map of categories. */
     protected Map<String, CmsTreeItem> m_categories;
 
+    /** All category tree items, including duplicates with the same category path. */
+    protected List<CmsTreeItem> m_categoriesAsList = new ArrayList<>();
+
     /** List of categories selected from the server. */
     protected List<CmsCategoryTreeEntry> m_categoryBeans;
 
@@ -313,8 +316,8 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
     /** Flag, indicating if the category tree should be collapsed when shown first. */
     private boolean m_showCollapsed;
 
-    /** Categories that have been used in this instance of the category tree - they may not be among the categories marked as used we got from the server yet. */
-    private Set<String> m_usedLocally = new HashSet<>();
+    /** Set of used categories (either reported as used from the server, or used locally in this widget instance). */
+    private Set<String> m_used = new HashSet<>();
 
     /**
      * Default Constructor.<p>
@@ -371,12 +374,12 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
         m_scrollList = createScrollList();
         m_list.setHeight(height + "px");
         m_categoryBeans = categories;
-        addCategoriesById(m_categoryBeans);
+        processCategories(m_categoryBeans);
         m_list.add(m_scrollList);
         m_showCollapsed = showCollapsed;
         m_childrens = new HashMap<>();
         m_categories = new HashMap<>();
-        updateContentTree();
+        updateContentTree(false);
         normalizeSelectedCategories();
         init();
     }
@@ -577,12 +580,15 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
 
     /**
      * Updates the content of the categories tree.<p>
+     *
+     * @param removeUnused if true, only show used categories, with all levels opened
      */
-    public void updateContentTree() {
+    public void updateContentTree(boolean removeUnused) {
 
         m_scrollList.clearList();
         m_childrens.clear();
         m_categories.clear();
+        m_categoriesAsList.clear();
         if ((m_categoryBeans != null) && !m_categoryBeans.isEmpty()) {
             // add the first level and children
             for (CmsCategoryTreeEntry category : m_categoryBeans) {
@@ -595,7 +601,30 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
                 }
                 treeItem.setOpen(!m_showCollapsed);
             }
-        } else {
+            if (removeUnused) {
+                for (CmsTreeItem item : m_categoriesAsList) {
+                    String categoryOfCurrentTreeItem = item.getId();
+                    if (!hasUsedSubcategory(categoryOfCurrentTreeItem)) {
+                        item.removeFromParent();
+                    }
+                }
+
+                for (CmsTreeItem item : m_categoriesAsList) {
+                    if (item.getChildren().getWidgetCount() == 0) {
+                        if ("".equals(item.getId())) {
+                            // It's an empty 'global categories / site categories' entry, we don't need it
+                            item.removeFromParent();
+                        } else {
+                            // empty normal top-level category
+                            item.setLeafStyle(true);
+                        }
+                    } else {
+                        item.setOpen(true);
+                    }
+                }
+            }
+        }
+        if (m_scrollList.getWidgetCount() == 0) {
             showIsEmptyLabel();
         }
         scheduleResize();
@@ -681,11 +710,10 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      * Gets the filtered list of categories.<p>
      *
      * @param filter the search string to use for filtering
-     * @param onlyUsed if true, only the used categories should be returned
      *
      * @return the filtered category beans
      */
-    protected List<CmsTreeItem> getFilteredCategories(String filter, boolean onlyUsed) {
+    protected List<CmsTreeItem> getFilteredCategories(String filter) {
 
         List<CmsTreeItem> result = new ArrayList<CmsTreeItem>();
 
@@ -693,12 +721,6 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
         for (CmsTreeItem category : m_categories.values()) {
             CmsDataValue dataWidget = (CmsDataValue)category.getMainWidget();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(filter) || dataWidget.matchesFilter(filter, 0, 1)) {
-                if (onlyUsed) {
-                    CmsCategoryTreeEntry categoryBean = m_categoriesById.get(category.getId());
-                    if ((categoryBean != null) && !categoryBean.isUsed() && !m_usedLocally.contains(category.getId())) {
-                        continue;
-                    }
-                }
                 result.add(category);
             }
         }
@@ -769,9 +791,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
 
         List<CmsTreeItem> categories = new ArrayList<CmsTreeItem>();
         if ((m_quickSearch != null)) {
-            categories = getFilteredCategories(
-                hasQuickFilter() ? m_quickSearch.getFormValueAsString() : null,
-                /* filterUsed = */ false /* in 'recently used' mode, the sort call will filter out the unused categories. */);
+            categories = getFilteredCategories(hasQuickFilter() ? m_quickSearch.getFormValueAsString() : null);
             sort(categories, SortParams.valueOf(m_sortSelectBox.getFormValueAsString()));
         }
     }
@@ -809,12 +829,13 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
 
         int sortParam = -1;
         boolean ascending = true;
-        boolean filterUsed = false;
+        m_quickSearch.setVisible(true);
+        m_searchButton.setVisible(true);
         switch (sort) {
             case tree:
                 m_quickSearch.setFormValueAsString("");
                 m_listView = false;
-                updateContentTree();
+                updateContentTree(false);
                 break;
             case title_asc:
                 sortParam = 0;
@@ -831,16 +852,18 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
                 ascending = false;
                 break;
             case used:
-                sortParam = 1;
-                ascending = true;
-                filterUsed = true;
+                m_quickSearch.setFormValueAsString("");
+                m_quickSearch.setVisible(false);
+                m_searchButton.setVisible(false);
+                m_listView = false;
+                updateContentTree(true);
                 break;
             default:
                 break;
         }
         if (sortParam != -1) {
             m_listView = true;
-            items = getFilteredCategories(hasQuickFilter() ? m_quickSearch.getFormValueAsString() : null, filterUsed);
+            items = getFilteredCategories(hasQuickFilter() ? m_quickSearch.getFormValueAsString() : null);
             Collections.sort(items, new CmsListItemDataComparator(sortParam, ascending));
             updateContentList(items);
         }
@@ -897,19 +920,6 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
     }
 
     /**
-     * Traverses the tree of categories and stores all of them by category path.
-     *
-     * @param categoryBeans the top-level category entries
-     */
-    private void addCategoriesById(List<CmsCategoryTreeEntry> categoryBeans) {
-
-        for (CmsCategoryTreeEntry category : categoryBeans) {
-            m_categoriesById.put(category.getPath(), category);
-            addCategoriesById(category.getChildren());
-        }
-    }
-
-    /**
      * Builds a tree item for the given category.<p>
      *
      * @param category the category
@@ -955,6 +965,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
         treeItem.setId(category.getPath());
         // add it to the list of all categories
         m_categories.put(treeItem.getId(), treeItem);
+        m_categoriesAsList.add(treeItem);
         return treeItem;
     }
 
@@ -991,6 +1002,22 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
     }
 
     /**
+     * Checks if the given category path has any used sub-categories.
+     *
+     * @param category the category to check
+     *
+     * @return true if the category has used sub-categories
+     */
+    private boolean hasUsedSubcategory(String category) {
+
+        if ("".equals(category)) {
+            return m_used.size() > 0;
+        } else {
+            return m_used.stream().anyMatch(used -> CmsStringUtil.isPrefixPath(category, used));
+        }
+    }
+
+    /**
      * Normalize the list of selected categories to fit for the ids of the tree items.
      */
     private void normalizeSelectedCategories() {
@@ -1006,13 +1033,29 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
     }
 
     /**
+     * Traverses the tree of categories and stores all of them by category path.
+     *
+     * @param categoryBeans the top-level category entries
+     */
+    private void processCategories(List<CmsCategoryTreeEntry> categoryBeans) {
+
+        for (CmsCategoryTreeEntry category : categoryBeans) {
+            m_categoriesById.put(category.getPath(), category);
+            if (category.isUsed()) {
+                m_used.add(category.getPath());
+            }
+            processCategories(category.getChildren());
+        }
+    }
+
+    /**
      * Marks the category with the given path as 'used', both on the server and in the local 'used categories' cache.
      *
      * @param category the path of the category to mark as used
      */
     private void saveUsed(String category) {
 
-        m_usedLocally.add(category);
+        m_used.add(category);
         CmsRpcAction<Void> saveUsed = new CmsRpcAction<Void>() {
 
             @Override
