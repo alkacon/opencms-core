@@ -59,9 +59,12 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.PopupPanel;
+
+import elemental2.dom.DOMRect;
+import elemental2.dom.DomGlobal;
+import jsinterop.base.Js;
 
 /**
  * Provides a standard HTML form category widget, for use on a widget dialog.<p>
@@ -83,11 +86,11 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget, I_C
             Event nativeEvent = Event.as(event.getNativeEvent());
             switch (DOM.eventGetType(nativeEvent)) {
                 case Event.ONMOUSEWHEEL:
-                    int x_coords = nativeEvent.getClientX();
-                    int y_coords = (nativeEvent.getClientY() + Window.getScrollTop());
-
-                    if (((x_coords > (m_xcoordspopup + 605)) || (x_coords < (m_xcoordspopup)))
-                        || ((y_coords > ((m_ycoordspopup + 390))) || (y_coords < ((m_ycoordspopup))))) {
+                    int x = nativeEvent.getClientX();
+                    int y = nativeEvent.getClientY();
+                    elemental2.dom.Element popupElem = Js.cast(m_cmsPopup.getElement());
+                    DOMRect rect = popupElem.getBoundingClientRect();
+                    if ((x < rect.left) || (x > rect.right) || (y < rect.top) || (y > rect.bottom)) {
                         closePopup();
                     }
                     break;
@@ -130,12 +133,6 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget, I_C
 
     /** List of all category folder. */
     protected List<CmsCategoryTreeEntry> m_resultList;
-
-    /** The x-coords of the popup. */
-    protected int m_xcoordspopup;
-
-    /** The y-coords of the popup. */
-    protected int m_ycoordspopup;
 
     /** The category field. */
     CmsCategoryTree m_cmsCategoryTree;
@@ -368,9 +365,17 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget, I_C
     protected void openPopup() {
 
         if (m_cmsPopup == null) {
+            int width = Math.max(getOffsetWidth(), CmsPopup.WIDE_WIDTH);
+            m_cmsPopup = new CmsPopup(Messages.get().key(Messages.GUI_DIALOG_CATEGORIES_TITLE_0), width);
+            elemental2.dom.Element myElem = Js.cast(getElement());
 
-            m_cmsPopup = new CmsPopup(Messages.get().key(Messages.GUI_DIALOG_CATEGORIES_TITLE_0), CmsPopup.WIDE_WIDTH);
-            m_cmsCategoryTree = new CmsCategoryTree(m_selected, 300, m_isSingleValue, m_resultList, m_collapsed);
+            int space = (int)(DomGlobal.window.innerHeight - myElem.getBoundingClientRect().bottom) - 95;
+            m_cmsCategoryTree = new CmsCategoryTree(
+                m_selected,
+                Math.max(300, space),
+                m_isSingleValue,
+                m_resultList,
+                m_collapsed);
             m_cmsPopup.add(m_cmsCategoryTree);
             m_cmsPopup.setModal(false);
             m_cmsPopup.setAutoHideEnabled(true);
@@ -396,8 +401,6 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget, I_C
         m_previewHandlerRegistration = Event.addNativePreviewHandler(new CloseEventPreviewHandler());
         m_cmsCategoryTree.truncate("CATEGORIES", CmsPopup.WIDE_WIDTH - 20);
         m_cmsPopup.showRelativeTo(m_categoryField);
-        m_xcoordspopup = m_cmsPopup.getPopupLeft();
-        m_ycoordspopup = m_cmsPopup.getPopupTop();
     }
 
     /**
