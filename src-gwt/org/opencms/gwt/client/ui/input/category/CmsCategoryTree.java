@@ -48,6 +48,7 @@ import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.shared.CmsCategoryBean;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
+import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -402,7 +403,8 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
                 CmsTreeItem treeItem = buildTreeItem(child, selectedCategories);
                 m_childrens.get(parent.getId()).add(treeItem.getId());
                 m_childrens.put(treeItem.getId(), new ArrayList<>(child.getChildren().size()));
-                if ((selectedCategories != null) && selectedCategories.contains(child.getPath())) {
+                if ((selectedCategories != null)
+                    && CmsCategoryField.isParentCategoryOfSelected(child.getPath(), selectedCategories)) {
                     openWithParents(parent);
 
                 }
@@ -596,11 +598,16 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
                 // set the category tree item and add to list
                 CmsTreeItem treeItem = buildTreeItem(category, m_selectedCategories);
                 m_childrens.put(treeItem.getId(), new ArrayList<>(category.getChildren().size()));
+
+                // We set the 'open' state of the item*before* processing the children, so that even if a top-level item
+                // is set to 'closed' here, it can still be opened when encountering a descendant whose category
+                // is among the selected categories.
+                treeItem.setOpen(!m_showCollapsed);
                 addChildren(treeItem, category.getChildren(), m_selectedCategories);
+
                 if (!category.getPath().isEmpty() || (treeItem.getChildCount() > 0)) {
                     m_scrollList.add(treeItem);
                 }
-                treeItem.setOpen(!m_showCollapsed);
             }
             if (removeUnused) {
                 for (CmsTreeItem item : m_categoriesAsList) {
