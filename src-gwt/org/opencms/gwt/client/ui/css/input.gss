@@ -467,6 +467,11 @@ div.categoryItem{
 	margin-top: 6px;
 }
 
+div.categoryEmptyLabel {
+	margin-left: 12px;
+	margin-top: 12px;
+}
+
 div.fader, div.textArea div.fader {
 	background-image: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%) !important;
 }

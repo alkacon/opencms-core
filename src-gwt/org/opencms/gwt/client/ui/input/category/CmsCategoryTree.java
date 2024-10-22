@@ -545,6 +545,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
 
         CmsSimpleListItem item = new CmsSimpleListItem();
         Label isEmptyLabel = new Label(Messages.get().key(Messages.GUI_CATEGORIES_IS_EMPTY_0));
+        isEmptyLabel.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().categoryEmptyLabel());
         item.add(isEmptyLabel);
         m_scrollList.add(item);
     }
@@ -604,7 +605,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
             if (removeUnused) {
                 for (CmsTreeItem item : m_categoriesAsList) {
                     String categoryOfCurrentTreeItem = item.getId();
-                    if (!hasUsedSubcategory(categoryOfCurrentTreeItem)) {
+                    if (!showInUsedView(categoryOfCurrentTreeItem)) {
                         item.removeFromParent();
                     }
                 }
@@ -1002,22 +1003,6 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
     }
 
     /**
-     * Checks if the given category path has any used sub-categories.
-     *
-     * @param category the category to check
-     *
-     * @return true if the category has used sub-categories
-     */
-    private boolean hasUsedSubcategory(String category) {
-
-        if ("".equals(category)) {
-            return m_used.size() > 0;
-        } else {
-            return m_used.stream().anyMatch(used -> CmsStringUtil.isPrefixPath(category, used));
-        }
-    }
-
-    /**
      * Normalize the list of selected categories to fit for the ids of the tree items.
      */
     private void normalizeSelectedCategories() {
@@ -1105,6 +1090,25 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
                 treeItem.getCheckBox().disable(disabledReason);
             }
             setListEnabled(treeItem.getChildren(), enabled, disabledReason);
+        }
+    }
+
+    /**
+     * Checks if the given category path has any used sub-categories.
+     *
+     * @param category the category to check
+     *
+     * @return true if the category has used sub-categories
+     */
+    private boolean showInUsedView(String category) {
+
+        if (CmsCategoryField.isParentCategoryOfSelected(category, m_selectedCategories)) {
+            return true;
+        }
+        if ("".equals(category)) {
+            return m_used.size() > 0;
+        } else {
+            return m_used.stream().anyMatch(used -> CmsStringUtil.isPrefixPath(category, used));
         }
     }
 

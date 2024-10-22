@@ -173,6 +173,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget, I_C
     /** If true, the categories are shown separate for each repository. */
     private boolean m_showWithRepository;
 
+
     /**
      * Constructs an CmsComboWidget with the in XSD schema declared configuration.<p>
      * @param config The configuration string given from OpenCms XSD
@@ -363,16 +364,21 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget, I_C
      * Is called to open the popup.<p>
      */
     protected void openPopup() {
-
+        elemental2.dom.Element myElem = Js.cast(getElement());
+        boolean center = false;
+        int spaceForTree = (int)(DomGlobal.window.innerHeight - myElem.getBoundingClientRect().bottom) - 115;
+        if (spaceForTree < 300) {
+            spaceForTree = 300;
+            center = true;
+        }
         if (m_cmsPopup == null) {
             int width = Math.max(getOffsetWidth(), CmsPopup.WIDE_WIDTH);
             m_cmsPopup = new CmsPopup(Messages.get().key(Messages.GUI_DIALOG_CATEGORIES_TITLE_0), width);
-            elemental2.dom.Element myElem = Js.cast(getElement());
 
-            int space = (int)(DomGlobal.window.innerHeight - myElem.getBoundingClientRect().bottom) - 95;
+
             m_cmsCategoryTree = new CmsCategoryTree(
                 m_selected,
-                Math.max(300, space),
+                spaceForTree,
                 m_isSingleValue,
                 m_resultList,
                 m_collapsed);
@@ -400,7 +406,11 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget, I_C
         }
         m_previewHandlerRegistration = Event.addNativePreviewHandler(new CloseEventPreviewHandler());
         m_cmsCategoryTree.truncate("CATEGORIES", CmsPopup.WIDE_WIDTH - 20);
-        m_cmsPopup.showRelativeTo(m_categoryField);
+        if (center) {
+            m_cmsPopup.center();
+        } else {
+            m_cmsPopup.showRelativeTo(m_categoryField);
+        }
     }
 
     /**
