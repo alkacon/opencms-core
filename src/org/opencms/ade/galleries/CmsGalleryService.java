@@ -1742,8 +1742,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 bean.setResourceType(tInfo.getResourceType().getTypeName());
                 bean.setUploadAction(tInfo.getResourceType().getConfiguration().get("gallery.upload.action"));
 
+                boolean isOptimizeGalleryType = Arrays.asList("imagegallery", "downloadgallery").stream().anyMatch(
+                    typeName -> OpenCms.getResourceManager().matchResourceType(typeName, res.getTypeId()));
+
                 // For performance reasons, we only do a general role check for EDITOR which does not take the concrete gallery path or context path into account.
-                bean.setOptimizable(OpenCms.getRoleManager().hasRole(getCmsObject(), CmsRole.EDITOR));
+                bean.setOptimizable(
+                    OpenCms.getRoleManager().hasRole(getCmsObject(), CmsRole.EDITOR) && isOptimizeGalleryType);
 
                 bean.setEditable(isEditable(getCmsObject(), res));
                 bean.setBigIconClasses(

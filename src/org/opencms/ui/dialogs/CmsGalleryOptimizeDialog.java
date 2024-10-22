@@ -637,8 +637,10 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             setWidthFull();
             m_selectSortOrder = createSelectSortOrder();
             m_textFieldFilter = createTextFieldFilter();
-            addComponent(m_selectSortOrder, "left: 2px; top: 2px;");
-            addComponent(m_textFieldFilter, "right: 2px; top: 2px;");
+
+            addComponent(m_selectSortOrder, "left: 0px; top: 2px;");
+            addComponent(m_textFieldFilter, "right: 0px; top: 2px;");
+            addStyleName("o-optimize-gallery-header");
             refresh();
         }
 
@@ -1954,6 +1956,26 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /**
+     * Creates a note widget to display above the list.
+     *
+     * @param html the HTML content
+     * @param styles the additional CSS classes
+     * @return the created widget
+     */
+    private HorizontalLayout createSimpleNote(String html, String... styles) {
+
+        HorizontalLayout layout1 = new HorizontalLayout();
+        layout1.setWidthFull();
+        layout1.addStyleNames("v-panel", "o-error-dialog");
+        layout1.addStyleName("o-optimize-gallery-note");
+        layout1.addStyleNames(styles);
+        Label message = new Label(html);
+        message.setContentMode(ContentMode.HTML);
+        layout1.addComponent(message);
+        return layout1;
+    }
+
+    /**
      * Whether one of the editable gallery items has been modified by the user.<p>
      *
      * @return whether has changes
@@ -2339,15 +2361,25 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     private void updateUnusedInfo() {
 
         if (m_provider.getSortComparator() == m_provider.SORT_UNUSED_FIRST) {
+            boolean isImageGallery = OpenCms.getResourceManager().matchResourceType(
+                "imagegallery",
+                m_gallery.getTypeId());
             m_unusedInfo.setVisible(true);
             m_unusedInfo.removeAllComponents();
             long unusedCount = m_provider.getItems().stream().filter(item -> !item.getIsUsed()).count();
             if (unusedCount == 0) {
-                String text  = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_NO_UNUSED_0);
-                m_unusedInfo.addComponent(createNote(text, OpenCmsTheme.OPTIMIZE_GALLERY_WARNING));
+                String text = CmsVaadinUtils.getMessageText(
+                    isImageGallery
+                    ? Messages.GUI_GALLERY_OPTIMIZE_NO_UNUSED_0
+                    : Messages.GUI_GALLERY_OPTIMIZE_NO_UNUSED_DOWNLOADS_0);
+                m_unusedInfo.addComponent(createSimpleNote(text, "o-optimize-gallery-warning"));
             } else {
-                String text  = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_NUM_UNUSED_1, unusedCount);
-                m_unusedInfo.addComponent(createNote(text));
+                String text = CmsVaadinUtils.getMessageText(
+                    isImageGallery
+                    ? Messages.GUI_GALLERY_OPTIMIZE_NUM_UNUSED_1
+                    : Messages.GUI_GALLERY_OPTIMIZE_NUM_UNUSED_DOWNLOADS_1,
+                    unusedCount);
+                m_unusedInfo.addComponent(createSimpleNote(text));
             }
         } else {
             m_unusedInfo.setVisible(false);

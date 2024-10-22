@@ -108,15 +108,28 @@
 		}
 	}
 	
-	.o-gallery-alert-in-use, .o-optimize-gallery-warning {
+	.o-gallery-alert-in-use {
 		color: white;
         background-color: $alkacon-red;
         background-image: linear-gradient(to bottom, $alkacon-red 0%, $alkacon-red 100%);
 	}
 	
 	.o-optimize-gallery-warning {
-		border-radius: 4px;
+		background-color: rgb(255, 255, 204);
 	}
+	
+	.o-optimize-gallery-note {
+		padding-top: 4px;
+		padding-bottom: 4px;
+		padding-left: 6px;
+	}
+	
+	.o-optimize-gallery-header {
+		.v-absolutelayout-margin {
+			overflow: visible !important;
+		}
+	}
+
 	
 	.o-gallery-form .v-formlayout-contentcell, .o-gallery-form .v-formlayout-captioncell {
 		padding-top: 4px;
