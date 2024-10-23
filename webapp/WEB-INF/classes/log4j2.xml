@@ -43,6 +43,15 @@
 			</Policies>
 			<DefaultRolloverStrategy max="20"/>
 		</RollingFile>
+		
+		<RollingFile name="OCVirusScans" fileName="${sys:opencms.logfolder}opencms-virus-scans.log"
+			filePattern="${sys:opencms.logfolder}opencms-virus-scans.log.%i.log.gz">
+			<PatternLayout pattern="%d{DATE} [r:%6X{request_id}] %5p [%30.30C:%4L] %m %n" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="5 MB"/>
+			</Policies>
+			<DefaultRolloverStrategy max="20"/>
+		</RollingFile>
 
 		<RollingFile name="OCMemoryMonitor" fileName="${sys:opencms.logfolder}opencms-memory.log"
 			filePattern="${sys:opencms.logfolder}opencms-memory.log.%i.log.gz">
@@ -88,6 +97,9 @@
 	    </Logger>
 	    <Logger level="info" name="org.opencms.security.CmsUserLog" additivity="false">
 	    	<AppenderRef ref="OCUsers" />
+	    </Logger>
+	    <Logger level="info" name="org.opencms.ade.upload.CmsVirusScannerLog" additivity="false">
+	    	<AppenderRef ref="OCVirusScans" />
 	    </Logger>
 	    <Root level="error">
 	        <AppenderRef ref="OC"/>

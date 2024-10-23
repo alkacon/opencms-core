@@ -94,6 +94,22 @@ import com.google.common.collect.HashMultimap;
  */
 public class CmsUploadBean extends CmsJspBean {
 
+    /**
+     * Supplies an input stream (used by the virus scanning mechanism).
+     */
+    private interface InputStreamProvider {
+
+        /**
+         * Gets the input stream.
+         *
+         * <p>Don't call this more than once.
+         *
+         * @return the input stream
+         * @throws IOException if something IO related fails
+         */
+        InputStream getStream() throws IOException;
+    }
+
     /** The default upload timeout. */
     public static final int DEFAULT_UPLOAD_TIMEOUT = 20000;
 
@@ -105,9 +121,6 @@ public class CmsUploadBean extends CmsJspBean {
 
     /** A static map of all listeners. */
     private static Map<CmsUUID, CmsUploadListener> m_listeners = new HashMap<CmsUUID, CmsUploadListener>();
-
-    /** The virus scanner instance to use for uploads. */
-    private I_CmsVirusScanner m_scanner;
 
     /** The gwt message bundle. */
     private CmsMessages m_bundle = org.opencms.ade.upload.Messages.get().getBundle();
@@ -127,6 +140,9 @@ public class CmsUploadBean extends CmsJspBean {
     /** A CMS context for the root site. */
     private CmsObject m_rootCms;
 
+    /** The virus scanner instance to use for uploads. */
+    private I_CmsVirusScanner m_scanner;
+
     /** The server side upload delay. */
     private int m_uploadDelay;
 
@@ -135,7 +151,7 @@ public class CmsUploadBean extends CmsJspBean {
 
     private CmsUploadRestrictionInfo m_uploadRestrictionInfo;
 
-    /** The viruses found while processing the uploads, with the file names as keys. */ 
+    /** The viruses found while processing the uploads, with the file names as keys. */
     private HashMultimap<String, String> m_viruses = HashMultimap.create();
 
     /**
@@ -295,12 +311,12 @@ public class CmsUploadBean extends CmsJspBean {
                     fileItem.getFieldName() + I_CmsUploadConstants.UPLOAD_FILENAME_ENCODED_SUFFIX)[0];
                 String originalFileName = m_parameterMap.get(
                     fileItem.getFieldName() + I_CmsUploadConstants.UPLOAD_ORIGINAL_FILENAME_ENCODED_SUFFIX)[0];
-                List<String> viruses = scan(originalFileName, content);
+                String context = "(file: " + originalFileName + ")";
+                List<String> viruses = scan(context, content);
 
                 fileName = URLDecoder.decode(fileName, "UTF-8");
                 originalFileName = URLDecoder.decode(originalFileName, "UTF-8");
                 if (viruses.size() > 0) {
-                    LOG.info("Found viruses in uploaded file " + originalFileName + ": " + viruses);
                     m_viruses.putAll(originalFileName, viruses);
                 } else {
                     if (filesToUnzip.contains(CmsResource.getName(fileName.replace('\\', '/')))) {
@@ -313,9 +329,13 @@ public class CmsUploadBean extends CmsJspBean {
                                 if (entry.isDirectory() || entry.isUnixSymlink()) {
                                     continue;
                                 }
-                                viruses = scan(originalFileName + " >> " + entry.getName(), zip, entry);
+                                String zipEntryContext = "(file: "
+                                    + originalFileName
+                                    + ", entry: "
+                                    + entry.getName()
+                                    + ")";
+                                viruses = scan(zipEntryContext, zip, entry);
                                 if (viruses.size() > 0) {
-                                    LOG.info("Found viruses in uploaded file " + originalFileName + ": " + viruses);
                                     foundVirus = true;
                                     m_viruses.putAll(originalFileName, viruses);
                                     break;
@@ -805,20 +825,7 @@ public class CmsUploadBean extends CmsJspBean {
      */
     private List<String> scan(String context, byte[] data) {
 
-        if (m_scanner != null) {
-            long t1 = System.currentTimeMillis();
-            try (InputStream stream = new ByteArrayInputStream(data)) {
-                return m_scanner.scan(stream);
-            } catch (IOException e) {
-                // shouldn't happen
-                return Collections.emptyList();
-            } finally {
-                long t2 = System.currentTimeMillis();
-                LOG.debug("Scanning " + context + " took " + (t2 - t1) + "ms");
-            }
-        } else {
-            return Collections.emptyList();
-        }
+        return scanInternal(context, () -> new ByteArrayInputStream(data));
     }
 
     /**
@@ -829,17 +836,42 @@ public class CmsUploadBean extends CmsJspBean {
      */
     private List<String> scan(String context, ZipFile zip, ZipArchiveEntry entry) {
 
+        return scanInternal(context, () -> zip.getInputStream(entry));
+    }
+
+    /**
+     * Internal helper method for calling the virus scanner implementation and handling logging.
+     *
+     * @param context the context string to include into the log; contains information about what is being scanned
+     * @param streamProvider supplier for the data stream to be scanned
+     *
+     * @return the list of found virus names
+     */
+    private List<String> scanInternal(String context, InputStreamProvider streamProvider) {
+
         if (m_scanner != null) {
+            List<String> result = null;
             long t1 = System.currentTimeMillis();
-            try (InputStream stream = zip.getInputStream(entry)) {
-                return m_scanner.scan(stream);
+            try (InputStream stream = streamProvider.getStream()) {
+                result = m_scanner.scan(stream);
             } catch (IOException e) {
-                // shouldn't happen, Zip file is in memory
-                return Collections.emptyList();
+                result = Collections.emptyList();
             } finally {
                 long t2 = System.currentTimeMillis();
-                LOG.debug("Scanning " + context + " took " + (t2 - t1) + "ms");
+                CmsVirusScannerLog.LOG.debug("Virus scan in context " + context + " took " + (t2 - t1) + "ms");
             }
+            if (result.isEmpty()) {
+                CmsVirusScannerLog.LOG.info("Found no viruses, context=" + context);
+            } else {
+                CmsVirusScannerLog.LOG.warn(
+                    "Found viruses: "
+                        + result
+                        + ", context="
+                        + context
+                        + ", user="
+                        + getCmsObject().getRequestContext().getCurrentUser().getName());
+            }
+            return result;
         } else {
             return Collections.emptyList();
         }
