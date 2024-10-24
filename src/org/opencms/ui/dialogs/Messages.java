@@ -123,15 +123,13 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_GALLERY_OPTIMIZE_NO_NOCOPYRIGHT_0 = "GUI_GALLERY_OPTIMIZE_NO_NOCOPYRIGHT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_GALLERY_OPTIMIZE_NO_NOCOPYRIGHT_DOWNLOADS_0 = "GUI_GALLERY_OPTIMIZE_NO_NOCOPYRIGHT_0";
+    public static final String GUI_GALLERY_OPTIMIZE_NO_NOCOPYRIGHT_DOWNLOADS_0 = "GUI_GALLERY_OPTIMIZE_NO_NOCOPYRIGHT_DOWNLOADS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_OPTIMIZE_NUM_NOCOPYRIGHT_1 = "GUI_GALLERY_OPTIMIZE_NUM_NOCOPYRIGHT_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_GALLERY_OPTIMIZE_NUM_NOCOPYRIGHT_DOWNLOADS_1 = "GUI_GALLERY_OPTIMIZE_NUM_NOCOPYRIGHT_1";
-
-
+    public static final String GUI_GALLERY_OPTIMIZE_NUM_NOCOPYRIGHT_DOWNLOADS_1 = "GUI_GALLERY_OPTIMIZE_NUM_NOCOPYRIGHT_DOWNLOADS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_OPTIMIZE_NUM_UNUSED_1 = "GUI_GALLERY_OPTIMIZE_NUM_UNUSED_1";
