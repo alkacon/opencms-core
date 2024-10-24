@@ -2360,12 +2360,10 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
      */
     private void updateUnusedInfo() {
 
+        m_unusedInfo.removeAllComponents();
+        m_unusedInfo.setVisible(true);
+        boolean isImageGallery = OpenCms.getResourceManager().matchResourceType("imagegallery", m_gallery.getTypeId());
         if (m_provider.getSortComparator() == m_provider.SORT_UNUSED_FIRST) {
-            boolean isImageGallery = OpenCms.getResourceManager().matchResourceType(
-                "imagegallery",
-                m_gallery.getTypeId());
-            m_unusedInfo.setVisible(true);
-            m_unusedInfo.removeAllComponents();
             long unusedCount = m_provider.getItems().stream().filter(item -> !item.getIsUsed()).count();
             if (unusedCount == 0) {
                 String text = CmsVaadinUtils.getMessageText(
@@ -2379,6 +2377,23 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                     ? Messages.GUI_GALLERY_OPTIMIZE_NUM_UNUSED_1
                     : Messages.GUI_GALLERY_OPTIMIZE_NUM_UNUSED_DOWNLOADS_1,
                     unusedCount);
+                m_unusedInfo.addComponent(createSimpleNote(text));
+            }
+        } else if (m_provider.getSortComparator() == m_provider.SORT_NOCOPYRIGHT_FIRST) {
+            long noCopyright = m_provider.getItems().stream().filter(item -> !item.getNoCopyright()).count();
+            if (noCopyright == 0) {
+                String text = CmsVaadinUtils.getMessageText(
+                    isImageGallery
+                    ? Messages.GUI_GALLERY_OPTIMIZE_NO_NOCOPYRIGHT_0
+                    : Messages.GUI_GALLERY_OPTIMIZE_NO_NOCOPYRIGHT_DOWNLOADS_0);
+                m_unusedInfo.addComponent(createSimpleNote(text, "o-optimize-gallery-warning"));
+            } else {
+                String text = CmsVaadinUtils.getMessageText(
+                    isImageGallery
+                    ? Messages.GUI_GALLERY_OPTIMIZE_NUM_NOCOPYRIGHT_1
+                    : Messages.GUI_GALLERY_OPTIMIZE_NUM_NOCOPYRIGHT_DOWNLOADS_1,
+                    noCopyright);
+
                 m_unusedInfo.addComponent(createSimpleNote(text));
             }
         } else {
