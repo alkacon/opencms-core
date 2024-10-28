@@ -66,7 +66,7 @@ public class CmsMenuListItem extends CmsListItem {
      */
     public CmsMenuListItem(CmsContainerElementData element) {
 
-        super(new CmsListItemWidget(new CmsListInfoBean(element.getTitle(), element.getSitePath(), null)));
+        super(new CmsListItemWidget(new CmsListInfoBean(element.getTitle(), element.getSitePath(), null).setBigIconClasses(element.getBigIconClasses())));
         if (!m_listItemWidget.hasAdditionalInfo()) {
             m_listItemWidget.addAdditionalInfo(
                 new CmsAdditionalInfoBean("", Messages.get().key(Messages.GUI_NO_SETTINGS_TITLE_0), null));

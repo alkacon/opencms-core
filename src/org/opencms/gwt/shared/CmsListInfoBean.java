@@ -285,6 +285,16 @@ public class CmsListInfoBean extends CmsIconBean implements I_CmsHasTitle, I_Cms
     }
 
     /**
+     * @see org.opencms.gwt.shared.CmsIconBean#setBigIconClasses(java.lang.String)
+     */
+    @Override
+    public CmsListInfoBean setBigIconClasses(String bigIconClasses) {
+
+        super.setBigIconClasses(bigIconClasses);
+        return this;
+    }
+
+    /**
      * Sets thE 'isFolder' flag.<p>
      *
      * @param isFolder the new value
@@ -375,4 +385,5 @@ public class CmsListInfoBean extends CmsIconBean implements I_CmsHasTitle, I_Cms
 
         m_title = title;
     }
+
 }

@@ -60,10 +60,12 @@ public class CmsIconBean implements I_CmsHasIconClasses, IsSerializable {
      * Sets the big icon CSS classes.<p>
      *
      * @param bigIconClasses the big icon CSS classes to set
+     * @return this object
      */
-    public void setBigIconClasses(String bigIconClasses) {
+    public CmsIconBean setBigIconClasses(String bigIconClasses) {
 
         m_bigIconClasses = bigIconClasses;
+        return this;
     }
 
     /**
