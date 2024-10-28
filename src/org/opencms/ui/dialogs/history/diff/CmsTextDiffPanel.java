@@ -43,13 +43,13 @@ import java.io.StringReader;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.OptionGroup;
 import com.vaadin.v7.ui.VerticalLayout;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Widget used to display a colorized diff view for two texts.<p>
@@ -167,7 +167,7 @@ public class CmsTextDiffPanel extends VerticalLayout {
     public void update() {
 
         try {
-            String diffHtml = "<pre>" + getDiffHtml() + "</pre>";
+            String diffHtml = "<pre class='o-text-diff'>" + getDiffHtml() + "</pre>";
             m_diffHtml.setContentMode(ContentMode.HTML);
             m_diffHtml.setValue(diffHtml);
         } catch (Exception e) {
