@@ -71,6 +71,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -1021,6 +1022,48 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                 // the properties
 
                 Map<String, String> processedSettings = processSettingsForSaveV2(adeConfig, properties);
+
+                // now remove settings whose value matches the default value
+                {
+                    if (formatter == null) {
+                        // old schema-based formatter configuration or old functions
+                        CmsFormatterConfiguration formatterConfig = adeConfig.getFormatters(cms, elementRes);
+                        List<I_CmsFormatterBean> formatters = formatterConfig.getFormattersForKey(formatterKey);
+                        if (formatters.size() > 0) {
+                            formatter = formatters.get(0);
+                        }
+                    }
+                    Map<String, CmsXmlContentProperty> settingDefs = OpenCms.getADEManager().getFormatterSettings(
+                        cms,
+                        adeConfig,
+                        formatter,
+                        elementRes,
+                        cms.getRequestContext().getLocale(),
+                        null);
+                    Map<String, String> settingDefaults = new HashMap<>();
+                    for (Map.Entry<String, CmsXmlContentProperty> entry : settingDefs.entrySet()) {
+                        settingDefaults.put(entry.getKey(), entry.getValue().getDefault());
+                    }
+                    Iterator<Map.Entry<String, String>> entryIter = processedSettings.entrySet().iterator();
+                    Map<String, String> removedEntries = new HashMap<>();
+                    while (entryIter.hasNext()) {
+                        Map.Entry<String, String> settingEntry = entryIter.next();
+                        if (settingDefaults.containsKey(settingEntry.getKey())
+                            && Objects.equals(settingEntry.getValue(), settingDefaults.get(settingEntry.getKey()))) {
+                            removedEntries.put(settingEntry.getKey(), settingEntry.getValue());
+                            entryIter.remove();
+                        }
+                    }
+                    if (removedEntries.size() > 0) {
+                        LOG.debug(
+                            (m_file != null ? (m_file.getRootPath() + ": ") : "")
+                                + "Removed default settings for "
+                                + elementRes.getRootPath()
+                                + ":"
+                                + removedEntries);
+                    }
+                }
+
                 Map<String, CmsXmlContentProperty> propertiesConf = OpenCms.getADEManager().getElementSettings(
                     cms,
                     elementRes);
