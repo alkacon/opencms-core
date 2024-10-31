@@ -275,7 +275,8 @@ public class CmsFavoriteDialog extends CmsBasicDialog implements CmsEditableGrou
         initEntries(entries);
         CmsObject cms = A_CmsUI.getCmsObject();
         m_siteBox.initOptions(cms, true);
-        m_siteBox.setValue(new SiteSelectorOption(cms.getRequestContext().getSiteRoot(), null, null));
+        SiteSelectorOption option = m_siteBox.getOptionForSiteRoot(cms.getRequestContext().getSiteRoot());
+        m_siteBox.setValue(option != null ? option : new SiteSelectorOption(cms.getRequestContext().getSiteRoot(), null, null));
         m_siteBox.addValueChangeListener(evt -> {
             if (!evt.getOldValue().equals(evt.getValue())) {
                 m_context.changeSite(evt.getValue());
