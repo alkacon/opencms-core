@@ -1091,7 +1091,10 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                     } else if (valAlways.equals(storeDefaultSettings)) {
                         for (Map.Entry<String, String> entry : visibleSettingDefaults.entrySet()) {
                             if (!processedSettings.containsKey(entry.getKey())) {
-                                processedSettings.put(entry.getKey(), entry.getValue());
+                                String defaultValue = entry.getValue();
+                                if (defaultValue != null) {
+                                    processedSettings.put(entry.getKey(), defaultValue);
+                                }
                             }
                         }
                         processedSettings = sortSettingsForSave(processedSettings);
