@@ -1733,6 +1733,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 }
             } else {
                 link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath());
+                if (CmsResourceTypeXmlContainerPage.isModelGroup(resource) && (locale != null)) {
+                    link += "?__locale=" + locale;
+                }
             }
             return new CmsPreviewInfo(null, link, true, null, cms.getSitePath(resource), locale.toString());
         } else if (isBinary(resource)) {
