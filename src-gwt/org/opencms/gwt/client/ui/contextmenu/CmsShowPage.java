@@ -34,7 +34,7 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsPreviewInfo;
 import org.opencms.util.CmsUUID;
 
-import com.google.gwt.user.client.Window;
+import elemental2.dom.DomGlobal;
 
 /**
  * Context menu entry to show a container page.<p>
@@ -72,7 +72,7 @@ public class CmsShowPage implements I_CmsHasContextMenuCommand, I_CmsContextMenu
 
                 stop(false);
                 if (result.getPreviewUrl() != null) {
-                    Window.Location.assign(result.getPreviewUrl());
+                    DomGlobal.top.location.assign(result.getPreviewUrl());
                 } else {
                     CmsNotification.get().sendAlert(CmsNotification.Type.ERROR, result.getPreviewContent());
                 }
