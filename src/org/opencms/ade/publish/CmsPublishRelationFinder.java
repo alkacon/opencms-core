@@ -34,11 +34,13 @@ import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypePointer;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
+import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
@@ -298,6 +300,22 @@ public class CmsPublishRelationFinder {
                             resourcesToProcess.add(target);
                         }
                         relatedResources.get(currentResource).add(target);
+                    }
+                }
+            } else {
+                if (CmsResourceTypeXmlContent.isXmlContent(currentResource)
+                    && CmsResourceTypeXmlContent.isPossiblyDetailContent(currentResource)) {
+                    // special case for detail-only containers: If the corresponding detail content has been deleted and is going to be published,
+                    // we will usually want to publish the detail-only containers as well.
+                    List<CmsRelation> relations = getRelationsFromResource(currentResource);
+                    for (CmsRelation relation : relations) {
+                        if (relation.getType() == CmsRelationType.DETAIL_ONLY) {
+                            CmsResource target = getResource(relation.getTargetId());
+                            if (target != null) {
+                                // only add them to the related resources, no further recursive processing
+                                relatedResources.get(currentResource).add(target);
+                            }
+                        }
                     }
                 }
             }

@@ -176,6 +176,24 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     }
 
     /**
+     * Checks if the resource is possibly a detail content.<p>
+     *
+     * @param resource the resource to check
+     * @return true if the resource is possibly a detail content
+     */
+    public static boolean isPossiblyDetailContent(CmsResource resource) {
+
+        if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
+            return false;
+        }
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
+        if (type instanceof CmsResourceTypeXmlAdeConfiguration) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Returns <code>true</code> in case the given resource is an XML content.<p>
      *
      * @param resource the resource to check
@@ -715,24 +733,6 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             LOG.error(e.getLocalizedMessage(), e);
         }
         return null;
-    }
-
-    /**
-     * Checks if the resource is possibly a detail content.<p>
-     *
-     * @param resource the resource to check
-     * @return true if the resource is possibly a detail content
-     */
-    boolean isPossiblyDetailContent(CmsResource resource) {
-
-        if (CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
-            return false;
-        }
-        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
-        if (type instanceof CmsResourceTypeXmlAdeConfiguration) {
-            return false;
-        }
-        return true;
     }
 
     /**
