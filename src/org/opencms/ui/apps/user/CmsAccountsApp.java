@@ -316,10 +316,12 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         if (principal instanceof CmsUser) {
             CmsUser user = (CmsUser)principal;
             CmsUserIconHelper helper = OpenCms.getWorkplaceAppManager().getUserIconHelper();
-            return new CmsResourceInfo(
+            CmsResourceInfo result = new CmsResourceInfo(
                 user.getName(),
                 user.getEmail(),
                 new ExternalResource(helper.getTinyIconPath(A_CmsUI.getCmsObject(), user)));
+            result.addStyleName("o-userinfo-box");
+            return result;
         }
         if (principal.getId().equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID)) {
             return new CmsResourceInfo(
