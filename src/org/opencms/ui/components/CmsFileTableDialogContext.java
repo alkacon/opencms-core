@@ -46,7 +46,7 @@ import com.google.common.collect.Lists;
 public class CmsFileTableDialogContext extends A_CmsDialogContext implements I_CmsEditPropertyContext {
 
     /** The file table instance. */
-    private CmsFileTable m_fileTable;
+    protected CmsFileTable m_fileTable;
 
     /** The in line editable properties. */
     private Collection<CmsResourceTableProperty> m_editableProperties;
