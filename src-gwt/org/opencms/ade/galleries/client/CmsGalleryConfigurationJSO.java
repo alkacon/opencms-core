@@ -33,12 +33,19 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
+
+import elemental2.dom.DomGlobal;
+import elemental2.dom.Window;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * Gallery configuration java-script overlay object.<p>
@@ -65,7 +72,22 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(conf)) {
             conf = "{}";
         }
-        return (CmsGalleryConfigurationJSO)CmsDomUtil.parseJSON(conf);
+        CmsGalleryConfigurationJSO result = (CmsGalleryConfigurationJSO)CmsDomUtil.parseJSON(conf);
+        if (result.getLocale() == null) {
+            Window window = DomGlobal.window;
+            Window prevWindow = null;
+            while ((window != null) && (window != prevWindow)) {
+                JsPropertyMap<Object> windowProps = Js.cast(window);
+                String locale = (String) windowProps.get(CmsGwtConstants.ATTR_CONTENT_EDITOR_LOCALE);
+                if (locale != null) {
+                    result.setLocale(locale);
+                    break;
+                }
+                prevWindow = window;
+                window = window.parent;
+            }
+        }
+        return result;
     }
 
     /**
@@ -356,6 +378,11 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
     private String internalGetSearchTypes() {
 
         return getString(I_CmsGalleryProviderConstants.CONFIG_SEARCH_TYPES);
+    }
+
+    private void setLocale(String locale) {
+        JsPropertyMap<Object> props = Js.cast(this);
+        props.set(I_CmsGalleryProviderConstants.CONFIG_LOCALE, locale);
     }
 
 }

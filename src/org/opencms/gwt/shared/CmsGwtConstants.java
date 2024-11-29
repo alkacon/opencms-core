@@ -108,6 +108,9 @@ public final class CmsGwtConstants {
     /** Attribute for container id. */
     public static final String ATTR_CONTAINER_ID = "ATTR_CONTAINER_ID";
 
+    /** JS property for accessing content editor locale from nested iframes. */
+    public static final String ATTR_CONTENT_EDITOR_LOCALE = "cmsContentEditorLocale";
+
     /** Collector data attribute name. */
     public static final String ATTR_DATA_COLLECTOR = "data-oc-collector";
 

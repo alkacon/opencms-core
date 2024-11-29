@@ -211,6 +211,9 @@ public class CmsToolbarAllGalleriesMenu extends A_CmsToolbarMenu<CmsContainerpag
                 if (result.getReferencePath() == null) {
                     result.setReferencePath(CmsCoreProvider.get().getUri());
                 }
+                if (result.getLocale() == null) {
+                    result.setLocale(CmsCoreProvider.get().getLocale());
+                }
                 openDialog(result);
 
             }

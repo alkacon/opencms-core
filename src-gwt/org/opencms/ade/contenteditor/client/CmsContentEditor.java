@@ -129,6 +129,10 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 
+import elemental2.dom.DomGlobal;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
+
 /**
  * The content editor.<p>
  */
@@ -910,7 +914,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         initEventPreviewHandler();
         m_context = context;
         final String entityId = CmsContentDefinition.uuidToEntityId(elementId, locale);
-        m_locale = locale;
+        internalSetLocale(locale);
         m_onClose = onClose;
         CmsCoreProvider.get().lock(elementId, loadTime, new I_CmsSimpleCallback<Boolean>() {
 
@@ -1169,7 +1173,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         m_openFormButton = null;
         m_saveButton = null;
         m_onClose = null;
-        m_locale = null;
+        internalSetLocale(null);
         if (m_basePanel != null) {
             m_basePanel.removeFromParent();
             m_basePanel = null;
@@ -1576,7 +1580,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         String mainLocale) {
 
         m_context = context;
-        m_locale = contentDefinition.getLocale();
+        internalSetLocale(contentDefinition.getLocale());
         m_entityId = contentDefinition.getEntityId();
         m_deleteOnCancel = contentDefinition.isDeleteOnCancel();
         m_autoUnlock = contentDefinition.isAutoUnlock();
@@ -2011,7 +2015,8 @@ public final class CmsContentEditor extends CmsEditorBase {
             return;
         }
         final Integer oldTabIndex = getTabIndex();
-        m_locale = locale;
+        internalSetLocale(locale);
+
         m_basePanel.clear();
         destroyForm(false);
         final CmsEntity entity = m_entityBackend.getEntity(m_entityId);
@@ -2523,6 +2528,22 @@ public final class CmsContentEditor extends CmsEditorBase {
         });
         m_toolbar.addRight(m_cancelButton);
         RootPanel.get().add(m_toolbar);
+    }
+
+    /**
+     * Sets both this object's locale field and a Javascript variable that can be used to access the locale from nested iframes.
+     *
+     * @param locale the locale to set
+     */
+    private void internalSetLocale(String locale) {
+
+        m_locale = locale;
+        JsPropertyMap<Object> window = Js.cast(DomGlobal.window);
+        if (locale != null) {
+            window.set(CmsGwtConstants.ATTR_CONTENT_EDITOR_LOCALE, locale);
+        } else {
+            window.delete(CmsGwtConstants.ATTR_CONTENT_EDITOR_LOCALE);
+        }
     }
 
     /**

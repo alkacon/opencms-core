@@ -54,6 +54,7 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -186,6 +187,8 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
             JSONObject conf = new JSONObject();
             conf.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE, GalleryMode.view.name());
             conf.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_PATH, cms.getSitePath(resource));
+            Locale locale = OpenCms.getLocaleManager().getDefaultLocale(cms, resource);
+            conf.put(I_CmsGalleryProviderConstants.CONFIG_LOCALE, "" + locale);
             conf.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_STORAGE_PREFIX, "");
             conf.put(I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG, CmsGalleryTabConfiguration.TC_SELECT_ALL);
             getRpcProxy(I_CmsGwtDialogClientRpc.class).openGalleryDialog(conf.toString());
