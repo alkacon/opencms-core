@@ -181,7 +181,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
             Locale locale = cms.getRequestContext().getLocale();
             boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
             CmsJspStandardContextBean contextBean = CmsJspStandardContextBean.getInstance(request);
-            CmsContainerElementBean parentElement = contextBean.getElement();
+            CmsContainerElementBean parentElement = contextBean.getRawElement();
 
             try {
                 if (formatter != null) {

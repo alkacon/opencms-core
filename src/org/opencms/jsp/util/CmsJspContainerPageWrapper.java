@@ -113,7 +113,7 @@ public class CmsJspContainerPageWrapper {
         CmsFlexController controller = CmsFlexController.getController(context.getRequest());
         CmsObject m_cms = context.getCmsObject();
         CmsContainerBean oldContainer = context.getContainer();
-        CmsContainerElementBean oldElement = context.getElement();
+        CmsContainerElementBean oldElement = context.getRawElement();
         CmsContainerPageBean oldPage = context.getPage();
         boolean oldForceDisableEdit = context.isForceDisableEditMode();
         Locale locale = m_cms.getRequestContext().getLocale();

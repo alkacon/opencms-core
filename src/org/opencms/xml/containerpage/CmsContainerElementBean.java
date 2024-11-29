@@ -390,13 +390,13 @@ public class CmsContainerElementBean implements Cloneable {
             m_createNew,
             m_elementId,
             m_formatterId,
-            m_individualSettings,
+            m_individualSettings == null ? null : new HashMap<>(m_individualSettings),
             m_inheritanceInfo,
             m_inMemoryOnly,
             m_temporaryContent,
             m_releasedAndNotExpired,
             m_resource,
-            m_settings,
+            m_settings == null ? null : new HashMap<>(m_settings),
             m_sitePath);
     }
 

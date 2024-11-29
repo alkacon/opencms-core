@@ -475,7 +475,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(req);
                 standardContext.initPage();
                 m_editableRequest = standardContext.getIsEditMode();
-                m_parentElement = standardContext.getElement();
+                m_parentElement = standardContext.getRawElement();
                 m_parentContainer = standardContext.getContainer();
                 m_hasModelGroupAncestor = m_editableRequest ? hasModelGroupAncestor(standardContext) : false;
                 CmsContainerPageBean containerPage = standardContext.getPage();

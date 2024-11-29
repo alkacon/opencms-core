@@ -52,6 +52,7 @@ import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.containerpage.mutable.CmsMutableContainerPage;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentMacroVisitor;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -269,10 +270,30 @@ public class CmsXmlContainerPage extends CmsXmlContent {
     /**
      * Gets the container page content as a bean.<p>
      *
+     * <p>Always creates a new copy of the bean.
+     *
      * @param cms the current CMS context
      * @return the bean containing the container page data
      */
     public CmsContainerPageBean getContainerPage(CmsObject cms) {
+
+        CmsContainerPageBean result = getOriginalContainerPage(cms);
+        if (result != null) {
+            // Copy everything
+            result = CmsMutableContainerPage.fromImmutable(result).toImmutable();
+            return result;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Gets the container page content as a bean.<p>
+     *
+     * @param cms the current CMS context
+     * @return the bean containing the container page data
+     */
+    public CmsContainerPageBean getOriginalContainerPage(CmsObject cms) {
 
         Locale masterLocale = CmsLocaleManager.MASTER_LOCALE;
         Locale localeToLoad = null;

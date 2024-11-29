@@ -127,6 +127,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletRequest;
@@ -161,7 +162,7 @@ public final class CmsJspStandardContextBean {
         private String m_resourceTypeName;
 
         /** The wrapped element instance. */
-        private CmsContainerElementBean m_wrappedElement;
+        private Supplier<CmsContainerElementBean> m_elementProvider;
 
         /** Cache for the wrapped element settings. */
         private Map<String, CmsJspElementSettingValueWrapper> m_wrappedSettings;
@@ -169,14 +170,16 @@ public final class CmsJspStandardContextBean {
         /** Cached formatter key - use array to distinguish between uncached and cached, but null. */
         private String[] m_formatterKey;
 
+        CmsContainerElementBean m_wrappedElement;
+
         /**
          * Constructor.<p>
          *
          * @param element the element to wrap
          */
-        protected CmsContainerElementWrapper(CmsContainerElementBean element) {
+        protected CmsContainerElementWrapper(Supplier<CmsContainerElementBean> elementProvider) {
 
-            m_wrappedElement = element;
+            m_elementProvider = elementProvider;
 
         }
 
@@ -186,7 +189,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public CmsContainerElementBean clone() {
 
-            return m_wrappedElement.clone();
+            return m_elementProvider.get().clone();
         }
 
         /**
@@ -195,7 +198,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public String editorHash() {
 
-            return m_wrappedElement.editorHash();
+            return m_elementProvider.get().editorHash();
         }
 
         /**
@@ -204,7 +207,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public boolean equals(Object obj) {
 
-            return m_wrappedElement.equals(obj);
+            return m_elementProvider.get().equals(obj);
         }
 
         /**
@@ -213,7 +216,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public CmsUUID getFormatterId() {
 
-            return m_wrappedElement.getFormatterId();
+            return m_elementProvider.get().getFormatterId();
         }
 
         /**
@@ -225,7 +228,7 @@ public final class CmsJspStandardContextBean {
 
             if (m_formatterKey == null) {
                 String key = null;
-                I_CmsFormatterBean formatter = getElementFormatter(m_wrappedElement);
+                I_CmsFormatterBean formatter = getElementFormatter(m_elementProvider.get());
                 if (formatter != null) {
                     key = formatter.getKeyOrId();
                 }
@@ -240,7 +243,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public CmsUUID getId() {
 
-            return m_wrappedElement.getId();
+            return m_elementProvider.get().getId();
         }
 
         /**
@@ -249,7 +252,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public Map<String, String> getIndividualSettings() {
 
-            return m_wrappedElement.getIndividualSettings();
+            return m_elementProvider.get().getIndividualSettings();
         }
 
         /**
@@ -258,7 +261,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public CmsInheritanceInfo getInheritanceInfo() {
 
-            return m_wrappedElement.getInheritanceInfo();
+            return m_elementProvider.get().getInheritanceInfo();
         }
 
         /**
@@ -267,7 +270,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public String getInstanceId() {
 
-            return m_wrappedElement.getInstanceId();
+            return m_elementProvider.get().getInstanceId();
         }
 
         /**
@@ -278,8 +281,10 @@ public final class CmsJspStandardContextBean {
         public CmsContainerElementWrapper getParent() {
 
             if (m_parent == null) {
-                CmsContainerElementBean parent = getParentElement(m_wrappedElement);
-                m_parent = (parent != null) ? new CmsContainerElementWrapper(getParentElement(m_wrappedElement)) : null;
+                CmsContainerElementBean parent = getParentElement(m_elementProvider.get());
+                m_parent = (parent != null)
+                ? new CmsContainerElementWrapper(() -> getParentElement(m_elementProvider.get()))
+                : null;
             }
             return m_parent;
         }
@@ -290,7 +295,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public CmsResource getResource() {
 
-            return m_wrappedElement.getResource();
+            return m_elementProvider.get().getResource();
         }
 
         /**
@@ -304,7 +309,7 @@ public final class CmsJspStandardContextBean {
                 m_resourceTypeName = "";
                 try {
                     m_resourceTypeName = OpenCms.getResourceManager().getResourceType(
-                        m_wrappedElement.getResource()).getTypeName();
+                        m_elementProvider.get().getResource()).getTypeName();
                 } catch (Exception e) {
                     CmsJspStandardContextBean.LOG.error(e.getLocalizedMessage(), e);
                 }
@@ -321,7 +326,8 @@ public final class CmsJspStandardContextBean {
          */
         public Map<String, CmsJspElementSettingValueWrapper> getSetting() {
 
-            if (m_wrappedSettings == null) {
+            if ((m_wrappedSettings == null) || (m_wrappedElement != m_elementProvider.get())) {
+                m_wrappedElement = m_elementProvider.get();
                 m_wrappedSettings = CmsCollectionsGenericWrapper.createLazyMap(
                     new SettingsTransformer(m_wrappedElement));
             }
@@ -334,7 +340,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public Map<String, String> getSettings() {
 
-            return m_wrappedElement.getSettings();
+            return m_elementProvider.get().getSettings();
         }
 
         /**
@@ -343,7 +349,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public String getSitePath() {
 
-            return m_wrappedElement.getSitePath();
+            return m_elementProvider.get().getSitePath();
         }
 
         /**
@@ -352,7 +358,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public int hashCode() {
 
-            return m_wrappedElement.hashCode();
+            return m_elementProvider.get().hashCode();
         }
 
         /**
@@ -361,7 +367,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public void initResource(CmsObject cms) throws CmsException {
 
-            m_wrappedElement.initResource(cms);
+            m_elementProvider.get().initResource(cms);
         }
 
         /**
@@ -376,7 +382,7 @@ public final class CmsJspStandardContextBean {
             ServletRequest request,
             Map<String, String> settingPresets) {
 
-            m_wrappedElement.initSettings(cms, config, formatterBean, locale, request, settingPresets);
+            m_elementProvider.get().initSettings(cms, config, formatterBean, locale, request, settingPresets);
         }
 
         /**
@@ -385,7 +391,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public boolean isCreateNew() {
 
-            return m_wrappedElement.isCreateNew();
+            return m_elementProvider.get().isCreateNew();
         }
 
         /**
@@ -394,7 +400,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public boolean isGroupContainer(CmsObject cms) throws CmsException {
 
-            return m_wrappedElement.isGroupContainer(cms);
+            return m_elementProvider.get().isGroupContainer(cms);
         }
 
         /**
@@ -403,7 +409,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public boolean isHistoryContent() {
 
-            return m_wrappedElement.isHistoryContent();
+            return m_elementProvider.get().isHistoryContent();
         }
 
         /**
@@ -412,7 +418,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public boolean isInheritedContainer(CmsObject cms) throws CmsException {
 
-            return m_wrappedElement.isInheritedContainer(cms);
+            return m_elementProvider.get().isInheritedContainer(cms);
         }
 
         /**
@@ -421,7 +427,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public boolean isInMemoryOnly() {
 
-            return m_wrappedElement.isInMemoryOnly();
+            return m_elementProvider.get().isInMemoryOnly();
         }
 
         /**
@@ -430,7 +436,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public boolean isReleasedAndNotExpired() {
 
-            return m_wrappedElement.isReleasedAndNotExpired();
+            return m_elementProvider.get().isReleasedAndNotExpired();
         }
 
         /**
@@ -439,7 +445,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public boolean isTemporaryContent() {
 
-            return m_wrappedElement.isTemporaryContent();
+            return m_elementProvider.get().isTemporaryContent();
         }
 
         /**
@@ -448,7 +454,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public void setFormatterId(CmsUUID formatterId) {
 
-            m_wrappedElement.setFormatterId(formatterId);
+            m_elementProvider.get().setFormatterId(formatterId);
         }
 
         /**
@@ -457,7 +463,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public void setHistoryFile(CmsFile file) {
 
-            m_wrappedElement.setHistoryFile(file);
+            m_elementProvider.get().setHistoryFile(file);
         }
 
         /**
@@ -466,7 +472,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public void setInheritanceInfo(CmsInheritanceInfo inheritanceInfo) {
 
-            m_wrappedElement.setInheritanceInfo(inheritanceInfo);
+            m_elementProvider.get().setInheritanceInfo(inheritanceInfo);
         }
 
         /**
@@ -475,7 +481,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public void setTemporaryFile(CmsFile elementFile) {
 
-            m_wrappedElement.setTemporaryFile(elementFile);
+            m_elementProvider.get().setTemporaryFile(elementFile);
         }
 
         /**
@@ -484,7 +490,7 @@ public final class CmsJspStandardContextBean {
         @Override
         public String toString() {
 
-            return m_wrappedElement.toString();
+            return m_elementProvider.get().toString();
         }
     }
 
@@ -1430,7 +1436,7 @@ public final class CmsJspStandardContextBean {
      */
     public CmsContainerElementWrapper getElement() {
 
-        return m_element != null ? new CmsContainerElementWrapper(m_element) : null;
+        return m_element != null ? new CmsContainerElementWrapper(() -> m_element) : null;
     }
 
     /**
@@ -1453,7 +1459,7 @@ public final class CmsJspStandardContextBean {
                         for (CmsContainerElementBean element : container.getElements()) {
                             try {
                                 element.initResource(m_cms);
-                                containerElements.add(new CmsContainerElementWrapper(element));
+                                containerElements.add(new CmsContainerElementWrapper(() -> element));
                             } catch (Exception e) {
                                 LOG.error(e.getLocalizedMessage(), e);
                             }
@@ -2070,6 +2076,16 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Gets the unwrapped element.
+     *
+     * @return the unwrapped element
+     */
+    public CmsContainerElementBean getRawElement() {
+
+        return m_element;
+    }
+
+    /**
      * Reads all sub-categories below the provided category.
      * @return The map from the provided category to it's sub-categories in a {@link CmsJspCategoryAccessBean}.
      */
@@ -2676,6 +2692,27 @@ public final class CmsJspStandardContextBean {
 
         return CmsJspObjectValueWrapper.createWrapper(m_cms, path).getToLink();
 
+    }
+
+    /**
+     * Replaces the current element with a copy to which some settings are added.
+     *
+     * <p>The original container element bean is not modified, and the bean is not replaced in any container beans, only the bean returned by the getElement() method is different.
+     *
+     * @param settings the settings to add
+     */
+    public void modifySettings(Map<String, String> settings) {
+
+        if (m_element != null) {
+            if ((settings != null) && !settings.isEmpty()) {
+                m_element = m_element.clone();
+                if (m_element.getSettings() != null) {
+                    m_element.getSettings().putAll(settings);
+                } else {
+                    LOG.error("Trying to modify null settings:" + m_element.getInstanceId());
+                }
+            }
+        }
     }
 
     /**
