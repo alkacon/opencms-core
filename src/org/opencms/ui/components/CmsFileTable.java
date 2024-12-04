@@ -103,6 +103,7 @@ import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.shared.Registration;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.data.Container;
@@ -168,26 +169,33 @@ public class CmsFileTable extends CmsResourceTable {
                 result.addValidator(m_editHandler);
                 if (result instanceof TextField) {
                     ((TextField)result).setComponentError(null);
-                    ((TextField)result).addShortcutListener(new ShortcutListener("Cancel edit", KeyCode.ESCAPE, null) {
+                    clearColumnEditActions();
+                    // we attach the shortcuts to the table, not the textbox, so that they still trigger if the change from the edited field would cause the current row
+                    // to be filtered by the current container filter.
+                    m_columnEditEscRegistration = CmsFileTable.this.addShortcutListener(
+                        new ShortcutListener("Cancel edit", KeyCode.ESCAPE, null) {
 
-                        private static final long serialVersionUID = 1L;
+                            private static final long serialVersionUID = 1L;
 
-                        @Override
-                        public void handleAction(Object sender, Object target) {
+                            @Override
+                            public void handleAction(Object sender, Object target) {
 
-                            cancelEdit();
-                        }
-                    });
-                    ((TextField)result).addShortcutListener(new ShortcutListener("Save", KeyCode.ENTER, null) {
+                                cancelEdit();
+                            }
+                        });
 
-                        private static final long serialVersionUID = 1L;
+                    m_columnEditEnterRegistration = CmsFileTable.this.addShortcutListener(
+                        new ShortcutListener("Save", KeyCode.ENTER, null) {
 
-                        @Override
-                        public void handleAction(Object sender, Object target) {
+                            private static final long serialVersionUID = 1L;
 
-                            stopEdit();
-                        }
-                    });
+                            @Override
+                            public void handleAction(Object sender, Object target) {
+
+                                stopEdit();
+                            }
+                        });
+
                     ((TextField)result).addBlurListener(m_fileEditHandler);
                     ((TextField)result).setTextChangeEventMode(TextChangeEventMode.LAZY);
                     ((TextField)result).addTextChangeListener(m_editHandler);
@@ -248,35 +256,35 @@ public class CmsFileTable extends CmsResourceTable {
             } else if ((CmsResourceTableProperty.PROPERTY_TYPE_ICON.equals(propertyId)
                 || CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT.equals(propertyId))
                 && (item1.getItemProperty(CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION) != null)) {
-                    int result;
-                    Float pos1 = (Float)item1.getItemProperty(
-                        CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
-                    Float pos2 = (Float)item2.getItemProperty(
-                        CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
-                    if (pos1 == null) {
-                        result = pos2 == null
-                        ? compareProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, true, item1, item2)
-                        : 1;
-                    } else {
-                        result = pos2 == null ? -1 : Float.compare(pos1.floatValue(), pos2.floatValue());
-                    }
-                    if (!sortDirection) {
-                        result = result * (-1);
-                    }
-                    return result;
-                } else if (((CmsResourceTableProperty)propertyId).getColumnType().equals(String.class)) {
-                    String value1 = (String)item1.getItemProperty(propertyId).getValue();
-                    String value2 = (String)item2.getItemProperty(propertyId).getValue();
-                    // Java collators obtained by java.text.Collator.getInstance(...) ignore spaces, and we don't want to ignore them, so we use
-                    // ICU collators instead
-                    com.ibm.icu.text.Collator collator = com.ibm.icu.text.Collator.getInstance(
-                        com.ibm.icu.util.ULocale.ROOT);
-                    int result = collator.compare(value1, value2);
-                    if (!sortDirection) {
-                        result = -result;
-                    }
-                    return result;
+                int result;
+                Float pos1 = (Float)item1.getItemProperty(
+                    CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
+                Float pos2 = (Float)item2.getItemProperty(
+                    CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
+                if (pos1 == null) {
+                    result = pos2 == null
+                    ? compareProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, true, item1, item2)
+                    : 1;
+                } else {
+                    result = pos2 == null ? -1 : Float.compare(pos1.floatValue(), pos2.floatValue());
                 }
+                if (!sortDirection) {
+                    result = result * (-1);
+                }
+                return result;
+            } else if (((CmsResourceTableProperty)propertyId).getColumnType().equals(String.class)) {
+                String value1 = (String)item1.getItemProperty(propertyId).getValue();
+                String value2 = (String)item2.getItemProperty(propertyId).getValue();
+                // Java collators obtained by java.text.Collator.getInstance(...) ignore spaces, and we don't want to ignore them, so we use
+                // ICU collators instead
+                com.ibm.icu.text.Collator collator = com.ibm.icu.text.Collator.getInstance(
+                    com.ibm.icu.util.ULocale.ROOT);
+                int result = collator.compare(value1, value2);
+                if (!sortDirection) {
+                    result = -result;
+                }
+                return result;
+            }
             return super.compareProperty(propertyId, sortDirection, item1, item2);
             //@formatter:on
         }
@@ -334,6 +342,12 @@ public class CmsFileTable extends CmsResourceTable {
         DEFAULT_TABLE_PROPERTIES = Collections.unmodifiableMap(defaultProps);
     }
 
+    /** Action registration for pressing Enter during column editing. */
+    private Registration m_columnEditEnterRegistration;
+
+    /** Action registration for pressing Esc during column editing. */
+    private Registration m_columnEditEscRegistration;
+
     /** The selected resources. */
     protected List<CmsResource> m_currentResources = new ArrayList<CmsResource>();
 
@@ -367,8 +381,8 @@ public class CmsFileTable extends CmsResourceTable {
     /** The edited property id. */
     private CmsResourceTableProperty m_editProperty;
 
-    /** Saved container filters. */
-    private Collection<Filter> m_filters = Collections.emptyList();
+    /** Stack of saved container filters. */
+    private List<Collection<Filter>> m_filterStack = new ArrayList<>();
 
     /** The folder select handler. */
     private I_FolderSelectHandler m_folderSelectHandler;
@@ -463,12 +477,12 @@ public class CmsFileTable extends CmsResourceTable {
                     style += " " + OpenCmsTheme.HOVER_COLUMN;
                 } else if ((CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT == propertyId)
                     || (CmsResourceTableProperty.PROPERTY_TITLE == propertyId)) {
-                        if ((item.getItemProperty(CmsResourceTableProperty.PROPERTY_IN_NAVIGATION) != null)
-                            && ((Boolean)item.getItemProperty(
-                                CmsResourceTableProperty.PROPERTY_IN_NAVIGATION).getValue()).booleanValue()) {
-                            style += " " + OpenCmsTheme.IN_NAVIGATION;
-                        }
+                    if ((item.getItemProperty(CmsResourceTableProperty.PROPERTY_IN_NAVIGATION) != null)
+                        && ((Boolean)item.getItemProperty(
+                            CmsResourceTableProperty.PROPERTY_IN_NAVIGATION).getValue()).booleanValue()) {
+                        style += " " + OpenCmsTheme.IN_NAVIGATION;
                     }
+                }
                 for (Table.CellStyleGenerator generator : m_additionalStyleGenerators) {
                     String additional = generator.getStyle(source, itemId, propertyId);
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(additional)) {
@@ -805,10 +819,15 @@ public class CmsFileTable extends CmsResourceTable {
      */
     public void restoreFilters() {
 
-        IndexedContainer container = (IndexedContainer)m_fileTable.getContainerDataSource();
-        container.removeAllContainerFilters();
-        for (Filter filter : m_filters) {
-            container.addContainerFilter(filter);
+        if (m_filterStack.size() > 0) {
+            IndexedContainer container = (IndexedContainer)m_fileTable.getContainerDataSource();
+            container.removeAllContainerFilters();
+            Collection<Filter> filters = m_filterStack.remove(m_filterStack.size() - 1);
+            for (Filter filter : filters) {
+                container.addContainerFilter(filter);
+            }
+        } else {
+            LOG.error("restoreFilter called but no saved filters available");
         }
     }
 
@@ -818,7 +837,8 @@ public class CmsFileTable extends CmsResourceTable {
     public void saveFilters() {
 
         IndexedContainer container = (IndexedContainer)m_fileTable.getContainerDataSource();
-        m_filters = container.getContainerFilters();
+        Collection<Filter> filters = container.getContainerFilters();
+        m_filterStack.add(new ArrayList<>(filters)); // we need to make a copy because the list returned by getContainerFilters() is changed dynamically by the container
     }
 
     /**
@@ -919,14 +939,20 @@ public class CmsFileTable extends CmsResourceTable {
     public void stopEdit() {
 
         if (m_editHandler != null) {
-            String value = (String)m_container.getItem(m_editItemId.toString()).getItemProperty(
-                m_editProperty).getValue();
-            if (!value.equals(m_originalEditValue)) {
-                m_editHandler.validate(value);
-                m_editHandler.save(value);
-            } else {
-                // call cancel to ensure unlock
-                m_editHandler.cancel();
+            saveFilters();
+            clearFilters();
+            try {
+                String value = (String)m_container.getItem(m_editItemId.toString()).getItemProperty(
+                    m_editProperty).getValue();
+                if (!value.equals(m_originalEditValue)) {
+                    m_editHandler.validate(value);
+                    m_editHandler.save(value);
+                } else {
+                    // call cancel to ensure unlock
+                    m_editHandler.cancel();
+                }
+            } finally {
+                restoreFilters();
             }
         }
         clearEdit();
@@ -1107,17 +1133,40 @@ public class CmsFileTable extends CmsResourceTable {
     }
 
     /**
+     * Clears the actions that were set for editing a column.
+     */
+    private void clearColumnEditActions() {
+
+        if (m_columnEditEnterRegistration != null) {
+            m_columnEditEnterRegistration.remove();
+            m_columnEditEnterRegistration = null;
+        }
+        if (m_columnEditEscRegistration != null) {
+            m_columnEditEscRegistration.remove();
+            m_columnEditEscRegistration = null;
+        }
+    }
+
+    /**
      * Clears the current edit process.<p>
      */
     private void clearEdit() {
 
         m_fileTable.setEditable(false);
         if (m_editItemId != null) {
-            updateItem(m_editItemId, false);
+            try {
+                // current filter may prevent item from being updated
+                saveFilters();
+                clearFilters();
+                updateItem(m_editItemId, false);
+            } finally {
+                restoreFilters();
+            }
         }
         m_editItemId = null;
         m_editProperty = null;
         m_editHandler = null;
+        clearColumnEditActions();
         updateSorting();
     }
 
