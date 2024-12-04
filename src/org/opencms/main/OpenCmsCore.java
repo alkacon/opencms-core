@@ -137,7 +137,6 @@ import org.opencms.xml.xml2json.I_CmsApiAuthorizationHandler;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -154,7 +153,6 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -170,7 +168,6 @@ import org.antlr.stringtemplate.StringTemplate;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.google.gwt.user.client.rpc.core.java.util.LinkedHashMap_CustomFieldSerializer;
 
 /**
  * The internal implementation of the core OpenCms "operating system" functions.<p>
@@ -2737,19 +2734,6 @@ public final class OpenCmsCore {
         try {
             CmsDiagnosticsMXBean.register();
         } catch (Throwable e) {
-            CmsLog.INIT.error(e.getLocalizedMessage(), e);
-        }
-
-        try {
-            // Workaround: The GWT serializer for LinkedHashMaps uses reflection on java.util.LinkedHashMap that is disallowed in newer Java versions that use modules.
-            // This can be bypassed by setting a private 'reflectionHasFailed' field in the serializer class. *This* reflective access is OK, because it does not access a different module.
-            // GWT should really handle that problem, but as of version 2.9.0 it does not. This workaround can be removed if a newer GWT version handles the problem correctly.
-            // (See https://github.com/gwtproject/gwt/issues/9584)
-
-            Field field = LinkedHashMap_CustomFieldSerializer.class.getDeclaredField("reflectionHasFailed");
-            field.setAccessible(true);
-            ((AtomicBoolean)field.get(null)).set(true);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
             CmsLog.INIT.error(e.getLocalizedMessage(), e);
         }
 

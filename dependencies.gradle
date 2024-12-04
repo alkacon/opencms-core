@@ -18,8 +18,8 @@ dependencies {
     gwtCompile group: 'ant', name: 'ant', version: '1.6.5'
     gwtCompile group: 'colt', name: 'colt', version: '1.2.0'
     gwtCompile group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
-    gwtCompile group: 'org.gwtproject', name: 'gwt-dev', version: '2.11.0'
-    gwtCompile group: 'org.gwtproject', name: 'gwt-user', version: '2.11.0'
+    gwtCompile group: 'org.gwtproject', name: 'gwt-dev', version: '2.12.1'
+    gwtCompile group: 'org.gwtproject', name: 'gwt-user', version: '2.12.1'
     gwtCompile group: 'com.google.jsinterop', name: 'jsinterop-annotations', version: '2.0.0'
     gwtCompile(group: 'com.google.jsinterop', name: 'jsinterop-annotations', version: '1.0.2'){
         artifact {
@@ -84,7 +84,7 @@ dependencies {
     distribution group: 'com.google.elemental2', name: 'elemental2-dom', version: '1.1.0'
     distribution group: 'com.google.elemental2', name: 'elemental2-webstorage', version: '1.1.0'
     distribution group: 'com.google.guava', name: 'failureaccess', version: '1.0.1'
-    distribution group: 'org.gwtproject', name: 'gwt-servlet', version: '2.11.0'
+    distribution group: 'org.gwtproject', name: 'gwt-servlet', version: '2.12.1'
     distribution group: 'com.google.gwt', name: 'gwt-elemental', version: '2.9.0'
     distribution group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
     distribution group: 'com.google.j2objc', name: 'j2objc-annotations', version: '1.3'
