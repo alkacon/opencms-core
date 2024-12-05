@@ -61,14 +61,14 @@ repositories {
         }
     }
     mavenCentral()
-    maven {
-        url "http://software.rescarta.org/nexus/content/repositories/thirdparty/"
-    }
+//    maven {
+//        url "https://software.rescarta.org/nexus/content/repositories/thirdparty/"
+//    }
     maven {
         url "https://maven.restlet.talend.com"
     }
     maven {
-        url "http://maven.vaadin.com/vaadin-addons"
+        url "https://maven.vaadin.com/vaadin-addons"
     }
 }
 
