@@ -73,9 +73,6 @@ repositories {
     }
     mavenCentral()
     maven {
-        url 'https://software.rescarta.org/nexus/content/repositories/thirdparty/'
-    }
-    maven {
         url 'https://maven.restlet.talend.com'
     }
     maven {
