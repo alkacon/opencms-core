@@ -342,9 +342,12 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                     tag.setAttribute(attr, CmsEncoder.escapeXml(l));
 
                     // In the Online project, remove href attributes with broken links from A tags.
+                    // Exception: We don't do this if the target is empty, because fragment links ('#anchor') 
+                    // in the WYSIWYG editor are stored as internal links with empty targets 
                     if (tag.getTagName().equalsIgnoreCase("A")
                         && m_cms.getRequestContext().isOnlineOrEditDisabled()
                         && link.isInternal()
+                        && !CmsStringUtil.isEmpty(link.getTarget())
                         && (link.getResource() == null)) {
                         // getResource() == null could either mean checkConsistency has not been called, or that the link is broken.
                         // so we have to call checkConsistency to eliminate the first possibility.
