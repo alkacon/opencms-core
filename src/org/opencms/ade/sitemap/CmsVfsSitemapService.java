@@ -1051,6 +1051,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             CmsUUID rootId = cms.readResource("/", CmsResourceFilter.ALL).getStructureId();
             result.setSiteRootId(rootId);
             result.setLocaleComparisonEnabled(showLocaleComparison);
+            boolean allowCreateNestedGalleries = Boolean.parseBoolean("" + OpenCms.getRuntimeProperty("ade.sitemap.allowCreateNestedGalleries"));
+            result.setAllowCreateNestedGalleries(allowCreateNestedGalleries);
         } catch (Throwable e) {
             error(e);
         }

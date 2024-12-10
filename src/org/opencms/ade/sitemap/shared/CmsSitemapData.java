@@ -70,6 +70,9 @@ public class CmsSitemapData implements IsSerializable {
     /** The URL of the JSP used to import aliases. */
     private String m_aliasImportUrl;
 
+    /** Enables/disables creation of nested galleries in galleries view. */
+    private boolean m_allowCreateNestedGalleries;
+
     /** The list of property names. */
     private List<String> m_allPropertyNames;
 
@@ -572,6 +575,16 @@ public class CmsSitemapData implements IsSerializable {
     }
 
     /**
+     * Checks if creation of nested galleries is allowed.
+     *
+     * @return true if creation of nested galleries is allowed
+     */
+    public boolean isAllowCreateNestedGalleries() {
+
+        return m_allowCreateNestedGalleries;
+    }
+
+    /**
      * Returns if the current user has the category manager role.<p>
      *
      * @return if the current user has the category manager role
@@ -639,6 +652,16 @@ public class CmsSitemapData implements IsSerializable {
     public boolean isShowModelEditConfirm() {
 
         return m_showModelEditConfirm;
+    }
+
+    /**
+     * Enable or disable option for creating nested galleries.
+     *
+     * @param allowCreateNestedGalleries true if nested galleries are allowed
+     */
+    public void setAllowCreateNestedGalleries(boolean allowCreateNestedGalleries) {
+
+        m_allowCreateNestedGalleries = allowCreateNestedGalleries;
     }
 
     /**

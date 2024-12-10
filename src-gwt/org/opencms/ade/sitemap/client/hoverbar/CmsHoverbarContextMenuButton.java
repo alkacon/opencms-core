@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.CmsMenuButton;
@@ -129,7 +130,9 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton implements I_Cms
         result.add(new CmsCopyModelPageMenuEntry(hoverbar));
         result.add(new CmsSetDefaultModelMenuEntry(hoverbar));
         result.add(new CmsCopyAsModelGroupPageMenuEntry(hoverbar));
-        result.add(new CmsCreateGalleryMenuEntry(hoverbar));
+        if (CmsSitemapView.getInstance().getController().getData().isAllowCreateNestedGalleries()) {
+            result.add(new CmsCreateGalleryMenuEntry(hoverbar));
+        }
         result.add(new CmsResourceInfoMenuEntry(hoverbar));
         result.add(new CmsParentSitemapMenuEntry(hoverbar));
         result.add(new CmsGotoSubSitemapMenuEntry(hoverbar));
