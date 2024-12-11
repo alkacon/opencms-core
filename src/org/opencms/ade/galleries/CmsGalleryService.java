@@ -316,6 +316,15 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /** Name for the 'galleryShowInvalidDefault' preference. */
     public static final String PREF_GALLERY_SHOW_INVALID_DEFAULT = "galleryShowInvalidDefault";
 
+    /** Storage key for the last gallery sort order used in the content editor and ADE image gallery button. */
+    public static final String RESULT_ORDER_KEY_EDITOR = "editor";
+
+    /** Storage key for the last gallery sort order in other contexts. */
+    public static final String RESULT_ORDER_KEY_OTHER = "other";
+
+    /** Storage key for the last gallery sort order used in the 'magic wand'/new element dialog. */
+    public static final String RESULT_ORDER_KEY_PAGE = "page";
+
     /** Key for additional info gallery result view type. */
     public static final String RESULT_VIEW_TYPE_ADD_INFO_KEY = "gallery_result_view_type";
 
@@ -355,6 +364,31 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /** The workplace locale from the current user's settings. */
     private Locale m_wpLocale;
+
+    /**
+     * Converts the gallery mode to the key used for storing the last used search order
+     *
+     * @param mode the gallery mode
+     * @return the key to use for storing the last used search order
+     */
+    public static String convertModeToResultOrderKey(GalleryMode mode) {
+
+        String key = null;
+        switch (mode) {
+            case ade:
+                key = RESULT_ORDER_KEY_PAGE;
+                break;
+            case adeView:
+            case editor:
+            case widget:
+                key = RESULT_ORDER_KEY_EDITOR;
+                break;
+            default:
+                key = RESULT_ORDER_KEY_OTHER;
+        }
+        return key;
+
+    }
 
     /**
      * Generates the pre-loaded contents for the VFS tab of the gallery dialog.<p>
@@ -936,7 +970,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             data.setVfsRootFolders(getRootEntries());
 
             data.setScope(getWorkplaceSettings().getLastSearchScope());
-            data.setSortOrder(getWorkplaceSettings().getLastGalleryResultOrder());
+            data.setSortOrder(
+                getWorkplaceSettings().getLastGalleryResultOrder(CmsGalleryService.RESULT_ORDER_KEY_PAGE));
 
             data.setTabIds(GalleryMode.ade.getTabs());
             data.setReferenceSitePath(uri);
@@ -1098,7 +1133,10 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         try {
             gSearchObj = search(searchObj);
             getWorkplaceSettings().setLastSearchScope(searchObj.getScope());
-            getWorkplaceSettings().setLastGalleryResultOrder(SortParams.valueOf(searchObj.getSortOrder()));
+            String resultOrderKey = convertModeToResultOrderKey(searchObj.getGalleryMode());
+            getWorkplaceSettings().setLastGalleryResultOrder(
+                resultOrderKey,
+                SortParams.valueOf(searchObj.getSortOrder()));
             setLastOpenedGallery(searchObj);
         } catch (Throwable e) {
             error(e);
@@ -2264,7 +2302,20 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         }
         initialSearchObj.setLocale(data.getLocale());
         CmsGallerySearchBean searchObj = new CmsGallerySearchBean(initialSearchObj);
-        searchObj.setSortOrder(CmsGallerySearchParameters.CmsGallerySortParam.DEFAULT.toString());
+        CmsWorkplaceSettings wpSettings = getWorkplaceSettings();
+        String resultOrderKey = convertModeToResultOrderKey(data.getMode());
+        SortParams sortOrder = wpSettings.getLastGalleryResultOrder(resultOrderKey);
+        if (sortOrder == null) {
+            sortOrder = SortParams.dateLastModified_desc;
+        }
+        try {
+            // Make sure that the SortParams name corresponds to a valid CmsGallerySortParam name
+            searchObj.setSortOrder(CmsGallerySearchParameters.CmsGallerySortParam.valueOf(sortOrder.toString()).name());
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            searchObj.setSortOrder(CmsGallerySearchParameters.CmsGallerySortParam.dateLastModified_desc.name());
+        }
+
         int currentPage = 1;
         boolean found = false;
         searchObj.setPage(currentPage);
@@ -2473,7 +2524,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         }
         data.setVfsRootFolders(getRootEntries());
         data.setScope(getWorkplaceSettings().getLastSearchScope());
-        data.setSortOrder(getWorkplaceSettings().getLastGalleryResultOrder());
+        String resultOrderKey = convertModeToResultOrderKey(conf.getGalleryMode());
+        data.setSortOrder(getWorkplaceSettings().getLastGalleryResultOrder(resultOrderKey));
 
         List<CmsResourceTypeBean> types = null;
         data.setTabIds(conf.getGalleryMode().getTabs());

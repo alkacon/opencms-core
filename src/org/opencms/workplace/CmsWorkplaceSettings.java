@@ -44,6 +44,7 @@ import org.opencms.workplace.tools.CmsToolUserData;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 
@@ -94,11 +95,11 @@ public class CmsWorkplaceSettings {
     /** The gallery type. */
     private String m_galleryType;
 
-    /** The last sort order used for the gallery search results. */
-    private SortParams m_lastGalleryResultOrder;
-
     /** The last used galleries. */
     private Map<String, String> m_lastUsedGalleries;
+
+    /** Map of last used gallery search result orders, where the map keys correspond to different usages of galleries. */
+    private Map<String, SortParams> m_lastUsedGalleryResultOrder = new ConcurrentHashMap<>();
 
     /** The list object. */
     private Object m_listObject;
@@ -291,16 +292,15 @@ public class CmsWorkplaceSettings {
     }
 
     /**
-     * Gets the last result sort order for the gallery dialog.<p>
+     * Gets the last result sort order for the gallery dialog and a particular usage type.<p>
      *
+     * @param key the usage type of galleries (see the RESULT_ORDER_* constants in CmsGalleryService)
      * @return the last sort order
      */
-    public SortParams getLastGalleryResultOrder() {
+    public SortParams getLastGalleryResultOrder(String key) {
 
-        if (m_lastGalleryResultOrder == null) {
-            return SortParams.dateLastModified_desc;
-        }
-        return m_lastGalleryResultOrder;
+        SortParams result = m_lastUsedGalleryResultOrder.getOrDefault(key, SortParams.dateLastModified_desc);
+        return result;
     }
 
     /**
@@ -641,13 +641,18 @@ public class CmsWorkplaceSettings {
     }
 
     /**
-     * Sets the last sort order used for the gallery results.<p>
+     * Sets the last sort order used for the gallery results for a particular usage type.<p>
      *
+     * @param key the usage type of galleries (see the RESULT_ORDER_* constants in CmsGalleryService)
      * @param order the last sort order
      */
-    public void setLastGalleryResultOrder(SortParams order) {
+    public void setLastGalleryResultOrder(String key, SortParams order) {
 
-        m_lastGalleryResultOrder = order;
+        if (order != null) {
+            m_lastUsedGalleryResultOrder.put(key, order);
+        } else {
+            m_lastUsedGalleryResultOrder.remove(key);
+        }
     }
 
     /**
