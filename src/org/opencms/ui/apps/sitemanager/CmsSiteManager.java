@@ -51,6 +51,7 @@ import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsInfoButton;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -183,7 +184,19 @@ public class CmsSiteManager extends A_CmsWorkplaceApp implements I_CmsCRUDApp<Cm
             m_dialogWindow = null;
         }
         if (updateTable) {
-            A_CmsUI.get().reload();
+            final String filter = m_siteTableFilter.getValue();
+            // reload the sites, but reset the filter first because loadSites in subclasses may not work right
+            // for filtered lists. Restore the filter afterwards.
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(filter)) {
+                m_sitesTable.filter(null);
+            }
+            try {
+                m_sitesTable.loadSites();
+            } finally {
+                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(filter)) {
+                    m_sitesTable.filter(filter);
+                }
+            }
         }
     }
 
