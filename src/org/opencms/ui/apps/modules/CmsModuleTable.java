@@ -121,14 +121,9 @@ public class CmsModuleTable<T> extends Table {
             public void textChange(TextChangeEvent event) {
 
                 String filterString = event.getText();
-
-                Container.Filterable container = (Container.Filterable)getContainerDataSource();
-                container.removeAllContainerFilters();
-                container.addContainerFilter(m_tableBuilder.getDefaultFilter(filterString));
-                if ((getValue() != null)) {
-                    setCurrentPageFirstItemId(getValue());
-                }
+                filter(filterString);
             }
+
         });
         m_searchBox.setIcon(FontOpenCms.FILTER);
         m_searchBox.setInputPrompt(
@@ -174,6 +169,7 @@ public class CmsModuleTable<T> extends Table {
                 importModule();
             }
         });
+
         buttons.add(importButton);
         m_counter = new CmsInfoButton();
         m_counter.setWindowCaption(CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_STATISTICS_0));
@@ -194,11 +190,28 @@ public class CmsModuleTable<T> extends Table {
     }
 
     /**
+     * Applies the given filter.
+     *
+     * @param filterString a filter string
+     */
+    public void filter(String filterString) {
+
+        m_searchBox.setValue(filterString);
+        Container.Filterable container = (Container.Filterable)getContainerDataSource();
+        container.removeAllContainerFilters();
+        container.addContainerFilter(m_tableBuilder.getDefaultFilter(filterString));
+        if ((getValue() != null)) {
+            setCurrentPageFirstItemId(getValue());
+        }
+    }
+
+    /**
      * Gets the search field.
-     * 
+     *
      * @return the search field
      */
     public TextField getSearchBox() {
+
         return m_searchBox;
     }
 

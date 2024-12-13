@@ -593,7 +593,7 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
                 // Setting the filter again is redundant for this class, but might be needed for subclasses, as the actual table instance may change
                 CmsVaadinUtils.visitDescendants(UI.getCurrent(), component -> {
                     if (component instanceof CmsModuleTable) {
-                        ((CmsModuleTable)component).getSearchBox().setValue(filter);
+                        ((CmsModuleTable)component).filter(filter);
                         return false;
                     } else {
                         return true;
