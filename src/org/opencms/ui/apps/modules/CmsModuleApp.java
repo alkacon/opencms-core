@@ -71,8 +71,10 @@ import com.google.common.collect.Maps;
 import com.vaadin.navigator.View;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.v7.ui.TextField;
 
 /**
  * Main module manager app class.<p>
@@ -568,12 +570,37 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
      */
     public void editModule(String moduleName) {
 
+        StringBuilder searchFilterBuffer = new StringBuilder();
+        CmsVaadinUtils.visitDescendants(UI.getCurrent(), component -> {
+            if (component instanceof CmsModuleTable) {
+                TextField searchBox = ((CmsModuleTable)component).getSearchBox();
+                if (searchBox != null) {
+                    searchFilterBuffer.append(searchBox.getValue());
+                }
+                return false;
+            } else {
+                return true;
+            }
+        });
+        String filter = searchFilterBuffer.toString();
         CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
         editModule(
             module,
             false,
             CmsVaadinUtils.getMessageText(Messages.GUI_MODULES_TITLE_EDIT_MODULE_1, module.getName()),
-            this::reload);
+            () -> {
+                reload();
+                // Setting the filter again is redundant for this class, but might be needed for subclasses, as the actual table instance may change
+                CmsVaadinUtils.visitDescendants(UI.getCurrent(), component -> {
+                    if (component instanceof CmsModuleTable) {
+                        ((CmsModuleTable)component).getSearchBox().setValue(filter);
+                        return false;
+                    } else {
+                        return true;
+                    }
+                });
+
+            });
     }
 
     /**
@@ -741,19 +768,19 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
         } else if (state.equals(States.IMPORT_REPORT)
             || state.equals(States.DELETE_REPORT)
             || state.equals(States.EXPORT_REPORT)) {
-                String label = getReportLabel(state);
-                CmsBasicReportPage reportForm = new CmsBasicReportPage(label, m_reports.get(state), new Runnable() {
+            String label = getReportLabel(state);
+            CmsBasicReportPage reportForm = new CmsBasicReportPage(label, m_reports.get(state), new Runnable() {
 
-                    public void run() {
+                public void run() {
 
-                        openSubView("", true);
-                    }
-                });
-                reportForm.setHeight("100%");
-                return reportForm;
-            } else {
-                return getModuleTable();
-            }
+                    openSubView("", true);
+                }
+            });
+            reportForm.setHeight("100%");
+            return reportForm;
+        } else {
+            return getModuleTable();
+        }
     }
 
     /**
@@ -797,7 +824,14 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
      */
     protected void reload() {
 
-        A_CmsUI.get().reload();
+        CmsVaadinUtils.visitDescendants(UI.getCurrent(), component -> {
+            if (component instanceof CmsModuleTable) {
+                ((CmsModuleTable)component).reload();
+                return false;
+            } else {
+                return true;
+            }
+        });
 
     }
 

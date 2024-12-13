@@ -194,6 +194,15 @@ public class CmsModuleTable<T> extends Table {
     }
 
     /**
+     * Gets the search field.
+     * 
+     * @return the search field
+     */
+    public TextField getSearchBox() {
+        return m_searchBox;
+    }
+
+    /**
      * Opens the import module dialog.<p>
      */
     public void importModule() {
