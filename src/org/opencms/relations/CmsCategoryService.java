@@ -375,6 +375,9 @@ public class CmsCategoryService {
                 CmsCategoryService.CENTRALIZED_REPOSITORY,
                 CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
                 false).getValue();
+        } catch (CmsVfsResourceNotFoundException e) {
+            // the folder not being present should not count as an error.
+            LOG.info(e.getLocalizedMessage(), e);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage(), e);
