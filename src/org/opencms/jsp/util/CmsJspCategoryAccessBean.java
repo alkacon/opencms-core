@@ -36,6 +36,7 @@ import org.opencms.relations.CmsCategoryService;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -120,6 +121,48 @@ public class CmsJspCategoryAccessBean {
             }
         }
         return new ArrayList<CmsCategory>(0);
+    }
+
+    /**
+     * Checks if the wrapped categories contain a given category.
+     *
+     * @param categoryPath the complete path of the category to check, e.g. "location/africa/"
+     * @return <code>true</code> iff the wrapped categories contain a category with the provided categoryPath.
+     */
+    public boolean contains(String categoryPath) {
+
+        if ((null != m_categories) && (categoryPath != null)) {
+            return m_categories.stream().anyMatch((c) -> categoryPath.equals(c.getPath()));
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the wrapped categories contain all given categories.
+     *
+     * @param categoryPaths the complete paths of the categories to check, e.g. ["location/africa/", "news/"]
+     * @return <code>true</code> iff for each of the provided categoryPaths, the wrapped categories contain a category with this path.
+     */
+    public boolean containsAll(Collection<String> categoryPaths) {
+
+        if ((categoryPaths == null) || (categoryPaths.size() == 0)) {
+            return true;
+        }
+        return categoryPaths.stream().allMatch((path) -> this.contains(path));
+    }
+
+    /**
+     * Checks if the wrapped categories contain at lease one of the given categories.
+     *
+     * @param categoryPaths the complete paths of the categories to check, e.g. ["location/africa/", "news/"]
+     * @return <code>true</code> iff for at least one of the provided categoryPaths, the wrapped categories contain a category with this path.
+     */
+    public boolean containsAny(Collection<String> categoryPaths) {
+
+        if ((categoryPaths == null) || (categoryPaths.size() == 0)) {
+            return false;
+        }
+        return categoryPaths.stream().anyMatch((path) -> this.contains(path));
     }
 
     /**
