@@ -463,6 +463,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
                     newEntry.getSitePath(),
                     newEntry.getDetailpageTypeName(),
                     /* qualifier = */null,
+                    new ArrayList<>(),
                     newEntry.getVfsModeIcon());
                 table.add(info);
             }
@@ -2098,6 +2099,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
                             newEntry.getSitePath(),
                             newEntry.getDetailpageTypeName(),
                             /* qualifier = */null,
+                            new ArrayList<>(),
                             newEntry.getVfsModeIcon());
                     }
                     addDetailPageInfo(info);

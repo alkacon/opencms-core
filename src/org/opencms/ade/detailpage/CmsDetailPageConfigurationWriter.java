@@ -172,7 +172,7 @@ public class CmsDetailPageConfigurationWriter {
             if (id == null) {
                 id = newId;
             }
-            writeValue(info.getQualifiedType(), id, i);
+            writeValue(info.getQualifiedType(), info.getFolders(), id, i);
             i += 1;
         }
     }
@@ -181,10 +181,11 @@ public class CmsDetailPageConfigurationWriter {
      * Writes a single item of detail page information to the XML content.<p>
      *
      * @param type the type which the detail page should render
+     * @param folders the folder ids to write
      * @param id the page id of the detail page
      * @param index the position at which the detail page info should be added
      */
-    private void writeValue(String type, CmsUUID id, int index) {
+    private void writeValue(String type, List<CmsUUID> folders, CmsUUID id, int index) {
 
         Locale locale = CmsLocaleManager.getLocale("en");
         // todo: check actual locale.
@@ -193,6 +194,15 @@ public class CmsDetailPageConfigurationWriter {
         I_CmsXmlContentValue typeVal = m_document.getValue(typePath, locale);
         String pagePath = N_DETAIL_PAGE + "[" + (1 + index) + "]/" + N_PAGE;
         CmsXmlVfsFileValue pageVal = (CmsXmlVfsFileValue)m_document.getValue(pagePath, locale);
+        for (int i = 0; i < folders.size(); i++) {
+            CmsXmlVfsFileValue folderValue = (CmsXmlVfsFileValue)m_document.addValue(
+                m_cms,
+                N_DETAIL_PAGE + "[" + (1 + index) + "]/Folder",
+                locale,
+                i);
+            folderValue.setIdValue(m_cms, folders.get(i));
+        }
+
         typeVal.setStringValue(m_cms, type);
         pageVal.setIdValue(m_cms, id);
     }

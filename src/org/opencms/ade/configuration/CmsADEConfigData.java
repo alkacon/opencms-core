@@ -2057,6 +2057,7 @@ public class CmsADEConfigData {
                     rootPath,
                     page.getType(),
                     page.getQualifier(),
+                    page.getFolders(),
                     iconClasses);
                 result.add(page.isInherited() ? correctedPage.copyAsInherited() : correctedPage);
             } catch (CmsException e) {
@@ -2183,18 +2184,19 @@ public class CmsADEConfigData {
 
         List<CmsDetailPageInfo> merged = null;
         if ((parentPages != null) && (childPages != null)) {
-            // the only nontrivial case. If the child detail pages contain one with an unqualified type, they completely override the parent detail pages.
-            // otherwise they only override the parent detail pages for each matching qualifier.
-
             if (childPages.stream().anyMatch(page -> page.getQualifier() == null)) {
+                // If the child detail pages contain one with an unqualified type, they completely override the parent detail pages.
                 merged = childPages;
             } else {
-                Map<String, List<CmsDetailPageInfo>> pagesGroupedByQualifiedType = parentPages.stream().collect(
-                    Collectors.groupingBy(page -> page.getQualifiedType()));
-                pagesGroupedByQualifiedType.putAll(
-                    childPages.stream().collect(Collectors.groupingBy(page -> page.getQualifiedType())));
-                merged = pagesGroupedByQualifiedType.entrySet().stream().flatMap(
-                    entry -> entry.getValue().stream()).collect(Collectors.toList());
+                // Otherwise, all child pages with a specific merge key override all parent pages with the same merge key
+                Map<String, List<CmsDetailPageInfo>> pagesGroupedByMergeKey = new HashMap<>();
+                for (List<CmsDetailPageInfo> pages : Arrays.asList(parentPages, childPages)) {
+                    pagesGroupedByMergeKey.putAll(
+                        pages.stream().collect(Collectors.groupingBy(page -> page.getMergeKey())));
+                }
+                // combine page lists for all merge keys into a single page list
+                merged = pagesGroupedByMergeKey.entrySet().stream().flatMap(entry -> entry.getValue().stream()).collect(
+                    Collectors.toList());
             }
         } else if (parentPages != null) {
             merged = parentPages;

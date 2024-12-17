@@ -490,15 +490,16 @@ public class TestConfig extends OpenCmsTestCase {
      */
     public void testDetailPageFiltering() throws Exception {
 
-        CmsDetailPageInfo foo1 = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a1", "a", "foo", "");
-        CmsDetailPageInfo foo2 = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a2", "a", "foo", "");
-        CmsDetailPageInfo bar = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a3", "a", "bar", "");
-        CmsDetailPageInfo unqualified1 = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a4", "a", null, "");
-        CmsDetailPageInfo unqualified2 = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a5", "a", null, "");
+        CmsDetailPageInfo foo1 = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a1", "a", "foo", null, "");
+        CmsDetailPageInfo foo2 = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a2", "a", "foo", null, "");
+        CmsDetailPageInfo bar = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a3", "a", "bar", null, "");
+        CmsDetailPageInfo unqualified1 = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a4", "a", null, null, "");
+        CmsDetailPageInfo unqualified2 = new CmsDetailPageInfo(new CmsUUID(), "/sites/default/a5", "a", null, null, "");
         CmsDetailPageInfo unqualifiedDefault = new CmsDetailPageInfo(
             new CmsUUID(),
             "/sites/default/a6",
             "##DEFAULT##",
+            null,
             null,
             "");
         CmsDetailPageInfo fooDefault = new CmsDetailPageInfo(
@@ -506,15 +507,16 @@ public class TestConfig extends OpenCmsTestCase {
             "/sites/default/a7",
             "##DEFAULT##",
             "foo",
+            null,
             "");
         final Set<String> qualifiersToMatch = new HashSet<>();
         // we use a dummy that doesn't check categories and just uses the set qualifierToMatch for testing qualifiers
         CmsDetailPageFilter filter = new CmsDetailPageFilter(getCmsObject(), (CmsResource)null) {
 
             @Override
-            protected boolean checkQualifier(String qualifier) {
+            protected boolean checkQualifier(CmsDetailPageInfo info) {
 
-                return qualifiersToMatch.contains(qualifier);
+                return qualifiersToMatch.contains(info.getQualifier());
             }
         };
 
@@ -563,13 +565,49 @@ public class TestConfig extends OpenCmsTestCase {
      */
     public void testDetailPages2() throws Exception {
 
-        CmsDetailPageInfo a1 = new CmsDetailPageInfo(getId("/sites/default/a1"), "/sites/default/a1", "a", null, "");
-        CmsDetailPageInfo a2 = new CmsDetailPageInfo(getId("/sites/default/a2"), "/sites/default/a2", "a", null, "");
-        CmsDetailPageInfo a3 = new CmsDetailPageInfo(getId("/sites/default/a3"), "/sites/default/a3", "a", null, "");
-        CmsDetailPageInfo a4 = new CmsDetailPageInfo(getId("/sites/default/a4"), "/sites/default/a4", "a", null, "");
+        CmsDetailPageInfo a1 = new CmsDetailPageInfo(
+            getId("/sites/default/a1"),
+            "/sites/default/a1",
+            "a",
+            null,
+            null,
+            "");
+        CmsDetailPageInfo a2 = new CmsDetailPageInfo(
+            getId("/sites/default/a2"),
+            "/sites/default/a2",
+            "a",
+            null,
+            null,
+            "");
+        CmsDetailPageInfo a3 = new CmsDetailPageInfo(
+            getId("/sites/default/a3"),
+            "/sites/default/a3",
+            "a",
+            null,
+            null,
+            "");
+        CmsDetailPageInfo a4 = new CmsDetailPageInfo(
+            getId("/sites/default/a4"),
+            "/sites/default/a4",
+            "a",
+            null,
+            null,
+            "");
 
-        CmsDetailPageInfo b1 = new CmsDetailPageInfo(getId("/sites/default/b1"), "/sites/default/b1", "b", null, "");
-        CmsDetailPageInfo b2 = new CmsDetailPageInfo(getId("/sites/default/b2"), "/sites/default/b2", "b", null, "");
+        CmsDetailPageInfo b1 = new CmsDetailPageInfo(
+            getId("/sites/default/b1"),
+            "/sites/default/b1",
+            "b",
+            null,
+            null,
+            "");
+        CmsDetailPageInfo b2 = new CmsDetailPageInfo(
+            getId("/sites/default/b2"),
+            "/sites/default/b2",
+            "b",
+            null,
+            null,
+            "");
 
         List<CmsDetailPageInfo> parentDetailPages = list(a1, a2, b1, b2);
         List<CmsDetailPageInfo> childDetailPages = list(a3, a4);

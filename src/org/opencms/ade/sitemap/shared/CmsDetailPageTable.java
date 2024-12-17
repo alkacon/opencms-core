@@ -33,6 +33,7 @@ import org.opencms.util.CmsUUID;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -240,6 +241,7 @@ public class CmsDetailPageTable implements Cloneable, Serializable {
                 info.getUri(),
                 info.getType(),
                 null,
+                Collections.emptyList(),
                 info.getIconClasses());
             m_infoById.put(id, info2);
             if (info.isInherited()) {

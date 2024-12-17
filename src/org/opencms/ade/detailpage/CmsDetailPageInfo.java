@@ -32,6 +32,9 @@ import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Data bean containing the information for a detail page.<p>
@@ -67,6 +70,9 @@ public class CmsDetailPageInfo implements Serializable {
     /** The original URI of the detail page (for debugging purposes only). */
     private String m_uri;
 
+    /** Structure ids of folders which can be used for detail page selection. */
+    private List<CmsUUID> m_folders;
+
     /**
      * Creates a new detail page info bean.<p>
      *
@@ -74,12 +80,20 @@ public class CmsDetailPageInfo implements Serializable {
      * @param uri the original URI of the page
      * @param type the resource type for which the detail page is used
      * @param qualifier an optional string that indicates when the detail page should be used
+     * @param folders list of folder ids that can be used for automatic detail page selection
      * @param iconClasses the resource icon style classes
      */
-    public CmsDetailPageInfo(CmsUUID id, String uri, String type, String qualifier, String iconClasses) {
+    public CmsDetailPageInfo(
+        CmsUUID id,
+        String uri,
+        String type,
+        String qualifier,
+        List<CmsUUID> folders,
+        String iconClasses) {
 
         m_id = id;
         m_type = type;
+        m_folders = folders != null ? new ArrayList<>(folders) : new ArrayList<>();
         if ((m_type != null) && (m_type.indexOf(QUALIFIER_SEPARATOR) != -1)) {
             throw new RuntimeException(
                 "Error: Qualifier separator '"
@@ -119,7 +133,7 @@ public class CmsDetailPageInfo implements Serializable {
      */
     public CmsDetailPageInfo copyAsInherited() {
 
-        CmsDetailPageInfo result = new CmsDetailPageInfo(m_id, m_uri, m_type, m_qualifier, m_iconClasses);
+        CmsDetailPageInfo result = new CmsDetailPageInfo(m_id, m_uri, m_type, m_qualifier, m_folders, m_iconClasses);
         result.m_inherited = true;
         return result;
     }
@@ -146,6 +160,16 @@ public class CmsDetailPageInfo implements Serializable {
     public String getDisplayType() {
 
         return m_type != null ? removeFunctionPrefix(m_type) : "";
+    }
+
+    /**
+     * Gets a list of structure ids of folders which can be used for detail page selection.
+     *
+     * @return the folder ids
+     */
+    public List<CmsUUID> getFolders() {
+
+        return Collections.unmodifiableList(m_folders);
     }
 
     /**
@@ -180,6 +204,11 @@ public class CmsDetailPageInfo implements Serializable {
     public CmsUUID getId() {
 
         return m_id;
+    }
+
+    public String getMergeKey() {
+
+        return getQualifiedType() + "|" + m_folders.toString();
     }
 
     /**
@@ -265,6 +294,6 @@ public class CmsDetailPageInfo implements Serializable {
     @Override
     public String toString() {
 
-        return "" + m_type + QUALIFIER_SEPARATOR + m_qualifier + ":" + m_id + m_uri;
+        return "" + m_type + QUALIFIER_SEPARATOR + m_qualifier + "|" + m_folders + ":" + m_id + m_uri;
     }
 }

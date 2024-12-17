@@ -1116,8 +1116,22 @@ public class CmsConfigurationReader {
         } else {
             iconClasses = CmsIconUtil.getIconClasses(typeName, null, false);
         }
+        List<CmsUUID> folders = new ArrayList<>();
+        for (I_CmsXmlContentValueLocation folderLoc : node.getSubValues(N_FOLDER)) {
+            CmsXmlVfsFileValue folderValue = (CmsXmlVfsFileValue)folderLoc.getValue();
+            CmsLink folderLink = folderValue.getUncheckedLink();
+            if ((folderLink != null) && (folderLink.getStructureId() != null)) {
+                folders.add(folderLink.getStructureId());
+            }
+        }
 
-        CmsDetailPageInfo detailPage = new CmsDetailPageInfo(structureId, page, typeName, qualifier, iconClasses);
+        CmsDetailPageInfo detailPage = new CmsDetailPageInfo(
+            structureId,
+            page,
+            typeName,
+            qualifier,
+            folders,
+            iconClasses);
         m_detailPageConfigs.add(detailPage);
 
     }

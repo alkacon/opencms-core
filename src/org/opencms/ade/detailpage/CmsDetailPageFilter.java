@@ -30,6 +30,7 @@ package org.opencms.ade.detailpage;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -37,6 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.util.CmsPath;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,20 +60,26 @@ public class CmsDetailPageFilter {
     /** Prefix for the category qualifier in a detail page entry. */
     public static final String PREFIX_CATEGORY = "category:";
 
+    /** 'folders' qualifier for detail pages. */
+    public static final String QUALIFIER_FOLDERS = "folders";
+
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDetailPageFilter.class);
-
-    /** The CMS context. */
-    private CmsObject m_cms;
-
-    /** The detail resource (either this or m_path is null). */
-    private CmsResource m_resource;
 
     /** The categories of the detail resource (lazily initialized). */
     private Set<CmsPath> m_categories;
 
+    /** The category folder name. */
+    private String m_categoryBase;
+
+    /** The CMS context. */
+    private CmsObject m_cms;
+
     /** The detail root path (either this or m_resource is null). */
     private String m_path;
+
+    /** The detail resource (either this or m_path is null). */
+    private CmsResource m_resource;
 
     /**
      * Creates a new instance based on an actual detail resource.
@@ -84,6 +92,7 @@ public class CmsDetailPageFilter {
         try {
             m_cms = OpenCms.initCmsObject(cms);
             m_cms.getRequestContext().setSiteRoot("");
+            m_categoryBase = CmsCategoryService.getInstance().getRepositoryBaseFolderName(m_cms);
             m_resource = resource;
         } catch (CmsException e) {
             // shouldn't happen - initCmsObject doesn't *actually* throw exceptions
@@ -103,6 +112,7 @@ public class CmsDetailPageFilter {
         try {
             m_cms = OpenCms.initCmsObject(cms);
             m_cms.getRequestContext().setSiteRoot("");
+            m_categoryBase = CmsCategoryService.getInstance().getRepositoryBaseFolderName(m_cms);
             m_path = rootPath;
         } catch (CmsException e) {
             // shouldn't happen
@@ -162,17 +172,18 @@ public class CmsDetailPageFilter {
             }
             return Collections.<CmsDetailPageInfo> emptyList().stream();
         }
-        return infos2.stream().filter(info -> (info.getQualifier() == null) || checkQualifier(info.getQualifier()));
+        return infos2.stream().filter(info -> (info.getQualifier() == null) || checkQualifier(info));
     }
 
     /**
      * Checks that a detail page qualifier matches the detail resource.
      *
-     * @param qualifier the qualifier to check
+     * @param info the qualifier to check
      * @return true if the qualifier matches the detail resource
      */
-    protected boolean checkQualifier(String qualifier) {
+    protected boolean checkQualifier(CmsDetailPageInfo info) {
 
+        String qualifier = info.getQualifier();
         // shouldn't happen, test anyway
         if (qualifier == null) {
             return true;
@@ -183,6 +194,59 @@ public class CmsDetailPageFilter {
             // use CmsPath to normalize leading/trailing slashes
             CmsPath categoryPath = new CmsPath(categoryStr);
             return getCategories().contains(categoryPath);
+        } else if (qualifier.equals(QUALIFIER_FOLDERS)) {
+            CmsCategoryService catService = CmsCategoryService.getInstance();
+
+            // category paths relative to categories folder
+            Set<CmsPath> categoryPaths = new HashSet<>();
+            // root paths
+            Set<CmsPath> folderPaths = new HashSet<>();
+
+            try {
+                if ((m_resource == null) && (m_path != null)) {
+                    m_resource = m_cms.readResource(m_path, CmsResourceFilter.IGNORE_EXPIRATION);
+                }
+                for (CmsUUID id : info.getFolders()) {
+                    try {
+                        // ignore resources which can't be read by id
+                        CmsResource folder = m_cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
+                        if (folder.getRootPath().contains(m_categoryBase)) {
+                            CmsCategory category = catService.getCategory(m_cms, folder);
+                            categoryPaths.add(new CmsPath(category.getPath()));
+                        } else {
+                            folderPaths.add(new CmsPath(folder.getRootPath()));
+                        }
+                    } catch (CmsVfsResourceNotFoundException e) {
+                        LOG.debug(e.getLocalizedMessage(), e);
+                    } catch (Exception e) {
+                        LOG.error(e.getLocalizedMessage());
+                    }
+                }
+
+                CmsPath path = new CmsPath(m_resource.getRootPath());
+                boolean result = true;
+                LOG.debug("Checking detail page for " + m_resource.getRootPath() + ":" + info);
+                if (!categoryPaths.isEmpty()) {
+                    LOG.debug("Categories to check: " + categoryPaths);
+                    LOG.debug("Content categories: " + getCategories());
+                    CmsPath matchingCategory = categoryPaths.stream().filter(
+                        catPath -> getCategories().contains(catPath)).findFirst().orElse(null);
+                    LOG.debug("Matching category: " + matchingCategory);
+                    result &= matchingCategory != null;
+                }
+                if (!folderPaths.isEmpty()) {
+                    LOG.debug("Folders to check: " + folderPaths);
+                    CmsPath matchingFolder = folderPaths.stream().filter(
+                        folderPath -> folderPath.isPrefixOf(path)).findFirst().orElse(null);
+                    LOG.debug("Matching folder: " + matchingFolder);
+                    result &= matchingFolder != null;
+                }
+                LOG.debug("Check result: " + result);
+                return result;
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                return false;
+            }
         }
         LOG.error("Invalid detail page qualifier: " + qualifier);
         return false;

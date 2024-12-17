@@ -15,6 +15,7 @@
     <xsd:complexType name="OpenCmsDetailPage">
         <xsd:sequence>
             <xsd:element name="Type" type="OpenCmsString" />
+            <xsd:element name="Folder" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="Page" type="OpenCmsVfsFile" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
