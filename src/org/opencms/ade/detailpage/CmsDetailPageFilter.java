@@ -38,6 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.util.CmsPath;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -208,7 +209,8 @@ public class CmsDetailPageFilter {
                     try {
                         // ignore resources which can't be read by id
                         CmsResource folder = m_cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
-                        if (folder.getRootPath().contains(getCategoryBase())) {
+                        if (CmsStringUtil.isPrefixPath(CmsCategoryService.CENTRALIZED_REPOSITORY, folder.getRootPath())
+                            || folder.getRootPath().contains(getCategoryBase())) {
                             CmsCategory category = catService.getCategory(m_cms, folder);
                             categoryPaths.add(new CmsPath(category.getPath()));
                         } else {
@@ -298,6 +300,7 @@ public class CmsDetailPageFilter {
      * @return the category base folder name
      */
     private String getCategoryBase() {
+
         if (m_categoryBase == null) {
             m_categoryBase = CmsCategoryService.getInstance().getRepositoryBaseFolderName(m_cms);
         }
