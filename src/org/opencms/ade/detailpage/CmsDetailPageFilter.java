@@ -92,7 +92,6 @@ public class CmsDetailPageFilter {
         try {
             m_cms = OpenCms.initCmsObject(cms);
             m_cms.getRequestContext().setSiteRoot("");
-            m_categoryBase = CmsCategoryService.getInstance().getRepositoryBaseFolderName(m_cms);
             m_resource = resource;
         } catch (CmsException e) {
             // shouldn't happen - initCmsObject doesn't *actually* throw exceptions
@@ -112,7 +111,6 @@ public class CmsDetailPageFilter {
         try {
             m_cms = OpenCms.initCmsObject(cms);
             m_cms.getRequestContext().setSiteRoot("");
-            m_categoryBase = CmsCategoryService.getInstance().getRepositoryBaseFolderName(m_cms);
             m_path = rootPath;
         } catch (CmsException e) {
             // shouldn't happen
@@ -210,7 +208,7 @@ public class CmsDetailPageFilter {
                     try {
                         // ignore resources which can't be read by id
                         CmsResource folder = m_cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
-                        if (folder.getRootPath().contains(m_categoryBase)) {
+                        if (folder.getRootPath().contains(getCategoryBase())) {
                             CmsCategory category = catService.getCategory(m_cms, folder);
                             categoryPaths.add(new CmsPath(category.getPath()));
                         } else {
@@ -292,6 +290,18 @@ public class CmsDetailPageFilter {
             return Collections.emptySet();
         }
 
+    }
+
+    /**
+     * Returns the category base folder name.
+     *
+     * @return the category base folder name
+     */
+    private String getCategoryBase() {
+        if (m_categoryBase == null) {
+            m_categoryBase = CmsCategoryService.getInstance().getRepositoryBaseFolderName(m_cms);
+        }
+        return m_categoryBase;
     }
 
 }
