@@ -117,14 +117,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
@@ -1376,8 +1378,13 @@ public class CmsElementUtil {
      */
     private String removeScriptTags(String input) {
 
-        Pattern removePattern = Pattern.compile("<script[^>]*?>[\\s\\S]*?<\\/script>");
-        Matcher match = removePattern.matcher(input);
-        return match.replaceAll("");
+        Document doc = Jsoup.parseBodyFragment(input);
+        Elements scriptTags = doc.select("script");
+        String output = input;
+        if (scriptTags.size() > 0) {
+            scriptTags.remove();
+            output = doc.body().html();
+        }
+        return output;
     }
 }
