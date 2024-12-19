@@ -714,6 +714,7 @@ public class CmsElementUtil {
 
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
         CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfigurationWithCache(m_cms, page.getRootPath());
+        boolean isCopyGroup = CmsResourceTypeXmlContainerPage.isModelCopyGroup(m_cms, page);
         Locale requestLocale = m_cms.getRequestContext().getLocale();
         m_cms.getRequestContext().setLocale(m_locale);
         element.initResource(m_cms);
@@ -921,7 +922,7 @@ public class CmsElementUtil {
         }
 
         CmsResourceState state = element.getResource().getState();
-        return new CmsElementSettingsConfig(elementData, state, infos, schema);
+        return new CmsElementSettingsConfig(elementData, state, infos, schema, isCopyGroup);
     }
 
     /**

@@ -48,6 +48,9 @@ public class CmsElementSettingsConfig implements IsSerializable {
     /** Schema path for element. **/
     private String m_schema;
 
+    /** True if the page is a copy group. */
+    private boolean m_isCopyGroup;
+
     /** The resource state. */
     private CmsResourceState m_state;
 
@@ -57,17 +60,20 @@ public class CmsElementSettingsConfig implements IsSerializable {
      * @param elementData the element data
      * @param state the resource state
      * @param additionalInfo the additional infos
+     * @param isCopyGroup true if the page is a copy group
      */
     public CmsElementSettingsConfig(
         CmsContainerElementData elementData,
         CmsResourceState state,
         ArrayList<CmsAdditionalInfoBean> additionalInfo,
-        String schema) {
+        String schema,
+        boolean isCopyGroup) {
 
         m_elementData = elementData;
         m_additionalInfo = additionalInfo;
         m_state = state;
         m_schema = schema;
+        m_isCopyGroup = isCopyGroup;
     }
 
     /**
@@ -116,6 +122,16 @@ public class CmsElementSettingsConfig implements IsSerializable {
     public CmsResourceState getState() {
 
         return m_state;
+    }
+
+    /**
+     * Checks if the page is a copy group.
+     *
+     * @return true if the page is a copy group
+     */
+    public boolean isCopyGroup() {
+
+        return m_isCopyGroup;
     }
 
 }

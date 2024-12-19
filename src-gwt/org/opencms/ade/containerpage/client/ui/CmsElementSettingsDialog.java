@@ -282,10 +282,13 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
         }
 
         boolean isEditableModelGroup = CmsCoreProvider.get().getUserInfo().isDeveloper()
-            && m_controller.getData().isModelGroup()
+            && m_controller.getData().isModelGroup();
+        boolean hasGroupTypeOption = isEditableModelGroup
             && ((m_controller.getModelGroupElementId() == null)
                 || CmsContainerpageController.getServerId(elementBean.getClientId()).equals(
-                    m_controller.getModelGroupElementId()));
+                    m_controller.getModelGroupElementId()))
+            && !m_elementWidget.hasModelGroupParent();
+
         boolean isDeveloper = CmsCoreProvider.get().getUserInfo().isDeveloper();
         m_originalFormatter = currentFormatterConfig.getKeyOrId();
 
@@ -353,10 +356,13 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
                 ));
                 modelGroupFieldSet.getElement().getStyle().setMarginTop(10, Unit.PX);
 
-                if (isEditableModelGroup && !elementWidget.hasModelGroupParent()) {
+                if (hasGroupTypeOption) {
                     addModelGroupSettings(elementBean, elementWidget, modelGroupFieldSet);
-                } else if (!elementWidget.isModelGroup()) {
-                    addCreateNewCheckbox(elementBean, modelGroupFieldSet);
+                }
+                if (!elementWidget.isModelGroup() && !hasGroupTypeOption) {
+                    if (!isEditableModelGroup || settingsConfig.isCopyGroup()) {
+                        addCreateNewCheckbox(elementBean, modelGroupFieldSet);
+                    }
                 }
                 if (modelGroupFieldSet.getWidgetCount() > 0) {
                     fieldSetPanel.getMainPanel().insert(modelGroupFieldSet, 1);
@@ -691,8 +697,8 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
         final String changeModelGroupId = modelGroupId;
         I_ReloadHandler reloadHandler = new I_ReloadHandler() {
 
-            CmsContainerPageElementPanel m_oldElement;
             CmsContainerPageElementPanel m_newElement;
+            CmsContainerPageElementPanel m_oldElement;
 
             @Override
             public void finish() {
@@ -719,11 +725,12 @@ public class CmsElementSettingsDialog extends CmsFormDialog implements I_CmsForm
 
             @Override
             public void onReload(CmsContainerPageElementPanel oldElement, CmsContainerPageElementPanel newElement) {
+
                 m_oldElement = oldElement;
                 m_newElement = newElement;
             }
 
-        } ;
+        };
         m_controller.reloadElementWithSettings(
             m_elementWidget,
             m_elementBean.getClientId(),
