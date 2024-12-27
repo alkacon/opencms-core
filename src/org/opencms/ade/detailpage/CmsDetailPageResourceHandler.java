@@ -146,9 +146,35 @@ public class CmsDetailPageResourceHandler implements I_CmsResourceInit {
 
             if (detailId != null) {
                 // check existence / permissions
-                CmsResource detailRes = cms.readResource(detailId, CmsResourceFilter.ignoreExpirationOffline(cms));
-                // change OpenCms request URI to detail page
-                CmsResource detailPage = cms.readDefaultFile(CmsResource.getFolderPath(path));
+                CmsResource detailRes = null;
+                CmsPermissionViolationException permissionDenied = null;
+                try {
+                    detailRes = cms.readResource(detailId, CmsResourceFilter.ignoreExpirationOffline(cms));
+                } catch (CmsPermissionViolationException e) {
+                    // we postpone the decision what to do with a permission violation until later (see below)
+                    permissionDenied = e;
+                }
+                String detailPagePath = CmsResource.getFolderPath(path);
+                CmsResource detailPage = cms.readDefaultFile(detailPagePath);
+                if (permissionDenied != null) {
+                    // If we got a permission violation while reading the detail content, we only want to rethrow it if the rest
+                    // of the URL is actually plausibly a detail page. Otherwise, we return null, which will usually cause a HTTP
+                    // 404 response status. This is to prevent broken links which accidentally end with a restricted detail content's
+                    // mapped URL name from triggering a HTTP 401 status. E.g. https://server.com/nonexistent-page/secret, where
+                    // there is no "nonexistent-page" folder and "secret" is the mapped URL name of a restricted content.
+                    if ((detailPage != null) && OpenCms.getADEManager().isDetailPage(cms, detailPage)) {
+                        throw permissionDenied;
+                    } else {
+                        LOG.debug(
+                            "Swallowing CmsPermissionViolationException for detail content because the page ["
+                                + detailPagePath
+                                + "] is not a detail page.\nDefault file: "
+                                + detailPage
+                                + "\n",
+                            permissionDenied);
+                        return null;
+                    }
+                }
                 if (!isValidDetailPage(cms, detailPage, detailRes)) {
                     return null;
                 }
