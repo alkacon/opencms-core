@@ -34,6 +34,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Dialog entry class.<p>
@@ -59,6 +60,8 @@ public class CmsPostUploadDialogEntryPoint extends A_CmsEntryPoint {
 
         // load and show the dialog
         final CmsUploadPropertyDialog dialog = new CmsUploadPropertyDialog();
+        RootPanel.get().addStyleName("opencms"); // to make CSS rules from Vaadin theme work - we need them for the resource type icons
+
         Command onFinish = new Command() {
 
             /**

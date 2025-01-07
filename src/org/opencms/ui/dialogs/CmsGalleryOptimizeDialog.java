@@ -843,12 +843,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         /** The panel width. */
         private static final String PANEL_WIDTH = "206px";
 
-        /** Image scale parameters for preview images as used by the image scaler. */
-        private static final String SCALE_PARAMETERS = "t:1,c:ffffff,w:" + IMAGE_WIDTH + ",h:" + IMAGE_HEIGHT;
-
-        /** Request query string to load a scaled preview image. */
-        private static final String SCALE_QUERY_STRING = "?__scale=" + SCALE_PARAMETERS;
-
         /** The default serial version UID. */
         private static final long serialVersionUID = 1L;
 
@@ -1638,17 +1632,23 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
     }
 
+    /** The height of the preview images. */
+    public static final String IMAGE_HEIGHT = "170";
+
+    /** The width of the preview images. */
+    public static final String IMAGE_WIDTH = "200";
+
+    /** Image scale parameters for preview images as used by the image scaler. */
+    public static final String SCALE_PARAMETERS = "t:1,c:ffffff,w:" + IMAGE_WIDTH + ",h:" + IMAGE_HEIGHT;
+
+    /** Request query string to load a scaled preview image. */
+    public static final String SCALE_QUERY_STRING = "?__scale=" + SCALE_PARAMETERS;
+
     /** The sort order session attribute. */
     static final String GALLERY_OPTIMIZE_ATTR_SORT_ORDER = "GALLERY_OPTIMIZE_ATTR_SORT_ORDER";
 
     /** Logger instance for this class. */
     static final Log LOG = CmsLog.getLog(CmsGalleryOptimizeDialog.class);
-
-    /** The height of the preview images. */
-    private static final String IMAGE_HEIGHT = "170";
-
-    /** The width of the preview images. */
-    private static final String IMAGE_WIDTH = "200";
 
     /** The default serial version UID. */
     private static final long serialVersionUID = 1L;

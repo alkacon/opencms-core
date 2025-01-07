@@ -40,6 +40,7 @@ import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -233,7 +234,7 @@ public class CmsUploadPropertyDialog {
      */
     public void updateHeight() {
 
-        int height = m_dialogContent.getOffsetHeight() + 76;
+        int height = m_dialogContent.getOffsetHeight() + 84;
         setHeight(height);
     }
 
@@ -481,5 +482,6 @@ public class CmsUploadPropertyDialog {
             m_frameDialog.addButton(m_buttonAdvanced);
         }
     }
+
 
 }

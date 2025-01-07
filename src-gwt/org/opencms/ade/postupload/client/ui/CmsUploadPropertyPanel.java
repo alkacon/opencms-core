@@ -39,12 +39,14 @@ import org.opencms.gwt.client.property.I_CmsPropertyEditorHandler;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
+import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.Map;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -85,6 +87,21 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
         m_dialog = dialog;
         m_resourcePath = values.getInfoBean().getSubTitle();
         initializePropertyEditor();
+        if (options.hasImage()) {
+            CmsImagePreview preview = new CmsImagePreview();
+            add(preview);
+            preview.getElement().getStyle().setMarginLeft(290, Unit.PX);
+            preview.getElement().getStyle().setMarginTop(5, Unit.PX);
+            if (values.getPreviewLink() != null) {
+                preview.setImageUrl(values.getPreviewLink());
+                preview.setLabel1(values.getPreviewInfo1());
+                preview.setLabel2(values.getPreviewInfo2());
+            } else {
+                preview.hide();
+            }
+
+        }
+
         // height may change on click
         addDomHandler(new ClickHandler() {
 
@@ -172,9 +189,6 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
         m_propertyEditor.initializeWidgets(null);
         A_CmsFormFieldPanel propertiesPanel = m_propertyEditor.getForm().getWidget();
         add(propertiesPanel);
-        FlowPanel spacer = new FlowPanel();
-        spacer.getElement().setAttribute("style", "height: 24px");
-        add(spacer);
     }
 
     /**

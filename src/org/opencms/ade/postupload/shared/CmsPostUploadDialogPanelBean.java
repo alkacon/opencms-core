@@ -41,11 +41,17 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsPostUploadDialogPanelBean implements IsSerializable {
 
-    /** The warning to display. */ 
-    private String m_warning;
-
     /** The page info for displaying the CmsListItemWidget. */
     private CmsListInfoBean m_infoBean;
+
+    /** The first image preview info text. */
+    private String m_previewInfo1;
+
+    /** The second preview info text. */
+    private String m_previewInfo2;
+
+    /** The image preview URL. */
+    private String m_previewLink;
 
     /** The properties of the resource. */
     private Map<String, CmsClientProperty> m_properties;
@@ -55,6 +61,9 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
 
     /** The structure id of the resource. */
     private CmsUUID m_structureId;
+
+    /** The warning to display. */
+    private String m_warning;
 
     /**
      * Creates a new instance.<p>
@@ -84,6 +93,36 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
     public CmsListInfoBean getInfoBean() {
 
         return m_infoBean;
+    }
+
+    /**
+     * Gets the first preview info text to display.
+     *
+     * @return a preview info text
+     */
+    public String getPreviewInfo1() {
+
+        return m_previewInfo1;
+    }
+
+    /**
+     * Gets the second preview info text to display.
+     *
+     * @return a preview info text
+     */
+    public String getPreviewInfo2() {
+
+        return m_previewInfo2;
+    }
+
+    /**
+     * Gets the image preview URL.
+     *
+     * @return the image preview URL, if it exists, and null otherwise
+     */
+    public String getPreviewLink() {
+
+        return m_previewLink;
     }
 
     /**
@@ -118,7 +157,7 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
 
     /**
      * Gets the warning to display.
-     * 
+     *
      * @return the warning to display
      */
     public String getWarning() {
@@ -134,6 +173,37 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
     public void setInfoBean(CmsListInfoBean info) {
 
         m_infoBean = info;
+    }
+
+    /**
+     * Sets the first preview info text.
+     *
+     * @param text the preview info text
+     *
+     */
+    public void setPreviewInfo1(String text) {
+
+        this.m_previewInfo1 = text;
+    }
+
+    /**
+     * Sets the second preview info text.
+     *
+     * @param text the preview info text
+     */
+    public void setPreviewInfo2(String text) {
+
+        this.m_previewInfo2 = text;
+    }
+
+    /**
+     * Sets the image preview URL.
+     *
+     * @param previewLink the image preview URL
+     */
+    public void setPreviewLink(String previewLink) {
+
+        m_previewLink = previewLink;
     }
 
     /**
@@ -169,7 +239,7 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
 
     /**
      * Sets the warning to display.
-     * 
+     *
      * @param warning the warning to display
      */
     public void setWarning(String warning) {

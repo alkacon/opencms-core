@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
@@ -48,6 +49,7 @@ import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.dialogs.CmsGalleryOptimizeDialog;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -141,6 +143,7 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
                 result.setWarning(warning);
             }
 
+            CmsObject cms = getCmsObject();
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(res.getTypeId());
             String typeName = type.getTypeName();
             listInfo.setResourceType(typeName);
@@ -230,6 +233,29 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
 
             CmsPropertyEditorHelper.updateWysiwygConfig(propertyDefinitions, getCmsObject(), res);
 
+            String previewLink = null;
+            if (CmsResourceTypeImage.getStaticTypeName().equals(typeName)) {
+                String permalink = OpenCms.getLinkManager().getPermalink(cms, cms.getRequestContext().getSitePath(res));
+                previewLink = permalink + CmsGalleryOptimizeDialog.SCALE_QUERY_STRING;
+                result.setPreviewLink(previewLink);
+                result.setPreviewInfo1((res.getLength() / 1024) + "kb");
+                CmsProperty imageSizeProp = cms.readPropertyObject(
+                    res,
+                    CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
+                    false);
+                String imageSizeText = "? x ?";
+                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(imageSizeProp.getValue())) {
+                    Map<String, String> imageSizeAttrs = CmsStringUtil.splitAsMap(imageSizeProp.getValue(), ",", ":");
+                    String w = imageSizeAttrs.get("w");
+                    String h = imageSizeAttrs.get("h");
+                    if ((w != null) && (h != null)) {
+                        imageSizeText = w + " x " + h;
+
+                    }
+                }
+                result.setPreviewInfo2(imageSizeText);
+            }
+
             result.setPropertyDefinitions(propertyDefinitions);
             result.setProperties(clientProperties);
             return result;
@@ -285,6 +311,15 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
 
         Map<CmsUUID, String> result = new LinkedHashMap<>();
         CmsObject cms = getCmsObject();
+        boolean hasImage = false;
+        for (CmsResource resource : resources) {
+            if (OpenCms.getResourceManager().matchResourceType(
+                CmsResourceTypeImage.getStaticTypeName(),
+                resource.getTypeId())) {
+                hasImage = true;
+                break;
+            }
+        }
         // split resource list into two parts, ones that have required properties and ones that don't,
         // then iterate over the ones with required properties first.
         //
@@ -298,7 +333,7 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
         }
         Set<CmsUUID> reqValIds = parts.get(Boolean.TRUE).stream().map(res -> res.getStructureId()).collect(
             Collectors.toSet());
-        return new CmsPostUploadDialogBean(result, reqValIds);
+        return new CmsPostUploadDialogBean(result, reqValIds, hasImage);
     }
 
     /**

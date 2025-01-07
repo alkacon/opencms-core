@@ -61,6 +61,9 @@ public class CmsPostUploadDialogBean implements IsSerializable {
     /** Flag to control if configured basic properties should be shown. */
     private boolean m_addBasicProperties;
 
+    /** True if there  was an image among the uploaded resources. */
+    private boolean m_hasImage;
+
     /**
      * Default constructor for serialization.<p>
      */
@@ -74,11 +77,16 @@ public class CmsPostUploadDialogBean implements IsSerializable {
      *
      * @param resources the map of resources for which the properties should be uploaded
      * @param idsWithRequiredValidation structurei ids of resources for which validation is required
+     * @param hasImage true if there is an image among the resources
      */
-    public CmsPostUploadDialogBean(Map<CmsUUID, String> resources, Set<CmsUUID> idsWithRequiredValidation) {
+    public CmsPostUploadDialogBean(
+        Map<CmsUUID, String> resources,
+        Set<CmsUUID> idsWithRequiredValidation,
+        boolean hasImage) {
 
         m_resources.putAll(resources);
         m_idsWithRequiredValidation = idsWithRequiredValidation;
+        m_hasImage = hasImage;
     }
 
     /**
@@ -99,6 +107,16 @@ public class CmsPostUploadDialogBean implements IsSerializable {
     public Map<CmsUUID, String> getResources() {
 
         return m_resources;
+    }
+
+    /**
+     * Checks if there was an image among the uploaded resources.
+     *
+     * @return  true if an image was uploaded
+     */
+    public boolean hasImage() {
+
+        return m_hasImage;
     }
 
     /**
