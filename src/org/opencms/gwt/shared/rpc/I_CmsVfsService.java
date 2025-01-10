@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.shared.SerializableThrowable;
 import com.google.gwt.user.client.rpc.RemoteService;
 
 /**
@@ -474,7 +475,7 @@ public interface I_CmsVfsService extends RemoteService {
      *
      * @throws CmsRpcException if something goes wrong
      */
-    void saveProperties(CmsPropertyChangeSet changes, boolean updateIndex) throws CmsRpcException;
+    void saveProperties(CmsPropertyChangeSet changes, boolean updateIndex) throws SerializableThrowable;
 
     /**
      * Returns the absolute link to the given root path.<p>

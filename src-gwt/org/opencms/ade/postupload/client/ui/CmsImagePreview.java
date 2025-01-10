@@ -27,6 +27,8 @@
 
 package org.opencms.ade.postupload.client.ui;
 
+import org.opencms.ade.postupload.client.Messages;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -54,13 +56,16 @@ public class CmsImagePreview extends Composite {
     @UiField
     protected Image m_image;
 
+    @UiField
+    protected Label m_label;
+
     /** The first info label. */
     @UiField
-    protected Label m_label1;
+    protected Label m_info1;
 
     /** The second info label. */
     @UiField
-    protected Label m_label2;
+    protected Label m_info2;
 
     /**
      * Creates a new instance.
@@ -68,6 +73,7 @@ public class CmsImagePreview extends Composite {
     public CmsImagePreview() {
 
         initWidget(uiBinder.createAndBindUi(this));
+        m_label.setText(Messages.get().key(Messages.GUI_DIALOG_PREVIEW_LABEL_0));
     }
 
     /**
@@ -96,9 +102,9 @@ public class CmsImagePreview extends Composite {
      *
      * @param text the text
      */
-    public void setLabel1(String text) {
+    public void setInfo1(String text) {
 
-        m_label1.setText(text);
+        m_info1.setText(text);
     }
 
     /**
@@ -106,9 +112,9 @@ public class CmsImagePreview extends Composite {
      *
      * @param text the text
      */
-    public void setLabel2(String text) {
+    public void setInfo2(String text) {
 
-        m_label2.setText(text);
+        m_info2.setText(text);
     }
 
 }

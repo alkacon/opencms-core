@@ -43,6 +43,12 @@ public interface I_CmsPropertiesCss extends CssResource {
     String navModePropertiesBox();
 
     /** Access method.<p>
+    *
+    * @return the CSS class name
+    */
+    String noPaddingTop();
+
+    /** Access method.<p>
      *
      * @return the CSS class name
      */

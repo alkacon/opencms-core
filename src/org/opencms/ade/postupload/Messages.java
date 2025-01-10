@@ -38,6 +38,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_POSTUPLOAD_FILENAME_VALIDATION_ERROR_1 = "GUI_POSTUPLOAD_FILENAME_VALIDATION_ERROR_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_POSTUPLOAD_REQUIRED_PROPERTY_1 = "GUI_POSTUPLOAD_REQUIRED_PROPERTY_1";
 
     /** Message constant for key in the resource bundle. */

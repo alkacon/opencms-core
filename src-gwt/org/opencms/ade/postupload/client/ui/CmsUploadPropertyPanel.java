@@ -31,15 +31,20 @@
 
 package org.opencms.ade.postupload.client.ui;
 
+import org.opencms.ade.postupload.client.Messages;
 import org.opencms.ade.postupload.shared.CmsPostUploadDialogBean;
 import org.opencms.ade.postupload.shared.CmsPostUploadDialogPanelBean;
 import org.opencms.gwt.client.property.CmsPropertySubmitHandler;
 import org.opencms.gwt.client.property.CmsSimplePropertyEditor;
 import org.opencms.gwt.client.property.I_CmsPropertyEditorHandler;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
+import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
 import org.opencms.gwt.shared.CmsGwtLog;
+import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.Map;
@@ -61,6 +66,9 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
 
     /** The property editor handler instance. */
     I_CmsPropertyEditorHandler m_propertyEditorHandler;
+
+    /** The original file extension. */
+    private String m_originalExtension;
 
     /** The property editor instance. */
     private CmsSimplePropertyEditor m_propertyEditor;
@@ -87,15 +95,16 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
         m_dialog = dialog;
         m_resourcePath = values.getInfoBean().getSubTitle();
         initializePropertyEditor();
+        I_CmsFormField filenameField = getFilenameField();
+        m_originalExtension = getExtension(filenameField.getModelValue());
         if (options.hasImage()) {
             CmsImagePreview preview = new CmsImagePreview();
-            add(preview);
-            preview.getElement().getStyle().setMarginLeft(290, Unit.PX);
             preview.getElement().getStyle().setMarginTop(5, Unit.PX);
+            add(preview);
             if (values.getPreviewLink() != null) {
                 preview.setImageUrl(values.getPreviewLink());
-                preview.setLabel1(values.getPreviewInfo1());
-                preview.setLabel2(values.getPreviewInfo2());
+                preview.setInfo1(values.getPreviewInfo1());
+                preview.setInfo2(values.getPreviewInfo2());
             } else {
                 preview.hide();
             }
@@ -164,7 +173,36 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
     public void onSubmitValidationResult(CmsForm form, boolean ok) {
 
         if (ok) {
-            form.handleSubmit(new CmsPropertySubmitHandler(m_propertyEditorHandler));
+            I_CmsFormField filenameField = getFilenameField();
+
+            String value = filenameField.getWidget().getFormValueAsString();
+            String extension = getExtension(value);
+
+            if (!extension.equalsIgnoreCase(m_originalExtension)) {
+                CmsYesNoDialog confirmation = new CmsYesNoDialog(
+                    Messages.get().key(
+                        Messages.GUI_DIALOG_CHANGE_FILE_EXTENSION_WARNING_TITLE_2,
+                        m_originalExtension,
+                        extension),
+
+                    Messages.get().key(Messages.GUI_DIALOG_CHANGE_FILE_EXTENSION_WARNING_TEXT_0),
+                    (dialog, useOriginalExtension) -> {
+                        dialog.hide();
+                        if (useOriginalExtension) {
+                            String correctedValue = value.substring(0, value.length() - extension.length())
+                                + m_originalExtension;
+                            filenameField.getModel().setValue(correctedValue, false);
+                        }
+                        form.handleSubmit(new CmsPropertySubmitHandler(m_propertyEditorHandler));
+                    });
+                confirmation.getNoButton().setText(Messages.get().key(Messages.GUI_DIALOG_BUTTON_CHANGE_0));
+                confirmation.getNoButton().setButtonStyle(ButtonStyle.TEXT, ButtonColor.RED);
+                confirmation.getYesButton().setText(Messages.get().key(Messages.GUI_DIALOG_BUTTON_KEEP_0));
+                confirmation.getYesButton().setButtonStyle(ButtonStyle.TEXT, ButtonColor.GREEN);
+                confirmation.center();
+            } else {
+                form.handleSubmit(new CmsPropertySubmitHandler(m_propertyEditorHandler));
+            }
         }
     }
 
@@ -207,5 +245,21 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
                 }
             }
         });
+    }
+
+    private String getExtension(String filename) {
+
+        int dotPos = filename.lastIndexOf('.');
+        if (dotPos == -1) {
+            return "";
+        } else {
+            return filename.substring(dotPos);
+        }
+    }
+
+    private I_CmsFormField getFilenameField() {
+
+        return m_propertyEditor.getForm().getFields().values().stream().filter(
+            field -> field.getId().contains(CmsPropertyModification.FILE_NAME_PROPERTY)).findFirst().orElse(null);
     }
 }

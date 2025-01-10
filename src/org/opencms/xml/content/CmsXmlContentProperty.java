@@ -66,7 +66,7 @@ public class CmsXmlContentProperty implements Serializable {
             return valueOf(type.toLowerCase()) == vfslist;
         }
     }
-
+    
     /** The property visibility options. */
     public enum Visibility {
 

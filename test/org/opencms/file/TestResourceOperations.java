@@ -27,6 +27,10 @@
 
 package org.opencms.file;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
@@ -78,6 +82,8 @@ public class TestResourceOperations extends OpenCmsTestCase {
         suite.addTest(new TestResourceOperations("testGetFolderPath"));
         suite.addTest(new TestResourceOperations("testResourceNames"));
         suite.addTest(new TestResourceOperations("testCreateResources"));
+        suite.addTest(new TestResourceOperations("testConstraintStartsWithDash"));
+
         suite.addTest(new TestResourceOperations("testCreateReadFile"));
         suite.addTest(new TestResourceOperations("testPublishFile"));
         suite.addTest(new TestResourceOperations("testCreateSibling"));
@@ -101,6 +107,10 @@ public class TestResourceOperations extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    public void testConstraintStartsWithDash() throws Throwable {
+        assertTrue("CmsResource.NAME_CONSTRAINTS must start with a '-'.", CmsResource.NAME_CONSTRAINTS.startsWith("-"));
     }
 
     /**

@@ -2,42 +2,63 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
-	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
+	<ui:with field="resources"
+		type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<ui:style>
 		.root {
 			display: flex;
-		}
-		
-		.imageContainer {
-			width: 206px;
-			height: 176px;
-			border: 1px solid #d9d9d9;
+			border: 1px solid #c9c9c9;
 			border-radius: 4px;
 		}
 		
+		.flex {
+			flex: 1;
+		}
+
+		.imageContainer {
+			width: 206px;
+			height: 176px;
+			border: 1px solid #c9c9c9;
+			border-radius: 4px;
+		}
+
 		.imageContainer img {
 			display: block;
 			left: 3px;
 			top: 3px;
 			position: relative;
 		}
-		
+
 		.labelContainer {
-			margin-left: 15px;
+			display: flex;
+			flex-direction: column;
+			width: 289px;
 		}
 		
 		.labelContainer > * {
-			margin: 5px;
+			margin-top: 2px;
+			margin-bottom: 2px;
+			margin-left: 6px;
 		}
-	
+		
+		.root > * {
+			margin-top: 2px;
+			margin-bottom: 2px;
+		}
 	</ui:style>
 	<g:FlowPanel addStyleNames="{style.root}">
+
+		<g:FlowPanel addStyleNames="{style.labelContainer}">
+			<g:Label ui:field="m_label" />
+			<g:Label addStyleNames="{style.flex}" />
+			<g:Label ui:field="m_info1" />
+			<g:Label ui:field="m_info2" />
+		</g:FlowPanel>
+
 		<g:FlowPanel addStyleNames="{style.imageContainer}">
 			<g:Image ui:field="m_image" width="200px" height="170px" />
 		</g:FlowPanel>
-		<g:FlowPanel addStyleNames="{style.labelContainer}" >
-			<g:Label ui:field="m_label1" />
-			<g:Label ui:field="m_label2" />
-		</g:FlowPanel> 
-	</g:FlowPanel> 
+
+
+	</g:FlowPanel>
 </ui:UiBinder>

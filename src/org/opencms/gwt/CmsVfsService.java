@@ -124,6 +124,7 @@ import org.apache.commons.logging.Log;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import com.google.gwt.core.shared.SerializableThrowable;
 
 /**
  * A service class for reading the VFS tree.<p>
@@ -1165,7 +1166,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /**
      * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#saveProperties(org.opencms.gwt.shared.property.CmsPropertyChangeSet, boolean)
      */
-    public void saveProperties(CmsPropertyChangeSet changes, boolean updateIndex) throws CmsRpcException {
+    public void saveProperties(CmsPropertyChangeSet changes, boolean updateIndex) throws SerializableThrowable {
 
         String origSiteRoot = getCmsObject().getRequestContext().getSiteRoot();
         try {
@@ -1174,7 +1175,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             helper.setUpdateIndex(updateIndex);
             helper.saveProperties(changes);
         } catch (Throwable t) {
-            error(t);
+            throw SerializableThrowable.fromThrowable(t);
         } finally {
             getCmsObject().getRequestContext().setSiteRoot(origSiteRoot);
         }
@@ -1725,7 +1726,8 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                     cms,
                     CmsHistoryListUtil.getHistoryLink(cms, resource.getStructureId(), "" + version));
             } else if (resource.getRootPath().contains(CmsDetailOnlyContainerUtil.DETAIL_CONTAINERS_FOLDER_NAME)) {
-                String detailContentPath = cms.getRequestContext().removeSiteRoot(CmsDetailOnlyContainerUtil.getDetailContentPath(resource.getRootPath()));
+                String detailContentPath = cms.getRequestContext().removeSiteRoot(
+                    CmsDetailOnlyContainerUtil.getDetailContentPath(resource.getRootPath()));
                 if (cms.existsResource(detailContentPath, CmsResourceFilter.IGNORE_EXPIRATION)) {
                     link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, detailContentPath);
                 } else {

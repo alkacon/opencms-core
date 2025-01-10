@@ -43,16 +43,31 @@ public final class Messages {
     public static final String GUI_DIALOG_BUTTON_BACK_0 = "GUI_DIALOG_BUTTON_BACK_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_BUTTON_CHANGE_0 = "GUI_DIALOG_BUTTON_CHANGE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_BUTTON_CLOSE_0 = "GUI_DIALOG_BUTTON_CLOSE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_BUTTON_KEEP_0 = "GUI_DIALOG_BUTTON_KEEP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_BUTTON_NEXT_0 = "GUI_DIALOG_BUTTON_NEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_CHANGE_FILE_EXTENSION_WARNING_TEXT_0 = "GUI_DIALOG_CHANGE_FILE_EXTENSION_WARNING_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_CHANGE_FILE_EXTENSION_WARNING_TITLE_2 = "GUI_DIALOG_CHANGE_FILE_EXTENSION_WARNING_TITLE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_INFO_FIRST_RESOURCE_0 = "GUI_DIALOG_INFO_FIRST_RESOURCE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_INFO_LAST_RESOURCE_0 = "GUI_DIALOG_INFO_LAST_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_PREVIEW_LABEL_0 = "GUI_DIALOG_PREVIEW_LABEL_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_TITLE_0 = "GUI_DIALOG_TITLE_0";

@@ -7,6 +7,10 @@
 	padding-top: 4px;
 }
 
+.noPaddingTop .navModePropertiesBox,  .noPaddingTop .vfsModeSimplePropertiesBox  {
+	padding-top: 0px !important;
+}
+
 @external  cmsState cmsState-up-hovering; 
 
 .cmsState.propertyDefinitionButton {

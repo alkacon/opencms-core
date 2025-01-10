@@ -159,19 +159,23 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
             Map<String, CmsXmlContentProperty> propertyDefinitions = new LinkedHashMap<String, CmsXmlContentProperty>();
             Map<String, CmsClientProperty> clientProperties = new LinkedHashMap<String, CmsClientProperty>();
 
-            // add the file name to the list of properties to allow renaming the uploaded file
+
+            // match strings consisting of one or more alphanumeric characters and those from NAME_CONSTRAINTS, but exclude those that are just sequences of one or more "."s
+            String regex = "^(?!\\.+$)[" + CmsResource.NAME_CONSTRAINTS + "a-zA-Z0-9]+$";
+            Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+            String validationMessage = Messages.get().getBundle(locale).key(Messages.GUI_POSTUPLOAD_FILENAME_VALIDATION_ERROR_1, CmsResource.NAME_CONSTRAINTS);
             CmsXmlContentProperty fileNamePropDef = new CmsXmlContentProperty(
                 CmsPropertyModification.FILE_NAME_PROPERTY,
                 "string",
                 "string",
                 "",
-                "",
+                regex,
                 "",
                 "",
                 Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject())).key(
                     Messages.GUI_UPLOAD_FILE_NAME_0),
                 "",
-                "",
+                validationMessage,
                 "false");
             propertyDefinitions.put(CmsPropertyModification.FILE_NAME_PROPERTY, fileNamePropDef);
             clientProperties.put(

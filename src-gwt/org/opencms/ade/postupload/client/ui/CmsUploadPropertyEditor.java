@@ -29,6 +29,7 @@ package org.opencms.ade.postupload.client.ui;
 
 import org.opencms.gwt.client.property.CmsSimplePropertyEditor;
 import org.opencms.gwt.client.property.I_CmsPropertyEditorHandler;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
@@ -42,7 +43,7 @@ import com.google.gwt.user.client.ui.Label;
  */
 public class CmsUploadPropertyEditor extends CmsSimplePropertyEditor {
 
-    /** The warning message. */ 
+    /** The warning message. */
     private String m_warning;
 
     /**
@@ -74,6 +75,7 @@ public class CmsUploadPropertyEditor extends CmsSimplePropertyEditor {
     protected void setupFieldContainer() {
 
         CmsInfoBoxFormFieldPanel panel = new CmsInfoBoxFormFieldPanel(m_handler.getPageInfo());
+        panel.addStyleName(I_CmsLayoutBundle.INSTANCE.propertiesCss().noPaddingTop());
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_warning)) {
             Label warningLabel = new Label(m_warning);
             warningLabel.addStyleName(
