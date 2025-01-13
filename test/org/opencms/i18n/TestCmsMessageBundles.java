@@ -162,6 +162,7 @@ public abstract class TestCmsMessageBundles extends OpenCmsTestCase {
         Field[] fields = clazz.getDeclaredFields();
         for (int i = 0; i < fields.length; i++) {
             Field field = fields[i];
+            boolean ignoreArgCount  = null != field.getAnnotation(IgnoreArgCountInTests.class);
             if (!field.getType().equals(String.class) || !Modifier.isStatic(field.getModifiers())) {
                 continue;
             }
@@ -219,7 +220,7 @@ public abstract class TestCmsMessageBundles extends OpenCmsTestCase {
                 errorMessages.add("Key '" + key + "' must end in the number of parameters.");
                 continue;
             }
-            if (testKeyValue && isPresent) {
+            if (testKeyValue && isPresent && !ignoreArgCount) {
                 for (int j = 0; j < argCount; j++) {
                     String arg = "{" + j;
                     int pos = message.indexOf(arg);

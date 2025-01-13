@@ -28,6 +28,7 @@
 package org.opencms.ade.postupload.client;
 
 import org.opencms.gwt.client.util.CmsMessages;
+import org.opencms.i18n.IgnoreArgCountInTests;
 
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p>
@@ -46,6 +47,7 @@ public final class Messages {
     public static final String GUI_DIALOG_BUTTON_CHANGE_1 = "GUI_DIALOG_BUTTON_CHANGE_1";
 
     /** Message constant for key in the resource bundle. */
+    @IgnoreArgCountInTests
     public static final String GUI_DIALOG_BUTTON_CHANGE_TO_EMPTY_1 = "GUI_DIALOG_BUTTON_CHANGE_TO_EMPTY_1";
 
     /** Message constant for key in the resource bundle. */
@@ -55,12 +57,14 @@ public final class Messages {
     public static final String GUI_DIALOG_BUTTON_KEEP_1 = "GUI_DIALOG_BUTTON_KEEP_1";
 
     /** Message constant for key in the resource bundle. */
+    @IgnoreArgCountInTests
     public static final String GUI_DIALOG_BUTTON_KEEP_NONEMPTY_1 = "GUI_DIALOG_BUTTON_KEEP_NONEMPTY_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_BUTTON_NEXT_0 = "GUI_DIALOG_BUTTON_NEXT_0";
 
     /** Message constant for key in the resource bundle. */
+    @IgnoreArgCountInTests
     public static final String  GUI_DIALOG_CHANGE_FILE_EXTENSION_TO_EMPTY_WARNING_TITLE_2 = "GUI_DIALOG_CHANGE_FILE_EXTENSION_TO_EMPTY_WARNING_TITLE_2";
 
     /** Message constant for key in the resource bundle. */

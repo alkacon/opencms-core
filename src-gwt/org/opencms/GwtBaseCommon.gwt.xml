@@ -44,6 +44,9 @@
 	<source path="db" >
 		<include name="CmsResourceState.java" />
 	</source>
+	<source path="i18n">
+		<include name="IgnoreArgCountInTests.java" />
+	</source>
 	<source path="jsp">
 		<include name="CmsContainerJsonKeys.java" />
 	</source>
