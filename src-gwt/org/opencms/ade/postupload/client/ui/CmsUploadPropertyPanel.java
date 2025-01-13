@@ -43,11 +43,11 @@ import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
-import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.Map;
+import java.util.function.Function;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -179,13 +179,20 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
             String extension = getExtension(value);
 
             if (!extension.equalsIgnoreCase(m_originalExtension)) {
-                CmsYesNoDialog confirmation = new CmsYesNoDialog(
-                    Messages.get().key(
-                        Messages.GUI_DIALOG_CHANGE_FILE_EXTENSION_WARNING_TITLE_2,
-                        m_originalExtension,
-                        extension),
 
-                    Messages.get().key(Messages.GUI_DIALOG_CHANGE_FILE_EXTENSION_WARNING_TEXT_0),
+                String titleKey = Messages.GUI_DIALOG_CHANGE_FILE_EXTENSION_WARNING_TITLE_2;
+                String textKey = Messages.GUI_DIALOG_CHANGE_FILE_EXTENSION_WARNING_TEXT_0;
+                String yesKey = Messages.GUI_DIALOG_BUTTON_KEEP_1;
+                String noKey = Messages.GUI_DIALOG_BUTTON_CHANGE_1;
+                if ("".equals(extension)) {
+                    titleKey = Messages.GUI_DIALOG_CHANGE_FILE_EXTENSION_TO_EMPTY_WARNING_TITLE_2;
+                    yesKey = Messages.GUI_DIALOG_BUTTON_KEEP_NONEMPTY_1;
+                    noKey = Messages.GUI_DIALOG_BUTTON_CHANGE_TO_EMPTY_1;
+                }
+
+                CmsYesNoDialog confirmation = new CmsYesNoDialog(
+                    Messages.get().key(titleKey, m_originalExtension, extension),
+                    Messages.get().key(textKey),
                     (dialog, useOriginalExtension) -> {
                         dialog.hide();
                         if (useOriginalExtension) {
@@ -195,9 +202,10 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
                         }
                         form.handleSubmit(new CmsPropertySubmitHandler(m_propertyEditorHandler));
                     });
-                confirmation.getNoButton().setText(Messages.get().key(Messages.GUI_DIALOG_BUTTON_CHANGE_0));
+                Function<String, String> wrapEmpty = s -> "".equals(s) ? "\"" + s + "\"" : s;
+                confirmation.getNoButton().setText(Messages.get().key(noKey, wrapEmpty.apply(extension)));
                 confirmation.getNoButton().setButtonStyle(ButtonStyle.TEXT, ButtonColor.RED);
-                confirmation.getYesButton().setText(Messages.get().key(Messages.GUI_DIALOG_BUTTON_KEEP_0));
+                confirmation.getYesButton().setText(Messages.get().key(yesKey, wrapEmpty.apply(m_originalExtension)));
                 confirmation.getYesButton().setButtonStyle(ButtonStyle.TEXT, ButtonColor.GREEN);
                 confirmation.center();
             } else {
