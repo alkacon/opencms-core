@@ -48,6 +48,7 @@ import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsPermalinkResourceHandler;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.dialogs.CmsGalleryOptimizeDialog;
 import org.opencms.util.CmsMacroResolver;
@@ -159,11 +160,12 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
             Map<String, CmsXmlContentProperty> propertyDefinitions = new LinkedHashMap<String, CmsXmlContentProperty>();
             Map<String, CmsClientProperty> clientProperties = new LinkedHashMap<String, CmsClientProperty>();
 
-
             // match strings consisting of one or more alphanumeric characters and those from NAME_CONSTRAINTS, but exclude those that are just sequences of one or more "."s
             String regex = "^(?!\\.+$)[" + CmsResource.NAME_CONSTRAINTS + "a-zA-Z0-9]+$";
             Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-            String validationMessage = Messages.get().getBundle(locale).key(Messages.GUI_POSTUPLOAD_FILENAME_VALIDATION_ERROR_1, CmsResource.NAME_CONSTRAINTS);
+            String validationMessage = Messages.get().getBundle(locale).key(
+                Messages.GUI_POSTUPLOAD_FILENAME_VALIDATION_ERROR_1,
+                CmsResource.NAME_CONSTRAINTS);
             CmsXmlContentProperty fileNamePropDef = new CmsXmlContentProperty(
                 CmsPropertyModification.FILE_NAME_PROPERTY,
                 "string",
@@ -239,7 +241,10 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
 
             String previewLink = null;
             if (CmsResourceTypeImage.getStaticTypeName().equals(typeName)) {
-                String permalink = OpenCms.getLinkManager().getPermalink(cms, cms.getRequestContext().getSitePath(res));
+                String permalink = CmsStringUtil.joinPaths(
+                    OpenCms.getSystemInfo().getOpenCmsContext(),
+                    CmsPermalinkResourceHandler.PERMALINK_HANDLER,
+                    res.getStructureId().toString());
                 previewLink = permalink + CmsGalleryOptimizeDialog.SCALE_QUERY_STRING;
                 result.setPreviewLink(previewLink);
                 result.setPreviewInfo1((res.getLength() / 1024) + "kb");
