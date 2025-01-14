@@ -56,6 +56,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 
+import elemental2.core.JsString;
+
 /**
  * Panel for the property dialog.<p>
  */
@@ -202,10 +204,18 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
                         }
                         form.handleSubmit(new CmsPropertySubmitHandler(m_propertyEditorHandler));
                     });
-                Function<String, String> wrapEmpty = s -> "".equals(s) ? "\"" + s + "\"" : s;
-                confirmation.getNoButton().setText(Messages.get().key(noKey, wrapEmpty.apply(extension)));
-                confirmation.getNoButton().setButtonStyle(ButtonStyle.TEXT, ButtonColor.RED);
-                confirmation.getYesButton().setText(Messages.get().key(yesKey, wrapEmpty.apply(m_originalExtension)));
+                Function<String, String> format = s -> {
+                    if ("".equals(s)) {
+                        return "\"\"";
+                    }
+                    if (s.length() > 10) {
+                        return s.substring(0, 10) + JsString.fromCodePoint(8230 /* ellipsis */);
+                    }
+                    return s;
+                };
+                confirmation.getNoButton().setText(Messages.get().key(noKey, format.apply(extension)));
+                confirmation.getNoButton().setButtonStyle(ButtonStyle.TEXT, ButtonColor.BLUE);
+                confirmation.getYesButton().setText(Messages.get().key(yesKey, format.apply(m_originalExtension)));
                 confirmation.getYesButton().setButtonStyle(ButtonStyle.TEXT, ButtonColor.GREEN);
                 confirmation.center();
             } else {

@@ -838,10 +838,10 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     private class FileComposite extends HorizontalLayout {
 
         /** The panel height. */
-        private static final String PANEL_HEIGHT = "176px";
+        private static final String PANEL_HEIGHT = "172px";
 
         /** The panel width. */
-        private static final String PANEL_WIDTH = "206px";
+        private static final String PANEL_WIDTH = "202px";
 
         /** The default serial version UID. */
         private static final long serialVersionUID = 1L;
@@ -867,7 +867,8 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             m_panel.setHeight(PANEL_HEIGHT);
             m_panel.addStyleName("v-panel");
             Component link = createClickableFile();
-            m_panel.addComponent(link, "left: 2px; top: 2px;");
+            m_panel.addComponent(link, "left: 0px; top: 0px;");
+            m_panel.addStyleName("o-optimize-gallery-preview-panel");
             addComponent(m_panel);
         }
 

@@ -16,17 +16,16 @@
 		}
 
 		.imageContainer {
-			width: 206px;
-			height: 176px;
+			width: 202px;
+			height: 172px;
 			border: 1px solid #c9c9c9;
 			border-radius: 4px;
+			overflow: hidden;
+			box-sizing: border-box;
 		}
 
 		.imageContainer img {
 			display: block;
-			left: 3px;
-			top: 3px;
-			position: relative;
 		}
 
 		.labelContainer {
