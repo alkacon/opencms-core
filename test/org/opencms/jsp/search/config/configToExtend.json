@@ -1,0 +1,12 @@
+{
+    "extrasolrparams" : "fq=type:plain",
+    "additionalrequestparams" : [
+        { "param" : "p1", "solrquery" : "fq=lastmodified:[%(value) TO *]" }
+    ],
+    "fieldfacets" : [
+        { "field" : "field1" }
+    ],
+    "rangefacets" : [
+        { "range" : "lastmodified", "name" : "range1", "label" : "Date lastmodified", "start" : "NOW/MONTH-20MONTHS", "end" : "NOW/MONTH", "gap" : "+1MONTHS", "other" : ["before", "after", "between", "all", "none"], "hardend" : false, "mincount" : 1, "isAndFacet" : true, "preselection" : [ "2015-01-01T00:00:00Z", "2016-01-01T00:00:00Z"  ], "ignoreAllFacetFilters" : true, "excludeTags" : ["oneKey", "anotherKey"] }
+    ]
+}

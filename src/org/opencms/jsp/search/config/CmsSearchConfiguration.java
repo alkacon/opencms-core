@@ -32,6 +32,7 @@ import org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -76,8 +77,8 @@ public class CmsSearchConfiguration implements I_CmsSearchConfiguration {
         m_geoFilter = parser.parseGeoFilter();
         m_pagination = parser.parsePagination();
         m_sorting = parser.parseSorting();
-        m_fieldFacets = parser.parseFieldFacets();
-        m_rangeFacets = parser.parseRangeFacets();
+        m_fieldFacets = new HashMap<>(parser.parseFieldFacets());
+        m_rangeFacets = new HashMap<>(parser.parseRangeFacets());
         m_queryFacet = parser.parseQueryFacet();
         m_highlighting = parser.parseHighlighter();
         m_didYouMean = parser.parseDidYouMean();
@@ -87,8 +88,21 @@ public class CmsSearchConfiguration implements I_CmsSearchConfiguration {
     }
 
     /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfiguration#extend(org.opencms.jsp.search.config.I_CmsSearchConfiguration)
+     */
+    @Override
+    public void extend(I_CmsSearchConfiguration extensionConfig) {
+
+        m_general.extend(extensionConfig.getGeneralConfig());
+        m_fieldFacets.putAll(extensionConfig.getFieldFacetConfigs());
+        m_rangeFacets.putAll(extensionConfig.getRangeFacetConfigs());
+
+    }
+
+    /**
      * @see org.opencms.jsp.search.config.I_CmsSearchConfiguration#getDidYouMeanConfig()
      */
+    @Override
     public I_CmsSearchConfigurationDidYouMean getDidYouMeanConfig() {
 
         return m_didYouMean;

@@ -34,6 +34,12 @@ import java.util.Map;
  */
 public interface I_CmsSearchConfiguration {
 
+    /**
+     * Extends the search configuration with another given configuration.
+     * @param extensionConfig the extension to add.
+     */
+    void extend(I_CmsSearchConfiguration extensionConfig);
+
     /** Returns the configuration for "Did you mean ...?".
      * @return The configuration for "Did you mean ...?".
      */

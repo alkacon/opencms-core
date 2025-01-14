@@ -34,8 +34,11 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.I_CmsCollectorPublishListProvider;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
+import org.opencms.json.JSONArray;
+import org.opencms.json.JSONObject;
 import org.opencms.jsp.search.config.CmsSearchConfiguration;
 import org.opencms.jsp.search.config.I_CmsSearchConfiguration;
+import org.opencms.jsp.search.config.parser.CmsJSONSearchConfigurationParser;
 import org.opencms.jsp.search.config.parser.CmsSimpleSearchConfigurationParser;
 import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigParserUtils;
 import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigurationBean;
@@ -45,6 +48,7 @@ import org.opencms.jsp.search.controller.I_CmsSearchControllerMain;
 import org.opencms.jsp.search.result.CmsSearchResultWrapper;
 import org.opencms.jsp.search.result.I_CmsSearchResultWrapper;
 import org.opencms.jsp.util.CmsJspElFunctions;
+import org.opencms.jsp.util.CmsJspJsonWrapper;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -59,6 +63,7 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -88,6 +93,9 @@ public class CmsJspTagSimpleSearch extends CmsJspScopedVarBodyTagSuport implemen
 
     /** The "configString" tag attribute. */
     private String m_configString;
+
+    /** The "additionalConfigs" tag attribute. */
+    private Object m_additionalConfigs;
 
     /** The search index that should be used .
      *  It will either be the configured index, or "Solr Offline" / "Solr Online" depending on the project.
@@ -177,6 +185,59 @@ public class CmsJspTagSimpleSearch extends CmsJspScopedVarBodyTagSuport implemen
             config = new CmsSearchConfiguration(
                 new CmsSimpleSearchConfigurationParser(cms, configBean, m_configString),
                 cms);
+            if (null != m_additionalConfigs) {
+                if (m_additionalConfigs instanceof CmsJspJsonWrapper) {
+                    m_additionalConfigs = ((CmsJspJsonWrapper)m_additionalConfigs).getJson();
+                }
+                if (m_additionalConfigs instanceof JSONArray) {
+                    JSONArray addConfig = (JSONArray)m_additionalConfigs;
+                    if (addConfig.length() > 0) {
+                        for (int i = 0; i < addConfig.length(); i++) {
+                            Object c = addConfig.get(i);
+                            CmsJSONSearchConfigurationParser parser = (c instanceof JSONObject)
+                            ? new CmsJSONSearchConfigurationParser((JSONObject)c)
+                            : new CmsJSONSearchConfigurationParser(c.toString());
+                            I_CmsSearchConfiguration conf = new CmsSearchConfiguration(parser, cms);
+                            config.extend(conf);
+                        }
+                    }
+                } else if (m_additionalConfigs instanceof JSONObject) {
+                    CmsJSONSearchConfigurationParser parser = new CmsJSONSearchConfigurationParser(
+                        (JSONObject)m_additionalConfigs);
+                    I_CmsSearchConfiguration conf = new CmsSearchConfiguration(parser, cms);
+                    config.extend(conf);
+                } else if (m_additionalConfigs instanceof List) {
+                    for (Object c : (List<?>)m_additionalConfigs) {
+                        CmsJSONSearchConfigurationParser parser = (c instanceof JSONObject)
+                        ? new CmsJSONSearchConfigurationParser((JSONObject)c)
+                        : new CmsJSONSearchConfigurationParser(c.toString());
+                        I_CmsSearchConfiguration conf = new CmsSearchConfiguration(parser, cms);
+                        config.extend(conf);
+                    }
+                } else {
+                    // We assume we have a string.
+                    String c = m_additionalConfigs.toString().trim();
+                    if (!c.isEmpty()) {
+                        if (c.startsWith("[")) {
+                            // We must have a JSON array
+                            JSONArray addConfig = new JSONArray(c);
+                            if (addConfig.length() > 0) {
+                                for (int i = 0; i < addConfig.length(); i++) {
+                                    CmsJSONSearchConfigurationParser parser = new CmsJSONSearchConfigurationParser(
+                                        addConfig.getJSONObject(i));
+                                    I_CmsSearchConfiguration conf = new CmsSearchConfiguration(parser, cms);
+                                    config.extend(conf);
+                                }
+                            }
+                        } else {
+                            // We must have a single JSON Object
+                            CmsJSONSearchConfigurationParser parser = new CmsJSONSearchConfigurationParser(c);
+                            I_CmsSearchConfiguration conf = new CmsSearchConfiguration(parser, cms);
+                            config.extend(conf);
+                        }
+                    }
+                }
+            }
             m_searchController = new CmsSearchController(config);
 
             String indexName = m_searchController.getCommon().getConfig().getSolrIndex();
@@ -287,6 +348,14 @@ public class CmsJspTagSimpleSearch extends CmsJspScopedVarBodyTagSuport implemen
         if ((doAddInfo != null) && doAddInfo.booleanValue() && (null == m_addContentInfoForEntries)) {
             m_addContentInfoForEntries = Integer.valueOf(DEFAULT_CONTENTINFO_ROWS);
         }
+    }
+
+    /** Setter for the "additionalConfigs".
+     * @param additionalConfigs The "additionalConfigs".
+     */
+    public void setAdditionalConfigs(final Object additionalConfigs) {
+
+        m_additionalConfigs = additionalConfigs;
     }
 
     /** Setter for the configuration file.

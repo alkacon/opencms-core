@@ -248,6 +248,15 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     /** The optional base configuration that should be changed by the JSON configuration. */
     private I_CmsSearchConfiguration m_baseConfig;
 
+    /** Constructor taking the JSON as JSONObject.
+     * @param jsonObject The JSON that should be evaluated as JSONObject.
+     */
+    public CmsJSONSearchConfigurationParser(JSONObject jsonObject) {
+
+        m_configObject = jsonObject;
+
+    }
+
     /** Constructor taking the JSON as String.
      * @param json The JSON that should be parsed as String.
      * @throws JSONException Thrown if parsing fails.

@@ -54,7 +54,7 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
     /** The Solr core to use for the query (specified by it's name). */
     private final String m_solrCore;
     /** Extra parameters given to Solr, specified like "p1=v1&p2=v2". */
-    private final String m_extraSolrParams;
+    private String m_extraSolrParams;
     /** Additional request parameters mapped to their Solr query parts. */
     private final Map<String, String> m_additionalParameters;
     /** Flag, indicating if the release date should be ignored. */
@@ -107,10 +107,31 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
         m_solrIndex = solrIndex;
         m_solrCore = solrCore;
         m_extraSolrParams = extraSolrParams == null ? "" : extraSolrParams;
-        m_additionalParameters = additionalParameters != null ? additionalParameters : new HashMap<String, String>();
+        m_additionalParameters = additionalParameters != null ? new HashMap<>(additionalParameters) : new HashMap<>();
         m_ignoreReleaseDate = null == ignoreReleaseDate ? false : ignoreReleaseDate.booleanValue();
         m_ignoreExpirationDate = null == ignoreExpirationDate ? false : ignoreExpirationDate.booleanValue();
         m_maxReturnedResults = maxReturnedResults;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon#extend(org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon)
+     */
+    @Override
+    public void extend(I_CmsSearchConfigurationCommon extensionConfig) {
+
+        m_additionalParameters.putAll(extensionConfig.getAdditionalParameters());
+        String extraSolrParams = extensionConfig.getExtraSolrParams();
+        if (!extraSolrParams.isEmpty()) {
+            if (m_extraSolrParams.isEmpty()) {
+                m_extraSolrParams = extraSolrParams;
+            } else {
+                if (!extraSolrParams.startsWith("&")) {
+                    extraSolrParams = "&" + extraSolrParams;
+                }
+                m_extraSolrParams = m_extraSolrParams + extraSolrParams;
+            }
+        }
+
     }
 
     /**

@@ -350,8 +350,8 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-        
-        
+
+
     </tag>
 
     <tag>
@@ -1397,9 +1397,9 @@
             <type>java.lang.String</type>
         </attribute>
         <attribute>
-        	<description>The folder to upload binary folders to. If not set, upload for binary files is disabled.</description>
-        	<name>uploadFolder</name>
-        	<rtexprvalue>true</rtexprvalue>
+            <description>The folder to upload binary folders to. If not set, upload for binary files is disabled.</description>
+            <name>uploadFolder</name>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
 
@@ -2247,12 +2247,12 @@
         <attribute>
             <description><![CDATA[
               Flag to indicate if the used formatters should be included in 'cacheable' mode (see the cms:include tag). If this parameter is false, the formatters will be never included in cacheable mode,
-              otherwise they will only included in cacheable mode in the Online project. 
+              otherwise they will only included in cacheable mode in the Online project.
             ]]></description>
             <name>cacheable</name>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-        
+
     </tag>
 
     <tag>
@@ -2319,9 +2319,9 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-            	A container type used to select a formatter.
-            	<p>When a content is to be displayed, and no formatter has been specified for its type, then if this attribute is set, an active formatter for its resource type which matches the given container type 
-            	will be selected (formatters with higher rank will be prioritized).</p>
+                A container type used to select a formatter.
+                <p>When a content is to be displayed, and no formatter has been specified for its type, then if this attribute is set, an active formatter for its resource type which matches the given container type
+                will be selected (formatters with higher rank will be prioritized).</p>
             ]]></description>
             <name>containerType</name>
             <required>false</required>
@@ -2402,9 +2402,9 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-        	<description>The folder to upload binary folders to. If not set, upload for binary files is disabled.</description>
-        	<name>uploadFolder</name>
-        	<rtexprvalue>true</rtexprvalue>
+            <description>The folder to upload binary folders to. If not set, upload for binary files is disabled.</description>
+            <name>uploadFolder</name>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
 
@@ -2529,12 +2529,12 @@
             <name>cacheable</name>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-		<attribute>
-        	<description>The folder to upload binary folders to. If not set, upload for binary files is disabled.</description>
-        	<name>uploadFolder</name>
-        	<rtexprvalue>true</rtexprvalue>
+        <attribute>
+            <description>The folder to upload binary folders to. If not set, upload for binary files is disabled.</description>
+            <name>uploadFolder</name>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
-        
+
     </tag>
 
     <tag>
@@ -2565,7 +2565,7 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-                The key of the formatter that should be used. 
+                The key of the formatter that should be used.
             ]]></description>
             <name>formatterKey</name>
             <required>false</required>
@@ -2579,7 +2579,7 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-        
+
     </tag>
 
     <tag>
@@ -2999,6 +2999,24 @@
         </attribute>
         <attribute>
             <description><![CDATA[
+                <p>Single JSON object with an additional search configuration or an array with such additional JSON search configurations
+                that extend the otherwise provided configuration.</p>
+                <p>The value can be provided either as String, as org.opencms.json.JSONArray or org.opencms.json.JSONObject or java.util.List or org.opencms.jsp.util.CmsJspJsonWrapper</p>
+                <p>Currently only the following extensions are supported:</p>
+                <ul>
+                    <li>additional field facets</li>
+                    <li>additional range facets</li>
+                    <li>extension of the extrasolrparams (via concatination)</li>
+                    <li>additional "additional request parameters"</li>
+                </ul>
+            ]]></description>
+            <name>additionalConfigs</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Object</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
               <p>The tag allows for detection of changes on resources collected by the
               search tag  (editing, creation, deletion). If <code>addContentInfo</code> is set to true, these changes are taken into account when publishing
               changes for the current web page.</p>
@@ -3053,12 +3071,12 @@
             URI of the AntiSamy policy file.
         ]]></description>
             <name>policy</name>
-            <required>false</required> 
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
         <description><![CDATA[
-            Special dummy value to replace parameters which would otherwise be XML-escaped. 
+            Special dummy value to replace parameters which would otherwise be XML-escaped.
         ]]></description>
             <name>replaceInvalid</name>
             <required>false</required>
@@ -3066,14 +3084,14 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-            Comma-separated list of parameters which should be XML-escaped even if replaceInvalid is set. 
+            Comma-separated list of parameters which should be XML-escaped even if replaceInvalid is set.
         ]]></description>
             <name>escapeInvalid</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-        
-        
+
+
     </tag>
 
     <tag>
@@ -3209,7 +3227,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-    
+
     <tag>
         <description><![CDATA[
             Takes a JSON value from the 'value' attribute and adds it to the surrounding JSON context or
@@ -3255,19 +3273,19 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-        	<description>If true, uses the given value as a string to parse JSON from, else just uses the value as-is.</description>
-        	<name>parse</name>
-        	<required>false</required>
-        	<rtexprvalue>true</rtexprvalue>
+            <description>If true, uses the given value as a string to parse JSON from, else just uses the value as-is.</description>
+            <name>parse</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
          <attribute>
-        	<description>Name of a page scope variable to store a parse error in. If no parse error occurs, the variable is set to null.</description>
-        	<name>errorVar</name>
-        	<required>false</required>
-        	<rtexprvalue>true</rtexprvalue>
+            <description>Name of a page scope variable to store a parse error in. If no parse error occurs, the variable is set to null.</description>
+            <name>errorVar</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-    
+
     <tag>
         <description>Enables the option for creating a new content in the ADE menu of a container page element when used in the element's formatter.</description>
         <name>enable-list-add</name>

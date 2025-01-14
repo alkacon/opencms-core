@@ -32,6 +32,12 @@ import java.util.Map;
 /** Interface the common search configuration must implement. */
 public interface I_CmsSearchConfigurationCommon {
 
+    /**
+     * Extends the search configuration with another given configuration.
+     * @param extensionConfig the extension to add.
+     */
+    void extend(I_CmsSearchConfigurationCommon extensionConfig);
+
     /** Returns a map from request parameter names to Solr query parts (where the parameter's values are typically inserted).
      * @return A map from request parameter names to Solr query parts (where the parameter's values are typically inserted).
      */
