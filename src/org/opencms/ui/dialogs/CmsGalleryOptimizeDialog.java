@@ -898,8 +898,13 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                 + "px\" height=\""
                 + IMAGE_HEIGHT
                 + "px\" src=\""
-                + getScaleUri(resource)
-                + "\" style=\"background: white;\">";
+                + getScaleUri(resource, false)
+                + "\""
+                + " srcset=\""
+                + getScaleUri(resource, true)
+                + " 2x"
+                + "\" "
+                + " style=\"background: white;\">";
             String a = "<a target=\"_blank\" href=\"" + getPermanentUri(resource) + "\">" + image + "</a>";
             String div = "<div class=\""
                 + OpenCmsTheme.GALLERY_PREVIEW_IMAGE
@@ -957,12 +962,13 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
          * Utility function to create a permanent URI for a scaled preview image.<p>
          *
          * @param resource the CMS resource
+         * @param highres if true, generate high resolution scaling uri
          * @return the scale URI
          */
-        private String getScaleUri(CmsResource resource) {
+        private String getScaleUri(CmsResource resource, boolean highres) {
 
             String paramTimestamp = "&timestamp=" + System.currentTimeMillis();
-            return getPermanentUri(resource) + SCALE_QUERY_STRING + paramTimestamp;
+            return getPermanentUri(resource) + getScaleQueryString(highres) + paramTimestamp;
         }
     }
 
@@ -1634,16 +1640,10 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
     }
 
     /** The height of the preview images. */
-    public static final String IMAGE_HEIGHT = "170";
+    public static final int IMAGE_HEIGHT = 170;
 
     /** The width of the preview images. */
-    public static final String IMAGE_WIDTH = "200";
-
-    /** Image scale parameters for preview images as used by the image scaler. */
-    public static final String SCALE_PARAMETERS = "t:1,c:ffffff,w:" + IMAGE_WIDTH + ",h:" + IMAGE_HEIGHT;
-
-    /** Request query string to load a scaled preview image. */
-    public static final String SCALE_QUERY_STRING = "?__scale=" + SCALE_PARAMETERS;
+    public static final int IMAGE_WIDTH = 200;
 
     /** The sort order session attribute. */
     static final String GALLERY_OPTIMIZE_ATTR_SORT_ORDER = "GALLERY_OPTIMIZE_ATTR_SORT_ORDER";
@@ -1738,6 +1738,30 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         dataListLoad();
         displayDataListHeaderView();
         displayDataListViewSorted(getSessionSortOrder());
+    }
+
+    /**
+     * Gets the scaling parameters for the preview.
+     * 
+     * @param highres if true, generates high-resolution scaling parameters
+     * @return the scaling parameters
+     */
+    public static String getScaleParameter(boolean highres) {
+
+        int m = highres ? 2 : 1;
+        String suffix = highres ? ",q:85" : "";
+        return "t:1,c:ffffff,w:" + (m * IMAGE_WIDTH) + ",h:" + (m * IMAGE_HEIGHT) + suffix;
+
+    }
+
+    /**
+     * Gets the scaling query string for the preview.
+     * @param highres if true, generates high-resolution scaling query string 
+     * @return the scaling parameters
+     */
+    public static String getScaleQueryString(boolean highres) {
+
+        return "?__scale=" + getScaleParameter(highres);
     }
 
     /**

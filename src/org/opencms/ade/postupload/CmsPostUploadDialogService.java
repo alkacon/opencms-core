@@ -245,7 +245,7 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
                     OpenCms.getSystemInfo().getOpenCmsContext(),
                     CmsPermalinkResourceHandler.PERMALINK_HANDLER,
                     res.getStructureId().toString());
-                previewLink = permalink + CmsGalleryOptimizeDialog.SCALE_QUERY_STRING;
+                previewLink = permalink + CmsGalleryOptimizeDialog.getScaleQueryString(false);
                 result.setPreviewLink(previewLink);
                 result.setPreviewInfo1((res.getLength() / 1024) + "kb");
                 CmsProperty imageSizeProp = cms.readPropertyObject(
