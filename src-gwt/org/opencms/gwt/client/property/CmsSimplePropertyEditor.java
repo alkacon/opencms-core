@@ -28,6 +28,7 @@
 package org.opencms.gwt.client.property;
 
 import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.I_CmsStringModel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
@@ -134,6 +135,17 @@ public class CmsSimplePropertyEditor extends A_CmsPropertyEditor {
     }
 
     /**
+     * Can be overridden by subclasses to customize field validators.
+     *
+     * @param propDef the property definition from which the field was created
+     * @param field the field
+     */
+    protected void maybeAddCustomValidator(CmsXmlContentProperty propDef, I_CmsFormField field) {
+
+        // do nothing
+    }
+
+    /**
      * @see org.opencms.gwt.client.property.A_CmsPropertyEditor#setupFieldContainer()
      */
     @Override
@@ -189,6 +201,7 @@ public class CmsSimplePropertyEditor extends A_CmsPropertyEditor {
             this,
             Collections.<String, String> emptyMap(),
             isAlwaysAllowEmpty(propDef.getName()));
+        maybeAddCustomValidator(propDef, field);
 
         CmsPair<String, String> defaultValueAndOrigin = getDefaultValueToDisplay(ownProp, mode);
         String defaultValue = "";

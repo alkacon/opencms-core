@@ -169,6 +169,7 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
         return false;
     }
 
+
     /**
      * @see org.opencms.gwt.client.ui.input.form.I_CmsFormHandler#onSubmitValidationResult(org.opencms.gwt.client.ui.input.form.CmsForm, boolean)
      */
@@ -188,7 +189,6 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
                 String noKey = Messages.GUI_DIALOG_BUTTON_CHANGE_1;
                 if ("".equals(extension)) {
                     titleKey = Messages.GUI_DIALOG_CHANGE_FILE_EXTENSION_TO_EMPTY_WARNING_TITLE_2;
-                    yesKey = Messages.GUI_DIALOG_BUTTON_KEEP_NONEMPTY_1;
                     noKey = Messages.GUI_DIALOG_BUTTON_CHANGE_TO_EMPTY_1;
                 }
 
@@ -237,9 +237,10 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
      */
     protected void initializePropertyEditor() {
 
+
         Map<String, CmsXmlContentProperty> propertyConfig = m_values.getPropertyDefinitions();
         m_propertyEditorHandler = new CmsUploadPropertyEditorHandler(m_dialog, m_values);
-        CmsSimplePropertyEditor propertyEditor = new CmsUploadPropertyEditor(propertyConfig, m_propertyEditorHandler);
+        CmsSimplePropertyEditor propertyEditor = new CmsUploadPropertyEditor(m_values.getStructureId(), propertyConfig, m_propertyEditorHandler);
         propertyEditor.getForm().setFormHandler(this);
         m_propertyEditor = propertyEditor;
         m_propertyEditor.initializeWidgets(null);
@@ -280,4 +281,5 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
         return m_propertyEditor.getForm().getFields().values().stream().filter(
             field -> field.getId().contains(CmsPropertyModification.FILE_NAME_PROPERTY)).findFirst().orElse(null);
     }
+
 }

@@ -30,8 +30,11 @@ package org.opencms.ade.postupload.client.ui;
 import org.opencms.gwt.client.property.CmsSimplePropertyEditor;
 import org.opencms.gwt.client.property.I_CmsPropertyEditorHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
+import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.Map;
@@ -45,6 +48,7 @@ public class CmsUploadPropertyEditor extends CmsSimplePropertyEditor {
 
     /** The warning message. */
     private String m_warning;
+    private CmsUUID m_structureId;
 
     /**
      * Creates a new instance.<p>
@@ -52,9 +56,10 @@ public class CmsUploadPropertyEditor extends CmsSimplePropertyEditor {
      * @param propConfig the property configuration
      * @param handler the property editor handler to use
      */
-    public CmsUploadPropertyEditor(Map<String, CmsXmlContentProperty> propConfig, I_CmsPropertyEditorHandler handler) {
+    public CmsUploadPropertyEditor(CmsUUID structureId, Map<String, CmsXmlContentProperty> propConfig, I_CmsPropertyEditorHandler handler) {
 
         super(propConfig, handler);
+        m_structureId = structureId;
         CmsUploadPropertyEditorHandler uploadPropertyHandler = (CmsUploadPropertyEditorHandler)handler;
         m_warning = uploadPropertyHandler.getWarning();
     }
@@ -69,8 +74,19 @@ public class CmsUploadPropertyEditor extends CmsSimplePropertyEditor {
     }
 
     /**
-     * @see org.opencms.gwt.client.property.CmsSimplePropertyEditor#setupFieldContainer()
+     * @see org.opencms.gwt.client.property.CmsSimplePropertyEditor#maybeAddCustomValidator(org.opencms.xml.content.CmsXmlContentProperty, org.opencms.gwt.client.ui.input.I_CmsFormField)
      */
+    @Override
+    protected void maybeAddCustomValidator(CmsXmlContentProperty propDef, I_CmsFormField field) {
+
+        if (field.getId().contains(CmsPropertyModification.FILE_NAME_PROPERTY)) {
+            field.setValidator(new CmsFilenameValidator(m_structureId, propDef));
+        }
+    }
+
+    /**
+    * @see org.opencms.gwt.client.property.CmsSimplePropertyEditor#setupFieldContainer()
+    */
     @Override
     protected void setupFieldContainer() {
 
