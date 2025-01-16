@@ -96,6 +96,7 @@ public class CmsSearchConfiguration implements I_CmsSearchConfiguration {
         m_general.extend(extensionConfig.getGeneralConfig());
         m_fieldFacets.putAll(extensionConfig.getFieldFacetConfigs());
         m_rangeFacets.putAll(extensionConfig.getRangeFacetConfigs());
+        propagateFacetNames();
 
     }
 
