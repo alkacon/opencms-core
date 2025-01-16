@@ -41,8 +41,14 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsPostUploadDialogPanelBean implements IsSerializable {
 
+    /** The high-res preview link. */
+    private String m_highResPreviewLink;
+
     /** The page info for displaying the CmsListItemWidget. */
     private CmsListInfoBean m_infoBean;
+
+    /** The full-size preview link. */
+    private String m_permalink;
 
     /** The first image preview info text. */
     private String m_previewInfo1;
@@ -86,6 +92,16 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
     }
 
     /**
+     * Gets the high-res preview link.
+     * 
+     * @return the high-res preview link
+     */
+    public String getHighResPreviewLink() {
+
+        return m_highResPreviewLink;
+    }
+
+    /**
      * Gets the info bean for the resource.<p>
      *
      * @return the info bean for the resource
@@ -93,6 +109,16 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
     public CmsListInfoBean getInfoBean() {
 
         return m_infoBean;
+    }
+
+    /**
+     * Gets the full size preview permalink.
+     *
+     * @return the full size preview link
+     */
+    public String getPermalink() {
+
+        return m_permalink;
     }
 
     /**
@@ -166,6 +192,16 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
     }
 
     /**
+     * Sets the high-res preview link.
+     * 
+     * @param highResPreviewLink the high-res preview link
+     */
+    public void setHighResPreviewLink(String highResPreviewLink) {
+
+        m_highResPreviewLink = highResPreviewLink;
+    }
+
+    /**
      * Sets the list info bean for the resource.<p>
      *
      * @param info the list info bean for the resource
@@ -173,6 +209,16 @@ public class CmsPostUploadDialogPanelBean implements IsSerializable {
     public void setInfoBean(CmsListInfoBean info) {
 
         m_infoBean = info;
+    }
+
+    /**
+     * Sets the full-size preview permalink.
+     * 
+     * @param permalink the full-size preview permalink
+     */
+    public void setPermalink(String permalink) {
+
+        m_permalink = permalink;
     }
 
     /**

@@ -104,7 +104,9 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
             preview.getElement().getStyle().setMarginTop(5, Unit.PX);
             add(preview);
             if (values.getPreviewLink() != null) {
+                preview.setFullPreview(values.getPermalink());
                 preview.setImageUrl(values.getPreviewLink());
+                preview.setHighResImageUrl(values.getHighResPreviewLink());
                 preview.setInfo1(values.getPreviewInfo1());
                 preview.setInfo2(values.getPreviewInfo2());
             } else {
@@ -168,7 +170,6 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
         // TODO Auto-generated method stub
         return false;
     }
-
 
     /**
      * @see org.opencms.gwt.client.ui.input.form.I_CmsFormHandler#onSubmitValidationResult(org.opencms.gwt.client.ui.input.form.CmsForm, boolean)
@@ -237,10 +238,12 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
      */
     protected void initializePropertyEditor() {
 
-
         Map<String, CmsXmlContentProperty> propertyConfig = m_values.getPropertyDefinitions();
         m_propertyEditorHandler = new CmsUploadPropertyEditorHandler(m_dialog, m_values);
-        CmsSimplePropertyEditor propertyEditor = new CmsUploadPropertyEditor(m_values.getStructureId(), propertyConfig, m_propertyEditorHandler);
+        CmsSimplePropertyEditor propertyEditor = new CmsUploadPropertyEditor(
+            m_values.getStructureId(),
+            propertyConfig,
+            m_propertyEditorHandler);
         propertyEditor.getForm().setFormHandler(this);
         m_propertyEditor = propertyEditor;
         m_propertyEditor.initializeWidgets(null);

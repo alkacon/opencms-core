@@ -56,6 +56,10 @@ public class CmsImagePreview extends Composite {
     @UiField
     protected Image m_image;
 
+    /** Link which opens the preview in a separate window. */
+    @UiField
+    protected CmsPreviewLink m_link;
+
     @UiField
     protected Label m_label;
 
@@ -82,6 +86,30 @@ public class CmsImagePreview extends Composite {
     public void hide() {
 
         getElement().getStyle().setVisibility(Visibility.HIDDEN);
+    }
+
+    /**
+     * Sets the full preview URL.
+     *
+     * @param fullPreviewUrl the full preview URL
+     */
+    public void setFullPreview(String fullPreviewUrl) {
+        m_link.setHref(fullPreviewUrl);
+    }
+
+    /**
+     * Sets the high resolution preview URL.
+     *
+     * @param highResPreviewLink the high resolution preview URL
+     */
+    public void setHighResImageUrl(String highResPreviewLink) {
+        if (highResPreviewLink != null) {
+            m_image.getElement().setAttribute("srcset", highResPreviewLink + " 2x");
+        } else {
+            m_image.getElement().removeAttribute("srcset");
+        }
+
+
     }
 
     /**
