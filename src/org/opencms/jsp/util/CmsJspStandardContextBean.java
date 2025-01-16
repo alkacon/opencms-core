@@ -155,22 +155,22 @@ public final class CmsJspStandardContextBean {
      */
     public class CmsContainerElementWrapper extends CmsContainerElementBean {
 
+        CmsContainerElementBean m_wrappedElement;
+
+        /** The wrapped element instance. */
+        private Supplier<CmsContainerElementBean> m_elementProvider;
+
+        /** Cached formatter key - use array to distinguish between uncached and cached, but null. */
+        private String[] m_formatterKey;
+
         /** Cache for the wrapped element parent. */
         private CmsContainerElementWrapper m_parent;
 
         /** Cache for the wrapped element type name. */
         private String m_resourceTypeName;
 
-        /** The wrapped element instance. */
-        private Supplier<CmsContainerElementBean> m_elementProvider;
-
         /** Cache for the wrapped element settings. */
         private Map<String, CmsJspElementSettingValueWrapper> m_wrappedSettings;
-
-        /** Cached formatter key - use array to distinguish between uncached and cached, but null. */
-        private String[] m_formatterKey;
-
-        CmsContainerElementBean m_wrappedElement;
 
         /**
          * Constructor.<p>
@@ -1936,6 +1936,35 @@ public final class CmsJspStandardContextBean {
 
         }
         return result;
+    }
+
+    /**
+     * Gets the id for the container page which the current element is located in.
+     *
+     *  <p>In case the current container is a detail-only container, the id of the detail-only page will be returned.
+     *
+     * @return the id of the container page which the current element is located in
+     */
+    public String getPageIdForElement() {
+
+        CmsObject cms = getCmsObject();
+        if (getElement().isInMemoryOnly() || isEdited()) {
+            return null;
+        }
+        if (getContainer().isDetailOnly()) {
+            CmsResource detailContent = getDetailContent();
+            CmsResource detailOnlyPage = CmsDetailOnlyContainerUtil.getDetailOnlyPage(
+                cms,
+                detailContent,
+                "" + cms.getRequestContext().getLocale()).orNull();
+            if (detailOnlyPage != null) {
+                return detailOnlyPage.getStructureId().toString();
+            } else {
+                return null;
+            }
+        } else {
+            return getPageResource().getStructureId().toString();
+        }
     }
 
     /**
