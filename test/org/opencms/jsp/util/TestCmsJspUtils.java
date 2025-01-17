@@ -111,7 +111,7 @@ public class TestCmsJspUtils extends OpenCmsTestCase {
         assertEquals("", link.getLiteral());
         assertFalse(link.getIsInternal());
 
-        link = new CmsJspLinkWrapper(cms, null);
+        link = new CmsJspLinkWrapper(cms, (String)null);
         assertEquals("", link.getLink());
         assertNull(link.getLiteral());
         assertFalse(link.getIsInternal());
