@@ -41,6 +41,7 @@ import org.opencms.i18n.CmsLocaleGroup;
 import org.opencms.jsp.util.CmsJspCategoryAccessBean;
 import org.opencms.jsp.util.CmsJspContentAccessBean;
 import org.opencms.jsp.util.CmsJspImageBean;
+import org.opencms.jsp.util.CmsJspLinkWrapper;
 import org.opencms.jsp.util.CmsJspValueTransformers.CmsLocalePropertyLoaderTransformer;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
@@ -377,9 +378,7 @@ public class CmsJspResourceWrapper extends CmsResource {
      */
     public String getLink() {
 
-        return OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-            m_cms,
-            m_cms.getRequestContext().getSitePath(this));
+        return getToLink().getLink();
     }
 
     /**
@@ -522,7 +521,7 @@ public class CmsJspResourceWrapper extends CmsResource {
      */
     public String getOnlineLink() {
 
-        return OpenCms.getLinkManager().getOnlineLink(m_cms, m_cms.getRequestContext().getSitePath(this));
+        return getToLink().getOnlineLink();
     }
 
     /**
@@ -879,6 +878,16 @@ public class CmsJspResourceWrapper extends CmsResource {
             m_imageBean = new CmsJspImageBean(getCmsObject(), this, null);
         }
         return m_imageBean;
+    }
+
+    /**
+     * Gets a link wrapper corresponding to the the resource's path.
+     *
+     * @return the new link wrapper
+     */
+    public CmsJspLinkWrapper getToLink() {
+
+        return new CmsJspLinkWrapper(m_cms, this);
     }
 
     /**
