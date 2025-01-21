@@ -35,9 +35,6 @@ import org.opencms.util.CmsStringUtil;
  */
 public class CmsJspElementSettingValueWrapper extends A_CmsJspValueWrapper {
 
-    /** The instance of the enclosing context bean. */
-    private final CmsJspStandardContextBean m_contextBean;
-
     /** Flag indicating the setting has been configured. */
     private boolean m_exists;
 
@@ -50,24 +47,15 @@ public class CmsJspElementSettingValueWrapper extends A_CmsJspValueWrapper {
     /**
      * Constructor.<p>
      *
-     * @param contextBean the standard context bean this setting was wrapped from
+     * @param cms the CMS context
      * @param value the wrapped value
      * @param exists flag indicating the setting has been configured
      */
-    CmsJspElementSettingValueWrapper(CmsJspStandardContextBean contextBean, String value, boolean exists) {
+    CmsJspElementSettingValueWrapper(CmsObject cms, String value, boolean exists) {
 
-        m_contextBean = contextBean;
+        m_cms = cms;
         m_value = value;
         m_exists = exists;
-    }
-
-    /**
-     * @see org.opencms.jsp.util.A_CmsJspValueWrapper#getCmsObject()
-     */
-    @Override
-    public CmsObject getCmsObject() {
-
-        return m_contextBean.m_cms;
     }
 
     /**

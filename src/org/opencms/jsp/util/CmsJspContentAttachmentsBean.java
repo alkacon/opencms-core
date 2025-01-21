@@ -267,7 +267,7 @@ public class CmsJspContentAttachmentsBean {
      */
     public CmsJspContainerPageWrapper getContainerPage() {
 
-        return new CmsJspContainerPageWrapper(m_page);
+        return new CmsJspContainerPageWrapper(m_cms, m_page);
     }
 
     /**

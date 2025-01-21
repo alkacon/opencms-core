@@ -402,7 +402,7 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
                 m_cms.readFile(res),
                 true,
                 /*nocache=*/true); // container page caching causes problems with the EL container rendering feature, don't use it here
-            m_containerPageWrapper = new CmsJspContainerPageWrapper(page.getContainerPage(m_cms));
+            m_containerPageWrapper = new CmsJspContainerPageWrapper(m_cms, page.getContainerPage(m_cms));
             return m_containerPageWrapper;
         } catch (Exception e) {
             LOG.debug(e.getLocalizedMessage(), e);

@@ -582,7 +582,7 @@ public final class CmsJspStandardContextBean {
                 exists = m_transformElement.getSettings().get(settingName) != null;
             }
             return new CmsJspElementSettingValueWrapper(
-                CmsJspStandardContextBean.this,
+                m_cms,
                 m_transformElement.getSettings().get(settingName),
                 exists);
         }
@@ -1895,7 +1895,7 @@ public final class CmsJspStandardContextBean {
      *
      * @return the container page bean
      */
-    public CmsContainerPageBean getPage(Object page, Object locale) {
+    public CmsJspContainerPageWrapper getPage(Object page, Object locale) {
 
         CmsResource pageResource = null;
         CmsContainerPageBean result = null;
@@ -1903,11 +1903,18 @@ public final class CmsJspStandardContextBean {
             try {
                 pageResource = CmsJspElFunctions.convertRawResource(m_cms, page);
                 Locale l = CmsJspElFunctions.convertLocale(locale);
-                result = getPage(pageResource);
-                if (result != null) {
-                    CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
+
+                CmsADEConfigData adeConfig;
+                if (OpenCms.getSiteManager().startsWithShared(pageResource.getRootPath())) {
+                    adeConfig = OpenCms.getADEManager().lookupConfiguration(
                         m_cms,
-                        pageResource.getRootPath());
+                        m_cms.getRequestContext().addSiteRoot(m_cms.getRequestContext().getUri()));
+                } else {
+                    adeConfig = OpenCms.getADEManager().lookupConfiguration(m_cms, pageResource.getRootPath());
+                }
+
+                result = getPage(adeConfig, pageResource);
+                if (result != null) {
                     for (CmsContainerBean container : result.getContainers().values()) {
                         for (CmsContainerElementBean element : container.getElements()) {
                             boolean isGroupContainer = element.isGroupContainer(m_cms);
@@ -1935,7 +1942,7 @@ public final class CmsJspStandardContextBean {
             }
 
         }
-        return result;
+        return new CmsJspContainerPageWrapper(m_cms, result);
     }
 
     /**
@@ -2570,7 +2577,7 @@ public final class CmsJspStandardContextBean {
                 pageResource = m_cms.readResource(requestUri, CmsResourceFilter.ignoreExpirationOffline(m_cms));
             }
             m_config = OpenCms.getADEManager().lookupConfigurationWithCache(m_cms, pageResource.getRootPath());
-            m_page = getPage(pageResource);
+            m_page = getPage(m_config, pageResource);
             m_page = CmsTemplateMapper.get(m_request).transformContainerpageBean(
                 m_cms,
                 m_page,
@@ -3334,13 +3341,14 @@ public final class CmsJspStandardContextBean {
     /**
      * Returns the container page bean for the give resource.<p>
      *
+     * @param config the sitemap config to use
      * @param pageResource the resource
      *
      * @return the container page bean
      *
      * @throws CmsException in case reading the page bean fails
      */
-    private CmsContainerPageBean getPage(CmsResource pageResource) throws CmsException {
+    private CmsContainerPageBean getPage(CmsADEConfigData config, CmsResource pageResource) throws CmsException {
 
         CmsContainerPageBean result = null;
         if ((pageResource != null) && CmsResourceTypeXmlContainerPage.isContainerPage(pageResource)) {
@@ -3348,7 +3356,7 @@ public final class CmsJspStandardContextBean {
             result = xmlContainerPage.getContainerPage(m_cms);
             CmsModelGroupHelper modelHelper = new CmsModelGroupHelper(
                 m_cms,
-                OpenCms.getADEManager().lookupConfiguration(m_cms, pageResource.getRootPath()),
+                config,
                 CmsJspTagEditable.isEditableRequest(m_request) && (m_request instanceof HttpServletRequest)
                 ? CmsADESessionCache.getCache((HttpServletRequest)m_request, m_cms)
                 : null,
