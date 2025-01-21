@@ -64,6 +64,9 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
+
 /**
  * Wrapper subclass of CmsResource with some convenience methods.<p>
  */
@@ -150,6 +153,10 @@ public class CmsJspResourceWrapper extends CmsResource {
 
     /** The XML content access bean. */
     private CmsJspContentAccessBean m_xml;
+
+    /** Creates/caches link wrapper. */
+    private Supplier<CmsJspLinkWrapper> m_linkSupplier = Suppliers.memoize(
+        () -> new CmsJspLinkWrapper(m_cms, CmsJspResourceWrapper.this));
 
     /**
      * Creates a new instance.<p>
@@ -887,7 +894,7 @@ public class CmsJspResourceWrapper extends CmsResource {
      */
     public CmsJspLinkWrapper getToLink() {
 
-        return new CmsJspLinkWrapper(m_cms, this);
+        return m_linkSupplier.get();
     }
 
     /**
