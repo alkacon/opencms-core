@@ -7,6 +7,8 @@
 	<ui:with field="resources"
 		type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<ui:style>
+		@external oc-broken-image;
+	
 		.root {
 			display: flex;
 			border: 1px solid #c9c9c9;
@@ -28,6 +30,14 @@
 
 		.imageContainer img {
 			display: block;
+			object-fit: scale-down;
+			background-color: white;
+		}
+		
+		.imageContainer img:not(.oc-broken-image) {
+			background-image: linear-gradient(45deg,#e0e0e2 25%,transparent 25%,transparent 75%,#e0e0e2 75%,#e0e0e2),linear-gradient(45deg,#e0e0e2 25%,transparent 25%,transparent 75%,#e0e0e2 75%,#e0e0e2);
+			background-size: 20px 20px;
+			background-position: 0 0,10px 10px;
 		}
 
 		.labelContainer {

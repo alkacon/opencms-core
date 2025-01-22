@@ -904,7 +904,8 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                 + getScaleUri(resource, true)
                 + " 2x"
                 + "\" "
-                + " style=\"background: white;\">";
+                + " onerror=\"this.classList.add('oc-broken-image');\" "
+                + " >";
             String a = "<a target=\"_blank\" href=\"" + getPermanentUri(resource) + "\">" + image + "</a>";
             String div = "<div class=\""
                 + OpenCmsTheme.GALLERY_PREVIEW_IMAGE
@@ -1742,7 +1743,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
     /**
      * Gets the scaling parameters for the preview.
-     * 
+     *
      * @param highres if true, generates high-resolution scaling parameters
      * @return the scaling parameters
      */
@@ -1756,7 +1757,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
     /**
      * Gets the scaling query string for the preview.
-     * @param highres if true, generates high-resolution scaling query string 
+     * @param highres if true, generates high-resolution scaling query string
      * @return the scaling parameters
      */
     public static String getScaleQueryString(boolean highres) {

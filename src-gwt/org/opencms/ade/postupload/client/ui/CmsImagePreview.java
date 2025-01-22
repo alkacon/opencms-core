@@ -77,6 +77,9 @@ public class CmsImagePreview extends Composite {
     public CmsImagePreview() {
 
         initWidget(uiBinder.createAndBindUi(this));
+        m_image.addErrorHandler(event -> {
+            m_image.addStyleName("oc-broken-image");
+        });
         m_label.setText(Messages.get().key(Messages.GUI_DIALOG_PREVIEW_LABEL_0));
     }
 
