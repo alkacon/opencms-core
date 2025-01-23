@@ -4662,6 +4662,25 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
+     * Creates a property object.
+     *
+     * @param propertyName name of the property
+     * @param value value to set for the property
+     * @param mapToShared flag, indicating if the value should be set as shared property (in contrast to an individual property)
+     *
+     * @return the created property object.
+     */
+    private CmsProperty createProperty(String propertyName, String value, boolean mapToShared) {
+
+        if (mapToShared) {
+            // map to shared value
+            return new CmsProperty(propertyName, null, value);
+        }
+        // map to individual value
+        return new CmsProperty(propertyName, value, null);
+    }
+
+    /**
      * Creates a search field mapping for the given mapping element and the locale.<p>
      *
      * @param contentDefinition the content definition
@@ -4740,6 +4759,36 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         for (Map.Entry<String, List<String>> entry : m_elementMappings.entrySet()) {
             if (entry.getValue().contains(target)) {
                 return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the name of the property to map to in case of a property or property list mapping.
+     * Otherwise null is returned.
+     *
+     * @param mapping the mapping to get the property for.
+     *
+     * @return the property to map to, or null if the provided mapping was not for properties.
+     */
+    private String getMapToProperty(String mapping) {
+
+        if (mapping.startsWith(MAPTO_PROPERTY)) {
+            if (mapping.startsWith(MAPTO_PROPERTY_INDIVIDUAL)) {
+                return mapping.substring(MAPTO_PROPERTY_INDIVIDUAL.length());
+            } else if (mapping.startsWith(MAPTO_PROPERTY_SHARED)) {
+                return mapping.substring(MAPTO_PROPERTY_SHARED.length());
+            } else {
+                return mapping.substring(MAPTO_PROPERTY.length());
+            }
+        } else if (mapping.startsWith(MAPTO_PROPERTY_LIST)) {
+            if (mapping.startsWith(MAPTO_PROPERTY_LIST_INDIVIDUAL)) {
+                return mapping.substring(MAPTO_PROPERTY_LIST_INDIVIDUAL.length());
+            } else if (mapping.startsWith(MAPTO_PROPERTY_LIST_SHARED)) {
+                return mapping.substring(MAPTO_PROPERTY_LIST_SHARED.length());
+            } else {
+                return mapping.substring(MAPTO_PROPERTY_LIST.length());
             }
         }
         return null;
@@ -4961,6 +5010,25 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     continue; // skip to next mapping
                 }
 
+                // Get the property to map to in case we have a property (list) mapping
+                String mapToProperty = getMapToProperty(mapping);
+                // We need to determine if locale specific property mappings are necessary
+                // If not, we can skip much code
+                boolean needsLocaleSpecificMapping = false;
+                if ((null != mapToProperty) && !mapToProperty.isBlank()) {
+                    // We check if the locale specific property is defined.
+                    // Only for defined properties we do mappings.
+                    String localeSpecificProperty = CmsProperty.getLocaleSpecificPropertyName(
+                        mapToProperty,
+                        valueLocale);
+                    try {
+                        needsLocaleSpecificMapping = null != rootCms.readPropertyDefinition(localeSpecificProperty);
+                    } catch (CmsException e) {
+                        // Do nothing, this is thrown if the property definition does not exist and in this case we
+                        // do not want to perform the mapping.
+                    }
+                }
+
                 // for multiple language mappings, we need to ensure
                 // a) all siblings are handled
                 // b) only the "right" locale is mapped to a sibling
@@ -4973,8 +5041,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                     }
 
                     Locale locale = OpenCms.getLocaleManager().getDefaultLocale(rootCms, filename);
-                    if (!locale.equals(valueLocale)) {
-                        // only map property if the locale fits
+                    boolean localeIsValueLocale = locale.equals(valueLocale);
+
+                    if (!(localeIsValueLocale || needsLocaleSpecificMapping)) {
+                        // only map if the locale fits, but for properties map to locale-specific properties, even if it does not fit.
                         continue;
                     }
 
@@ -4986,7 +5056,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                         rootCms.changeLock(filename);
                     }
 
-                    if (mapping.startsWith(MAPTO_PERMISSION) && (valueIndex == 0)) {
+                    if (localeIsValueLocale && mapping.startsWith(MAPTO_PERMISSION) && (valueIndex == 0)) {
 
                         // map value to a permission
                         // example of a mapping: mapto="permission:GROUP:+r+v|GROUP.ALL_OTHERS:|GROUP.Projectmanagers:+r+v+w+c"
@@ -5089,22 +5159,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                         i = 0;
                     } else if (mapping.startsWith(MAPTO_PROPERTY_LIST) && (valueIndex == 0)) {
 
-                        boolean mapToShared;
-                        int prefixLength;
                         // check which mapping is used (shared or individual)
-                        if (mapping.startsWith(MAPTO_PROPERTY_LIST_SHARED)) {
-                            mapToShared = true;
-                            prefixLength = MAPTO_PROPERTY_LIST_SHARED.length();
-                        } else if (mapping.startsWith(MAPTO_PROPERTY_LIST_INDIVIDUAL)) {
-                            mapToShared = false;
-                            prefixLength = MAPTO_PROPERTY_LIST_INDIVIDUAL.length();
-                        } else {
-                            mapToShared = false;
-                            prefixLength = MAPTO_PROPERTY_LIST.length();
-                        }
-
-                        // this is a property list mapping
-                        String property = mapping.substring(prefixLength);
+                        boolean mapToShared = mapping.startsWith(MAPTO_PROPERTY_LIST_SHARED);
 
                         String path = CmsXmlUtils.removeXpathIndex(valuePath);
                         List<I_CmsXmlContentValue> values = content.getValues(path, valueLocale);
@@ -5118,16 +5174,19 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                             }
                         }
 
-                        CmsProperty p;
-                        if (mapToShared) {
-                            // map to shared value
-                            p = new CmsProperty(property, null, result.toString());
-                        } else {
-                            // map to individual value
-                            p = new CmsProperty(property, result.toString(), null);
+                        if (localeIsValueLocale) {
+                            rootCms.writePropertyObject(
+                                filename,
+                                createProperty(mapToProperty, result.toString(), mapToShared));
                         }
-                        // write the created list string value in the selected property
-                        rootCms.writePropertyObject(filename, p);
+                        if (needsLocaleSpecificMapping) {
+                            rootCms.writePropertyObject(
+                                filename,
+                                createProperty(
+                                    CmsProperty.getLocaleSpecificPropertyName(mapToProperty, valueLocale),
+                                    result.toString(),
+                                    mapToShared));
+                        }
                         if (mapToShared) {
                             // special case: shared mappings must be written only to one sibling, end loop
                             i = 0;
@@ -5135,38 +5194,27 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
                     } else if (mapping.startsWith(MAPTO_PROPERTY)) {
 
-                        boolean mapToShared;
-                        int prefixLength;
                         // check which mapping is used (shared or individual)
-                        if (mapping.startsWith(MAPTO_PROPERTY_SHARED)) {
-                            mapToShared = true;
-                            prefixLength = MAPTO_PROPERTY_SHARED.length();
-                        } else if (mapping.startsWith(MAPTO_PROPERTY_INDIVIDUAL)) {
-                            mapToShared = false;
-                            prefixLength = MAPTO_PROPERTY_INDIVIDUAL.length();
-                        } else {
-                            mapToShared = false;
-                            prefixLength = MAPTO_PROPERTY.length();
-                        }
+                        boolean mapToShared = mapping.startsWith(MAPTO_PROPERTY_SHARED);
 
-                        // this is a property mapping
-                        String property = mapping.substring(prefixLength);
-
-                        CmsProperty p;
-                        if (mapToShared) {
-                            // map to shared value
-                            p = new CmsProperty(property, null, stringValue);
-                        } else {
-                            // map to individual value
-                            p = new CmsProperty(property, stringValue, null);
+                        if (localeIsValueLocale) {
+                            rootCms.writePropertyObject(
+                                filename,
+                                createProperty(mapToProperty, stringValue, mapToShared));
                         }
-                        // just store the string value in the selected property
-                        rootCms.writePropertyObject(filename, p);
+                        if (needsLocaleSpecificMapping) {
+                            rootCms.writePropertyObject(
+                                filename,
+                                createProperty(
+                                    CmsProperty.getLocaleSpecificPropertyName(mapToProperty, valueLocale),
+                                    stringValue,
+                                    mapToShared));
+                        }
                         if (mapToShared) {
                             // special case: shared mappings must be written only to one sibling, end loop
                             i = 0;
                         }
-                    } else if (mapping.startsWith(MAPTO_URLNAME)) {
+                    } else if (localeIsValueLocale && mapping.startsWith(MAPTO_URLNAME)) {
                         // we write the actual mappings later
                         urlNameMappingResources.add(siblings.get(i));
                     }

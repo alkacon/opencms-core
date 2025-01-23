@@ -318,6 +318,22 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     }
 
     /**
+     * Returns the locale specific property name for the provided property base name.
+     * The locale specific extension is added without any check.
+     * E.g., for provided property name "Title" and locale "de_DE", the result will be "Title_de_DE".
+     * If the locale is null, the base name will be returned as is.
+     * If the base name is null, null will be returned.
+     *
+     * @param baseName the base property name.
+     * @param locale the locale to extend the property name for.
+     * @return the locale specific property name.
+     */
+    public static String getLocaleSpecificPropertyName(String baseName, Locale locale) {
+
+        return baseName == null ? null : (locale == null ? baseName : (baseName + "_" + locale.toString()));
+    }
+
+    /**
      * Returns the value for the best matching local-specific property version.
      *
      * @param propertiesMap the "raw" property map

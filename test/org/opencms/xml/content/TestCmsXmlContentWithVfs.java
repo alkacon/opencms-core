@@ -163,6 +163,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentWithVfs("testMappingsWithManyLocales"));
         suite.addTest(new TestCmsXmlContentWithVfs("testMappingsOfNestedContent"));
         suite.addTest(new TestCmsXmlContentWithVfs("testMappingsAsList"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testMappingWithLocaleSpecificProperties"));
         suite.addTest(new TestCmsXmlContentWithVfs("testResourceBundle"));
         suite.addTest(new TestCmsXmlContentWithVfs("testResourceBundleFromXml"));
         suite.addTest(new TestCmsXmlContentWithVfs("testResourceBundleFromXmlWithDefault"));
@@ -1580,6 +1581,165 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             false);
         assertEquals(titleStrDe, titlePropertyDe.getValue());
         assertDateReleased(cms, resourcenameDe, timeDE);
+    }
+
+    /**
+     * Tests the element mappings from the appinfo node if there is more then one locale.<p>
+     *
+     * @throws Exception in case something goes wrong
+     */
+    public void testMappingWithLocaleSpecificProperties() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing mapping of values in the XML content with locale specific properties.");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String content;
+        CmsXmlContent xmlcontent;
+
+        // unmarshal content definition
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-8.xsd",
+            CmsEncoder.ENCODING_UTF_8);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_8, content.getBytes(CmsEncoder.ENCODING_ISO_8859_1));
+
+        // now read the XML content
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-8.xml", CmsEncoder.ENCODING_ISO_8859_1);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_ISO_8859_1, resolver);
+        // validate the XML structure
+        xmlcontent.validateXmlStructure(resolver);
+
+        // create "en" property
+        List<CmsProperty> properties = new ArrayList<>();
+        properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, Locale.ENGLISH.toString(), null));
+
+        String resourcename = "/mappingtext_multiple.html";
+        // create a file in the VFS with this content (required for mappings to work)
+        cms.createResource(
+            resourcename,
+            OpenCms.getResourceManager().getResourceType("xmlcontent"),
+            content.getBytes(CmsEncoder.ENCODING_ISO_8859_1),
+            properties);
+
+        cms.changeLock(resourcename);
+        CmsFile file = cms.readFile(resourcename);
+        xmlcontent = CmsXmlContentFactory.unmarshal(cms, file);
+
+        xmlcontent.addLocale(cms, Locale.GERMAN);
+        if (!xmlcontent.hasLocale(Locale.ENGLISH)) {
+            xmlcontent.addLocale(cms, Locale.ENGLISH);
+        }
+
+        // add EN property
+        String titleStrEn = "This must be the Title in EN";
+        I_CmsXmlContentValue value;
+        value = xmlcontent.addValue(cms, "String", Locale.ENGLISH, 0);
+        value.setStringValue(cms, titleStrEn);
+        // add DE property
+        String titleStrDe = "Das ist der Title in DE";
+        value = xmlcontent.addValue(cms, "String", Locale.GERMAN, 0);
+        value.setStringValue(cms, titleStrDe);
+
+        // add items for property list mapping test
+
+        CmsXmlContentValueSequence seq = xmlcontent.getValueSequence("VfsFile", Locale.ENGLISH);
+        assertEquals(0, seq.getElementCount());
+
+        String res1 = "/index.html";
+        String res2 = "/xmlcontent/";
+
+        value = seq.addValue(cms, 0);
+        value.setStringValue(cms, res1);
+        value = seq.addValue(cms, 1);
+        value.setStringValue(cms, res2);
+
+        seq = xmlcontent.getValueSequence("VfsFile", Locale.GERMAN);
+        assertEquals(0, seq.getElementCount());
+
+        value = seq.addValue(cms, 0);
+        value.setStringValue(cms, res2);
+        value = seq.addValue(cms, 1);
+        value.setStringValue(cms, res1);
+
+        assertEquals(2, seq.getElementCount());
+
+        // validate the XML structure
+        xmlcontent.validateXmlStructure(resolver);
+
+        String sr = cms.getRequestContext().getSiteRoot();
+        String descStrEn = sr + res1 + "|" + sr + res2;
+        String descStrDe = sr + res2 + "|" + sr + res1;
+
+        file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
+        cms.writeFile(file);
+        // finally unlock the resource
+        cms.unlockResource(resourcename);
+
+        String titlePropDe = CmsProperty.getLocaleSpecificPropertyName(
+            CmsPropertyDefinition.PROPERTY_TITLE,
+            Locale.GERMAN);
+        String titlePropEn = CmsProperty.getLocaleSpecificPropertyName(
+            CmsPropertyDefinition.PROPERTY_TITLE,
+            Locale.ENGLISH);
+        String descPropDe = CmsProperty.getLocaleSpecificPropertyName(
+            CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+            Locale.GERMAN);
+        String descPropEn = CmsProperty.getLocaleSpecificPropertyName(
+            CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+            Locale.ENGLISH);
+
+        // we do not have locale specific properties defined yet, so they should not be present.
+        // now check if the properties have been assigned as required to the locales
+        CmsProperty titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        assertEquals(titleStrEn, titleProperty.getValue());
+        CmsProperty titlePropertyEn = cms.readPropertyObject(resourcename, titlePropEn, false);
+        assertTrue(titlePropertyEn.isNullProperty());
+        CmsProperty titlePropertyDe = cms.readPropertyObject(resourcename, titlePropDe, false);
+        assertTrue(titlePropertyDe.isNullProperty());
+
+        CmsProperty descProperty = cms.readPropertyObject(
+            resourcename,
+            CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+            false);
+        assertEquals(descStrEn, descProperty.getValue());
+        CmsProperty descPropertyEn = cms.readPropertyObject(resourcename, descPropEn, false);
+        assertTrue(descPropertyEn.isNullProperty());
+        CmsProperty descPropertyDe = cms.readPropertyObject(resourcename, descPropDe, false);
+        assertTrue(descPropertyDe.isNullProperty());
+
+        cms.createPropertyDefinition(titlePropDe);
+        cms.createPropertyDefinition(descPropDe);
+
+        // We re-write the file. Now the Title_de property should be filled.
+
+        cms.lockResource(resourcename);
+        file = cms.readFile(resourcename);
+        xmlcontent = CmsXmlContentFactory.unmarshal(cms, file);
+        file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
+        cms.writeFile(file);
+        // finally unlock the resource
+        cms.unlockResource(resourcename);
+
+        titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        assertEquals(titleStrEn, titleProperty.getValue());
+        titlePropertyEn = cms.readPropertyObject(resourcename, titlePropEn, false);
+        assertTrue(titlePropertyEn.isNullProperty());
+        titlePropertyDe = cms.readPropertyObject(resourcename, titlePropDe, false);
+        assertEquals(titleStrDe, titlePropertyDe.getValue());
+
+        descProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
+        assertEquals(descStrEn, descProperty.getValue());
+        descPropertyEn = cms.readPropertyObject(resourcename, descPropEn, false);
+        assertTrue(descPropertyEn.isNullProperty());
+        descPropertyDe = cms.readPropertyObject(resourcename, descPropDe, false);
+        assertEquals(descStrDe, descPropertyDe.getValue());
+        // clean up
+        cms.lockResource(resourcename);
+        cms.deleteResource(resourcename, CmsResource.DELETE_REMOVE_SIBLINGS);
+        cms.deletePropertyDefinition(titlePropDe);
+        cms.deletePropertyDefinition(descPropDe);
     }
 
     /**
