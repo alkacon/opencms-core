@@ -3,7 +3,6 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
 	xmlns:input="urn:import:org.opencms.gwt.client.ui.input">
-	<ui:with field="images" type="org.opencms.gwt.client.ui.css.I_CmsImageBundle" />
 	<ui:with field="style" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:FlowPanel ui:field="m_wrapper">
 		<g:FlowPanel ui:field="m_fieldset">

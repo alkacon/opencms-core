@@ -25,23 +25,20 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.gwt.client.ui.css;
+package org.opencms.gwt.client;
 
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
+import elemental2.dom.HTMLImageElement;
+import jsinterop.annotations.JsType;
 
 /**
- * Resource bundle to access CSS and image resources.
- *
- * @since 8.0.0
+ * Native JS interface for some simple functions needed on the client.
  */
-public interface I_CmsImageBundle extends ClientBundle {
-
+@JsType(isNative = true)
+public interface I_CmsJsFunctions {
     /**
-     * Image resource accessor.<p>
+     * Error handle for preview images in dialogs.
      *
-     * @return an image resource
+     * @param elem the image element
      */
-    @Source("images/broken_image.png")
-    ImageResource brokenImage();
+    void handleBrokenImage(HTMLImageElement elem);
 }

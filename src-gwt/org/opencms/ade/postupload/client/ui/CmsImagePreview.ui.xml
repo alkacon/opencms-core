@@ -3,11 +3,9 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:postupload="urn:import:org.opencms.ade.postupload.client.ui"
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
-	
 	<ui:with field="resources"
 		type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<ui:style>
-		@external oc-broken-image;
 	
 		.root {
 			display: flex;
@@ -32,12 +30,14 @@
 			display: block;
 			object-fit: scale-down;
 			background-color: white;
+			position: relative;
 		}
 		
-		.imageContainer img:not(.oc-broken-image) {
+		.imageContainer img {
 			background-image: linear-gradient(45deg,#e0e0e2 25%,transparent 25%,transparent 75%,#e0e0e2 75%,#e0e0e2),linear-gradient(45deg,#e0e0e2 25%,transparent 25%,transparent 75%,#e0e0e2 75%,#e0e0e2);
 			background-size: 20px 20px;
 			background-position: 0 0,10px 10px;
+			background-color: white;
 		}
 
 		.labelContainer {
@@ -68,7 +68,7 @@
 
 		<g:FlowPanel addStyleNames="{style.imageContainer}">
 			<postupload:CmsPreviewLink ui:field="m_link" target="_blank">
-				<g:Image ui:field="m_image" width="200px" height="170px" />
+				<g:Image ui:field="m_image" width="200px" height="170px"/>
 			</postupload:CmsPreviewLink>
 		</g:FlowPanel>
 	</g:FlowPanel>

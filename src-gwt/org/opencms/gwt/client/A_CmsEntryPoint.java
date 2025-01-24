@@ -41,6 +41,9 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.UmbrellaException;
 
+import elemental2.dom.DomGlobal;
+import jsinterop.base.JsPropertyMap;
+
 /**
  * Handles exception handling and more for entry points.<p>
  *
@@ -106,6 +109,7 @@ public abstract class A_CmsEntryPoint implements EntryPoint {
 
         I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().ensureInjected();
         I_CmsCellTableResources.INSTANCE.cellTableStyle().ensureInjected();
+        ((JsPropertyMap<Object>)DomGlobal.window).set("cmsJsFunctions", CmsJsFunctions.INSTANCE);
         initClasses();
     }
 

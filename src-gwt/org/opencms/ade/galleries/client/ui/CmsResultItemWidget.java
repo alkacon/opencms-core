@@ -91,7 +91,7 @@ public class CmsResultItemWidget extends CmsListItemWidget {
     }
 
     /** Standard image tile scale parameter. */
-    private static final String IMAGE_SCALE_PARAM = "?__scale=t:1,c:ffffff";
+    private static final String IMAGE_SCALE_PARAM = "?__scale=t:1";
 
     /** Tile view flag. */
     private boolean m_hasTileView;
@@ -132,6 +132,7 @@ public class CmsResultItemWidget extends CmsListItemWidget {
             // add time stamp to override browser image caching
                 + timeParam
                 + "\" "
+                + " onerror='cmsJsFunctions.handleBrokenImage(this)' "
                 + (" srcset=\"" + src + getBigImageScaleParam(true) + timeParam + " 2x" + "\" ")
                 + "class=\""
                 + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().bigImage()
@@ -143,6 +144,7 @@ public class CmsResultItemWidget extends CmsListItemWidget {
                 // add time stamp to override browser image caching
                 + timeParam
                 + "\" "
+                + " onerror='cmsJsFunctions.handleBrokenImage(this)' "
                 + (" srcset=\"" + src + getSmallImageScaleParam(infoBean, true) + timeParam + " 2x" + "\" ")
                 + " class=\""
                 + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().smallImage()

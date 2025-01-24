@@ -28,6 +28,7 @@
 package org.opencms.ade.postupload.client.ui;
 
 import org.opencms.ade.postupload.client.Messages;
+import org.opencms.gwt.client.CmsJsFunctions;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Visibility;
@@ -37,6 +38,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+
+import jsinterop.base.Js;
 
 /**
  * Widget to display an image preview in the upload property dialog.
@@ -77,10 +80,8 @@ public class CmsImagePreview extends Composite {
     public CmsImagePreview() {
 
         initWidget(uiBinder.createAndBindUi(this));
-        m_image.addErrorHandler(event -> {
-            m_image.addStyleName("oc-broken-image");
-        });
         m_label.setText(Messages.get().key(Messages.GUI_DIALOG_PREVIEW_LABEL_0));
+        m_image.addErrorHandler(event -> CmsJsFunctions.INSTANCE.handleBrokenImage(Js.cast(m_image.getElement())));
     }
 
     /**
@@ -97,6 +98,7 @@ public class CmsImagePreview extends Composite {
      * @param fullPreviewUrl the full preview URL
      */
     public void setFullPreview(String fullPreviewUrl) {
+
         m_link.setHref(fullPreviewUrl);
     }
 
@@ -106,12 +108,12 @@ public class CmsImagePreview extends Composite {
      * @param highResPreviewLink the high resolution preview URL
      */
     public void setHighResImageUrl(String highResPreviewLink) {
+
         if (highResPreviewLink != null) {
             m_image.getElement().setAttribute("srcset", highResPreviewLink + " 2x");
         } else {
             m_image.getElement().removeAttribute("srcset");
         }
-
 
     }
 

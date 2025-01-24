@@ -904,7 +904,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                 + getScaleUri(resource, true)
                 + " 2x"
                 + "\" "
-                + " onerror=\"this.classList.add('oc-broken-image');\" "
+                + " onerror='cmsJsFunctions.handleBrokenImage(this)' "
                 + " >";
             String a = "<a target=\"_blank\" href=\"" + getPermanentUri(resource) + "\">" + image + "</a>";
             String div = "<div class=\""
@@ -1751,7 +1751,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
         int m = highres ? 2 : 1;
         String suffix = highres ? ",q:85" : "";
-        return "t:1,c:ffffff,w:" + (m * IMAGE_WIDTH) + ",h:" + (m * IMAGE_HEIGHT) + suffix;
+        return "t:1,w:" + (m * IMAGE_WIDTH) + ",h:" + (m * IMAGE_HEIGHT) + suffix;
 
     }
 

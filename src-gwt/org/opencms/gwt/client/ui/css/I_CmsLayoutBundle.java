@@ -2445,12 +2445,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     @Source("contextmenu.gss")
     I_CmsContextmenuCss contextmenuCss();
 
-    /**
-     * Access method.<p>
-     *
-     * @return the CSS class name
-     */
-    I_CmsImageBundle coreImages();
+  
 
     /**
      * Access method.<p>
