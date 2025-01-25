@@ -824,8 +824,14 @@ public class CmsImageScaler {
             }
         }
 
+        if ((type == 9) && ((width > getWidth()) || (height > getHeight()))) {
+            // type 9 with "no upscale" has been requested but target size is larger than original size
+            width = getWidth();
+            height = getHeight();
+        }
+
         if ((type == 1) && (!target.isValid())) {
-            // "no upscale" has been requested, only one target dimension was given
+            // type 1 with "no upscale" has been requested, only one target dimension was given
             if ((target.getWidth() > 0) && (getWidth() < width)) {
                 // target width was given, target image should have this width
                 height = getHeight();
@@ -901,6 +907,12 @@ public class CmsImageScaler {
      * <p>If a focal point is set on this scaler, this mode will first crop a region defined by cx,cy,cw,ch from the original
      * image, then select the largest region of the aspect ratio defined by w/h in the cropped image containing the focal point, and finally
      * scale that region to size w x h.</p>
+     *
+     * <dt>9: Scale and keep image proportions, target size variable, no image enlargement</dt><dd><ul>
+     * <li>dont't enlarge image
+     * <li>reduce image to fit in target size (if required)
+     * <li>keep image aspect ratio / proportions intact
+     * <li>scaled image will not be padded or cropped, so target size is likely not the exact requested size</ul></dd>
      *
      * @return the type
      */
@@ -1308,6 +1320,13 @@ public class CmsImageScaler {
                             imageProcessed = true;
                         }
                         break;
+                    case 9:
+                        // scale and keep image proportions, target size variable, no image enlargement
+                        if ((imageWidth > getWidth()) && (imageHeight > getHeight())) {
+                            image = scaler.resize(image, getWidth(), getHeight(), true);
+                            imageProcessed = true;
+                        }
+                        break;
                     default:
                         // scale to exact target size with background padding
                         image = scaler.resize(image, getWidth(), getHeight(), color, getPosition(), true);
@@ -1549,7 +1568,7 @@ public class CmsImageScaler {
      */
     public void setType(int type) {
 
-        if ((type < 0) || (type > 8)) {
+        if ((type < 0) || (type > 9)) {
             // invalid type, use 0
             m_type = 0;
         } else {

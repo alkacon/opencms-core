@@ -235,4 +235,49 @@ public class TestCmsImageScaler extends OpenCmsTestCase {
         assertTrue(resultScaler.isCropping());
         assertEquals(5, resultScaler.getType());
     }
+
+    /**
+     * Tests the image scaling type 9.<p>
+     *
+     * @throws Exception in case the test fails
+     */
+    public void testScaleType9() throws Exception {
+
+        CmsImageScaler baseImage;
+        CmsImageScaler rescaler;
+        CmsImageScaler resultScaler;
+
+        // Test with a larger square image
+        baseImage = new CmsImageScaler("w:250,h:250");
+        rescaler = new CmsImageScaler();
+        rescaler.setWidth(100);
+        rescaler.setHeight(100);
+        rescaler.setType(9);
+        resultScaler = baseImage.getReScaler(rescaler);
+        assertEquals(100, resultScaler.getWidth());
+        assertEquals(100, resultScaler.getHeight());
+        assertEquals(9, resultScaler.getType());
+
+        // Test with a larger rectangular image
+        baseImage = new CmsImageScaler("w:400,h:300");
+        rescaler = new CmsImageScaler();
+        rescaler.setWidth(100);
+        rescaler.setHeight(100);
+        rescaler.setType(9);
+        resultScaler = baseImage.getReScaler(rescaler);
+        assertEquals(100, resultScaler.getWidth());
+        assertEquals(75, resultScaler.getHeight());
+        assertEquals(9, resultScaler.getType());
+
+        // Test with a smaller image
+        baseImage = new CmsImageScaler("w:50,h:25");
+        rescaler = new CmsImageScaler();
+        rescaler.setWidth(100);
+        rescaler.setHeight(100);
+        rescaler.setType(9);
+        resultScaler = baseImage.getReScaler(rescaler);
+        assertEquals(50, resultScaler.getWidth());
+        assertEquals(25, resultScaler.getHeight());
+        assertEquals(9, resultScaler.getType());
+    }
 }
