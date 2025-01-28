@@ -37,8 +37,8 @@
 }
 
 .tilingList div.imageTile img {
-	background-image: linear-gradient(45deg,#e0e0e2 25%,transparent 25%,transparent 75%,#e0e0e2 75%,#e0e0e2),linear-gradient(45deg,#e0e0e2 25%,transparent 25%,transparent 75%,#e0e0e2 75%,#e0e0e2);
-	background-color: white;
+	object-fit: scale-down;
+	background-color: #eeeeee;
 	background-size: 20px 20px;
 	background-position: 0 0,10px 10px;
 }
@@ -50,7 +50,7 @@
 }
 
 .tilingList div.imageTile.svg img {
-	background-color: white;
+	background-color: #eeeeee;
 	object-fit: contain;
 }
 

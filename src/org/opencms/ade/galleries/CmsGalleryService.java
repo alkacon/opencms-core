@@ -1897,12 +1897,15 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         bean.setClientId(sResult.getStructureId());
 
         CmsVfsService.addLockInfo(cms, resultResource, bean);
+        String extension = CmsResource.getExtension(resultResource.getRootPath());
+        String suffix = extension != null ? "." + extension : "";
+
 
         String permalinkId = sResult.getStructureId().toString();
         String permalink = CmsStringUtil.joinPaths(
             OpenCms.getSystemInfo().getOpenCmsContext(),
             CmsPermalinkResourceHandler.PERMALINK_HANDLER,
-            permalinkId);
+            permalinkId) + suffix;
 
         bean.setViewLink(permalink);
         // set nice resource type name as subtitle

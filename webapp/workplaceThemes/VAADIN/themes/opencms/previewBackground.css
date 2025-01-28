@@ -1,9 +1,15 @@
 
 .opencms .o-gallery-preview-image img {
-	background-image: linear-gradient(45deg,#e0e0e2 25%,transparent 25%,transparent 75%,#e0e0e2 75%,#e0e0e2),linear-gradient(45deg,#e0e0e2 25%,transparent 25%,transparent 75%,#e0e0e2 75%,#e0e0e2);
-	background-size: 20px 20px;
-	background-position: 0 0,10px 10px;
 	object-fit: scale-down;
 	display: block;
+	background-image: repeating-conic-gradient(#ddd 0% 25%, #fff 0% 50%);
+	background-size: 10px 10px;
+	background-position: 0 0, 5px 5px;
+
 }
+
+.opencms .o-gallery-preview-image img[src*=".svg"] {
+	object-fit: contain;
+}
+
 

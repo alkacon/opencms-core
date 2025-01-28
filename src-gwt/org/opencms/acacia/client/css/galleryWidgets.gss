@@ -16,6 +16,8 @@ div.locationFields div.locationField > div:first-child{
 	background: value("constants.css.backgroundColorDialog");
 }
 
+.rightBlock {}
+
 .hasError .widget.galleryField .fieldBox, .hasError .widget.locationField .displayBox{
 	border-color: value("constants.css.borderColorHighlight");
 }

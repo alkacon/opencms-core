@@ -91,7 +91,7 @@ public class CmsResultItemWidget extends CmsListItemWidget {
     }
 
     /** Standard image tile scale parameter. */
-    private static final String IMAGE_SCALE_PARAM = "?__scale=t:1";
+    private static final String IMAGE_SCALE_PARAM = "?__scale=t:9";
 
     /** Tile view flag. */
     private boolean m_hasTileView;

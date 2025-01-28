@@ -952,10 +952,12 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         private String getPermanentUri(CmsResource resource) {
 
             String structureId = resource.getStructureId().toString();
+            String extension = CmsResource.getExtension(resource.getRootPath());
+            String suffix = (extension != null) ? "." + extension : "";
             String permalink = CmsStringUtil.joinPaths(
                 OpenCms.getSystemInfo().getOpenCmsContext(),
                 CmsPermalinkResourceHandler.PERMALINK_HANDLER,
-                structureId);
+                structureId) + suffix;
             return permalink;
         }
 
@@ -1751,7 +1753,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
         int m = highres ? 2 : 1;
         String suffix = highres ? ",q:85" : "";
-        return "t:1,w:" + (m * IMAGE_WIDTH) + ",h:" + (m * IMAGE_HEIGHT) + suffix;
+        return "t:9,w:" + (m * IMAGE_WIDTH) + ",h:" + (m * IMAGE_HEIGHT) + suffix;
 
     }
 

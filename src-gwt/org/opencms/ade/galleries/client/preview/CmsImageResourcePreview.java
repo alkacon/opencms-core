@@ -217,7 +217,7 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
                             if (CmsPreviewUtil.isAdvancedWidget()) {
                                 CmsPreviewUtil.setVfsImage(
                                     resourcePath,
-                                    param.getScaleParam(),
+                                    param.getScaleParam(false),
                                     param.getFormatName(),
                                     param.getRatio() + "");
                             } else {
@@ -278,7 +278,7 @@ public final class CmsImageResourcePreview extends A_CmsResourcePreview<CmsImage
                     if (CmsPreviewUtil.isAdvancedWidget()) {
                         CmsPreviewUtil.setVfsImage(
                             m_infoBean.getResourcePath(),
-                            croppingParam.getScaleParam(),
+                            croppingParam.getScaleParam(false),
                             croppingParam.getFormatName(),
                             croppingParam.getRatio() + "");
                     } else {

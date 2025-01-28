@@ -42,6 +42,7 @@ import org.opencms.ade.upload.client.I_CmsUploadContext;
 import org.opencms.ade.upload.client.ui.CmsDialogUploadButtonHandler;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.CmsJsFunctions;
 import org.opencms.gwt.client.I_CmsHasInit;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
@@ -56,9 +57,9 @@ import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetFactory;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
-import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsEmbeddedDialogHandler;
+import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -74,7 +75,6 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -103,6 +103,9 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
+
+import elemental2.dom.HTMLImageElement;
+import jsinterop.base.Js;
 
 /**
  * A widget for selecting a resource from an ADE gallery dialog.<p>
@@ -180,6 +183,10 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     /** The resource info panel. */
     @UiField
     protected FlowPanel m_resourceInfoPanel;
+
+    /** Everything to the right of the preview image. */
+    @UiField
+    protected HTMLPanel m_rightBlock;
 
     /** The special upload button. */
     @UiField(provided = true)
@@ -489,7 +496,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      */
     protected void addToMain(IsWidget widget) {
 
-        m_main.add(widget);
+        m_rightBlock.add(widget);
     }
 
     /**
@@ -601,21 +608,25 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             m_croppingParam = CmsCroppingParamBean.parseImagePath(getFormValueAsString());
         }
         CmsCroppingParamBean restricted;
-        int marginTop = 0;
-        if (m_croppingParam.getScaleParam().isEmpty()) {
-            imagePath += "?__scale=w:165,h:114,t:1,c:white,r:0";
+
+        String highRes = null;
+        String normalRes = null;
+        if (m_croppingParam.getScaleParam(false).isEmpty()) {
+            highRes = imagePath + getScalingParams(true);
+            normalRes = imagePath + getScalingParams(false);
         } else {
-            restricted = m_croppingParam.getRestrictedSizeParam(114, 165);
-            imagePath += "?" + restricted.toString();
-            marginTop = (114 - restricted.getResultingHeight()) / 2;
+            restricted = m_croppingParam.getRestrictedSizeParam(140, 165);
+            normalRes = imagePath + "?" + restricted.convertToScalingParam(false);
+            highRes = imagePath + "?" + restricted.convertToScalingParam(true);
         }
         Element image = DOM.createImg();
-        image.setAttribute("src", imagePath);
-        image.getStyle().setMarginTop(marginTop, Unit.PX);
-        if (CmsClientStringUtil.checkIsPathOrLinkToSvg(realPath)) {
-            image.getStyle().setWidth(100, Unit.PCT);
-            image.getStyle().setHeight(100, Unit.PCT);
-            image.getStyle().setProperty("objectFit", "contain");
+        image.setAttribute("src", normalRes);
+        {
+            HTMLImageElement img = Js.cast(image);
+            img.addEventListener("error", event -> CmsJsFunctions.INSTANCE.handleBrokenImage(img));
+            if (highRes != null) {
+                img.srcset = highRes + " 2x";
+            }
         }
         m_imagePreview.setInnerHTML("");
         m_imagePreview.appendChild(image);
@@ -945,6 +956,22 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             }
         });
         return uploadButton;
+    }
+
+    /** 
+     * Gets the default scaling parameters for the preview.
+     * 
+     * @param highRes true if we want the high-res version
+     * @param the scaling parameters
+     */
+    private String getScalingParams(boolean highRes) {
+
+
+        if (highRes) {
+            return "?__scale=w:400,h:340,t:9,q:85";
+        } else {
+            return "?__scale=w:200,h:170,t:9";
+        }
     }
 
     /**

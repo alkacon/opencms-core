@@ -297,6 +297,13 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * @return the CSS class name
          */
         String resourceInfo();
+
+
+        /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String rightBlock();
     }
 
     /** The gallery field CSS. */

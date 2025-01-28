@@ -241,10 +241,12 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
 
             String previewLink = null;
             if (CmsResourceTypeImage.getStaticTypeName().equals(typeName)) {
+                String extension = CmsResource.getExtension(res.getRootPath());
+                String suffix = extension != null ? "." + extension : "";
                 String permalink = CmsStringUtil.joinPaths(
                     OpenCms.getSystemInfo().getOpenCmsContext(),
                     CmsPermalinkResourceHandler.PERMALINK_HANDLER,
-                    res.getStructureId().toString());
+                    res.getStructureId().toString()) + suffix;
                 previewLink = permalink + CmsGalleryOptimizeDialog.getScaleQueryString(false);
                 result.setPermalink(permalink);
                 result.setPreviewLink(previewLink);

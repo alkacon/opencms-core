@@ -33,10 +33,15 @@
 			position: relative;
 		}
 		
+		.imageContainer img[src*=".svg"] {
+			object-fit: contain;
+		}
+		
+		@def BG eval("\"repeating-conic-gradient(#ddd 0% 25%, #fff 0% 50%)\"");
 		.imageContainer img {
-			background-image: linear-gradient(45deg,#e0e0e2 25%,transparent 25%,transparent 75%,#e0e0e2 75%,#e0e0e2),linear-gradient(45deg,#e0e0e2 25%,transparent 25%,transparent 75%,#e0e0e2 75%,#e0e0e2);
-			background-size: 20px 20px;
-			background-position: 0 0,10px 10px;
+			background-image: BG;
+			background-size: 10px 10px;
+			background-position: 0 0,5px 5px;
 			background-color: white;
 		}
 

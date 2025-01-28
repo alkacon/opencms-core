@@ -59,13 +59,6 @@ public class CmsImagePreview extends Composite {
     @UiField
     protected Image m_image;
 
-    /** Link which opens the preview in a separate window. */
-    @UiField
-    protected CmsPreviewLink m_link;
-
-    @UiField
-    protected Label m_label;
-
     /** The first info label. */
     @UiField
     protected Label m_info1;
@@ -73,6 +66,13 @@ public class CmsImagePreview extends Composite {
     /** The second info label. */
     @UiField
     protected Label m_info2;
+
+    @UiField
+    protected Label m_label;
+
+    /** Link which opens the preview in a separate window. */
+    @UiField
+    protected CmsPreviewLink m_link;
 
     /**
      * Creates a new instance.

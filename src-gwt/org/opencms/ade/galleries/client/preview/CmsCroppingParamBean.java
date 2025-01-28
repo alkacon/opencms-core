@@ -234,6 +234,21 @@ public class CmsCroppingParamBean {
     }-*/;
 
     /**
+     * Converts this bean to a scaling parameter string.
+     *
+     * @param highRes true if we want the high-resolution version
+     * @return the scaling parameter string
+     */
+    public String convertToScalingParam(boolean highRes) {
+
+        String result = getScaleParam(highRes);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result)) {
+            result = SCALE_PARAM_NAME + SCALE_PARAM_EQ + result;
+        }
+        return result;
+    }
+
+    /**
      * Returns the cropping height parameter.<p>
      *
      * @return the cropping height parameter
@@ -417,9 +432,13 @@ public class CmsCroppingParamBean {
     /**
      * Returns the scale parameter.<p>
      *
+     * @param highres true if we want the high resolution version
+     *
      * @return the scale parameter
      */
-    public String getScaleParam() {
+    public String getScaleParam(boolean highres) {
+
+        int m = highres ? 2 : 1;
 
         if (!isScaled() && !isCropped()) {
             // the image is not cropped nor scaled, return an empty parameter
@@ -427,10 +446,10 @@ public class CmsCroppingParamBean {
         }
         StringBuffer result = new StringBuffer();
         if ((m_targetHeight > -1) || (m_targetWidth > -1)) {
-            result.append(SCALE_PARAM_TARGETHEIGHT).append(SCALE_PARAM_COLON).append(getResultingTargetHeight()).append(
-                SCALE_PARAM_DELIMITER);
-            result.append(SCALE_PARAM_TARGETWIDTH).append(SCALE_PARAM_COLON).append(getResultingTargetWidth()).append(
-                SCALE_PARAM_DELIMITER);
+            result.append(SCALE_PARAM_TARGETHEIGHT).append(SCALE_PARAM_COLON).append(
+                m * getResultingTargetHeight()).append(SCALE_PARAM_DELIMITER);
+            result.append(SCALE_PARAM_TARGETWIDTH).append(SCALE_PARAM_COLON).append(
+                m * getResultingTargetWidth()).append(SCALE_PARAM_DELIMITER);
         }
         if (m_cropX > -1) {
             result.append(SCALE_PARAM_CROP_X).append(SCALE_PARAM_COLON).append(m_cropX).append(SCALE_PARAM_DELIMITER);
@@ -602,11 +621,8 @@ public class CmsCroppingParamBean {
     @Override
     public String toString() {
 
-        String result = getScaleParam();
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(result)) {
-            result = SCALE_PARAM_NAME + SCALE_PARAM_EQ + result;
-        }
-        return result;
+        boolean highRes = false;
+        return convertToScalingParam(highRes);
     }
 
     /**
