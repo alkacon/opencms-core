@@ -101,6 +101,7 @@ import org.opencms.workplace.editors.CmsEditorCssHandlerDefault;
 import org.opencms.workplace.editors.CmsXmlContentEditor;
 import org.opencms.workplace.editors.directedit.I_CmsEditHandler;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.CmsXmlDisplayOrderPathComparator;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
@@ -788,7 +789,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
-     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#saveAndDeleteEntities(org.opencms.acacia.shared.CmsEntity, java.lang.String, java.util.List, java.util.Collection, java.lang.String, boolean)
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#saveAndDeleteEntities(org.opencms.acacia.shared.CmsEntity, java.lang.String, java.util.List, java.util.Collection, java.lang.String, boolean, boolean)
      */
     public CmsSaveResult saveAndDeleteEntities(
         CmsEntity lastEditedEntity,
@@ -796,7 +797,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         List<String> deletedEntities,
         Collection<String> skipPaths,
         String lastEditedLocale,
-        boolean clearOnSuccess)
+        boolean clearOnSuccess,
+        boolean failOnWarnings)
     throws CmsRpcException {
 
         CmsUUID structureId = null;
@@ -828,8 +830,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     }
                 }
                 CmsValidationResult validationResult = validateContent(cms, structureId, content);
-                if (validationResult.hasErrors()) {
-                    return new CmsSaveResult(false, validationResult);
+                if (validationResult.hasErrors() || (failOnWarnings && validationResult.hasWarnings())) {
+                    Map<String, List<List<CmsPair<String, Integer>>>> sortedIssues = getValidationIssues(
+                        cms,
+                        content,
+                        validationResult);
+                    return new CmsSaveResult(false, validationResult, failOnWarnings, sortedIssues);
                 }
                 boolean hasChangedSettings = false;
                 if ((clientId != null) && (lastEditedEntity != null)) {
@@ -847,8 +853,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                             locale,
                             getRequest());
                         validateSettings(lastEditedEntity, validationResult, settingsConfig);
-                        if (validationResult.hasErrors()) {
-                            return new CmsSaveResult(false, validationResult);
+                        if (validationResult.hasErrors() || (failOnWarnings && validationResult.hasWarnings())) {
+                            Map<String, List<List<CmsPair<String, Integer>>>> sortedIssues = getValidationIssues(
+                                cms,
+                                content,
+                                validationResult);
+                            return new CmsSaveResult(false, validationResult, failOnWarnings, sortedIssues);
                         }
 
                         List<I_CmsFormatterBean> nestedFormatters = OpenCms.getADEManager().getNestedFormatters(
@@ -891,7 +901,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     tryUnlock(resource);
                     getSessionCache().uncacheXmlContent(structureId);
                 }
-                return new CmsSaveResult(hasChangedSettings, null);
+                return new CmsSaveResult(hasChangedSettings, null, false, null);
             } catch (Exception e) {
                 if (resource != null) {
                     tryUnlock(resource);
@@ -1027,6 +1037,57 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 return new CmsEntityHtml(htmlContent, validationResult);
 
             } catch (Exception e) {
+                error(e);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#validateEntities(org.opencms.acacia.shared.CmsEntity, java.lang.String, java.util.List, java.util.Collection, java.lang.String)
+     */
+    public CmsValidationResult validateEntities(
+        CmsEntity lastEditedEntity,
+        String clientId,
+        List<String> deletedEntities,
+        Collection<String> skipPaths,
+        String lastEditedLocale)
+    throws CmsRpcException {
+
+        CmsUUID structureId = null;
+        if (lastEditedEntity != null) {
+            structureId = CmsContentDefinition.entityIdToUuid(lastEditedEntity.getId());
+        }
+        if ((structureId == null) && !deletedEntities.isEmpty()) {
+            structureId = CmsContentDefinition.entityIdToUuid(deletedEntities.get(0));
+        }
+        CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
+            getCmsObject(),
+            getCmsObject().getRequestContext().getRootUri());
+        if (structureId != null) {
+            CmsObject cms = getCmsObject();
+            CmsResource resource = null;
+            try {
+                resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+                CmsFile file = cms.readFile(resource);
+                CmsXmlContent content = getContentDocument(file, true);
+                checkAutoCorrection(cms, content);
+                if (lastEditedEntity != null) {
+                    synchronizeLocaleIndependentForEntity(file, content, skipPaths, lastEditedEntity);
+                }
+                for (String deleteId : deletedEntities) {
+                    Locale contentLocale = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(deleteId));
+                    if (content.hasLocale(contentLocale)) {
+                        content.removeLocale(contentLocale);
+                    }
+                }
+                return validateContent(cms, structureId, content);
+
+            } catch (Exception e) {
+                if (resource != null) {
+                    // TODO: What is this for?
+                    getSessionCache().uncacheXmlContent(structureId);
+                }
                 error(e);
             }
         }
@@ -2034,6 +2095,67 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
+     * Returns information on validation issues, sorted by locale and in the order the issues appear in the editor.
+     * @param cms the current context
+     * @param content the content with the issues
+     * @param validationResult the validation result
+     * @return information on validation issues, sorted by locale and in the order the issues appear in the editor.
+     */
+    private Map<String, List<List<CmsPair<String, Integer>>>> getValidationIssues(
+        CmsObject cms,
+        CmsXmlContent content,
+        CmsValidationResult validationResult) {
+
+        // only if we have warnings or errors, we can display them.
+        if (validationResult.hasErrors() || validationResult.hasWarnings()) {
+            // if we have errors, we display errors, only otherwise we display warnings.
+            Map<String, Map<String[], CmsPair<String, String>>> issues = validationResult.hasErrors()
+            ? validationResult.getErrors()
+            : validationResult.getWarnings();
+            // we use a tree map to sort the locales alphabetically
+            TreeMap<String, List<List<CmsPair<String, Integer>>>> sortedInfoPerLocale = new TreeMap<>();
+            CmsXmlContentDefinition definition = content.getContentDefinition();
+            for (Entry<String, Map<String[], CmsPair<String, String>>> e : issues.entrySet()) {
+                String lstr = CmsContentDefinition.getLocaleFromId(e.getKey());
+                Locale l = CmsLocaleManager.getLocale(lstr);
+                // map from XML path to attributes as provided by teh validation result
+                Map<String, String[]> errorsByPath = new HashMap<>(e.getValue().size());
+                // fill the map
+                e.getValue().entrySet().stream().forEach(v -> errorsByPath.put(v.getValue().getSecond(), v.getKey()));
+                // get the paths and sort them
+                List<String> sortedPaths = new ArrayList<>(errorsByPath.keySet());
+                sortedPaths.sort(new CmsXmlDisplayOrderPathComparator(definition));
+                // the infos for the locale, a list of issue information, where each issue information
+                // is a list of the path part attributes combined with the index of the path part.
+                List<List<CmsPair<String, Integer>>> sortedInfos = new ArrayList<>(errorsByPath.size());
+                // fill the info list in the correct sort order
+                for (String p : sortedPaths) {
+                    String[] entities = errorsByPath.get(p);
+                    List<CmsPair<String, Integer>> singleInfo = new ArrayList<>(entities.length);
+                    String attributePrefix = "";
+                    for (int i = 0; i < entities.length; i++) {
+                        String w = entities[i];
+                        if (!"ATTRIBUTE_CHOICE".equals(w)) {
+                            String attr = org.opencms.acacia.shared.CmsContentDefinition.removeIndex(w);
+                            int idx = org.opencms.acacia.shared.CmsContentDefinition.extractIndex(w);
+                            if (!attributePrefix.isEmpty()) {
+                                attr = attributePrefix + ":" + attr;
+                            }
+                            singleInfo.add(new CmsPair<>(attr, Integer.valueOf(idx + 1)));
+                            attributePrefix += attr.substring(attr.lastIndexOf('/'));
+                        }
+                    }
+                    sortedInfos.add(singleInfo);
+                }
+
+                sortedInfoPerLocale.put(l.getDisplayName(getWorkplaceLocale(cms)), sortedInfos);
+            }
+            return sortedInfoPerLocale;
+        }
+        return null;
+    }
+
+    /**
      * Transforms the widget configuration.<p>
      * @param settingsWidget the settings widget name
      * @param settingsConfig the setting widget configuration
@@ -2519,9 +2641,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)
                 && !CmsGwtConstants.HIDDEN_SETTINGS_WIDGET_NAME.equals(settingsEntry.getValue().getWidget())
                 && !value.equals(values.get(settingsEntry.getKey()))) {
-                values.put(settingsEntry.getKey(), value);
-                hasChangedSettings = true;
-            }
+                    values.put(settingsEntry.getKey(), value);
+                    hasChangedSettings = true;
+                }
         }
         if (hasChangedSettings) {
             containerElement.updateIndividualSettings(values);

@@ -28,6 +28,7 @@
 package org.opencms.ade.contenteditor.shared.rpc;
 
 import org.opencms.acacia.shared.CmsEntity;
+import org.opencms.acacia.shared.CmsValidationResult;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.CmsEditHandlerData;
 import org.opencms.ade.contenteditor.shared.CmsSaveResult;
@@ -172,6 +173,7 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
      * @param skipPaths the paths to skip during locale synchronization
      * @param lastEditedLocale the last edited locale
      * @param clearOnSuccess  <code>true</code> to unlock resource after saving
+     * @param failOnWarnings <code>true</code> to prevent saving when there are validation warnings
      *
      * @return the editor save result information
      *
@@ -183,7 +185,8 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
         List<String> deletedEntities,
         Collection<String> skipPaths,
         String lastEditedLocale,
-        boolean clearOnSuccess)
+        boolean clearOnSuccess,
+        boolean failOnWarnings)
     throws CmsRpcException;
 
     /**
@@ -198,4 +201,25 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
      * @throws CmsRpcException if something goes wrong
      */
     String saveValue(String contentId, String contentPath, String locale, String value) throws CmsRpcException;
+
+    /**
+     * Validates the edited XML content, taking all current changes into account. Returns the validation result.<p>
+     *
+     * @param lastEditedEntity the last edited entity
+     * @param clientId the container element client id if available
+     * @param deletedEntities the entity id's to delete
+     * @param skipPaths the paths to skip during locale synchronization
+     * @param lastEditedLocale the last edited locale
+     *
+     * @return the validatoin result
+     *
+     * @throws CmsRpcException if something goes wrong processing the request
+     */
+    CmsValidationResult validateEntities(
+        CmsEntity lastEditedEntity,
+        String clientId,
+        List<String> deletedEntities,
+        Collection<String> skipPaths,
+        String lastEditedLocale)
+    throws CmsRpcException;
 }

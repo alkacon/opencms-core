@@ -139,6 +139,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
+        String cmsError();
+
+        /**
+         *  Access method.<p>
+         *
+         * @return the CSS class name
+         */
         String cmsFontIconButton();
 
         /**
@@ -175,6 +182,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String cmsTransparentButton();
+
+        /**
+         *  Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String cmsWarning();
 
         /**
          *  Access method.<p>

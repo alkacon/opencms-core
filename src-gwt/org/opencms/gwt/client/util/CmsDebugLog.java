@@ -99,9 +99,21 @@ public final class CmsDebugLog {
     }-*/;
 
     /**
+     * Logs an object to the browser console if possible.<p>
+     *
+     * @param object the object to log
+     */
+    public static native void consoleLogObject(Object object) /*-{
+        var cns = $wnd.top.console;
+        if (cns && cns.log) {
+            cns.log(object);
+        }
+    }-*/;
+
+    /**
      * Logs a message and includes the current stack trace.
-     * 
-     * @param message the message to log 
+     *
+     * @param message the message to log
      */
     public static native void consoleTrace(String message) /*-{
         var cns = $wnd.top.console;

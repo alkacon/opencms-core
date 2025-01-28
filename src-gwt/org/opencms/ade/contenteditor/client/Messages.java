@@ -325,9 +325,6 @@ public final class Messages {
     public static final String GUI_TOOLBAR_VALIDATION_ERRORS_1 = "GUI_TOOLBAR_VALIDATION_ERRORS_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_VALIDATION_ERROR_1 = "GUI_VALIDATION_ERROR_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_VIEW_ADD_1 = "GUI_VIEW_ADD_1"; //Acacia message: Add {0}
 
     /** Message constant for key in the resource bundle. */
@@ -392,6 +389,27 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CONTENT_EDITOR_REUSE_MARKER_0 = "GUI_CONTENT_EDITOR_REUSE_MARKER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_VALIDATION_WARNING_TITLE_0 = "GUI_DIALOG_VALIDATION_WARNING_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_VALIDATION_WARNING_MESSAGE_0 = "GUI_DIALOG_VALIDATION_WARNING_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_VALIDATION_WARNING_BUTTON_SAVE_0 = "GUI_DIALOG_VALIDATION_WARNING_BUTTON_SAVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_VALIDATION_WARNING_BUTTON_CANCEL_0 = "GUI_DIALOG_VALIDATION_WARNING_BUTTON_CANCEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_VALIDATION_ERROR_TITLE_0 = "GUI_DIALOG_VALIDATION_ERROR_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_VALIDATION_ERROR_MESSAGE_0 = "GUI_DIALOG_VALIDATION_ERROR_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_VALIDATION_ERROR_BUTTON_CLOSE_0 = "GUI_DIALOG_VALIDATION_ERROR_BUTTON_CLOSE_0";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

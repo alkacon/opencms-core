@@ -27,18 +27,21 @@
 
 package org.opencms.acacia.client;
 
-import java.util.HashMap;
+import org.opencms.acacia.shared.CmsValidationResult;
+
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
- * The validation context. Keeps track of valid and invalid entity id's.<p>
+ * The validation context. Keeps track of valid and invalid entity id's as well as of entity ids with warnings attached.<p>
  */
 public class CmsValidationContext {
 
     /** The invalid entity id's. */
-    private Map<String, String> m_invalidEntityIds;
+    private Set<String> m_invalidEntityIds;
+
+    /** The warning entity id's. */
+    private Set<String> m_warningEntityIds;
 
     /** The valid entity id's. */
     private Set<String> m_validEntityIds;
@@ -48,20 +51,43 @@ public class CmsValidationContext {
      */
     public CmsValidationContext() {
 
-        m_invalidEntityIds = new HashMap<String, String>();
-        m_validEntityIds = new HashSet<String>();
+        m_invalidEntityIds = new HashSet<>();
+        m_validEntityIds = new HashSet<>();
+        m_warningEntityIds = new HashSet<>();
+    }
+
+    /**
+     * Constructor, starting with an initial validation result.
+     * @param validationResult the validation result to initialize the context with.
+     */
+    public CmsValidationContext(CmsValidationResult validationResult) {
+
+        m_invalidEntityIds = new HashSet<>();
+        m_validEntityIds = new HashSet<>();
+        m_warningEntityIds = new HashSet<>();
+
+        for (String entityId : validationResult.getWarnings().keySet()) {
+            if (validationResult.hasWarnings(entityId)) {
+                addWarningEntity(entityId);
+            }
+        }
+        for (String entityId : validationResult.getErrors().keySet()) {
+            if (validationResult.hasErrors(entityId)) {
+                addInvalidEntity(entityId);
+            }
+        }
+
     }
 
     /**
      * Adds an invalid entity id.<p>
      *
      * @param entityId the entity id
-     * @param invalidFields the invalid fields
      */
-    public void addInvalidEntity(String entityId, String invalidFields) {
+    public void addInvalidEntity(String entityId) {
 
         m_validEntityIds.remove(entityId);
-        m_invalidEntityIds.put(entityId, invalidFields);
+        m_invalidEntityIds.add(entityId);
     }
 
     /**
@@ -76,25 +102,33 @@ public class CmsValidationContext {
     }
 
     /**
+     * Adds an warning entity id.<p>
+     *
+     * @param entityId the entity id
+     */
+    public void addWarningEntity(String entityId) {
+
+        m_warningEntityIds.add(entityId);
+    }
+
+    /**
+     * Clears a warning entity id.<p>
+     *
+     * @param entityId the entity id
+     */
+    public void clearWarningEntity(String entityId) {
+
+        m_warningEntityIds.remove(entityId);
+    }
+
+    /**
      * Returns the invalid entity id's.<p>
      *
      * @return the invalid entity id's
      */
     public Set<String> getInvalidEntityIds() {
 
-        return m_invalidEntityIds.keySet();
-    }
-
-    /**
-     * Returns the invalid fields of the given entity.<p>
-     *
-     * @param entityId the entity id
-     *
-     * @return the invalid fields
-     */
-    public String getInvalidFields(String entityId) {
-
-        return m_invalidEntityIds.get(entityId);
+        return m_invalidEntityIds;
     }
 
     /**
@@ -108,6 +142,16 @@ public class CmsValidationContext {
     }
 
     /**
+     * Returns the warning entity id's.<p>
+     *
+     * @return the warning entity id's
+     */
+    public Set<String> getWarningEntityIds() {
+
+        return m_warningEntityIds;
+    }
+
+    /**
      * Returns if there are any invalid entities.<p>
      *
      * @return <code>true</code>  if there are any invalid entities
@@ -115,6 +159,16 @@ public class CmsValidationContext {
     public boolean hasValidationErrors() {
 
         return !m_invalidEntityIds.isEmpty();
+    }
+
+    /**
+     * Returns if there are any warning entities.<p>
+     *
+     * @return <code>true</code>  if there are any warning entities
+     */
+    public boolean hasValidationWarnings() {
+
+        return !m_warningEntityIds.isEmpty();
     }
 
     /**
@@ -126,5 +180,6 @@ public class CmsValidationContext {
 
         m_invalidEntityIds.remove(entityId);
         m_validEntityIds.remove(entityId);
+        m_warningEntityIds.remove(entityId);
     }
 }

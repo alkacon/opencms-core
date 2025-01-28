@@ -28,6 +28,10 @@
 package org.opencms.ade.contenteditor.shared;
 
 import org.opencms.acacia.shared.CmsValidationResult;
+import org.opencms.util.CmsPair;
+
+import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -39,25 +43,54 @@ public class CmsSaveResult implements IsSerializable {
     /** If container element settings where changed. */
     private boolean m_hasChangedSettings;
 
+    /** If validation warnings caused a save error. */
+    private boolean m_warningsAsError;
+
     /** The validation result. */
     private CmsValidationResult m_validationResult;
+
+    /**
+     * Map from locale to issues with information to display in the validation result dialog.
+     * It contains already the information to display, localized wrt the workplace locale
+     * and in the correct order.
+     */
+    private Map<String, List<List<CmsPair<String, Integer>>>> m_validationIssueInformation;
 
     /**
      * Constructor.<p>
      *
      * @param hasChangedSettings if container element settings where changed
      * @param validationResult the validation result
+     * @param warningsAsError flag, indicating if warnings should be treated as errors
+     * @param issuesToDisplay the issues (warnings or errors) to display, already localized and sorted as needed.
      */
-    public CmsSaveResult(boolean hasChangedSettings, CmsValidationResult validationResult) {
+    public CmsSaveResult(
+        boolean hasChangedSettings,
+        CmsValidationResult validationResult,
+        boolean warningsAsError,
+        Map<String, List<List<CmsPair<String, Integer>>>> issuesToDisplay) {
 
         m_hasChangedSettings = hasChangedSettings;
         m_validationResult = validationResult;
+        m_warningsAsError = warningsAsError;
+        m_validationIssueInformation = issuesToDisplay;
     }
 
     /**
      * Constructor for serialization only.<p>
      */
-    protected CmsSaveResult() {}
+    protected CmsSaveResult() {
+
+    }
+
+    /**
+     * Returns the validation issue information to display.
+     * @return the validation issue information to display.
+     */
+    public Map<String, List<List<CmsPair<String, Integer>>>> getIssueInformation() {
+
+        return m_validationIssueInformation;
+    }
 
     /**
      * Returns the validation result.<p>
@@ -76,7 +109,8 @@ public class CmsSaveResult implements IsSerializable {
      */
     public boolean hasErrors() {
 
-        return (m_validationResult != null) && m_validationResult.hasErrors();
+        return (m_validationResult != null)
+            && (m_validationResult.hasErrors() || (m_warningsAsError && m_validationResult.hasWarnings()));
     }
 
     /**

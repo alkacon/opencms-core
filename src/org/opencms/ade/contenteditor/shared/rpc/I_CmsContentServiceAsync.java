@@ -28,6 +28,7 @@
 package org.opencms.ade.contenteditor.shared.rpc;
 
 import org.opencms.acacia.shared.CmsEntity;
+import org.opencms.acacia.shared.CmsValidationResult;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.CmsEditHandlerData;
 import org.opencms.ade.contenteditor.shared.CmsSaveResult;
@@ -152,6 +153,7 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
      * @param skipPaths the paths to skip during locale synchronization
      * @param lastEditedLocale the last edited locale
      * @param clearOnSuccess  <code>true</code> to unlock resource after saving
+     * @param failOnWarnings <code>true</code> to prevent saving when there are validation warnings
      * @param callback the asynchronous callback
      */
     void saveAndDeleteEntities(
@@ -161,6 +163,7 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
         Collection<String> skipPaths,
         String lastEditedLocale,
         boolean clearOnSuccess,
+        boolean failOnWarnings,
         AsyncCallback<CmsSaveResult> callback);
 
     /**
@@ -174,5 +177,23 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
      * @param callback the callback to call with the result
      */
     void saveValue(String contentId, String contentPath, String locale, String value, AsyncCallback<String> callback);
+
+    /**
+     * Validates the edited XML content, taking all current changes into account. Returns the validation result.<p>
+     *
+     * @param lastEditedEntity the last edited entity
+     * @param clientId the container element client id if available
+     * @param deletedEntities the entity id's to delete
+     * @param skipPaths the paths to skip during locale synchronization
+     * @param lastEditedLocale the last edited locale
+     * @param callback the asynchronous callback
+     */
+    void validateEntities(
+        CmsEntity lastEditedEntity,
+        String clientId,
+        List<String> deletedEntities,
+        Collection<String> skipPaths,
+        String lastEditedLocale,
+        AsyncCallback<CmsValidationResult> callback);
 
 }

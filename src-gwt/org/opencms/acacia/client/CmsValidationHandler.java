@@ -175,9 +175,11 @@ implements ValueChangeHandler<CmsEntity>, HasValueChangeHandlers<CmsValidationCo
                     }
                 }
             }
+            m_validationContext.addWarningEntity(entityId);
+        } else {
+            m_validationContext.clearWarningEntity(entityId);
         }
         if (validationResult.hasErrors(entityId)) {
-            String invalidFields = "";
             for (Entry<String[], CmsPair<String, String>> error : validationResult.getErrors(entityId).entrySet()) {
                 String[] pathElements = error.getKey();
                 CmsAttributeHandler handler = m_rootHandler.getHandlerByPath(pathElements);
@@ -188,12 +190,8 @@ implements ValueChangeHandler<CmsEntity>, HasValueChangeHandlers<CmsValidationCo
                         error.getValue().getFirst(),
                         m_formTabPanel);
                 }
-                invalidFields += error.getValue().getSecond() + ", ";
             }
-            if (invalidFields.length() > 0) {
-                invalidFields = invalidFields.substring(0, invalidFields.length() - 2);
-            }
-            m_validationContext.addInvalidEntity(entityId, invalidFields);
+            m_validationContext.addInvalidEntity(entityId);
         } else {
             m_validationContext.addValidEntity(entityId);
         }
@@ -301,6 +299,15 @@ implements ValueChangeHandler<CmsEntity>, HasValueChangeHandlers<CmsValidationCo
     public void setRootHandler(CmsRootHandler rootHandler) {
 
         m_rootHandler = rootHandler;
+    }
+
+    /**
+     * Update the validation context, i.e., replace it with the one generated from the validation result.
+     * @param validationResult the result to update the context for.
+     */
+    public void updateValidationContext(final CmsValidationResult validationResult) {
+
+        m_validationContext = new CmsValidationContext(validationResult);
     }
 
     /**
