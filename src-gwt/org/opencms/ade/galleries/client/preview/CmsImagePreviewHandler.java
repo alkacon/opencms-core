@@ -31,6 +31,7 @@ import org.opencms.ade.galleries.client.preview.ui.CmsImagePreviewDialog;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -236,17 +237,48 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
     }
 
     /**
+     * Gets the array of preview scaling parameters.
+     * 
+     * @param imageHeight the original image height
+     * @param imageWidth the original image width
+     */
+    public String[] getNormalAndHighResPreviewScaleParams(int imageHeight, int imageWidth) {
+
+        // Compute scaling parameters for the preview, both for normal pixel density and for 2x pixel density, if possible, and
+        // returns them in an array.
+        // We only want to set the preview for 2x pixel density if it actually has (approximately) double the dimensions
+        // of the preview for 1x pixel density. Otherwise, the 2x preview image on a screen with density 2x would become smaller
+        // in (density-adjusted) "CSS pixels" than the 1x preview image on a screen with density 1x,
+
+        String lowRes = getPreviewScaleParam(imageHeight, imageWidth, 1);
+        String highRes = getPreviewScaleParam(imageHeight, imageWidth, 2);
+        Map<String, String> lowResMap = parseScalingParams(lowRes);
+        Map<String, String> highResMap = parseScalingParams(highRes);
+        int wLow = getScalerParameter(lowResMap, "w", imageWidth);
+        int wHigh = getScalerParameter(highResMap, "w", imageWidth);
+        int hLow = getScalerParameter(lowResMap, "h", imageHeight);
+        int hHigh = getScalerParameter(highResMap, "h", imageHeight);
+        int tolerance = 1; // to deal with rounding issues
+        if ((Math.abs(wHigh - (2 * wLow)) <= tolerance) && (Math.abs(hHigh - (2 * hLow)) <= tolerance)) {
+            return new String[] {lowRes, highRes};
+        } else {
+            return new String[] {lowRes};
+        }
+    }
+
+    /**
      * Returns the cropping parameter.<p>
      *
      * @param imageHeight the original image height
      * @param imageWidth the original image width
+     * @param density the pixel density (acts as a multiplier for available space)
      *
      * @return the cropping parameter
      */
-    public String getPreviewScaleParam(int imageHeight, int imageWidth) {
+    public String getPreviewScaleParam(int imageHeight, int imageWidth, int density) {
 
-        int maxHeight = m_containerHeight;
-        int maxWidth = m_containerWidth;
+        int maxHeight = m_containerHeight * density;
+        int maxWidth = m_containerWidth * density;
 
         if ((m_croppingParam != null) && (m_croppingParam.isCropped() || m_croppingParam.isScaled())) {
             // NOTE: getREstrictedSizeScaleParam does not work correctly if there isn't actually any cropping/scaling, so we explicitly don't use it in this case
@@ -293,8 +325,10 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
         if (viewLink == null) {
             viewLink = CmsCoreProvider.get().link(m_resourcePreview.getResourcePath());
         }
+        String[] scale = getNormalAndHighResPreviewScaleParams(m_croppingParam.getOrgHeight(), m_croppingParam.getOrgWidth());
         m_previewDialog.resetPreviewImage(
-            viewLink + "?" + getPreviewScaleParam(m_croppingParam.getOrgHeight(), m_croppingParam.getOrgWidth()));
+            viewLink + "?" + scale[0],
+            scale.length > 1 ? viewLink + "?" + scale[1] : null);
         onCroppingChanged();
     }
 
@@ -325,6 +359,25 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
     }
 
     /**
+     * Helper method for getting an integer-valued scaler parameter from a map of parameters, with a default value that should be returned if the map doesn't contain the parameter.
+     *
+     * @param scalerParams the map of scaler parameters
+     * @param key the map key
+     * @param defaultValue the value to return if the map doesn't contain a value for the key
+     *
+     * @return the value of the scaler parameter
+     */
+    private int getScalerParameter(Map<String, String> scalerParams, String key, int defaultValue) {
+
+        String value = scalerParams.get(key);
+        if (value != null) {
+            return Integer.parseInt(value);
+        } else {
+            return defaultValue;
+        }
+    }
+
+    /**
      * Calls all cropping change handlers.
      */
     private void onCroppingChanged() {
@@ -343,6 +396,21 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
             handler.run();
         }
 
+    }
+
+    /**
+     * Parse scaling parameters as a map.
+     * 
+     * @param params the scaling parameters 
+     * @return the scaling parameters as a map
+     */
+    private Map<String, String> parseScalingParams(String params) {
+
+        final String prefix = "__scale=";
+        if (params.startsWith(prefix)) {
+            params = params.substring(prefix.length());
+        }
+        return CmsStringUtil.splitAsMap(params, ",", ":");
     }
 
 }
