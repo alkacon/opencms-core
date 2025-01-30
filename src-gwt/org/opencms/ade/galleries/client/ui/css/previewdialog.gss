@@ -57,6 +57,8 @@ div.previewDialog div.previewTitle{
 	display: block; 
 }
 
+@def BG eval("\"repeating-conic-gradient(#ddd 0% 25%, #fff 0% 50%)\"");
+
 .imagePanel {
 	display: flex; 
 	align-items: center; 
@@ -67,9 +69,9 @@ div.previewDialog div.previewTitle{
 	height: 100%; 
 	
 	background-color: #fff;
-    background-image: linear-gradient(45deg, value("previewDialogCss.previewBackground") 25%, transparent 25%, transparent 75%, value("previewDialogCss.previewBackground") 75%, value("previewDialogCss.previewBackground")), linear-gradient(45deg,value("previewDialogCss.previewBackground") 25%, transparent 25%, transparent 75%, value("previewDialogCss.previewBackground") 75%, value("previewDialogCss.previewBackground"));
-    background-size: 20px 20px;
-    background-position: 0 0, 10px 10px;
+    background-image: BG;
+    background-size: 10px 10px;
+    background-position: 0 0, 5px 5px;
 }
 
 /* Tabs panel (details) */
