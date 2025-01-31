@@ -54,7 +54,9 @@ div.previewDialog div.previewTitle{
 	-webkit-user-select: none;
 	-o-user-select: none;
 	user-select: none;
-	display: block; 
+	display: block;
+	width: revert-layer;
+	height: revert-layer; 
 }
 
 @def BG eval("\"repeating-conic-gradient(#ddd 0% 25%, #fff 0% 50%)\"");

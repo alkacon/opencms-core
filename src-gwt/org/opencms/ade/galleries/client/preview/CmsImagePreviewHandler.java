@@ -30,6 +30,7 @@ package org.opencms.ade.galleries.client.preview;
 import org.opencms.ade.galleries.client.preview.ui.CmsImagePreviewDialog;
 import org.opencms.ade.galleries.shared.CmsImageInfoBean;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.util.CmsStringUtil;
 
@@ -40,6 +41,10 @@ import java.util.Map;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.Image;
+
+import elemental2.dom.HTMLImageElement;
+import jsinterop.base.Js;
 
 /**
  * Image preview dialog controller handler.<p>
@@ -99,6 +104,73 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
         width
     }
 
+    /**
+     * Encapsulates information used to update the preview image's scaling parameters.
+     */
+    public static class PreviewImageUpdate {
+
+        /** Normal height. */
+        private int m_height;
+
+        /** High resolution scaling parameters. */
+        private String m_highResPreview;
+
+        /** Normal preview scaling parameters. */
+        private String m_preview;
+
+        /** Normal width. */
+        private int m_width;
+
+        /**
+         * Creates a new instance.
+         *
+         * @param preview the normal preview scaling parameters
+         * @param highResPreview the high resolution scaling parameters
+         * @param width the normal width
+         * @param height the normal height
+         */
+        public PreviewImageUpdate(String preview, String highResPreview, int width, int height) {
+
+            super();
+            m_preview = preview;
+            m_highResPreview = highResPreview;
+            m_width = width;
+            m_height = height;
+        }
+
+        /**
+         * Updates the given image with information from this object.
+         *
+         * @param image the image to update
+         * @param src the image base URL
+         * @param isSvg true if the image is an SVG
+         */
+        public void applyToImage(Image image, String src, boolean isSvg) {
+
+            HTMLImageElement imgElement = Js.cast(image.getElement());
+            long time = System.currentTimeMillis();
+            if (!isSvg) {
+                imgElement.setAttribute("width", "" + m_width);
+                imgElement.setAttribute("height", "" + m_height);
+            }
+            imgElement.src = src + "?" + m_preview + "&time=" + time;
+            imgElement.removeAttribute("srcset");
+            if (!isSvg) {
+                if (m_highResPreview != null) {
+                    imgElement.srcset = src + "?" + m_highResPreview + "&time=" + time + " 2x";
+                }
+            }
+
+        }
+
+    }
+
+    /** The image container height. */
+    private int m_containerHeight;
+
+    /** The image container width. */
+    private int m_containerWidth;
+
     /** List of handlers for cropping changes. */
     private List<Runnable> m_croppingHandlers = new ArrayList<>();
 
@@ -116,12 +188,6 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
 
     /** The preview dialog. */
     private CmsImagePreviewDialog m_previewDialog;
-
-    /** The image container width. */
-    private int m_containerWidth;
-
-    /** The image container height. */
-    private int m_containerHeight;
 
     /**
      * Constructor.<p>
@@ -237,33 +303,21 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
     }
 
     /**
-     * Gets the array of preview scaling parameters.
-     * 
+     * Gets the information to update the preview image.
+     *
      * @param imageHeight the original image height
      * @param imageWidth the original image width
+     * @return the preview update information
      */
-    public String[] getNormalAndHighResPreviewScaleParams(int imageHeight, int imageWidth) {
-
-        // Compute scaling parameters for the preview, both for normal pixel density and for 2x pixel density, if possible, and
-        // returns them in an array.
-        // We only want to set the preview for 2x pixel density if it actually has (approximately) double the dimensions
-        // of the preview for 1x pixel density. Otherwise, the 2x preview image on a screen with density 2x would become smaller
-        // in (density-adjusted) "CSS pixels" than the 1x preview image on a screen with density 1x,
+    public PreviewImageUpdate getPreviewImageUpdate(int imageHeight, int imageWidth) {
 
         String lowRes = getPreviewScaleParam(imageHeight, imageWidth, 1);
         String highRes = getPreviewScaleParam(imageHeight, imageWidth, 2);
         Map<String, String> lowResMap = parseScalingParams(lowRes);
-        Map<String, String> highResMap = parseScalingParams(highRes);
         int wLow = getScalerParameter(lowResMap, "w", imageWidth);
-        int wHigh = getScalerParameter(highResMap, "w", imageWidth);
         int hLow = getScalerParameter(lowResMap, "h", imageHeight);
-        int hHigh = getScalerParameter(highResMap, "h", imageHeight);
-        int tolerance = 1; // to deal with rounding issues
-        if ((Math.abs(wHigh - (2 * wLow)) <= tolerance) && (Math.abs(hHigh - (2 * hLow)) <= tolerance)) {
-            return new String[] {lowRes, highRes};
-        } else {
-            return new String[] {lowRes};
-        }
+        return new PreviewImageUpdate(lowRes, highRes, wLow, hLow);
+
     }
 
     /**
@@ -325,10 +379,11 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
         if (viewLink == null) {
             viewLink = CmsCoreProvider.get().link(m_resourcePreview.getResourcePath());
         }
-        String[] scale = getNormalAndHighResPreviewScaleParams(m_croppingParam.getOrgHeight(), m_croppingParam.getOrgWidth());
-        m_previewDialog.resetPreviewImage(
-            viewLink + "?" + scale[0],
-            scale.length > 1 ? viewLink + "?" + scale[1] : null);
+        PreviewImageUpdate previewUpdate = getPreviewImageUpdate(
+            m_croppingParam.getOrgHeight(),
+            m_croppingParam.getOrgWidth());
+        boolean isSvg = CmsClientStringUtil.checkIsPathOrLinkToSvg(m_resourcePreview.getResourcePath());
+        previewUpdate.applyToImage(m_previewDialog.getPreviewImage(), viewLink, isSvg);
         onCroppingChanged();
     }
 
@@ -400,8 +455,8 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
 
     /**
      * Parse scaling parameters as a map.
-     * 
-     * @param params the scaling parameters 
+     *
+     * @param params the scaling parameters
      * @return the scaling parameters as a map
      */
     private Map<String, String> parseScalingParams(String params) {
