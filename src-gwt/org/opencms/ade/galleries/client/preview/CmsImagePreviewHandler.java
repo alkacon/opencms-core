@@ -42,6 +42,7 @@ import java.util.Map;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Widget;
 
 import elemental2.dom.HTMLImageElement;
 import jsinterop.base.Js;
@@ -145,13 +146,24 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
          * @param src the image base URL
          * @param isSvg true if the image is an SVG
          */
-        public void applyToImage(Image image, String src, boolean isSvg) {
+        public void applyToImage(Image image, String src, boolean isSvg, Widget container) {
 
             HTMLImageElement imgElement = Js.cast(image.getElement());
             long time = System.currentTimeMillis();
             if (!isSvg) {
-                imgElement.setAttribute("width", "" + m_width);
-                imgElement.setAttribute("height", "" + m_height);
+                int parentWidth = container.getElement().getClientWidth();
+                int parentHeight = container.getElement().getClientHeight();
+                int effectiveWidth = m_width;
+                if ((parentWidth > effectiveWidth) && ((parentWidth - effectiveWidth) <= 3)) {
+                    effectiveWidth = parentWidth;
+                }
+                int effectiveHeight = m_height;
+                if ((parentHeight > effectiveHeight) && ((parentHeight - effectiveHeight) <= 3)) {
+                    effectiveHeight = parentHeight;
+                }
+
+                imgElement.setAttribute("width", "" + effectiveWidth);
+                imgElement.setAttribute("height", "" + effectiveHeight);
             }
             imgElement.src = src + "?" + m_preview + "&time=" + time;
             imgElement.removeAttribute("srcset");
@@ -383,7 +395,11 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
             m_croppingParam.getOrgHeight(),
             m_croppingParam.getOrgWidth());
         boolean isSvg = CmsClientStringUtil.checkIsPathOrLinkToSvg(m_resourcePreview.getResourcePath());
-        previewUpdate.applyToImage(m_previewDialog.getPreviewImage(), viewLink, isSvg);
+        previewUpdate.applyToImage(
+            m_previewDialog.getPreviewImage(),
+            viewLink,
+            isSvg,
+            m_previewDialog.getPreviewImage().getParent());
         onCroppingChanged();
     }
 

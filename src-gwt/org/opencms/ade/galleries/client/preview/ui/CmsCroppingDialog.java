@@ -50,6 +50,9 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
+import elemental2.dom.HTMLImageElement;
+import jsinterop.base.Js;
+
 /**
  * Image cropping dialog.<p>
  *
@@ -230,6 +233,12 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
         m_displayCropping = m_displayCropping.getRestrictedSizeParam(
             getElement().getOffsetHeight() - 35,
             getElement().getOffsetWidth() - 4);
+        int width = m_displayCropping.getTargetWidth();
+        int height = m_displayCropping.getTargetHeight();
+        m_image.getElement().setAttribute("width", "" + width);
+        m_image.getElement().setAttribute("height", "" + height);
+        HTMLImageElement img = Js.cast(m_image.getElement());
+        img.srcset = m_imagePath + " 2x";
         m_image.setUrl(m_imagePath + "?" + m_displayCropping.toString());
         m_croppingPanel.getElement().getStyle().setWidth(m_displayCropping.getTargetWidth(), Unit.PX);
         if ((targetParam.getTargetHeight() > 0) && (targetParam.getTargetWidth() > 0)) {

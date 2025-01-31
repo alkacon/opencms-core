@@ -155,7 +155,7 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
         m_previewPanel.setWidget(panel); // Need to already attach it here so we can measure the dimensions
         m_handler.setImageContainerSize(panel.getOffsetWidth(), panel.getOffsetHeight());
         PreviewImageUpdate previewUpdate = m_handler.getPreviewImageUpdate(infoBean.getHeight(), infoBean.getWidth());
-        previewUpdate.applyToImage(m_previewImage, src, isSvg);
+        previewUpdate.applyToImage(m_previewImage, src, isSvg, panel);
         getHandler().getFocalPointController().updateImage(panel, m_previewImage);
         panel.add(m_previewImage);
     }
