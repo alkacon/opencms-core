@@ -213,7 +213,7 @@ public final class CmsClientStringUtil {
             newText = CmsStringUtil.formatResourceName(text, maxLength);
         } else if (maxLength > 2) {
             // enough space for ellipsis?
-            newText += CmsDomUtil.Entity.hellip.html();
+            newText += '\u2026'; // ellipsis
         }
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(newText)) {
             // if empty, it could break the layout
