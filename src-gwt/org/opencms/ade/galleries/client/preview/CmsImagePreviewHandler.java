@@ -165,11 +165,11 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
                 imgElement.setAttribute("width", "" + effectiveWidth);
                 imgElement.setAttribute("height", "" + effectiveHeight);
             }
-            imgElement.src = src + "?" + m_preview + "&time=" + time;
+            imgElement.src = src + "?" + appendQuality(m_preview) + "&time=" + time;
             imgElement.removeAttribute("srcset");
             if (!isSvg) {
                 if (m_highResPreview != null) {
-                    imgElement.srcset = src + "?" + m_highResPreview + "&time=" + time + " 2x";
+                    imgElement.srcset = src + "?" + appendQuality(m_highResPreview) + "&time=" + time + " 2x";
                 }
             }
 
@@ -214,6 +214,21 @@ implements ValueChangeHandler<CmsCroppingParamBean> {
             () -> m_croppingParam,
             this::getImageInfo,
             this::onImagePointChanged);
+    }
+
+    /**
+     * Appends quality parameter to a set of scaling parameters, unless the input is the empty string or already contains a quality parameter.
+     *
+     * @param text the input scaling parameters
+     * @return the modified scaling parameters
+     */
+    public static final String appendQuality(String text) {
+
+        if (CmsStringUtil.isEmpty(text) || text.contains("q:")) {
+            return text;
+        } else {
+            return text + ",q:85";
+        }
     }
 
     /**

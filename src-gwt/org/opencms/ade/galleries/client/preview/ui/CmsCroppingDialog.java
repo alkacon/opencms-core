@@ -29,6 +29,7 @@ package org.opencms.ade.galleries.client.preview.ui;
 
 import org.opencms.ade.galleries.client.Messages;
 import org.opencms.ade.galleries.client.preview.CmsCroppingParamBean;
+import org.opencms.ade.galleries.client.preview.CmsImagePreviewHandler;
 import org.opencms.gwt.client.ui.CmsAreaSelectPanel;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.util.CmsPositionBean;
@@ -230,16 +231,22 @@ implements ValueChangeHandler<CmsPositionBean>, HasValueChangeHandlers<CmsCroppi
         m_displayCropping = new CmsCroppingParamBean();
         m_displayCropping.setTargetHeight(m_croppingParam.getOrgHeight());
         m_displayCropping.setTargetWidth(m_croppingParam.getOrgWidth());
-        m_displayCropping = m_displayCropping.getRestrictedSizeParam(
-            getElement().getOffsetHeight() - 35,
-            getElement().getOffsetWidth() - 4);
+        int availableWidth = getElement().getOffsetWidth() - 4;
+        int availableHeight = getElement().getOffsetHeight() - 35;
+        m_displayCropping = m_displayCropping.getRestrictedSizeParam(availableHeight, availableWidth);
+        String bigCropping = m_displayCropping.getRestrictedSizeParam(
+            2 * availableHeight,
+            2 * availableWidth).toString();
+        if (m_displayCropping.toString().equals(bigCropping)) {
+            bigCropping = "";
+        }
         int width = m_displayCropping.getTargetWidth();
         int height = m_displayCropping.getTargetHeight();
         m_image.getElement().setAttribute("width", "" + width);
         m_image.getElement().setAttribute("height", "" + height);
         HTMLImageElement img = Js.cast(m_image.getElement());
-        img.srcset = m_imagePath + " 2x";
-        m_image.setUrl(m_imagePath + "?" + m_displayCropping.toString());
+        img.srcset = m_imagePath + "?" + CmsImagePreviewHandler.appendQuality(bigCropping) + " 2x";
+        m_image.setUrl(m_imagePath + "?" + CmsImagePreviewHandler.appendQuality(m_displayCropping.toString()));
         m_croppingPanel.getElement().getStyle().setWidth(m_displayCropping.getTargetWidth(), Unit.PX);
         if ((targetParam.getTargetHeight() > 0) && (targetParam.getTargetWidth() > 0)) {
             m_croppingPanel.setRatio((1.00 * targetParam.getTargetHeight()) / targetParam.getTargetWidth());
