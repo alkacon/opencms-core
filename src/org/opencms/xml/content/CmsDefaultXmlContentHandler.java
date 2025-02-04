@@ -4795,6 +4795,34 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
+     * Returns the value to map for property list mappings.
+     * @param rootCms the context
+     * @param content the content
+     * @param valuePath the value path (to the value list) to map
+     * @param locale the locale to map
+     * @return the value to map for property list mappings.
+     */
+    private String getPropertyListMappingValue(
+        CmsObject rootCms,
+        CmsXmlContent content,
+        String valuePath,
+        Locale locale) {
+
+        String path = CmsXmlUtils.removeXpathIndex(valuePath);
+        List<I_CmsXmlContentValue> values = content.getValues(path, locale);
+        Iterator<I_CmsXmlContentValue> j = values.iterator();
+        StringBuffer result = new StringBuffer(values.size() * 64);
+        while (j.hasNext()) {
+            I_CmsXmlContentValue val = j.next();
+            result.append(val.getStringValue(rootCms));
+            if (j.hasNext()) {
+                result.append(CmsProperty.VALUE_LIST_DELIMITER);
+            }
+        }
+        return result.toString();
+    }
+
+    /**
      * Utility method to return a path fragment.<p>
      *
      * @param pathElements the path elements
@@ -4895,6 +4923,65 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
+    }
+
+    /**
+     * Checks if the locale specific value would be the same as the fallback
+     * @param rootCms the context
+     * @param content the content
+     * @param valuePath the path to the value (sequence) to map
+     * @param valueIndex the index of the value
+     * @param valueLocale the locale to map the value
+     * @param defaultLocale the default locale
+     * @param isSequence flag, indicating if a sequence should be mapped
+     * @param stringValueToMap the value that would be mapped to the locale specific property
+     * @return true iff the value would be the same as its fallback.
+     */
+    private boolean isLocalePropertyValueEqualToFallback(
+        CmsObject rootCms,
+        CmsXmlContent content,
+        String valuePath,
+        int valueIndex,
+        Locale valueLocale,
+        Locale defaultLocale,
+        boolean isSequence,
+        String stringValueToMap) {
+
+        String valueLocaleString = valueLocale.toString();
+        Locale fallbackLocale = null;
+        while (valueLocaleString.contains("_")) {
+            valueLocaleString = valueLocaleString.substring(0, valueLocaleString.lastIndexOf('_'));
+            Locale l = CmsLocaleManager.getLocale(valueLocaleString);
+            if (content.hasLocale(l)
+                && (content.hasValue(valuePath, l, valueIndex) || (isSequence && content.hasValue(valuePath, l)))) {
+                fallbackLocale = l;
+            }
+        }
+        if ((null == fallbackLocale)
+            && content.hasLocale(defaultLocale)
+            && (content.hasValue(valuePath, defaultLocale, valueIndex)
+                || (isSequence && content.hasValue(valuePath, defaultLocale)))) {
+            fallbackLocale = defaultLocale;
+        }
+        if (null != fallbackLocale) {
+            String fallbackStringValue = null;
+            if (isSequence) {
+                fallbackStringValue = getPropertyListMappingValue(rootCms, content, valuePath, fallbackLocale);
+            } else {
+                String originalFallbackStringValue = content.getValue(
+                    valuePath,
+                    fallbackLocale,
+                    valueIndex).getStringValue(rootCms);
+                CmsGalleryNameMacroResolver resolver = new CmsGalleryNameMacroResolver(
+                    rootCms,
+                    content,
+                    fallbackLocale);
+                resolver.setKeepEmptyMacros(true);
+                fallbackStringValue = resolver.resolveMacros(originalFallbackStringValue);
+            }
+            return stringValueToMap.equals(fallbackStringValue);
+        }
+        return false;
     }
 
     /**
@@ -5162,29 +5249,28 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                         // check which mapping is used (shared or individual)
                         boolean mapToShared = mapping.startsWith(MAPTO_PROPERTY_LIST_SHARED);
 
-                        String path = CmsXmlUtils.removeXpathIndex(valuePath);
-                        List<I_CmsXmlContentValue> values = content.getValues(path, valueLocale);
-                        Iterator<I_CmsXmlContentValue> j = values.iterator();
-                        StringBuffer result = new StringBuffer(values.size() * 64);
-                        while (j.hasNext()) {
-                            I_CmsXmlContentValue val = j.next();
-                            result.append(val.getStringValue(rootCms));
-                            if (j.hasNext()) {
-                                result.append(CmsProperty.VALUE_LIST_DELIMITER);
-                            }
-                        }
-
+                        String result = getPropertyListMappingValue(rootCms, content, valuePath, valueLocale);
                         if (localeIsValueLocale) {
                             rootCms.writePropertyObject(
                                 filename,
                                 createProperty(mapToProperty, result.toString(), mapToShared));
                         }
                         if (needsLocaleSpecificMapping) {
+                            boolean removePropertyValue = localeIsValueLocale
+                                || isLocalePropertyValueEqualToFallback(
+                                    rootCms,
+                                    content,
+                                    valuePath,
+                                    valueIndex,
+                                    valueLocale,
+                                    locale,
+                                    true,
+                                    result);
                             rootCms.writePropertyObject(
                                 filename,
                                 createProperty(
                                     CmsProperty.getLocaleSpecificPropertyName(mapToProperty, valueLocale),
-                                    result.toString(),
+                                    removePropertyValue ? "" : result,
                                     mapToShared));
                         }
                         if (mapToShared) {
@@ -5203,11 +5289,21 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                                 createProperty(mapToProperty, stringValue, mapToShared));
                         }
                         if (needsLocaleSpecificMapping) {
+                            boolean removePropertyValue = localeIsValueLocale
+                                || isLocalePropertyValueEqualToFallback(
+                                    rootCms,
+                                    content,
+                                    valuePath,
+                                    valueIndex,
+                                    valueLocale,
+                                    locale,
+                                    true,
+                                    stringValue);
                             rootCms.writePropertyObject(
                                 filename,
                                 createProperty(
                                     CmsProperty.getLocaleSpecificPropertyName(mapToProperty, valueLocale),
-                                    stringValue,
+                                    removePropertyValue ? "" : stringValue,
                                     mapToShared));
                         }
                         if (mapToShared) {
