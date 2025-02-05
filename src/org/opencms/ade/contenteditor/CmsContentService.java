@@ -831,7 +831,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 }
                 CmsValidationResult validationResult = validateContent(cms, structureId, content);
                 if (validationResult.hasErrors() || (failOnWarnings && validationResult.hasWarnings())) {
-                    Map<String, List<List<CmsPair<String, Integer>>>> sortedIssues = getValidationIssues(
+                    Map<String, List<CmsPair<List<CmsPair<String, Integer>>, String>>> sortedIssues = getValidationIssues(
                         cms,
                         content,
                         validationResult);
@@ -854,7 +854,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                             getRequest());
                         validateSettings(lastEditedEntity, validationResult, settingsConfig);
                         if (validationResult.hasErrors() || (failOnWarnings && validationResult.hasWarnings())) {
-                            Map<String, List<List<CmsPair<String, Integer>>>> sortedIssues = getValidationIssues(
+                            Map<String, List<CmsPair<List<CmsPair<String, Integer>>, String>>> sortedIssues = getValidationIssues(
                                 cms,
                                 content,
                                 validationResult);
@@ -2101,36 +2101,53 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * @param validationResult the validation result
      * @return information on validation issues, sorted by locale and in the order the issues appear in the editor.
      */
-    private Map<String, List<List<CmsPair<String, Integer>>>> getValidationIssues(
+    private Map<String, List<CmsPair<List<CmsPair<String, Integer>>, String>>> getValidationIssues(
         CmsObject cms,
         CmsXmlContent content,
         CmsValidationResult validationResult) {
 
         // only if we have warnings or errors, we can display them.
         if (validationResult.hasErrors() || validationResult.hasWarnings()) {
-            // if we have errors, we display errors, only otherwise we display warnings.
-            Map<String, Map<String[], CmsPair<String, String>>> issues = validationResult.hasErrors()
-            ? validationResult.getErrors()
-            : validationResult.getWarnings();
+            // if we have errors, we display errors and warnings mixed.
+            Map<String, Map<String[], CmsPair<String, String>>> issues = new HashMap<>();
+            if (validationResult.hasErrors()) {
+                validationResult.getErrors().entrySet().forEach(
+                    e -> issues.put(CmsContentDefinition.getLocaleFromId(e.getKey()), e.getValue()));
+            }
+            if (validationResult.hasWarnings()) {
+                validationResult.getWarnings().entrySet().forEach(e -> {
+                    String locale = CmsContentDefinition.getLocaleFromId(e.getKey());
+                    if (issues.containsKey(locale)) {
+                        // We assume we cannot have a warning and error at the same time, so we can override here.
+                        issues.get(locale).putAll(e.getValue());
+                    } else {
+                        issues.put(locale, e.getValue());
+                    }
+                });
+            }
             // we use a tree map to sort the locales alphabetically
-            TreeMap<String, List<List<CmsPair<String, Integer>>>> sortedInfoPerLocale = new TreeMap<>();
+            TreeMap<String, List<CmsPair<List<CmsPair<String, Integer>>, String>>> sortedInfoPerLocale = new TreeMap<>();
             CmsXmlContentDefinition definition = content.getContentDefinition();
             for (Entry<String, Map<String[], CmsPair<String, String>>> e : issues.entrySet()) {
-                String lstr = CmsContentDefinition.getLocaleFromId(e.getKey());
-                Locale l = CmsLocaleManager.getLocale(lstr);
-                // map from XML path to attributes as provided by teh validation result
-                Map<String, String[]> errorsByPath = new HashMap<>(e.getValue().size());
+                Locale l = CmsLocaleManager.getLocale(e.getKey());
+                // map from XML path to attributes as provided by the validation result
+                Map<String, CmsPair<String[], String>> errorsByPath = new HashMap<>(e.getValue().size());
                 // fill the map
-                e.getValue().entrySet().stream().forEach(v -> errorsByPath.put(v.getValue().getSecond(), v.getKey()));
+                e.getValue().entrySet().stream().forEach(
+                    v -> errorsByPath.put(
+                        v.getValue().getSecond(),
+                        new CmsPair<>(v.getKey(), v.getValue().getFirst())));
                 // get the paths and sort them
                 List<String> sortedPaths = new ArrayList<>(errorsByPath.keySet());
                 sortedPaths.sort(new CmsXmlDisplayOrderPathComparator(definition));
                 // the infos for the locale, a list of issue information, where each issue information
                 // is a list of the path part attributes combined with the index of the path part.
-                List<List<CmsPair<String, Integer>>> sortedInfos = new ArrayList<>(errorsByPath.size());
+                List<CmsPair<List<CmsPair<String, Integer>>, String>> sortedInfos = new ArrayList<>(
+                    errorsByPath.size());
                 // fill the info list in the correct sort order
                 for (String p : sortedPaths) {
-                    String[] entities = errorsByPath.get(p);
+                    CmsPair<String[], String> v = errorsByPath.get(p);
+                    String[] entities = v.getFirst();
                     List<CmsPair<String, Integer>> singleInfo = new ArrayList<>(entities.length);
                     String attributePrefix = "";
                     for (int i = 0; i < entities.length; i++) {
@@ -2145,7 +2162,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                             attributePrefix += attr.substring(attr.lastIndexOf('/'));
                         }
                     }
-                    sortedInfos.add(singleInfo);
+                    sortedInfos.add(new CmsPair<>(singleInfo, v.getSecond()));
                 }
 
                 sortedInfoPerLocale.put(l.getDisplayName(getWorkplaceLocale(cms)), sortedInfos);

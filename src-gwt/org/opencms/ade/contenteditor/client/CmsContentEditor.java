@@ -2022,12 +2022,12 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param callback the callback to trigger to save
      */
     void showSaveValidationWarningDialog(
-        Map<String, List<List<CmsPair<String, Integer>>>> issueInformation,
+        Map<String, List<CmsPair<List<CmsPair<String, Integer>>, String>>> issueInformation,
         I_CmsSimpleCallback<?> callback) {
 
         Map<String, List<String>> issues = createIssueMap(issueInformation);
 
-        CmsConfirmSaveDialog dialog = new CmsConfirmSaveDialog(issues, true, callback);
+        CmsConfirmSaveDialog dialog = new CmsConfirmSaveDialog(issues, true, m_contentLocales.size() == 1, callback);
 
         dialog.center();
 
@@ -2041,7 +2041,7 @@ public final class CmsContentEditor extends CmsEditorBase {
      */
     void showValidationErrorDialog(
         CmsValidationResult validationResult,
-        Map<String, List<List<CmsPair<String, Integer>>>> issueInformation) {
+        Map<String, List<CmsPair<List<CmsPair<String, Integer>>, String>>> issueInformation) {
 
         //TODO: What is this for?
         if (validationResult.getErrors().keySet().contains(m_entityId)) {
@@ -2049,7 +2049,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         }
         Map<String, List<String>> issues = createIssueMap(issueInformation);
 
-        CmsConfirmSaveDialog dialog = new CmsConfirmSaveDialog(issues, false, null);
+        CmsConfirmSaveDialog dialog = new CmsConfirmSaveDialog(issues, false, m_contentLocales.size() == 1, null);
 
         dialog.center();
 
@@ -2294,19 +2294,19 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @return the map from languages to localized element path information for all errors/warnings.
      */
     private Map<String, List<String>> createIssueMap(
-        Map<String, List<List<CmsPair<String, Integer>>>> issueInformation) {
+        Map<String, List<CmsPair<List<CmsPair<String, Integer>>, String>>> issueInformation) {
 
         I_CmsWidgetService service = getWidgetService();
         CmsDebugLog.consoleLogObject(service);
         Map<String, List<String>> resultMap = new TreeMap<>();
-        for (Entry<String, List<List<CmsPair<String, Integer>>>> e : issueInformation.entrySet()) {
+        for (Entry<String, List<CmsPair<List<CmsPair<String, Integer>>, String>>> e : issueInformation.entrySet()) {
             String localeName = e.getKey();
-            List<List<CmsPair<String, Integer>>> items = e.getValue();
+            List<CmsPair<List<CmsPair<String, Integer>>, String>> items = e.getValue();
             List<String> localeItems = new ArrayList<>(items.size());
             resultMap.put(localeName, localeItems);
-            for (List<CmsPair<String, Integer>> it : items) {
+            for (CmsPair<List<CmsPair<String, Integer>>, String> it : items) {
                 String path = "";
-                for (CmsPair<String, Integer> partInfo : it) {
+                for (CmsPair<String, Integer> partInfo : it.getFirst()) {
                     String attribute = partInfo.getFirst();
                     Integer idx = partInfo.getSecond();
                     path += service.getAttributeLabel(attribute);
@@ -2315,7 +2315,11 @@ public final class CmsContentEditor extends CmsEditorBase {
                     }
                     path += " > ";
                 }
-                localeItems.add(path.substring(0, path.length() - 3));
+                String issueDisplay = "<strong>"
+                    + path.substring(0, path.length() - 3)
+                    + "</strong> - "
+                    + it.getSecond();
+                localeItems.add(issueDisplay);
             }
         }
         return resultMap;

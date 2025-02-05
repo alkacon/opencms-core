@@ -53,18 +53,16 @@ public class CmsConfirmSaveDialog extends CmsPopup {
      *
      * @param issues the validation issues
      * @param isWarning flag, indicating if the issues are warnings (or errors)
+     * @param hideLocale flag, indicating if the issues should be presented without locale.
      * @param okCallback callback for confirming the save action.
      */
     public CmsConfirmSaveDialog(
         Map<String, List<String>> issues,
         boolean isWarning,
+        boolean hideLocale,
         final I_CmsSimpleCallback<?> okCallback) {
 
-        super(
-            Messages.get().key(
-                isWarning
-                ? Messages.GUI_DIALOG_VALIDATION_WARNING_TITLE_0
-                : Messages.GUI_DIALOG_VALIDATION_ERROR_TITLE_0));
+        super(Messages.get().key(Messages.GUI_DIALOG_VALIDATION_TITLE_0));
         FlowPanel main = new FlowPanel();
         CmsValidationDetailsWidget widget = new CmsValidationDetailsWidget();
         widget.setWidth("100%");
@@ -73,7 +71,7 @@ public class CmsConfirmSaveDialog extends CmsPopup {
                 isWarning
                 ? Messages.GUI_DIALOG_VALIDATION_WARNING_MESSAGE_0
                 : Messages.GUI_DIALOG_VALIDATION_ERROR_MESSAGE_0));
-        String issuesHtml = createIssuesHtml(issues);
+        String issuesHtml = createIssuesHtml(issues, hideLocale);
         widget.setIssuesHtml(issuesHtml);
         main.add(widget);
         CmsPushButton cancelButton = new CmsPushButton();
@@ -117,17 +115,25 @@ public class CmsConfirmSaveDialog extends CmsPopup {
     /**
      * Create the issues HTML to add to the validation details widget.
      * @param issues the issues to display.
+     * @param hideLocale flag, indicating if the issues should be presented without locale.
      * @return the issues HTML to add to the validation details widget.
      */
-    private String createIssuesHtml(Map<String, List<String>> issues) {
+    private String createIssuesHtml(Map<String, List<String>> issues, boolean hideLocale) {
 
         String result = "";
-        for (Map.Entry<String, List<String>> e : issues.entrySet()) {
-            result += "<li><em>" + e.getKey() + ":</em><ul>";
-            for (String p : e.getValue()) {
+        if (hideLocale && (issues.size() == 1)) {
+            List<String> pps = issues.values().iterator().next();
+            for (String p : pps) {
                 result += "<li>" + p + "</li>";
             }
-            result += "</ul></li>";
+        } else {
+            for (Map.Entry<String, List<String>> e : issues.entrySet()) {
+                result += "<li><em>" + e.getKey() + ":</em><ul>";
+                for (String p : e.getValue()) {
+                    result += "<li>" + p + "</li>";
+                }
+                result += "</ul></li>";
+            }
         }
         return result;
     }

@@ -43,10 +43,6 @@
             overflow: auto;
         }
 
-        div.issues * {
-            font-size: 12px;
-        }
-
         ul.issues ul {
             padding-left: 10px;
             list-style-type: none;
@@ -54,6 +50,9 @@
         ul.issues {
             list-style-type: none;
             padding-left: 0px;
+        }
+        ul.issues strong {
+            font-weight: bold;
         }
         div.outercontainer {
             width: 100%;

@@ -391,7 +391,7 @@ public final class Messages {
     public static final String GUI_CONTENT_EDITOR_REUSE_MARKER_0 = "GUI_CONTENT_EDITOR_REUSE_MARKER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_VALIDATION_WARNING_TITLE_0 = "GUI_DIALOG_VALIDATION_WARNING_TITLE_0";
+    public static final String GUI_DIALOG_VALIDATION_TITLE_0 = "GUI_DIALOG_VALIDATION_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_VALIDATION_WARNING_MESSAGE_0 = "GUI_DIALOG_VALIDATION_WARNING_MESSAGE_0";
@@ -401,9 +401,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_VALIDATION_WARNING_BUTTON_CANCEL_0 = "GUI_DIALOG_VALIDATION_WARNING_BUTTON_CANCEL_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIALOG_VALIDATION_ERROR_TITLE_0 = "GUI_DIALOG_VALIDATION_ERROR_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_VALIDATION_ERROR_MESSAGE_0 = "GUI_DIALOG_VALIDATION_ERROR_MESSAGE_0";

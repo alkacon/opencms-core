@@ -53,8 +53,18 @@ public class CmsSaveResult implements IsSerializable {
      * Map from locale to issues with information to display in the validation result dialog.
      * It contains already the information to display, localized wrt the workplace locale
      * and in the correct order.
+     *
+     * The structure is:
+     * { "locale" :
+     *  [
+     *      {
+     *          first: [ { first: "elementName", second: "elementIdx" } ],
+     *          second: "localized error message"
+     *      }
+     *  ]
+     *
      */
-    private Map<String, List<List<CmsPair<String, Integer>>>> m_validationIssueInformation;
+    private Map<String, List<CmsPair<List<CmsPair<String, Integer>>, String>>> m_validationIssueInformation;
 
     /**
      * Constructor.<p>
@@ -68,7 +78,7 @@ public class CmsSaveResult implements IsSerializable {
         boolean hasChangedSettings,
         CmsValidationResult validationResult,
         boolean warningsAsError,
-        Map<String, List<List<CmsPair<String, Integer>>>> issuesToDisplay) {
+        Map<String, List<CmsPair<List<CmsPair<String, Integer>>, String>>> issuesToDisplay) {
 
         m_hasChangedSettings = hasChangedSettings;
         m_validationResult = validationResult;
@@ -87,7 +97,7 @@ public class CmsSaveResult implements IsSerializable {
      * Returns the validation issue information to display.
      * @return the validation issue information to display.
      */
-    public Map<String, List<List<CmsPair<String, Integer>>>> getIssueInformation() {
+    public Map<String, List<CmsPair<List<CmsPair<String, Integer>>, String>>> getIssueInformation() {
 
         return m_validationIssueInformation;
     }
