@@ -4374,7 +4374,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                         // generate warning message
                         errorHandler.addWarning(
                             value,
-                            Messages.get().getBundle(value.getLocale()).key(
+                            Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
                                 Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0));
                     }
                     return true;
@@ -4393,7 +4393,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             if (errorHandler != null) {
                 String message = getErrorMessage(cms, value.getName());
                 if (message == null) {
-                    message = Messages.get().getBundle(value.getLocale()).key(Messages.GUI_XMLCONTENT_CHECK_ERROR_0);
+                    message = Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
+                        Messages.GUI_XMLCONTENT_CHECK_ERROR_0);
                 }
                 // generate error message
                 errorHandler.addError(value, message);
@@ -4486,7 +4487,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 : new Exception(stackOverflowInfoMessage);
                 errorHandler.addError(
                     value,
-                    Messages.get().getBundle(value.getLocale()).key(
+                    Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
                         Messages.GUI_EDITOR_XMLCONTENT_CANNOT_VALIDATE_ERROR_3,
                         ticket,
                         regex,
@@ -4494,7 +4495,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             } else {
                 errorHandler.addError(
                     value,
-                    Messages.get().getBundle(value.getLocale()).key(
+                    Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
                         Messages.GUI_EDITOR_XMLCONTENT_INVALID_RULE_3,
                         ticket,
                         regex,
