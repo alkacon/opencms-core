@@ -35,6 +35,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.main.CmsEvent;
@@ -1632,13 +1633,23 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             xmlcontent.addLocale(cms, Locale.ENGLISH);
         }
 
+        OpenCms.getLocaleManager();
+        Locale enGB = CmsLocaleManager.getLocale("en_GB");
+        if (!xmlcontent.hasLocale(enGB)) {
+            xmlcontent.addLocale(cms, enGB);
+        }
+
         // add EN property
         String titleStrEn = "This must be the Title in EN";
         I_CmsXmlContentValue value;
         value = xmlcontent.addValue(cms, "String", Locale.ENGLISH, 0);
         value.setStringValue(cms, titleStrEn);
+        // add en_GB property
+        String titleStrEnGB = "This must be the Title in EN (GB)";
+        value = xmlcontent.addValue(cms, "String", enGB, 0);
+        value.setStringValue(cms, titleStrEnGB);
         // add DE property
-        String titleStrDe = "Das ist der Title in DE";
+        String titleStrDe = "Das ist der Titel in DE";
         value = xmlcontent.addValue(cms, "String", Locale.GERMAN, 0);
         value.setStringValue(cms, titleStrDe);
 
@@ -1654,6 +1665,16 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         value.setStringValue(cms, res1);
         value = seq.addValue(cms, 1);
         value.setStringValue(cms, res2);
+        assertEquals(2, seq.getElementCount());
+
+        seq = xmlcontent.getValueSequence("VfsFile", enGB);
+        assertEquals(0, seq.getElementCount());
+
+        value = seq.addValue(cms, 0);
+        value.setStringValue(cms, res1);
+        value = seq.addValue(cms, 1);
+        value.setStringValue(cms, res2);
+        assertEquals(2, seq.getElementCount());
 
         seq = xmlcontent.getValueSequence("VfsFile", Locale.GERMAN);
         assertEquals(0, seq.getElementCount());
@@ -1662,7 +1683,6 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         value.setStringValue(cms, res2);
         value = seq.addValue(cms, 1);
         value.setStringValue(cms, res1);
-
         assertEquals(2, seq.getElementCount());
 
         // validate the XML structure
@@ -1670,6 +1690,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         String sr = cms.getRequestContext().getSiteRoot();
         String descStrEn = sr + res1 + "|" + sr + res2;
+        String descStrEnGB = descStrEn;
         String descStrDe = sr + res2 + "|" + sr + res1;
 
         file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
@@ -1683,12 +1704,19 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         String titlePropEn = CmsProperty.getLocaleSpecificPropertyName(
             CmsPropertyDefinition.PROPERTY_TITLE,
             Locale.ENGLISH);
+        String titlePropEnGB = CmsProperty.getLocaleSpecificPropertyName(CmsPropertyDefinition.PROPERTY_TITLE, enGB);
         String descPropDe = CmsProperty.getLocaleSpecificPropertyName(
             CmsPropertyDefinition.PROPERTY_DESCRIPTION,
             Locale.GERMAN);
         String descPropEn = CmsProperty.getLocaleSpecificPropertyName(
             CmsPropertyDefinition.PROPERTY_DESCRIPTION,
             Locale.ENGLISH);
+        String descPropEnGB = CmsProperty.getLocaleSpecificPropertyName(
+            CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+            enGB);
+        String titlePropFr = CmsProperty.getLocaleSpecificPropertyName(
+            CmsPropertyDefinition.PROPERTY_TITLE,
+            Locale.FRENCH);
 
         // we do not have locale specific properties defined yet, so they should not be present.
         // now check if the properties have been assigned as required to the locales
@@ -1696,6 +1724,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(titleStrEn, titleProperty.getValue());
         CmsProperty titlePropertyEn = cms.readPropertyObject(resourcename, titlePropEn, false);
         assertTrue(titlePropertyEn.isNullProperty());
+        CmsProperty titlePropertyEnGB = cms.readPropertyObject(resourcename, titlePropEnGB, false);
+        assertTrue(titlePropertyEnGB.isNullProperty());
         CmsProperty titlePropertyDe = cms.readPropertyObject(resourcename, titlePropDe, false);
         assertTrue(titlePropertyDe.isNullProperty());
 
@@ -1706,11 +1736,18 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(descStrEn, descProperty.getValue());
         CmsProperty descPropertyEn = cms.readPropertyObject(resourcename, descPropEn, false);
         assertTrue(descPropertyEn.isNullProperty());
+        CmsProperty descPropertyEnGB = cms.readPropertyObject(resourcename, descPropEnGB, false);
+        assertTrue(descPropertyEnGB.isNullProperty());
         CmsProperty descPropertyDe = cms.readPropertyObject(resourcename, descPropDe, false);
         assertTrue(descPropertyDe.isNullProperty());
 
+        // create all the properties needed.
         cms.createPropertyDefinition(titlePropDe);
+        cms.createPropertyDefinition(titlePropEn);
+        cms.createPropertyDefinition(titlePropEnGB);
         cms.createPropertyDefinition(descPropDe);
+        cms.createPropertyDefinition(descPropEn);
+        cms.createPropertyDefinition(descPropEnGB);
 
         // We re-write the file. Now the Title_de property should be filled.
 
@@ -1725,21 +1762,116 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
         assertEquals(titleStrEn, titleProperty.getValue());
         titlePropertyEn = cms.readPropertyObject(resourcename, titlePropEn, false);
-        assertTrue(titlePropertyEn.isNullProperty());
+        assertTrue(
+            "The property should be empty, since it would double the default property value",
+            titlePropertyEn.isNullProperty());
+        titlePropertyEnGB = cms.readPropertyObject(resourcename, titlePropEnGB, false);
+        assertEquals(
+            "The property should be filled, since it is different from the default value",
+            titleStrEnGB,
+            titlePropertyEnGB.getValue());
         titlePropertyDe = cms.readPropertyObject(resourcename, titlePropDe, false);
-        assertEquals(titleStrDe, titlePropertyDe.getValue());
+        assertEquals(
+            "The property should be filled, since it is different from the default value",
+            titleStrDe,
+            titlePropertyDe.getValue());
 
         descProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
         assertEquals(descStrEn, descProperty.getValue());
         descPropertyEn = cms.readPropertyObject(resourcename, descPropEn, false);
-        assertTrue(descPropertyEn.isNullProperty());
+        assertTrue(
+            "The property should be empty, since it would double the default property value",
+            descPropertyEn.isNullProperty());
+        descPropertyEnGB = cms.readPropertyObject(resourcename, descPropEnGB, false);
+        assertTrue(
+            "The property should be empty, since it would double the default property value",
+            descPropertyEnGB.isNullProperty());
         descPropertyDe = cms.readPropertyObject(resourcename, descPropDe, false);
-        assertEquals(descStrDe, descPropertyDe.getValue());
+        assertEquals(
+            "The property should be filled, since it is different from the default value",
+            descStrDe,
+            descPropertyDe.getValue());
+
+        // We manually add a property that should be removed by the mapping.
+        cms.lockResource(resourcename);
+        cms.writePropertyObject(resourcename, new CmsProperty(titlePropFr, "Manually added value", null));
+        cms.unlockResource(resourcename);
+        assertEquals(
+            "Manually added value",
+            cms.readPropertyObject(cms.readFile(resourcename), titlePropFr, false).getValue());
+
+        // We check if property values are removed correctly
+        cms.lockResource(resourcename);
+        file = cms.readFile(resourcename);
+        xmlcontent = CmsXmlContentFactory.unmarshal(cms, file);
+        xmlcontent.removeLocale(enGB);
+        xmlcontent.getValue("String", Locale.GERMAN, 0).setStringValue(cms, titleStrEn);
+        file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
+        cms.writeFile(file);
+
+        titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        assertEquals(titleStrEn, titleProperty.getValue());
+        titlePropertyEn = cms.readPropertyObject(resourcename, titlePropEn, false);
+        assertTrue(
+            "The property should be empty, since it would double the default property value",
+            titlePropertyEn.isNullProperty());
+        titlePropertyEnGB = cms.readPropertyObject(resourcename, titlePropEnGB, false);
+        assertTrue(
+            "The property should be empty, since the whole locale is removed",
+            titlePropertyEnGB.isNullProperty());
+        titlePropertyDe = cms.readPropertyObject(resourcename, titlePropDe, false);
+        assertTrue(
+            "The property should be empty, since it would double the default property value",
+            titlePropertyDe.isNullProperty());
+
+        descProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
+        assertEquals(descStrEn, descProperty.getValue());
+        descPropertyEn = cms.readPropertyObject(resourcename, descPropEn, false);
+        assertTrue(
+            "The property should be empty, since it would double the default property value",
+            descPropertyEn.isNullProperty());
+        descPropertyEnGB = cms.readPropertyObject(resourcename, descPropEnGB, false);
+        assertTrue(
+            "The property should be empty, since the whole locale is removed",
+            descPropertyEnGB.isNullProperty());
+        descPropertyDe = cms.readPropertyObject(resourcename, descPropDe, false);
+        assertEquals(
+            "The property should be filled, since it is different from the default value",
+            descStrDe,
+            descPropertyDe.getValue());
+
+        // The manually added property should be removed
+        assertTrue(cms.readPropertyObject(cms.readFile(resourcename), titlePropFr, false).isNullProperty());
+
+        // We check, if the title property itself would be cleared when the mapping is missing
+        cms.lockResource(resourcename);
+        file = cms.readFile(resourcename);
+        xmlcontent = CmsXmlContentFactory.unmarshal(cms, file);
+        xmlcontent.removeLocale(Locale.ENGLISH);
+        file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
+        cms.writeFile(file);
+
+        // finally unlock the resource
+        cms.unlockResource(resourcename);
+
+        titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
+
+        // For backwards compatibility reasons we will not delete the non-locale-specific property
+        assertEquals(titleStrEn, titleProperty.getValue());
+        // The following would have been cleaner, but not implemented for backward compatibility issues.
+        //assertTrue(
+        //    "The title property should have been cleared, since we have no English content anymore.",
+        //    titleProperty.isNullProperty());
+
         // clean up
         cms.lockResource(resourcename);
         cms.deleteResource(resourcename, CmsResource.DELETE_REMOVE_SIBLINGS);
         cms.deletePropertyDefinition(titlePropDe);
+        cms.deletePropertyDefinition(titlePropEn);
+        cms.deletePropertyDefinition(titlePropEnGB);
         cms.deletePropertyDefinition(descPropDe);
+        cms.deletePropertyDefinition(descPropEn);
+        cms.deletePropertyDefinition(descPropEnGB);
     }
 
     /**

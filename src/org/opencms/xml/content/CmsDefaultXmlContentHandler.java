@@ -78,6 +78,7 @@ import org.opencms.util.CmsDefaultSet;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.I_CmsMacroResolver;
@@ -117,6 +118,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -130,6 +132,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletRequest;
 
@@ -1103,6 +1106,67 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
         MappingInfo info = getAttributeMapping(attr);
         return info.canBeUsedForReverseAvailabilityMapping();
+
+    }
+
+    /**
+     * We clear all potential property mappings.
+     *
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#clearMappings(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent)
+     */
+    @Override
+    public void clearMappings(CmsObject cms, CmsXmlContent content) throws CmsException {
+
+        CmsObject rootCms = createRootCms(cms);
+        Set<String> mappings = new HashSet<>();
+        getMappings().values().forEach(mps -> mappings.addAll(mps));
+        CmsFile f = content.getFile();
+        String filename = f.getRootPath();
+        Collection<Locale> locales = OpenCms.getLocaleManager().getAvailableLocales();
+
+        for (String mapping : mappings) {
+            CmsPair<String, Boolean> propertyInfo = getMapToProperty(mapping);
+            if (null != propertyInfo) {
+                String prop = propertyInfo.getFirst();
+                Set<String> propNames = new HashSet<>(locales.size());
+                // We do not delete the property itself - would be cleaner, but may cause backward compatibility issues
+                //propNames.add(prop);
+                propNames.addAll(
+                    locales.stream().map(l -> CmsProperty.getLocaleSpecificPropertyName(prop, l)).collect(
+                        Collectors.toSet()));
+                boolean isShared = propertyInfo.getSecond().booleanValue();
+                for (String propName : propNames) {
+                    try {
+                        rootCms.readPropertyDefinition(propName);
+                        CmsProperty p = rootCms.readPropertyObject(f, propName, false);
+                        if (!p.isNullProperty()) {
+                            String v = isShared ? p.getResourceValue() : p.getStructureValue();
+                            if ((null != v) && !v.isEmpty()) {
+                                // make sure the file is locked
+                                CmsLock lock = rootCms.getLock(filename);
+                                if (lock.isUnlocked()) {
+                                    rootCms.lockResource(filename);
+                                } else if (!lock.isDirectlyOwnedInProjectBy(rootCms)) {
+                                    rootCms.changeLock(filename);
+                                }
+                                rootCms.writePropertyObject(
+                                    filename,
+                                    createProperty(propName, CmsProperty.DELETE_VALUE, isShared));
+                            }
+                        }
+                    } catch (CmsException e) {
+                        // property not defined, do nothing.
+                    }
+                }
+            }
+        }
+        // make sure the original is locked
+        CmsLock lock = rootCms.getLock(f);
+        if (lock.isUnlocked()) {
+            rootCms.lockResource(f.getRootPath());
+        } else if (!lock.isExclusiveOwnedBy(rootCms.getRequestContext().getCurrentUser())) {
+            rootCms.changeLock(f.getRootPath());
+        }
 
     }
 
@@ -4765,30 +4829,32 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
-     * Returns the name of the property to map to in case of a property or property list mapping.
+     * Returns the name of the property to map to in case of a property or property list mapping,
+     * combined with the information if the mapping is to the shared property.
      * Otherwise null is returned.
      *
      * @param mapping the mapping to get the property for.
      *
-     * @return the property to map to, or null if the provided mapping was not for properties.
+     * @return the property to map to, combined with the information if the mapping is for the shared property version,
+     *  or null if the provided mapping was not for properties.
      */
-    private String getMapToProperty(String mapping) {
+    private CmsPair<String, Boolean> getMapToProperty(String mapping) {
 
         if (mapping.startsWith(MAPTO_PROPERTY)) {
             if (mapping.startsWith(MAPTO_PROPERTY_INDIVIDUAL)) {
-                return mapping.substring(MAPTO_PROPERTY_INDIVIDUAL.length());
+                return new CmsPair<>(mapping.substring(MAPTO_PROPERTY_INDIVIDUAL.length()), Boolean.FALSE);
             } else if (mapping.startsWith(MAPTO_PROPERTY_SHARED)) {
-                return mapping.substring(MAPTO_PROPERTY_SHARED.length());
+                return new CmsPair<>(mapping.substring(MAPTO_PROPERTY_SHARED.length()), Boolean.TRUE);
             } else {
-                return mapping.substring(MAPTO_PROPERTY.length());
+                return new CmsPair<>(mapping.substring(MAPTO_PROPERTY.length()), Boolean.FALSE);
             }
         } else if (mapping.startsWith(MAPTO_PROPERTY_LIST)) {
             if (mapping.startsWith(MAPTO_PROPERTY_LIST_INDIVIDUAL)) {
-                return mapping.substring(MAPTO_PROPERTY_LIST_INDIVIDUAL.length());
+                return new CmsPair<>(mapping.substring(MAPTO_PROPERTY_LIST_INDIVIDUAL.length()), Boolean.FALSE);
             } else if (mapping.startsWith(MAPTO_PROPERTY_LIST_SHARED)) {
-                return mapping.substring(MAPTO_PROPERTY_LIST_SHARED.length());
+                return new CmsPair<>(mapping.substring(MAPTO_PROPERTY_LIST_SHARED.length()), Boolean.TRUE);
             } else {
-                return mapping.substring(MAPTO_PROPERTY_LIST.length());
+                return new CmsPair<>(mapping.substring(MAPTO_PROPERTY_LIST.length()), Boolean.FALSE);
             }
         }
         return null;
@@ -5098,7 +5164,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 }
 
                 // Get the property to map to in case we have a property (list) mapping
-                String mapToProperty = getMapToProperty(mapping);
+                CmsPair<String, Boolean> mapToPropertyInfo = getMapToProperty(mapping);
+                String mapToProperty = mapToPropertyInfo == null ? null : mapToPropertyInfo.getFirst();
                 // We need to determine if locale specific property mappings are necessary
                 // If not, we can skip much code
                 boolean needsLocaleSpecificMapping = false;
@@ -5270,7 +5337,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                                 filename,
                                 createProperty(
                                     CmsProperty.getLocaleSpecificPropertyName(mapToProperty, valueLocale),
-                                    removePropertyValue ? "" : result,
+                                    removePropertyValue ? CmsProperty.DELETE_VALUE : result,
                                     mapToShared));
                         }
                         if (mapToShared) {
@@ -5303,7 +5370,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                                 filename,
                                 createProperty(
                                     CmsProperty.getLocaleSpecificPropertyName(mapToProperty, valueLocale),
-                                    removePropertyValue ? "" : stringValue,
+                                    removePropertyValue ? CmsProperty.DELETE_VALUE : stringValue,
                                     mapToShared));
                         }
                         if (mapToShared) {

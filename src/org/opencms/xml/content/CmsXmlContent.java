@@ -800,6 +800,18 @@ public class CmsXmlContent extends A_CmsXmlDocument {
      */
     public void resolveMappings(CmsObject cms) {
 
+        // clear formerly mapped values
+        try {
+            getHandler().clearMappings(cms, this);
+        } catch (CmsException e) {
+            String message = "Failed to clean mappings for content "
+                + (this.getFile() == null ? "<unknown>" : this.getFile().getRootPath());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message, e);
+            } else {
+                LOG.error(message);
+            }
+        }
         // iterate through all initialized value nodes in this XML content
         CmsXmlContentMappingVisitor visitor = new CmsXmlContentMappingVisitor(cms, this);
         visitAllValuesWith(visitor);
@@ -1140,6 +1152,16 @@ public class CmsXmlContent extends A_CmsXmlDocument {
                 int index = CmsXmlUtils.getXpathIndexInt(parentPath) - 1;
                 addValue(cms, parentPath, locale, index);
             }
+        }
+    }
+
+    private void removePreviousPropertyMappings(CmsObject cms) {
+
+        Set<String> mappings = new HashSet<>();
+        getHandler().getMappings().values().stream().forEach(mps -> mappings.addAll(mps));
+        Set<String> properties = new HashSet<>();
+        for (String mapping : mappings) {
+
         }
     }
 

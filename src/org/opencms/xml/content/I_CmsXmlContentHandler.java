@@ -218,6 +218,24 @@ public interface I_CmsXmlContentHandler {
     boolean canUseReverseAvailabilityMapping(CmsMappingResolutionContext.AttributeType attr);
 
     /**
+     * Removes potentially existing formerly mapped values, according
+     * to the rules of the specific XML content handler.<p>
+     *
+     * The default implementation does nothing and is only added for backward compatibility.
+     *
+     * @param cms the current OpenCms user context
+     * @param content the XML content to resolve the mappings for
+     *
+     * @throws CmsException if something goes wrong
+     */
+    @SuppressWarnings("unused")
+    default void clearMappings(CmsObject cms, CmsXmlContent content) throws CmsException {
+
+        // Do nothing by default.
+        return;
+    }
+
+    /**
      * Gets the list of allowed template context names.<p>
      *
      * @return the list of allowed template context names
