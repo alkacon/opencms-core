@@ -5046,7 +5046,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 resolver.setKeepEmptyMacros(true);
                 fallbackStringValue = resolver.resolveMacros(originalFallbackStringValue);
             }
-            return stringValueToMap.equals(fallbackStringValue);
+            // This is more a hack to deal with some macro resolving issues that produce spaces for some locales, but not for others.
+            // It would be cleaner to trim the mapped values directly, or improve the macro resolution mechanism.
+            return stringValueToMap.trim().equals(fallbackStringValue.trim());
         }
         return false;
     }
