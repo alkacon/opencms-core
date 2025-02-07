@@ -1118,7 +1118,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                                 }
                             });
                     } else {
-                        showValidationErrorDialog(result.getValidationResult(), result.getIssueInformation());
+                        showValidationErrorDialog(result.getIssueInformation());
                     }
                 } else {
                     callback.execute(Boolean.valueOf((result != null) && result.isHasChangedSettings()));
@@ -2036,17 +2036,11 @@ public final class CmsContentEditor extends CmsEditorBase {
     /**
      * Shows the validation error dialog.<p>
      *
-     * @param validationResult the validation result
      * @param issueInformation the validation issues
      */
     void showValidationErrorDialog(
-        CmsValidationResult validationResult,
         Map<String, List<CmsPair<List<CmsPair<String, Integer>>, String>>> issueInformation) {
 
-        //TODO: What is this for?
-        if (validationResult.getErrors().keySet().contains(m_entityId)) {
-            getValidationHandler().displayValidation(m_entityId, validationResult);
-        }
         Map<String, List<String>> issues = createIssueMap(issueInformation);
 
         CmsConfirmSaveDialog dialog = new CmsConfirmSaveDialog(issues, false, m_contentLocales.size() == 1, null);
