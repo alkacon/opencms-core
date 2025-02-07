@@ -1800,6 +1800,28 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             "Manually added value",
             cms.readPropertyObject(cms.readFile(resourcename), titlePropFr, false).getValue());
 
+        // We check, if trimming whitespace works as expected
+        cms.lockResource(resourcename);
+        file = cms.readFile(resourcename);
+        xmlcontent = CmsXmlContentFactory.unmarshal(cms, file);
+        xmlcontent.getValue("String", Locale.ENGLISH, 0).setStringValue(cms, " " + titleStrEn);
+        xmlcontent.getValue("String", enGB, 0).setStringValue(cms, titleStrEn + "  ");
+        file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
+        cms.writeFile(file);
+        // finally unlock the resource
+        cms.unlockResource(resourcename);
+
+        titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        assertEquals(titleStrEn, titleProperty.getValue());
+        titlePropertyEn = cms.readPropertyObject(resourcename, titlePropEn, false);
+        assertTrue(
+            "The property should be empty, since it would double the default property value",
+            titlePropertyEn.isNullProperty());
+        titlePropertyEnGB = cms.readPropertyObject(resourcename, titlePropEnGB, false);
+        assertTrue(
+            "The property should be empty, since it would double the default property value",
+            titlePropertyEnGB.isNullProperty());
+
         // We check if property values are removed correctly
         cms.lockResource(resourcename);
         file = cms.readFile(resourcename);

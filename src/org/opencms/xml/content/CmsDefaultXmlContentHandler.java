@@ -5046,9 +5046,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 resolver.setKeepEmptyMacros(true);
                 fallbackStringValue = resolver.resolveMacros(originalFallbackStringValue);
             }
-            // This is more a hack to deal with some macro resolving issues that produce spaces for some locales, but not for others.
-            // It would be cleaner to trim the mapped values directly, or improve the macro resolution mechanism.
-            return stringValueToMap.trim().equals(fallbackStringValue.trim());
+            if (null != fallbackStringValue) {
+                fallbackStringValue = fallbackStringValue.trim();
+            }
+            return stringValueToMap.equals(fallbackStringValue);
         }
         return false;
     }
@@ -5319,11 +5320,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                         // check which mapping is used (shared or individual)
                         boolean mapToShared = mapping.startsWith(MAPTO_PROPERTY_LIST_SHARED);
 
-                        String result = getPropertyListMappingValue(rootCms, content, valuePath, valueLocale);
+                        String result = getPropertyListMappingValue(rootCms, content, valuePath, valueLocale).trim();
                         if (localeIsValueLocale) {
-                            rootCms.writePropertyObject(
-                                filename,
-                                createProperty(mapToProperty, result.toString(), mapToShared));
+                            rootCms.writePropertyObject(filename, createProperty(mapToProperty, result, mapToShared));
                         }
                         if (needsLocaleSpecificMapping) {
                             boolean removePropertyValue = localeIsValueLocale
@@ -5352,6 +5351,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
                         // check which mapping is used (shared or individual)
                         boolean mapToShared = mapping.startsWith(MAPTO_PROPERTY_SHARED);
+
+                        if (null != stringValue) {
+                            stringValue = stringValue.trim();
+                        }
 
                         if (localeIsValueLocale) {
                             rootCms.writePropertyObject(
