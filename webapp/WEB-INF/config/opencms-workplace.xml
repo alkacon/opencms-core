@@ -33,6 +33,9 @@
         <enableusermanagement>true</enableusermanagement>
         <defaultpropertiesonstructure>true</defaultpropertiesonstructure>
         <enableadvancedpropertytabs>true</enableadvancedpropertytabs>
+        <categorydisplayoptions displayByRepository="true" />
+        <!-- Displaying categories in the explorer has a big performance impact. Only enable if really needed. -->
+        <display-categories-in-explorer enabled="false" with-paths="true" leaves-only="true" />
         <maxfileuploadsize>-1</maxfileuploadsize>
         <labeledfolders />
         <rfsfileviewsettings>
@@ -294,7 +297,7 @@
                 <preference name="gallery.linkgallery" />
                 <preference name="gallery.imagegallery" />
                 <preference name="gallery.downloadgallery" />
-                <preference name="org.opencms.ui.apps.CmsFileExplorerSettings" value="{'collapsed_collumns':['PROPERTY_PROJECT','PROPERTY_NAVIGATION_TEXT','PROPERTY_COPYRIGHT','PROPERTY_CACHE','PROPERTY_INTERNAL_RESOURCE_TYPE', 'PROPERTY_PERMISSIONS','PROPERTY_USER_MODIFIED','PROPERTY_DATE_MODIFIED','PROPERTY_DATE_RELEASED','PROPERTY_DATE_EXPIRED','PROPERTY_DATE_CREATED','PROPERTY_USER_CREATED','PROPERTY_STATE_NAME','PROPERTY_USER_LOCKED'],'sort_column':'PROPERTY_RESOURCE_NAME','sort_order':true}" />
+                <preference name="org.opencms.ui.apps.CmsFileExplorerSettings" value="{'collapsed_collumns':['PROPERTY_PROJECT','PROPERTY_NAVIGATION_TEXT','PROPERTY_COPYRIGHT','PROPERTY_CACHE','PROPERTY_INTERNAL_RESOURCE_TYPE', 'PROPERTY_PERMISSIONS','PROPERTY_USER_MODIFIED','PROPERTY_DATE_MODIFIED','PROPERTY_DATE_RELEASED','PROPERTY_DATE_EXPIRED','PROPERTY_DATE_CREATED','PROPERTY_USER_CREATED','PROPERTY_STATE_NAME','PROPERTY_USER_LOCKED', 'PROPERTY_CATEGORIES'],'sort_column':'PROPERTY_RESOURCE_NAME','sort_order':true}" />
             </preference-tab>
         </default-preferences>
         <tool-manager>

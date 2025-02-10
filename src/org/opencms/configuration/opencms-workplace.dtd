@@ -28,6 +28,7 @@
 	enableadvancedpropertytabs,
 	categoryfolder?,
 	categorydisplayoptions?,
+	display-categories-in-explorer?,
 	group-translation?,
 	maxfileuploadsize?,
 	labeledfolders?,
@@ -320,6 +321,22 @@
 <!ATTLIST categorydisplayoptions
     displayByRepository (true|false) "false"
     displayCollapsed (true|false) "false"
+>
+
+<!--
+Options related to the 'Categories' column in the file explorer. 
+-->
+<!ELEMENT display-categories-in-explorer EMPTY>
+
+<!--
+enabled: Enables/disables the column
+leaves-only: If true, categories are omitted if any of their child categories are assigned to the same resource. 
+with-path: If true, categories' displayed labels are assembled into a path from the titles of their ancestor categories. Otherwise, just the title of the category itself is used. 
+-->
+<!ATTLIST display-categories-in-explorer
+	enabled (true|false) "false"
+	leaves-only (true|false) "true"
+	with-path (true|false) "false"
 >
 
 <!--

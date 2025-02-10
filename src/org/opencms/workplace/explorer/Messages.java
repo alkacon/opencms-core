@@ -344,6 +344,8 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_PERMISSIONS_0 = "GUI_INPUT_PERMISSIONS_0";
 
+    public static final String GUI_INPUT_CATEGORIES_0 = "GUI_INPUT_CATEGORIES_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_SIZE_0 = "GUI_INPUT_SIZE_0";
 

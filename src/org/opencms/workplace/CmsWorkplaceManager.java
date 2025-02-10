@@ -377,6 +377,15 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The XML content auto correction flag. */
     private boolean m_xmlContentAutoCorrect;
 
+    /** Categories column enabled? */
+    private boolean m_explorerCategoriesEnabled;
+
+    /** Show only leaf categories in explorer? */
+    private boolean m_explorerCategoriesLeavesOnly;
+
+    /** Show categories with their path in the explorer? */
+    private boolean m_explorerCategoriesWithPath;
+
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
      */
@@ -1843,6 +1852,36 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
+     * Checks if the 'Categories' column in the explorer should be enabled
+     *
+     * @return true if the categories column in the explorer should be enabled
+     */
+    public boolean isExplorerCategoriesEnabled() {
+
+        return m_explorerCategoriesEnabled;
+    }
+
+    /**
+     * Checks if only 'leaf' categories should be shown in the explorer 'Categories' column, i.e. only those which don't have child categories assigned to the same resource.
+     *
+     * @return true if only 'leaf' categories should be shown
+     */
+    public boolean isExplorerCategoriesLeavesOnly() {
+
+        return m_explorerCategoriesLeavesOnly;
+    }
+
+    /**
+     * Checks if categories should be shown with their path in the explorer 'Categories' column.
+     *
+     * @return true if categories should be shown with their path
+     */
+    public boolean isExplorerCategoriesWithPath() {
+
+        return m_explorerCategoriesWithPath;
+    }
+
+    /**
      * Returns true if "keep alive" mode is active.
      *
      * @return true if the session should be kept alive
@@ -2155,6 +2194,21 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                     ? Messages.INIT_ADV_PROP_DIALOG_SHOW_TABS_0
                     : Messages.INIT_ADV_PROP_DIALOG_HIDE_TABS_0));
         }
+    }
+
+    /**
+     * Sets the options related to the 'Categories' column in the file explorer.
+     *
+     * @param enabled 'true' if the column should be enabled
+     * @param leavesOnly 'true' if parent categories should be omitted
+     * @param withPath 'true' if category labels should include the whole path (i.e. the titles of parent categories)
+     */
+    public void setExplorerCategoryOptions(String enabled, String leavesOnly, String withPath) {
+
+        m_explorerCategoriesEnabled = Boolean.parseBoolean(enabled);
+        m_explorerCategoriesLeavesOnly = Boolean.parseBoolean(leavesOnly);
+        m_explorerCategoriesWithPath = Boolean.parseBoolean(withPath);
+
     }
 
     /**

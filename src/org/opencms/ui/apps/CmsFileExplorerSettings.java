@@ -158,7 +158,11 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
                 m_sortAscending = json.getBoolean(SORT_ORDER_KEY);
             }
             if (json.has(SORT_COLUMN_KEY)) {
-                m_sortColumnId = columnMap.get(json.getString(SORT_COLUMN_KEY));
+
+                CmsResourceTableProperty sortColumn = columnMap.get(json.getString(SORT_COLUMN_KEY));
+                if (!CmsResourceTableProperty.PROPERTY_CATEGORIES.equals(sortColumn)) {
+                    m_sortColumnId = sortColumn;
+                }
             }
             if (json.has(COLLAPSED_COLUMNS_KEY)) {
                 List<CmsResourceTableProperty> collapsed = new ArrayList<CmsResourceTableProperty>();
@@ -166,6 +170,14 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
 
                 for (int i = 0; i < array.length(); i++) {
                     collapsed.add(columnMap.get(array.getString(i)));
+                }
+                if (!collapsed.contains(CmsResourceTableProperty.PROPERTY_CATEGORIES)) {
+                    // Because only the collapsed columns are saved, if we have an existing installation and upgrade it to a new version
+                    // with new columns, these would be shown by default if the user any has saved file explorer settings. But the categories column
+                    // is both expensive to compute and takes a lot of screen space. It would be annoying for most users. So we add it to the
+                    // list of collapsed columns here. In practice, this means users will have to enable the column by hand every time they
+                    // open the explorer.
+                    collapsed.add(CmsResourceTableProperty.PROPERTY_CATEGORIES);
                 }
                 m_collapsedColumns = collapsed;
             }

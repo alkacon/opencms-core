@@ -29,6 +29,7 @@ package org.opencms.ui.components;
 
 import static org.opencms.workplace.Messages.GUI_LABEL_PROJECT_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_CACHE_0;
+import static org.opencms.workplace.explorer.Messages.GUI_INPUT_CATEGORIES_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_COPYRIGHT_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_DATECREATED_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_DATEEXPIRED_0;
@@ -354,6 +355,15 @@ public class CmsResourceTableProperty implements Serializable {
         3,
         0);
 
+    public static final CmsResourceTableProperty PROPERTY_CATEGORIES = new CmsResourceTableProperty(
+        "PROPERTY_CATEGORIES",
+        CmsResourceTable.CategoryLabel.class,
+        null,
+        GUI_INPUT_CATEGORIES_0,
+        true,
+        3,
+        0);
+
     /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_TREE_CAPTION = new CmsResourceTableProperty(
         "PROPERTY_TREE_CAPTION",
@@ -546,7 +556,8 @@ public class CmsResourceTableProperty implements Serializable {
             PROPERTY_TYPE_ICON,
             PROPERTY_USER_CREATED,
             PROPERTY_USER_LOCKED,
-            PROPERTY_USER_MODIFIED);
+            PROPERTY_USER_MODIFIED,
+            PROPERTY_CATEGORIES);
     }
 
     /**

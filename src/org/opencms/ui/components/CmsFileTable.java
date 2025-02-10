@@ -28,6 +28,7 @@
 package org.opencms.ui.components;
 
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_CACHE;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_CATEGORIES;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_COPYRIGHT;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_CREATED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_EXPIRED;
@@ -318,6 +319,13 @@ public class CmsFileTable extends CmsResourceTable {
         defaultProps.put(PROPERTY_PROJECT, Integer.valueOf(COLLAPSED));
         defaultProps.put(PROPERTY_RESOURCE_NAME, Integer.valueOf(0));
         defaultProps.put(PROPERTY_TITLE, Integer.valueOf(0));
+        try {
+            if (OpenCms.getWorkplaceManager().isExplorerCategoriesEnabled()) {
+                defaultProps.put(PROPERTY_CATEGORIES, Integer.valueOf(COLLAPSED));
+            }
+        } catch (Exception e) {
+            // ignore
+        }
         defaultProps.put(PROPERTY_NAVIGATION_TEXT, Integer.valueOf(COLLAPSED));
         defaultProps.put(PROPERTY_NAVIGATION_POSITION, Integer.valueOf(INVISIBLE));
         defaultProps.put(PROPERTY_IN_NAVIGATION, Integer.valueOf(INVISIBLE));
@@ -613,7 +621,8 @@ public class CmsFileTable extends CmsResourceTable {
                 new Or(
                     new SimpleStringFilter(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, search, true, false),
                     new SimpleStringFilter(CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT, search, true, false),
-                    new SimpleStringFilter(CmsResourceTableProperty.PROPERTY_TITLE, search, true, false)));
+                    new SimpleStringFilter(CmsResourceTableProperty.PROPERTY_TITLE, search, true, false),
+                    new SimpleStringFilter(CmsResourceTableProperty.PROPERTY_CATEGORIES, search, true, false)));
         }
         if ((m_fileTable.getValue() != null) & !((Set<?>)m_fileTable.getValue()).isEmpty()) {
             m_fileTable.setCurrentPageFirstItemId(((Set<?>)m_fileTable.getValue()).iterator().next());
@@ -644,7 +653,7 @@ public class CmsFileTable extends CmsResourceTable {
                     CmsResourceTableProperty tableProp = (CmsResourceTableProperty)propId;
                     if (!m_fileTable.isColumnCollapsed(propId)) {
                         Class<?> colType = tableProp.getColumnType();
-                        // skip "widget"-valued columns - currently this is just the project flag
+                        // skip columns with Vaadin types - currently this is just the project flag
                         if (!colType.getName().contains("vaadin")) {
                             // always use English column headers, as external tools using the CSV may use the column labels as IDs
                             String colHeader = OpenCms.getWorkplaceManager().getMessages(Locale.ENGLISH).key(

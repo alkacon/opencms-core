@@ -124,6 +124,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The isview attribute. */
     public static final String A_ISVIEW = "isview";
 
+    /** The 'leaves-only' attribute for the 'display-categories-in-explorer' element. */
+    public static final String A_LEAVES_ONLY = "leaves-only";
+
     /** The name pattern attrribute. */
     public static final String A_NAME_PATTERN = "name-pattern";
 
@@ -186,6 +189,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The 'widget-config' attribute. */
     public static final String A_WIDGET_CONFIG = "widget-config";
+
+    /** The 'with-path' attribute for the 'display-categories-in-explorer' element. */
+    public static final String A_WITH_PATH = "with-path";
 
     /** The name of the DTD for this configuration. */
     public static final String CONFIGURATION_DTD_NAME = "opencms-workplace.dtd";
@@ -282,6 +288,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name of the directpublish node. */
     public static final String N_DIRECTPUBLISH = "directpublish";
+
+    /** The 'display-categories-in-explorer' element. */
+    public static final String N_DISPLAY_CATEGORIES_IN_EXPLORER = "display-categories-in-explorer";
 
     /** The name of the edit options node. */
     public static final String N_EDITOPTIONS = "editoptions";
@@ -901,6 +910,15 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_CATEGORYDISPLAYOPTIONS, 0, A_DISPLAY_BY_REPOSITORY);
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_CATEGORYDISPLAYOPTIONS, 1, A_DISPLAY_COLLAPSED);
 
+        // add explorer category options
+        digester.addCallMethod(
+            "*/" + N_WORKPLACE + "/" + N_DISPLAY_CATEGORIES_IN_EXPLORER,
+            "setExplorerCategoryOptions",
+            3);
+        digester.addCallParam("*/" + N_WORKPLACE + "/" + N_DISPLAY_CATEGORIES_IN_EXPLORER, 0, A_ENABLED);
+        digester.addCallParam("*/" + N_WORKPLACE + "/" + N_DISPLAY_CATEGORIES_IN_EXPLORER, 1, A_LEAVES_ONLY);
+        digester.addCallParam("*/" + N_WORKPLACE + "/" + N_DISPLAY_CATEGORIES_IN_EXPLORER, 2, A_WITH_PATH);
+
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_GROUP_TRANSLATION, "setGroupTranslationClass", 1);
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_GROUP_TRANSLATION, 0, A_CLASS);
 
@@ -1250,6 +1268,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                 categoryDisplayOptions.addAttribute(A_DISPLAY_COLLAPSED, "true");
             }
         }
+
+        Element explorerCategories = workplaceElement.addElement(N_DISPLAY_CATEGORIES_IN_EXPLORER);
+        explorerCategories.addAttribute(A_ENABLED, "" + m_workplaceManager.isExplorerCategoriesEnabled());
+        explorerCategories.addAttribute(A_LEAVES_ONLY, "" + m_workplaceManager.isExplorerCategoriesLeavesOnly());
+        explorerCategories.addAttribute(A_WITH_PATH, "" + m_workplaceManager.isExplorerCategoriesWithPath());
 
         String groupTranslationClass = m_workplaceManager.getGroupTranslationClass();
         if (groupTranslationClass != null) {
