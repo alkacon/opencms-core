@@ -4996,6 +4996,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
      * Checks if the locale specific value would be the same as the fallback
      * @param rootCms the context
      * @param content the content
+     * @param mapping the mapping to resolve
      * @param valuePath the path to the value (sequence) to map
      * @param valueIndex the index of the value
      * @param valueLocale the locale to map the value
@@ -5007,6 +5008,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     private boolean isLocalePropertyValueEqualToFallback(
         CmsObject rootCms,
         CmsXmlContent content,
+        String mapping,
         String valuePath,
         int valueIndex,
         Locale valueLocale,
@@ -5016,41 +5018,66 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
         String valueLocaleString = valueLocale.toString();
         Locale fallbackLocale = null;
+        String fallbackValue = null;
+        List<String> localeStrings = new ArrayList<>(4);
         while (valueLocaleString.contains("_")) {
             valueLocaleString = valueLocaleString.substring(0, valueLocaleString.lastIndexOf('_'));
+            localeStrings.add(valueLocaleString);
+        }
+        localeStrings.add(defaultLocale.toString());
+        Iterator<String> localeIterator = localeStrings.iterator();
+        while ((fallbackLocale == null) && localeIterator.hasNext()) {
+            valueLocaleString = localeIterator.next();
             Locale l = CmsLocaleManager.getLocale(valueLocaleString);
             if (content.hasLocale(l)
-                && (content.hasValue(valuePath, l, valueIndex) || (isSequence && content.hasValue(valuePath, l)))) {
+                && (content.hasValue(valuePath, l)
+                    || (isSequence && content.hasValue(CmsXmlUtils.removeXpathIndex(valuePath), l)))) {
                 fallbackLocale = l;
+            } else if (isMappingUsingDefault(valuePath, mapping)) {
+                String potentialFallbackValue = getDefault(rootCms, content.getFile(), null, valuePath, l);
+                if ((potentialFallbackValue != null) && !potentialFallbackValue.isEmpty()) {
+                    if (isSequence) {
+                        fallbackLocale = l;
+                        fallbackValue = potentialFallbackValue;
+                    } else {
+                        CmsGalleryNameMacroResolver resolver = new CmsGalleryNameMacroResolver(rootCms, content, l);
+                        resolver.setKeepEmptyMacros(true);
+                        potentialFallbackValue = resolver.resolveMacros(potentialFallbackValue);
+                        if ((null != potentialFallbackValue) && !potentialFallbackValue.isEmpty()) {
+                            fallbackLocale = l;
+                            fallbackValue = potentialFallbackValue;
+                        }
+                    }
+                }
             }
-        }
-        if ((null == fallbackLocale)
-            && content.hasLocale(defaultLocale)
-            && (content.hasValue(valuePath, defaultLocale, valueIndex)
-                || (isSequence && content.hasValue(valuePath, defaultLocale)))) {
-            fallbackLocale = defaultLocale;
         }
         if (null != fallbackLocale) {
             String fallbackStringValue = null;
             if (isSequence) {
-                fallbackStringValue = getPropertyListMappingValue(rootCms, content, valuePath, fallbackLocale);
+                fallbackStringValue = fallbackValue != null
+                ? fallbackValue
+                : getPropertyListMappingValue(rootCms, content, valuePath, fallbackLocale);
             } else {
-                String originalFallbackStringValue = content.getValue(
-                    valuePath,
-                    fallbackLocale,
-                    valueIndex).getStringValue(rootCms);
-                CmsGalleryNameMacroResolver resolver = new CmsGalleryNameMacroResolver(
-                    rootCms,
-                    content,
-                    fallbackLocale);
-                resolver.setKeepEmptyMacros(true);
-                fallbackStringValue = resolver.resolveMacros(originalFallbackStringValue);
+                if (null != fallbackValue) {
+                    // This is already resolved.
+                    fallbackStringValue = fallbackValue;
+                } else {
+                    String originalFallbackStringValue = content.getValue(valuePath, fallbackLocale).getStringValue(
+                        rootCms);
+                    CmsGalleryNameMacroResolver resolver = new CmsGalleryNameMacroResolver(
+                        rootCms,
+                        content,
+                        fallbackLocale);
+                    resolver.setKeepEmptyMacros(true);
+                    fallbackStringValue = resolver.resolveMacros(originalFallbackStringValue);
+                }
             }
             if (null != fallbackStringValue) {
                 fallbackStringValue = fallbackStringValue.trim();
             }
             return stringValueToMap.equals(fallbackStringValue);
         }
+
         return false;
     }
 
@@ -5329,6 +5356,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                                 || isLocalePropertyValueEqualToFallback(
                                     rootCms,
                                     content,
+                                    mapping,
                                     valuePath,
                                     valueIndex,
                                     valueLocale,
@@ -5366,11 +5394,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                                 || isLocalePropertyValueEqualToFallback(
                                     rootCms,
                                     content,
+                                    mapping,
                                     valuePath,
                                     valueIndex,
                                     valueLocale,
                                     locale,
-                                    true,
+                                    false,
                                     stringValue);
                             rootCms.writePropertyObject(
                                 filename,
