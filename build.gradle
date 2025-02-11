@@ -284,6 +284,7 @@ jar {
     manifest {
         attributes 'Implementation-Title': 'Alkacon OpenCms',
         'Implementation-Version': archiveVersion,
+        'Build-Time': new java.util.Date().format("yyyy-MM-dd HH:mm:ss"),
         'OpenCms-Localization': 'en'
     }
     archiveBaseName = 'opencms-core'

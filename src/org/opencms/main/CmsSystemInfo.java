@@ -39,6 +39,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.jar.JarFile;
 
 /**
  * Provides access to system wide "read only" information about the running OpenCms instance.<p>
@@ -449,19 +450,6 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the filename of the log file (in the "real" file system).<p>
-     *
-     * If the method returns <code>null</code>, this means that the log
-     * file is not managed by OpenCms.<p>
-     *
-     * @return the filename of the log file (in the "real" file system)
-     */
-    public String getLogFileRfsPath() {
-
-        return CmsLog.getLogFileRfsPath();
-    }
-
-    /**
      * Returns the absolute path to the folder of the main OpenCms log file
      * (in the "real" file system).<p>
      *
@@ -474,6 +462,19 @@ public class CmsSystemInfo {
     public String getLogFileRfsFolder() {
 
         return CmsLog.getLogFileRfsFolder();
+    }
+
+    /**
+     * Returns the filename of the log file (in the "real" file system).<p>
+     *
+     * If the method returns <code>null</code>, this means that the log
+     * file is not managed by OpenCms.<p>
+     *
+     * @return the filename of the log file (in the "real" file system)
+     */
+    public String getLogFileRfsPath() {
+
+        return CmsLog.getLogFileRfsPath();
     }
 
     /**
@@ -890,7 +891,22 @@ public class CmsSystemInfo {
             if (!"version.number".equals(key) && !"version.id".equals(key) && !key.startsWith("nicename")) {
                 String value = props.getProperty(key);
                 String nicename = props.getProperty("nicename." + key, key);
-                m_buildInfo.put(key, new BuildInfoItem(value, nicename, key));
+                if ("build.date".equals(key) && CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+                    try (JarFile jarFile = new JarFile(
+                        new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI()))) {
+                        m_buildInfo.put(
+                            key,
+                            new BuildInfoItem(
+                                jarFile.getManifest().getMainAttributes().getValue("Build-Time") + " (manual build)",
+                                nicename,
+                                key));
+                    } catch (Exception e) {
+                        // when running test cases there is no JAR file
+                        m_buildInfo.put(key, new BuildInfoItem("not set (manual build)", nicename, key));
+                    }
+                } else {
+                    m_buildInfo.put(key, new BuildInfoItem(value, nicename, key));
+                }
             }
         }
         // make the map unmodifiable
