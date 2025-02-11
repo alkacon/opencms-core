@@ -1665,6 +1665,7 @@ public final class CmsContentEditor extends CmsEditorBase {
             renderFormContent();
             fixFocus();
         }
+        getValidationHandler().setSynchronizedValues(m_definitions.get(m_locale).getSynchronizations());
         if (contentDefinition.isPerformedAutocorrection()) {
             CmsNotification.get().send(
                 CmsNotification.Type.NORMAL,
@@ -2291,7 +2292,6 @@ public final class CmsContentEditor extends CmsEditorBase {
         Map<String, List<CmsPair<List<CmsPair<String, Integer>>, String>>> issueInformation) {
 
         I_CmsWidgetService service = getWidgetService();
-        CmsDebugLog.consoleLogObject(service);
         Map<String, List<String>> resultMap = new TreeMap<>();
         for (Entry<String, List<CmsPair<List<CmsPair<String, Integer>>, String>>> e : issueInformation.entrySet()) {
             String localeName = e.getKey();
