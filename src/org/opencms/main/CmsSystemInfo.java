@@ -902,7 +902,7 @@ public class CmsSystemInfo {
                                 key));
                     } catch (Exception e) {
                         // when running test cases there is no JAR file
-                        m_buildInfo.put(key, new BuildInfoItem("not set (manual build)", nicename, key));
+                        m_buildInfo.put(key, new BuildInfoItem("(not set, manual build)", nicename, key));
                     }
                 } else {
                     m_buildInfo.put(key, new BuildInfoItem(value, nicename, key));
