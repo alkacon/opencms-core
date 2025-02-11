@@ -813,7 +813,7 @@ public class CmsResourceTable extends CustomComponent {
         }
         // The while loop iterated "up" the category tree, we want the category titles in "down" direction
         Collections.reverse(components);
-        return Joiner.on("/").join(components);
+        return Joiner.on(" / ").join(components);
     }
 
     /**
