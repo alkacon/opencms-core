@@ -91,6 +91,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.ComparatorUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.logging.Log;
 
@@ -157,6 +158,51 @@ public class CmsResourceTable extends CustomComponent {
      * or when other operations (sorting, filtering) need it.
      */
     public static class CategoryLabel extends Composite implements Comparable<CategoryLabel> {
+
+        /**
+         * Holds the data to display for a single category.
+         */
+        class CategoryItem {
+
+            /** The title to display. */
+            private String m_title;
+
+            /** The background color. */
+            private String m_background;
+
+            /**
+             * Creates a new instance.
+             *
+             * @param title the title
+             * @param background the background color
+             */
+            public CategoryItem(String title, String background) {
+
+                super();
+                m_title = title;
+                m_background = background;
+            }
+
+            /**
+             * Gets the background color.
+             *
+             * @return the background color
+             */
+            public String getBackground() {
+
+                return m_background;
+            }
+
+            /**
+             * Gets the title.
+             *
+             * @return the title
+             */
+            public String getTitle() {
+
+                return m_title;
+            }
+        }
 
         /** Serial version id. */
         private static final long serialVersionUID = 1L;
@@ -263,23 +309,35 @@ public class CmsResourceTable extends CustomComponent {
                         categoriesToDisplay.removeIf(cat -> parents.contains(new CmsPath(cat.getPath())));
                     }
 
-                    List<String> titles = new ArrayList<>();
-                    for (CmsCategory category : categoriesToDisplay) {
-                        titles.add(
-                            fullPath ? getCompositeCategoryTitle(categoriesByPath, category) : category.getTitle());
-                    }
-
-                    Collections.sort(titles, String.CASE_INSENSITIVE_ORDER);
+                    List<CategoryItem> items = categoriesToDisplay.stream().map(
+                        cat -> new CategoryItem(
+                            fullPath ? getCompositeCategoryTitle(categoriesByPath, cat) : cat.getTitle(),
+                            cat.getBackground())).collect(Collectors.toList());
+                    // Use same comparison criteria for individual category titles as for the complete column.
+                    Comparator<CategoryItem> comparator = ComparatorUtils.transformedComparator(
+                        CATEGORY_COMPARATOR,
+                        item -> item.getTitle());
+                    Collections.sort(items, comparator);
                     // Comma-separated list of titles, for tooltip, sorting and filtering
-                    m_value = Joiner.on(", ").join(titles);
+                    m_value = items.stream().map(item -> item.getTitle()).collect(Collectors.joining(", "));
                     m_label.setDescription(m_value);
 
                     // Assemble HTML based on the titles and fill the widget with it.
-                    String html = titles.stream().flatMap(
-                        part -> Arrays.asList(
-                            "<div class='o-category-label-category'>",
-                            CmsEncoder.escapeXml(part),
-                            "</div>").stream()).collect(Collectors.joining(""));
+                    String html = items.stream().flatMap(item -> {
+                        String colorStyle = "";
+                        String bg = item.getBackground();
+                        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(bg)) {
+                            bg = bg.trim();
+                            colorStyle = " style='background-color: " + bg + " !important;' ";
+                        }
+                        return Arrays.asList(
+                            "<div class='o-category-label-category' ",
+                            colorStyle,
+                            ">",
+                            CmsEncoder.escapeXml(item.getTitle()),
+                            "</div>").stream();
+                    }).collect(Collectors.joining(""));
+
                     m_label.setContentMode(ContentMode.HTML);
                     m_label.setValue(html);
 

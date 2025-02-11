@@ -30,10 +30,13 @@ package org.opencms.relations;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Represents a category, that is just a folder.<p>
@@ -53,6 +56,9 @@ import java.io.Serializable;
  */
 public class CmsCategory implements Comparable<CmsCategory>, Serializable {
 
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsCategory.class);
+
     /** The serialization id. */
     private static final long serialVersionUID = -6395887983124249138L;
 
@@ -61,6 +67,9 @@ public class CmsCategory implements Comparable<CmsCategory>, Serializable {
 
     /** The description of the category. */
     private String m_description;
+
+    /** Background color to use for the category in the explorer's 'Categories'  column. */
+    private String m_background;
 
     /** The path of the category. */
     private String m_path;
@@ -82,6 +91,7 @@ public class CmsCategory implements Comparable<CmsCategory>, Serializable {
      * @param description the new description
      */
     public CmsCategory(CmsCategory other, String title, String description) {
+
         m_basePath = other.m_basePath;
 
         m_path = other.m_path;
@@ -89,6 +99,7 @@ public class CmsCategory implements Comparable<CmsCategory>, Serializable {
         m_structureId = other.m_structureId;
         m_description = description != null ? description : other.m_description;
         m_title = title != null ? title : other.m_title;
+        m_background = other.m_background;
     }
 
     /**
@@ -99,10 +110,17 @@ public class CmsCategory implements Comparable<CmsCategory>, Serializable {
      * @param title the title of the category
      * @param description the description of the category
      * @param baseFolder the base categories folder
+     * @param background the background color for displaying the category in the explorer file table (in 6 digit hexadecimal form, e.g. #aabbcc), or null
      *
      * @throws CmsException if the root path does not match the given base folder
      */
-    public CmsCategory(CmsUUID structureId, String rootPath, String title, String description, String baseFolder)
+    public CmsCategory(
+        CmsUUID structureId,
+        String rootPath,
+        String title,
+        String description,
+        String baseFolder,
+        String background)
     throws CmsException {
 
         m_structureId = structureId;
@@ -111,6 +129,7 @@ public class CmsCategory implements Comparable<CmsCategory>, Serializable {
         m_description = description;
         m_path = getCategoryPath(m_rootPath, baseFolder);
         m_basePath = m_rootPath.substring(0, m_rootPath.length() - m_path.length());
+        m_background = background;
     }
 
     /**
@@ -181,6 +200,18 @@ public class CmsCategory implements Comparable<CmsCategory>, Serializable {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Gets the configured background color for the category in the 'Categories' explorer column.
+     *
+     * <p>The color should consist of 6 hex digits preceded by a hash symbol (#aabbcc).
+     *
+     * @return the background color, or null if it's not set
+     */
+    public String getBackground() {
+
+        return m_background;
     }
 
     /**
@@ -278,4 +309,5 @@ public class CmsCategory implements Comparable<CmsCategory>, Serializable {
 
         return "[" + CmsCategory.class.getSimpleName() + "/" + System.identityHashCode(this) + ": " + m_rootPath + " ]";
     }
+
 }

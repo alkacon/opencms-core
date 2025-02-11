@@ -108,6 +108,11 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
      * */
     public static final String PROPERTY_CATEGORY_HIDDEN = "category.hidden";
 
+    /**
+     * Property for configuring background color for a category in the explorer's category column.
+     **/
+    public static final String PROPERTY_CATEGORY_BACKGROUND = "category.background";
+
     /** The property to read an additional category folder from.  */
     public static final String PROPERTY_CATEGORY_REPOSITORY = "category.repository";
 

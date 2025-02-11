@@ -49,6 +49,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 
@@ -65,6 +66,9 @@ public class CmsCategoryService {
 
     /** The centralized path for categories. */
     public static final String CENTRALIZED_REPOSITORY = "/system/categories/";
+
+    /** Regex for validating colors in the category.background property. */
+    public static final Pattern COLOR_PATTERN = Pattern.compile("(?i)#[0-9a-f]{6}");
 
     /** The folder for the local category repositories. */
     public static final String REPOSITORY_BASE_FOLDER = "/.categories/";
@@ -272,12 +276,25 @@ public class CmsCategoryService {
 
         CmsProperty title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
         CmsProperty description = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
+        CmsProperty background = cms.readPropertyObject(
+            resource,
+            CmsPropertyDefinition.PROPERTY_CATEGORY_BACKGROUND,
+            false);
+        String backgroundValue = background.getValue();
+        if (backgroundValue != null) {
+            backgroundValue = backgroundValue.trim();
+            if (!COLOR_PATTERN.matcher(backgroundValue).matches()) {
+                LOG.warn("Invalid category background color '" + backgroundValue + "' for " + resource.getRootPath());
+                backgroundValue = null;
+            }
+        }
         return new CmsCategory(
             resource.getStructureId(),
             resource.getRootPath(),
             title.getValue(resource.getName()),
             description.getValue(""),
-            getRepositoryBaseFolderName(cms));
+            getRepositoryBaseFolderName(cms),
+            backgroundValue);
     }
 
     /**
@@ -442,7 +459,9 @@ public class CmsCategoryService {
                 CmsPropertyDefinition.PROPERTY_DESCRIPTION,
                 false,
                 locale).getValue();
-            return new CmsCategory(category, title, description);
+            CmsCategory result = new CmsCategory(category, title, description);
+            return result;
+
         } catch (Exception e) {
             LOG.error("Could not read localized category: " + e.getLocalizedMessage(), e);
             return category;
