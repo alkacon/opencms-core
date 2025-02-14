@@ -77,6 +77,7 @@ public final class AllTests {
         suite.addTest(new TestSuite(TestCmsManyToOneMap.class));
         suite.addTest(new TestSuite(TestCmsPathMap.class));
         suite.addTest(new TestSuite(TestCmsHtmlValidator.class));
+        suite.addTest(new TestSuite(TestCmsColorContrastCalculator.class));
         //$JUnit-END$
         return suite;
     }
