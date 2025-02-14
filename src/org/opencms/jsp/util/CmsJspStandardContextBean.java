@@ -86,6 +86,7 @@ import org.opencms.ui.apps.CmsEditor;
 import org.opencms.ui.apps.CmsEditorConfiguration;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditor;
 import org.opencms.util.CmsCollectionsGenericWrapper;
+import org.opencms.util.CmsColorContrastCalculator;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -527,7 +528,6 @@ public final class CmsJspStandardContextBean {
 
             return getFunctionDetailLink(cms, prefix, inputStr, false);
         }
-
     }
 
     /**
@@ -755,6 +755,9 @@ public final class CmsJspStandardContextBean {
 
     /** The logger instance for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsJspStandardContextBean.class);
+
+    /** Used for color contrast calculations. */
+    private static final CmsColorContrastCalculator m_color = new CmsColorContrastCalculator();
 
     /** OpenCms user context. */
     protected CmsObject m_cms;
@@ -1339,6 +1342,16 @@ public final class CmsJspStandardContextBean {
             LOG.error(e.getLocalizedMessage(), e);
             return null;
         }
+    }
+
+    /**
+     * Gets the bean to use for color calculations.
+     *
+     * @return the bean for color calculation
+     */
+    public CmsColorContrastCalculator getColor() {
+
+        return m_color;
     }
 
     /**

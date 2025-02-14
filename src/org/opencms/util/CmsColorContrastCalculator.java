@@ -41,53 +41,24 @@ import java.util.concurrent.ConcurrentHashMap;
  *   <li>Adjust non-compliant colors to meet contrast requirements</li>
  * </ul>
  *
- * The class implements the singleton pattern for efficient caching of luminance calculations.
- * All calculations follow the WCAG 2.2 specifications for relative luminance and contrast ratios.
- *
  * Key features:
  * <ul>
  *   <li>Supports both hex (#ffffff) and RGB ([255,255,255]) color formats</li>
  *   <li>Implements WCAG AA standard minimum contrast ratio of 4.5:1 for normal text</li>
  *   <li>Provides automatic adjustments of non-compliant colors</li>
  *   <li>Uses caching to optimize performance for repeated calculations</li>
- *   <li>Thread-safe implementation</li>
  * </ul>
  *
  * @see <a href="https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html">WCAG 2.2 Contrast Guidelines</a>
  */
 public final class CmsColorContrastCalculator {
 
-    /** Lock object for synchronization. */
-    private static final Object LOCK = new Object();
-
-    /** The single instance. */
-    private static CmsColorContrastCalculator m_instance;
-
     /** Cache for precomputed luminance values. */
-    private final Map<String, Double> m_luminanceCache;
+    private Map<String, Double> m_luminanceCache;
 
-    /**
-     * Private constructor to enforce singleton pattern.
-     */
-    private CmsColorContrastCalculator() {
+    public CmsColorContrastCalculator() {
+
         m_luminanceCache = new ConcurrentHashMap<>();
-    }
-
-    /**
-     * Returns the initialized calculator instance.
-     *
-     * @return the calculator instance
-     */
-    public static CmsColorContrastCalculator getInstance() {
-        if (m_instance != null) {
-            return m_instance;
-        }
-        synchronized (LOCK) {
-            if (m_instance == null) {
-                m_instance = new CmsColorContrastCalculator();
-            }
-        }
-        return m_instance;
     }
 
     /**
@@ -101,6 +72,7 @@ public final class CmsColorContrastCalculator {
      * @return contrast ratio between 1:1 and 21:1
      */
     public double getContrast(String bgHex, String fgHex) {
+
         int[] bgRgb = hexToRgb(normalizeHex(bgHex));
         int[] fgRgb = hexToRgb(normalizeHex(fgHex));
         return calculateContrastRatio(bgRgb, fgRgb);
@@ -116,6 +88,7 @@ public final class CmsColorContrastCalculator {
      * @throws IllegalArgumentException if RGB values are invalid
      */
     public double getContrastRgb(int[] bgRgb, int[] fgRgb) {
+
         validateRgb(bgRgb);
         validateRgb(fgRgb);
         return calculateContrastRatio(bgRgb, fgRgb);
@@ -129,6 +102,7 @@ public final class CmsColorContrastCalculator {
      * @return "#000000" or "#ffffff" depending on contrast
      */
     public String getForeground(String bgHex) {
+
         int[] bgRgb = hexToRgb(normalizeHex(bgHex));
         return getForegroundRgb(bgRgb);
     }
@@ -142,6 +116,7 @@ public final class CmsColorContrastCalculator {
      * @return original foreground color if compliant, otherwise black or white
      */
     public String getForegroundCheck(String bgHex, String fgHex) {
+
         int[] bgRgb = hexToRgb(normalizeHex(bgHex));
         int[] fgRgb = hexToRgb(normalizeHex(fgHex));
         return getForegroundCheckRgb(bgRgb, fgRgb);
@@ -156,11 +131,10 @@ public final class CmsColorContrastCalculator {
      * @return original foreground color if compliant, otherwise black or white
      */
     public String getForegroundCheckRgb(int[] bgRgb, int[] fgRgb) {
+
         validateRgb(bgRgb);
         validateRgb(fgRgb);
-        return getHasSufficientContrastRgb(bgRgb, fgRgb)
-            ? rgbToHex(fgRgb)
-            : getForegroundRgb(bgRgb);
+        return getHasSufficientContrastRgb(bgRgb, fgRgb) ? rgbToHex(fgRgb) : getForegroundRgb(bgRgb);
     }
 
     /**
@@ -173,6 +147,7 @@ public final class CmsColorContrastCalculator {
      * @throws IllegalArgumentException if RGB values are invalid
      */
     public String getForegroundRgb(int[] bgRgb) {
+
         validateRgb(bgRgb);
         // Use luminance threshold of 0.179 (true middle point between black and white luminance)
         // This is more efficient than calculating contrast ratios with both black and white
@@ -189,11 +164,12 @@ public final class CmsColorContrastCalculator {
      * @return either the original color if compliant, or a suggested compliant alternative
      */
     public String getForegroundSuggest(String bgHex, String possibleFgHex) {
+
         int[] bgRgb = hexToRgb(normalizeHex(bgHex));
         int[] possibleFgRgb = hexToRgb(normalizeHex(possibleFgHex));
         return getHasSufficientContrastRgb(bgRgb, possibleFgRgb)
-            ? possibleFgHex
-            : getClosestCompliantColor(bgRgb, possibleFgRgb);
+        ? possibleFgHex
+        : getClosestCompliantColor(bgRgb, possibleFgRgb);
     }
 
     /**
@@ -207,11 +183,12 @@ public final class CmsColorContrastCalculator {
      * @throws IllegalArgumentException if RGB values are invalid
      */
     public String getForegroundSuggestRgb(int[] bgRgb, int[] possibleFgRgb) {
+
         validateRgb(bgRgb);
         validateRgb(possibleFgRgb);
         return getHasSufficientContrastRgb(bgRgb, possibleFgRgb)
-            ? rgbToHex(possibleFgRgb)
-            : getClosestCompliantColor(bgRgb, possibleFgRgb);
+        ? rgbToHex(possibleFgRgb)
+        : getClosestCompliantColor(bgRgb, possibleFgRgb);
     }
 
     /**
@@ -224,6 +201,7 @@ public final class CmsColorContrastCalculator {
      * @return true if contrast ratio is at least 4.5:1
      */
     public boolean getHasSufficientContrast(String bgHex, String fgHex) {
+
         return getHasSufficientContrast(bgHex, fgHex, 4.5); // Default threshold
     }
 
@@ -241,6 +219,7 @@ public final class CmsColorContrastCalculator {
      * @return true if contrast ratio meets or exceeds the threshold
      */
     public boolean getHasSufficientContrast(String bgHex, String fgHex, double threshold) {
+
         return getContrast(bgHex, fgHex) >= threshold;
     }
 
@@ -255,10 +234,12 @@ public final class CmsColorContrastCalculator {
      * @throws IllegalArgumentException if RGB values are invalid
      */
     public boolean getHasSufficientContrastRgb(int[] bgRgb, int[] fgRgb) {
+
         return calculateContrastRatio(bgRgb, fgRgb) >= 4.5;
     }
 
     private double calculateContrastRatio(int[] color1, int[] color2) {
+
         double l1 = getCachedLuminance(color1);
         double l2 = getCachedLuminance(color2);
         // Ensure lighter luminance is always first in formula
@@ -268,8 +249,8 @@ public final class CmsColorContrastCalculator {
         return (lighter + 0.05) / (darker + 0.05);
     }
 
-
     private double calculateRelativeLuminance(int[] rgb) {
+
         // WCAG relative luminance formula for sRGB
         double r = normalizeChannel(rgb[0]);
         double g = normalizeChannel(rgb[1]);
@@ -279,32 +260,32 @@ public final class CmsColorContrastCalculator {
     }
 
     private double getCachedLuminance(int[] rgb) {
+
         String hex = rgbToHex(rgb);
         return m_luminanceCache.computeIfAbsent(hex, k -> calculateRelativeLuminance(rgb));
     }
 
     private String getClosestCompliantColor(int[] bgRgb, int[] fgRgb) {
+
         int step = 5; // Smaller steps for more precise adjustments
         int[] originalFgRgb = fgRgb.clone();
 
         // Try both lighter and darker variants
         for (int i = 0; i <= 255; i += step) {
             // Try lighter version
-            int[] lighterRgb = new int[]{
+            int[] lighterRgb = new int[] {
                 Math.min(originalFgRgb[0] + i, 255),
                 Math.min(originalFgRgb[1] + i, 255),
-                Math.min(originalFgRgb[2] + i, 255)
-            };
+                Math.min(originalFgRgb[2] + i, 255)};
             if (calculateContrastRatio(bgRgb, lighterRgb) >= 4.5) {
                 return rgbToHex(lighterRgb);
             }
 
             // Try darker version
-            int[] darkerRgb = new int[]{
+            int[] darkerRgb = new int[] {
                 Math.max(originalFgRgb[0] - i, 0),
                 Math.max(originalFgRgb[1] - i, 0),
-                Math.max(originalFgRgb[2] - i, 0)
-            };
+                Math.max(originalFgRgb[2] - i, 0)};
             if (calculateContrastRatio(bgRgb, darkerRgb) >= 4.5) {
                 return rgbToHex(darkerRgb);
             }
@@ -315,14 +296,15 @@ public final class CmsColorContrastCalculator {
     }
 
     private int[] hexToRgb(String hex) {
-        return new int[]{
+
+        return new int[] {
             Integer.parseInt(hex.substring(1, 3), 16),
             Integer.parseInt(hex.substring(3, 5), 16),
-            Integer.parseInt(hex.substring(5, 7), 16)
-        };
+            Integer.parseInt(hex.substring(5, 7), 16)};
     }
 
     private double normalizeChannel(int value) {
+
         // Convert to sRGB value
         double srgb = value / 255.0;
         // WCAG requires gamma correction
@@ -333,11 +315,10 @@ public final class CmsColorContrastCalculator {
     }
 
     private String normalizeHex(String hex) {
+
         hex = hex.toLowerCase().replace("#", "");
         if (hex.length() == 3) {
-            hex = "" + hex.charAt(0) + hex.charAt(0) +
-                   hex.charAt(1) + hex.charAt(1) +
-                   hex.charAt(2) + hex.charAt(2);
+            hex = "" + hex.charAt(0) + hex.charAt(0) + hex.charAt(1) + hex.charAt(1) + hex.charAt(2) + hex.charAt(2);
         }
         if (hex.length() != 6) {
             throw new IllegalArgumentException("Invalid hex color value: " + hex);
@@ -346,6 +327,7 @@ public final class CmsColorContrastCalculator {
     }
 
     private String rgbToHex(int[] rgb) {
+
         char[] hexChars = new char[7];
         hexChars[0] = '#';
         for (int i = 0; i < 3; i++) {
@@ -357,15 +339,28 @@ public final class CmsColorContrastCalculator {
     }
 
     private char toHexChar(int value) {
-        return (char) (value < 10 ? '0' + value : 'a' + (value - 10));
+
+        return (char)(value < 10 ? '0' + value : 'a' + (value - 10));
     }
 
     private void validateRgb(int[] rgb) {
-        if ((rgb.length != 3) || (rgb[0] < 0) || (rgb[0] > 255) || (rgb[1] < 0) || (rgb[1] > 255) || (rgb[2] < 0) || (rgb[2] > 255)) {
+
+        if ((rgb.length != 3)
+            || (rgb[0] < 0)
+            || (rgb[0] > 255)
+            || (rgb[1] < 0)
+            || (rgb[1] > 255)
+            || (rgb[2] < 0)
+            || (rgb[2] > 255)) {
             throw new IllegalArgumentException(
-                "Invalid RGB values: [" + rgb[0] + ", " + rgb[1] + ", " + rgb[2] + "]. " +
-                "Each value must be an integer between 0 and 255."
-            );
+                "Invalid RGB values: ["
+                    + rgb[0]
+                    + ", "
+                    + rgb[1]
+                    + ", "
+                    + rgb[2]
+                    + "]. "
+                    + "Each value must be an integer between 0 and 255.");
         }
     }
 }

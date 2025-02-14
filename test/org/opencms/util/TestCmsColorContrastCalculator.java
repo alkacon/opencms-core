@@ -47,12 +47,12 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
     public TestCmsColorContrastCalculator(String arg0) {
 
         super(arg0);
-        m_calculator = CmsColorContrastCalculator.getInstance();
+        m_calculator = new CmsColorContrastCalculator();
     }
-
 
     @Test
     public void testCommonUIColors() {
+
         // Test common UI color combinations
         assertTrue(m_calculator.getHasSufficientContrast("#ffffff", "#1a73e8")); // Google Blue
         assertFalse(m_calculator.getHasSufficientContrast("#ffffff", "#007bff")); // Bootstrap Primary
@@ -62,6 +62,7 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
 
     @Test
     public void testEdgeCases() {
+
         // Test identical colors (should have 1:1 contrast)
         assertEquals(1.0, m_calculator.getContrast("#ffffff", "#ffffff"), 0.01);
         assertEquals(1.0, m_calculator.getContrast("#000000", "#000000"), 0.01);
@@ -74,6 +75,7 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
 
     @Test
     public void testForegroundCheck() {
+
         // Test that compliant colors are preserved
         assertEquals("#000000", m_calculator.getForegroundCheck("#ffffff", "#000000")); // Keep black on white
         assertEquals("#ffffff", m_calculator.getForegroundCheck("#000000", "#ffffff")); // Keep white on black
@@ -97,6 +99,7 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
 
     @Test
     public void testForegroundSuggestions() {
+
         // Test color suggestions for non-compliant colors
         assertEquals("#000000", m_calculator.getForeground("#ffffff")); // White bg -> Black text
         assertEquals("#ffffff", m_calculator.getForeground("#000000")); // Black bg -> White text
@@ -113,22 +116,23 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
         String fgHex = "#808080";
 
         suggestion = m_calculator.getForegroundSuggest(bgHex, fgHex);
-        System.out.println("Fg "+ fgHex + " on Bg " + bgHex +  " > " + suggestion);
+        System.out.println("Fg " + fgHex + " on Bg " + bgHex + " > " + suggestion);
         assertTrue(m_calculator.getHasSufficientContrast(bgHex, suggestion));
 
         bgHex = "#b31b34";
         suggestion = m_calculator.getForegroundSuggest(bgHex, fgHex);
-        System.out.println("Fg "+ fgHex + " on Bg " + bgHex +  " > " + suggestion);
+        System.out.println("Fg " + fgHex + " on Bg " + bgHex + " > " + suggestion);
         assertTrue(m_calculator.getHasSufficientContrast(bgHex, suggestion));
 
         bgHex = "#00ffcc";
         suggestion = m_calculator.getForegroundSuggest(bgHex, fgHex);
-        System.out.println("Fg "+ fgHex + " on Bg " + bgHex +  " > " + suggestion);
+        System.out.println("Fg " + fgHex + " on Bg " + bgHex + " > " + suggestion);
         assertTrue(m_calculator.getHasSufficientContrast(bgHex, suggestion));
     }
 
     @Test
     public void testKnownContrastRatios() {
+
         // Test cases from WebAIM with known contrast ratios
         assertContrast("#000000", "#ffffff", 21.0); // Black on White
         assertContrast("#ffffff", "#000000", 21.0); // White on Black
@@ -143,6 +147,7 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
 
     @Test
     public void testWCAGCompliance() {
+
         // Test WCAG AA compliance (4.5:1 minimum for normal text)
         assertTrue(m_calculator.getHasSufficientContrast("#000000", "#ffffff")); // Black on White
         assertTrue(m_calculator.getHasSufficientContrast("#0000ff", "#ffffff")); // Blue on White
@@ -151,8 +156,8 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
     }
 
     private void assertContrast(String color1, String color2, double expectedRatio) {
+
         double actualRatio = m_calculator.getContrast(color1, color2);
-        assertEquals("Contrast ratio between " + color1 + " and " + color2,
-            expectedRatio, actualRatio, 0.01);
+        assertEquals("Contrast ratio between " + color1 + " and " + color2, expectedRatio, actualRatio, 0.01);
     }
 }
