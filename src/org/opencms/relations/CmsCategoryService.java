@@ -279,7 +279,7 @@ public class CmsCategoryService {
         CmsProperty background = cms.readPropertyObject(
             resource,
             CmsPropertyDefinition.PROPERTY_CATEGORY_BACKGROUND,
-            false);
+            true);
         String backgroundValue = background.getValue();
         if (backgroundValue != null) {
             backgroundValue = backgroundValue.trim();

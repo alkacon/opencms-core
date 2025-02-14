@@ -72,6 +72,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.util.I_CmsItemSorter;
+import org.opencms.util.CmsColorContrastCalculator;
 import org.opencms.util.CmsPath;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -328,7 +329,13 @@ public class CmsResourceTable extends CustomComponent {
                         String bg = item.getBackground();
                         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(bg)) {
                             bg = bg.trim();
-                            colorStyle = " style='background-color: " + bg + " !important;' ";
+                            String fgSuffix = "";
+                            try {
+                                fgSuffix = " color: " + m_contrastCalculator.getForeground(bg) + " !important;";
+                            } catch (Exception e) {
+                                LOG.error(e.getLocalizedMessage(), e);
+                            }
+                            colorStyle = " style='background-color: " + bg + " !important; " + fgSuffix + "' ";
                         }
                         return Arrays.asList(
                             "<div class='o-category-label-category' ",
@@ -586,6 +593,9 @@ public class CmsResourceTable extends CustomComponent {
             return getAllItemIds().size();
         }
     }
+
+    /** Used for calculating foreground colors for categories. */
+    private static final CmsColorContrastCalculator m_contrastCalculator = new CmsColorContrastCalculator();
 
     /** Flag to mark columns as initially collapsed.*/
     public static final int COLLAPSED = 1;
