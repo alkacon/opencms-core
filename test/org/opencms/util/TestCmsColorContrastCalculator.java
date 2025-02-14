@@ -131,6 +131,49 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
     }
 
     @Test
+    public void testInvalidHexValues() {
+        // Test invalid hex values
+        assertEquals(0.0, m_calculator.getContrast("not-a-color", "#ffffff"));
+        assertEquals(0.0, m_calculator.getContrast("#ffffff", "invalid"));
+        assertEquals(0.0, m_calculator.getContrast("#fff", "12345"));
+        assertEquals(0.0, m_calculator.getContrast("#12", "#ffffff"));
+        assertEquals(0.0, m_calculator.getContrast("#12345", "#ffffff"));
+        assertEquals(0.0, m_calculator.getContrast("", ""));
+        assertEquals(0.0, m_calculator.getContrast(null, "#ffffff"));
+        assertEquals(0.0, m_calculator.getContrast("#ffffff", null));
+
+        assertFalse(m_calculator.getHasSufficientContrast("", "#000000"));
+        assertFalse(m_calculator.getHasSufficientContrast(null, "#000"));
+        assertFalse(m_calculator.getHasSufficientContrast("#fffzzz", "#000"));
+
+        // Ensure valid hex values still work
+        assertTrue(m_calculator.getHasSufficientContrast("#ffffff", "#000000"));
+        assertTrue(m_calculator.getHasSufficientContrast("#fff", "#000"));
+    }
+
+    @Test
+    public void testInvalidInputHandling() {
+        // Test invalid inputs return red (#ff0000)
+        assertEquals("#ff0000", m_calculator.getForeground("invalid-color"));
+        assertEquals("#ff0000", m_calculator.getForeground(null));
+        assertEquals("#ff0000", m_calculator.getForeground(""));
+        assertEquals("#ff0000", m_calculator.getForeground("#12")); // Too short
+        assertEquals("#ff0000", m_calculator.getForeground("#12345")); // Wrong length
+
+        assertEquals("#ff0000", m_calculator.getForegroundCheck("not-a-color", "#ffffff"));
+        assertEquals("#ff0000", m_calculator.getForegroundCheck("#ffffff", "not-a-color"));
+        assertEquals("#ff0000", m_calculator.getForegroundCheck(null, null));
+        assertEquals("#ff0000", m_calculator.getForegroundCheck("", null));
+        assertEquals("#ff0000", m_calculator.getForegroundCheck("#12", "#ffffff"));
+
+        assertEquals("#ff0000", m_calculator.getForegroundSuggest("invalid", "#ffffff"));
+        assertEquals("#ff0000", m_calculator.getForegroundSuggest("#ffffff", "invalid"));
+        assertEquals("#ff0000", m_calculator.getForegroundSuggest(null, null));
+        assertEquals("#ff0000", m_calculator.getForegroundSuggest("#12", "#ffffff"));
+        assertEquals("#ff0000", m_calculator.getForegroundSuggest("#12345", "#ffffff"));
+    }
+
+    @Test
     public void testKnownContrastRatios() {
 
         // Test cases from WebAIM with known contrast ratios

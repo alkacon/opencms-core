@@ -65,6 +65,7 @@ public final class CmsColorContrastCalculator {
      * Calculates the contrast ratio between two colors according to WCAG 2.2 guidelines.
      * The contrast ratio formula is (L1 + 0.05) / (L2 + 0.05), where L1 is the lighter
      * relative luminance and L2 is the darker.
+     * Returns 0 if either parameter is invalid.
      *
      * @see <a href="https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html">WCAG 2.2 Contrast Guidelines</a>
      * @param bgHex background color in hex format (e.g., "#ffffff" or "#fff")
@@ -73,13 +74,12 @@ public final class CmsColorContrastCalculator {
      */
     public double getContrast(String bgHex, String fgHex) {
 
-        int[] bgRgb = hexToRgb(normalizeHex(bgHex));
-        int[] fgRgb = hexToRgb(normalizeHex(fgHex));
-        return calculateContrastRatio(bgRgb, fgRgb);
+        return getContrastRgb(hexToRgb(bgHex), hexToRgb(fgHex));
     }
 
     /**
      * Calculates the contrast ratio between two RGB colors according to WCAG 2.2 guidelines.
+     * Returns 0 if either parameter is invalid.
      *
      * @see <a href="https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html">WCAG 2.2 Contrast Guidelines</a>
      * @param bgRgb background color as RGB array [r, g, b] with values 0-255
@@ -89,27 +89,32 @@ public final class CmsColorContrastCalculator {
      */
     public double getContrastRgb(int[] bgRgb, int[] fgRgb) {
 
-        validateRgb(bgRgb);
-        validateRgb(fgRgb);
+        try {
+            validateRgb(bgRgb);
+            validateRgb(fgRgb);
+        } catch (IllegalArgumentException e) {
+            return 0.0; // Return zero for invalid input
+        }
         return calculateContrastRatio(bgRgb, fgRgb);
     }
 
     /**
      * Checks the background color and returns either black or white as foreground color,
      * choosing whichever provides better contrast according to WCAG guidelines.
+     * Returns red (#ff0000) if the parameter is invalid.
      *
      * @param bgHex background color in hex format
      * @return "#000000" or "#ffffff" depending on contrast
      */
     public String getForeground(String bgHex) {
 
-        int[] bgRgb = hexToRgb(normalizeHex(bgHex));
-        return getForegroundRgb(bgRgb);
+        return getForegroundRgb(hexToRgb(bgHex));
     }
 
     /**
      * Checks if the provided foreground color has sufficient contrast with the background.
      * If not, returns either black or white (whichever provides better contrast).
+     * Returns red (#ff0000) if either parameter is invalid.
      *
      * @param bgHex background color in hex format
      * @param fgHex foreground color to check in hex format
@@ -117,14 +122,13 @@ public final class CmsColorContrastCalculator {
      */
     public String getForegroundCheck(String bgHex, String fgHex) {
 
-        int[] bgRgb = hexToRgb(normalizeHex(bgHex));
-        int[] fgRgb = hexToRgb(normalizeHex(fgHex));
-        return getForegroundCheckRgb(bgRgb, fgRgb);
+        return getForegroundCheckRgb(hexToRgb(bgHex), hexToRgb(fgHex));
     }
 
     /**
      * RGB version of getForegroundCheck. Checks if the provided foreground color has sufficient
      * contrast with the background. If not, returns either black or white.
+     * Returns red (#ff0000) if either parameter is invalid.
      *
      * @param bgRgb background color as RGB array
      * @param fgRgb foreground color to check as RGB array
@@ -132,15 +136,19 @@ public final class CmsColorContrastCalculator {
      */
     public String getForegroundCheckRgb(int[] bgRgb, int[] fgRgb) {
 
-        validateRgb(bgRgb);
-        validateRgb(fgRgb);
+        try {
+            validateRgb(bgRgb);
+            validateRgb(fgRgb);
+        } catch (IllegalArgumentException e) {
+            return "#ff0000"; // Return red for invalid input
+        }
         return getHasSufficientContrastRgb(bgRgb, fgRgb) ? rgbToHex(fgRgb) : getForegroundRgb(bgRgb);
     }
 
     /**
      * Checks the RGB background color and returns either black or white as foreground color,
      * choosing whichever provides better contrast according to WCAG guidelines.
-     * Optimized to use luminance threshold instead of contrast ratio comparison.
+     * Returns red (#ff0000) if the parameter is invalid.
      *
      * @param bgRgb background color as RGB array [r, g, b]
      * @return "#000000" or "#ffffff" depending on contrast
@@ -148,7 +156,11 @@ public final class CmsColorContrastCalculator {
      */
     public String getForegroundRgb(int[] bgRgb) {
 
-        validateRgb(bgRgb);
+        try {
+            validateRgb(bgRgb);
+        } catch (IllegalArgumentException e) {
+            return "#ff0000"; // Return red for invalid input
+        }
         // Use luminance threshold of 0.179 (true middle point between black and white luminance)
         // This is more efficient than calculating contrast ratios with both black and white
         return getCachedLuminance(bgRgb) > 0.179 ? "#000000" : "#ffffff";
@@ -158,6 +170,7 @@ public final class CmsColorContrastCalculator {
      * Suggests a WCAG-compliant foreground color based on the given background color.
      * If the provided foreground color doesn't meet the minimum contrast ratio of 4.5:1,
      * returns an adjusted color that does.
+     * Returns red (#ff0000) if either parameter is invalid.
      *
      * @param bgHex background color in hex format
      * @param possibleFgHex proposed foreground color in hex format
@@ -165,17 +178,14 @@ public final class CmsColorContrastCalculator {
      */
     public String getForegroundSuggest(String bgHex, String possibleFgHex) {
 
-        int[] bgRgb = hexToRgb(normalizeHex(bgHex));
-        int[] possibleFgRgb = hexToRgb(normalizeHex(possibleFgHex));
-        return getHasSufficientContrastRgb(bgRgb, possibleFgRgb)
-        ? possibleFgHex
-        : getClosestCompliantColor(bgRgb, possibleFgRgb);
+        return getForegroundSuggestRgb(hexToRgb(bgHex), hexToRgb(possibleFgHex));
     }
 
     /**
      * Suggests a WCAG-compliant foreground color based on the given RGB background color.
      * If the provided foreground color doesn't meet the minimum contrast ratio of 4.5:1,
      * returns an adjusted color that does.
+     * Returns red (#ff0000) if either parameter is invalid.
      *
      * @param bgRgb background color as RGB array [r, g, b]
      * @param possibleFgRgb proposed foreground color as RGB array [r, g, b]
@@ -184,8 +194,12 @@ public final class CmsColorContrastCalculator {
      */
     public String getForegroundSuggestRgb(int[] bgRgb, int[] possibleFgRgb) {
 
-        validateRgb(bgRgb);
-        validateRgb(possibleFgRgb);
+        try {
+            validateRgb(bgRgb);
+            validateRgb(possibleFgRgb);
+        } catch (IllegalArgumentException e) {
+            return "#ff0000"; // Return red for invalid input
+        }
         return getHasSufficientContrastRgb(bgRgb, possibleFgRgb)
         ? rgbToHex(possibleFgRgb)
         : getClosestCompliantColor(bgRgb, possibleFgRgb);
@@ -194,6 +208,7 @@ public final class CmsColorContrastCalculator {
     /**
      * Checks if the contrast ratio between two colors meets the WCAG AA standard
      * minimum requirement of 4.5:1 for normal text.
+     * Returns false if either parameter is invalid.
      *
      * @see <a href="https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html">WCAG 2.2 Contrast Guidelines</a>
      * @param bgHex background color in hex format
@@ -202,30 +217,13 @@ public final class CmsColorContrastCalculator {
      */
     public boolean getHasSufficientContrast(String bgHex, String fgHex) {
 
-        return getHasSufficientContrast(bgHex, fgHex, 4.5); // Default threshold
-    }
-
-    /**
-     * Checks if the contrast ratio between two colors meets a specified threshold.
-     * WCAG 2.2 recommends:
-     * - 4.5:1 for normal text
-     * - 3:1 for large text
-     * - 3:1 for graphics and UI components
-     *
-     * @see <a href="https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html">WCAG 2.2 Contrast Guidelines</a>
-     * @param bgHex background color in hex format
-     * @param fgHex foreground color in hex format
-     * @param threshold minimum required contrast ratio
-     * @return true if contrast ratio meets or exceeds the threshold
-     */
-    public boolean getHasSufficientContrast(String bgHex, String fgHex, double threshold) {
-
-        return getContrast(bgHex, fgHex) >= threshold;
+        return getHasSufficientContrastRgb(hexToRgb(bgHex), hexToRgb(fgHex));
     }
 
     /**
      * Checks if the contrast ratio between two RGB colors meets the WCAG AA standard
      * minimum requirement of 4.5:1 for normal text.
+     * Returns false if either parameter is invalid.
      *
      * @see <a href="https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html">WCAG 2.2 Contrast Guidelines</a>
      * @param bgRgb background color as RGB array [r, g, b]
@@ -235,7 +233,7 @@ public final class CmsColorContrastCalculator {
      */
     public boolean getHasSufficientContrastRgb(int[] bgRgb, int[] fgRgb) {
 
-        return calculateContrastRatio(bgRgb, fgRgb) >= 4.5;
+        return getContrastRgb(bgRgb, fgRgb) >= 4.5;
     }
 
     private double calculateContrastRatio(int[] color1, int[] color2) {
@@ -297,10 +295,16 @@ public final class CmsColorContrastCalculator {
 
     private int[] hexToRgb(String hex) {
 
-        return new int[] {
-            Integer.parseInt(hex.substring(1, 3), 16),
-            Integer.parseInt(hex.substring(3, 5), 16),
-            Integer.parseInt(hex.substring(5, 7), 16)};
+        try {
+            hex = normalizeHex(hex);
+            return new int[] {
+                Integer.parseInt(hex.substring(1, 3), 16),
+                Integer.parseInt(hex.substring(3, 5), 16),
+                Integer.parseInt(hex.substring(5, 7), 16)
+            };
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
     private double normalizeChannel(int value) {
@@ -316,12 +320,12 @@ public final class CmsColorContrastCalculator {
 
     private String normalizeHex(String hex) {
 
+        if ((hex == null) || ((hex.length() != 4) && (hex.length() != 7))) {
+            throw new IllegalArgumentException("Invalid hex color value: " + hex);
+        }
         hex = hex.toLowerCase().replace("#", "");
         if (hex.length() == 3) {
             hex = "" + hex.charAt(0) + hex.charAt(0) + hex.charAt(1) + hex.charAt(1) + hex.charAt(2) + hex.charAt(2);
-        }
-        if (hex.length() != 6) {
-            throw new IllegalArgumentException("Invalid hex color value: " + hex);
         }
         return "#" + hex;
     }
@@ -345,6 +349,9 @@ public final class CmsColorContrastCalculator {
 
     private void validateRgb(int[] rgb) {
 
+        if (rgb == null) {
+            throw new IllegalArgumentException("Invalid RGB value: " + rgb);
+        }
         if ((rgb.length != 3)
             || (rgb[0] < 0)
             || (rgb[0] > 255)
