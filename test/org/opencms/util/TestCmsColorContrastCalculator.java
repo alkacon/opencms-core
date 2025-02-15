@@ -29,6 +29,10 @@ package org.opencms.util;
 
 import org.opencms.test.OpenCmsTestCase;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.Test;
 
 /**
@@ -51,13 +55,71 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
     }
 
     @Test
+    public void testcheckForeground() {
+
+        // Test that compliant colors are preserved
+        assertEquals("#000000", m_calculator.checkForeground("#ffffff", "#000000")); // Keep black on white
+        assertEquals("#ffffff", m_calculator.checkForeground("#000000", "#ffffff")); // Keep white on black
+        assertEquals("#000000", m_calculator.checkForeground("#ffff00", "#000000")); // Keep black on yellow
+
+        // Test that non-compliant colors are replaced with black or white
+        assertEquals("#000000", m_calculator.checkForeground("#ffffff", "#777777")); // Replace gray with black on white
+        assertEquals("#ffffff", m_calculator.checkForeground("#000000", "#444444")); // Replace gray with white on black
+        assertEquals("#ffffff", m_calculator.checkForeground("#0000ff", "#aaaaaa")); // Replace gray with white on blue
+
+        // Test edge cases
+        assertEquals("#000000", m_calculator.checkForeground("#ffffff", "#ffffff")); // White on white -> black
+        assertEquals("#ffffff", m_calculator.checkForeground("#000000", "#000000")); // Black on black -> white
+
+        // Test with various background colors
+        String fgColor = "#777777"; // A non-compliant gray
+        assertEquals("#000000", m_calculator.checkForeground("#ffff00", fgColor)); // Yellow bg -> black
+        assertEquals("#ffffff", m_calculator.checkForeground("#0000ff", fgColor)); // Blue bg -> white
+        assertEquals("#000000", m_calculator.checkForeground("#00ffcc", fgColor)); // Cyan bg -> black
+    }
+
+    @Test
+    public void testcheckForegroundWithList() {
+        // Test list with compliant colors
+        List<String> colors = Arrays.asList("#eee", "#000000", "#666666");
+        assertEquals("#000000", m_calculator.checkForegroundList("#ffffff", colors)); // Should pick first compliant color
+
+        // Test list with no compliant colors
+        colors = Arrays.asList("#999999", "#aaaaaa", "#cccccc");
+        assertEquals("#000000", m_calculator.checkForegroundList("#ffffff", colors)); // Should return black for white background
+
+        // Test empty list
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND,
+                m_calculator.checkForegroundList("#ffffff", Collections.emptyList()));
+
+        // Test null list
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.checkForegroundList("#ffffff", null));
+
+        // Test list with invalid colors
+        colors = Arrays.asList("invalid", "not-a-color", "#zzzzzz");
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.checkForegroundList("#ffffff", colors));
+
+        // Test list with mix of valid and invalid colors
+        colors = Arrays.asList("invalid", "#333", "not-a-color");
+        assertEquals("#333333", m_calculator.checkForegroundList("#ffffff", colors)); // Should find the valid compliant color
+
+        // Test list with valid but non-compliant colors
+        colors = Arrays.asList("#777777", "#888888", "#999999");
+        assertEquals("#000000", m_calculator.checkForegroundList("#ffffff", colors)); // Should return black for white background
+
+        // Test with invalid background color
+        colors = Arrays.asList("#000000", "#ffffff");
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.checkForegroundList("invalid", colors));
+    }
+
+    @Test
     public void testCommonUIColors() {
 
         // Test common UI color combinations
-        assertTrue(m_calculator.getHasSufficientContrast("#ffffff", "#1a73e8")); // Google Blue
-        assertFalse(m_calculator.getHasSufficientContrast("#ffffff", "#007bff")); // Bootstrap Primary
-        assertTrue(m_calculator.getHasSufficientContrast("#ffffff", "#dc3545")); // Bootstrap Danger
-        assertFalse(m_calculator.getHasSufficientContrast("#ffffff", "#ffc107")); // Bootstrap Warning
+        assertTrue(m_calculator.hasSufficientContrast("#ffffff", "#1a73e8")); // Google Blue
+        assertFalse(m_calculator.hasSufficientContrast("#ffffff", "#007bff")); // Bootstrap Primary
+        assertTrue(m_calculator.hasSufficientContrast("#ffffff", "#dc3545")); // Bootstrap Danger
+        assertFalse(m_calculator.hasSufficientContrast("#ffffff", "#ffc107")); // Bootstrap Warning
     }
 
     @Test
@@ -69,32 +131,8 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
         assertEquals(1.0, m_calculator.getContrast("#ff0000", "#ff0000"), 0.01);
 
         // Test very similar colors
-        assertFalse(m_calculator.getHasSufficientContrast("#fefefe", "#ffffff"));
-        assertFalse(m_calculator.getHasSufficientContrast("#010101", "#000000"));
-    }
-
-    @Test
-    public void testForegroundCheck() {
-
-        // Test that compliant colors are preserved
-        assertEquals("#000000", m_calculator.getForegroundCheck("#ffffff", "#000000")); // Keep black on white
-        assertEquals("#ffffff", m_calculator.getForegroundCheck("#000000", "#ffffff")); // Keep white on black
-        assertEquals("#000000", m_calculator.getForegroundCheck("#ffff00", "#000000")); // Keep black on yellow
-
-        // Test that non-compliant colors are replaced with black or white
-        assertEquals("#000000", m_calculator.getForegroundCheck("#ffffff", "#777777")); // Replace gray with black on white
-        assertEquals("#ffffff", m_calculator.getForegroundCheck("#000000", "#444444")); // Replace gray with white on black
-        assertEquals("#ffffff", m_calculator.getForegroundCheck("#0000ff", "#aaaaaa")); // Replace gray with white on blue
-
-        // Test edge cases
-        assertEquals("#000000", m_calculator.getForegroundCheck("#ffffff", "#ffffff")); // White on white -> black
-        assertEquals("#ffffff", m_calculator.getForegroundCheck("#000000", "#000000")); // Black on black -> white
-
-        // Test with various background colors
-        String fgColor = "#777777"; // A non-compliant gray
-        assertEquals("#000000", m_calculator.getForegroundCheck("#ffff00", fgColor)); // Yellow bg -> black
-        assertEquals("#ffffff", m_calculator.getForegroundCheck("#0000ff", fgColor)); // Blue bg -> white
-        assertEquals("#000000", m_calculator.getForegroundCheck("#00ffcc", fgColor)); // Cyan bg -> black
+        assertFalse(m_calculator.hasSufficientContrast("#fefefe", "#ffffff"));
+        assertFalse(m_calculator.hasSufficientContrast("#010101", "#000000"));
     }
 
     @Test
@@ -106,28 +144,28 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
         assertEquals("#ffffff", m_calculator.getForeground("#0000ff")); // Blue bg -> White text
 
         // Test suggestions maintain WCAG compliance
-        String suggestion = m_calculator.getForegroundSuggest("#ffffff", "#777777");
-        assertTrue(m_calculator.getHasSufficientContrast("#ffffff", suggestion));
+        String suggestion = m_calculator.suggestForeground("#ffffff", "#777777");
+        assertTrue(m_calculator.hasSufficientContrast("#ffffff", suggestion));
 
-        suggestion = m_calculator.getForegroundSuggest("#000000", "#444444");
-        assertTrue(m_calculator.getHasSufficientContrast("#000000", suggestion));
+        suggestion = m_calculator.suggestForeground("#000000", "#444444");
+        assertTrue(m_calculator.hasSufficientContrast("#000000", suggestion));
 
         String bgHex = "#dd00dd";
         String fgHex = "#808080";
 
-        suggestion = m_calculator.getForegroundSuggest(bgHex, fgHex);
+        suggestion = m_calculator.suggestForeground(bgHex, fgHex);
         System.out.println("Fg " + fgHex + " on Bg " + bgHex + " > " + suggestion);
-        assertTrue(m_calculator.getHasSufficientContrast(bgHex, suggestion));
+        assertTrue(m_calculator.hasSufficientContrast(bgHex, suggestion));
 
         bgHex = "#b31b34";
-        suggestion = m_calculator.getForegroundSuggest(bgHex, fgHex);
+        suggestion = m_calculator.suggestForeground(bgHex, fgHex);
         System.out.println("Fg " + fgHex + " on Bg " + bgHex + " > " + suggestion);
-        assertTrue(m_calculator.getHasSufficientContrast(bgHex, suggestion));
+        assertTrue(m_calculator.hasSufficientContrast(bgHex, suggestion));
 
         bgHex = "#00ffcc";
-        suggestion = m_calculator.getForegroundSuggest(bgHex, fgHex);
+        suggestion = m_calculator.suggestForeground(bgHex, fgHex);
         System.out.println("Fg " + fgHex + " on Bg " + bgHex + " > " + suggestion);
-        assertTrue(m_calculator.getHasSufficientContrast(bgHex, suggestion));
+        assertTrue(m_calculator.hasSufficientContrast(bgHex, suggestion));
     }
 
     @Test
@@ -142,35 +180,37 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
         assertEquals(0.0, m_calculator.getContrast(null, "#ffffff"));
         assertEquals(0.0, m_calculator.getContrast("#ffffff", null));
 
-        assertFalse(m_calculator.getHasSufficientContrast("", "#000000"));
-        assertFalse(m_calculator.getHasSufficientContrast(null, "#000"));
-        assertFalse(m_calculator.getHasSufficientContrast("#fffzzz", "#000"));
+        assertFalse(m_calculator.hasSufficientContrast("", "#000000"));
+        assertFalse(m_calculator.hasSufficientContrast(null, "#000"));
+        assertFalse(m_calculator.hasSufficientContrast("#fffzzz", "#000"));
 
         // Ensure valid hex values still work
-        assertTrue(m_calculator.getHasSufficientContrast("#ffffff", "#000000"));
-        assertTrue(m_calculator.getHasSufficientContrast("#fff", "#000"));
+        assertTrue(m_calculator.hasSufficientContrast("#ffffff", "#000000"));
+        assertTrue(m_calculator.hasSufficientContrast("#fff", "#000"));
     }
 
     @Test
     public void testInvalidInputHandling() {
-        // Test invalid inputs return red (#ff0000)
-        assertEquals("#ff0000", m_calculator.getForeground("invalid-color"));
-        assertEquals("#ff0000", m_calculator.getForeground(null));
-        assertEquals("#ff0000", m_calculator.getForeground(""));
-        assertEquals("#ff0000", m_calculator.getForeground("#12")); // Too short
-        assertEquals("#ff0000", m_calculator.getForeground("#12345")); // Wrong length
+        // Test invalid inputs return red
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.getForeground("invalid-color"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.getForeground(null));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.getForeground(""));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.getForeground("#12")); // Too short
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.getForeground("#12345")); // Wrong length
 
-        assertEquals("#ff0000", m_calculator.getForegroundCheck("not-a-color", "#ffffff"));
-        assertEquals("#ff0000", m_calculator.getForegroundCheck("#ffffff", "not-a-color"));
-        assertEquals("#ff0000", m_calculator.getForegroundCheck(null, null));
-        assertEquals("#ff0000", m_calculator.getForegroundCheck("", null));
-        assertEquals("#ff0000", m_calculator.getForegroundCheck("#12", "#ffffff"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND,
+                m_calculator.checkForeground("not-a-color", "#ffffff"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND,
+                m_calculator.checkForeground("#ffffff", "not-a-color"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.checkForeground(null, null));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.checkForeground("", null));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.checkForeground("#12", "#ffffff"));
 
-        assertEquals("#ff0000", m_calculator.getForegroundSuggest("invalid", "#ffffff"));
-        assertEquals("#ff0000", m_calculator.getForegroundSuggest("#ffffff", "invalid"));
-        assertEquals("#ff0000", m_calculator.getForegroundSuggest(null, null));
-        assertEquals("#ff0000", m_calculator.getForegroundSuggest("#12", "#ffffff"));
-        assertEquals("#ff0000", m_calculator.getForegroundSuggest("#12345", "#ffffff"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.suggestForeground("invalid", "#ffffff"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.suggestForeground("#ffffff", "invalid"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.suggestForeground(null, null));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.suggestForeground("#12", "#ffffff"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.suggestForeground("#12345", "#ffffff"));
     }
 
     @Test
@@ -189,13 +229,37 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
     }
 
     @Test
+    public void testValidate() {
+        // Test valid inputs are normalized correctly
+        assertEquals("#000000", m_calculator.validate("#000"));
+        assertEquals("#ffffff", m_calculator.validate("#fff"));
+        assertEquals("#ff0000", m_calculator.validate("#f00"));
+        assertEquals("#000000", m_calculator.validate("#000000"));
+        assertEquals("#ffffff", m_calculator.validate("#FFFFFF"));
+        assertEquals("#ff0000", m_calculator.validate("#FF0000"));
+        assertEquals("#abcdef", m_calculator.validate("#abcdef"));
+        assertEquals("#123456", m_calculator.validate("#123456"));
+
+        // Test invalid inputs return red
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate(null));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate(""));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("not-a-color"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#12"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#12345"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#1234567"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#xyz"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("123456"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#zzzzzz"));
+    }
+
+    @Test
     public void testWCAGCompliance() {
 
         // Test WCAG AA compliance (4.5:1 minimum for normal text)
-        assertTrue(m_calculator.getHasSufficientContrast("#000000", "#ffffff")); // Black on White
-        assertTrue(m_calculator.getHasSufficientContrast("#0000ff", "#ffffff")); // Blue on White
-        assertFalse(m_calculator.getHasSufficientContrast("#777777", "#ffffff")); // Grey on White (4.48:1)
-        assertFalse(m_calculator.getHasSufficientContrast("#ff0000", "#ffffff")); // Red on White (4.0:1)
+        assertTrue(m_calculator.hasSufficientContrast("#000000", "#ffffff")); // Black on White
+        assertTrue(m_calculator.hasSufficientContrast("#0000ff", "#ffffff")); // Blue on White
+        assertFalse(m_calculator.hasSufficientContrast("#777777", "#ffffff")); // Grey on White (4.48:1)
+        assertFalse(m_calculator.hasSufficientContrast("#ff0000", "#ffffff")); // Red on White (4.0:1)
     }
 
     private void assertContrast(String color1, String color2, double expectedRatio) {

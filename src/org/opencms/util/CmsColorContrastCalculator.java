@@ -27,8 +27,10 @@
 
 package org.opencms.util;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * Calculator for color contrast ratios according to WCAG 2.2 guidelines.<p>
@@ -53,12 +55,105 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class CmsColorContrastCalculator {
 
+    /** Color returned for invalid inputs in foreground methods. */
+    public static final String INVALID_FOREGROUND = "#ff0000";
+
     /** Cache for precomputed luminance values. */
     private Map<String, Double> m_luminanceCache;
 
     public CmsColorContrastCalculator() {
 
         m_luminanceCache = new ConcurrentHashMap<>();
+    }
+
+    /**
+     * Checks if the provided foreground color has sufficient contrast with the background.
+     * If not, returns either black or white (whichever provides better contrast).
+     * Returns red (#ff0000) if either parameter is invalid.
+     *
+     * @param bgHex background color in hex format
+     * @param fgHex foreground color to check in hex format
+     * @return original foreground color if compliant, otherwise black or white
+     */
+    public String checkForeground(String bgHex, String fgHex) {
+        try {
+            return checkForegroundRgb(hexToRgb(bgHex), hexToRgb(fgHex));
+        } catch (IllegalArgumentException e) {
+            return INVALID_FOREGROUND;
+        }
+    }
+
+    /**
+     * Checks if any of the foreground colors in the provided list has sufficient contrast with the background.
+     * If so, returns the first compliant color from the list.
+     * If not, returns either black or white (whichever provides better contrast).
+     * Returns red (#ff0000) if either parameter is invalid.
+     *
+     * @param bgHex background color in hex format
+     * @param fgHex foreground color to check in hex format
+     * @return original foreground color if compliant, otherwise black or white
+     */
+    public String checkForegroundList(String bgHex, List<String> fgHexList) {
+
+        return checkForegroundListRgb(
+            hexToRgb(bgHex),
+            hexListToRgbList(fgHexList)
+        );
+    }
+
+    /**
+     * Checks if any of the foreground colors in the provided list has sufficient contrast with the background.
+     * Returns the first compliant color found, or black/white if none is compliant.
+     * Returns red (#ff0000) if the background is invalid or if all foreground colors are invalid.
+     *
+     * @param bgRgb background color as RGB array
+     * @param fgRgbList list of foreground colors to check as RGB arrays
+     * @return first compliant color from the list, black/white if none found, or red if invalid input
+     */
+    public String checkForegroundListRgb(int[] bgRgb, List<int[]> fgRgbList) {
+
+        if ((fgRgbList == null) || fgRgbList.isEmpty()) {
+            return INVALID_FOREGROUND;
+        }
+        try {
+            validateRgb(bgRgb);
+        } catch (IllegalArgumentException e) {
+            return INVALID_FOREGROUND;
+        }
+
+        boolean hasValidColor = false;
+        for (int[] fgRgb : fgRgbList) {
+            try {
+                validateRgb(fgRgb);
+                if (hasSufficientContrastRgb(bgRgb, fgRgb)) {
+                    return rgbToHex(fgRgb);
+                }
+                hasValidColor = true;
+            } catch (IllegalArgumentException e) {
+                continue;
+            }
+        }
+
+        return hasValidColor ? getForegroundRgb(bgRgb) : INVALID_FOREGROUND;
+    }
+
+    /**
+     * Checks if the provided foreground color has sufficient contrast with the background.
+     * If not, returns either black or white (whichever provides better contrast).
+     * Returns red (#ff0000) if either parameter is invalid.
+     *
+     * @param bgRgb background color as RGB array
+     * @param fgRgb foreground color to check as RGB array
+     * @return original foreground color if compliant, otherwise black or white
+     */
+    public String checkForegroundRgb(int[] bgRgb, int[] fgRgb) {
+        try {
+            validateRgb(bgRgb);
+            validateRgb(fgRgb);
+        } catch (IllegalArgumentException e) {
+            return INVALID_FOREGROUND;
+        }
+        return hasSufficientContrastRgb(bgRgb, fgRgb) ? rgbToHex(fgRgb) : getForegroundRgb(bgRgb);
     }
 
     /**
@@ -107,42 +202,11 @@ public final class CmsColorContrastCalculator {
      * @return "#000000" or "#ffffff" depending on contrast
      */
     public String getForeground(String bgHex) {
-
-        return getForegroundRgb(hexToRgb(bgHex));
-    }
-
-    /**
-     * Checks if the provided foreground color has sufficient contrast with the background.
-     * If not, returns either black or white (whichever provides better contrast).
-     * Returns red (#ff0000) if either parameter is invalid.
-     *
-     * @param bgHex background color in hex format
-     * @param fgHex foreground color to check in hex format
-     * @return original foreground color if compliant, otherwise black or white
-     */
-    public String getForegroundCheck(String bgHex, String fgHex) {
-
-        return getForegroundCheckRgb(hexToRgb(bgHex), hexToRgb(fgHex));
-    }
-
-    /**
-     * RGB version of getForegroundCheck. Checks if the provided foreground color has sufficient
-     * contrast with the background. If not, returns either black or white.
-     * Returns red (#ff0000) if either parameter is invalid.
-     *
-     * @param bgRgb background color as RGB array
-     * @param fgRgb foreground color to check as RGB array
-     * @return original foreground color if compliant, otherwise black or white
-     */
-    public String getForegroundCheckRgb(int[] bgRgb, int[] fgRgb) {
-
         try {
-            validateRgb(bgRgb);
-            validateRgb(fgRgb);
+            return getForegroundRgb(hexToRgb(bgHex));
         } catch (IllegalArgumentException e) {
-            return "#ff0000"; // Return red for invalid input
+            return INVALID_FOREGROUND;
         }
-        return getHasSufficientContrastRgb(bgRgb, fgRgb) ? rgbToHex(fgRgb) : getForegroundRgb(bgRgb);
     }
 
     /**
@@ -159,50 +223,11 @@ public final class CmsColorContrastCalculator {
         try {
             validateRgb(bgRgb);
         } catch (IllegalArgumentException e) {
-            return "#ff0000"; // Return red for invalid input
+            return INVALID_FOREGROUND;
         }
         // Use luminance threshold of 0.179 (true middle point between black and white luminance)
         // This is more efficient than calculating contrast ratios with both black and white
         return getCachedLuminance(bgRgb) > 0.179 ? "#000000" : "#ffffff";
-    }
-
-    /**
-     * Suggests a WCAG-compliant foreground color based on the given background color.
-     * If the provided foreground color doesn't meet the minimum contrast ratio of 4.5:1,
-     * returns an adjusted color that does.
-     * Returns red (#ff0000) if either parameter is invalid.
-     *
-     * @param bgHex background color in hex format
-     * @param possibleFgHex proposed foreground color in hex format
-     * @return either the original color if compliant, or a suggested compliant alternative
-     */
-    public String getForegroundSuggest(String bgHex, String possibleFgHex) {
-
-        return getForegroundSuggestRgb(hexToRgb(bgHex), hexToRgb(possibleFgHex));
-    }
-
-    /**
-     * Suggests a WCAG-compliant foreground color based on the given RGB background color.
-     * If the provided foreground color doesn't meet the minimum contrast ratio of 4.5:1,
-     * returns an adjusted color that does.
-     * Returns red (#ff0000) if either parameter is invalid.
-     *
-     * @param bgRgb background color as RGB array [r, g, b]
-     * @param possibleFgRgb proposed foreground color as RGB array [r, g, b]
-     * @return hex code of either the original color if compliant, or a suggested compliant alternative
-     * @throws IllegalArgumentException if RGB values are invalid
-     */
-    public String getForegroundSuggestRgb(int[] bgRgb, int[] possibleFgRgb) {
-
-        try {
-            validateRgb(bgRgb);
-            validateRgb(possibleFgRgb);
-        } catch (IllegalArgumentException e) {
-            return "#ff0000"; // Return red for invalid input
-        }
-        return getHasSufficientContrastRgb(bgRgb, possibleFgRgb)
-        ? rgbToHex(possibleFgRgb)
-        : getClosestCompliantColor(bgRgb, possibleFgRgb);
     }
 
     /**
@@ -215,9 +240,9 @@ public final class CmsColorContrastCalculator {
      * @param fgHex foreground color in hex format
      * @return true if contrast ratio is at least 4.5:1
      */
-    public boolean getHasSufficientContrast(String bgHex, String fgHex) {
+    public boolean hasSufficientContrast(String bgHex, String fgHex) {
 
-        return getHasSufficientContrastRgb(hexToRgb(bgHex), hexToRgb(fgHex));
+        return hasSufficientContrastRgb(hexToRgb(bgHex), hexToRgb(fgHex));
     }
 
     /**
@@ -231,11 +256,91 @@ public final class CmsColorContrastCalculator {
      * @return true if contrast ratio is at least 4.5:1
      * @throws IllegalArgumentException if RGB values are invalid
      */
-    public boolean getHasSufficientContrastRgb(int[] bgRgb, int[] fgRgb) {
+    public boolean hasSufficientContrastRgb(int[] bgRgb, int[] fgRgb) {
 
         return getContrastRgb(bgRgb, fgRgb) >= 4.5;
     }
 
+    /**
+     * Validates a web hex color input.
+     * Returns true if the input is a valid 3-digit or 6-digit hex color code with or without # prefix.
+     *
+     * @param hexColor the color to validate
+     * @return true if the input is a valid 3-digit or 6-digit hex color code with or without # prefix
+     */
+    public boolean isValid(String hexColor) {
+
+        try {
+            validateRgb(hexToRgb(normalizeHex(hexColor)));
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Suggests a WCAG-compliant foreground color based on the given background color.
+     * If the provided foreground color doesn't meet the minimum contrast ratio of 4.5:1,
+     * returns an adjusted color that does.
+     * Returns red (#ff0000) if either parameter is invalid.
+     *
+     * @param bgHex background color in hex format
+     * @param possibleFgHex proposed foreground color in hex format
+     * @return either the original color if compliant, or a suggested compliant alternative
+     */
+    public String suggestForeground(String bgHex, String possibleFgHex) {
+        try {
+            return suggestForegroundRgb(hexToRgb(bgHex), hexToRgb(possibleFgHex));
+        } catch (IllegalArgumentException e) {
+            return INVALID_FOREGROUND;
+        }
+    }
+
+    /**
+     * Suggests a WCAG-compliant foreground color based on the given RGB background color.
+     * If the provided foreground color doesn't meet the minimum contrast ratio of 4.5:1,
+     * returns an adjusted color that does.
+     * Returns red (#ff0000) if either parameter is invalid.
+     *
+     * @param bgRgb background color as RGB array [r, g, b]
+     * @param possibleFgRgb proposed foreground color as RGB array [r, g, b]
+     * @return hex code of either the original color if compliant, or a suggested compliant alternative
+     * @throws IllegalArgumentException if RGB values are invalid
+     */
+    public String suggestForegroundRgb(int[] bgRgb, int[] possibleFgRgb) {
+        try {
+            validateRgb(bgRgb);
+            validateRgb(possibleFgRgb);
+        } catch (IllegalArgumentException e) {
+            return INVALID_FOREGROUND;
+        }
+        return hasSufficientContrastRgb(bgRgb, possibleFgRgb)
+        ? rgbToHex(possibleFgRgb)
+        : getClosestCompliantColor(bgRgb, possibleFgRgb);
+    }
+
+    /**
+     * Validates a web hex color input.
+     * Supports both 3-digit and 6-digit hex color codes with or without # prefix.
+     * In case the input is a valid hex color, returns the color.
+     * All returned colors will use 6-digit web hex notation with # prefix.
+     * If the input is invalid, returns red (#ff0000).
+     *
+     * @param hexColor the color to validate
+     * @return the color in 6-digit web hex notation with # prefix or red (#ff0000) if the input is invalid
+     */
+    public String validate(String hexColor) {
+
+        return isValid(hexColor) ? normalizeHex(hexColor) : INVALID_FOREGROUND;
+    }
+
+    /**
+     * Calculates the contrast ratio between two colors using WCAG formula.
+     *
+     * @param color1 first color as RGB array
+     * @param color2 second color as RGB array
+     * @return contrast ratio between 1:1 and 21:1
+     */
     private double calculateContrastRatio(int[] color1, int[] color2) {
 
         double l1 = getCachedLuminance(color1);
@@ -247,6 +352,12 @@ public final class CmsColorContrastCalculator {
         return (lighter + 0.05) / (darker + 0.05);
     }
 
+    /**
+     * Calculates the relative luminance of a color according to WCAG 2.2.
+     *
+     * @param rgb color as RGB array
+     * @return relative luminance value between 0 and 1
+     */
     private double calculateRelativeLuminance(int[] rgb) {
 
         // WCAG relative luminance formula for sRGB
@@ -257,12 +368,25 @@ public final class CmsColorContrastCalculator {
         return (0.2126 * r) + (0.7152 * g) + (0.0722 * b);
     }
 
+    /**
+     * Gets the cached luminance value for a color, calculating it if not present.
+     *
+     * @param rgb color as RGB array
+     * @return luminance value between 0 and 1
+     */
     private double getCachedLuminance(int[] rgb) {
 
         String hex = rgbToHex(rgb);
         return m_luminanceCache.computeIfAbsent(hex, k -> calculateRelativeLuminance(rgb));
     }
 
+    /**
+     * Finds the closest color that meets WCAG contrast requirements by adjusting brightness.
+     *
+     * @param bgRgb background color as RGB array
+     * @param fgRgb foreground color as RGB array to adjust
+     * @return hex color code of the compliant color
+     */
     private String getClosestCompliantColor(int[] bgRgb, int[] fgRgb) {
 
         int step = 5; // Smaller steps for more precise adjustments
@@ -293,6 +417,28 @@ public final class CmsColorContrastCalculator {
         return getForegroundRgb(bgRgb);
     }
 
+    /**
+     * Converts a list of hex color strings to a list of RGB arrays.
+     *
+     * @param hexList list of hex color strings
+     * @return list of RGB int arrays
+     */
+    private List<int[]> hexListToRgbList(List<String> hexList) {
+
+        if (hexList == null) {
+            return null;
+        }
+        return hexList.stream()
+            .map(this::hexToRgb)
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * Converts hex color code to RGB values.
+     *
+     * @param hex color in hex format (e.g. "#ffffff")
+     * @return RGB array or null if input is invalid
+     */
     private int[] hexToRgb(String hex) {
 
         try {
@@ -307,6 +453,12 @@ public final class CmsColorContrastCalculator {
         }
     }
 
+    /**
+     * Applies gamma correction to normalize RGB channel values.
+     *
+     * @param value RGB channel value (0-255)
+     * @return normalized value according to WCAG formula
+     */
     private double normalizeChannel(int value) {
 
         // Convert to sRGB value
@@ -318,6 +470,13 @@ public final class CmsColorContrastCalculator {
         return Math.pow((srgb + 0.055) / 1.055, 2.4);
     }
 
+    /**
+     * Normalizes hex color codes to standard 6-digit format with # prefix.
+     *
+     * @param hex color code to normalize
+     * @return normalized hex color (e.g. "#ffffff")
+     * @throws IllegalArgumentException if hex format is invalid
+     */
     private String normalizeHex(String hex) {
 
         if ((hex == null) || ((hex.length() != 4) && (hex.length() != 7))) {
@@ -330,6 +489,12 @@ public final class CmsColorContrastCalculator {
         return "#" + hex;
     }
 
+    /**
+     * Converts RGB values to hex color code.
+     *
+     * @param rgb color as RGB array
+     * @return hex color code (e.g. "#ffffff")
+     */
     private String rgbToHex(int[] rgb) {
 
         char[] hexChars = new char[7];
@@ -342,11 +507,23 @@ public final class CmsColorContrastCalculator {
         return new String(hexChars);
     }
 
+    /**
+     * Converts a number (0-15) to its hexadecimal character representation.
+     *
+     * @param value number to convert (0-15)
+     * @return hexadecimal character ('0'-'9' or 'a'-'f')
+     */
     private char toHexChar(int value) {
 
         return (char)(value < 10 ? '0' + value : 'a' + (value - 10));
     }
 
+    /**
+     * Validates that an RGB array contains three values between 0 and 255.
+     *
+     * @param rgb array to validate
+     * @throws IllegalArgumentException if array is null or contains invalid values
+     */
     private void validateRgb(int[] rgb) {
 
         if (rgb == null) {
