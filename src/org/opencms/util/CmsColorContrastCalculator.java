@@ -262,6 +262,32 @@ public final class CmsColorContrastCalculator {
     }
 
     /**
+     * Converts a hex color code to its corresponding RGB values.<p>
+     *
+     * This method takes a hex color code in the format "rrggbb" or "rgb" and converts it to an array of integers
+     * representing the red, green, and blue components of the color. The input hex color code can optionally include
+     * a leading "#" character.<p>
+     *
+     * If the input hex color code is invalid, the method returns {@code null}.
+     *
+     * @param hex the color in hex format (e.g., "#ffffff" or "#fff")
+     * @return an array of integers representing the RGB values, or {@code null} if the input is invalid
+     */
+    public int[] hexToRgb(String hex) {
+
+        try {
+            hex = normalizeHex(hex);
+            return new int[] {
+                Integer.parseInt(hex.substring(1, 3), 16),
+                Integer.parseInt(hex.substring(3, 5), 16),
+                Integer.parseInt(hex.substring(5, 7), 16)
+            };
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    /**
      * Validates a web hex color input.
      * Returns true if the input is a valid 3-digit or 6-digit hex color code with or without # prefix.
      *
@@ -434,26 +460,6 @@ public final class CmsColorContrastCalculator {
     }
 
     /**
-     * Converts hex color code to RGB values.
-     *
-     * @param hex color in hex format (e.g. "#ffffff")
-     * @return RGB array or null if input is invalid
-     */
-    private int[] hexToRgb(String hex) {
-
-        try {
-            hex = normalizeHex(hex);
-            return new int[] {
-                Integer.parseInt(hex.substring(1, 3), 16),
-                Integer.parseInt(hex.substring(3, 5), 16),
-                Integer.parseInt(hex.substring(5, 7), 16)
-            };
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
-    }
-
-    /**
      * Applies gamma correction to normalize RGB channel values.
      *
      * @param value RGB channel value (0-255)
@@ -479,10 +485,13 @@ public final class CmsColorContrastCalculator {
      */
     private String normalizeHex(String hex) {
 
-        if ((hex == null) || ((hex.length() != 4) && (hex.length() != 7))) {
+        if ((hex == null) || (hex.length() == 0)) {
+            throw new IllegalArgumentException("Invalid empty hex color value");
+        }
+        hex = hex.toLowerCase().trim().replace("#", "");
+        if ((hex.length() != 3) && (hex.length() != 6)) {
             throw new IllegalArgumentException("Invalid hex color value: " + hex);
         }
-        hex = hex.toLowerCase().replace("#", "");
         if (hex.length() == 3) {
             hex = "" + hex.charAt(0) + hex.charAt(0) + hex.charAt(1) + hex.charAt(1) + hex.charAt(2) + hex.charAt(2);
         }

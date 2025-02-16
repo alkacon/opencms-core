@@ -27,6 +27,8 @@
 
 package org.opencms.util;
 
+import static org.junit.Assert.assertArrayEquals;
+
 import org.opencms.test.OpenCmsTestCase;
 
 import java.util.Arrays;
@@ -169,6 +171,37 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
     }
 
     @Test
+    public void testHexToRgb() {
+        // Valid hex values
+        assertArrayEquals(new int[]{255, 255, 255}, m_calculator.hexToRgb("#ffffff"));
+        assertArrayEquals(new int[]{0, 0, 0}, m_calculator.hexToRgb("#000000"));
+        assertArrayEquals(new int[]{255, 0, 0}, m_calculator.hexToRgb("#ff0000"));
+        assertArrayEquals(new int[] { 0, 255, 0 }, m_calculator.hexToRgb("00ff00"));
+        assertArrayEquals(new int[]{0, 0, 255}, m_calculator.hexToRgb("#0000ff"));
+        assertArrayEquals(new int[]{255, 255, 0}, m_calculator.hexToRgb("#ffff00"));
+        assertArrayEquals(new int[] { 0, 255, 255 }, m_calculator.hexToRgb("00ffff"));
+        assertArrayEquals(new int[]{255, 0, 255}, m_calculator.hexToRgb("#ff00ff"));
+
+        // Valid shorthand hex values
+        assertArrayEquals(new int[]{255, 255, 255}, m_calculator.hexToRgb("#fff"));
+        assertArrayEquals(new int[]{0, 0, 0}, m_calculator.hexToRgb("#000"));
+        assertArrayEquals(new int[]{255, 0, 0}, m_calculator.hexToRgb("#f00"));
+        assertArrayEquals(new int[]{0, 255, 0}, m_calculator.hexToRgb("#0f0"));
+        assertArrayEquals(new int[] { 0, 0, 255 }, m_calculator.hexToRgb("00f"));
+        assertArrayEquals(new int[]{255, 255, 0}, m_calculator.hexToRgb("#ff0"));
+        assertArrayEquals(new int[]{0, 255, 255}, m_calculator.hexToRgb("#0ff"));
+        assertArrayEquals(new int[] { 255, 0, 255 }, m_calculator.hexToRgb("f0f"));
+
+        // Invalid hex values
+        assertNull(m_calculator.hexToRgb("not-a-color"));
+        assertNull(m_calculator.hexToRgb("#12"));
+        assertNull(m_calculator.hexToRgb("#12345"));
+        assertNull(m_calculator.hexToRgb("#1234567"));
+        assertNull(m_calculator.hexToRgb("#xyz"));
+        assertNull(m_calculator.hexToRgb("#zzzzzz"));
+    }
+
+    @Test
     public void testInvalidHexValues() {
         // Test invalid hex values
         assertEquals(0.0, m_calculator.getContrast("not-a-color", "#ffffff"));
@@ -232,23 +265,24 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
     public void testValidate() {
         // Test valid inputs are normalized correctly
         assertEquals("#000000", m_calculator.validate("#000"));
-        assertEquals("#ffffff", m_calculator.validate("#fff"));
-        assertEquals("#ff0000", m_calculator.validate("#f00"));
+        assertEquals("#ffffff", m_calculator.validate("fff"));
+        assertEquals("#ff0000", m_calculator.validate("  #f00"));
         assertEquals("#000000", m_calculator.validate("#000000"));
         assertEquals("#ffffff", m_calculator.validate("#FFFFFF"));
-        assertEquals("#ff0000", m_calculator.validate("#FF0000"));
+        assertEquals("#ff0000", m_calculator.validate("FF0000  "));
         assertEquals("#abcdef", m_calculator.validate("#abcdef"));
-        assertEquals("#123456", m_calculator.validate("#123456"));
+        assertEquals("#123456", m_calculator.validate("  #123456"));
+        assertEquals("#123456", m_calculator.validate("123456"));
 
         // Test invalid inputs return red
         assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate(null));
         assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate(""));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("    "));
         assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("not-a-color"));
         assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#12"));
         assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#12345"));
         assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#1234567"));
         assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#xyz"));
-        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("123456"));
         assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#zzzzzz"));
     }
 
