@@ -2806,7 +2806,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 Map<String[], CmsPair<String, String>> warnings = new HashMap<String[], CmsPair<String, String>>();
                 for (Entry<String, String> warning : localeEntry.getValue().entrySet()) {
                     I_CmsXmlContentValue value = content.getValue(warning.getKey(), localeEntry.getKey());
-                    if ((fieldNames == null) || fieldNames.contains(value.getPath())) {
+                    if (content.getHandler().isVisible(
+                        cms,
+                        value,
+                        CmsXmlUtils.removeAllXpathIndices(value.getPath()),
+                        content.getFile(),
+                        localeEntry.getKey()) && ((fieldNames == null) || fieldNames.contains(value.getPath()))) {
                         warnings.put(
                             getPathElements(content, value),
                             new CmsPair<String, String>(warning.getValue(), warning.getKey()));
