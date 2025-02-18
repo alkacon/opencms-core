@@ -63,6 +63,9 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
     /** JSON key. */
     private static final String SORT_ORDER_KEY = "sort_order";
 
+    /** JSON key. */
+    private static final String UNCOLLAPSED = "uncollapsed";
+
     /** The collapsed column ids. */
     private List<CmsResourceTableProperty> m_collapsedColumns;
 
@@ -71,6 +74,9 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
 
     /** The sort column id. */
     private CmsResourceTableProperty m_sortColumnId;
+
+    /** The uncollapsed columns (might be null). */
+    private List<CmsResourceTableProperty> m_uncollapsedColumns;
 
     /**
      * Constructor.<p>
@@ -81,7 +87,7 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
         // initialize with the default settings
         m_sortColumnId = CmsResourceTableProperty.PROPERTY_RESOURCE_NAME;
         m_sortAscending = true;
-        m_collapsedColumns = new ArrayList<CmsResourceTableProperty>();
+        m_collapsedColumns = new ArrayList<>();
         Collections.addAll(
             m_collapsedColumns,
             CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT,
@@ -95,7 +101,7 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
     }
 
     /**
-     * Returns the collapsed column ids.<p>
+     * Returns the collapsed column ids.
      *
      * @return the collapsed column ids
      */
@@ -118,6 +124,13 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
                 collapsed.add(column.getId());
             }
             json.put(COLLAPSED_COLUMNS_KEY, new JSONArray(collapsed));
+            if (m_uncollapsedColumns != null) {
+                JSONArray uncollapsed = new JSONArray();
+                json.put(UNCOLLAPSED, uncollapsed);
+                for (CmsResourceTableProperty column : m_uncollapsedColumns) {
+                    uncollapsed.put(column.getId());
+                }
+            }
         } catch (JSONException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
@@ -133,6 +146,16 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
     public CmsResourceTableProperty getSortColumnId() {
 
         return m_sortColumnId;
+    }
+
+    /**
+     * Gets the uncollapsed column ids, or null if they are not set.
+     *
+     * @return the uncollapsed columns
+     */
+    public List<CmsResourceTableProperty> getUncollapsedColumns() {
+
+        return m_uncollapsedColumns;
     }
 
     /**
@@ -158,11 +181,7 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
                 m_sortAscending = json.getBoolean(SORT_ORDER_KEY);
             }
             if (json.has(SORT_COLUMN_KEY)) {
-
-                CmsResourceTableProperty sortColumn = columnMap.get(json.getString(SORT_COLUMN_KEY));
-                if (!CmsResourceTableProperty.PROPERTY_CATEGORIES.equals(sortColumn)) {
-                    m_sortColumnId = sortColumn;
-                }
+                m_sortColumnId = columnMap.get(json.getString(SORT_COLUMN_KEY));
             }
             if (json.has(COLLAPSED_COLUMNS_KEY)) {
                 List<CmsResourceTableProperty> collapsed = new ArrayList<CmsResourceTableProperty>();
@@ -171,17 +190,17 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
                 for (int i = 0; i < array.length(); i++) {
                     collapsed.add(columnMap.get(array.getString(i)));
                 }
-                if (!collapsed.contains(CmsResourceTableProperty.PROPERTY_CATEGORIES)) {
-                    // Because only the collapsed columns are saved, if we have an existing installation and upgrade it to a new version
-                    // with new columns, these would be shown by default if the user any has saved file explorer settings. But the categories column
-                    // is both expensive to compute and takes a lot of screen space. It would be annoying for most users. So we add it to the
-                    // list of collapsed columns here. In practice, this means users will have to enable the column by hand every time they
-                    // open the explorer.
-                    collapsed.add(CmsResourceTableProperty.PROPERTY_CATEGORIES);
-                }
                 m_collapsedColumns = collapsed;
             }
 
+            if (json.has(UNCOLLAPSED)) {
+                JSONArray array = json.getJSONArray(UNCOLLAPSED);
+                List<CmsResourceTableProperty> uncollapsed = new ArrayList<>();
+                for (int i = 0; i < array.length(); i++) {
+                    uncollapsed.add(columnMap.get(array.getString(i)));
+                }
+                m_uncollapsedColumns = uncollapsed;
+            }
         } catch (JSONException e) {
             LOG.error("Failed to restore file explorer settings from '" + storedSettings + "'", e);
         }
@@ -215,5 +234,15 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
     public void setSortColumnId(CmsResourceTableProperty sortColumnId) {
 
         m_sortColumnId = sortColumnId;
+    }
+
+    /**
+     * Sets the uncollapsed columns.
+     *
+     * @param uncollapsedColumns the uncollapsed columns
+     */
+    public void setUncollapsedColumns(List<CmsResourceTableProperty> uncollapsedColumns) {
+
+        m_uncollapsedColumns = uncollapsedColumns;
     }
 }

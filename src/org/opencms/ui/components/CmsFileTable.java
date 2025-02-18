@@ -313,49 +313,6 @@ public class CmsFileTable extends CmsResourceTable {
     /** The serial version id. */
     private static final long serialVersionUID = 5460048685141699277L;
 
-    static {
-        Map<CmsResourceTableProperty, Integer> defaultProps = new LinkedHashMap<CmsResourceTableProperty, Integer>();
-        defaultProps.put(PROPERTY_TYPE_ICON, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_PROJECT, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_RESOURCE_NAME, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_TITLE, Integer.valueOf(0));
-        try {
-            if (OpenCms.getWorkplaceManager().isExplorerCategoriesEnabled()) {
-                defaultProps.put(PROPERTY_CATEGORIES, Integer.valueOf(COLLAPSED));
-            }
-        } catch (Exception e) {
-            // ignore
-        }
-        defaultProps.put(PROPERTY_NAVIGATION_TEXT, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_NAVIGATION_POSITION, Integer.valueOf(INVISIBLE));
-        defaultProps.put(PROPERTY_IN_NAVIGATION, Integer.valueOf(INVISIBLE));
-        defaultProps.put(PROPERTY_COPYRIGHT, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_CACHE, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_RESOURCE_TYPE, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_INTERNAL_RESOURCE_TYPE, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_SIZE, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_PERMISSIONS, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_DATE_MODIFIED, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_USER_MODIFIED, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_DATE_CREATED, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_USER_CREATED, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_DATE_RELEASED, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_DATE_EXPIRED, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_STATE_NAME, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_USER_LOCKED, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_IS_FOLDER, Integer.valueOf(INVISIBLE));
-        defaultProps.put(PROPERTY_STATE, Integer.valueOf(INVISIBLE));
-        defaultProps.put(PROPERTY_INSIDE_PROJECT, Integer.valueOf(INVISIBLE));
-        defaultProps.put(PROPERTY_RELEASED_NOT_EXPIRED, Integer.valueOf(INVISIBLE));
-        DEFAULT_TABLE_PROPERTIES = Collections.unmodifiableMap(defaultProps);
-    }
-
-    /** Action registration for pressing Enter during column editing. */
-    private Registration m_columnEditEnterRegistration;
-
-    /** Action registration for pressing Esc during column editing. */
-    private Registration m_columnEditEscRegistration;
-
     /** The selected resources. */
     protected List<CmsResource> m_currentResources = new ArrayList<CmsResource>();
 
@@ -379,6 +336,12 @@ public class CmsFileTable extends CmsResourceTable {
 
     /** The table drag mode, stored during item editing. */
     private TableDragMode m_beforEditDragMode;
+
+    /** Action registration for pressing Enter during column editing. */
+    private Registration m_columnEditEnterRegistration;
+
+    /** Action registration for pressing Esc during column editing. */
+    private Registration m_columnEditEscRegistration;
 
     /** The dialog context provider. */
     private I_CmsContextProvider m_contextProvider;
@@ -502,6 +465,43 @@ public class CmsFileTable extends CmsResourceTable {
         });
 
         m_menu.setAsTableContextMenu(m_fileTable);
+    }
+
+    static {
+        Map<CmsResourceTableProperty, Integer> defaultProps = new LinkedHashMap<CmsResourceTableProperty, Integer>();
+        defaultProps.put(PROPERTY_TYPE_ICON, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_PROJECT, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_RESOURCE_NAME, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_TITLE, Integer.valueOf(0));
+        try {
+            if (OpenCms.getWorkplaceManager().isExplorerCategoriesEnabled()) {
+                defaultProps.put(PROPERTY_CATEGORIES, Integer.valueOf(COLLAPSED));
+            }
+        } catch (Exception e) {
+            // ignore
+        }
+        defaultProps.put(PROPERTY_NAVIGATION_TEXT, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_NAVIGATION_POSITION, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_IN_NAVIGATION, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_COPYRIGHT, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_CACHE, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_RESOURCE_TYPE, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_INTERNAL_RESOURCE_TYPE, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_SIZE, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_PERMISSIONS, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_DATE_MODIFIED, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_USER_MODIFIED, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_DATE_CREATED, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_USER_CREATED, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_DATE_RELEASED, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_DATE_EXPIRED, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_STATE_NAME, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_USER_LOCKED, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_IS_FOLDER, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_STATE, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_INSIDE_PROJECT, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_RELEASED_NOT_EXPIRED, Integer.valueOf(INVISIBLE));
+        DEFAULT_TABLE_PROPERTIES = Collections.unmodifiableMap(defaultProps);
     }
 
     /**
@@ -755,14 +755,18 @@ public class CmsFileTable extends CmsResourceTable {
 
         fileTableState.setSortAscending(m_fileTable.isSortAscending());
         fileTableState.setSortColumnId((CmsResourceTableProperty)m_fileTable.getSortContainerPropertyId());
-        List<CmsResourceTableProperty> collapsedCollumns = new ArrayList<CmsResourceTableProperty>();
+        List<CmsResourceTableProperty> collapsedCollumns = new ArrayList<>();
+        List<CmsResourceTableProperty> uncollapsedColumns = new ArrayList<>();
         Object[] visibleCols = m_fileTable.getVisibleColumns();
         for (int i = 0; i < visibleCols.length; i++) {
             if (m_fileTable.isColumnCollapsed(visibleCols[i])) {
                 collapsedCollumns.add((CmsResourceTableProperty)visibleCols[i]);
+            } else {
+                uncollapsedColumns.add((CmsResourceTableProperty)visibleCols[i]);
             }
         }
         fileTableState.setCollapsedColumns(collapsedCollumns);
+        fileTableState.setUncollapsedColumns(uncollapsedColumns);
         return fileTableState;
     }
 
@@ -912,7 +916,19 @@ public class CmsFileTable extends CmsResourceTable {
             m_fileTable.setSortAscending(state.isSortAscending());
             Object[] visibleCols = m_fileTable.getVisibleColumns();
             for (int i = 0; i < visibleCols.length; i++) {
-                m_fileTable.setColumnCollapsed(visibleCols[i], state.getCollapsedColumns().contains(visibleCols[i]));
+                boolean isCollapsed;
+                // Originally, just the collapsed columns would be stored in the user settings.
+                // The problem with this is that if new columns were added in a new version of OpenCms,
+                // those would be active by default for users who had stored table settings.
+                // So we now also store the uncollapsed columns, and prioritize this list for deciding whether
+                // a column should be visible.
+                if (state.getUncollapsedColumns() != null) {
+                    isCollapsed = !state.getUncollapsedColumns().contains(visibleCols[i]);
+                } else {
+                    isCollapsed = state.getCollapsedColumns().contains(visibleCols[i])
+                        || CmsResourceTableProperty.PROPERTY_CATEGORIES.equals(visibleCols[i]);
+                }
+                m_fileTable.setColumnCollapsed(visibleCols[i], isCollapsed);
             }
         }
     }

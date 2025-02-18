@@ -165,11 +165,11 @@ public class CmsResourceTable extends CustomComponent {
          */
         class CategoryItem {
 
-            /** The title to display. */
-            private String m_title;
-
             /** The background color. */
             private String m_background;
+
+            /** The title to display. */
+            private String m_title;
 
             /**
              * Creates a new instance.
@@ -208,20 +208,20 @@ public class CmsResourceTable extends CustomComponent {
         /** Serial version id. */
         private static final long serialVersionUID = 1L;
 
+        /** True if the widget has been initialized. */
+        private boolean m_initialized;
+
+        /** The label used to display the categories. */
+        private Label m_label = new Label();
+
         /** The locale. */
         private Locale m_locale;
 
         /** The resource utility wrapper. */
         private CmsResourceUtil m_resUtil;
 
-        /** True if the widget has been initialized. */
-        private boolean m_initialized;
-
         /** The categories value as a string, for tooltips, sorting and filtering. */
         private String m_value = "";
-
-        /** The label used to display the categories. */
-        private Label m_label = new Label();
 
         /**
          * Creates a new instance.
@@ -505,6 +505,17 @@ public class CmsResourceTable extends CustomComponent {
     }
 
     /**
+     * Interfaces for getting notified of column visibility/sort setting changes.
+     */
+    public interface ColumnSettingChangeHandler {
+
+        /**
+         * Called when column visibility or sorting is changed by the user.
+         */
+        void onColumnSettingsChanged();
+    }
+
+    /**
      * Default description generator for table entries.
      */
     public static class DefaultItemDescriptionGenerator implements ItemDescriptionGenerator {
@@ -594,32 +605,79 @@ public class CmsResourceTable extends CustomComponent {
         }
     }
 
-    /** Used for calculating foreground colors for categories. */
-    private static final CmsColorContrastCalculator m_contrastCalculator = new CmsColorContrastCalculator();
-
     /** Flag to mark columns as initially collapsed.*/
     public static final int COLLAPSED = 1;
 
     /** Flag to mark columns as invisible. */
     public static final int INVISIBLE = 2;
 
+    /** Static instance of the comparator used for categories. */
+    private static final CategoryComparator CATEGORY_COMPARATOR = new CategoryComparator();
+
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTable.class);
 
+    /** Used for calculating foreground colors for categories. */
+    private static final CmsColorContrastCalculator m_contrastCalculator = new CmsColorContrastCalculator();
+
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
-
-    /** Static instance of the comparator used for categories. */
-    private static final CategoryComparator CATEGORY_COMPARATOR = new CategoryComparator();
 
     /** The resource data container. */
     protected ItemContainer m_container = new ItemContainer();
 
     /** The table used to display the resource data. */
-    protected Table m_fileTable = new Table();
+    protected Table m_fileTable = new Table() {
+
+        /** If greater than 0, we are in a changeVariables call - which means that column changes probably are the direct result of user interaction with the table rather than automatic/programmatic changes. */
+        private long m_changingVariables;
+
+        /**
+         * @see com.vaadin.v7.ui.Table#changeVariables(java.lang.Object, java.util.Map)
+         */
+        public void changeVariables(Object source, java.util.Map<String, Object> variables) {
+
+            m_changingVariables += 1;
+            try {
+                super.changeVariables(source, variables);
+            } finally {
+                m_changingVariables -= 1;
+            }
+        }
+
+        /**
+         * @see com.vaadin.v7.ui.Table#setColumnCollapsed(java.lang.Object, boolean)
+         */
+        public void setColumnCollapsed(Object propertyId, boolean collapsed) throws IllegalStateException {
+
+            super.setColumnCollapsed(propertyId, collapsed);
+            if (m_changingVariables > 0) {
+                if (m_columnSettingChangeHandler != null) {
+                    m_columnSettingChangeHandler.onColumnSettingsChanged();
+                }
+            }
+
+        };
+
+        /**
+         * @see com.vaadin.v7.ui.Table#sort(java.lang.Object[], boolean[])
+         */
+        public void sort(Object[] propertyId, boolean[] ascending) throws UnsupportedOperationException {
+
+            super.sort(propertyId, ascending);
+            if (m_changingVariables > 0) {
+                if (m_columnSettingChangeHandler != null) {
+                    m_columnSettingChangeHandler.onColumnSettingsChanged();
+                }
+            }
+        }
+    };
 
     /** Property provider for additional columns. */
     protected List<I_ResourcePropertyProvider> m_propertyProviders;
+
+    /** Handles column setting changes. */
+    private ColumnSettingChangeHandler m_columnSettingChangeHandler;
 
     /**
      * Creates a new instance.<p>
@@ -1058,6 +1116,15 @@ public class CmsResourceTable extends CustomComponent {
             boolean isCollapsed = collapsedSet.contains(key);
             internalSetColumnCollapsed(key, isCollapsed);
         }
+    }
+
+    /**
+     * Sets the column setting change handler.
+     * @param columnSettingChangeHandler the handler instance
+     */
+    public void setColumnSettingChangeHandler(ColumnSettingChangeHandler columnSettingChangeHandler) {
+
+        m_columnSettingChangeHandler = columnSettingChangeHandler;
     }
 
     /**

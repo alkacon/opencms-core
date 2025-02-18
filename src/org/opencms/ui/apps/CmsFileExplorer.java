@@ -52,6 +52,7 @@ import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsExtendedSiteSelector;
 import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsResourceIcon;
+import org.opencms.ui.components.CmsResourceTable;
 import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.CmsUploadButton;
@@ -138,7 +139,7 @@ import com.vaadin.v7.ui.Tree.TreeDragMode;
 @SuppressWarnings("deprecation")
 public class CmsFileExplorer
 implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowCloseListener, I_CmsHasShortcutActions,
-I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
+I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler, CmsResourceTable.ColumnSettingChangeHandler {
 
     /** The drop handler for copy/move operations. */
     public class ExplorerDropHandler implements DropHandler {
@@ -664,6 +665,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
         m_shortcutActions.put(ACTION_SWITCH_ONLINE_CMD, switchOnline);
 
         m_fileTable = new CmsFileTable(this);
+        m_fileTable.setColumnSettingChangeHandler(this);
         m_fileTable.setSizeFull();
         m_fileTable.setMenuBuilder(new CmsResourceContextMenuBuilder());
         m_fileTable.setFolderSelectHandler(this);
@@ -1004,6 +1006,18 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler {
     public boolean isCachable() {
 
         return true;
+    }
+
+    /**
+     * @see org.opencms.ui.components.CmsResourceTable.ColumnSettingChangeHandler#onColumnSettingsChanged()
+     */
+    @Override
+    public void onColumnSettingsChanged() {
+
+        OpenCms.getWorkplaceAppManager().storeAppSettings(
+            A_CmsUI.getCmsObject(),
+            CmsFileExplorerSettings.class,
+            m_fileTable.getTableSettings());
     }
 
     /**
