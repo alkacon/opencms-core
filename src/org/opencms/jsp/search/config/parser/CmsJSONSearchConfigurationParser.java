@@ -837,32 +837,36 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
      */
     protected List<Integer> getPageSizes() {
 
-        try {
-            return Collections.singletonList(Integer.valueOf(m_configObject.getInt(JSON_KEY_PAGESIZE)));
-        } catch (JSONException e) {
-            List<Integer> result = null;
-            String pageSizesString = null;
+        if (m_configObject.has(JSON_KEY_PAGESIZE)) {
             try {
-                pageSizesString = m_configObject.getString(JSON_KEY_PAGESIZE);
-                String[] pageSizesArray = pageSizesString.split("-");
-                if (pageSizesArray.length > 0) {
-                    result = new ArrayList<>(pageSizesArray.length);
-                    for (int i = 0; i < pageSizesArray.length; i++) {
-                        result.add(Integer.valueOf(pageSizesArray[i]));
+                return Collections.singletonList(Integer.valueOf(m_configObject.getInt(JSON_KEY_PAGESIZE)));
+            } catch (JSONException e) {
+                List<Integer> result = null;
+                String pageSizesString = null;
+                try {
+                    pageSizesString = m_configObject.getString(JSON_KEY_PAGESIZE);
+                    String[] pageSizesArray = pageSizesString.split("-");
+                    if (pageSizesArray.length > 0) {
+                        result = new ArrayList<>(pageSizesArray.length);
+                        for (int i = 0; i < pageSizesArray.length; i++) {
+                            result.add(Integer.valueOf(pageSizesArray[i]));
+                        }
                     }
+                    return result;
+                } catch (NumberFormatException | JSONException e1) {
+                    LOG.warn(
+                        Messages.get().getBundle().key(Messages.LOG_PARSING_PAGE_SIZES_FAILED_1, pageSizesString),
+                        e);
                 }
-                return result;
-            } catch (NumberFormatException | JSONException e1) {
-                LOG.warn(Messages.get().getBundle().key(Messages.LOG_PARSING_PAGE_SIZES_FAILED_1, pageSizesString), e);
             }
-            if (null == m_baseConfig) {
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_PAGESIZE_SPECIFIED_0), e);
-                }
-                return null;
-            } else {
-                return m_baseConfig.getPaginationConfig().getPageSizes();
+        }
+        if (null == m_baseConfig) {
+            if (LOG.isInfoEnabled()) {
+                LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_PAGESIZE_SPECIFIED_0));
             }
+            return null;
+        } else {
+            return m_baseConfig.getPaginationConfig().getPageSizes();
         }
     }
 
