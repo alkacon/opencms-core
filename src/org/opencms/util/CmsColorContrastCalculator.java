@@ -273,7 +273,7 @@ public final class CmsColorContrastCalculator {
     }
 
     /**
-     * Checks the background color and returns either black or white as foreground color,
+     * Treats the given color as background and returns either black or white as foreground color,
      * choosing whichever provides better contrast according to WCAG guidelines.<p>
      *
      * Returns black ("#000000") or white ("#ffffff") depending on contrast, or red (#ff0000) if the parameter is invalid.<p>
@@ -311,8 +311,9 @@ public final class CmsColorContrastCalculator {
     /**
      * Checks if the provided String represents a CSS color.<p>
      *
-     * Accepts a hex colors in the format "#rrggbb", "#rgb" or "#rrggbbaa".
-     * Additionally, this method supports named CSS colors, e.g. "white", "blue", "transparent" etc.<p>
+     * Accepts hex colors in the format "#rrggbb", "#rgb" or "#rrggbbaa".
+     * Additionally, this method supports named CSS colors, e.g. "white", "blue", "transparent" etc.
+     * The input will be trimmed, so it can contain leading or trailing white spaces.<p>
      *
      * @param color the color to validate
      *
@@ -324,8 +325,10 @@ public final class CmsColorContrastCalculator {
     }
 
     /**
-     * Suggests a WCAG-compliant foreground color based on the given background color.
-     * If the provided foreground color doesn't meet the minimum contrast ratio of 4.5:1, returns an adjusted color that does.<p>
+     * Suggests a WCAG compliant foreground color based on the given background color.<p>
+     *
+     * If the provided foreground color doesn't meet the minimum contrast ratio of 4.5:1,
+     * it will be adjusted to be either darker or lighter until it does.<p>
      *
      * Returns red (#ff0000) if either parameter is invalid.<p>
      *
@@ -348,13 +351,17 @@ public final class CmsColorContrastCalculator {
      *
      * Accepts a hex colors in the format "#rrggbb", "#rgb" or "#rrggbbaa".
      * Additionally, this method supports named CSS colors, e.g. "white", "blue", "transparent" etc.
-     * If the input includes an alpha channel, it will also be included in the returned String.<p>
+     * If the input includes an alpha channel, it will also be included in the returned String.
+     * The input will be trimmed, so it can contain leading or trailing white spaces.<p>
      *
      * If the input is not a valid CSS color, the method returns {@code null}.<p>
      *
      * @param color the color name or hex color code (e.g. "white", "#ffffff" or "#fff")
      *
      * @return to colors hex representation, or {@code null} if the input is invalid
+     *
+     * @see #toRgb(String)
+     * @see #toRgbStr(String)
      */
     public String toHex(String color) {
 
@@ -368,17 +375,21 @@ public final class CmsColorContrastCalculator {
     }
 
     /**
-     * Converts CSS color to its corresponding RGB values.<p>
+     * Converts a CSS color to its corresponding RGB values.<p>
      *
      * Accepts a hex colors in the format "#rrggbb", "#rgb" or "#rrggbbaa".
      * Additionally, this method supports named CSS colors, e.g. "white", "blue", "transparent" etc.
-     * If the input includes an alpha channel, it will also be included in the returned array.<p>
+     * If the input includes an alpha channel, it will also be included in the returned array.
+     * The input will be trimmed, so it can contain leading or trailing white spaces.<p>
      *
      * If the input is not a valid CSS color, the method returns {@code null}.<p>
      *
      * @param color the color name or hex color code (e.g. "white", "#ffffff" or "#fff")
      *
      * @return an array of integers representing the RGB(A) values, or {@code null} if the input is not a valid CSS color
+     *
+     * @see #toRgb(String, boolean, boolean)
+     * @see #toRgbStr(String)
      */
     public int[] toRgb(String color) {
 
@@ -386,7 +397,7 @@ public final class CmsColorContrastCalculator {
     }
 
     /**
-     * Converts CSS color to its corresponding RGB values.<p>
+     * Converts a CSS color to its corresponding RGB values.<p>
      *
      * If the input is not a valid CSS color, the method returns {@code null}.<p>
      *
@@ -395,6 +406,9 @@ public final class CmsColorContrastCalculator {
      * @param supportAlpha if {@code true}, support alpha channel in RGB(A) hex codes in the input
      *
      * @return an array of integers representing the RGB(A) values, or {@code null} if the input is invalid
+     *
+     * @see #toRgb(String)
+     * @see #toRgbStr(String)
      */
     public int[] toRgb(String color, boolean supportNames, boolean supportAlpha) {
 
@@ -417,6 +431,33 @@ public final class CmsColorContrastCalculator {
             } else if (supportNames) {
                 result = NAMED_COLORS.get(color);
             }
+        }
+        return result;
+    }
+
+    /**
+     * Converts a CSS color to its corresponding RGB representation as a comma separated String.<p>
+     * For example, the color "red" will be converted to "255, 0, 0".<p>
+     *
+     * @param color the color name or hex color code (e.g. "white", "#ffffff" or "#fff")
+     *
+     * @return the RGB representation as a comma separated String, or {@code null} if the input is invalid
+     *
+     * @see #toRgb(String)
+     */
+    public String toRgbStr(String color) {
+
+        String result = null;
+        int[] rgb = toRgb(color, true, true);
+        if (rgb != null) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < rgb.length; i++) {
+                if (i > 0) {
+                    sb.append(", ");
+                }
+                sb.append(rgb[i]);
+            }
+            result = sb.toString();
         }
         return result;
     }

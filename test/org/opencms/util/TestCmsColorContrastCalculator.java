@@ -394,6 +394,53 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
         assertNull(m_calculator.toRgb("#zzzzzz"));
     }
 
+    @Test
+    public void testToRgbStr() {
+
+        // Valid hex values
+        assertEquals("255, 255, 255", m_calculator.toRgbStr("#ffffff"));
+        assertEquals("0, 0, 0", m_calculator.toRgbStr("#000000"));
+        assertEquals("255, 0, 0", m_calculator.toRgbStr("#ff0000"));
+        assertEquals("0, 255, 0", m_calculator.toRgbStr("#00ff00"));
+        assertEquals("0, 0, 255", m_calculator.toRgbStr("#0000ff"));
+
+        // Valid shorthand hex values
+        assertEquals("255, 255, 255", m_calculator.toRgbStr("#fff"));
+        assertEquals("0, 0, 0", m_calculator.toRgbStr("#000"));
+        assertEquals("255, 0, 0", m_calculator.toRgbStr("#f00"));
+        assertEquals("0, 255, 0", m_calculator.toRgbStr("#0f0"));
+        assertEquals("0, 0, 255", m_calculator.toRgbStr("#00f"));
+
+        // Valid rgba hex values
+        assertEquals("255, 255, 255, 0", m_calculator.toRgbStr("#ffffff00"));
+        assertEquals("255, 255, 255, 170", m_calculator.toRgbStr("#ffffffaa"));
+        assertEquals("0, 0, 0, 255", m_calculator.toRgbStr("#000000ff"));
+        assertEquals("255, 0, 0, 128", m_calculator.toRgbStr("#ff000080"));
+
+        // Named colors
+        assertEquals("0, 0, 0", m_calculator.toRgbStr("black"));
+        assertEquals("255, 255, 255", m_calculator.toRgbStr("white"));
+        assertEquals("255, 0, 0", m_calculator.toRgbStr("red"));
+        assertEquals("0, 128, 0", m_calculator.toRgbStr("green"));
+        assertEquals("0, 0, 255", m_calculator.toRgbStr("blue"));
+        assertEquals("255, 255, 0", m_calculator.toRgbStr("yellow"));
+        assertEquals("0, 255, 255", m_calculator.toRgbStr("cyan"));
+        assertEquals("255, 0, 255", m_calculator.toRgbStr("magenta"));
+        assertEquals("128, 128, 128", m_calculator.toRgbStr("gray"));
+        assertEquals("128, 128, 128", m_calculator.toRgbStr("grey"));
+        assertEquals("255, 255, 255, 0", m_calculator.toRgbStr("transparent"));
+
+        // Invalid values
+        assertNull(m_calculator.toRgbStr("not-a-color"));
+        assertNull(m_calculator.toRgbStr("#12"));
+        assertNull(m_calculator.toRgbStr("#12345"));
+        assertNull(m_calculator.toRgbStr("123456"));
+        assertNull(m_calculator.toRgbStr("#1234567"));
+        assertNull(m_calculator.toRgbStr("#123456xx"));
+        assertNull(m_calculator.toRgbStr("#xyz"));
+        assertNull(m_calculator.toRgbStr("#zzzzzz"));
+    }
+
     private void assertContrast(String color1, String color2, double expectedRatio) {
 
         double actualRatio = m_calculator.getContrast(color1, color2);
