@@ -221,12 +221,12 @@ public final class CmsColorContrastCalculator {
     /**
      * Checks if the provided foreground color has sufficient contrast with the background.<p>
      *
-     * Returns the provided {@code fgColor} if compliant, otherwise black ("#000000") or white ("#ffffff") depending on contrast, or red (#ff0000) if any parameter is invalid.<p>
+     * Returns the provided {@code fgColor} if compliant, otherwise black ("#000000") or white ("#ffffff") depending on contrast, or red ("#ff0000") if any parameter is invalid.<p>
      *
      * @param bgColor background color
      * @param fgColor potential foreground color
      *
-     * @return the provided {@code fgColor} if compliant, otherwise black ("#000000") or white ("#ffffff") depending on contrast, or red (#ff0000) if any parameter is invalid
+     * @return the provided {@code fgColor} if compliant, otherwise black ("#000000") or white ("#ffffff") depending on contrast, or red ("#ff0000") if any parameter is invalid
      */
     public String checkForeground(String bgColor, String fgColor) {
 
@@ -245,7 +245,7 @@ public final class CmsColorContrastCalculator {
      * @param bgColor background color
      * @param fgColorList list of potential foreground colors
      *
-     * @return the first compliant color from the list, otherwise black ("#000000") or white ("#ffffff") depending on contrast, or red (#ff0000) if any parameter is invalid
+     * @return the first compliant color from the list, otherwise black ("#000000") or white ("#ffffff") depending on contrast, or red ("#ff0000") if any parameter is invalid
      */
     public String checkForegroundList(String bgColor, List<String> fgColorList) {
 
@@ -276,11 +276,11 @@ public final class CmsColorContrastCalculator {
      * Treats the given color as background and returns either black or white as foreground color,
      * choosing whichever provides better contrast according to WCAG guidelines.<p>
      *
-     * Returns black ("#000000") or white ("#ffffff") depending on contrast, or red (#ff0000) if the parameter is invalid.<p>
+     * Returns black ("#000000") or white ("#ffffff") depending on contrast, or red ("#ff0000") if the parameter is invalid.<p>
      *
      * @param bgColor background color
      *
-     * @return black ("#000000") or white ("#ffffff") depending on contrast, or red (#ff0000) if the parameter is invalid
+     * @return black ("#000000") or white ("#ffffff") depending on contrast, or red ("#ff0000") if the parameter is invalid
      */
     public String getForeground(String bgColor) {
 
@@ -318,6 +318,9 @@ public final class CmsColorContrastCalculator {
      * @param color the color to validate
      *
      * @return true if the input is a valid CSS color
+     *
+     * @see #validate(String)
+     * @see #toHex(String)
      */
     public boolean isValid(String color) {
 
@@ -330,7 +333,7 @@ public final class CmsColorContrastCalculator {
      * If the provided foreground color doesn't meet the minimum contrast ratio of 4.5:1,
      * it will be adjusted to be either darker or lighter until it does.<p>
      *
-     * Returns red (#ff0000) if either parameter is invalid.<p>
+     * Returns red("#ff0000") if either parameter is invalid.<p>
      *
      * @param bgColor background color
      * @param fgColor potential foreground color
@@ -360,8 +363,8 @@ public final class CmsColorContrastCalculator {
      *
      * @return to colors hex representation, or {@code null} if the input is invalid
      *
-     * @see #toRgb(String)
-     * @see #toRgbStr(String)
+     * @see #isValid(String)
+     * @see #toHex(String)
      */
     public String toHex(String color) {
 
@@ -463,6 +466,33 @@ public final class CmsColorContrastCalculator {
     }
 
     /**
+     * Validates and converts a CSS color to a 'normalized' hex representation.<p>
+     *
+     * Accepts a hex colors in the format "#rrggbb", "#rgb" or "#rrggbbaa".
+     * Additionally, this method supports named CSS colors, e.g. "white", "blue", "transparent" etc.
+     * If the input includes an alpha channel, it will also be included in the returned String.
+     * The input will be trimmed, so it can contain leading or trailing white spaces.<p>
+     *
+     * If the input is not a valid CSS color, the method returns red ("#ff0000").
+     * So it is assured that the output of this methods is always a valid CSS color.<p>
+     *
+     * @param color the color name or hex color code (e.g. "white", "#ffffff" or "#fff")
+     *
+     * @return to colors hex representation, or red ("#ff0000") if the input is invalid
+     *
+     * @see #isValid(String)
+     * @see #toHex(String)
+     */
+    public String validate(String color) {
+
+        String result = toHex(color);
+        if (result == null) {
+            result = INVALID_FOREGROUND;
+        }
+        return result;
+    }
+
+    /**
      * Calculates the contrast ratio between two colors using WCAG formula.<p>
      *
      * @param color1 first color as RGB array
@@ -505,7 +535,7 @@ public final class CmsColorContrastCalculator {
      * @param bgRgb background color as RGB array
      * @param fgRgbList list of potential foreground colors as RGB arrays
      *
-     * @return the first compliant color from the list, otherwise black ("#000000") or white ("#ffffff") depending on contrast, or red (#ff0000) if any parameter is invalid
+     * @return the first compliant color from the list, otherwise black ("#000000") or white ("#ffffff") depending on contrast, or red ("#ff0000") if any parameter is invalid
      */
     private String checkForegroundListRgb(int[] bgRgb, List<int[]> fgRgbList) {
 
@@ -537,11 +567,11 @@ public final class CmsColorContrastCalculator {
     /**
      * Checks if the provided foreground color has sufficient contrast with the background.<p>
      *
-     * Returns the provided {@code fgRgb} if compliant, otherwise black ("#000000") or white ("#ffffff") depending on contrast, or red (#ff0000) if any parameter is invalid.<p>
+     * Returns the provided {@code fgRgb} if compliant, otherwise black ("#000000") or white ("#ffffff") depending on contrast, or red ("#ff0000") if any parameter is invalid.<p>
      *
      * @param bgRgb background color as RGB array
      * @param fgRgb potential foreground color as RGB array
-     * @return the provided {@code fgRgb} if compliant, otherwise black ("#000000") or white ("#ffffff") depending on contrast, or red (#ff0000) if any parameter is invalid
+     * @return the provided {@code fgRgb} if compliant, otherwise black ("#000000") or white ("#ffffff") depending on contrast, or red ("#ff0000") if any parameter is invalid
      */
     private String checkForegroundRgb(int[] bgRgb, int[] fgRgb) {
 
@@ -640,7 +670,7 @@ public final class CmsColorContrastCalculator {
      *
      * @param bgRgb background color as RGB array
      *
-     * @return black ("#000000") or white ("#ffffff") depending on contrast, or red (#ff0000) if the parameter is invalid
+     * @return black ("#000000") or white ("#ffffff") depending on contrast, or red ("#ff0000") if the parameter is invalid
      */
     private String getForegroundRgb(int[] bgRgb) {
 

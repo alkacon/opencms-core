@@ -441,6 +441,34 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
         assertNull(m_calculator.toRgbStr("#zzzzzz"));
     }
 
+    @Test
+    public void testValidate() {
+
+        // Valid hex colors
+        assertEquals("#ffffff", m_calculator.validate("#ffffff"));
+        assertEquals("#ffffff", m_calculator.validate("#fff"));
+        assertEquals("#ffffff00", m_calculator.validate("#ffffff00"));
+        assertEquals("#ffffffaa", m_calculator.validate("#ffffffaa"));
+
+        // Named colors
+        assertEquals("#ffffff", m_calculator.validate("white"));
+        assertEquals("#000000", m_calculator.validate("black"));
+        assertEquals("#ff0000", m_calculator.validate("red"));
+        assertEquals("#00ff00", m_calculator.validate("lime"));
+        assertEquals("#0000ff", m_calculator.validate("blue"));
+        assertEquals("#ffffff00", m_calculator.validate("transparent"));
+
+        // Invalid colors
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("not-a-color"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#12"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#12345"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("123456"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#1234567"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#123456xx"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#xyz"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#zzzzzz"));
+    }
+
     private void assertContrast(String color1, String color2, double expectedRatio) {
 
         double actualRatio = m_calculator.getContrast(color1, color2);
