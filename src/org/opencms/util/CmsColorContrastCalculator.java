@@ -231,7 +231,7 @@ public final class CmsColorContrastCalculator {
     public String checkForeground(String bgColor, String fgColor) {
 
         try {
-            return checkForegroundRgb(toRgb(bgColor, true, false), toRgb(fgColor, true, false));
+            return checkForegroundRgb(toRgbArray(bgColor, true, false), toRgbArray(fgColor, true, false));
         } catch (IllegalArgumentException e) {
             return INVALID_FOREGROUND;
         }
@@ -249,7 +249,7 @@ public final class CmsColorContrastCalculator {
      */
     public String checkForegroundList(String bgColor, List<String> fgColorList) {
 
-        return checkForegroundListRgb(toRgb(bgColor, true, false), colorListToRgbList(fgColorList));
+        return checkForegroundListRgb(toRgbArray(bgColor, true, false), colorListToRgbList(fgColorList));
     }
 
     /**
@@ -269,7 +269,7 @@ public final class CmsColorContrastCalculator {
      */
     public double getContrast(String bgColor, String fgColor) {
 
-        return getContrastRgb(toRgb(bgColor, true, false), toRgb(fgColor, true, false));
+        return getContrastRgb(toRgbArray(bgColor, true, false), toRgbArray(fgColor, true, false));
     }
 
     /**
@@ -285,7 +285,7 @@ public final class CmsColorContrastCalculator {
     public String getForeground(String bgColor) {
 
         try {
-            return getForegroundRgb(toRgb(bgColor, true, false));
+            return getForegroundRgb(toRgbArray(bgColor, true, false));
         } catch (IllegalArgumentException e) {
             return INVALID_FOREGROUND;
         }
@@ -305,7 +305,7 @@ public final class CmsColorContrastCalculator {
      */
     public boolean hasSufficientContrast(String bgColor, String fgColor) {
 
-        return hasSufficientContrastRgb(toRgb(bgColor, true, false), toRgb(fgColor, true, false));
+        return hasSufficientContrastRgb(toRgbArray(bgColor, true, false), toRgbArray(fgColor, true, false));
     }
 
     /**
@@ -319,12 +319,39 @@ public final class CmsColorContrastCalculator {
      *
      * @return true if the input is a valid CSS color
      *
-     * @see #validate(String)
+     * @see #normalize(String)
      * @see #toHex(String)
      */
     public boolean isValid(String color) {
 
-        return null != toRgb(color);
+        return null != toRgbArray(color);
+    }
+
+    /**
+     * Normalizes a CSS color by converting it to a 6 (or 8 for RGBA) digit hex representation.<p>
+     *
+     * Accepts a hex colors in the format "#rrggbb", "#rgb" or "#rrggbbaa".
+     * Additionally, this method supports named CSS colors, e.g. "white", "blue", "transparent" etc.
+     * If the input includes an alpha channel, it will also be included in the returned String.
+     * The input will be trimmed, so it can contain leading or trailing white spaces.<p>
+     *
+     * If the input is not a valid CSS color, the method returns red ("#ff0000").
+     * So it is assured that the output of this methods is always a valid CSS color.<p>
+     *
+     * @param color the color name or hex color code (e.g. "white", "#ffffff" or "#fff")
+     *
+     * @return to colors hex representation, or red ("#ff0000") if the input is invalid
+     *
+     * @see #isValid(String)
+     * @see #toHex(String)
+     */
+    public String normalize(String color) {
+
+        String result = toHex(color);
+        if (result == null) {
+            result = INVALID_FOREGROUND;
+        }
+        return result;
     }
 
     /**
@@ -343,7 +370,7 @@ public final class CmsColorContrastCalculator {
     public String suggestForeground(String bgColor, String fgColor) {
 
         try {
-            return suggestForegroundRgb(toRgb(bgColor, true, false), toRgb(fgColor, true, false));
+            return suggestForegroundRgb(toRgbArray(bgColor, true, false), toRgbArray(fgColor, true, false));
         } catch (IllegalArgumentException e) {
             return INVALID_FOREGROUND;
         }
@@ -371,7 +398,7 @@ public final class CmsColorContrastCalculator {
         String result = null;
         if ((color != null) && (color.length() != 0)) {
             if (isValid(color)) {
-                return rgbToHex(toRgb(color));
+                return rgbToHex(toRgbArray(color));
             }
         }
         return result;
@@ -391,12 +418,12 @@ public final class CmsColorContrastCalculator {
      *
      * @return an array of integers representing the RGB(A) values, or {@code null} if the input is not a valid CSS color
      *
-     * @see #toRgb(String, boolean, boolean)
-     * @see #toRgbStr(String)
+     * @see #toRgbArray(String, boolean, boolean)
+     * @see #toRgb(String)
      */
-    public int[] toRgb(String color) {
+    public int[] toRgbArray(String color) {
 
-        return toRgb(color, true, true);
+        return toRgbArray(color, true, true);
     }
 
     /**
@@ -410,10 +437,10 @@ public final class CmsColorContrastCalculator {
      *
      * @return an array of integers representing the RGB(A) values, or {@code null} if the input is invalid
      *
+     * @see #toRgbArray(String)
      * @see #toRgb(String)
-     * @see #toRgbStr(String)
      */
-    public int[] toRgb(String color, boolean supportNames, boolean supportAlpha) {
+    public int[] toRgbArray(String color, boolean supportNames, boolean supportAlpha) {
 
         int[] result = null;
         if (color != null) {
@@ -446,12 +473,12 @@ public final class CmsColorContrastCalculator {
      *
      * @return the RGB representation as a comma separated String, or {@code null} if the input is invalid
      *
-     * @see #toRgb(String)
+     * @see #toRgbArray(String)
      */
-    public String toRgbStr(String color) {
+    public String toRgb(String color) {
 
         String result = null;
-        int[] rgb = toRgb(color, true, true);
+        int[] rgb = toRgbArray(color, true, true);
         if (rgb != null) {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < rgb.length; i++) {
@@ -461,33 +488,6 @@ public final class CmsColorContrastCalculator {
                 sb.append(rgb[i]);
             }
             result = sb.toString();
-        }
-        return result;
-    }
-
-    /**
-     * Validates and converts a CSS color to a 'normalized' hex representation.<p>
-     *
-     * Accepts a hex colors in the format "#rrggbb", "#rgb" or "#rrggbbaa".
-     * Additionally, this method supports named CSS colors, e.g. "white", "blue", "transparent" etc.
-     * If the input includes an alpha channel, it will also be included in the returned String.
-     * The input will be trimmed, so it can contain leading or trailing white spaces.<p>
-     *
-     * If the input is not a valid CSS color, the method returns red ("#ff0000").
-     * So it is assured that the output of this methods is always a valid CSS color.<p>
-     *
-     * @param color the color name or hex color code (e.g. "white", "#ffffff" or "#fff")
-     *
-     * @return to colors hex representation, or red ("#ff0000") if the input is invalid
-     *
-     * @see #isValid(String)
-     * @see #toHex(String)
-     */
-    public String validate(String color) {
-
-        String result = toHex(color);
-        if (result == null) {
-            result = INVALID_FOREGROUND;
         }
         return result;
     }
@@ -595,7 +595,7 @@ public final class CmsColorContrastCalculator {
         if (colorList == null) {
             return null;
         }
-        return colorList.stream().map(color -> toRgb(color, true, false)).collect(Collectors.toList());
+        return colorList.stream().map(color -> toRgbArray(color, true, false)).collect(Collectors.toList());
     }
 
     /**

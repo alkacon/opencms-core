@@ -288,6 +288,34 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
     }
 
     @Test
+    public void testNormalize() {
+
+        // Valid hex colors
+        assertEquals("#ffffff", m_calculator.normalize("#ffffff"));
+        assertEquals("#ffffff", m_calculator.normalize("#fff"));
+        assertEquals("#ffffff00", m_calculator.normalize("#ffffff00"));
+        assertEquals("#ffffffaa", m_calculator.normalize("#ffffffaa"));
+
+        // Named colors
+        assertEquals("#ffffff", m_calculator.normalize("white"));
+        assertEquals("#000000", m_calculator.normalize("black"));
+        assertEquals("#ff0000", m_calculator.normalize("red"));
+        assertEquals("#00ff00", m_calculator.normalize("lime"));
+        assertEquals("#0000ff", m_calculator.normalize("blue"));
+        assertEquals("#ffffff00", m_calculator.normalize("transparent"));
+
+        // Invalid colors
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.normalize("not-a-color"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.normalize("#12"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.normalize("#12345"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.normalize("123456"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.normalize("#1234567"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.normalize("#123456xx"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.normalize("#xyz"));
+        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.normalize("#zzzzzz"));
+    }
+
+    @Test
     public void testSuggestForeground() {
 
         // Test suggestions maintain WCAG compliance
@@ -345,44 +373,38 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
     public void testToRgb() {
 
         // Valid hex values
-        assertArrayEquals(new int[] {255, 255, 255}, m_calculator.toRgb("#ffffff"));
-        assertArrayEquals(new int[] {0, 0, 0}, m_calculator.toRgb("#000000"));
-        assertArrayEquals(new int[] {255, 0, 0}, m_calculator.toRgb("#ff0000"));
-        assertArrayEquals(new int[] {0, 255, 0}, m_calculator.toRgb("#00ff00"));
-        assertArrayEquals(new int[] {0, 0, 255}, m_calculator.toRgb("#0000ff"));
-        assertArrayEquals(new int[] {255, 255, 0}, m_calculator.toRgb("#ffff00  "));
-        assertArrayEquals(new int[] {0, 255, 255}, m_calculator.toRgb("  #00ffff"));
-        assertArrayEquals(new int[] {255, 0, 255}, m_calculator.toRgb("  #ff00ff  "));
+        assertEquals("255, 255, 255", m_calculator.toRgb("#ffffff"));
+        assertEquals("0, 0, 0", m_calculator.toRgb("#000000"));
+        assertEquals("255, 0, 0", m_calculator.toRgb("#ff0000"));
+        assertEquals("0, 255, 0", m_calculator.toRgb("#00ff00"));
+        assertEquals("0, 0, 255", m_calculator.toRgb("#0000ff"));
 
         // Valid shorthand hex values
-        assertArrayEquals(new int[] {255, 255, 255}, m_calculator.toRgb("#fff"));
-        assertArrayEquals(new int[] {0, 0, 0}, m_calculator.toRgb("#000"));
-        assertArrayEquals(new int[] {255, 0, 0}, m_calculator.toRgb("#f00"));
-        assertArrayEquals(new int[] {0, 255, 0}, m_calculator.toRgb("#0f0"));
-        assertArrayEquals(new int[] {0, 0, 255}, m_calculator.toRgb("#00f"));
-        assertArrayEquals(new int[] {255, 255, 0}, m_calculator.toRgb("#ff0"));
-        assertArrayEquals(new int[] {0, 255, 255}, m_calculator.toRgb("#0ff"));
-        assertArrayEquals(new int[] {255, 0, 255}, m_calculator.toRgb("#f0f"));
+        assertEquals("255, 255, 255", m_calculator.toRgb("#fff"));
+        assertEquals("0, 0, 0", m_calculator.toRgb("#000"));
+        assertEquals("255, 0, 0", m_calculator.toRgb("#f00"));
+        assertEquals("0, 255, 0", m_calculator.toRgb("#0f0"));
+        assertEquals("0, 0, 255", m_calculator.toRgb("#00f"));
 
         // Valid rgba hex values
-        assertArrayEquals(new int[] {255, 255, 255, 0}, m_calculator.toRgb("#ffffff00"));
-        assertArrayEquals(new int[] {255, 255, 255, 170}, m_calculator.toRgb("#ffffffaa"));
-        assertArrayEquals(new int[] {0, 0, 0, 255}, m_calculator.toRgb("#000000ff"));
-        assertArrayEquals(new int[] {255, 0, 0, 128}, m_calculator.toRgb("#ff000080"));
+        assertEquals("255, 255, 255, 0", m_calculator.toRgb("#ffffff00"));
+        assertEquals("255, 255, 255, 170", m_calculator.toRgb("#ffffffaa"));
+        assertEquals("0, 0, 0, 255", m_calculator.toRgb("#000000ff"));
+        assertEquals("255, 0, 0, 128", m_calculator.toRgb("#ff000080"));
 
         // Named colors
-        assertArrayEquals(new int[] {0, 0, 0}, m_calculator.toRgb("black"));
-        assertArrayEquals(new int[] {255, 255, 255}, m_calculator.toRgb("white   "));
-        assertArrayEquals(new int[] {255, 0, 0}, m_calculator.toRgb("red"));
-        assertArrayEquals(new int[] {0, 128, 0}, m_calculator.toRgb("green"));
-        assertArrayEquals(new int[] {0, 0, 255}, m_calculator.toRgb("blue"));
-        assertArrayEquals(new int[] {255, 255, 0}, m_calculator.toRgb("   yellow"));
-        assertArrayEquals(new int[] {0, 255, 255}, m_calculator.toRgb("cyan"));
-        assertArrayEquals(new int[] {255, 0, 255}, m_calculator.toRgb("magenta"));
-        assertArrayEquals(new int[] {128, 128, 128}, m_calculator.toRgb("  gray"));
-        assertArrayEquals(new int[] {128, 128, 128}, m_calculator.toRgb("grey"));
-        assertArrayEquals(new int[] {255, 255, 255, 0}, m_calculator.toRgb("transparent"));
-        assertArrayEquals(new int[] {255, 255, 255, 0}, m_calculator.toRgb("transparent", true, false));
+        assertEquals("0, 0, 0", m_calculator.toRgb("black"));
+        assertEquals("255, 255, 255", m_calculator.toRgb("white"));
+        assertEquals("255, 0, 0", m_calculator.toRgb("red"));
+        assertEquals("0, 128, 0", m_calculator.toRgb("green"));
+        assertEquals("0, 0, 255", m_calculator.toRgb("blue"));
+        assertEquals("255, 255, 0", m_calculator.toRgb("yellow"));
+        assertEquals("0, 255, 255", m_calculator.toRgb("cyan"));
+        assertEquals("255, 0, 255", m_calculator.toRgb("magenta"));
+        assertEquals("128, 128, 128", m_calculator.toRgb("gray"));
+        assertEquals("128, 128, 128", m_calculator.toRgb("grey"));
+        assertEquals("255, 255, 255, 0", m_calculator.toRgb("transparent"));
+
         // Invalid values
         assertNull(m_calculator.toRgb("not-a-color"));
         assertNull(m_calculator.toRgb("#12"));
@@ -395,78 +417,56 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
     }
 
     @Test
-    public void testToRgbStr() {
+    public void testToRgbArray() {
 
         // Valid hex values
-        assertEquals("255, 255, 255", m_calculator.toRgbStr("#ffffff"));
-        assertEquals("0, 0, 0", m_calculator.toRgbStr("#000000"));
-        assertEquals("255, 0, 0", m_calculator.toRgbStr("#ff0000"));
-        assertEquals("0, 255, 0", m_calculator.toRgbStr("#00ff00"));
-        assertEquals("0, 0, 255", m_calculator.toRgbStr("#0000ff"));
+        assertArrayEquals(new int[] {255, 255, 255}, m_calculator.toRgbArray("#ffffff"));
+        assertArrayEquals(new int[] {0, 0, 0}, m_calculator.toRgbArray("#000000"));
+        assertArrayEquals(new int[] {255, 0, 0}, m_calculator.toRgbArray("#ff0000"));
+        assertArrayEquals(new int[] {0, 255, 0}, m_calculator.toRgbArray("#00ff00"));
+        assertArrayEquals(new int[] {0, 0, 255}, m_calculator.toRgbArray("#0000ff"));
+        assertArrayEquals(new int[] {255, 255, 0}, m_calculator.toRgbArray("#ffff00  "));
+        assertArrayEquals(new int[] {0, 255, 255}, m_calculator.toRgbArray("  #00ffff"));
+        assertArrayEquals(new int[] {255, 0, 255}, m_calculator.toRgbArray("  #ff00ff  "));
 
         // Valid shorthand hex values
-        assertEquals("255, 255, 255", m_calculator.toRgbStr("#fff"));
-        assertEquals("0, 0, 0", m_calculator.toRgbStr("#000"));
-        assertEquals("255, 0, 0", m_calculator.toRgbStr("#f00"));
-        assertEquals("0, 255, 0", m_calculator.toRgbStr("#0f0"));
-        assertEquals("0, 0, 255", m_calculator.toRgbStr("#00f"));
+        assertArrayEquals(new int[] {255, 255, 255}, m_calculator.toRgbArray("#fff"));
+        assertArrayEquals(new int[] {0, 0, 0}, m_calculator.toRgbArray("#000"));
+        assertArrayEquals(new int[] {255, 0, 0}, m_calculator.toRgbArray("#f00"));
+        assertArrayEquals(new int[] {0, 255, 0}, m_calculator.toRgbArray("#0f0"));
+        assertArrayEquals(new int[] {0, 0, 255}, m_calculator.toRgbArray("#00f"));
+        assertArrayEquals(new int[] {255, 255, 0}, m_calculator.toRgbArray("#ff0"));
+        assertArrayEquals(new int[] {0, 255, 255}, m_calculator.toRgbArray("#0ff"));
+        assertArrayEquals(new int[] {255, 0, 255}, m_calculator.toRgbArray("#f0f"));
 
         // Valid rgba hex values
-        assertEquals("255, 255, 255, 0", m_calculator.toRgbStr("#ffffff00"));
-        assertEquals("255, 255, 255, 170", m_calculator.toRgbStr("#ffffffaa"));
-        assertEquals("0, 0, 0, 255", m_calculator.toRgbStr("#000000ff"));
-        assertEquals("255, 0, 0, 128", m_calculator.toRgbStr("#ff000080"));
+        assertArrayEquals(new int[] {255, 255, 255, 0}, m_calculator.toRgbArray("#ffffff00"));
+        assertArrayEquals(new int[] {255, 255, 255, 170}, m_calculator.toRgbArray("#ffffffaa"));
+        assertArrayEquals(new int[] {0, 0, 0, 255}, m_calculator.toRgbArray("#000000ff"));
+        assertArrayEquals(new int[] {255, 0, 0, 128}, m_calculator.toRgbArray("#ff000080"));
 
         // Named colors
-        assertEquals("0, 0, 0", m_calculator.toRgbStr("black"));
-        assertEquals("255, 255, 255", m_calculator.toRgbStr("white"));
-        assertEquals("255, 0, 0", m_calculator.toRgbStr("red"));
-        assertEquals("0, 128, 0", m_calculator.toRgbStr("green"));
-        assertEquals("0, 0, 255", m_calculator.toRgbStr("blue"));
-        assertEquals("255, 255, 0", m_calculator.toRgbStr("yellow"));
-        assertEquals("0, 255, 255", m_calculator.toRgbStr("cyan"));
-        assertEquals("255, 0, 255", m_calculator.toRgbStr("magenta"));
-        assertEquals("128, 128, 128", m_calculator.toRgbStr("gray"));
-        assertEquals("128, 128, 128", m_calculator.toRgbStr("grey"));
-        assertEquals("255, 255, 255, 0", m_calculator.toRgbStr("transparent"));
-
+        assertArrayEquals(new int[] {0, 0, 0}, m_calculator.toRgbArray("black"));
+        assertArrayEquals(new int[] {255, 255, 255}, m_calculator.toRgbArray("white   "));
+        assertArrayEquals(new int[] {255, 0, 0}, m_calculator.toRgbArray("red"));
+        assertArrayEquals(new int[] {0, 128, 0}, m_calculator.toRgbArray("green"));
+        assertArrayEquals(new int[] {0, 0, 255}, m_calculator.toRgbArray("blue"));
+        assertArrayEquals(new int[] {255, 255, 0}, m_calculator.toRgbArray("   yellow"));
+        assertArrayEquals(new int[] {0, 255, 255}, m_calculator.toRgbArray("cyan"));
+        assertArrayEquals(new int[] {255, 0, 255}, m_calculator.toRgbArray("magenta"));
+        assertArrayEquals(new int[] {128, 128, 128}, m_calculator.toRgbArray("  gray"));
+        assertArrayEquals(new int[] {128, 128, 128}, m_calculator.toRgbArray("grey"));
+        assertArrayEquals(new int[] {255, 255, 255, 0}, m_calculator.toRgbArray("transparent"));
+        assertArrayEquals(new int[] {255, 255, 255, 0}, m_calculator.toRgbArray("transparent", true, false));
         // Invalid values
-        assertNull(m_calculator.toRgbStr("not-a-color"));
-        assertNull(m_calculator.toRgbStr("#12"));
-        assertNull(m_calculator.toRgbStr("#12345"));
-        assertNull(m_calculator.toRgbStr("123456"));
-        assertNull(m_calculator.toRgbStr("#1234567"));
-        assertNull(m_calculator.toRgbStr("#123456xx"));
-        assertNull(m_calculator.toRgbStr("#xyz"));
-        assertNull(m_calculator.toRgbStr("#zzzzzz"));
-    }
-
-    @Test
-    public void testValidate() {
-
-        // Valid hex colors
-        assertEquals("#ffffff", m_calculator.validate("#ffffff"));
-        assertEquals("#ffffff", m_calculator.validate("#fff"));
-        assertEquals("#ffffff00", m_calculator.validate("#ffffff00"));
-        assertEquals("#ffffffaa", m_calculator.validate("#ffffffaa"));
-
-        // Named colors
-        assertEquals("#ffffff", m_calculator.validate("white"));
-        assertEquals("#000000", m_calculator.validate("black"));
-        assertEquals("#ff0000", m_calculator.validate("red"));
-        assertEquals("#00ff00", m_calculator.validate("lime"));
-        assertEquals("#0000ff", m_calculator.validate("blue"));
-        assertEquals("#ffffff00", m_calculator.validate("transparent"));
-
-        // Invalid colors
-        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("not-a-color"));
-        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#12"));
-        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#12345"));
-        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("123456"));
-        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#1234567"));
-        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#123456xx"));
-        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#xyz"));
-        assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.validate("#zzzzzz"));
+        assertNull(m_calculator.toRgbArray("not-a-color"));
+        assertNull(m_calculator.toRgbArray("#12"));
+        assertNull(m_calculator.toRgbArray("#12345"));
+        assertNull(m_calculator.toRgbArray("123456"));
+        assertNull(m_calculator.toRgbArray("#1234567"));
+        assertNull(m_calculator.toRgbArray("#123456xx"));
+        assertNull(m_calculator.toRgbArray("#xyz"));
+        assertNull(m_calculator.toRgbArray("#zzzzzz"));
     }
 
     private void assertContrast(String color1, String color2, double expectedRatio) {
