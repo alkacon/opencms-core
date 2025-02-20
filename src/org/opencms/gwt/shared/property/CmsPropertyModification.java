@@ -161,6 +161,14 @@ public class CmsPropertyModification implements IsSerializable {
     }
 
     /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        return m_id + "/" + (m_isStructureValue ? "S" : "R") + "/" + m_name + "=" + m_value;
+    }
+
+    /**
      * Helper method for applying the change to a property map.<p>
      *
      * @param props a map of properties

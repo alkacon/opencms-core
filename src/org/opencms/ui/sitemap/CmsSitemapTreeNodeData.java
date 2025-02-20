@@ -66,6 +66,9 @@ public class CmsSitemapTreeNodeData {
     /** Flag indicating whether the linked resource is directly linked. */
     private boolean m_isDirectLink;
 
+    /** If m_linkedResource is a default file, then m_linkedEntry is its parent folder, else it's m_linkedResource itself. */
+    private CmsResource m_linkedEntryResource;
+
     /** The linked resource. */
     private CmsResource m_linkedResource;
 
@@ -85,6 +88,7 @@ public class CmsSitemapTreeNodeData {
      * @param otherLocale the other locale
      */
     public CmsSitemapTreeNodeData(Locale mainLocale, Locale otherLocale) {
+
         m_otherLocale = otherLocale;
     }
 
@@ -96,6 +100,16 @@ public class CmsSitemapTreeNodeData {
     public CmsClientSitemapEntry getClientEntry() {
 
         return m_entry;
+    }
+
+    /**
+     * Gets the linked resource or its parent folder, whichever corresponds to the sitemap entry.
+     *
+     * @return the linked entry resource
+     */
+    public CmsResource getLinkedEntryResource() {
+
+        return m_linkedEntryResource;
     }
 
     /**
@@ -157,6 +171,7 @@ public class CmsSitemapTreeNodeData {
         Collection<CmsResource> resourcesForTargetLocale = localeGroup.getResourcesForLocale(m_otherLocale);
         if (!resourcesForTargetLocale.isEmpty()) {
             m_linkedResource = resourcesForTargetLocale.iterator().next();
+            m_linkedEntryResource = CmsSitemapTreeController.readSitemapEntryFolderIfPossible(m_linkedResource);
             if (primary.getStructureId().equals(m_resource.getStructureId())
                 || primary.getStructureId().equals(defaultFileId)
                 || primary.getStructureId().equals(m_linkedResource.getStructureId())) {

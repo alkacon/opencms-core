@@ -52,14 +52,48 @@ public class CmsPath implements Serializable, Comparable<CmsPath> {
      */
     public CmsPath(String pathStr) {
 
+        m_pathStr = normalize(pathStr);
+    }
+
+    /**
+     * Checks if two (absolute) paths are equal in normalized form.
+     *
+     * @param path1 the first path
+     * @param path2 the second path
+     * @return true if the paths are logically equal
+     */
+    public static boolean equal(String path1, String path2) {
+
+        if ((path1 == null) && (path2 == null)) {
+            return true;
+        }
+        if ((path1 == null) || (path2 == null)) {
+            return false;
+        }
+        return normalize(path1).equals(normalize(path2));
+
+    }
+
+    /**
+     * Normalizes a path.
+     *
+     * <p>The normalized path always has a leading slash, but never a trailing slash if it's more than one character long.
+     *
+     * @param pathStr the path to normalize
+     * @return the normalized path
+     */
+    private static String normalize(String pathStr) {
+
+        String result = null;
         if (pathStr.equals("") || pathStr.equals("/")) {
-            m_pathStr = "/";
+            result = "/";
         } else {
-            m_pathStr = CmsFileUtil.removeTrailingSeparator(pathStr);
-            if (!m_pathStr.startsWith("/")) {
-                m_pathStr = "/" + m_pathStr;
+            result = CmsFileUtil.removeTrailingSeparator(pathStr);
+            if (!result.startsWith("/")) {
+                result = "/" + result;
             }
         }
+        return result;
     }
 
     /**

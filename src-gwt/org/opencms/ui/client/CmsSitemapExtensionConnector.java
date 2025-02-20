@@ -68,6 +68,7 @@ public class CmsSitemapExtensionConnector extends AbstractExtensionConnector imp
      * Creates a new instance.<p>
      */
     public CmsSitemapExtensionConnector() {
+
         super();
         registerRpc(I_CmsSitemapClientRpc.class, this);
         INSTANCE = this;

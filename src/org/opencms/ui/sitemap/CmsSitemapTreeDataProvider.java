@@ -79,6 +79,7 @@ public class CmsSitemapTreeDataProvider {
      * @param context the locale context
      */
     public CmsSitemapTreeDataProvider(CmsObject cms, CmsResource root, I_CmsLocaleCompareContext context) {
+
         m_root = root;
         m_localeContext = context;
         try {

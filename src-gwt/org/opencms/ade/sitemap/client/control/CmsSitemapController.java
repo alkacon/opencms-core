@@ -190,7 +190,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
         final String noEditReason) {
 
         final CmsUUID infoId;
-        infoId = defaultFileId;
+        infoId = ownId;
         Set<CmsUUID> idsForPropertyConfig = new HashSet<CmsUUID>();
         idsForPropertyConfig.add(defaultFileId);
         idsForPropertyConfig.add(ownId);
@@ -2182,6 +2182,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
 
                 @Override
                 public void onFailure(Throwable t) {
+
                     // An error after a drag/drop operation can cause click events to get sent to the sitemap entry's move handle
                     // instead of the error dialog's buttons. We use releaseCapture() to fix this.
                     DOM.releaseCapture(DOM.getCaptureElement());
@@ -2360,9 +2361,9 @@ public class CmsSitemapController implements I_CmsSitemapController {
                 String currentPath = entry.getSitePath();
                 String partAfterOldSitePath = currentPath.substring(oldSitepath.length());
 
-                String updatedSitePath = "".equals(partAfterOldSitePath) ? newSitepath : CmsStringUtil.joinPaths(
-                    newSitepath,
-                    partAfterOldSitePath);
+                String updatedSitePath = "".equals(partAfterOldSitePath)
+                ? newSitepath
+                : CmsStringUtil.joinPaths(newSitepath, partAfterOldSitePath);
                 entry.updateSitePath(updatedSitePath, this);
             }
         }

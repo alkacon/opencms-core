@@ -128,6 +128,7 @@ import org.opencms.ui.apps.CmsQuickLaunchLocationCache;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsPath;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceManager;
@@ -1051,7 +1052,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             CmsUUID rootId = cms.readResource("/", CmsResourceFilter.ALL).getStructureId();
             result.setSiteRootId(rootId);
             result.setLocaleComparisonEnabled(showLocaleComparison);
-            boolean allowCreateNestedGalleries = Boolean.parseBoolean("" + OpenCms.getRuntimeProperty("ade.sitemap.allowCreateNestedGalleries"));
+            boolean allowCreateNestedGalleries = Boolean.parseBoolean(
+                "" + OpenCms.getRuntimeProperty("ade.sitemap.allowCreateNestedGalleries"));
             result.setAllowCreateNestedGalleries(allowCreateNestedGalleries);
         } catch (Throwable e) {
             error(e);
@@ -1158,7 +1160,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                     String newPath = CmsStringUtil.joinPaths(parent, newUrlName);
                     CmsObject rootCms = OpenCms.initCmsObject(cms);
                     rootCms.getRequestContext().setSiteRoot("");
-                    rootCms.moveResource(ownRes.getRootPath(), newPath);
+                    if (!CmsPath.equal(ownRes.getRootPath(), newPath)) {
+                        rootCms.moveResource(ownRes.getRootPath(), newPath);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -3411,6 +3415,20 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         CmsResource defaultFileRes,
         List<CmsPropertyModification> propertyModifications)
     throws CmsException {
+
+        System.out.println("==========================================");
+        System.out.println(
+            "PM "
+                + ownRes.getStructureId()
+                + ":"
+                + ownRes.getRootPath()
+                + " "
+                + defaultFileRes.getStructureId()
+                + ":"
+                + defaultFileRes.getRootPath());
+        for (CmsPropertyModification p : propertyModifications) {
+            System.out.println(p);
+        }
 
         Map<String, CmsProperty> ownProps = getPropertiesByName(cms.readPropertyObjects(ownRes, false));
         // determine if the title property should be changed in case of a 'NavText' change

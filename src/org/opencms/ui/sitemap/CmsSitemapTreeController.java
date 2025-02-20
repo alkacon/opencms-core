@@ -33,6 +33,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.gwt.CmsCoreService;
 import org.opencms.i18n.CmsLocaleGroupService;
 import org.opencms.i18n.CmsLocaleManager;
@@ -114,6 +115,7 @@ public class CmsSitemapTreeController {
          * @param node the tree node
          */
         public DialogContext(CmsResource resource, CmsSitemapTreeNode node) {
+
             m_resource = resource;
             m_node = node;
         }
@@ -169,6 +171,7 @@ public class CmsSitemapTreeController {
          * @see org.opencms.ui.I_CmsDialogContext#focus(org.opencms.util.CmsUUID)
          */
         public void focus(CmsUUID structureId) {
+
             // not used
         }
 
@@ -216,6 +219,7 @@ public class CmsSitemapTreeController {
          * @see org.opencms.ui.I_CmsDialogContext#navigateTo(java.lang.String)
          */
         public void navigateTo(String appId) {
+
             // not used
         }
 
@@ -223,6 +227,7 @@ public class CmsSitemapTreeController {
          * @see org.opencms.ui.I_CmsDialogContext#onViewChange()
          */
         public void onViewChange() {
+
             // do nothing
         }
 
@@ -286,7 +291,16 @@ public class CmsSitemapTreeController {
          */
         public void executeAction(MenuContext context) {
 
-            openPageCopyDialog(context.getNode(), context.getData());
+            try {
+                CmsResource resource = context.getTargetResource();
+                DialogContext dialogContext = new DialogContext(resource, context.getNode());
+                CmsCopyPageDialog dialog = new CmsCopyPageDialog(dialogContext);
+                String title = CmsVaadinUtils.getMessageText(Messages.GUI_COPYPAGE_DIALOG_TITLE_0);
+                dialogContext.start(title, dialog);
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                CmsErrorDialog.showErrorDialog(e);
+            }
 
         }
 
@@ -303,7 +317,10 @@ public class CmsSitemapTreeController {
          */
         public CmsMenuItemVisibilityMode getVisibility(MenuContext context) {
 
-            return visibleIfTrue(context.getData().isCopyable());
+            return visibleIfTrue(
+                context.isTargetingLinkedResource()
+                ? CmsResourceTypeXmlContainerPage.isContainerPage(context.getData().getLinkedResource())
+                : context.getData().isCopyable());
 
         }
     }
@@ -320,7 +337,7 @@ public class CmsSitemapTreeController {
 
             String link = CmsCoreService.getVaadinWorkplaceLink(
                 A_CmsUI.getCmsObject(),
-                context.getData().getResource().getStructureId());
+                context.getTargetResource().getStructureId());
             A_CmsUI.get().getPage().setLocation(link);
 
         }
@@ -355,7 +372,7 @@ public class CmsSitemapTreeController {
         public void executeAction(MenuContext context) {
 
             CmsResourceInfoAction infoAction = new CmsResourceInfoAction();
-            infoAction.executeAction(new DialogContext(context.getData().getResource(), context.getNode()));
+            infoAction.executeAction(new DialogContext(context.getTargetResource(), context.getNode()));
         }
 
         /**
@@ -549,7 +566,7 @@ public class CmsSitemapTreeController {
         @SuppressWarnings("synthetic-access")
         public void executeAction(MenuContext context) {
 
-            openTargetPage((CmsSitemapTreeNodeData)(context.getNode().getData()), false);
+            openTargetPage((CmsSitemapTreeNodeData)(context.getNode().getData()), context.isTargetingLinkedResource());
 
         }
 
@@ -584,7 +601,7 @@ public class CmsSitemapTreeController {
         public void executeAction(MenuContext context) {
 
             ((CmsSitemapUI)A_CmsUI.get()).getSitemapExtension().openPropertyDialog(
-                context.getData().getResource().getStructureId(),
+                context.getTargetResource().getStructureId(),
                 m_root.getStructureId());
         }
 
@@ -800,15 +817,22 @@ public class CmsSitemapTreeController {
         /** The tree node widget. */
         private CmsSitemapTreeNode m_node;
 
+        /** True if menu entries should act on the linked resource. */
+        private boolean m_isTargetingLinkedResource;
+
         /**
          * Creates a new instance.<p>
          *
          * @param data the sitemap tree data
          * @param node the tree node widget
+         * @param isTargetingLinkedResource true if the menu entries should act on the linked resource
          */
-        public MenuContext(CmsSitemapTreeNodeData data, CmsSitemapTreeNode node) {
+        public MenuContext(CmsSitemapTreeNodeData data, CmsSitemapTreeNode node, boolean isTargetingLinkedResource) {
+
             m_node = node;
             m_data = data;
+            m_isTargetingLinkedResource = isTargetingLinkedResource;
+
         }
 
         /**
@@ -832,6 +856,20 @@ public class CmsSitemapTreeController {
         }
 
         /**
+         * Gets the resource which context menu entries should operate on.
+         *
+         * @return the resource which context menu entries should operate on
+         */
+        public CmsResource getTargetResource() {
+
+            if (m_isTargetingLinkedResource) {
+                return m_data.getLinkedEntryResource();
+            } else {
+                return m_data.getResource();
+            }
+        }
+
+        /**
          * Checks if the currently selected locale is the main locale.<p>
          *
          * @return true if we are in the main locale
@@ -841,6 +879,16 @@ public class CmsSitemapTreeController {
 
             return m_localeContext.getRootLocale().equals(
                 A_CmsUI.getCmsObject().getLocaleGroupService().getMainLocale(m_localeContext.getRoot().getRootPath()));
+        }
+
+        /**
+         * Returns true if the menu entries should act on the linked resource if possible.
+         *
+         * @return true if the menu entries should act on the linked resource
+         */
+        public boolean isTargetingLinkedResource() {
+
+            return m_isTargetingLinkedResource;
         }
 
     }
@@ -885,6 +933,7 @@ public class CmsSitemapTreeController {
         CmsResource root,
         I_CmsLocaleCompareContext context,
         Component parent) {
+
         m_treeDataProvider = new CmsSitemapTreeDataProvider(cms, root, context);
         m_localeContext = context;
         m_root = root;
@@ -901,6 +950,32 @@ public class CmsSitemapTreeController {
     public static CmsMenuItemVisibilityMode activeIfTrue(boolean condition) {
 
         return condition ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE : CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+    }
+
+    /**
+     * If the given resource is the default file of a sitmeap entry folder, then returns that
+     * folder, else the original file.<p>
+     *
+     * @param resource a resource
+     * @return the resource or its parent folder
+     */
+    public static CmsResource readSitemapEntryFolderIfPossible(CmsResource resource) {
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        try {
+            if (resource.isFolder()) {
+                return resource;
+            }
+            CmsResource parent = cms.readParentFolder(resource.getStructureId());
+            CmsResource defaultFile = cms.readDefaultFile(parent, CmsResourceFilter.IGNORE_EXPIRATION);
+            if ((defaultFile != null) && defaultFile.equals(resource)) {
+                return parent;
+            }
+            return resource;
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return resource;
+        }
     }
 
     /**
@@ -970,50 +1045,24 @@ public class CmsSitemapTreeController {
         if (entry.getClientEntry().isHiddenNavigationEntry()) {
             info.addStyleName(OpenCmsTheme.RESOURCE_INFO_WEAK);
         }
-        final MenuBar menu = new MenuBar();
+
         boolean noTranslation = false;
         noTranslation = entry.isMarkedNoTranslation(m_localeContext.getComparisonLocale());
-
-        final MenuItem main = menu.addItem("", null);
-        main.setIcon(FontOpenCms.CONTEXT_MENU);
         CssLayout rightSide = new CssLayout();
         info.setButtonWidget(rightSide);
+
+        final MenuBar menu = createMenu(entry, node, false);
         rightSide.addComponent(menu);
-        main.setCommand(new Command() {
-
-            /** Serial version id. */
-            private static final long serialVersionUID = 1L;
-
-            public void menuSelected(MenuItem selectedItem) {
-
-                List<I_CmsSimpleContextMenuEntry<MenuContext>> entries = Arrays.asList(
-
-                    new EntryOpen(),
-                    new EntryExplorer(),
-                    new EntryProperties(),
-                    new EntryLink(),
-                    new EntryUnlink(),
-                    new EntryMark(),
-                    new EntryRemoveMark(),
-                    new EntryCopy(),
-                    new EntryInfo());
-
-                MenuContext context = new MenuContext(entry, node);
-                m_menu.setEntries(entries, context);
-                m_menu.open(menu);
-
-            }
-
-        });
-
-        menu.addStyleName("borderless o-toolbar-button o-resourceinfo-toolbar");
         if (entry.isLinked()) {
             CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(m_localeContext.getRoot().getRootPath());
             CmsResourceInfo linkedInfo = CmsResourceInfo.createSitemapResourceInfo(
                 readSitemapEntryFolderIfPossible(entry.getLinkedResource()),
                 site);
             linkedInfo.addStyleName(OpenCmsTheme.RESOURCE_INFO_DIRECTLINK);
-            rightSide.addComponent(linkedInfo, 0);
+            CssLayout linkedRightSide = new CssLayout();
+            linkedInfo.setButtonWidget(linkedRightSide);
+            linkedRightSide.addComponent(createMenu(entry, node, true));
+            rightSide.addComponent(linkedInfo);
             linkedInfo.setWidth(RHS_WIDTH + "px");
             node.setContent(info);
             linkedInfo.setData("linked"); // Data used by click handler to distinguish clicked resource icons
@@ -1038,7 +1087,7 @@ public class CmsSitemapTreeController {
                         + "</span>");
                 noTranslationInfo.addStyleName(OpenCmsTheme.RESOURCE_INFO_DIRECTLINK);
                 noTranslationInfo.setWidth(RHS_WIDTH + "px");
-                rightSide.addComponent(noTranslationInfo, 0);
+                rightSide.addComponent(noTranslationInfo);
             }
             node.setContent(info);
         }
@@ -1122,29 +1171,6 @@ public class CmsSitemapTreeController {
     }
 
     /**
-     * Opens the page copy dialog for a tree entry.<p>
-     *
-     * @param node the tree node widget
-     * @param entry the tree entry
-     */
-    public void openPageCopyDialog(CmsSitemapTreeNode node, CmsSitemapTreeNodeData entry) {
-
-        CmsObject cms = A_CmsUI.getCmsObject();
-        try {
-            CmsResource resource = cms.readResource(
-                entry.getClientEntry().getId(),
-                CmsResourceFilter.IGNORE_EXPIRATION);
-            DialogContext context = new DialogContext(resource, node);
-            CmsCopyPageDialog dialog = new CmsCopyPageDialog(context);
-            String title = CmsVaadinUtils.getMessageText(Messages.GUI_COPYPAGE_DIALOG_TITLE_0);
-            context.start(title, dialog);
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            CmsErrorDialog.showErrorDialog(e);
-        }
-    }
-
-    /**
      * Updates a sitemap node widget after the resource it corresponds to has changed.<p>
      *
      * @param node the sitemap node
@@ -1181,7 +1207,9 @@ public class CmsSitemapTreeController {
                 if (input instanceof CmsSitemapTreeNode) {
                     CmsSitemapTreeNode node = (CmsSitemapTreeNode)input;
                     CmsSitemapTreeNodeData data = (CmsSitemapTreeNodeData)node.getData();
-                    if (data.getResource().getStructureId().equals(id)) {
+                    if (data.getResource().getStructureId().equals(id)
+                        || ((data.getLinkedEntryResource() != null)
+                            && data.getLinkedEntryResource().getStructureId().equals(id))) {
                         nodes.add(node);
                         return false;
                     }
@@ -1196,32 +1224,6 @@ public class CmsSitemapTreeController {
     }
 
     /**
-     * If the given resource is the default file of a sitmeap entry folder, then returns that
-     * folder, else the original file.<p>
-     *
-     * @param resource a resource
-     * @return the resource or its parent folder
-     */
-    protected CmsResource readSitemapEntryFolderIfPossible(CmsResource resource) {
-
-        CmsObject cms = A_CmsUI.getCmsObject();
-        try {
-            if (resource.isFolder()) {
-                return resource;
-            }
-            CmsResource parent = cms.readParentFolder(resource.getStructureId());
-            CmsResource defaultFile = cms.readDefaultFile(parent, CmsResourceFilter.IGNORE_EXPIRATION);
-            if ((defaultFile != null) && defaultFile.equals(resource)) {
-                return parent;
-            }
-            return resource;
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            return resource;
-        }
-    }
-
-    /**
      * Gets the logger for the tree controller.<p>
      *
      * @return the logger
@@ -1229,6 +1231,50 @@ public class CmsSitemapTreeController {
     Log getTreeControllerLog() {
 
         return LOG;
+    }
+
+    /**
+     * Creates the context menu for either the main resource or the linked resource of a tree node.
+     *
+     * @param entry the tree node data
+     * @param node the tree node widget
+     * @param linked true if we want to create the menu for the linked resource
+     *
+     * @return the context menu
+     */
+    private MenuBar createMenu(final CmsSitemapTreeNodeData entry, final CmsSitemapTreeNode node, boolean linked) {
+
+        final MenuBar menu = new MenuBar();
+        final MenuItem main = menu.addItem("", null);
+        main.setIcon(FontOpenCms.CONTEXT_MENU);
+        main.setCommand(new Command() {
+
+            /** Serial version id. */
+            private static final long serialVersionUID = 1L;
+
+            public void menuSelected(MenuItem selectedItem) {
+
+                List<I_CmsSimpleContextMenuEntry<MenuContext>> entries = Arrays.asList(
+
+                    new EntryOpen(),
+                    new EntryExplorer(),
+                    new EntryProperties(),
+                    new EntryLink(),
+                    new EntryUnlink(),
+                    new EntryMark(),
+                    new EntryRemoveMark(),
+                    new EntryCopy(),
+                    new EntryInfo());
+
+                MenuContext context = new MenuContext(entry, node, linked);
+                m_menu.setEntries(entries, context);
+                m_menu.open(menu);
+
+            }
+
+        });
+        menu.addStyleName("borderless o-toolbar-button o-resourceinfo-toolbar");
+        return menu;
     }
 
     /**
