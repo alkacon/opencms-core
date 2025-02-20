@@ -326,7 +326,7 @@ public final class CmsResourceFilter {
      */
     public CmsResourceFilter addExcludeType(I_CmsResourceType type) {
 
-        return addExcludeFlags(type.getTypeId());
+        return addExcludeType(type.getTypeId());
     }
 
     /**
