@@ -331,7 +331,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
     /**vaadin component.*/
     CmsPathSelectField m_startfolder;
 
-    /** The app instance. */ 
+    /** The app instance. */
     private CmsAccountsApp m_app;
 
     /**vaadin component.*/
@@ -717,8 +717,13 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
 
         m_pw.getPassword1Field().setValue(password);
         m_pw.getPassword2Field().setValue(password);
-        m_forceResetPassword.setValue(Boolean.TRUE);
-        m_sendEmail.setValue(Boolean.TRUE);
+        // only check checkboxes if they are visible.
+        if (m_forceResetPassword.isVisible()) {
+            m_forceResetPassword.setValue(Boolean.TRUE);
+        }
+        if (m_sendEmail.isVisible()) {
+            m_sendEmail.setValue(Boolean.TRUE);
+        }
         m_sendEmail.setEnabled(true);
 
     }
