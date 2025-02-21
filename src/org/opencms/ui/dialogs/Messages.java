@@ -132,6 +132,12 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_GALLERY_OPTIMIZE_NUM_NOCOPYRIGHT_DOWNLOADS_1 = "GUI_GALLERY_OPTIMIZE_NUM_NOCOPYRIGHT_DOWNLOADS_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_ONE_NOCOPYRIGHT_0 = "GUI_GALLERY_OPTIMIZE_ONE_NOCOPYRIGHT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_ONE_NOCOPYRIGHT_DOWNLOADS_0 = "GUI_GALLERY_OPTIMIZE_ONE_NOCOPYRIGHT_DOWNLOADS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_OPTIMIZE_NO_NODESCRIPTION_0 = "GUI_GALLERY_OPTIMIZE_NO_NODESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
@@ -142,6 +148,12 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_OPTIMIZE_NUM_NODESCRIPTION_DOWNLOADS_1 = "GUI_GALLERY_OPTIMIZE_NUM_NODESCRIPTION_DOWNLOADS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_ONE_NODESCRIPTION_0 = "GUI_GALLERY_OPTIMIZE_ONE_NODESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_ONE_NODESCRIPTION_DOWNLOADS_0 = "GUI_GALLERY_OPTIMIZE_ONE_NODESCRIPTION_DOWNLOADS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_OPTIMIZE_NUM_UNUSED_1 = "GUI_GALLERY_OPTIMIZE_NUM_UNUSED_1";

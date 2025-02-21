@@ -127,7 +127,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
         /**
          * Creates a new instance.
-        
+
          * @param dataItem the data item
          */
         public ContextMenu(DataItem dataItem) {
@@ -2437,13 +2437,18 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                     ? Messages.GUI_GALLERY_OPTIMIZE_NO_NOCOPYRIGHT_0
                     : Messages.GUI_GALLERY_OPTIMIZE_NO_NOCOPYRIGHT_DOWNLOADS_0);
                 m_unusedInfo.addComponent(createSimpleNote(text, "o-optimize-gallery-warning"));
+            } else if (noCopyright == 1) {
+                String text = CmsVaadinUtils.getMessageText(
+                    isImageGallery
+                    ? Messages.GUI_GALLERY_OPTIMIZE_ONE_NOCOPYRIGHT_0
+                    : Messages.GUI_GALLERY_OPTIMIZE_ONE_NOCOPYRIGHT_DOWNLOADS_0);
+                m_unusedInfo.addComponent(createSimpleNote(text));
             } else {
                 String text = CmsVaadinUtils.getMessageText(
                     isImageGallery
                     ? Messages.GUI_GALLERY_OPTIMIZE_NUM_NOCOPYRIGHT_1
                     : Messages.GUI_GALLERY_OPTIMIZE_NUM_NOCOPYRIGHT_DOWNLOADS_1,
                     noCopyright);
-
                 m_unusedInfo.addComponent(createSimpleNote(text));
             }
         } else if (m_provider.getSortComparator() == m_provider.SORT_NODESCRIPTION_FIRST) {
@@ -2454,6 +2459,12 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                     ? Messages.GUI_GALLERY_OPTIMIZE_NO_NODESCRIPTION_0
                     : Messages.GUI_GALLERY_OPTIMIZE_NO_NODESCRIPTION_DOWNLOADS_0);
                 m_unusedInfo.addComponent(createSimpleNote(text, "o-optimize-gallery-warning"));
+            } else if (noDescription == 1) {
+                String text = CmsVaadinUtils.getMessageText(
+                    isImageGallery
+                    ? Messages.GUI_GALLERY_OPTIMIZE_ONE_NODESCRIPTION_0
+                    : Messages.GUI_GALLERY_OPTIMIZE_ONE_NODESCRIPTION_DOWNLOADS_0);
+                m_unusedInfo.addComponent(createSimpleNote(text));
             } else {
                 String text = CmsVaadinUtils.getMessageText(
                     isImageGallery
