@@ -127,7 +127,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
         /**
          * Creates a new instance.
-
+        
          * @param dataItem the data item
          */
         public ContextMenu(DataItem dataItem) {
@@ -347,6 +347,16 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         public Boolean getNoCopyright() {
 
             return Boolean.valueOf(CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_copyright));
+        }
+
+        /**
+         * Returns whether this data item has no description.<p>
+         *
+         * @return whether this data item has no description
+         */
+        public Boolean getNoDescription() {
+
+            return Boolean.valueOf(CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_description));
         }
 
         /**
@@ -768,7 +778,8 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                 m_messageSortPathAscending,
                 m_messageSortPathDescending,
                 m_messageSortUnusedFirst,
-                m_messageSortNoCopyrightFirst);
+                m_messageSortNoCopyrightFirst,
+                m_messageSortNoDescriptionFirst);
             selectSortOrder.addValueChangeListener(event -> {
                 if (event.isUserOriginated()) {
                     selectPage(0);
@@ -1407,6 +1418,10 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             DataItem::getNoCopyright)::compare;
 
         /** Comparator. */
+        final SerializableComparator<DataItem> SORT_NODESCRIPTION_FIRST = Comparator.comparing(
+            DataItem::getNoDescription)::compare;
+
+        /** Comparator. */
         final SerializableComparator<DataItem> SORT_PATH_ASCENDING = Comparator.comparing(
             DataItem::getPath,
             String.CASE_INSENSITIVE_ORDER)::compare;
@@ -1617,9 +1632,9 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                             m_deletedCurrentResource.add(dataItem.getResource());
                         } else if ((dataItem.getDeleteFlag().booleanValue() == false)
                             && m_deletedCurrent.contains(dataItem)) {
-                            m_deletedCurrent.remove(dataItem);
-                            m_deletedCurrentResource.remove(dataItem.getResource());
-                        }
+                                m_deletedCurrent.remove(dataItem);
+                                m_deletedCurrentResource.remove(dataItem.getResource());
+                            }
                     } catch (ValidationException e) {
                         LOG.warn(e.getLocalizedMessage(), e);
                     }
@@ -1695,6 +1710,9 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
     /** Localized message. */
     private String m_messageSortNoCopyrightFirst;
+
+    /** Localized message. */
+    private String m_messageSortNoDescriptionFirst;
 
     /** Localized message. */
     private String m_messageSortPathAscending;
@@ -2126,6 +2144,8 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             m_provider.setSortComparator(m_provider.SORT_UNUSED_FIRST);
         } else if (sortOrder == m_messageSortNoCopyrightFirst) {
             m_provider.setSortComparator(m_provider.SORT_NOCOPYRIGHT_FIRST);
+        } else if (sortOrder == m_messageSortNoDescriptionFirst) {
+            m_provider.setSortComparator(m_provider.SORT_NODESCRIPTION_FIRST);
         } else {
             m_provider.setSortComparator(defaultSortOrder);
         }
@@ -2248,6 +2268,8 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         m_messageSortUnusedFirst = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_SORT_UNUSED_FIRST_0);
         m_messageSortNoCopyrightFirst = CmsVaadinUtils.getMessageText(
             Messages.GUI_GALLERY_OPTIMIZE_SORT_NOCOPYRIGHT_FIRST_0);
+        m_messageSortNoDescriptionFirst = CmsVaadinUtils.getMessageText(
+            Messages.GUI_GALLERY_OPTIMIZE_SORT_NODESCRIPTION_FIRST_0);
     }
 
     /**
@@ -2421,6 +2443,23 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                     ? Messages.GUI_GALLERY_OPTIMIZE_NUM_NOCOPYRIGHT_1
                     : Messages.GUI_GALLERY_OPTIMIZE_NUM_NOCOPYRIGHT_DOWNLOADS_1,
                     noCopyright);
+
+                m_unusedInfo.addComponent(createSimpleNote(text));
+            }
+        } else if (m_provider.getSortComparator() == m_provider.SORT_NODESCRIPTION_FIRST) {
+            long noDescription = m_provider.getItems().stream().filter(item -> !item.getNoDescription()).count();
+            if (noDescription == 0) {
+                String text = CmsVaadinUtils.getMessageText(
+                    isImageGallery
+                    ? Messages.GUI_GALLERY_OPTIMIZE_NO_NODESCRIPTION_0
+                    : Messages.GUI_GALLERY_OPTIMIZE_NO_NODESCRIPTION_DOWNLOADS_0);
+                m_unusedInfo.addComponent(createSimpleNote(text, "o-optimize-gallery-warning"));
+            } else {
+                String text = CmsVaadinUtils.getMessageText(
+                    isImageGallery
+                    ? Messages.GUI_GALLERY_OPTIMIZE_NUM_NODESCRIPTION_1
+                    : Messages.GUI_GALLERY_OPTIMIZE_NUM_NODESCRIPTION_DOWNLOADS_1,
+                    noDescription);
 
                 m_unusedInfo.addComponent(createSimpleNote(text));
             }
