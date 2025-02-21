@@ -57,6 +57,7 @@
                     <mappings>
                         <mapping suffix=".pdf" />
                         <mapping suffix=".zip" />
+                        <mapping suffix=".7z" />
                         <mapping suffix=".class" />
                         <mapping suffix=".ppt" />
                         <mapping suffix=".doc" />
