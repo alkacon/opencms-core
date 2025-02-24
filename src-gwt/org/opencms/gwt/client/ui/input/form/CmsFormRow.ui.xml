@@ -10,7 +10,10 @@
 		}
 	</ui:style>
 	<g:FlowPanel styleName="{inputstyle.inputCss.formRow}">
-		<g:Label ui:field="m_label"  styleName="{inputstyle.inputCss.formLabel}"/>
+		<g:FlowPanel styleName="{inputstyle.inputCss.formLabelBox}">
+			<g:Label ui:field="m_label" styleName="{inputstyle.inputCss.formLabel} "/>
+			<g:Label ui:field="m_tag" styleName="{inputstyle.inputCss.formLabelTag}" visible="false"/>
+		</g:FlowPanel>
 		<g:SimplePanel ui:field="m_widgetContainer"  styleName="{inputstyle.inputCss.formWidgetContainer}" />
         <g:FlowPanel styleName="{style.additionalIcon}" ui:field="m_icon" />
 	</g:FlowPanel>

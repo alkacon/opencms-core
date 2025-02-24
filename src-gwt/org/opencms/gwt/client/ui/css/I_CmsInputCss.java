@@ -183,6 +183,20 @@ public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
      *
      * @return the css class
      */
+    String formLabelBox();
+
+    /**
+     * Css class reader.<p>
+     *
+     * @return the css class
+     */
+    String formLabelTag();
+
+    /**
+     * Css class reader.<p>
+     *
+     * @return the css class
+     */
     String formOpener();
 
     /**

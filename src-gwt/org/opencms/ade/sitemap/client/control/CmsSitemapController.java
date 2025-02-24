@@ -190,7 +190,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
         final String noEditReason) {
 
         final CmsUUID infoId;
-        infoId = ownId;
+        infoId = defaultFileId;
         Set<CmsUUID> idsForPropertyConfig = new HashSet<CmsUUID>();
         idsForPropertyConfig.add(defaultFileId);
         idsForPropertyConfig.add(ownId);

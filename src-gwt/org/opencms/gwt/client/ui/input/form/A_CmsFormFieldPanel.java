@@ -47,6 +47,9 @@ public abstract class A_CmsFormFieldPanel extends Composite {
 
     public static final String NO_DESCRIPTION = "!nodescription";
 
+    /** Layout info for showing a 'tag' on a form field's label. The value of the layout attribute is the text to show in the tag. */
+    public static final String LAYOUT_TAG = "tag";
+
     /** The info widget. */
     protected CmsListItemWidget m_infoWidget;
 
@@ -99,12 +102,17 @@ public abstract class A_CmsFormFieldPanel extends Composite {
      */
     protected CmsFormRow createRow(I_CmsFormField field) {
 
-        return createRow(
+        String tag = field.getLayoutData().get(LAYOUT_TAG);
+        CmsFormRow row = createRow(
             field.getLabel(),
             field.getDescription(),
             (Widget)field.getWidget(),
             field.getLayoutData().get("info"),
             Boolean.parseBoolean(field.getLayoutData().get("htmlinfo")));
+        if (tag != null) {
+            row.setTag(tag);
+        }
+        return row;
 
     }
 

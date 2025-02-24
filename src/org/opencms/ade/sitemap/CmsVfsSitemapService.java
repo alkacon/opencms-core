@@ -3230,6 +3230,37 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /**
+     * Synchronizes the title from the NavText for a specific resource after properties have been edited, if NavText isn't empty and the title isn't already set to a different non-empty value.
+     *
+     * @param resource the resource
+     * @param oldNavText the NavText before editing the properties
+     * @param newNavText the NavText after editing the properties (may be the same as oldNavText)
+     * @throws CmsException if something goes wrong
+     */
+    private void synchTitleFromNavText(CmsResource resource, String oldNavText, String newNavText) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+
+        if (CmsStringUtil.isEmpty(newNavText)) {
+            return;
+        }
+        CmsProperty titleProp = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        String title = titleProp.getValue();
+        if (title == null) {
+            title = "";
+        }
+        // We don't check if oldNavText is different from newNavText, because we also want the synchronization to happen
+        // when we don't actually change the NavText, but e.g. when we change the title to an empty string.
+        if (CmsStringUtil.isEmpty(title) || title.equals(oldNavText)) {
+            if (!newNavText.equals(title)) {
+                cms.writePropertyObjects(
+                    resource,
+                    Arrays.asList(new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, newNavText, null)));
+            }
+        }
+    }
+
+    /**
      * Converts a jsp navigation element into a client sitemap entry.<p>
      *
      * @param navElement the jsp navigation element
@@ -3416,61 +3447,40 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         List<CmsPropertyModification> propertyModifications)
     throws CmsException {
 
-        System.out.println("==========================================");
-        System.out.println(
-            "PM "
-                + ownRes.getStructureId()
-                + ":"
-                + ownRes.getRootPath()
-                + " "
-                + defaultFileRes.getStructureId()
-                + ":"
-                + defaultFileRes.getRootPath());
-        for (CmsPropertyModification p : propertyModifications) {
-            System.out.println(p);
-        }
-
         Map<String, CmsProperty> ownProps = getPropertiesByName(cms.readPropertyObjects(ownRes, false));
-        // determine if the title property should be changed in case of a 'NavText' change
-        boolean changeOwnTitle = shouldChangeTitle(ownProps);
-
-        boolean changeDefaultFileTitle = false;
+        String oldNavText = null;
+        if (ownProps.containsKey(CmsPropertyDefinition.PROPERTY_NAVTEXT)) {
+            oldNavText = ownProps.get(CmsPropertyDefinition.PROPERTY_NAVTEXT).getValue();
+        }
+        if (oldNavText == null) {
+            oldNavText = "";
+        }
         Map<String, CmsProperty> defaultFileProps = Maps.newHashMap();
         if (defaultFileRes != null) {
             defaultFileProps = getPropertiesByName(cms.readPropertyObjects(defaultFileRes, false));
-            // determine if the title property of the default file should be changed
-            changeDefaultFileTitle = shouldChangeDefaultFileTitle(
-                defaultFileProps,
-                ownProps.get(CmsPropertyDefinition.PROPERTY_NAVTEXT));
         }
-        String hasNavTextChange = null;
+        String newNavText = oldNavText;
         List<CmsProperty> ownPropertyChanges = new ArrayList<CmsProperty>();
         List<CmsProperty> defaultFilePropertyChanges = new ArrayList<CmsProperty>();
         for (CmsPropertyModification propMod : propertyModifications) {
             CmsProperty propToModify = null;
+            Map<String, CmsProperty> propMap = null;
+            List<CmsProperty> changeList = null;
+
             if (ownRes.getStructureId().equals(propMod.getId())) {
-
                 if (CmsPropertyDefinition.PROPERTY_NAVTEXT.equals(propMod.getName())) {
-                    hasNavTextChange = propMod.getValue();
-                } else if (CmsPropertyDefinition.PROPERTY_TITLE.equals(propMod.getName())) {
-                    changeOwnTitle = false;
+                    newNavText = propMod.getValue();
                 }
-                propToModify = ownProps.get(propMod.getName());
-                if (propToModify == null) {
-                    propToModify = new CmsProperty(propMod.getName(), null, null);
-                }
-                ownPropertyChanges.add(propToModify);
+                propMap = ownProps;
+                changeList = ownPropertyChanges;
             } else {
-                if (CmsPropertyDefinition.PROPERTY_TITLE.equals(propMod.getName())) {
-                    changeDefaultFileTitle = false;
-                }
-                propToModify = defaultFileProps.get(propMod.getName());
-                if (propToModify == null) {
-                    propToModify = new CmsProperty(propMod.getName(), null, null);
-                }
-                defaultFilePropertyChanges.add(propToModify);
+                propMap = defaultFileProps;
+                changeList = defaultFilePropertyChanges;
             }
-
+            propToModify = propMap.get(propMod.getName());
+            if (propToModify == null) {
+                propToModify = new CmsProperty(propMod.getName(), null, null);
+            }
             String newValue = propMod.getValue();
             if (newValue == null) {
                 newValue = "";
@@ -3480,30 +3490,18 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             } else {
                 propToModify.setResourceValue(newValue);
             }
+            changeList.add(propToModify);
         }
-        if (hasNavTextChange != null) {
-            if (changeOwnTitle) {
-                CmsProperty titleProp = ownProps.get(CmsPropertyDefinition.PROPERTY_TITLE);
-                if (titleProp == null) {
-                    titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, null, null);
-                }
-                titleProp.setStructureValue(hasNavTextChange);
-                ownPropertyChanges.add(titleProp);
-            }
-            if (changeDefaultFileTitle) {
-                CmsProperty titleProp = defaultFileProps.get(CmsPropertyDefinition.PROPERTY_TITLE);
-                if (titleProp == null) {
-                    titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, null, null);
-                }
-                titleProp.setStructureValue(hasNavTextChange);
-                defaultFilePropertyChanges.add(titleProp);
-            }
-        }
+
         if (!ownPropertyChanges.isEmpty()) {
             cms.writePropertyObjects(ownRes, ownPropertyChanges);
         }
         if (!defaultFilePropertyChanges.isEmpty() && (defaultFileRes != null)) {
             cms.writePropertyObjects(defaultFileRes, defaultFilePropertyChanges);
+        }
+        synchTitleFromNavText(ownRes, oldNavText, newNavText);
+        if (defaultFileRes != null) {
+            synchTitleFromNavText(defaultFileRes, oldNavText, newNavText);
         }
     }
 

@@ -577,6 +577,9 @@ public final class Messages {
     public static final String GUI_SUBSITEMAP_CONFIRM_TITLE_0 = "GUI_SUBSITEMAP_CONFIRM_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAG_FOLDER_0 = "GUI_TAG_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TEMPLATE_INHERIT_0 = "GUI_TEMPLATE_INHERIT_0";
 
     /** Message constant for key in the resource bundle. */

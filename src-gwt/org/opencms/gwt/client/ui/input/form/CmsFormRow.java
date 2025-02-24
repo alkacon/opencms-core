@@ -102,6 +102,10 @@ public class CmsFormRow extends Composite {
     @UiField
     protected Label m_label;
 
+    /** Tag to show next to the field label. */
+    @UiField
+    protected Label m_tag;
+
     /** The widget container for the form row. */
     @UiField
     protected Panel m_widgetContainer;
@@ -253,6 +257,24 @@ public class CmsFormRow extends Composite {
                 installTooltipEventHandlers(icon, dataSupplier);
             }
         }
+    }
+
+    /**
+     * Sets the tag to show next to the field label.
+     *
+     * <p>To hide the tag, set it to null.
+     *
+     * @param tag the tag to display
+     */
+    public void setTag(String tag) {
+
+        if (tag != null) {
+            m_tag.setText(tag);
+            m_tag.setVisible(true);
+        } else {
+            m_tag.setVisible(false);
+        }
+
     }
 
 }

@@ -576,10 +576,26 @@ div.formInfo {
 	font-weight: bold; 
 }
 
-div.formLabel { 
+div.formLabelBox { 
 	width: 30%;
-	line-height: value("constants.css.inputHeight");
     align-self: flex-start;
+    display: flex;
+}
+
+div.formLabel {
+	line-height: value("constants.css.inputHeight");
+}
+
+.formLabelTag {
+	border-radius: 4px;
+	background-color: lightgrey;
+	border: 1px solid darkgrey;
+	line-height: 20px;
+	height: 20px;
+	padding-left: 3px;
+	padding-right: 3px;
+	margin-left: 5px;
+	align-self: center;
 }
 
 
