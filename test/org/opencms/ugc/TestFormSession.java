@@ -27,6 +27,8 @@
 
 package org.opencms.ugc;
 
+import static org.junit.Assert.assertNotEquals;
+
 import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
@@ -135,8 +137,10 @@ public class TestFormSession extends OpenCmsTestCase {
         xmlContent.removeLocale(editLocale);
         session.addContentValues(xmlContent, editLocale, values);
 
-        // all content values should be restored
-        assertEquals(fileContent, new String(xmlContent.marshal(), CmsEncoder.ENCODING_UTF_8));
+        // all content values should be restored, except that values should be XML escaped.
+        String newContent = new String(xmlContent.marshal(), CmsEncoder.ENCODING_UTF_8);
+        assertNotEquals(fileContent, newContent);
+        assertEquals(fileContent, newContent.replace("&lt;", "<").replace("&gt;", ">"));
     }
 
     /**

@@ -157,6 +157,9 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
     /** The resource being edited. */
     private CmsResource m_editResource;
 
+    /** The value transform handler to transform values before writing them to the content. */
+    private CmsUgcValueTranformHandler m_valueTransformHandler;
+
     /** The Admin-privileged CMS context. */
     private CmsObject m_adminCms;
 
@@ -228,6 +231,7 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
     protected CmsUgcSession(CmsObject cms) {
 
         m_cms = cms;
+        m_valueTransformHandler = CmsUgcValueTranformHandler.DEFAULT;
     }
 
     /**
@@ -308,6 +312,7 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
         try {
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(m_configuration.getResourceType());
             m_editResource = m_cms.createResource(getNewContentName(), type);
+            initValueTransformHandler();
             return m_editResource;
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
@@ -466,6 +471,7 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
                 m_configuration.getContentParentFolder().getRootPath());
             String path = CmsStringUtil.joinPaths(contentSitePath, fileName);
             m_editResource = m_cms.readResource(path);
+            initValueTransformHandler();
             CmsLock lock = m_cms.getLock(m_editResource);
             if (!lock.isOwnedBy(m_cms.getRequestContext().getCurrentUser())) {
                 m_cms.lockResourceTemporary(m_editResource);
@@ -563,7 +569,8 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
                 }
             }
         }
-        content.getValue(path, locale).setStringValue(m_cms, value);
+        String transformedValue = m_valueTransformHandler.transformValue(path, value);
+        content.getValue(path, locale).setStringValue(m_cms, transformedValue);
 
     }
 
@@ -818,6 +825,25 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
             }
         }
         return hasOnlyNewResources;
+    }
+
+    /**
+     * Initialize the value transform handler for the currently edited content.
+     */
+    private void initValueTransformHandler() {
+
+        try {
+            m_valueTransformHandler = new CmsUgcValueTranformHandler(m_cms, m_editResource);
+        } catch (Throwable e) {
+            m_valueTransformHandler = CmsUgcValueTranformHandler.DEFAULT;
+            LOG.warn(
+                "Failed to init ugc value transform handler for resource \""
+                    + (m_editResource == null ? null : m_editResource.getRootPath())
+                    + "\". Using the default handler",
+                e);
+
+        }
+
     }
 
     /**
