@@ -588,7 +588,7 @@ div.formLabel {
 
 .formLabelTag {
 	border-radius: 4px;
-	background-color: lightgrey;
+	background-color: value("constants.css.backgroundColorListItem");
 	border: 1px solid darkgrey;
 	line-height: 20px;
 	height: 20px;
