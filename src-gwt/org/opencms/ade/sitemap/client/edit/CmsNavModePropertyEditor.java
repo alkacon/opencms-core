@@ -35,7 +35,6 @@ import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
-import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPathValue;
 import org.opencms.util.CmsStringUtil;
@@ -89,7 +88,6 @@ public class CmsNavModePropertyEditor extends A_CmsPropertyEditor {
 
         Map<String, CmsClientProperty> ownProps = m_handler.getOwnProperties();
         Map<String, CmsClientProperty> defaultFileProps = m_handler.getDefaultFileProperties();
-        CmsGwtLog.log("DFP" + m_handler.getDefaultFileProperties());
 
         String entryId = m_handler.getId().toString();
         String defaultFileId = toStringOrNull(m_handler.getDefaultFileId());
@@ -142,7 +140,7 @@ public class CmsNavModePropertyEditor extends A_CmsPropertyEditor {
     /**
      * Builds a single form field.<p>
      *
-
+    
      * @param entryId the entry id
      * @param defaultFileId the default file id
      * @param ownProps the entry's own properties
