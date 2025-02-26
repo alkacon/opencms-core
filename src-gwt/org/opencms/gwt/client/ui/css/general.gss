@@ -59,7 +59,7 @@ div.header{
 	border: 2px solid value("constants.css.borderColor");
 	background: value("constants.css.backgroundColorDialog");
 	width: value("constants.css.toolbarWidth");
-	padding: 10px 0px;
+	padding: 10px 0px 5px 0px;
 	margin: 0px auto 10px;
 	position: relative;
 }
@@ -89,6 +89,29 @@ div.header > div{
 div.header p{
 	font-size: value("constants.css.fontSize");
 	margin: 8px 0px;
+}
+
+div.header .headerLeftBlock {
+	display: flex;
+	width: calc(100% - 10px);
+}
+
+div.header .headerPathSection {
+	display: flex;
+}
+
+div.header .headerPathSection > div:first-child {
+	flex: 1;
+}
+
+div.header .headerPathButtons {
+	margin-left: auto;
+	margin-right: 3px;
+}
+
+div.header .headerTextSection {
+	flex: 1;
+	margin-left: 10px;
 }
 
 div.header div.headerButtons{

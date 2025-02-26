@@ -1338,6 +1338,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsTinyMCEData tinyMCEData = new CmsTinyMCEData();
         tinyMCEData.setLink(tinyMCE);
         data.setTinymce(tinyMCEData);
+        data.setMaxLocaleButtons(OpenCms.getWorkplaceManager().getEditorMaxLocaleButtons());
         return data;
     }
 
@@ -1575,7 +1576,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      * @return the resource categories
      *
      * @throws CmsRpcException if something goes wrong
-
+    
      *
      * @return
      * @throws CmsRpcException

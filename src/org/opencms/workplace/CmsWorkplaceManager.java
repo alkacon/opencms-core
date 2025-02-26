@@ -272,6 +272,15 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The configured encoding of the workplace. */
     private String m_encoding;
 
+    /** Categories column enabled? */
+    private boolean m_explorerCategoriesEnabled;
+
+    /** Show only leaf categories in explorer? */
+    private boolean m_explorerCategoriesLeavesOnly;
+
+    /** Show categories with their path in the explorer? */
+    private boolean m_explorerCategoriesWithPath;
+
     /** The explorer type settings. */
     private List<CmsExplorerTypeSettings> m_explorerTypeSettings;
 
@@ -322,6 +331,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
     /** The additional log folder configuration. */
     private CmsAdditionalLogFolderConfig m_logFolderConfig = new CmsAdditionalLogFolderConfig();
+
+    /** Max number of locale buttons to display in the editor. */
+    private int m_maxLocaleButtons = 5;
 
     /** The workplace localized messages (mapped to the locales). */
     private Map<Locale, CmsWorkplaceMessages> m_messages;
@@ -376,15 +388,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
     /** The XML content auto correction flag. */
     private boolean m_xmlContentAutoCorrect;
-
-    /** Categories column enabled? */
-    private boolean m_explorerCategoriesEnabled;
-
-    /** Show only leaf categories in explorer? */
-    private boolean m_explorerCategoriesLeavesOnly;
-
-    /** Show categories with their path in the explorer? */
-    private boolean m_explorerCategoriesWithPath;
 
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
@@ -1038,6 +1041,14 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public I_CmsEditorHandler getEditorHandler() {
 
         return m_editorHandler;
+    }
+
+    /**
+     * Gets the maximum number of locale buttons to display in the content editor.
+     */
+    public int getEditorMaxLocaleButtons() {
+
+        return m_maxLocaleButtons;
     }
 
     /**
@@ -2163,6 +2174,15 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                     Messages.INIT_EDITOR_HANDLER_CLASS_1,
                     m_editorHandler.getClass().getName()));
         }
+    }
+
+    /**
+     * Sets the maximum number of locale buttons to display in the content editor.
+     * @param maxLocaleButtons the number of buttons, as a string
+     */
+    public void setEditorMaxLocaleButtons(String maxLocaleButtons) {
+
+        m_maxLocaleButtons = Math.max(0, Integer.valueOf(maxLocaleButtons));
     }
 
     /**

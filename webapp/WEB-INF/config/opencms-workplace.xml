@@ -24,6 +24,7 @@
         <editorpreconditions>
             <editorprecondition name="xmlcontent" class="org.opencms.workplace.editors.CmsPreEditorActionDefinitionXmlContent" />
         </editorpreconditions>
+        <editor-max-locale-buttons>5</editor-max-locale-buttons>
         <directeditprovider class="org.opencms.ade.editprovider.CmsToolbarDirectEditProvider" />
         <exportpoints>
             <exportpoint uri="/system/workplace/resources/" destination="resources/" />

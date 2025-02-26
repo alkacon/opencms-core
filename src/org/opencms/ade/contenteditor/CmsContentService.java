@@ -128,6 +128,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -182,6 +183,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /** Mapping client widget names to server side widget classes. */
     private static final Map<String, Class<? extends I_CmsADEWidget>> WIDGET_MAPPINGS = new HashMap<>();
 
+    /** The session cache. */
+    private CmsADESessionCache m_sessionCache;
+
+    /** The current users workplace locale. */
+    private Locale m_workplaceLocale;
+
     static {
         WIDGET_MAPPINGS.put("string", CmsInputWidget.class);
         WIDGET_MAPPINGS.put("select", CmsSelectWidget.class);
@@ -195,12 +202,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         WIDGET_MAPPINGS.put("radio", CmsRadioSelectWidget.class);
         WIDGET_MAPPINGS.put("groupselection", CmsGroupWidget.class);
     }
-
-    /** The session cache. */
-    private CmsADESessionCache m_sessionCache;
-
-    /** The current users workplace locale. */
-    private Locale m_workplaceLocale;
 
     /**
      * Creates a new resource to edit, delegating to an edit handler if edit handler data is passed in.<p>
@@ -2393,7 +2394,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             contentLocales.add(contentLocale.toString());
         }
         Locale workplaceLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        TreeMap<String, String> availableLocales = new TreeMap<String, String>();
+        LinkedHashMap<String, String> availableLocales = new LinkedHashMap<String, String>();
         for (Locale availableLocale : OpenCms.getLocaleManager().getAvailableLocales(cms, file)) {
             availableLocales.put(availableLocale.toString(), availableLocale.getDisplayName(workplaceLocale));
         }
@@ -2658,9 +2659,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)
                 && !CmsGwtConstants.HIDDEN_SETTINGS_WIDGET_NAME.equals(settingsEntry.getValue().getWidget())
                 && !value.equals(values.get(settingsEntry.getKey()))) {
-                    values.put(settingsEntry.getKey(), value);
-                    hasChangedSettings = true;
-                }
+                values.put(settingsEntry.getKey(), value);
+                hasChangedSettings = true;
+            }
         }
         if (hasChangedSettings) {
             containerElement.updateIndividualSettings(values);

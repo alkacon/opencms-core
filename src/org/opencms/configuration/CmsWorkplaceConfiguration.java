@@ -298,6 +298,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The node name of the editor node. */
     public static final String N_EDITOR = "editor";
 
+    /** The element editor-max-locale-buttons. */
+    public static final String N_EDITOR_MAX_LOCALE_BUTTONS = "editor-max-locale-buttons";
+
     /** The name of the editor action node. */
     public static final String N_EDITORACTION = "editoraction";
 
@@ -979,6 +982,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             "*/" + N_WORKPLACE + "/" + N_EDITORPRECONDITIONS + "/" + N_EDITORPRECONDITION,
             I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD);
 
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_EDITOR_MAX_LOCALE_BUTTONS, "setEditorMaxLocaleButtons", 0);
+
         // add rules for direct edit provider
         digester.addObjectCreate(
             "*/" + N_WORKPLACE + "/" + N_DIRECTEDITPROVIDER,
@@ -1214,6 +1219,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                 }
             }
         }
+
+        Element maxLocaleElem = workplaceElement.addElement(N_EDITOR_MAX_LOCALE_BUTTONS);
+        maxLocaleElem.setText("" + m_workplaceManager.getEditorMaxLocaleButtons());
 
         I_CmsConfigurationParameterHandler deProvider = m_workplaceManager.getDirectEditProvider();
         Element deProviderNode = workplaceElement.addElement(N_DIRECTEDITPROVIDER).addAttribute(

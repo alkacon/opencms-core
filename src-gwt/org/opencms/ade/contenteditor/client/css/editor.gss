@@ -1,4 +1,4 @@
-@external oc-inline-editable;
+@external oc-inline-editable, html-face;
 
 body.standAloneEditor{
 	background: value("constants.css.backgroundColorMenu");
@@ -56,6 +56,31 @@ body.integratedEditor{
 	z-index: value("constants.css.zIndexPopup");
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
+}
+
+.localeButtons > * {
+	font-weight: 600;
+	background-color: #4e545b;
+	border: 1px solid #4e545b;
+	color: #fafafd;
+	padding: 5px;
+	border-radius: 3px;
+	line-height: 18px;
+	cursor: pointer;
+	font-size: 17px;
+	min-width: 32px;
+	text-align: center;
+}
+
+.localeButtons {
+	display: flex;
+	gap: 2px;
+	align-items: flex-end;
+}
+
+.localeButtons > *:hover {
+	color: #4e545b;
+	background-color: #fafafd;
 }
 
 div.basePanel > div{

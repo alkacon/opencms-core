@@ -293,6 +293,9 @@ public class CmsCoreData implements IsSerializable {
     /** The login JSP URL. */
     private String m_loginURL;
 
+    /** Max number of locale buttons in the editor. */
+    private int m_maxLocaleButtons;
+
     /** The current navigation URI. */
     private String m_navigationUri;
 
@@ -386,6 +389,7 @@ public class CmsCoreData implements IsSerializable {
             clone.m_hideDisabledGalleryTypes,
             clone.m_warnWhenEditingReusedElement);
         setTinymce(clone.getTinymce());
+        setMaxLocaleButtons(clone.m_maxLocaleButtons);
     }
 
     /**
@@ -597,6 +601,16 @@ public class CmsCoreData implements IsSerializable {
     public String getLoginURL() {
 
         return m_loginURL;
+    }
+
+    /**
+     * Gets the maximum number of locale buttons to display in the editor.
+     * 
+     * @return the maximum number of locale buttons to display in the editor 
+     */
+    public int getMaxLocaleButtons() {
+
+        return m_maxLocaleButtons;
     }
 
     /**
@@ -815,6 +829,16 @@ public class CmsCoreData implements IsSerializable {
     public boolean isWarnWhenEditingReusedElement() {
 
         return m_warnWhenEditingReusedElement;
+    }
+
+    /**
+     * Sets the maximum number of locale buttons to display in the editor.
+     * 
+     * @param maxLocaleButtons the max number of locale buttons to display in the editor
+     */
+    public void setMaxLocaleButtons(int maxLocaleButtons) {
+
+        m_maxLocaleButtons = maxLocaleButtons;
     }
 
     /**

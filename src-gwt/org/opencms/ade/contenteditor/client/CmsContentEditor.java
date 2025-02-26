@@ -89,6 +89,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -315,6 +316,15 @@ public final class CmsContentEditor extends CmsEditorBase {
     /** The entity observer instance. */
     private CmsEntityObserver m_entityObserver;
 
+    /** Flag, indicating if save is enabled */
+    private boolean m_hasChanges;
+
+    /** Flag, indicating if there are errors */
+    private boolean m_hasErrors;
+
+    /** Flag, indicating if there are warnings */
+    private boolean m_hasWarnings;
+
     /** The hide help bubbles button. */
     private CmsToggleButton m_hideHelpBubblesButton;
 
@@ -323,6 +333,9 @@ public final class CmsContentEditor extends CmsEditorBase {
 
     /** Flag which indicate whether the directedit parameter was set to true when loading the editor. */
     private boolean m_isDirectEdit;
+
+    /** Flag, indicating if save is enabled */
+    private boolean m_isSaveDisabled;
 
     /** Flag indicating the editor was opened as the stand alone version, not from within any other module. */
     private boolean m_isStandAlone;
@@ -375,18 +388,6 @@ public final class CmsContentEditor extends CmsEditorBase {
     /** The undo redo event handler registration. */
     private HandlerRegistration m_undoRedoHandlerRegistration;
 
-    /** Flag, indicating if there are warnings */
-    private boolean m_hasWarnings;
-
-    /** Flag, indicating if there are errors */
-    private boolean m_hasErrors;
-
-    /** Flag, indicating if save is enabled */
-    private boolean m_isSaveDisabled;
-
-    /** Flag, indicating if save is enabled */
-    private boolean m_hasChanges;
-
     /**
      * Constructor.<p>
      */
@@ -405,7 +406,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         I_CmsLayoutBundle.INSTANCE.editorCss().ensureInjected();
         m_changedEntityIds = new HashSet<String>();
         m_registeredEntities = new HashSet<String>();
-        m_availableLocales = new HashMap<String, String>();
+        m_availableLocales = new LinkedHashMap<String, String>();
         m_contentLocales = new HashSet<String>();
         m_deletedEntities = new HashSet<String>();
         m_definitions = new HashMap<String, CmsContentDefinition>();
@@ -1814,9 +1815,10 @@ public final class CmsContentEditor extends CmsEditorBase {
      */
     void renderFormContent() {
 
+        m_contentInfoHeader = new CmsInfoHeader(m_title, null, m_sitePath, m_locale, m_iconClasses);
         initLocaleSelect();
         setNativeResourceInfo(m_sitePath, m_locale);
-        m_contentInfoHeader = new CmsInfoHeader(m_title, null, m_sitePath, m_locale, m_iconClasses);
+
         m_basePanel.add(m_contentInfoHeader);
         if (m_context.isReusedElement()) {
             String message = Messages.get().key(Messages.GUI_CONTENT_EDITOR_REUSE_MARKER_0);
@@ -1824,6 +1826,8 @@ public final class CmsContentEditor extends CmsEditorBase {
             label.addStyleName("oc-editor-reuse-marker");
             m_contentInfoHeader.addWidget(label);
         }
+        FlowPanel localeButtons = m_contentInfoHeader.getPathButtons();
+        localeButtons.addStyleName(I_CmsLayoutBundle.INSTANCE.editorCss().localeButtons());
         SimplePanel content = new SimplePanel();
         content.setStyleName(org.opencms.acacia.client.css.I_CmsLayoutBundle.INSTANCE.form().formParent());
         m_basePanel.add(content);
@@ -2428,10 +2432,21 @@ public final class CmsContentEditor extends CmsEditorBase {
         if (m_availableLocales.size() < 2) {
             return;
         }
+        FlowPanel localeButtons = m_contentInfoHeader.getPathButtons();
+        localeButtons.clear();
         Map<String, String> selectOptions = new HashMap<String, String>();
+        int buttonLimit = CmsCoreProvider.get().getMaxLocaleButtons();
         for (Entry<String, String> localeEntry : m_availableLocales.entrySet()) {
             if (m_contentLocales.contains(localeEntry.getKey())) {
-                selectOptions.put(localeEntry.getKey(), localeEntry.getValue());
+                final String locale = localeEntry.getKey();
+                selectOptions.put(locale, localeEntry.getValue());
+                if ((localeButtons.getWidgetCount() < buttonLimit) && !locale.equals(m_locale)) {
+                    Label button = new Label(locale.toUpperCase());
+                    localeButtons.add(button);
+                    button.addClickHandler(event -> {
+                        switchLocale(locale);
+                    });
+                }
             } else {
                 selectOptions.put(localeEntry.getKey(), localeEntry.getValue() + " [-]");
             }
@@ -2742,12 +2757,12 @@ public final class CmsContentEditor extends CmsEditorBase {
                                         previousAttribute.getSimpleValues().get(i))
                                         && previousAttribute.getSimpleValues().get(i).equals(
                                             targetAttribute.getSimpleValues().get(i))) {
-                                                changeSimpleValue(
-                                                    attributeName,
-                                                    i,
-                                                    updatedAttribute.getSimpleValues().get(i),
-                                                    parentPathElements);
-                                            }
+                                        changeSimpleValue(
+                                            attributeName,
+                                            i,
+                                            updatedAttribute.getSimpleValues().get(i),
+                                            parentPathElements);
+                                    }
                                 }
                             } else {
                                 // values have been removed
@@ -2758,12 +2773,12 @@ public final class CmsContentEditor extends CmsEditorBase {
                                         previousAttribute.getSimpleValues().get(i))
                                         && previousAttribute.getSimpleValues().get(i).equals(
                                             targetAttribute.getSimpleValues().get(i))) {
-                                                changeSimpleValue(
-                                                    attributeName,
-                                                    i,
-                                                    updatedAttribute.getSimpleValues().get(i),
-                                                    parentPathElements);
-                                            }
+                                        changeSimpleValue(
+                                            attributeName,
+                                            i,
+                                            updatedAttribute.getSimpleValues().get(i),
+                                            parentPathElements);
+                                    }
                                 }
                             }
                         }

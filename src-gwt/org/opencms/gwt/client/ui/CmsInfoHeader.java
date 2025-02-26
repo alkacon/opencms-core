@@ -40,6 +40,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -58,6 +59,13 @@ public class CmsInfoHeader extends Composite {
     /** The ui-binder instance for this class. */
     private static I_CmsInfoHeaderUiBinder uiBinder = GWT.create(I_CmsInfoHeaderUiBinder.class);
 
+    @UiField
+    protected DivElement m_additionalWidgets;
+
+    /** The button bar. */
+    @UiField
+    protected Element m_buttonBar;
+
     /** The description element. */
     @UiField
     protected ParagraphElement m_description;
@@ -65,6 +73,10 @@ public class CmsInfoHeader extends Composite {
     /** The locale cell. */
     @UiField
     protected SpanElement m_locale;
+
+    /** The button bar next to the path information. */
+    @UiField
+    protected FlowPanel m_pathButtons;
 
     /** The site host element. */
     @UiField
@@ -77,13 +89,6 @@ public class CmsInfoHeader extends Composite {
     /** The type icon element. */
     @UiField
     protected DivElement m_typeIcon;
-
-    @UiField
-    protected DivElement m_additionalWidgets;
-
-    /** The button bar. */
-    @UiField
-    protected Element m_buttonBar;
 
     /** The main panel. */
     private HTMLPanel m_main;
@@ -128,6 +133,17 @@ public class CmsInfoHeader extends Composite {
     }
 
     public void addWidget(Widget widget) {
+
         m_main.add(widget, m_additionalWidgets);
+    }
+
+    /**
+     * Gets the button bar next to the path information.
+     * 
+     * @return the button bar next to the path information
+     */
+    public FlowPanel getPathButtons() {
+
+        return m_pathButtons;
     }
 }

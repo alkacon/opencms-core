@@ -18,6 +18,7 @@
 	editoraction,
 	editorcsshandlers?,
 	editorpreconditions?,
+	editor-max-locale-buttons?,
 	directeditprovider?,
 	exportpoints,
 	autolock?,
@@ -119,6 +120,9 @@
 # a macro for the display name of the given root.
 -->
 <!ELEMENT name (#PCDATA) >
+
+<!-- Maximum number of locale buttons to display in content editor. -->
+<!ELEMENT editor-max-locale-buttons (#PCDATA)>
 
 <!--
 # a macro for the helptext of the given root.

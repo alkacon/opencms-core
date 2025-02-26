@@ -838,6 +838,34 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
+        String headerLeftBlock();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String headerPathButtons();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String headerPathSection();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String headerTextSection();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
         String hideOverlay();
 
         /**
@@ -2458,8 +2486,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      */
     @Source("contextmenu.gss")
     I_CmsContextmenuCss contextmenuCss();
-
-  
 
     /**
      * Access method.<p>
