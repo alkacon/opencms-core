@@ -60,9 +60,9 @@ body.integratedEditor{
 
 .localeButtons > * {
 	font-weight: 600;
-	background-color: #4e545b;
-	border: 1px solid #4e545b;
-	color: #fafafd;
+	background-color: #fafafd;
+	border: 2px solid #4e545b;
+	color: #4e545b;
 	padding: 5px;
 	border-radius: 3px;
 	line-height: 18px;
@@ -72,6 +72,12 @@ body.integratedEditor{
 	text-align: center;
 }
 
+.localeButtons > .currentLocaleLabel {
+	background-color: #4e545b;
+	color: #fafafd;
+	cursor: default;
+}
+
 .localeButtons {
 	display: flex;
 	gap: 2px;
@@ -79,8 +85,8 @@ body.integratedEditor{
 }
 
 .localeButtons > *:hover {
-	color: #4e545b;
-	background-color: #fafafd;
+	color: #fafafd;
+	background-color: #4e545b;
 }
 
 div.basePanel > div{

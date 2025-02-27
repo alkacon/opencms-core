@@ -2451,6 +2451,11 @@ public final class CmsContentEditor extends CmsEditorBase {
                 selectOptions.put(localeEntry.getKey(), localeEntry.getValue() + " [-]");
             }
         }
+        if (localeButtons.getWidgetCount() > 0) {
+            Label label = new Label(m_locale.toUpperCase());
+            label.addStyleName(I_CmsLayoutBundle.INSTANCE.editorCss().currentLocaleLabel());
+            localeButtons.add(label);
+        }
         if (m_localeSelect == null) {
             m_localeSelect = new CmsSelectBox(selectOptions);
             m_toolbar.insertRight(m_localeSelect, 1);
