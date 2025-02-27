@@ -65,7 +65,7 @@ body.integratedEditor{
 	color: #4e545b;
 	padding: 5px;
 	border-radius: 3px;
-	line-height: 18px;
+	line-height: 14px;
 	cursor: pointer;
 	font-size: 17px;
 	min-width: 32px;
@@ -80,8 +80,8 @@ body.integratedEditor{
 
 .localeButtons {
 	display: flex;
-	gap: 2px;
-	align-items: flex-end;
+	gap: 4px;
+	align-items: flex-start;
 }
 
 .localeButtons > *:hover {
