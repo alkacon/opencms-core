@@ -407,13 +407,15 @@ public interface I_CmsContainerpageService extends RemoteService {
      * Gets the status of a removed element.<p>
      *
      * @param id the client id of the removed element
+     * @param contextId the id of the resource used to look up the sitemap configuration
      * @param containerpageId the id of the page which should be excluded from the relation check, or null if no page should be excluded
      *
      * @return the status of the removed element
      *
      * @throws CmsRpcException if something goes wrong
      */
-    CmsRemovedElementStatus getRemovedElementStatus(String id, CmsUUID containerpageId) throws CmsRpcException;
+    CmsRemovedElementStatus getRemovedElementStatus(String id, CmsUUID contextId, CmsUUID containerpageId)
+    throws CmsRpcException;
 
     /**
      * Loads the reuse information for a container element.

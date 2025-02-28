@@ -369,11 +369,16 @@ public interface I_CmsContainerpageServiceAsync {
      * Gets the status of a removed element.<p>
      *
      * @param id the element's client id
+     * @param contextId the structure id of the resource from which the sitemap configuration should be looked up
      * @param containerpageId the id of the container page which should be excluded from the relation check, or null if no page should be excluded
      *
      * @param callback the asynchronous callback to execute with the results
      */
-    void getRemovedElementStatus(String id, CmsUUID containerpageId, AsyncCallback<CmsRemovedElementStatus> callback);
+    void getRemovedElementStatus(
+        String id,
+        CmsUUID contextId,
+        CmsUUID containerpageId,
+        AsyncCallback<CmsRemovedElementStatus> callback);
 
     /**
      * Loads reuse information for a container element.

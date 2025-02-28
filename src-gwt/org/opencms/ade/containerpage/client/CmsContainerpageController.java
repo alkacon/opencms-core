@@ -3831,6 +3831,7 @@ public final class CmsContainerpageController {
      * @param handler the alternative preview handler to use
      */
     public void setPreviewHandler(NativePreviewHandler handler) {
+
         m_previewHandler = handler;
     }
 
@@ -4017,7 +4018,7 @@ public final class CmsContainerpageController {
                 public void execute() {
 
                     start(200, true);
-                    getContainerpageService().getRemovedElementStatus(id, null, this);
+                    getContainerpageService().getRemovedElementStatus(id, null, null, this);
                 }
 
                 @Override
@@ -4214,6 +4215,7 @@ public final class CmsContainerpageController {
     * @param event the native event
     */
     protected void previewNativeEvent(NativePreviewEvent event) {
+
         if (m_previewHandler != null) {
             m_previewHandler.onPreviewNativeEvent(event);
             return;
@@ -4526,9 +4528,13 @@ public final class CmsContainerpageController {
                 public void execute() {
 
                     start(200, true);
+                    CmsUUID detailOnlyId = CmsContainerpageController.get().getData().getDetailContainerPageId();
+                    CmsUUID pageId = detailOnlyId != null ? detailOnlyId : CmsCoreProvider.get().getStructureId();
+
                     getContainerpageService().getRemovedElementStatus(
                         element.getId(),
                         CmsCoreProvider.get().getStructureId(),
+                        pageId,
                         this);
                 }
 

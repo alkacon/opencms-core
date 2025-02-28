@@ -1517,16 +1517,17 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getRemovedElementStatus(java.lang.String, org.opencms.util.CmsUUID)
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getRemovedElementStatus(java.lang.String, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
      */
-    public CmsRemovedElementStatus getRemovedElementStatus(String id, CmsUUID containerpageId) throws CmsRpcException {
+    public CmsRemovedElementStatus getRemovedElementStatus(String id, CmsUUID contextId, CmsUUID containerpageId)
+    throws CmsRpcException {
 
         if ((id == null) || !id.matches(CmsUUID.UUID_REGEX + ".*$")) {
             return new CmsRemovedElementStatus(null, null, false, null);
         }
         try {
             CmsUUID structureId = convertToServerId(id);
-            return internalGetRemovedElementStatus(structureId, containerpageId);
+            return internalGetRemovedElementStatus(structureId, contextId, containerpageId);
         } catch (CmsException e) {
             error(e);
             return null;
@@ -1622,13 +1623,17 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * Internal helper method to get the status of a removed element.<p>
      *
      * @param structureId the structure id of the removed element
+     * @param contextId the id of the resource used to look up the sitemap configuration
      * @param containerpageId the id of the page to exclude from the relation check, or null if no page should be excluded
      *
      * @return the status of the removed element
      *
      * @throws CmsException in case reading the resource fails
      */
-    public CmsRemovedElementStatus internalGetRemovedElementStatus(CmsUUID structureId, CmsUUID containerpageId)
+    public CmsRemovedElementStatus internalGetRemovedElementStatus(
+        CmsUUID structureId,
+        CmsUUID contextId,
+        CmsUUID containerpageId)
     throws CmsException {
 
         CmsObject cms = getCmsObject();
@@ -1641,6 +1646,9 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         boolean isSystemResource = elementResource.getRootPath().startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/");
         CmsRelationFilter relationFilter = CmsRelationFilter.relationsToStructureId(structureId);
         List<CmsRelation> relationsToElement = cms.readRelations(relationFilter);
+        for (CmsRelation relation : relationsToElement) {
+            System.out.println("FROM: " + relation.getSourcePath() + " TYPE: " + relation.getType().getName());
+        }
         Iterator<CmsRelation> iter = relationsToElement.iterator();
 
         // ignore XML_STRONG (i.e. container element) relations from the container page, this must be checked on the client side.
@@ -1653,15 +1661,20 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
         }
         ElementDeleteMode elementDeleteMode = null;
-        CmsResource pageResource = cms.readResource(containerpageId, CmsResourceFilter.IGNORE_EXPIRATION);
-        CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(cms, pageResource.getRootPath());
-        CmsResourceTypeConfig typeConfig = adeConfig.getResourceType(
-            OpenCms.getResourceManager().getResourceType(elementResource).getTypeName());
+        if (contextId != null) {
+            CmsResource contextResource = cms.readResource(contextId, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsADEConfigData adeConfig = OpenCms.getADEManager().lookupConfiguration(
+                cms,
+                contextResource.getRootPath());
+            CmsResourceTypeConfig typeConfig = adeConfig.getResourceType(
+                OpenCms.getResourceManager().getResourceType(elementResource).getTypeName());
 
-        if (typeConfig != null) {
-            elementDeleteMode = typeConfig.getElementDeleteMode();
+            if (typeConfig != null) {
+                elementDeleteMode = typeConfig.getElementDeleteMode();
+            }
+        } else {
+            elementDeleteMode = ElementDeleteMode.askKeep;
         }
-
         boolean hasNoRelations = relationsToElement.isEmpty();
         boolean deletionCandidate = hasNoRelations && hasWritePermissions && !isSystemResource;
         CmsListInfoBean elementInfo = CmsVfsService.getPageInfo(cms, elementResource);
@@ -1874,8 +1887,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                     || Boolean.valueOf(param).booleanValue();
             }
             data.setAllowSettingsInEditor(allowSettingsInEditor);
-            String placementModeEnabledStr = (String)OpenCms.getRuntimeProperty(PARAM_PAGE_EDITOR_PLACEMENT_MODE_ENABLED);
-            boolean placementModeEnabled = (placementModeEnabledStr == null) || Boolean.parseBoolean(placementModeEnabledStr);
+            String placementModeEnabledStr = (String)OpenCms.getRuntimeProperty(
+                PARAM_PAGE_EDITOR_PLACEMENT_MODE_ENABLED);
+            boolean placementModeEnabled = (placementModeEnabledStr == null)
+                || Boolean.parseBoolean(placementModeEnabledStr);
             data.setPlacementModeEnabled(placementModeEnabled);
             data.setSessionStorageData(sessionStorageData);
         } catch (Throwable e) {
@@ -3249,7 +3264,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         Set<CmsUUID> removedElementIds = Sets.difference(oldElementIds, newElementIds);
         List<CmsRemovedElementStatus> deletionCandidateStatuses = new ArrayList<CmsRemovedElementStatus>();
         for (CmsUUID removedId : removedElementIds) {
-            CmsRemovedElementStatus status = internalGetRemovedElementStatus(removedId, null);
+            CmsRemovedElementStatus status = internalGetRemovedElementStatus(removedId, null, null);
             if (status.isDeletionCandidate()) {
                 deletionCandidateStatuses.add(status);
             }
