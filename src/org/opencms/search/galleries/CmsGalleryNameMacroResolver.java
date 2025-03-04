@@ -383,39 +383,45 @@ public class CmsGalleryNameMacroResolver extends CmsMacroResolver {
      */
     private String resolveStringTemplate(String stMacro) {
 
-        String template = m_stringTemplateSource.apply(stMacro.trim());
-        if (template == null) {
-            return "";
+        try {
+            String template = m_stringTemplateSource.apply(stMacro.trim());
+            if (template == null) {
+                return "";
+            }
+            CmsJspContentAccessBean jspContentAccess = new CmsJspContentAccessBean(m_cms, m_contentLocale, m_content);
+            Map<String, Object> params = Maps.newHashMap();
+            params.put(
+                CmsStringTemplateRenderer.KEY_FUNCTIONS,
+                CmsCollectionsGenericWrapper.createLazyMap(new CmsObjectFunctionTransformer(m_cms)));
+
+            // We don't necessarily need the page title / navigation, so instead of passing the computed values to the template, we pass objects whose
+            // toString methods compute the values
+            params.put(PAGE_TITLE, new Object() {
+
+                @Override
+                public String toString() {
+
+                    return getContainerPageProperty(CmsPropertyDefinition.PROPERTY_TITLE);
+                }
+            });
+
+            params.put("isDetailPage", Boolean.valueOf(isOnDetailPage()));
+
+            params.put(PAGE_NAV, new Object() {
+
+                @Override
+                public String toString() {
+
+                    return getContainerPageProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT);
+
+                }
+            });
+            String result = CmsStringTemplateRenderer.renderTemplate(m_cms, template, jspContentAccess, params);
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException(
+                "Error resolving string template macro '" + stMacro + "': " + e.getLocalizedMessage(),
+                e);
         }
-        CmsJspContentAccessBean jspContentAccess = new CmsJspContentAccessBean(m_cms, m_contentLocale, m_content);
-        Map<String, Object> params = Maps.newHashMap();
-        params.put(
-            CmsStringTemplateRenderer.KEY_FUNCTIONS,
-            CmsCollectionsGenericWrapper.createLazyMap(new CmsObjectFunctionTransformer(m_cms)));
-
-        // We don't necessarily need the page title / navigation, so instead of passing the computed values to the template, we pass objects whose
-        // toString methods compute the values
-        params.put(PAGE_TITLE, new Object() {
-
-            @Override
-            public String toString() {
-
-                return getContainerPageProperty(CmsPropertyDefinition.PROPERTY_TITLE);
-            }
-        });
-
-        params.put("isDetailPage", Boolean.valueOf(isOnDetailPage()));
-
-        params.put(PAGE_NAV, new Object() {
-
-            @Override
-            public String toString() {
-
-                return getContainerPageProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT);
-
-            }
-        });
-        String result = CmsStringTemplateRenderer.renderTemplate(m_cms, template, jspContentAccess, params);
-        return result;
     }
 }
