@@ -40,6 +40,7 @@ import org.opencms.util.CmsHtmlParser;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.Vector;
 
@@ -342,17 +343,24 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                     tag.setAttribute(attr, CmsEncoder.escapeXml(l));
 
                     // In the Online project, remove href attributes with broken links from A tags.
-                    // Exception: We don't do this if the target is empty, because fragment links ('#anchor') 
-                    // in the WYSIWYG editor are stored as internal links with empty targets 
+                    // Exception: We don't do this if the target is empty, because fragment links ('#anchor')
+                    // in the WYSIWYG editor are stored as internal links with empty targets
                     if (tag.getTagName().equalsIgnoreCase("A")
                         && m_cms.getRequestContext().isOnlineOrEditDisabled()
                         && link.isInternal()
                         && !CmsStringUtil.isEmpty(link.getTarget())
                         && (link.getResource() == null)) {
+
                         // getResource() == null could either mean checkConsistency has not been called, or that the link is broken.
                         // so we have to call checkConsistency to eliminate the first possibility.
                         link.checkConsistency(m_cms);
-                        if (link.getResource() == null) {
+                        // The consistency check tries to read the resource by id first, and then by path if this fails. If at some point in this process
+                        // we get a security exception, then there must be some resource there, either for the given id or for the path, although we don't
+                        // know at this point in the code which one it is. But it doesn't matter; because a potential link target exists, we don't remove the link.
+                        if ((link.getResource() == null)
+                            && !CmsUUID.getNullUUID().equals(
+                                link.getStructureId()) /* 00000000-0000-0000-0000-000000000000 corresponds to static resource served from Jar file. We probably don't need that in the Online project, but we don't need to actively remove that, either. */
+                            && !link.hadSecurityErrorDuringLastConsistencyCheck()) {
                             tag.removeAttribute(ATTRIBUTE_HREF);
                             tag.setAttribute(CmsGwtConstants.ATTR_DEAD_LINK_MARKER, "true");
                         }

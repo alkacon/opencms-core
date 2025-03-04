@@ -37,6 +37,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsStaticResourceHandler;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -111,6 +112,9 @@ public class CmsLink {
 
     /** The parameters of the query, if any. */
     private Map<String, String[]> m_parameters;
+
+    /** Tracks whether there was a security error during the consistency check. */
+    private boolean m_securityErrorDuringConsistencyCheck;
 
     /** The query, if any. */
     private String m_query;
@@ -240,6 +244,7 @@ public class CmsLink {
      */
     public void checkConsistency(CmsObject cms) {
 
+        m_securityErrorDuringConsistencyCheck = false;
         if (!m_internal || (cms == null)) {
             return;
         }
@@ -275,6 +280,9 @@ public class CmsLink {
 
                 }
             } catch (CmsException e) {
+                if (e instanceof CmsSecurityException) {
+                    m_securityErrorDuringConsistencyCheck = true;
+                }
                 // not found
                 throw new CmsVfsResourceNotFoundException(
                     org.opencms.db.generic.Messages.get().container(
@@ -319,11 +327,17 @@ public class CmsLink {
                     CmsLinkUpdateUtil.updateXml(this, m_element, true);
                 }
             } catch (CmsException e1) {
-                // no correction was possible
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_BROKEN_LINK_BY_NAME_1, m_target), e1);
+                if (e1 instanceof CmsSecurityException) {
+                    m_securityErrorDuringConsistencyCheck = true;
                 }
-                m_structureId = null;
+                if (!m_securityErrorDuringConsistencyCheck) {
+                    m_structureId = null;
+                    // no correction was possible
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_BROKEN_LINK_BY_NAME_1, m_target), e1);
+                    }
+
+                }
             } finally {
                 cms.getRequestContext().setSiteRoot(siteRoot);
             }
@@ -643,6 +657,16 @@ public class CmsLink {
     public String getVfsUri() {
 
         return getSitePath();
+    }
+
+    /**
+     * Returns true if we had a security exception during the last consistency check.
+     *
+     * @return true if there was a security exception during the consistency check
+     */
+    public boolean hadSecurityErrorDuringLastConsistencyCheck() {
+
+        return m_securityErrorDuringConsistencyCheck;
     }
 
     /**
