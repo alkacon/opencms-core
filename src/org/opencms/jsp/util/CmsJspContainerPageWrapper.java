@@ -149,7 +149,7 @@ public class CmsJspContainerPageWrapper {
      * @param elementInstanceId the element instance id
      * @return the map of setting wrappers
      */
-    public Map getSettingsForElement(String elementInstanceId) {
+    public Map<?, ?> getSettingsForElement(String elementInstanceId) {
 
         for (CmsContainerBean container : m_page.getContainers().values()) {
             for (CmsContainerElementBean element : container.getElements()) {

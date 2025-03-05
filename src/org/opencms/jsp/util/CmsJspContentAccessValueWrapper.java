@@ -99,7 +99,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
         @Override
         public Object transform(Object input) {
 
-            if (isDirectEditEnabled(obtainCmsObject())) {
+            if (isDirectEditEnabled(getCmsObject())) {
                 return CmsContentService.getRdfaAttributes(getContentValue(), String.valueOf(input));
             } else {
                 return "";
@@ -127,7 +127,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
             while (i.hasNext()) {
                 // must iterate values from XML content and create wrapper for each
                 I_CmsXmlContentValue value = i.next();
-                result.add(createWrapper(obtainCmsObject(), value, getContentValue(), value.getName()));
+                result.add(createWrapper(getCmsObject(), value, getContentValue(), value.getName()));
             }
             return result;
         }
@@ -153,7 +153,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
             while (i.hasNext()) {
                 // must iterate values from XML content and create wrapper for each
                 I_CmsXmlContentValue value = i.next();
-                result.add(createWrapper(obtainCmsObject(), value, getContentValue(), (String)input));
+                result.add(createWrapper(getCmsObject(), value, getContentValue(), (String)input));
             }
             return result;
         }
@@ -176,7 +176,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
                 I_CmsXmlContentValue value = getContentValue().getDocument().getValue(
                     createPath(input),
                     getContentValue().getLocale());
-                return createWrapper(obtainCmsObject(), value, getContentValue(), (String)input);
+                return createWrapper(getCmsObject(), value, getContentValue(), (String)input);
             } else {
                 return NULL_VALUE_WRAPPER;
             }
@@ -539,7 +539,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
     public String getImageDndAttr() {
 
         String result = "";
-        CmsObject cms = obtainCmsObject();
+        CmsObject cms = getCmsObject();
 
         if ((cms != null)
             && (m_contentValue != null)
@@ -789,7 +789,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
     public String getRdfaAttr() {
 
         String result = "";
-        CmsObject cms = obtainCmsObject();
+        CmsObject cms = getCmsObject();
         if (cms != null) {
             if (isDirectEditEnabled(cms)) {
                 if (m_contentValue != null) {
@@ -943,7 +943,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
                 }
             }
             if (m_parameters == null) {
-                m_parameters = Collections.EMPTY_MAP;
+                m_parameters = Collections.emptyMap();
             }
         }
         return m_parameters;
