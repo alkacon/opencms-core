@@ -571,7 +571,9 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
                         links.add(link);
                     }
                 }
-                if (SearchContentType.CONTENT.equals(xmlContent.getHandler().getSearchContentType(value))) {
+                if ((null != xmlContent.getHandler().getSearchContentConfig(value))
+                    && SearchContentType.CONTENT.equals(
+                        xmlContent.getHandler().getSearchContentConfig(value).getSearchContentType())) {
                     String stringValue = value.getStringValue(cms);
                     try {
                         if ((null != stringValue) && !stringValue.trim().isEmpty() && cms.existsResource(stringValue)) {

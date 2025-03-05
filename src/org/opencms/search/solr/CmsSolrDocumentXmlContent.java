@@ -63,12 +63,14 @@ import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.content.I_CmsContentValueAdjustment;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.CmsXmlDateTimeValue;
 import org.opencms.xml.types.CmsXmlHtmlValue;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.CmsXmlSerialDateValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
+import org.opencms.xml.types.I_CmsXmlContentValue.CmsSearchContentConfig;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
@@ -398,13 +400,8 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
         Set<CmsUUID> alreadyExtracted)
     throws CmsException {
 
-        return extractXmlContent(
-            cms,
-            resource,
-            index,
-            forceLocale,
-            alreadyExtracted,
-            content -> {/*do nothing with the content*/});
+        return extractXmlContent(cms, resource, index, forceLocale, alreadyExtracted, content -> {
+            /*do nothing with the content*/});
 
     }
 
@@ -493,8 +490,40 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
                     localeItems.put(xpath, extracted);
                 }
-                switch (xmlContent.getHandler().getSearchContentType(value)) {
+                CmsSearchContentConfig searchContentConfig = xmlContent.getHandler().getSearchContentConfig(value);
+                switch (searchContentConfig.getSearchContentType()) {
                     case TRUE:
+                        if (null != searchContentConfig.getAdjustmentClass()) {
+                            Class<I_CmsContentValueAdjustment> adjustmentClass;
+                            try {
+                                //We cast by purpose and catch the exception if we fail.
+                                adjustmentClass = (Class<I_CmsContentValueAdjustment>)Class.forName(
+                                    searchContentConfig.getAdjustmentClass());
+                                I_CmsContentValueAdjustment adjustment = adjustmentClass.getConstructor().newInstance();
+                                String adjustedValue = adjustment.getAdjustedValue(
+                                    cms,
+                                    xmlContent,
+                                    locale,
+                                    xpath,
+                                    extracted);
+                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(adjustedValue)) {
+                                    textContent.append(adjustedValue);
+                                    textContent.append('\n');
+                                }
+                                break;
+                            } catch (Throwable t) {
+                                String logMessage = "Cannot adjust value via configured class in searchsetting for \""
+                                    + value.getPath()
+                                    + "\" in content \""
+                                    + resource.getRootPath()
+                                    + "\". Using the unadjusted value.";
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.debug(logMessage, t);
+                                } else {
+                                    LOG.error(logMessage);
+                                }
+                            }
+                        }
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
                             textContent.append(extracted);
                             textContent.append('\n');

@@ -133,6 +133,7 @@
         </xsd:sequence>
         <xsd:attribute name="element" type="xsd:string" use="required" />
         <xsd:attribute name="searchcontent" type="OpenCmsDefaultAppinfoSearchsettingSearchContentType" use="optional" default="true" />
+        <xsd:attribute name="class" type="xsd:string" use="optional" />
     </xsd:complexType>
 
     <xsd:simpleType name="OpenCmsDefaultAppinfoSearchsettingSearchContentType">
@@ -348,7 +349,7 @@
         <xsd:attribute name="class" type="xsd:string" use="required" />
         <xsd:attribute name="configuration" type="xsd:string" use="optional" />
     </xsd:complexType>
-    
+
     <xsd:complexType name="OpenCmsDefaultAppinfoVersion">
         <xsd:attribute name="number" type="xsd:string" use="required" />
         <xsd:attribute name="migration" type="xsd:string" use="optional" />
@@ -417,16 +418,16 @@
             <xsd:element name="Display" type="xsd:string" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Synchronization" type="xsd:string" minOccurs="0" maxOccurs="1" />
             <xsd:element name="ChangeHandler" type="OpenCmsChangeHandlerConfig" minOccurs="0" maxOccurs="unbounded" />
-    	</xsd:sequence>
-	</xsd:complexType>
-    
+        </xsd:sequence>
+    </xsd:complexType>
+
     <xsd:complexType name="OpenCmsJsonRenderer">
         <xsd:sequence>
-			<xsd:element name="param" type="OpenCmsDefaultAppinfoParam" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
+            <xsd:element name="param" type="OpenCmsDefaultAppinfoParam" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
         <xsd:attribute name="class" type="xsd:string" use="required" />
     </xsd:complexType>
-    
+
     <xsd:complexType name="OpenCmsChangeHandlerConfig">
         <xsd:simpleContent>
             <xsd:extension base="xsd:string">
@@ -434,11 +435,11 @@
             </xsd:extension>
         </xsd:simpleContent>
     </xsd:complexType>
-    
+
     <xsd:complexType name="OpenCmsDefaultAppinfoGeoMapping">
-    	<xsd:choice minOccurs="0" maxOccurs="unbounded">
-    		<xsd:element name="link" type="xsd:string" />
-    	</xsd:choice>
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+            <xsd:element name="link" type="xsd:string" />
+        </xsd:choice>
     </xsd:complexType>
-	
+
 </xsd:schema>

@@ -45,6 +45,7 @@ import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler.InvalidRelationAction;
 import org.opencms.xml.types.I_CmsXmlContentValue;
+import org.opencms.xml.types.I_CmsXmlContentValue.CmsSearchContentConfig;
 import org.opencms.xml.types.I_CmsXmlContentValue.SearchContentType;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -548,7 +549,7 @@ public interface I_CmsXmlContentHandler {
     CmsRelationType getRelationType(String xpath, CmsRelationType defaultType);
 
     /**
-     * Returns the search content type, ie., the way how to integrate the value into full text search.<p>
+     * Returns the search content configuration, ie., the way how to integrate the value into full text search.<p>
      *
      * For the full text search, the value of all elements in one locale of the XML content are combined
      * to one big text, which is referred to as the "content" in the context of the full text search.
@@ -557,11 +558,13 @@ public interface I_CmsXmlContentHandler {
      *
      * Moreover, if the value contains a link to another resource, the content of that other resource can be added.
      *
+     * And additionally it is possible to adjust the value by a custom adjustment implementation before it is added.
+     *
      * @param value the XML content value to check
      *
      * @return the search content type, indicating how the element should be added to the content for the full text search
      */
-    SearchContentType getSearchContentType(I_CmsXmlContentValue value);
+    CmsSearchContentConfig getSearchContentConfig(I_CmsXmlContentValue value);
 
     /**
      * Returns all configured Search fields for this XML content.<p>
@@ -588,7 +591,7 @@ public interface I_CmsXmlContentHandler {
      *
      * @return the search field settings for this XML content schema
      */
-    Map<String, SearchContentType> getSearchSettings();
+    Map<String, CmsSearchContentConfig> getSearchSettings();
 
     /**
      * Returns the element settings defined for the container page formatters.<p>
@@ -745,12 +748,13 @@ public interface I_CmsXmlContentHandler {
      *
      * @return <code>true</code> in case the given value should be searchable
      *
-     * @deprecated use {@link #getSearchContentType(I_CmsXmlContentValue)} instead. Will be removed if plain lucene search is removed.
+     * @deprecated use {@link #getSearchContentConfig(I_CmsXmlContentValue)} instead. Will be removed if plain lucene search is removed.
      */
     @Deprecated
     default boolean isSearchable(I_CmsXmlContentValue value) {
 
-        return Objects.equals(getSearchContentType(value), SearchContentType.TRUE);
+        CmsSearchContentConfig config = getSearchContentConfig(value);
+        return Objects.equals(null == config ? null : config.getSearchContentType(), SearchContentType.TRUE);
     }
 
     /**

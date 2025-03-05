@@ -110,6 +110,7 @@ import org.opencms.xml.types.CmsXmlStringValue;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
+import org.opencms.xml.types.I_CmsXmlContentValue.CmsSearchContentConfig;
 import org.opencms.xml.types.I_CmsXmlContentValue.SearchContentType;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 import org.opencms.xml.types.I_CmsXmlValidateWithMessage;
@@ -831,7 +832,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     protected Map<String, CmsSearchField> m_searchFieldsPage;
 
     /** The search settings. */
-    protected Map<String, SearchContentType> m_searchSettings;
+    protected Map<String, CmsSearchContentConfig> m_searchSettings;
 
     /** String template group for the simple search setting expansions. */
     protected StringTemplateGroup m_searchTemplateGroup;
@@ -1706,13 +1707,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSearchContentType(org.opencms.xml.types.I_CmsXmlContentValue)
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSearchContentConfig(org.opencms.xml.types.I_CmsXmlContentValue)
      */
-    public SearchContentType getSearchContentType(I_CmsXmlContentValue value) {
+    @Override
+    public CmsSearchContentConfig getSearchContentConfig(I_CmsXmlContentValue value) {
 
         String path = CmsXmlUtils.removeXpath(value.getPath());
         // check for name configured in the annotations
-        SearchContentType searchSetting = m_searchSettings.get(path);
+        CmsSearchContentConfig searchSetting = m_searchSettings.get(path);
         // if no search setting is found within the root handler, move the path upwards to look for other configurations
         if (searchSetting == null) {
             String[] pathElements = path.split("/");
@@ -1728,7 +1730,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             }
         }
         // if no annotation has been found, use default for value
-        return (searchSetting == null) ? value.getSearchContentType() : searchSetting;
+        return (searchSetting == null) ? value.getSearchContentConfig() : searchSetting;
     }
 
     /**
@@ -1750,7 +1752,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getSearchSettings()
      */
-    public Map<String, SearchContentType> getSearchSettings() {
+    public Map<String, CmsSearchContentConfig> getSearchSettings() {
 
         return m_searchSettings;
     }
@@ -2722,7 +2724,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     protected void addSearchSetting(
         CmsXmlContentDefinition contentDefinition,
         String elementName,
-        SearchContentType value)
+        CmsSearchContentConfig value)
     throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
@@ -2746,11 +2748,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
         SearchContentType searchContentType = SearchContentType.fromString(value);
         if (null != searchContentType) {
-            addSearchSetting(contentDef, name, searchContentType);
+            addSearchSetting(contentDef, name, CmsSearchContentConfig.get(searchContentType));
         } else {
             if ("geocoords".equals(value) || "listgeocoords".equals(value)) {
                 m_primaryGeomappingField = name;
-                m_searchSettings.put(CmsXmlUtils.removeXpath(name), I_CmsXmlContentValue.SearchContentType.FALSE);
+                m_searchSettings.put(CmsXmlUtils.removeXpath(name), I_CmsXmlContentValue.CmsSearchContentConfig.FALSE);
             } else {
                 StringTemplate template = m_searchTemplateGroup.getInstanceOf(value);
                 if ((template != null) && (template.getFormalArgument("name") != null)) {
@@ -3050,7 +3052,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         m_validationWarningMessages = new HashMap<String, String>();
         m_defaultValues = new HashMap<String, String>();
         m_configurationValues = new HashMap<String, String>();
-        m_searchSettings = new HashMap<String, SearchContentType>();
+        m_searchSettings = new HashMap<String, CmsSearchContentConfig>();
         m_relations = new HashMap<String, CmsRelationType>();
         m_relationChecks = new HashMap<String, Boolean>();
         m_previewLocation = null;
@@ -3734,8 +3736,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
             String searchContent = element.attributeValue(APPINFO_ATTR_SEARCHCONTENT);
             SearchContentType searchContentType = SearchContentType.fromString(searchContent);
+            String adjustmentClass = element.attributeValue(APPINFO_ATTR_CLASS);
             if (elementName != null) {
-                addSearchSetting(contentDefinition, elementName, searchContentType);
+                CmsSearchContentConfig config = CmsSearchContentConfig.get(searchContentType, adjustmentClass);
+                addSearchSetting(contentDefinition, elementName, config);
             }
             Iterator<Element> it = CmsXmlGenericWrapper.elementIterator(element, APPINFO_SOLR_FIELD);
             Element solrElement;

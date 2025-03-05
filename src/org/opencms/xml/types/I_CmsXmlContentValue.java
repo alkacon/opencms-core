@@ -42,9 +42,94 @@ import org.dom4j.Element;
 public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
 
     /**
+     * Search content configuration for the value.
+     * The configuration determines how the conent's value should be added to the indexed content fields.
+     */
+    public static class CmsSearchContentConfig {
+
+        /** Configuration for not adding the value to the content fields. */
+        public static final CmsSearchContentConfig FALSE = new CmsSearchContentConfig(SearchContentType.FALSE, null);
+        /** Configuration for adding the extraction of the content linked by the value to the content fields. */
+        public static final CmsSearchContentConfig CONTENT = new CmsSearchContentConfig(
+            SearchContentType.CONTENT,
+            null);
+        /** Configuration for adding the value unchanged to the content fields. */
+        public static final CmsSearchContentConfig TRUE = new CmsSearchContentConfig(SearchContentType.TRUE, null);
+        /** The search content type. */
+        private SearchContentType m_type;
+        /** The adjustment implementation for the value. */
+        private String m_adjustmentClass;
+
+        /**
+         * Constructs a new search content configuration.
+         * @param type the search content type
+         * @param adjustmentClass the adjustment implementation
+         */
+        private CmsSearchContentConfig(SearchContentType type, String adjustmentClass) {
+
+            m_type = type;
+            m_adjustmentClass = adjustmentClass;
+        }
+
+        /**
+         * Returns the configuration for the search content type.
+         * @param searchContentType the type to get the configuration for
+         * @return the configuration for the type
+         */
+        public static CmsSearchContentConfig get(SearchContentType searchContentType) {
+
+            return get(searchContentType, null);
+        }
+
+        /**
+         * Returns the configuration for the combination of search content type and adjustment class.
+         * @param searchContentType the type to get the configuration for
+         * @param adjustmentClass the adjustment class
+         * @return the configuration for the type/adjustment combination.
+         */
+        public static CmsSearchContentConfig get(SearchContentType searchContentType, String adjustmentClass) {
+
+            if (searchContentType == null) {
+                return adjustmentClass == null
+                ? null
+                : new CmsSearchContentConfig(SearchContentType.TRUE, adjustmentClass);
+            }
+            switch (searchContentType) {
+                case FALSE:
+                    return FALSE;
+                case TRUE:
+                    return adjustmentClass == null
+                    ? TRUE
+                    : new CmsSearchContentConfig(SearchContentType.TRUE, adjustmentClass);
+                case CONTENT:
+                    return CONTENT;
+                default:
+                    return null;
+            }
+        }
+
+        /**
+         * @return the adjustment class.
+         */
+        public String getAdjustmentClass() {
+
+            return m_adjustmentClass;
+        }
+
+        /**
+         * @return the search content type.
+         */
+        public SearchContentType getSearchContentType() {
+
+            return m_type;
+        }
+    }
+
+    /**
      * The available search types for element searchsetting.
      */
     public static enum SearchContentType {
+
         /** Do not merge the value of the field into the content field. */
         FALSE,
         /** Merge the value of the field into the content field. */
@@ -73,6 +158,7 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
                     return null;
             }
         }
+
     }
 
     /**
@@ -145,9 +231,9 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
      * Returns the search content type for the value. Default implementation uses the historic isSearchable() method.
      * @return the search content type
      */
-    default SearchContentType getSearchContentType() {
+    default CmsSearchContentConfig getSearchContentConfig() {
 
-        return isSearchable() ? SearchContentType.TRUE : SearchContentType.FALSE;
+        return new CmsSearchContentConfig(isSearchable() ? SearchContentType.TRUE : SearchContentType.FALSE, null);
     }
 
     /**
