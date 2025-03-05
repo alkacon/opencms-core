@@ -172,10 +172,14 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
         @Override
         public Object transform(Object input) {
 
-            I_CmsXmlContentValue value = getContentValue().getDocument().getValue(
-                createPath(input),
-                getContentValue().getLocale());
-            return createWrapper(obtainCmsObject(), value, getContentValue(), (String)input);
+            if (getContentValue() != null) {
+                I_CmsXmlContentValue value = getContentValue().getDocument().getValue(
+                    createPath(input),
+                    getContentValue().getLocale());
+                return createWrapper(obtainCmsObject(), value, getContentValue(), (String)input);
+            } else {
+                return NULL_VALUE_WRAPPER;
+            }
         }
     }
 
