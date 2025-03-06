@@ -31,11 +31,13 @@ import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.file.CmsObject;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -64,10 +66,10 @@ public class CmsResourceTypeInfoWrapper implements I_CmsFormatterInfo {
     /** The current sitemap configuration. */
     private CmsADEConfigData m_config;
 
+    private CmsJspStandardContextBean m_context;
+
     /** The wrapped resource type. */
     private I_CmsResourceType m_type;
-
-    private CmsJspStandardContextBean m_context;
 
     /**
      * Creates a new instance.
@@ -101,21 +103,6 @@ public class CmsResourceTypeInfoWrapper implements I_CmsFormatterInfo {
     }
 
     /**
-     * Gets the description for the type in the given locale.
-     *
-     * @param locale the locale to use
-     * @return the type description
-     */
-    public String description(Locale locale) {
-
-        try {
-            return CmsWorkplaceMessages.getResourceTypeDescription(locale, m_type.getTypeName());
-        } catch (Throwable e) {
-            return m_type.getTypeName();
-        }
-    }
-
-    /**
      * Gets the formatter information beans for a specific container type.
      *
      * @param containerType the container type
@@ -134,7 +121,37 @@ public class CmsResourceTypeInfoWrapper implements I_CmsFormatterInfo {
      */
     public String getDescription() {
 
-        return description(m_cms.getRequestContext().getLocale());
+        return getDescription(m_cms.getRequestContext().getLocale());
+    }
+
+    /**
+     * Gets the description for the type in the given locale.
+     *
+     * @param locale the locale to use
+     * @return the type description
+     */
+    public String getDescription(Locale locale) {
+
+        try {
+            String name = m_type.getTypeName();
+            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(name);
+            if (settings != null) {
+                // try to find the localized key
+                String key = settings.getInfo();
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(key)) {
+                    CmsWorkplaceMessages messages = OpenCms.getWorkplaceManager().getMessages(locale);
+                    String result = messages.keyDefault(key, name);
+                    String extension = messages.keyDefault(key + ".ext", null);
+                    if (extension != null) {
+                        result += extension;
+                    }
+                    return result;
+                }
+            }
+            return "";
+        } catch (Throwable e) {
+            return m_type.getTypeName();
+        }
     }
 
     /**
@@ -145,6 +162,21 @@ public class CmsResourceTypeInfoWrapper implements I_CmsFormatterInfo {
         CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
             m_type.getTypeName());
         return explorerType.getInfo();
+    }
+
+    /**
+     * Gets the keys used for the description text.
+     * 
+     * @return the list of description keys
+     */
+    public List<String> getDescriptionKeys() {
+
+        String normalKey = getDescriptionKey();
+        if (normalKey == null) {
+            return Collections.emptyList();
+        } else {
+            return Collections.unmodifiableList(Arrays.asList(normalKey, normalKey + ".ext"));
+        }
     }
 
     /**

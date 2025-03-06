@@ -75,7 +75,6 @@ public class CmsFormatterInfoWrapper implements I_CmsFormatterInfo {
 
         m_cms = cms;
         m_formatter = formatter;
-        m_macroResolver = getMacroResolverForFormatter(cms, formatter);
         m_config = config;
     }
 
@@ -83,14 +82,17 @@ public class CmsFormatterInfoWrapper implements I_CmsFormatterInfo {
      * Prepares the macro resolver to use for formatter info / setting info beans.
      *
      * @param cms the CMS context to use
+     * @param locale the locale to use
      * @param formatter the formatter bean
      * @return the macro resolver to sue
      */
-    public static CmsMacroResolver getMacroResolverForFormatter(CmsObject cms, I_CmsFormatterBean formatter) {
+    public static CmsMacroResolver getMacroResolverForFormatter(
+        CmsObject cms,
+        Locale locale,
+        I_CmsFormatterBean formatter) {
 
         final CmsMacroResolver resolver = new CmsMacroResolver();
         resolver.setCmsObject(cms);
-        Locale locale = cms.getRequestContext().getLocale();
         CmsMultiMessages messages = new CmsMultiMessages(locale);
         messages.addMessages(OpenCms.getWorkplaceManager().getMessages(locale));
         for (String type : formatter.getResourceTypeNames()) {
@@ -113,19 +115,6 @@ public class CmsFormatterInfoWrapper implements I_CmsFormatterInfo {
         resolver.setKeepEmptyMacros(true);
         resolver.setMessages(messages);
         return resolver;
-    }
-
-    /**
-     * Gets the description of the formatter in the given locale.
-     *
-     * @param locale the locale to use
-     * @return the description
-     */
-    public String description(Locale locale) {
-
-        String result = m_formatter.getDescription(locale);
-        result = m_macroResolver.resolveMacros(result);
-        return result;
     }
 
     /**
@@ -156,8 +145,15 @@ public class CmsFormatterInfoWrapper implements I_CmsFormatterInfo {
     public String getDescription() {
 
         Locale locale = m_cms.getRequestContext().getLocale();
+        return getDescription(locale);
+    }
+
+    /**
+     * @see org.opencms.jsp.util.I_CmsInfoWrapper#getDescription(java.util.Locale)
+     */
+    public String getDescription(Locale locale) {
+
         String result = m_formatter.getDescription(locale);
-        result = m_macroResolver.resolveMacros(result);
         return result;
     }
 
@@ -167,6 +163,17 @@ public class CmsFormatterInfoWrapper implements I_CmsFormatterInfo {
     public String getDescriptionKey() {
 
         return CmsKeyDummyMacroResolver.getKey(m_formatter.getDescription(null), m_macroResolver);
+    }
+
+    /**
+     * Gets the localization keys from which the description is read.
+     *
+     * @return the list of localization keys
+     */
+    public List<String> getDescriptionKeys() {
+
+        return CmsKeyDummyMacroResolver.getKeys(m_formatter.getDescription(null), m_macroResolver);
+
     }
 
     /**
@@ -347,7 +354,7 @@ public class CmsFormatterInfoWrapper implements I_CmsFormatterInfo {
             CmsSettingDefinitionWrapper setting = new CmsSettingDefinitionWrapper(
                 m_cms,
                 entry.getValue(),
-                m_macroResolver);
+                locale -> getMacroResolverForFormatter(m_cms, locale, m_formatter));
             result.add(setting);
         }
         return result;

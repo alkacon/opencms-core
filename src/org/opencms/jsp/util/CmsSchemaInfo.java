@@ -49,10 +49,13 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
@@ -154,7 +157,19 @@ public class CmsSchemaInfo {
          */
         public String getDescription() {
 
-            return getDescription(ResolveMode.text);
+            return getDescription(ResolveMode.text, m_cms.getRequestContext().getLocale());
+        }
+
+        /**
+         * Gets the localized description
+         * 
+         * @param locale the locale
+         * @return the description for the given locale
+         */
+        public String getDescription(Locale locale) {
+
+            return getDescription(ResolveMode.text, locale);
+
         }
 
         /**
@@ -164,7 +179,7 @@ public class CmsSchemaInfo {
          */
         public String getDescriptionKey() {
 
-            return getDescription(ResolveMode.key);
+            return getDescription(ResolveMode.key, m_cms.getRequestContext().getLocale());
         }
 
         /**
@@ -174,7 +189,7 @@ public class CmsSchemaInfo {
          */
         public String getDescriptionRaw() {
 
-            return getDescription(ResolveMode.raw);
+            return getDescription(ResolveMode.raw, m_cms.getRequestContext().getLocale());
         }
 
         /**
@@ -442,11 +457,12 @@ public class CmsSchemaInfo {
         /**
          * Gets the description or description key.
          *
-         * @param keyOnly true if only the localization key should be returned rather than the localized string
+         * @param resolveMode the resolve mode
+         * @param locale the locale to use
          * @return the description or localization key
          */
         @SuppressWarnings("synthetic-access")
-        private String getDescription(ResolveMode resolveMode) {
+        private String getDescription(ResolveMode resolveMode, Locale locale) {
 
             if (m_field == null) {
                 return null;
@@ -466,7 +482,7 @@ public class CmsSchemaInfo {
                         }
                         resolver.setCmsObject(m_cms);
                         resolver.setKeepEmptyMacros(true);
-                        resolver.setMessages(m_messages);
+                        resolver.setMessages(getMessages(locale));
 
                         String val = resolver.resolveMacros(help);
                         if (resolveMode == ResolveMode.key) {
@@ -486,7 +502,7 @@ public class CmsSchemaInfo {
                     return result.toString();
                 case text:
                 default:
-                    return m_messages.keyDefault(result.toString(), null);
+                    return getMessages(locale).keyDefault(result.toString(), null);
             }
         }
 
@@ -564,7 +580,12 @@ public class CmsSchemaInfo {
         private WidgetInfo getWidgetInfo() {
 
             if (m_widgetInfo == null) {
-                m_widgetInfo = CmsWidgetUtil.collectWidgetInfo(m_cms, m_root.getContentDefinition(), m_path, null, m_cms.getRequestContext().getLocale());
+                m_widgetInfo = CmsWidgetUtil.collectWidgetInfo(
+                    m_cms,
+                    m_root.getContentDefinition(),
+                    m_path,
+                    null,
+                    m_cms.getRequestContext().getLocale());
             }
             return m_widgetInfo;
 
@@ -591,26 +612,38 @@ public class CmsSchemaInfo {
      */
     public class Tab implements I_CmsInfoWrapper {
 
-        /** The description. */
-        private String m_description;
-
-        /** The description key. */
-        private String m_descriptionKey;
-
-        /** The raw description string. */
-        private String m_descriptionRaw;
-
-        /** The display name. */
-        private String m_displayName;
-
-        /** The display name key. */
-        private String m_displayNameKey;
-
-        /** The raw display name string. */
-        private String m_displayNameRaw;
+        private Locale m_defaultLocale;
 
         /** The fields. */
         private List<Field> m_fields = new ArrayList<>();
+
+        private int m_tabIndex = -1;
+
+        private Function<Locale, List<CmsTabInfo>> m_tabInfoProvider;
+
+        /**
+         * Default constructor - doesn't initialize anything.
+         *
+         * <p>Used for 'dummy' tab that is generated when no actual tabs are configured.
+         *
+         */
+        public Tab() {
+
+        }
+
+        /**
+         * Constructor for tab that is actually configured in the schema.
+         *
+         * @param defaultLocale the default locale
+         * @param tabIndex the current tab index
+         * @param tabInfoProvider the function that provides the list of localized tab info objects
+         */
+        public Tab(Locale defaultLocale, int tabIndex, Function<Locale, List<CmsTabInfo>> tabInfoProvider) {
+
+            m_tabInfoProvider = tabInfoProvider;
+            m_tabIndex = tabIndex;
+            m_defaultLocale = defaultLocale;
+        }
 
         /**
          * Adds a field.
@@ -629,7 +662,19 @@ public class CmsSchemaInfo {
          */
         public String getDescription() {
 
-            return m_description;
+            return localizedTabInfo(null, null, tabInfo -> tabInfo.getDescription());
+        }
+
+        /**
+         * Gets the localized description.
+         * 
+         * @param locale the locale 
+         * @return the description for the locale
+         */
+        @Override
+        public String getDescription(Locale locale) {
+
+            return localizedTabInfo(locale, null, tab -> tab.getDescription());
         }
 
         /**
@@ -639,7 +684,7 @@ public class CmsSchemaInfo {
          */
         public String getDescriptionKey() {
 
-            return m_descriptionKey;
+            return localizedTabInfo(null, null, tabInfo -> tabInfo.getDescriptionKey());
         }
 
         /**
@@ -649,7 +694,7 @@ public class CmsSchemaInfo {
          */
         public String getDescriptionRaw() {
 
-            return m_descriptionRaw;
+            return localizedTabInfo(null, null, tab -> tab.getDescriptionRaw());
         }
 
         /**
@@ -659,7 +704,7 @@ public class CmsSchemaInfo {
          */
         public String getDisplayName() {
 
-            return m_displayName;
+            return localizedTabInfo(null, null, tab -> tab.getTabName());
         }
 
         /**
@@ -669,7 +714,7 @@ public class CmsSchemaInfo {
          */
         public String getDisplayNameKey() {
 
-            return m_displayNameKey;
+            return localizedTabInfo(null, null, tab -> tab.getTabNameKey());
         }
 
         /**
@@ -679,7 +724,8 @@ public class CmsSchemaInfo {
          */
         public String getDisplayNameRaw() {
 
-            return m_displayNameRaw;
+            return localizedTabInfo(null, null, tab -> tab.getTabNameRaw());
+
         }
 
         /**
@@ -693,63 +739,24 @@ public class CmsSchemaInfo {
         }
 
         /**
-         * Sets the description.
+         * Helper method for reading localized tab information.
          *
-         * @param description the new description
-         */
-        public void setDescription(String description) {
-
-            m_description = description;
-        }
-
-        /**
-         * Sets the description key.
+         * @param locale the locale (null for current locale)
+         * @param defaultValue the default value
+         * @param function a function to extract the relevant information from a localized CmsTabInfo instance
          *
-         * @param descriptionKey the new description key
+         * @return the result
          */
-        public void setDescriptionKey(String descriptionKey) {
+        private String localizedTabInfo(Locale locale, String defaultValue, Function<CmsTabInfo, String> function) {
 
-            m_descriptionKey = descriptionKey;
-        }
-
-        /**
-         * Sets the raw description string.
-         *
-         * @param descriptionRaw the raw description string
-         */
-        public void setDescriptionRaw(String descriptionRaw) {
-
-            m_descriptionRaw = descriptionRaw;
-        }
-
-        /**
-         * Sets the display name.
-         *
-         * @param displayName the new display name
-         */
-        public void setDisplayName(String displayName) {
-
-            m_displayName = displayName;
-        }
-
-        /**
-         * Sets the display name key.
-         *
-         * @param displayNameKey the new display name key
-         */
-        public void setDisplayNameKey(String displayNameKey) {
-
-            m_displayNameKey = displayNameKey;
-        }
-
-        /**
-         * Sets the raw display name string.
-         *
-         * @param displayNameRaw the raw display name string
-         */
-        public void setDisplayNameRaw(String displayNameRaw) {
-
-            m_displayNameRaw = displayNameRaw;
+            if (locale == null) {
+                locale = m_defaultLocale;
+            }
+            if ((m_tabIndex != -1) && (m_tabInfoProvider != null)) {
+                CmsTabInfo tabInfo = m_tabInfoProvider.apply(locale).get(m_tabIndex);
+                return function.apply(tabInfo);
+            }
+            return defaultValue;
         }
 
     }
@@ -760,14 +767,21 @@ public class CmsSchemaInfo {
     /** The CMS context. */
     private CmsObject m_cms;
 
+    private CmsXmlContentDefinition m_contentDefinition;
+
     /** The locale. */
     private Locale m_locale;
 
     /** The messages. */
     private CmsMultiMessages m_messages;
 
+    /** Cache of message objects. */
+    private Map<Locale, CmsMultiMessages> m_messagesByLocale = new HashMap<>();
+
     /** The root field instanec representing the whole schema. */
     private Field m_root;
+
+    private Map<Locale, List<CmsTabInfo>> m_tabInfoCache = new HashMap<>();
 
     /** The tabs. */
     private List<Tab> m_tabs;
@@ -783,22 +797,10 @@ public class CmsSchemaInfo {
         m_cms = cms;
         m_locale = cms.getRequestContext().getLocale();
         m_root = new Field(contentDef);
-        CmsMessages messages = null;
-        m_messages = new CmsMultiMessages(m_locale);
-        m_messages.setFallbackHandler(contentDef.getContentHandler().getMessageKeyHandler());
+        m_contentDefinition = contentDef;
 
-        try {
-            messages = OpenCms.getWorkplaceManager().getMessages(m_locale);
-            if (messages != null) {
-                m_messages.addMessages(messages);
-            }
-            messages = contentDef.getContentHandler().getMessages(m_locale);
-            if (messages != null) {
-                m_messages.addMessages(messages);
-            }
-        } catch (Exception e) {
-            LOG.debug(e.getMessage(), e);
-        }
+        Locale locale = cms.getRequestContext().getLocale();
+        m_messages = getMessages(locale);
         initTabs();
 
     }
@@ -849,6 +851,58 @@ public class CmsSchemaInfo {
     }
 
     /**
+     * Creates the message object for the given locale.
+     * 
+     * @param locale the locale 
+     * @return the messages for the given locale 
+     */
+    private CmsMultiMessages createMessages(Locale locale) {
+
+        CmsMessages messages;
+        CmsMultiMessages resultMessages = new CmsMultiMessages(locale);
+        resultMessages.setFallbackHandler(m_contentDefinition.getContentHandler().getMessageKeyHandler());
+        try {
+            messages = OpenCms.getWorkplaceManager().getMessages(locale);
+            if (messages != null) {
+                resultMessages.addMessages(messages);
+            }
+            messages = m_contentDefinition.getContentHandler().getMessages(locale);
+            if (messages != null) {
+                resultMessages.addMessages(messages);
+            }
+        } catch (Exception e) {
+            LOG.debug(e.getMessage(), e);
+        }
+        return resultMessages;
+    }
+
+    /**
+     * Gets or creates the messages object for the given locale.
+     *
+     * @param locale the locale to use
+     * @return the messages for the locale
+     */
+    private CmsMultiMessages getMessages(Locale locale) {
+
+        return m_messagesByLocale.computeIfAbsent(locale, l -> {
+            return createMessages(l);
+        });
+    }
+
+    /**
+     * Gets or creates the localized tab information for the given locale.
+     * 
+     * @param locale the locale 
+     * @return the localized tab information
+     */
+    private List<CmsTabInfo> getTabInfos(Locale locale) {
+
+        return m_tabInfoCache.computeIfAbsent(
+            locale,
+            l -> CmsContentTypeVisitor.collectTabInfos(m_cms, m_root.getContentDefinition(), getMessages(l)));
+    }
+
+    /**
      * Initializes the tabs.
      */
     private void initTabs() {
@@ -864,15 +918,7 @@ public class CmsSchemaInfo {
             int index = 0;
             for (Field node : m_root.getChildren()) {
                 if ((index < tabs.size()) && node.getName().equals(tabs.get(index).getStartName())) {
-                    Tab tab = new Tab();
-
-                    tab.setDisplayName(tabs.get(index).getTabName());
-                    tab.setDisplayNameKey(tabs.get(index).getTabNameKey());
-                    tab.setDisplayNameRaw(tabs.get(index).getTabNameRaw());
-                    tab.setDescriptionKey(tabs.get(index).getDescriptionKey());
-                    tab.setDescriptionRaw(tabs.get(index).getDescriptionRaw());
-                    tab.setDescription(tabs.get(index).getDescription());
-
+                    Tab tab = new Tab(m_cms.getRequestContext().getLocale(), index, locale -> getTabInfos(locale));
                     result.add(tab);
                     index += 1;
                 }

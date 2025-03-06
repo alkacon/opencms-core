@@ -38,23 +38,15 @@ public interface I_CmsFormatterInfo extends I_CmsInfoWrapper {
      * Mode which controls whether / how localized strings should be resolved.
      */
     enum ResolveMode {
-        /** Fully resolve localized string. */
-        text,
-
         /** Tries to get the localization key itself. */
         key,
 
         /** Get the whole raw configured string including macro characters. */
-        raw;
-    }
+        raw,
 
-    /**
-     * Gets the description in the given locale.
-     *
-     * @param l the locale to use
-     * @return the description
-     */
-    String description(Locale l);
+        /** Fully resolve localized string. */
+        text;
+    }
 
     /**
      * Checks if this is active.

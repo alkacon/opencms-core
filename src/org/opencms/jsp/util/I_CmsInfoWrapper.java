@@ -27,6 +27,10 @@
 
 package org.opencms.jsp.util;
 
+import org.opencms.i18n.CmsLocaleManager;
+
+import java.util.Locale;
+
 /**
  * Contains common methods for various beans used to generate the template documentation.
  */
@@ -35,9 +39,28 @@ public interface I_CmsInfoWrapper {
     /**
      * Gets the description in the current locale.
      *
-     * @return the locale to use
+     * @return the description
      */
     String getDescription();
+
+    /**
+     * Gets the description in the given locale.
+     *
+     * @param locale the locale to use
+     * @return the description
+     */
+    String getDescription(Locale locale);
+
+    /**
+     * Gets the description in the given locale.
+     *
+     * @param locale the locale to use
+     * @return the description
+     */
+    default String getDescription(String locale) {
+
+        return getDescription(CmsLocaleManager.getLocale(locale));
+    }
 
     /**
      * Returns the localization key for the description if one was used, and null otherwise.

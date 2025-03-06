@@ -37,9 +37,12 @@ import org.opencms.xml.content.CmsXmlContentProperty.Visibility;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -53,6 +56,9 @@ public class CmsSettingDefinitionWrapper implements I_CmsInfoWrapper {
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSettingDefinitionWrapper.class);
 
+    /** The CmsObject used. */
+    private CmsObject m_cms;
+
     /** The definition. containing the original message keys.*/
     private CmsXmlContentProperty m_definitionWithKeys;
 
@@ -62,23 +68,33 @@ public class CmsSettingDefinitionWrapper implements I_CmsInfoWrapper {
     /** The resolved definition. */
     private CmsXmlContentProperty m_resolvedDefinition;
 
-    /** The CmsObject used. */
-    private CmsObject m_cms;
+    /** Resolved definitions by locale. */
+    private Map<Locale, CmsXmlContentProperty> m_resolvedDefsByLocale = new HashMap<>();
+
+    /** Used for accessing locale-specific macro resolvers. */
+    private Function<Locale, CmsMacroResolver> m_resolverProvider;
 
     /**
      * Creates a new instance.
      *
      * @param cms the current CMS context
      * @param settingDef the raw setting definition
-     * @param resolver the macro resolver to use
+     * @param resolverProvider provides macro resolvers for a particular locale
+     *
      */
-    public CmsSettingDefinitionWrapper(CmsObject cms, CmsXmlContentProperty settingDef, CmsMacroResolver resolver) {
+    public CmsSettingDefinitionWrapper(
+        CmsObject cms,
+        CmsXmlContentProperty settingDef,
+        Function<Locale, CmsMacroResolver> resolverProvider) {
 
+        m_resolverProvider = resolverProvider;
         m_rawDefinition = settingDef;
         m_cms = cms;
-        m_resolvedDefinition = CmsXmlContentPropertyHelper.resolveMacrosInProperty(settingDef, resolver);
-        CmsKeyDummyMacroResolver keyResolver = new CmsKeyDummyMacroResolver(resolver);
+        m_resolvedDefinition = resolveDefinition(cms.getRequestContext().getLocale());
+        CmsKeyDummyMacroResolver keyResolver = new CmsKeyDummyMacroResolver(
+            resolverProvider.apply(cms.getRequestContext().getLocale()));
         m_definitionWithKeys = CmsXmlContentPropertyHelper.resolveMacrosInProperty(settingDef, keyResolver);
+
     }
 
     /**
@@ -99,6 +115,18 @@ public class CmsSettingDefinitionWrapper implements I_CmsInfoWrapper {
     public String getDescription() {
 
         return m_resolvedDefinition.getDescription();
+    }
+
+    /**
+     * Gets the localized description for a particular locale.
+     *
+     * @param locale the locale
+     * @return the localized description
+     */
+    public String getDescription(Locale locale) {
+
+        CmsXmlContentProperty resolvedDef = resolveDefinition(locale);
+        return resolvedDef.getDescription();
     }
 
     /**
@@ -147,6 +175,7 @@ public class CmsSettingDefinitionWrapper implements I_CmsInfoWrapper {
      * @return the raw display name
      */
     public String getDisplayNameRaw() {
+
         return m_rawDefinition.getNiceName();
     }
 
@@ -238,6 +267,21 @@ public class CmsSettingDefinitionWrapper implements I_CmsInfoWrapper {
             e.printStackTrace();
             return "???";
         }
+
+    }
+
+    /**
+     * Localizes the setting definition for a given locale.
+     *
+     * @param locale the locale to use
+     * @return the localized setting definition
+     */
+    private CmsXmlContentProperty resolveDefinition(Locale locale) {
+
+        return m_resolvedDefsByLocale.computeIfAbsent(locale, loc -> {
+            CmsMacroResolver resolver = m_resolverProvider.apply(loc);
+            return CmsXmlContentPropertyHelper.resolveMacrosInProperty(m_rawDefinition, resolver);
+        });
 
     }
 

@@ -27,14 +27,19 @@
 
 package org.opencms.jsp.util;
 
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Macro resolver used to temporarily replace localization message macros with random UUIDs and then replace the UUIDs
@@ -46,6 +51,12 @@ public class CmsKeyDummyMacroResolver extends CmsMacroResolver {
 
     /** Pattern to match message key macros. */
     public static final Pattern PATTERN_MESSAGE = Pattern.compile("^%\\(key\\.([^\\)]++)\\)$");
+
+    /** Pattern to match message key macros. */
+    public static final Pattern PATTERN_MESSAGE_UNANCHORED = Pattern.compile("%\\(key\\.([^\\)]++)\\)\\s*");
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsKeyDummyMacroResolver.class);
 
     /** Pattern to match UUIDs. */
     private static final Pattern UUID_PATTERN = Pattern.compile(CmsUUID.UUID_REGEX);
@@ -96,12 +107,66 @@ public class CmsKeyDummyMacroResolver extends CmsMacroResolver {
      */
     public static String getKey(String s, CmsMacroResolver delegate) {
 
+        List<String> keys = getKeys(s, delegate);
+        if ((keys != null) && (keys.size() > 0)) {
+            return keys.get(0);
+        } else {
+            return null;
+        }
+
+    }
+
+    /**
+     * Gets the localization keys from a string consisting solely of localization key macros (only whitespace is allowed between them).
+     * 
+     * @param s the string to extract the localization keys from 
+     * @param delegate the macro resolver to use for non-localization macros
+     */
+    public static List<String> getKeys(String s, CmsMacroResolver delegate) {
+
         if (s == null) {
             return null;
         }
         CmsKeyDummyMacroResolver resolver = new CmsKeyDummyMacroResolver(delegate);
         String resolved = resolver.resolveMacros(s);
-        return getKey(resolved);
+        return parseKeys(resolved);
+
+    }
+
+    /**
+     * Parses a string that is a sequence of %(key....) macros and extracts the corresponding keys.
+     *
+     * <p>There may be additional whitespace before or after the macros, but nothing else. If anything else is found,
+     * null will be returned.
+     *
+     * @param s the input string
+     * @return the sequence of extracted keys
+     */
+    public static List<String> parseKeys(String s) {
+
+        if (s == null) {
+            LOG.debug("Not a sequence of key macros: [" + s + "]");
+            return null;
+        }
+        s = s.trim();
+        Matcher matcher = PATTERN_MESSAGE_UNANCHORED.matcher(s);
+        int offset = 0;
+        List<String> keys = new ArrayList<>();
+
+        while (matcher.find()) {
+            if (matcher.start() != offset) {
+                LOG.debug("Not a sequence of key macros: [" + s + "]");
+                return null;
+            }
+            keys.add(matcher.group(1));
+            offset = matcher.end();
+        }
+
+        if (offset != s.length()) {
+            LOG.debug("Not a sequence of key macros: [" + s + "]");
+            return null;
+        }
+        return keys;
     }
 
     /**
