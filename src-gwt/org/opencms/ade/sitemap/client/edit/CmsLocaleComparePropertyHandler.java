@@ -51,6 +51,8 @@ import java.util.Map;
  */
 public class CmsLocaleComparePropertyHandler implements I_CmsPropertyEditorHandler {
 
+    private String m_defaultFilePath;
+
     /** The property data loaded from the server. */
     private CmsLocaleComparePropertyData m_data;
 
@@ -82,6 +84,14 @@ public class CmsLocaleComparePropertyHandler implements I_CmsPropertyEditorHandl
     public CmsUUID getDefaultFileId() {
 
         return m_data.getDefaultFileId();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#getDefaultFilePath()
+     */
+    public String getDefaultFilePath() {
+
+        return m_defaultFilePath;
     }
 
     /**
@@ -236,6 +246,16 @@ public class CmsLocaleComparePropertyHandler implements I_CmsPropertyEditorHandl
     public boolean isSimpleMode() {
 
         return true;
+    }
+
+    /**
+     * Sets the default file path.
+     *
+     * @param defaultFilePath the default file path
+     */
+    public void setDefaultFilePath(String defaultFilePath) {
+
+        m_defaultFilePath = defaultFilePath;
     }
 
     /**

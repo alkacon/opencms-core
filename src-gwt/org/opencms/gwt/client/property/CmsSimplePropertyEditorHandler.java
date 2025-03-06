@@ -94,6 +94,17 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
     }
 
     /**
+     * Gets the default file path, if available.
+     * 
+     * @return the default file path
+     */
+    @Override
+    public String getDefaultFilePath() {
+
+        return null;
+    }
+
+    /**
      * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#getDefaultFileProperties()
      */
     public Map<String, CmsClientProperty> getDefaultFileProperties() {

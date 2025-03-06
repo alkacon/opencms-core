@@ -230,9 +230,10 @@ public class CmsNavModePropertyEditor extends A_CmsPropertyEditor {
         if (splitMode == SplitMode.parent) {
             field.getLayoutData().put(A_CmsFormFieldPanel.LAYOUT_TAG, Messages.get().key(Messages.GUI_TAG_FOLDER_0));
         } else if (splitMode == SplitMode.child) {
-            String subtitle = m_handler.getPageInfo().getSubTitle();
-            int slashPos = subtitle.lastIndexOf("/");
-            String name = slashPos > -1 ? subtitle.substring(slashPos + 1) : subtitle;
+
+            String path = m_handler.getDefaultFilePath();
+            int slashPos = path.lastIndexOf("/");
+            String name = slashPos > -1 ? path.substring(slashPos + 1) : path;
             if (!name.toLowerCase().endsWith(".html")) {
                 name = "index.html";
             }

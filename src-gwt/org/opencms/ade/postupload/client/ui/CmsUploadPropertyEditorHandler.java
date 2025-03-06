@@ -85,6 +85,15 @@ public class CmsUploadPropertyEditorHandler implements I_CmsPropertyEditorHandle
     }
 
     /**
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#getDefaultFilePath()
+     */
+    @Override
+    public String getDefaultFilePath() {
+
+        return null;
+    }
+
+    /**
      * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#getDefaultFileProperties()
      */
     public Map<String, CmsClientProperty> getDefaultFileProperties() {
@@ -174,8 +183,8 @@ public class CmsUploadPropertyEditorHandler implements I_CmsPropertyEditorHandle
 
     /**
      * Gets the warning message.
-     * 
-     * @return the warning message 
+     *
+     * @return the warning message
      */
     public String getWarning() {
 

@@ -190,7 +190,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
         final String noEditReason) {
 
         final CmsUUID infoId;
-        infoId = defaultFileId;
+        infoId = ownId;
         Set<CmsUUID> idsForPropertyConfig = new HashSet<CmsUUID>();
         idsForPropertyConfig.add(defaultFileId);
         idsForPropertyConfig.add(ownId);
@@ -210,61 +210,82 @@ public class CmsSitemapController implements I_CmsSitemapController {
             protected void onResponse(CmsListInfoBean infoResult) {
 
                 stop(false);
-                final CmsLocaleComparePropertyHandler handler = new CmsLocaleComparePropertyHandler(data);
-                handler.setPageInfo(infoResult);
-
-                CmsRpcAction<Map<CmsUUID, Map<String, CmsXmlContentProperty>>> propertyAction = new CmsRpcAction<Map<CmsUUID, Map<String, CmsXmlContentProperty>>>() {
+                CmsRpcAction<CmsListInfoBean> defaultFileInfoAction = new CmsRpcAction<CmsListInfoBean>() {
 
                     @Override
                     public void execute() {
 
                         start(0, true);
-                        CmsCoreProvider.getVfsService().getDefaultProperties(propertyConfigIds, this);
+                        CmsCoreProvider.getVfsService().getPageInfo(defaultFileId, this);
                     }
 
                     @Override
-                    protected void onResponse(Map<CmsUUID, Map<String, CmsXmlContentProperty>> propertyResult) {
+                    protected void onResponse(CmsListInfoBean defaultFileInfo) {
 
                         stop(false);
-                        Map<String, CmsXmlContentProperty> propConfig = new LinkedHashMap<String, CmsXmlContentProperty>();
-                        for (Map<String, CmsXmlContentProperty> defaultProps : propertyResult.values()) {
-                            propConfig.putAll(defaultProps);
-                        }
-                        propConfig.putAll(CmsSitemapView.getInstance().getController().getData().getProperties());
-                        A_CmsPropertyEditor editor = new CmsNavModePropertyEditor(propConfig, handler);
-                        editor.setPropertyNames(
-                            CmsSitemapView.getInstance().getController().getData().getAllPropertyNames());
-                        final CmsFormDialog dialog = new CmsFormDialog(handler.getDialogTitle(), editor.getForm());
-                        CmsPropertyDefinitionButton defButton = new CmsPropertyDefinitionButton() {
 
-                            /**
-                             * @see org.opencms.gwt.client.property.definition.CmsPropertyDefinitionButton#onBeforeEditPropertyDefinition()
-                             */
+                        final CmsLocaleComparePropertyHandler handler = new CmsLocaleComparePropertyHandler(data);
+                        handler.setPageInfo(infoResult);
+                        handler.setDefaultFilePath(defaultFileInfo.getSubTitle());
+                        CmsRpcAction<Map<CmsUUID, Map<String, CmsXmlContentProperty>>> propertyAction = new CmsRpcAction<Map<CmsUUID, Map<String, CmsXmlContentProperty>>>() {
+
                             @Override
-                            public void onBeforeEditPropertyDefinition() {
+                            public void execute() {
 
-                                dialog.hide();
+                                start(0, true);
+                                CmsCoreProvider.getVfsService().getDefaultProperties(propertyConfigIds, this);
                             }
 
-                        };
-                        defButton.getElement().getStyle().setFloat(Style.Float.LEFT);
-                        defButton.installOnDialog(dialog);
-                        CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
-                        formHandler.setDialog(dialog);
-                        I_CmsFormSubmitHandler submitHandler = new CmsPropertySubmitHandler(handler);
-                        formHandler.setSubmitHandler(submitHandler);
-                        dialog.setFormHandler(formHandler);
-                        editor.initializeWidgets(dialog);
-                        dialog.centerHorizontally(50);
-                        dialog.catchNotifications();
-                        if (noEditReason != null) {
-                            editor.disableInput(noEditReason, false);
-                            dialog.getOkButton().disable(noEditReason);
-                        }
+                            @Override
+                            protected void onResponse(Map<CmsUUID, Map<String, CmsXmlContentProperty>> propertyResult) {
 
+                                stop(false);
+                                Map<String, CmsXmlContentProperty> propConfig = new LinkedHashMap<String, CmsXmlContentProperty>();
+                                for (Map<String, CmsXmlContentProperty> defaultProps : propertyResult.values()) {
+                                    propConfig.putAll(defaultProps);
+                                }
+                                propConfig.putAll(
+                                    CmsSitemapView.getInstance().getController().getData().getProperties());
+                                A_CmsPropertyEditor editor = new CmsNavModePropertyEditor(propConfig, handler);
+                                editor.setPropertyNames(
+                                    CmsSitemapView.getInstance().getController().getData().getAllPropertyNames());
+                                final CmsFormDialog dialog = new CmsFormDialog(
+                                    handler.getDialogTitle(),
+                                    editor.getForm());
+                                CmsPropertyDefinitionButton defButton = new CmsPropertyDefinitionButton() {
+
+                                    /**
+                                     * @see org.opencms.gwt.client.property.definition.CmsPropertyDefinitionButton#onBeforeEditPropertyDefinition()
+                                     */
+                                    @Override
+                                    public void onBeforeEditPropertyDefinition() {
+
+                                        dialog.hide();
+                                    }
+
+                                };
+                                defButton.getElement().getStyle().setFloat(Style.Float.LEFT);
+                                defButton.installOnDialog(dialog);
+                                CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
+                                formHandler.setDialog(dialog);
+                                I_CmsFormSubmitHandler submitHandler = new CmsPropertySubmitHandler(handler);
+                                formHandler.setSubmitHandler(submitHandler);
+                                dialog.setFormHandler(formHandler);
+                                editor.initializeWidgets(dialog);
+                                dialog.centerHorizontally(50);
+                                dialog.catchNotifications();
+                                if (noEditReason != null) {
+                                    editor.disableInput(noEditReason, false);
+                                    dialog.getOkButton().disable(noEditReason);
+                                }
+
+                            }
+                        };
+                        propertyAction.execute();
                     }
                 };
-                propertyAction.execute();
+                defaultFileInfoAction.execute();
+
             }
 
         };

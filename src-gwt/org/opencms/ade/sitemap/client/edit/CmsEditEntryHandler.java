@@ -52,6 +52,8 @@ import java.util.Map;
  */
 public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
 
+    private String m_defaultFilePath;
+
     /** True if the sitemap editor is in simple mode. */
     private boolean m_isSimpleMode;
 
@@ -86,6 +88,15 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
     public CmsUUID getDefaultFileId() {
 
         return m_entry.getDefaultFileId();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#getDefaultFilePath()
+     */
+    @Override
+    public String getDefaultFilePath() {
+
+        return m_defaultFilePath;
     }
 
     /**
@@ -239,6 +250,15 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
     public boolean isSimpleMode() {
 
         return m_isSimpleMode;
+    }
+
+    /**
+     * Sets the default file path
+     * @param defaultFilePath the new default file path
+     */
+    public void setDefaultFilePath(String defaultFilePath) {
+
+        m_defaultFilePath = defaultFilePath;
     }
 
     /**

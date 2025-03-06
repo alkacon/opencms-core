@@ -58,6 +58,13 @@ public interface I_CmsPropertyEditorHandler {
     CmsUUID getDefaultFileId();
 
     /**
+     * Gets the default file path, if available.
+     * 
+     *  @return the default file path
+     */
+    String getDefaultFilePath();
+
+    /**
      * Returns the default file properties, if available.<p>
      *
      * @return the default file properties
