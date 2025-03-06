@@ -92,11 +92,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.ComparatorUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.vaadin.event.dd.DropHandler;
@@ -171,15 +171,19 @@ public class CmsResourceTable extends CustomComponent {
             /** The title to display. */
             private String m_title;
 
+            /** The category path. */
+            private String m_categoryPath;
+
             /**
              * Creates a new instance.
              *
              * @param title the title
              * @param background the background color
              */
-            public CategoryItem(String title, String background) {
+            public CategoryItem(String categoryPath, String title, String background) {
 
                 super();
+                m_categoryPath = categoryPath;
                 m_title = title;
                 m_background = background;
             }
@@ -192,6 +196,11 @@ public class CmsResourceTable extends CustomComponent {
             public String getBackground() {
 
                 return m_background;
+            }
+
+            public String getCategoryPath() {
+
+                return m_categoryPath;
             }
 
             /**
@@ -312,12 +321,12 @@ public class CmsResourceTable extends CustomComponent {
 
                     List<CategoryItem> items = categoriesToDisplay.stream().map(
                         cat -> new CategoryItem(
+                            cat.getPath(),
                             fullPath ? getCompositeCategoryTitle(categoriesByPath, cat) : cat.getTitle(),
                             cat.getBackground())).collect(Collectors.toList());
-                    // Use same comparison criteria for individual category titles as for the complete column.
-                    Comparator<CategoryItem> comparator = ComparatorUtils.transformedComparator(
-                        CATEGORY_COMPARATOR,
-                        item -> item.getTitle());
+                    Comparator<CategoryItem> comparator = (
+                        a,
+                        b) -> ComparisonChain.start().compare(a.getCategoryPath(), b.getCategoryPath()).result();
                     Collections.sort(items, comparator);
                     // Comma-separated list of titles, for tooltip, sorting and filtering
                     m_value = items.stream().map(item -> item.getTitle()).collect(Collectors.joining(", "));
