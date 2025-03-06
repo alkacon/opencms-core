@@ -51,6 +51,9 @@ import com.google.common.collect.Multimap;
  */
 public class CmsResourceTypeInfoWrapper implements I_CmsFormatterInfo {
 
+    /** Suffix for the description key - by appending it to the key, we get another key that can be used for adding text to the description. */
+    public static final String DESCRIPTION_KEY_EXTENSION_SUFFIX = ".addon";
+
     /** Whether the type is active in the sitemap configuration. */
     private boolean m_active;
 
@@ -141,7 +144,7 @@ public class CmsResourceTypeInfoWrapper implements I_CmsFormatterInfo {
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(key)) {
                     CmsWorkplaceMessages messages = OpenCms.getWorkplaceManager().getMessages(locale);
                     String result = messages.keyDefault(key, name);
-                    String extension = messages.keyDefault(key + ".ext", null);
+                    String extension = messages.keyDefault(key + DESCRIPTION_KEY_EXTENSION_SUFFIX, null);
                     if (extension != null) {
                         result += extension;
                     }
@@ -166,7 +169,7 @@ public class CmsResourceTypeInfoWrapper implements I_CmsFormatterInfo {
 
     /**
      * Gets the keys used for the description text.
-     * 
+     *
      * @return the list of description keys
      */
     public List<String> getDescriptionKeys() {
@@ -175,7 +178,7 @@ public class CmsResourceTypeInfoWrapper implements I_CmsFormatterInfo {
         if (normalKey == null) {
             return Collections.emptyList();
         } else {
-            return Collections.unmodifiableList(Arrays.asList(normalKey, normalKey + ".ext"));
+            return Collections.unmodifiableList(Arrays.asList(normalKey, normalKey + DESCRIPTION_KEY_EXTENSION_SUFFIX));
         }
     }
 
