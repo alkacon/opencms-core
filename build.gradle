@@ -137,7 +137,6 @@ configurations {
 
     distribution {
         description = 'libraries included into the opencms distribution'
-        transitive = false
     }
 
     api {
@@ -146,7 +145,6 @@ configurations {
 
     compile {
         description = 'used to compile the opencms.jar and the modules jars'
-        transitive = false
         extendsFrom distribution
     }
     // Default configuration of the java-library plugin
@@ -157,7 +155,6 @@ configurations {
 
     modulesCompile {
         description = 'used to compile the modules classes'
-        transitive = false
         extendsFrom compile
     }
 
@@ -169,11 +166,9 @@ configurations {
 
     moduleDeps {
         description = 'additional dependencies required by external modules'
-        transitive = false
     }
 
     testCompile{
-        transitive = false
         extendsFrom modulesCompile
     }
 
@@ -185,7 +180,6 @@ configurations {
 
     gwtCompile {
         description = 'needed to generate the GWT JavaScript resources'
-        transitive = false
         extendsFrom modulesCompile
     }
 
@@ -197,7 +191,6 @@ configurations {
 
     testGwtCompile{
         description = 'needed to run GWT test cases'
-        transitive = false
         extendsFrom gwtCompile
     }
 
@@ -221,7 +214,6 @@ configurations {
     }
 
     setupCompile {
-        transitive = false
         extendsFrom modulesCompile
     }
 
@@ -231,12 +223,6 @@ configurations {
         extendsFrom setupCompile
     }
 }
-
-// We want no transitive dependencies
-configurations.configureEach {
-    transitive = false
-}
-
 
 // import dependencies
 apply from: 'dependencies.gradle'
@@ -1528,4 +1514,3 @@ tasks.withType(CopySpec) {
 tasks.withType(GenerateModuleMetadata) {
     enabled = false
 }
-
