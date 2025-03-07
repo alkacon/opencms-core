@@ -597,6 +597,7 @@ public final class CmsCntPageData implements IsSerializable {
      * @return true if placement mode is enabled
      */
     public boolean isPlacementModeEnabled() {
+
         return m_placementModeEnabled;
     }
 
@@ -631,11 +632,23 @@ public final class CmsCntPageData implements IsSerializable {
     }
 
     /**
+     * Sets the detail container page id.
+     * 
+     * @param pageId the detail container page id
+     */
+    public void setDetailContainerPageId(CmsUUID pageId) {
+
+        m_detailContainerPageId = pageId;
+
+    }
+
+    /**
      * Sets the 'placement mode enabled' flag.
      *
      * @param placementModeEnabled the new value for the 'placement mode enabled' flag
      */
     public void setPlacementModeEnabled(boolean placementModeEnabled) {
+
         m_placementModeEnabled = placementModeEnabled;
     }
 

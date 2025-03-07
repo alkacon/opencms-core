@@ -54,6 +54,7 @@ import org.opencms.ade.containerpage.shared.CmsElementViewInfo;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
+import org.opencms.ade.containerpage.shared.CmsPageSaveStatus;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
 import org.opencms.ade.containerpage.shared.CmsReuseInfo;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
@@ -3298,7 +3299,7 @@ public final class CmsContainerpageController {
     public void saveAndLeave(final Command leaveCommand) {
 
         if (hasPageChanged()) {
-            CmsRpcAction<Long> action = new CmsRpcAction<Long>() {
+            CmsRpcAction<CmsPageSaveStatus> action = new CmsRpcAction<CmsPageSaveStatus>() {
 
                 /**
                  * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -3324,9 +3325,12 @@ public final class CmsContainerpageController {
                  * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
                  */
                 @Override
-                protected void onResponse(Long result) {
+                protected void onResponse(CmsPageSaveStatus result) {
 
-                    setLoadTime(result);
+                    setLoadTime(result.getTimestamp());
+                    if (getData().getDetailContainerPage() != null) {
+                        getData().setDetailContainerPageId(result.getPageId());
+                    }
                     CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_SAVED_0));
                     CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.pageSaved));
                     setPageChanged(false, true);
@@ -3345,7 +3349,7 @@ public final class CmsContainerpageController {
     public void saveAndLeave(final String targetUri) {
 
         if (hasPageChanged()) {
-            CmsRpcAction<Long> action = new CmsRpcAction<Long>() {
+            CmsRpcAction<CmsPageSaveStatus> action = new CmsRpcAction<CmsPageSaveStatus>() {
 
                 /**
                  * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -3371,9 +3375,12 @@ public final class CmsContainerpageController {
                  * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
                  */
                 @Override
-                protected void onResponse(Long result) {
+                protected void onResponse(CmsPageSaveStatus result) {
 
-                    setLoadTime(result);
+                    setLoadTime(result.getTimestamp());
+                    if (getData().getDetailContainerPage() != null) {
+                        getData().setDetailContainerPageId(result.getPageId());
+                    }
                     CmsNotification.get().send(Type.NORMAL, Messages.get().key(Messages.GUI_NOTIFICATION_PAGE_SAVED_0));
                     CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.pageSaved));
                     setPageChanged(false, true);
@@ -3417,7 +3424,7 @@ public final class CmsContainerpageController {
     public void saveContainerpage(final Runnable... afterSaveActions) {
 
         if (hasPageChanged()) {
-            final CmsRpcAction<Long> action = new CmsRpcAction<Long>() {
+            final CmsRpcAction<CmsPageSaveStatus> action = new CmsRpcAction<CmsPageSaveStatus>() {
 
                 /**
                  * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
@@ -3444,9 +3451,12 @@ public final class CmsContainerpageController {
                  * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
                  */
                 @Override
-                protected void onResponse(Long result) {
+                protected void onResponse(CmsPageSaveStatus result) {
 
-                    setLoadTime(result);
+                    setLoadTime(result.getTimestamp());
+                    if (getData().getDetailContainerPage() != null) {
+                        getData().setDetailContainerPageId(result.getPageId());
+                    }
                     stop(false);
                     setPageChanged(false, false);
                     CmsContainerpageController.get().fireEvent(new CmsContainerpageEvent(EventType.pageSaved));

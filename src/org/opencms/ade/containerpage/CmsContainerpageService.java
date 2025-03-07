@@ -55,6 +55,7 @@ import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsInheritanceInfo;
 import org.opencms.ade.containerpage.shared.CmsLocaleLinkBean;
+import org.opencms.ade.containerpage.shared.CmsPageSaveStatus;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
 import org.opencms.ade.containerpage.shared.CmsReuseInfo;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
@@ -1986,7 +1987,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveContainerpage(org.opencms.util.CmsUUID, java.util.List)
      */
-    public long saveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers) throws CmsRpcException {
+    public CmsPageSaveStatus saveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers)
+    throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
         try {
@@ -2000,16 +2002,20 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         } catch (Throwable e) {
             error(e);
         }
-        return System.currentTimeMillis();
+        return new CmsPageSaveStatus(pageStructureId, System.currentTimeMillis());
     }
 
     /**
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#saveDetailContainers(org.opencms.util.CmsUUID, java.lang.String, java.util.List)
      */
-    public long saveDetailContainers(CmsUUID detailId, String detailContainerResource, List<CmsContainer> containers)
+    public CmsPageSaveStatus saveDetailContainers(
+        CmsUUID detailId,
+        String detailContainerResource,
+        List<CmsContainer> containers)
     throws CmsRpcException {
 
         CmsObject cms = getCmsObject();
+        CmsUUID id = null;
         try {
             ensureSession();
             CmsObject rootCms = OpenCms.initCmsObject(cms);
@@ -2019,11 +2025,12 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 rootCms,
                 detailId,
                 detailContainerResource);
+            id = containerpage.getStructureId();
             saveContainers(rootCms, containerpage, detailContainerResource, containers);
         } catch (Throwable e) {
             error(e);
         }
-        return System.currentTimeMillis();
+        return new CmsPageSaveStatus(id, System.currentTimeMillis());
     }
 
     /**

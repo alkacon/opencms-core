@@ -39,6 +39,7 @@ import org.opencms.ade.containerpage.shared.CmsElementSettingsConfig;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
+import org.opencms.ade.containerpage.shared.CmsPageSaveStatus;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
 import org.opencms.ade.containerpage.shared.CmsReuseInfo;
 import org.opencms.gwt.CmsRpcException;
@@ -510,11 +511,11 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param pageStructureId the container page structure id
      * @param containers the container-page's containers
      *
-     * @return the server time stamp of time of saving
+     * @return the page save status
      *
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    long saveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers) throws CmsRpcException;
+    CmsPageSaveStatus saveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers) throws CmsRpcException;
 
     /**
      * Saves the detail containers.<p>
@@ -523,11 +524,14 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param detailContainerResource the detail container resource path
      * @param containers the container-page's containers
      *
-     * @return the server time stamp of time of saving
+     * @return the page save status
      *
      * @throws CmsRpcException if something goes wrong processing the request
      */
-    long saveDetailContainers(CmsUUID detailId, String detailContainerResource, List<CmsContainer> containers)
+    CmsPageSaveStatus saveDetailContainers(
+        CmsUUID detailId,
+        String detailContainerResource,
+        List<CmsContainer> containers)
     throws CmsRpcException;
 
     /**

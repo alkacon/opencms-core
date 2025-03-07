@@ -39,6 +39,7 @@ import org.opencms.ade.containerpage.shared.CmsElementSettingsConfig;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
+import org.opencms.ade.containerpage.shared.CmsPageSaveStatus;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
 import org.opencms.ade.containerpage.shared.CmsReuseInfo;
 import org.opencms.gwt.shared.CmsListElementCreationDialogData;
@@ -473,7 +474,10 @@ public interface I_CmsContainerpageServiceAsync {
      * @param containers the container-page's containers
      * @param callback the call-back executed on response
      */
-    void saveContainerpage(CmsUUID pageStructureId, List<CmsContainer> containers, AsyncCallback<Long> callback);
+    void saveContainerpage(
+        CmsUUID pageStructureId,
+        List<CmsContainer> containers,
+        AsyncCallback<CmsPageSaveStatus> callback);
 
     /**
      * Saves the detail containers. Returning the save time stamp.<p>
@@ -488,7 +492,7 @@ public interface I_CmsContainerpageServiceAsync {
         String detailContainerResource,
         List<CmsContainer> containers,
 
-        AsyncCallback<Long> callback);
+        AsyncCallback<CmsPageSaveStatus> callback);
 
     /**
      * Saves the settings for the given element to the container page and returns the updated element data.<p>
