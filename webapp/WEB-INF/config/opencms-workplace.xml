@@ -34,7 +34,6 @@
         <enableusermanagement>true</enableusermanagement>
         <defaultpropertiesonstructure>true</defaultpropertiesonstructure>
         <enableadvancedpropertytabs>true</enableadvancedpropertytabs>
-        <categorydisplayoptions displayByRepository="true" />
         <!-- Displaying categories in the explorer has a big performance impact. Only enable if really needed. -->
         <display-categories-in-explorer enabled="false" with-path="true" leaves-only="true" />
         <maxfileuploadsize>-1</maxfileuploadsize>
