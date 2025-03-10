@@ -104,7 +104,7 @@ dependencies {
     distribution group: 'com.vaadin', name: 'vaadin-shared', version: '8.14.3', transitive: false
     distribution group: 'com.vaadin', name: 'vaadin-themes', version: '8.14.3', transitive: false
     distribution group: 'com.vaadin.external', name: 'gentyref', version: '1.2.0.vaadin1', transitive: false
-    distribution group: 'com.zaxxer', name: 'HikariCP', version: '4.0.2', transitive: false
+    distribution group: 'com.zaxxer', name: 'HikariCP', version: '6.2.1', transitive: false
     // used by Apache POI
     distribution group: 'com.zaxxer', name: 'SparseBitSet', version: '1.2', transitive: false
     distribution group: 'commons-lang', name: 'commons-lang', version: '2.6', transitive: false
@@ -264,8 +264,8 @@ dependencies {
     distribution group: 'org.safehaus.jug', name: 'jug', version: '2.0.0', classifier: 'lgpl', transitive: false
     distribution group: 'org.restlet.jee', name: 'org.restlet', version: '2.3.12', transitive: false
     distribution group: 'org.rrd4j', name: 'rrd4j', version: '3.7', transitive: false
-    distribution group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30', transitive: false
-    distribution group: 'org.slf4j', name: 'jul-to-slf4j', version: '1.7.30', transitive: false
+    distribution group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36', transitive: false
+    distribution group: 'org.slf4j', name: 'jul-to-slf4j', version: '1.7.36', transitive: false
     distribution group: 'org.tepi.filtertable', name: 'filteringtable', version: '1.0.1.v8', transitive: false
     distribution group: 'org.vaadin.addons', name: 'popupbutton', version: '3.0.0', transitive: false
     distribution group: 'org.xhtmlrenderer', name: 'flying-saucer-core', version: '9.1.20', transitive: false
