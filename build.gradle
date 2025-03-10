@@ -1288,13 +1288,6 @@ publishing {
                     // Update dependencies with resolved versions
                     def hasDependencies = !asNode().dependencies.isEmpty()
                     if (hasDependencies) {
-                        asNode().dependencies.first().each {
-                            def exclusionsNode = it.appendNode('exclusions');
-                            def exclusionNode = exclusionsNode.appendNode('exclusion');
-                            exclusionNode.appendNode('artifactId','*');
-                            exclusionNode.appendNode('groupId','*');
-                        }
-
                         // for some reason Gradle incorrectly sets the scope to 'runtime' for some dependencies, so we fix it
                         // (if we didn't do this, the dependencies would be missing in dependent projects)
                         asNode().dependencies.'*'.each() { dep ->
