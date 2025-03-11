@@ -7,17 +7,17 @@
     <uniqueKey>solr_id</uniqueKey>
 
 
-    <fieldType name="uuid"    class="solr.UUIDField"        indexed="true" />
+    <fieldType name="uuid"    class="solr.UUIDField"        indexed="true" docValues="false"/>
 
     <!-- The StrField type is not analyzed, but indexed/stored verbatim. -->
-    <fieldType name="string"  class="solr.StrField" sortMissingLast="true" />
-    <fieldType name="strings" class="solr.StrField" sortMissingLast="true" multiValued="true"/>
+    <fieldType name="string"  class="solr.StrField" sortMissingLast="true" docValues="false"/>
+    <fieldType name="strings" class="solr.StrField" sortMissingLast="true" multiValued="true" docValues="false"/>
 
     <!-- boolean type: "true" or "false" -->
-    <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true"/>
+    <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true" docValues="false"/>
 
     <!--Binary data type. The data should be sent/retrieved in as Base64 encoded Strings -->
-    <fieldType name="binary"  class="solr.BinaryField"/>
+    <fieldType name="binary"  class="solr.BinaryField" docValues="false"/>
 
     <!--
       Numeric field types that index values using KD-trees.
@@ -38,24 +38,24 @@
     <!-- KD-tree versions of date fields -->
     <fieldType name="date"  class="solr.DatePointField" docValues="true"/>
     <fieldType name="pdate" class="solr.DatePointField" docValues="true" multiValued="true"/>
-    <fieldType name="date_range"  class="solr.DateRangeField"/>
-    <fieldType name="pdate_range" class="solr.DateRangeField" multiValued="true"/>
+    <fieldType name="date_range"  class="solr.DateRangeField" docValues="false"/>
+    <fieldType name="pdate_range" class="solr.DateRangeField" multiValued="true" docValues="false"/>
 
     <!-- A specialized field for geospatial search filters and distance sorting. -->
     <fieldType name="location"      class="solr.LatLonPointSpatialField" docValues="true" />
-    <fieldType name="location_rpt"  class="solr.SpatialRecursivePrefixTreeFieldType" geo="true" maxDistErr="0.001" distErrPct="0.025" distanceUnits="kilometers"/>
+    <fieldType name="location_rpt"  class="solr.SpatialRecursivePrefixTreeFieldType" geo="true" maxDistErr="0.001" distErrPct="0.025" distanceUnits="kilometers" docValues="false"/>
 
-    <fieldType name="random"   class="solr.RandomSortField"  indexed="true" />
+    <fieldType name="random"   class="solr.RandomSortField"  indexed="true" docValues="false"/>
 
     <!-- since fields of this type are by default not stored or indexed,
          any data added to them will be ignored outright.  -->
-    <fieldType name="ignored" stored="false" indexed="false" multiValued="true" class="solr.StrField" />
+    <fieldType name="ignored" stored="false" indexed="false" multiValued="true" class="solr.StrField" docValues="false"/>
 
 
 
 
     <!-- A text field that only splits on whitespace for exact matching of words -->
-    <fieldType name="text_ws" class="solr.TextField" positionIncrementGap="2">
+    <fieldType name="text_ws" class="solr.TextField" positionIncrementGap="2" docValues="false">
       <analyzer type="index">
         <tokenizer class="solr.WhitespaceTokenizerFactory"/>
         <filter class="solr.HyphenatedWordsFilterFactory"/>
@@ -66,10 +66,10 @@
     </fieldType>
 
     <!-- This is a special field type for alphabetically sorting. It requires solr-analysis-extras. -->
-    <fieldType name="sort" class="solr.ICUCollationField" locale="" strength="primary" />
+    <fieldType name="sort" class="solr.ICUCollationField" locale="" strength="primary" docValues="false" />
 
     <!-- lowercases the entire field value, keeping it as a single token.  -->
-    <fieldType name="lowercase" class="solr.TextField" positionIncrementGap="100">
+    <fieldType name="lowercase" class="solr.TextField" positionIncrementGap="100" docValues="false">
       <analyzer>
         <tokenizer class="solr.KeywordTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory" />
@@ -77,21 +77,21 @@
     </fieldType>
 
     <!-- A field type that stored the Hierarchy of an path. -->
-    <fieldType name="text_path" class="solr.TextField" positionIncrementGap="100">
+    <fieldType name="text_path" class="solr.TextField" positionIncrementGap="100" docValues="false">
       <analyzer>
         <tokenizer class="solr.PathHierarchyTokenizerFactory"/>
       </analyzer>
     </fieldType>
 
     <!-- A field type that splits at commas -->
-    <fieldType name="text_comma" class="solr.TextField" positionIncrementGap="2">
+    <fieldType name="text_comma" class="solr.TextField" positionIncrementGap="2" docValues="false">
       <analyzer>
         <tokenizer class="solr.PatternTokenizerFactory" pattern=",\s*" />
       </analyzer>
     </fieldType>
 
     <!-- A general text field -->
-    <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100">
+    <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100" docValues="false">
       <analyzer type="index">
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt" />
@@ -106,7 +106,7 @@
     </fieldType>
 
     <!-- Just like text_general except it reverses the characters of each token, to enable more efficient leading wildcard queries. -->
-    <fieldType name="text_general_rev" class="solr.TextField" positionIncrementGap="100">
+    <fieldType name="text_general_rev" class="solr.TextField" positionIncrementGap="100" docValues="false">
       <analyzer type="index">
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt" />
@@ -122,7 +122,7 @@
     </fieldType>
 
     <!-- A text field with defaults appropriate for English -->
-    <fieldType name="text_en" class="solr.TextField" positionIncrementGap="100">
+    <fieldType name="text_en" class="solr.TextField" positionIncrementGap="100" docValues="false">
       <analyzer type="index">
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <!-- Case insensitive stop word removal. -->
@@ -147,7 +147,7 @@
     </fieldType>
 
     <!-- A text field with defaults appropriate for English, plus aggressive word-splitting and autophrase features enabled. -->
-    <fieldType name="text_en_splitting" class="solr.TextField" positionIncrementGap="100" autoGeneratePhraseQueries="true">
+    <fieldType name="text_en_splitting" class="solr.TextField" positionIncrementGap="100" autoGeneratePhraseQueries="true" docValues="false">
       <analyzer type="index">
         <tokenizer class="solr.WhitespaceTokenizerFactory"/>
         <!-- Case insensitive stop word removal. -->
@@ -170,7 +170,7 @@
     </fieldType>
 
     <!-- German -->
-    <fieldType name="text_de" class="solr.TextField" positionIncrementGap="100">
+    <fieldType name="text_de" class="solr.TextField" positionIncrementGap="100" docValues="false">
       <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
@@ -183,7 +183,7 @@
     </fieldType>
 
     <!-- Greek -->
-    <fieldType name="text_el" class="solr.TextField" positionIncrementGap="100">
+    <fieldType name="text_el" class="solr.TextField" positionIncrementGap="100" docValues="false">
       <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.GreekLowerCaseFilterFactory"/>
@@ -193,7 +193,7 @@
     </fieldType>
 
     <!-- Spanish -->
-    <fieldType name="text_es" class="solr.TextField" positionIncrementGap="100">
+    <fieldType name="text_es" class="solr.TextField" positionIncrementGap="100" docValues="false">
       <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
@@ -204,7 +204,7 @@
     </fieldType>
 
     <!-- Finnish -->
-    <fieldType name="text_fi" class="solr.TextField" positionIncrementGap="100">
+    <fieldType name="text_fi" class="solr.TextField" positionIncrementGap="100" docValues="false">
       <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
@@ -215,7 +215,7 @@
     </fieldType>
 
     <!-- French -->
-    <fieldType name="text_fr" class="solr.TextField" positionIncrementGap="100">
+    <fieldType name="text_fr" class="solr.TextField" positionIncrementGap="100" docValues="false">
       <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <!-- removes l', etc -->
@@ -229,7 +229,7 @@
     </fieldType>
 
     <!-- Hungarian -->
-    <fieldType name="text_hu" class="solr.TextField" positionIncrementGap="100">
+    <fieldType name="text_hu" class="solr.TextField" positionIncrementGap="100" docValues="false">
       <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
@@ -240,7 +240,7 @@
     </fieldType>
 
     <!-- Italian -->
-    <fieldType name="text_it" class="solr.TextField" positionIncrementGap="100">
+    <fieldType name="text_it" class="solr.TextField" positionIncrementGap="100" docValues="false">
       <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <!-- removes l', etc -->
@@ -253,7 +253,7 @@
 
 
     <!-- Spell-checking / Suggestion field, using maxShingleSize=2 -->
-    <fieldType name="spell" class="solr.TextField" positionIncrementGap="100">
+    <fieldType name="spell" class="solr.TextField" positionIncrementGap="100" docValues="false">
       <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
@@ -264,7 +264,7 @@
     </fieldType>
 
         <!-- en Spell-checking / Suggestion field, using maxShingleSize=2 -->
-    <fieldType name="spell_en" class="solr.TextField" positionIncrementGap="100">
+    <fieldType name="spell_en" class="solr.TextField" positionIncrementGap="100" docValues="false">
       <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
@@ -275,7 +275,7 @@
     </fieldType>
 
         <!-- de Spell-checking / Suggestion field, using maxShingleSize=2 -->
-    <fieldType name="spell_de" class="solr.TextField" positionIncrementGap="100">
+    <fieldType name="spell_de" class="solr.TextField" positionIncrementGap="100" docValues="false">
       <analyzer>
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
