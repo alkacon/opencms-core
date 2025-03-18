@@ -492,8 +492,7 @@ public class CmsLocationController {
             }
             m_popup.center();
             m_popup.show();
-            initialize();
-            updateForm();
+            initialize(() -> updateForm());
         } catch (Throwable t) {
             CmsErrorDialog.handleException(t);
         }
@@ -707,17 +706,22 @@ public class CmsLocationController {
 
     /**
      * Initializes the location picker.<p>
+     *
+     * @param callback the callback to execute after initialization
      */
-    private void initialize() {
+    private void initialize(Runnable callback) {
 
         if (isApiLoaded()) {
             initMap();
+            callback.run();
+
         } else {
             onApiReady(new Command() {
 
                 public void execute() {
 
                     initMap();
+                    callback.run();
                 }
             });
         }
