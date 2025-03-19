@@ -113,12 +113,6 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
         + CmsTemplateContextInfo.DUMMY_ELEMENT_MARKER
         + "' style='display: none !important;'></div>";
 
-    public static final String DUMMY_ELEMENT_START = "<div class='"
-        + CmsTemplateContextInfo.DUMMY_ELEMENT_MARKER
-        + "' style='display: none !important;'>";
-
-    public static final String DUMMY_ELEMENT_END = "</div>";
-
     /** The default tag name constant. */
     private static final String DEFAULT_TAG_NAME = "div";
 
@@ -924,70 +918,6 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
     }
 
     /**
-     * Generates the detail view element.<p>
-     *
-     * @param request the current request
-     * @param cms the CMS context
-     * @param detailContent the detail content resource
-     * @param container the container
-     *
-     * @return the detail view element
-     */
-    protected CmsContainerElementBean generateDetailViewElement(
-        ServletRequest request,
-        CmsObject cms,
-        CmsResource detailContent,
-        CmsContainerBean container) {
-
-        CmsContainerElementBean element = null;
-        if (detailContent != null) {
-            // get the right formatter
-
-            CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(
-                cms,
-                cms.getRequestContext().getRootUri());
-            CmsFormatterConfiguration formatters = config.getFormatters(cms, detailContent);
-            I_CmsFormatterBean formatter = formatters.getDetailFormatter(getType(), getContainerWidth());
-
-            if (formatter != null) {
-                // use structure id as the instance id to enable use of nested containers
-                Map<String, String> settings = new HashMap<String, String>();
-                for (CmsContainerElementBean el : container.getElements()) {
-                    try {
-                        el.initResource(cms);
-                        if (el.getResource().getTypeId() == detailContent.getTypeId()) {
-                            settings.putAll(el.getIndividualSettings());
-                            break;
-                        }
-                    } catch (CmsException e) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
-                }
-
-                String formatterKey = CmsFormatterConfig.getSettingsKeyForContainer(container.getName());
-                if (settings.containsKey(formatterKey)) {
-                    String formatterConfigId = settings.get(formatterKey);
-                    I_CmsFormatterBean dynamicFmt = config.findFormatter(formatterConfigId);
-                    if (dynamicFmt != null) {
-                        formatter = dynamicFmt;
-                    }
-                }
-                settings.put(formatterKey, formatter.getKeyOrId());
-                settings.put(CmsContainerElement.ELEMENT_INSTANCE_ID, new CmsUUID().toString());
-                // create element bean
-                element = new CmsContainerElementBean(
-                    detailContent.getStructureId(),
-                    formatter.getJspStructureId(),
-                    settings,
-                    false);
-                String pageRootPath = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri());
-                element = CmsTemplateMapper.get(request).transformDetailElement(cms, element, pageRootPath);
-            }
-        }
-        return element;
-    }
-
-    /**
      * Returns the serialized data of the given container.<p>
      *
      * @param cms the cms context
@@ -1173,6 +1103,265 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
     }
 
     /**
+     * Generates the detail view element.<p>
+     *
+     * @param request the current request
+     * @param cms the CMS context
+     * @param detailContent the detail content resource
+     * @param container the container
+     *
+     * @return the detail view element
+     */
+    private CmsContainerElementBean generateDetailViewElement(
+        ServletRequest request,
+        CmsObject cms,
+        CmsResource detailContent,
+        CmsContainerBean container) {
+
+        CmsContainerElementBean element = null;
+        if (detailContent != null) {
+            // get the right formatter
+
+            CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(
+                cms,
+                cms.getRequestContext().getRootUri());
+            CmsFormatterConfiguration formatters = config.getFormatters(cms, detailContent);
+            I_CmsFormatterBean formatter = formatters.getDetailFormatter(getType(), getContainerWidth());
+
+            if (formatter != null) {
+                // use structure id as the instance id to enable use of nested containers
+                Map<String, String> settings = new HashMap<String, String>();
+                for (CmsContainerElementBean el : container.getElements()) {
+                    try {
+                        el.initResource(cms);
+                        if (el.getResource().getTypeId() == detailContent.getTypeId()) {
+                            settings.putAll(el.getIndividualSettings());
+                            break;
+                        }
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+
+                String formatterKey = CmsFormatterConfig.getSettingsKeyForContainer(container.getName());
+                if (settings.containsKey(formatterKey)) {
+                    String formatterConfigId = settings.get(formatterKey);
+                    I_CmsFormatterBean dynamicFmt = config.findFormatter(formatterConfigId);
+                    if (dynamicFmt != null) {
+                        formatter = dynamicFmt;
+                    }
+                }
+                settings.put(formatterKey, formatter.getKeyOrId());
+                settings.put(CmsContainerElement.ELEMENT_INSTANCE_ID, new CmsUUID().toString());
+                // create element bean
+                element = new CmsContainerElementBean(
+                    detailContent.getStructureId(),
+                    formatter.getJspStructureId(),
+                    settings,
+                    false);
+                String pageRootPath = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri());
+                element = CmsTemplateMapper.get(request).transformDetailElement(cms, element, pageRootPath);
+            }
+        }
+        return element;
+    }
+
+    /**
+     * Gets the container width as a number.<p>
+     *
+     * If the container width is not set, or not a number, -1 will be returned.<p>
+     *
+     * @return the container width or -1
+     */
+    private int getContainerWidth() {
+
+        int containerWidth = -1;
+        try {
+            containerWidth = Integer.parseInt(m_width);
+        } catch (NumberFormatException e) {
+            // do nothing, set width to -1
+            LOG.debug("Error parsing container width.", e);
+        }
+        return containerWidth;
+    }
+
+    /**
+     * Returns the detail function element.<p>
+     *
+     * @param cms the cms context
+     * @param detailFunctionPage the detail function page
+     * @param req the current request
+     *
+     * @return the detail function element, if available
+     */
+    private CmsContainerElementBean getDetailFunctionElement(
+        CmsObject cms,
+        CmsResource detailFunctionPage,
+        ServletRequest req) {
+
+        try {
+            CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, detailFunctionPage, req);
+
+            CmsContainerPageBean page = xmlContainerPage.getContainerPage(cms);
+            CmsContainerBean container = page.getContainers().get(DETAIL_FUNCTION_CONTAINER_NAME);
+            if (container == null) {
+                for (Entry<String, CmsContainerBean> entry : page.getContainers().entrySet()) {
+                    if (entry.getKey().endsWith("-" + DETAIL_FUNCTION_CONTAINER_NAME)) {
+                        container = entry.getValue();
+                        break;
+                    }
+                }
+            }
+            if (container != null) {
+                return container.getElements().get(0);
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return null;
+    }
+
+    /**
+     * Returns the serialized element data.<p>
+     *
+     * @param cms the current cms context
+     * @param elementBean the element to serialize
+     * @param page the container page
+     *
+     * @return the serialized element data
+     *
+     * @throws Exception if something goes wrong
+     */
+    private String getElementInfo(CmsObject cms, CmsContainerElementBean elementBean, CmsContainerPageBean page)
+    throws Exception {
+
+        return CmsContainerpageService.getSerializedElementInfo(
+            cms,
+            (HttpServletRequest)pageContext.getRequest(),
+            (HttpServletResponse)pageContext.getResponse(),
+            elementBean,
+            page);
+    }
+
+    /**
+     * Parses the maximum element number from the current container and returns the resulting number.<p>
+     *
+     * @param requestUri the requested URI
+     *
+     * @return the maximum number of elements of the container
+     */
+    private int getMaxElements(String requestUri) {
+
+        String containerMaxElements = getMaxElements();
+
+        int maxElements = -1;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(containerMaxElements)) {
+            try {
+                maxElements = Integer.parseInt(containerMaxElements);
+            } catch (NumberFormatException e) {
+                throw new CmsIllegalStateException(
+                    Messages.get().container(
+                        Messages.LOG_WRONG_CONTAINER_MAXELEMENTS_3,
+                        new Object[] {requestUri, getName(), containerMaxElements}),
+                    e);
+            }
+        } else {
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_MAXELEMENTS_NOT_SET_2,
+                        new Object[] {getName(), requestUri}));
+            }
+        }
+        return maxElements;
+    }
+
+    /**
+     * Returns the ADE session cache for container elements in case of an editable request, otherwise <code>null</code>.<p>
+     *
+     * @param cms the cms context
+     *
+     * @return the session cache
+     */
+    private CmsADESessionCache getSessionCache(CmsObject cms) {
+
+        return m_editableRequest
+        ? CmsADESessionCache.getCache((HttpServletRequest)(pageContext.getRequest()), cms)
+        : null;
+    }
+
+    /**
+     * Evaluates if this container is nested within a model group.<p>
+     *
+     * @param standardContext the standard context
+     *
+     * @return <code>true</code> if the container has model group ancestors
+     */
+    private boolean hasModelGroupAncestor(CmsJspStandardContextBean standardContext) {
+
+        boolean result = false;
+        if (!standardContext.isModelGroupPage()) {
+            CmsContainerElementWrapper parent = standardContext.getElement();
+            while ((parent != null) && !result) {
+                result = parent.isModelGroup();
+                parent = parent.getParent();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Prints an element error tag to the response out.<p>
+     *
+     * @param elementSitePath the element site path
+     * @param formatterSitePath the formatter site path
+     * @param exception the exception causing the error
+     *
+     * @throws IOException if something goes wrong writing to response out
+     */
+    private void printElementErrorTag(String elementSitePath, String formatterSitePath, Exception exception)
+    throws IOException {
+
+        if (m_editableRequest) {
+            String stacktrace = CmsException.getStackTraceAsString(exception);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(stacktrace)) {
+                stacktrace = null;
+            } else {
+                // stacktrace = CmsStringUtil.escapeJavaScript(stacktrace);
+                stacktrace = CmsEncoder.escapeXml(stacktrace);
+            }
+            StringBuffer errorBox = new StringBuffer(256);
+            errorBox.append(
+                "<div style=\"display:block; padding: 5px; border: red solid 2px; color: black; background: white;\" class=\"");
+            errorBox.append(CmsContainerElement.CLASS_ELEMENT_ERROR);
+            errorBox.append("\">");
+            errorBox.append(
+                Messages.get().getBundle().key(
+                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                    elementSitePath,
+                    formatterSitePath));
+            errorBox.append("<br />");
+            errorBox.append(exception.getLocalizedMessage());
+            if (stacktrace != null) {
+                errorBox.append(
+                    "<span onclick=\"opencms.openStacktraceDialog(event);\" style=\"border: 1px solid black; cursor: pointer;\">");
+                errorBox.append(Messages.get().getBundle().key(Messages.GUI_LABEL_STACKTRACE_0));
+                String title = Messages.get().getBundle().key(
+                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                    elementSitePath,
+                    formatterSitePath);
+                errorBox.append("<span title=\"");
+                errorBox.append(CmsEncoder.escapeXml(title));
+                errorBox.append("\" class=\"hiddenStacktrace\" style=\"display:none;\">");
+                errorBox.append(stacktrace);
+                errorBox.append("</span></span>");
+            }
+            errorBox.append("</div>");
+            pageContext.getOut().print(errorBox.toString());
+        }
+    }
+
+    /**
      * Renders a container element.<p>
      *
      * @param request the current request
@@ -1186,7 +1375,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
      *
      * @throws Exception if something goes wrong
      */
-    protected boolean renderContainerElement(
+    private boolean renderContainerElement(
         HttpServletRequest request,
         CmsObject cms,
         CmsJspStandardContextBean standardContext,
@@ -1229,7 +1418,6 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
         if (!m_editableRequest && !showInContext) {
             return false;
         }
-        // !showInContext => m_editableRequest
         try {
             element.initResource(cms);
         } catch (CmsPermissionViolationException e) {
@@ -1441,10 +1629,9 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 try {
                     if (!showInContext) {
                         // write invisible dummy element
-                        pageContext.getOut().print(DUMMY_ELEMENT_START);
+                        pageContext.getOut().print(DUMMY_ELEMENT);
                         result = false;
-                    }
-                    try {
+                    } else {
                         // execute the formatter jsp for the given element uri
                         CmsJspTagInclude.includeTagAction(
                             pageContext,
@@ -1457,10 +1644,6 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                             CmsRequestUtil.getAtrributeMap(req),
                             req,
                             res);
-                    } finally {
-                        if (!showInContext) {
-                            pageContext.getOut().print(DUMMY_ELEMENT_END);
-                        }
                     }
                 } catch (Exception e) {
                     if (LOG.isErrorEnabled()) {
@@ -1485,201 +1668,6 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 printElementWrapperTagEnd(false);
             }
             return result;
-        }
-    }
-
-    /**
-     * Gets the container width as a number.<p>
-     *
-     * If the container width is not set, or not a number, -1 will be returned.<p>
-     *
-     * @return the container width or -1
-     */
-    private int getContainerWidth() {
-
-        int containerWidth = -1;
-        try {
-            containerWidth = Integer.parseInt(m_width);
-        } catch (NumberFormatException e) {
-            // do nothing, set width to -1
-            LOG.debug("Error parsing container width.", e);
-        }
-        return containerWidth;
-    }
-
-    /**
-     * Returns the detail function element.<p>
-     *
-     * @param cms the cms context
-     * @param detailFunctionPage the detail function page
-     * @param req the current request
-     *
-     * @return the detail function element, if available
-     */
-    private CmsContainerElementBean getDetailFunctionElement(
-        CmsObject cms,
-        CmsResource detailFunctionPage,
-        ServletRequest req) {
-
-        try {
-            CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, detailFunctionPage, req);
-
-            CmsContainerPageBean page = xmlContainerPage.getContainerPage(cms);
-            CmsContainerBean container = page.getContainers().get(DETAIL_FUNCTION_CONTAINER_NAME);
-            if (container == null) {
-                for (Entry<String, CmsContainerBean> entry : page.getContainers().entrySet()) {
-                    if (entry.getKey().endsWith("-" + DETAIL_FUNCTION_CONTAINER_NAME)) {
-                        container = entry.getValue();
-                        break;
-                    }
-                }
-            }
-            if (container != null) {
-                return container.getElements().get(0);
-            }
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-        return null;
-    }
-
-    /**
-     * Returns the serialized element data.<p>
-     *
-     * @param cms the current cms context
-     * @param elementBean the element to serialize
-     * @param page the container page
-     *
-     * @return the serialized element data
-     *
-     * @throws Exception if something goes wrong
-     */
-    private String getElementInfo(CmsObject cms, CmsContainerElementBean elementBean, CmsContainerPageBean page)
-    throws Exception {
-
-        return CmsContainerpageService.getSerializedElementInfo(
-            cms,
-            (HttpServletRequest)pageContext.getRequest(),
-            (HttpServletResponse)pageContext.getResponse(),
-            elementBean,
-            page);
-    }
-
-    /**
-     * Parses the maximum element number from the current container and returns the resulting number.<p>
-     *
-     * @param requestUri the requested URI
-     *
-     * @return the maximum number of elements of the container
-     */
-    private int getMaxElements(String requestUri) {
-
-        String containerMaxElements = getMaxElements();
-
-        int maxElements = -1;
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(containerMaxElements)) {
-            try {
-                maxElements = Integer.parseInt(containerMaxElements);
-            } catch (NumberFormatException e) {
-                throw new CmsIllegalStateException(
-                    Messages.get().container(
-                        Messages.LOG_WRONG_CONTAINER_MAXELEMENTS_3,
-                        new Object[] {requestUri, getName(), containerMaxElements}),
-                    e);
-            }
-        } else {
-            if (LOG.isWarnEnabled()) {
-                LOG.warn(
-                    Messages.get().getBundle().key(
-                        Messages.LOG_MAXELEMENTS_NOT_SET_2,
-                        new Object[] {getName(), requestUri}));
-            }
-        }
-        return maxElements;
-    }
-
-    /**
-     * Returns the ADE session cache for container elements in case of an editable request, otherwise <code>null</code>.<p>
-     *
-     * @param cms the cms context
-     *
-     * @return the session cache
-     */
-    private CmsADESessionCache getSessionCache(CmsObject cms) {
-
-        return m_editableRequest
-        ? CmsADESessionCache.getCache((HttpServletRequest)(pageContext.getRequest()), cms)
-        : null;
-    }
-
-    /**
-     * Evaluates if this container is nested within a model group.<p>
-     *
-     * @param standardContext the standard context
-     *
-     * @return <code>true</code> if the container has model group ancestors
-     */
-    private boolean hasModelGroupAncestor(CmsJspStandardContextBean standardContext) {
-
-        boolean result = false;
-        if (!standardContext.isModelGroupPage()) {
-            CmsContainerElementWrapper parent = standardContext.getElement();
-            while ((parent != null) && !result) {
-                result = parent.isModelGroup();
-                parent = parent.getParent();
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Prints an element error tag to the response out.<p>
-     *
-     * @param elementSitePath the element site path
-     * @param formatterSitePath the formatter site path
-     * @param exception the exception causing the error
-     *
-     * @throws IOException if something goes wrong writing to response out
-     */
-    private void printElementErrorTag(String elementSitePath, String formatterSitePath, Exception exception)
-    throws IOException {
-
-        if (m_editableRequest) {
-            String stacktrace = CmsException.getStackTraceAsString(exception);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(stacktrace)) {
-                stacktrace = null;
-            } else {
-                // stacktrace = CmsStringUtil.escapeJavaScript(stacktrace);
-                stacktrace = CmsEncoder.escapeXml(stacktrace);
-            }
-            StringBuffer errorBox = new StringBuffer(256);
-            errorBox.append(
-                "<div style=\"display:block; padding: 5px; border: red solid 2px; color: black; background: white;\" class=\"");
-            errorBox.append(CmsContainerElement.CLASS_ELEMENT_ERROR);
-            errorBox.append("\">");
-            errorBox.append(
-                Messages.get().getBundle().key(
-                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                    elementSitePath,
-                    formatterSitePath));
-            errorBox.append("<br />");
-            errorBox.append(exception.getLocalizedMessage());
-            if (stacktrace != null) {
-                errorBox.append(
-                    "<span onclick=\"opencms.openStacktraceDialog(event);\" style=\"border: 1px solid black; cursor: pointer;\">");
-                errorBox.append(Messages.get().getBundle().key(Messages.GUI_LABEL_STACKTRACE_0));
-                String title = Messages.get().getBundle().key(
-                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
-                    elementSitePath,
-                    formatterSitePath);
-                errorBox.append("<span title=\"");
-                errorBox.append(CmsEncoder.escapeXml(title));
-                errorBox.append("\" class=\"hiddenStacktrace\" style=\"display:none;\">");
-                errorBox.append(stacktrace);
-                errorBox.append("</span></span>");
-            }
-            errorBox.append("</div>");
-            pageContext.getOut().print(errorBox.toString());
         }
     }
 
