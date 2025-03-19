@@ -109,9 +109,20 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
     public static final String DETAIL_FUNCTION_CONTAINER_NAME = "FunctionDefault";
 
     /** HTML used for invisible dummy elements. */
-    public static final String DUMMY_ELEMENT = "<div class='"
-        + CmsTemplateContextInfo.DUMMY_ELEMENT_MARKER
-        + "' style='display: none !important;'></div>";
+    public static final String DUMMY_ELEMENT = String.format(
+        "<%s class='%s' style='display: none !important;'></%s>",
+        CmsGwtConstants.TAG_OC_HIDDEN_ELEMENT,
+        CmsTemplateContextInfo.DUMMY_ELEMENT_MARKER,
+        CmsGwtConstants.TAG_OC_HIDDEN_ELEMENT);
+
+    /** Closing tag for hidden elements. */
+    public static final String DUMMY_ELEMENT_END = "</" + CmsGwtConstants.TAG_OC_HIDDEN_ELEMENT + ">";
+
+    /** Opening tag for hidden elements. */
+    public static final String DUMMY_ELEMENT_START = String.format(
+        "<%s class='%s' style='display: none !important;'>",
+        CmsGwtConstants.TAG_OC_HIDDEN_ELEMENT,
+        CmsTemplateContextInfo.DUMMY_ELEMENT_MARKER);
 
     /** The default tag name constant. */
     private static final String DEFAULT_TAG_NAME = "div";
@@ -1570,13 +1581,8 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
             return true;
         } else {
             boolean result = true;
-            if (alreadyFull) {
+            if (alreadyFull && showInContext) {
                 result = false;
-                if (!showInContext) {
-                    printElementWrapperTagStart(cms, element, standardContext.getPage(), false);
-                    pageContext.getOut().print(DUMMY_ELEMENT);
-                    printElementWrapperTagEnd(false);
-                }
             } else {
                 String formatter = null;
                 try {
@@ -1629,9 +1635,10 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 try {
                     if (!showInContext) {
                         // write invisible dummy element
-                        pageContext.getOut().print(DUMMY_ELEMENT);
+                        pageContext.getOut().print(DUMMY_ELEMENT_START);
                         result = false;
-                    } else {
+                    }
+                    try {
                         // execute the formatter jsp for the given element uri
                         CmsJspTagInclude.includeTagAction(
                             pageContext,
@@ -1644,6 +1651,10 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                             CmsRequestUtil.getAtrributeMap(req),
                             req,
                             res);
+                    } finally {
+                        if (!showInContext) {
+                            pageContext.getOut().print(DUMMY_ELEMENT_END);
+                        }
                     }
                 } catch (Exception e) {
                     if (LOG.isErrorEnabled()) {
