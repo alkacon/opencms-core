@@ -71,7 +71,9 @@ public class CmsSearchControllerFacetsField implements I_CmsSearchControllerFace
     public void addQueryParts(CmsSolrQuery query, CmsObject cms) {
 
         if (!m_fieldFacets.isEmpty()) {
-            query.set("facet", "true");
+            if (null == query.getParams("facet")) {
+                query.set("facet", "true");
+            }
             final Iterator<I_CmsSearchControllerFacetField> it = m_fieldFacets.values().iterator();
             it.next().addQueryParts(query, cms);
             while (it.hasNext()) {

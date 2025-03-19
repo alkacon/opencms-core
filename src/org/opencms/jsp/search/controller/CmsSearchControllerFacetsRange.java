@@ -71,7 +71,9 @@ public class CmsSearchControllerFacetsRange implements I_CmsSearchControllerFace
     public void addQueryParts(CmsSolrQuery query, CmsObject cms) {
 
         if (!m_rangeFacets.isEmpty()) {
-            query.set("facet", "true");
+            if (null == query.getParams("facet")) {
+                query.set("facet", "true");
+            }
             final Iterator<I_CmsSearchControllerFacetRange> it = m_rangeFacets.values().iterator();
             it.next().addQueryParts(query, cms);
             while (it.hasNext()) {
