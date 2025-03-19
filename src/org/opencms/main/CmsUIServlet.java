@@ -140,6 +140,7 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
             } catch (Exception e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
+            response.setHeader(CmsRequestUtil.HEADER_CACHE_CONTROL, "no-store");
         }
     };
 
