@@ -59,6 +59,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_INVALID_OTHER_OPTION_1 = "ERR_INVALID_OTHER_OPTION_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_RANGE_METHOD_OPTION_1 = "ERR_INVALID_RANGE_METHOD_OPTION_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_OPTIONAL_BOOLEAN_MISSING_1 = "LOG_OPTIONAL_BOOLEAN_MISSING_1";
 
     /** Message constant for key in the resource bundle. */

@@ -162,6 +162,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     /** A JSON key. */
     public static final String JSON_KEY_RANGE_FACET_HARDEND = "hardend";
     /** A JSON key. */
+    public static final String JSON_KEY_RANGE_FACET_METHOD = "method";
+    /** A JSON key. */
     public static final String JSON_KEY_QUERY_FACET_QUERY = "queryitems";
     /** A JSON key. */
     public static final String JSON_KEY_QUERY_FACET_QUERY_QUERY = "query";
@@ -1049,6 +1051,15 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             String gap = rangeFacetObject.getString(JSON_KEY_RANGE_FACET_GAP);
             List<String> sother = parseOptionalStringValues(rangeFacetObject, JSON_KEY_RANGE_FACET_OTHER);
             Boolean hardEnd = parseOptionalBooleanValue(rangeFacetObject, JSON_KEY_RANGE_FACET_HARDEND);
+            I_CmsSearchConfigurationFacetRange.Method method = null;
+            String methodStr = parseOptionalStringValue(rangeFacetObject, JSON_KEY_RANGE_FACET_METHOD);
+            if (null != methodStr) {
+                try {
+                    method = I_CmsSearchConfigurationFacetRange.Method.valueOf(methodStr);
+                } catch (Exception e) {
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_INVALID_RANGE_METHOD_OPTION_1, methodStr), e);
+                }
+            }
             List<I_CmsSearchConfigurationFacetRange.Other> other = null;
             if (sother != null) {
                 other = new ArrayList<I_CmsSearchConfigurationFacetRange.Other>(sother.size());
@@ -1075,6 +1086,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 gap,
                 other,
                 hardEnd,
+                method,
                 name,
                 minCount,
                 label,

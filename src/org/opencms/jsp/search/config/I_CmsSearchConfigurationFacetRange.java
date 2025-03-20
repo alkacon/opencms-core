@@ -32,6 +32,10 @@ import java.util.Collection;
 /** The interface a field facet configuration must implement. */
 public interface I_CmsSearchConfigurationFacetRange extends I_CmsSearchConfigurationFacet {
 
+    enum Method {
+        dv, filter
+    }
+
     enum Other {
         before, after, between, none, all
     }
@@ -53,6 +57,12 @@ public interface I_CmsSearchConfigurationFacetRange extends I_CmsSearchConfigura
      * @return the value of facet.range.hardend for the facet.
      */
     boolean getHardEnd();
+
+    /**
+     * Returns the value of facet.range.method for the facet, or null if not configured explicitly.
+     * @return the value of facet.range.method for the facet, or null if not configured explicitly.
+     */
+    Method getMethod();
 
     /**
      * Returns the values of facet.range.other for the facet.

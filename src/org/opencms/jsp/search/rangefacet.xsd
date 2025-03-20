@@ -21,6 +21,7 @@
             <xsd:element name="Other" type="OpenCmsString" />
             <xsd:element name="HardEnd" type="OpenCmsBoolean" minOccurs="0" />
             <xsd:element name="MinCount" type="OpenCmsString" minOccurs="0" />
+            <xsd:element name="Method" type="OpenCmsBoolean" minOccurs="0" />
             <xsd:element name="IsAndFacet" type="OpenCmsBoolean" minOccurs="0" />
             <xsd:element name="PreSelection" type="OpenCmsString" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="IgnoreAllFacetFilters" type="OpenCmsBoolean" minOccurs="0" />
@@ -42,6 +43,7 @@
                 <searchsetting element="Other" searchcontent="false" />
                 <searchsetting element="HardEnd" searchcontent="false" />
                 <searchsetting element="MinCount" searchcontent="false" />
+                <searchsetting element="Method" searchcontent="false" />
                 <searchsetting element="IsAndFacet" searchcontent="false" />
                 <searchsetting element="PreSelection" searchcontent="false" />
                 <searchsetting element="IgnoreAllFacetFilters" searchcontent="false" />
@@ -77,6 +79,12 @@
                 </Setting>
                 <Setting>
                     <PropertyName>MinCount</PropertyName>
+                    <Display>singleline</Display>
+                </Setting>
+                <Setting>
+                    <PropertyName>Method</PropertyName>
+                    <Widget>select</Widget>
+                    <WidgetConfig>filter|dv</WidgetConfig>
                     <Display>singleline</Display>
                 </Setting>
                 <Setting>

@@ -147,6 +147,10 @@ public class CmsSearchControllerFacetRange implements I_CmsSearchControllerFacet
         appendFacetOption(query, "range.end", m_config.getEnd());
         // gap
         appendFacetOption(query, "range.gap", m_config.getGap());
+        // method
+        if (m_config.getMethod() != null) {
+            appendFacetOption(query, "range.method", m_config.getMethod().toString());
+        }
         // other
         for (I_CmsSearchConfigurationFacetRange.Other o : m_config.getOther()) {
             appendFacetOption(query, "range.other", o.toString());

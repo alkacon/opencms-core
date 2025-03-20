@@ -31,7 +31,7 @@
         { "field" : "Keywords" }
     ],
     "rangefacets" : [
-        { "range" : "lastmodified", "name" : "modification", "label" : "Date lastmodified", "start" : "NOW/MONTH-20MONTHS", "end" : "NOW/MONTH", "gap" : "+1MONTHS", "other" : ["before", "after", "between", "all", "none"], "hardend" : false, "mincount" : 1, "isAndFacet" : true, "preselection" : [ "2015-01-01T00:00:00Z", "2016-01-01T00:00:00Z"  ], "ignoreAllFacetFilters" : true, "excludeTags" : ["oneKey", "anotherKey"] },
+        { "range" : "lastmodified", "name" : "modification", "label" : "Date lastmodified", "start" : "NOW/MONTH-20MONTHS", "end" : "NOW/MONTH", "gap" : "+1MONTHS", "other" : ["before", "after", "between", "all", "none"], "hardend" : false, "mincount" : 1, "isAndFacet" : true, "preselection" : [ "2015-01-01T00:00:00Z", "2016-01-01T00:00:00Z"  ], "ignoreAllFacetFilters" : true, "excludeTags" : ["oneKey", "anotherKey"], "method" : "dv" },
         { "range" : "size", "start" : "0", "end" : "1000000", "gap" : "1000" }
     ],
     "queryfacet" : {

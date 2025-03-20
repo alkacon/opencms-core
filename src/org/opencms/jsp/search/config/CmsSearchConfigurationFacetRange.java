@@ -45,6 +45,8 @@ implements I_CmsSearchConfigurationFacetRange {
     private String m_end;
     /** The range size for one facet entry. */
     private String m_gap;
+    /** The method, the range facet is calculated. */
+    private Method m_method;
     /** Additional information collected by the facet. */
     private Collection<Other> m_other;
     /** The value to use for facet.range.hardend. */
@@ -57,6 +59,7 @@ implements I_CmsSearchConfigurationFacetRange {
      * @param gap The range of one facet entry
      * @param other The way how to group other values
      * @param hardEnd Flag, indicating if the last facet item range should end at <code>end</code> (use <code>true</code>) or extend to the full size of <code>gap</code> (use <code>false</code>).
+     * @param method The method to use for filtering, see the Solr documentation for suitable values.
      * @param name The name of the facet. If <code>null</code> it defaults to the name of the index field.
      * @param minCount The minimal number of hits that is necessary to add a term to the facet.
      * @param label The label that can be shown over the facet entries in your search form.
@@ -72,6 +75,7 @@ implements I_CmsSearchConfigurationFacetRange {
         final String gap,
         final Collection<Other> other,
         final Boolean hardEnd,
+        final Method method,
         final String name,
         final Integer minCount,
         final String label,
@@ -95,6 +99,7 @@ implements I_CmsSearchConfigurationFacetRange {
         m_gap = gap;
         m_other = null == other ? new ArrayList<Other>() : other;
         m_hardEnd = null == hardEnd ? false : hardEnd.booleanValue();
+        m_method = method;
     }
 
     /**
@@ -119,6 +124,14 @@ implements I_CmsSearchConfigurationFacetRange {
     public boolean getHardEnd() {
 
         return m_hardEnd;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetRange#getMethod()
+     */
+    public Method getMethod() {
+
+        return m_method;
     }
 
     /**

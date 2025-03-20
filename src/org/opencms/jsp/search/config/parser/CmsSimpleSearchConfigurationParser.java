@@ -347,8 +347,10 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         } else {
             Map<String, I_CmsSearchConfigurationFacetRange> rangeFacets = new HashMap<String, I_CmsSearchConfigurationFacetRange>();
             String indexField = FIELD_DATE;
+            I_CmsSearchConfigurationFacetRange.Method method = I_CmsSearchConfigurationFacetRange.Method.dv;
             if (Boolean.parseBoolean(m_config.getParameterValue(CmsConfigurationBean.PARAM_FILTER_MULTI_DAY))) {
                 indexField = FIELD_DATE_RANGE;
+                method = null;
             }
             I_CmsSearchConfigurationFacetRange rangeFacet = new CmsSearchConfigurationFacetRange(
                 String.format(indexField, getSearchLocale().toString()),
@@ -357,6 +359,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
                 "+1MONTHS",
                 null,
                 Boolean.FALSE,
+                method,
                 FIELD_DATE_FACET_NAME,
                 Integer.valueOf(1),
                 "Date",

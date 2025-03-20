@@ -214,6 +214,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     private static final String XML_ELEMENT_RANGE_FACET_OTHER = "Other";
     /** XML element name. */
     private static final String XML_ELEMENT_RANGE_FACET_HARDEND = "HardEnd";
+    /** XML element name. */
+    private static final String XML_ELEMENT_RANGE_FACET_METHOD = "Method";
 
     /** Default value. */
     private static final String DEFAULT_QUERY_PARAM = "q";
@@ -643,6 +645,15 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
                 }
             }
             final Boolean hardEnd = parseOptionalBooleanValue(pathPrefix + XML_ELEMENT_RANGE_FACET_HARDEND);
+            final String methodStr = parseOptionalStringValue(pathPrefix + XML_ELEMENT_RANGE_FACET_METHOD);
+            I_CmsSearchConfigurationFacetRange.Method method = null;
+            if (null != methodStr) {
+                try {
+                    method = I_CmsSearchConfigurationFacetRange.Method.valueOf(methodStr);
+                } catch (Exception e) {
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_INVALID_RANGE_METHOD_OPTION_1, methodStr), e);
+                }
+            }
             final Boolean isAndFacet = parseOptionalBooleanValue(pathPrefix + XML_ELEMENT_FACET_ISANDFACET);
             final List<String> preselection = parseOptionalStringValues(pathPrefix + XML_ELEMENT_FACET_PRESELECTION);
             final Boolean ignoreAllFacetFilters = parseOptionalBooleanValue(
@@ -655,6 +666,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
                 gap,
                 other,
                 hardEnd,
+                method,
                 name,
                 minCount,
                 label,
