@@ -1550,7 +1550,6 @@ public final class CmsContentEditor extends CmsEditorBase {
         if (!(m_hasWarnings || m_hasErrors)) {
             m_saveButton.disable(message);
             m_saveExitButton.disable(message);
-            m_publishButton.disable(message);
             m_isSaveDisabled = true;
         }
     }
