@@ -33,6 +33,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsRequestUtil;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +75,22 @@ public class CmsFlexController {
 
             m_target = target;
             m_permanent = permanent;
+
+        }
+
+        /**
+         * Executes the redirect on the given response with the stored information.
+         * 
+         * @param res the res to use for executing the redirect
+         */
+        public void executeRedirect(HttpServletResponse res) throws IOException {
+
+            if (isPermanent()) {
+                res.setHeader(CmsRequestUtil.HEADER_LOCATION, getTarget());
+                res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+            } else {
+                res.sendRedirect(getTarget());
+            }
 
         }
 

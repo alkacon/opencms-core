@@ -233,7 +233,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             return false;
         }
 
-        for (Throwable t: ExceptionUtils.getThrowableList(exception)) {
+        for (Throwable t : ExceptionUtils.getThrowableList(exception)) {
             if (t.getClass().getName().equals("org.apache.jasper.JasperException")) {
                 for (StackTraceElement elem : t.getStackTrace()) {
                     if (elem.getClassName().startsWith("org.apache.jasper.compiler.")) {
@@ -1038,6 +1038,23 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     // check if the current request was done by a workplace user
                     boolean isWorkplaceUser = CmsWorkplaceManager.isWorkplaceUser(f_req);
 
+                    if (controller.isTop() && (controller.getRedirectInfo() != null)) {
+                        if (!controller.getCmsObject().getRequestContext().getCurrentProject().isOnlineProject()) {
+                            RedirectInfo info = controller.getRedirectInfo();
+                            info.executeRedirect(res);
+                            return null;
+                        } else {
+                            if (LOG.isWarnEnabled()) {
+                                Exception e = new Exception();
+                                LOG.warn(
+                                    "Found redirect info in Flex controller in Online project, but response was not suspended (target = "
+                                        + controller.getRedirectInfo().getTarget()
+                                        + ")",
+                                    e);
+                            }
+                        }
+                    }
+
                     // check if the content was modified since the last request
                     if (controller.isTop()
                         && !isWorkplaceUser
@@ -1108,12 +1125,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             }
         } else if (controller.isTop() && (controller.getRedirectInfo() != null)) {
             RedirectInfo info = controller.getRedirectInfo();
-            if (info.isPermanent()) {
-                res.setHeader(CmsRequestUtil.HEADER_LOCATION, info.getTarget());
-                res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-            } else {
-                res.sendRedirect(info.getTarget());
-            }
+            info.executeRedirect(res);
         }
         return result;
     }
