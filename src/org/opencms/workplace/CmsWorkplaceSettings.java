@@ -292,12 +292,18 @@ public class CmsWorkplaceSettings {
     }
 
     /**
-     * Gets the last result sort order for the gallery dialog and a particular usage type.<p>
+     * Gets the last result sort order for the gallery dialog and a particular usage type.
+     *
+     * <p>If the key is null, the default order will be returned.
      *
      * @param key the usage type of galleries (see the RESULT_ORDER_* constants in CmsGalleryService)
      * @return the last sort order
      */
     public SortParams getLastGalleryResultOrder(String key) {
+
+        if (key == null) {
+            return SortParams.dateLastModified_desc;
+        }
 
         SortParams result = m_lastUsedGalleryResultOrder.getOrDefault(key, SortParams.dateLastModified_desc);
         return result;
@@ -643,11 +649,16 @@ public class CmsWorkplaceSettings {
     /**
      * Sets the last sort order used for the gallery results for a particular usage type.<p>
      *
+     * If the key is null, nothing will be saved.
+     *
      * @param key the usage type of galleries (see the RESULT_ORDER_* constants in CmsGalleryService)
      * @param order the last sort order
      */
     public void setLastGalleryResultOrder(String key, SortParams order) {
 
+        if (key == null) {
+            return;
+        }
         if (order != null) {
             m_lastUsedGalleryResultOrder.put(key, order);
         } else {

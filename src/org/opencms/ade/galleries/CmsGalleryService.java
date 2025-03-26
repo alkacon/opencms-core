@@ -379,12 +379,12 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 key = RESULT_ORDER_KEY_PAGE;
                 break;
             case adeView:
-            case editor:
-            case widget:
-                key = RESULT_ORDER_KEY_EDITOR;
+            case view:
+                key = RESULT_ORDER_KEY_OTHER;
                 break;
             default:
-                key = RESULT_ORDER_KEY_OTHER;
+                return null;
+
         }
         return key;
 
@@ -1899,7 +1899,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsVfsService.addLockInfo(cms, resultResource, bean);
         String extension = CmsResource.getExtension(resultResource.getRootPath());
         String suffix = extension != null ? "." + extension : "";
-
 
         String permalinkId = sResult.getStructureId().toString();
         String permalink = CmsStringUtil.joinPaths(
