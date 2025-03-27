@@ -1,5 +1,5 @@
 
-      Instructions for updating OpenCms 10.x, 11.x, 12.x 13.x and 14.x to @OPENCMS_VERSION@
+      Instructions for updating OpenCms 10.x or higher to @OPENCMS_VERSION@
 
 
                                     WARNING:
@@ -16,12 +16,12 @@ existing OpenCms installation when using this upgrade wizard.
 IMPORTANT: Before using this upgrade wizard, make sure you have a full backup
            of your OpenCms installation and database.
 
-IMPORTANT: Alkacon OCEE versions less than 15 will not work with OpenCms 15.
+IMPORTANT: Alkacon OCEE versions less than @OPENCMS_VERSION@ will not work with OpenCms @OPENCMS_VERSION@.
 
 IMPORTANT: The updater is only compatible with the database engines MySQL,
            Oracle and PostgreSQL.
 
-IMPORTANT: This version of OpenCms requires at least Java 8.
+IMPORTANT: This version of OpenCms requires at least Java 11.
 
 IMPORTANT: The upgrade wizard will replace all VFS resources of the updated modules.
            If you made modifications to these modules, their changes will be lost.
