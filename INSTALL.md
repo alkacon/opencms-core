@@ -12,7 +12,7 @@ This guide provides step by step information on how to install OpenCms using Tom
 
 ## Install Java
 
-OpenCms supports Java 8 and Java 11 LTS.
+OpenCms supports Java 11 and Java 17.
 
 Download and install Java, e.g., from one of the following repositories:
 
