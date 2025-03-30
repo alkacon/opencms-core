@@ -50,7 +50,7 @@ Start the database and make sure it is running properly.
 
 ## Download and deploy OpenCms
 
-Download the latest OpenCms distribution from [http://www.opencms.org/en/download/opencms.html](http://www.opencms.org/en/download/opencms.html).
+Download the latest OpenCms distribution from [https://www.opencms.org/en/download/](https://www.opencms.org/en/download/).
 Unpack the distribution ZIP file.
 Copy the opencms.war file from the distribution to `{CATALINA_HOME}/webapps/` (replace `{CATALINA_HOME}` with the path of your Tomcat installation).
 

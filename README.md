@@ -1,13 +1,13 @@
 <h1 align="center">OpenCms</h1>
 
 <p align="center">
-  <a href="http://opencms.org/" alt="OpenCms">
+  <a href="https://opencms.org/" alt="OpenCms">
     <img src="https://www.alkacon.com/export/shared/web/logos/opencms-logo.svg" alt="OpenCms logo" width="340" height="84">
   </a>
 </p>
 
 <p align="center">A powerful open source website content management system.</p>
-<p align="center"><a href="http://opencms.org/">OpenCms</a> is build in Java and XML from open source components. OpenCms provides compelling features especially suited for large Internet or Intranet websites.</p>
+<p align="center"><a href="https://opencms.org/">OpenCms</a> is build in Java and XML from open source components. OpenCms provides compelling features especially suited for large Internet or Intranet websites.</p>
 
 
 ## Table of contents
@@ -51,7 +51,7 @@ OpenCms features include:
 - JSP integration for dynamic functionality in templates, dynamic forms etc.
 - ... and much more
 
-See the [OpenCms website](http://opencms.org/) for further information.
+See the [OpenCms website](https://opencms.org/) for further information.
 
 ## Online live demo
 
@@ -69,7 +69,7 @@ The [OpenCms Documentation Central](https://documentation.opencms.org/) is the p
 
 Receive updates about the OpenCms development and get in touch with the core developers and community members.
 
-- Subscribe to the [OpenCms mailing list](http://www.opencms.org/en/development/mailinglist.html) for all questions, comments and suggestions regarding OpenCms.
+- Subscribe to the [OpenCms mailing list](https://www.opencms.org/en/community/mailinglist/) for all questions, comments and suggestions regarding OpenCms.
 - Follow [@OpenCms on Twitter](https://twitter.com/opencms/) or [OpenCms on Facebook](https://www.facebook.com/opencms/).
 
 

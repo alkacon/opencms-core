@@ -2,18 +2,69 @@
  * This file is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (https://www.alkacon.com)
  */
 
 History of changes for the OpenCms project.
 
 Changes are chronologically ordered from top (most recent) to bottom (least recent).
-For more information about the OpenCms project, see the OpenCms website at http://www.opencms.org.
+For more information about the OpenCms project, see the OpenCms website at https://www.opencms.org.
 
 Legend:
 ! New Feature
 - Minor improvement or general comment
 * Bug fixed
+
+OpenCms 19.0.0 - April 2, 2025
+
+! Show available languages as buttons in the form editor for quick switching
+! The "Compare locales" dialog in the sitemap now shows a context menu for both languages
+! XML content now supports mapping values to localized file properties
+! The upload dialog has been improved with image preview and filename checks
+! Quick access to recently used categories in the editor
+! Improved display of validation errors in the form editor
+! The "Website" and "Module" apps in the workplace "remember" the selected filter
+
+- Page editor: Default element settings are no longer written to the container page
+- Page editor: Allow access to the "Optimize gallery" dialog without workplace access
+- Page editor: "Delete unused element" is now supported on detail only pages
+- Page / Form editor: Image galleries now use retina thumbnais and optimized CSS
+- Form editor: Always use "date descending" sort order when opening the gallery view
+- Sitemap editor: The folder path is now displayed in the in "Properties" editor
+- Sitemap editor: Creation of nested galleries has been disabled
+- Optimize gallery: Added note in case there are no "unused" images
+- Optimize gallery: Show count of images without copyright or description set
+- Workplace: Experimental option to display categories in an explorer column
+- Workplace: Improved saving of user's explorer column selection
+- Workplace: OpenCms "About" dialog now shows a "Build date" for a custom local build
+- JSP API: Added EL functions to check if a resource has certain categories
+- JSP API: Added EL functions for WCAG color test / calculation
+- JSP API: Added EL function CmsJspResourceWrapper#getToLink
+- JSP API: Added option to manipulate element settings before passing them to the formatter
+- JSP API: Added method to get the id of the current page, accounting for detail only and new pages
+- JSP API: Extended I_CmsInfoWrapper implementations to support description.addon
+- Core API: Optionally pass ids not in the table to the tables update method
+- Core API: Extended detail page configuration with optional folder field
+- Core API: Copy groups now all to set the "Copy this element" option
+- Core API: Deleted detail-only content is now automatically published together with the detail content
+- Detail page hander: Return 404 instead of 401 response for unavailable resources
+- Updated SOLR and several other dependencies to the latest version
+
+* Security: Fixed 2 "Cross Site Scripting in OpenCms" issues reported by INCIBE (INC-2025-0031)
+* Fixed some issues in the place element mode introduced in OpenCms 18
+* Fixed issue with workplace explorer context menus not functional after title change operations in explorer list
+* Fixed issue where clicking the icon in the "Links to element" dialog not using the same action as "Open page"
+* Fixed issue in content editor where validation errors for VFS links could be displayed in the wrong locale
+* Fixed issue with CSS for SVG in "Optimize gallery" dialog that caused distorted SGV display
+* Fixed issue with CSS for internal "diff" showing too much space between lines
+* Fixed issue with NPE in CmsJspContentAccessValueWrapper that could occur during scripted setup
+* Fixed issue where an unnecessary password change email was send to a "web user"
+* Fixed issue with removing broken links to restricted areas
+* Fixed issue in Chrome where using the browser "Back" button may cause the workplace to freeze or become nonfunctional
+* Fixed issue #808 with redirects not working in the offline project when triggered by container elements (https://github.com/alkacon/opencms-core/issues/808)
+* Fixed issue #809 with device-specific contents being lost when modifying a container page GitHub (https://github.com/alkacon/opencms-core/issues/809)
+* Fixed issue #810 with location picker widget not being correctly initialized when used in an optional content field GitHub (https://github.com/alkacon/opencms-core/issues/810)
+
 
 OpenCms 18.0.0 - October 8, 2024
 
