@@ -1,6 +1,16 @@
 # Installing OpenCms
 
-This guide provides step by step information on how to install OpenCms using Tomcat and MariaDB/MySQL.
+## Live demo server
+
+If you just want to try OpenCms without doing a local installation, the easiest option is to use the [OpenCms Live Demo server](https://demo.opencms.org/). The live demo provides a personal OpenCms installation exclusively for you.
+
+## Docker based Installation
+
+**The easiest way to install OpenCms is to use the official docker image.** See [alkacon/opencms-docker](https://hub.docker.com/r/alkacon/opencms-docker/) on Docker Hub for full information about running the OpenCms docker image.
+
+## Manual Installation
+
+The following guide provides step by step information on how to install OpenCms "from scratch" manually on your local PC or on your server using Tomcat and MariaDB/MySQL.
 
 - [Install Java](#install-java)
 - [Install Tomcat](#install-tomcat)
@@ -10,7 +20,9 @@ This guide provides step by step information on how to install OpenCms using Tom
 - [Login to the OpenCms workplace](#login-to-the-opencms-workplace)
 - [Security settings](#security-settings)
 
-## Install Java
+There is [additional documentation](https://documentation.opencms.org/opencms-documentation/server-administration/) available on deploying OpenCms in a production environment.
+
+### Install Java
 
 OpenCms supports Java 11 and Java 17.
 
@@ -22,7 +34,7 @@ Download and install Java, e.g., from one of the following repositories:
 You must install a Java JDK (Java Development Kit), not a JRE (Java Runtime Environment).
 Make sure that the `JAVA_HOME` environment variable points to your installed Java SDK and Java is working properly.
 
-## Install Tomcat
+### Install Tomcat
 
 OpenCms supports Tomcat 9.x and 8.x.
 
@@ -35,7 +47,7 @@ If you run a purely headless Linux system, image processing will not work and To
 
 Start Tomcat and make sure it is running properly.
 
-## Install MariaDB/MySQL
+### Install MariaDB/MySQL
 
 OpenCms supports MariaDB/MySQL 5.5 and later.
 
@@ -44,11 +56,11 @@ Download and install MariaDB from [https://mariadb.org/download/](https://mariad
 Before running OpenCms you **must** update the datbase setting `max_allowed_packet` to `max_allowed_packet=32M` (or more).
 You find this setting in the database configuration file, usually `my.cnf` on Unix systems or `my.ini` on Windows.
 This is required since OpenCms stores binary files such as images or PDF documents in the database.
-More information about database settings is available [here](https://documentation.opencms.org/opencms-documentation/server-installation/).
+More information about database settings is available [here](https://documentation.opencms.org/opencms-documentation/server-administration/database-settings/).
 
 Start the database and make sure it is running properly.
 
-## Download and deploy OpenCms
+### Download and deploy OpenCms
 
 Download the latest OpenCms distribution from [https://www.opencms.org/en/download/](https://www.opencms.org/en/download/).
 Unpack the distribution ZIP file.
@@ -62,7 +74,7 @@ Make sure Tomcat does unpack the war file and creates the `{CATALINA_HOME}/webap
 The default configuration for your Servlet container may be to not unpack the deployed `*.war` file.
 If this is the case, you must unpack the `opencms.war` file manually.
 
-## Follow the setup wizard
+### Follow the setup wizard
 
 Start the setup wizard by pointing your browser to `http://localhost:8080/opencms/setup/`.
 Follow the instructions of the OpenCms setup wizard.
@@ -70,7 +82,7 @@ For normal installations with MariaDB/MySQL and Tomcat running on the same serve
 
 A detailed explanation of the various setup wizard options is available in the [getting started guide](https://documentation.opencms.org/opencms-documentation/introduction/getting-started/).
 
-## Login to the OpenCms workplace
+### Login to the OpenCms workplace
 
 Your OpenCms installation is now ready to use.
 
@@ -80,7 +92,7 @@ You can login with username `Admin` and password `admin`.
 Make sure you disable all pop-up blockers and enable Javascript for your OpenCms server URL.
 Otherwise you may not be able to log in.
 
-## Security settings
+### Security settings
 
 After your OpenCms is running you definitely should change the default passwords!
 
@@ -89,5 +101,3 @@ Then click on the user icon on the top right, and select *Change password* in th
 
 You should also add a password for the OpenCms database connection.
 Please consult the documentation of your database for information about how to do so.
-
-There is [additional documentation](https://documentation.opencms.org/opencms-documentation/server-installation/) available on deploying OpenCms in a production environment.

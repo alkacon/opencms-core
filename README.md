@@ -75,9 +75,9 @@ Receive updates about the OpenCms development and get in touch with the core dev
 
 ## Compatibility
 
-OpenCms 18 is compatible with Java 21, 17, and 11.
+OpenCms is compatible with Java 21, 17, and 11.
 
-OpenCms 18 requires a Java Servlet 4.0 compatible web container. We have tested this release using Jetty and Tomcat. It works "out of the box" with Jetty 12 or Tomcat 9. Others have reported deploying OpenCms successfully on other web servlet containers like WildFly, GlassFish, WebLogic, WebSphere and Resin.
+OpenCms requires a Java Servlet 4.0 compatible web container. We have tested this release using Jetty and Tomcat. It works "out of the box" with Jetty 12 or Tomcat 9. Others have reported deploying OpenCms successfully on other web servlet containers like WildFly, GlassFish, WebLogic, WebSphere and Resin.
 
 On the database side, we provide support for MySQL, MariaDB, Oracle, PostgreSQL, MS SQL Server, DB2 and HSQLDB.
 
