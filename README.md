@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">A powerful open source website content management system.</p>
-<p align="center"><a href="https://opencms.org/">OpenCms</a> is build in Java and XML from open source components. OpenCms provides compelling features especially suited for large Internet or Intranet websites.</p>
+<p align="center"><a href="https://opencms.org/">OpenCms</a> is built in Java and XML from open source components. OpenCms provides compelling features especially suited for large Internet or Intranet websites.</p>
 
 
 ## Table of contents
@@ -55,7 +55,7 @@ See the [OpenCms website](https://opencms.org/) for further information.
 
 ## Online live demo
 
-If you want to try OpenCms, the easiest option is to use our [OpenCms Live Demo server](https://demo.opencms.org).
+If you want to try out OpenCms, the easiest option is to use our [OpenCms Live Demo server](https://demo.opencms.org).
 
 The live demo provides a personal OpenCms installation exclusively for you. All you need to do is register with a valid email address. We will not use the data you provide for anything else than setting up your personal demo installation!
 
@@ -95,7 +95,7 @@ You can install OpenCms "from scratch" manually on your server as well. See [the
 
 ## Bugs and feature requests
 
-Please report issues and file feature requests on using our [GitHub OpenCms issue tracker](https://github.com/alkacon/opencms-core/issues).
+Please report issues and submit feature requests using our [GitHub OpenCms issue tracker](https://github.com/alkacon/opencms-core/issues).
 
 
 ## Contributing
@@ -116,4 +116,3 @@ OpenCms is developed by [Alkacon Software](https://www.alkacon.com) with the hel
 ## Copyright and license
 
 OpenCms is copyright by [Alkacon Software GmbH & Co. KG](https://www.alkacon.com). The OpenCms source code is released under the [GNU LGPL](https://github.com/alkacon/opencms-core/blob/master/LICENSE).
-
