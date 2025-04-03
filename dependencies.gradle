@@ -291,6 +291,7 @@ configurations.all {
 	exclude group: 'org.apache.lucene', module: 'lucene-analysis-smartcn'
 	exclude group: 'org.apache.lucene', module: 'lucene-analysis-opennlp'
 	exclude group: 'org.apache.opennlp', module: 'opennlp-tools'
+	exclude group: 'org.eclipse.jetty.toolchain', module: 'jetty-servlet-api'
 	exclude group: 'io.netty'
 }
 
