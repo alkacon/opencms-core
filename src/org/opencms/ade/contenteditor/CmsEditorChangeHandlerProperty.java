@@ -71,7 +71,7 @@ public class CmsEditorChangeHandlerProperty extends A_CmsXmlContentEditorChangeH
                     String val = value.getStringValue(cms);
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(val)) {
                         try {
-                            CmsProperty prop = cms.readPropertyObject(val, m_propertyName, false);
+                            CmsProperty prop = cms.readPropertyObject(val, m_propertyName, false, locale);
 
                             if (!prop.isNullProperty()) {
                                 String target = resolveRelativePath(path, m_targetField);
