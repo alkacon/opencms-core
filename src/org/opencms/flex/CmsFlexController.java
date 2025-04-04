@@ -80,7 +80,7 @@ public class CmsFlexController {
 
         /**
          * Executes the redirect on the given response with the stored information.
-         * 
+         *
          * @param res the res to use for executing the redirect
          */
         public void executeRedirect(HttpServletResponse res) throws IOException {
@@ -124,6 +124,9 @@ public class CmsFlexController {
 
     /** Set of uncacheable attributes. */
     private static Set<String> uncacheableAttributes = new HashSet<String>();
+
+    /** Fake HTTP header used to store information about the content type in a CmsFlexResponse. Should never be actually sent to the client. */
+    public static final String HEADER_OPENCMS_CONTENT_TYPE = "X-OpenCms-Content-Type";
 
     /** The CmsFlexCache where the result will be cached in, required for the dispatcher. */
     private CmsFlexCache m_cache;
@@ -712,6 +715,18 @@ public class CmsFlexController {
         attributeMap.remove(CmsFlexController.ATTRIBUTE_NAME);
         attributeMap.remove(CmsDetailPageResourceHandler.ATTR_DETAIL_CONTENT_RESOURCE);
         attributeMap.remove(CmsDetailPageResourceHandler.ATTR_DETAIL_FUNCTION_PAGE);
+    }
+
+    /**
+     * Special method for setting the content type from a JSP in a way that is compatible with both Tomcat and Jetty and also works with the Flex Cache.
+     *
+     * <p>This is implemented as setting a fake HTTP header which is then translated back to a call to setContentType() in CmsJspLoader.dispatchJsp().
+     *
+     * @param contentType the content type to set
+     */
+    public void setContentType(String contentType) {
+
+        getCurrentResponse().setHeader(HEADER_OPENCMS_CONTENT_TYPE, contentType);
     }
 
     /**

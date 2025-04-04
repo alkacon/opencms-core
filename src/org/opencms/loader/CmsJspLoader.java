@@ -1111,7 +1111,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                             res.setStatus(errorCode.intValue());
                         }
                         // process the headers
-                        CmsFlexResponse.processHeaders(f_res.getHeaders(), res);
+                        CmsFlexResponse.processHeaders(f_res.getHeaders(), res, true);
                         res.getOutputStream().write(result);
                         res.getOutputStream().flush();
                     }

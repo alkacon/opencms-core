@@ -328,6 +328,18 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      */
     public static void processHeaders(Map<String, List<String>> headers, HttpServletResponse res) {
 
+        processHeaders(headers, res, false);
+    }
+
+    /**
+     * Process the headers stored in the provided map and add them to the response.<p>
+     *
+     * @param headers the headers to add
+     * @param res the response to add the headers to
+     * @param top true if we are at the top of the JSP processing stack
+     */
+    public static void processHeaders(Map<String, List<String>> headers, HttpServletResponse res, boolean top) {
+
         if (headers != null) {
             Iterator<Map.Entry<String, List<String>>> i = headers.entrySet().iterator();
             while (i.hasNext()) {
@@ -337,7 +349,15 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                 for (int j = 0; j < l.size(); j++) {
                     if ((j == 0) && ((l.get(0)).startsWith(SET_HEADER))) {
                         String s = l.get(0);
-                        res.setHeader(key, s.substring(SET_HEADER.length()));
+                        String val = s.substring(SET_HEADER.length());
+                        // We look for a fake content type header and replace it with a call to setContentType, but only if we are at the top level of JSP processing.
+                        // Otherwise we just call setHeader. In the case where the header name is equal to the fake content type header but we are not at the top level,
+                        // the fake header is just propagated through the flex responses.
+                        if (top && CmsFlexController.HEADER_OPENCMS_CONTENT_TYPE.equals(key)) {
+                            res.setContentType(val);
+                        } else {
+                            res.setHeader(key, val);
+                        }
                     } else {
                         res.addHeader(key, l.get(j));
                     }
