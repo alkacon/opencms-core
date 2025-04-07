@@ -668,11 +668,18 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         try {
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_DELETE_PUBLISHED_LINKS");
-            stmt.setString(1, resourceName);
-            stmt.setInt(2, linkType);
-            stmt.setString(3, linkParameter);
-            stmt.executeUpdate();
+            if (linkParameter == null) {
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_DELETE_RFSPATH_PUBLISHED_LINKS");
+                stmt.setString(1, resourceName);
+                stmt.setInt(2, linkType);
+                stmt.executeUpdate();
+            } else {
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_DELETE_PUBLISHED_LINKS");
+                stmt.setString(1, resourceName);
+                stmt.setInt(2, linkType);
+                stmt.setString(3, linkParameter);
+                stmt.executeUpdate();
+            }
         } catch (SQLException e) {
             throw new CmsDbSqlException(
                 Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),

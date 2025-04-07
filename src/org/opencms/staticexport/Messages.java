@@ -233,6 +233,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_PURGED_DETAILPAGES_0 = "LOG_PURGED_DETAILPAGES_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_PURGED_RFSFILE_1 = "LOG_PURGED_RFSFILE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_READING_CHANGED_RESOURCES_FAILED_1 = "LOG_READING_CHANGED_RESOURCES_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
