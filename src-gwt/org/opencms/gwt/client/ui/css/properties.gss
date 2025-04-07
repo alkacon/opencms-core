@@ -1,3 +1,5 @@
+@external isRenderingFields, propertyTab;
+
 .vfsModeSimplePropertiesBox, .navModePropertiesBox {
 	border: solid 1px value("constants.css.borderColor");
 	background: value("constants.css.backgroundColorDialog");
@@ -28,4 +30,12 @@
 
 .propertyPanel {
 	
+}
+
+.isRenderingFields .propertyTab {
+	visibility: hidden;
+}
+
+.propertyTab {
+	width: 100%;
 }

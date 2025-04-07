@@ -53,6 +53,11 @@ public abstract class A_CmsFormFieldPanel extends Composite {
     /** The info widget. */
     protected CmsListItemWidget m_infoWidget;
 
+    protected A_CmsFormFieldPanel() {
+
+        
+    }
+
     /**
      * Returns the default group name.<p>
      *

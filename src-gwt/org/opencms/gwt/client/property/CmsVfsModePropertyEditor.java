@@ -83,7 +83,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
 
     /** The interval used for updating the height. */
-    public static final int UPDATE_HEIGHT_INTERVAL = 200;
+    public static final int UPDATE_HEIGHT_INTERVAL = 70;
 
     /** True when resizing of the dialog is disabled. */
     protected static boolean m_resizeDisabled;
@@ -324,20 +324,27 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
         int tabIndex = m_panel.getTabPanel().getSelectedIndex();
         boolean changedTab = tabIndex != m_oldTabIndex;
         m_oldTabIndex = tabIndex;
-        CmsScrollPanel tabWidget = m_panel.getTabPanel().getWidget(tabIndex);
+        CmsScrollPanel tabWidget = m_panel.getTabPanel().getWidget(tabIndex).getScrollPanel();
         Element innerElement = tabWidget.getWidget().getElement();
         int contentHeight = CmsDomUtil.getCurrentStyleInt(innerElement, Style.height);
         int spaceLeft = dialog.getAvailableHeight(0);
-        int newHeight = Math.min(spaceLeft, contentHeight + 47);
-        boolean changedHeight = m_panel.getTabPanel().getOffsetHeight() != newHeight;
+        int extraSpaceOutsideOfTab = 50;
+        int extraSpaceInTabOutsideOfScrollPanel = 38;
+        // The second and later tabs start out with a collapsed fieldset at the bottom, which takes more vertical space which is not included in the offsetHeight of the scroll panel content.
+        // So to not make things look weird, we use different sizing of the scroll panel for the first tab than for the others.
+        int extraSpaceInScrollPanel = tabIndex == 0 ? 4 : 10;
+        int newTabPanelHeight = Math.min(
+            spaceLeft,
+            contentHeight + extraSpaceOutsideOfTab + extraSpaceInTabOutsideOfScrollPanel + extraSpaceInScrollPanel);
+        int newTabHeight = newTabPanelHeight - extraSpaceOutsideOfTab;
+        int newScrollPanelHeight = newTabHeight - extraSpaceInTabOutsideOfScrollPanel;
+        boolean changedHeight = m_panel.getTabPanel().getOffsetHeight() != newTabPanelHeight;
         if (changedHeight || changedTab) {
-            m_panel.getTabPanel().setHeight(newHeight + "px");
+            m_panel.getTabPanel().setHeight(newTabPanelHeight + "px");
             int selectedIndex = m_panel.getTabPanel().getSelectedIndex();
-            CmsScrollPanel widget = m_panel.getTabPanel().getWidget(selectedIndex);
-
-            widget.setHeight((newHeight - 34) + "px");
+            CmsScrollPanel widget = m_panel.getTabPanel().getWidget(selectedIndex).getScrollPanel();
+            widget.setHeight(newScrollPanelHeight + "px");
             widget.onResizeDescendant();
-            //dialog.center();
         }
     }
 
