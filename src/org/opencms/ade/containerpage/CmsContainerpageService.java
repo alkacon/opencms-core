@@ -1647,9 +1647,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         boolean isSystemResource = elementResource.getRootPath().startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/");
         CmsRelationFilter relationFilter = CmsRelationFilter.relationsToStructureId(structureId);
         List<CmsRelation> relationsToElement = cms.readRelations(relationFilter);
-        for (CmsRelation relation : relationsToElement) {
-            System.out.println("FROM: " + relation.getSourcePath() + " TYPE: " + relation.getType().getName());
-        }
         Iterator<CmsRelation> iter = relationsToElement.iterator();
 
         // ignore XML_STRONG (i.e. container element) relations from the container page, this must be checked on the client side.
