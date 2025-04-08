@@ -102,16 +102,16 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
     /** The name of the VFS property that controls the caching. */
     public static final String PROPERTY_CACHE = "cache";
 
+    /**
+     * Property for configuring background color for a category in the explorer's category column.
+     **/
+    public static final String PROPERTY_CATEGORY_BACKGROUND = "category.background";
+
     /** Property used to hide categories from the category widgets in the page/content editor.
      *
      * <p>If this property is set to 'true' on a category, it should never be set to 'false' on one of its subcategory.
      * */
     public static final String PROPERTY_CATEGORY_HIDDEN = "category.hidden";
-
-    /**
-     * Property for configuring background color for a category in the explorer's category column.
-     **/
-    public static final String PROPERTY_CATEGORY_BACKGROUND = "category.background";
 
     /** The property to read an additional category folder from.  */
     public static final String PROPERTY_CATEGORY_REPOSITORY = "category.repository";
@@ -124,6 +124,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
 
     /** Property for the content encoding. */
     public static final String PROPERTY_CONTENT_ENCODING = "content-encoding";
+
+    /** If configured on a folder, when copying contents in the folder or any of its subfolders through ADE, the copies will be placed in the same folder as the original, and given a file name according to the name pattern. */
+    public static final String PROPERTY_CONTENT_NAME_PATTERN = "content.namepattern";
 
     /** Property for the content encoding. */
     public static final String PROPERTY_COPYRIGHT = "Copyright";
