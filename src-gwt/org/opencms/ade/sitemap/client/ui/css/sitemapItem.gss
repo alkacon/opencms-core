@@ -51,9 +51,27 @@ div.expiredOrNotReleased{
 	background-color: value("constants.css.backgroundColorSitemapExpired");
 }
 
-div.hiddenNavEntry{
+div.liw-itemContent.hiddenNavEntry {
+	background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.4) 48%, rgba(240, 240, 242, 0.4) 52%, rgba(240, 240, 242, 0.4) 100%);
+}
+
+div.hiddenNavEntry .liw-itemIcon {
 	opacity: 0.4;
 }
+
+div.hiddenNavEntry .liw-titleRow {
+	color: rgba(71,71,71,0.4);
+}
+
+div.hiddenNavEntry .liw-titleRow .buttons-cmsFontIconButton {
+	color: rgba(153,153,153,0.4) !important;
+}
+
+
+
+
+
+ 
 
 div.itemTitle{
 	cursor: text;
