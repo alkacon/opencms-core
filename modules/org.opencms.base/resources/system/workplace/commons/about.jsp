@@ -28,7 +28,7 @@
 <body>
     <div class="center">
         <h1>This is OpenCms <%= OpenCms.getSystemInfo().getVersionNumber() %></h1>
-        <p><a href="http://alkacon.com" target="_blank" rel="noopener">&copy; Alkacon Software GmbH &amp; Co. KG - All rights reserved</a></p>
+        <p><a href="https://alkacon.com" target="_blank" rel="noopener">&copy; Alkacon Software GmbH &amp; Co. KG - All rights reserved</a></p>
         <h2>Version and Build Information</h2>
     </div>
 	<% CmsObject cms = new CmsJspActionElement(pageContext, request, response).getCmsObject(); %>
@@ -70,7 +70,7 @@
             Alkacon OpenCms and the OpenCms logo are registered trademarks of Alkacon Software GmbH &amp; Co. KG.
         </p>
         <p>
-            Visit the OpenCms Website at <a href="http://opencms.org" target="_blank" rel="noopener">http://opencms.org</a>.
+            Visit the OpenCms Website at <a href="https://opencms.org" target="_blank" rel="noopener">https://opencms.org</a>.
         </p>
         <p>
             <a href="mailto:?subject=<%= mailSubject %>&body=<%= mailBody %>">Copy this version information to an email.</a>

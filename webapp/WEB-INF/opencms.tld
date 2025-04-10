@@ -9,8 +9,8 @@
         <h1>The OpenCms / JSP integration tag library</h1>
         <p>Used by OpenCms, the Open Source Content Management System.</p>
         <p>(c) Alkacon Software GmbH &amp; Co. KG</br>
-        For more details about OpenCms, please see http://www.opencms.org/.</br>
-        For more details about Alkacon Software GmbH, please see http://www.alkacon.com/.</p>
+        For more details about OpenCms, please see https://www.opencms.org/.</br>
+        For more details about Alkacon Software GmbH, please see https://www.alkacon.com/.</p>
     ]]></description>
     <display-name>OpenCms JSP standard taglib</display-name>
     <tlib-version>1.1</tlib-version>

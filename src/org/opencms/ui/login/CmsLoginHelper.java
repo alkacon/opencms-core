@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (https://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,10 +15,10 @@
  * Lesser General Public License for more details.
  *
  * For further information about Alkacon Software GmbH & Co. KG, please see the
- * company website: http://www.alkacon.com
+ * company website: https://www.alkacon.com
  *
  * For further information about OpenCms, please see the
- * project website: http://www.opencms.org
+ * project website: https://www.opencms.org
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
@@ -303,7 +303,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
         StringBuffer html = new StringBuffer();
         html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");
-        html.append("<a href=\"http://www.opencms.org\" target=\"_blank\">OpenCms</a> ");
+        html.append("<a href=\"https://www.opencms.org\" target=\"_blank\">OpenCms</a> ");
         html.append(Messages.get().getBundle(locale).key(Messages.GUI_LOGIN_OPENCMS_IS_FREE_SOFTWARE_0));
         html.append("</div>\n");
         html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");

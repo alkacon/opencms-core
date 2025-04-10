@@ -354,8 +354,8 @@ tinymce.create('tinymce.opencms', {
       return {
          longname : 'OpenCms TinyMCE plugin',
          author : 'Alkacon Software GmbH & Co. KG',
-         authorurl : 'http://www.opencms.org',
-         infourl : 'http://wwww.opencms.org',
+         authorurl : 'https://www.opencms.org',
+         infourl : 'https://wwww.opencms.org',
          version : '1.0'
       };
    }

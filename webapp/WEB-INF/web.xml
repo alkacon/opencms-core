@@ -10,8 +10,8 @@
     <description><![CDATA[
         OpenCms, the Open Source Content Management System.
         (c) Alkacon Software GmbH & Co. KG.
-        For more details about OpenCms, please see http://www.opencms.org/.
-        For more details about Alkacon Software GmbH & Co. KG, please see http://www.alkacon.com/.
+        For more details about OpenCms, please see https://www.opencms.org/.
+        For more details about Alkacon Software GmbH & Co. KG, please see https://www.alkacon.com/.
     ]]></description>
 
     <!-- Because auto-initialization is disabled with the isLog4jAutoInitializationDisabled context parameter,

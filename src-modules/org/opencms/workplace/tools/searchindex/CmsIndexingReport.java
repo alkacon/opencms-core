@@ -5,7 +5,7 @@
  * modules of the Alkacon OpenCms Software library published by
  * Alkacon Software GmbH & Co. KG, unless otherwise noted.
  *
- * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (https://www.alkacon.com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,10 +22,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
  * For further information about Alkacon Software GmbH & Co. KG, please see the
- * companys website: http://www.alkacon.com.
+ * companys website: https://www.alkacon.com.
  *
  * For further information about OpenCms, please see the OpenCms project
- * website: http://www.opencms.org.
+ * website: https://www.opencms.org.
  *
  * The names "Alkacon", "Alkacon Software GmbH & Co. KG" and "OpenCms" must not be used
  * to endorse or promote products derived from this software without prior

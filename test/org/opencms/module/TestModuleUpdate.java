@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (https://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,10 +15,10 @@
  * Lesser General Public License for more details.
  *
  * For further information about Alkacon Software GmbH & Co. KG, please see the
- * company website: http://www.alkacon.com
+ * company website: https://www.alkacon.com
  *
  * For further information about OpenCms, please see the
- * project website: http://www.opencms.org
+ * project website: https://www.opencms.org
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
@@ -1114,7 +1114,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
                 + "        <site>/</site>\n"
                 + "        <export-mode name=\"reduced\" />\n"
                 + "        <description><![CDATA[<p>Contains various configuration files to specify OpenCms core behavior.</p>\n"
-                + "<p><i>&copy; by Alkacon Software GmbH &amp; Co. KG (http://www.alkacon.com).</i></p>]]></description>\n"
+                + "<p><i>&copy; by Alkacon Software GmbH &amp; Co. KG (https://www.alkacon.com).</i></p>]]></description>\n"
                 + "        <version>11.0.0</version>\n"
                 + "        <authorname><![CDATA[Alkacon Software GmbH &amp; Co. KG]]></authorname>\n"
                 + "        <authoremail><![CDATA[info@alkacon.com]]></authoremail>\n"
@@ -1247,7 +1247,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             + "        <site>/</site>\n"
             + "        <export-mode name=\"reduced\" />\n"
             + "        <description><![CDATA[<p>Contains various configuration files to specify OpenCms core behavior.</p>\n"
-            + "<p><i>&copy; by Alkacon Software GmbH &amp; Co. KG (http://www.alkacon.com).</i></p>]]></description>\n"
+            + "<p><i>&copy; by Alkacon Software GmbH &amp; Co. KG (https://www.alkacon.com).</i></p>]]></description>\n"
             + "        <version>11.0.0</version>\n"
             + "        <authorname><![CDATA[Alkacon Software GmbH &amp; Co. KG]]></authorname>\n"
             + "        <authoremail><![CDATA[info@alkacon.com]]></authoremail>\n"

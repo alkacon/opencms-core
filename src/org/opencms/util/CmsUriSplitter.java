@@ -2,7 +2,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) Alkacon Software GmbH & Co. KG (http://www.alkacon.com)
+ * Copyright (c) Alkacon Software GmbH & Co. KG (https://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,10 +15,10 @@
  * Lesser General Public License for more details.
  *
  * For further information about Alkacon Software, please see the
- * company website: http://www.alkacon.com
+ * company website: https://www.alkacon.com
  *
  * For further information about OpenCms, please see the
- * project website: http://www.opencms.org
+ * project website: https://www.opencms.org
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
@@ -54,7 +54,7 @@ public class CmsUriSplitter {
     /** The URI protocol, for example <code>http</code> or <code>https</code>. */
     private String m_protocol;
 
-    /** The prefix part of the URI, for example <code>http://www.opencms.org/some/path/</code>. */
+    /** The prefix part of the URI, for example <code>https://www.opencms.org/some/path/</code>. */
     private String m_prefix;
 
     /** The query part of the URI, for example <code>a=b&c=d</code>. */
@@ -219,7 +219,7 @@ public class CmsUriSplitter {
     }
 
     /**
-     * Returns the prefix part of the uri, for example <code>http://www.opencms.org/some/path/</code>,
+     * Returns the prefix part of the uri, for example <code>https://www.opencms.org/some/path/</code>,
      * or <code>null</code> if no prefix is available.<p>
      *
      * @return the prefix part of the uri

@@ -3,7 +3,7 @@
  * Date   : $Date: 2010/09/06 13:38:58 $
  * Version: $Revision: 1.21 $
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2005 Alkacon Software GmbH (https://www.alkacon.com)
  * All rights reserved.
  *
  * This source code is the intellectual property of Alkacon Software GmbH.
@@ -23,7 +23,7 @@
  * THIS SOURCE CODE OR ITS DERIVATIVES.
  *
  * For further information about Alkacon Software GmbH, please see the
- * company website: http://www.alkacon.com
+ * company website: https://www.alkacon.com
  */
 
 package org.opencms.ui.apps.dbmanager.sqlconsole;

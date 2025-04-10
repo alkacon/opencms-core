@@ -55,7 +55,7 @@
 					<cms:property name="Description"/>
 				</div>
 				<div class="right">
-					<a href="http://www.opencms.org"><img src="<cms:link>../../resources/commons/login_logo.png</cms:link>" alt="OpenCms Logo"></a>
+					<a href="https://www.opencms.org"><img src="<cms:link>../../resources/commons/login_logo.png</cms:link>" alt="OpenCms Logo"></a>
 				</div>
 				<div class="clear">&nbsp;</div>
 			</div>
@@ -120,7 +120,7 @@
 		
 			<!-- begin: #footer -->
 			<div id="footer">
-				Built with <a href="http://www.opencms.org/">OpenCms - The Open Source Cms</a>, provided by <a href="http://www.alkacon.com" target="_self" title="Alkacon Software GmbH">Alkacon Software GmbH &amp; Co. KG - The OpenCms Experts</a>
+				Built with <a href="https://www.opencms.org/">OpenCms - The Open Source Cms</a>, provided by <a href="https://www.alkacon.com" target="_self" title="Alkacon Software GmbH">Alkacon Software GmbH &amp; Co. KG - The OpenCms Experts</a>
 			</div>
 			<!-- end: #footer -->
 		
