@@ -182,7 +182,7 @@ div.toolbarBackground div.title{
 	background: #4E545B;
     border-radius: 4px;
     color: #FAFAFD;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
     padding: 4px 12px;
     width: auto !important;
