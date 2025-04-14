@@ -623,14 +623,18 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers, I
         if (!CmsStringUtil.isEmpty(value)) {
             try {
                 long time = Long.parseLong(value);
-                setValue(new Date(time));
+                Date date = new Date(time);
+                m_oldValue = date;
+                setValue(date);
             } catch (NumberFormatException e) {
                 // if the String value is none long number make the field empty
                 setValue(null);
+                m_oldValue = null;
             }
         } else {
             // if the value is <code>null</code> make the field empty
             setValue(null);
+            m_oldValue = null;
         }
     }
 
