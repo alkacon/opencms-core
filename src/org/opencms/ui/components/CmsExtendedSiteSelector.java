@@ -121,6 +121,15 @@ public class CmsExtendedSiteSelector extends ComboBox<SiteSelectorOption> {
         }
 
         /**
+         * Returns the full path for this site selector option.
+         * @return the full path for this site selector option
+         */
+        public String getOptionPath() {
+
+            return m_path == null ? m_site : CmsStringUtil.joinPaths(m_site, m_path);
+        }
+
+        /**
          * Gets the path to jump to as a site path (may be null).
          *
          * @return the path to jump to
