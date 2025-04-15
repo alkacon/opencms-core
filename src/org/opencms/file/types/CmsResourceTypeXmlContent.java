@@ -27,6 +27,7 @@
 
 package org.opencms.file.types;
 
+import org.opencms.ade.containerpage.CmsDetailOnlyContainerUtil;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
@@ -52,6 +53,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsVfsUtil;
 import org.opencms.workplace.editors.I_CmsPreEditorActionDefinition;
 import org.opencms.workplace.editors.directedit.I_CmsEditHandler;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -464,21 +466,29 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             String rootDest = cms.getRequestContext().addSiteRoot(destination);
             CmsObject rootCms = OpenCms.initCmsObject(cms);
             rootCms.getRequestContext().setSiteRoot("");
-            String srcParent = CmsResource.getParentFolder(resource.getRootPath());
-            String srcName = CmsResource.getName(resource.getRootPath());
             String destParent = CmsResource.getParentFolder(rootDest);
-            String destName = CmsResource.getName(rootDest);
-            if (srcParent.equals(destParent) && !srcName.equals(destName)) {
-                List<CmsResource> detailOnlyPages = getDetailContainerResources(cms, resource);
-                for (CmsResource page : detailOnlyPages) {
-                    if (page.getState().isDeleted()) {
-                        continue;
-                    }
-                    String newPath = CmsStringUtil.joinPaths(CmsResource.getParentFolder(page.getRootPath()), destName);
+
+            List<CmsResource> detailOnlyPages = getDetailContainerResources(cms, resource);
+            for (CmsResource page : detailOnlyPages) {
+                if (page.getState().isDeleted()) {
+                    continue;
+                }
+                String pageParent = CmsResource.getParentFolder(page.getRootPath());
+                int detailContainerFolderIndex = pageParent.indexOf(
+                    "/" + CmsDetailOnlyContainerUtil.DETAIL_CONTAINERS_FOLDER_NAME + "/");
+                if (detailContainerFolderIndex != -1) {
+                    String newPath = CmsStringUtil.joinPaths(
+                        destParent,
+                        pageParent.substring(detailContainerFolderIndex),
+                        CmsResource.getName(rootDest));
                     CmsLockActionRecord lockRecord = null;
                     try {
                         lockRecord = CmsLockUtil.ensureLock(cms, page);
-                        rootCms.moveResource(page.getRootPath(), newPath);
+                        String newParent = CmsResource.getParentFolder(newPath);
+                        if (!page.getRootPath().equals(newPath)) {
+                            CmsVfsUtil.createFolder(rootCms, newParent);
+                            rootCms.moveResource(page.getRootPath(), newPath);
+                        }
                     } catch (Exception e) {
                         LOG.error(e.getLocalizedMessage(), e);
                     } finally {
