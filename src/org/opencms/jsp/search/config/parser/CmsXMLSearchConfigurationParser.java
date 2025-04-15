@@ -197,6 +197,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     /** XML element name. */
     private static final String XML_ELEMENT_DIDYOUMEAN_QUERYPARAM = "QueryParam";
     /** XML element name. */
+    private static final String XML_ELEMENT_DIDYOUMEAN_ESCAPEQUERY = "EscapeQuery";
+    /** XML element name. */
     private static final String XML_ELEMENT_DIDYOUMEAN_COLLATE = "Collate";
     /** XML element name. */
     private static final String XML_ELEMENT_DIDYOUMEAN_COUNT = "Count";
@@ -272,16 +274,19 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         final I_CmsXmlContentValue didYouMean = m_xml.getValue(XML_ELEMENT_DIDYOUMEAN, m_locale);
         if (didYouMean == null) {
             return null;
-        } else {
-            final String pathPrefix = didYouMean.getPath() + "/";
-            String param = parseOptionalStringValue(pathPrefix + XML_ELEMENT_DIDYOUMEAN_QUERYPARAM);
-            if (null == param) {
-                param = getQueryParam();
-            }
-            Boolean collate = parseOptionalBooleanValue(pathPrefix + XML_ELEMENT_DIDYOUMEAN_COLLATE);
-            Integer count = parseOptionalIntValue(pathPrefix + XML_ELEMENT_DIDYOUMEAN_COUNT);
-            return new CmsSearchConfigurationDidYouMean(param, collate, count);
         }
+        final String pathPrefix = didYouMean.getPath() + "/";
+        String param = parseOptionalStringValue(pathPrefix + XML_ELEMENT_DIDYOUMEAN_QUERYPARAM);
+        if (null == param) {
+            param = getQueryParam();
+        }
+        Boolean escape = parseOptionalBooleanValue(pathPrefix + XML_ELEMENT_DIDYOUMEAN_ESCAPEQUERY);
+        if (null == escape) {
+            escape = parseOptionalBooleanValue(XML_ELEMENT_ESCAPE_QUERY_CHARACTERS);
+        }
+        Boolean collate = parseOptionalBooleanValue(pathPrefix + XML_ELEMENT_DIDYOUMEAN_COLLATE);
+        Integer count = parseOptionalIntValue(pathPrefix + XML_ELEMENT_DIDYOUMEAN_COUNT);
+        return new CmsSearchConfigurationDidYouMean(param, escape, collate, count);
     }
 
     /**

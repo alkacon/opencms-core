@@ -60,6 +60,7 @@
     },
     "didYouMean" : {
         "didYouMeanQueryParam" : "dymparam",
+        "didYouMeanEscapeQuery" : false,
         "didYouMeanCollate" : false,
         "didYouMeanCount" : 7
     },

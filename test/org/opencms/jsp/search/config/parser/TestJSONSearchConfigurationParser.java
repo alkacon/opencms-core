@@ -364,6 +364,7 @@ public class TestJSONSearchConfigurationParser extends OpenCmsTestCase {
         I_CmsSearchConfigurationDidYouMean didYouMeanConfig = new CmsSearchConfigurationDidYouMean(
             "dymparam",
             Boolean.FALSE,
+            Boolean.FALSE,
             Integer.valueOf(7));
         ConfigurationTester.testDidYouMeanConfiguration(didYouMeanConfig, config.getDidYouMeanConfig());
 

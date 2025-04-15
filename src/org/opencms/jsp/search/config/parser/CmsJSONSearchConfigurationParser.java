@@ -215,6 +215,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     /** A JSON key. */
     public static final String JSON_KEY_DIDYOUMEAN_QUERYPARAM = "didYouMeanQueryParam";
     /** A JSON key. */
+    public static final String JSON_KEY_DIDYOUMEAN_ESCAPE_QUERY = "escapeDidYouMeanQuery";
+    /** A JSON key. */
     public static final String JSON_KEY_DIDYOUMEAN_COLLATE = "didYouMeanCollate";
     /** A JSON key. */
     public static final String JSON_KEY_DIDYOUMEAN_COUNT = "didYouMeanCount";
@@ -401,9 +403,13 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             if (null == param) {
                 param = getQueryParam();
             }
+            Boolean escape = parseOptionalBooleanValue(didYouMean, JSON_KEY_DIDYOUMEAN_ESCAPE_QUERY);
+            if (null == escape) {
+                escape = getEscapeQueryChars();
+            }
             Boolean collate = parseOptionalBooleanValue(didYouMean, JSON_KEY_DIDYOUMEAN_COLLATE);
             Integer count = parseOptionalIntValue(didYouMean, JSON_KEY_DIDYOUMEAN_COUNT);
-            return new CmsSearchConfigurationDidYouMean(param, collate, count);
+            return new CmsSearchConfigurationDidYouMean(param, escape, collate, count);
 
         } catch (JSONException e) {
             if (null == m_baseConfig) {

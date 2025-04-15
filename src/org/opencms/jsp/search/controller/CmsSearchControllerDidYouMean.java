@@ -35,6 +35,8 @@ import org.opencms.search.solr.CmsSolrQuery;
 
 import java.util.Map;
 
+import org.apache.solr.client.solrj.util.ClientUtils;
+
 /** Controller for the "Did you mean ...?" feature. */
 public class CmsSearchControllerDidYouMean implements I_CmsSearchControllerDidYouMean {
 
@@ -68,6 +70,9 @@ public class CmsSearchControllerDidYouMean implements I_CmsSearchControllerDidYo
 
         query.set("spellcheck", "true");
         String queryString = m_state.getQuery();
+        if (m_config.getEscapeQueryChars()) {
+            queryString = ClientUtils.escapeQueryChars(queryString);
+        }
         query.set("spellcheck.q", queryString);
         if (m_config.getCollate()) {
             query.set("spellcheck.collate", "true");
@@ -111,7 +116,8 @@ public class CmsSearchControllerDidYouMean implements I_CmsSearchControllerDidYo
         if (parameters.containsKey(m_config.getQueryParam())) {
             final String[] queryStrings = parameters.get(m_config.getQueryParam());
             if (queryStrings.length > 0) {
-                m_state.setQuery(queryStrings[0]);
+                String queryString = queryStrings[0];
+                m_state.setQuery(queryString);
                 return;
             }
         }

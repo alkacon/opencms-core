@@ -40,6 +40,11 @@ public interface I_CmsSearchConfigurationDidYouMean {
      */
     int getCount();
 
+    /** Returns a flag, indicating if special query characters (e.g., ":", "(", "[" ...) should be escaped in the query string.
+     * @return A flag, indicating if special query characters (e.g., ":", "(", "[" ...) should be escaped in the query string.
+     */
+    boolean getEscapeQueryChars();
+
     /** Returns the parameter name of the request parameter used to send the current query string for spellchecking.
      * @return The request parameter name used to send the current query string for spellchecking.
      */

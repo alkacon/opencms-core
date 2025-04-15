@@ -41,7 +41,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TimeZone;
-import java.util.regex.Pattern;
 
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.params.CommonParams;
@@ -242,6 +241,6 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
      */
     private String resolveMacro(final String string, final String macroName, final String value) {
 
-        return null != value ? string.replaceAll("\\%\\(" + Pattern.quote(macroName) + "\\)", value) : string;
+        return null != value ? string.replace("%(" + macroName + ")", value) : string;
     }
 }

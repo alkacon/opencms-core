@@ -1,35 +1,38 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 
-	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
 
-	<xsd:element name="DidYouMeanConfigs" type="OpenCmsDidYouMeanConfigs"/>
+    <xsd:element name="DidYouMeanConfigs" type="OpenCmsDidYouMeanConfigs"/>
 
-	<xsd:complexType name="OpenCmsDidYouMeanConfigs">
-		<xsd:sequence>
-			<xsd:element name="DidYouMeanConfig" type="OpenCmsDidYouMeanConfig" minOccurs="0" maxOccurs="unbounded"/>
-		</xsd:sequence>
-	</xsd:complexType>
+    <xsd:complexType name="OpenCmsDidYouMeanConfigs">
+        <xsd:sequence>
+            <xsd:element name="DidYouMeanConfig" type="OpenCmsDidYouMeanConfig" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
 
-	<xsd:complexType name="OpenCmsDidYouMeanConfig">
-		<xsd:sequence>
-			<xsd:element name="QueryParam" type="OpenCmsString" minOccurs="0"/>
-			<xsd:element name="Collate" type="OpenCmsBoolean" minOccurs="0"/>
-			<xsd:element name="Count" type="OpenCmsString" minOccurs="0"/>
-		</xsd:sequence>
-		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
-	</xsd:complexType>
+    <xsd:complexType name="OpenCmsDidYouMeanConfig">
+        <xsd:sequence>
+            <xsd:element name="QueryParam" type="OpenCmsString" minOccurs="0"/>
+            <xsd:element name="EscapeQuery" type="OpenCmsBoolean" minOccurs="0"/>
+            <xsd:element name="Collate" type="OpenCmsBoolean" minOccurs="0"/>
+            <xsd:element name="Count" type="OpenCmsString" minOccurs="0"/>
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+    </xsd:complexType>
 
-	<xsd:annotation>
-		<xsd:appinfo>
-			<resourcebundle name="org.opencms.jsp.search.messages" />
-			<searchsettings>
-				<searchsetting element="QueryParam" searchcontent="false" />
-				<searchsetting element="Collate" searchcontent="false" />
-			</searchsettings>
-			<validationrules>
-				<rule element="Count" regex="[0-9]+" type="error" message="%(key.validation.error.suggestion.count) %(validation.path)" />
-			</validationrules>
-		</xsd:appinfo>
-	</xsd:annotation>
+    <xsd:annotation>
+        <xsd:appinfo>
+            <resourcebundle name="org.opencms.jsp.search.messages" />
+            <searchsettings>
+                <searchsetting element="QueryParam" searchcontent="false" />
+                <searchsetting element="EscapeQuery" searchcontent="false" />
+                <searchsetting element="Collate" searchcontent="false" />
+                <searchsetting element="Count" searchcontent="false" />
+            </searchsettings>
+            <validationrules>
+                <rule element="Count" regex="[0-9]+" type="error" message="%(key.validation.error.suggestion.count) %(validation.path)" />
+            </validationrules>
+        </xsd:appinfo>
+    </xsd:annotation>
 
 </xsd:schema>

@@ -30,6 +30,8 @@ package org.opencms.jsp.search.config;
 /** Class keeping the configuration of the "Did you mean ...?" feature of the search form. */
 public class CmsSearchConfigurationDidYouMean implements I_CmsSearchConfigurationDidYouMean {
 
+    /** The default escape setting. */
+    private static final boolean DEFAULT_ESCAPE = true;
     /** The default collate setting. */
     private static final boolean DEFAULT_COLLATE = true;
     /** Default for maximal number of suggestions. */
@@ -39,17 +41,25 @@ public class CmsSearchConfigurationDidYouMean implements I_CmsSearchConfiguratio
     private final boolean m_collate;
     /** Parameter used to transmit the query used for spellchecking. */
     private final String m_param;
+    /** Flag, indicating if the query should be escaped. */
+    private final boolean m_escapeQueryChars;
     /** Maximal number of suggestions. */
     private final int m_count;
 
     /** Constructor setting all the state.
      * @param param The request parameter used to send the spellcheck query.
+     * @param escapeQueryChars Flag, indicating if query characters should be escaped.
      * @param collate Flag, indicating if the results should be collated.
      * @param count The maximal number of suggestions.
      */
-    public CmsSearchConfigurationDidYouMean(final String param, final Boolean collate, final Integer count) {
+    public CmsSearchConfigurationDidYouMean(
+        final String param,
+        final Boolean escapeQueryChars,
+        final Boolean collate,
+        final Integer count) {
 
         m_param = param;
+        m_escapeQueryChars = null == escapeQueryChars ? DEFAULT_ESCAPE : escapeQueryChars.booleanValue();
         m_collate = null == collate ? DEFAULT_COLLATE : collate.booleanValue();
         m_count = null == count ? DEFAULT_COUNT : count.intValue();
 
@@ -69,6 +79,14 @@ public class CmsSearchConfigurationDidYouMean implements I_CmsSearchConfiguratio
     public int getCount() {
 
         return m_count;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationDidYouMean#getEscapeQueryChars()
+     */
+    public boolean getEscapeQueryChars() {
+
+        return m_escapeQueryChars;
     }
 
     /**
