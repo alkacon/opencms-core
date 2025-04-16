@@ -69,20 +69,29 @@ public class CmsToolbar extends Composite {
     @UiField
     protected FlowPanel m_buttonPanelRight;
 
+    /** The quick launcher (initially invisible). */
+    @UiField
+    protected CmsQuickLauncher m_quickLauncher;
+
     /**
      * Center of the toolbar, normally for displaying the logo, but the content can be changed.
      */
     @UiField
     protected FlowPanel m_toolbarCenter;
 
-    /** The quick launcher (initially invisible). */
-    @UiField
-    protected CmsQuickLauncher m_quickLauncher;
-
     /** The user info button HTML. */
     @UiField
     protected CmsUserInfo m_userInfo;
 
+    /** The two-line title widget. */ 
+    private FlowPanel m_complexTitle = new FlowPanel();
+
+    /** Bottom row of the two-line title. */
+    private Label m_complexTitleBottom = new Label();
+
+    /** Top row of the two-line title. */ 
+    private Label m_complexTitleTop = new Label();
+    
     /** The title label. */
     private Label m_titleLabel;
 
@@ -92,6 +101,10 @@ public class CmsToolbar extends Composite {
     public CmsToolbar() {
 
         initWidget(uiBinder.createAndBindUi(this));
+        m_complexTitle.add(m_complexTitleTop);
+        m_complexTitle.add(m_complexTitleBottom);
+        m_complexTitle.addStyleName(I_CmsLayoutBundle.INSTANCE.toolbarCss().title());
+        m_complexTitle.addStyleName(I_CmsLayoutBundle.INSTANCE.toolbarCss().complexTitle());
 
     }
 
@@ -191,6 +204,7 @@ public class CmsToolbar extends Composite {
      * @return the center toolbar area
      */
     public FlowPanel getToolbarCenter() {
+
         return m_toolbarCenter;
     }
 
@@ -238,6 +252,7 @@ public class CmsToolbar extends Composite {
                 m_titleLabel.removeFromParent();
                 m_titleLabel = null;
             }
+            m_complexTitle.removeFromParent();
         } else {
 
             if (m_titleLabel == null) {
@@ -247,6 +262,31 @@ public class CmsToolbar extends Composite {
             }
             m_titleLabel.setText(title);
         }
+    }
+
+    /**
+     * Sets a two-line title.
+     *
+     * @param top the top line text
+     * @param bottom the bottom line text
+     */
+    public void setComplexTitle(String top, String bottom) {
+
+        setAppTitle(null);
+        if ((top == null) && (bottom == null)) {
+            return;
+        }
+
+        if (top == null) {
+            top = "";
+        }
+        if (bottom == null) {
+            bottom = "";
+        }
+        m_complexTitleTop.setText(top);
+        m_complexTitleBottom.setText(bottom);
+        m_buttonPanelLeft.insert(m_complexTitle, 0);
+
     }
 
     /**

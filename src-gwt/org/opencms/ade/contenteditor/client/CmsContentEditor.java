@@ -2514,7 +2514,9 @@ public final class CmsContentEditor extends CmsEditorBase {
         m_hasErrors = false;
         m_hasWarnings = false;
         m_toolbar = new CmsToolbar();
-        m_toolbar.setAppTitle(Messages.get().key(Messages.GUI_CONTENT_EDITOR_TITLE_0));
+        m_toolbar.setComplexTitle(
+            Messages.get().key(Messages.GUI_CONTENT_EDITOR_TITLE_0),
+            Messages.get().key(Messages.GUI_CONTENT_EDITOR_TITLE_BOTTOM_0));
         m_publishButton = createButton(
             I_CmsButton.ButtonData.PUBLISH_BUTTON.getTitle(),
             I_CmsButton.ButtonData.PUBLISH_BUTTON.getIconClass());

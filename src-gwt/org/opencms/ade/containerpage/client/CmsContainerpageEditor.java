@@ -338,9 +338,10 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_toolbar.getQuickLauncher().setHandler(containerpageHandler);
         String title = controller.getData().getAppTitle();
         if (title == null) {
-            title = Messages.get().key(Messages.GUI_PAGE_EDITOR_TITLE_0);
+            m_toolbar.setComplexTitle(Messages.get().key(Messages.GUI_PAGE_EDITOR_TITLE_0), Messages.get().key(Messages.GUI_PAGE_EDITOR_TITLE_BOTTOM_0));
+        } else {
+            m_toolbar.setAppTitle(title);
         }
-        m_toolbar.setAppTitle(title);
 
         m_publish = new CmsToolbarPublishButton(containerpageHandler);
         m_publish.addClickHandler(clickHandler);
@@ -380,8 +381,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_context = new CmsToolbarContextButton(containerpageHandler);
         m_context.addClickHandler(clickHandler);
         m_toolbar.insertRight(m_context, 0);
-
-
 
         CmsToolbarFavLocationButton favLocButton = new CmsToolbarFavLocationButton(containerpageHandler);
         favLocButton.addClickHandler(clickHandler);

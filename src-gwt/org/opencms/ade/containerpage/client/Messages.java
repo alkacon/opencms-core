@@ -45,10 +45,8 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOCK_TITLE_RESOURCE_CHANGED_0 = "ERR_LOCK_TITLE_RESOURCE_CHANGED_0";
 
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_PLACE_ELEMENT_0 = "GUI_TOOLBAR_PLACE_ELEMENT_0";
-
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOCK_TITLE_RESOURCE_LOCKED_0 = "ERR_LOCK_TITLE_RESOURCE_LOCKED_0";
@@ -319,6 +317,9 @@ public final class Messages {
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.containerpage.clientmessages";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PAGE_EDITOR_TITLE_BOTTOM_0 = "GUI_PAGE_EDITOR_TITLE_BOTTOM_0";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

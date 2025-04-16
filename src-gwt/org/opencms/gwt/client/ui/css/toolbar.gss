@@ -189,6 +189,24 @@ div.toolbarBackground div.title{
     line-height: 32px;
 }
 
+div.toolbarBackground div.title.complexTitle {
+	display: inline-flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+div.toolbarBackground div.title.complexTitle > * {
+	color: #FAFAFD;
+	font-weight: 600;
+	font-size: 12px;
+	line-height: 1;
+}
+
+div.toolbarBackground div.title.complexTitle > *:nth-child(1) {
+	font-size: 18px;
+}
+
 div.toolbarBackground > div.toolbarContent div.userInfo{
 	padding: 0px !important;
     display: inline-block;
