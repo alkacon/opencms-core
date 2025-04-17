@@ -41,5 +41,14 @@
 		.o-permissions-hide-layout{
 			display:none;
 			}
+			
+		
 	}
+	
+	.o-permission-view-toolbar  {
+				margin-right: 5px;
+				& > * {
+					min-width: 25px !important;
+				}
+			}
 }

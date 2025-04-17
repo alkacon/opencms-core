@@ -30,12 +30,17 @@ package org.opencms.ui.dialogs.permissions;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPrincipal;
+import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.user.CmsAccountsApp;
+import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsStringUtil;
@@ -46,14 +51,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.vaadin.v7.data.Item;
-import com.vaadin.v7.data.util.IndexedContainer;
-import com.vaadin.v7.data.util.filter.Or;
-import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.util.IndexedContainer;
+import com.vaadin.v7.data.util.filter.Or;
+import com.vaadin.v7.data.util.filter.SimpleStringFilter;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.Table;
 import com.vaadin.v7.ui.VerticalLayout;
@@ -191,17 +197,48 @@ public class CmsPermissionViewTable extends Table {
         VerticalLayout res = new VerticalLayout();
         res.setSpacing(false);
         I_CmsPrincipal principal = null;
+        boolean canShowMembers = false;
         try {
             principal = CmsPrincipal.readPrincipalIncludingHistory(cms, entry.getPrincipal());
-
+            canShowMembers = principal instanceof CmsGroup;
         } catch (CmsException e) {
             principal = new CmsGroup(entry.getPrincipal(), null, "", "", 0);
 
         }
         if (principal != null) {
             CmsResourceInfo info = CmsAccountsApp.getPrincipalInfo(principal);
+
+            CssLayout cssl = new CssLayout();
+            cssl.addStyleName("o-permission-view-toolbar");
+            info.setButtonWidget(cssl);
+
+            if (canShowMembers) {
+                final CmsGroup group = (CmsGroup)principal;
+                if (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(group.getOuFqn()))) {
+                    Button manageButton = new Button(FontOpenCms.SEARCH_SMALL);
+                    manageButton.addStyleName(
+                        "borderless o-toolbar-button o-resourceinfo-toolbar o-toolbar-icon-visible");
+                    manageButton.addClickListener(new ClickListener() {
+
+                        private static final long serialVersionUID = -6112693137800596485L;
+
+                        public void buttonClick(ClickEvent event) {
+
+                            Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
+                            window.setContent(new CmsPermissionUserListDialog(cms, group));
+                            window.setCaption(
+                                CmsVaadinUtils.getMessageText(
+                                    org.opencms.ui.apps.Messages.GUI_USERMANAGEMENT_TOOL_NAME_0));
+                            window.setModal(true);
+                            window.setResizable(false);
+                            A_CmsUI.get().addWindow(window);
+                        }
+                    });
+                    cssl.addComponent(manageButton);
+                }
+
+            }
             if (view.isEditable()) {
-                CssLayout cssl = new CssLayout();
                 Button removeButton = new Button(FontOpenCms.TRASH_SMALL);
                 removeButton.addStyleName("borderless o-toolbar-button o-resourceinfo-toolbar o-toolbar-icon-visible");
                 removeButton.addClickListener(new ClickListener() {
@@ -216,7 +253,6 @@ public class CmsPermissionViewTable extends Table {
 
                 });
                 cssl.addComponent(removeButton);
-                info.setButtonWidget(cssl);
             }
             res.addComponent(info);
             if (resPath != null) {

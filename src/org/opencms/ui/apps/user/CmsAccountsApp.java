@@ -105,7 +105,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
     /**
      * Bean for the state of the app.<p>
      */
-    class CmsStateBean {
+    static class CmsStateBean {
 
         /**the filter for tables. */
         private String m_filter;
@@ -839,7 +839,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
      * @param type the tree type
      * @param cmsAccountsApp the app instance
      * @param buttonPressed true if toggle button for users is active
-
+    
      * @return the user table
      */
     protected I_CmsFilterableTable createUserTable(
@@ -1139,7 +1139,6 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         // do nothing
     }
 
-
     /**
      * Opens a dialog for a new item (ou, group or user).<p>
      */
@@ -1151,6 +1150,7 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
         window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_ADD_ELEMENT_0));
         A_CmsUI.get().addWindow(window);
     }
+
     /**
      * opens a principle select dialog.<p>
      */
@@ -1261,11 +1261,12 @@ public class CmsAccountsApp extends A_CmsWorkplaceApp implements I_CmsPrincipalS
             }
         });
 
-        m_importExport = CmsToolBar.createButton(FontOpenCms.DOWNLOAD, CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_IMEXPORT_CONTEXTMENUNAME_0));
+        m_importExport = CmsToolBar.createButton(
+            FontOpenCms.DOWNLOAD,
+            CmsVaadinUtils.getMessageText(Messages.GUI_USERMANAGEMENT_USER_IMEXPORT_CONTEXTMENUNAME_0));
         m_importExport.addClickListener(event -> {
             CmsOUTable.openImportExportDialog(A_CmsUI.getCmsObject(), m_stateBean.getPath());
         });
-
 
         m_toggleButtonRole = CmsToolBar.createButton(
             FontOpenCms.USERS,
