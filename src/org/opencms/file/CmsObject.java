@@ -39,6 +39,8 @@ import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleGroupService;
 import org.opencms.lock.CmsLock;
@@ -46,6 +48,7 @@ import org.opencms.lock.CmsLockFilter;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
@@ -76,6 +79,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+
 /**
  * This pivotal class provides all authorized access to the OpenCms VFS resources.<p>
  *
@@ -99,6 +104,9 @@ import java.util.Set;
  * @since 6.0.0
  */
 public final class CmsObject {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsObject.class);
 
     /** The request context. */
     protected CmsRequestContext m_context;
@@ -3710,9 +3718,24 @@ public final class CmsObject {
      */
     public void removeResourceFromProject(String resourcename) throws CmsException {
 
-        // TODO: this should be also possible if the resource has been deleted
-        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        getResourceType(resource).removeResourceFromProject(this, m_securityManager, resource);
+        try {
+            CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
+            getResourceType(resource).removeResourceFromProject(this, m_securityManager, resource);
+        } catch (CmsVfsResourceNotFoundException e) {
+            LOG.info(e.getLocalizedMessage(), e);
+            CmsResourceBuilder builder = new CmsResourceBuilder();
+            builder.setStructureId(CmsUUID.getNullUUID());
+            builder.setResourceId(CmsUUID.getNullUUID());
+            if (resourcename.endsWith("/")) {
+                builder.setType(
+                    OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()));
+            } else {
+                builder.setType(OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()));
+            }
+            builder.setRootPath(addSiteRoot(resourcename));
+            CmsResource resource = builder.buildResource();
+            getResourceType(resource).removeResourceFromProject(this, m_securityManager, resource);
+        }
     }
 
     /**
