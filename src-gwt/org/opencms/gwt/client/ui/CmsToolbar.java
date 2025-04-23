@@ -83,15 +83,15 @@ public class CmsToolbar extends Composite {
     @UiField
     protected CmsUserInfo m_userInfo;
 
-    /** The two-line title widget. */ 
+    /** The two-line title widget. */
     private FlowPanel m_complexTitle = new FlowPanel();
 
     /** Bottom row of the two-line title. */
     private Label m_complexTitleBottom = new Label();
 
-    /** Top row of the two-line title. */ 
+    /** Top row of the two-line title. */
     private Label m_complexTitleTop = new Label();
-    
+
     /** The title label. */
     private Label m_titleLabel;
 

@@ -338,7 +338,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_toolbar.getQuickLauncher().setHandler(containerpageHandler);
         String title = controller.getData().getAppTitle();
         if (title == null) {
-            m_toolbar.setComplexTitle(Messages.get().key(Messages.GUI_PAGE_EDITOR_TITLE_0), Messages.get().key(Messages.GUI_PAGE_EDITOR_TITLE_BOTTOM_0));
+            m_toolbar.setAppTitle(Messages.get().key(Messages.GUI_PAGE_EDITOR_TITLE_0));
         } else {
             m_toolbar.setAppTitle(title);
         }

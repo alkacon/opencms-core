@@ -1621,7 +1621,7 @@ public final class CmsContentEditor extends CmsEditorBase {
 
         initClosingHandler();
         setContentDefinition(contentDefinition);
-        initToolbar();
+        initToolbar(inline);
         updateValidation();
         if (inline && (formParent != null)) {
             if ((mainLocale != null)
@@ -2508,15 +2508,23 @@ public final class CmsContentEditor extends CmsEditorBase {
 
     /**
      * Generates the button bar displayed beneath the editable fields.<p>
+     *
+     * @param inline true if we are in inline editing mode
      */
-    private void initToolbar() {
+    private void initToolbar(boolean inline) {
 
         m_hasErrors = false;
         m_hasWarnings = false;
         m_toolbar = new CmsToolbar();
-        m_toolbar.setComplexTitle(
-            Messages.get().key(Messages.GUI_CONTENT_EDITOR_TITLE_0),
-            Messages.get().key(Messages.GUI_CONTENT_EDITOR_TITLE_BOTTOM_0));
+        if (!inline) {
+            m_toolbar.setComplexTitle(
+                Messages.get().key(Messages.GUI_CONTENT_EDITOR_TITLE_0),
+                Messages.get().key(Messages.GUI_CONTENT_EDITOR_TITLE_BOTTOM_0));
+        } else {
+            m_toolbar.setComplexTitle(
+                Messages.get().key(Messages.GUI_CONTENT_EDITOR_TITLE_0),
+                Messages.get().key(Messages.GUI_CONTENT_EDITOR_TITLE_BOTTOM_PAGE_EDITOR_0));
+        }
         m_publishButton = createButton(
             I_CmsButton.ButtonData.PUBLISH_BUTTON.getTitle(),
             I_CmsButton.ButtonData.PUBLISH_BUTTON.getIconClass());
