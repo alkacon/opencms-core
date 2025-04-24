@@ -29,6 +29,7 @@ package org.opencms.ui.dialogs.permissions;
 
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.user.CmsAccountsAppConfiguration;
@@ -54,7 +55,67 @@ public class CmsPermissionUserListDialog extends CmsBasicDialog {
     /** The iframe. */
     BrowserFrame m_frame;
 
+    /**
+     * Initializes the dialog for a specific group.
+     *
+     * @param cms the current CMS context
+     * @param group the group
+     */
     public CmsPermissionUserListDialog(CmsObject cms, CmsGroup group) {
+
+        init(getFrameUrlForGroup(group));
+    }
+
+    /**
+     * Initializes the dialog for a specific role.
+     *
+     * @param cms the current CMS context
+     * @param role the role
+     */
+    public CmsPermissionUserListDialog(CmsObject cms, CmsRole role) {
+
+        init(getFrameUrlForRole(role));
+    }
+
+    /**
+     * Gets the frame URL to use for a group.
+     *
+     * @param group the group
+     * @return the frame URL
+     */
+    private String getFrameUrlForGroup(CmsGroup group) {
+
+        String id = "" + group.getId();
+        String prefix = "g";
+        if (0 != (group.getFlags() & 131072)) { // for OCEE
+            prefix = "G";
+        }
+        String t = prefix + "!!" + group.getOuFqn() + "!!" + id + "!!";
+        String target = CmsVaadinUtils.getWorkplaceLink(CmsAccountsAppConfiguration.APP_ID) + "/" + t;
+        return target;
+    }
+
+    /**
+     * Gets the frame URL to use for a role.
+     *
+     * @param role the role
+     * @return the frame URL
+     */
+    private String getFrameUrlForRole(CmsRole role) {
+
+        String id = "" + role.getId();
+        String prefix = "r";
+        String t = prefix + "!!!!" + id + "!!";
+        String target = CmsVaadinUtils.getWorkplaceLink(CmsAccountsAppConfiguration.APP_ID) + "/" + t;
+        return target;
+    }
+
+    /**
+     * Initializes the dialog and displays the target URL in the contained iframe.
+     *
+     * @param target the target URL
+     */
+    private void init(String target) {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), new HashMap<>());
         m_closeButton.addClickListener(event -> {
@@ -65,15 +126,8 @@ public class CmsPermissionUserListDialog extends CmsBasicDialog {
         int height = A_CmsUI.get().getPage().getBrowserWindowHeight();
         height = Math.max(200, height - 150);
         m_frame.setHeight(height + "px");
-
-        String id = "" + group.getId();
-        String prefix = "g";
-        if (0 != (group.getFlags() & 131072)) { // for OCEE
-            prefix = "G";
-        }
-        String t = prefix + "!!" + group.getOuFqn() + "!!" + id + "!!";
-        String target = CmsVaadinUtils.getWorkplaceLink(CmsAccountsAppConfiguration.APP_ID) + "/" + t;
         m_frame.setSource(new ExternalResource(target));
+
     }
 
 }

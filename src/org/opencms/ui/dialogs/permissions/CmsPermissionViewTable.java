@@ -237,6 +237,33 @@ public class CmsPermissionViewTable extends Table {
                     cssl.addComponent(manageButton);
                 }
 
+            } else {
+                CmsRole role = CmsRole.valueOfId(principal.getId());
+                if (role != null) {
+                    if (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""))) {
+                        Button manageButton = new Button(FontOpenCms.SEARCH_SMALL);
+                        manageButton.addStyleName(
+                            "borderless o-toolbar-button o-resourceinfo-toolbar o-toolbar-icon-visible");
+                        manageButton.addClickListener(new ClickListener() {
+
+                            private static final long serialVersionUID = -6112693137800596485L;
+
+                            public void buttonClick(ClickEvent event) {
+
+                                Window window = CmsBasicDialog.prepareWindow(DialogWidth.max);
+                                window.setContent(new CmsPermissionUserListDialog(cms, role));
+                                window.setCaption(
+                                    CmsVaadinUtils.getMessageText(
+                                        org.opencms.ui.apps.Messages.GUI_USERMANAGEMENT_TOOL_NAME_0));
+                                window.setModal(true);
+                                window.setResizable(false);
+                                A_CmsUI.get().addWindow(window);
+                            }
+                        });
+                        cssl.addComponent(manageButton);
+                    }
+                }
+
             }
             if (view.isEditable()) {
                 Button removeButton = new Button(FontOpenCms.TRASH_SMALL);
