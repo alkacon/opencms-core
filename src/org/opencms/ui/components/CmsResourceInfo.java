@@ -27,6 +27,7 @@
 
 package org.opencms.ui.components;
 
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
@@ -145,11 +146,24 @@ public class CmsResourceInfo extends CustomLayout {
      */
     public CmsResourceInfo(String top, String bottom, Resource iconResource) {
 
+        this(top, bottom, iconResource, null);
+    }
+
+    /**
+     * Constructor.<p>
+     *
+     * @param top the title
+     * @param bottom the sub title
+     * @param iconResource the icon resource path
+     * @param resourceState the resource state
+     */
+    public CmsResourceInfo(String top, String bottom, Resource iconResource, CmsResourceState resourceState) {
+
         this();
         m_topText.setValue(top);
         m_topInput.setValue(top);
         m_bottomText.setValue(CmsJspElFunctions.stripHtml(bottom));
-        m_icon.initContent(null, iconResource, null, false, true);
+        m_icon.initContent(null, iconResource, resourceState, false, true);
     }
 
     /**
