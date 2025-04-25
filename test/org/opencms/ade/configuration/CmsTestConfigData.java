@@ -126,6 +126,7 @@ public class CmsTestConfigData extends CmsADEConfigData {
             /*CmsResource*/ null,
             /* boolean isModuleConfig*/false,
             /*String basePath*/basePath,
+            null,
             /*List<CmsUUID> masterConfigs*/new ArrayList<>(),
             /*List<CmsResourceTypeConfig> resourceTypeConfig*/new ArrayList<>(),
             /*CmsGalleriesDisabledTypeMode*/null,

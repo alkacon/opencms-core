@@ -744,7 +744,6 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                 LOG.warn(e.getLocalizedMessage(), e);
             }
             return null;
-
         }
     }
 

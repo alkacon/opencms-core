@@ -529,7 +529,15 @@ public class CmsConfigurationReader {
         m_modelPageConfigs = Lists.newArrayList();
         m_propertyConfigs = Lists.newArrayList();
         m_resourceTypeConfigs = Lists.newArrayList();
-
+        CmsUUID baseId = null;
+        if (basePath != null) {
+            try {
+                CmsResource folderRes = m_cms.readResource(basePath, CmsResourceFilter.IGNORE_EXPIRATION);
+                baseId = folderRes.getStructureId();
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
         if (!content.hasLocale(DEFAULT_LOCALE)) {
             return CmsADEConfigDataInternal.emptyConfiguration(basePath);
         }
@@ -696,6 +704,7 @@ public class CmsConfigurationReader {
             content.getFile(),
             isModuleConfig,
             basePath,
+            baseId,
             masterConfigIds,
             m_resourceTypeConfigs,
             galleryDisabledTypesMode,

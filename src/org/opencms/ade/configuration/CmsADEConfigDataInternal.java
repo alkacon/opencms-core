@@ -412,6 +412,9 @@ public class CmsADEConfigDataInternal {
     /** The type ordering mode. */
     private CmsTypeOrderingMode m_typeOrderingMode;
 
+    /** The structure id of the base folder. */
+    private CmsUUID m_baseId;
+
     /**
      * Creates a new configuration data instance.<p>
      *
@@ -419,6 +422,7 @@ public class CmsADEConfigDataInternal {
      * @param resource the resource from which this configuration data was read
      * @param isModuleConfig true if this is a module configuration
      * @param basePath the base path
+     * @param baseId the structure id corresponding to the base path
      * @param masterConfigs structure ids of master configuration files
      * @param resourceTypeConfig the resource type configuration
      * @param galleryDisabledTypesMode  the display mode deactivated types in the gallery dialog
@@ -454,6 +458,7 @@ public class CmsADEConfigDataInternal {
         CmsResource resource,
         boolean isModuleConfig,
         String basePath,
+        CmsUUID baseId,
         List<ConfigReference> masterConfigs,
         List<CmsResourceTypeConfig> resourceTypeConfig,
         CmsGalleryDisabledTypesMode galleryDisabledTypesMode,
@@ -487,6 +492,7 @@ public class CmsADEConfigDataInternal {
         m_cms = cms;
         m_resource = resource;
         m_basePath = basePath;
+        m_baseId = baseId;
         m_ownResourceTypes = resourceTypeConfig;
         m_galleryDisabledTypesMode = galleryDisabledTypesMode;
         m_galleryDisabledFunctionsMode = galleryDisabledFunctionsMode;
@@ -545,7 +551,7 @@ public class CmsADEConfigDataInternal {
 
     /**
      * Creates a new configuration data instance.<p>
-
+    
      * @param resource the resource from which this configuration data was read
      * @param isModuleConfig true if this is a module configuration
      * @param basePath the base path
@@ -661,6 +667,16 @@ public class CmsADEConfigDataInternal {
     public Map<String, AttributeValue> getAttributes() {
 
         return m_attributes;
+    }
+
+    /**
+     * Gets the structure id of the base folder, or null if there is no base folder.
+     *
+     * @return the structure id of the base folder
+     */
+    public CmsUUID getBaseId() {
+
+        return m_baseId;
     }
 
     /**

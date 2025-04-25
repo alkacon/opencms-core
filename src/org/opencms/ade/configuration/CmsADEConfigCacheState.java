@@ -270,8 +270,8 @@ public class CmsADEConfigCacheState {
 
     /**
      * Gets the set of content types configured anywhere in sitemap configurations.
-     * 
-     * @return the set of content types 
+     *
+     * @return the set of content types
      */
     public Set<String> getContentTypes() {
 
