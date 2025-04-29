@@ -39,6 +39,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -71,6 +72,9 @@ public class CmsADEConfigCacheState {
 
     /** The CMS context used for VFS operations. */
     private CmsObject m_cms;
+
+    /** Cached set of names of content types anywhere in the configuration. */
+    private volatile Set<String> m_contentTypes;
 
     /** Cache for detail page lists. */
     private Map<String, List<String>> m_detailPageCache;
@@ -107,9 +111,6 @@ public class CmsADEConfigCacheState {
 
     /** Cached list of subsites to be included in the site selector. */
     private volatile List<String> m_subsitesForSiteSelector;
-
-    /** Cached set of names of content types anywhere in the configuration. */
-    private volatile Set<String> m_contentTypes;
 
     /**
      * Creates a new configuration cache state.<p>
@@ -687,6 +688,12 @@ public class CmsADEConfigCacheState {
                 fillMasterConfigurations(configList, new ConfigReferenceInstance(currentConfig), new HashSet<>());
             }
         }
-        return new CmsADEConfigData(data, this, new CmsADEConfigurationSequence(configList));
+        CmsADEConfigData result = new CmsADEConfigData(data, this, new CmsADEConfigurationSequence(configList));
+        List<I_CmsSitemapExtraInfo> extraInfo = new ArrayList<>();
+        for (I_CmsSitemapExtraInfoProvider provider : OpenCms.getADEManager().getSitemapExtraInfoProviders()) {
+            extraInfo.add(provider.getExtraInfo(m_cms));
+        }
+        result.m_extraInfo = extraInfo;
+        return result;
     }
 }

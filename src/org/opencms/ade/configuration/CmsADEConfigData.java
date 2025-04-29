@@ -79,6 +79,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.logging.Log;
 
@@ -97,6 +98,20 @@ import com.google.common.collect.Sets;
  * A class which represents the accessible configuration data at a given point in a sitemap.<p>
  */
 public class CmsADEConfigData {
+
+    /**
+     * Enum for indicating how sitemap attributes should be read.
+     */
+    public enum AttributeMode {
+        /** Include all sitemap attributes, including dynamically injected ones. */
+        all,
+
+        /** Ignore all dynamically injected sitemap attributes. */
+        excludeInjected,
+
+        /** Ignore dynamically injected sitemap attributes for this sitemap configuration, but include injected values that were inherited from parent sitemap configurations. */
+        excludeInjectedForThisLevel
+    }
 
     /**
      * Bean which contains the detail information for a single sub-sitemap and resource type.<p>
@@ -214,6 +229,9 @@ public class CmsADEConfigData {
 
     /** The wrapped configuration bean containing the actual data. */
     protected CmsADEConfigDataInternal m_data;
+
+    /** Extra information injected from elsewhere. */
+    protected List<I_CmsSitemapExtraInfo> m_extraInfo = Collections.emptyList();
 
     /** Lazily initialized map of formatters. */
     private Map<CmsUUID, I_CmsFormatterBean> m_activeFormatters;
@@ -755,20 +773,46 @@ public class CmsADEConfigData {
      */
     public Map<String, AttributeValue> getAttributes() {
 
-        if (m_attributes != null) {
+        return getAttributes(AttributeMode.all);
+    }
+
+    /**
+     * Gets the map of attributes configured for this sitemap, including values inherited from parent sitemaps.
+     *
+     * <p>NOTE: If mode != AttributeMode.all, the result is not cached.
+     *
+     * @param mode indicates how injected attributes should be treated
+     * @return the map of attributes
+     */
+    public Map<String, AttributeValue> getAttributes(AttributeMode mode) {
+
+        if ((m_attributes != null) && (mode == AttributeMode.all)) {
             return m_attributes;
         }
         CmsADEConfigData parentConfig = parent();
         Map<String, AttributeValue> result = new HashMap<>();
+        AttributeMode parentMode = mode;
+        if (mode == AttributeMode.excludeInjectedForThisLevel) {
+            parentMode = AttributeMode.all;
+        }
         if (parentConfig != null) {
-            result.putAll(parentConfig.getAttributes());
+            result.putAll(parentConfig.getAttributes(parentMode));
         }
 
         for (Map.Entry<String, AttributeValue> entry : m_data.getAttributes().entrySet()) {
             result.put(entry.getKey(), entry.getValue());
         }
+
+        if ((getBasePath() != null) && (mode == AttributeMode.all)) {
+            for (I_CmsSitemapExtraInfo extraInfo : m_extraInfo) {
+                result.putAll(MapUtils.emptyIfNull(extraInfo.getAttributes(getBasePath())));
+            }
+        }
+
         Map<String, AttributeValue> immutableResult = Collections.unmodifiableMap(result);
-        m_attributes = immutableResult;
+        if (mode == AttributeMode.all) {
+            m_attributes = immutableResult;
+        }
         return immutableResult;
     }
 
@@ -1730,7 +1774,9 @@ public class CmsADEConfigData {
         Optional<CmsADEConfigurationSequence> parentPath = m_configSequence.getParent();
         if (parentPath.isPresent()) {
             CmsADEConfigDataInternal internalData = parentPath.get().getConfig();
-            return new CmsADEConfigData(internalData, m_cache, parentPath.get());
+            CmsADEConfigData result = new CmsADEConfigData(internalData, m_cache, parentPath.get());
+            result.m_extraInfo = m_extraInfo;
+            return result;
         } else {
             return null;
         }

@@ -28,6 +28,8 @@
 package org.opencms.ade.sitemap;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsADEConfigData.AttributeMode;
+import org.opencms.ade.configuration.CmsADEConfigDataInternal.AttributeValue;
 import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.configuration.CmsFunctionAvailability;
 import org.opencms.ade.configuration.CmsFunctionReference;
@@ -578,8 +580,16 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 CmsMacroResolver.newWorkplaceLocaleResolver(cms));
 
             HashMap<String, String> values = new HashMap<>();
+            Map<String, AttributeValue> attributes = config.getAttributes(AttributeMode.excludeInjectedForThisLevel);
             for (String key : definitions.keySet()) {
-                values.put(key, config.getAttribute(key, ""));
+                AttributeValue val = attributes.get(key);
+                String strVal;
+                if (val == null) {
+                    strVal = "";
+                } else {
+                    strVal = val.getValue();
+                }
+                values.put(key, strVal);
             }
             String unlockUrl = CmsStringUtil.joinPaths(
                 OpenCms.getStaticExportManager().getVfsPrefix(),

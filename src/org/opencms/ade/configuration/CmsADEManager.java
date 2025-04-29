@@ -99,6 +99,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -261,6 +262,9 @@ public class CmsADEManager {
     /** The table of upload warnings. */
     private CmsUploadWarningTable m_uploadWarningTable = new CmsUploadWarningTable();
 
+    /** The providers used to inject additional configuration details into the sitemap configuration. */
+    private List<I_CmsSitemapExtraInfoProvider> m_sitemapExtraInfoProviders = new ArrayList<>();
+
     /**
      * Creates a new ADE manager.<p>
      *
@@ -298,6 +302,16 @@ public class CmsADEManager {
         CmsFormatterConfigurationCache cache = online ? m_onlineFormatterCache : m_offlineFormatterCache;
         cache.addWaitHandle(handle);
         return handle;
+    }
+
+    /**
+     * Adds a sitemap extra info provider.
+     * 
+     * @param provider the provider to add
+     */
+    public void addSitemapExtraInfoProvider(I_CmsSitemapExtraInfoProvider provider) {
+
+        m_sitemapExtraInfoProviders.add(provider);
     }
 
     /**
@@ -1037,6 +1051,17 @@ public class CmsADEManager {
     }
 
     /**
+     * Gets the registered sitemap extra info providers.
+     *
+     * @return the list of providers
+     */
+    public List<I_CmsSitemapExtraInfoProvider> getSitemapExtraInfoProviders() {
+
+        return m_sitemapExtraInfoProviders.stream().sorted(
+            Comparator.comparing(provider -> provider.getOrder())).collect(Collectors.toList());
+    }
+
+    /**
      * Returns all sub sites below the given path.<p>
      *
      * @param cms the cms context
@@ -1387,6 +1412,11 @@ public class CmsADEManager {
 
         m_onlineCache.initialize();
         m_offlineCache.initialize();
+    }
+
+    public void removeSitemapExtraInfoProvider(I_CmsSitemapExtraInfoProvider provider) {
+
+        m_sitemapExtraInfoProviders.remove(provider);
     }
 
     /**
