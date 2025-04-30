@@ -44,6 +44,7 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -230,13 +231,32 @@ public class CmsExplorerTypeAccess implements Serializable {
             // error reading the groups of the current user
             LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, user.getName()), e);
         }
-        List<CmsRole> roles = null;
+        List<CmsRole> roles = new ArrayList<>();
         try {
-            roles = OpenCms.getRoleManager().getRolesForResource(cms, user, resource);
+            roles.addAll(OpenCms.getRoleManager().getRolesForResource(cms, user, resource));
         } catch (CmsException e) {
             // error reading the roles of the current user
             LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, user.getName()), e);
         }
+
+        // getRolesForResource does not return OU indepent roles - so now we add them separately
+        try {
+            List<CmsRole> userRoles = OpenCms.getRoleManager().getRolesOfUser(
+                cms,
+                user.getName(),
+                "",
+                false,
+                false,
+                false);
+            for (CmsRole role : userRoles) {
+                if (role.isOrganizationalUnitIndependent() && !roles.contains(role)) {
+                    roles.add(role);
+                }
+            }
+        } catch (CmsException e) {
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, user.getName()), e);
+        }
+
         String defaultPermissions = m_accessControl.get(PRINCIPAL_DEFAULT);
         // add the default permissions to the acl
         if ((defaultPermissions != null) && !user.isGuestUser()) {
