@@ -257,35 +257,35 @@ public class CmsFileTable extends CmsResourceTable {
             } else if ((CmsResourceTableProperty.PROPERTY_TYPE_ICON.equals(propertyId)
                 || CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT.equals(propertyId))
                 && (item1.getItemProperty(CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION) != null)) {
-                int result;
-                Float pos1 = (Float)item1.getItemProperty(
-                    CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
-                Float pos2 = (Float)item2.getItemProperty(
-                    CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
-                if (pos1 == null) {
-                    result = pos2 == null
-                    ? compareProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, true, item1, item2)
-                    : 1;
-                } else {
-                    result = pos2 == null ? -1 : Float.compare(pos1.floatValue(), pos2.floatValue());
+                    int result;
+                    Float pos1 = (Float)item1.getItemProperty(
+                        CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
+                    Float pos2 = (Float)item2.getItemProperty(
+                        CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
+                    if (pos1 == null) {
+                        result = pos2 == null
+                        ? compareProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, true, item1, item2)
+                        : 1;
+                    } else {
+                        result = pos2 == null ? -1 : Float.compare(pos1.floatValue(), pos2.floatValue());
+                    }
+                    if (!sortDirection) {
+                        result = result * (-1);
+                    }
+                    return result;
+                } else if (((CmsResourceTableProperty)propertyId).getColumnType().equals(String.class)) {
+                    String value1 = (String)item1.getItemProperty(propertyId).getValue();
+                    String value2 = (String)item2.getItemProperty(propertyId).getValue();
+                    // Java collators obtained by java.text.Collator.getInstance(...) ignore spaces, and we don't want to ignore them, so we use
+                    // ICU collators instead
+                    com.ibm.icu.text.Collator collator = com.ibm.icu.text.Collator.getInstance(
+                        com.ibm.icu.util.ULocale.ROOT);
+                    int result = collator.compare(value1, value2);
+                    if (!sortDirection) {
+                        result = -result;
+                    }
+                    return result;
                 }
-                if (!sortDirection) {
-                    result = result * (-1);
-                }
-                return result;
-            } else if (((CmsResourceTableProperty)propertyId).getColumnType().equals(String.class)) {
-                String value1 = (String)item1.getItemProperty(propertyId).getValue();
-                String value2 = (String)item2.getItemProperty(propertyId).getValue();
-                // Java collators obtained by java.text.Collator.getInstance(...) ignore spaces, and we don't want to ignore them, so we use
-                // ICU collators instead
-                com.ibm.icu.text.Collator collator = com.ibm.icu.text.Collator.getInstance(
-                    com.ibm.icu.util.ULocale.ROOT);
-                int result = collator.compare(value1, value2);
-                if (!sortDirection) {
-                    result = -result;
-                }
-                return result;
-            }
             return super.compareProperty(propertyId, sortDirection, item1, item2);
             //@formatter:on
         }
@@ -312,6 +312,43 @@ public class CmsFileTable extends CmsResourceTable {
 
     /** The serial version id. */
     private static final long serialVersionUID = 5460048685141699277L;
+
+    static {
+        Map<CmsResourceTableProperty, Integer> defaultProps = new LinkedHashMap<CmsResourceTableProperty, Integer>();
+        defaultProps.put(PROPERTY_TYPE_ICON, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_PROJECT, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_RESOURCE_NAME, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_TITLE, Integer.valueOf(0));
+        try {
+            if (OpenCms.getWorkplaceManager().isExplorerCategoriesEnabled()) {
+                defaultProps.put(PROPERTY_CATEGORIES, Integer.valueOf(COLLAPSED));
+            }
+        } catch (Exception e) {
+            // ignore
+        }
+        defaultProps.put(PROPERTY_NAVIGATION_TEXT, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_NAVIGATION_POSITION, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_IN_NAVIGATION, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_COPYRIGHT, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_CACHE, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_RESOURCE_TYPE, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_INTERNAL_RESOURCE_TYPE, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_SIZE, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_PERMISSIONS, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_DATE_MODIFIED, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_USER_MODIFIED, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_DATE_CREATED, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_USER_CREATED, Integer.valueOf(COLLAPSED));
+        defaultProps.put(PROPERTY_DATE_RELEASED, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_DATE_EXPIRED, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_STATE_NAME, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_USER_LOCKED, Integer.valueOf(0));
+        defaultProps.put(PROPERTY_IS_FOLDER, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_STATE, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_INSIDE_PROJECT, Integer.valueOf(INVISIBLE));
+        defaultProps.put(PROPERTY_RELEASED_NOT_EXPIRED, Integer.valueOf(INVISIBLE));
+        DEFAULT_TABLE_PROPERTIES = Collections.unmodifiableMap(defaultProps);
+    }
 
     /** The selected resources. */
     protected List<CmsResource> m_currentResources = new ArrayList<CmsResource>();
@@ -448,12 +485,12 @@ public class CmsFileTable extends CmsResourceTable {
                     style += " " + OpenCmsTheme.HOVER_COLUMN;
                 } else if ((CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT == propertyId)
                     || (CmsResourceTableProperty.PROPERTY_TITLE == propertyId)) {
-                    if ((item.getItemProperty(CmsResourceTableProperty.PROPERTY_IN_NAVIGATION) != null)
-                        && ((Boolean)item.getItemProperty(
-                            CmsResourceTableProperty.PROPERTY_IN_NAVIGATION).getValue()).booleanValue()) {
-                        style += " " + OpenCmsTheme.IN_NAVIGATION;
+                        if ((item.getItemProperty(CmsResourceTableProperty.PROPERTY_IN_NAVIGATION) != null)
+                            && ((Boolean)item.getItemProperty(
+                                CmsResourceTableProperty.PROPERTY_IN_NAVIGATION).getValue()).booleanValue()) {
+                            style += " " + OpenCmsTheme.IN_NAVIGATION;
+                        }
                     }
-                }
                 for (Table.CellStyleGenerator generator : m_additionalStyleGenerators) {
                     String additional = generator.getStyle(source, itemId, propertyId);
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(additional)) {
@@ -465,43 +502,6 @@ public class CmsFileTable extends CmsResourceTable {
         });
 
         m_menu.setAsTableContextMenu(m_fileTable);
-    }
-
-    static {
-        Map<CmsResourceTableProperty, Integer> defaultProps = new LinkedHashMap<CmsResourceTableProperty, Integer>();
-        defaultProps.put(PROPERTY_TYPE_ICON, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_PROJECT, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_RESOURCE_NAME, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_TITLE, Integer.valueOf(0));
-        try {
-            if (OpenCms.getWorkplaceManager().isExplorerCategoriesEnabled()) {
-                defaultProps.put(PROPERTY_CATEGORIES, Integer.valueOf(COLLAPSED));
-            }
-        } catch (Exception e) {
-            // ignore
-        }
-        defaultProps.put(PROPERTY_NAVIGATION_TEXT, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_NAVIGATION_POSITION, Integer.valueOf(INVISIBLE));
-        defaultProps.put(PROPERTY_IN_NAVIGATION, Integer.valueOf(INVISIBLE));
-        defaultProps.put(PROPERTY_COPYRIGHT, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_CACHE, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_RESOURCE_TYPE, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_INTERNAL_RESOURCE_TYPE, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_SIZE, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_PERMISSIONS, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_DATE_MODIFIED, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_USER_MODIFIED, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_DATE_CREATED, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_USER_CREATED, Integer.valueOf(COLLAPSED));
-        defaultProps.put(PROPERTY_DATE_RELEASED, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_DATE_EXPIRED, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_STATE_NAME, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_USER_LOCKED, Integer.valueOf(0));
-        defaultProps.put(PROPERTY_IS_FOLDER, Integer.valueOf(INVISIBLE));
-        defaultProps.put(PROPERTY_STATE, Integer.valueOf(INVISIBLE));
-        defaultProps.put(PROPERTY_INSIDE_PROJECT, Integer.valueOf(INVISIBLE));
-        defaultProps.put(PROPERTY_RELEASED_NOT_EXPIRED, Integer.valueOf(INVISIBLE));
-        DEFAULT_TABLE_PROPERTIES = Collections.unmodifiableMap(defaultProps);
     }
 
     /**
@@ -928,7 +928,11 @@ public class CmsFileTable extends CmsResourceTable {
                     isCollapsed = state.getCollapsedColumns().contains(visibleCols[i])
                         || CmsResourceTableProperty.PROPERTY_CATEGORIES.equals(visibleCols[i]);
                 }
-                m_fileTable.setColumnCollapsed(visibleCols[i], isCollapsed);
+                if (m_fileTable.isColumnCollapsible(visibleCols[i])) {
+                    m_fileTable.setColumnCollapsed(visibleCols[i], isCollapsed);
+                } else {
+                    LOG.debug("Skip collapsing none-collapsible column " + visibleCols[i]);
+                }
             }
         }
     }
