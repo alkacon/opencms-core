@@ -251,9 +251,17 @@ public class CmsDeleteDialog extends CmsBasicDialog {
             for (CmsRelation relation : relations) {
                 // only add related resources that are not going to be deleted
                 if (!deleteIds.contains(relation.getSourceId())) {
-                    CmsResource source1 = relation.getSource(cms, CmsResourceFilter.ALL);
-                    if (!source1.getState().isDeleted()) {
-                        result1.add(source1);
+                    try {
+                        CmsResource source1 = relation.getSource(cms, CmsResourceFilter.ALL);
+                        if (!source1.getState().isDeleted()) {
+                            result1.add(source1);
+                        }
+                    } catch (Exception e) {
+                        LOG.warn(
+                            "Couldn't find relation source while checking the following relation: "
+                                + relation.toString(),
+                            e);
+
                     }
                 }
             }
