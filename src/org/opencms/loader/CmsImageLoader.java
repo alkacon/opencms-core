@@ -63,6 +63,9 @@ import org.apache.commons.logging.Log;
  */
 public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener {
 
+    /** Controls max number of threads that are allowed to scale images concurrently. */
+    public static final String CONFIGURATION_CONCURRENCY = "image.scaling.concurrency";
+
     /** The configuration parameter for the OpenCms XML configuration to set the image down scale operation. */
     public static final String CONFIGURATION_DOWNSCALE = "image.scaling.downscale";
 
@@ -101,6 +104,20 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
 
     /** The disk cache to use for saving scaled image versions. */
     protected static CmsVfsNameBasedDiskCache m_vfsDiskCache;
+
+    /** The name of the configured image cache repository. */
+    protected String m_imageRepositoryFolder;
+
+    /** The maximum image size (width or height) to allow when up scaling an image using request parameters. */
+    protected int m_maxScaleSize = CmsImageScaler.SCALE_DEFAULT_MAX_SIZE;
+
+    /**
+     * Creates a new image loader.<p>
+     */
+    public CmsImageLoader() {
+
+        super();
+    }
 
     /**
      * Returns the image down scale parameters,
@@ -159,20 +176,6 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
         return m_enabled;
     }
 
-    /** The name of the configured image cache repository. */
-    protected String m_imageRepositoryFolder;
-
-    /** The maximum image size (width or height) to allow when up scaling an image using request parameters. */
-    protected int m_maxScaleSize = CmsImageScaler.SCALE_DEFAULT_MAX_SIZE;
-
-    /**
-     * Creates a new image loader.<p>
-     */
-    public CmsImageLoader() {
-
-        super();
-    }
-
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
@@ -200,6 +203,13 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
             }
             if (CONFIGURATION_DOWNSCALE.equals(paramName)) {
                 m_downScaleParams = paramValue.trim();
+            }
+
+            if (CONFIGURATION_CONCURRENCY.equals(paramName)) {
+                int concurrency = CmsStringUtil.getIntValue(paramValue, CmsImageScaler.DEFAULT_CONCURRENCY, paramName);
+                if (concurrency > 0) {
+                    CmsImageScaler.setConcurrency(concurrency);
+                }
             }
         }
         super.addConfigurationParameter(paramName, paramValue);
@@ -273,6 +283,57 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
     }
 
     /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
+     */
+    @Override
+    public void initConfiguration() {
+
+        if (CmsStringUtil.isEmpty(m_imageRepositoryFolder)) {
+            m_imageRepositoryFolder = IMAGE_REPOSITORY_DEFAULT;
+        }
+        // initialize the image cache
+        if (m_vfsDiskCache == null) {
+            m_vfsDiskCache = new CmsVfsNameBasedDiskCache(
+                OpenCms.getSystemInfo().getWebApplicationRfsPath(),
+                m_imageRepositoryFolder);
+        }
+        OpenCms.addCmsEventListener(this);
+        // output setup information
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(
+                    Messages.INIT_IMAGE_REPOSITORY_PATH_1,
+                    m_vfsDiskCache.getRepositoryPath()));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(Messages.INIT_IMAGE_SCALING_ENABLED_1, Boolean.valueOf(m_enabled)));
+        }
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
+    throws IOException, CmsException {
+
+        if (m_enabled) {
+            if (canSendLastModifiedHeader(resource, req, res)) {
+                // no image processing required at all
+                return;
+            }
+            // get the scale information from the request
+            CmsImageScaler scaler = new CmsImageScaler(req, m_maxScaleSize, m_maxBlurSize);
+            // load the file from the cache
+            CmsFile file = getScaledImage(cms, resource, scaler);
+            // now perform standard load operation inherited from dump loader
+            super.load(cms, file, req, res);
+        } else {
+            // scaling is disabled
+            super.load(cms, resource, req, res);
+        }
+    }
+
+    /**
      * Returns a scaled version of the given OpenCms VFS image resource.<p>
      *
      * All results are cached in disk.
@@ -324,56 +385,5 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
             m_vfsDiskCache.saveCacheFile(cacheName, file.getContents());
         }
         return file;
-    }
-
-    /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
-     */
-    @Override
-    public void initConfiguration() {
-
-        if (CmsStringUtil.isEmpty(m_imageRepositoryFolder)) {
-            m_imageRepositoryFolder = IMAGE_REPOSITORY_DEFAULT;
-        }
-        // initialize the image cache
-        if (m_vfsDiskCache == null) {
-            m_vfsDiskCache = new CmsVfsNameBasedDiskCache(
-                OpenCms.getSystemInfo().getWebApplicationRfsPath(),
-                m_imageRepositoryFolder);
-        }
-        OpenCms.addCmsEventListener(this);
-        // output setup information
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(
-                Messages.get().getBundle().key(
-                    Messages.INIT_IMAGE_REPOSITORY_PATH_1,
-                    m_vfsDiskCache.getRepositoryPath()));
-            CmsLog.INIT.info(
-                Messages.get().getBundle().key(Messages.INIT_IMAGE_SCALING_ENABLED_1, Boolean.valueOf(m_enabled)));
-        }
-    }
-
-    /**
-     * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    @Override
-    public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
-    throws IOException, CmsException {
-
-        if (m_enabled) {
-            if (canSendLastModifiedHeader(resource, req, res)) {
-                // no image processing required at all
-                return;
-            }
-            // get the scale information from the request
-            CmsImageScaler scaler = new CmsImageScaler(req, m_maxScaleSize, m_maxBlurSize);
-            // load the file from the cache
-            CmsFile file = getScaledImage(cms, resource, scaler);
-            // now perform standard load operation inherited from dump loader
-            super.load(cms, file, req, res);
-        } else {
-            // scaling is disabled
-            super.load(cms, resource, req, res);
-        }
     }
 }
