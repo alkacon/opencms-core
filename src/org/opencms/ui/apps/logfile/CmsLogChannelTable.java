@@ -184,6 +184,9 @@ public class CmsLogChannelTable extends Table {
      */
     private enum LoggerLevel {
 
+        /**Trace level.*/
+        Trace(Level.TRACE, OpenCmsTheme.TABLE_COLUMN_BOX_RED, null),
+
         /**Debug level.*/
         Debug(Level.DEBUG, OpenCmsTheme.TABLE_COLUMN_BOX_RED, null),
 
