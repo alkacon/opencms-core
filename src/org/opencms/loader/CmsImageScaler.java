@@ -73,7 +73,7 @@ public class CmsImageScaler {
     public static final String COLOR_TRANSPARENT = "transparent";
 
     /** Default number of permits for the image scaling semaphore. */
-    public static final int DEFAULT_CONCURRENCY = 4;
+    public static final int DEFAULT_CONCURRENCY = 6;
 
     /** The name of the grayscale image filter. */
     public static final String FILTER_GRAYSCALE = "grayscale";
