@@ -142,10 +142,15 @@ configurations {
     api {
         extendsFrom distribution
     }
+    
+    usedApis {
+    	description = "APIs that should normally be provided by the servlet container, but are also needed for the CmsShell, so they're bundled in the WAR." 
+    }
 
     compile {
         description = 'used to compile the opencms.jar and the modules jars'
         extendsFrom distribution
+        extendsFrom usedApis
     }
     // Default configuration of the java-library plugin
     // It corresponds to our compile configuration, that's why we have to use extendsFrom here
@@ -907,6 +912,7 @@ task war (dependsOn: [
 
     into ('/WEB-INF/lib') { from configurations.distribution }
     into ('/WEB-INF/lib') { from configurations.moduleDeps }
+    into ('/WEB-INF/lib/apis') { from configurations.usedApis }
 
     fileTree('webapp/WEB-INF/setupdata/database'){ include '**/*.jar'}.each {File driverJar ->
         // copy the database drivers into the lib folder
@@ -1461,6 +1467,7 @@ publishing {
         }
     }
 }
+
 
 // add it to keep the old task names
 task install(dependsOn: publishToMavenLocal) {
