@@ -50,7 +50,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsPermalinkResourceHandler;
 import org.opencms.main.OpenCms;
-import org.opencms.ui.dialogs.CmsGalleryOptimizeDialog;
+import org.opencms.ui.util.CmsGalleryFilePreview;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -247,10 +247,10 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
                     OpenCms.getSystemInfo().getOpenCmsContext(),
                     CmsPermalinkResourceHandler.PERMALINK_HANDLER,
                     res.getStructureId().toString()) + suffix;
-                previewLink = permalink + CmsGalleryOptimizeDialog.getScaleQueryString(false);
+                previewLink = permalink + CmsGalleryFilePreview.getScaleQueryString(false);
                 result.setPermalink(permalink);
                 result.setPreviewLink(previewLink);
-                result.setHighResPreviewLink(permalink + CmsGalleryOptimizeDialog.getScaleQueryString(true));
+                result.setHighResPreviewLink(permalink + CmsGalleryFilePreview.getScaleQueryString(true));
                 result.setPreviewInfo1((res.getLength() / 1024) + "kb");
                 CmsProperty imageSizeProp = cms.readPropertyObject(
                     res,

@@ -38,12 +38,10 @@ import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.CmsPermalinkResourceHandler;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
@@ -55,6 +53,7 @@ import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.shared.rpc.I_CmsGwtContextMenuServerRpc;
+import org.opencms.ui.util.CmsGalleryFilePreview;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -78,7 +77,6 @@ import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.data.provider.Query;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Page;
 import com.vaadin.server.SerializableComparator;
 import com.vaadin.server.SerializablePredicate;
@@ -98,7 +96,6 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.ItemCaptionGenerator;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Link;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
@@ -127,7 +124,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
         /**
          * Creates a new instance.
-
+        
          * @param dataItem the data item
          */
         public ContextMenu(DataItem dataItem) {
@@ -693,7 +690,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
          *
          * @return the page info label
          */
-        @SuppressWarnings("synthetic-access")
         private Label createLabelPageInfo() {
 
             String text = "";
@@ -722,7 +718,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
          *
          * @return the page select box
          */
-        @SuppressWarnings("synthetic-access")
         private NativeSelect<Integer> createSelectPage() {
 
             NativeSelect<Integer> selectPage = new NativeSelect<Integer>();
@@ -765,7 +760,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
          *
          * @return the sort order select box
          */
-        @SuppressWarnings("synthetic-access")
         private NativeSelect<String> createSelectSortOrder() {
 
             NativeSelect<String> selectSortOrder = new NativeSelect<String>();
@@ -814,7 +808,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
          *
          * @param query the filter query string
          */
-        @SuppressWarnings("synthetic-access")
         private void handleFilterChange(String query) {
 
             String clean = query.trim();
@@ -830,7 +823,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
          * @param index the index of the page to select
          * @param display whether to re-render the data item list
          */
-        @SuppressWarnings("synthetic-access")
         private void handlePageChange(int index, boolean display) {
 
             m_pageHandler.setCurrentPage(index);
@@ -857,9 +849,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         /** The default serial version UID. */
         private static final long serialVersionUID = 1L;
 
-        /** The data item of this file composite. */
-        private DataItem m_dataItem;
-
         /** The main panel of this file composite. */
         private AbsoluteLayout m_panel;
 
@@ -870,119 +859,18 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
          */
         public FileComposite(DataItem dataItem) {
 
-            m_dataItem = dataItem;
             setSizeUndefined();
             setMargin(true);
             m_panel = new AbsoluteLayout();
             m_panel.setWidth(PANEL_WIDTH);
             m_panel.setHeight(PANEL_HEIGHT);
             m_panel.addStyleName("v-panel");
-            Component link = createClickableFile();
+            Component link = CmsGalleryFilePreview.createClickableFile(
+                dataItem.getResource(),
+                dataItem.getResourceUtil());
             m_panel.addComponent(link, "left: 0px; top: 0px;");
             m_panel.addStyleName("o-optimize-gallery-preview-panel");
             addComponent(m_panel);
-        }
-
-        /**
-         * Creates a clickable file preview.<p>
-         *
-         * @return the clickable file preview
-         */
-        private Component createClickableFile() {
-
-            Component link = m_dataItem.isTypeImage() ? createClickableImage() : createClickableOther();
-            link.setWidth(IMAGE_WIDTH + "px");
-            link.setHeight(IMAGE_HEIGHT + "px");
-            return link;
-        }
-
-        /**
-         * Utility function to create a clickable image.<p>
-         *
-         * @return the clickable image
-         */
-        private Label createClickableImage() {
-
-            CmsResource resource = m_dataItem.getResource();
-            String image = "<img width=\""
-                + IMAGE_WIDTH
-                + "px\" height=\""
-                + IMAGE_HEIGHT
-                + "px\" src=\""
-                + getScaleUri(resource, false)
-                + "\""
-                + " srcset=\""
-                + getScaleUri(resource, true)
-                + " 2x"
-                + "\" "
-                + " onerror='cmsJsFunctions.handleBrokenImage(this)' "
-                + " >";
-            String a = "<a target=\"_blank\" href=\"" + getPermanentUri(resource) + "\">" + image + "</a>";
-            String div = "<div class=\""
-                + OpenCmsTheme.GALLERY_PREVIEW_IMAGE
-                + "\" style=\"width:"
-                + IMAGE_WIDTH
-                + "px;height:"
-                + IMAGE_HEIGHT
-                + "px;\">"
-                + a
-                + "</div>";
-            Label label = new Label(div);
-            label.setContentMode(ContentMode.HTML);
-            return label;
-        }
-
-        /**
-         * Utility function to create a clickable preview for files that are not images.
-         *
-         * @return the clickable preview
-         */
-        private Link createClickableOther() {
-
-            CmsResource resource = m_dataItem.getResource();
-            CmsCssIcon cssIcon = (CmsCssIcon)m_dataItem.getResourceUtil().getSmallIconResource();
-            String caption = "<div style=\"width:"
-                + IMAGE_WIDTH
-                + "px;height:"
-                + IMAGE_HEIGHT
-                + "px;display: flex; justify-content: center; align-items: center;\"><span class=\""
-                + cssIcon.getStyleName()
-                + "\" style=\"transform: scale(4);\"></span></div>";
-            Link link = new Link(caption, new ExternalResource(getPermanentUri(resource)));
-            link.setCaptionAsHtml(true);
-            link.setTargetName("_blank");
-            return link;
-        }
-
-        /**
-         * Utility function to create a permanent URI for a file preview.<p>
-         *
-         * @param resource the CMS resource
-         * @return the permanent URI
-         */
-        private String getPermanentUri(CmsResource resource) {
-
-            String structureId = resource.getStructureId().toString();
-            String extension = CmsResource.getExtension(resource.getRootPath());
-            String suffix = (extension != null) ? "." + extension : "";
-            String permalink = CmsStringUtil.joinPaths(
-                OpenCms.getSystemInfo().getOpenCmsContext(),
-                CmsPermalinkResourceHandler.PERMALINK_HANDLER,
-                structureId) + suffix;
-            return permalink;
-        }
-
-        /**
-         * Utility function to create a permanent URI for a scaled preview image.<p>
-         *
-         * @param resource the CMS resource
-         * @param highres if true, generate high resolution scaling uri
-         * @return the scale URI
-         */
-        private String getScaleUri(CmsResource resource, boolean highres) {
-
-            String paramTimestamp = "&timestamp=" + System.currentTimeMillis();
-            return getPermanentUri(resource) + getScaleQueryString(highres) + paramTimestamp;
         }
     }
 
@@ -1369,7 +1257,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
          *
          * @return the total number of items
          */
-        @SuppressWarnings("synthetic-access")
         public int getSizeItem() {
 
             return m_provider.size(m_filterHandler);
@@ -1657,12 +1544,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
     }
 
-    /** The height of the preview images. */
-    public static final int IMAGE_HEIGHT = 170;
-
-    /** The width of the preview images. */
-    public static final int IMAGE_WIDTH = 200;
-
     /** The sort order session attribute. */
     static final String GALLERY_OPTIMIZE_ATTR_SORT_ORDER = "GALLERY_OPTIMIZE_ATTR_SORT_ORDER";
 
@@ -1759,30 +1640,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         dataListLoad();
         displayDataListHeaderView();
         displayDataListViewSorted(getSessionSortOrder());
-    }
-
-    /**
-     * Gets the scaling parameters for the preview.
-     *
-     * @param highres if true, generates high-resolution scaling parameters
-     * @return the scaling parameters
-     */
-    public static String getScaleParameter(boolean highres) {
-
-        int m = highres ? 2 : 1;
-        String suffix = highres ? ",q:85" : "";
-        return "t:9,w:" + (m * IMAGE_WIDTH) + ",h:" + (m * IMAGE_HEIGHT) + suffix;
-
-    }
-
-    /**
-     * Gets the scaling query string for the preview.
-     * @param highres if true, generates high-resolution scaling query string
-     * @return the scaling parameters
-     */
-    public static String getScaleQueryString(boolean highres) {
-
-        return "?__scale=" + getScaleParameter(highres);
     }
 
     /**
@@ -1901,7 +1758,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             String message = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_CONFIRM_DELETE_0);
             CmsConfirmationDialog confirmationDialog = CmsConfirmationDialog.show(title, message, new Runnable() {
 
-                @SuppressWarnings("synthetic-access")
                 @Override
                 public void run() {
 
@@ -1913,7 +1769,6 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                 }
             }, new Runnable() {
 
-                @SuppressWarnings("synthetic-access")
                 @Override
                 public void run() {
 
@@ -1979,7 +1834,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
      *
      * @param text the text (HTML) to display in the box
      * @param styles the additional CSS styles for the info box
-     * @return
+     * @return the info box
      */
     private HorizontalLayout createNote(String text, String... styles) {
 
