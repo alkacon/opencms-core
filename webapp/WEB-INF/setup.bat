@@ -2,8 +2,8 @@
 
 SET "WEB_INF="
 
-IF DEFINED OPENCMS_HOME (
-    SET "WEB_INF=%OPENCMS_HOME%"
+IF DEFINED OPENCMS_WEB_INF (
+    SET "WEB_INF=%OPENCMS_WEB_INF%"
 ) ELSE (
     REM Get the directory of the current batch file
     FOR %%i IN ("%~dp0.") DO SET "WEB_INF=%%~fi"

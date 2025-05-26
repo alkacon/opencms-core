@@ -1,9 +1,9 @@
 #!/bin/bash
  
-if [ -z "$OPENCMS_HOME" ] ; then
+if [ -z "$OPENCMS_WEB_INF" ] ; then
 	WEB_INF=$(dirname $(readlink -f ${0}))
 else
-	WEB_INF="$OPENCMS_HOME"
+	WEB_INF="$OPENCMS_WEB_INF"
 fi
 
 PARAMS="${@}"
