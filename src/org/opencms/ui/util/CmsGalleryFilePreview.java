@@ -54,6 +54,17 @@ public final class CmsGalleryFilePreview {
     public static final int IMAGE_WIDTH = 200;
 
     /**
+     * Creates a clickable file preview.
+     * @param resource the resource to create the preview for
+     * @return the clickable file preview
+     */
+    public static Component createClickableFile(CmsResource resource) {
+
+        CmsResourceUtil resourceUtil = new CmsResourceUtil(resource);
+        return createClickableFile(resource, resourceUtil);
+    }
+
+    /**
      * Creates a clickable file preview.<p>
      * @param resource the resource to create the preview for
      * @param resourceUtil the resource util
@@ -62,7 +73,7 @@ public final class CmsGalleryFilePreview {
      */
     public static Component createClickableFile(CmsResource resource, CmsResourceUtil resourceUtil) {
 
-        Component preview = isTypeImage(resource)
+        Component preview = (resource == null) || isTypeImage(resource)
         ? createClickableImage(resource)
         : createClickableOther(resource, resourceUtil);
         preview.setWidth(IMAGE_WIDTH + "px");
@@ -88,24 +99,22 @@ public final class CmsGalleryFilePreview {
      */
     private static Label createClickableImage(CmsResource resource) {
 
+        String scaleUri = resource == null ? "#" : CmsGalleryFilePreview.getScaleUri(resource, false);
+        String permanentUri = resource == null ? "#" : CmsGalleryFilePreview.getPermanentUri(resource);
         String image = "<img width=\""
             + IMAGE_WIDTH
             + "px\" height=\""
             + IMAGE_HEIGHT
             + "px\" src=\""
-            + CmsGalleryFilePreview.getScaleUri(resource, false)
+            + scaleUri
             + "\""
             + " srcset=\""
-            + CmsGalleryFilePreview.getScaleUri(resource, true)
+            + scaleUri
             + " 2x"
             + "\" "
             + " onerror='cmsJsFunctions.handleBrokenImage(this)' "
             + " >";
-        String a = "<a target=\"_blank\" href=\""
-            + CmsGalleryFilePreview.getPermanentUri(resource)
-            + "\">"
-            + image
-            + "</a>";
+        String a = "<a target=\"_blank\" href=\"" + permanentUri + "\">" + image + "</a>";
         String div = "<div class=\""
             + OpenCmsTheme.GALLERY_PREVIEW_IMAGE
             + "\" style=\"width:"
