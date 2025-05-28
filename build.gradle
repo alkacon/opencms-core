@@ -5,16 +5,21 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 apply plugin: 'eclipse'
 
+
 buildscript {
     dependencies {
         classpath group: 'com.liferay', name: 'com.liferay.gradle.plugins.tlddoc.builder', version: '2.0.1'
+        classpath("io.github.gradle-nexus.publish-plugin:io.github.gradle-nexus.publish-plugin.gradle.plugin:2.0.0")
     }
     repositories {
         mavenLocal()
         mavenCentral()
+        gradlePluginPortal()
     }
 }
 apply plugin: 'com.liferay.tlddoc.builder'
+apply plugin: 'io.github.gradle-nexus.publish-plugin'
+group = "org.opencms"
 
 buildDir = build_directory
 
@@ -23,10 +28,19 @@ java {
     targetCompatibility = JavaVersion.toVersion(java_target_version)
 }
 signing {
-
-    /* Uncomment if you want to use the external gpg command - this requires setting all of signing.gnupg.(keyName|passPhrase|useLegacyGpg) */
-    //useGpgCmd()
+    useGpgCmd()
 }
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
+        }
+    }
+}
+
+
 
 // use the same properties file as the OpenCms core does for the version information
 // please note that in a Jenkins CI build, this properties file should be dynamically generated
@@ -1199,7 +1213,7 @@ task testGwt(type: Test, dependsOn: [compileTestGwtJava]) {
 artifacts {
     archives sourcesJar
 
-    if (project.hasProperty('publish_repository')) {
+	if (gradle.startParameter.taskNames.contains("uploadArchives")) {
         // do not include the war if only running the install task, it takes ages to build
         archives war
         archives resourcesJar
@@ -1246,17 +1260,6 @@ artifacts {
 
 
 publishing {
-    if (project.hasProperty('publish_repository')){
-        repositories {
-            maven {
-                credentials {
-                    username publish_user
-                    password publish_password
-                }
-                url publish_repository
-            }
-        }
-    }
     publications { pubs ->
         core(MavenPublication) {
             from components.java
@@ -1427,7 +1430,7 @@ publishing {
                 }
             }
         }
-        if (project.hasProperty('publish_repository')) {
+        if (gradle.startParameter.taskNames.contains("uploadArchives")) {
             webapp(MavenPublication) {
                 artifact war
                 pom {
@@ -1476,13 +1479,12 @@ task install(dependsOn: publishToMavenLocal) {
     }
 }
 
-if (project.hasProperty('publish_repository')) {
-    task uploadArchives(dependsOn: publish) {
-        doFirst {
-            println "Upload artifacts for version $version"
-        }
+task uploadArchives { // dependency tasks are set dynamically via afterEvaluate
+    doFirst {
+        println "Upload artifacts for version $version"
     }
 }
+
 
 // fixed issue with libraries containing both .java and .class files
 tasks.withType(JavaCompile) {
@@ -1513,4 +1515,10 @@ tasks.withType(CopySpec) {
 // So just disable the module metadata - there is no benefit from it right now.
 tasks.withType(GenerateModuleMetadata) {
     enabled = false
+}
+
+
+afterEvaluate {
+	def uploadArchivesDeps = [tasks.findByName("publishToSonatype"), tasks.findByName("closeSonatypeStagingRepository")]
+	tasks.findByName("uploadArchives").dependsOn(uploadArchivesDeps) 
 }
