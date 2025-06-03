@@ -110,13 +110,6 @@ div.expiredListElementOverlay{
 
 
 
-div.toolbarToggle{
-	position: fixed;
-	left: 97%;
-	top: -3px;
-	padding: 3px 3px 1px 3px;
-	z-index: value("constants.css.zIndexPopup");
-}
 
 oc-editpoint.oc-option-bar .cmsState, oc-editpoint.oc-option-bar .html-face, oc-editpoint.oc-option-bar span{
 	margin: 0;

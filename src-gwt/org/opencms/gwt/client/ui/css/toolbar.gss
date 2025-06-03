@@ -86,7 +86,7 @@
 	top: 0px;
 	right: 0px;
 	position: fixed;
-	z-index: value("constants.css.zIndexPopup"); 
+	z-index: value("constants.css.zIndexToolbar"); 
 }
 
 .opencms .oc-toolbar { 

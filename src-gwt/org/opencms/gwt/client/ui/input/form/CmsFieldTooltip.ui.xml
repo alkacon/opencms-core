@@ -4,8 +4,9 @@
     xmlns:cms="urn:import:org.opencms.gwt.client.ui">
     <ui:with field="constants" type="org.opencms.gwt.client.ui.css.I_CmsConstantsBundle" />
     <ui:style>
+    	@def Z_INDEX eval("org.opencms.gwt.client.ui.css.I_CmsConstantsBundle.INSTANCE.css().zIndexPopup()");
         .tooltip {
-            z-index: 200000;
+            z-index: Z_INDEX;
             position: absolute;
             width: 400px;
             border-radius: 4px;

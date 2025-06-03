@@ -119,7 +119,6 @@ public class CmsClientVariantDisplay {
         m_popup.getGlassElement().addClassName(I_CmsLayoutBundle.INSTANCE.generalCss().opencms());
         m_popup.getGlassElement().getStyle().setBackgroundColor("white");
         m_popup.getGlassElement().getStyle().setOpacity(0.8);
-        m_popup.getElement().getStyle().setZIndex(200000);
         popup.center();
 
         popup.addCloseHandler(new CloseHandler<PopupPanel>() {
