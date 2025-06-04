@@ -191,17 +191,13 @@ public class CmsJspBean {
      * This method is required since JSP's are handled in a special way for included template elements,
      * so {@link javax.servlet.ServletResponse#setContentType(java.lang.String)} won't work.<p>
      *
-     * Please note that the content type set this way is never cached in the Flex cache,
-     * so you must make sure to not cache the element when you use this method.<p>
-     *
      * @param type the type to set
      *
      * @see javax.servlet.ServletResponse#setContentType(java.lang.String)
      */
     public void setContentType(String type) {
 
-        // set the content type on the top level response
-        m_controller.getTopResponse().setContentType(type);
+        m_controller.setContentType(type);
     }
 
     /**
