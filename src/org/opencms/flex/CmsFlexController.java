@@ -450,6 +450,54 @@ public class CmsFlexController {
     }
 
     /**
+     * Method overload from the standard HttpServletResponse API.<p>
+     *
+     * The method is added to the controller itself,
+     * to automatically have the correct choice for the response to set the header.
+     *
+     * @param name
+     * @param date
+     *
+     * @see javax.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
+     */
+    public void addDateHeader(String name, long date) {
+
+        getCurrentResponse().addDateHeader(name, date);
+    }
+
+    /**
+     * Method overload from the standard HttpServletResponse API.<p>
+     *
+     * The method is added to the controller itself,
+     * to automatically have the correct choice for the response to set the header.
+     *
+     * @param name
+     * @param value
+     *
+     * @see javax.servlet.http.HttpServletResponse#addHeader(java.lang.String, java.lang.String)
+     */
+    public void addHeader(String name, String value) {
+
+        getCurrentResponse().addHeader(name, value);
+    }
+
+    /**
+     * Method overload from the standard HttpServletResponse API.<p>
+     *
+     * The method is added to the controller itself,
+     * to automatically have the correct choice for the response to set the header.
+     *
+     * @param name
+     * @param value
+     *
+     * @see javax.servlet.http.HttpServletResponse#addIntHeader(java.lang.String, int)
+     */
+    public void addIntHeader(String name, int value) {
+
+        getCurrentResponse().addIntHeader(name, value);
+    }
+
+    /**
      * Clears all data of this controller.<p>
      */
     public void clear() {
@@ -730,6 +778,22 @@ public class CmsFlexController {
     }
 
     /**
+     * Method overload from the standard HttpServletResponse API.<p>
+     *
+     * The method is added to the controller itself,
+     * to automatically have the correct choice for the response to set the header.
+     *
+     * @param name
+     * @param date
+     *
+     * @see javax.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
+     */
+    public void setDateHeader(String name, long date) {
+
+        getCurrentResponse().setDateHeader(name, date);
+    }
+
+    /**
      * Sets the value of the "forward mode" flag.<p>
      *
      * @param value the forward mode to set
@@ -737,6 +801,38 @@ public class CmsFlexController {
     public void setForwardMode(boolean value) {
 
         m_forwardMode = value;
+    }
+
+    /**
+     * Method overload from the standard HttpServletResponse API.<p>
+     *
+     * The method is added to the controller itself,
+     * to automatically have the correct choice for the response to set the header.
+     *
+     * @param name
+     * @param value
+     *
+     * @see javax.servlet.http.HttpServletResponse#setHeader(java.lang.String, java.lang.String)
+     */
+    public void setHeader(String name, String value) {
+
+        getCurrentResponse().setHeader(name, value);
+    }
+
+    /**
+     * Method overload from the standard HttpServletResponse API.<p>
+     *
+     * The method is added to the controller itself,
+     * to automatically have the correct choice for the response to set the header.
+     *
+     * @param name
+     * @param value
+     *
+     * @see javax.servlet.http.HttpServletResponse#setIntHeader(java.lang.String, int)
+     */
+    public void setIntHeader(String name, int value) {
+
+        getCurrentResponse().setIntHeader(name, value);
     }
 
     /**
