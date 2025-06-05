@@ -27,6 +27,7 @@
 
 package org.opencms.acacia.client.ui;
 
+import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
@@ -53,6 +54,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import jsinterop.base.Js;
 
 /**
  * In-line edit overlay covering rest of the page.<p>
@@ -165,6 +168,21 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
         m_main = uiBinder.createAndBindUi(this);
         initWidget(m_main);
         m_element = element;
+        elemental2.dom.Element elem = Js.cast(m_element);
+        List<elemental2.dom.Element> inactive = elem.querySelectorAll(
+            ".oc-container, .oc-not-inline-editable").asList();
+        for (elemental2.dom.Element candidate : inactive) {
+            boolean isRoot = true;
+            for (elemental2.dom.Element other : inactive) {
+                if ((other != candidate) && other.contains(candidate)) {
+                    isRoot = false;
+                    break;
+                }
+            }
+            if (isRoot) {
+                candidate.classList.add(I_CmsLayoutBundle.INSTANCE.containerpageCss().inlineEditDisabled());
+            }
+        }
         m_overlayLeftStyle = m_overlayLeft.getStyle();
         m_overlayBottomStyle = m_overlayBottom.getStyle();
         m_overlayRightStyle = m_overlayRight.getStyle();
@@ -358,6 +376,21 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
                 ((CmsInlineEntityWidget)widget).positionWidget();
             }
         }
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Composite#onDetach()
+     */
+    @Override
+    protected void onDetach() {
+
+        super.onDetach();
+        elemental2.dom.Element elem = Js.cast(m_element);
+        List<elemental2.dom.Element> inactive = elem.querySelectorAll(
+            "." + I_CmsLayoutBundle.INSTANCE.containerpageCss().inlineEditDisabled()).asList();
+        inactive.forEach(
+            elem2 -> elem2.classList.remove(I_CmsLayoutBundle.INSTANCE.containerpageCss().inlineEditDisabled()));
+
     }
 
     /**
