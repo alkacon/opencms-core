@@ -158,6 +158,9 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
     /** Style of overlay. */
     private Style m_overlayTopStyle;
 
+    /** Elements marked as non inline editable, for which an overlay is displayed. */
+    private List<elemental2.dom.Element> m_disabledElements = new ArrayList<>();
+
     /**
      * Constructor.<p>
      *
@@ -168,21 +171,6 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
         m_main = uiBinder.createAndBindUi(this);
         initWidget(m_main);
         m_element = element;
-        elemental2.dom.Element elem = Js.cast(m_element);
-        List<elemental2.dom.Element> inactive = elem.querySelectorAll(
-            ".oc-container, .oc-not-inline-editable").asList();
-        for (elemental2.dom.Element candidate : inactive) {
-            boolean isRoot = true;
-            for (elemental2.dom.Element other : inactive) {
-                if ((other != candidate) && other.contains(candidate)) {
-                    isRoot = false;
-                    break;
-                }
-            }
-            if (isRoot) {
-                candidate.classList.add(I_CmsLayoutBundle.INSTANCE.containerpageCss().inlineEditDisabled());
-            }
-        }
         m_overlayLeftStyle = m_overlayLeft.getStyle();
         m_overlayBottomStyle = m_overlayBottom.getStyle();
         m_overlayRightStyle = m_overlayRight.getStyle();
@@ -319,6 +307,30 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
     }
 
     /**
+     * Initializes the overlay for 'disabled' (not inline editable) elements.
+     */
+    public void initDisabled() {
+
+        clearDisabled();
+        elemental2.dom.Element elem = Js.cast(m_element);
+        List<elemental2.dom.Element> inactive = elem.querySelectorAll(
+            ".oc-container, .oc-not-inline-editable").asList();
+        for (elemental2.dom.Element candidate : inactive) {
+            boolean isRoot = true;
+            for (elemental2.dom.Element other : inactive) {
+                if ((other != candidate) && other.contains(candidate)) {
+                    isRoot = false;
+                    break;
+                }
+            }
+            if (isRoot) {
+                m_disabledElements.add(candidate);
+                candidate.classList.add(I_CmsLayoutBundle.INSTANCE.containerpageCss().inlineEditDisabled());
+            }
+        }
+    }
+
+    /**
      * Updates the position of the given button widget.<p>
      *
      * @param widget the button widget
@@ -385,12 +397,18 @@ public class CmsInlineEditOverlay extends Composite implements HasClickHandlers 
     protected void onDetach() {
 
         super.onDetach();
-        elemental2.dom.Element elem = Js.cast(m_element);
-        List<elemental2.dom.Element> inactive = elem.querySelectorAll(
-            "." + I_CmsLayoutBundle.INSTANCE.containerpageCss().inlineEditDisabled()).asList();
-        inactive.forEach(
-            elem2 -> elem2.classList.remove(I_CmsLayoutBundle.INSTANCE.containerpageCss().inlineEditDisabled()));
+        clearDisabled();
 
+    }
+
+    /**
+     * Clears the overlay for non inline editable elements.
+     */
+    private void clearDisabled() {
+
+        m_disabledElements.forEach(
+            elem2 -> elem2.classList.remove(I_CmsLayoutBundle.INSTANCE.containerpageCss().inlineEditDisabled()));
+        m_disabledElements.clear();
     }
 
     /**

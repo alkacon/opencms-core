@@ -379,7 +379,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
      * @param tabInfos the tab informations
      * @param context the context element
      * @param scrollParent the scroll element to be used for automatic scrolling during drag and drop
-    
+
      */
     public void renderEntityForm(String entityId, List<CmsTabInfo> tabInfos, Panel context, Element scrollParent) {
 
@@ -468,6 +468,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
             CmsType type = m_entityBackend.getType(m_entity.getTypeName());
             CmsButtonBarHandler.INSTANCE.setWidgetService(m_widgetService);
             m_widgetService.getRendererForType(type).renderInline(m_entity, formParent, this, m_rootHandler, 0);
+            CmsInlineEditOverlay.getRootOverlay().initDisabled();
             CmsUndoRedoHandler.getInstance().initialize(m_entity, this, m_rootHandler);
         }
     }
