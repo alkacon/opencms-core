@@ -63,6 +63,15 @@ public class CmsPathSelectField extends A_CmsFileSelectField<String> {
     }
 
     /**
+     * Returns the placeholder.
+     * @return the placeholder
+     */
+    public String getPlaceholder() {
+
+        return m_textField.getPlaceholder();
+    }
+
+    /**
      * @see com.vaadin.ui.AbstractField#getType()
      */
     @Override
