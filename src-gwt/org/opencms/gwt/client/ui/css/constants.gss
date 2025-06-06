@@ -226,8 +226,8 @@
 @def zIndexToolbar 200000;
 
 @def zIndexGroupContainer 190000;
-/** Used during drag and drop. */
-@def zIndexDND 250000;
+/** Used during drag and drop, and for tooltips. Should be greater than zIndexPopup. */
+@def zIndexDND 350000;
 /** Used for highlighting. */
 @def zIndexHighlighting 140000;
 /** Used for positioned UI elements. */
