@@ -109,11 +109,13 @@ div.expiredListElementOverlay{
 }
 
 .inlineEditDisabled {
-position: relative !important;
+	position: relative !important;
+	overflow-y: hidden !important;
 }
 
 .inlineEditDisabled::before {
-  background-image: value("constants.css.gradientInvalid") !important;
+  background-image: repeating-linear-gradient(45deg, #aaa, #aaa 10px, #000 10px, #000 20px) !important;
+  opacity: .4;
   content: ""; 
   position: absolute;
   display: block;
@@ -122,8 +124,6 @@ position: relative !important;
   bottom: 0;
   left: 0;
   z-index: 10;
-  opacity: 0.6;
-  
 }
 
 oc-editpoint.oc-option-bar .cmsState, oc-editpoint.oc-option-bar .html-face, oc-editpoint.oc-option-bar span{
