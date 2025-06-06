@@ -45,15 +45,15 @@ import org.opencms.util.CmsStringUtil;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
-import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.CustomField;
-import com.vaadin.v7.ui.Label;
-import com.vaadin.v7.ui.TextField;
 
 /**
  * Abstract file select field. Used by {@link org.opencms.ui.components.fileselect.CmsPathSelectField}.<p>
@@ -123,7 +123,7 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> implements 
     }
 
     /**
-     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroup.I_HasError#hasEditableGroupError()
+     * @see org.opencms.ui.components.editablegroup.CmsEditableGroup.I_HasError#hasEditableGroupError()
      */
     public boolean hasEditableGroupError() {
 
@@ -158,6 +158,10 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> implements 
 
     }
 
+    /**
+     * Sets the base path.
+     * @param path the base path
+     */
     public void setBasePath(String path) {
 
         m_basePath = path;
@@ -364,6 +368,10 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> implements 
      */
     protected abstract void setResourceValue(CmsResource resource);
 
+    /**
+     * Returns the window caption.
+     * @return the window caption.
+     */
     private String getWindowCaption() {
 
         if (m_requireFolder) {

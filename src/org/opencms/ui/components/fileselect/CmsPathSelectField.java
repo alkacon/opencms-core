@@ -52,21 +52,12 @@ public class CmsPathSelectField extends A_CmsFileSelectField<String> {
      */
     public CmsPathSelectField() {
 
-        m_textField.addValueChangeListener(new ValueChangeListener() {
+        m_textField.addValueChangeListener(event -> {
 
-            private static final long serialVersionUID = 1L;
-
-            @SuppressWarnings("synthetic-access")
-            public void valueChange(com.vaadin.v7.data.Property.ValueChangeEvent event) {
-
-                String value = (String)(event.getProperty().getValue());
-                if (!m_settingInternalValue) {
-                    setInternalValue(value);
-                    fireValueChange(false);
-                }
-
+            if (!m_settingInternalValue) {
+                setInternalValue(event.getValue());
+                fireValueChange(false);
             }
-
         });
 
     }
@@ -99,6 +90,15 @@ public class CmsPathSelectField extends A_CmsFileSelectField<String> {
     public boolean isUseRootPaths() {
 
         return m_useRootPaths;
+    }
+
+    /**
+     * Sets the placeholder.
+     * @param placeholder the placeholder
+     */
+    public void setPlaceholder(String placeholder) {
+
+        m_textField.setPlaceholder(placeholder);
     }
 
     /**
