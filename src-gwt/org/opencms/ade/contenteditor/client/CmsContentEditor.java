@@ -46,6 +46,7 @@ import org.opencms.acacia.shared.CmsTabInfo;
 import org.opencms.acacia.shared.CmsType;
 import org.opencms.acacia.shared.CmsValidationResult;
 import org.opencms.ade.containerpage.client.CmsContainerpageController;
+import org.opencms.ade.containerpage.client.CmsContentEditorHandler;
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.ade.contenteditor.shared.CmsComplexWidgetData;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
@@ -79,6 +80,7 @@ import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
@@ -1360,6 +1362,7 @@ public final class CmsContentEditor extends CmsEditorBase {
 
         // store the scroll position
         int scrollTop = RootPanel.getBodyElement().getOwnerDocument().getScrollTop();
+        CmsContentEditorHandler.scrollPosition = Integer.valueOf(scrollTop);
         setEditorState(false);
         unlockResource();
         if (m_onClose != null) {
@@ -1879,6 +1882,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         boolean unlock = shouldUnlockAutomatically();
         // store the scroll position
         final int scrollTop = RootPanel.getBodyElement().getOwnerDocument().getScrollTop();
+        CmsContentEditorHandler.scrollPosition = Integer.valueOf(scrollTop);
         saveAndDeleteEntities(unlock, new I_CmsSimpleCallback<Boolean>() {
 
             public void execute(final Boolean hasChangedSettings) {

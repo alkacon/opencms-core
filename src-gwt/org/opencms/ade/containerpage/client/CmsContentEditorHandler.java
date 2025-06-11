@@ -66,8 +66,10 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 
+import elemental2.dom.DomGlobal;
 import jsinterop.base.Js;
 
 /**
@@ -82,6 +84,9 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
 
     /** Content editor hash key used for history management. */
     private static final String EDITOR_HASH_KEY = "cE:";
+
+    /** Saved scroll position. */
+    public static Integer scrollPosition;
 
     /** The container-page handler. */
     CmsContainerpageHandler m_handler;
@@ -147,6 +152,20 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 if (reloadCounter[0] <= 0) {
                     m_todo.forEach(item -> item.run());
                 }
+                if (scrollPosition != null) {
+                    final int top = scrollPosition.intValue();
+                    scrollPosition = null;
+                    Timer timer = new Timer() {
+
+                        @Override
+                        public void run() {
+
+                            DomGlobal.document.documentElement.scrollTop = top;
+                        }
+
+                    };
+                    timer.schedule(1);
+                }
 
             }
 
@@ -174,10 +193,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                         CmsContainerpageController.getServerId(m_currentElementId)));
             }
             reloadCounter[0] += 1;
-            m_handler.m_controller.replaceElement(
-                m_replaceElement,
-                m_currentElementId,
-                reloadHandler);
+            m_handler.m_controller.replaceElement(m_replaceElement, m_currentElementId, reloadHandler);
             m_replaceElement = null;
             if (m_dependingElementId != null) {
                 reloadCounter[0] += 1;
@@ -186,7 +202,9 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
             }
         } else if (m_dependingElementId != null) {
             reloadCounter[0] += 1;
-            m_handler.m_controller.reloadElements(new String[] {m_currentElementId, m_dependingElementId}, reloadHandler);
+            m_handler.m_controller.reloadElements(
+                new String[] {m_currentElementId, m_dependingElementId},
+                reloadHandler);
             m_dependingElementId = null;
         } else {
             reloadCounter[0] += 1;
