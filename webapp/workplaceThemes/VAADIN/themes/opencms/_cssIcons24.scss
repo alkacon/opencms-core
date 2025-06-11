@@ -1,6 +1,6 @@
 @mixin o-css-icons-24 {
 
-[class^="oc-icon-24-"], 
+[class^="oc-icon-24-"],
 [class*=" oc-icon-24-"] {
   display: inline-block;
   background-repeat: no-repeat;
@@ -386,6 +386,16 @@
   width: 24px;
   height: 24px;
   background-position: -440px -160px;
+}
+.oc-icon-24-tenant {
+  width: 24px;
+  height: 24px;
+  background-position: -480px -160px;
+}
+.oc-icon-24-subtenant {
+  width: 24px;
+  height: 24px;
+  background-position: -520px -160px;
 }
 
 }
