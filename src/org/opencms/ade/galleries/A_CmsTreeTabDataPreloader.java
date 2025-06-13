@@ -34,6 +34,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.util.CmsStringUtil;
 
@@ -158,7 +159,7 @@ public abstract class A_CmsTreeTabDataPreloader<T extends I_CmsGalleryTreeEntry<
         String commonPath = getCommonAncestorPath(resources);
         try {
             m_rootResource = m_cms.readResource(m_commonRoot, m_filter);
-        } catch (CmsVfsResourceNotFoundException e) {
+        } catch (CmsVfsResourceNotFoundException | CmsPermissionViolationException e) {
             String currentPath = commonPath;
             String lastWorkingPath = null;
             while (m_cms.existsResource(currentPath, m_filter)) {
