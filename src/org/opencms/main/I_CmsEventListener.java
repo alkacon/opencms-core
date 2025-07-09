@@ -256,21 +256,6 @@ public interface I_CmsEventListener {
     int EVENT_REBUILD_SEARCHINDEXES = 32;
 
     /**
-     * Event "reindex" in the online project.<p>
-     *
-     * Note we split offline/online in two events since only for the online project, the event has to be forwarded in a cluster.<p>
-     *
-     * Event data:
-     * <ul>
-     * <li><code>{@link #KEY_RESOURCES}</code>: a list of {@link org.opencms.file.CmsResource}.</li>
-     * <li><code>{@link #KEY_REPORT}</code>: a <code>{@link org.opencms.report.I_CmsReport}</code> to print output messages to</li>
-     * <li><code>{@link #KEY_USER_ID}</code>: id of the user triggering the action. Used to show a message on success/failure.</li>
-     * <li><code>{@link #KEY_REINDEX_RELATED}</code>: flag, indicating if related resources should be reindexed as well.</li>
-     * </ul>
-     */
-    int EVENT_REINDEX_ONLINE = 34;
-
-    /**
      * Event "reindex" in an offline project.<p>
      *
      * Note we split offline/online in two events since only for the online project, the event has to be forwarded in a cluster.<p>
@@ -285,6 +270,21 @@ public interface I_CmsEventListener {
      * </ul>
      */
     int EVENT_REINDEX_OFFLINE = 35;
+
+    /**
+     * Event "reindex" in the online project.<p>
+     *
+     * Note we split offline/online in two events since only for the online project, the event has to be forwarded in a cluster.<p>
+     *
+     * Event data:
+     * <ul>
+     * <li><code>{@link #KEY_RESOURCES}</code>: a list of {@link org.opencms.file.CmsResource}.</li>
+     * <li><code>{@link #KEY_REPORT}</code>: a <code>{@link org.opencms.report.I_CmsReport}</code> to print output messages to</li>
+     * <li><code>{@link #KEY_USER_ID}</code>: id of the user triggering the action. Used to show a message on success/failure.</li>
+     * <li><code>{@link #KEY_REINDEX_RELATED}</code>: flag, indicating if related resources should be reindexed as well.</li>
+     * </ul>
+     */
+    int EVENT_REINDEX_ONLINE = 34;
 
     /**
      * Event "all properties (and so the resource itself, too) have been modified".<p>
@@ -406,6 +406,9 @@ public interface I_CmsEventListener {
     /** Key name for passing a comma separated list of search index names in the data map. */
     String KEY_INDEX_NAMES = "indexNames";
 
+    /** Event attribute to mark publish events as 'instant publish', which happens when resources in online-only folders are modified. */ 
+    String KEY_INSTANT_PUBLISH = "instantPublish";
+
     /** Key name for passing a flag, indicating if we are in the online project. */
     String KEY_IS_ONLINE = "isOnline";
 
@@ -454,6 +457,9 @@ public interface I_CmsEventListener {
     /** Marker for "all events". */
     Integer LISTENERS_FOR_ALL_EVENTS = Integer.valueOf(-1);
 
+    /** Value to mark modification events from sibling creation. */
+    String VALUE_CREATE_SIBLING = "createSibling";
+
     /** Value for the "group modified" action. */
     String VALUE_GROUP_MODIFIED_ACTION_CREATE = "createGroup";
 
@@ -489,9 +495,6 @@ public interface I_CmsEventListener {
 
     /** Value for the "user modified" action. */
     String VALUE_USER_MODIFIED_ACTION_WRITE_USER = "writeUser";
-
-    /** Value to mark modification events from sibling creation. */
-    String VALUE_CREATE_SIBLING = "createSibling";
 
     /**
      * Acknowledge the occurrence of the specified event, implement this

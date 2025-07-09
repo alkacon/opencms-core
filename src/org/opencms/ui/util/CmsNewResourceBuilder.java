@@ -41,6 +41,7 @@ import org.opencms.gwt.CmsTemplateFinder;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
+import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -257,16 +258,29 @@ public class CmsNewResourceBuilder {
      */
     public CmsResource createResource() throws CmsException {
 
-        String path = OpenCms.getResourceManager().getNameGenerator().getNewFileName(
-            m_cms,
-            m_pathWithPattern,
-            5,
-            m_explorerNameGeneration);
-        Locale contentLocale = OpenCms.getLocaleManager().getDefaultLocale(m_cms, CmsResource.getFolderPath(path));
         CmsRequestContext context = m_cms.getRequestContext();
         if (m_modelResource != null) {
             context.setAttribute(CmsRequestContext.ATTRIBUTE_MODEL, m_modelResource.getRootPath());
         }
+
+        String name = null;
+        for (CmsPropertyModification propMod : m_propChanges.getChanges()) {
+            if (propMod.isFileNameProperty()) {
+                name = propMod.getValue();
+            }
+        }
+        String path = null;
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
+            path = OpenCms.getResourceManager().getNameGenerator().getNewFileName(
+                m_cms,
+                m_pathWithPattern,
+                5,
+                m_explorerNameGeneration);
+        } else {
+            String parent = CmsResource.getParentFolder(m_pathWithPattern);
+            path = CmsStringUtil.joinPaths(parent, name.trim());
+        }
+        Locale contentLocale = OpenCms.getLocaleManager().getDefaultLocale(m_cms, CmsResource.getFolderPath(path));
         context.setAttribute(CmsRequestContext.ATTRIBUTE_NEW_RESOURCE_LOCALE, contentLocale);
         CmsResource res = m_cms.createResource(
             path,

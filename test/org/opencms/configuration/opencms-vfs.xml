@@ -650,6 +650,12 @@
 			</foldertranslations>
 			<xsdtranslations enabled="false" />
 		</translations>
+		<online-folders>
+			<path>/system/online</path>
+			<path>/shared/online</path>
+			<param name="param1">1</param>			
+			<param name="param2">2</param>
+		</online-folders>
 		<xmlcontent>
 			<widgets>
                 <widget class="org.opencms.widgets.CmsCalendarWidget">

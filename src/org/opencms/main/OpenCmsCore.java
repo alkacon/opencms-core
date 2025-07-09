@@ -49,6 +49,7 @@ import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.db.CmsLoginManager;
+import org.opencms.db.CmsModificationContext;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.db.CmsSqlManager;
 import org.opencms.db.CmsSubscriptionManager;
@@ -1559,6 +1560,7 @@ public final class OpenCmsCore {
             3,
             new ThreadFactoryBuilder().setNameFormat("OpenCmsCore-exec-%d").build());
         // set resource init classes
+
         m_resourceInitHandlers = systemConfiguration.getResourceInitHandlers();
 
         // register request handler classes
@@ -1851,6 +1853,15 @@ public final class OpenCmsCore {
             StringTemplate stringTemplate = new org.antlr.stringtemplate.StringTemplate();
         } catch (Exception e) {
             CmsLog.INIT.error("Problem with initializing stringtemplate class: " + e.getLocalizedMessage(), e);
+        }
+
+        try {
+            CmsModificationContext.initialize(
+                m_securityManager,
+                initCmsObject(adminCms),
+                vfsConfiguation.getOnlineFolderOptions());
+        } catch (Exception e) {
+            CmsLog.INIT.error("Problem with initializing modification context");
         }
 
         try {
@@ -2408,7 +2419,7 @@ public final class OpenCmsCore {
 
                 try {
                     if (m_executor != null) {
-                        m_executor.shutdownNow();
+                        m_executor.shutdown();
                         m_executor.awaitTermination(30, TimeUnit.SECONDS);
                     }
                 } catch (Throwable e) {
@@ -2732,7 +2743,7 @@ public final class OpenCmsCore {
         }
 
         try {
-            CmsDiagnosticsMXBean.register();
+            CmsDiagnosticsMXBean.register(m_configAdminCms);
         } catch (Throwable e) {
             CmsLog.INIT.error(e.getLocalizedMessage(), e);
         }

@@ -948,6 +948,8 @@ public final class Messages extends A_CmsMessageBundle {
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 
+    public static final String ERR_MOVE_SIBLING_FROM_OR_TO_ONLINE_FOLDER_0 = "ERR_MOVE_SIBLING_FROM_OR_TO_ONLINE_FOLDER_0";
+
     /**
      * Hides the public constructor for this utility class.<p>
      */

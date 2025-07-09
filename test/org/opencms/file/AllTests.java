@@ -96,6 +96,7 @@ public final class AllTests {
         suite.addTest(TestUndoChanges.suite());
         suite.addTest(TestUser.suite());
         suite.addTest(TestLinkRewriter.suite());
+        suite.addTest(TestOnlineFolder.suite());
         //$JUnit-END$
         return suite;
     }

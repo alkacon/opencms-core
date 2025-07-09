@@ -27,6 +27,9 @@
 
 package org.opencms.mx;
 
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsServlet;
 import org.opencms.main.OpenCmsServlet.RequestInfo;
 
@@ -37,6 +40,8 @@ import java.util.List;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Bean for special diagnostic information retrievable via JMX.
  */
@@ -44,15 +49,19 @@ public class CmsDiagnosticsMXBean implements I_CmsDiagnosticsMXBean {
 
     /** The instance. */
     public static final CmsDiagnosticsMXBean INSTANCE = new CmsDiagnosticsMXBean();
+    private static CmsObject adminCms;
+
+    private static final Log LOG = CmsLog.getLog(CmsDiagnosticsMXBean.class);
 
     /**
      * Registers an MBean of this class.
      *
      * @throws Exception if registration fails
      */
-    public static void register() throws Exception {
+    public static void register(CmsObject cms) throws Exception {
 
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        adminCms = OpenCms.initCmsObject(cms);
         ObjectName mxbeanName = new ObjectName("org.opencms.mx:type=CmsDiagnosticsMXBean");
         mbs.registerMBean(INSTANCE, mxbeanName);
     }

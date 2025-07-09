@@ -133,6 +133,18 @@ public class CmsEvent {
     }
 
     /**
+     * Converts the event to a more informative string representation.
+     *
+     * <p>For logging/debugging.
+     *
+     * @return the detailed string representation
+     */
+    public String toNiceString() {
+
+        return "CmsEvent[" + CmsEventManager.getEventName(getType()) + ", " + m_data + "]";
+    }
+
+    /**
      * Return a String representation of this CmsEvent.<p>
      *
      * @return a String representation of this event

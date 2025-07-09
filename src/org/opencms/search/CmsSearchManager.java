@@ -30,6 +30,7 @@ package org.opencms.search;
 import org.opencms.ade.containerpage.CmsDetailOnlyContainerUtil;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsModificationContext;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
@@ -102,7 +103,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
@@ -114,6 +119,8 @@ import org.apache.solr.client.solrj.impl.HttpSolrClient.Builder;
 import org.apache.solr.core.CoreContainer;
 import org.apache.solr.core.CoreDescriptor;
 import org.apache.solr.core.SolrCore;
+
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 /**
  * Implements the general management and configuration of the search and
@@ -650,11 +657,167 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 m_offlineIndexThread.getWaitHandle().release();
             }
         }
+
+    }
+
+    /**
+     * Helper class for batching resources arising from multiple independent 'instant publish' operations for indexing.
+     * <p>This is to reduce overhead for indexing, while still limiting the indexing batch size to not block 'interactive' publishing too much.
+     * <p>The batching is time-based, i.e. file changes in a given time span (currently 2 seconds) are collected and then indexed together.
+     * <p>However, changes that include publish resources with state 'deleted' (actual deletions or move operations) are never batched together with others, to avoid complications.
+     */
+    protected class InstantPublishIndexingQueue {
+
+        /** Current map of batched resources to publish, grouped by id. */
+        private Map<CmsUUID, List<CmsPublishedResource>> m_currentBatch = new HashMap<>();
+
+        /** The task for flushing the queue. */
+        private ScheduledFuture<?> m_flushTask;
+
+        /** The executor used to do the actual indexing. */
+        private ThreadPoolExecutor m_executor;
+
+        private ScheduledThreadPoolExecutor m_flushExecutor;
+
+        private LinkedBlockingQueue<Runnable> m_workQueue = new LinkedBlockingQueue<>();
+
+        /**
+         * Creates a new instance.
+         */
+        public InstantPublishIndexingQueue() {
+
+            m_executor = new ThreadPoolExecutor(
+                0,
+                1,
+                10,
+                TimeUnit.SECONDS,
+                m_workQueue,
+                new ThreadFactoryBuilder().setNameFormat("instant-publish-indexer-%d").build());
+            m_flushExecutor = new ScheduledThreadPoolExecutor(
+                1,
+                new ThreadFactoryBuilder().setNameFormat("instant-publish-flush-%d").build());
+        }
+
+        /**
+         * Adds the resources from a publish job to the queue.
+         *
+         * @param publishJobResources the publish job resources
+         */
+        public synchronized void addPublishJob(List<CmsPublishedResource> publishJobResources) {
+
+            boolean needToFlush = false;
+            Map<CmsUUID, List<CmsPublishedResource>> publishMap = new HashMap<>();
+            for (CmsPublishedResource resource : publishJobResources) {
+                publishMap.computeIfAbsent(resource.getStructureId(), id -> new ArrayList<>()).add(resource);
+            }
+            for (CmsUUID id : publishMap.keySet()) {
+                if (isMove(m_currentBatch.get(id))) {
+                    needToFlush = true;
+                }
+            }
+            if (needToFlush) {
+                if (m_flushTask != null) {
+                    m_flushTask.cancel(false);
+                    m_flushTask = null;
+                }
+                flush();
+            }
+            m_currentBatch.putAll(publishMap);
+            if (m_flushTask == null) {
+                m_flushTask = m_flushExecutor.schedule(
+                    this::flush,
+                    CmsModificationContext.getOnlineFolderOptions().getIndexingInterval(),
+                    TimeUnit.MILLISECONDS);
+            }
+
+        }
+
+        /**
+         * Checks if there is currently any work left to do for the instant publish indexing queue.
+         */
+        public synchronized boolean hasWorkToDo() {
+
+            return (m_currentBatch.size() > 0) || (m_executor.getActiveCount() > 0) || !m_workQueue.isEmpty();
+        }
+
+        /**
+         * Shuts down the queue.
+         */
+        public void shutdown() {
+
+            // Tasks running in the flush executor produce tasks for the indexing executor, so we shut down the former before the latter to avoid skipping indexing during shutdown
+            m_flushExecutor.shutdown();
+            try {
+                m_flushExecutor.awaitTermination(30, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+            m_executor.shutdown();
+            try {
+                m_executor.awaitTermination(30, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+
+        /**
+         * Flushes the currently collected batch of published resources and submits them for indexing.
+         */
+        protected synchronized void flush() {
+
+            m_flushTask = null;
+
+            List<CmsPublishedResource> resources = new ArrayList<>();
+            for (List<CmsPublishedResource> entriesForId : m_currentBatch.values()) {
+                resources.addAll(entriesForId);
+            }
+            m_currentBatch.clear();
+            if (resources.size() > 0) {
+                m_executor.submit(() -> tryIndex(resources));
+            }
+        }
+
+        /**
+         * Indexes the given list of published resources.
+         *
+         * @param resourceList the resources to index
+         */
+        protected void tryIndex(List<CmsPublishedResource> resourceList) {
+
+            try {
+                List<CmsPublishedResource> resourcesToIndex = computeUpdateResources(m_adminCms, resourceList);
+                long start = System.currentTimeMillis();
+                ONLINE_LOCK.lock(false);
+                try {
+                    updateAllIndexes(m_adminCms, resourcesToIndex, null);
+                } finally {
+                    ONLINE_LOCK.unlock();
+                    long end = System.currentTimeMillis();
+                    LOG.info(
+                        "Instant publish indexing of a batch of size "
+                            + resourcesToIndex.size()
+                            + " took "
+                            + (end - start)
+                            + "ms");
+                }
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+
+        private boolean isMove(Collection<CmsPublishedResource> publishedResources) {
+
+            return (publishedResources != null)
+                && (publishedResources.size() == 2)
+                && publishedResources.stream().map(res -> res.getState()).collect(Collectors.toSet()).equals(
+                    Set.of(CmsResource.STATE_DELETED, CmsResource.STATE_NEW));
+        }
+
     }
 
     /** This needs to be a fair lock to preserve order of threads accessing the search manager. */
     private static final CmsPriorityLock OFFLINE_LOCK = new CmsPriorityLock();
-    
+
     /** This needs to be a fair lock to preserve order of threads accessing the search manager. */
     private static final CmsPriorityLock ONLINE_LOCK = new CmsPriorityLock();
 
@@ -693,6 +856,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME,
         CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME,
         CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_TYPE_NAME};
+
+    /** The indexing queue for the 'instant publish' feature. */
+    private InstantPublishIndexingQueue m_instantPublishIndexQueue = new InstantPublishIndexingQueue();
 
     /** The administrator OpenCms user context to access OpenCms VFS resources. */
     protected CmsObject m_adminCms;
@@ -1041,12 +1207,28 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_EVENT_PUBLISH_PROJECT_1, publishHistoryId));
                 }
-                updateAllIndexes(m_adminCms, publishHistoryId, getEventReport(event));
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(
-                        Messages.get().getBundle().key(
-                            Messages.LOG_EVENT_PUBLISH_PROJECT_FINISHED_1,
-                            publishHistoryId));
+                boolean instantPublish = Boolean.TRUE.equals(
+                    event.getData().get(I_CmsEventListener.KEY_INSTANT_PUBLISH));
+                if (instantPublish) {
+                    String publishIdStr = (String)event.getData().get(I_CmsEventListener.KEY_PUBLISHID);
+                    if (CmsUUID.isValidUUID(publishIdStr)) {
+                        CmsUUID publishId = new CmsUUID(publishIdStr);
+                        List<CmsPublishedResource> publishedResources;
+                        try {
+                            publishedResources = m_adminCms.readPublishedResources(publishId);
+                            m_instantPublishIndexQueue.addPublishJob(publishedResources);
+                        } catch (CmsException e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                } else {
+                    updateAllIndexes(m_adminCms, publishHistoryId, getEventReport(event));
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_EVENT_PUBLISH_PROJECT_FINISHED_1,
+                                publishHistoryId));
+                    }
                 }
                 break;
             case I_CmsEventListener.EVENT_REINDEX_OFFLINE:
@@ -2581,6 +2763,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * This will cause all search indices to be shut down.<p>
      */
     public void shutDown() {
+
+        m_instantPublishIndexQueue.shutdown();
 
         if (m_offlineIndexThread != null) {
             m_offlineIndexThread.shutDown();

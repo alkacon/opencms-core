@@ -28,6 +28,7 @@
 package org.opencms.file;
 
 import org.opencms.db.CmsDbEntryNotFoundException;
+import org.opencms.db.CmsModificationContext;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.CmsResourceState;
 import org.opencms.db.CmsSecurityManager;
@@ -4214,7 +4215,11 @@ public final class CmsObject {
      */
     public CmsFile writeFile(CmsFile resource) throws CmsException {
 
-        return getResourceType(resource).writeFile(this, m_securityManager, resource);
+        return CmsModificationContext.doWithModificationContext(m_context, () -> {
+
+            return getResourceType(resource).writeFile(this, m_securityManager, resource);
+
+        });
     }
 
     /**

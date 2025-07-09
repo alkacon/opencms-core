@@ -93,7 +93,8 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
     public CmsPropertyDefinition createPropertyDefinition(
         CmsDbContext dbc,
         String name,
-        CmsPropertyDefinition.CmsPropertyType type) throws CmsDataAccessException {
+        CmsPropertyDefinition.CmsPropertyType type)
+    throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -953,7 +954,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                 }
             } else {
                 throw new CmsDbEntryNotFoundException(
-                    Messages.get().container(Messages.ERR_NO_HISTORY_PROJECT_WITH_TAG_ID_1, Integer.valueOf(publishTag)));
+                    Messages.get().container(
+                        Messages.ERR_NO_HISTORY_PROJECT_WITH_TAG_ID_1,
+                        Integer.valueOf(publishTag)));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(
@@ -1545,7 +1548,8 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         I_CmsHistoryResource resource,
         String propertyKey,
         String propertyValue,
-        int mappingType) throws CmsDbConsistencyException {
+        int mappingType)
+    throws CmsDbConsistencyException {
 
         CmsProperty property = propertyMap.get(propertyKey);
         if (property != null) {

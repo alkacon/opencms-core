@@ -13,7 +13,7 @@
 	resources,
 	defaultfiles,
 	translations?, 
-	
+	online-folders?,
 	xmlcontent?)>
 
 <!ELEMENT resources (
@@ -95,6 +95,9 @@
 -->
 <!ELEMENT translations (filetranslations?, foldertranslations?, xsdtranslations?)>
 <!ELEMENT translation (#PCDATA)>
+
+<!ELEMENT online-folders (path*, param*)>
+<!ELEMENT path (#PCDATA)>
 
 <!--
 # Filename translation is used when creating new files to automatically 

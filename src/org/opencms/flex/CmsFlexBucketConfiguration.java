@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
@@ -80,6 +81,7 @@ public class CmsFlexBucketConfiguration {
          * @param buckets the bucket names
          */
         protected BucketSet(Set<String> buckets) {
+
             for (String bucket : buckets) {
                 int index = getBucketIndex(bucket);
                 if (index >= 0) {
@@ -302,6 +304,24 @@ public class CmsFlexBucketConfiguration {
             throw new IllegalStateException("Can not modify frozen CmsFlexBucketConfiguration");
         }
         m_clearAll = Collections.unmodifiableList(clearAll);
+    }
+
+    /**
+     * Returns true if for the given set of published paths, the complete Flex cache should be cleared based on this configuration.<p>
+     *
+     * @param publishedResources a publish list
+     * @return true if the complete Flex cache should be cleared
+     */
+    public boolean shouldClearAll(Collection<String> publishedPaths) {
+
+        for (String path : publishedPaths) {
+            for (String clearPath : m_clearAll) {
+                if (CmsStringUtil.isPrefixPath(clearPath, path)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

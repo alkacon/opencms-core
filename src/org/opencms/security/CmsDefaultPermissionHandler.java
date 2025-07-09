@@ -31,6 +31,7 @@ import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.db.CmsCacheSettings;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsModificationContext;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.db.I_CmsCacheKey;
 import org.opencms.file.CmsProject;
@@ -169,11 +170,8 @@ public class CmsDefaultPermissionHandler implements I_CmsPermissionHandler {
             // direct publish permission is required
             if ((permissions.getPermissions() & CmsPermissionSet.PERMISSION_DIRECT_PUBLISH) == 0) {
                 // but the user has no direct publish permission, so check if the user has the project manager role
-                boolean canIgnorePublishPermission = m_securityManager.hasRoleForResource(
-                    dbc,
-                    dbc.currentUser(),
-                    CmsRole.PROJECT_MANAGER,
-                    resource);
+                boolean canIgnorePublishPermission = CmsModificationContext.isInstantPublishing()
+                    || m_securityManager.hasRoleForResource(dbc, dbc.currentUser(), CmsRole.PROJECT_MANAGER, resource);
                 // if not, check the manageable projects
                 if (!canIgnorePublishPermission) {
                     CmsUser user = dbc.currentUser();

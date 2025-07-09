@@ -27,6 +27,7 @@
 
 package org.opencms.configuration;
 
+import org.opencms.db.CmsOnlineFolderOptions;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
@@ -94,6 +95,8 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
     /** The collectors node name. */
     public static final String N_COLLECTORS = "collectors";
 
+    public static final String N_PATH = "path";
+
     /** The copy-resource node name.*/
     public static final String N_COPY_RESOURCE = "copy-resource";
 
@@ -154,6 +157,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
     /** The schematype node name. */
     public static final String N_SCHEMATYPE = "schematype";
 
+    /** The online-folders node name. */
+    public static final String N_ONLINE_FOLDERS = "online-folders";
+
     /** The schematypes node name. */
     public static final String N_SCHEMATYPES = "schematypes";
 
@@ -192,6 +198,10 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
     /** The namegenerator node name. */
     private static final String N_NAMEGENERATOR = "namegenerator";
+
+    private CmsOnlineFolderOptions m_onlineFolderOptions = new CmsOnlineFolderOptions(
+        new ArrayList<>(),
+        new CmsParameterConfiguration());
 
     /** The configured XML content type manager. */
     CmsXmlContentTypeManager m_xmlContentTypeManager;
@@ -304,6 +314,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
             "*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_COPY_RESOURCES + "/" + N_COPY_RESOURCE,
             2,
             A_TYPE);
+
     }
 
     /**
@@ -616,6 +627,55 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
             "*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_SCHEMATYPES + "/" + N_SCHEMATYPE,
             1,
             A_DEFAULTWIDGET);
+
+        final CmsParameterConfiguration onlineFolderParams = new CmsParameterConfiguration();
+        final List<String> onlineFolderPaths = new ArrayList<>();
+        digester.addRule("*/" + N_ONLINE_FOLDERS, new Rule() {
+
+            @Override
+            public void begin(String namespace, String name, Attributes attributes) throws Exception {
+
+                super.begin(namespace, name, attributes);
+                getDigester().push(new I_CmsConfigurationParameterHandler() {
+
+                    @Override
+                    public void addConfigurationParameter(String paramName, String paramValue) {
+
+                        onlineFolderParams.add(paramName, paramValue);
+                    }
+
+                    @Override
+                    public CmsParameterConfiguration getConfiguration() {
+
+                        return onlineFolderParams;
+
+                    }
+
+                    @Override
+                    public void initConfiguration() throws CmsConfigurationException {
+
+                        // TODO Auto-generated method stub
+
+                    }
+                });
+            }
+
+            @Override
+            public void end(String namespace, String name) throws Exception {
+
+                getDigester().pop();
+                m_onlineFolderOptions = new CmsOnlineFolderOptions(onlineFolderPaths, onlineFolderParams);
+            }
+        });
+        digester.addRule("*/" + N_ONLINE_FOLDERS + "/" + N_PATH, new Rule() {
+
+            public void body(String namespace, String name, String text) throws Exception {
+
+                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(text)) {
+                    onlineFolderPaths.add(text);
+                }
+            }
+        });
     }
 
     /**
@@ -753,6 +813,17 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
             xsdTransElement.addElement(N_TRANSLATION).setText(translation);
         }
 
+        Element onlineFoldersElement = vfs.addElement(N_ONLINE_FOLDERS);
+        for (String path : m_onlineFolderOptions.getPaths()) {
+            Element pathElem = onlineFoldersElement.addElement(N_PATH);
+            pathElem.setText(path);
+        }
+        for (String key : m_onlineFolderOptions.getParams().keySet()) {
+            Element paramElem = onlineFoldersElement.addElement(N_PARAM);
+            paramElem.addAttribute(A_NAME, key);
+            paramElem.setText(m_onlineFolderOptions.getParams().get(key));
+        }
+
         // XML content configuration
         Element xmlContentsElement = vfs.addElement(N_XMLCONTENT);
 
@@ -834,6 +905,16 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
             }
         }
         return new CmsResourceTranslator(array, false);
+    }
+
+    /**
+     * Gets the configured online folder options.
+     *
+     * @return the online folder options
+     */
+    public CmsOnlineFolderOptions getOnlineFolderOptions() {
+
+        return m_onlineFolderOptions;
     }
 
     /**

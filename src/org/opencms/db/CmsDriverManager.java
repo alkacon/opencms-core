@@ -579,6 +579,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** Constant mode parameter to read all files and folders in the {@link #readChangedResourcesInsideProject(CmsDbContext, CmsUUID, CmsReadChangedProjectResourceMode)}} method. */
     private static final CmsReadChangedProjectResourceMode RCPRM_FOLDERS_ONLY_MODE = new CmsReadChangedProjectResourceMode();
 
+    private final Object m_publishTagLock = new Object();
+
     /** The history driver. */
     private I_CmsHistoryDriver m_historyDriver;
 
@@ -623,6 +625,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
     /** The VFS driver. */
     private I_CmsVfsDriver m_vfsDriver;
+
+    private volatile Integer m_lastPublishTag = null;
 
     /**
      * Private constructor, initializes some required member variables.<p>
@@ -1418,7 +1422,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @see CmsObject#copyResource(String, String, CmsResource.CmsResourceCopyMode)
      * @see I_CmsResourceType#copyResource(CmsObject, CmsSecurityManager, CmsResource, String, CmsResource.CmsResourceCopyMode)
      */
-    public void copyResource(
+    public CmsResource copyResource(
         CmsDbContext dbc,
         CmsResource source,
         String destination,
@@ -1447,9 +1451,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         if (copyAsSibling) {
             // create a sibling of the source file at the destination
-            createSibling(dbc, source, destination, properties);
-            // after the sibling is created the copy operation is finished
-            return;
+            return createSibling(dbc, source, destination, properties);
         }
 
         // prepare the content if required
@@ -1550,6 +1552,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             new CmsEvent(
                 I_CmsEventListener.EVENT_RESOURCE_COPIED,
                 Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCES, modifiedResources)));
+        return newResource;
     }
 
     /**
@@ -4506,7 +4509,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public int getNextPublishTag(CmsDbContext dbc) {
 
-        return getHistoryDriver(dbc).readNextPublishTag(dbc);
+        if (dbc.getProjectId().isNullUUID()) {
+            synchronized (m_publishTagLock) {
+                int dbNextPublishTag = getHistoryDriver(dbc).readNextPublishTag(dbc);
+                if (m_lastPublishTag == null) {
+                    m_lastPublishTag = Integer.valueOf(dbNextPublishTag);
+                    return dbNextPublishTag;
+                } else {
+                    int newValue = Math.max(dbNextPublishTag, m_lastPublishTag.intValue() + 1);
+                    m_lastPublishTag = Integer.valueOf(newValue);
+                    return newValue;
+
+                }
+            }
+        } else {
+            return getHistoryDriver(dbc).readNextPublishTag(dbc);
+        }
+
     }
 
     /**
@@ -6509,17 +6528,19 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     unlockResource(dbc, resource, true, true);
                     continue;
                 }
-                CmsLock lock = m_lockManager.getLock(dbc, resource, false);
-                if (!lock.getSystemLock().isPublish()) {
-                    // remove files that are not locked for publishing
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(
-                            Messages.get().getBundle().key(
-                                Messages.RPT_PUBLISH_REMOVED_RESOURCE_1,
-                                dbc.removeSiteRoot(resource.getRootPath())));
+                if (!CmsModificationContext.isInOnlineFolder(resource.getRootPath())) {
+                    CmsLock lock = m_lockManager.getLock(dbc, resource, false);
+                    if (!lock.getSystemLock().isPublish()) {
+                        // remove files that are not locked for publishing
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(
+                                Messages.get().getBundle().key(
+                                    Messages.RPT_PUBLISH_REMOVED_RESOURCE_1,
+                                    dbc.removeSiteRoot(resource.getRootPath())));
+                        }
+                        publishList.remove(resource);
+                        continue;
                     }
-                    publishList.remove(resource);
-                    continue;
                 }
             }
 
@@ -9000,7 +9021,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @see CmsObject#restoreDeletedResource(CmsUUID)
      */
-    public void restoreDeletedResource(CmsDbContext dbc, CmsUUID structureId) throws CmsException {
+    public CmsResource restoreDeletedResource(CmsDbContext dbc, CmsUUID structureId) throws CmsException {
 
         // get the last version, which should be the deleted one
         int version = getHistoryDriver(dbc).readLastVersion(dbc, structureId);
@@ -9122,6 +9143,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         data.put(I_CmsEventListener.KEY_RESOURCE, resource);
         data.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(CHANGED_RESOURCE | CHANGED_CONTENT));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
+        return newResource;
     }
 
     /**
@@ -9136,7 +9158,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @see CmsObject#restoreResourceVersion(CmsUUID, int)
      * @see I_CmsResourceType#restoreResource(CmsObject, CmsSecurityManager, CmsResource, int)
      */
-    public void restoreResource(CmsDbContext dbc, CmsResource resource, int version) throws CmsException {
+    public CmsResource restoreResource(CmsDbContext dbc, CmsResource resource, int version) throws CmsException {
 
         I_CmsHistoryResource historyResource = readResource(dbc, resource, version);
         CmsResourceState state = CmsResource.STATE_CHANGED;
@@ -9232,6 +9254,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         data.put(I_CmsEventListener.KEY_RESOURCE, resource);
         data.put(I_CmsEventListener.KEY_CHANGE, Integer.valueOf(CHANGED_RESOURCE | CHANGED_CONTENT));
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, data));
+        return newResource;
     }
 
     /**

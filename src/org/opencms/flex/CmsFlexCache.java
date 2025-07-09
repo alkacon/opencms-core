@@ -29,6 +29,7 @@ package org.opencms.flex;
 
 import org.opencms.cache.CmsLruCache;
 import org.opencms.cache.I_CmsLruCacheObject;
+import org.opencms.db.CmsModificationContext;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
 import org.opencms.flex.CmsFlexBucketConfiguration.BucketSet;
@@ -52,6 +53,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
@@ -233,7 +237,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     protected CmsLruCache m_variationCache;
 
     /** The Flex bucket configuration. */
-    private CmsFlexBucketConfiguration m_bucketConfiguration;
+    private volatile CmsFlexBucketConfiguration m_bucketConfiguration;
 
     /** Indicates if offline resources should be cached or not. */
     private boolean m_cacheOffline;
@@ -249,6 +253,10 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
 
     /** Counter for the size. */
     private int m_size;
+
+    private LinkedBlockingQueue<String> m_publishPathsForDelayedClear = new LinkedBlockingQueue<>();
+
+    private volatile Future<?> m_delayedClear;
 
     /**
      * Constructor for class CmsFlexCache.<p>
@@ -360,20 +368,25 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                     LOG.debug("FlexCache: Received event PUBLISH_PROJECT");
                 }
                 String publishIdStr = (String)(event.getData().get(I_CmsEventListener.KEY_PUBLISHID));
+                boolean isInstantPublish = Boolean.TRUE.equals(
+                    event.getData().get(I_CmsEventListener.KEY_INSTANT_PUBLISH));
                 if (!CmsUUID.isValidUUID(publishIdStr)) {
                     clear();
                 } else {
                     try {
                         CmsUUID publishId = new CmsUUID(publishIdStr);
                         List<CmsPublishedResource> publishedResources = m_cmsObject.readPublishedResources(publishId);
+                        Set<String> paths = new HashSet<>();
+                        for (CmsPublishedResource pubRes : publishedResources) {
+                            paths.add(pubRes.getRootPath());
+                        }
                         boolean updateConfiguration = false;
-                        for (CmsPublishedResource res : publishedResources) {
-                            if (res.getRootPath().equals(CONFIG_PATH)) {
+                        for (String path : paths) {
+                            if (CONFIG_PATH.equals(path)) {
                                 updateConfiguration = true;
                                 break;
                             }
                         }
-                        CmsFlexBucketConfiguration bucketConfig = m_bucketConfiguration;
                         if (updateConfiguration) {
                             LOG.info("Flex bucket configuration was updated, re-initializing configuration...");
                             try {
@@ -385,18 +398,33 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                             }
                             // Make sure no entries built for the old configuration remain in the cache
                             clear();
-                        } else if (bucketConfig != null) {
-                            boolean bucketClearOk = clearBucketsForPublishList(
-                                bucketConfig,
-                                publishId,
-                                publishedResources);
-                            if (!bucketClearOk) {
-                                clear();
-                            }
                         } else {
-                            clear();
+                            if (isInstantPublish) {
+                                // Instant publishing happens when writing to online-only folders, which we expect to happen mostly in import jobs of some sort.
+                                // In this scenario, a lot of publish events will be triggered by resource modifications, potentially over a significant time span,
+                                // and we don't want to clear the FlexCache after each one. So we schedule a task to do it 5 seconds in the future, and cancel that
+                                // task if another publish event happens, which means the Flex Cache will eventually be cleared after the 'last' resource is imported.
+                                // (Of course we can't actually know if it's the last resource, that's just a heuristic - if nothing happens for 5 seconds, we assume that it is.)
+                                synchronized (m_publishPathsForDelayedClear) {
+                                    m_publishPathsForDelayedClear.addAll(paths);
+                                    if (m_delayedClear != null) {
+                                        m_delayedClear.cancel(false);
+                                        m_delayedClear = null;
+                                    }
+                                    m_delayedClear = OpenCms.getExecutor().schedule(() -> {
+                                        synchronized (m_publishPathsForDelayedClear) {
+                                            Set<String> fullPaths = new HashSet<>();
+                                            m_publishPathsForDelayedClear.drainTo(fullPaths);
+                                            clearBucketsForPublishList(null, fullPaths);
+                                        }
+                                    },
+                                        CmsModificationContext.getOnlineFolderOptions().getFlexCacheDelay(),
+                                        TimeUnit.MILLISECONDS);
+                                }
+                            } else {
+                                clearBucketsForPublishList(publishId, paths);
+                            }
                         }
-
                     } catch (CmsException e1) {
                         LOG.error(e1.getLocalizedMessage(), e1);
                         clear();
@@ -873,27 +901,24 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      *
      * @return true if the flex buckets could be cleared successfully (if this returns false, the flex cache should fall back to the old behavior, i.e. clearing everything)
      */
-    private boolean clearBucketsForPublishList(
-        CmsFlexBucketConfiguration bucketConfig,
-        CmsUUID publishId,
-        List<CmsPublishedResource> publishedResources) {
+    private void clearBucketsForPublishList(CmsUUID publishId, Collection<String> paths) {
 
+        CmsFlexBucketConfiguration bucketConfig = m_bucketConfiguration;
         long startTime = System.currentTimeMillis();
         String p = "[" + publishId + "] "; // Prefix for log messages
+        if (bucketConfig == null) {
+            clear();
+            return;
+        }
         try {
 
             LOG.debug(p + "Trying bucket-based flex entry cleanup");
-            if (bucketConfig.shouldClearAll(publishedResources)) {
+            if (bucketConfig.shouldClearAll(paths)) {
                 LOG.info(p + "Clearing Flex cache completely based on Flex bucket configuration.");
-                return false;
+                clear();
             } else {
                 long totalEntries = 0;
                 long removedEntries = 0;
-                List<String> paths = Lists.newArrayList();
-                for (CmsPublishedResource pubRes : publishedResources) {
-                    paths.add(pubRes.getRootPath());
-                    LOG.info(p + "Published resource: " + pubRes.getRootPath());
-                }
                 BucketSet publishListBucketSet = bucketConfig.getBucketSet(paths);
                 if (LOG.isInfoEnabled()) {
                     LOG.info(p + "Flex cache buckets for publish list: " + publishListBucketSet.toString());
@@ -938,12 +963,11 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                             + " Flex cache entries, took "
                             + (endTime - startTime)
                             + " milliseconds");
-                    return true;
                 }
             }
         } catch (Exception e) {
             LOG.error(p + "Exception while trying to selectively purge flex cache: " + e.getLocalizedMessage(), e);
-            return false;
+            clear();
         }
     }
 

@@ -27,11 +27,14 @@
 
 package org.opencms.main;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 
@@ -57,6 +60,9 @@ public class CmsEventManager {
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsEventManager.class);
 
+    /** Maps event type ids to the corresponding field names - for debug purposes. */
+    private static ConcurrentHashMap<Integer, String> m_eventNames = new ConcurrentHashMap<>();
+
     /** Stores the active event listeners. */
     private Map<Integer, List<I_CmsEventListener>> m_eventListeners;
 
@@ -66,6 +72,19 @@ public class CmsEventManager {
     public CmsEventManager() {
 
         m_eventListeners = new HashMap<Integer, List<I_CmsEventListener>>();
+    }
+
+    /**
+     * Finds the field name in I_CmsEventListener for a specific event type.
+     *
+     * <p>For debugging/logging.
+     *
+     * @param eventType the event type id
+     * @return the field name
+     */
+    public static String getEventName(int eventType) {
+
+        return m_eventNames.computeIfAbsent(Integer.valueOf(eventType), k -> "" + k);
     }
 
     /**
@@ -266,6 +285,16 @@ public class CmsEventManager {
     protected void initialize(CmsEventManager base) {
 
         m_eventListeners = new HashMap<Integer, List<I_CmsEventListener>>(base.getEventListeners());
-
+        try {
+            for (Field field : I_CmsEventListener.class.getDeclaredFields()) {
+                if (Modifier.isStatic(field.getModifiers())) {
+                    if ((field.getType() == int.class) && field.getName().startsWith("EVENT_")) {
+                        m_eventNames.put(Integer.valueOf(field.getInt(null)), field.getName());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
     }
 }

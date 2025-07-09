@@ -35,6 +35,7 @@ import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDbIoException;
 import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsModificationContext;
 import org.opencms.db.CmsPreparedStatementIntParameter;
 import org.opencms.db.CmsPreparedStatementLongParameter;
 import org.opencms.db.CmsPreparedStatementStringParameter;
@@ -1778,7 +1779,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         // reset the resource state to UNCHANGED and the last-modified-in-project-ID to 0
                         internalResetResourceState(dbc, currentFolder);
 
-                        m_driverManager.unlockResource(dbc, currentFolder, true, true);
+                        if (!CmsModificationContext.isInOnlineFolder(currentFolder.getRootPath())) {
+                            m_driverManager.unlockResource(dbc, currentFolder, true, true);
+                        }
                     } else {
                         // state == unchanged !!?? something went really wrong
                         report.print(Messages.get().container(Messages.RPT_PUBLISH_FOLDER_0), I_CmsReport.FORMAT_NOTE);
@@ -1865,7 +1868,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     }
 
                     // unlock it
-                    m_driverManager.unlockResource(dbc, currentResource, true, true);
+                    if (!CmsModificationContext.isInOnlineFolder(currentResource.getRootPath())) {
+                        m_driverManager.unlockResource(dbc, currentResource, true, true);
+                    }
                     // log it
                     CmsLogEntryType type = state.isNew()
                     ? CmsLogEntryType.RESOURCE_PUBLISHED_NEW
@@ -1937,7 +1942,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
                     publishedIds.add(currentFolder.getStructureId());
                     // unlock it
-                    m_driverManager.unlockResource(dbc, currentFolder, true, true);
+                    if (!CmsModificationContext.isInOnlineFolder(currentFolder.getRootPath())) {
+                        m_driverManager.unlockResource(dbc, currentFolder, true, true);
+                    }
                     // log it
                     m_driverManager.log(
                         dbc,
