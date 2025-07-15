@@ -78,6 +78,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.apache.commons.logging.Log;
 
@@ -996,7 +997,41 @@ public final class CmsObject {
     public void deleteHistoricalVersions(int versionsToKeep, int versionsDeleted, long timeDeleted, I_CmsReport report)
     throws CmsException {
 
-        m_securityManager.deleteHistoricalVersions(m_context, versionsToKeep, versionsDeleted, timeDeleted, report);
+        m_securityManager.deleteHistoricalVersions(
+            m_context,
+            versionsToKeep,
+            versionsDeleted,
+            timeDeleted,
+            res -> true,
+            report);
+    }
+
+    /**
+     * Deletes the versions from the history tables, keeping the given number of versions per resource.<p>
+     *
+     * @param versionsToKeep number of versions to keep, is ignored if negative
+     * @param versionsDeleted number of versions to keep for deleted resources, is ignored if negative
+     * @param timeDeleted deleted resources older than this will also be deleted, is ignored if negative
+     * @param clearDeletedFilter a filter to evaluate whether a the history entry for deleted resources should be cleared
+     * @param report the report for output logging
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public void deleteHistoricalVersions(
+        int versionsToKeep,
+        int versionsDeleted,
+        long timeDeleted,
+        Predicate<I_CmsHistoryResource> clearDeletedFilter,
+        I_CmsReport report)
+    throws CmsException {
+
+        m_securityManager.deleteHistoricalVersions(
+            m_context,
+            versionsToKeep,
+            versionsDeleted,
+            timeDeleted,
+            clearDeletedFilter,
+            report);
     }
 
     /**

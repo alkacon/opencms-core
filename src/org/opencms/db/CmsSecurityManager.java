@@ -110,6 +110,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.apache.commons.logging.Log;
 
@@ -1464,6 +1465,7 @@ public final class CmsSecurityManager {
      * @param versionsToKeep number of versions to keep, is ignored if negative
      * @param versionsDeleted number of versions to keep for deleted resources, is ignored if negative
      * @param timeDeleted deleted resources older than this will also be deleted, is ignored if negative
+     * @param clearDeletedFilter a filter to evaluate whether a the history entry for deleted resources should be cleared
      * @param report the report for output logging
      *
      * @throws CmsException if operation was not successful
@@ -1474,6 +1476,7 @@ public final class CmsSecurityManager {
         int versionsToKeep,
         int versionsDeleted,
         long timeDeleted,
+        Predicate<I_CmsHistoryResource> clearDeletedFilter,
         I_CmsReport report)
     throws CmsException, CmsRoleViolationException {
 
@@ -1482,7 +1485,13 @@ public final class CmsSecurityManager {
             CmsFolder root = readFolder(dbc, "/", CmsResourceFilter.ALL);
             checkRole(dbc, CmsRole.WORKPLACE_MANAGER.forOrgUnit(null));
             checkPermissions(dbc, root, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
-            m_driverManager.deleteHistoricalVersions(dbc, versionsToKeep, versionsDeleted, timeDeleted, report);
+            m_driverManager.deleteHistoricalVersions(
+                dbc,
+                versionsToKeep,
+                versionsDeleted,
+                timeDeleted,
+                clearDeletedFilter,
+                report);
         } catch (Exception e) {
             dbc.report(
                 null,

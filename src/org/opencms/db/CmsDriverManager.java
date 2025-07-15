@@ -2726,6 +2726,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param versionsToKeep number of versions to keep, is ignored if negative
      * @param versionsDeleted number of versions to keep for deleted resources, is ignored if negative
      * @param timeDeleted deleted resources older than this will also be deleted, is ignored if negative
+     * @param clearDeletedFilter filter to evaluate whether the deleted resources should be cleared
      * @param report the report for output logging
      *
      * @throws CmsException if operation was not successful
@@ -2735,8 +2736,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         int versionsToKeep,
         int versionsDeleted,
         long timeDeleted,
+        Predicate<I_CmsHistoryResource> clearDeletedFilter,
         I_CmsReport report)
     throws CmsException {
+
+        if (clearDeletedFilter == null) {
+            clearDeletedFilter = res -> true;
+        }
 
         report.println(Messages.get().container(Messages.RPT_START_DELETE_VERSIONS_0), I_CmsReport.FORMAT_HEADLINE);
         if (versionsToKeep >= 0) {
@@ -2809,6 +2815,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     I_CmsReport.FORMAT_HEADLINE);
             }
             List<I_CmsHistoryResource> resources = getHistoryDriver(dbc).getAllDeletedEntries(dbc);
+            resources = resources.stream().filter(clearDeletedFilter).collect(Collectors.toList());
             if (resources.isEmpty()) {
                 report.println(Messages.get().container(Messages.RPT_DELETE_NOTHING_0), I_CmsReport.FORMAT_OK);
             }
