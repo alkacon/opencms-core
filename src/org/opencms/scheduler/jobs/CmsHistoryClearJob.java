@@ -35,9 +35,11 @@ import org.opencms.report.CmsLogReport;
 import org.opencms.scheduler.I_CmsScheduledJob;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -73,7 +75,7 @@ import org.apache.commons.logging.Log;
 public class CmsHistoryClearJob implements I_CmsScheduledJob {
 
     /**Parameter for selecting the path of deleted resources to clear. */
-    public static final String PARAM_CLEAR_DELETED_PATH = "clearDeletedPath";
+    public static final String PARAM_CLEAR_DELETED_PATHS = "clearDeletedPaths";
 
     /** Parameter for selecting the types of deleted resources to clear. */
     public static final String PARAM_CLEAR_DELETED_TYPES = "clearDeletedTypes";
@@ -123,7 +125,16 @@ public class CmsHistoryClearJob implements I_CmsScheduledJob {
             }
         }
 
-        final String clearDeletedPath = parameters.get(PARAM_CLEAR_DELETED_PATH);
+        final String clearDeletedPathsStr = parameters.get(PARAM_CLEAR_DELETED_PATHS);
+        final List<String> clearDeletedPaths = new ArrayList<>();
+        if (clearDeletedPathsStr != null) {
+            for (String token : clearDeletedPathsStr.split(",")) {
+                token = token.trim();
+                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(token)) {
+                    clearDeletedPaths.add(token);
+                }
+            }
+        }
         // calculate the date from where to clear deleted versions
         long timeDeleted = -1;
         int keepDeletedVersions;
@@ -145,8 +156,9 @@ public class CmsHistoryClearJob implements I_CmsScheduledJob {
             if (clearDeletedTypesStr != null) {
                 delete &= clearDeletedTypes.contains(res.getTypeId());
             }
-            if (clearDeletedPath != null) {
-                delete &= CmsStringUtil.isPrefixPath(clearDeletedPath.trim(), res.getRootPath());
+            if (clearDeletedPathsStr != null) {
+                delete &= clearDeletedPaths.stream().anyMatch(
+                    prefix -> CmsStringUtil.isPrefixPath(prefix, res.getRootPath()));
             }
             return delete;
         }, report);
