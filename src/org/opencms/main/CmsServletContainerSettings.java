@@ -32,8 +32,6 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import javax.servlet.ServletContext;
 
@@ -235,29 +233,20 @@ public class CmsServletContainerSettings {
             // web application context:
             // read it from the servlet context parameters
             //      this is needed in case an application server specific deployment descriptor is used to changed the webapp context
-            String webApplicationContext = context.getInitParameter(
+            String webApplicationContextFromConfig = context.getInitParameter(
                 OpenCmsServlet.SERVLET_PARAM_WEB_APPLICATION_CONTEXT);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(webApplicationContext)) {
-                try {
-                    URL contextRelativeUrl = context.getResource("/");
-                    webApplicationContext = contextRelativeUrl.getPath();
-                    String[] pathTokens = CmsStringUtil.splitAsArray(webApplicationContext, '/');
-                    if (pathTokens.length == 1) {
-                        /*
-                         * There may be a "" context configured (e.g. in GlassFish).
-                         */
-                        webApplicationContext = "";
-                    } else {
-
-                        webApplicationContext = pathTokens[pathTokens.length - 1];
-                    }
-                } catch (MalformedURLException e) {
-                    LOG.error(Messages.get().getBundle().key(Messages.LOG_INIT_CONTEXTNAME_0), e);
+            String contextPath = "";
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(webApplicationContextFromConfig)) {
+                contextPath = context.getContextPath();
+            } else {
+                if (defaultWebApplication.equals(webApplicationContextFromConfig)) {
+                    contextPath = "";
+                } else {
+                    contextPath = "/" + webApplicationContextFromConfig;
                 }
-
             }
             // init values:
-            init(webInfRfsPath, defaultWebApplication, servletMapping, servletContainerName, webApplicationContext);
+            init(webInfRfsPath, defaultWebApplication, servletMapping, servletContainerName, contextPath);
             // finally care for the speciality of different servlet containers:
             initContainerSpecifics(context);
         }
@@ -509,13 +498,14 @@ public class CmsServletContainerSettings {
      * @param webApplicationContext the name/path of the OpenCms web application context (optional, will be calculated form the path if null)
      * @param defaultWebApplication the default web application name (usually "ROOT")
      * @param servletContainerName the name of the servlet container running OpenCms
+     * @param contextPath the context path
      */
     private void init(
         String webInfRfsPath,
         String defaultWebApplication,
         String servletMapping,
         String servletContainerName,
-        String webApplicationContext) {
+        String contextPath) {
 
         // WEB-INF RFS path
 
@@ -557,20 +547,12 @@ public class CmsServletContainerSettings {
         File path = new File(m_webInfRfsPath);
         m_webApplicationName = path.getParentFile().getName();
 
-        String contextPath = webApplicationContext;
-        // whitespace is OK because e.g. on glassfish the "" context may be configured
-        if (contextPath == null) {
-            contextPath = m_webApplicationName;
-            // this fixes an issue with context names in JBoss
-            if (contextPath.endsWith(".war")) {
-                contextPath = contextPath.substring(0, contextPath.length() - 4);
-            }
-        }
         // set the context path
-        if (contextPath.equals(getDefaultWebApplicationName()) || "".equals(contextPath)) {
-            m_contextPath = "";
+        if (contextPath == null) {
+            // this should only happen during test cases
+            m_contextPath = "/" + m_webApplicationName;
         } else {
-            m_contextPath = "/" + contextPath;
+            m_contextPath = contextPath;
         }
         // set the OpenCms context
         m_openCmsContext = m_contextPath + m_servletPath;
