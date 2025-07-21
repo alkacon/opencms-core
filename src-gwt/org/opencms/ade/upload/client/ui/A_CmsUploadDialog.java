@@ -346,7 +346,11 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
         // enable or disable the OK button
         if (getFilesToUpload().isEmpty()) {
             disableOKButton(Messages.get().key(Messages.GUI_UPLOAD_NOTIFICATION_NO_FILES_0));
-            setDragAndDropMessage();
+            if (m_restricted.isEmpty()) {
+                setDragAndDropMessage();
+            } else {
+                removeDragAndDropMessage();
+            }
         } else {
             enableOKButton();
             removeDragAndDropMessage();

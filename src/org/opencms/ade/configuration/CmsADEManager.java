@@ -306,7 +306,7 @@ public class CmsADEManager {
 
     /**
      * Adds a sitemap extra info provider.
-     * 
+     *
      * @param provider the provider to add
      */
     public void addSitemapExtraInfoProvider(I_CmsSitemapExtraInfoProvider provider) {
@@ -1038,6 +1038,21 @@ public class CmsADEManager {
         }
 
         return recentList;
+    }
+
+    /**
+     * Gets a map of sitemap attribute values by sitemap path for a given attribute key.
+     *
+     * @param cms the current CMS context
+     * @param attribute the sitemap attribute key
+     *
+     * @return the map of attribute values, with the root paths of the corresponding subsitemaps as keys
+     */
+    public Map<String, String> getSitemapAttributeValuesByPath(CmsObject cms, String attribute) {
+
+        boolean online = (null == cms) || isOnline(cms);
+        CmsADEConfigCacheState state = getCacheState(online);
+        return state.getAttributeValuesByPath(attribute);
     }
 
     /**

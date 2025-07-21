@@ -27,15 +27,16 @@
 
 package org.opencms.gwt.shared;
 
-import org.opencms.file.CmsResource;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import com.google.common.base.Joiner;
@@ -51,11 +52,31 @@ public class CmsUploadRestrictionInfo implements IsSerializable {
      */
     public static class Builder {
 
-        /** 'Enabled' status. */
-        private Map<String, Boolean> m_tempUploadEnabledMap = new HashMap<>();
+        /** The tree node corresponding to the root directory. */
+        private Node m_root = new Node();
 
-        /** 'Types' status. */
-        private Map<String, Set<String>> uploadTypesMap = new HashMap<>();
+        /** Map used to 'uniquify' equivalent node data objects. */
+        private Map<NodeData, NodeData> m_nodeDataCache = new HashMap<>();
+
+        /**
+         * Adds a new entry with the given options for the given path.
+         *
+         * @param path the path
+         * @param enabled upload enabled (TRUE / FALSE / null)
+         * @param extensions (set of file extensions or null)
+         *
+         * @return the builder instance
+         */
+        public Builder add(String path, Boolean enabled, Set<String> extensions) {
+
+            Node node = findOrCreateNode(m_root, path);
+            NodeData data = new NodeData();
+            data.setEnabled(enabled);
+            data.setExtensions(extensions);
+            data = m_nodeDataCache.computeIfAbsent(data, dataParam -> dataParam);
+            node.setData(data);
+            return this;
+        }
 
         /**
          * Adds a new entry.
@@ -69,26 +90,11 @@ public class CmsUploadRestrictionInfo implements IsSerializable {
          */
         public Builder add(String path, String info) {
 
-            Map<String, String> parsedInfo = CmsStringUtil.splitAsMap(info, "|", ":");
-            path = normalizePath(path);
-            String enabledStr = parsedInfo.get(KEY_ENABLED);
-            if (enabledStr != null) {
-                m_tempUploadEnabledMap.put(path, Boolean.valueOf(enabledStr));
-            }
-            String typesStr = parsedInfo.get(KEY_TYPES);
-            if (typesStr != null) {
-                Set<String> types = new HashSet<>();
-                for (String type : typesStr.split(",")) {
-                    type = type.trim().toLowerCase();
-                    if (type.startsWith(".")) {
-                        type = type.substring(1);
-                    }
-                    if (type.length() > 0) {
-                        types.add(type);
-                    }
-                }
-                uploadTypesMap.put(path, types);
-            }
+            Node node = findOrCreateNode(m_root, path);
+            NodeData data = new NodeData();
+            data.parse(info);
+            data = m_nodeDataCache.computeIfAbsent(data, dataParam -> dataParam);
+            node.setData(data);
             return this;
 
         }
@@ -102,9 +108,187 @@ public class CmsUploadRestrictionInfo implements IsSerializable {
         public CmsUploadRestrictionInfo build() {
 
             CmsUploadRestrictionInfo result = new CmsUploadRestrictionInfo();
-            result.m_uploadEnabledMap = m_tempUploadEnabledMap;
-            result.m_uploadTypesMap = uploadTypesMap;
+            result.m_root = m_root;
             return result;
+        }
+
+    }
+
+    /**
+     * Tree node that stores the settings for a single folder.
+     */
+    public static class Node implements IsSerializable {
+
+        /** Map of child nodes by name. */
+        private Map<String, Node> m_children = new HashMap<>();
+
+        /** The stored node data (may be null). */
+        private NodeData m_data;
+
+        /**
+         * Creates a new instance.
+         */
+        public Node() {}
+
+        /**
+         * Gets the children.
+         *
+         * @return the children by name
+         */
+        public Map<String, Node> getChildren() {
+
+            return m_children;
+        }
+
+        /**
+         * Gets the node data
+         *
+         * @return the node data
+         */
+        public NodeData getData() {
+
+            return m_data;
+        }
+
+        /**
+         * Sets the node data
+         *
+         * @param data the node data
+         */
+        public void setData(NodeData data) {
+
+            m_data = data;
+        }
+    }
+
+    /**
+     * The data for a single node.
+     *
+     * <p>Contains information on which file extensions are uploadable and whether uploads are enabled at all.
+     */
+    public static class NodeData implements IsSerializable {
+
+        /** True if upload enabled (may be null). */
+        private Boolean m_enabled;
+
+        /** Set of allowed extensions (without leading '.'). May be null. */
+        private Set<String> m_extensions;
+
+        /** Creates a new instance. */
+        public NodeData() {}
+
+        /**
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
+        public boolean equals(Object other) {
+
+            if (!(other instanceof NodeData)) {
+                return false;
+            }
+            NodeData data = (NodeData)other;
+            return Objects.equals(m_enabled, data.getEnabled()) && Objects.equals(m_extensions, data.getExtensions());
+
+        }
+
+        /**
+         * @see java.lang.Object#hashCode()
+         */
+        @Override
+        public int hashCode() {
+
+            return Objects.hash(m_enabled, m_extensions);
+        }
+
+        /**
+         * Merges this node with a child node, where if the child node has attributes set, they override the corresponding attributes of this node.
+         *
+         * @param child the child node
+         * @return the merged node
+         */
+        public NodeData merge(NodeData child) {
+
+            if (child == null) {
+                return this;
+            }
+            if ((child.getExtensions() != null) && (child.getEnabled() != null)) {
+                // everything is overwritten, so we don't need a merged version
+                return child;
+            }
+            NodeData result = new NodeData();
+            if (child.getExtensions() != null) {
+                result.setExtensions(child.getExtensions());
+            } else {
+                result.setExtensions(getExtensions());
+            }
+            if (child.getEnabled() != null) {
+                result.setEnabled(child.getEnabled());
+            } else {
+                result.setEnabled(getEnabled());
+            }
+            return result;
+        }
+
+        public void parse(String info) {
+
+            Map<String, String> parsedInfo = CmsStringUtil.splitAsMap(info, "|", ":");
+            String enabledStr = parsedInfo.get(KEY_ENABLED);
+            if (enabledStr != null) {
+                setEnabled(Boolean.valueOf(enabledStr));
+            }
+            String typesStr = parsedInfo.get(KEY_TYPES);
+            if (typesStr != null) {
+                Set<String> types = new HashSet<>();
+                for (String type : typesStr.split(",")) {
+                    type = type.trim().toLowerCase();
+                    if (type.startsWith(".")) {
+                        type = type.substring(1);
+                    }
+                    if (type.length() > 0) {
+                        types.add(type);
+                    }
+                }
+                setExtensions(types);
+            }
+        }
+
+        /**
+         * Gets the 'upload enabled' status (may be null).
+         *
+         * @return the 'upload enabled' status
+         */
+        private Boolean getEnabled() {
+
+            return m_enabled;
+        }
+
+        /**
+         * Gets the allowed file extensions for uploading (may be null).
+         *
+         * @return the set of allowed file extensions for uploads
+         */
+        private Set<String> getExtensions() {
+
+            return m_extensions;
+        }
+
+        /**
+         * Sets the 'upload enabled' status.
+         *
+         * @param enabled the 'upload enabled' status
+         */
+        private void setEnabled(Boolean enabled) {
+
+            m_enabled = enabled;
+        }
+
+        /**
+         * Sets the allowed file extensions.
+         *
+         * @param extensions the set of allowed file extensions
+         */
+        private void setExtensions(Set<String> extensions) {
+
+            m_extensions = extensions;
         }
 
     }
@@ -118,16 +302,68 @@ public class CmsUploadRestrictionInfo implements IsSerializable {
     /** The default upload restriction that allows everything. */
     public static final String UNRESTRICTED_UPLOADS = "enabled:true|types:*";
 
-    /** Map to keep track of enabled/disabled status. */
-    private Map<String, Boolean> m_uploadEnabledMap = new HashMap<>();
-
-    /** Map to keep track of allowed file extensions. */
-    private Map<String, Set<String>> m_uploadTypesMap = new HashMap<>();
+    protected Node m_root;
 
     /**
      * Creates a new instance.
      */
     protected CmsUploadRestrictionInfo() {}
+
+    /**
+     * Helper method for collecting and merging the node data valid for a particular path.
+     *
+     * @param root the root node
+     * @param path the path along which to collect and merge the node data
+     *
+     * @return the merged node data
+     */
+    public static NodeData collectNodeData(Node root, String path) {
+
+        NodeData empty = new NodeData();
+        NodeData currentData = empty.merge(root.getData()); // root.getData() may be null, so we merge it with an empty NodeData instance
+        Node current = root;
+        List<String> pathComponents = Arrays.asList(path.split("/"));
+        for (String part : pathComponents) {
+            if ("".equals(part)) {
+                continue;
+            }
+            Node child = current.getChildren().get(part);
+            if (child != null) {
+                currentData = currentData.merge(child.getData());
+                current = child;
+            } else {
+                break;
+            }
+        }
+        return currentData;
+
+    }
+
+    /**
+     * Finds or creates the node corresponding to a given path from a root node (also creating any required intermediate nodes).
+     *
+     * @param root the root node of the tree
+     * @param path the path
+     * @return the node for the given path
+     */
+    public static Node findOrCreateNode(Node root, String path) {
+
+        Node current = root;
+        if ("/".equals(path) || "".equals(path)) {
+            // empty list of path components is OK
+        } else {
+            List<String> pathComponents = Arrays.asList(path.split("/"));
+            for (String part : pathComponents) {
+                if ("".equals(part)) {
+                    // trailing or duplicate slashes
+                    continue;
+                }
+                Node child = current.getChildren().computeIfAbsent(part, k -> new Node());
+                current = child;
+            }
+        }
+        return current;
+    }
 
     /**
      * Normalizes a path.
@@ -178,7 +414,8 @@ public class CmsUploadRestrictionInfo implements IsSerializable {
                 suffixes.add("." + type);
             }
         }
-        return Joiner.on(",").join(suffixes);
+        String result = Joiner.on(",").join(suffixes);
+        return result;
     }
 
     /**
@@ -189,17 +426,8 @@ public class CmsUploadRestrictionInfo implements IsSerializable {
      */
     public boolean isUploadEnabled(String originalPath) {
 
-        String path = originalPath;
-
-        while (path != null) {
-            path = normalizePath(path);
-            Boolean value = m_uploadEnabledMap.get(path);
-            if (value != null) {
-                return value.booleanValue();
-            }
-            path = CmsResource.getParentFolder(path);
-        }
-        return true;
+        NodeData data = collectNodeData(m_root, originalPath);
+        return (data.getEnabled() == null) || data.getEnabled().booleanValue();
     }
 
     /**
@@ -210,16 +438,12 @@ public class CmsUploadRestrictionInfo implements IsSerializable {
      */
     protected Set<String> getTypes(String path) {
 
-        while (path != null) {
-            path = normalizePath(path);
-            Set<String> value = m_uploadTypesMap.get(path);
-            if (value != null) {
-                return value;
-
-            }
-            path = CmsResource.getParentFolder(path);
+        NodeData data = collectNodeData(m_root, path);
+        if (data.getExtensions() == null) {
+            return Collections.emptySet();
+        } else {
+            return data.getExtensions();
         }
-        return Collections.emptySet();
     }
 
 }

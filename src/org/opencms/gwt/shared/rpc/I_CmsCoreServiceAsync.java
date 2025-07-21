@@ -36,6 +36,7 @@ import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsCoreData.UserInfo;
 import org.opencms.gwt.shared.CmsResourceCategoryInfo;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
+import org.opencms.gwt.shared.CmsUploadRestrictionInfo;
 import org.opencms.gwt.shared.CmsUserSettingsBean;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
@@ -199,6 +200,13 @@ public interface I_CmsCoreServiceAsync {
      * @param action the callback for the result
      */
     void getWorkplaceLinkForPath(String path, AsyncCallback<String> action);
+
+    /**
+     * Loads the upload restriction info.
+     *
+     * @param callback the callback to call with the upload restriction info
+     */
+    void loadUploadRestrictionInfo(AsyncCallback<CmsUploadRestrictionInfo> callback);
 
     /**
      * Loads the user settings for the current user.<p>

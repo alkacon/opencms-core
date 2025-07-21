@@ -808,6 +808,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     public List<CmsBroadcastMessage> getBroadcast() {
 
         setBroadcastPoll();
+        CmsObject cms = getCmsObject();
         Set<CmsBroadcast> repeatedBroadcasts = new HashSet<CmsBroadcast>();
         OpenCms.getWorkplaceManager().checkWorkplaceRequest(getRequest(), getCmsObject());
         CmsSessionInfo sessionInfo = OpenCms.getSessionManager().getSessionInfo(getRequest().getSession());
@@ -1083,6 +1084,19 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             error(e);
             return null;
         }
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#loadUploadRestrictionInfo()
+     */
+    @Override
+    public CmsUploadRestrictionInfo loadUploadRestrictionInfo() throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        CmsUploadRestrictionInfo result = OpenCms.getWorkplaceManager().getUploadRestriction().getUploadRestrictionInfo(
+            cms);
+        return result;
+
     }
 
     /**

@@ -37,6 +37,7 @@ import org.opencms.gwt.shared.CmsCoreData.AdeContext;
 import org.opencms.gwt.shared.CmsCoreData.UserInfo;
 import org.opencms.gwt.shared.CmsResourceCategoryInfo;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
+import org.opencms.gwt.shared.CmsUploadRestrictionInfo;
 import org.opencms.gwt.shared.CmsUserSettingsBean;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
@@ -228,6 +229,14 @@ public interface I_CmsCoreService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     String getWorkplaceLinkForPath(String path) throws CmsRpcException;
+
+    /**
+     * Loads the upload restriction info.
+     *
+     * @return the upload restriction info
+     * @throws CmsRpcException if something goes wrong
+     */
+    CmsUploadRestrictionInfo loadUploadRestrictionInfo() throws CmsRpcException;
 
     /**
      * Loads the user settings for the current user.<p>

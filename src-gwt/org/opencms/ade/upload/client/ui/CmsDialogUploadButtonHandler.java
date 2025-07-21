@@ -34,21 +34,31 @@ import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
+import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.gwt.shared.CmsUploadRestrictionInfo;
 
 import java.util.List;
 
 import com.google.common.base.Supplier;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * Default upload button handler which is used for the upload dialog.<p>
  */
 public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
+
+    /** Handler registration for the user interaction detection. */
+    private static HandlerRegistration m_userInteractionCheckRegistration;
+
+    /** Records if user interaction has occurred. */
+    private static boolean m_userInteraction;
 
     /** The upload button instance. */
     private I_CmsUploadButton m_button;
@@ -107,6 +117,47 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
     public void initializeFileInput(CmsFileInput fileInput) {
 
         CmsUploadRestrictionInfo restriction = CmsCoreProvider.get().getUploadRestriction();
+
+        // Set up a repeating job (every 10s) to update the upload restriction info if user interaction was detected
+        // (which we detect in a native preview handler).
+        // We do all this here because we don't need it if no file input is ever initialized.
+        if (m_userInteractionCheckRegistration == null) {
+            Scheduler.get().scheduleFixedDelay(() -> {
+                if (m_userInteraction) {
+                    m_userInteraction = false;
+                    CmsCoreProvider.get();
+                    CmsCoreProvider.getService().loadUploadRestrictionInfo(
+                        new AsyncCallback<CmsUploadRestrictionInfo>() {
+
+                            @Override
+                            public void onFailure(Throwable caught) {
+
+                                CmsErrorDialog.handleException(caught);
+                            }
+
+                            @Override
+                            public void onSuccess(CmsUploadRestrictionInfo result) {
+
+                                CmsCoreProvider.get().setUploadRestrictionInfo(result);
+
+                            }
+                        });
+                }
+                return true;
+
+            }, 10000);
+            m_userInteractionCheckRegistration = Event.addNativePreviewHandler(event -> {
+                if ((event.getTypeInt() == Event.ONMOUSEMOVE)
+                    || (event.getTypeInt() == Event.ONTOUCHSTART)
+                    || (event.getTypeInt() == Event.ONKEYDOWN)
+                    || (event.getTypeInt() == Event.ONSCROLL)) {
+                    m_userInteraction = true;
+
+                }
+
+            });
+
+        }
 
         if (m_targetFolder != null) {
 

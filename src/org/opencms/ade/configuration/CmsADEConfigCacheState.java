@@ -50,6 +50,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -108,6 +109,9 @@ public class CmsADEConfigCacheState {
 
     /** Site plugins. */
     private Map<CmsUUID, CmsSitePlugin> m_sitePlugins;
+    
+    /** Cache for sitemap attribute overview maps. */
+    private ConcurrentHashMap<String, Map<String, String>> m_attributeValuesByPathCache = new ConcurrentHashMap<>();
 
     /** Cached list of subsites to be included in the site selector. */
     private volatile List<String> m_subsitesForSiteSelector;
@@ -138,7 +142,6 @@ public class CmsADEConfigCacheState {
         m_sitemapAttributeEditorConfigurations = attributeEditorConfigurations;
         for (CmsADEConfigDataInternal data : siteConfigurations.values()) {
             if (data.getBasePath() != null) {
-                // In theory, the base path should never be null
                 m_siteConfigurationsByPath.put(data.getBasePath(), data);
             } else {
                 LOG.info("Empty base path for sitemap configuration: " + data.getResource().getRootPath());
@@ -267,6 +270,30 @@ public class CmsADEConfigCacheState {
     public CmsSitemapAttributeEditorConfiguration getAttributeEditorConfiguration(CmsUUID id) {
 
         return m_sitemapAttributeEditorConfigurations.get(id);
+    }
+
+    /**
+     * Gets a map of the values of a specific sitemap attribute for each subsite.
+     *
+     * <p>The keys of the map are the root paths of the subsite, and the values are the attribute values.
+     *
+     * @param attribute the attribute we want to get
+     *
+     * @return the map of attribute values
+     */
+    public Map<String, String> getAttributeValuesByPath(String attribute) {
+
+        return m_attributeValuesByPathCache.computeIfAbsent(attribute, attr -> {
+            Map<String, String> result = new HashMap<>();
+            for (String path : m_siteConfigurationsByPath.keySet()) {
+                CmsADEConfigData config = lookupConfiguration(path);
+                String value = config.getAttribute(attr, null);
+                if (value != null) {
+                    result.put(path, value);
+                }
+            }
+            return Collections.unmodifiableMap(result);
+        });
     }
 
     /**

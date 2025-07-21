@@ -605,8 +605,8 @@ public class CmsCoreData implements IsSerializable {
 
     /**
      * Gets the maximum number of locale buttons to display in the editor.
-     * 
-     * @return the maximum number of locale buttons to display in the editor 
+     *
+     * @return the maximum number of locale buttons to display in the editor
      */
     public int getMaxLocaleButtons() {
 
@@ -833,7 +833,7 @@ public class CmsCoreData implements IsSerializable {
 
     /**
      * Sets the maximum number of locale buttons to display in the editor.
-     * 
+     *
      * @param maxLocaleButtons the max number of locale buttons to display in the editor
      */
     public void setMaxLocaleButtons(int maxLocaleButtons) {
@@ -849,6 +849,17 @@ public class CmsCoreData implements IsSerializable {
     public void setTinymce(CmsTinyMCEData tinyMceData) {
 
         m_tinymce = tinyMceData;
+    }
+
+    /**
+     * Updates the upload restriction info
+     *
+     * @param uploadRestriction
+     */
+    public void setUploadRestrictionInfo(CmsUploadRestrictionInfo uploadRestriction) {
+
+        m_uploadRestriction = uploadRestriction;
+
     }
 
     /**
