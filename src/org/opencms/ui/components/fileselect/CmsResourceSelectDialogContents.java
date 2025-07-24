@@ -28,10 +28,13 @@
 package org.opencms.ui.components.fileselect;
 
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.components.CmsBasicDialog;
 
-import com.vaadin.v7.ui.ComboBox;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.TextField;
+import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.VerticalLayout;
 
 /**
@@ -54,12 +57,25 @@ public class CmsResourceSelectDialogContents extends CmsBasicDialog {
     /** Container for the tree component. */
     private VerticalLayout m_treeContainer;
 
+    /** The filter box. */ 
+    private TextField m_filterBox;
+
+    /** The filter button. */ 
+    private Button m_filterButton;
+
     /**
      * Creates a new widget instance.<p>
      */
     public CmsResourceSelectDialogContents() {
-        CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
+        CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+        m_filterButton.setIcon(FontOpenCms.FILTER);
+
+    }
+
+    private static long getSerialversionuid() {
+
+        return serialVersionUID;
     }
 
     /**
@@ -80,6 +96,26 @@ public class CmsResourceSelectDialogContents extends CmsBasicDialog {
     public VerticalLayout getContainer() {
 
         return m_container;
+    }
+
+    /**
+     * Gets the filter box.
+     * 
+     * @return the filter box
+     */
+    public TextField getFilterBox() {
+
+        return m_filterBox;
+    }
+
+    /**
+     * Gets the filter button.
+     * 
+     * @return the filter button
+     */
+    public Button getFilterButton() {
+
+        return m_filterButton;
     }
 
     /**

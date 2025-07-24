@@ -32,6 +32,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -428,6 +429,7 @@ public class CmsUserEditDialog extends CmsBasicDialog implements I_CmsPasswordFe
             m_cms = OpenCms.initCmsObject(cms);
             m_app = app;
             m_startfolder.disableSiteSwitch();
+            m_startfolder.setResourceFilter(CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder());
             m_user = m_cms.readUser(userId);
             m_editParams = app.getUserEditParameters(m_user);
             if (m_user.isWebuser()) {

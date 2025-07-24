@@ -36,26 +36,37 @@ import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.Container.Filter;
+import com.vaadin.v7.data.Item;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.v7.shared.ui.combobox.FilteringMode;
 import com.vaadin.v7.ui.ComboBox;
+import com.vaadin.v7.ui.TreeTable;
 
 /**
  * Dialog with a site selector and file tree which can be used to select resources.<p>
@@ -90,6 +101,38 @@ public class CmsResourceSelectDialog extends CustomComponent {
             m_siteSelectionContainer = siteSelectionContainer;
         }
 
+    }
+
+    /**
+     * Information needed for filtering the resource tree.
+     */
+    static class FilterData {
+
+        /** The set of folders to open. */
+        private Set<CmsResource> m_openFolders = new HashSet<>();
+
+        /** The set of root paths directly matching the filter. */
+        private Set<String> m_matchedPaths = new HashSet<>();
+
+        /**
+         * Gets the set of root paths of resources directly matching the filter.
+         *
+         * @return the set of paths of matching resources
+         */
+        public Set<String> getMatchedPaths() {
+
+            return m_matchedPaths;
+        }
+
+        /**
+         * Gets the set of folders to open +
+         *
+         * @return the set of folders to open
+         */
+        public Set<CmsResource> getOpenFolders() {
+
+            return m_openFolders;
+        }
     }
 
     /**
@@ -149,7 +192,7 @@ public class CmsResourceSelectDialog extends CustomComponent {
     protected CmsObject m_currentCms;
 
     /** The resource filter. */
-    protected CmsResourceFilter m_filter;
+    protected CmsResourceFilter m_resourceFilter;
 
     /** The resource initially displayed at the root of the tree. */
     protected CmsResource m_root;
@@ -165,6 +208,9 @@ public class CmsResourceSelectDialog extends CustomComponent {
 
     /** Contains the data for the tree. */
     private CmsResourceTreeContainer m_treeData;
+
+    /** The currently applied filter. */
+    private Filter m_currentFilter;
 
     /**
      * Creates a new instance.<p>
@@ -200,19 +246,22 @@ public class CmsResourceSelectDialog extends CustomComponent {
      * @param options options
      * @throws CmsException exception
      */
-    public CmsResourceSelectDialog(CmsResourceFilter filter, CmsObject cms, Options options)
+    public CmsResourceSelectDialog(CmsResourceFilter filter, final CmsObject _cms, Options options)
     throws CmsException {
 
-        m_filter = filter;
+        m_resourceFilter = filter;
         setCompositionRoot(new CmsResourceSelectDialogContents());
         IndexedContainer container = options.getSiteSelectionContainer() != null
         ? options.getSiteSelectionContainer()
-        : CmsVaadinUtils.getAvailableSitesContainer(cms, PROPERTY_SITE_CAPTION);
+        : CmsVaadinUtils.getAvailableSitesContainer(_cms, PROPERTY_SITE_CAPTION);
         getSiteSelector().setContainerDataSource(container);
 
-        if (!cms.existsResource("/", CmsResourceFilter.IGNORE_EXPIRATION)) {
-            cms = OpenCms.initCmsObject(cms);
+        final CmsObject cms;
+        if (!_cms.existsResource("/", CmsResourceFilter.IGNORE_EXPIRATION)) {
+            cms = OpenCms.initCmsObject(_cms);
             cms.getRequestContext().setSiteRoot("/system/");
+        } else {
+            cms = _cms;
         }
         m_siteRoot = cms.getRequestContext().getSiteRoot();
 
@@ -241,8 +290,57 @@ public class CmsResourceSelectDialog extends CustomComponent {
         updateRoot(cms, root);
 
         getContents().getTreeContainer().addComponent(m_fileTree);
-        ((Component)m_fileTree).setSizeFull();
+        m_fileTree.setSizeFull();
         updateView();
+
+        getContents().getFilterButton().addClickListener(event -> {
+            String filterText = getContents().getFilterBox().getValue();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(filterText)) {
+                removeStringFilter();
+            } else {
+                removeStringFilter();
+                try {
+                    FilterData filterData = getFilterData(m_currentCms, m_root, m_resourceFilter, filterText);
+                    List<CmsResource> openFolders = new ArrayList<>(filterData.getOpenFolders());
+                    // sort open folders by path so parents are opened before children
+                    openFolders.sort(Comparator.comparing(res -> res.getRootPath()));
+                    for (CmsResource resource : openFolders) {
+                        m_fileTree.expandItem(resource.getStructureId());
+                    }
+                    m_currentFilter = new Container.Filter() {
+
+                        private Map<CmsUUID, Boolean> m_cache = new HashMap<>();
+
+                        @Override
+                        public boolean appliesToProperty(Object propertyId) {
+
+                            return false;
+                        }
+
+                        @Override
+                        public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
+
+                            return m_cache.computeIfAbsent((CmsUUID)itemId, id -> {
+
+                                CmsResource resource = (CmsResource)(item.getItemProperty(
+                                    CmsResourceTreeContainer.PROPERTY_RESOURCE).getValue());
+                                for (String matchPath : filterData.getMatchedPaths()) {
+                                    if (CmsStringUtil.isPrefixPath(matchPath, resource.getRootPath())
+                                        || CmsStringUtil.isPrefixPath(resource.getRootPath(), matchPath)) {
+                                        return true;
+                                    }
+                                }
+                                return false;
+                            });
+                        }
+                    };
+                    m_treeData.addContainerFilter(m_currentFilter);
+                } catch (Exception e) {
+                    CmsErrorDialog.showErrorDialog(e);
+                }
+            }
+        });
+
     }
 
     /**
@@ -359,7 +457,7 @@ public class CmsResourceSelectDialog extends CustomComponent {
      */
     protected CmsResourceTreeTable createTree(CmsObject cms, CmsResource root) {
 
-        return new CmsResourceTreeTable(cms, root, m_filter);
+        return new CmsResourceTreeTable(cms, root, m_resourceFilter);
     }
 
     /**
@@ -390,11 +488,26 @@ public class CmsResourceSelectDialog extends CustomComponent {
     protected void onSiteChange(String site) {
 
         try {
+            removeStringFilter();
             m_treeData.removeAllItems();
+
+            // the tree table caches the open/closed state of items,  even when the content of the data source changes,
+            // and then can get confused during a site change because the container items for a site share IDs
+            // with the corresponding container items in the root site.
+            // The following is a hack to clear the open/closed state cache, which depends on the internals of TreeTable.
+            try {
+                Field cStrategy = TreeTable.class.getDeclaredField("cStrategy");
+                cStrategy.trySetAccessible();
+                cStrategy.set(m_fileTree, null);
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+            CmsResourceSelectDialogContents contents = (CmsResourceSelectDialogContents)getCompositionRoot();
+            contents.getFilterBox().setValue("");
+
             CmsObject rootCms = OpenCms.initCmsObject(A_CmsUI.getCmsObject());
             rootCms.getRequestContext().setSiteRoot("");
             CmsResource siteRootResource = rootCms.readResource(site);
-
             m_treeData.initRoot(rootCms, siteRootResource);
             m_fileTree.expandItem(siteRootResource.getStructureId());
             m_siteRoot = site;
@@ -425,6 +538,30 @@ public class CmsResourceSelectDialog extends CustomComponent {
         m_fileTree.showSitemapView(m_isSitemapView);
     }
 
+    private FilterData getFilterData(CmsObject cms, CmsResource root, CmsResourceFilter filter, String filterText)
+    throws CmsException {
+
+        List<CmsResource> allResources = cms.readResources(root, filter, true);
+        List<CmsResource> matching = allResources.stream().filter(
+            res -> res.getName().toLowerCase().contains(filterText.toLowerCase())).collect(Collectors.toList());
+        Map<String, CmsResource> resourcesByPath = allResources.stream().collect(
+            Collectors.toMap(res -> res.getRootPath(), res -> res, (a, b) -> b));
+        FilterData result = new FilterData();
+        for (CmsResource res : matching) {
+            String path = res.getRootPath();
+            result.getMatchedPaths().add(path);
+            do {
+                path = CmsResource.getParentFolder(path);
+                CmsResource parent = resourcesByPath.get(path);
+                if (parent != null) {
+                    result.getOpenFolders().add(parent);
+                }
+            } while ((path != null) && !path.equals(root.getRootPath()));
+        }
+        return result;
+
+    }
+
     /**
      * Gets the site selector.<p>
      *
@@ -433,6 +570,17 @@ public class CmsResourceSelectDialog extends CustomComponent {
     private ComboBox getSiteSelector() {
 
         return getContents().getSiteSelector();
+    }
+
+    /**
+     * Removes the current filter.
+     */
+    private void removeStringFilter() {
+
+        if (m_currentFilter != null) {
+            m_treeData.removeContainerFilter(m_currentFilter);
+            m_currentFilter = null;
+        }
     }
 
 }

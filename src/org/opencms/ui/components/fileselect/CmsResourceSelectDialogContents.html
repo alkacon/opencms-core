@@ -8,7 +8,11 @@
   		<o-cms-basic-dialog>
   			<content>
   				<vaadin7-vertical-layout _id="m_container" margin spacing size-full>
-  					<vaadin7-combo-box _id="m_siteSelector" width="100%" />
+  					<vaadin7-horizontal-layout spacing width="100%">
+  						<vaadin7-combo-box _id="m_siteSelector" width="100%" :expand="3.0" />
+  						<v-text-field _id="m_filterBox" width="100%" :expand="1.0") ></v-text-field>
+  						<v-button _id="m_filterButton"></v-button>
+  					</vaadin7-horizontal-layout>
   					<v-form-layout _id="m_additionalWidgets" visible="false"></v-form-layout>
   					<vaadin7-vertical-layout _id="m_treeContainer" size-full :expand />
   				</vaadin7-vertical-layout>
