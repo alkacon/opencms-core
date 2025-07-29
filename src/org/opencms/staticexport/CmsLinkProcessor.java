@@ -533,34 +533,36 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                             tag.setAttribute(CmsGwtConstants.ATTR_DEAD_LINK_MARKER, "true");
                         }
                     }
-                    CmsADEConfigData sitemapConfig = OpenCms.getADEManager().lookupConfigurationWithCache(
-                        m_cms,
-                        m_cms.getRequestContext().getRootUri());
-                    String externalMarker = sitemapConfig.getAttribute(
-                        "template.editor.links.externalMarker",
-                        "none").trim();
-                    if (!"none".equals(externalMarker)) {
-                        if (tag.getTagName().equalsIgnoreCase("A")) {
-                            boolean markAsExternal = shouldMarkAsExternal(m_cms, sitemapConfig, link);
-                            final String attrClass = "class";
-                            String classesValue = tag.getAttribute(attrClass);
-                            if (markAsExternal) {
-                                // Add marker class
+                    if (m_cms != null) {
+                        CmsADEConfigData sitemapConfig = OpenCms.getADEManager().lookupConfigurationWithCache(
+                            m_cms,
+                            m_cms.getRequestContext().getRootUri());
+                        String externalMarker = sitemapConfig.getAttribute(
+                            "template.editor.links.externalMarker",
+                            "none").trim();
+                        if (!"none".equals(externalMarker)) {
+                            if (tag.getTagName().equalsIgnoreCase("A")) {
+                                boolean markAsExternal = shouldMarkAsExternal(m_cms, sitemapConfig, link);
+                                final String attrClass = "class";
+                                String classesValue = tag.getAttribute(attrClass);
+                                if (markAsExternal) {
+                                    // Add marker class
 
-                                if (CmsStringUtil.isEmptyOrWhitespaceOnly(classesValue)) {
-                                    tag.setAttribute(attrClass, externalMarker);
-                                } else {
-                                    List<String> classes = Arrays.asList(classesValue.trim().split("\\s+"));
-                                    if (!classes.contains(externalMarker)) {
-                                        tag.setAttribute(attrClass, classesValue + " " + externalMarker);
+                                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(classesValue)) {
+                                        tag.setAttribute(attrClass, externalMarker);
+                                    } else {
+                                        List<String> classes = Arrays.asList(classesValue.trim().split("\\s+"));
+                                        if (!classes.contains(externalMarker)) {
+                                            tag.setAttribute(attrClass, classesValue + " " + externalMarker);
+                                        }
                                     }
-                                }
-                            } else {
-                                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(classesValue)) {
-                                    // Remove marker class
-                                    String newValue = Arrays.asList(classesValue.split("\\s+")).stream().filter(
-                                        cls -> !cls.equals(externalMarker)).collect(Collectors.joining(" "));
-                                    tag.setAttribute(attrClass, newValue);
+                                } else {
+                                    if (!CmsStringUtil.isEmptyOrWhitespaceOnly(classesValue)) {
+                                        // Remove marker class
+                                        String newValue = Arrays.asList(classesValue.split("\\s+")).stream().filter(
+                                            cls -> !cls.equals(externalMarker)).collect(Collectors.joining(" "));
+                                        tag.setAttribute(attrClass, newValue);
+                                    }
                                 }
                             }
                         }
