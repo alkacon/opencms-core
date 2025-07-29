@@ -27,22 +27,40 @@
 
 package org.opencms.staticexport;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.wrapper.CmsObjectWrapper;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
+import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsHtmlParser;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
 
 import org.htmlparser.Attribute;
 import org.htmlparser.Node;
@@ -53,6 +71,9 @@ import org.htmlparser.tags.ObjectTag;
 import org.htmlparser.util.ParserException;
 import org.htmlparser.util.SimpleNodeIterator;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
 /**
  * Implements the HTML parser node visitor pattern to
  * exchange all links on the page.<p>
@@ -60,6 +81,50 @@ import org.htmlparser.util.SimpleNodeIterator;
  * @since 6.0.0
  */
 public class CmsLinkProcessor extends CmsHtmlParser {
+
+    /**
+     * Holds information about external link domain whitelists.
+     */
+    public static class ExternalLinkWhitelistInfo {
+
+        /** The list of site roots matching the whitelist. */
+        private Set<String> m_siteRoots;
+
+        /** The whitelist itself. */
+        private Set<String> m_whitelistEntries;
+
+        /**
+         * Creates a new instance
+         *
+         * @param whitelistEntries the whitelist entries
+         * @param siteRoots the site roots matching the whitelist
+         */
+        public ExternalLinkWhitelistInfo(Set<String> whitelistEntries, Set<String> siteRoots) {
+
+            m_siteRoots = siteRoots;
+            m_whitelistEntries = whitelistEntries;
+        }
+
+        /**
+         * Gets the site roots matching the whitelist
+         *
+         * @return the matching site roots
+         */
+        public Set<String> getSiteRoots() {
+
+            return m_siteRoots;
+        }
+
+        /**
+         * Gets the whitelist entries
+         * @return the whitelist entries
+         */
+        public Set<String> getWhitelistEntries() {
+
+            return m_whitelistEntries;
+        }
+
+    }
 
     /** Constant for the attribute name. */
     public static final String ATTRIBUTE_HREF = "href";
@@ -99,6 +164,13 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
     /** Processing mode "replace links" (links to macros).  */
     private static final int REPLACE_LINKS = 0;
+
+    private static final Log LOG = CmsLog.getLog(CmsLinkProcessor.class);
+
+    /** Cache for site roots of internal sites that should not be marked as external, according to the sitemap configuration. */
+    private static Cache<String, ExternalLinkWhitelistInfo> externalLinkWhitelistCache = CacheBuilder.newBuilder().expireAfterWrite(
+        5,
+        TimeUnit.SECONDS).concurrencyLevel(4).build();
 
     /** The current users OpenCms context, containing the users permission and site root context. */
     private CmsObject m_cms;
@@ -181,6 +253,102 @@ public class CmsLinkProcessor extends CmsHtmlParser {
             }
         }
         return new String(result);
+    }
+
+    /**
+     * Gets the list of site roots of sites in OpenCms which should be considered as internal, in the sense of not having to mark
+     * the corresponding link tags with the external link marker.
+     *
+     * @param cms the current CMS context
+     *
+     * @return the external link whitelist site roots
+     */
+    public static ExternalLinkWhitelistInfo getExternalLinkWhitelistInfo(CmsObject cms) {
+
+        CmsADEConfigData sitemapConfig = OpenCms.getADEManager().lookupConfigurationWithCache(
+            cms,
+            cms.getRequestContext().getRootUri());
+        String whitelist = sitemapConfig.getAttribute("template.editor.links.externalWhitelist", "");
+        String cacheKey = "" + cms.getRequestContext().getCurrentProject().isOnlineProject() + ":" + whitelist;
+        try {
+            return externalLinkWhitelistCache.get(cacheKey, () -> {
+
+                Set<String> whitelistEntries = Arrays.asList(whitelist.split(",")).stream().map(
+                    entry -> entry.trim()).filter(entry -> !CmsStringUtil.isEmptyOrWhitespaceOnly(entry)).collect(
+                        Collectors.toSet());
+                Set<String> siteRoots = new HashSet<>();
+                for (String whitelistEntry : whitelistEntries) {
+                    for (Map.Entry<CmsSiteMatcher, CmsSite> siteEntry : OpenCms.getSiteManager().getSites().entrySet()) {
+                        CmsSiteMatcher key = siteEntry.getKey();
+                        try {
+                            URI uri = new URI(key.getUrl());
+                            String host = uri.getHost();
+                            if (host != null) {
+                                if (host.equals(whitelistEntry) || host.endsWith("." + whitelistEntry)) {
+                                    siteRoots.add(siteEntry.getValue().getSiteRoot());
+                                }
+                            }
+                        } catch (Exception e) {
+                            LOG.info(e.getLocalizedMessage(), e);
+                        }
+
+                    }
+                }
+                return new ExternalLinkWhitelistInfo(
+                    Collections.unmodifiableSet(whitelistEntries),
+                    Collections.unmodifiableSet(siteRoots));
+            });
+        } catch (ExecutionException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return new ExternalLinkWhitelistInfo(new HashSet<>(), new HashSet<>());
+        }
+
+    }
+
+    /**
+     * Checks if the link should be marked as external.
+     *
+     * @param cms the current CMS context
+     * @param sitemapConfig the current sitemap configuration
+     * @param link the link to check
+     * @return true if the link should be be marked as external
+     */
+    public static boolean shouldMarkAsExternal(CmsObject cms, CmsADEConfigData sitemapConfig, CmsLink link) {
+
+        boolean markAsExternal = false;
+        if (link.isInternal()) {
+            String target = link.getTarget();
+            if ((target != null) && target.startsWith("/")) {
+                CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(target);
+                CmsSite currentSite = OpenCms.getSiteManager().getSiteForRootPath(cms.getRequestContext().getRootUri());
+                if ((site != null) && (currentSite != null) && !currentSite.getSiteRoot().equals(site.getSiteRoot())) {
+                    markAsExternal = true;
+                }
+            }
+        } else {
+            markAsExternal = true;
+        }
+        final String siteRoot = link.getSiteRoot();
+        if (markAsExternal) {
+            ExternalLinkWhitelistInfo whitelistInfo = getExternalLinkWhitelistInfo(cms);
+            Set<String> whitelistSiteRoots = whitelistInfo.getSiteRoots();
+            try {
+                URI uri = new URI(link.getUri());
+                if (uri.getHost() != null) {
+                    if (whitelistInfo.getWhitelistEntries().stream().anyMatch(
+                        entry -> entry.equals(uri.getHost()) || StringUtils.endsWith(uri.getHost(), "." + entry))) {
+                        markAsExternal = false;
+                    }
+                } else if (siteRoot != null) {
+                    if (whitelistSiteRoots.contains(siteRoot)) {
+                        markAsExternal = false;
+                    }
+                }
+            } catch (URISyntaxException e) {
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+        }
+        return markAsExternal;
     }
 
     /**
@@ -365,6 +533,38 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                             tag.setAttribute(CmsGwtConstants.ATTR_DEAD_LINK_MARKER, "true");
                         }
                     }
+                    CmsADEConfigData sitemapConfig = OpenCms.getADEManager().lookupConfigurationWithCache(
+                        m_cms,
+                        m_cms.getRequestContext().getRootUri());
+                    String externalMarker = sitemapConfig.getAttribute(
+                        "template.editor.links.externalMarker",
+                        "none").trim();
+                    if (!"none".equals(externalMarker)) {
+                        if (tag.getTagName().equalsIgnoreCase("A")) {
+                            boolean markAsExternal = shouldMarkAsExternal(m_cms, sitemapConfig, link);
+                            final String attrClass = "class";
+                            String classesValue = tag.getAttribute(attrClass);
+                            if (markAsExternal) {
+                                // Add marker class
+
+                                if (CmsStringUtil.isEmptyOrWhitespaceOnly(classesValue)) {
+                                    tag.setAttribute(attrClass, externalMarker);
+                                } else {
+                                    List<String> classes = Arrays.asList(classesValue.trim().split("\\s+"));
+                                    if (!classes.contains(externalMarker)) {
+                                        tag.setAttribute(attrClass, classesValue + " " + externalMarker);
+                                    }
+                                }
+                            } else {
+                                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(classesValue)) {
+                                    // Remove marker class
+                                    String newValue = Arrays.asList(classesValue.split("\\s+")).stream().filter(
+                                        cls -> !cls.equals(externalMarker)).collect(Collectors.joining(" "));
+                                    tag.setAttribute(attrClass, newValue);
+                                }
+                            }
+                        }
+                    }
                 }
                 break;
             case REPLACE_LINKS:
@@ -406,6 +606,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                 break;
             default: // empty
         }
+
     }
 
     /**

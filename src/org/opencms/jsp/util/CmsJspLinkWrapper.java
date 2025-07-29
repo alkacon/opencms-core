@@ -34,6 +34,9 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
+import org.opencms.site.CmsSite;
+import org.opencms.staticexport.CmsLinkProcessor;
+import org.opencms.staticexport.CmsLinkProcessor.ExternalLinkWhitelistInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 
@@ -44,8 +47,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 
 /**
@@ -133,6 +138,45 @@ public class CmsJspLinkWrapper extends AbstractCollection<String> {
             return obj.toString().equals(toString());
         }
         return false;
+    }
+
+    /**
+     * Checks if the link is 'external', which is not just the opposite of 'internal', in this case.
+     *
+     * <p>A link is external if it's either an internal link pointing to a different site, or a link to a location outside
+     * OpenCms, unless the domain is listed in the sitemap attribute 'template.editor.links.externalWhitelist' for the current subsite.
+     *
+     * @return the 'external' status of the link
+     */
+    public boolean getIsExternal() {
+
+        ExternalLinkWhitelistInfo whitelistInfo = CmsLinkProcessor.getExternalLinkWhitelistInfo(m_cms);
+        Set<String> whitelistSiteRoots = whitelistInfo.getSiteRoots();
+        boolean result = false;
+        if (getIsInternal()) {
+            String rootPath = m_cms.getRequestContext().addSiteRoot(m_link);
+            CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(rootPath);
+            CmsSite currentSite = OpenCms.getSiteManager().getSiteForRootPath(m_cms.getRequestContext().getRootUri());
+            if ((site != null) && (currentSite != null) && !currentSite.getSiteRoot().equals(site.getSiteRoot())) {
+                if (!whitelistSiteRoots.contains(site.getSiteRoot())) {
+                    result = true;
+                }
+            }
+        } else {
+            result = true;
+            try {
+                URI uri = new URI(m_link);
+                if (uri.getHost() != null) {
+                    if (whitelistInfo.getWhitelistEntries().stream().anyMatch(
+                        entry -> entry.equals(uri.getHost()) || StringUtils.endsWith(uri.getHost(), "." + entry))) {
+                        result = false;
+                    }
+                }
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return result;
     }
 
     /**
