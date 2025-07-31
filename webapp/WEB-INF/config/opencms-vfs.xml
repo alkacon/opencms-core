@@ -464,7 +464,9 @@
                 <translation>s#opencms://system/shared/decoration/decoration\.xsd#opencms://system/config/decoration/decoration.xsd#</translation>
             </xsdtranslations>
         </translations>
-        <online-folders />
+        <online-folders>
+        	<path>/system/shared/online</path>
+        </online-folders>
         <xmlcontent>
             <widgets>
                 <widget class="org.opencms.widgets.CmsCalendarWidget">
