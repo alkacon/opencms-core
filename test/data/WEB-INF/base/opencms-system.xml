@@ -59,6 +59,7 @@
 		<runtimeproperties>
 			<param name="compatibility.support.oldlocales">false</param>
 			<param name="compatibility.support.webAppNames">/opencms/opencms/</param>
+			<param name="folderSizeTrackerInterval">1000</param>
 		</runtimeproperties>
 		<runtimeclasses>
 			<runtimeinfo class="org.opencms.db.CmsDbContextFactory" />

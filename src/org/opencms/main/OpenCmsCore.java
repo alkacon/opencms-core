@@ -64,6 +64,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.quota.CmsFolderSizeTracker;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.flex.CmsFlexCacheConfiguration;
 import org.opencms.flex.CmsFlexController;
@@ -152,6 +153,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -378,6 +380,8 @@ public final class OpenCmsCore {
 
     /** The XML content type manager that contains the initialized XML content types. */
     private CmsXmlContentTypeManager m_xmlContentTypeManager;
+
+    private Future<CmsFolderSizeTracker> m_folderSizeTrackerFuture;
 
     /**
      * Protected constructor that will initialize the singleton OpenCms instance
@@ -689,6 +693,20 @@ public final class OpenCmsCore {
             m_flexCache.dumpKeys(buffer);
             return buffer.toString();
         } else {
+            return null;
+        }
+    }
+
+    /**
+     * Gets the folder size tracker.
+     * @return
+     */
+    protected CmsFolderSizeTracker getFolderSizeTracker() {
+
+        try {
+            return m_folderSizeTrackerFuture.get();
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
             return null;
         }
     }
@@ -2725,8 +2743,15 @@ public final class OpenCmsCore {
             } catch (CmsException e) {
                 throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_ADMINCMS_0), e);
             }
-
         }
+
+        try {
+            m_folderSizeTrackerFuture = m_executor.submit(
+                () -> new CmsFolderSizeTracker(m_configAdminCms).initialize());
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+
         // everything is initialized, now start publishing
         m_publishManager.startPublishing();
 

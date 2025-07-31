@@ -38,6 +38,7 @@ import org.opencms.db.CmsSqlManager;
 import org.opencms.db.CmsSubscriptionManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.quota.CmsFolderSizeTracker;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.importexport.CmsImportExportManager;
@@ -322,6 +323,16 @@ public final class OpenCms {
     public static String getFlexCacheKeyDump() {
 
         return OpenCmsCore.getInstance().getFlexCacheKeyDump();
+    }
+
+    /**
+     * Gets the folder size tracker.
+     *
+     * @return the folder size tracker
+     */
+    public static CmsFolderSizeTracker getFolderSizeTracker() {
+
+        return OpenCmsCore.getInstance().getFolderSizeTracker();
     }
 
     /**

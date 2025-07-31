@@ -62,6 +62,8 @@ import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.I_CmsResource;
 import org.opencms.file.history.I_CmsHistoryResource;
+import org.opencms.file.quota.CmsFolderSizeEntry;
+import org.opencms.file.quota.CmsFolderSizeOptions;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.gwt.shared.alias.CmsAliasMode;
 import org.opencms.main.CmsEvent;
@@ -1970,6 +1972,48 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         return folder;
 
+    }
+
+    public List<CmsFolderSizeEntry> readFolderSizeStats(CmsDbContext dbc, boolean online, CmsFolderSizeOptions options)
+    throws CmsDataAccessException {
+
+        PreparedStatement stmt = null;
+        List<CmsFolderSizeEntry> result = new ArrayList<>();
+        try (Connection conn = m_sqlManager.getConnection(dbc)) {
+            ResultSet res;
+            if (options.isTree()) {
+                String query = m_sqlManager.readQuery("C_FOLDER_SIZE_STATS");
+                query = replaceProject(query, online);
+                stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
+                stmt.setString(1, escapeDbWildcard(options.getRootPath()) + "%");
+                res = stmt.executeQuery();
+            } else {
+                String query = m_sqlManager.readQuery("C_FOLDER_SIZE_STATS_SINGLE");
+                query = replaceProject(query, online);
+                stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
+                String path = options.getRootPath();
+                if (!"/".equals(path)) {
+                    path = CmsFileUtil.removeTrailingSeparator(path);
+                }
+                stmt.setString(1, path);
+                res = stmt.executeQuery();
+            }
+            while (res.next()) {
+                long size = res.getLong(1);
+                String path = res.getString(2);
+                String idStr = res.getString(3);
+                int type = res.getInt(4);
+                if (CmsUUID.isValidUUID(idStr)) {
+                    CmsUUID id = new CmsUUID(idStr);
+                    result.add(new CmsFolderSizeEntry(id, path, size, type));
+                }
+            }
+            return Collections.unmodifiableList(result);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(
+                Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)),
+                e);
+        }
     }
 
     /**

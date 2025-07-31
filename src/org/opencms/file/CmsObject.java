@@ -40,6 +40,8 @@ import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
+import org.opencms.file.quota.CmsFolderSizeEntry;
+import org.opencms.file.quota.CmsFolderSizeOptions;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.I_CmsResourceType;
@@ -2762,6 +2764,11 @@ public final class CmsObject {
     public CmsFolder readFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
 
         return m_securityManager.readFolder(m_context, addSiteRoot(resourcename), filter);
+    }
+
+    public List<CmsFolderSizeEntry> readFolderSizeStats(CmsFolderSizeOptions options) throws CmsException {
+
+        return m_securityManager.readFolderSizeStats(m_context, options);
     }
 
     /**

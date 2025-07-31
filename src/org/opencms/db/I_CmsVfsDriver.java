@@ -36,6 +36,8 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.quota.CmsFolderSizeEntry;
+import org.opencms.file.quota.CmsFolderSizeOptions;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.security.CmsOrganizationalUnit;
@@ -153,7 +155,8 @@ public interface I_CmsVfsDriver {
         byte[] contents,
         int publishTag,
         boolean keepOnline,
-        boolean needToUpdateContent) throws CmsDataAccessException;
+        boolean needToUpdateContent)
+    throws CmsDataAccessException;
 
     /**
      * Creates a new property definition in the database.<p>
@@ -171,7 +174,8 @@ public interface I_CmsVfsDriver {
         CmsDbContext dbc,
         CmsUUID projectId,
         String name,
-        CmsPropertyDefinition.CmsPropertyType type) throws CmsDataAccessException;
+        CmsPropertyDefinition.CmsPropertyType type)
+    throws CmsDataAccessException;
 
     /**
      * Creates a new {@link CmsRelation} object in the database.<p>
@@ -405,7 +409,8 @@ public interface I_CmsVfsDriver {
         CmsDbContext dbc,
         CmsProject onlineProject,
         CmsResource onlineResource,
-        CmsResource offlineResource) throws CmsDataAccessException;
+        CmsResource offlineResource)
+    throws CmsDataAccessException;
 
     /**
      * Copies the version number from the offline resource to the online resource,
@@ -449,7 +454,8 @@ public interface I_CmsVfsDriver {
         CmsProject currentProject,
         CmsResource resource,
         boolean getFolders,
-        boolean getFiles) throws CmsDataAccessException;
+        boolean getFiles)
+    throws CmsDataAccessException;
 
     /**
      * Reads the content of a file specified by it's resource ID.<p>
@@ -488,6 +494,20 @@ public interface I_CmsVfsDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     CmsFolder readFolder(CmsDbContext dbc, CmsUUID projectId, String foldername) throws CmsDataAccessException;
+
+    /**
+     * Reads folder size statistics for the subtree at a given root path.
+     *
+     * @param dbc tje database context
+     * @param online true if we want the online data, false for the offline data
+     * @param options the options on what exactly to read
+     *
+     * @return the list of folder size beans
+     *
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    List<CmsFolderSizeEntry> readFolderSizeStats(CmsDbContext dbc, boolean online, CmsFolderSizeOptions options)
+    throws CmsDataAccessException;
 
     /**
      * Reads the parent folder of a resource specified by it's structure ID.<p>
@@ -633,7 +653,7 @@ public interface I_CmsVfsDriver {
      * @param dbc the current database context
      * @param project the to read the entries from
      * @param principalId the id of the principal
-
+    
      * @return a list of <code>{@link org.opencms.file.CmsResource}</code> objects
      *
      * @throws CmsDataAccessException if something goes wrong
@@ -652,7 +672,7 @@ public interface I_CmsVfsDriver {
      * @param dbc the current database context
      * @param project the to read the entries from
      * @param principalId the id of the principal
-
+    
      * @return a list of <code>{@link org.opencms.file.CmsResource}</code> objects
      *
      * @throws CmsDataAccessException if something goes wrong
@@ -685,7 +705,8 @@ public interface I_CmsVfsDriver {
         CmsUUID projectId,
         CmsUUID propertyDefinition,
         String path,
-        String value) throws CmsDataAccessException;
+        String value)
+    throws CmsDataAccessException;
 
     /**
      * Reads all resources inside a given project matching the criteria specified by parameter values.<p>
@@ -730,7 +751,8 @@ public interface I_CmsVfsDriver {
         long releasedBefore,
         long expiredAfter,
         long expiredBefore,
-        int mode) throws CmsDataAccessException;
+        int mode)
+    throws CmsDataAccessException;
 
     /**
      * Reads the rewrite aliases matching a given filter.<p>
@@ -776,7 +798,8 @@ public interface I_CmsVfsDriver {
     List<CmsUrlNameMappingEntry> readUrlNameMappingEntries(
         CmsDbContext dbc,
         boolean online,
-        CmsUrlNameMappingFilter filter) throws CmsDataAccessException;
+        CmsUrlNameMappingFilter filter)
+    throws CmsDataAccessException;
 
     /**
      * Reads a resource version numbers.<p>
@@ -859,7 +882,8 @@ public interface I_CmsVfsDriver {
         CmsProject project,
         CmsResource resource,
         CmsUUID createdUser,
-        CmsUUID lastModifiedUser) throws CmsDataAccessException;
+        CmsUUID lastModifiedUser)
+    throws CmsDataAccessException;
 
     /**
      * Updates the relations on the online project copying the relations from the offline project.<p>
@@ -1019,6 +1043,7 @@ public interface I_CmsVfsDriver {
         CmsProject project,
         CmsResource resource,
         int changed,
-        boolean isPublishing) throws CmsDataAccessException;
+        boolean isPublishing)
+    throws CmsDataAccessException;
 
 }

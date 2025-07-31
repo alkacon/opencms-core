@@ -65,6 +65,8 @@ import org.opencms.file.history.CmsHistoryFolder;
 import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
+import org.opencms.file.quota.CmsFolderSizeEntry;
+import org.opencms.file.quota.CmsFolderSizeOptions;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.I_CmsResourceType;
@@ -7327,6 +7329,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsResource resource = readResource(dbc, resourcename, filter);
 
         return convertResourceToFolder(resource);
+    }
+
+    public List<CmsFolderSizeEntry> readFolderSizeStats(CmsDbContext dbc, CmsFolderSizeOptions options)
+    throws CmsException {
+
+        I_CmsVfsDriver vfsDriver = getVfsDriver(dbc);
+        List<CmsFolderSizeEntry> stats = vfsDriver.readFolderSizeStats(dbc, false, options);
+        return stats;
+
     }
 
     /**

@@ -55,6 +55,8 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
+import org.opencms.file.quota.CmsFolderSizeEntry;
+import org.opencms.file.quota.CmsFolderSizeOptions;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.gwt.shared.alias.CmsAliasImportResult;
 import org.opencms.gwt.shared.alias.CmsAliasMode;
@@ -4582,6 +4584,26 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
         return result;
+    }
+
+    /**
+     * Reads folder size statistis.
+     *
+     * @param context the request context
+     * @param options the options that control what is actually read
+     * @return the folder size entries
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsFolderSizeEntry> readFolderSizeStats(CmsRequestContext context, CmsFolderSizeOptions options)
+    throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            return m_driverManager.readFolderSizeStats(dbc, options);
+        } finally {
+            dbc.clear();
+        }
     }
 
     /**

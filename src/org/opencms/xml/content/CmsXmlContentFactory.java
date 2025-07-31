@@ -298,6 +298,7 @@ public final class CmsXmlContentFactory {
 
         if (content == null) {
             // unmarshal XML structure from the file content
+            System.out.println("unmarshal: " + resource.getRootPath());
             CmsFile file = resource instanceof CmsFile ? (CmsFile)resource : cms.readFile(resource);
             content = unmarshal(cms, file);
             // store the content as request attribute for future read requests
