@@ -405,12 +405,10 @@ public class CmsResourceIcon extends Label {
 
         if (resUtil != null) {
             CmsResource resource = resUtil.getResource();
-            if (resource.isFolder()) {
-                if (CmsModificationContext.getOnlineFolderOptions().getPaths().stream().anyMatch(
-                    onlineFolder -> CmsStringUtil.isPrefixPath(onlineFolder, resource.getRootPath()))) {
-                    content += getOverlaySpan(ICON_CLASS_ONLINE_FOLDER + " " + OpenCmsTheme.ONLINE_FOLDER, null);
-                    isOnlineFolder = true;
-                }
+            if (CmsModificationContext.getOnlineFolderOptions().getPaths().stream().anyMatch(
+                onlineFolder -> CmsStringUtil.isPrefixPath(onlineFolder, resource.getRootPath()))) {
+                content += getOverlaySpan(ICON_CLASS_ONLINE_FOLDER + " " + OpenCmsTheme.ONLINE_FOLDER, null);
+                isOnlineFolder = true;
             }
         }
 
