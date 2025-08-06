@@ -336,7 +336,7 @@ public final class OpenCmsTheme {
     public static final String OPENCMS_LOGO_PATH = "img/opencmsLogo.png";
 
     /** CSS style name. */
-    public static final String  OPTIMIZE_GALLERY_WARNING = "o-optimize-gallery-warning";
+    public static final String OPTIMIZE_GALLERY_WARNING = "o-optimize-gallery-warning";
 
     /** CSS style name. */
     public static final String PADDING_HORIZONTAL = "o-padding-horizontal";
@@ -409,6 +409,8 @@ public final class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String STATE_NEW = "o-state-new";
+
+    public static final String ONLINE_FOLDER = "o-online-folder";
 
     /** CSS style name.*/
     public static final String TABLE_CELL_DISABLED = "o-table-cell-disabled";

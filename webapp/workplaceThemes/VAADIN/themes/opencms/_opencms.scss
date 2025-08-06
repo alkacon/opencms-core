@@ -611,7 +611,7 @@
 			left: 16px;
 		}
 
-		.o-lock-shared, .o-lock-user, .o-lock-other, .o-lock-publish, .o-state-changed, .o-state-new, .o-sibling{
+		.o-lock-shared, .o-lock-user, .o-lock-other, .o-lock-publish, .o-state-changed, .o-state-new, .o-online-folder, .o-sibling{
 			position: absolute;
 			color: transparent;
 			z-index:2;
@@ -624,7 +624,7 @@
 			bottom: 0;
 			left: 0;
 		}
-		.o-state-changed, .o-state-new {
+		.o-state-changed, .o-state-new, .o-online-folder {
 			top: 0;
 			right: 0;
 		}
@@ -1610,6 +1610,11 @@
 			padding: 4px;
 		}
 	}
+	
+	.v-tree-node-caption span.o-online-folder { 
+		padding-right: 0px;
+	}
+	
 	
 }
 

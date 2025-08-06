@@ -29,6 +29,7 @@ package org.opencms.ui.components;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
+import org.opencms.db.CmsModificationContext;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -44,6 +45,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.ui.CmsCssIcon;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
@@ -78,6 +80,8 @@ public class CmsResourceIcon extends Label {
 
     /** The changed icon class. */
     public static final String ICON_CLASS_CHANGED = "oc-icon-16-overlay-changed";
+
+    public static final String ICON_CLASS_ONLINE_FOLDER = "oc-icon-16-online-folder";
 
     /** The other user lock icon class. */
     public static final String ICON_CLASS_LOCK_OTHER = "oc-icon-16-lock-other";
@@ -397,7 +401,20 @@ public class CmsResourceIcon extends Label {
                 }
             }
         }
-        if (state != null) {
+        boolean isOnlineFolder = false;
+
+        if (resUtil != null) {
+            CmsResource resource = resUtil.getResource();
+            if (resource.isFolder()) {
+                if (CmsModificationContext.getOnlineFolderOptions().getPaths().stream().anyMatch(
+                    onlineFolder -> CmsStringUtil.isPrefixPath(onlineFolder, resource.getRootPath()))) {
+                    content += getOverlaySpan(ICON_CLASS_ONLINE_FOLDER + " " + OpenCmsTheme.ONLINE_FOLDER, null);
+                    isOnlineFolder = true;
+                }
+            }
+        }
+
+        if ((state != null) && !isOnlineFolder) {
             String title = resUtil != null
             ? CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_LABEL_USER_LAST_MODIFIED_0)
                 + " "
