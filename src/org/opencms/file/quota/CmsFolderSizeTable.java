@@ -33,19 +33,19 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
-import org.opencms.util.CmsStringUtil;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
-import org.apache.commons.collections4.trie.PatriciaTrie;
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 /**
  * Object for storing folder size information for all folders in the VFS, and for efficiently updating and retrieving it.
@@ -60,8 +60,9 @@ public class CmsFolderSizeTable {
     /** A CMS context. */
     private CmsObject m_cms;
 
-    /** Trie in which the folder size information is organized by path. */
-    private PatriciaTrie<CmsFolderSizeEntry> m_folders = new PatriciaTrie<>();
+    private TreeMap<String, Long> m_folders = new TreeMap<>();
+
+    private Map<String, Long> m_subtreeCache;
 
     /**
      * Creates a deep copy of an existing instance.
@@ -77,7 +78,8 @@ public class CmsFolderSizeTable {
             LOG.error(e.getLocalizedMessage(), e);
             this.m_cms = other.m_cms;
         }
-        this.m_folders = new PatriciaTrie<>(other.m_folders);
+        this.m_folders = new TreeMap<>(other.m_folders);
+        updateSubtreeCache();
     }
 
     /**
@@ -100,46 +102,40 @@ public class CmsFolderSizeTable {
      */
     public Map<String, CmsFolderReportEntry> getFolderReport(Collection<String> folders) {
 
+        Map<String, Long> subtreeCache = getSubtreeCache();
         Set<String> folderSet = new HashSet<>();
-        List<String> sortedFolders = new ArrayList<>();
-
-        Map<String, CmsFolderReportEntry> result = new HashMap<>();
-
         for (String folder : folders) {
-            folder = normalize(folder);
-            sortedFolders.add(folder);
-            result.put(folder, new CmsFolderReportEntry(0, 0));
+            folderSet.add(normalize(folder));
         }
-        Collections.sort(sortedFolders);
-        String prev = null;
-
-        // All subfolders of a folder must come in a single block after it in a sorted list,
-        // and by skipping them, we end up with just the (mutually disjoint) parent folders.
-        Set<String> prefixes = new HashSet<>(folderSet);
-        for (String folder : sortedFolders) {
-            if ((prev == null) || !CmsStringUtil.isPrefixPath(prev, folder)) {
-                prefixes.add(folder);
-                prev = folder;
-            }
-        }
-        for (String prefix : prefixes) {
-            for (Map.Entry<String, CmsFolderSizeEntry> entry : m_folders.prefixMap(prefix).entrySet()) {
-                String currentPath = entry.getKey();
-                boolean firstMatch = true;
-                while (currentPath != null) {
-                    CmsFolderReportEntry resultEntry = result.get(currentPath);
-                    if (resultEntry != null) {
-                        resultEntry.m_treeSize += entry.getValue().getSize();
-                        if (firstMatch) {
-                            resultEntry.m_treeSizeExclusive += entry.getValue().getSize();
-                        }
-                        firstMatch = false;
-                    }
-                    currentPath = CmsResource.getParentFolder(currentPath);
+        // to compute the exclusive folder sizes, we need to take the total subtree size for the given folder and then subtract
+        // the subtree sizes of its immediate descendants.
+        // For example, if our paths are /a/, /a/b/, and /a/b/d/, to get the exclusive size for /a/, we must *not* subtract the size of /a/b/d/.
+        // So we first need to determine the direct descendants for each folder.
+        Multimap<String, String> directDescendants = ArrayListMultimap.create();
+        for (String folder : folderSet) {
+            String currentAncestor = CmsResource.getParentFolder(folder);
+            String directAncestor = null;
+            while (currentAncestor != null) {
+                if (folderSet.contains(currentAncestor)) {
+                    directAncestor = currentAncestor;
+                    break;
                 }
+                currentAncestor = CmsResource.getParentFolder(currentAncestor);
+            }
+            if (directAncestor != null) {
+                directDescendants.put(directAncestor, folder);
             }
         }
-        return Collections.unmodifiableMap(result);
+        Map<String, CmsFolderReportEntry> result = new HashMap<>();
+        for (String folder : folderSet) {
+            long size = subtreeCache.getOrDefault(folder, Long.valueOf(0));
+            long exclusiveSize = size;
+            for (String child : directDescendants.get(folder)) {
+                exclusiveSize -= subtreeCache.getOrDefault(child, Long.valueOf(0));
+            }
+            result.put(folder, new CmsFolderReportEntry(size, exclusiveSize));
+        }
+        return result;
     }
 
     /**
@@ -150,12 +146,12 @@ public class CmsFolderSizeTable {
      */
     public long getTotalFolderSize(String rootPath) {
 
-        long result = 0;
-
-        for (Map.Entry<String, CmsFolderSizeEntry> entry : m_folders.prefixMap(normalize(rootPath)).entrySet()) {
-            result += entry.getValue().getSize();
+        Long size = getSubtreeCache().get(normalize(rootPath));
+        if (size != null) {
+            return size.longValue();
+        } else {
+            return 0;
         }
-        return result;
     }
 
     /**
@@ -169,18 +165,10 @@ public class CmsFolderSizeTable {
      */
     public long getTotalFolderSizeExclusive(String rootPath, Collection<String> otherPaths) {
 
-        long result = 0;
-
-        PatriciaTrie<CmsFolderSizeEntry> subtrie = new PatriciaTrie<>(m_folders.prefixMap(normalize(rootPath)));
-        for (String otherPath : otherPaths) {
-            if (!CmsStringUtil.isPrefixPath(otherPath, rootPath)) {
-                subtrie.prefixMap(normalize(otherPath)).clear();
-            }
-        }
-        for (Map.Entry<String, CmsFolderSizeEntry> entry : subtrie.entrySet()) {
-            result += entry.getValue().getSize();
-        }
-        return result;
+        Set<String> paths = new HashSet<>(otherPaths);
+        rootPath = normalize(rootPath);
+        paths.add(rootPath);
+        return getFolderReport(paths).get(rootPath).getTreeSizeExclusive();
 
     }
 
@@ -191,12 +179,13 @@ public class CmsFolderSizeTable {
      */
     public void loadAll() throws CmsException {
 
-        PatriciaTrie<CmsFolderSizeEntry> folders = new PatriciaTrie<>();
+        TreeMap<String, Long> folders = new TreeMap<>();
         List<CmsFolderSizeEntry> stats = m_cms.readFolderSizeStats(new CmsFolderSizeOptions("/", true));
         for (CmsFolderSizeEntry entry : stats) {
-            folders.put(normalize(entry.getRootPath()), entry);
+            folders.put(normalize(entry.getRootPath()), Long.valueOf(entry.getSize()));
         }
         m_folders = folders;
+        m_subtreeCache = null;
     }
 
     /**
@@ -210,8 +199,9 @@ public class CmsFolderSizeTable {
         List<CmsFolderSizeEntry> entries = m_cms.readFolderSizeStats(new CmsFolderSizeOptions(rootPath, false));
         m_folders.remove(normalize(rootPath));
         if (entries.size() > 0) {
-            m_folders.put(normalize(entries.get(0).getRootPath()), entries.get(0));
+            m_folders.put(normalize(entries.get(0).getRootPath()), Long.valueOf(entries.get(0).getSize()));
         }
+        m_subtreeCache = null;
     }
 
     /**
@@ -223,10 +213,25 @@ public class CmsFolderSizeTable {
     public void updateTree(String rootPath) throws CmsException {
 
         List<CmsFolderSizeEntry> entries = m_cms.readFolderSizeStats(new CmsFolderSizeOptions(rootPath, true));
-        m_folders.prefixMap(normalize(rootPath)).clear();
+        rootPath = normalize(rootPath);
+        m_folders.subMap(rootPath, rootPath + Character.MAX_VALUE).clear();
         for (CmsFolderSizeEntry entry : entries) {
-            m_folders.put(normalize(entry.getRootPath()), entry);
+            m_folders.put(normalize(entry.getRootPath()), Long.valueOf(entry.getSize()));
         }
+        m_subtreeCache = null;
+    }
+
+    /**
+     * Gets the subtree cache.
+     *
+     * @return the subtree cache
+     */
+    private Map<String, Long> getSubtreeCache() {
+
+        if (m_subtreeCache == null) {
+            updateSubtreeCache();
+        }
+        return m_subtreeCache;
     }
 
     /**
@@ -244,6 +249,24 @@ public class CmsFolderSizeTable {
             return path;
         }
         return CmsFileUtil.addTrailingSeparator(path);
+    }
+
+    /**
+     * Updates the subtree cache.
+     */
+    private void updateSubtreeCache() {
+
+        Map<String, Long> subtreeCache = new HashMap<>();
+        for (Map.Entry<String, Long> entry : m_folders.entrySet()) {
+            String currentPath = entry.getKey();
+            while (currentPath != null) {
+                subtreeCache.put(
+                    currentPath,
+                    Long.valueOf(subtreeCache.computeIfAbsent(currentPath, key -> 0l) + entry.getValue()));
+                currentPath = CmsResource.getParentFolder(currentPath);
+            }
+        }
+        m_subtreeCache = subtreeCache;
     }
 
 }
