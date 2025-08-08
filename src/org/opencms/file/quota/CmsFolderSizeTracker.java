@@ -41,6 +41,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -124,7 +125,7 @@ public class CmsFolderSizeTracker {
     public Map<String, CmsFolderReportEntry> getFolderReport(Collection<String> folders) {
 
         if (!m_initialized) {
-            return null;
+            return Collections.emptyMap();
         }
 
         return m_readTable.getFolderReport(folders);

@@ -95,7 +95,7 @@ public class CmsResourceStatusBean implements IsSerializable {
     private ArrayList<CmsResourceStatusRelationBean> m_siblings = new ArrayList<CmsResourceStatusRelationBean>();
 
     /** Size. */
-    private int m_size;
+    private long m_size;
 
     /** The start tab id. */
     private CmsResourceStatusTabId m_startTab;
@@ -285,7 +285,7 @@ public class CmsResourceStatusBean implements IsSerializable {
      *
      * @return the size
      */
-    public int getSize() {
+    public long getSize() {
 
         return m_size;
     }
@@ -505,7 +505,7 @@ public class CmsResourceStatusBean implements IsSerializable {
      *
      * @param size the new size
      */
-    public void setSize(int size) {
+    public void setSize(long size) {
 
         m_size = size;
     }

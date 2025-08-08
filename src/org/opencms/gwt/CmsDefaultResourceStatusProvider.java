@@ -366,7 +366,11 @@ public class CmsDefaultResourceStatusProvider {
             result.setNavText(navText.getValue());
         }
         result.setPermissions(resourceUtil.getPermissionString());
-        result.setSize(resource.getLength());
+        if (resource.isFile()) {
+            result.setSize(resource.getLength());
+        } else {
+            result.setSize(OpenCms.getFolderSizeTracker().getTotalFolderSize(resource.getRootPath()));
+        }
         result.setStateBean(resource.getState());
         CmsProperty title = CmsProperty.get(CmsPropertyDefinition.PROPERTY_TITLE, properties);
         if (localizedTitle != null) {
