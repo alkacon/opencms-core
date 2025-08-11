@@ -38,18 +38,21 @@ public class CmsFolderSizeOptions implements Cloneable {
     /** True if we want folder size information for all folders in the subtree. */
     private boolean m_tree;
 
+    private boolean m_online;
+
     /**
      * Creates a new instance.
      *
      * @param rootPath the root path for which to read the folder size information
      * @param isTree true if we want folder size information for all folders in the subtree and not just the folder itself
      */
-    public CmsFolderSizeOptions(String rootPath, boolean isTree) {
+    public CmsFolderSizeOptions(String rootPath, boolean online, boolean isTree) {
 
         m_rootPath = rootPath;
         if (!m_rootPath.endsWith("/")) {
             m_rootPath += "/";
         }
+        m_online = online;
         m_tree = isTree;
     }
 
@@ -61,6 +64,11 @@ public class CmsFolderSizeOptions implements Cloneable {
     public String getRootPath() {
 
         return m_rootPath;
+    }
+
+    public boolean isOnline() {
+
+        return m_online;
     }
 
     /**

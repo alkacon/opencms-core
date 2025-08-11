@@ -369,7 +369,10 @@ public class CmsDefaultResourceStatusProvider {
         if (resource.isFile()) {
             result.setSize(resource.getLength());
         } else {
-            result.setSize(OpenCms.getFolderSizeTracker().getTotalFolderSize(resource.getRootPath()));
+            result.setSize(
+                OpenCms.getFolderSizeTracker(
+                    cms.getRequestContext().getCurrentProject().isOnlineProject()).getTotalFolderSize(
+                        resource.getRootPath()));
         }
         result.setStateBean(resource.getState());
         CmsProperty title = CmsProperty.get(CmsPropertyDefinition.PROPERTY_TITLE, properties);

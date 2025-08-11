@@ -326,13 +326,14 @@ public final class OpenCms {
     }
 
     /**
-     * Gets the folder size tracker.
+     * Gets the folder size tracker for the Offline or Online project.
      *
+     * @param true if we want the Online folder size tracker, false for the Offline project one
      * @return the folder size tracker
      */
-    public static CmsFolderSizeTracker getFolderSizeTracker() {
+    public static CmsFolderSizeTracker getFolderSizeTracker(boolean online) {
 
-        return OpenCmsCore.getInstance().getFolderSizeTracker();
+        return OpenCmsCore.getInstance().getFolderSizeTracker(online);
     }
 
     /**

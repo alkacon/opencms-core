@@ -80,26 +80,26 @@ public class CmsFolderSizeTracker {
     private Object m_lock = new Object();
 
     /** A read-only copy of the folder size information that is used for normal read operations. */
-    private volatile CmsFolderSizeTable m_readTable;
+    private volatile CmsFolderSizeTable m_table;
 
     /** Set of paths that still need to be processed. */
     private LinkedBlockingQueue<String> m_todo = new LinkedBlockingQueue<>();
 
-    /** A table of folder sizes that is actively maintained by a scheduled task. */
-    private CmsFolderSizeTable m_workTable;
-
     /** Timer interval. */
     private long m_interval;
 
-    /** Just a simple timed cache to save on space for commonly used paths in the work queue. */
+    /** Just a simple timed cache to save space for commonly used paths in the work queue. */
     private LoadingCache<String, String> m_pathCache;
+
+    private boolean m_online;
 
     /**
      * Creates a new instance.
      *
      * @param cms the CMS context
+     * @param true if we want to track folder sizes in the Online project instead of the Offline project
      */
-    public CmsFolderSizeTracker(CmsObject cms) {
+    public CmsFolderSizeTracker(CmsObject cms, boolean online) {
 
         try {
             m_cms = OpenCms.initCmsObject(cms);
@@ -107,8 +107,8 @@ public class CmsFolderSizeTracker {
             // shouldn't happen
             LOG.error(e.getLocalizedMessage(), e);
         }
-        m_workTable = new CmsFolderSizeTable(m_cms);
-        m_readTable = new CmsFolderSizeTable(m_cms);
+        m_table = new CmsFolderSizeTable(m_cms, online);
+        m_online = online;
         CacheLoader<String, String> loader = CacheLoader.from(Functions.identity());
         m_pathCache = CacheBuilder.newBuilder().concurrencyLevel(4).expireAfterAccess(30, TimeUnit.SECONDS).build(
             loader);
@@ -128,7 +128,7 @@ public class CmsFolderSizeTracker {
             return Collections.emptyMap();
         }
 
-        return m_readTable.getFolderReport(folders);
+        return m_table.getFolderReport(folders);
     }
 
     /**
@@ -152,7 +152,7 @@ public class CmsFolderSizeTracker {
         if (!m_initialized) {
             return -1;
         }
-        return m_readTable.getTotalFolderSize(rootPath);
+        return m_table.getTotalFolderSize(rootPath);
     }
 
     /**
@@ -169,7 +169,7 @@ public class CmsFolderSizeTracker {
         if (!m_initialized) {
             return -1;
         }
-        return m_readTable.getTotalFolderSizeExclusive(rootPath, otherPaths);
+        return m_table.getTotalFolderSizeExclusive(rootPath, otherPaths);
     }
 
     /**
@@ -190,10 +190,10 @@ public class CmsFolderSizeTracker {
                 }
             }
             if (m_interval > 0) {
-                OpenCms.getEventManager().addCmsEventListener(this::handleEvent);
                 reload();
+                OpenCms.getEventManager().addCmsEventListener(this::handleEvent);
                 OpenCms.getExecutor().scheduleWithFixedDelay(
-                    this::timer,
+                    this::processUpdates,
                     m_interval,
                     m_interval,
                     TimeUnit.MILLISECONDS);
@@ -217,8 +217,10 @@ public class CmsFolderSizeTracker {
 
         synchronized (m_lock) {
             try {
-                m_workTable.updateTree(rootPath);
-                m_readTable = new CmsFolderSizeTable(m_workTable);
+                CmsFolderSizeTable newTable = new CmsFolderSizeTable(m_table);
+                newTable.updateTree(rootPath);
+                newTable.updateSubtreeCache();
+                m_table = newTable;
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
@@ -232,11 +234,13 @@ public class CmsFolderSizeTracker {
 
         synchronized (m_lock) {
             try {
-                m_workTable.loadAll();
+                CmsFolderSizeTable newTable = new CmsFolderSizeTable(m_table);
+                newTable.loadAll();
+                newTable.updateSubtreeCache();
+                m_table = newTable;
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
-            m_readTable = new CmsFolderSizeTable(m_workTable);
         }
     }
 
@@ -292,72 +296,98 @@ public class CmsFolderSizeTracker {
 
         CmsResource resource = null;
         List<CmsResource> resources = null;
-        List<Object> irrelevantChangeTypes = new ArrayList<Object>();
-        irrelevantChangeTypes.add(Integer.valueOf(CmsDriverManager.NOTHING_CHANGED));
-        irrelevantChangeTypes.add(Integer.valueOf(CmsDriverManager.CHANGED_PROJECT));
-        switch (event.getType()) {
-            case I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED:
-            case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
-            case I_CmsEventListener.EVENT_RESOURCE_CREATED:
-                Object change = event.getData().get(I_CmsEventListener.KEY_CHANGE);
-                if ((change != null) && irrelevantChangeTypes.contains(change)) {
-                    return;
-                }
-                resource = (CmsResource)event.getData().get(I_CmsEventListener.KEY_RESOURCE);
-                addUpdate(resource);
-                break;
-            case I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED:
-                resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
-                for (CmsResource res : resources) {
-                    addUpdate(res);
-                }
-                break;
-
-            case I_CmsEventListener.EVENT_RESOURCE_MOVED:
-                resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
-                // source, source folder, dest, dest folder
-                // - OR -
-                // source, dest, dest folder
-                addUpdate(resources.get(0));
-                addUpdate(resources.get(resources.size() - 2));
-                break;
-
-            case I_CmsEventListener.EVENT_RESOURCE_DELETED:
-                resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
-                for (CmsResource res : resources) {
-                    addUpdate(res);
-                }
-                break;
-            case I_CmsEventListener.EVENT_RESOURCES_MODIFIED:
-                resources = CmsCollectionsGenericWrapper.list(event.getData().get(I_CmsEventListener.KEY_RESOURCES));
-                for (CmsResource res : resources) {
-                    addUpdate(res);
-                }
-                break;
-            case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
-                String publishIdStr = (String)event.getData().get(I_CmsEventListener.KEY_PUBLISHID);
-                if (publishIdStr != null) {
-                    CmsUUID publishId = new CmsUUID(publishIdStr);
-                    try {
-                        List<CmsPublishedResource> publishedResources = m_cms.readPublishedResources(publishId);
-                        for (CmsPublishedResource res : publishedResources) {
-                            addUpdate(res);
+        if (m_online) {
+            switch (event.getType()) {
+                case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
+                    String publishIdStr = (String)event.getData().get(I_CmsEventListener.KEY_PUBLISHID);
+                    if (publishIdStr != null) {
+                        CmsUUID publishId = new CmsUUID(publishIdStr);
+                        try {
+                            List<CmsPublishedResource> publishedResources = m_cms.readPublishedResources(publishId);
+                            for (CmsPublishedResource res : publishedResources) {
+                                addUpdate(res);
+                            }
+                        } catch (CmsException e) {
+                            LOG.error(e.getLocalizedMessage(), e);
                         }
-                    } catch (CmsException e) {
-                        LOG.error(e.getLocalizedMessage(), e);
                     }
-                }
-                break;
-            default:
-                // do nothing
-                break;
+                    break;
+                default:
+                    // do nothing
+                    break;
+            }
+        } else {
+            List<Object> irrelevantChangeTypes = new ArrayList<Object>();
+            irrelevantChangeTypes.add(Integer.valueOf(CmsDriverManager.NOTHING_CHANGED));
+            irrelevantChangeTypes.add(Integer.valueOf(CmsDriverManager.CHANGED_PROJECT));
+            switch (event.getType()) {
+                case I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED:
+                case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
+                case I_CmsEventListener.EVENT_RESOURCE_CREATED:
+                    Object change = event.getData().get(I_CmsEventListener.KEY_CHANGE);
+                    if ((change != null) && irrelevantChangeTypes.contains(change)) {
+                        return;
+                    }
+                    resource = (CmsResource)event.getData().get(I_CmsEventListener.KEY_RESOURCE);
+                    addUpdate(resource);
+                    break;
+                case I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED:
+                    resources = CmsCollectionsGenericWrapper.list(
+                        event.getData().get(I_CmsEventListener.KEY_RESOURCES));
+                    for (CmsResource res : resources) {
+                        addUpdate(res);
+                    }
+                    break;
+
+                case I_CmsEventListener.EVENT_RESOURCE_MOVED:
+                    resources = CmsCollectionsGenericWrapper.list(
+                        event.getData().get(I_CmsEventListener.KEY_RESOURCES));
+                    // source, source folder, dest, dest folder
+                    // - OR -
+                    // source, dest, dest folder
+                    addUpdate(resources.get(0));
+                    addUpdate(resources.get(resources.size() - 2));
+                    break;
+
+                case I_CmsEventListener.EVENT_RESOURCE_DELETED:
+                    resources = CmsCollectionsGenericWrapper.list(
+                        event.getData().get(I_CmsEventListener.KEY_RESOURCES));
+                    for (CmsResource res : resources) {
+                        addUpdate(res);
+                    }
+                    break;
+                case I_CmsEventListener.EVENT_RESOURCES_MODIFIED:
+                    resources = CmsCollectionsGenericWrapper.list(
+                        event.getData().get(I_CmsEventListener.KEY_RESOURCES));
+                    for (CmsResource res : resources) {
+                        addUpdate(res);
+                    }
+                    break;
+                case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
+                    String publishIdStr = (String)event.getData().get(I_CmsEventListener.KEY_PUBLISHID);
+                    if (publishIdStr != null) {
+                        CmsUUID publishId = new CmsUUID(publishIdStr);
+                        try {
+                            List<CmsPublishedResource> publishedResources = m_cms.readPublishedResources(publishId);
+                            for (CmsPublishedResource res : publishedResources) {
+                                addUpdate(res);
+                            }
+                        } catch (CmsException e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                    break;
+                default:
+                    // do nothing
+                    break;
+            }
         }
     }
 
     /**
      * The scheduled task.
      */
-    private void timer() {
+    private void processUpdates() {
 
         long start = System.currentTimeMillis();
         try {
@@ -369,10 +399,12 @@ public class CmsFolderSizeTracker {
                     LOG.trace("Update set: " + paths);
                 }
                 if (paths.size() > 0) {
+                    CmsFolderSizeTable newTable = new CmsFolderSizeTable(m_table);
                     for (String path : paths) {
-                        m_workTable.updateSingle(path);
+                        newTable.updateSingle(path);
                     }
-                    m_readTable = new CmsFolderSizeTable(m_workTable);
+                    newTable.updateSubtreeCache();
+                    m_table = newTable;
                 }
             }
         } catch (Exception e) {

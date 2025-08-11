@@ -381,7 +381,11 @@ public final class OpenCmsCore {
     /** The XML content type manager that contains the initialized XML content types. */
     private CmsXmlContentTypeManager m_xmlContentTypeManager;
 
+    /** The future for the offline folder size tracker. */
     private Future<CmsFolderSizeTracker> m_folderSizeTrackerFuture;
+
+    /** The future for the online folder size tracker. */
+    private Future<CmsFolderSizeTracker> m_onlineFolderSizeTrackerFuture;
 
     /**
      * Protected constructor that will initialize the singleton OpenCms instance
@@ -698,13 +702,13 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Gets the folder size tracker.
-     * @return
+     * Gets the folder size tracker for the  Online or Offline project
+     * @return true to get the online folder size tracker, false for the offline one
      */
-    protected CmsFolderSizeTracker getFolderSizeTracker() {
+    protected CmsFolderSizeTracker getFolderSizeTracker(boolean online) {
 
         try {
-            return m_folderSizeTrackerFuture.get();
+            return online ? m_onlineFolderSizeTrackerFuture.get() : m_folderSizeTrackerFuture.get();
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
             return null;
@@ -2747,7 +2751,14 @@ public final class OpenCmsCore {
 
         try {
             m_folderSizeTrackerFuture = m_executor.submit(
-                () -> new CmsFolderSizeTracker(m_configAdminCms).initialize());
+                () -> new CmsFolderSizeTracker(m_configAdminCms, false).initialize());
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+
+        try {
+            m_onlineFolderSizeTrackerFuture = m_executor.submit(
+                () -> new CmsFolderSizeTracker(m_configAdminCms, true).initialize());
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
         }

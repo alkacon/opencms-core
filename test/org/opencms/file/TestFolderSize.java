@@ -65,7 +65,7 @@ public class TestFolderSize extends OpenCmsTestCase {
 
     public void testDelete() throws Exception {
 
-        CmsFolderSizeTracker tracker = OpenCms.getFolderSizeTracker();
+        CmsFolderSizeTracker tracker = OpenCms.getFolderSizeTracker(false);
         byte[] data = new byte[100];
         CmsObject cms = getCmsObject();
         String folder = getName();
@@ -96,7 +96,10 @@ public class TestFolderSize extends OpenCmsTestCase {
         cms.createResource(folder + "_extended", 0);
         cms.createResource(folder + "_extended/file1", 1, data, new ArrayList<>());
         List<CmsFolderSizeEntry> entries = cms.readFolderSizeStats(
-            new CmsFolderSizeOptions(CmsStringUtil.joinPaths(cms.getRequestContext().getSiteRoot(), getName()), true));
+            new CmsFolderSizeOptions(
+                CmsStringUtil.joinPaths(cms.getRequestContext().getSiteRoot(), getName()),
+                false,
+                true));
         assertEquals(0, entries.stream().collect(Collectors.summingLong(entry -> entry.getSize())).longValue());
 
     }
@@ -112,7 +115,10 @@ public class TestFolderSize extends OpenCmsTestCase {
         cms.createResource(folder + "/subfolder", 0);
         cms.createResource(folder + "/subfolder/file1", 1, data, new ArrayList<>());
         List<CmsFolderSizeEntry> entries = cms.readFolderSizeStats(
-            new CmsFolderSizeOptions(CmsStringUtil.joinPaths(cms.getRequestContext().getSiteRoot(), getName()), true));
+            new CmsFolderSizeOptions(
+                CmsStringUtil.joinPaths(cms.getRequestContext().getSiteRoot(), getName()),
+                false,
+                true));
         assertEquals(2, entries.size());
         assertEquals(
             2 * data.length,
@@ -134,12 +140,16 @@ public class TestFolderSize extends OpenCmsTestCase {
         cms.createResource(folder + "/subfolder", 0);
         cms.createResource(folder + "/subfolder/file1", 1, data, new ArrayList<>());
         List<CmsFolderSizeEntry> entries = cms.readFolderSizeStats(
-            new CmsFolderSizeOptions(CmsStringUtil.joinPaths(cms.getRequestContext().getSiteRoot(), getName()), false));
+            new CmsFolderSizeOptions(
+                CmsStringUtil.joinPaths(cms.getRequestContext().getSiteRoot(), getName()),
+                false,
+                false));
         assertEquals(1, entries.size());
         assertEquals(2 * data.length, entries.get(0).getSize());
         entries = cms.readFolderSizeStats(
             new CmsFolderSizeOptions(
                 CmsStringUtil.joinPaths(cms.getRequestContext().getSiteRoot(), getName(), "subfolder"),
+                false,
                 false));
         assertEquals(1, entries.size());
         assertEquals(data.length, entries.get(0).getSize());
@@ -172,7 +182,7 @@ public class TestFolderSize extends OpenCmsTestCase {
             site + folder + "/alpha/",
             site + folder + "/beta/",
             site + folder + ".ext/");
-        CmsFolderSizeTracker tracker = OpenCms.getFolderSizeTracker();
+        CmsFolderSizeTracker tracker = OpenCms.getFolderSizeTracker(false);
         tracker.reload();
         assertEquals(400, tracker.getTotalFolderSize(folders.get(0)));
         assertEquals(100, tracker.getTotalFolderSize(folders.get(1)));
@@ -186,8 +196,39 @@ public class TestFolderSize extends OpenCmsTestCase {
 
     public void testTrackerInterval() throws Exception {
 
-        CmsFolderSizeTracker tracker = OpenCms.getFolderSizeTracker();
+        CmsFolderSizeTracker tracker = OpenCms.getFolderSizeTracker(false);
         assertEquals(1000, tracker.getTimerInterval());
+    }
+
+    public void testTrackerOnline() throws Exception {
+
+        byte[] data = new byte[100];
+        CmsObject cms = getCmsObject();
+        String folder = getName();
+        cms.createResource(folder, 0);
+        cms.createResource(folder + "/file1", 1, data, new ArrayList<>());
+        cms.createResource(folder + ".ext", 0);
+        cms.createResource(folder + ".ext/file1", 1, data, new ArrayList<>());
+
+        cms.createResource(folder + "/alpha", 0);
+        cms.createResource(folder + "/alpha/file", 1, data, new ArrayList<>());
+        cms.createResource(folder + "/beta", 0);
+        cms.createResource(folder + "/beta/file", 1, data, new ArrayList<>());
+        cms.createResource(folder + "/gamma", 0);
+        cms.createResource(folder + "/gamma/file", 1, data, new ArrayList<>());
+        String site = "/sites/default/";
+        List<String> folders = Arrays.asList(
+            site + folder + "/",
+            site + folder + "/alpha/",
+            site + folder + "/beta/",
+            site + folder + ".ext/");
+        CmsFolderSizeTracker tracker = OpenCms.getFolderSizeTracker(true);
+        Thread.sleep(tracker.getTimerInterval());
+        assertEquals(0, tracker.getTotalFolderSize(folders.get(0)));
+        OpenCms.getPublishManager().publishProject(cms);
+        Thread.sleep(tracker.getTimerInterval());
+        assertEquals(400, tracker.getTotalFolderSize(folders.get(0)));
+
     }
 
     public void testTrackerReportMethod() throws Exception {
@@ -212,7 +253,7 @@ public class TestFolderSize extends OpenCmsTestCase {
             site + folder + "/alpha/",
             site + folder + "/beta/",
             site + folder + ".ext/");
-        CmsFolderSizeTracker tracker = OpenCms.getFolderSizeTracker();
+        CmsFolderSizeTracker tracker = OpenCms.getFolderSizeTracker(false);
         tracker.reload();
         Map<String, CmsFolderReportEntry> report = tracker.getFolderReport(folders);
         CmsFolderReportEntry root = report.get(folders.get(0));

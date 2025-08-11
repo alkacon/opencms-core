@@ -64,6 +64,8 @@ public class CmsFolderSizeTable {
 
     private Map<String, Long> m_subtreeCache;
 
+    private boolean m_online;
+
     /**
      * Creates a deep copy of an existing instance.
      *
@@ -78,8 +80,8 @@ public class CmsFolderSizeTable {
             LOG.error(e.getLocalizedMessage(), e);
             this.m_cms = other.m_cms;
         }
+        this.m_online = other.m_online;
         this.m_folders = new TreeMap<>(other.m_folders);
-        updateSubtreeCache();
     }
 
     /**
@@ -87,9 +89,10 @@ public class CmsFolderSizeTable {
      *
      * @param cms the CMS context
      */
-    public CmsFolderSizeTable(CmsObject cms) {
+    public CmsFolderSizeTable(CmsObject cms, boolean online) {
 
         m_cms = cms;
+        m_online = online;
     }
 
     /**
@@ -180,7 +183,7 @@ public class CmsFolderSizeTable {
     public void loadAll() throws CmsException {
 
         TreeMap<String, Long> folders = new TreeMap<>();
-        List<CmsFolderSizeEntry> stats = m_cms.readFolderSizeStats(new CmsFolderSizeOptions("/", true));
+        List<CmsFolderSizeEntry> stats = m_cms.readFolderSizeStats(new CmsFolderSizeOptions("/", m_online, true));
         for (CmsFolderSizeEntry entry : stats) {
             folders.put(normalize(entry.getRootPath()), Long.valueOf(entry.getSize()));
         }
@@ -196,12 +199,31 @@ public class CmsFolderSizeTable {
      */
     public void updateSingle(String rootPath) throws CmsException {
 
-        List<CmsFolderSizeEntry> entries = m_cms.readFolderSizeStats(new CmsFolderSizeOptions(rootPath, false));
+        List<CmsFolderSizeEntry> entries = m_cms.readFolderSizeStats(
+            new CmsFolderSizeOptions(rootPath, m_online, false));
         m_folders.remove(normalize(rootPath));
         if (entries.size() > 0) {
             m_folders.put(normalize(entries.get(0).getRootPath()), Long.valueOf(entries.get(0).getSize()));
         }
         m_subtreeCache = null;
+    }
+
+    /**
+     * Updates the subtree cache.
+     */
+    public void updateSubtreeCache() {
+
+        Map<String, Long> subtreeCache = new HashMap<>();
+        for (Map.Entry<String, Long> entry : m_folders.entrySet()) {
+            String currentPath = entry.getKey();
+            while (currentPath != null) {
+                subtreeCache.put(
+                    currentPath,
+                    Long.valueOf(subtreeCache.computeIfAbsent(currentPath, key -> 0l) + entry.getValue()));
+                currentPath = CmsResource.getParentFolder(currentPath);
+            }
+        }
+        m_subtreeCache = subtreeCache;
     }
 
     /**
@@ -212,7 +234,8 @@ public class CmsFolderSizeTable {
      */
     public void updateTree(String rootPath) throws CmsException {
 
-        List<CmsFolderSizeEntry> entries = m_cms.readFolderSizeStats(new CmsFolderSizeOptions(rootPath, true));
+        List<CmsFolderSizeEntry> entries = m_cms.readFolderSizeStats(
+            new CmsFolderSizeOptions(rootPath, m_online, true));
         rootPath = normalize(rootPath);
         m_folders.subMap(rootPath, rootPath + Character.MAX_VALUE).clear();
         for (CmsFolderSizeEntry entry : entries) {
@@ -249,24 +272,6 @@ public class CmsFolderSizeTable {
             return path;
         }
         return CmsFileUtil.addTrailingSeparator(path);
-    }
-
-    /**
-     * Updates the subtree cache.
-     */
-    private void updateSubtreeCache() {
-
-        Map<String, Long> subtreeCache = new HashMap<>();
-        for (Map.Entry<String, Long> entry : m_folders.entrySet()) {
-            String currentPath = entry.getKey();
-            while (currentPath != null) {
-                subtreeCache.put(
-                    currentPath,
-                    Long.valueOf(subtreeCache.computeIfAbsent(currentPath, key -> 0l) + entry.getValue()));
-                currentPath = CmsResource.getParentFolder(currentPath);
-            }
-        }
-        m_subtreeCache = subtreeCache;
     }
 
 }
