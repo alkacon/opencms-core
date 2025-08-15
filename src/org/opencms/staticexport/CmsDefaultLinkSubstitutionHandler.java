@@ -37,6 +37,7 @@ import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -404,7 +405,10 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
         CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(
             cms,
             cms.getRequestContext().getRootUri());
-        if (!cms.getRequestContext().getCurrentProject().isOnlineProject()
+        boolean isEditMode = !cms.getRequestContext().getCurrentProject().isOnlineProject()
+            && (cms.getRequestContext().getAttribute(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT) == null);
+
+        if (isEditMode
             && (cms.getRequestContext().getAttribute(CmsLinkProcessor.ATTR_IS_PROCESSING_LINKS) == Boolean.TRUE)) {
             // in the Offline project, the link engine is also used for rendering links in the WYSIWYG editor, and the resulting HTML
             // is sent to the server later for saving, so we want to preserve the actual resources linked to - so we can't cut off index.html or similar suffixes.
