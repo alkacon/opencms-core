@@ -79,6 +79,7 @@ public final class AllTests {
         suite.addTest(new TestSuite(TestCmsHtmlValidator.class));
         suite.addTest(new TestSuite(TestCmsColorContrastCalculator.class));
         suite.addTest(new TestSuite(TestCmsPriorityLock.class));
+        suite.addTest(new TestSuite(TestCmsLinkFinisher.class));
         //$JUnit-END$
         return suite;
     }

@@ -27,6 +27,7 @@
 
 package org.opencms.staticexport;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsDetailNameCache;
 import org.opencms.ade.detailpage.I_CmsDetailPageHandler;
 import org.opencms.file.CmsObject;
@@ -49,6 +50,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsUriSplitter;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.CmsLinkFinisher;
 
 import java.net.URI;
 import java.util.List;
@@ -133,6 +135,9 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             return CmsWorkplace.getStaticResourceUri(link);
         }
 
+        CmsLinkFinisher linkFinisher;
+        boolean fullLinkFinish = true;
+
         // make sure we have an absolute link
         String absoluteLink = CmsLinkManager.getAbsoluteUri(link, cms.getRequestContext().getUri());
         String overrideSiteRoot = null;
@@ -203,7 +208,9 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                         detailPage,
                         cms.getDetailName(element, locale, defaultLocales),
                         "/");
-
+                    // technically, we could have an URL name of 'index.html' (or whatever the configured names in the link finisher are),
+                    // and in that case the link finisher would break the link
+                    fullLinkFinish = false;
                 } catch (CmsVfsException e) {
                     if (LOG.isWarnEnabled()) {
                         LOG.warn(e.getLocalizedMessage(), e);
@@ -272,6 +279,8 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                         parameters = prepareExportParameters(cms, vfsName, parameters);
                         // export required, get export name for target link
                         resultLink = exportManager.getRfsName(cms, vfsName, parameters, targetDetailPage);
+                        // link finisher may give wrong results for export links
+                        fullLinkFinish = false;
                         // now set the parameters to null, we do not need them anymore
                         parameters = null;
                     } else {
@@ -391,7 +400,19 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             cms.getRequestContext().setAttribute(OVERRIDE_SITEROOT_PREFIX + resultLink, overrideSiteRoot);
         }
 
-        return serverPrefix.concat(resultLink);
+        String result = serverPrefix.concat(resultLink);
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(
+            cms,
+            cms.getRequestContext().getRootUri());
+        if (!cms.getRequestContext().getCurrentProject().isOnlineProject()
+            && (cms.getRequestContext().getAttribute(CmsLinkProcessor.ATTR_IS_PROCESSING_LINKS) == Boolean.TRUE)) {
+            // in the Offline project, the link engine is also used for rendering links in the WYSIWYG editor, and the resulting HTML
+            // is sent to the server later for saving, so we want to preserve the actual resources linked to - so we can't cut off index.html or similar suffixes.
+            fullLinkFinish = false;
+        }
+        linkFinisher = config.getLinkFinisher();
+        result = linkFinisher.transformLink(result, fullLinkFinish);
+        return result;
     }
 
     /**

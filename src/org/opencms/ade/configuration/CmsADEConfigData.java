@@ -57,6 +57,7 @@ import org.opencms.main.OpenCmsServlet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider.SitemapDirectEditPermissions;
+import org.opencms.xml.CmsLinkFinisher;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
 import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
@@ -214,6 +215,15 @@ public class CmsADEConfigData {
     /** Sitemap attribute for the upload folder. */
     public static final String ATTR_BINARY_UPLOAD_TARGET = "binary.upload.target";
 
+    /** Sitemap attribute controlling the default files that should be truncated by the link finisher (comma separated). */
+    public static final String ATTR_TEMPLATE_LINK_DEFAULTFILES = "template.link.defaultfiles";
+
+    /** Sitemap attribute configuring the link finisher - currently only supports the mode 'foldername', every other value is interpreted as 'disabled'. */
+    public static final String ATTR_TEMPLATE_LINK_FINISHER = "template.link.finisher";
+
+    /** Attribute for regex to exclude links from being run through the finisher if they match. */
+    public static final String ATTRIBUTE_TEMPLATE_LINK_FINISHER_EXCLUDE = "template.link.finisher.exclude";
+
     /** Prefix for logging special request log messages. */
     public static final String REQ_LOG_PREFIX = "[CmsADEConfigData] ";
 
@@ -279,6 +289,8 @@ public class CmsADEConfigData {
                 return result;
             }
         });
+
+    private CmsLinkFinisher m_linkFinisher;
 
     /** Cached shared setting overrides. */
     private volatile ImmutableList<CmsUUID> m_sharedSettingOverrides;
@@ -1257,6 +1269,27 @@ public class CmsADEConfigData {
         Map<CmsUUID, I_CmsFormatterBean> result = Maps.newHashMap(cacheState.getFormatters());
         result.keySet().removeAll(getActiveFormatters().keySet());
         return result;
+    }
+
+    /**
+     * Creates a link finisher based on the configured sitemap attributes.
+     *
+     * @return the link finisher
+     */
+    public CmsLinkFinisher getLinkFinisher() {
+
+        if (m_linkFinisher == null) {
+
+            boolean enabled = "foldername".equals(getAttribute(ATTR_TEMPLATE_LINK_FINISHER, ""));
+            String suffixesStr = getAttribute(ATTR_TEMPLATE_LINK_DEFAULTFILES, "");
+            Collection<String> defaultFileNames = Collections.unmodifiableList(
+                Arrays.asList(suffixesStr.split(",")).stream().map(suffix -> suffix.strip()).filter(
+                    suffix -> !CmsStringUtil.isEmptyOrWhitespaceOnly(suffix)).collect(Collectors.toList()));
+            String exclude = getAttribute(ATTRIBUTE_TEMPLATE_LINK_FINISHER_EXCLUDE, null);
+            m_linkFinisher = new CmsLinkFinisher(enabled, defaultFileNames, exclude);
+        }
+        return m_linkFinisher;
+
     }
 
     /**

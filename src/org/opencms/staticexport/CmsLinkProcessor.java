@@ -126,6 +126,9 @@ public class CmsLinkProcessor extends CmsHtmlParser {
 
     }
 
+    /** Context attribute used to mark when we are in the link processing stage (expanding macros into links). */
+    public static final String ATTR_IS_PROCESSING_LINKS = "isInLinkProcessor";
+
     /** Constant for the attribute name. */
     public static final String ATTRIBUTE_HREF = "href";
 
@@ -389,7 +392,18 @@ public class CmsLinkProcessor extends CmsHtmlParser {
     public String processLinks(String content) throws ParserException {
 
         m_mode = PROCESS_LINKS;
-        return process(content, m_encoding);
+
+        if (m_cms != null) {
+            m_cms.getRequestContext().setAttribute(ATTR_IS_PROCESSING_LINKS, Boolean.TRUE);
+        }
+        try {
+            return process(content, m_encoding);
+        } finally {
+            if (m_cms != null) {
+                m_cms.getRequestContext().removeAttribute(ATTR_IS_PROCESSING_LINKS);
+            }
+        }
+
     }
 
     /**
