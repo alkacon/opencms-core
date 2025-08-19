@@ -73,17 +73,20 @@ public class TestFolderSize extends OpenCmsTestCase {
         cms.createResource(folder + "/file1", 1, data, new ArrayList<>());
         cms.createResource(folder + "/file2", 1, data, new ArrayList<>());
         OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
         cms.createResource(folder + "/file3", 1, data, new ArrayList<>());
-        Thread.sleep(tracker.getTimerInterval());
+        tracker.processUpdates();
         assertEquals(300, tracker.getTotalFolderSize("/sites/default/" + folder));
         cms.lockResourceTemporary(folder + "/file2");
         cms.deleteResource(folder + "/file2", CmsResource.DELETE_PRESERVE_SIBLINGS);
         cms.lockResourceTemporary(folder + "/file3");
         cms.deleteResource(folder + "/file3", CmsResource.DELETE_PRESERVE_SIBLINGS);
-        Thread.sleep(tracker.getTimerInterval());
+        tracker.processUpdates();
         assertEquals(200, tracker.getTotalFolderSize("/sites/default/" + folder));
         OpenCms.getPublishManager().publishProject(cms);
-        Thread.sleep(tracker.getTimerInterval());
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        tracker.processUpdates();
         assertEquals(100, tracker.getTotalFolderSize("/sites/default/" + folder));
     }
 
@@ -223,10 +226,11 @@ public class TestFolderSize extends OpenCmsTestCase {
             site + folder + "/beta/",
             site + folder + ".ext/");
         CmsFolderSizeTracker tracker = OpenCms.getFolderSizeTracker(true);
-        Thread.sleep(tracker.getTimerInterval());
+        tracker.processUpdates();
         assertEquals(0, tracker.getTotalFolderSize(folders.get(0)));
         OpenCms.getPublishManager().publishProject(cms);
-        Thread.sleep(tracker.getTimerInterval());
+        OpenCms.getPublishManager().waitWhileRunning();
+        tracker.processUpdates();
         assertEquals(400, tracker.getTotalFolderSize(folders.get(0)));
 
     }

@@ -209,6 +209,39 @@ public class CmsFolderSizeTracker {
     }
 
     /**
+     * The scheduled task.
+     */
+    public void processUpdates() {
+
+        long start = System.currentTimeMillis();
+        try {
+            synchronized (m_lock) {
+                Set<String> paths = new HashSet<>();
+                m_todo.drainTo(paths);
+                LOG.debug("Processing path update set of size " + paths.size());
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Update set: " + paths);
+                }
+                if (paths.size() > 0) {
+                    CmsFolderSizeTable newTable = new CmsFolderSizeTable(m_table);
+                    for (String path : paths) {
+                        newTable.updateSingle(path);
+                    }
+                    newTable.updateSubtreeCache();
+                    m_table = newTable;
+                }
+            }
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        long end = System.currentTimeMillis();
+        long duration = end - start;
+        if (LOG.isDebugEnabled() && (duration > 250)) {
+            LOG.debug("folder size tracker update took " + duration + "ms");
+        }
+    }
+
+    /**
      * Refreshes the data for a particular subtree.
      *
      * @param rootPath the root path to refresh the data for
@@ -381,39 +414,6 @@ public class CmsFolderSizeTracker {
                     // do nothing
                     break;
             }
-        }
-    }
-
-    /**
-     * The scheduled task.
-     */
-    private void processUpdates() {
-
-        long start = System.currentTimeMillis();
-        try {
-            synchronized (m_lock) {
-                Set<String> paths = new HashSet<>();
-                m_todo.drainTo(paths);
-                LOG.debug("Processing path update set of size " + paths.size());
-                if (LOG.isTraceEnabled()) {
-                    LOG.trace("Update set: " + paths);
-                }
-                if (paths.size() > 0) {
-                    CmsFolderSizeTable newTable = new CmsFolderSizeTable(m_table);
-                    for (String path : paths) {
-                        newTable.updateSingle(path);
-                    }
-                    newTable.updateSubtreeCache();
-                    m_table = newTable;
-                }
-            }
-        } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-        long end = System.currentTimeMillis();
-        long duration = end - start;
-        if (LOG.isDebugEnabled() && (duration > 250)) {
-            LOG.debug("folder size tracker update took " + duration + "ms");
         }
     }
 
