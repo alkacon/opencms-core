@@ -13,6 +13,8 @@
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/add_formatters_block.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/remove_formatters_block.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/add_content_restriction.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/folder_option.xsd" />
+    
     <xsd:element name="SitemapMasterConfigurations" type="OpenCmsSitemapMasterConfigurations" />
 
     <xsd:complexType name="OpenCmsSitemapMasterConfigurations">
@@ -25,6 +27,7 @@
         <xsd:sequence>
             <xsd:element name="MasterConfig" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="DiscardTypes" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="ContentFolder" type="OpenCmsADEFolderOption" minOccurs="0" maxOccurs="1" />
             <xsd:element name="PreferDetailPagesForLocalContents" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="TypeOrderingMode" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
             <xsd:element name="DisabledTypesMode" type="OpenCmsString" minOccurs="0" maxOccurs="1" />

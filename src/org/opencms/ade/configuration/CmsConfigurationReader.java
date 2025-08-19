@@ -147,6 +147,8 @@ public class CmsConfigurationReader {
     /** Node name for the 'Check reuse' option. */
     public static final String N_CHECK_REUSE = "CheckReuse";
 
+    public static final String N_CONTENT_FOLDER = "ContentFolder";
+
     /** The CopyInModels node name. */
     public static final String N_COPY_IN_MODELS = "CopyInModels";
 
@@ -635,6 +637,10 @@ public class CmsConfigurationReader {
         boolean discardInheritedModelPages = getBoolean(root, N_DISCARD_MODEL_PAGES);
 
         boolean createContentsLocally = getBoolean(root, N_CREATE_CONTENTS_LOCALLY);
+        CmsContentFolderOption contentFolderOption = null;
+        for (I_CmsXmlContentValueLocation contentFolderLoc : root.getSubValues(N_CONTENT_FOLDER)) {
+            contentFolderOption = parseContentFolderOption(contentFolderLoc);
+        }
         boolean preferDetailPagesForLocalContents = getBoolean(root, N_PREFER_DETAIL_PAGES_FOR_LOCAL_CONTENTS);
         boolean exludeExternalDetailContents = getBoolean(root, N_EXCLUDE_EXTERNAL_DETAIL_CONTENTS);
         boolean includeInSiteSelector = getBoolean(root, N_INCLUDE_IN_SITE_SELECTOR);
@@ -717,6 +723,7 @@ public class CmsConfigurationReader {
             m_functionReferences,
             discardInheritedModelPages,
             createContentsLocally,
+            contentFolderOption,
             preferDetailPagesForLocalContents,
             exludeExternalDetailContents,
             includeInSiteSelector,
@@ -735,6 +742,36 @@ public class CmsConfigurationReader {
             attributeEditorConfigId,
             attributes);
         return result;
+    }
+
+    /**
+     * Parses the content folder configuration.
+     *
+     * @param location the XML content location from which to read the data.
+     *
+     * @return the content folder configuration
+     */
+    public CmsContentFolderOption parseContentFolderOption(I_CmsXmlContentLocation location) {
+
+        if (location == null) {
+            return null;
+        }
+        I_CmsXmlContentValueLocation defaultLoc = location.getSubValue(N_DEFAULT);
+        I_CmsXmlContentValueLocation pathLoc = location.getSubValue(N_PATH);
+        if (defaultLoc != null) {
+            return new CmsContentFolderOption(null);
+        }
+        if (pathLoc != null) {
+            CmsXmlVfsFileValue value = (CmsXmlVfsFileValue)pathLoc.getValue();
+            if ((value.getUncheckedLink() != null) && (value.getUncheckedLink().getStructureId() != null)) {
+
+                return new CmsContentFolderOption(value.getUncheckedLink().getStructureId());
+            }
+        }
+        if (LOG.isWarnEnabled()) {
+            LOG.warn(location.getDocument().getFile().getRootPath() + ": invalid content folder");
+        }
+        return null;
     }
 
     /**

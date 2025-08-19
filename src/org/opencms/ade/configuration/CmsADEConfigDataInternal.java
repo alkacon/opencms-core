@@ -169,7 +169,6 @@ public class CmsADEConfigDataInternal {
 
             return m_meta;
         }
-
     }
 
     /**
@@ -349,11 +348,17 @@ public class CmsADEConfigDataInternal {
     /** The map of attributes. */
     private Map<String, AttributeValue> m_attributes = Collections.emptyMap();
 
+    /** The structure id of the base folder. */
+    private CmsUUID m_baseId;
+
     /** The base path of this configuration. */
     private String m_basePath;
 
     /** The CMS context. */
     private CmsObject m_cms;
+
+    /** The content folder configuration. */
+    private CmsContentFolderOption m_contentFolderOption;
 
     /** the dynamic functions available. */
     private Set<CmsUUID> m_dynamicFunctions;
@@ -412,9 +417,6 @@ public class CmsADEConfigDataInternal {
     /** The type ordering mode. */
     private CmsTypeOrderingMode m_typeOrderingMode;
 
-    /** The structure id of the base folder. */
-    private CmsUUID m_baseId;
-
     /**
      * Creates a new configuration data instance.<p>
      *
@@ -435,6 +437,7 @@ public class CmsADEConfigDataInternal {
      * @param functionReferences the function reference configuration
      * @param discardInheritedModelPages the "discard  inherited model pages" flag
      * @param createContentsLocally the "create contents locally" flag
+     * @param contentFolderOption the content folder configuration
      * @param preferDetailPagesForLocalContents the "preferDetailPagesForLocalContents" flag
      * @param excludeExternalDetailContents the "excludeExternalDetailContents" flag
      * @param includeInSiteSelector the "includeInSiteSelector" flag
@@ -471,6 +474,7 @@ public class CmsADEConfigDataInternal {
         List<CmsFunctionReference> functionReferences,
         boolean discardInheritedModelPages,
         boolean createContentsLocally,
+        CmsContentFolderOption contentFolderOption,
         boolean preferDetailPagesForLocalContents,
         boolean excludeExternalDetailContents,
         boolean includeInSiteSelector,
@@ -500,6 +504,7 @@ public class CmsADEConfigDataInternal {
         m_ownModelPageConfigRaw = modelPages;
         m_ownDetailPages = detailPageInfos;
         m_functionReferences = functionReferences;
+        m_contentFolderOption = contentFolderOption;
         m_isModuleConfig = isModuleConfig;
         m_masterConfigs = masterConfigs;
         if (m_masterConfigs == null) {
@@ -687,6 +692,16 @@ public class CmsADEConfigDataInternal {
     public String getBasePath() {
 
         return m_basePath;
+    }
+
+    /**
+     * Gets the content folder configuration.
+     * 
+     * @return the content folder configuration
+     */
+    public CmsContentFolderOption getContentFolderOption() {
+
+        return m_contentFolderOption;
     }
 
     /**

@@ -12,6 +12,7 @@
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/plugin_list.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/add_formatters_block.xsd" />
     <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/remove_formatters_block.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/folder_option.xsd" />
     <xsd:element name="SitemapConfigurations" type="OpenCmsSitemapConfigurations" />
 
     <xsd:complexType name="OpenCmsSitemapConfigurations">

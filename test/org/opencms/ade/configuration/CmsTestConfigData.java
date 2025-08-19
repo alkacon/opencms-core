@@ -139,6 +139,7 @@ public class CmsTestConfigData extends CmsADEConfigData {
             /*List<CmsFunctionReference> functionReferences*/new ArrayList<>(),
             /*boolean discardInheritedModelPages*/false,
             /*boolean createContentsLocally*/true,
+            null,
             /*boolean preferDetailPagesForLocalContents*/false,
             /*boolean excludeExternalDetailContents*/false,
             /*boolean includeInSiteSelector*/true,

@@ -54,6 +54,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsServlet;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider.SitemapDirectEditPermissions;
@@ -880,6 +881,24 @@ public class CmsADEConfigData {
             }
         }
         return result;
+    }
+
+    /**
+     * Gets the active content folder configuration.
+     * 
+     * @return the active content folder configuration
+     */
+    public CmsContentFolderOption getContentFolderOption() {
+
+        if (m_data.getContentFolderOption() != null) {
+            return m_data.getContentFolderOption();
+        }
+        CmsADEConfigData parent = parent();
+        if (parent != null) {
+            return parent.getContentFolderOption();
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -2051,9 +2070,32 @@ public class CmsADEConfigData {
                 Collectors.toList()),
             true);
         if (m_data.isCreateContentsLocally()) {
+            CmsContentFolderOption contentFolderOption = getContentFolderOption();
+            CmsUUID folderId = null;
+            if (contentFolderOption != null) {
+                folderId = contentFolderOption.getFolderId();
+            }
+            String basePath = CmsStringUtil.joinPaths(m_data.getBasePath(), CmsADEManager.CONTENT_FOLDER_NAME);
+            if (folderId != null) {
+                try {
+                    CmsResource resource = getCms().readResource(folderId, CmsResourceFilter.ALL);
+                    if (!resource.isFolder()) {
+                        LOG.error(
+                            "Resource configured as content folder isn't a folder: "
+                                + resource.getRootPath()
+                                + " (context: "
+                                + getBasePath()
+                                + ")");
+                    } else {
+                        basePath = CmsFileUtil.removeTrailingSeparator(resource.getRootPath());
+                    }
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+
             for (CmsResourceTypeConfig typeConfig : result) {
-                typeConfig.updateBasePath(
-                    CmsStringUtil.joinPaths(m_data.getBasePath(), CmsADEManager.CONTENT_FOLDER_NAME));
+                typeConfig.updateBasePath(basePath);
             }
         }
         if (filterDisabled) {
