@@ -28,11 +28,7 @@
 package org.opencms.synchronize;
 
 import org.opencms.db.CmsDbIoException;
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.*;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -553,11 +549,41 @@ public class CmsSynchronize {
 
             // get the file type of the FS file
             int resType = OpenCms.getResourceManager().getDefaultTypeForName(resName).getTypeId();
+
+            // set property 'Title' for the new resource
+            CmsProperty titleProp = new CmsProperty();
+            titleProp.setName(CmsPropertyDefinition.PROPERTY_TITLE);
+
+            // in the unlikely case that the filename contains a full path, we only take the last part
+            String fsFileName = fsFile.getName();
+            String title = fsFileName.replace("\\", "/");
+
+            int lastSlashIndex = title.lastIndexOf('/');
+            if (lastSlashIndex != -1) {
+                title = title.substring(lastSlashIndex + 1);
+            }
+
+            // remove the file extension from the title
+            int lastDotIndex = title.lastIndexOf('.');
+            if (lastDotIndex != -1) {
+                title = title.substring(0, lastDotIndex);
+            }
+
+            if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
+                titleProp.setStructureValue(title);
+            } else {
+                titleProp.setResourceValue(title);
+            }
+
+            // list of properties to be set for the new resource
+            List<CmsProperty> properties = new ArrayList<>();
+            properties.add(titleProp);
+
             CmsResource newFile = m_cms.createResource(
                 translate(folder) + filename,
                 resType,
                 content,
-                new ArrayList<CmsProperty>());
+                properties);
 
             m_report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_ARGUMENT_1,
