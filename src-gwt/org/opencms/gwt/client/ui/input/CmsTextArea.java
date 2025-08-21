@@ -264,6 +264,7 @@ I_CmsHasResizeOnShow, I_CmsHasGhostValue {
      * @return the cursor position
      */
     public int getPosition() {
+
         HTMLInputElement elem = Js.uncheckedCast(m_textArea.getElement()); // wrong class, but works
         return elem.selectionStart;
     }
@@ -353,6 +354,7 @@ I_CmsHasResizeOnShow, I_CmsHasGhostValue {
                 m_disabledOverlay.removeFromParent();
                 m_disabledOverlay = null;
             }
+            m_textAreaContainer.onResizeDescendant();
         } else {
             if (m_disabledOverlay == null) {
                 m_disabledOverlay = DOM.createDiv();
@@ -455,6 +457,7 @@ I_CmsHasResizeOnShow, I_CmsHasGhostValue {
      * @param position the cursor position
      */
     public void setPosition(int position) {
+
         HTMLInputElement elem = Js.uncheckedCast(m_textArea.getElement()); // wrong class, but works
         elem.setSelectionRange(position, position);
     }
