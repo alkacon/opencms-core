@@ -885,7 +885,7 @@ public class CmsADEConfigData {
 
     /**
      * Gets the active content folder configuration.
-     * 
+     *
      * @return the active content folder configuration
      */
     public CmsContentFolderOption getContentFolderOption() {
@@ -1300,10 +1300,15 @@ public class CmsADEConfigData {
         if (m_linkFinisher == null) {
 
             boolean enabled = "foldername".equals(getAttribute(ATTR_TEMPLATE_LINK_FINISHER, ""));
-            String suffixesStr = getAttribute(ATTR_TEMPLATE_LINK_DEFAULTFILES, "");
-            Collection<String> defaultFileNames = Collections.unmodifiableList(
-                Arrays.asList(suffixesStr.split(",")).stream().map(suffix -> suffix.strip()).filter(
-                    suffix -> !CmsStringUtil.isEmptyOrWhitespaceOnly(suffix)).collect(Collectors.toList()));
+            String suffixesStr = getAttribute(ATTR_TEMPLATE_LINK_DEFAULTFILES, null);
+            Collection<String> defaultFileNames;
+            if (suffixesStr != null) {
+                defaultFileNames = Collections.unmodifiableList(
+                    Arrays.asList(suffixesStr.split(",")).stream().map(suffix -> suffix.strip()).filter(
+                        suffix -> !CmsStringUtil.isEmptyOrWhitespaceOnly(suffix)).collect(Collectors.toList()));
+            } else {
+                defaultFileNames = OpenCms.getDefaultFiles();
+            }
             String exclude = getAttribute(ATTRIBUTE_TEMPLATE_LINK_FINISHER_EXCLUDE, null);
             m_linkFinisher = new CmsLinkFinisher(enabled, defaultFileNames, exclude);
         }

@@ -33,7 +33,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -100,6 +99,9 @@ public class CmsLinkFinisher {
         if (link.startsWith(CmsHistoryResourceHandler.HISTORY_HANDLER)) {
             return link;
         }
+        if (link.startsWith("javascript:")) {
+            return link;
+        }
         if (m_excludePattern != null) {
             if (m_excludePattern.matcher(link).matches()) {
                 return link;
@@ -109,23 +111,24 @@ public class CmsLinkFinisher {
             URI uri = new URI(link);
             URIBuilder builder = new URIBuilder(uri);
             String path = builder.getPath();
-            path = path.replaceFirst("/$", "");
-            if (full) {
-                if (path.length() > 1) {
-                    String name = CmsResource.getName(path);
-                    if (m_defaultFileNames.contains(name)) {
-                        path = path.substring(0, path.lastIndexOf('/'));
+            if (path != null) {
+                path = path.replaceFirst("/$", "");
+                if (full) {
+                    if (path.length() > 1) {
+                        String name = CmsResource.getName(path);
+                        if (m_defaultFileNames.contains(name)) {
+                            path = path.substring(0, path.lastIndexOf('/'));
+                        }
                     }
                 }
+                // since we usually put the result of link substitution into hrefs, we need to avoid an empty path if there is no host, otherwise the href will link to the current page
+                if ((uri.getAuthority() == null) && "".equals(path)) {
+                    path = "/";
+                }
+                builder.setPath(path);
+                link = builder.toString();
             }
-            // since we usually put the result of link substitution into hrefs, we need to avoid an empty path if there is no host, otherwise the href will link to the current page
-            if ((uri.getAuthority() == null) && "".equals(path)) {
-                path = "/";
-            }
-            builder.setPath(path);
-
-            link = builder.toString();
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
 

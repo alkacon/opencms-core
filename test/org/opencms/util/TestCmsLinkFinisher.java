@@ -65,6 +65,7 @@ public class TestCmsLinkFinisher extends OpenCmsTestCase {
         assertEquals("/", lf.transformLink("/index.html", true));
         assertEquals("/", lf.transformLink("/", true));
         assertEquals("/opencms", lf.transformLink("/opencms/index.html", true));
+        assertEquals("javascript:void(0)", lf.transformLink("javascript:void(0)", true));
 
     }
 
