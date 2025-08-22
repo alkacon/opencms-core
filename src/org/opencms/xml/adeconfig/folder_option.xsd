@@ -22,8 +22,8 @@
         <xsd:appinfo>
             <resourcebundle name="org.opencms.xml.containerpage.messages" />
             <layouts>
-                <layout element="Default" widget="DisplayWidget" configuration=".content"  />
-                <layout element="Path" widget="VfsFileWidget"  />
+                <layout element="Default" widget="DisplayWidget" configuration=".content" display="singleline" />
+                <layout element="Path" widget="VfsFileWidget"  display="singleline" />
             </layouts>
         </xsd:appinfo>
     </xsd:annotation>
