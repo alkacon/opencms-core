@@ -54,6 +54,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.http.client.utils.URIBuilder;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 /**
@@ -112,6 +113,9 @@ public final class CmsEncoder {
 
     /** The plus entity. */
     private static final String PLUS_ENTITY = ENTITY_PREFIX + "043;";
+
+    /** Pattern for decomposing the authority section of an URI. */
+    public static final Pattern AUTHORITY_PATTERN = Pattern.compile("^(.*?@)?(.*)(:[0-9]+)?$");
 
     /**
      * Constructor.<p>
@@ -178,12 +182,12 @@ public final class CmsEncoder {
         if (uriString.indexOf(":") >= 0) {
             try {
                 URI uri = new URI(uriString);
-                String authority = uri.getAuthority(); // getHost won't work when we have special characters
-                int colonPos = authority.indexOf(':');
-                if (colonPos >= 0) {
-                    authority = IDN.toASCII(authority.substring(0, colonPos)) + authority.substring(colonPos);
-                } else {
-                    authority = IDN.toASCII(authority);
+                String authority = uri.getAuthority(); // getHost won't work when we have non-ASCII domain characters
+                Matcher matcher = AUTHORITY_PATTERN.matcher(authority);
+                if (matcher.matches()) {
+                    authority = Strings.nullToEmpty(matcher.group(1))
+                        + IDN.toASCII(matcher.group(2))
+                        + Strings.nullToEmpty(matcher.group(3));
                 }
                 URI uriWithCorrectedHost = new URI(uri.getScheme(), authority, null, null, null);
                 URIBuilder builder = new URIBuilder(uri);

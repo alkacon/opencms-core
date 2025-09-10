@@ -47,6 +47,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 
@@ -68,6 +69,22 @@ public class CmsLinkManager {
     /** Base URL to calculate absolute links. */
     private static URL m_baseUrl;
 
+    /**
+     * Static initializer for the base URL.<p>
+     */
+    static {
+        m_baseUrl = null;
+        try {
+            m_baseUrl = new URL("http://127.0.0.1");
+        } catch (MalformedURLException e) {
+            // this won't happen
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    /** Pattern for detecting whether an URI starts with a scheme. */
+    public static final Pattern HAS_SCHEME_PATTERN = Pattern.compile("^[A-Za-z][A-Za-z0-9+.-]*:");
+
     /** The configured link substitution handler. */
     private I_CmsLinkSubstitutionHandler m_linkSubstitutionHandler;
 
@@ -85,19 +102,6 @@ public class CmsLinkManager {
         if (m_linkSubstitutionHandler == null) {
             // just make very sure that this is not null
             m_linkSubstitutionHandler = new CmsDefaultLinkSubstitutionHandler();
-        }
-    }
-
-    /**
-     * Static initializer for the base URL.<p>
-     */
-    static {
-        m_baseUrl = null;
-        try {
-            m_baseUrl = new URL("http://127.0.0.1");
-        } catch (MalformedURLException e) {
-            // this won't happen
-            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 
@@ -137,7 +141,6 @@ public class CmsLinkManager {
         }
     }
 
-
     /**
      * Gets the absolute path for the subsite a link links to.
      *
@@ -148,7 +151,7 @@ public class CmsLinkManager {
      * @param link the link to check
      * @return the subsite path for the link target, or null if not applicable
      */
-    public static  String getLinkSubsite(CmsObject cms, String link) {
+    public static String getLinkSubsite(CmsObject cms, String link) {
 
         try {
 
@@ -184,7 +187,7 @@ public class CmsLinkManager {
             } else {
                 return OpenCms.getADEManager().getSubSiteRoot(cms, rootPath);
             }
-        } catch (URISyntaxException  e) {
+        } catch (URISyntaxException e) {
             LOG.warn(e.getLocalizedMessage(), e);
             return null;
         }
@@ -260,10 +263,7 @@ public class CmsLinkManager {
      */
     public static boolean hasScheme(String uri) {
 
-        int pos = uri.indexOf(':');
-        // don't want to be misguided by a potential ':' in the query section of the URI (is this possible / allowed?)
-        // so consider only a ':' in the first 10 chars as a scheme
-        return (pos > -1) && (pos < 10);
+        return HAS_SCHEME_PATTERN.matcher(uri).find();
     }
 
     /**
@@ -320,7 +320,6 @@ public class CmsLinkManager {
 
         return (uri != null) && uri.getPath().startsWith(OpenCms.getSystemInfo().getWorkplaceContext());
     }
-
 
     /**
      * Given a path to a VFS resource, the method removes the OpenCms context,

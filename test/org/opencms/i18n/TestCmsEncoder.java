@@ -247,6 +247,17 @@ public class TestCmsEncoder extends OpenCmsTestCase {
         assertEquals(
             "http://xn--wrmer-kva.de:77/%26/?f=%26&g=%26",
             CmsEncoder.convertHostToPunycode("http://würmer.de:77/%26/?f=%26&g=%26"));
+        String ipv6Uri = "http://[ed19:f7ae:ac5b:8b46:bbb0:c02c:1d29:e337]:8080/f1";
+        assertEquals(ipv6Uri, CmsEncoder.convertHostToPunycode(ipv6Uri));
+        ipv6Uri = "http://[ed19:f7ae:ac5b:8b46:bbb0:c02c:1d29:e337]/f1";
+        assertEquals(ipv6Uri, CmsEncoder.convertHostToPunycode(ipv6Uri));
+        assertEquals(
+            "http://user:password@xn--wrmer-kva.de",
+            CmsEncoder.convertHostToPunycode("http://user:password@würmer.de"));
+        assertEquals(
+            "http://test.invalid:8080/foo?bar=qux",
+            CmsEncoder.convertHostToPunycode("http://test.invalid:8080/foo?bar=qux"));
+
     }
 
     /**
