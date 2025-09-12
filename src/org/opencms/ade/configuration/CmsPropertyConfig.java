@@ -29,7 +29,7 @@ package org.opencms.ade.configuration;
 
 import org.opencms.xml.content.CmsXmlContentProperty;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 /**
  * This class represents the property configuration for a sitemap region.<p>
