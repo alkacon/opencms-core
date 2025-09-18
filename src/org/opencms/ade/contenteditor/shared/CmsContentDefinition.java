@@ -258,10 +258,27 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
         int index = org.opencms.acacia.shared.CmsContentDefinition.extractIndex(attributeName);
         if (index > 0) {
             index--;
+
         }
-        attributeName = entity.getTypeName()
-            + "/"
-            + org.opencms.acacia.shared.CmsContentDefinition.removeIndex(attributeName);
+        String typeName = entity.getTypeName();
+
+        attributeName = typeName + "/" + org.opencms.acacia.shared.CmsContentDefinition.removeIndex(attributeName);
+        CmsEntityAttribute choiceAttr = entity.getAttribute(CmsType.CHOICE_ATTRIBUTE_NAME);
+        if ((choiceAttr != null) && choiceAttr.isComplexValue()) {
+            List<CmsEntity> choiceChildren = new ArrayList<>();
+            for (CmsEntity child : choiceAttr.getComplexValues()) {
+                if (child.getAttribute(attributeName) != null) {
+                    choiceChildren.add(child);
+                }
+            }
+            if (index < choiceChildren.size()) {
+                entity = choiceChildren.get(index);
+                index = 0;
+            } else {
+                return null;
+            }
+        }
+
         CmsEntityAttribute attribute = entity.getAttribute(attributeName);
         if (!((attribute == null) || (attribute.isComplexValue() && (path == null)))) {
             if (attribute.isSimpleValue()) {
