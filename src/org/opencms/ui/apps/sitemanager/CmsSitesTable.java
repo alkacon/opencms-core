@@ -189,7 +189,7 @@ public class CmsSitesTable extends Table implements I_CmsFilterableTable {
         /**OU. */
         Favicon("", Image.class, null),
         /**Icon. */
-        Icon(null, Label.class, new Label(new CmsCssIcon(OpenCmsTheme.ICON_SITE).getHtml(), ContentMode.HTML)),
+        Icon(null, Label.class, null),
         /**Last login. */
         Is_Webserver("", Boolean.class, Boolean.valueOf(true)),
         /**IsIndirect?. */
