@@ -29,8 +29,6 @@ package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.gwt.shared.CmsCoreData.AdeContext;
-import org.opencms.main.OpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilityMode;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
@@ -50,7 +48,7 @@ public class CmsUndoDialogAction extends A_CmsWorkplaceAction implements I_CmsAD
     public static final String ACTION_ID = "undo";
 
     /** The action visibility. */
-    public static final I_CmsHasMenuItemVisibility VISIBILITY = CmsStandardVisibilityCheck.UNDO;
+    public static final I_CmsHasMenuItemVisibility VISIBILITY = CmsStandardVisibilityCheck.UNDO_AUTHOR;
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
@@ -106,12 +104,7 @@ public class CmsUndoDialogAction extends A_CmsWorkplaceAction implements I_CmsAD
     @Override
     public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
 
-        I_CmsHasMenuItemVisibility check = VISIBILITY;
-        if (AdeContext.gallery.name().equals(context.getAppId())
-            && OpenCms.getWorkplaceManager().isAllowElementAuthorToWorkInGalleries()) {
-            check = CmsStandardVisibilityCheck.UNDO_AUTHOR;
-        }
-        return check.getVisibility(context.getCms(), context.getResources());
+        return VISIBILITY.getVisibility(context.getCms(), context.getResources());
     }
 
     /**
