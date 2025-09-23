@@ -121,7 +121,7 @@ public class CmsEditorBase extends CmsDialog {
     @Override
     protected void checkRole() throws CmsRoleViolationException {
 
-        OpenCms.getRoleManager().checkRole(getCms(), CmsRole.EDITOR);
+        OpenCms.getRoleManager().checkRole(getCms(), CmsRole.ELEMENT_AUTHOR);
     }
 
     /**
