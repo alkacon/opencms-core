@@ -40,7 +40,7 @@ OpenCms supports Tomcat 9.x only.
 Later Tomcat versions are currently not supported due to the API naming change from javax to jakarta.
 
 Download and install Tomcat from [https://tomcat.apache.org/](https://tomcat.apache.org/) into a folder of your choice.
-OpenCms requires a Servlet 3.1 / JSP 2.3 standards compliant container.
+OpenCms requires a Servlet 4.0 / JSP 2.3 standards compliant container.
 Ensure that the `CATALINA_HOME` environment variable points to the folder where you installed Tomcat.
 
 OpenCms integrates image processing tools that rely on Java AWT. In most Linux distributions, Java AWT is available by default.
