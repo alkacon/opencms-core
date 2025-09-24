@@ -159,6 +159,17 @@ public final class CmsSiteMatcher implements Cloneable, Serializable {
                 serverProtocol = SCHEME_HTTP;
             }
             serverName = uri.getHost();
+            if (serverName == null) {
+                // handle weird cases like trailing dashes in a backward compatible way
+                LOG.error("Invalid server name: " + serverString);
+                String authority = uri.getAuthority();
+                String candidate = authority.replaceFirst(":[0-9]+$", "");
+                int atIndex = candidate.indexOf("@");
+                if (atIndex != -1) {
+                    candidate = candidate.substring(atIndex + 1);
+                }
+                serverName = candidate;
+            }
             serverPort = uri.getPort();
             if (serverPort == -1) {
                 if (SCHEME_HTTPS.equals(serverProtocol)) {
@@ -169,6 +180,7 @@ public final class CmsSiteMatcher implements Cloneable, Serializable {
             }
             init(serverProtocol, serverName, serverPort, timeOffset);
         } catch (URISyntaxException e) {
+            LOG.error("Invalid server name: " + serverString, e);
             init(WILDCARD, WILDCARD, 0, timeOffset);
 
         }
