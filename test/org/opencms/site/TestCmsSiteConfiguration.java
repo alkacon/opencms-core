@@ -35,9 +35,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import junit.extensions.TestSetup;
+import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
+
 import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * Tests the site configuration.<p>
@@ -65,28 +65,8 @@ public class TestCmsSiteConfiguration extends OpenCmsTestCase {
     public static Test suite() {
 
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+        return generateSetupTestWrapper(TestCmsSiteConfiguration.class, "simpletest", "/");
 
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsSiteConfiguration.class.getName());
-
-        suite.addTest(new TestCmsSiteConfiguration("testSiteConfiguration"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
     }
 
     /**
@@ -120,5 +100,29 @@ public class TestCmsSiteConfiguration extends OpenCmsTestCase {
         assertTrue(
             "Site at http://localhost:8082 not found",
             sites.contains(new CmsSite("/sites/testsite/", "http://localhost:8082")));
+    }
+
+    /**
+     * Tests some edge cases for the site matcher.
+     *
+     * @throws Exception
+     */
+    public void testSiteMatcher() throws Exception {
+
+        OpenCmsTestLogAppender.setBreakOnError(false);
+        try {
+
+            CmsSiteMatcher m1 = new CmsSiteMatcher("http://foo.invalid-");
+            assertEquals("foo.invalid-", m1.getServerName());
+            CmsSiteMatcher m2 = new CmsSiteMatcher("host.alkacon.com");
+            assertEquals("host.alkacon.com", m2.getServerName());
+            CmsSiteMatcher m3 = new CmsSiteMatcher("http://localhost:7070");
+            assertEquals("localhost", m3.getServerName());
+            assertEquals(7070, m3.getServerPort());
+
+        } finally {
+            OpenCmsTestLogAppender.setBreakOnError(true);
+        }
+
     }
 }

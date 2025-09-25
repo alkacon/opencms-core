@@ -156,7 +156,9 @@ public final class CmsSiteMatcher implements Cloneable, Serializable {
             if (uri.getScheme() != null) {
                 serverProtocol = uri.getScheme();
             } else {
+                // handle missing protocol, for backward compatibility
                 serverProtocol = SCHEME_HTTP;
+                uri = new URI(serverProtocol + "://" + serverString);
             }
             serverName = uri.getHost();
             if (serverName == null) {
