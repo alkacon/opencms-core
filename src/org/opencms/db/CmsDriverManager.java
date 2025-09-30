@@ -841,22 +841,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         CmsRelation relation = new CmsRelation(resource, target, type);
         getVfsDriver(dbc).createRelation(dbc, dbc.currentProject().getUuid(), relation);
-        if (importCase) {
-            // fire the reindexing event, since - if offline indexing is not stopped,
-            // the content could be indexed without relations already and thus miss categories.
-            Map<String, Object> data = new HashMap<String, Object>(2);
-            data.put(I_CmsEventListener.KEY_PROJECTID, dbc.currentProject().getId());
-            data.put(I_CmsEventListener.KEY_RESOURCES, Collections.singletonList(resource));
-            I_CmsReport report = null;
-            if (dbc.getRequestContext() != null) {
-                report = new CmsLogReport(dbc.getRequestContext().getLocale(), getClass());
-            } else {
-                report = new CmsLogReport(CmsLocaleManager.getDefaultLocale(), getClass());
-            }
-            data.put(I_CmsEventListener.KEY_REPORT, report);
-            data.put(I_CmsEventListener.KEY_REINDEX_RELATED, Boolean.TRUE);
-            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_REINDEX_OFFLINE, data));
-        } else {
+        // IMPORTANT: In the import case, the importer has to ensure that the
+        // resource is reindexed offline after the relation has been added.
+        // We do not trigger reindexing here for each added relation due to performance issues.
+        // in the the non-import case reindexing is triggered by the update of the last modification date.
+        if (!importCase) {
             // log it
             log(
                 dbc,
@@ -1030,9 +1019,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     dbc.getRequestContext().getSitePath(resource)));
         } else if ((lockType == CmsLockType.EXCLUSIVE)
             && currentLock.isExclusiveOwnedInProjectBy(dbc.currentUser(), dbc.currentProject())) {
-            // the current lock requires no change
-            return;
-        }
+                // the current lock requires no change
+                return;
+            }
 
         // duplicate logic from CmsSecurityManager#hasPermissions() because lock state can't be ignored
         // if another user has locked the file, the current user can never get WRITE permissions with the default check

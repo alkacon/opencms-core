@@ -52,9 +52,11 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.importexport.CmsImportExportManager.TimestampMode;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.relations.I_CmsLinkParseable;
@@ -1948,6 +1950,7 @@ public class CmsImportVersion10 implements I_CmsImport {
 
         int i = 0;
         CmsResourceFilter filter = CmsResourceFilter.ALL;
+        Collection<CmsResource> resourcesToReIndex = new HashSet<>();
         for (Integer importIndex : m_relationData.keySet()) {
             CmsUUID structureId = m_indexToStructureId.get(importIndex);
             if (structureId == null) {
@@ -2009,6 +2012,9 @@ public class CmsImportVersion10 implements I_CmsImport {
                         }
                     }
                 }
+
+                resourcesToReIndex.add(src);
+
                 if (!withErrors) {
                     getReport().println(
                         org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
@@ -2026,6 +2032,14 @@ public class CmsImportVersion10 implements I_CmsImport {
                 continue;
             }
         }
+        // Reindex for relations
+        Map<String, Object> data = new HashMap<>(2);
+        data.put(I_CmsEventListener.KEY_PROJECTID, getCms().getRequestContext().getCurrentProject().getId());
+        data.put(I_CmsEventListener.KEY_RESOURCES, new ArrayList<>(resourcesToReIndex));
+        data.put(I_CmsEventListener.KEY_REPORT, getReport());
+        data.put(I_CmsEventListener.KEY_REINDEX_RELATED, Boolean.TRUE);
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_REINDEX_OFFLINE, data));
+
     }
 
     /**
