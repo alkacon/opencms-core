@@ -121,6 +121,8 @@ public class CmsResourceStatusBean implements IsSerializable {
     /** Custom error message to display in the relation targets tab. */
     private String m_targetsError;
 
+    private String m_formattedSize;
+
     /**
      * Returns the additional resource attributes to display.<p>
      * @return the additional resource attributes
@@ -168,6 +170,16 @@ public class CmsResourceStatusBean implements IsSerializable {
     public String getDateReleased() {
 
         return m_dateReleased;
+    }
+
+    /**
+     * Gets the size formatted as a string.
+     *
+     * @return the formatted size
+     */
+    public String getFormattedSize() {
+
+        return m_formattedSize;
     }
 
     /**
@@ -428,6 +440,16 @@ public class CmsResourceStatusBean implements IsSerializable {
     public void setDateReleased(String dateReleased) {
 
         m_dateReleased = dateReleased;
+    }
+
+    /**
+     * Sets the size formatted as a string.
+     *
+     * @param formattedSize the formatted size
+     */
+    public void setFormattedSize(String formattedSize) {
+
+        m_formattedSize = formattedSize;
     }
 
     /**

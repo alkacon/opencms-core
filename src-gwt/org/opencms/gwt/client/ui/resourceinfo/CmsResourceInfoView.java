@@ -247,7 +247,11 @@ public class CmsResourceInfoView extends Composite implements I_CmsDescendantRes
         m_navText.setText(status.getNavText());
         m_permissions.setText(status.getPermissions());
         m_resourceType.setText(status.getResourceType());
-        m_size.setText("" + status.getSize() + " Bytes");
+        if (status.getFormattedSize() != null) {
+            m_size.setText(status.getFormattedSize());
+        } else {
+            m_size.setText("" + status.getSize() + " Bytes");
+        }
         m_userCreated.setText(status.getUserCreated());
         m_userLastModified.setText(status.getUserLastModified());
 

@@ -73,6 +73,7 @@ import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -368,11 +369,14 @@ public class CmsDefaultResourceStatusProvider {
         result.setPermissions(resourceUtil.getPermissionString());
         if (resource.isFile()) {
             result.setSize(resource.getLength());
+            result.setFormattedSize(result.getSize() + " B");
         } else {
-            result.setSize(
-                OpenCms.getFolderSizeTracker(
-                    cms.getRequestContext().getCurrentProject().isOnlineProject()).getTotalFolderSize(
-                        resource.getRootPath()));
+            long totalSize = OpenCms.getFolderSizeTracker(
+                cms.getRequestContext().getCurrentProject().isOnlineProject()).getTotalFolderSize(
+                    resource.getRootPath());
+            String formattedSize = formatFolderSize(totalSize, locale);
+            result.setSize(totalSize);
+            result.setFormattedSize(formattedSize);
         }
         result.setStateBean(resource.getState());
         CmsProperty title = CmsProperty.get(CmsPropertyDefinition.PROPERTY_TITLE, properties);
@@ -849,5 +853,33 @@ public class CmsDefaultResourceStatusProvider {
         }
 
         return additionalAttributes;
+    }
+
+    /**
+     * Formats the folder size.
+     *
+     * @param totalSize the size to format
+     * @param locale the locale to use for formatting
+     *
+     * @return the formatted folder size
+     */
+    private String formatFolderSize(long totalSize, Locale locale) {
+
+        long kilo = 1024l;
+        long mega = kilo * kilo;
+        long giga = kilo * mega;
+        NumberFormat format = NumberFormat.getInstance(locale);
+        format.setMinimumFractionDigits(2);
+        format.setMaximumFractionDigits(2);
+        if (totalSize >= giga) {
+            return format.format(((double)totalSize) / giga) + " GB";
+        }
+        if (totalSize >= mega) {
+            return format.format(((double)totalSize) / mega) + " MB";
+        }
+        if (totalSize >= kilo) {
+            return format.format(((double)totalSize) / kilo) + " KB";
+        }
+        return totalSize + " B";
     }
 }
