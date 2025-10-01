@@ -57,7 +57,11 @@ import java.util.stream.Collectors;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
+import com.vaadin.event.Action;
+import com.vaadin.event.Action.Handler;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.Window;
 import com.vaadin.v7.data.Container;
 import com.vaadin.v7.data.Container.Filter;
 import com.vaadin.v7.data.Item;
@@ -291,54 +295,40 @@ public class CmsResourceSelectDialog extends CustomComponent {
 
         getContents().getTreeContainer().addComponent(m_fileTree);
         m_fileTree.setSizeFull();
+        getContents().addAttachListener(event -> {
+            Window window = CmsVaadinUtils.getWindow(this);
+            if (window != null) {
+                window.addActionHandler(new Handler() {
+
+                    private final Action enterKeyShortcutAction = new ShortcutAction(
+                        null,
+                        ShortcutAction.KeyCode.ENTER,
+                        null);
+
+                    @Override
+                    public Action[] getActions(Object target, Object sender) {
+
+                        return new Action[] {enterKeyShortcutAction};
+                    }
+
+                    @Override
+                    public void handleAction(Action action, Object sender, Object target) {
+
+                        if (enterKeyShortcutAction.equals(action)) {
+                            if (target == getContents().getFilterBox()) {
+                                updateFilter();
+                            }
+                        }
+
+                    }
+                });
+            }
+        });
+
         updateView();
 
         getContents().getFilterButton().addClickListener(event -> {
-            String filterText = getContents().getFilterBox().getValue();
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(filterText)) {
-                removeStringFilter();
-            } else {
-                removeStringFilter();
-                try {
-                    FilterData filterData = getFilterData(m_currentCms, m_root, m_resourceFilter, filterText);
-                    List<CmsResource> openFolders = new ArrayList<>(filterData.getOpenFolders());
-                    // sort open folders by path so parents are opened before children
-                    openFolders.sort(Comparator.comparing(res -> res.getRootPath()));
-                    for (CmsResource resource : openFolders) {
-                        m_fileTree.expandItem(resource.getStructureId());
-                    }
-                    m_currentFilter = new Container.Filter() {
-
-                        private Map<CmsUUID, Boolean> m_cache = new HashMap<>();
-
-                        @Override
-                        public boolean appliesToProperty(Object propertyId) {
-
-                            return false;
-                        }
-
-                        @Override
-                        public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
-
-                            return m_cache.computeIfAbsent((CmsUUID)itemId, id -> {
-
-                                CmsResource resource = (CmsResource)(item.getItemProperty(
-                                    CmsResourceTreeContainer.PROPERTY_RESOURCE).getValue());
-                                for (String matchPath : filterData.getMatchedPaths()) {
-                                    if (CmsStringUtil.isPrefixPath(matchPath, resource.getRootPath())
-                                        || CmsStringUtil.isPrefixPath(resource.getRootPath(), matchPath)) {
-                                        return true;
-                                    }
-                                }
-                                return false;
-                            });
-                        }
-                    };
-                    m_treeData.addContainerFilter(m_currentFilter);
-                } catch (Exception e) {
-                    CmsErrorDialog.showErrorDialog(e);
-                }
-            }
+            updateFilter();
         });
 
     }
@@ -580,6 +570,58 @@ public class CmsResourceSelectDialog extends CustomComponent {
         if (m_currentFilter != null) {
             m_treeData.removeContainerFilter(m_currentFilter);
             m_currentFilter = null;
+        }
+    }
+
+    /**
+     * Updates the filtering based on the current content of the filter box.
+     */
+    private void updateFilter() {
+
+        String filterText = getContents().getFilterBox().getValue();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(filterText)) {
+            removeStringFilter();
+        } else {
+            removeStringFilter();
+            try {
+                FilterData filterData = getFilterData(m_currentCms, m_root, m_resourceFilter, filterText);
+                List<CmsResource> openFolders = new ArrayList<>(filterData.getOpenFolders());
+                // sort open folders by path so parents are opened before children
+                openFolders.sort(Comparator.comparing(res -> res.getRootPath()));
+                for (CmsResource resource : openFolders) {
+                    m_fileTree.expandItem(resource.getStructureId());
+                }
+                m_currentFilter = new Container.Filter() {
+
+                    private Map<CmsUUID, Boolean> m_cache = new HashMap<>();
+
+                    @Override
+                    public boolean appliesToProperty(Object propertyId) {
+
+                        return false;
+                    }
+
+                    @Override
+                    public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
+
+                        return m_cache.computeIfAbsent((CmsUUID)itemId, id -> {
+
+                            CmsResource resource = (CmsResource)(item.getItemProperty(
+                                CmsResourceTreeContainer.PROPERTY_RESOURCE).getValue());
+                            for (String matchPath : filterData.getMatchedPaths()) {
+                                if (CmsStringUtil.isPrefixPath(matchPath, resource.getRootPath())
+                                    || CmsStringUtil.isPrefixPath(resource.getRootPath(), matchPath)) {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        });
+                    }
+                };
+                m_treeData.addContainerFilter(m_currentFilter);
+            } catch (Exception e) {
+                CmsErrorDialog.showErrorDialog(e);
+            }
         }
     }
 

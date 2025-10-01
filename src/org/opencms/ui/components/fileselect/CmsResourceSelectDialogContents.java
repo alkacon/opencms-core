@@ -57,10 +57,10 @@ public class CmsResourceSelectDialogContents extends CmsBasicDialog {
     /** Container for the tree component. */
     private VerticalLayout m_treeContainer;
 
-    /** The filter box. */ 
+    /** The filter box. */
     private TextField m_filterBox;
 
-    /** The filter button. */ 
+    /** The filter button. */
     private Button m_filterButton;
 
     /**
@@ -100,7 +100,7 @@ public class CmsResourceSelectDialogContents extends CmsBasicDialog {
 
     /**
      * Gets the filter box.
-     * 
+     *
      * @return the filter box
      */
     public TextField getFilterBox() {
@@ -110,7 +110,7 @@ public class CmsResourceSelectDialogContents extends CmsBasicDialog {
 
     /**
      * Gets the filter button.
-     * 
+     *
      * @return the filter button
      */
     public Button getFilterButton() {
