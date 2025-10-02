@@ -1384,6 +1384,7 @@ public class CmsElementUtil {
         String output = input;
         if (scriptTags.size() > 0) {
             scriptTags.remove();
+            doc.outputSettings().prettyPrint(false);
             output = doc.body().html();
         }
         return output;
