@@ -15,6 +15,49 @@ Legend:
 - Minor improvement or general comment
 * Bug fixed
 
+OpenCms 20.0.0 - October 14, 2025
+
+! Support for "online only" folders
+! Move detail containers if a detail page is moved
+! Link finisher can generate uniform link endings
+! Calculate the disk space size of all resources in a folder
+! Optional whitelist for the resource upload dialog
+! Option to automatically add a class to external links in WYSIWYG fields
+
+- Page editor: Hide "detail only" containers with a layer when editing a detail page
+- Page / Form editor: Display of "Page editor" and "Form editor" when editing pages or resources
+- Workplace: Added filter option to the resource dialog in the explorer
+- Workplace: Access the list of users in a group directly from the permission dialog
+- Workplace: Property dialog keeps "Resource Box" visible when scrolling
+- Workplace: Support for folder-based content creation rules
+- Workplace: Allow "local content elements" creation in a configured folder
+- Image scaler: Improved handling of scaling multiple images simultaneously
+- Core API: Using java.nio.* classes for some core operations
+- Core API: Minimum supported Servlet version is now 4.0
+- Core API: Remove old entries from the CMS_STATICEXPORT_LINKS database table
+- Core API: Improved job for deleting historic resource versions
+- Core API: Improved support for accessing a website using the IPv6 address without DNS
+- Core API: Migrate Maven publish process to use Central Portal
+- Core API: Spread z-index for toolbar and dialogs
+
+- Pull request #817 sets the 'Title' property when creating a file after synchronizing it from the RFS (https://github.com/alkacon/opencms-core/pull/817)
+
+* Fixed issue with setting the "Content-Type" header in JSPs in Jetty
+* Fixed issue with setting HTTP headers in JSPs and instances of CmsJspActionElement in Jetty
+* Fixed issue with core shell and setup scripts not working in Jetty
+* Fixed issue with "Compare locales" where the icon would appear "grayed out" for hidden entries
+* Fixed issue with form editor not using the localized title property when inserting an image
+* Fixed issue with permission check for role ROOT_ADMIN not seeing all explorer types
+* Fixed issue with orphaned relations leading to errors when deleting files
+* Fixed issue with FileTable column display for other apps that use the table (not the explorer)
+* Fixed issue with I_CmsWorkplaceStylesheetProvider loading CSS files twice
+* Fixed issue with text area width in WYSIWYG editor not correctly initialized in case of tabs
+* Fixed issue #811 with frequent exceptions from CmsFileTable in the log (https://github.com/alkacon/opencms-core/issues/811)
+* Fixed issue #815 with 'Element Author' role missing the 'Undo' context menu option (https://github.com/alkacon/opencms-core/issues/815)
+* Fixed issue #815 with 'Element Author' role with edit buttons in info dialog not working (https://github.com/alkacon/opencms-core/issues/815)
+* Fixed issue #816 with OpenCms not working on CentOS (https://github.com/alkacon/opencms-core/issues/816)
+
+
 OpenCms 19.0.0 - April 2, 2025
 
 ! Show available languages as buttons in the form editor for quick switching
@@ -47,7 +90,7 @@ OpenCms 19.0.0 - April 2, 2025
 - Core API: Extended detail page configuration with optional folder field
 - Core API: Copy groups now all to set the "Copy this element" option
 - Core API: Deleted detail-only content is now automatically published together with the detail content
-- Detail page hander: Return 404 instead of 401 response for unavailable resources
+- Detail page handler: Return 404 instead of 401 response for unavailable resources
 - Updated SOLR and several other dependencies to the latest version
 
 * Security: Fixed 2 "Cross Site Scripting in OpenCms" issues reported by INCIBE (INC-2025-0031)
