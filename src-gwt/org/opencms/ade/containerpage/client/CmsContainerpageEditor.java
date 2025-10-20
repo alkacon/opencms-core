@@ -393,6 +393,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         containerpageHandler.activateSelection();
 
         RootPanel root = RootPanel.get();
+        root.addStyleName("oc-page-editor");
         root.add(m_toolbar);
         CmsContainerpageUtil containerpageUtil = new CmsContainerpageUtil(
             controller,
