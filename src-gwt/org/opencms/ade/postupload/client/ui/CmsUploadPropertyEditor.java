@@ -31,7 +31,6 @@ import org.opencms.gwt.client.property.CmsSimplePropertyEditor;
 import org.opencms.gwt.client.property.I_CmsPropertyEditorHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
-import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -46,20 +45,29 @@ import com.google.gwt.user.client.ui.Label;
  */
 public class CmsUploadPropertyEditor extends CmsSimplePropertyEditor {
 
+    private CmsUUID m_structureId;
+    /** The handler for transferring property values to other uploads. */
+    private I_CmsUpdateAllUploadsHandler m_updateAllHandler;
+
     /** The warning message. */
     private String m_warning;
-    private CmsUUID m_structureId;
 
     /**
      * Creates a new instance.<p>
      *
      * @param propConfig the property configuration
      * @param handler the property editor handler to use
+     * @param updateAllHandler the handler to call for transferring a property value to all uploads
      */
-    public CmsUploadPropertyEditor(CmsUUID structureId, Map<String, CmsXmlContentProperty> propConfig, I_CmsPropertyEditorHandler handler) {
+    public CmsUploadPropertyEditor(
+        CmsUUID structureId,
+        Map<String, CmsXmlContentProperty> propConfig,
+        I_CmsPropertyEditorHandler handler,
+        I_CmsUpdateAllUploadsHandler updateAllHandler) {
 
         super(propConfig, handler);
         m_structureId = structureId;
+        m_updateAllHandler = updateAllHandler;
         CmsUploadPropertyEditorHandler uploadPropertyHandler = (CmsUploadPropertyEditorHandler)handler;
         m_warning = uploadPropertyHandler.getWarning();
     }
@@ -90,7 +98,7 @@ public class CmsUploadPropertyEditor extends CmsSimplePropertyEditor {
     @Override
     protected void setupFieldContainer() {
 
-        CmsInfoBoxFormFieldPanel panel = new CmsInfoBoxFormFieldPanel(m_handler.getPageInfo());
+        CmsUploadFormFieldPanel panel = new CmsUploadFormFieldPanel(m_handler.getPageInfo(), m_updateAllHandler);
         panel.addStyleName(I_CmsLayoutBundle.INSTANCE.propertiesCss().noPaddingTop());
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_warning)) {
             Label warningLabel = new Label(m_warning);

@@ -238,7 +238,6 @@ public class CmsUploadPropertyEditorHandler implements I_CmsPropertyEditorHandle
      */
     public boolean isFolder() {
 
-        // TODO: Auto-generated method stub
         return false;
     }
 
@@ -247,7 +246,6 @@ public class CmsUploadPropertyEditorHandler implements I_CmsPropertyEditorHandle
      */
     public boolean isHiddenProperty(String key) {
 
-        // TODO: Auto-generated method stub
         return false;
     }
 

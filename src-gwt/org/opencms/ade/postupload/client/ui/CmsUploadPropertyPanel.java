@@ -37,6 +37,8 @@ import org.opencms.ade.postupload.shared.CmsPostUploadDialogPanelBean;
 import org.opencms.gwt.client.property.CmsPropertySubmitHandler;
 import org.opencms.gwt.client.property.CmsSimplePropertyEditor;
 import org.opencms.gwt.client.property.I_CmsPropertyEditorHandler;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
@@ -44,8 +46,12 @@ import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormHandler;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -78,6 +84,9 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
     /** The path relative resource path. */
     private String m_resourcePath;
 
+    /** The handler for transferring property values to other uploads. */
+    private I_CmsUpdateAllUploadsHandler m_updateAllHandler;
+
     /** The values. */
     private CmsPostUploadDialogPanelBean m_values;
 
@@ -96,6 +105,50 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
         m_values = values;
         m_dialog = dialog;
         m_resourcePath = values.getInfoBean().getSubTitle();
+        m_updateAllHandler = new I_CmsUpdateAllUploadsHandler() {
+
+            @Override
+            public void updateAll(String propName, String value) {
+
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+                    CmsAlertDialog alert = new CmsAlertDialog(
+                        CmsConfirmTransferWidget.MessageStrings.caption(),
+                        CmsConfirmTransferWidget.MessageStrings.emptyStringsNotAllowed());
+                    alert.center();
+
+                } else {
+                    CmsConfirmTransferWidget.showDialog(overwriteMode -> {
+                        List<CmsUUID> fileIds = new ArrayList<>(options.getResources().keySet());
+                        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+                            @Override
+                            public void execute() {
+
+                                start(0, true);
+                                final boolean withBasicProperties = dialog.m_dialogData.isAddBasicProperties();
+                                dialog.getDialogService().updateAllFiles(
+                                    fileIds,
+                                    propName,
+                                    value,
+                                    overwriteMode,
+                                    withBasicProperties,
+                                    this);
+                            }
+
+                            @Override
+                            protected void onResponse(Void result) {
+
+                                stop(false);
+
+                            }
+
+                        };
+                        action.execute();
+                    });
+                }
+
+            }
+        };
         initializePropertyEditor();
         I_CmsFormField filenameField = getFilenameField();
         m_originalExtension = getExtension(filenameField.getModelValue());
@@ -243,7 +296,8 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
         CmsSimplePropertyEditor propertyEditor = new CmsUploadPropertyEditor(
             m_values.getStructureId(),
             propertyConfig,
-            m_propertyEditorHandler);
+            m_propertyEditorHandler,
+            m_updateAllHandler);
         propertyEditor.getForm().setFormHandler(this);
         m_propertyEditor = propertyEditor;
         m_propertyEditor.initializeWidgets(null);

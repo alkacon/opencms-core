@@ -1,3 +1,5 @@
+@external opencms-icon-circle-inv-plus;
+
 .popup, .popupContent {}
 
 .propertyDialog {
@@ -41,6 +43,10 @@
 
 .propertyDialog .inputLineHeight div {
 	line-height: 20px;
+}
+
+.propertyDialog .opencms-icon-circle-inv-plus::before {
+	font-size: 16px;
 }
 
 .warningBox {

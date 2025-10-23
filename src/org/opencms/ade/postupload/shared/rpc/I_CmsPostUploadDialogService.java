@@ -32,6 +32,8 @@ import org.opencms.ade.postupload.shared.CmsPostUploadDialogPanelBean;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.util.CmsUUID;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 
 /**
@@ -61,5 +63,24 @@ public interface I_CmsPostUploadDialogService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     CmsPostUploadDialogBean prefetch() throws CmsRpcException;
+
+    /**
+     * Updates the given property on all indicated files (if the property is available).
+     *
+     * @param ids the structure ids of the files to update
+     * @param propName the property name
+     * @param propValue the property value
+     * @param overwriteNonEmpty true if non-empty properties should be overwritten
+     * @param withBasicProperties true if the basic properties should be taken into account
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    void updateAllFiles(
+        List<CmsUUID> ids,
+        String propName,
+        String propValue,
+        boolean overwriteNonEmpty,
+        boolean withBasicProperties)
+    throws CmsRpcException;
 
 }

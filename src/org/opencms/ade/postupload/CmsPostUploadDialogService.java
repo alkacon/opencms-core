@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
@@ -46,6 +47,7 @@ import org.opencms.gwt.CmsVfsService;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
+import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsPermalinkResourceHandler;
@@ -65,6 +67,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -79,11 +82,11 @@ import com.google.common.collect.Iterables;
  */
 public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPostUploadDialogService {
 
-    /** Serial version id. */
-    private static final long serialVersionUID = 1L;
-
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPostUploadDialogService.class);
+
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
 
     /**
      * Creates a new instance.<p>
@@ -151,10 +154,22 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
 
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
 
-            List<String> defaultProperties = settings.getProperties();
-            while (properties.isEmpty() && !CmsStringUtil.isEmptyOrWhitespaceOnly(settings.getReference())) {
-                settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(settings.getReference());
-                defaultProperties = settings.getProperties();
+            CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
+                getCmsObject(),
+                res.getRootPath());
+            Map<String, CmsXmlContentProperty> propertyConfiguration = configData.getPropertyConfigurationAsMap();
+
+            Set<String> propertiesToShow = new LinkedHashSet<String>();
+            {
+                List<String> defaultProperties = settings.getProperties();
+                while (defaultProperties.isEmpty() && !CmsStringUtil.isEmptyOrWhitespaceOnly(settings.getReference())) {
+                    settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(settings.getReference());
+                    defaultProperties = settings.getProperties();
+                }
+                propertiesToShow.addAll(defaultProperties);
+            }
+            if (addBasicProperties) {
+                propertiesToShow.addAll(propertyConfiguration.keySet());
             }
 
             Map<String, CmsXmlContentProperty> propertyDefinitions = new LinkedHashMap<String, CmsXmlContentProperty>();
@@ -184,16 +199,6 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
                 CmsPropertyModification.FILE_NAME_PROPERTY,
                 new CmsClientProperty(CmsPropertyModification.FILE_NAME_PROPERTY, res.getName(), res.getName()));
 
-            CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
-                getCmsObject(),
-                res.getRootPath());
-            Map<String, CmsXmlContentProperty> propertyConfiguration = configData.getPropertyConfigurationAsMap();
-
-            Set<String> propertiesToShow = new LinkedHashSet<String>();
-            propertiesToShow.addAll(defaultProperties);
-            if (addBasicProperties) {
-                propertiesToShow.addAll(propertyConfiguration.keySet());
-            }
             Set<String> requiredProperties = getRequiredProperties(getCmsObject(), res);
             for (String propertyName : propertiesToShow) {
                 CmsXmlContentProperty propDef = null;
@@ -311,6 +316,81 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
         } catch (CmsException e) {
             error(e);
             return null; // will never be reached
+        }
+    }
+
+    /**
+     * @see org.opencms.ade.postupload.shared.rpc.I_CmsPostUploadDialogService#updateAllFiles(java.util.List, java.lang.String, java.lang.String, boolean, boolean)
+     */
+    @Override
+    public void updateAllFiles(
+        List<CmsUUID> ids,
+        String propName,
+        String propValue,
+        boolean overwriteNonEmpty,
+        boolean withBasicProperties)
+    throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        Exception caughtException = null;
+        for (CmsUUID id : ids) {
+            try {
+                CmsResource res = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
+
+                // most of this method body is trying to figure out which properties are applicable to which resources -
+                // a property value should only be updated if the corresponding property would actually show up in the dialog
+                // for that resource
+
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(res.getTypeId());
+                String typeName = type.getTypeName();
+                CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
+                CmsADEConfigData configData = OpenCms.getADEManager().lookupConfigurationWithCache(
+                    getCmsObject(),
+                    CmsResource.getParentFolder(res.getRootPath()));
+                Map<String, CmsXmlContentProperty> propertyConfiguration = configData.getPropertyConfigurationAsMap();
+                Set<String> editableProperties = new LinkedHashSet<String>();
+                {
+                    List<String> defaultProperties = settings.getProperties();
+                    while (defaultProperties.isEmpty()
+                        && !CmsStringUtil.isEmptyOrWhitespaceOnly(settings.getReference())) {
+                        settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(settings.getReference());
+                        defaultProperties = settings.getProperties();
+                    }
+                    editableProperties.addAll(defaultProperties);
+                }
+                if (withBasicProperties) {
+                    editableProperties.addAll(propertyConfiguration.keySet());
+                }
+                if (editableProperties.contains(propName)) {
+                    Map<String, CmsProperty> existingProps = CmsProperty.toObjectMap(
+                        cms.readPropertyObjects(res, false));
+                    boolean write = false;
+                    if (!existingProps.containsKey(propName)) {
+                        write = true;
+                    } else {
+                        write = overwriteNonEmpty
+                            && !Objects.equals(existingProps.get(propName).getStructureValue(), propValue);
+                    }
+                    if (write) {
+                        try (AutoCloseable c = CmsLockUtil.withLockedResources(cms, res)) {
+                            CmsProperty newProp = new CmsProperty(propName, propValue, null);
+                            cms.writePropertyObject(cms.getSitePath(res), newProp);
+                        } catch (CmsException e) {
+                            throw e;
+                        } catch (Exception e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+                if (caughtException == null) {
+                    caughtException = e;
+                }
+            }
+        }
+        if (caughtException != null) {
+            error(caughtException);
         }
     }
 

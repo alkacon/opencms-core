@@ -38,6 +38,12 @@ import org.opencms.i18n.IgnoreArgCountInTests;
 public final class Messages {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_APPLY_PROPERTY_TO_ALL_FILES_0 = "GUI_APPLY_PROPERTY_TO_ALL_FILES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_APPLY_PROPERTY_TO_ALL_FILES_CAPTION_0 = "GUI_APPLY_PROPERTY_TO_ALL_FILES_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_BUTTON_ADVANCED_0 = "GUI_DIALOG_BUTTON_ADVANCED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -65,7 +71,7 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     @IgnoreArgCountInTests
-    public static final String  GUI_DIALOG_CHANGE_FILE_EXTENSION_TO_EMPTY_WARNING_TITLE_2 = "GUI_DIALOG_CHANGE_FILE_EXTENSION_TO_EMPTY_WARNING_TITLE_2";
+    public static final String GUI_DIALOG_CHANGE_FILE_EXTENSION_TO_EMPTY_WARNING_TITLE_2 = "GUI_DIALOG_CHANGE_FILE_EXTENSION_TO_EMPTY_WARNING_TITLE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_CHANGE_FILE_EXTENSION_WARNING_TEXT_0 = "GUI_DIALOG_CHANGE_FILE_EXTENSION_WARNING_TEXT_0";
@@ -84,6 +90,12 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_TITLE_0 = "GUI_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EMPTY_VALUES_CAN_NOT_BE_TRANSFERRED_0 = "GUI_EMPTY_VALUES_CAN_NOT_BE_TRANSFERRED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_OVERWRITE_EXISTING_VALUES_0 = "GUI_OVERWRITE_EXISTING_VALUES_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ade.postupload.clientmessages";

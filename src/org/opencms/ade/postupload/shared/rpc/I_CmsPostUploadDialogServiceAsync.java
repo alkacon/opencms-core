@@ -31,6 +31,8 @@ import org.opencms.ade.postupload.shared.CmsPostUploadDialogBean;
 import org.opencms.ade.postupload.shared.CmsPostUploadDialogPanelBean;
 import org.opencms.util.CmsUUID;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -58,5 +60,23 @@ public interface I_CmsPostUploadDialogServiceAsync {
      * @param asyncCallback the asynchronous callback for the result
      */
     void prefetch(AsyncCallback<CmsPostUploadDialogBean> asyncCallback);
+
+    /**
+     * Updates the given property on all indicated files (if the property is available).
+     *
+     * @param ids the structure ids of the files to update
+     * @param propName the property name
+     * @param propValue the property value
+     * @param overwriteNonEmpty true if non-empty properties should be overwritten
+     * @param withBasicProperties true if the basic properties should be taken into account
+     * @param callback the callback to call with the result
+     */
+    void updateAllFiles(
+        List<CmsUUID> ids,
+        String propName,
+        String propValue,
+        boolean overwriteNonEmpty,
+        boolean withBasicProperties,
+        AsyncCallback<Void> callback);
 
 }
