@@ -66,34 +66,28 @@ public class CmsUpdateUI extends A_CmsUI {
 
         this.addStyleName("opencms");
         m_updateBean = new CmsUpdateBean();
-        if (!m_updateBean.checkOceeVersion(org.opencms.main.OpenCms.getSystemInfo().getVersionNumber())) {
+        m_updateBean.init(
+            CmsUpdateServlet.instance.getServletConfig().getServletContext().getRealPath("/"),
+            CmsUpdateServlet.instance.getServletContext().getInitParameter(
+                OpenCmsServlet.SERVLET_PARAM_OPEN_CMS_SERVLET),
+            CmsUpdateServlet.instance.getServletContext().getInitParameter(
+                OpenCmsServlet.SERVLET_PARAM_DEFAULT_WEB_APPLICATION));
+        // check wizards accessability
+        boolean wizardEnabled = m_updateBean.getWizardEnabled();
+        Window window = createWindow();
+        addWindow(window);
+        if (!wizardEnabled) {
+            window.setContent(new CmsSetupErrorDialog("Wizard not enabled", null, new Runnable() {
 
+                public void run() {
+
+                    //
+
+                }
+            }, window));
         } else {
-            m_updateBean.init(
-                CmsUpdateServlet.instance.getServletConfig().getServletContext().getRealPath("/"),
-                CmsUpdateServlet.instance.getServletContext().getInitParameter(
-                    OpenCmsServlet.SERVLET_PARAM_OPEN_CMS_SERVLET),
-                CmsUpdateServlet.instance.getServletContext().getInitParameter(
-                    OpenCmsServlet.SERVLET_PARAM_DEFAULT_WEB_APPLICATION));
-            // check wizards accessability
-            boolean wizardEnabled = m_updateBean.getWizardEnabled();
-            Window window = createWindow();
-            addWindow(window);
-            if (!wizardEnabled) {
-                window.setContent(new CmsSetupErrorDialog("Wizard not enabled", null, new Runnable() {
-
-                    public void run() {
-
-                        //
-
-                    }
-                }, window));
-            } else {
-                displayDialog(new CmsUpdateStep01LicenseDialog());
-            }
-
+            displayDialog(new CmsUpdateStep01LicenseDialog());
         }
-
     }
 
     private Window createWindow() {
