@@ -27,156 +27,176 @@
 
 package org.opencms.jsp.search.config;
 
+import org.opencms.main.CmsLog;
+
+import java.util.Collections;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+
 /**
  * Search configuration for highlighting options.
  */
 public class CmsSearchConfigurationHighlighting implements I_CmsSearchConfigurationHighlighting {
 
-    /** The fields that should be used for highlighting. */
-    private final String m_highlightField;
-    /** The number of snippets to return. */
-    private final Integer m_snippetCount;
-    /** The size of a snippet (in letters). */
-    private final Integer m_fragSize;
-    /** A field that should be displayed if no highlighting snippet is found. */
-    private final String m_alternateField;
-    /** The maximal length of the snippet shown from the alternative field (in letters). */
-    private final Integer m_maxAlternateFieldLength;
-    /** The String added in front of the highlighted part. */
-    private final String m_pre;
-    /** The String added behind the highlighted part. */
-    private final String m_post;
-    /** The formatter used for highlighting. */
-    private final String m_formatter;
-    /** The fragmenter used for highlighting. */
-    private final String m_fragmenter;
-    /** Flag, indicating if fast vector highlighting should be used. */
-    private final Boolean m_fastVectorHighlighting;
+    /** Logger for the class. */
+    protected static final Log LOG = CmsLog.getLog(CmsSearchConfigurationHighlighting.class);
+
+    /** Additional configuration parameters */
+    private final Map<String, String> m_params;
 
     /** The constructor setting all configuration values.
-     * @param field The fields that should be used for highlighting. (Solr: hl.fl)
-     * @param snippetCount The number of snippets to return. (Solr: hl.snippets)
-     * @param fragSize The size of a snippet (in letters). (Solr: hl.fragsize)
-     * @param alternateField A field that should be displayed if no highlighting snippet is found. (Solr: hl.alternateField)
-     * @param maxAlternateFieldLength The maximal length of the snippet shown from the alternative field (in letters). (Solr: hl.maxAlternateFieldLength)
-     * @param pre The String added in front of the highlighted part. (Solr: hl.simple.pre)
-     * @param post The String added behind the highlighted part. (Solr: hl.simple.post)
-     * @param formatter The formatter used for highlighting. (Solr: hl.formatter)
-     * @param fragmenter The fragmenter used for highlighting. (Solr: hl.fragmenter)
-     * @param useFastVectorHighlighting Flag, indicating if fast vector highlighting should be used. (Solr: hl.useFastVectorHighlighting)
+     * @param params the highlighting parameters as given to solr, all without the "hl." prefix that is added automatically.
      */
-    public CmsSearchConfigurationHighlighting(
-        final String field,
-        final Integer snippetCount,
-        final Integer fragSize,
-        final String alternateField,
-        final Integer maxAlternateFieldLength,
-        final String pre,
-        final String post,
-        final String formatter,
-        final String fragmenter,
-        final Boolean useFastVectorHighlighting) {
+    public CmsSearchConfigurationHighlighting(final Map<String, String> params) {
 
-        m_highlightField = field;
-        m_snippetCount = snippetCount;
-        m_fragSize = fragSize;
-        m_alternateField = alternateField;
-        m_maxAlternateFieldLength = maxAlternateFieldLength;
-        m_pre = pre;
-        m_post = post;
-        m_formatter = formatter;
-        m_fragmenter = fragmenter;
-        m_fastVectorHighlighting = useFastVectorHighlighting;
+        m_params = params == null ? Collections.emptyMap() : Collections.unmodifiableMap(params);
+
     }
 
     /**
      * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting#getAlternateHighlightField()
      */
+    @Deprecated
     @Override
     public String getAlternateHighlightField() {
 
-        return m_alternateField;
+        return m_params.get("alternateField");
     }
 
     /**
      * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting#getFormatter()
      */
+    @Deprecated
     @Override
     public String getFormatter() {
 
-        return m_formatter;
+        return m_params.get("formatter");
     }
 
     /**
      * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting#getFragmenter()
      */
+    @Deprecated
     @Override
     public String getFragmenter() {
 
-        return m_fragmenter;
+        return m_params.get("fragmenter");
     }
 
     /**
      * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting#getFragSize()
      */
+    @Deprecated
     @Override
     public Integer getFragSize() {
 
-        return m_fragSize;
+        String fragSize = m_params.get("fragsize");
+        if ((fragSize != null) && !fragSize.isBlank()) {
+            try {
+                return Integer.valueOf(fragSize);
+            } catch (NumberFormatException e) {
+                LOG.error(
+                    "Invalid fragsize value \""
+                        + fragSize
+                        + "\" will be used in the final query even if null is returned here.");
+            }
+        }
+        return null;
     }
 
     /**
      * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting#getHightlightField()
      */
+    @Deprecated
     @Override
     public String getHightlightField() {
 
-        return m_highlightField;
+        return m_params.get("fl");
     }
 
     /**
      * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting#getMaxAlternateHighlightFieldLength()
      */
+    @Deprecated
     @Override
     public Integer getMaxAlternateHighlightFieldLength() {
 
-        return m_maxAlternateFieldLength;
+        String maxAlternateFieldLength = m_params.get("maxAlternateFieldLength");
+        if ((maxAlternateFieldLength != null) && !maxAlternateFieldLength.isBlank()) {
+            try {
+                return Integer.valueOf(maxAlternateFieldLength);
+            } catch (NumberFormatException e) {
+                LOG.error(
+                    "Invalid maxAlternateFieldLength value \""
+                        + maxAlternateFieldLength
+                        + "\" will be used in the final query even if null is returned here.");
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting#getParams()
+     */
+    @Override
+    public Map<String, String> getParams() {
+
+        return Collections.unmodifiableMap(m_params);
     }
 
     /**
      * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting#getSimplePost()
      */
+    @Deprecated
     @Override
     public String getSimplePost() {
 
-        return m_post;
+        return m_params.get("simple.post");
     }
 
     /**
      * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting#getSimplePre()
      */
+    @Deprecated
     @Override
     public String getSimplePre() {
 
-        return m_pre;
+        return m_params.get("simple.pre");
     }
 
     /**
      * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting#getSnippetsCount()
      */
+    @Deprecated
     @Override
     public Integer getSnippetsCount() {
 
-        return m_snippetCount;
+        String snippets = m_params.get("snippets");
+        if ((snippets != null) && !snippets.isBlank()) {
+            try {
+                return Integer.valueOf(snippets);
+            } catch (NumberFormatException e) {
+                LOG.error(
+                    "Invalid snippets value \""
+                        + snippets
+                        + "\" will be used in the final query even if null is returned here.");
+            }
+        }
+        return null;
     }
 
     /**
      * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting#getUseFastVectorHighlighting()
      */
+    @Deprecated
     @Override
     public Boolean getUseFastVectorHighlighting() {
 
-        return m_fastVectorHighlighting;
+        String method = m_params.get("method");
+        if (null == method) {
+            return null;
+        }
+        return Boolean.valueOf("fastVector".equals(method));
     }
-
 }

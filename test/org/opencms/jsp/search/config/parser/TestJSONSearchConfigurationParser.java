@@ -67,6 +67,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -347,17 +348,22 @@ public class TestJSONSearchConfigurationParser extends OpenCmsTestCase {
         ConfigurationTester.testQueryFacetConfiguration(queryFacet, config.getQueryFacetConfig());
 
         // Test Highlighter configuration
-        I_CmsSearchConfigurationHighlighting highlightingConfig = new CmsSearchConfigurationHighlighting(
-            "content_en",
-            Integer.valueOf(2),
-            Integer.valueOf(123),
-            "content",
-            Integer.valueOf(124),
-            "<strong>",
-            "</strong>",
-            "simple",
-            "gap",
-            Boolean.TRUE);
+        Map<String, String> hlParams = new LinkedHashMap<>(10);
+        hlParams.put("fl", "content_en");
+        hlParams.put("snippets", "2");
+        hlParams.put("fragsize", "123");
+        hlParams.put("alternateField", "content");
+        hlParams.put("maxAlternateFieldLength", "124");
+        hlParams.put("simple.pre", "<strong>");
+        hlParams.put("simple.post", "</strong>");
+        hlParams.put("formatter", "simple");
+        hlParams.put("fragmenter", "gap");
+        hlParams.put("method", "fastVector");
+        hlParams.put("maxAnalyzedChars", "10000");
+        hlParams.put("queryFieldPattern", "fieldA,fieldB");
+        hlParams.put("usePhraseHighlighter", "true");
+
+        I_CmsSearchConfigurationHighlighting highlightingConfig = new CmsSearchConfigurationHighlighting(hlParams);
         ConfigurationTester.testHighlightingConfiguration(highlightingConfig, config.getHighlighterConfig());
 
         // Test DidYouMean configuration

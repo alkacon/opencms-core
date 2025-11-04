@@ -292,7 +292,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
 
         List<String> list = null;
         JSONArray array = json.getJSONArray(key);
-        list = new ArrayList<String>(array.length());
+        list = new ArrayList<>(array.length());
         for (int i = 0; i < array.length(); i++) {
             try {
                 String entry = array.getString(i);
@@ -302,6 +302,35 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             }
         }
         return list;
+    }
+
+    /** Helper for reading an optional JSON value of type String, boolean or number. The result is always returned as String.
+     * @param json The JSON object where the list should be read from.
+     * @param key The key of the value to read.
+     * @return The value from the JSON.
+     */
+    protected static String parseOptionalAtomicValue(JSONObject json, String key) {
+
+        String result = parseOptionalStringValue(json, key);
+        if (null == result) {
+            Boolean b = parseOptionalBooleanValue(json, key);
+            if (null != b) {
+                result = b.booleanValue() ? "true" : "false";
+            }
+        }
+        if (null == result) {
+            Integer i = parseOptionalIntValue(json, key);
+            if (null != i) {
+                result = String.valueOf(i);
+            }
+        }
+        if (null == result) {
+            Double d = parseOptionalDoubleValue(json, key);
+            if (null != d) {
+                result = String.valueOf(d);
+            }
+        }
+        return result;
     }
 
     /** Helper for reading an optional Boolean value - returning <code>null</code> if parsing fails.
@@ -319,6 +348,21 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         }
     }
 
+    /** Helper for reading an optional Double value - returning <code>null</code> if parsing fails.
+     * @param json The JSON object where the value should be read from.
+     * @param key The key of the value to read.
+     * @return The value from the JSON, or <code>null</code> if the value does not exist, or is no Double.
+     */
+    protected static Double parseOptionalDoubleValue(JSONObject json, String key) {
+
+        try {
+            return Double.valueOf(json.getDouble(key));
+        } catch (JSONException e) {
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_OPTIONAL_DOUBLE_MISSING_1, key), e);
+            return null;
+        }
+    }
+
     /** Helper for reading an optional Integer value - returning <code>null</code> if parsing fails.
      * @param json The JSON object where the value should be read from.
      * @param key The key of the value to read.
@@ -330,6 +374,21 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             return Integer.valueOf(json.getInt(key));
         } catch (JSONException e) {
             LOG.info(Messages.get().getBundle().key(Messages.LOG_OPTIONAL_INTEGER_MISSING_1, key), e);
+            return null;
+        }
+    }
+
+    /** Helper for reading an optional JSON object - returning <code>null</code> if parsing fails.
+     * @param json The JSON object where the value should be read from.
+     * @param key The key of the JSON object to read.
+     * @return The value from the JSON, or <code>null</code> if the value does not exist, or is no JSON object.
+     */
+    protected static JSONObject parseOptionalJSONObject(JSONObject json, String key) {
+
+        try {
+            return json.getJSONObject(key);
+        } catch (JSONException e) {
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_OPTIONAL_JSON_OBJECT_MISSING_1, key), e);
             return null;
         }
     }
@@ -394,6 +453,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     /**
      * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseDidYouMean()
      */
+    @Override
     public I_CmsSearchConfigurationDidYouMean parseDidYouMean() {
 
         try {
@@ -417,9 +477,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                     LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_HIGHLIGHTING_CONFIG_0), e);
                 }
                 return null;
-            } else {
-                return m_baseConfig.getDidYouMeanConfig();
             }
+            return m_baseConfig.getDidYouMeanConfig();
         }
 
     }
@@ -430,7 +489,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     @Override
     public Map<String, I_CmsSearchConfigurationFacetField> parseFieldFacets() {
 
-        Map<String, I_CmsSearchConfigurationFacetField> facetConfigs = new LinkedHashMap<String, I_CmsSearchConfigurationFacetField>();
+        Map<String, I_CmsSearchConfigurationFacetField> facetConfigs = new LinkedHashMap<>();
         try {
             JSONArray fieldFacets = m_configObject.getJSONArray(JSON_KEY_FIELD_FACETS);
             for (int i = 0; i < fieldFacets.length(); i++) {
@@ -481,9 +540,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                     LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_GEOFILTER_CONFIG_0), e);
                 }
                 return null;
-            } else {
-                return m_baseConfig.getGeoFilterConfig();
             }
+            return m_baseConfig.getGeoFilterConfig();
         }
     }
 
@@ -494,41 +552,74 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     public I_CmsSearchConfigurationHighlighting parseHighlighter() {
 
         try {
+            Map<String, String> hlParams = new LinkedHashMap<>();
             JSONObject highlighter = m_configObject.getJSONObject(JSON_KEY_HIGHLIGHTER);
             String field = highlighter.getString(JSON_KEY_HIGHLIGHTER_FIELD);
+            hlParams.put("fl", field);
             Integer snippets = parseOptionalIntValue(highlighter, JSON_KEY_HIGHLIGHTER_SNIPPETS);
+            if (null != snippets) {
+                hlParams.put("snippets", snippets.toString());
+            }
             Integer fragsize = parseOptionalIntValue(highlighter, JSON_KEY_HIGHLIGHTER_FRAGSIZE);
+            if (null != fragsize) {
+                hlParams.put("fragsize", fragsize.toString());
+            }
             String alternateField = parseOptionalStringValue(highlighter, JSON_KEY_HIGHLIGHTER_ALTERNATE_FIELD);
+            if (null != alternateField) {
+                hlParams.put("alternateField", alternateField);
+            }
             Integer maxAlternateFieldLength = parseOptionalIntValue(
                 highlighter,
                 JSON_KEY_HIGHLIGHTER_MAX_LENGTH_ALTERNATE_FIELD);
+            if (null != maxAlternateFieldLength) {
+                hlParams.put("maxAlternateFieldLength", maxAlternateFieldLength.toString());
+            }
             String pre = parseOptionalStringValue(highlighter, JSON_KEY_HIGHLIGHTER_SIMPLE_PRE);
+            if (null != pre) {
+                hlParams.put("simple.pre", pre);
+                hlParams.put("tag.pre", pre);
+            }
             String post = parseOptionalStringValue(highlighter, JSON_KEY_HIGHLIGHTER_SIMPLE_POST);
+            if (null != post) {
+                hlParams.put("simple.post", post);
+                hlParams.put("tag.post", post);
+            }
             String formatter = parseOptionalStringValue(highlighter, JSON_KEY_HIGHLIGHTER_FORMATTER);
+            if (null != formatter) {
+                hlParams.put("formatter", formatter);
+            }
             String fragmenter = parseOptionalStringValue(highlighter, JSON_KEY_HIGHLIGHTER_FRAGMENTER);
+            if (null != fragmenter) {
+                hlParams.put("fragmenter", fragmenter);
+            }
             Boolean useFastVectorHighlighting = parseOptionalBooleanValue(
                 highlighter,
                 JSON_KEY_HIGHLIGHTER_FASTVECTORHIGHLIGHTING);
-            return new CmsSearchConfigurationHighlighting(
-                field,
-                snippets,
-                fragsize,
-                alternateField,
-                maxAlternateFieldLength,
-                pre,
-                post,
-                formatter,
-                fragmenter,
-                useFastVectorHighlighting);
+            if (null != useFastVectorHighlighting) {
+                hlParams.put("method", "fastVector");
+            }
+            JSONObject params = parseOptionalJSONObject(highlighter, "params");
+            if (null != params) {
+                Iterator<String> it = params.keys();
+                while (it.hasNext()) {
+                    String key = it.next();
+                    String value = parseOptionalAtomicValue(params, key);
+                    if (value != null) {
+                        hlParams.put(key, value);
+                    } else {
+                        LOG.warn("Invalid highlight option " + key + "=" + value + " will be ignored.");
+                    }
+                }
+            }
+            return new CmsSearchConfigurationHighlighting(hlParams);
         } catch (JSONException e) {
             if (null == m_baseConfig) {
                 if (LOG.isInfoEnabled()) {
                     LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_HIGHLIGHTING_CONFIG_0), e);
                 }
                 return null;
-            } else {
-                return m_baseConfig.getHighlighterConfig();
             }
+            return m_baseConfig.getHighlighterConfig();
         }
     }
 
@@ -582,9 +673,10 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     /**
      * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseRangeFacets()
      */
+    @Override
     public Map<String, I_CmsSearchConfigurationFacetRange> parseRangeFacets() {
 
-        Map<String, I_CmsSearchConfigurationFacetRange> facetConfigs = new LinkedHashMap<String, I_CmsSearchConfigurationFacetRange>();
+        Map<String, I_CmsSearchConfigurationFacetRange> facetConfigs = new LinkedHashMap<>();
         try {
             JSONArray rangeFacets = m_configObject.getJSONArray(JSON_KEY_RANGE_FACETS);
             for (int i = 0; i < rangeFacets.length(); i++) {
@@ -639,7 +731,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         Map<String, String> result;
         try {
             JSONArray additionalParams = m_configObject.getJSONArray(JSON_KEY_ADDITIONAL_PARAMETERS);
-            result = new HashMap<String, String>(additionalParams.length());
+            result = new HashMap<>(additionalParams.length());
             for (int i = 0; i < additionalParams.length(); i++) {
                 try {
                     JSONObject currentParam = additionalParams.getJSONObject(i);
@@ -653,9 +745,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             }
         } catch (JSONException e) {
             LOG.info(Messages.get().getBundle().key(Messages.LOG_ADDITIONAL_PARAMETER_CONFIG_NOT_PARSED_0), e);
-            return null != m_baseConfig
-            ? m_baseConfig.getGeneralConfig().getAdditionalParameters()
-            : new HashMap<String, String>();
+            return null != m_baseConfig ? m_baseConfig.getGeneralConfig().getAdditionalParameters() : new HashMap<>();
         }
         return result;
     }
@@ -673,9 +763,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                     LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_CORE_SPECIFIED_0), e);
                 }
                 return null;
-            } else {
-                return m_baseConfig.getGeneralConfig().getSolrCore();
             }
+            return m_baseConfig.getGeneralConfig().getSolrCore();
         }
     }
 
@@ -704,9 +793,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                     LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_EXTRA_PARAMETERS_0), e);
                 }
                 return "";
-            } else {
-                return m_baseConfig.getGeneralConfig().getExtraSolrParams();
             }
+            return m_baseConfig.getGeneralConfig().getExtraSolrParams();
         }
     }
 
@@ -718,9 +806,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         String param = parseOptionalStringValue(m_configObject, JSON_KEY_RELOADED_PARAM);
         if (param == null) {
             return null != m_baseConfig ? m_baseConfig.getGeneralConfig().getReloadedParam() : DEFAULT_RELOADED_PARAM;
-        } else {
-            return param;
         }
+        return param;
     }
 
     /** Returns a flag indicating if also expired resources should be found.
@@ -791,9 +878,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             return null != m_baseConfig
             ? m_baseConfig.getGeneralConfig().getLastQueryParam()
             : DEFAULT_LAST_QUERY_PARAM;
-        } else {
-            return param;
         }
+        return param;
     }
 
     /** Returns the number of maximally returned results, or <code>null</code> if the indexes default should be used.
@@ -873,9 +959,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_PAGESIZE_SPECIFIED_0));
             }
             return null;
-        } else {
-            return m_baseConfig.getPaginationConfig().getPageSizes();
         }
+        return m_baseConfig.getPaginationConfig().getPageSizes();
     }
 
     /** Returns the optional query modifier.
@@ -897,9 +982,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
         String param = parseOptionalStringValue(m_configObject, JSON_KEY_QUERYPARAM);
         if (param == null) {
             return null != m_baseConfig ? m_baseConfig.getGeneralConfig().getQueryParam() : DEFAULT_QUERY_PARAM;
-        } else {
-            return param;
         }
+        return param;
     }
 
     /** Returns a flag, indicating if search should be performed using a wildcard if the empty query is given.
@@ -918,7 +1002,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
      */
     protected List<I_CmsSearchConfigurationSortOption> getSortOptions() {
 
-        List<I_CmsSearchConfigurationSortOption> options = new LinkedList<I_CmsSearchConfigurationSortOption>();
+        List<I_CmsSearchConfigurationSortOption> options = new LinkedList<>();
         try {
             JSONArray sortOptions = m_configObject.getJSONArray(JSON_KEY_SORTOPTIONS);
             for (int i = 0; i < sortOptions.length(); i++) {
@@ -983,7 +1067,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     protected List<I_CmsFacetQueryItem> parseFacetQueryItems(JSONObject queryFacetObject) throws JSONException {
 
         JSONArray items = queryFacetObject.getJSONArray(JSON_KEY_QUERY_FACET_QUERY);
-        List<I_CmsFacetQueryItem> result = new ArrayList<I_CmsFacetQueryItem>(items.length());
+        List<I_CmsFacetQueryItem> result = new ArrayList<>(items.length());
         for (int i = 0; i < items.length(); i++) {
             I_CmsFacetQueryItem item = parseFacetQueryItem(items.getJSONObject(i));
             if (item != null) {
@@ -1068,7 +1152,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             }
             List<I_CmsSearchConfigurationFacetRange.Other> other = null;
             if (sother != null) {
-                other = new ArrayList<I_CmsSearchConfigurationFacetRange.Other>(sother.size());
+                other = new ArrayList<>(sother.size());
                 for (String so : sother) {
                     try {
                         I_CmsSearchConfigurationFacetRange.Other o = I_CmsSearchConfigurationFacetRange.Other.valueOf(

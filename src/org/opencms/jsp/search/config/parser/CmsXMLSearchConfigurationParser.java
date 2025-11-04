@@ -189,6 +189,12 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     private static final String XML_ELEMENT_HIGHLIGHTER_FRAGMENTER = "Fragmenter";
     /** XML element name. */
     private static final String XML_ELEMENT_HIGHLIGHTER_FASTVECTORHIGHLIGHTING = "UseFastVectorHighlighting";
+    /** XML element name. */
+    private static final String XML_ELEMENT_PARAM = "Param";
+    /** XML element name. */
+    private static final String XML_ELEMENT_PARAM_NAME = "Name";
+    /** XML element name. */
+    private static final String XML_ELEMENT_PARAM_VALUE = "Value";
 
     /** XML element names for "Did you mean ...?". */
     /** XML element name. */
@@ -269,6 +275,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     /**
      * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseDidYouMean()
      */
+    @Override
     public I_CmsSearchConfigurationDidYouMean parseDidYouMean() {
 
         final I_CmsXmlContentValue didYouMean = m_xml.getValue(XML_ELEMENT_DIDYOUMEAN, m_locale);
@@ -295,7 +302,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     @Override
     public Map<String, I_CmsSearchConfigurationFacetField> parseFieldFacets() {
 
-        final Map<String, I_CmsSearchConfigurationFacetField> facetConfigs = new LinkedHashMap<String, I_CmsSearchConfigurationFacetField>();
+        final Map<String, I_CmsSearchConfigurationFacetField> facetConfigs = new LinkedHashMap<>();
         final CmsXmlContentValueSequence fieldFacets = m_xml.getValueSequence(XML_ELEMENT_FIELD_FACETS, m_locale);
         if (fieldFacets != null) {
             for (int i = 0; i < fieldFacets.getElementCount(); i++) {
@@ -328,37 +335,61 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         final I_CmsXmlContentValue highlighter = m_xml.getValue(XML_ELEMENT_HIGHLIGHTER, m_locale);
         if (highlighter == null) {
             return null;
-        } else {
-            try {
-                final String pathPrefix = highlighter.getPath() + "/";
-                final String field = parseMandatoryStringValue(pathPrefix + XML_ELEMENT_HIGHLIGHTER_FIELD);
-                final Integer snippets = parseOptionalIntValue(pathPrefix + XML_ELEMENT_HIGHLIGHTER_SNIPPETS);
-                final Integer fragsize = parseOptionalIntValue(pathPrefix + XML_ELEMENT_HIGHLIGHTER_FRAGSIZE);
-                final String alternateField = parseOptionalStringValue(
-                    pathPrefix + XML_ELEMENT_HIGHLIGHTER_ALTERNATE_FIELD);
-                final Integer maxAlternateFieldLength = parseOptionalIntValue(
-                    pathPrefix + XML_ELEMENT_HIGHLIGHTER_MAX_LENGTH_ALTERNATE_FIELD);
-                final String pre = parseOptionalStringValue(pathPrefix + XML_ELEMENT_HIGHLIGHTER_SIMPLE_PRE);
-                final String post = parseOptionalStringValue(pathPrefix + XML_ELEMENT_HIGHLIGHTER_SIMPLE_POST);
-                final String formatter = parseOptionalStringValue(pathPrefix + XML_ELEMENT_HIGHLIGHTER_FORMATTER);
-                final String fragmenter = parseOptionalStringValue(pathPrefix + XML_ELEMENT_HIGHLIGHTER_FRAGMENTER);
-                final Boolean useFastVectorHighlighting = parseOptionalBooleanValue(
-                    pathPrefix + XML_ELEMENT_HIGHLIGHTER_FASTVECTORHIGHLIGHTING);
-                return new CmsSearchConfigurationHighlighting(
-                    field,
-                    snippets,
-                    fragsize,
-                    alternateField,
-                    maxAlternateFieldLength,
-                    pre,
-                    post,
-                    formatter,
-                    fragmenter,
-                    useFastVectorHighlighting);
-            } catch (final Exception e) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_MANDATORY_HIGHLIGHTING_FIELD_MISSING_0), e);
-                return null;
+        }
+        try {
+            Map<String, String> hlParams = new LinkedHashMap<>();
+            final String pathPrefix = highlighter.getPath() + "/";
+            final String field = parseMandatoryStringValue(pathPrefix + XML_ELEMENT_HIGHLIGHTER_FIELD);
+            hlParams.put("fl", field);
+            final Integer snippets = parseOptionalIntValue(pathPrefix + XML_ELEMENT_HIGHLIGHTER_SNIPPETS);
+            if (null != snippets) {
+                hlParams.put("snippets", snippets.toString());
             }
+            final Integer fragsize = parseOptionalIntValue(pathPrefix + XML_ELEMENT_HIGHLIGHTER_FRAGSIZE);
+            if (null != fragsize) {
+                hlParams.put("fragsize", fragsize.toString());
+            }
+            final String alternateField = parseOptionalStringValue(
+                pathPrefix + XML_ELEMENT_HIGHLIGHTER_ALTERNATE_FIELD);
+            if (null != alternateField) {
+                hlParams.put("alternateField", alternateField);
+            }
+            final Integer maxAlternateFieldLength = parseOptionalIntValue(
+                pathPrefix + XML_ELEMENT_HIGHLIGHTER_MAX_LENGTH_ALTERNATE_FIELD);
+            if (null != maxAlternateFieldLength) {
+                hlParams.put("maxAlternateFieldLength", maxAlternateFieldLength.toString());
+            }
+            final String pre = parseOptionalStringValue(pathPrefix + XML_ELEMENT_HIGHLIGHTER_SIMPLE_PRE);
+            if (null != pre) {
+                hlParams.put("simple.pre", pre);
+                hlParams.put("tag.pre", pre);
+            }
+            final String post = parseOptionalStringValue(pathPrefix + XML_ELEMENT_HIGHLIGHTER_SIMPLE_POST);
+            if (null != post) {
+                hlParams.put("simple.post", post);
+                hlParams.put("tag.post", post);
+            }
+            final String formatter = parseOptionalStringValue(pathPrefix + XML_ELEMENT_HIGHLIGHTER_FORMATTER);
+            if (null != formatter) {
+                hlParams.put("formatter", formatter);
+            }
+            final String fragmenter = parseOptionalStringValue(pathPrefix + XML_ELEMENT_HIGHLIGHTER_FRAGMENTER);
+            if (null != fragmenter) {
+                hlParams.put("fragmenter", fragmenter);
+            }
+            final Boolean useFastVectorHighlighting = parseOptionalBooleanValue(
+                pathPrefix + XML_ELEMENT_HIGHLIGHTER_FASTVECTORHIGHLIGHTING);
+            if (null != useFastVectorHighlighting) {
+                hlParams.put("method", "fastVector");
+            }
+            Map<String, String> params = parseOptionalKeyValueMap(pathPrefix + XML_ELEMENT_PARAM);
+            if (null != params) {
+                hlParams.putAll(params);
+            }
+            return new CmsSearchConfigurationHighlighting(hlParams);
+        } catch (final Exception e) {
+            LOG.error(Messages.get().getBundle().key(Messages.ERR_MANDATORY_HIGHLIGHTING_FIELD_MISSING_0), e);
+            return null;
         }
     }
 
@@ -406,9 +437,10 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     /**
      * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseRangeFacets()
      */
+    @Override
     public Map<String, I_CmsSearchConfigurationFacetRange> parseRangeFacets() {
 
-        final Map<String, I_CmsSearchConfigurationFacetRange> facetConfigs = new LinkedHashMap<String, I_CmsSearchConfigurationFacetRange>();
+        final Map<String, I_CmsSearchConfigurationFacetRange> facetConfigs = new LinkedHashMap<>();
         final CmsXmlContentValueSequence rangeFacets = m_xml.getValueSequence(XML_ELEMENT_RANGE_FACETS, m_locale);
         if (rangeFacets != null) {
             for (int i = 0; i < rangeFacets.getElementCount(); i++) {
@@ -482,18 +514,17 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         final List<I_CmsXmlContentValue> values = m_xml.getValues(path, m_locale);
         if (values == null) {
             return null;
-        } else {
-            List<I_CmsFacetQueryItem> parsedItems = new ArrayList<I_CmsFacetQueryItem>(values.size());
-            for (I_CmsXmlContentValue value : values) {
-                I_CmsFacetQueryItem item = parseFacetQueryItem(value.getPath() + "/");
-                if (null != item) {
-                    parsedItems.add(item);
-                } else {
-                    // TODO: log
-                }
-            }
-            return parsedItems;
         }
+        List<I_CmsFacetQueryItem> parsedItems = new ArrayList<>(values.size());
+        for (I_CmsXmlContentValue value : values) {
+            I_CmsFacetQueryItem item = parseFacetQueryItem(value.getPath() + "/");
+            if (null != item) {
+                parsedItems.add(item);
+            } else {
+                // TODO: log
+            }
+        }
+        return parsedItems;
     }
 
     /** Reads the configuration of a field facet.
@@ -555,15 +586,14 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         final I_CmsXmlContentValue value = m_xml.getValue(path, m_locale);
         if (value == null) {
             return null;
-        } else {
-            final String stringValue = value.getStringValue(null);
-            try {
-                final Boolean boolValue = Boolean.valueOf(stringValue);
-                return boolValue;
-            } catch (final NumberFormatException e) {
-                LOG.info(Messages.get().getBundle().key(Messages.LOG_OPTIONAL_BOOLEAN_MISSING_1, path), e);
-                return null;
-            }
+        }
+        final String stringValue = value.getStringValue(null);
+        try {
+            final Boolean boolValue = Boolean.valueOf(stringValue);
+            return boolValue;
+        } catch (final NumberFormatException e) {
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_OPTIONAL_BOOLEAN_MISSING_1, path), e);
+            return null;
         }
     }
 
@@ -576,16 +606,36 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         final I_CmsXmlContentValue value = m_xml.getValue(path, m_locale);
         if (value == null) {
             return null;
-        } else {
-            final String stringValue = value.getStringValue(null);
-            try {
-                final Integer intValue = Integer.valueOf(stringValue);
-                return intValue;
-            } catch (final NumberFormatException e) {
-                LOG.info(Messages.get().getBundle().key(Messages.LOG_OPTIONAL_INTEGER_MISSING_1, path), e);
-                return null;
-            }
         }
+        final String stringValue = value.getStringValue(null);
+        try {
+            final Integer intValue = Integer.valueOf(stringValue);
+            return intValue;
+        } catch (final NumberFormatException e) {
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_OPTIONAL_INTEGER_MISSING_1, path), e);
+            return null;
+        }
+    }
+
+    /** Helper to read an optional String value.
+     * @param path The XML path of the element to read.
+     * @return The String value stored in the XML, or <code>null</code> if the value could not be read.
+     */
+    protected Map<String, String> parseOptionalKeyValueMap(final String path) {
+
+        final CmsXmlContentValueSequence entries = m_xml.getValueSequence(path, m_locale);
+        if (entries == null) {
+            return null;
+        }
+        Map<String, String> result = new LinkedHashMap<>(entries.getElementCount());
+        String prefix = path.endsWith("/") ? path : path.substring(0, path.length() - 1);
+        for (int i = 1; i <= entries.getElementCount(); i++) {
+            String entryPrefix = prefix + "[" + i + "]/";
+            String key = m_xml.getStringValue(null, entryPrefix + XML_ELEMENT_PARAM_NAME, m_locale);
+            String value = m_xml.getStringValue(null, entryPrefix + XML_ELEMENT_PARAM_VALUE, m_locale);
+            result.put(key, value);
+        }
+        return result;
     }
 
     /** Helper to read an optional String value.
@@ -597,9 +647,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         final I_CmsXmlContentValue value = m_xml.getValue(path, m_locale);
         if (value == null) {
             return null;
-        } else {
-            return value.getStringValue(null);
         }
+        return value.getStringValue(null);
     }
 
     /** Helper to read an optional String value list.
@@ -611,13 +660,12 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         final List<I_CmsXmlContentValue> values = m_xml.getValues(path, m_locale);
         if (values == null) {
             return null;
-        } else {
-            List<String> stringValues = new ArrayList<String>(values.size());
-            for (I_CmsXmlContentValue value : values) {
-                stringValues.add(value.getStringValue(null));
-            }
-            return stringValues;
         }
+        List<String> stringValues = new ArrayList<>(values.size());
+        for (I_CmsXmlContentValue value : values) {
+            stringValues.add(value.getStringValue(null));
+        }
+        return stringValues;
     }
 
     /** Reads the configuration of a range facet.
@@ -638,7 +686,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             List<I_CmsSearchConfigurationFacetRange.Other> other = null;
             if (sother != null) {
                 final List<String> sothers = Arrays.asList(sother.split(","));
-                other = new ArrayList<I_CmsSearchConfigurationFacetRange.Other>(sothers.size());
+                other = new ArrayList<>(sothers.size());
                 for (String so : sothers) {
                     try {
                         I_CmsSearchConfigurationFacetRange.Other o = I_CmsSearchConfigurationFacetRange.Other.valueOf(
@@ -702,7 +750,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     private Map<String, String> getAdditionalRequestParameters() {
 
         List<I_CmsXmlContentValue> parametersToParse = m_xml.getValues(XML_ELEMENT_ADDITIONAL_PARAMETERS, m_locale);
-        Map<String, String> result = new HashMap<String, String>(parametersToParse.size());
+        Map<String, String> result = new HashMap<>(parametersToParse.size());
         for (I_CmsXmlContentValue additionalParam : parametersToParse) {
             String param = m_xml.getValue(
                 additionalParam.getPath() + "/" + XML_ELEMENT_ADDITIONAL_PARAMETERS_PARAM,
@@ -748,9 +796,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         final String param = parseOptionalStringValue(XML_ELEMENT_RELOADED_PARAM);
         if (param == null) {
             return DEFAULT_RELOADED_PARAM;
-        } else {
-            return param;
         }
+        return param;
     }
 
     /** Returns a flag indicating if also expired resources should be found.
@@ -802,9 +849,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         final String param = parseOptionalStringValue(XML_ELEMENT_LAST_QUERYPARAM);
         if (param == null) {
             return DEFAULT_LAST_QUERY_PARAM;
-        } else {
-            return param;
         }
+        return param;
     }
 
     /** Returns the configured length of the "Google"-like page navigation, or the default length if it is not configured.
@@ -862,9 +908,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
         final String param = parseOptionalStringValue(XML_ELEMENT_QUERYPARAM);
         if (param == null) {
             return DEFAULT_QUERY_PARAM;
-        } else {
-            return param;
         }
+        return param;
     }
 
     /** Returns a flag, indicating if search should be performed using a wildcard if the empty query is given.
@@ -880,20 +925,18 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
      */
     private List<I_CmsSearchConfigurationSortOption> getSortOptions() {
 
-        final List<I_CmsSearchConfigurationSortOption> options = new ArrayList<I_CmsSearchConfigurationSortOption>();
+        final List<I_CmsSearchConfigurationSortOption> options = new ArrayList<>();
         final CmsXmlContentValueSequence sortOptions = m_xml.getValueSequence(XML_ELEMENT_SORTOPTIONS, m_locale);
         if (sortOptions == null) {
             return null;
-        } else {
-            for (int i = 0; i < sortOptions.getElementCount(); i++) {
-                final I_CmsSearchConfigurationSortOption option = parseSortOption(
-                    sortOptions.getValue(i).getPath() + "/");
-                if (option != null) {
-                    options.add(option);
-                }
-            }
-            return options;
         }
+        for (int i = 0; i < sortOptions.getElementCount(); i++) {
+            final I_CmsSearchConfigurationSortOption option = parseSortOption(sortOptions.getValue(i).getPath() + "/");
+            if (option != null) {
+                options.add(option);
+            }
+        }
+        return options;
     }
 
     /** Returns the configured request parameter for the current sort option, or the default parameter if the core is not specified.
@@ -916,9 +959,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             I_CmsXmlContentValue label = m_xml.getValue(prefix + XML_ELEMENT_QUERY_FACET_QUERY_LABEL, m_locale);
             String labelString = null != label ? label.getStringValue(null) : null;
             return new CmsFacetQueryItem(queryString, labelString);
-        } else {
-            return null;
         }
+        return null;
     }
 
     /** Helper to read a mandatory String value.

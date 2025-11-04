@@ -56,7 +56,12 @@
         "simple.post" : "</strong>",
         "formatter" : "simple",
         "fragmenter" : "gap",
-        "useFastVectorHighlighting" : true
+        "useFastVectorHighlighting" : true,
+        "params" : {
+            "maxAnalyzedChars" : 10000,
+            "queryFieldPattern" : "fieldA,fieldB",
+            "usePhraseHighlighter" : true
+        }
     },
     "didYouMean" : {
         "didYouMeanQueryParam" : "dymparam",

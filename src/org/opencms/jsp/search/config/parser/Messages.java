@@ -65,7 +65,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_OPTIONAL_BOOLEAN_MISSING_1 = "LOG_OPTIONAL_BOOLEAN_MISSING_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_OPTIONAL_DOUBLE_MISSING_1 = "LOG_OPTIONAL_DOUBLE_MISSING_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_OPTIONAL_INTEGER_MISSING_1 = "LOG_OPTIONAL_INTEGER_MISSING_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_OPTIONAL_JSON_OBJECT_MISSING_1 = "LOG_OPTIONAL_JSON_OBJECT_MISSING_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NO_CORE_SPECIFIED_0 = "LOG_NO_CORE_SPECIFIED_0";

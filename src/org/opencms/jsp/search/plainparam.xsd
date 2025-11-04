@@ -1,0 +1,47 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+
+    <xsd:element name="PlainParams" type="OpenCmsPlainParams"/>
+
+    <xsd:complexType name="OpenCmsPlainParams">
+        <xsd:sequence>
+            <xsd:element name="PlainParam" type="OpenCmsPlainParam" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsPlainParam">
+        <xsd:sequence>
+            <xsd:element name="Name" type="OpenCmsString"/>
+            <xsd:element name="Value" type="OpenCmsString"/>
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+    </xsd:complexType>
+
+    <xsd:annotation>
+        <xsd:appinfo>
+            <resourcebundle name="org.opencms.jsp.search.messages" />
+            <FieldSettings>
+                <Setting>
+                    <PropertyName>Name</PropertyName>
+                    <DisplayName>%(key.label.PlainParam.Name)</DisplayName>
+                    <RuleRegex>.+</RuleRegex>
+                    <RuleType>Error</RuleType>
+                    <Error>%(key.error.empty)</Error>
+                    <Search>false</Search>
+                    <Display>column</Display>
+                </Setting>
+                <Setting>
+                    <PropertyName>Value</PropertyName>
+                    <DisplayName>%(key.label.PlainParam.Value)</DisplayName>
+                    <RuleRegex>.+</RuleRegex>
+                    <RuleType>Error</RuleType>
+                    <Error>%(key.error.empty)</Error>
+                    <Search>false</Search>
+                    <Display>column</Display>
+                </Setting>
+            </FieldSettings>
+        </xsd:appinfo>
+    </xsd:annotation>
+
+</xsd:schema>

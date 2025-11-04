@@ -65,34 +65,8 @@ public class CmsSearchControllerHighlighting implements I_CmsSearchControllerHig
     public void addQueryParts(CmsSolrQuery query, CmsObject cms) {
 
         query.set("hl", "true");
-        query.set("hl.fl", m_config.getHightlightField());
-        if (m_config.getSnippetsCount() != null) {
-            query.set("hl.snippets", m_config.getSnippetsCount().toString());
-        }
-        if (m_config.getFragSize() != null) {
-            query.set("hl.fragsize", m_config.getFragSize().toString());
-        }
-        if (m_config.getAlternateHighlightField() != null) {
-            query.set("hl.alternateField", m_config.getAlternateHighlightField());
-        }
-        if (m_config.getMaxAlternateHighlightFieldLength() != null) {
-            query.set("hl.maxAlternateFieldLength", m_config.getMaxAlternateHighlightFieldLength().toString());
-        }
-        if (m_config.getSimplePre() != null) {
-            query.set("hl.simple.pre", m_config.getSimplePre());
-        }
-        if (m_config.getSimplePost() != null) {
-            query.set("hl.simple.post", m_config.getSimplePost());
-        }
-        if (m_config.getFormatter() != null) {
-            query.set("hl.formatter", m_config.getFormatter());
-        }
-        if (m_config.getFragmenter() != null) {
-            query.set("hl.fragmenter", m_config.getFragmenter());
-        }
-        if (m_config.getUseFastVectorHighlighting() != null) {
-            query.set("hl.useFastVectorHighlighting", m_config.getUseFastVectorHighlighting().toString());
-        }
+        m_config.getParams().entrySet().stream().forEach(
+            (Map.Entry<String, String> e) -> query.set("hl." + e.getKey(), e.getValue()));
     }
 
     /**

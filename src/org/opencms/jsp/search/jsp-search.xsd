@@ -101,7 +101,7 @@
                 <tab element="FieldFacet" name="FieldFacets"/>
                 <tab element="RangeFacet" name="RangeFacets"/>
                 <tab element="QueryFacet" name="QueryFacets"/>
-                <tab element="Highlighting" name="Highlighting"/>
+                <tab element="Highlighting" name="Highlighting" description="%(key.tab.JspSearchConfig.Highlighting.description)"/>
                 <tab element="DidYouMean" name="DidYouMeanTab"/>
             </tabs>
         </xsd:appinfo>
