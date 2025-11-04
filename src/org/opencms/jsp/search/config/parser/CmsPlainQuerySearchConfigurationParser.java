@@ -90,6 +90,7 @@ public class CmsPlainQuerySearchConfigurationParser implements I_CmsSearchConfig
     /**
      * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseCommon(CmsObject)
      */
+    @Override
     public I_CmsSearchConfigurationCommon parseCommon(CmsObject cms) {
 
         String queryString = m_queryString;
@@ -154,6 +155,7 @@ public class CmsPlainQuerySearchConfigurationParser implements I_CmsSearchConfig
     /**
     * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseDidYouMean()
     */
+    @Override
     public I_CmsSearchConfigurationDidYouMean parseDidYouMean() {
 
         return null != m_baseConfig ? m_baseConfig.getDidYouMeanConfig() : null;
@@ -162,6 +164,7 @@ public class CmsPlainQuerySearchConfigurationParser implements I_CmsSearchConfig
     /**
      * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseFieldFacets()
      */
+    @Override
     public Map<String, I_CmsSearchConfigurationFacetField> parseFieldFacets() {
 
         return null != m_baseConfig ? m_baseConfig.getFieldFacetConfigs() : Collections.emptyMap();
@@ -179,6 +182,7 @@ public class CmsPlainQuerySearchConfigurationParser implements I_CmsSearchConfig
     /**
      * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseHighlighter()
      */
+    @Override
     public I_CmsSearchConfigurationHighlighting parseHighlighter() {
 
         return null != m_baseConfig ? m_baseConfig.getHighlighterConfig() : null;
@@ -187,6 +191,7 @@ public class CmsPlainQuerySearchConfigurationParser implements I_CmsSearchConfig
     /**
      * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parsePagination()
      */
+    @Override
     public I_CmsSearchConfigurationPagination parsePagination() {
 
         return null != m_baseConfig ? m_baseConfig.getPaginationConfig() : null;
@@ -195,6 +200,7 @@ public class CmsPlainQuerySearchConfigurationParser implements I_CmsSearchConfig
     /**
      * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseQueryFacet()
      */
+    @Override
     public I_CmsSearchConfigurationFacetQuery parseQueryFacet() {
 
         return null != m_baseConfig ? m_baseConfig.getQueryFacetConfig() : null;
@@ -203,6 +209,7 @@ public class CmsPlainQuerySearchConfigurationParser implements I_CmsSearchConfig
     /**
      * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseRangeFacets()
      */
+    @Override
     public Map<String, I_CmsSearchConfigurationFacetRange> parseRangeFacets() {
 
         return null != m_baseConfig ? m_baseConfig.getRangeFacetConfigs() : Collections.emptyMap();
@@ -211,6 +218,7 @@ public class CmsPlainQuerySearchConfigurationParser implements I_CmsSearchConfig
     /**
      * @see org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser#parseSorting()
      */
+    @Override
     public I_CmsSearchConfigurationSorting parseSorting() {
 
         return null != m_baseConfig ? m_baseConfig.getSortConfig() : null;

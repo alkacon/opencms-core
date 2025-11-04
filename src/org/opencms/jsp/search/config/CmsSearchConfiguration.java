@@ -32,7 +32,7 @@ import org.opencms.jsp.search.config.parser.I_CmsSearchConfigurationParser;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -77,8 +77,8 @@ public class CmsSearchConfiguration implements I_CmsSearchConfiguration {
         m_geoFilter = parser.parseGeoFilter();
         m_pagination = parser.parsePagination();
         m_sorting = parser.parseSorting();
-        m_fieldFacets = new HashMap<>(parser.parseFieldFacets());
-        m_rangeFacets = new HashMap<>(parser.parseRangeFacets());
+        m_fieldFacets = new LinkedHashMap<>(parser.parseFieldFacets());
+        m_rangeFacets = new LinkedHashMap<>(parser.parseRangeFacets());
         m_queryFacet = parser.parseQueryFacet();
         m_highlighting = parser.parseHighlighter();
         m_didYouMean = parser.parseDidYouMean();
@@ -166,6 +166,7 @@ public class CmsSearchConfiguration implements I_CmsSearchConfiguration {
     /**
      * @see org.opencms.jsp.search.config.I_CmsSearchConfiguration#getRangeFacetConfigs()
      */
+    @Override
     public Map<String, I_CmsSearchConfigurationFacetRange> getRangeFacetConfigs() {
 
         return m_rangeFacets;
@@ -186,8 +187,8 @@ public class CmsSearchConfiguration implements I_CmsSearchConfiguration {
     private void propagateFacetNames() {
 
         // collect all names and configurations
-        Collection<String> facetNames = new ArrayList<String>();
-        Collection<I_CmsSearchConfigurationFacet> facetConfigs = new ArrayList<I_CmsSearchConfigurationFacet>();
+        Collection<String> facetNames = new ArrayList<>();
+        Collection<I_CmsSearchConfigurationFacet> facetConfigs = new ArrayList<>();
         facetNames.addAll(m_fieldFacets.keySet());
         facetConfigs.addAll(m_fieldFacets.values());
         facetNames.addAll(m_rangeFacets.keySet());

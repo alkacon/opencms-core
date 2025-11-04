@@ -60,6 +60,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -249,7 +250,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
      */
     public static Map<String, I_CmsSearchConfigurationFacetField> getDefaultFieldFacets(boolean categoryConjunction) {
 
-        Map<String, I_CmsSearchConfigurationFacetField> fieldFacets = new HashMap<String, I_CmsSearchConfigurationFacetField>();
+        Map<String, I_CmsSearchConfigurationFacetField> fieldFacets = new LinkedHashMap<>();
         fieldFacets.put(
             FIELD_CATEGORIES,
             new CmsSearchConfigurationFacetField(
@@ -291,7 +292,7 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
      */
     public CmsSolrQuery getInitialQuery() {
 
-        Map<String, String[]> queryParams = new HashMap<String, String[]>();
+        Map<String, String[]> queryParams = new HashMap<>();
         if (!m_cms.getRequestContext().getCurrentProject().isOnlineProject() && m_config.isShowExpired()) {
             queryParams.put("fq", new String[] {"released:[* TO *]", "expired:[* TO *]"});
         }
@@ -319,9 +320,8 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
 
         if (m_configObject.has(JSON_KEY_FIELD_FACETS)) {
             return super.parseFieldFacets();
-        } else {
-            return getDefaultFieldFacets(true);
         }
+        return getDefaultFieldFacets(true);
     }
 
     /**
@@ -344,33 +344,32 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
 
         if (m_configObject.has(JSON_KEY_RANGE_FACETS)) {
             return super.parseRangeFacets();
-        } else {
-            Map<String, I_CmsSearchConfigurationFacetRange> rangeFacets = new HashMap<String, I_CmsSearchConfigurationFacetRange>();
-            String indexField = FIELD_DATE;
-            I_CmsSearchConfigurationFacetRange.Method method = I_CmsSearchConfigurationFacetRange.Method.dv;
-            if (Boolean.parseBoolean(m_config.getParameterValue(CmsConfigurationBean.PARAM_FILTER_MULTI_DAY))) {
-                indexField = FIELD_DATE_RANGE;
-                method = null;
-            }
-            I_CmsSearchConfigurationFacetRange rangeFacet = new CmsSearchConfigurationFacetRange(
-                String.format(indexField, getSearchLocale().toString()),
-                "NOW/YEAR-20YEARS",
-                "NOW/MONTH+5YEARS",
-                "+1MONTHS",
-                null,
-                Boolean.FALSE,
-                method,
-                FIELD_DATE_FACET_NAME,
-                Integer.valueOf(1),
-                "Date",
-                Boolean.FALSE,
-                null,
-                Boolean.TRUE,
-                null);
-
-            rangeFacets.put(rangeFacet.getName(), rangeFacet);
-            return rangeFacets;
         }
+        Map<String, I_CmsSearchConfigurationFacetRange> rangeFacets = new LinkedHashMap<>();
+        String indexField = FIELD_DATE;
+        I_CmsSearchConfigurationFacetRange.Method method = I_CmsSearchConfigurationFacetRange.Method.dv;
+        if (Boolean.parseBoolean(m_config.getParameterValue(CmsConfigurationBean.PARAM_FILTER_MULTI_DAY))) {
+            indexField = FIELD_DATE_RANGE;
+            method = null;
+        }
+        I_CmsSearchConfigurationFacetRange rangeFacet = new CmsSearchConfigurationFacetRange(
+            String.format(indexField, getSearchLocale().toString()),
+            "NOW/YEAR-20YEARS",
+            "NOW/MONTH+5YEARS",
+            "+1MONTHS",
+            null,
+            Boolean.FALSE,
+            method,
+            FIELD_DATE_FACET_NAME,
+            Integer.valueOf(1),
+            "Date",
+            Boolean.FALSE,
+            null,
+            Boolean.TRUE,
+            null);
+
+        rangeFacets.put(rangeFacet.getName(), rangeFacet);
+        return rangeFacets;
     }
 
     /**
@@ -435,9 +434,8 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
 
         if (m_configObject.has(JSON_KEY_ESCAPE_QUERY_CHARACTERS)) {
             return super.getEscapeQueryChars();
-        } else {
-            return Boolean.TRUE;
         }
+        return Boolean.TRUE;
     }
 
     /**
@@ -530,9 +528,8 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
 
         if (m_configObject.has(JSON_KEY_SEARCH_FOR_EMPTY_QUERY)) {
             return super.getSearchForEmptyQuery();
-        } else {
-            return Boolean.TRUE;
         }
+        return Boolean.TRUE;
     }
 
     /**
@@ -543,25 +540,24 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
 
         if (m_configObject.has(JSON_KEY_SORTOPTIONS)) {
             return super.getSortOptions();
-        } else {
-            List<I_CmsSearchConfigurationSortOption> options = new LinkedList<I_CmsSearchConfigurationSortOption>();
-
-            CmsSimpleSearchConfigurationParser.SortOption currentOption = CmsSimpleSearchConfigurationParser.SortOption.valueOf(
-                m_config.getSortOrder());
-            if (m_sortOrder != null) {
-                currentOption = m_sortOrder;
-            }
-            Locale locale = getSearchLocale();
-            options.add(currentOption.getOption(locale));
-            CmsSimpleSearchConfigurationParser.SortOption[] sortOptions = CmsSimpleSearchConfigurationParser.SortOption.values();
-            for (int i = 0; i < sortOptions.length; i++) {
-                CmsSimpleSearchConfigurationParser.SortOption option = sortOptions[i];
-                if (!Objects.equals(currentOption, option)) {
-                    options.add(option.getOption(locale));
-                }
-            }
-            return options;
         }
+        List<I_CmsSearchConfigurationSortOption> options = new LinkedList<>();
+
+        CmsSimpleSearchConfigurationParser.SortOption currentOption = CmsSimpleSearchConfigurationParser.SortOption.valueOf(
+            m_config.getSortOrder());
+        if (m_sortOrder != null) {
+            currentOption = m_sortOrder;
+        }
+        Locale locale = getSearchLocale();
+        options.add(currentOption.getOption(locale));
+        CmsSimpleSearchConfigurationParser.SortOption[] sortOptions = CmsSimpleSearchConfigurationParser.SortOption.values();
+        for (int i = 0; i < sortOptions.length; i++) {
+            CmsSimpleSearchConfigurationParser.SortOption option = sortOptions[i];
+            if (!Objects.equals(currentOption, option)) {
+                options.add(option.getOption(locale));
+            }
+        }
+        return options;
     }
 
     /**
@@ -868,35 +864,32 @@ public class CmsSimpleSearchConfigurationParser extends CmsJSONSearchConfigurati
         if (FieldType.PLAIN.equals(fieldValues.getFieldType())) {
             // We are sure that there is exactly one value in that case.
             return "(" + values.iterator().next() + ")";
-        } else {
-            switch (rule.getMatchType()) {
-                case DEFAULT:
-                    finalValues = values;
-                    break;
-                case EXACT:
-                    finalValues = values.stream().map(v -> ("\"" + v + "\"")).collect(Collectors.toSet());
-                    break;
-                case INFIX:
-                    finalValues = values.stream().map(
-                        v -> ("(" + v + " OR *" + v + " OR *" + v + "* OR " + v + "*)")).collect(Collectors.toSet());
-                    break;
-                case POSTFIX:
-                    finalValues = values.stream().map(v -> ("(" + v + " OR *" + v + ")")).collect(Collectors.toSet());
-                    break;
-                case PREFIX:
-                    finalValues = values.stream().map(v -> ("(" + v + " OR " + v + "*)")).collect(Collectors.toSet());
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unknown match type '" + rule.getMatchType() + "'.");
-            }
-            if (finalValues.size() > 1) {
-                String seperator = " " + rule.getCombinationModeInField().toString() + " ";
-                return "(" + finalValues.stream().reduce((v1, v2) -> v1 + seperator + v2).get() + ")";
-            } else {
-                return finalValues.iterator().next();
-            }
-
         }
+        switch (rule.getMatchType()) {
+            case DEFAULT:
+                finalValues = values;
+                break;
+            case EXACT:
+                finalValues = values.stream().map(v -> ("\"" + v + "\"")).collect(Collectors.toSet());
+                break;
+            case INFIX:
+                finalValues = values.stream().map(
+                    v -> ("(" + v + " OR *" + v + " OR *" + v + "* OR " + v + "*)")).collect(Collectors.toSet());
+                break;
+            case POSTFIX:
+                finalValues = values.stream().map(v -> ("(" + v + " OR *" + v + ")")).collect(Collectors.toSet());
+                break;
+            case PREFIX:
+                finalValues = values.stream().map(v -> ("(" + v + " OR " + v + "*)")).collect(Collectors.toSet());
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown match type '" + rule.getMatchType() + "'.");
+        }
+        if (finalValues.size() > 1) {
+            String seperator = " " + rule.getCombinationModeInField().toString() + " ";
+            return "(" + finalValues.stream().reduce((v1, v2) -> v1 + seperator + v2).get() + ")";
+        }
+        return finalValues.iterator().next();
     }
 
     /**
