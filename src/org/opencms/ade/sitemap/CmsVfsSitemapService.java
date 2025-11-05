@@ -1071,7 +1071,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 detailPages,
                 resourceTypeInfos,
                 returnCode,
-                canEditDetailPages,
+                canEditDetailPages && canManageDetailPages,
                 aliasImportUrl,
                 canEditAliases,
                 OpenCms.getWorkplaceManager().getDefaultUserSettings().getSubsitemapCreationMode() == CmsDefaultUserSettings.SubsitemapCreationMode.createfolder,
