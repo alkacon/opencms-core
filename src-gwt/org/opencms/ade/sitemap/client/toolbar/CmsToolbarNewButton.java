@@ -39,6 +39,7 @@ import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
+import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 
@@ -110,10 +111,12 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
             }
         }
 
-        for (CmsNewResourceInfo typeInfo : getController().getData().getResourceTypeInfos()) {
-            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(typeInfo.getCreateParameter())) {
-                CmsCreatableListItem item = makeDetailPageItem(typeInfo);
-                m_detailList.add(item);
+        if (getController().canManageDetailPages()) {
+            for (CmsNewResourceInfo typeInfo : getController().getData().getResourceTypeInfos()) {
+                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(typeInfo.getCreateParameter())) {
+                    CmsCreatableListItem item = makeDetailPageItem(typeInfo);
+                    m_detailList.add(item);
+                }
             }
         }
         if (m_detailList.getWidgetCount() > 0) {

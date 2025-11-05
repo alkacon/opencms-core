@@ -51,7 +51,8 @@
 	upload-restriction?,
 	virus-scanner?,
 	sitemap-config-edit-role?,
-	allow-element-author-to-work-in-galleries?
+	allow-element-author-to-work-in-galleries?,
+	sitemap-editor-detail-page-management-role?
 	)>
 
 <!--
@@ -930,6 +931,11 @@ with-path: If true, categories' displayed labels are assembled into a path from 
 # Boolean flag (true/false) which allows element authors to upload in galleries and gives some additional permissions in gallery context menus if set.
 -->
 <!ELEMENT allow-element-author-to-work-in-galleries (#PCDATA)>
+
+<!--
+#	Role that is required to be able to create/delete detail pages in the sitemap editor. Leave empty for no role check.
+-->
+<!ELEMENT sitemap-editor-detail-page-management-role (#PCDATA)>
 
 <!--
 # Include the explorer types DTD.

@@ -353,6 +353,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The role required for editing the sitemap configuration. */
     private String m_sitemapConfigEditRole;
 
+    /** Configured name of the role users should have to manage detail pages from the sitemap editor. */
+    private String m_sitemapEditorDetailPageManagementRole;
+
     /** Exclude patterns for synchronization. */
     private ArrayList<Pattern> m_synchronizeExcludePatterns;
 
@@ -1484,6 +1487,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
+     * Gets the name of the role users should have to be able to edit detail pages from the sitemap editor
+     *
+     * @return the role name, or null
+     */
+    public String getSitemapEditorDetailPageManagementRole() {
+
+        return m_sitemapEditorDetailPageManagementRole;
+    }
+
+    /**
      * Returns Regex patterns that should be excluded from synchronization.<p>
      *
      * @return the exclude patterns
@@ -2348,6 +2361,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public void setSitemapConfigEditRole(String roleName) {
 
         m_sitemapConfigEditRole = roleName;
+    }
+
+    /**
+     * Sets the role users should have to be able to manage detail pages from the sitemap editor.
+     *
+     * @param sitemapEditorDetailPageManagementRole the role name
+     */
+    public void setSitemapEditorDetailPageManagementRole(String sitemapEditorDetailPageManagementRole) {
+
+        m_sitemapEditorDetailPageManagementRole = sitemapEditorDetailPageManagementRole;
     }
 
     /**

@@ -82,6 +82,9 @@ public class CmsSitemapData implements IsSerializable {
     /** Flag to indicate whether detail pages can be edited. */
     private boolean m_canEditDetailPages;
 
+    /** Flag indicating whether the user has permissions to manage detail pages via the sitemap editor. */
+    private boolean m_canManageDetailPages;
+
     /** Flag indicating whether user is category manager. */
     private boolean m_categoryManager;
 
@@ -303,6 +306,16 @@ public class CmsSitemapData implements IsSerializable {
     public boolean canEditDetailPages() {
 
         return m_canEditDetailPages && (m_resourceTypeInfos != null) && !m_resourceTypeInfos.isEmpty();
+    }
+
+    /**
+     * Flag which indicates whether the user has a sufficient role for managing detail pages.
+     *
+     * @return true if the user has a sufficient role for managing detail pages
+     */
+    public boolean canManagetDetailPages() {
+
+        return m_canManageDetailPages;
     }
 
     /**
@@ -662,6 +675,16 @@ public class CmsSitemapData implements IsSerializable {
     public void setAllowCreateNestedGalleries(boolean allowCreateNestedGalleries) {
 
         m_allowCreateNestedGalleries = allowCreateNestedGalleries;
+    }
+
+    /**
+     * Sets whether the user can manage detail pages.
+     *
+     * @param canManageDetailPages true if the user can manage detail pages
+     */
+    public void setCanManageDetailPages(boolean canManageDetailPages) {
+
+        m_canManageDetailPages = canManageDetailPages;
     }
 
     /**

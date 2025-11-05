@@ -390,6 +390,16 @@ public class CmsSitemapController implements I_CmsSitemapController {
     }
 
     /**
+     * Checks if the user has a sufficient role for managing detail pages.
+     *
+     * @return true if the user has a sufficient role for managing detail pages
+     */
+    public boolean canManageDetailPages() {
+
+        return m_data.canManagetDetailPages();
+    }
+
+    /**
      * Changes the given category.<p>
      *
      * @param id the category id

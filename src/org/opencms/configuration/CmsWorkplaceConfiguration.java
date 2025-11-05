@@ -268,6 +268,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The name of the default property node. */
     public static final String N_DEFAULTPROPERTY = "defaultproperty";
 
+    /** The name of the element containing the role for users who should be allowed to manage detail pages in the page editor. */
+    public static final String N_DETAIL_PAGE_MANAGEMENT_ROLE = "sitemap-editor-detail-page-management-role";
+
     /** Individual workplace handler node name. */
     public static final String N_DIALOGHANDLER = "dialoghandler";
 
@@ -1141,6 +1144,19 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             }
         });
 
+        digester.addRule("*/" + N_WORKPLACE + "/" + N_DETAIL_PAGE_MANAGEMENT_ROLE, new Rule() {
+
+            @Override
+            public void body(String namespace, String name, String text) throws Exception {
+
+                CmsWorkplaceManager wpManager = (CmsWorkplaceManager)(digester.peek());
+                if (text != null) {
+                    text = text.trim();
+                }
+                wpManager.setSitemapEditorDetailPageManagementRole(text);
+            }
+        });
+
     }
 
     /**
@@ -1478,6 +1494,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         boolean allowElementAuthorToWorkInGalleries = m_workplaceManager.isAllowElementAuthorToWorkInGalleries();
         workplaceElement.addElement(N_ALLOW_ELEMENT_AUTHOR_TO_WORK_IN_GALLERIES).addText(
             "" + allowElementAuthorToWorkInGalleries);
+
+        String detailPageRole = m_workplaceManager.getSitemapEditorDetailPageManagementRole();
+        if (detailPageRole != null) {
+            workplaceElement.addElement(N_DETAIL_PAGE_MANAGEMENT_ROLE).addText(detailPageRole);
+        }
 
         // return the configured node
         return workplaceElement;

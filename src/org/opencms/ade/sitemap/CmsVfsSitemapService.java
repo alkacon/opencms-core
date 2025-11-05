@@ -943,6 +943,29 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             } catch (CmsException e) {
                 LOG.warn(e.getLocalizedMessage(), e);
             }
+            boolean canManageDetailPages = true;
+            String detailPageRole = OpenCms.getWorkplaceManager().getSitemapEditorDetailPageManagementRole();
+
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(detailPageRole)) {
+                CmsRole role = null;
+                try {
+                    if (detailPageRole.indexOf("/") == -1) {
+                        role = CmsRole.valueOfRoleName(detailPageRole).forOrgUnit(null);
+                    } else {
+                        role = CmsRole.valueOfRoleName(detailPageRole);
+                    }
+                    if (role != null) {
+                        canManageDetailPages = OpenCms.getRoleManager().hasRoleForResource(
+                            cms,
+                            role,
+                            cms.getRequestContext().removeSiteRoot(configData.getBasePath()));
+                    } else {
+                        LOG.error("Configured role '" + detailPageRole + "' not found");
+                    }
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
 
             detailPages = new CmsDetailPageTable(configData.getAllDetailPages());
             if (!isOnlineProject) {
@@ -1062,9 +1085,12 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             CmsUUID rootId = cms.readResource("/", CmsResourceFilter.ALL).getStructureId();
             result.setSiteRootId(rootId);
             result.setLocaleComparisonEnabled(showLocaleComparison);
+            result.setCanManageDetailPages(canManageDetailPages);
+
             boolean allowCreateNestedGalleries = Boolean.parseBoolean(
                 "" + OpenCms.getRuntimeProperty("ade.sitemap.allowCreateNestedGalleries"));
             result.setAllowCreateNestedGalleries(allowCreateNestedGalleries);
+
         } catch (Throwable e) {
             error(e);
         }

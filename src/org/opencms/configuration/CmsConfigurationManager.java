@@ -88,14 +88,14 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     /** The location of the OpenCms configuration DTD if the default prefix is the system ID. */
     public static final String DEFAULT_DTD_LOCATION = "org/opencms/configuration/";
 
-    /** Location of the optional XSLT file used to transform the configuration. */
-    public static final String DEFAULT_XSLT_FILENAME = "opencms-configuration.xslt";
-
     /** The default prefix for the OpenCms configuration DTD. */
     public static final String DEFAULT_DTD_PREFIX = "http://www.opencms.org/dtd/6.0/";
 
     /** The name of the default XML file for this configuration. */
     public static final String DEFAULT_XML_FILE_NAME = "opencms.xml";
+
+    /** Location of the optional XSLT file used to transform the configuration. */
+    public static final String DEFAULT_XSLT_FILENAME = "opencms-configuration.xslt";
 
     /** The name of the DTD file for this configuration. */
     public static final String DTD_FILE_NAME = "opencms-configuration.dtd";
@@ -121,6 +121,9 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     /** The number of days to keep old backups for. */
     private static final long MAX_BACKUP_DAYS = 15;
 
+    /** The admin CmsObject. */
+    private CmsObject m_adminCms;
+
     /** The folder where to store the backup files of the configuration. */
     private File m_backupFolder;
 
@@ -135,9 +138,6 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
     /** The configuration based on <code>opencms.properties</code>. */
     private CmsParameterConfiguration m_propertyConfiguration;
-
-    /** The admin CmsObject. */
-    private CmsObject m_adminCms;
 
     /**
      * Creates a new OpenCms configuration manager.<p>
@@ -371,7 +371,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
     /**
      * Sets the admin CmsObject.<p>
-     * 
+     *
      * @param cms the admin CmsObject
      */
     public void setAdminCms(CmsObject cms) {
@@ -694,4 +694,5 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
             }
         }
     }
+
 }

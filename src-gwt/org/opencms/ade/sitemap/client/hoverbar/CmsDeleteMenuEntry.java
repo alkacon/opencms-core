@@ -27,12 +27,14 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.gwt.client.ui.CmsDeleteWarningDialog;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
+import org.opencms.gwt.shared.CmsGwtLog;
 
 /**
  * Sitemap context menu delete entry.<p>
@@ -89,11 +91,18 @@ public class CmsDeleteMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
+
         // gallery folders may only be deleted by gallery managers
         boolean show = controller.isEditable()
             && !controller.isRoot(entry.getSitePath())
             && !CmsSitemapView.getInstance().isModelPageMode()
-            && (!CmsSitemapView.getInstance().isGalleryMode() || getHoverbar().getController().getData().isGalleryManager());
+            && (!CmsSitemapView.getInstance().isGalleryMode()
+                || getHoverbar().getController().getData().isGalleryManager());
+        CmsDetailPageInfo detailInfo = controller.getDetailPageInfo(entry.getId());
+        if ((detailInfo != null) && !controller.canManageDetailPages()) {
+            show = false;
+        }
+
         setVisible(show);
         if (show && !entry.isEditable()) {
             setActive(false);
