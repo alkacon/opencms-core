@@ -353,11 +353,27 @@ if [ $copyAndUnzip == 1 ]; then
                 subdirectory of the repository's configured modules main folder [${MODULE_TARGET_PATH}]." 4
             fi
             echoVerbose "   * Copying "${moduleSourcePath}/${fileName}" to $(pwd) ..."
-            #copy the new module .zip
-            cp "${moduleSourcePath}/${fileName}" ./
-            if [[ $? != 0 ]]; then
-                echoError "Failed to copy \"${moduleSourcePath}/${fileName}\" to $(pwd)." 13
-            fi
+            #copy the new module .zip with simple retry for transient failures
+            __cp_attempt=0
+            while true; do
+                __cp_err=$({ cp "${moduleSourcePath}/${fileName}" ./; } 2>&1)
+                __cp_status=$?
+                if [[ $__cp_status == 0 ]]; then
+                    break
+                fi
+                __cp_attempt=$((__cp_attempt + 1))
+                if [[ -n "${OPT_VERBOSE}" && -n "$__cp_err" ]]; then
+                    echoVerbose "     * Retry ${__cp_attempt}: ${__cp_err}"
+                fi
+                if [[ $__cp_attempt -ge 3 ]]; then
+                    if [[ -n "$__cp_err" ]]; then
+                        echoError "Failed to copy \"${moduleSourcePath}/${fileName}\" to $(pwd): ${__cp_err}" 13
+                    else
+                        echoError "Failed to copy \"${moduleSourcePath}/${fileName}\" to $(pwd)." 13
+                    fi
+                fi
+                sleep $((__cp_attempt))
+            done
             echoVerbose "   * Unzipping copied file."
             #unzip it
             unzip -o ${unzipOptions} "${fileName}" | awk '$0="     "$0'
