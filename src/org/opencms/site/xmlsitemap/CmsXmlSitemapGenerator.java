@@ -27,6 +27,7 @@
 
 package org.opencms.site.xmlsitemap;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.db.CmsAlias;
 import org.opencms.file.CmsObject;
@@ -324,10 +325,15 @@ public class CmsXmlSitemapGenerator {
                 getChangeFrequency(propertyList),
                 getPriority(propertyList));
             urlBean.setOriginalResource(resource);
-            addResult(urlBean, 3);
-            if (isContainerPage) {
+            List<I_CmsResourceType> types = getDetailTypesForPage(resource);
+            if (types.isEmpty()) { // not a detail page
+                addResult(urlBean, 3);
+            } else { // detail page
+                if (!excludeDetailPage(resource)) {
+                    addResult(urlBean, 3);
+                }
                 Locale locale = getLocale(resource, propertyList);
-                addDetailLinks(resource, locale);
+                addDetailLinks(resource, locale, types);
             }
         }
 
@@ -406,24 +412,7 @@ public class CmsXmlSitemapGenerator {
     protected void addDetailLinks(CmsResource containerPage, Locale locale) throws CmsException {
 
         List<I_CmsResourceType> types = getDetailTypesForPage(containerPage);
-        for (I_CmsResourceType type : types) {
-            List<CmsResource> resourcesForType = getDetailResources(type);
-            for (CmsResource detailRes : resourcesForType) {
-                if (!isValidDetailPageCombination(containerPage, locale, detailRes)) {
-                    continue;
-                }
-                List<CmsProperty> detailProps = m_guestCms.readPropertyObjects(detailRes, true);
-                String detailLink = getDetailLink(containerPage, detailRes, locale);
-                CmsXmlSitemapUrlBean detailUrlBean = new CmsXmlSitemapUrlBean(
-                    replaceServerUri(detailLink),
-                    detailRes.getDateLastModified(),
-                    getChangeFrequency(detailProps),
-                    getPriority(detailProps));
-                detailUrlBean.setOriginalResource(detailRes);
-                detailUrlBean.setDetailPageResource(containerPage);
-                addResult(detailUrlBean, 2);
-            }
-        }
+        addDetailLinks(containerPage, locale, types);
     }
 
     /**
@@ -483,6 +472,21 @@ public class CmsXmlSitemapGenerator {
         }
 
         return result;
+    }
+
+    /**
+     * Returns whether to exclude the given detail page.
+     * @param detailPage the detail page
+     * @return whether to exclude the given detail page
+     */
+    protected boolean excludeDetailPage(CmsResource detailPage) {
+
+        // optionally exclude detail pages that are relevant for settings only
+        CmsADEConfigData adeConfigData = OpenCms.getADEManager().lookupConfigurationWithCache(
+            m_guestCms,
+            detailPage.getRootPath());
+        String exclude = adeConfigData.getAttribute("template.detailsettingspage.exclude", null);
+        return Boolean.valueOf(exclude);
     }
 
     /**
@@ -732,6 +736,38 @@ public class CmsXmlSitemapGenerator {
             }
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    /**
+     * Adds the detail page links for a given page to the results.<p>
+     *
+     * @param containerPage the container page resource
+     * @param locale the locale of the container page
+     * @param types the detail types
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private void addDetailLinks(CmsResource containerPage, Locale locale, List<I_CmsResourceType> types)
+    throws CmsException {
+
+        for (I_CmsResourceType type : types) {
+            List<CmsResource> resourcesForType = getDetailResources(type);
+            for (CmsResource detailRes : resourcesForType) {
+                if (!isValidDetailPageCombination(containerPage, locale, detailRes)) {
+                    continue;
+                }
+                List<CmsProperty> detailProps = m_guestCms.readPropertyObjects(detailRes, true);
+                String detailLink = getDetailLink(containerPage, detailRes, locale);
+                CmsXmlSitemapUrlBean detailUrlBean = new CmsXmlSitemapUrlBean(
+                    replaceServerUri(detailLink),
+                    detailRes.getDateLastModified(),
+                    getChangeFrequency(detailProps),
+                    getPriority(detailProps));
+                detailUrlBean.setOriginalResource(detailRes);
+                detailUrlBean.setDetailPageResource(containerPage);
+                addResult(detailUrlBean, 2);
+            }
         }
     }
 
