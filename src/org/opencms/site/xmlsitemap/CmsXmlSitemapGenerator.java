@@ -28,6 +28,7 @@
 package org.opencms.site.xmlsitemap;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.db.CmsAlias;
 import org.opencms.file.CmsObject;
@@ -134,6 +135,9 @@ public class CmsXmlSitemapGenerator {
 
     /** The default priority. */
     public static final double DEFAULT_PRIORITY = 0.5;
+
+    /** Sitemap attribute to exclude empty detail pages relevant for settings only. */
+    public static final String ATTR_DETAIL_SETTINGS_PAGE_EXCLUDE = "template.detailsettingspage.exclude";
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlSitemapGenerator.class);
@@ -325,10 +329,15 @@ public class CmsXmlSitemapGenerator {
                 getChangeFrequency(propertyList),
                 getPriority(propertyList));
             urlBean.setOriginalResource(resource);
+            boolean isDefaultDetailPage = isDefaultDetailPage(resource);
             List<I_CmsResourceType> types = getDetailTypesForPage(resource);
-            if (types.isEmpty()) { // not a detail page
+            if (isDefaultDetailPage) { // default detail page
+                if (!excludeDetailPage(resource)) {
+                    addResult(urlBean, 3);
+                }
+            } else if (types.isEmpty()) { // not a detail page
                 addResult(urlBean, 3);
-            } else { // detail page
+            } else { // typed detail page
                 if (!excludeDetailPage(resource)) {
                     addResult(urlBean, 3);
                 }
@@ -485,7 +494,7 @@ public class CmsXmlSitemapGenerator {
         CmsADEConfigData adeConfigData = OpenCms.getADEManager().lookupConfigurationWithCache(
             m_guestCms,
             detailPage.getRootPath());
-        String exclude = adeConfigData.getAttribute("template.detailsettingspage.exclude", null);
+        String exclude = adeConfigData.getAttribute(ATTR_DETAIL_SETTINGS_PAGE_EXCLUDE, null);
         return Boolean.valueOf(exclude);
     }
 
@@ -686,6 +695,27 @@ public class CmsXmlSitemapGenerator {
     }
 
     /**
+     * Returns whether the given page is a default detail page.
+     * @param resource the page resource
+     * @return whether the given page is a default detail page
+     */
+    protected boolean isDefaultDetailPage(CmsResource resource) {
+
+        Collection<String> typesForPage = m_detailTypesByPage.get(resource.getRootPath());
+        String parentPath = CmsFileUtil.removeTrailingSeparator(CmsResource.getParentFolder(resource.getRootPath()));
+        Collection<String> typesForFolder = m_detailTypesByPage.get(parentPath);
+        Set<String> allTypes = new HashSet<String>();
+        allTypes.addAll(typesForPage);
+        allTypes.addAll(typesForFolder);
+        for (String typeName : allTypes) {
+            if (typeName.equals(CmsADEManager.DEFAULT_DETAILPAGE_TYPE)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Checks whether the page/detail content combination is a valid detail page.<p>
      *
      * @param page the container page
@@ -841,5 +871,4 @@ public class CmsXmlSitemapGenerator {
         }
 
     }
-
 }
