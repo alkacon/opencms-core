@@ -319,6 +319,6 @@
         <virus-scanner />
         <sitemap-config-edit-role>DEVELOPER</sitemap-config-edit-role>
         <allow-element-author-to-work-in-galleries>false</allow-element-author-to-work-in-galleries>
-        <sitemap-editor-detail-page-management-role/>
+        <sitemap-editor-detail-page-management-role>DEVELOPER</sitemap-editor-detail-page-management-role>
     </workplace>
 </opencms>
