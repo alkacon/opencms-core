@@ -789,14 +789,23 @@ public class CmsXmlSitemapGenerator {
                 }
                 List<CmsProperty> detailProps = m_guestCms.readPropertyObjects(detailRes, true);
                 String detailLink = getDetailLink(containerPage, detailRes, locale);
-                CmsXmlSitemapUrlBean detailUrlBean = new CmsXmlSitemapUrlBean(
-                    replaceServerUri(detailLink),
-                    detailRes.getDateLastModified(),
-                    getChangeFrequency(detailProps),
-                    getPriority(detailProps));
-                detailUrlBean.setOriginalResource(detailRes);
-                detailUrlBean.setDetailPageResource(containerPage);
-                addResult(detailUrlBean, 2);
+                String detailLinkRootPath = detailLink;
+                try {
+                    detailLinkRootPath = (new URI(detailLink)).getPath();
+                    detailLinkRootPath = CmsStringUtil.joinPaths(m_siteRoot, detailLinkRootPath);
+                } catch (URISyntaxException e) {
+                    // should not happen
+                }
+                if (!m_includeExcludeSet.isExcluded(detailLinkRootPath)) {
+                    CmsXmlSitemapUrlBean detailUrlBean = new CmsXmlSitemapUrlBean(
+                        replaceServerUri(detailLink),
+                        detailRes.getDateLastModified(),
+                        getChangeFrequency(detailProps),
+                        getPriority(detailProps));
+                    detailUrlBean.setOriginalResource(detailRes);
+                    detailUrlBean.setDetailPageResource(containerPage);
+                    addResult(detailUrlBean, 2);
+                }
             }
         }
     }
