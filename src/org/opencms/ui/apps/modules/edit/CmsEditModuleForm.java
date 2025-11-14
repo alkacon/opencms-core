@@ -104,6 +104,7 @@ import com.vaadin.v7.ui.VerticalLayout;
 /**
  * Form for editing a module.<p>
  */
+@SuppressWarnings("deprecation")
 public class CmsEditModuleForm extends CmsBasicDialog {
 
     /** CSS class. */
@@ -115,23 +116,35 @@ public class CmsEditModuleForm extends CmsBasicDialog {
     /** Classes folder within the module. */
     public static final String PATH_CLASSES = "classes/";
 
-    /** Elements folder within the module. */
-    public static final String PATH_ELEMENTS = "elements/";
+    /** Configuration folder within the module. */
+    public static final String PATH_CONFIGURATION = "configuration/";
 
     /** The formatters folder within the module. */
     public static final String PATH_FORMATTERS = "formatters/";
 
+    /** The functions folder within the module. */
+    public static final String PATH_FUNCTIONS = "functions/";
+
     /** Message bundle file name suffix. */
     private static final String SUFFIX_BUNDLE_FILE = ".messages";
 
+    /** I18N folder within the module. */
+    private static final String PATH_I18N = "i18n/";
+
     /** Lib folder within the module. */
     public static final String PATH_LIB = "lib/";
+
+    /** Plugins folder within the module. */
+    public static final String PATH_PLUGINS = "plugins/";
 
     /** Resources folder within the module. */
     public static final String PATH_RESOURCES = "resources/";
 
     /** Schemas folder within the module. */
     public static final String PATH_SCHEMAS = "schemas/";
+
+    /** Tags folder within the module. */
+    public static final String PATH_TAGS = "tags/";
 
     /** Template folder within the module. */
     public static final String PATH_TEMPLATES = "templates/";
@@ -144,9 +157,6 @@ public class CmsEditModuleForm extends CmsBasicDialog {
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
-
-    /**I18n path. */
-    private static final String PATH_i18n = "i18n/";
 
     public static final String CONFIG_FILE = ".config";
 
@@ -192,23 +202,35 @@ public class CmsEditModuleForm extends CmsBasicDialog {
     /** Check box for creating the classes folder. */
     private CheckBox m_folderClasses;
 
-    /** Check box for creating the elmments folder. */
+    /** Check box for creating the configuration folder. */
+    private CheckBox m_folderConfiguration;
+
+    /** Check box for creating the i18n folder. */
     private CheckBox m_folderI18N;
 
     /** Check box for creating the formatters folder. */
     private CheckBox m_folderFormatters;
 
+    /** Check box for creating the functions folder. */
+    private CheckBox m_folderFunctions;
+
     /** Check box for creating the lib folder. */
     private CheckBox m_folderLib;
 
-    /** Check box for crreating the module folder. */
+    /** Check box for creating the module folder. */
     private CheckBox m_folderModule;
+
+    /** Check box for creating the plugins folder. */
+    private CheckBox m_folderPlugins;
 
     /** Check box for creating the resources folder. */
     private CheckBox m_folderResources;
 
     /** Check box for creating the schemas folder. */
     private CheckBox m_folderSchemas;
+
+    /** Check box for creating the tags folder. */
+    private CheckBox m_folderTags;
 
     /** Check box for creating the templates folder. */
     private CheckBox m_folderTemplates;
@@ -320,11 +342,15 @@ public class CmsEditModuleForm extends CmsBasicDialog {
         m_fieldGroup.bind(m_reducedMetadata, "reducedExportMode");
         m_fieldGroup.bind(m_folderModule, "createModuleFolder");
         m_fieldGroup.bind(m_folderClasses, "createClassesFolder");
-        m_fieldGroup.bind(m_folderI18N, "createI18NFolder");
+        m_fieldGroup.bind(m_folderConfiguration, "createConfigurationFolder");
         m_fieldGroup.bind(m_folderFormatters, "createFormattersFolder");
+        m_fieldGroup.bind(m_folderFunctions, "createFunctionsFolder");
+        m_fieldGroup.bind(m_folderI18N, "createI18NFolder");
         m_fieldGroup.bind(m_folderLib, "createLibFolder");
+        m_fieldGroup.bind(m_folderPlugins, "createPluginsFolder");
         m_fieldGroup.bind(m_folderResources, "createResourcesFolder");
         m_fieldGroup.bind(m_folderSchemas, "createSchemasFolder");
+        m_fieldGroup.bind(m_folderTags, "createTagsFolder");
         m_fieldGroup.bind(m_autoIncrement, "autoIncrement");
         if (m_new) {
             m_reducedMetadata.setValue(Boolean.TRUE);
@@ -376,11 +402,15 @@ public class CmsEditModuleForm extends CmsBasicDialog {
             for (AbstractField<?> field : new AbstractField[] {
                 m_folderModule,
                 m_folderClasses,
-                m_folderI18N,
+                m_folderConfiguration,
                 m_folderFormatters,
+                m_folderFunctions,
+                m_folderI18N,
                 m_folderLib,
+                m_folderPlugins,
                 m_folderResources,
                 m_folderSchemas,
+                m_folderTags,
                 m_folderTemplates}) {
                 field.setVisible(false);
             }
@@ -801,43 +831,67 @@ public class CmsEditModuleForm extends CmsBasicDialog {
     }
 
     /**
+     * Creates one module folder.
+     * @param cms the CMS object
+     * @param modulePath the base module path
+     * @param folderPath the folder path
+     * @param createFlag whether to create the folder
+     * @throws CmsException if creating the folder fails
+     */
+    private void createModuleFolder(CmsObject cms, String modulePath, String folderPath, boolean createFlag)
+    throws CmsException {
+
+        I_CmsResourceType folderType = OpenCms.getResourceManager().getResourceType(
+            CmsResourceTypeFolder.getStaticTypeName());
+        if (createFlag) {
+            String path = modulePath + folderPath;
+            CmsResource resource = cms.createResource(path, folderType);
+            try {
+                cms.unlockResource(resource);
+            } catch (CmsLockException locke) {
+                LOG.warn("Unbale to unlock resource", locke);
+            }
+        }
+    }
+
+    /**
      * Creates all module folders that are selected in the input form.<p>
-     *
+     * @param cms the CMS object
      * @param module the module
      *
      * @return the updated module
      *
-     * @throws CmsException if somehting goes wrong
+     * @throws CmsException if something goes wrong
      */
     private CmsModule createModuleFolders(CmsObject cms, CmsModule module) throws CmsException {
 
         String modulePath = CmsWorkplace.VFS_PATH_MODULES + module.getName() + "/";
-        List<CmsExportPoint> exportPoints = module.getExportPoints();
         List<String> resources = module.getResources();
-
-        // set the createModuleFolder flag if any other flag is set
-        if (module.isCreateClassesFolder()
-            || module.isCreateElementsFolder()
-            || module.isCreateI18NFolder()
-            || module.isCreateLibFolder()
-            || module.isCreateResourcesFolder()
-            || module.isCreateSchemasFolder()
-            || module.isCreateTemplateFolder()
-            || module.isCreateFormattersFolder()) {
-            module.setCreateModuleFolder(true);
-        }
-
+        I_CmsResourceType folderType = OpenCms.getResourceManager().getResourceType(
+            CmsResourceTypeFolder.getStaticTypeName());
+        I_CmsResourceType configType = OpenCms.getResourceManager().getResourceType(CmsADEManager.MODULE_CONFIG_TYPE);
+        List<CmsExportPoint> exportPoints = module.getExportPoints();
         Set<String> exportPointPaths = new HashSet<String>();
         for (CmsExportPoint exportPoint : exportPoints) {
             exportPointPaths.add(exportPoint.getUri());
         }
 
+        // set the createModuleFolder flag if any other flag is set
+        if (module.isCreateClassesFolder()
+            || module.isCreateConfigurationFolder()
+            || module.isCreateFormattersFolder()
+            || module.isCreateFunctionsFolder()
+            || module.isCreateI18NFolder()
+            || module.isCreateLibFolder()
+            || module.isCreatePluginsFolder()
+            || module.isCreateResourcesFolder()
+            || module.isCreateSchemasFolder()
+            || module.isCreateTagsFolder()
+            || module.isCreateTemplateFolder()) {
+            module.setCreateModuleFolder(true);
+        }
+
         // check if we have to create the module folder
-
-        I_CmsResourceType folderType = OpenCms.getResourceManager().getResourceType(
-            CmsResourceTypeFolder.getStaticTypeName());
-        I_CmsResourceType configType = OpenCms.getResourceManager().getResourceType(CmsADEManager.MODULE_CONFIG_TYPE);
-
         if (module.isCreateModuleFolder()) {
             CmsResource resource = cms.createResource(modulePath, folderType);
             CmsResource configResource = cms.createResource(modulePath + CONFIG_FILE, configType);
@@ -852,19 +906,18 @@ public class CmsEditModuleForm extends CmsBasicDialog {
             module.setResources(resources);
         }
 
-        // check if we have to create the template folder
-        if (module.isCreateTemplateFolder()) {
-            String path = modulePath + PATH_TEMPLATES;
-            CmsResource resource = cms.createResource(path, folderType);
-            try {
-                cms.unlockResource(resource);
-            } catch (CmsLockException locke) {
-                LOG.warn("Unbale to unlock resource", locke);
-            }
-        }
+        // create the configuration folder if checked
+        createModuleFolder(cms, modulePath, PATH_CONFIGURATION, module.isCreateConfigurationFolder());
 
+        // create the functions folder if checked
+        createModuleFolder(cms, modulePath, PATH_FUNCTIONS, module.isCreateFunctionsFolder());
+
+        // create the formatters folder if checked
+        createModuleFolder(cms, modulePath, PATH_FORMATTERS, module.isCreateFormattersFolder());
+
+        // create the i18n folder if checked
         if (module.isCreateI18NFolder()) {
-            String path = modulePath + PATH_i18n;
+            String path = modulePath + PATH_I18N;
             CmsResource resource = cms.createResource(path, folderType);
             CmsResource bundleResource = cms.createResource(
                 path + module.getName() + SUFFIX_BUNDLE_FILE + "_" + CmsLocaleManager.getDefaultLocale(),
@@ -880,48 +933,20 @@ public class CmsEditModuleForm extends CmsBasicDialog {
             }
         }
 
-        // check if we have to create the elements folder
-        if (module.isCreateElementsFolder()) {
-            String path = modulePath + PATH_ELEMENTS;
-            CmsResource resource = cms.createResource(path, folderType);
-            try {
-                cms.unlockResource(resource);
-            } catch (CmsLockException locke) {
-                LOG.warn("Unbale to unlock resource", locke);
-            }
-        }
+        // create the plugins folder if checked
+        createModuleFolder(cms, modulePath, PATH_PLUGINS, module.isCreatePluginsFolder());
 
-        if (module.isCreateFormattersFolder()) {
-            String path = modulePath + PATH_FORMATTERS;
-            CmsResource resource = cms.createResource(path, folderType);
-            try {
-                cms.unlockResource(resource);
-            } catch (CmsLockException locke) {
-                LOG.warn("Unbale to unlock resource", locke);
-            }
-        }
+        // create the resources folder if checked
+        createModuleFolder(cms, modulePath, PATH_RESOURCES, module.isCreateResourcesFolder());
 
-        // check if we have to create the schemas folder
-        if (module.isCreateSchemasFolder()) {
-            String path = modulePath + PATH_SCHEMAS;
-            CmsResource resource = cms.createResource(path, folderType);
-            try {
-                cms.unlockResource(resource);
-            } catch (CmsLockException locke) {
-                LOG.warn("Unbale to unlock resource", locke);
-            }
-        }
+        // create the schemas folder if checked
+        createModuleFolder(cms, modulePath, PATH_SCHEMAS, module.isCreateSchemasFolder());
 
-        // check if we have to create the resources folder
-        if (module.isCreateResourcesFolder()) {
-            String path = modulePath + PATH_RESOURCES;
-            CmsResource resource = cms.createResource(path, folderType);
-            try {
-                cms.unlockResource(resource);
-            } catch (CmsLockException locke) {
-                LOG.warn("Unbale to unlock resource", locke);
-            }
-        }
+        // create the tags folder if checked
+        createModuleFolder(cms, modulePath, PATH_TAGS, module.isCreateTagsFolder());
+
+        // create the template folder if checked
+        createModuleFolder(cms, modulePath, PATH_TEMPLATES, module.isCreateTemplateFolder());
 
         // check if we have to create the lib folder
         if (module.isCreateLibFolder()) {

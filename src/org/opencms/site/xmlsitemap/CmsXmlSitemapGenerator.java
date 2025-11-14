@@ -53,6 +53,7 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.site.CmsSite;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -490,7 +491,6 @@ public class CmsXmlSitemapGenerator {
      */
     protected boolean excludeDetailPage(CmsResource detailPage) {
 
-        // optionally exclude detail pages that are relevant for settings only
         CmsADEConfigData adeConfigData = OpenCms.getADEManager().lookupConfigurationWithCache(
             m_guestCms,
             detailPage.getRootPath());
@@ -792,6 +792,7 @@ public class CmsXmlSitemapGenerator {
                 String detailLinkRootPath = detailLink;
                 try {
                     detailLinkRootPath = (new URI(detailLink)).getPath();
+                    detailLinkRootPath = CmsLinkManager.removeOpenCmsContext(detailLinkRootPath);
                     detailLinkRootPath = CmsStringUtil.joinPaths(m_siteRoot, detailLinkRootPath);
                 } catch (URISyntaxException e) {
                     // should not happen

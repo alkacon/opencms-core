@@ -1461,10 +1461,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MODULES_HELP_CREATE_CLASSES_FOLDER_0 = "GUI_MODULES_HELP_CREATE_CLASSES_FOLDER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_CREATE_CONFIGURATION_FOLDER_0 = "GUI_MODULES_HELP_CREATE_CONFIGURATION_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_HELP_CREATE_ELEMENTS_0 = "GUI_MODULES_HELP_CREATE_ELEMENTS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_HELP_CREATE_FORMATTER_FOLDER_0 = "GUI_MODULES_HELP_CREATE_FORMATTER_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_CREATE_FUNCTIONS_FOLDER_0 = "GUI_MODULES_HELP_CREATE_FUNCTIONS_FOLDER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_HELP_CREATE_I18N_0 = "GUI_MODULES_HELP_CREATE_I18N_0";
@@ -1476,10 +1482,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MODULES_HELP_CREATE_MODULE_FOLDER_0 = "GUI_MODULES_HELP_CREATE_MODULE_FOLDER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_CREATE_PLUGINS_FOLDER_0 = "GUI_MODULES_HELP_CREATE_PLUGINS_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_HELP_CREATE_RESOURCES_FOLDER_0 = "GUI_MODULES_HELP_CREATE_RESOURCES_FOLDER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_HELP_CREATE_SCHEMAS_FOLDER_0 = "GUI_MODULES_HELP_CREATE_SCHEMAS_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_HELP_CREATE_TAGS_FOLDER_0 = "GUI_MODULES_HELP_CREATE_TAGS_FOLDER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_HELP_CREATE_TEMPLATES_FOLDER_0 = "GUI_MODULES_HELP_CREATE_TEMPLATES_FOLDER_0";
@@ -1539,10 +1551,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MODULES_LABEL_CREATE_CLASSES_FOLDER_0 = "GUI_MODULES_LABEL_CREATE_CLASSES_FOLDER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_CREATE_CONFIGURATION_FOLDER_0 = "GUI_MODULES_LABEL_CREATE_CONFIGURATION_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_LABEL_CREATE_ELEMENTS_0 = "GUI_MODULES_LABEL_CREATE_ELEMENTS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_LABEL_CREATE_FORMATTER_FOLDER_0 = "GUI_MODULES_LABEL_CREATE_FORMATTER_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_CREATE_FUNCTIONS_FOLDER_0 = "GUI_MODULES_LABEL_CREATE_FUNCTIONS_FOLDER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_LABEL_CREATE_I18N_0 = "GUI_MODULES_LABEL_CREATE_I18N_0";
@@ -1554,10 +1572,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MODULES_LABEL_CREATE_MODULE_FOLDER_0 = "GUI_MODULES_LABEL_CREATE_MODULE_FOLDER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_CREATE_PLUGINS_FOLDER_0 = "GUI_MODULES_LABEL_CREATE_PLUGINS_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_LABEL_CREATE_RESOURCES_FOLDER_0 = "GUI_MODULES_LABEL_CREATE_RESOURCES_FOLDER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_LABEL_CREATE_SCHEMAS_FOLDER_0 = "GUI_MODULES_LABEL_CREATE_SCHEMAS_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODULES_LABEL_CREATE_TAGS_FOLDER_0 = "GUI_MODULES_LABEL_CREATE_TAGS_FOLDER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODULES_LABEL_CREATE_TEMPLATES_FOLDER_0 = "GUI_MODULES_LABEL_CREATE_TEMPLATES_FOLDER_0";

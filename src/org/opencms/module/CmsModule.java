@@ -125,11 +125,17 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
     /** Flag to create the classes folders when creating the module. */
     private transient boolean m_createClassesFolder;
 
+    /** Flag to create the configuration folder when creating the module. */
+    private transient boolean m_createConfigurationFolder;
+
     /** Flag to create the elements folder when creating the module. */
     private transient boolean m_createElementsFolder;
 
     /** Flag to create the formatters folder when creating the module. */
     private transient boolean m_createFormattersFolder;
+
+    /** Flag to create the functions folder when creating the module. */
+    private transient boolean m_createFunctionsFolder;
 
     /** Flag to create the i18n folder when creating the module. */
     private transient boolean m_createI18NFolder;
@@ -140,11 +146,17 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
     /** Flag to create the module folder when creating the module. */
     private transient boolean m_createModuleFolder;
 
+    /** Flag to create the plugins folder when creating the module. */
+    private transient boolean m_createPluginsFolder;
+
     /** Flag to create the resources folder when creating the module. */
     private transient boolean m_createResourcesFolder;
 
     /** Flag to create the schemas folder when creating the module. */
     private transient boolean m_createSchemasFolder;
+
+    /** Flag to create the tags folder when creating the module. */
+    private transient boolean m_createTagsFolder;
 
     /** Flag to create the template folder when creating the module. */
     private transient boolean m_createTemplateFolder;
@@ -621,13 +633,18 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
         result.setCheckpointTime(m_checkpointTime);
 
         result.setCreateClassesFolder(m_createClassesFolder);
+        result.setCreateConfigurationFolder(m_createConfigurationFolder);
         result.setCreateElementsFolder(m_createElementsFolder);
+        result.setCreateFormattersFolder(m_createFormattersFolder);
+        result.setCreateFunctionsFolder(m_createFunctionsFolder);
+        result.setCreateI18NFolder(m_createI18NFolder);
         result.setCreateLibFolder(m_createLibFolder);
         result.setCreateModuleFolder(m_createModuleFolder);
+        result.setCreatePluginsFolder(m_createPluginsFolder);
         result.setCreateResourcesFolder(m_createResourcesFolder);
         result.setCreateSchemasFolder(m_createSchemasFolder);
+        result.setCreateTagsFolder(m_createTagsFolder);
         result.setCreateTemplateFolder(m_createTemplateFolder);
-        result.setCreateFormattersFolder(m_createFormattersFolder);
 
         result.setResources(new ArrayList<String>(m_resources));
         result.setExcludeResources(new ArrayList<String>(m_excluderesources));
@@ -1082,6 +1099,16 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
     }
 
     /**
+     * Returns the createConfigurationFolder flag.<p>
+     *
+     * @return the createConfigurationFolder flag
+     */
+    public boolean isCreateConfigurationFolder() {
+
+        return m_createConfigurationFolder;
+    }
+
+    /**
      * Returns the createElementsFolder flag.<p>
      *
      * @return the createElementsFolder flag
@@ -1099,6 +1126,16 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
     public boolean isCreateFormattersFolder() {
 
         return m_createFormattersFolder;
+    }
+
+    /**
+     * Returns the createFunctionsFolder flag.<p>
+     *
+     * @return the createFunctionsFolder flag
+     */
+    public boolean isCreateFunctionsFolder() {
+
+        return m_createFunctionsFolder;
     }
 
     /**
@@ -1132,6 +1169,16 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
     }
 
     /**
+     * Returns the createPluginsFolder flag.<p>
+     *
+     * @return the createPluginsFolder flag
+     */
+    public boolean isCreatePluginsFolder() {
+
+        return m_createPluginsFolder;
+    }
+
+    /**
      * Returns the createResourcesFolder flag.<p>
      *
      * @return the createResourcesFolder flag
@@ -1149,6 +1196,16 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
     public boolean isCreateSchemasFolder() {
 
         return m_createSchemasFolder;
+    }
+
+    /**
+     * Returns the createTagsFolder flag.<p>
+     *
+     * @return the createTagsFolder flag
+     */
+    public boolean isCreateTagsFolder() {
+
+        return m_createTagsFolder;
     }
 
     /**
@@ -1299,6 +1356,16 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
     }
 
     /**
+     * Sets the createConfigurationFolder flag.<p>
+     *
+     * @param createConfigurationFolder the createConfigurationFolder flag to set
+     */
+    public void setCreateConfigurationFolder(boolean createConfigurationFolder) {
+
+        m_createConfigurationFolder = createConfigurationFolder;
+    }
+
+    /**
      * Sets the createElementsFolder flag.<p>
      *
      * @param createElementsFolder the createElementsFolder flag to set
@@ -1316,6 +1383,16 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
     public void setCreateFormattersFolder(boolean createFormattersFolder) {
 
         m_createFormattersFolder = createFormattersFolder;
+    }
+
+    /**
+     * Sets the createFunctionsFolder flag.<p>
+     *
+     * @param createFunctionsFolder the createFunctionsFolder flag to set
+     */
+    public void setCreateFunctionsFolder(boolean createFunctionsFolder) {
+
+        m_createFunctionsFolder = createFunctionsFolder;
     }
 
     /**
@@ -1349,6 +1426,16 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
     }
 
     /**
+     * Sets the createPluginsFolder flag .<p>
+     *
+     * @param createPluginsFolder the createPluginsFolder flag to set
+     */
+    public void setCreatePluginsFolder(boolean createPluginsFolder) {
+
+        m_createPluginsFolder = createPluginsFolder;
+    }
+
+    /**
      * Sets the createResourcesFolder flag.<p>
      *
      * @param createResourcesFolder the createResourcesFolder flag to set
@@ -1366,6 +1453,16 @@ public class CmsModule implements Comparable<CmsModule>, Serializable {
     public void setCreateSchemasFolder(boolean createSchemasFolder) {
 
         m_createSchemasFolder = createSchemasFolder;
+    }
+
+    /**
+     * Sets the createTagsFolder flag .<p>
+     *
+     * @param createTagsFolder the createTagsFolder flag to set
+     */
+    public void setCreateTagsFolder(boolean createTagsFolder) {
+
+        m_createTagsFolder = createTagsFolder;
     }
 
     /**
