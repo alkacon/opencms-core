@@ -200,6 +200,14 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
                     CmsVaadinUtils.getMessageText(Messages.GUI_RESOURCETYPE_EDIT_INVALID_NAME_0));
             }
 
+            // Even though technically more names might work as resource type names, this GUI tool uses them as parts of OpenCms paths,
+            // so they have to be valid file names
+            try {
+                CmsResource.checkResourceName((String)value);
+            } catch (Exception e) {
+                throw new InvalidValueException(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_RESOURCETYPE_EDIT_INVALID_NAME_0));
+            }
         }
 
     }
@@ -983,6 +991,7 @@ public class CmsNewResourceTypeDialog extends CmsBasicDialog {
         m_typeDescription.setRequired(true);
         m_typeShortName.setRequired(true);
         m_typeXPathName.setRequired(true);
+
         m_bundle.setRequired(true);
 
         m_typeName.setRequired(true);
