@@ -249,6 +249,9 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     /** The workplace servers. */
     private Map<String, CmsSSLMode> m_workplaceServers;
 
+    /** Sites nested under other sites. */
+    private volatile Map<CmsSiteMatcher, CmsSite> m_nestedSites = new HashMap<>();
+
     /**
      * Creates a new CmsSiteManager.<p>
      *
@@ -1002,6 +1005,12 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         if ((rootPath.length() > 0) && !rootPath.endsWith("/")) {
             rootPath = rootPath + "/";
         }
+        for (CmsSite site : m_nestedSites.values()) {
+            if (CmsStringUtil.isPrefixPath(site.getSiteRoot(), rootPath)) {
+                return site;
+            }
+        }
+
         // most sites will be below the "/sites/" folder,
         CmsSite result = lookupSitesFolder(rootPath);
         if (result != null) {
@@ -1036,6 +1045,11 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         if (siteRoot == null) {
             return null;
         }
+        for (CmsSite site : m_nestedSites.values()) {
+            if (siteRoot.equals(site.getSiteRoot())) {
+                return site;
+            }
+        }
         CmsSite result = m_siteRootSites.get(siteRoot);
         if (result != null) {
             return result;
@@ -1065,6 +1079,13 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         if (!rootPath.endsWith("/")) {
             rootPath = rootPath + "/";
         }
+
+        for (CmsSite site : m_nestedSites.values()) {
+            if (CmsStringUtil.isPrefixPath(site.getSiteRoot(), rootPath)) {
+                return site.getSiteRoot();
+            }
+        }
+
         // most sites will be below the "/sites/" folder,
         CmsSite site = lookupSitesFolder(rootPath);
         if (site != null) {
@@ -1406,6 +1427,19 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         return m_siteMatcherSites.get(matcher) == getCurrentSite(cms);
     }
 
+    /** 
+     * Checks if the given site root is the site root of a nested site.
+     * 
+     * @param siteRoot the site root
+     */
+    public boolean isNestedSite(String siteRoot) {
+
+        if (CmsStringUtil.isEmpty(siteRoot)) {
+            return false;
+        }
+        return m_nestedSites.values().stream().anyMatch(site -> siteRoot.equals(site.getSiteRoot()));
+    }
+
     /**
      * Checks if old style secure server is allowed.<p>
      *
@@ -1452,34 +1486,6 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         rootPath = CmsStringUtil.joinPaths(rootPath, "/");
         return rootPath.equals(siteRoot);
 
-    }
-
-    /**
-     * Checks if a given site is under another site.<p>
-     *
-     * @param site CmsSite to check
-     * @return true if given site is invalid
-     */
-    public boolean isSiteUnderSite(CmsSite site) {
-
-        return isSiteUnderSite(site.getSiteRoot());
-    }
-
-    /**
-     * Checks if a given site is under another site.<p>
-     *
-     * @param siteRootPath site root path to check
-     * @return true if given site is invalid
-     */
-    public boolean isSiteUnderSite(String siteRootPath) {
-
-        for (String siteRoot : getSiteRoots()) {
-            if ((siteRootPath.length() > siteRoot.length())
-                & siteRootPath.startsWith(CmsFileUtil.addTrailingSeparator(siteRoot))) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -1907,6 +1913,24 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
     private void initExtensionSites() {
 
         m_alternativeSiteData = new AlternativeSiteData(m_siteMatcherSites.values());
+        Set<CmsPath> siteRoots = new HashSet<CmsPath>();
+        for (CmsSite site : m_siteMatcherSites.values()) {
+            if (site.getSiteRoot() != null) {
+                siteRoots.add(new CmsPath(site.getSiteRoot()));
+            }
+        }
+        m_nestedSites = new HashMap<>();
+        for (CmsSite site : m_siteMatcherSites.values()) {
+            if (Boolean.parseBoolean(site.getParameters().get("isNestedSite"))) {
+                String parent = CmsResource.getParentFolder(site.getSiteRoot());
+                if (parent != null) {
+                    if (siteRoots.contains(new CmsPath(parent))) {
+                        m_nestedSites.put(site.getSiteMatcher(), site);
+                    }
+                }
+            }
+        }
+        LOG.info("Nested sites: " + m_nestedSites);
     }
 
     /**

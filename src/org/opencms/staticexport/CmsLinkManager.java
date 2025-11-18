@@ -998,7 +998,15 @@ public class CmsLinkManager {
         if (siteRoot == null) {
             // use current site root in case no valid site root is available
             // this will also be the case if a "/system" link is used
-            siteRoot = cms.getRequestContext().getSiteRoot();
+            String fullPath = cms.addSiteRoot(sitePath); // fullPath can contain query string, but works fine currently with site manager
+            String siteRootForFullPath = OpenCms.getSiteManager().getSiteRoot(fullPath);
+            if (OpenCms.getSiteManager().isNestedSite(siteRootForFullPath)) {
+                // special case for link target in a site nested in the current site
+                siteRoot = siteRootForFullPath;
+                sitePath = fullPath.substring(siteRoot.length());
+            } else {
+                siteRoot = cms.getRequestContext().getSiteRoot();
+            }
         } else {
             // we found a site root, cut this from the resource path
             sitePath = sitePath.substring(siteRoot.length());
