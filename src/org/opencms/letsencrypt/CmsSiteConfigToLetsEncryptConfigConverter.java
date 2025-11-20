@@ -50,6 +50,7 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
@@ -83,7 +84,8 @@ public class CmsSiteConfigToLetsEncryptConfigConverter {
         public void addDomainSet(Set<String> domains) {
 
             if (!domains.isEmpty()) {
-                m_domainGroups.add(domains);
+
+                m_domainGroups.add(domains.stream().map(domain -> domain.toLowerCase()).collect(Collectors.toSet()));
             }
         }
 
@@ -190,6 +192,7 @@ public class CmsSiteConfigToLetsEncryptConfigConverter {
          * @param invalidPort true if an invalid port was used
          */
         public SiteDomainInfo(Set<String> domains, String commonRootDomain, boolean invalidPort) {
+
             super();
             m_domains = domains;
             m_commonRootDomain = commonRootDomain;
@@ -285,6 +288,7 @@ public class CmsSiteConfigToLetsEncryptConfigConverter {
      * @param config the LetsEncrypt configuration
      */
     public CmsSiteConfigToLetsEncryptConfigConverter(CmsLetsEncryptConfiguration config) {
+
         m_config = config;
         m_configUpdater = new CmsLetsEncryptUpdater(config);
     }
