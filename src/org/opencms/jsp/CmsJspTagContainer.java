@@ -78,10 +78,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -589,25 +591,27 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
                 }
                 // iterate over elements to render
                 int numRenderedElements = 0;
-                boolean first = true;
+                Set<String> skippedTypes = new HashSet<>();
                 for (CmsContainerElementBean elementBean : allElements) {
-                    // in case of rendering a detail container on a detail page,
-                    // the first element may be used to provide settings for the detail content
-                    // this element will not be rendered, in case the detail page is not actually used to render detail content
+                    // if we are not in edit mode, and displaying a detail container without having a detail content,
+                    // skip the first element of any type for which this page is a detail page.
+                    // (those are the elements used as 'setting templates' for their respective types)
                     boolean skipDetailTemplateElement = false;
+                    String type = elementBean.getTypeName();
                     try {
-                        skipDetailTemplateElement = first
+                        skipDetailTemplateElement = !skippedTypes.contains(type)
                             && !m_editableRequest
                             && m_detailView
                             && (detailElement == null)
                             && OpenCms.getADEManager().isDetailPage(cms, standardContext.getPageResource())
-                            && OpenCms.getADEManager().getDetailPages(cms, elementBean.getTypeName()).contains(
+                            && OpenCms.getADEManager().getDetailPages(cms, type).contains(
                                 CmsResource.getFolderPath(standardContext.getPageResource().getRootPath()));
                     } catch (Exception e) {
                         LOG.error(e.getLocalizedMessage(), e);
                     }
-                    first = false;
-                    if (!skipDetailTemplateElement) {
+                    if (skipDetailTemplateElement) {
+                        skippedTypes.add(type);
+                    } else {
                         try {
                             boolean rendered = renderContainerElement(
                                 (HttpServletRequest)req,
