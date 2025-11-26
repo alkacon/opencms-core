@@ -1427,9 +1427,9 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
         return m_siteMatcherSites.get(matcher) == getCurrentSite(cms);
     }
 
-    /** 
+    /**
      * Checks if the given site root is the site root of a nested site.
-     * 
+     *
      * @param siteRoot the site root
      */
     public boolean isNestedSite(String siteRoot) {
@@ -1918,6 +1918,9 @@ public final class CmsSiteManagerImpl implements I_CmsEventListener {
             if (site.getSiteRoot() != null) {
                 siteRoots.add(new CmsPath(site.getSiteRoot()));
             }
+        }
+        for (String siteRoot : m_alternativeSiteData.getSiteRoots()) {
+            siteRoots.add(new CmsPath(siteRoot));
         }
         m_nestedSites = new HashMap<>();
         for (CmsSite site : m_siteMatcherSites.values()) {
