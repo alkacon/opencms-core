@@ -100,13 +100,6 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
     /** The detail container path pattern. */
     private static final String DETAIL_CONTAINER_PATTERN = ".*\\/\\.detailContainers\\/.*";
 
-    static {
-        m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
-        m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
-        m_filteredActions.add(CmsGwtConstants.ACTION_SELECTELEMENTVIEW);
-        m_filteredActions.add(CmsLogout.class.getName());
-    }
-
     /** The panel containing the resource boxes. */
     protected CmsList<CmsListItem> m_list;
 
@@ -134,21 +127,37 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
     /** The resource status from which we get the related resources to display. */
     private CmsResourceStatusBean m_statusBean;
 
+    /** The title of the tab in which this widget is used. */
+    private String m_tabTitle;
+
     /**
      * Creates a new widget instance.<p>
      *
      * @param status the resource status from which we get the related resources to display.
      * @param mode the display mode (display relation sources or targets)
      * @param menuHandler the context menu handler
+     * @param tabTitle the title of the tab in which this widget is used
      */
-    public CmsResourceRelationView(CmsResourceStatusBean status, Mode mode, CmsContextMenuHandler menuHandler) {
+    public CmsResourceRelationView(
+        CmsResourceStatusBean status,
+        Mode mode,
+        CmsContextMenuHandler menuHandler,
+        String tabTitle) {
 
         initWidget(m_panel);
         m_menuHandler = menuHandler;
         m_scrollPanels = new ArrayList<CmsScrollPanel>();
         m_statusBean = status;
         m_mode = mode;
+        m_tabTitle = tabTitle;
         initContent(status);
+    }
+
+    static {
+        m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
+        m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
+        m_filteredActions.add(CmsGwtConstants.ACTION_SELECTELEMENTVIEW);
+        m_filteredActions.add(CmsLogout.class.getName());
     }
 
     /**
@@ -386,10 +395,15 @@ public class CmsResourceRelationView extends Composite implements I_CmsDescendan
 
         switch (m_mode) {
             case sources:
+                if (m_tabTitle != null) {
+                    return m_tabTitle;
+                }
                 return org.opencms.gwt.client.Messages.get().key(
                     org.opencms.gwt.client.Messages.GUI_RESOURCE_INFO_TAB_USAGE_0);
             case targets:
-
+                if (m_tabTitle != null) {
+                    return m_tabTitle;
+                }
                 return org.opencms.gwt.client.Messages.get().key(
                     org.opencms.gwt.client.Messages.GUI_RESOURCE_INFO_TAB_TARGETS_0);
             case siblings:

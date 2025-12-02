@@ -102,14 +102,19 @@ public class CmsResourceInfoDialog extends CmsPopup {
                     CmsResourceRelationView targets = new CmsResourceRelationView(
                         statusBean,
                         Mode.targets,
-                        menuHandler);
+                        menuHandler,
+                        tabEntry.getValue());
                     setTabMinHeight(targets);
                     targets.setPopup(this);
                     m_tabPanel.add(new CmsTabContentWrapper(targets), tabEntry.getValue());
                     relationViews.add(targets);
                     break;
                 case tabRelationsTo:
-                    CmsResourceRelationView usage = new CmsResourceRelationView(statusBean, Mode.sources, menuHandler);
+                    CmsResourceRelationView usage = new CmsResourceRelationView(
+                        statusBean,
+                        Mode.sources,
+                        menuHandler,
+                        tabEntry.getValue());
                     setTabMinHeight(usage);
                     usage.setPopup(this);
                     m_tabPanel.add(new CmsTabContentWrapper(usage), tabEntry.getValue());
@@ -126,7 +131,8 @@ public class CmsResourceInfoDialog extends CmsPopup {
                         CmsResourceRelationView siblings = new CmsResourceRelationView(
                             statusBean,
                             Mode.siblings,
-                            menuHandler);
+                            menuHandler,
+                            tabEntry.getValue());
                         setTabMinHeight(siblings);
                         m_tabPanel.add(new CmsTabContentWrapper(siblings), tabEntry.getValue());
                         relationViews.add(siblings);
