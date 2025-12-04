@@ -79,7 +79,6 @@ if (hasExtModules) {
 }
 
 repositories {
-    mavenLocal()
     if (project.hasProperty('additional_repositories')){
         additional_repositories.split(';').each{ repo ->
             maven { url repo }
