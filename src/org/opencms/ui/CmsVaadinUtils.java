@@ -84,6 +84,7 @@ import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.vaadin.server.ErrorMessage;
@@ -776,13 +777,28 @@ public final class CmsVaadinUtils {
             res.addContainerProperty(descID, String.class, "");
         }
 
-        for (I_CmsPrincipal group : list) {
+        for (I_CmsPrincipal principal : list) {
 
-            Item item = res.addItem(group);
-            item.getItemProperty(captionID).setValue(group.getSimpleName());
-            item.getItemProperty(ouID).setValue(group.getOuFqn());
+            Item item = res.addItem(principal);
+            String name = principal.getSimpleName();
+            if (principal instanceof CmsUser) {
+                CmsUser user = (CmsUser)principal;
+                List<String> nameComponents = new ArrayList<>();
+                for (String nameComponent : Arrays.asList(user.getFirstname(), user.getLastname())) {
+                    if (!CmsStringUtil.isEmptyOrWhitespaceOnly(nameComponent)) {
+                        nameComponents.add(nameComponent);
+                    }
+                }
+                String fullName = Joiner.on(' ').join(nameComponents);
+                if (!CmsStringUtil.isEmpty(fullName)) {
+                    name = name + " (" + fullName + ")";
+                }
+            }
+            item.getItemProperty(captionID).setValue(name);
+            item.getItemProperty(ouID).setValue(principal.getOuFqn());
             if (descID != null) {
-                item.getItemProperty(descID).setValue(group.getDescription(A_CmsUI.get().getLocale()));
+                String desc = principal.getDescription(A_CmsUI.get().getLocale());
+                item.getItemProperty(descID).setValue(desc);
             }
         }
 
