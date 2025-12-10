@@ -30,6 +30,7 @@ package org.opencms.ade.contenteditor.shared.rpc;
 import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.acacia.shared.CmsValidationResult;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
+import org.opencms.ade.contenteditor.shared.CmsContentAugmentationDetails;
 import org.opencms.ade.contenteditor.shared.CmsEditHandlerData;
 import org.opencms.ade.contenteditor.shared.CmsSaveResult;
 import org.opencms.gwt.CmsRpcException;
@@ -49,6 +50,26 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
 
     /** The back-link parameter. */
     String PARAM_BACKLINK = "backlink";
+
+    /**
+     * Sends the edited data back to the server and triggers a content augmentation.
+     *
+     * @param entityId the entity id
+     * @param clientId the client id, if available
+     * @param editedEntity the edited entity
+     * @param deletedEntities the deleted entities
+     * @param skipPaths the paths to skip for locale synchronization
+     * @return the content synch results
+     *
+     * @throws CmsRpcException in case anything goes wrong
+     */
+    public CmsContentAugmentationDetails synchronizeAndTransform(
+        String entityId,
+        String clientId,
+        CmsEntity editedEntity,
+        List<String> deletedEntities,
+        Collection<String> skipPaths)
+    throws CmsRpcException;
 
     /**
      * Calls the editor change handlers.<p>

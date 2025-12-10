@@ -172,6 +172,16 @@ public final class CmsJsUtil {
     }-*/;
 
     /**
+     * Gets the top window.
+     *
+     * @return the top window
+     */
+    public static native JavaScriptObject getTop() /*-{
+        var result = $wnd.top;
+        return result;
+    }-*/;
+
+    /**
      * Gets the current window as a Javascript object.<p>
      *
      * @return the current window
@@ -238,5 +248,4 @@ public final class CmsJsUtil {
 
         };
     }
-
 }

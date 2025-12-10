@@ -109,6 +109,9 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
     /** The locale synchronization values. */
     private Map<String, String> m_syncValues;
 
+    /** Is there an active content augmentation? */
+    private boolean m_hasAugmentation;
+
     /** The content title. */
     private String m_title;
 
@@ -581,6 +584,16 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
     }
 
     /**
+     * Checks whether there is an active content augmentation.
+     *
+     * @return true if there is an active content augmentation
+     */
+    public boolean hasAugmentation() {
+
+        return m_hasAugmentation;
+    }
+
+    /**
      * Returns <code>true</code> if any editor change handlers have been configured for this content type.<p>
      *
      * @return <code>true</code> if any editor change handlers have been configured for this content type.<p>
@@ -678,6 +691,11 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
     public void setDirectEdit(boolean isDirectEdit) {
 
         m_isDirectEdit = isDirectEdit;
+    }
+
+    public void setHasAugmentation(boolean hasAugmentation) {
+
+        m_hasAugmentation = hasAugmentation;
     }
 
     /**

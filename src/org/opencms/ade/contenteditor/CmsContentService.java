@@ -42,6 +42,7 @@ import org.opencms.ade.containerpage.shared.CmsCntPageData;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
+import org.opencms.ade.contenteditor.shared.CmsContentAugmentationDetails;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.CmsEditHandlerData;
 import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
@@ -114,6 +115,7 @@ import org.opencms.xml.content.CmsXmlContentErrorHandler;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
+import org.opencms.xml.content.I_CmsXmlContentAugmentation;
 import org.opencms.xml.content.I_CmsXmlContentEditorChangeHandler;
 import org.opencms.xml.content.I_CmsXmlContentHandler.DisplayType;
 import org.opencms.xml.types.CmsXmlAccessRestrictionValue;
@@ -135,6 +137,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -183,12 +186,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /** Mapping client widget names to server side widget classes. */
     private static final Map<String, Class<? extends I_CmsADEWidget>> WIDGET_MAPPINGS = new HashMap<>();
 
-    /** The session cache. */
-    private CmsADESessionCache m_sessionCache;
-
-    /** The current users workplace locale. */
-    private Locale m_workplaceLocale;
-
     static {
         WIDGET_MAPPINGS.put("string", CmsInputWidget.class);
         WIDGET_MAPPINGS.put("select", CmsSelectWidget.class);
@@ -202,6 +199,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         WIDGET_MAPPINGS.put("radio", CmsRadioSelectWidget.class);
         WIDGET_MAPPINGS.put("groupselection", CmsGroupWidget.class);
     }
+
+    /** The session cache. */
+    private CmsADESessionCache m_sessionCache;
+
+    /** The current users workplace locale. */
+    private Locale m_workplaceLocale;
 
     /**
      * Creates a new resource to edit, delegating to an edit handler if edit handler data is passed in.<p>
@@ -960,6 +963,118 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             cms.writeFile(elementFile);
             tryUnlock(elementFile);
             return "";
+        } catch (Exception e) {
+            error(e);
+            return null;
+        }
+
+    }
+
+    /**
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#synchronizeAndTransform(java.lang.String, java.lang.String, org.opencms.acacia.shared.CmsEntity, java.util.List, java.util.Collection)
+     */
+    public CmsContentAugmentationDetails synchronizeAndTransform(
+        String entityId,
+        String clientId,
+        CmsEntity editedEntity,
+        List<String> deletedEntities,
+        Collection<String> skipPaths)
+    throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        try {
+            CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
+            CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+                cms,
+                cms.getRequestContext().getRootUri());
+            CmsFile file = cms.readFile(resource);
+            CmsXmlContent content = getContentDocument(file, true);
+            if (editedEntity != null) {
+                synchronizeLocaleIndependentForEntity(file, content, skipPaths, editedEntity);
+            }
+            for (String deleteId : deletedEntities) {
+                Locale localeToDelete = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(deleteId));
+                if (content.hasLocale(localeToDelete)) {
+                    content.removeLocale(localeToDelete);
+                }
+            }
+
+            byte[] contentData = content.marshal();
+            CmsFile fileCopy = new CmsFile(content.getFile());
+            fileCopy.setContents(contentData);
+
+            I_CmsXmlContentAugmentation augmentation = getContentAugmentation(cms, resource, config);
+            Locale currentLocale = CmsLocaleManager.getLocale(
+                CmsContentDefinition.getLocaleFromId(editedEntity.getId()));
+            CmsXmlContent originalCopy = CmsXmlContentFactory.unmarshal(cms, fileCopy);
+            CmsXmlContent[] resultContainer = {content}; // if not set, keeps the original
+            if (augmentation != null) {
+
+                augmentation.augmentContent(new I_CmsXmlContentAugmentation.Context() {
+
+                    private boolean m_callingJsp;
+
+                    @Override
+                    public void callJsp(String path) throws Exception {
+
+                        if (m_callingJsp) {
+                            throw new IllegalStateException("callJsp method can not be used reentrantly");
+                        }
+                        m_callingJsp = true;
+                        try {
+                            getRequest().setAttribute(I_CmsXmlContentAugmentation.ATTR_CONTEXT, this);
+                            CmsResource resource = cms.readResource(path);
+                            OpenCms.getResourceManager().getLoader(resource).dump(
+                                cms,
+                                resource,
+                                null,
+                                cms.getRequestContext().getLocale(),
+                                getRequest(),
+                                getResponse());
+                        } finally {
+                            getRequest().removeAttribute(I_CmsXmlContentAugmentation.ATTR_CONTEXT);
+                            m_callingJsp = false;
+                        }
+                    }
+
+                    @Override
+                    public CmsADEConfigData getADEConfig() {
+
+                        return config;
+                    }
+
+                    @Override
+                    public CmsObject getCmsObject() {
+
+                        return cms;
+                    }
+
+                    @Override
+                    public CmsXmlContent getContent() {
+
+                        return originalCopy;
+                    }
+
+                    @Override
+                    public Locale getLocale() {
+
+                        return currentLocale;
+                    }
+
+                    @Override
+                    public void setResult(CmsXmlContent result) {
+
+                        resultContainer[0] = result;
+                    }
+                });
+            }
+            CmsXmlContent resultContent = resultContainer[0];
+            getSessionCache().setCacheXmlContent(structureId, resultContent);
+            CmsContentAugmentationDetails result = new CmsContentAugmentationDetails();
+            result.setLocales(
+                resultContent.getLocales().stream().map(locale -> locale.toString()).collect(Collectors.toList()));
+            return result;
         } catch (Exception e) {
             error(e);
             return null;
@@ -1910,6 +2025,30 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
+     * Returns the active content augmentation, if any - otherwise returns null.
+     *
+     * @param cms the CMS context
+     * @param resource the edited resource
+     * @param config the active sitemap config
+     *
+     * @return the content augmentation, or null if none is active
+     */
+    private I_CmsXmlContentAugmentation getContentAugmentation(
+        CmsObject cms,
+        CmsResource resource,
+        CmsADEConfigData config) {
+
+        String jsp = config.getAttribute("xml.content.augmentation.jsp", null);
+
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(jsp)) {
+            jsp = jsp.trim();
+            return new CmsJspContentAugmentation(jsp);
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Returns the XML content document.<p>
      *
      * @param file the resource file
@@ -2297,9 +2436,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             timer = System.currentTimeMillis();
         }
         CmsObject cms = getCmsObject();
-        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
-            cms,
-            cms.getRequestContext().getRootUri());
+        String lookupPath = cms.getRequestContext().getRootUri();
+        if (lookupPath.startsWith("/system/workplace/") && (file != null)) {
+            lookupPath = file.getRootPath();
+        }
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, lookupPath);
         List<Locale> availableLocalesList = OpenCms.getLocaleManager().getAvailableLocales(cms, file);
         if (!availableLocalesList.contains(locale)) {
             availableLocalesList.retainAll(content.getLocales());
@@ -2496,7 +2637,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
         }
 
-        return new CmsContentDefinition(
+        CmsContentDefinition result = new CmsContentDefinition(
             entityId,
             entities,
             visitor.getAttributeConfigurations(),
@@ -2517,6 +2658,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             performedAutoCorrection,
             autoUnlock,
             getChangeHandlerScopes(content.getContentDefinition()));
+        I_CmsXmlContentAugmentation augmentation = getContentAugmentation(cms, file, config);
+        result.setHasAugmentation(augmentation != null);
+        return result;
     }
 
     /**

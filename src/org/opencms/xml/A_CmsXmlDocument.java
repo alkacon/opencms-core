@@ -124,6 +124,16 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     }
 
     /**
+     * Returns a clone of this content's document.
+     *
+     * @return a clone of the content's document
+     */
+    public Document cloneDocument() {
+
+        return (Document)m_document.clone();
+    }
+
+    /**
      * @see org.opencms.xml.I_CmsXmlDocument#copyLocale(java.util.List, java.util.Locale)
      */
     public void copyLocale(List<Locale> possibleSources, Locale destination) throws CmsXmlException {

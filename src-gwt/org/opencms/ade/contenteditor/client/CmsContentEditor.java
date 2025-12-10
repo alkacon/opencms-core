@@ -49,6 +49,7 @@ import org.opencms.ade.containerpage.client.CmsContainerpageController;
 import org.opencms.ade.containerpage.client.CmsContentEditorHandler;
 import org.opencms.ade.contenteditor.client.css.I_CmsLayoutBundle;
 import org.opencms.ade.contenteditor.shared.CmsComplexWidgetData;
+import org.opencms.ade.contenteditor.shared.CmsContentAugmentationDetails;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.CmsEditHandlerData;
 import org.opencms.ade.contenteditor.shared.CmsSaveResult;
@@ -80,7 +81,6 @@ import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsGwtConstants;
-import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
@@ -389,6 +389,8 @@ public final class CmsContentEditor extends CmsEditorBase {
 
     /** The undo redo event handler registration. */
     private HandlerRegistration m_undoRedoHandlerRegistration;
+
+    private boolean m_hasAugmentation;
 
     /**
      * Constructor.<p>
@@ -1537,7 +1539,7 @@ public final class CmsContentEditor extends CmsEditorBase {
             } else {
                 nextLocale = CmsContentDefinition.getLocaleFromId(m_registeredEntities.iterator().next());
             }
-            switchLocale(nextLocale);
+            switchLocale(nextLocale, false);
         }
     }
 
@@ -1859,6 +1861,57 @@ public final class CmsContentEditor extends CmsEditorBase {
     }
 
     /**
+     * Runs the content augmentation.
+     */
+    void runAugmentation() {
+
+        m_basePanel.clear();
+        destroyForm(false);
+        final CmsEntity entity = m_entityBackend.getEntity(m_entityId);
+        m_entityId = getIdForLocale(m_locale);
+        if (m_registeredEntities.contains(m_entityId)) {
+            unregistereEntity(m_entityId);
+        }
+        CmsRpcAction<CmsContentAugmentationDetails> action = new CmsRpcAction<CmsContentAugmentationDetails>() {
+
+            @Override
+            public void execute() {
+
+                start(0, true);
+                getService().synchronizeAndTransform(
+                    m_entityId,
+                    m_clientId,
+                    entity,
+                    new ArrayList<>(m_deletedEntities),
+                    getSkipPaths(),
+                    this);
+            }
+
+            @Override
+            protected void onResponse(final CmsContentAugmentationDetails result) {
+
+                m_deletedEntities.clear();
+                stop(false);
+                List<String> locales = result.getLocales();
+                if (locales.size() == 0) {
+                    DomGlobal.alert("Transformed content has no locales");
+                    return;
+                }
+                m_contentLocales.clear();
+                m_contentLocales.addAll(result.getLocales());
+                if (locales.contains(m_locale)) {
+                    String currentLocale = m_locale;
+                    m_locale = null;
+                    switchLocale(currentLocale, true);
+                } else {
+                    switchLocale(locales.get(0), true);
+                }
+            }
+        };
+        action.execute();
+    }
+
+    /**
      * Saves the content and closes the editor.<p>
      */
     void save() {
@@ -1933,6 +1986,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         m_registeredEntities.add(definition.getEntityId());
         m_tabInfos = definition.getTabInfos();
         m_iconClasses = definition.getIconClasses();
+        m_hasAugmentation = definition.hasAugmentation();
         addContentDefinition(definition);
         CmsDefaultWidgetService service = (CmsDefaultWidgetService)getWidgetService();
         service.addConfigurations(definition.getConfigurations());
@@ -2062,10 +2116,10 @@ public final class CmsContentEditor extends CmsEditorBase {
      *
      * @param locale the locale to switch to
      */
-    void switchLocale(final String locale) {
+    void switchLocale(final String locale, boolean forceSetChanged) {
 
         if (locale.equals(m_locale)) {
-            return;
+            // return;
         }
         final Integer oldTabIndex = getTabIndex();
         internalSetLocale(locale);
@@ -2101,11 +2155,15 @@ public final class CmsContentEditor extends CmsEditorBase {
                 public void execute(CmsContentDefinition contentDefinition) {
 
                     setContentDefinition(contentDefinition);
+
                     renderFormContent();
                     if (oldTabIndex != null) {
                         if (oldTabIndex.intValue() < getFormTabs().getTabCount()) {
                             getFormTabs().selectTab(oldTabIndex.intValue());
                         }
+                    }
+                    if (forceSetChanged) {
+                        setChanged();
                     }
                 }
 
@@ -2447,7 +2505,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                     Label button = new Label(locale.toUpperCase());
                     localeButtons.add(button);
                     button.addClickHandler(event -> {
-                        switchLocale(locale);
+                        switchLocale(locale, false);
                     });
                 }
             } else {
@@ -2469,7 +2527,7 @@ public final class CmsContentEditor extends CmsEditorBase {
 
                 public void onValueChange(ValueChangeEvent<String> event) {
 
-                    switchLocale(event.getValue());
+                    switchLocale(event.getValue(), false);
                 }
             });
         } else {
@@ -2679,6 +2737,13 @@ public final class CmsContentEditor extends CmsEditorBase {
                 confirmCancel();
             }
         });
+        if (!inline && m_hasAugmentation) {
+            CmsPushButton transformButton = createButton(
+                "Augment",
+                I_CmsButton.ButtonData.SETTINGS_BUTTON.getIconClass());
+            transformButton.addClickHandler(event -> runAugmentation());
+            m_toolbar.addRight(transformButton);
+        }
         m_toolbar.addRight(m_cancelButton);
         RootPanel.get().add(m_toolbar);
     }
