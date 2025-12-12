@@ -158,7 +158,7 @@ dependencies {
     distribution group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14', transitive: false
     distribution group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.16', transitive: false
     distribution group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.14', transitive: false
-    distribution group: 'org.apache.jackrabbit', name: 'jackrabbit-webdav', version: '2.21.3', transitive: true
+    distribution group: 'org.apache.jackrabbit', name: 'jackrabbit-webdav', version: '2.22.2', transitive: true
     distribution group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.21.1', transitive: false
     distribution group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.21.1', transitive: false
     distribution group: 'org.apache.logging.log4j', name: 'log4j-slf4j2-impl', version: '2.21.1', transitive: false
