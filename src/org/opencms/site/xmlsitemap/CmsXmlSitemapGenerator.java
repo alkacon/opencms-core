@@ -212,7 +212,7 @@ public class CmsXmlSitemapGenerator {
      *
      * @param link the link to change
      * @param server the server URI string
-
+    
      * @return the changed link
      */
     public static String replaceServerUri(String link, String server) {
@@ -793,7 +793,7 @@ public class CmsXmlSitemapGenerator {
                 try {
                     detailLinkRootPath = (new URI(detailLink)).getPath();
                     detailLinkRootPath = CmsLinkManager.removeOpenCmsContext(detailLinkRootPath);
-                    detailLinkRootPath = CmsStringUtil.joinPaths(m_siteRoot, detailLinkRootPath);
+                    detailLinkRootPath = m_siteGuestCms.addSiteRoot(detailLinkRootPath);
                 } catch (URISyntaxException e) {
                     // should not happen
                 }
