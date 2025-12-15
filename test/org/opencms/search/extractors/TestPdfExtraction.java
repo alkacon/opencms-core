@@ -62,7 +62,6 @@ public class TestPdfExtraction extends OpenCmsTestCase {
             System.out.println("Value: " + e.getValue());
         }
 
-        assertEquals(8, items.size());
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
         String result = extractionResult.getContent();

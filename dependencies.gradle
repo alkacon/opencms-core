@@ -159,11 +159,11 @@ dependencies {
     distribution group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.16', transitive: false
     distribution group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.14', transitive: false
     distribution group: 'org.apache.jackrabbit', name: 'jackrabbit-webdav', version: '2.22.2', transitive: true
-    distribution group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.21.1', transitive: false
-    distribution group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.21.1', transitive: false
-    distribution group: 'org.apache.logging.log4j', name: 'log4j-slf4j2-impl', version: '2.21.1', transitive: false
-    distribution group: 'org.apache.logging.log4j', name: 'log4j-jcl', version: '2.21.1', transitive: false
-    distribution group: 'org.apache.logging.log4j', name: 'log4j-web', version: '2.21.1', transitive: false
+    distribution group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.24.3', transitive: false
+    distribution group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.24.3', transitive: false
+    distribution group: 'org.apache.logging.log4j', name: 'log4j-slf4j2-impl', version: '2.24.3', transitive: false
+    distribution group: 'org.apache.logging.log4j', name: 'log4j-jcl', version: '2.24.3', transitive: false
+    distribution group: 'org.apache.logging.log4j', name: 'log4j-web', version: '2.24.3', transitive: false
     distribution group: 'org.apache.lucene', name: 'lucene-analysis-common', version: '9.11.1', transitive: true
     distribution group: 'org.apache.lucene', name: 'lucene-core', version: '9.11.1', transitive: true
     distribution group: 'org.apache.lucene', name: 'lucene-highlighter', version: '9.11.1', transitive: true
@@ -180,8 +180,9 @@ dependencies {
     distribution group: 'org.apache.poi', name: 'poi-ooxml', version:'5.2.5', transitive: false
     distribution group: 'org.apache.poi', name: 'poi-ooxml-lite', version: '5.2.5', transitive: false
     distribution group: 'org.apache.poi', name: 'poi-scratchpad', version: '5.2.5', transitive: false
-    distribution group: 'org.apache.tika', name: 'tika-core', version: '1.28.5', transitive: false
-    distribution group: 'org.apache.tika', name: 'tika-parsers', version:'1.28.5', transitive: false
+    distribution group: 'org.apache.tika', name: 'tika-core', version: '3.2.3', transitive: true
+    distribution group: 'org.apache.tika', name: 'tika-parser-microsoft-module', version: '3.2.3', transitive: true
+    distribution group: 'org.apache.tika', name: 'tika-parser-pdf-module', version: '3.2.3', transitive: true
     distribution group: 'org.apache.xbean', name: 'xbean-asm5-shaded', version: '4.5', transitive: false
     distribution group: 'org.apache.xmlbeans', name: 'xmlbeans', version:'5.1.1', transitive: false
     distribution group: 'org.apache.xmlgraphics', name: 'batik-constants', version: '1.16', transitive: false

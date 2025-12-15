@@ -29,7 +29,7 @@ package org.opencms.search.extractors;
 
 import java.io.InputStream;
 
-import org.apache.tika.parser.rtf.RTFParser;
+import org.apache.tika.parser.microsoft.rtf.RTFParser;
 
 /**
  * Extracts the text from a RTF  document.<p>

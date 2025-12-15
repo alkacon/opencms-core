@@ -38,9 +38,11 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.metadata.DublinCore;
-import org.apache.tika.metadata.MSOffice;
 import org.apache.tika.metadata.Metadata;
+import org.apache.tika.metadata.Office;
+import org.apache.tika.metadata.OfficeOpenXMLCore;
 import org.apache.tika.metadata.OfficeOpenXMLExtended;
+import org.apache.tika.metadata.PDF;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.BodyContentHandler;
@@ -135,7 +137,6 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
 
         parser.parse(in, handler, meta, context);
         in.close();
-
         String result = writer.toString();
 
         // add the main document text
@@ -146,13 +147,27 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
 
         // appends all known document meta data as content items
         combineContentItem(meta.get(DublinCore.TITLE), I_CmsExtractionResult.ITEM_TITLE, content, contentItems);
-        combineContentItem(meta.get(MSOffice.KEYWORDS), I_CmsExtractionResult.ITEM_KEYWORDS, content, contentItems);
-        String subject = meta.get(I_CmsExtractionResult.ITEM_SUBJECT);
+        String keywords = meta.get(PDF.DOC_INFO_KEY_WORDS);
+        if (StringUtils.isBlank(keywords)) {
+            keywords = meta.get(Office.KEYWORDS);
+        }
+        combineContentItem(keywords, I_CmsExtractionResult.ITEM_KEYWORDS, content, contentItems);
+        String subject = null;
+        if (StringUtils.isBlank(subject)) {
+            subject = meta.get(PDF.DOC_INFO_SUBJECT);
+        }
+        if (StringUtils.isBlank(subject)) {
+            subject = meta.get(I_CmsExtractionResult.ITEM_SUBJECT);
+        }
         if (StringUtils.isBlank(subject)) {
             subject = meta.get(DublinCore.SUBJECT);
         }
         combineContentItem(subject, I_CmsExtractionResult.ITEM_SUBJECT, content, contentItems);
-        combineContentItem(meta.get(MSOffice.AUTHOR), I_CmsExtractionResult.ITEM_AUTHOR, content, contentItems);
+        if (meta.get(Office.AUTHOR) != null) {
+            combineContentItem(meta.get(Office.AUTHOR), I_CmsExtractionResult.ITEM_AUTHOR, content, contentItems);
+        } else {
+            combineContentItem(meta.get(DublinCore.CREATOR), I_CmsExtractionResult.ITEM_AUTHOR, content, contentItems);
+        }
         String creator = meta.get("xmp:CreatorTool");
         if (StringUtils.isBlank(creator)) {
             creator = meta.get(DublinCore.CREATOR);
@@ -162,22 +177,40 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
         }
         combineContentItem(creator, I_CmsExtractionResult.ITEM_CREATOR, content, contentItems);
         //
-        combineContentItem(meta.get(MSOffice.CATEGORY), I_CmsExtractionResult.ITEM_CATEGORY, content, contentItems);
-        //
-        combineContentItem(meta.get(MSOffice.COMMENTS), I_CmsExtractionResult.ITEM_COMMENTS, content, contentItems);
-        String company = meta.get(OfficeOpenXMLExtended.COMPANY);
-        if (StringUtils.isBlank(company)) {
-            company = meta.get(MSOffice.COMPANY);
-        }
-        combineContentItem(company, I_CmsExtractionResult.ITEM_COMPANY, content, contentItems);
-        //
-        combineContentItem(meta.get(MSOffice.MANAGER), I_CmsExtractionResult.ITEM_MANAGER, content, contentItems);
-        // this constant seems to be missing from TIKA
         combineContentItem(
-            meta.get(I_CmsExtractionResult.ITEM_PRODUCER),
-            I_CmsExtractionResult.ITEM_PRODUCER,
+            meta.get(OfficeOpenXMLCore.CATEGORY),
+            I_CmsExtractionResult.ITEM_CATEGORY,
             content,
             contentItems);
+        //
+        if (meta.get(OfficeOpenXMLExtended.COMMENTS) != null) {
+            combineContentItem(
+                meta.get(OfficeOpenXMLExtended.COMMENTS),
+                I_CmsExtractionResult.ITEM_COMMENTS,
+                content,
+                contentItems);
+        } else {
+            combineContentItem(
+                meta.get(DublinCore.DESCRIPTION),
+                I_CmsExtractionResult.ITEM_COMMENTS,
+                content,
+                contentItems);
+
+        }
+        String company = meta.get(OfficeOpenXMLExtended.COMPANY);
+        combineContentItem(company, I_CmsExtractionResult.ITEM_COMPANY, content, contentItems);
+        //
+        combineContentItem(
+            meta.get(OfficeOpenXMLExtended.MANAGER),
+            I_CmsExtractionResult.ITEM_MANAGER,
+            content,
+            contentItems);
+
+        String producer = meta.get(PDF.DOC_INFO_PRODUCER);
+        if (StringUtils.isBlank(producer)) {
+            producer = meta.get(I_CmsExtractionResult.ITEM_PRODUCER);
+        }
+        combineContentItem(producer, I_CmsExtractionResult.ITEM_PRODUCER, content, contentItems);
 
         // return the final result
         return new CmsExtractionResult(content.toString(), contentItems);

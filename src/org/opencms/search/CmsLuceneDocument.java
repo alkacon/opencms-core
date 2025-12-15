@@ -31,10 +31,6 @@
 
 package org.opencms.search;
 
-import org.apache.lucene.document.*;
-import org.apache.lucene.index.IndexOptions;
-import org.apache.lucene.index.IndexableField;
-import org.apache.tika.io.IOUtils;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
@@ -43,8 +39,26 @@ import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.apache.lucene.document.DateTools;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.FieldType;
+import org.apache.lucene.document.StoredField;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.index.IndexOptions;
+import org.apache.lucene.index.IndexableField;
 
 /**
  * A Lucene search document implementation.<p>
@@ -289,7 +303,9 @@ public class CmsLuceneDocument implements I_CmsSearchDocument {
         if (fieldContentBlob != null) {
             try {
                 if (fieldContentBlob.readerValue() != null) {
-                    return IOUtils.toByteArray(fieldContentBlob.readerValue());
+                    return org.apache.commons.io.IOUtils.toByteArray(
+                        fieldContentBlob.readerValue(),
+                        StandardCharsets.UTF_8);
                 }
             } catch (IOException e) {
                 // TODO:
