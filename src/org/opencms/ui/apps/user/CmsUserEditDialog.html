@@ -14,35 +14,35 @@
 					<v-tab-sheet _id="m_tab" height="460px">
 						<tab  caption="%(key.GUI_USERMANAGEMENT_USER_0)">
 								<v-form-layout _id="m_tabSimple" margin spacing style-name="o-formlayout-workplace-main">
-									<vaadin7-text-field _id="m_loginname" width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_LOGIN_NAME_0)" description="%(key.GUI_USERMANAGEMENT_USER_LOGIN_NAME_HELP_0)" />
+									<vaadin7-text-field _id="m_loginname" width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_LOGIN_NAME_0)" description="%(key.GUI_USERMANAGEMENT_USER_LOGIN_NAME_HELP_0)" ></vaadin7-text-field>
 									<vaadin7-text-area _id="m_description" width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_DESCRIPTION_0)" description="%(key.GUI_USERMANAGEMENT_USER_DESCRIPTION_HELP_0)"></vaadin7-text-area>
-									<p-cms-principal-select _id="m_group" width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_GROUP_0)" description="%(key.GUI_USERMANAGEMENT_USER_GROUP_HELP_0)"/>	
-									<vaadin7-combo-box _id="m_role" immediate="true"  width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_ROLE_0)" description="%(key.GUI_USERMANAGEMENT_USER_ROLE_0)"/>
-									<vaadin7-label _id="m_ou" width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_OU_0)" description="%(key.GUI_USERMANAGEMENT_USER_OU_HELP_0)" />						
+									<p-cms-principal-select _id="m_group" width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_GROUP_0)" description="%(key.GUI_USERMANAGEMENT_USER_GROUP_HELP_0)"></p-cms-principal-select>	
+									<vaadin7-combo-box _id="m_role" immediate="true"  width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_ROLE_0)" description="%(key.GUI_USERMANAGEMENT_USER_ROLE_0)"></vaadin7-combo-box>
+									<vaadin7-label _id="m_ou" width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_OU_0)" description="%(key.GUI_USERMANAGEMENT_USER_OU_HELP_0)" ></vaadin7-label>						
 								</v-form-layout>
 						</tab>
 						
 						<tab  caption="%(key.GUI_USERMANAGEMENT_USER_DATA_0)">	
-								<o-cms-user-data-form-layout margin _id="m_userdata"/>
+								<o-cms-user-data-form-layout margin _id="m_userdata"></o-cms-user-data-form-layout>
 						</tab>
 						
 						<tab  caption="%(key.GUI_USERMANAGEMENT_USER_SETTINGS_0)">
 								<v-form-layout _id="m_tabSimple3" margin spacing style-name="o-formlayout-workplace-main">
-									<vaadin7-combo-box _id="m_language" immediate="true"  width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_LANGUAGE_0)" description="%(key.GUI_USERMANAGEMENT_USER_LANGUAGE_HELP_0)"/>
-									<vaadin7-combo-box _id="m_site" immediate="true"  width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_SITE_0)" description="%(key.GUI_USERMANAGEMENT_USER_SITE_HELP_0)"/>
-									<vaadin7-combo-box _id="m_project" immediate="true"  width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_PROJECT_0)" description="%(key.GUI_USERMANAGEMENT_USER_PROJECT_HELP_0)"/>
-									<f-cms-path-select-field _id="m_startfolder" width="100%"  caption="%(key.GUI_USERMANAGEMENT_USER_START_FOLDER_0)" description="%(key.GUI_USERMANAGEMENT_USER_START_FOLDER_HELP_0)"/>
-									<vaadin7-combo-box _id="m_startview" immediate="true"  width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_START_VIEW_0)" description="%(key.GUI_USERMANAGEMENT_USER_START_VIEW_HELP_0)"/>
+									<vaadin7-combo-box _id="m_language" immediate="true"  width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_LANGUAGE_0)" description="%(key.GUI_USERMANAGEMENT_USER_LANGUAGE_HELP_0)"></vaadin7-combo-box>
+									<vaadin7-combo-box _id="m_site" immediate="true"  width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_SITE_0)" description="%(key.GUI_USERMANAGEMENT_USER_SITE_HELP_0)"></vaadin7-combo-box>
+									<vaadin7-combo-box _id="m_project" immediate="true"  width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_PROJECT_0)" description="%(key.GUI_USERMANAGEMENT_USER_PROJECT_HELP_0)"></vaadin7-combo-box>
+									<f-cms-path-select-field _id="m_startfolder" width="100%"  caption="%(key.GUI_USERMANAGEMENT_USER_START_FOLDER_0)" description="%(key.GUI_USERMANAGEMENT_USER_START_FOLDER_HELP_0)"></f-cms-path-select-field>
+									<vaadin7-combo-box _id="m_startview" immediate="true"  width="100%" caption="%(key.GUI_USERMANAGEMENT_USER_START_VIEW_0)" description="%(key.GUI_USERMANAGEMENT_USER_START_VIEW_HELP_0)"></vaadin7-combo-box>
 								</v-form-layout>
 						</tab>
 						
 						<tab  caption="%(key.GUI_USERMANAGEMENT_USER_AUTHENTIFICATION_0)">
 							<vaadin7-vertical-layout _id="m_authHolder" style-name="o-no-padding">
 								<v-form-layout _id="m_tabSimple4" margin spacing style-name="o-formlayout-workplace-main">
-									<vaadin7-check-box _id="m_enabled" caption="%(key.GUI_USERMANAGEMENT_USER_ENABLED_0)" description="%(key.GUI_USERMANAGEMENT_USER_ENABLED_HELP_0)" />
-									<vaadin7-check-box _id="m_selfmanagement" caption="%(key.GUI_USERMANAGEMENT_USER_SELF_MANAGEMENT_0)" description="%(key.GUI_USERMANAGEMENT_USER_SELF_MANAGEMENT_HELP_0)" />
-									<vaadin7-check-box _id="m_forceResetPassword" caption="%(key.GUI_USERMANAGEMENT_USER_FORCE_PASSWORD_RESET_0)" description="%(key.GUI_USERMANAGEMENT_USER_FORCE_PASSWORD_RESET_HELP_0)" />
-									<vaadin7-check-box _id="m_sendEmail" caption="%(key.GUI_USERMANAGEMENT_USER_SEND_PASSWORD_MAIL_0)" description="%(key.GUI_USERMANAGEMENT_USER_SEND_PASSWORD_MAIL_HELP_0)" />								
+									<vaadin7-check-box _id="m_enabled" caption="%(key.GUI_USERMANAGEMENT_USER_ENABLED_0)" description="%(key.GUI_USERMANAGEMENT_USER_ENABLED_HELP_0)" ></vaadin7-check-box>
+									<vaadin7-check-box _id="m_selfmanagement" caption="%(key.GUI_USERMANAGEMENT_USER_SELF_MANAGEMENT_0)" description="%(key.GUI_USERMANAGEMENT_USER_SELF_MANAGEMENT_HELP_0)" ></vaadin7-check-box>
+									<vaadin7-check-box _id="m_forceResetPassword" caption="%(key.GUI_USERMANAGEMENT_USER_FORCE_PASSWORD_RESET_0)" description="%(key.GUI_USERMANAGEMENT_USER_FORCE_PASSWORD_RESET_HELP_0)" ></vaadin7-check-box>
+									<vaadin7-check-box _id="m_sendEmail" caption="%(key.GUI_USERMANAGEMENT_USER_SEND_PASSWORD_MAIL_0)" description="%(key.GUI_USERMANAGEMENT_USER_SEND_PASSWORD_MAIL_HELP_0)" ></vaadin7-check-box>								
 								</v-form-layout>
                                 <v-form-layout _id="m_twoFactorBox" margin spacing style-name="o-formlayout-workplace-main">
                                     <v-label _id="m_twoFactorAuthState" style-name="o-label-wrap"></v-label>

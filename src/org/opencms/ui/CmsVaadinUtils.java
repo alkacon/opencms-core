@@ -1452,7 +1452,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-    
+
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)
@@ -1468,6 +1468,7 @@ public final class CmsVaadinUtils {
             byte[] designBytes = CmsFileUtil.readFully(designStream, true);
             final String encoding = "UTF-8";
             String design = new String(designBytes, encoding);
+
             CmsMacroResolver resolver = new CmsMacroResolver() {
 
                 @Override
@@ -1487,6 +1488,18 @@ public final class CmsVaadinUtils {
             }
             if (messages != null) {
                 resolver.setMessages(messages);
+            }
+
+            // workaround for existing HTML templates which use the incorrect <tag/> syntax, which sort of worked with previous versions of JSoup but not with the current one
+            String correctedDesign = design.replaceAll("<(?!meta )([A-Za-z0-9-]+)( [^/>]*)/>", "<$1$2></$1>");
+            if (!design.equals(correctedDesign)) {
+                System.out.println(
+                    "Design was automatically corrected from \n"
+                        + design
+                        + "\n to \n"
+                        + correctedDesign
+                        + "\n\n--- Don't use XML-style empty-element syntax (<tag/>) in Vaadin HTML designs! ---\n");
+                design = correctedDesign;
             }
             String resolvedDesign = resolver.resolveMacros(design);
             Design.read(new ByteArrayInputStream(resolvedDesign.getBytes(encoding)), component);

@@ -11,7 +11,7 @@
 	<vaadin7-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
         <v-panel caption="%(key.GUI_FILEHISTORY_SETTINGS_CAPTION_0)">   
             <v-form-layout  margin spacing style-name="o-formlayout-workplace-main">
-                <vaadin7-combo-box _id="m_numberVersions" immediate="true"  width="100%" caption="%(key.GUI_FILEHISTORY_SETTINGS_VERSION_NAME_0)"/>
+                <vaadin7-combo-box _id="m_numberVersions" immediate="true"  width="100%" caption="%(key.GUI_FILEHISTORY_SETTINGS_VERSION_NAME_0)"></vaadin7-combo-box>
                 <vaadin7-option-group _id="m_mode" caption="%(key.GUI_FILEHISTORY_SETTINGS_MODE_NAME_0)">
                     <option item-id="disabled">%(key.GUI_FILEHISTORY_SETTINGS_MODE_DISABLED_0)</option>
                     <option item-id="withoutversions">%(key.GUI_FILEHISTORY_SETTINGS_MODE_KEEP_NO_VERSIONS_0)</option>
@@ -29,13 +29,13 @@
 		<v-panel _id="m_optionPanel" caption="%(key.GUI_FILEHISTORY_DELETE_CAPTION_0)">	
 			<v-form-layout  margin spacing style-name="o-formlayout-workplace-main">
 				<vaadin7-label _id="m_settedVersions">Test</vaadin7-label>
-				<vaadin7-combo-box _id="m_numberVersionsToKeep" immediate="true"  width="100%" caption="%(key.GUI_FILEHISTORY_DELETE_KEEPVERSIONS_0)"/>
+				<vaadin7-combo-box _id="m_numberVersionsToKeep" immediate="true"  width="100%" caption="%(key.GUI_FILEHISTORY_DELETE_KEEPVERSIONS_0)"></vaadin7-combo-box>
 				<vaadin7-option-group _id="m_deleteMode" caption="%(key.GUI_FILEHISTORY_DELETE_CLEARDELETEMODE_0)">
 					<option item-id="disabled">%(key.GUI_FILEHISTORY_SETTINGS_MODE_DISABLED_0)</option>
 					<option item-id="withoutversions">%(key.GUI_FILEHISTORY_SETTINGS_MODE_KEEP_NO_VERSIONS_0)</option>
 					<option item-id="withversions">%(key.GUI_FILEHISTORY_SETTINGS_MODE_KEEP_WITH_VERSIONS_0)</option>
 				</vaadin7-option-group>	
-				<o-cms-date-field _id="m_dateField" caption="%(key.GUI_FILEHISTORY_DELETE_CLEARODERTHAN_0)" />
+				<o-cms-date-field _id="m_dateField" caption="%(key.GUI_FILEHISTORY_DELETE_CLEARODERTHAN_0)" ></o-cms-date-field>
                 		
 			</v-form-layout>			
 		</v-panel>
