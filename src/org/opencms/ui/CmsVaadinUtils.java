@@ -1452,7 +1452,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-
+    
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)
@@ -1493,7 +1493,7 @@ public final class CmsVaadinUtils {
             // workaround for existing HTML templates which use the incorrect <tag/> syntax, which sort of worked with previous versions of JSoup but not with the current one
             String correctedDesign = design.replaceAll("<(?!meta )([A-Za-z0-9-]+)( [^/>]*)/>", "<$1$2></$1>");
             if (!design.equals(correctedDesign)) {
-                System.out.println(
+                LOG.warn(
                     "Design was automatically corrected from \n"
                         + design
                         + "\n to \n"
