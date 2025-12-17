@@ -361,6 +361,7 @@ I_OptionListener, I_CmsHasShortcutActions {
     public void handleLanguageChange(final Locale locale) {
 
         if (!locale.equals(m_model.getLocale())) {
+            ((TranslateTableFieldFactory)m_table.getTableFieldFactory()).setShouldHandleChanges(false);
             Object sortProperty = m_table.getSortContainerPropertyId();
             boolean isAcending = m_table.isSortAscending();
             Map<Object, Object> filters = getFilters();
@@ -380,6 +381,7 @@ I_OptionListener, I_CmsHasShortcutActions {
             }
             setFilters(filters);
             m_table.select(m_table.getCurrentPageFirstItemId());
+            ((TranslateTableFieldFactory)m_table.getTableFieldFactory()).setShouldHandleChanges(true);
         }
     }
 

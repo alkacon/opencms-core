@@ -55,8 +55,6 @@ import org.tepi.filtertable.FilterTable;
 
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
-import com.vaadin.event.FieldEvents.BlurEvent;
-import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
 import com.vaadin.event.ShortcutAction;
@@ -70,6 +68,7 @@ import com.vaadin.ui.UI;
 import com.vaadin.v7.data.Container;
 import com.vaadin.v7.data.Property;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.data.validator.AbstractStringValidator;
 import com.vaadin.v7.ui.AbstractTextField;
 import com.vaadin.v7.ui.DefaultFieldFactory;
@@ -85,6 +84,7 @@ public final class CmsMessageBundleEditorTypes {
 
     /** Types of bundles editable by the Editor. */
     public enum BundleType {
+
         /** A bundle of type propertyvfsbundle. */
         PROPERTY,
         /** A bundle of type xmlvfsbundle. */
@@ -819,6 +819,8 @@ public final class CmsMessageBundleEditorTypes {
     @SuppressWarnings("serial")
     static class TranslateTableFieldFactory extends DefaultFieldFactory {
 
+        /** Flag, indicating if change events should be handled. */
+        private boolean m_shouldHandleChanges = true;
         /** Mapping from column -> row -> AbstractTextField. */
         private final Map<Integer, Map<Integer, AbstractTextField>> m_valueFields;
         /** The editable columns. */
@@ -855,7 +857,7 @@ public final class CmsMessageBundleEditorTypes {
             for (int i = 1; i <= m_editableColumns.size(); i++) {
                 if (pid.equals(m_editableColumns.get(i - 1))) {
 
-                    AbstractTextField tf;
+                    final AbstractTextField tf;
                     if (pid.equals(TableProperty.KEY)) {
                         tf = new TextField();
                         tf.addValidator(new KeyValidator());
@@ -870,7 +872,11 @@ public final class CmsMessageBundleEditorTypes {
 
                     tf.setInputPrompt(
                         Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_PLEASE_ADD_VALUE_0));
-                    tf.setData(new ComponentData(i, itemId, ""));
+                    tf.setData(
+                        new ComponentData(
+                            i,
+                            itemId,
+                            (String)container.getItem(itemId).getItemProperty(propertyId).getValue()));
                     if (!m_valueFields.containsKey(Integer.valueOf(i))) {
                         m_valueFields.put(Integer.valueOf(i), new HashMap<Integer, AbstractTextField>());
                     }
@@ -890,23 +896,28 @@ public final class CmsMessageBundleEditorTypes {
                         }
 
                     });
-                    tf.addBlurListener(new BlurListener() {
+                    tf.addValueChangeListener(new ValueChangeListener() {
 
-                        public void blur(BlurEvent event) {
+                        @Override
+                        public void valueChange(ValueChangeEvent event) {
 
-                            AbstractTextField field = (AbstractTextField)event.getComponent();
-                            ComponentData data = (ComponentData)field.getData();
-                            if (!data.getLastValue().equals(field.getValue())) {
-                                EntryChangeEvent ev = new EntryChangeEvent(
-                                    field,
-                                    data.getItemId(),
-                                    pid,
-                                    data.getLastValue(),
-                                    field.getValue());
-                                fireKeyChangeEvent(ev);
+                            if (((TranslateTableFieldFactory)m_table.getTableFieldFactory()).shouldHandleChanges()) {
+                                ComponentData data = (ComponentData)tf.getData();
+                                String newValue = (String)event.getProperty().getValue();
+                                if (!data.getLastValue().equals(newValue)) {
+                                    EntryChangeEvent ev = new EntryChangeEvent(
+                                        tf,
+                                        data.getItemId(),
+                                        pid,
+                                        data.getLastValue(),
+                                        newValue);
+                                    fireKeyChangeEvent(ev);
+                                }
                             }
                         }
+
                     });
+
                     return tf;
                 }
             }
@@ -942,6 +953,27 @@ public final class CmsMessageBundleEditorTypes {
         }
 
         /**
+         * Set the should handle changes flag.
+         * 
+         * When doing programmatic changes that are not triggered by the
+         * editing person, handling changes should be disabled.
+         * 
+         * @param shouldHandle set to true, iff changes should be handled.
+         */
+        public void setShouldHandleChanges(boolean shouldHandle) {
+
+            m_shouldHandleChanges = shouldHandle;
+        }
+
+        /**
+         * @return a flag, indicating if changes should be handled.
+         */
+        public boolean shouldHandleChanges() {
+
+            return m_shouldHandleChanges;
+        }
+
+        /**
          * Called to fire a key change event.
          * @param ev the event to fire.
          */
@@ -964,6 +996,7 @@ public final class CmsMessageBundleEditorTypes {
 
     /** Hide default constructor. */
     private CmsMessageBundleEditorTypes() {
+
         //noop
     }
 
