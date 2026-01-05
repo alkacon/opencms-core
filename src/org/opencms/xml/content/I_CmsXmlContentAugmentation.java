@@ -90,6 +90,15 @@ public interface I_CmsXmlContentAugmentation {
         Locale getLocale();
 
         /**
+         * Sets the locale to switch to.
+         *
+         * <p>If not called, the current locale will be used if possible.
+         *
+         * @param locale the locale to switch to
+         */
+        void setNextLocale(Locale locale);
+
+        /**
          * Sends the augmented content back to the content editor.
          * @param result the augmented content
          */

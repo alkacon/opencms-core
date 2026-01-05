@@ -1009,6 +1009,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 CmsContentDefinition.getLocaleFromId(editedEntity.getId()));
             CmsXmlContent originalCopy = CmsXmlContentFactory.unmarshal(cms, fileCopy);
             CmsXmlContent[] resultContainer = {content}; // if not set, keeps the original
+            Locale[] nextLocaleContainer = {null};
             if (augmentation != null) {
 
                 augmentation.augmentContent(new I_CmsXmlContentAugmentation.Context() {
@@ -1063,6 +1064,13 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     }
 
                     @Override
+                    public void setNextLocale(Locale locale) {
+
+                        nextLocaleContainer[0] = locale;
+
+                    }
+
+                    @Override
                     public void setResult(CmsXmlContent result) {
 
                         resultContainer[0] = result;
@@ -1070,10 +1078,12 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 });
             }
             CmsXmlContent resultContent = resultContainer[0];
+            Locale nextLocale = nextLocaleContainer[0];
             getSessionCache().setCacheXmlContent(structureId, resultContent);
             CmsContentAugmentationDetails result = new CmsContentAugmentationDetails();
             result.setLocales(
                 resultContent.getLocales().stream().map(locale -> locale.toString()).collect(Collectors.toList()));
+            result.setNextLocale(nextLocale != null ? nextLocale.toString() : null);
             return result;
         } catch (Exception e) {
             error(e);
@@ -2044,6 +2054,15 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             jsp = jsp.trim();
             return new CmsJspContentAugmentation(jsp);
         } else {
+            String className = config.getAttribute("xml.content.augmentation.class", null);
+            if (className != null) {
+                className = className.trim();
+                try {
+                    return (I_CmsXmlContentAugmentation)(Class.forName(className).getConstructor().newInstance());
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
             return null;
         }
     }

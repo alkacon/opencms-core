@@ -1898,14 +1898,13 @@ public final class CmsContentEditor extends CmsEditorBase {
                     return;
                 }
                 m_contentLocales.clear();
-                m_contentLocales.addAll(result.getLocales());
-                if (locales.contains(m_locale)) {
-                    String currentLocale = m_locale;
-                    m_locale = null;
-                    switchLocale(currentLocale, true);
-                } else {
-                    switchLocale(locales.get(0), true);
+                m_contentLocales.addAll(locales);
+                String nextLocale = result.getNextLocale() != null ? result.getNextLocale() : m_locale;
+                if (!locales.contains(nextLocale)) {
+                    nextLocale = locales.get(0);
                 }
+                m_locale = null;
+                switchLocale(nextLocale, true);
             }
         };
         action.execute();

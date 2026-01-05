@@ -41,6 +41,8 @@ public class CmsContentAugmentationDetails implements IsSerializable {
      */
     private List<String> m_locales;
 
+    private String m_nextLocale;
+
     /**
      * Creates a new instance.
      */
@@ -59,6 +61,16 @@ public class CmsContentAugmentationDetails implements IsSerializable {
     }
 
     /**
+     * Gets tje next locale to switch to (might be null if we should remain in the current locale).
+     *
+     * @return the locale to switch to
+     */
+    public String getNextLocale() {
+
+        return m_nextLocale;
+    }
+
+    /**
      * Sets the locales.
      *
      * @param locales the locales
@@ -66,6 +78,16 @@ public class CmsContentAugmentationDetails implements IsSerializable {
     public void setLocales(List<String> locales) {
 
         m_locales = locales;
+    }
+
+    /**
+     * Sets the next locale to switch to (can be null if current locale should be maintained).
+     *
+     * @param nextLocale the next locale to switch to
+     */
+    public void setNextLocale(String nextLocale) {
+
+        m_nextLocale = nextLocale;
     }
 
 }
