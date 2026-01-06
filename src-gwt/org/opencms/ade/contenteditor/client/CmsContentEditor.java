@@ -123,6 +123,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
@@ -1904,7 +1905,25 @@ public final class CmsContentEditor extends CmsEditorBase {
                     nextLocale = locales.get(0);
                 }
                 m_locale = null;
-                switchLocale(nextLocale, true);
+                switchLocale(nextLocale, true, () -> {
+                    if (result.getHtmlMessage() != null) {
+                        CmsAugmentationFeedbackDialog feedbackDialog = new CmsAugmentationFeedbackDialog(
+                            result.getHtmlMessage());
+                        // for some reason vertical positioning does not work here immediately (which is why
+                        // we call center in a timer again), but at least we center the dialog horizontally here
+                        feedbackDialog.center();
+
+                        Timer timer = new Timer() {
+
+                            @Override
+                            public void run() {
+
+                                feedbackDialog.center();
+                            }
+                        };
+                        timer.schedule(100);
+                    }
+                });
             }
         };
         action.execute();
@@ -2115,7 +2134,7 @@ public final class CmsContentEditor extends CmsEditorBase {
      *
      * @param locale the locale to switch to
      */
-    void switchLocale(final String locale, boolean forceSetChanged) {
+    void switchLocale(final String locale, boolean forceSetChanged, Runnable... nextActions) {
 
         if (locale.equals(m_locale)) {
             // return;
@@ -2145,6 +2164,9 @@ public final class CmsContentEditor extends CmsEditorBase {
                         }
                     }
                     setChanged();
+                    for (Runnable action : nextActions) {
+                        action.run();
+                    }
 
                 }
             });
@@ -2164,8 +2186,10 @@ public final class CmsContentEditor extends CmsEditorBase {
                     if (forceSetChanged) {
                         setChanged();
                     }
+                    for (Runnable action : nextActions) {
+                        action.run();
+                    }
                 }
-
             });
         }
     }
@@ -2737,8 +2761,9 @@ public final class CmsContentEditor extends CmsEditorBase {
             }
         });
         if (!inline && m_hasAugmentation) {
+            String buttonText = Messages.get().key(Messages.GUI_CONTENT_EDITOR_AUGMENT_BUTTON_0);
             CmsPushButton transformButton = createButton(
-                "Augment",
+                buttonText,
                 I_CmsButton.ButtonData.SETTINGS_BUTTON.getIconClass());
             transformButton.addClickHandler(event -> runAugmentation());
             m_toolbar.addRight(transformButton);

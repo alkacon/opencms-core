@@ -90,6 +90,12 @@ public interface I_CmsXmlContentAugmentation {
         Locale getLocale();
 
         /**
+         * Sets the HTML to display to the user after the augmentation.
+         * @param message
+         */
+        void setHtmlMessage(String message);
+
+        /**
          * Sets the locale to switch to.
          *
          * <p>If not called, the current locale will be used if possible.

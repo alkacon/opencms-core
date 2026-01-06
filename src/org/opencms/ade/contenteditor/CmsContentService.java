@@ -1010,6 +1010,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             CmsXmlContent originalCopy = CmsXmlContentFactory.unmarshal(cms, fileCopy);
             CmsXmlContent[] resultContainer = {content}; // if not set, keeps the original
             Locale[] nextLocaleContainer = {null};
+            StringBuilder messageBuffer = new StringBuilder();
             if (augmentation != null) {
 
                 augmentation.augmentContent(new I_CmsXmlContentAugmentation.Context() {
@@ -1064,6 +1065,16 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     }
 
                     @Override
+                    public void setHtmlMessage(String message) {
+
+                        messageBuffer.delete(0, messageBuffer.length());
+                        if (message != null) {
+                            messageBuffer.append(message);
+                        }
+
+                    }
+
+                    @Override
                     public void setNextLocale(Locale locale) {
 
                         nextLocaleContainer[0] = locale;
@@ -1084,6 +1095,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             result.setLocales(
                 resultContent.getLocales().stream().map(locale -> locale.toString()).collect(Collectors.toList()));
             result.setNextLocale(nextLocale != null ? nextLocale.toString() : null);
+            if (messageBuffer.length() > 0) {
+                result.setHtmlMessage(messageBuffer.toString());
+            }
             return result;
         } catch (Exception e) {
             error(e);

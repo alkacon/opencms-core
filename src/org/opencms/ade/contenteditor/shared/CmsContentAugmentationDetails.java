@@ -36,11 +36,15 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsContentAugmentationDetails implements IsSerializable {
 
+    /** The message to display, as HTML (null for no message) . */
+    private String m_htmlMessage;
+
     /**
      * The list of locales from the augmented content.
      */
     private List<String> m_locales;
 
+    /** The locale to switch to (null to not switch locale). */
     private String m_nextLocale;
 
     /**
@@ -48,6 +52,16 @@ public class CmsContentAugmentationDetails implements IsSerializable {
      */
     public CmsContentAugmentationDetails() {
 
+    }
+
+    /**
+     * Gets the message to display to the user, in HTML format.
+     *
+     * @return the HTML message
+     */
+    public String getHtmlMessage() {
+
+        return m_htmlMessage;
     }
 
     /**
@@ -68,6 +82,16 @@ public class CmsContentAugmentationDetails implements IsSerializable {
     public String getNextLocale() {
 
         return m_nextLocale;
+    }
+
+    /**
+     * Sets the message to display, in HTML format
+     *
+     * @param htmlMessage the message to display
+     */
+    public void setHtmlMessage(String htmlMessage) {
+
+        m_htmlMessage = htmlMessage;
     }
 
     /**

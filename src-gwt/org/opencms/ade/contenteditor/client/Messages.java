@@ -52,6 +52,12 @@ public final class Messages {
     public static final String GUI_CONFIRM_LEAVING_EDITOR_0 = "GUI_CONFIRM_LEAVING_EDITOR_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONTENT_EDITOR_AUGMENT_BUTTON_0 = "GUI_CONTENT_EDITOR_AUGMENT_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONTENT_EDITOR_AUGMENTATION_RESULTS_CAPTION_0 = "GUI_CONTENT_EDITOR_AUGMENTATION_RESULTS_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CONTENT_EDITOR_REUSE_MARKER_0 = "GUI_CONTENT_EDITOR_REUSE_MARKER_0";
 
     /** Message constant for key in the resource bundle. */
@@ -412,7 +418,7 @@ public final class Messages {
     public static final String GUI_WIDGET_SELECT_FILE_0 = "GUI_WIDGET_SELECT_FILE_0";
 
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.ade.contenteditor.clientmessages";;
+    private static final String BUNDLE_NAME = "org.opencms.ade.contenteditor.clientmessages";
 
     /** Static instance member. */
     private static CmsMessages INSTANCE;

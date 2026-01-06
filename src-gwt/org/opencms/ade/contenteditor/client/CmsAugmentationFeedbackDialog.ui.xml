@@ -1,0 +1,88 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:input="urn:import:org.opencms.gwt.client.ui.input"
+	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:with field="inputstyle" type="org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle" />
+	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
+	<ui:style>
+		.htmlMessage {	
+			border: solid 1px #c9c9c9;
+            border-radius: 4px;
+            padding: 5px;
+            width: 100%;
+            overflow: auto;
+            max-height: 70vh;
+		}
+		
+		.htmlMessage, .htmlMessage * {
+            font-family: "Open Sans", sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            font-style: normal;
+            line-height: 1.25;
+            color: #474747;
+        }
+        
+        .htmlMessage * {
+            margin: 0;
+            text-align: left;
+        }
+        
+        .htmlMessage h1, .htmlMessage h2, .htmlMessage h3 {
+            font-weight: 700;
+            margin-bottom: 3px;
+            color: #222;
+        }
+        
+        .htmlMessage h1 {
+            font-size: 20px;
+        }
+
+        .htmlMessage h2 {
+            font-size: 18px;
+        }
+
+        .htmlMessage strong {
+            font-weight: 700;
+        }
+        
+        .htmlMessage em {
+            font-style: italic;
+        }
+        
+        .htmlMessage a {
+            font-size: inherit;
+            line-height: inherit;
+            color: #b31b34;
+            text-decoration: underline;
+        }
+        
+        .htmlMessage small {
+            font-size: 11px;
+            display: block;
+            line-height: 1.125;
+            margin-bottom: 5px;        
+        }
+        
+        .htmlMessage ul,  .htmlMessage ol {
+            padding-left: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .htmlMessage > p {
+            margin-left: 0px;
+            margin-right: 0px;
+            margin-top: 0px;
+            margin-bottom: 5px; 
+        }
+        
+        .htmlMessage > p:last-child {
+            margin-bottom: 0px;
+        }
+		
+	</ui:style>
+	<g:FlowPanel>
+		<g:HTML ui:field="m_html" addStyleNames="{style.htmlMessage}"/>
+	</g:FlowPanel>
+</ui:UiBinder>
