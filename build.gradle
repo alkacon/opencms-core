@@ -274,12 +274,12 @@ wrapper {
     gradleVersion = '7.5.1'
 }
 
-task copyDeps(type: Copy) {
+tasks.register('copyDeps', Copy) {
     from configurations.distribution
     into "${buildDir}/deps"
 }
 
-task copyCompileDeps(type: Copy) {
+tasks.register('copyCompileDeps', Copy) {
     from configurations.compile
     into "${buildDir}/deps"
 }
@@ -352,19 +352,21 @@ javadoc {
     }
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
+tasks.register('javadocJar', Jar) {
+    dependsOn javadoc
     archiveClassifier = 'javadoc'
     from "${buildDir}/docs/javadoc"
     archiveBaseName = 'opencms-core'
 }
 
-task sourcesJar(type: Jar) {
+tasks.register('sourcesJar', Jar) {
     from sourceSets.main.java.srcDirs
     archiveClassifier = 'sources'
     archiveBaseName = 'opencms-core'
 }
 
-task gwtJar(dependsOn: jar, type: Jar) {
+tasks.register('gwtJar', Jar) {
+    dependsOn jar
     from sourceSets.gwt.output
     from (sourceSets.gwt.java.srcDirs){ include '**/*.java' }
     from (sourceSets.main.java.srcDirs){
@@ -384,7 +386,7 @@ task gwtJar(dependsOn: jar, type: Jar) {
     exclude '**/.gitignore'
 }
 
-task modulesJar(type: Jar) {
+tasks.register('modulesJar', Jar) {
     from sourceSets.modules.output
     archiveFileName = 'opencms-modules.jar'
     archiveBaseName = 'opencms-modules'
@@ -392,7 +394,8 @@ task modulesJar(type: Jar) {
     exclude '**/.gitignore'
 }
 
-task javadocModules(type: Javadoc, dependsOn: jar) {
+tasks.register('javadocModules', Javadoc) {
+    dependsOn jar
     doLast {
         copy {
             from  "${projectDir}/doc/javadoc/logos"
@@ -416,19 +419,21 @@ task javadocModules(type: Javadoc, dependsOn: jar) {
     destinationDir = file("${buildDir}/docs/javadocModules")
 }
 
-task javadocJarModules(type: Jar, dependsOn: javadocModules) {
+tasks.register('javadocJarModules', Jar) {
+    dependsOn javadocModules
     archiveClassifier = 'javadoc'
     from "${buildDir}/docs/javadocModules"
     archiveBaseName = 'opencms-modules'
 }
 
-task sourcesJarModules(type: Jar) {
+tasks.register('sourcesJarModules', Jar) {
     from sourceSets.modules.java.srcDirs
     archiveClassifier = 'sources'
     archiveBaseName = 'opencms-modules'
 }
 
-task javadocGwt(type: Javadoc, dependsOn: jar) {
+tasks.register('javadocGwt', Javadoc) {
+    dependsOn jar
     doLast {
         copy {
             from  "${projectDir}/doc/javadoc/logos"
@@ -452,13 +457,14 @@ task javadocGwt(type: Javadoc, dependsOn: jar) {
     destinationDir = file("${buildDir}/docs/javadocGwt")
 }
 
-task javadocJarGwt(type: Jar, dependsOn: javadocGwt) {
+tasks.register('javadocJarGwt', Jar) {
+    dependsOn javadocGwt
     archiveClassifier = 'javadoc'
     from "${buildDir}/docs/javadocGwt"
     archiveBaseName = 'opencms-gwt'
 }
 
-task sourcesJarGwt(type: Jar) {
+tasks.register('sourcesJarGwt', Jar) {
     from sourceSets.gwt.java.srcDirs
     from (sourceSets.main.java.srcDirs){
         include '**/shared/**'
@@ -476,7 +482,7 @@ task sourcesJarGwt(type: Jar) {
     archiveBaseName = 'opencms-gwt'
 }
 
-task workplaceTheme (type: JavaExec) {
+tasks.register('workplaceTheme', JavaExec) {
     doFirst {
         println '======================================================'
         println "Building workplace theme"
@@ -504,7 +510,7 @@ task workplaceTheme (type: JavaExec) {
     ]
     maxHeapSize = max_heap_size
 }
-task opencmsFonts (type: JavaExec) {
+tasks.register('opencmsFonts', JavaExec) {
     doFirst {
         println '======================================================'
         println "Building OpenCms fonts CSS"
@@ -539,7 +545,8 @@ Properties gwtProps = new Properties()
 gwtProps.load(new FileInputStream("$projectDir/src-gwt/gwt-modules.properties"))
 project.ext.gwtModuleNames = gwtProps['gwtmodules']
 
-task resourcesJar(type: Jar, dependsOn: [workplaceTheme, opencmsFonts]){
+tasks.register('resourcesJar', Jar) {
+    dependsOn workplaceTheme, opencmsFonts
     doFirst {
         println '======================================================'
         println "Building Resources Jar"
@@ -589,7 +596,8 @@ task resourcesJar(type: Jar, dependsOn: [workplaceTheme, opencmsFonts]){
 
 // iterate gwt modules and create the required tasks
 gwtModuleNames.split(',').each{ gwtModule ->
-    task "gwt_${gwtModule}" (dependsOn: gwtClasses, type: JavaExec) {
+    tasks.register("gwt_${gwtModule}", JavaExec) {
+        dependsOn gwtClasses
         ext.buildDir =  project.buildDir.toString()  +"/gwt/${gwtModule}"
         ext.extraDir =  project.buildDir.toString() + "/extra/${gwtModule}"
         inputs.files sourceSets.gwt.java.srcDirs
@@ -677,12 +685,15 @@ gwtModuleNames.split(',').each{ gwtModule ->
         maxHeapSize = max_heap_size
     }
 
-    tasks['resourcesJar'].dependsOn(tasks["gwt_${gwtModule}"])
+    tasks.named('resourcesJar') {
+        dependsOn tasks.named("gwt_${gwtModule}")
+    }
 }
 
 
 
-task setupJar(dependsOn: jar, type: Jar) {
+tasks.register('setupJar', Jar) {
+    dependsOn jar
     from sourceSets.setup.output
     archiveFileName = 'opencms-setup.jar'
     archiveBaseName = 'opencms-setup'
@@ -690,7 +701,8 @@ task setupJar(dependsOn: jar, type: Jar) {
     exclude '**/.gitignore'
 }
 
-task javadocSetup(type: Javadoc, dependsOn: jar) {
+tasks.register('javadocSetup', Javadoc) {
+    dependsOn jar
     source = sourceSets.setup.allJava
     classpath = project.sourceSets.setup.compileClasspath
     destinationDir = file("${buildDir}/docs/javadocSetup")
@@ -714,13 +726,14 @@ task javadocSetup(type: Javadoc, dependsOn: jar) {
     }
 }
 
-task javadocJarSetup(type: Jar, dependsOn: javadocSetup) {
+tasks.register('javadocJarSetup', Jar) {
+    dependsOn javadocSetup
     archiveClassifier = 'javadoc'
     from "${buildDir}/docs/javadocSetup"
     archiveBaseName = 'opencms-setup'
 }
 
-task sourcesJarSetup(type: Jar) {
+tasks.register('sourcesJarSetup', Jar) {
     from sourceSets.setup.java.srcDirs
     archiveClassifier = 'sources'
     archiveBaseName = 'opencms-setup'
@@ -731,7 +744,8 @@ tlddoc {
 }
 
 
-task tlddocZip (type: Zip, dependsOn: tlddoc) {
+tasks.register('tlddocZip', Zip) {
+    dependsOn tlddoc
     archiveFileName = 'tld.zip'
     from ("${project.docsDir}/tlddoc/") {
         include '**/*'
@@ -772,7 +786,7 @@ allModuleNames.each{ moduleName ->
         preserveLibModules += "${moduleName},"
     }
 
-    task "dist_$moduleName" (type: Zip){
+    tasks.register("dist_$moduleName", Zip) {
         ext.moduleName = moduleName
         ext.moduleFolder = moduleFolder
         ext.dependencies = moduleDependencies
@@ -808,7 +822,7 @@ allModuleNames.each{ moduleName ->
         }
     }
     if (workplacelocalization != null){
-        task "jar_$moduleName" (type: Jar) {
+        tasks.register("jar_$moduleName", Jar) {
             ext.moduleName = moduleName
             ext.workplacelocalization=workplacelocalization
             manifest {
@@ -838,11 +852,14 @@ allModuleNames.each{ moduleName ->
                 }
             }
         }
-        tasks["dist_$moduleName"].dependsOn("jar_$moduleName")
+        tasks.named("dist_$moduleName") {
+            dependsOn tasks.named("jar_$moduleName")
+        }
     }
 }
 
-task allModules(dependsOn: tasks.matching{ Task task -> task.name.startsWith('dist_')}) {
+tasks.register('allModules') {
+    dependsOn tasks.matching{ Task task -> task.name.startsWith('dist_')}
     doLast {
         println '======================================================'
         println 'Done building modules'
@@ -850,12 +867,8 @@ task allModules(dependsOn: tasks.matching{ Task task -> task.name.startsWith('di
     }
 }
 
-task war (dependsOn: [
-    setupJar,
-    resourcesJar,
-    modulesJar,
-    allModules
-], type: Zip){
+tasks.register('war', Zip) {
+    dependsOn setupJar, resourcesJar, modulesJar, allModules
 
     if (hasExtModules) {
         dependsOn {
@@ -956,12 +969,8 @@ task war (dependsOn: [
     }
 }
 
-task updater (dependsOn: [
-    setupJar,
-    resourcesJar,
-    modulesJar,
-    allModules
-], type: Zip){
+tasks.register('updater', Zip) {
+    dependsOn setupJar, resourcesJar, modulesJar, allModules
     if (hasExtModules) {
         // without this declaration, Gradle 8 complains about implicit dependencies
         dependsOn {
@@ -1108,7 +1117,8 @@ task updater (dependsOn: [
     }
 }
 
-task bindist (dependsOn: war, type: Zip){
+tasks.register('bindist', Zip) {
+    dependsOn war
     archiveBaseName = 'opencms'
     from "${project.buildDir}/distributions/opencms.war"
     from(projectDir) {
@@ -1141,7 +1151,8 @@ test {
     }
 }
 
-task testSingle(type: Test, dependsOn: [compileTestJava]) {
+tasks.register('testSingle', Test) {
+    dependsOn compileTestJava
     description "Runs a specified test case set like this: -PtestCaseToRun=org.opencms.main.TestCmsSystemInfo*"
     inputs.dir "${projectDir}/test/data"
     inputs.dir "${projectDir}/webapp"
@@ -1166,33 +1177,37 @@ task testSingle(type: Test, dependsOn: [compileTestJava]) {
     ignoreFailures true
 }
 
-task testJar(dependsOn: compileTestJava, type: Jar) {
+tasks.register('testJar', Jar) {
+    dependsOn compileTestJava
     from sourceSets.test.output
     archiveBaseName = 'opencms-test'
     exclude '**/.gitignore'
     exclude '**/*.java'
 }
 
-task javadocTest(type: Javadoc, dependsOn: jar) {
+tasks.register('javadocTest', Javadoc) {
+    dependsOn jar
     source = sourceSets.test.allJava
     classpath = project.sourceSets.test.compileClasspath
     destinationDir = file("${buildDir}/docs/javadocTest")
 }
 
-task javadocJarTest(type: Jar, dependsOn: javadocTest) {
+tasks.register('javadocJarTest', Jar) {
+    dependsOn javadocTest
     archiveClassifier = 'javadoc'
     from "${buildDir}/docs/javadocTest"
     archiveBaseName = 'opencms-test'
 }
 
-task sourcesJarTest(type: Jar) {
+tasks.register('sourcesJarTest', Jar) {
     from sourceSets.test.java.srcDirs
     archiveClassifier = 'sources'
     archiveBaseName = 'opencms-test'
 }
 
 
-task testGwt(type: Test, dependsOn: [compileTestGwtJava]) {
+tasks.register('testGwt', Test) {
+    dependsOn compileTestGwtJava
     classpath=sourceSets.testGwt.runtimeClasspath
     classpath += files("${projectDir}/src")
     classpath += files("${projectDir}/src-gwt")
@@ -1473,13 +1488,14 @@ publishing {
 
 
 // add it to keep the old task names
-task install(dependsOn: publishToMavenLocal) {
+tasks.register('install') {
+    dependsOn publishToMavenLocal
     doFirst {
         println "Installing artifacts for version $version"
     }
 }
 
-task uploadArchives { // dependency tasks are set dynamically via afterEvaluate
+tasks.register('uploadArchives') { // dependency tasks are set dynamically via afterEvaluate
     doFirst {
         println "Upload artifacts for version $version"
     }
