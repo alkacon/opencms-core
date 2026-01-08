@@ -124,7 +124,25 @@ public class CmsXmlDynamicCategoryValue extends A_CmsXmlContentValue implements 
     @Override
     public String getPlainText(CmsObject cms) {
 
-        return getStringValue(cms);
+        CmsXmlContent content = (CmsXmlContent)getDocument();
+        try {
+            CmsFile file = content.getFile();
+            List<CmsCategory> categories = CmsCategoryService.getInstance().readResourceCategories(cms, file);
+            String result = "";
+            String previousPath = null;
+            for (CmsCategory cat : categories) {
+                String currentPath = cat.getPath();
+                if (previousPath != null) {
+                    result += currentPath.startsWith(previousPath) ? " > " : ", ";
+                }
+                previousPath = currentPath;
+                result += cat.getTitle();
+            }
+            return result;
+        } catch (Exception e) {
+            return "";
+        }
+        //        return getStringValue(cms);
     }
 
     /**
@@ -185,23 +203,6 @@ public class CmsXmlDynamicCategoryValue extends A_CmsXmlContentValue implements 
     }
 
     /**
-     * Gets the category-string subelement, creating it if necessary.
-     *
-     * @param create if true, the category string element is created if it doesn't exist; if false, null is returned in that case.
-     * @return the category-string subelement
-     */
-    Element categoryStringElem(boolean create) {
-
-        Element result = m_element.element(N_CATEGORY_STRING);
-        if ((result == null) && create) {
-            result = m_element.addElement(N_CATEGORY_STRING);
-            result.detach();
-            m_element.elements().add(0, result);
-        }
-        return result;
-    }
-
-    /**
      * @see org.opencms.xml.xml2json.I_CmsJsonFormattableValue#toJson(org.opencms.file.CmsObject)
      */
     public Object toJson(CmsObject cms) {
@@ -218,6 +219,23 @@ public class CmsXmlDynamicCategoryValue extends A_CmsXmlContentValue implements 
         } catch (Exception e) {
             return array;
         }
+    }
+
+    /**
+     * Gets the category-string subelement, creating it if necessary.
+     *
+     * @param create if true, the category string element is created if it doesn't exist; if false, null is returned in that case.
+     * @return the category-string subelement
+     */
+    Element categoryStringElem(boolean create) {
+
+        Element result = m_element.element(N_CATEGORY_STRING);
+        if ((result == null) && create) {
+            result = m_element.addElement(N_CATEGORY_STRING);
+            result.detach();
+            m_element.elements().add(0, result);
+        }
+        return result;
     }
 
 }
