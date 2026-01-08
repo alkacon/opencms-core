@@ -211,6 +211,9 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         /** The CMS resource utility of this editable gallery item. */
         private CmsResourceUtil m_resourceUtil;
 
+        /** The size of this editable gallery item. */
+        private int m_size;
+
         /** The title of this editable gallery item. */
         private String m_title;
 
@@ -401,6 +404,16 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         }
 
         /**
+         * Returns the size of this editable gallery item.<p>
+         *
+         * @return the size
+         */
+        public int getSize() {
+
+            return m_size;
+        }
+
+        /**
          * Returns the title of this editable gallery item.<p>
          *
          * @return the title
@@ -551,6 +564,7 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                 m_description = readPropertyDescription();
                 m_dateLastModified = Long.valueOf(m_resource.getDateLastModified());
                 m_isUsed = Boolean.valueOf(!((relations == null) || relations.isEmpty()));
+                m_size = m_resource.getLength();
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
@@ -771,6 +785,8 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
                 m_messageSortDateLastModifiedDescending,
                 m_messageSortPathAscending,
                 m_messageSortPathDescending,
+                m_messageSortSizeAscending,
+                m_messageSortSizeDescending,
                 m_messageSortUnusedFirst,
                 m_messageSortNoCopyrightFirst,
                 m_messageSortNoDescriptionFirst);
@@ -1319,6 +1335,13 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             String.CASE_INSENSITIVE_ORDER).reversed()::compare;
 
         /** Comparator. */
+        final SerializableComparator<DataItem> SORT_SIZE_ASCENDING = Comparator.comparing(DataItem::getSize)::compare;
+
+        /** Comparator. */
+        final SerializableComparator<DataItem> SORT_SIZE_DESCENDING = Comparator.comparing(
+            DataItem::getSize).reversed()::compare;
+
+        /** Comparator. */
         final SerializableComparator<DataItem> SORT_TITLE_ASCENDING = Comparator.comparing(
             DataItem::getTitle,
             String.CASE_INSENSITIVE_ORDER)::compare;
@@ -1600,6 +1623,12 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
 
     /** Localized message. */
     private String m_messageSortPathDescending;
+
+    /** Localized message. */
+    private String m_messageSortSizeAscending;
+
+    /** Localized message. */
+    private String m_messageSortSizeDescending;
 
     /** Localized message. */
     private String m_messageSortTitleAscending;
@@ -1995,6 +2024,10 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
             m_provider.setSortComparator(m_provider.SORT_PATH_ASCENDING);
         } else if (sortOrder == m_messageSortPathDescending) {
             m_provider.setSortComparator(m_provider.SORT_PATH_DESCENDING);
+        } else if (sortOrder == m_messageSortSizeAscending) {
+            m_provider.setSortComparator(m_provider.SORT_SIZE_ASCENDING);
+        } else if (sortOrder == m_messageSortSizeDescending) {
+            m_provider.setSortComparator(m_provider.SORT_SIZE_DESCENDING);
         } else if (sortOrder == m_messageSortUnusedFirst) {
             m_provider.setSortComparator(m_provider.SORT_UNUSED_FIRST);
         } else if (sortOrder == m_messageSortNoCopyrightFirst) {
@@ -2116,6 +2149,9 @@ public class CmsGalleryOptimizeDialog extends CmsBasicDialog {
         m_messageSortPathAscending = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_SORT_PATH_ASCENDING_0);
         m_messageSortPathDescending = CmsVaadinUtils.getMessageText(
             Messages.GUI_GALLERY_OPTIMIZE_SORT_PATH_DESCENDING_0);
+        m_messageSortSizeAscending = CmsVaadinUtils.getMessageText(Messages.GUI_GALLERY_OPTIMIZE_SORT_SIZE_ASCENDING_0);
+        m_messageSortSizeDescending = CmsVaadinUtils.getMessageText(
+            Messages.GUI_GALLERY_OPTIMIZE_SORT_SIZE_DESCENDING_0);
         m_messageSortTitleAscending = CmsVaadinUtils.getMessageText(
             Messages.GUI_GALLERY_OPTIMIZE_SORT_TITLE_ASCENDING_0);
         m_messageSortTitleDescending = CmsVaadinUtils.getMessageText(

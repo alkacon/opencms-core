@@ -183,6 +183,12 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_GALLERY_OPTIMIZE_SORT_PATH_DESCENDING_0 = "GUI_GALLERY_OPTIMIZE_SORT_PATH_DESCENDING_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_SORT_SIZE_ASCENDING_0 = "GUI_GALLERY_OPTIMIZE_SORT_SIZE_ASCENDING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_SORT_SIZE_DESCENDING_0 = "GUI_GALLERY_OPTIMIZE_SORT_SIZE_DESCENDING_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_OPTIMIZE_SORT_TITLE_ASCENDING_0 = "GUI_GALLERY_OPTIMIZE_SORT_TITLE_ASCENDING_0";
 
     /** Message constant for key in the resource bundle. */
