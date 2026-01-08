@@ -1,24 +1,22 @@
 import org.apache.tools.ant.filters.ReplaceTokens
-
-apply plugin: 'java-library'
-apply plugin: 'maven-publish'
-apply plugin: 'signing'
-apply plugin: 'eclipse'
-
-
+ 
 buildscript {
-    dependencies {
-        classpath group: 'com.liferay', name: 'com.liferay.gradle.plugins.tlddoc.builder', version: '2.0.1'
-        classpath("io.github.gradle-nexus.publish-plugin:io.github.gradle-nexus.publish-plugin.gradle.plugin:2.0.0")
-    }
     repositories {
         mavenLocal()
         mavenCentral()
         gradlePluginPortal()
     }
 }
-apply plugin: 'com.liferay.tlddoc.builder'
-apply plugin: 'io.github.gradle-nexus.publish-plugin'
+
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+    id 'eclipse'
+    id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
+    id 'com.liferay.tlddoc.builder' version '2.0.1'
+}
+
 group = "org.opencms"
 
 buildDir = build_directory
