@@ -195,6 +195,7 @@ configurations {
     // It corresponds to our compile configuration, that's why we have to use extendsFrom here
     testImplementation {
         extendsFrom testCompile
+        extendsFrom setupImplementation
     }
 
     gwtCompile {
@@ -1124,46 +1125,49 @@ task bindist (dependsOn: war, type: Zip){
 }
 
 
-test {
-    // We fix max heap size here, since with less heap size tests will fail.
+// Shared configuration for all test tasks
+tasks.withType(Test).configureEach {
     maxHeapSize = "2000m"
     useJUnit()
-    scanForTestClasses false
+    scanForTestClasses = false
+    testLogging.showStandardStreams = true
+    ignoreFailures = true
+}
+
+def coreTestConfig = {
     testClassesDirs = files(sourceSets.test.java.classesDirectory)
     systemProperties['test.data.path'] = "${projectDir}/test/data"
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
     systemProperties['test.project.path'] = "${projectDir}"
-    systemProperties['test.build.folder'] =sourceSets.test.output.resourcesDir
-    testLogging.showStandardStreams = true
-    ignoreFailures true
-    filter {
-        includeTestsMatching "org.opencms.test.AllTests"
-    }
-}
-
-task testSingle(type: Test, dependsOn: [compileTestJava]) {
-    description "Runs a specified test case set like this: -PtestCaseToRun=org.opencms.main.TestCmsSystemInfo*"
+    systemProperties['test.build.folder'] = sourceSets.test.output.resourcesDir
     inputs.dir "${projectDir}/test/data"
     inputs.dir "${projectDir}/webapp"
+}
 
-    useJUnit()
-    if (!project.hasProperty('testCaseToRun')){
-        project.ext.testCaseToRun='org.opencms.main.TestCmsSystemInfo*'
-    }
+test {
+    configure coreTestConfig
+    description "Runs the complete test suite 'org.opencms.test.AllTests'."
+
+    filter.includeTestsMatching("org.opencms.test.AllTests")
+}
+
+tasks.register('testSingle', Test) {
+    description "Runs a specified test case. If no specific test is requested, runs the TestCmsSystemInfo test case."
+    group 'verification'
+    configure coreTestConfig
+
     doFirst{
-        println "Running test case : ${testCaseToRun}"
+        logger.info("Test filter configuration - commandLineIncludePatterns: ${filter.commandLineIncludePatterns}, includePatterns: ${filter.includePatterns}")
+
+        // Ensure org.opencms.main.TestCmsSystemInfo* is the default if no specific tests are requested via CLI
+        boolean hasExplicit = !filter.commandLineIncludePatterns.empty || !filter.includePatterns.empty
+        logger.debug("hasExplicitTestSelection: ${hasExplicit}")
+
+        if (!hasExplicit) {
+            logger.lifecycle("No specific tests requested, applying default filter: org.opencms.main.TestCmsSystemInfo*")
+            filter.includeTestsMatching "org.opencms.main.TestCmsSystemInfo*"
+        }
     }
-    filter {
-        includeTestsMatching testCaseToRun
-    }
-    scanForTestClasses false
-    testClassesDirs = files(sourceSets.test.java.classesDirectory)
-    systemProperties['test.data.path'] = "${projectDir}/test/data"
-    systemProperties['test.webapp.path'] = "${projectDir}/webapp"
-    systemProperties['test.build.folder'] =sourceSets.test.output.resourcesDir
-    maxHeapSize = max_heap_size
-    testLogging.showStandardStreams = true
-    ignoreFailures true
 }
 
 task testJar(dependsOn: compileTestJava, type: Jar) {
