@@ -602,6 +602,9 @@ public class CmsResourceManager {
         Map<String, CmsDefaultSet<String>> result = new HashMap<String, CmsDefaultSet<String>>();
         for (I_CmsResourceType resType : getResourceTypes()) {
             if (resType instanceof CmsResourceTypeXmlContent) {
+                String ignoreMissingSchema = resType.getConfiguration().getString(
+                    I_CmsResourceType.PARAM_IGNORE_MISSING_SCHEMA,
+                    "false");
                 String schema = null;
                 try {
                     schema = ((CmsResourceTypeXmlContent)resType).getSchema();
@@ -615,6 +618,9 @@ public class CmsResourceManager {
                             "No schema for XML type " + resType.getTypeName() + " / " + resType.getClass().getName());
                     }
                 } catch (Exception e) {
+                    if (Boolean.parseBoolean(ignoreMissingSchema)) {
+                        continue;
+                    }
                     LOG.error(
                         "Error in getAllowedContextMap, schema="
                             + schema
@@ -623,6 +629,7 @@ public class CmsResourceManager {
                             + ", "
                             + e.getLocalizedMessage(),
                         e);
+
                 }
             }
         }

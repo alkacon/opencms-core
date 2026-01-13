@@ -41,14 +41,17 @@
 						</property>
 					</properties>
 					<param name="schema">/sites/default/xmlcontent/article.xsd</param>
+					<param name="ignoreMissingSchema">true</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
 					name="v8flower" id="33">
 					<param name="schema">/sites/default/flower/schema/flower.xsd</param>
+					<param name="ignoreMissingSchema">true</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
 					name="article1" id="1237">
 					<param name="schema">/system/schemas/article1.xsd</param>
+					<param name="ignoreMissingSchema">true</param>
 				</type>
 			</resourcetypes>
 		</module>

@@ -147,6 +147,9 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler, S
     /** Store the property on structure record. */
     String PROPERTY_ON_STRUCTURE = "structure";
 
+    /** Resource type parameter that can be used to turn off error messages for missing XSDs, mostly for use in test cases. */
+    String PARAM_IGNORE_MISSING_SCHEMA = "ignoreMissingSchema";
+
     /**
      * Maps a file extension to a resource type.<p>
      *
