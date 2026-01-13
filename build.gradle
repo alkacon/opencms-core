@@ -1152,15 +1152,30 @@ test {
 }
 
 tasks.register('testSingle', Test) {
-    description "Runs a specified test case. If no specific test is requested, runs the TestCmsSystemInfo test case."
+    description "Runs a specified test case. Equivalent to standard 'test' task. \n" +
+                "NOTE: Usage of legacy '-PtestCaseToRun' property is DEPRECATED. Use standard '--tests' filtering instead. \n" +
+                "Conflict Resolution: If both '-PtestCaseToRun' and '--tests' are defined, standard '--tests' takes precedence. \n" +
+                "Default: Runs TestCmsSystemInfo test case if no filters are provided."
     group 'verification'
     configure coreTestConfig
 
     doFirst{
         logger.info("Test filter configuration - commandLineIncludePatterns: ${filter.commandLineIncludePatterns}, includePatterns: ${filter.includePatterns}")
 
-        // Ensure org.opencms.main.TestCmsSystemInfo* is the default if no specific tests are requested via CLI
         boolean hasExplicit = !filter.commandLineIncludePatterns.empty || !filter.includePatterns.empty
+        
+        // Backward compatibility: Check for -PtestCaseToRun property
+        if (project.hasProperty('testCaseToRun')) {
+             if (hasExplicit) {
+                 logger.warn("WARNING: Both -PtestCaseToRun and --tests filters are present. Using standard Gradle filters and ignoring legacy property.")
+             } else {
+                 def legacyTestInfo = project.property('testCaseToRun')
+                 logger.warn("DEPRECATION WARNING: The 'testCaseToRun' property is deprecated. Please use standard Gradle filtering: ./gradlew testSingle --tests ${legacyTestInfo}")
+                 filter.includeTestsMatching "${legacyTestInfo}*"
+                 hasExplicit = true
+             }
+        }
+
         logger.debug("hasExplicitTestSelection: ${hasExplicit}")
 
         if (!hasExplicit) {
