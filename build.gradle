@@ -1210,53 +1210,7 @@ task testGwt(type: Test, dependsOn: [compileTestGwtJava]) {
     ignoreFailures true
 }
 
-artifacts {
-    archives sourcesJar
 
-	if (gradle.startParameter.taskNames.contains("uploadArchives")) {
-        // do not include the war if only running the install task, it takes ages to build
-        archives war
-        archives resourcesJar
-    }
-
-    archives setupJar
-    archives sourcesJarSetup
-
-    archives modulesJar
-    archives sourcesJarModules
-
-    archives gwtJar
-    archives sourcesJarGwt
-
-    archives testJar
-    archives sourcesJarTest
-
-    tasks.each { task ->
-        if (task.name.startsWith("jar_org.opencms.")){
-            def moduleName=task.archiveBaseName
-            archives task
-            if (tasks.hasProperty("sourcesJar_$moduleName")) {
-                archives tasks["sourcesJar_$moduleName"]
-            }
-        }
-    }
-    // in case the property 'skip_javadoc' is set to 'true', javadoc generation is skipped - this is supposed to speed up build time for CI
-    if (addJavadoc) {
-        archives javadocJar
-        archives javadocJarSetup
-        archives javadocJarModules
-        archives javadocJarGwt
-        archives javadocJarTest
-        tasks.each { task ->
-            if (task.name.startsWith("jar_org.opencms.")) {
-                def moduleName=task.archiveBaseName
-                if (tasks.hasProperty("javadocJar_$moduleName")) {
-                    archives tasks["javadocJar_$moduleName"]
-                }
-            }
-        }
-    }
-}
 
 
 publishing {
@@ -1360,6 +1314,9 @@ publishing {
                     sourcesJarTest,
                     javadocJarTest
                 ] : [testJar, sourcesJarTest]
+            ],
+            "resources" : [
+                "artifacts" : [resourcesJar]
             ]
         ]
         furtherPubs.each { pub ->
@@ -1430,43 +1387,93 @@ publishing {
                 }
             }
         }
-        if (gradle.startParameter.taskNames.contains("uploadArchives")) {
-            webapp(MavenPublication) {
-                artifact war
-                pom {
-                    artifactId 'opencms-webapp'
-                    name = product_name
-                    description = product_description
-                    packaging 'war'
-                    groupId 'org.opencms'
-                    url = 'http://www.opencms.org'
-                    scm {
-                        url = 'scm:git@github.com:alkacon/opencms-core.git'
-                        connection = 'scm:git@github.com:alkacon/opencms-core.git'
-                        developerConnection = 'scm:git@github.com:alkacon/opencms-core.git'
+        // Publications for individual modules
+        tasks.each { task ->
+            if (task.name.startsWith("jar_org.opencms.")) {
+                def moduleName = task.archiveBaseName.get()
+                pubs.create(moduleName, MavenPublication) {
+                    artifact task
+                    if (tasks.findByName("sourcesJar_$moduleName")) {
+                        artifact tasks["sourcesJar_$moduleName"]
                     }
-                    licenses {
-                        license {
-                            name = 'GNU Lesser General Public License'
-                            url = 'http://www.gnu.org/licenses/lgpl.html'
-                            distribution = 'repo'
+                    if (addJavadoc && tasks.findByName("javadocJar_$moduleName")) {
+                        artifact tasks["javadocJar_$moduleName"]
+                    }
+                    pom {
+                        artifactId moduleName
+                        name = product_name
+                        description = product_description
+                        packaging 'jar'
+                        groupId 'org.opencms'
+                        url = 'http://www.opencms.org'
+                        scm {
+                            url = 'scm:git@github.com:alkacon/opencms-core.git'
+                            connection = 'scm:git@github.com:alkacon/opencms-core.git'
+                            developerConnection = 'scm:git@github.com:alkacon/opencms-core.git'
                         }
-                    }
-                    organization {
-                        name = 'Alkacon Software'
-                        url = 'https://www.alkacon.com'
-                    }
-                    developers {
-                        developer {
+                        licenses {
+                            license {
+                                name = 'GNU Lesser General Public License'
+                                url = 'http://www.gnu.org/licenses/lgpl.html'
+                                distribution = 'repo'
+                            }
+                        }
+                        organization {
                             name = 'Alkacon Software'
                             url = 'https://www.alkacon.com'
+                        }
+                        developers {
+                            developer {
+                                name = 'Alkacon Software'
+                                url = 'https://www.alkacon.com'
+                            }
+                        }
+                        withXml {
+                            def depsNode = asNode().appendNode('dependencies')
+                            def depNode = depsNode.appendNode('dependency')
+                            depNode.appendNode('artifactId','opencms-core')
+                            depNode.appendNode('groupId','org.opencms')
+                            depNode.appendNode('version',version)
                         }
                     }
                 }
             }
-            pubs.each { pub ->
-                signing.sign pub
+        }
+        webapp(MavenPublication) {
+            artifact war
+            pom {
+                artifactId 'opencms-webapp'
+                name = product_name
+                description = product_description
+                packaging 'war'
+                groupId 'org.opencms'
+                url = 'http://www.opencms.org'
+                scm {
+                    url = 'scm:git@github.com:alkacon/opencms-core.git'
+                    connection = 'scm:git@github.com:alkacon/opencms-core.git'
+                    developerConnection = 'scm:git@github.com:alkacon/opencms-core.git'
+                }
+                licenses {
+                    license {
+                        name = 'GNU Lesser General Public License'
+                        url = 'http://www.gnu.org/licenses/lgpl.html'
+                        distribution = 'repo'
+                    }
+                }
+                organization {
+                    name = 'Alkacon Software'
+                    url = 'https://www.alkacon.com'
+                }
+                developers {
+                    developer {
+                        name = 'Alkacon Software'
+                        url = 'https://www.alkacon.com'
+                    }
+                }
             }
+        }
+        pubs.each { pub ->
+            signing.sign pub
         }
     }
 }
