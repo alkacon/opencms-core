@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<infoproject>Offline</infoproject>
+		<export_version>10</export_version>
+	</info>
+	<module>
+		<name>org.opencms.test.modules.solr.serialdate</name>
+		<nicename><![CDATA[Module to import for unit tests for the serial date handling]]></nicename>
+		<group>OpenCms Unit-Test</group>
+		<class/>
+		<import-site>/</import-site>
+		<export-mode name="reduced"/>
+		<description/>
+		<version>0.1</version>
+		<authorname><![CDATA[Daniel Seidel]]></authorname>
+		<authoremail><![CDATA[d.seidel@alkacon.com]]></authoremail>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints/>
+		<resources>
+			<resource uri="/system/modules/org.opencms.test.modules.solr.serialdate/"/>
+			<resource uri="/sites/default/content/"/>
+		</resources>
+		<excluderesources/>
+		<parameters/>
+		<resourcetypes>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="serial-date-test" id="20298">
+				<param name="schema">/system/modules/org.opencms.test.modules.solr.serialdate/schemas/serial-date-test.xsd</param>
+				<param name="ignoreMissingSchema">true</param>
+			</type>
+		</resourcetypes>
+		<explorertypes>
+			<explorertype name="serial-date-test" key="fileicon.serial-date-test" icon="serial-date-test.png" bigicon="serial-date-test_big.png" reference="xmlcontent">
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=serial-date-test" order="10" autosetnavigation="false" autosettitle="false" info="desc.serial-date-test" key="title.serial-date-test"/>
+			</explorertype>
+		</explorertypes>
+	</module>
+	<files>
+		<file>
+			<destination>sites</destination>
+			<type>folder</type>
+			<properties/>
+		</file>
+		<file>
+			<destination>sites/default</destination>
+			<type>folder</type>
+			<properties/>
+		</file>
+		<file>
+			<destination>sites/default/content</destination>
+			<type>folder</type>
+			<uuidstructure>5eb958f5-6098-11e7-a6f9-cf5dc4bab63a</uuidstructure>
+			<datecreated>Tue, 04 Jul 2017 09:08:39 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/content/sdt_00001.xml</source>
+			<destination>sites/default/content/sdt_00001.xml</destination>
+			<type>serial-date-test</type>
+			<uuidstructure>75356ba7-6098-11e7-a6f9-cf5dc4bab63a</uuidstructure>
+			<uuidresource>75356ba8-6098-11e7-a6f9-cf5dc4bab63a</uuidresource>
+			<datecreated>Tue, 04 Jul 2017 09:09:17 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>serialdate</name>
+					<value><![CDATA[type=1|interval=1|everyworkingday=false|startdate=1499159340000|enddate=1499159340000|occurences=100|endtype=2]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/default/content/sdt_00002.xml</source>
+			<destination>sites/default/content/sdt_00002.xml</destination>
+			<type>serial-date-test</type>
+			<uuidstructure>78bb0ff9-6098-11e7-a6f9-cf5dc4bab63a</uuidstructure>
+			<uuidresource>78bb0ffa-6098-11e7-a6f9-cf5dc4bab63a</uuidresource>
+			<datecreated>Tue, 04 Jul 2017 09:09:23 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>serialdate</name>
+					<value><![CDATA[type=2|interval=|weekdays=2,4|startdate=1499159400000|enddate=1499119800000|serialenddate=1506589860000|endtype=3]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<properties/>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<properties/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.test.modules.solr.serialdate</destination>
+			<type>folder</type>
+			<uuidstructure>3ad28c2e-6095-11e7-9729-cf5dc4bab63a</uuidstructure>
+			<datecreated>Tue, 04 Jul 2017 08:46:11 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.test.modules.solr.serialdate/.config</source>
+			<destination>system/modules/org.opencms.test.modules.solr.serialdate/.config</destination>
+			<type>module_config</type>
+			<uuidstructure>cc8d4268-6096-11e7-a67c-cf5dc4bab63a</uuidstructure>
+			<uuidresource>cc8d4269-6096-11e7-a67c-cf5dc4bab63a</uuidresource>
+			<datecreated>Tue, 04 Jul 2017 08:57:25 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.test.modules.solr.serialdate/i18n</destination>
+			<type>folder</type>
+			<uuidstructure>cc5e6b28-6096-11e7-a67c-cf5dc4bab63a</uuidstructure>
+			<datecreated>Tue, 04 Jul 2017 08:57:24 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.test.modules.solr.serialdate/i18n/org.opencms.test.modules.solr.serialdate.workplace_en</source>
+			<destination>system/modules/org.opencms.test.modules.solr.serialdate/i18n/org.opencms.test.modules.solr.serialdate.workplace_en</destination>
+			<type>propertyvfsbundle</type>
+			<uuidstructure>cc623bba-6096-11e7-a67c-cf5dc4bab63a</uuidstructure>
+			<uuidresource>cc623bbb-6096-11e7-a67c-cf5dc4bab63a</uuidresource>
+			<datecreated>Tue, 04 Jul 2017 08:57:24 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.test.modules.solr.serialdate/schemas</destination>
+			<type>folder</type>
+			<uuidstructure>cc4b3143-6096-11e7-a67c-cf5dc4bab63a</uuidstructure>
+			<datecreated>Tue, 04 Jul 2017 08:57:24 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.test.modules.solr.serialdate/schemas/serial-date-test.xsd</source>
+			<destination>system/modules/org.opencms.test.modules.solr.serialdate/schemas/serial-date-test.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>cc51e805-6096-11e7-a67c-cf5dc4bab63a</uuidstructure>
+			<uuidresource>cc51e806-6096-11e7-a67c-cf5dc4bab63a</uuidresource>
+			<datecreated>Tue, 04 Jul 2017 08:57:24 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample resource type schema]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

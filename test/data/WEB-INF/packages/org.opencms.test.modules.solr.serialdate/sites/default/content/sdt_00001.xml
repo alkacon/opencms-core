@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<SerialDateTests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.test.modules.solr.serialdate/schemas/serial-date-test.xsd">
+  <SerialDateTest language="en">
+    <Title><![CDATA[Serial Date Test 1]]></Title>
+    <Serial><![CDATA[{"from":"1491202800000", "to":"1491231600000", "pattern":{"type":"DAILY", "interval":"1"}, "occurrences":"5"}]]></Serial>
+  </SerialDateTest>
+</SerialDateTests>
