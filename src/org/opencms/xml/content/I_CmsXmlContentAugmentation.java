@@ -46,6 +46,8 @@ public interface I_CmsXmlContentAugmentation {
      */
     public interface Context {
 
+        public String getParameter(String param);
+
         /**
          * Helper method for calling the JSP at the given path.
          *
@@ -88,6 +90,10 @@ public interface I_CmsXmlContentAugmentation {
          * @return the currently edited locale of the content
          */
         Locale getLocale();
+
+        boolean isAborted();
+
+        void progress(String progressMessage);
 
         /**
          * Sets the HTML to display to the user after the augmentation.

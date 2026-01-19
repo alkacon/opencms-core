@@ -847,6 +847,16 @@ public final class OpenCms {
     }
 
     /**
+     * Registers an action to be executed before shutdown.
+     *
+     * @param action the action to be executed before shutdown
+     */
+    public static void registerShutdownAction(Runnable action) {
+
+        OpenCmsCore.getInstance().registerShutdownAction(action);
+    }
+
+    /**
      * Removes a cms event listener.<p>
      *
      * @param listener the listener to remove

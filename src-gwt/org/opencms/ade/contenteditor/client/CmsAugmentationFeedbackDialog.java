@@ -61,9 +61,10 @@ public class CmsAugmentationFeedbackDialog extends CmsPopup {
     /**
      * Creates a new instance.
      *
+     * @param title the title
      * @param htmlMessage the HTML message to display
      */
-    public CmsAugmentationFeedbackDialog(String htmlMessage) {
+    public CmsAugmentationFeedbackDialog(String caption, String htmlMessage) {
 
         super(CmsPopup.WIDE_WIDTH);
         m_root = uibinder.createAndBindUi(this);
@@ -71,7 +72,6 @@ public class CmsAugmentationFeedbackDialog extends CmsPopup {
         CmsPushButton okButton = new CmsPushButton();
         setModal(true);
         setMainContent(m_root);
-        String caption = Messages.get().key(Messages.GUI_CONTENT_EDITOR_AUGMENTATION_RESULTS_CAPTION_0);
         setCaption(caption);
         okButton.setText(org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_OK_0));
         okButton.setUseMinWidth(true);

@@ -84,6 +84,8 @@ public final class CmsGwtConstants {
         public static final String PAGE_ID = "pageId";
     }
 
+    public static final String PARAM_TARGET_LOCALE = "targetLocale";
+
     /** Context menu action id. */
     public static final String ACTION_EDITSMALLELEMENTS = "editsmallelements";
 
@@ -314,6 +316,8 @@ public final class CmsGwtConstants {
 
     /** Name of Javascript variable used to hold the structure id of the currently selected locale's root folder in the sitemap editor's locale comparison mode. */
     public static final String VAR_LOCALE_ROOT = "cmsLocaleCompareRoot";
+
+    public static final String AUGMENTATION_TRANSLATION = "translation";
 
     /**
      * Hide constructor.<p>

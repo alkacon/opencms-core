@@ -81,6 +81,7 @@ import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
 import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
@@ -97,6 +98,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.function.Consumer;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -230,22 +232,22 @@ public final class CmsContentEditor extends CmsEditorBase {
     }
 
     /** CSS marker class added to the html element when  the editor is active. */
-    public static final String EDITOR_MARKER_CLASS = "opencms-editor-active";
+    public static final String EDITOR_MARKER_CLASS = "opencms-editor-active"; //$NON-NLS-1$
 
     /** The add change listener method name. */
-    private static final String ADD_CHANGE_LISTENER_METHOD = "cmsAddEntityChangeListener";
+    private static final String ADD_CHANGE_LISTENER_METHOD = "cmsAddEntityChangeListener"; //$NON-NLS-1$
 
     /** The entity id selector prefix. */
-    private static final String ENTITY_ID_SELECTOR_PREFIX = "[" + CmsGwtConstants.ATTR_DATA_ID + "*=\"";
+    private static final String ENTITY_ID_SELECTOR_PREFIX = "[" + CmsGwtConstants.ATTR_DATA_ID + "*=\""; //$NON-NLS-1$ //$NON-NLS-2$
 
     /** The entity id selector suffix. */
-    private static final String ENTITY_ID_SELECTOR_SUFFIX = "\"]";
+    private static final String ENTITY_ID_SELECTOR_SUFFIX = "\"]"; //$NON-NLS-1$
 
     /** The editable field selector. */
-    private static final String FIELD_SELECTOR = "[" + CmsGwtConstants.ATTR_DATA_FIELD + "*=\"opencms://\"]";
+    private static final String FIELD_SELECTOR = "[" + CmsGwtConstants.ATTR_DATA_FIELD + "*=\"opencms://\"]"; //$NON-NLS-1$ //$NON-NLS-2$
 
     /** The get current entity method name. */
-    private static final String GET_CURRENT_ENTITY_METHOD = "cmsGetCurrentEntity";
+    private static final String GET_CURRENT_ENTITY_METHOD = "cmsGetCurrentEntity"; //$NON-NLS-1$
 
     /** The in-line editor instance. */
     private static CmsContentEditor INSTANCE;
@@ -391,7 +393,7 @@ public final class CmsContentEditor extends CmsEditorBase {
     /** The undo redo event handler registration. */
     private HandlerRegistration m_undoRedoHandlerRegistration;
 
-    private boolean m_hasAugmentation;
+    private boolean m_isTranslationEnabled;
 
     /**
      * Constructor.<p>
@@ -400,7 +402,7 @@ public final class CmsContentEditor extends CmsEditorBase {
 
         super((I_CmsContentServiceAsync)GWT.create(I_CmsContentService.class), new CmsDefaultWidgetService());
         m_service = (I_CmsContentServiceAsync)super.getService();
-        String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.contenteditor.CmsContentService.gwt");
+        String serviceUrl = CmsCoreProvider.get().link("org.opencms.ade.contenteditor.CmsContentService.gwt"); //$NON-NLS-1$
         ((ServiceDefTarget)m_service).setServiceEntryPoint(serviceUrl);
         getWidgetService().setWidgetFactories(WidgetRegistry.getInstance().getWidgetFactories());
         for (I_CmsEntityRenderer renderer : WidgetRegistry.getInstance().getRenderers()) {
@@ -432,20 +434,20 @@ public final class CmsContentEditor extends CmsEditorBase {
      */
     public static void addEntityChangeListener(I_CmsEntityChangeListener changeListener, String changeScope) {
 
-        CmsDebugLog.getInstance().printLine("trying to ad change listener for scope: " + changeScope);
+        CmsDebugLog.getInstance().printLine("trying to ad change listener for scope: " + changeScope); //$NON-NLS-1$
         if ((INSTANCE == null) || (INSTANCE.m_entityObserver == null)) {
-            CmsDebugLog.getInstance().printLine("handling external registration");
+            CmsDebugLog.getInstance().printLine("handling external registration"); //$NON-NLS-1$
             if (isObserverExported()) {
-                CmsDebugLog.getInstance().printLine("registration is available");
+                CmsDebugLog.getInstance().printLine("registration is available"); //$NON-NLS-1$
                 try {
                     addNativeListener(changeListener, changeScope);
                 } catch (Exception e) {
 
                     CmsDebugLog.getInstance().printLine(
-                        "Exception occured during listener registration" + e.getMessage());
+                        "Exception occured during listener registration" + e.getMessage()); //$NON-NLS-1$
                 }
             } else {
-                throw new RuntimeException("Editor is not initialized yet.");
+                throw new RuntimeException("Editor is not initialized yet."); //$NON-NLS-1$
             }
         } else {
             INSTANCE.m_entityObserver.addEntityChangeListener(changeListener, changeScope);
@@ -475,11 +477,11 @@ public final class CmsContentEditor extends CmsEditorBase {
     public static CmsEntity getEntity() {
 
         if ((INSTANCE == null) || (INSTANCE.m_entityObserver == null)) {
-            CmsDebugLog.getInstance().printLine("handling external registration");
+            CmsDebugLog.getInstance().printLine("handling external registration"); //$NON-NLS-1$
             if (isObserverExported()) {
                 return CmsEntityBackend.createFromNativeWrapper(nativeGetEntity());
             } else {
-                throw new RuntimeException("Editor is not initialized yet.");
+                throw new RuntimeException("Editor is not initialized yet."); //$NON-NLS-1$
             }
         } else {
             return INSTANCE.getCurrentEntity();
@@ -522,7 +524,7 @@ public final class CmsContentEditor extends CmsEditorBase {
     public static boolean isEditable(Element element) {
 
         String field = element.getAttribute(CmsGwtConstants.ATTR_DATA_FIELD);
-        return (field != null) && field.contains("opencms://");
+        return (field != null) && field.contains("opencms://"); //$NON-NLS-1$
     }
 
     /**
@@ -1298,6 +1300,43 @@ public final class CmsContentEditor extends CmsEditorBase {
         return ((CmsDefaultWidgetService)getWidgetService()).getSkipPaths();
     }
 
+    protected void replaceContentWithAugmentationOutput(final CmsContentAugmentationDetails result) {
+
+        m_deletedEntities.clear();
+        List<String> locales = result.getLocales();
+        if (locales.size() == 0) {
+            CmsGwtLog.log("no locales found"); //$NON-NLS-1$
+            return;
+        }
+        m_contentLocales.clear();
+        m_contentLocales.addAll(locales);
+        String nextLocale = result.getNextLocale() != null ? result.getNextLocale() : m_locale;
+        if (!locales.contains(nextLocale)) {
+            nextLocale = locales.get(0);
+        }
+        m_locale = null;
+        switchLocale(nextLocale, true, () -> {
+            if (result.getHtmlMessage() != null) {
+                CmsAugmentationFeedbackDialog feedbackDialog = new CmsAugmentationFeedbackDialog(
+                    result.getResultCaption(),
+                    result.getHtmlMessage());
+                // for some reason vertical positioning does not work here immediately (which is why
+                // we call center in a timer again), but at least we center the dialog horizontally here
+                feedbackDialog.center();
+
+                Timer timer = new Timer() {
+
+                    @Override
+                    public void run() {
+
+                        feedbackDialog.center();
+                    }
+                };
+                timer.schedule(100);
+            }
+        });
+    }
+
     /**
      * Adds a content definition to the internal store.<p>
      *
@@ -1632,14 +1671,14 @@ public final class CmsContentEditor extends CmsEditorBase {
         if (inline && (formParent != null)) {
             if ((mainLocale != null)
                 && (CmsDomUtil.querySelector(
-                    "[" + CmsGwtConstants.ATTR_DATA_ID + "^='" + m_entityId + "']",
+                    "[" + CmsGwtConstants.ATTR_DATA_ID + "^='" + m_entityId + "']", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     formParent.getElement()) == null)) {
                 // in case a main locale is given and there are not any HTML elements attributed to the current entity id,
                 // check if the content was rendered for the main locale
                 CmsUUID structureId = CmsContentDefinition.entityIdToUuid(m_entityId);
                 String mainLocaleEntityId = CmsContentDefinition.uuidToEntityId(structureId, mainLocale);
                 NodeList<Element> elements = CmsDomUtil.querySelectorAll(
-                    "[" + CmsGwtConstants.ATTR_DATA_ID + "^='" + mainLocaleEntityId + "']",
+                    "[" + CmsGwtConstants.ATTR_DATA_ID + "^='" + mainLocaleEntityId + "']", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     formParent.getElement());
                 if (elements.getLength() > 0) {
                     for (int i = 0; i < elements.getLength(); i++) {
@@ -1828,7 +1867,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         if (m_context.isReusedElement()) {
             String message = Messages.get().key(Messages.GUI_CONTENT_EDITOR_REUSE_MARKER_0);
             Label label = new Label(message);
-            label.addStyleName("oc-editor-reuse-marker");
+            label.addStyleName("oc-editor-reuse-marker"); //$NON-NLS-1$
             m_contentInfoHeader.addWidget(label);
         }
         FlowPanel localeButtons = m_contentInfoHeader.getPathButtons();
@@ -1864,69 +1903,57 @@ public final class CmsContentEditor extends CmsEditorBase {
     /**
      * Runs the content augmentation.
      */
-    void runAugmentation() {
+    void runTranslation() {
 
-        m_basePanel.clear();
-        destroyForm(false);
-        final CmsEntity entity = m_entityBackend.getEntity(m_entityId);
-        m_entityId = getIdForLocale(m_locale);
-        if (m_registeredEntities.contains(m_entityId)) {
-            unregistereEntity(m_entityId);
-        }
-        CmsRpcAction<CmsContentAugmentationDetails> action = new CmsRpcAction<CmsContentAugmentationDetails>() {
+        CmsContentTranslationView.showDialog(m_locale, m_availableLocales, (String locale) -> {
+            final CmsEntity entity = m_entityBackend.getEntity(m_entityId);
+            Map<String, String> params = new HashMap<>();
+            params.put(CmsGwtConstants.PARAM_TARGET_LOCALE, locale);
+            CmsGwtLog.log("Starting augmentation job, locale=" + locale); //$NON-NLS-1$
+            getService().startAugmentationJob(
+                m_entityId,
+                m_clientId,
+                entity,
+                new ArrayList<>(m_deletedEntities),
+                getSkipPaths(),
+                CmsGwtConstants.AUGMENTATION_TRANSLATION,
+                params,
+                new AsyncCallback<CmsUUID>() {
 
-            @Override
-            public void execute() {
+                    @Override
+                    public void onFailure(Throwable caught) {
 
-                start(0, true);
-                getService().synchronizeAndTransform(
-                    m_entityId,
-                    m_clientId,
-                    entity,
-                    new ArrayList<>(m_deletedEntities),
-                    getSkipPaths(),
-                    this);
-            }
+                        new CmsErrorDialog(caught.getMessage(), "--").center(); //$NON-NLS-1$
 
-            @Override
-            protected void onResponse(final CmsContentAugmentationDetails result) {
+                    }
 
-                m_deletedEntities.clear();
-                stop(false);
-                List<String> locales = result.getLocales();
-                if (locales.size() == 0) {
-                    DomGlobal.alert("Transformed content has no locales");
-                    return;
-                }
-                m_contentLocales.clear();
-                m_contentLocales.addAll(locales);
-                String nextLocale = result.getNextLocale() != null ? result.getNextLocale() : m_locale;
-                if (!locales.contains(nextLocale)) {
-                    nextLocale = locales.get(0);
-                }
-                m_locale = null;
-                switchLocale(nextLocale, true, () -> {
-                    if (result.getHtmlMessage() != null) {
-                        CmsAugmentationFeedbackDialog feedbackDialog = new CmsAugmentationFeedbackDialog(
-                            result.getHtmlMessage());
-                        // for some reason vertical positioning does not work here immediately (which is why
-                        // we call center in a timer again), but at least we center the dialog horizontally here
-                        feedbackDialog.center();
+                    @Override
+                    public void onSuccess(CmsUUID jobId) {
 
-                        Timer timer = new Timer() {
+                        CmsContentTranslationProgressView.showDialog(
+                            jobId,
+                            getService(),
+                            new Consumer<CmsContentAugmentationDetails>() {
 
-                            @Override
-                            public void run() {
+                                public void accept(CmsContentAugmentationDetails details) {
 
-                                feedbackDialog.center();
-                            }
-                        };
-                        timer.schedule(100);
+                                    if (details.isDone()) {
+                                        details.setResultCaption(
+                                            Messages.get().key(
+                                                Messages.GUI_TRANSLATION_DIALOG_TRANSLATION_RESULTS_CAPTION_0));
+                                        m_basePanel.clear();
+                                        destroyForm(false);
+                                        if (m_registeredEntities.contains(m_entityId)) {
+                                            unregistereEntity(m_entityId);
+                                        }
+                                        replaceContentWithAugmentationOutput(details);
+                                    }
+                                }
+                            });
                     }
                 });
-            }
-        };
-        action.execute();
+        });
+
     }
 
     /**
@@ -2004,7 +2031,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         m_registeredEntities.add(definition.getEntityId());
         m_tabInfos = definition.getTabInfos();
         m_iconClasses = definition.getIconClasses();
-        m_hasAugmentation = definition.hasAugmentation();
+        m_isTranslationEnabled = definition.isTranslationEnabled();
         addContentDefinition(definition);
         CmsDefaultWidgetService service = (CmsDefaultWidgetService)getWidgetService();
         service.addConfigurations(definition.getConfigurations());
@@ -2297,7 +2324,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                 @Override
                 public void onSuccess(CmsValidationResult result) {
 
-                    CmsDebugLog.consoleLog("Update validation success: " + result);
+                    CmsDebugLog.consoleLog("Update validation success: " + result); //$NON-NLS-1$
                     validationHandler.updateValidationContext(result);
                     updateSaveButtons(result.hasErrors(), result.hasWarnings());
 
@@ -2315,11 +2342,11 @@ public final class CmsContentEditor extends CmsEditorBase {
     private void addChangeListener(JavaScriptObject changeListener, String changeScope) {
 
         try {
-            System.out.println("Adding native listener for scope " + changeScope);
+            System.out.println("Adding native listener for scope " + changeScope); //$NON-NLS-1$
             m_entityObserver.addEntityChangeListener(new CmsEntityChangeListenerWrapper(changeListener), changeScope);
         } catch (Exception e) {
 
-            CmsDebugLog.getInstance().printLine("Exception occured during listener registration" + e.getMessage());
+            CmsDebugLog.getInstance().printLine("Exception occured during listener registration" + e.getMessage()); //$NON-NLS-1$
         }
     }
 
@@ -2387,19 +2414,19 @@ public final class CmsContentEditor extends CmsEditorBase {
             List<String> localeItems = new ArrayList<>(items.size());
             resultMap.put(localeName, localeItems);
             for (CmsPair<List<CmsPair<String, Integer>>, String> it : items) {
-                String path = "";
+                String path = ""; //$NON-NLS-1$
                 for (CmsPair<String, Integer> partInfo : it.getFirst()) {
                     String attribute = partInfo.getFirst();
                     Integer idx = partInfo.getSecond();
                     path += service.getAttributeLabel(attribute);
                     if (idx.intValue() > 1) {
-                        path += " [" + (idx) + "]";
+                        path += " [" + (idx) + "]"; //$NON-NLS-1$ //$NON-NLS-2$
                     }
-                    path += " > ";
+                    path += " > "; //$NON-NLS-1$
                 }
-                String issueDisplay = "<strong>"
+                String issueDisplay = "<strong>" //$NON-NLS-1$
                     + path.substring(0, path.length() - 3)
-                    + "</strong> - "
+                    + "</strong> - " //$NON-NLS-1$
                     + it.getSecond();
                 localeItems.add(issueDisplay);
             }
@@ -2532,7 +2559,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                     });
                 }
             } else {
-                selectOptions.put(localeEntry.getKey(), localeEntry.getValue() + " [-]");
+                selectOptions.put(localeEntry.getKey(), localeEntry.getValue() + " [-]"); //$NON-NLS-1$
             }
         }
         if (localeButtons.getWidgetCount() > 0) {
@@ -2560,7 +2587,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         if (m_deleteLocaleButton == null) {
             m_deleteLocaleButton = createButton(
                 Messages.get().key(Messages.GUI_TOOLBAR_DELETE_LOCALE_0),
-                "opencms-icon-remove-locale");
+                "opencms-icon-remove-locale"); //$NON-NLS-1$
             m_deleteLocaleButton.addClickHandler(new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -2628,8 +2655,8 @@ public final class CmsContentEditor extends CmsEditorBase {
                         HashMap<String, String> params = new HashMap<String, String>(
                             getContext().getPublishParameters());
                         CmsUUID structureId = CmsContentDefinition.entityIdToUuid(getEntityId());
-                        params.put(CmsPublishOptions.PARAM_CONTENT, "" + structureId);
-                        params.put(CmsPublishOptions.PARAM_START_WITH_CURRENT_PAGE, "");
+                        params.put(CmsPublishOptions.PARAM_CONTENT, "" + structureId); //$NON-NLS-1$
+                        params.put(CmsPublishOptions.PARAM_START_WITH_CURRENT_PAGE, ""); //$NON-NLS-1$
                         CmsPublishDialog.showPublishDialog(params, new CloseHandler<PopupPanel>() {
 
                             public void onClose(CloseEvent<PopupPanel> closeEvent) {
@@ -2657,7 +2684,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         });
         m_saveExitButton = createButton(
             Messages.get().key(Messages.GUI_TOOLBAR_SAVE_AND_EXIT_0),
-            "opencms-icon-save-exit");
+            "opencms-icon-save-exit"); //$NON-NLS-1$
         m_saveExitButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -2680,7 +2707,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         m_toolbar.addLeft(m_saveButton);
         disableSave(Messages.get().key(Messages.GUI_TOOLBAR_NOTHING_CHANGED_0));
         m_hasChanges = false;
-        m_undoButton = createButton(Messages.get().key(Messages.GUI_TOOLBAR_UNDO_0), "opencms-icon-undo");
+        m_undoButton = createButton(Messages.get().key(Messages.GUI_TOOLBAR_UNDO_0), "opencms-icon-undo"); //$NON-NLS-1$
         m_undoButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -2693,7 +2720,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         m_undoButton.disable(Messages.get().key(Messages.GUI_TOOLBAR_UNDO_DISABLED_0));
         m_undoButton.setVisible(false);
         m_toolbar.addLeft(m_undoButton);
-        m_redoButton = createButton(Messages.get().key(Messages.GUI_TOOLBAR_REDO_0), "opencms-icon-redo");
+        m_redoButton = createButton(Messages.get().key(Messages.GUI_TOOLBAR_REDO_0), "opencms-icon-redo"); //$NON-NLS-1$
         m_redoButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -2760,12 +2787,12 @@ public final class CmsContentEditor extends CmsEditorBase {
                 confirmCancel();
             }
         });
-        if (!inline && m_hasAugmentation) {
-            String buttonText = Messages.get().key(Messages.GUI_CONTENT_EDITOR_AUGMENT_BUTTON_0);
+        if (!inline && m_isTranslationEnabled && (m_availableLocales.size() > 1)) {
+            String buttonText = Messages.get().key(Messages.GUI_CONTENT_EDITOR_TRANSLATE_BUTTON_0);
             CmsPushButton transformButton = createButton(
                 buttonText,
                 I_CmsButton.ButtonData.SETTINGS_BUTTON.getIconClass());
-            transformButton.addClickHandler(event -> runAugmentation());
+            transformButton.addClickHandler(event -> runTranslation());
             m_toolbar.addRight(transformButton);
         }
         m_toolbar.addRight(m_cancelButton);
@@ -2903,7 +2930,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                                             true));
                                 } else {
                                     List<String> childPathElements = new ArrayList<String>(parentPathElements);
-                                    childPathElements.add(attributeName + "[" + i + "]");
+                                    childPathElements.add(attributeName + "[" + i + "]"); //$NON-NLS-1$ //$NON-NLS-2$
                                     updateEditorValues(
                                         previousAttribute.getComplexValues().get(i),
                                         updatedAttribute.getComplexValues().get(i),
@@ -2919,7 +2946,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                                     handler.removeAttributeValue(i);
                                 } else {
                                     List<String> childPathElements = new ArrayList<String>(parentPathElements);
-                                    childPathElements.add(attributeName + "[" + i + "]");
+                                    childPathElements.add(attributeName + "[" + i + "]"); //$NON-NLS-1$ //$NON-NLS-2$
                                     updateEditorValues(
                                         previousAttribute.getComplexValues().get(i),
                                         updatedAttribute.getComplexValues().get(i),

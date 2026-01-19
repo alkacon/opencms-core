@@ -29,8 +29,8 @@ package org.opencms.ade.contenteditor.shared.rpc;
 
 import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.acacia.shared.CmsValidationResult;
-import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.CmsContentAugmentationDetails;
+import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.CmsEditHandlerData;
 import org.opencms.ade.contenteditor.shared.CmsSaveResult;
 import org.opencms.gwt.CmsRpcException;
@@ -52,23 +52,42 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
     String PARAM_BACKLINK = "backlink";
 
     /**
-     * Sends the edited data back to the server and triggers a content augmentation.
+     * Tries to abort a content augmentation job with a given id.
+     *
+     * @param jobId the job ID
+     * @throws CmsRpcException if something goes wrong
+     */
+    public void abortAugmentationJob(CmsUUID jobId) throws CmsRpcException;
+
+    /**
+     * Gets the status (and potentially results) from an augmentation job.
+     * @param jobId the id of the augmentation job
+     *
+     * @return the status and possibly results of the content augmentation
+     * @throws CmsRpcException if something goes wrong
+     */
+    public CmsContentAugmentationDetails getAugmentationProgress(CmsUUID jobId) throws CmsRpcException;
+
+    /**
+     * Sends the edited data back to the server and starts a content augmentation.
      *
      * @param entityId the entity id
      * @param clientId the client id, if available
      * @param editedEntity the edited entity
      * @param deletedEntities the deleted entities
      * @param skipPaths the paths to skip for locale synchronization
-     * @return the content synch results
+     * @return the id of the content augmentation job
      *
      * @throws CmsRpcException in case anything goes wrong
      */
-    public CmsContentAugmentationDetails synchronizeAndTransform(
+    public CmsUUID startAugmentationJob(
         String entityId,
         String clientId,
         CmsEntity editedEntity,
         List<String> deletedEntities,
-        Collection<String> skipPaths)
+        Collection<String> skipPaths,
+        String augmentationType,
+        Map<String, String> params)
     throws CmsRpcException;
 
     /**

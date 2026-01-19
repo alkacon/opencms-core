@@ -55,6 +55,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.A_CmsResourceCollector;
 import org.opencms.file.collectors.I_CmsCollectorPostCreateHandler;
+import org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
@@ -137,9 +138,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 
@@ -152,6 +158,235 @@ import com.google.common.collect.Sets;
  * Service to provide entity persistence within OpenCms. <p>
  */
 public class CmsContentService extends CmsGwtService implements I_CmsContentService {
+
+    /**
+     * The data associated with a content augmentation job.
+     */
+    protected class ContentAugmentationJob {
+
+        /** The job state. */
+        private volatile AugmentationJobState m_state = AugmentationJobState.running;
+
+        /** The job id. */
+        private CmsUUID m_id = new CmsUUID();
+
+        /** The message to display. */
+        private volatile String m_message;
+
+        /** The locale to switch to. */
+        private volatile Locale m_nextLocale;
+
+        /** The results of the content augmentation. */
+        private volatile CmsXmlContent m_result;
+
+        /** The progress message to display. */
+        private volatile String m_progress;
+
+        /** The context supplied to the content augmentation job. */
+        private I_CmsXmlContentAugmentation.Context m_context;
+
+        /** The structure id of the content being augmented. */
+        private CmsUUID m_structureId;
+
+        /** The content augmentation used. */
+        private I_CmsXmlContentAugmentation m_augmentation;
+
+        /**
+         * The original copy of the XML content object.
+         */
+        private CmsXmlContent m_originalCopy;
+
+        /**
+         * Creates a new instance.
+         *
+         * @param augmentation the content augmentation to use
+         * @param cms the CMS context
+         * @param config the sitemap configuration
+         * @param originalCopy the original copy of the XML content object
+         * @param currentLocale the current locale
+         * @param params other parameters necessary for the augmentation
+         */
+        public ContentAugmentationJob(
+            I_CmsXmlContentAugmentation augmentation,
+            CmsObject cms,
+            CmsADEConfigData config,
+            CmsXmlContent originalCopy,
+            Locale currentLocale,
+
+            Map<String, String> params) {
+
+            m_structureId = originalCopy.getFile().getStructureId();
+            m_augmentation = augmentation;
+            m_result = originalCopy;
+            m_originalCopy = originalCopy;
+            m_context = new I_CmsXmlContentAugmentation.Context() {
+
+                private boolean m_callingJsp;
+
+                @Override
+                public void callJsp(String path) throws Exception {
+
+                    if (m_callingJsp) {
+                        throw new IllegalStateException("callJsp method can not be used reentrantly");
+                    }
+                    m_callingJsp = true;
+                    try {
+                        getRequest().setAttribute(I_CmsXmlContentAugmentation.ATTR_CONTEXT, this);
+                        CmsResource resource = cms.readResource(path);
+                        OpenCms.getResourceManager().getLoader(resource).dump(
+                            cms,
+                            resource,
+                            null,
+                            cms.getRequestContext().getLocale(),
+                            getRequest(),
+                            getResponse());
+                    } finally {
+                        getRequest().removeAttribute(I_CmsXmlContentAugmentation.ATTR_CONTEXT);
+                        m_callingJsp = false;
+                    }
+                }
+
+                @Override
+                public CmsADEConfigData getADEConfig() {
+
+                    return config;
+                }
+
+                @Override
+                public CmsObject getCmsObject() {
+
+                    return cms;
+                }
+
+                @Override
+                public CmsXmlContent getContent() {
+
+                    return originalCopy;
+                }
+
+                @Override
+                public Locale getLocale() {
+
+                    return currentLocale;
+                }
+
+                @Override
+                public String getParameter(String param) {
+
+                    return params.get(param);
+                }
+
+                public boolean isAborted() {
+
+                    return ContentAugmentationJob.this.m_state == AugmentationJobState.aborted;
+                }
+
+                @Override
+                public void progress(String progressMessage) {
+
+                    m_progress = progressMessage;
+                }
+
+                @Override
+                public void setHtmlMessage(String message) {
+
+                    m_message = message;
+
+                }
+
+                @Override
+                public void setNextLocale(Locale locale) {
+
+                    m_nextLocale = locale;
+
+                }
+
+                @Override
+                public void setResult(CmsXmlContent result) {
+
+                    m_result = result;
+                }
+            };
+
+        }
+
+        /**
+         * Sets the state to aborted.
+         */
+        public void abort() {
+
+            if (m_state == AugmentationJobState.running) {
+                m_state = AugmentationJobState.aborted;
+            }
+        }
+
+        /**
+         * Sets the state to done.
+         */
+        public void finish() {
+
+            if (m_state == AugmentationJobState.running) {
+                m_state = AugmentationJobState.done;
+            }
+        }
+
+        /**
+         * Gets a bean containing the result or progress information for the purpose of informing the client.
+         *
+         * @return the content augmentation details
+         */
+        public CmsContentAugmentationDetails getDetails() {
+
+            CmsContentAugmentationDetails result = new CmsContentAugmentationDetails();
+            if (m_state == AugmentationJobState.running) {
+                result.setProgress(m_progress);
+            } else if (m_state == AugmentationJobState.aborted) {
+                result.setProgress(CmsContentAugmentationDetails.PROGRESS_ABORTED);
+            } else if (m_state == AugmentationJobState.done) {
+                result.setProgress(CmsContentAugmentationDetails.PROGRESS_DONE);
+                result.setHtmlMessage(m_message);
+                result.setNextLocale(m_nextLocale != null ? m_nextLocale.toString() : null);
+                result.setLocales(
+                    m_result.getLocales().stream().map(locale -> locale.toString()).collect(Collectors.toList()));
+            }
+            return result;
+        }
+
+        /**
+         * Gets the job id.
+         *
+         * @return the job id
+         */
+        public CmsUUID getId() {
+
+            return m_id;
+        }
+
+        /**
+         * Runs the actual content augmentation.
+         */
+        public void run() {
+
+            try {
+                m_augmentation.augmentContent(m_context);
+            } catch (Exception e) {
+                abort();
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+            if (m_result == null) {
+                m_result = m_originalCopy;
+            }
+            getSessionCache().setCacheXmlContent(m_structureId, m_result);
+            finish();
+        }
+    }
+
+    /**
+     * The state of a content augmentation job.
+     */
+    enum AugmentationJobState {
+        running, done, aborted;
+    }
 
     /** Request context attribute to mark a writeFile() triggered by the user saving in the content editor. */
     public static final String ATTR_EDITOR_SAVING = "__EDITOR_SAVING";
@@ -186,6 +421,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     /** Mapping client widget names to server side widget classes. */
     private static final Map<String, Class<? extends I_CmsADEWidget>> WIDGET_MAPPINGS = new HashMap<>();
 
+    public static final String ATTR_AUGMENTATION_JOBS = "augmentationJobs";
+
     static {
         WIDGET_MAPPINGS.put("string", CmsInputWidget.class);
         WIDGET_MAPPINGS.put("select", CmsSelectWidget.class);
@@ -198,6 +435,19 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         WIDGET_MAPPINGS.put("multiselectbox", CmsMultiSelectWidget.class);
         WIDGET_MAPPINGS.put("radio", CmsRadioSelectWidget.class);
         WIDGET_MAPPINGS.put("groupselection", CmsGroupWidget.class);
+    }
+
+    private static ExecutorService m_augmentationThreadPool = Executors.newCachedThreadPool();
+
+    static {
+        OpenCms.registerShutdownAction(() -> {
+            m_augmentationThreadPool.shutdownNow();
+            try {
+                m_augmentationThreadPool.awaitTermination(30, TimeUnit.SECONDS);
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        });
     }
 
     /** The session cache. */
@@ -430,6 +680,26 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#abortAugmentationJob(org.opencms.util.CmsUUID)
+     */
+    @Override
+    public void abortAugmentationJob(CmsUUID jobId) throws CmsRpcException {
+
+        HttpSession session = getRequest().getSession();
+        Map<CmsUUID, ContentAugmentationJob> jobMap = (Map<CmsUUID, ContentAugmentationJob>)session.getAttribute(
+            ATTR_AUGMENTATION_JOBS);
+        if (jobMap == null) {
+            jobMap = new ConcurrentHashMap<>();
+            session.setAttribute(ATTR_AUGMENTATION_JOBS, jobMap);
+        }
+        ContentAugmentationJob job = jobMap.get(jobId);
+        if (job != null) {
+            job.abort();
+        }
+
+    }
+
+    /**
      * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#callEditorChangeHandlers(java.lang.String, org.opencms.acacia.shared.CmsEntity, java.util.Collection, java.util.Collection)
      */
     public CmsContentDefinition callEditorChangeHandlers(
@@ -505,6 +775,24 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         } catch (Throwable t) {
             error(t);
         }
+    }
+
+    /**
+     * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#getAugmentationProgress(org.opencms.util.CmsUUID)
+     */
+    @Override
+    public CmsContentAugmentationDetails getAugmentationProgress(CmsUUID jobId) throws CmsRpcException {
+
+        HttpSession session = getRequest().getSession();
+        Map<CmsUUID, ContentAugmentationJob> jobMap = (Map<CmsUUID, ContentAugmentationJob>)session.getAttribute(
+            ATTR_AUGMENTATION_JOBS);
+        if (jobMap == null) {
+            jobMap = new ConcurrentHashMap<>();
+            session.setAttribute(ATTR_AUGMENTATION_JOBS, jobMap);
+        }
+        ContentAugmentationJob job = jobMap.get(jobId);
+        return job.getDetails();
+
     }
 
     /**
@@ -970,6 +1258,83 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
     }
 
+    @Override
+    public CmsUUID startAugmentationJob(
+        String entityId,
+        String clientId,
+        CmsEntity editedEntity,
+        List<String> deletedEntities,
+        Collection<String> skipPaths,
+        String augmentationType,
+        Map<String, String> params)
+    throws CmsRpcException {
+
+        CmsObject cms = getCmsObject();
+        try {
+            CmsUUID structureId = CmsContentDefinition.entityIdToUuid(entityId);
+            CmsResource resource = getCmsObject().readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
+                cms,
+                cms.getRequestContext().getRootUri());
+            CmsFile file = cms.readFile(resource);
+            CmsXmlContent content = getContentDocument(file, true);
+            if (editedEntity != null) {
+                synchronizeLocaleIndependentForEntity(file, content, skipPaths, editedEntity);
+            }
+            for (String deleteId : deletedEntities) {
+                Locale localeToDelete = CmsLocaleManager.getLocale(CmsContentDefinition.getLocaleFromId(deleteId));
+                if (content.hasLocale(localeToDelete)) {
+                    content.removeLocale(localeToDelete);
+                }
+            }
+
+            byte[] contentData = content.marshal();
+            CmsFile fileCopy = new CmsFile(content.getFile());
+            fileCopy.setContents(contentData);
+            I_CmsXmlContentAugmentation augmentation = new I_CmsXmlContentAugmentation() {
+
+                @Override
+                public void augmentContent(Context context) throws Exception {
+
+                    // nop
+
+                }
+            };
+            if (CmsGwtConstants.AUGMENTATION_TRANSLATION.equals(augmentationType)) {
+                I_CmsContentTranslator translator = CmsTranslatorRegistry.getDefaultTranslator();
+                if ((translator != null) && (translator.getContentAugmentation() != null)) {
+                    augmentation = translator.getContentAugmentation();
+                }
+            }
+
+            Locale currentLocale = CmsLocaleManager.getLocale(
+                CmsContentDefinition.getLocaleFromId(editedEntity.getId()));
+            CmsXmlContent originalCopy = CmsXmlContentFactory.unmarshal(cms, fileCopy);
+            ContentAugmentationJob augmentationJob = new ContentAugmentationJob(
+                augmentation,
+                cms,
+                config,
+                originalCopy,
+                currentLocale,
+                params);
+
+            HttpSession session = getRequest().getSession();
+            Map<CmsUUID, ContentAugmentationJob> jobMap = (Map<CmsUUID, ContentAugmentationJob>)session.getAttribute(
+                ATTR_AUGMENTATION_JOBS);
+            if (jobMap == null) {
+                jobMap = new ConcurrentHashMap<>();
+                session.setAttribute(ATTR_AUGMENTATION_JOBS, jobMap);
+            }
+            jobMap.put(augmentationJob.getId(), augmentationJob);
+
+            m_augmentationThreadPool.submit(augmentationJob::run);
+            return augmentationJob.getId();
+        } catch (Exception e) {
+            error(e);
+            return null;
+        }
+    }
+
     /**
      * @see org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService#synchronizeAndTransform(java.lang.String, java.lang.String, org.opencms.acacia.shared.CmsEntity, java.util.List, java.util.Collection)
      */
@@ -1062,6 +1427,23 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                     public Locale getLocale() {
 
                         return currentLocale;
+                    }
+
+                    @Override
+                    public String getParameter(String param) {
+
+                        throw new UnsupportedOperationException();
+                    }
+
+                    public boolean isAborted() {
+
+                        return false;
+                    }
+
+                    @Override
+                    public void progress(String progressMessage) {
+
+                        throw new UnsupportedOperationException();
                     }
 
                     @Override
@@ -2691,8 +3073,16 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             performedAutoCorrection,
             autoUnlock,
             getChangeHandlerScopes(content.getContentDefinition()));
-        I_CmsXmlContentAugmentation augmentation = getContentAugmentation(cms, file, config);
-        result.setHasAugmentation(augmentation != null);
+        I_CmsContentTranslator translator = CmsTranslatorRegistry.getDefaultTranslator();
+        boolean translationEnabled = translator != null;
+        try {
+            if (OpenCms.getResourceManager().getResourceType(file) instanceof CmsResourceTypeXmlAdeConfiguration) {
+                translationEnabled = false;
+            }
+        } catch (Exception e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+        result.setTranslationEnabled(translationEnabled);
         return result;
     }
 

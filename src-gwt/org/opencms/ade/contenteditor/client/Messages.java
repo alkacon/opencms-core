@@ -52,9 +52,6 @@ public final class Messages {
     public static final String GUI_CONFIRM_LEAVING_EDITOR_0 = "GUI_CONFIRM_LEAVING_EDITOR_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_CONTENT_EDITOR_AUGMENT_BUTTON_0 = "GUI_CONTENT_EDITOR_AUGMENT_BUTTON_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_CONTENT_EDITOR_AUGMENTATION_RESULTS_CAPTION_0 = "GUI_CONTENT_EDITOR_AUGMENTATION_RESULTS_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */
@@ -68,6 +65,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CONTENT_EDITOR_TITLE_BOTTOM_PAGE_EDITOR_0 = "GUI_CONTENT_EDITOR_TITLE_BOTTOM_PAGE_EDITOR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONTENT_EDITOR_TRANSLATE_BUTTON_0 = "GUI_CONTENT_EDITOR_TRANSLATE_BUTTON_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_VALIDATION_ERROR_BUTTON_CLOSE_0 = "GUI_DIALOG_VALIDATION_ERROR_BUTTON_CLOSE_0";
@@ -389,6 +389,24 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLBAR_VALIDATION_ERRORS_1 = "GUI_TOOLBAR_VALIDATION_ERRORS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TRANSLATION_DIALOG_ABORT_BUTTON_0 = "GUI_TRANSLATION_DIALOG_ABORT_BUTTON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TRANSLATION_DIALOG_INITIAL_PROGRESS_0 = "GUI_TRANSLATION_DIALOG_INITIAL_PROGRESS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TRANSLATION_DIALOG_LOCALE_CHOICE_0 = "GUI_TRANSLATION_DIALOG_LOCALE_CHOICE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TRANSLATION_DIALOG_PROGRESS_TITLE_0 = "GUI_TRANSLATION_DIALOG_PROGRESS_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TRANSLATION_DIALOG_TITLE_0 = "GUI_TRANSLATION_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TRANSLATION_DIALOG_TRANSLATION_RESULTS_CAPTION_0 = "GUI_TRANSLATION_DIALOG_TRANSLATION_RESULTS_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VIEW_ADD_1 = "GUI_VIEW_ADD_1"; //Acacia message: Add {0}

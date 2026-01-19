@@ -36,6 +36,10 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsContentAugmentationDetails implements IsSerializable {
 
+    public static final String PROGRESS_DONE = "DONE";
+
+    public static final String PROGRESS_ABORTED = "ABORTED";
+
     /** The message to display, as HTML (null for no message) . */
     private String m_htmlMessage;
 
@@ -43,6 +47,10 @@ public class CmsContentAugmentationDetails implements IsSerializable {
      * The list of locales from the augmented content.
      */
     private List<String> m_locales;
+
+    private String m_resultCaption;
+
+    private String m_progress;
 
     /** The locale to switch to (null to not switch locale). */
     private String m_nextLocale;
@@ -85,6 +93,36 @@ public class CmsContentAugmentationDetails implements IsSerializable {
     }
 
     /**
+     * Gets the progress message.
+     *
+     * @return the progress message
+     */
+    public String getProgress() {
+
+        return m_progress;
+    }
+
+    /**
+     * Gets the caption to display on the result dialog.
+     *
+     * @return the caption to display on the results dialog
+     */
+    public String getResultCaption() {
+
+        return m_resultCaption;
+    }
+
+    /**
+     * Checks if the content augmentation has sucessfully completed.
+     *
+     * @return true if the content augmentation has successfully completed
+     */
+    public boolean isDone() {
+
+        return PROGRESS_DONE.equals(m_progress);
+    }
+
+    /**
      * Sets the message to display, in HTML format
      *
      * @param htmlMessage the message to display
@@ -112,6 +150,26 @@ public class CmsContentAugmentationDetails implements IsSerializable {
     public void setNextLocale(String nextLocale) {
 
         m_nextLocale = nextLocale;
+    }
+
+    /**
+     * Sets the progress message.
+     *
+     * @param progress the progress message
+     */
+    public void setProgress(String progress) {
+
+        m_progress = progress;
+    }
+
+    /**
+     * Sets the caption to display on the results dialog.
+     *
+     * @param resultCaption the caption to display on the results dialog
+     */
+    public void setResultCaption(String resultCaption) {
+
+        m_resultCaption = resultCaption;
     }
 
 }

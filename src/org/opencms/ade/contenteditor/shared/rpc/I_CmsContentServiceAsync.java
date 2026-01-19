@@ -29,8 +29,8 @@ package org.opencms.ade.contenteditor.shared.rpc;
 
 import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.acacia.shared.CmsValidationResult;
-import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.CmsContentAugmentationDetails;
+import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.CmsEditHandlerData;
 import org.opencms.ade.contenteditor.shared.CmsSaveResult;
 import org.opencms.gwt.CmsRpcException;
@@ -46,6 +46,46 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * The content editor asynchronous service interface.<p>
  */
 public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.I_CmsContentServiceAsync {
+
+    /**
+     * Tries to abort a content augmentation job with a given id.
+     *
+     * @param jobId the job ID
+     * @param callback the callback
+     * @throws CmsRpcException if something goes wrong
+     */
+    public void abortAugmentationJob(CmsUUID jobId, AsyncCallback<Void> callback);
+
+    /**
+     * Gets the status (and potentially results) from an augmentation job.
+     * @param jobId the id of the augmentation job
+     * @param callback the callback to call with the result
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    public void getAugmentationProgress(CmsUUID jobId, AsyncCallback<CmsContentAugmentationDetails> callback);
+
+    /**
+     * Sends the edited data back to the server and starts a content augmentation.
+     *
+     * @param entityId the entity id
+     * @param clientId the client id, if available
+     * @param editedEntity the edited entity
+     * @param deletedEntities the deleted entities
+     * @param skipPaths the paths to skip for locale synchronization
+     *
+     * @param callback the callback to call with the result
+     * @throws CmsRpcException in case anything goes wrong
+     */
+    public void startAugmentationJob(
+        String entityId,
+        String clientId,
+        CmsEntity editedEntity,
+        List<String> deletedEntities,
+        Collection<String> skipPaths,
+        String augmentationType,
+        Map<String, String> params,
+        AsyncCallback<CmsUUID> callback);
 
     /**
      * Calls the editor change handlers.<p>
@@ -179,26 +219,6 @@ public interface I_CmsContentServiceAsync extends org.opencms.acacia.shared.rpc.
      * @param callback the callback to call with the result
      */
     void saveValue(String contentId, String contentPath, String locale, String value, AsyncCallback<String> callback);
-
-    /**
-     * Sends the edited data back to the server and triggers a content augmentation.
-     *
-     * @param entityId the entity id
-     * @param clientId the client id, if available
-     * @param editedEntity the edited entity
-     * @param deletedEntities the deleted entities
-     * @param skipPaths the paths to skip for locale synchronization
-     * @param callback the callback for the result
-     *
-     * @throws CmsRpcException in case anything goes wrong
-     */
-    void synchronizeAndTransform(
-        String entityId,
-        String clientId,
-        CmsEntity editedEntity,
-        List<String> deletedEntities,
-        Collection<String> skipPaths,
-        AsyncCallback<CmsContentAugmentationDetails> callback);
 
     /**
      * Validates the edited XML content, taking all current changes into account. Returns the validation result.<p>

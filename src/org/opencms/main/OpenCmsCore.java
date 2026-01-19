@@ -153,6 +153,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -387,6 +388,8 @@ public final class OpenCmsCore {
     /** The future for the online folder size tracker. */
     private Future<CmsFolderSizeTracker> m_onlineFolderSizeTrackerFuture;
 
+    private List<Runnable> m_shutdownActions = new CopyOnWriteArrayList<Runnable>();
+
     /**
      * Protected constructor that will initialize the singleton OpenCms instance
      * with runlevel {@link OpenCms#RUNLEVEL_1_CORE_OBJECT}.<p>
@@ -512,6 +515,16 @@ public final class OpenCmsCore {
         }
         return m_vfsMemoryObjectCache;
 
+    }
+
+    /**
+     * Registers a callback to be called before shutdown.
+     *
+     * @param action the action to execute before shutdown
+     */
+    public void registerShutdownAction(Runnable action) {
+
+        m_shutdownActions.add(action);
     }
 
     /**
@@ -2370,6 +2383,14 @@ public final class OpenCmsCore {
                 if (LOG.isDebugEnabled()) {
                     // log exception to see which method did call the shutdown
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_SHUTDOWN_TRACE_0), new Exception());
+                }
+
+                for (Runnable action : m_shutdownActions) {
+                    try {
+                        action.run();
+                    } catch (Exception e) {
+                        CmsLog.INIT.error(e.getLocalizedMessage());
+                    }
                 }
 
                 for (I_CmsStartStopHandler handler : m_startStopHandlers) {

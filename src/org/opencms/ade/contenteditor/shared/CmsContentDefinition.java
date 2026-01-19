@@ -110,7 +110,7 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
     private Map<String, String> m_syncValues;
 
     /** Is there an active content augmentation? */
-    private boolean m_hasAugmentation;
+    private boolean m_isTranslationEnabled;
 
     /** The content title. */
     private String m_title;
@@ -588,9 +588,9 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
      *
      * @return true if there is an active content augmentation
      */
-    public boolean hasAugmentation() {
+    public boolean isTranslationEnabled() {
 
-        return m_hasAugmentation;
+        return m_isTranslationEnabled;
     }
 
     /**
@@ -693,9 +693,9 @@ public class CmsContentDefinition extends org.opencms.acacia.shared.CmsContentDe
         m_isDirectEdit = isDirectEdit;
     }
 
-    public void setHasAugmentation(boolean hasAugmentation) {
+    public void setTranslationEnabled(boolean translationEnabled) {
 
-        m_hasAugmentation = hasAugmentation;
+        m_isTranslationEnabled = translationEnabled;
     }
 
     /**
