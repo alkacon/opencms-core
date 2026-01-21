@@ -1,27 +1,25 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-apply plugin: 'java-library'
-apply plugin: 'maven-publish'
-apply plugin: 'signing'
-apply plugin: 'eclipse'
-
-
 buildscript {
-    dependencies {
-        classpath group: 'com.liferay', name: 'com.liferay.gradle.plugins.tlddoc.builder', version: '2.0.1'
-        classpath("io.github.gradle-nexus.publish-plugin:io.github.gradle-nexus.publish-plugin.gradle.plugin:2.0.0")
-    }
     repositories {
         mavenLocal()
         mavenCentral()
         gradlePluginPortal()
     }
 }
-apply plugin: 'com.liferay.tlddoc.builder'
-apply plugin: 'io.github.gradle-nexus.publish-plugin'
+
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+    id 'eclipse'
+    id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
+    id 'com.liferay.tlddoc.builder' version '2.0.1'
+}
+
 group = "org.opencms"
 
-buildDir = build_directory
+layout.buildDirectory.set(file(build_directory))
 
 java {
     sourceCompatibility = JavaVersion.toVersion(java_target_version)
@@ -44,7 +42,7 @@ nexusPublishing {
 
 // use the same properties file as the OpenCms core does for the version information
 // please note that in a Jenkins CI build, this properties file should be dynamically generated
-def externalVersionProps = file("${buildDir}/../version.properties");
+def externalVersionProps = layout.buildDirectory.file("../version.properties").get().asFile
 def propFile;
 if (externalVersionProps.exists()){
     println "Using external version properties file: $externalVersionProps"
@@ -99,7 +97,7 @@ if (!project.hasProperty('max_heap_size')){
 }
 
 project.ext.allModuleNames = modules_list.split(',')
-project.ext.modulesDistsDir = file("${project.buildDir}/modulesZip")
+project.ext.modulesDistsDir = layout.buildDirectory.dir("modulesZip").get().asFile
 
 
 sourceSets{
@@ -276,12 +274,12 @@ wrapper {
 
 task copyDeps(type: Copy) {
     from configurations.distribution
-    into "${buildDir}/deps"
+    into layout.buildDirectory.dir("deps")
 }
 
 task copyCompileDeps(type: Copy) {
     from configurations.compile
-    into "${buildDir}/deps"
+    into layout.buildDirectory.dir("deps")
 }
 
 // Task from the java plugin
@@ -306,7 +304,7 @@ jar {
 
     if (externalVersionProps.exists()){
         exclude 'org/opencms/main/version.properties'
-        from ("${buildDir}/.."){
+        from (layout.buildDirectory.dir("..")){
             include 'version.properties'
             into 'org/opencms/main'
         }
@@ -318,9 +316,9 @@ jar {
 
     doLast {
         if (project.hasProperty('tomcat_update_target') && file(tomcat_update_target).exists()){
-            println "copying ${project.buildDir}/libs/${archiveName} to ${tomcat_update_target}"
+            println "copying ${layout.buildDirectory.dir("libs").get().file(archiveName).asFile} to ${tomcat_update_target}"
             copy {
-                from  "${project.buildDir}/libs/${archiveName}"
+                from  layout.buildDirectory.dir("libs").get().file(archiveName).asFile
                 into tomcat_update_target
             }
         }
@@ -333,7 +331,7 @@ javadoc {
     doLast {
         copy {
             from  "${projectDir}/doc/javadoc/logos"
-            into "${buildDir}/docs/javadoc/logos"
+            into layout.buildDirectory.dir("docs/javadoc/logos")
         }
     }
 
@@ -354,7 +352,7 @@ javadoc {
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
     archiveClassifier = 'javadoc'
-    from "${buildDir}/docs/javadoc"
+    from layout.buildDirectory.dir("docs/javadoc")
     archiveBaseName = 'opencms-core'
 }
 
@@ -396,7 +394,7 @@ task javadocModules(type: Javadoc, dependsOn: jar) {
     doLast {
         copy {
             from  "${projectDir}/doc/javadoc/logos"
-            into "${buildDir}/docs/javadocModules/logos"
+            into layout.buildDirectory.dir("docs/javadocModules/logos")
         }
     }
 
@@ -413,12 +411,12 @@ task javadocModules(type: Javadoc, dependsOn: jar) {
     }
     source = sourceSets.modules.allJava
     classpath = project.sourceSets.modules.compileClasspath
-    destinationDir = file("${buildDir}/docs/javadocModules")
+    destinationDir = layout.buildDirectory.dir("docs/javadocModules").get().asFile
 }
 
 task javadocJarModules(type: Jar, dependsOn: javadocModules) {
     archiveClassifier = 'javadoc'
-    from "${buildDir}/docs/javadocModules"
+    from layout.buildDirectory.dir("docs/javadocModules")
     archiveBaseName = 'opencms-modules'
 }
 
@@ -432,7 +430,7 @@ task javadocGwt(type: Javadoc, dependsOn: jar) {
     doLast {
         copy {
             from  "${projectDir}/doc/javadoc/logos"
-            into "${buildDir}/docs/javadocGwt/logos"
+            into layout.buildDirectory.dir("docs/javadocGwt/logos")
         }
     }
 
@@ -449,12 +447,12 @@ task javadocGwt(type: Javadoc, dependsOn: jar) {
     }
     source = sourceSets.gwt.allJava
     classpath = project.sourceSets.gwt.compileClasspath
-    destinationDir = file("${buildDir}/docs/javadocGwt")
+    destinationDir = layout.buildDirectory.dir("docs/javadocGwt").get().asFile
 }
 
 task javadocJarGwt(type: Jar, dependsOn: javadocGwt) {
     archiveClassifier = 'javadoc'
-    from "${buildDir}/docs/javadocGwt"
+    from layout.buildDirectory.dir("docs/javadocGwt")
     archiveBaseName = 'opencms-gwt'
 }
 
@@ -480,9 +478,9 @@ task workplaceTheme (type: JavaExec) {
     doFirst {
         println '======================================================'
         println "Building workplace theme"
-        println "Generating $project.buildDir/workplaceThemes/opencms/styles.css"
+        println "Generating ${layout.buildDirectory.dir("workplaceThemes/opencms/styles.css").get().asFile}"
         println '======================================================'
-        def dir = file("$project.buildDir/workplaceThemes/opencms")
+        def dir = layout.buildDirectory.dir("workplaceThemes/opencms").get().asFile
         if (dir.exists()){
             delete(dir)
         }
@@ -500,7 +498,7 @@ task workplaceTheme (type: JavaExec) {
 
     args = [
         "$projectDir/webapp/workplaceThemes/VAADIN/themes/opencms/styles.scss",
-        "$project.buildDir/workplaceThemes/opencms/styles.css"
+        layout.buildDirectory.file("workplaceThemes/opencms/styles.css").get().asFile
     ]
     maxHeapSize = max_heap_size
 }
@@ -508,9 +506,9 @@ task opencmsFonts (type: JavaExec) {
     doFirst {
         println '======================================================'
         println "Building OpenCms fonts CSS"
-        println "Generating $project.buildDir/workplaceThemes/opencmsFonts/opencmsFonts.css"
+        println "Generating ${layout.buildDirectory.dir("workplaceThemes/opencmsFonts/opencmsFonts.css").get().asFile}"
         println '======================================================'
-        def dir = file("$project.buildDir/workplaceThemes/opencmsFonts")
+        def dir = layout.buildDirectory.dir("workplaceThemes/opencmsFonts").get().asFile
         if (dir.exists()){
             delete(dir)
         }
@@ -529,7 +527,7 @@ task opencmsFonts (type: JavaExec) {
     // to avoid conflicts or dependencies between the build tasks 'workplaceTheme' and 'opencmsFonts'
     args = [
         "$projectDir/webapp/workplaceThemes/VAADIN/themes/opencms/opencmsFonts.scss",
-        "$project.buildDir/workplaceThemes/opencmsFonts/opencmsFonts.css"
+        layout.buildDirectory.file("workplaceThemes/opencmsFonts/opencmsFonts.css").get().asFile
     ]
     maxHeapSize = max_heap_size
 }
@@ -556,31 +554,31 @@ task resourcesJar(type: Jar, dependsOn: [workplaceTheme, opencmsFonts]){
     from ("${projectDir}/webapp/workplaceThemes"){
         exclude '**/*.scss'
     }
-    from ("${project.buildDir}/workplaceThemes/opencms"){
+    from (layout.buildDirectory.dir("workplaceThemes/opencms")){
         into 'VAADIN/themes/opencms'
     }
-    from ("${project.buildDir}/workplaceThemes/opencmsFonts"){
+    from (layout.buildDirectory.dir("workplaceThemes/opencmsFonts")){
         into 'VAADIN/themes/opencms'
     }
     gwtModuleNames.split(',').each{ gwtModule ->
         if (!'org.opencms.ui.WidgetSet'.equals(gwtModule)){
-            from( "${project.buildDir}/gwt/${gwtModule}") {
+            from(layout.buildDirectory.dir("gwt/${gwtModule}")) {
                 exclude '**/WEB-INF/**'
                 into "OPENCMS/gwt"
             }
         }
     }
 
-    from ("${project.buildDir}/gwt/org.opencms.ui.WidgetSet"){
+    from (layout.buildDirectory.dir("gwt/org.opencms.ui.WidgetSet")){
         include 'org.opencms.ui.WidgetSet/**'
         into 'VAADIN/widgetsets'
     }
 
     doLast {
         if (project.hasProperty('tomcat_update_target') && file(tomcat_update_target).exists()){
-            println "copying ${project.buildDir}/libs/${archiveName} to ${tomcat_update_target}"
+            println "copying ${layout.buildDirectory.dir("libs").get().file(archiveName).asFile} to ${tomcat_update_target}"
             copy {
-                from  "${project.buildDir}/libs/${archiveName}"
+                from  layout.buildDirectory.dir("libs").get().file(archiveName).asFile
                 into tomcat_update_target
             }
         }
@@ -590,8 +588,8 @@ task resourcesJar(type: Jar, dependsOn: [workplaceTheme, opencmsFonts]){
 // iterate gwt modules and create the required tasks
 gwtModuleNames.split(',').each{ gwtModule ->
     task "gwt_${gwtModule}" (dependsOn: gwtClasses, type: JavaExec) {
-        ext.buildDir =  project.buildDir.toString()  +"/gwt/${gwtModule}"
-        ext.extraDir =  project.buildDir.toString() + "/extra/${gwtModule}"
+        ext.buildDir =  layout.buildDirectory.dir("gwt/${gwtModule}").get().asFile.toString()
+        ext.extraDir =  layout.buildDirectory.dir("extra/${gwtModule}").get().asFile.toString()
         inputs.files sourceSets.gwt.java.srcDirs
         inputs.dir sourceSets.gwt.output.resourcesDir
         outputs.dir buildDir
@@ -693,11 +691,11 @@ task setupJar(dependsOn: jar, type: Jar) {
 task javadocSetup(type: Javadoc, dependsOn: jar) {
     source = sourceSets.setup.allJava
     classpath = project.sourceSets.setup.compileClasspath
-    destinationDir = file("${buildDir}/docs/javadocSetup")
+    destinationDir = layout.buildDirectory.dir("docs/javadocSetup").get().asFile
     doLast {
         copy {
             from  "${projectDir}/doc/javadoc/logos"
-            into "${buildDir}/docs/javadocSetup/logos"
+            into layout.buildDirectory.dir("docs/javadocSetup/logos")
         }
     }
 
@@ -716,7 +714,7 @@ task javadocSetup(type: Javadoc, dependsOn: jar) {
 
 task javadocJarSetup(type: Jar, dependsOn: javadocSetup) {
     archiveClassifier = 'javadoc'
-    from "${buildDir}/docs/javadocSetup"
+    from layout.buildDirectory.dir("docs/javadocSetup")
     archiveBaseName = 'opencms-setup'
 }
 
@@ -799,9 +797,9 @@ allModuleNames.each{ moduleName ->
         }
         doLast {
             if (project.hasProperty('module_copy_target') && file(module_copy_target).exists()){
-                println "copying ${project.buildDir}/modulesZip/${archiveName} to ${module_copy_target}"
+                println "copying ${layout.buildDirectory.dir("modulesZip").get().file(archiveName).asFile} to ${module_copy_target}"
                 copy {
-                    from  "${project.buildDir}/modulesZip/${archiveName}"
+                    from  layout.buildDirectory.dir("modulesZip").get().file(archiveName).asFile
                     into module_copy_target
                 }
             }
@@ -830,9 +828,9 @@ allModuleNames.each{ moduleName ->
 
             doLast {
                 if (project.hasProperty('tomcat_update_target') && file(tomcat_update_target).exists()){
-                    println "copying ${project.buildDir}/libs/${archiveName} to ${tomcat_update_target}"
+                    println "copying ${layout.buildDirectory.dir("libs").get().file(archiveName).asFile} to ${tomcat_update_target}"
                     copy {
-                        from  "${project.buildDir}/libs/${archiveName}"
+                        from  layout.buildDirectory.dir("libs").get().file(archiveName).asFile
                         into tomcat_update_target
                     }
                 }
@@ -915,7 +913,7 @@ task war (dependsOn: [
         ])
     }
 
-    from ("${project.buildDir}/libs") {
+    from (layout.buildDirectory.dir("libs")) {
         include '*.jar'
         exclude 'opencms-gwt*.jar'
         exclude 'opencms-test*.jar'
@@ -945,7 +943,7 @@ task war (dependsOn: [
     if (hasExtModules) {
         // Note that the module deps do not need to be copied
         // since they are contained in configurations.moduleDeps
-        def extModulesDir = "${extModulesProject.buildDir}/modules"
+        def extModulesDir = extModulesProject.layout.buildDirectory.dir("modules").get().asFile
         from ("${extModulesDir}/libs") {
             include '*.jar'
             into '/WEB-INF/lib'
@@ -1082,7 +1080,7 @@ task updater (dependsOn: [
         include '*'
         include '**/*'
     }
-    from ("${project.buildDir}/libs") {
+    from (layout.buildDirectory.dir("libs")) {
         include '*.jar'
         exclude 'opencms-test*.jar'
         exclude 'opencms-gwt*.jar'
@@ -1110,7 +1108,7 @@ task updater (dependsOn: [
 
 task bindist (dependsOn: war, type: Zip){
     archiveBaseName = 'opencms'
-    from "${project.buildDir}/distributions/opencms.war"
+    from layout.buildDirectory.file("distributions/opencms.war").get().asFile
     from(projectDir) {
         include 'INSTALL.md'
         include 'LICENSE'
@@ -1176,12 +1174,12 @@ task testJar(dependsOn: compileTestJava, type: Jar) {
 task javadocTest(type: Javadoc, dependsOn: jar) {
     source = sourceSets.test.allJava
     classpath = project.sourceSets.test.compileClasspath
-    destinationDir = file("${buildDir}/docs/javadocTest")
+    destinationDir = layout.buildDirectory.dir("docs/javadocTest").get().asFile
 }
 
 task javadocJarTest(type: Jar, dependsOn: javadocTest) {
     archiveClassifier = 'javadoc'
-    from "${buildDir}/docs/javadocTest"
+    from layout.buildDirectory.dir("docs/javadocTest")
     archiveBaseName = 'opencms-test'
 }
 
