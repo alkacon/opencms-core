@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Llmtests 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="http://www.opencms.org/llm-test1.xsd">
+  
+	<Llmtest language="de">
+		<String><![CDATA[LLmtest 1]]></String>
+		<DateTime>-58254180000</DateTime>
+		<Html>
+			<links />
+			<content><![CDATA[<p>Das ist Html</p>]]></content>
+		</Html>
+        <Html>
+            <links/>
+            <content><![CDATA[<h2>Absatz mit einfachem HTML</h2>
+<p>Dies ist ein <strong>Typoblindtext</strong>. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen. Manchmal Sätze, die alle Buchstaben des Alphabets enthalten - man nennt diese Sätze »Pangrams«. Sehr bekannt ist dieser: <em>The quick brown fox jumps over the lazy old dog.</em></p>]]></content>
+        </Html>
+        <Html>
+            <links/>
+            <content><![CDATA[<h2>Absatz mit etwas komplexerem HTML</h2>
+<p><strong>Oft werden in Typoblindtexte auch fremdsprachige Satzteile eingebaut <em>(AVAIL® and Wefox™ are testing aussi la Kerning)</em>, um die Wirkung in anderen <span style="text-decoration: underline;">Sprachen zu testen. </span></strong><span style="text-decoration: underline;">In Lateinisch</span> sieht zum Beispiel fast jede Schrift gut aus. Quod erat demonstrandum.</p>
+<p><strong>Seit 1975 fehlen in den meisten Testtexten die Zahlen,</strong> weswegen nach TypoGb. 204 § ab dem Jahr 2034 Zahlen in 86 der Texte zur Pflicht werden. <strong>Nichteinhaltung <em>wird mit bis zu 245 € <span style="text-decoration: underline;">oder <span style="text-decoration: line-through;">368 $ bestraft.</span></span></em></strong><span style="text-decoration: underline;"> Genauso </span>wichtig in sind mittlerweile auch Âçcèñtë, die in neueren Schriften aber fast immer enthalten sind.</p>
+<p>Konrolle für Zeichen &lt; kein HTML &gt; \r\n äöüÄÖÜß€.</p>
+<p>&nbsp;</p>]]></content>
+        </Html>        
+	</Llmtest>
+</Llmtests>

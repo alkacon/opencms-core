@@ -108,6 +108,7 @@ dependencies {
     distribution group: 'commons-io', name: 'commons-io', version: '2.18.0', transitive: false
     //distribution group: 'cryptix.jce', name: 'crytix-jce-provider', version: '20050328', transitive: false
     distribution group: 'de.malkusch.whois-server-list', name: 'public-suffix-list', version: '2.2.0', transitive: false
+    distribution group: 'dev.langchain4j', name: 'langchain4j-open-ai', version: '1.9.1', transitive: true
     //for Solr
     distribution group: 'jakarta.activation', name: 'jakarta.activation-api', version: '2.1.3', transitive: false
     distribution group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.0.2', transitive: false
