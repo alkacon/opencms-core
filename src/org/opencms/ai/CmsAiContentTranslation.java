@@ -36,9 +36,11 @@ import org.opencms.file.CmsObject;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.I_CmsXmlContentAugmentation;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -104,10 +106,59 @@ public class CmsAiContentTranslation implements I_CmsContentTranslator {
             }
             if (result != null) {
                 context.setResult(result);
+                context.setHtmlMessage(
+                    buildFeedbackHtml(
+                        cms,
+                        sourceLocale,
+                        targetLocale,
+                        translator.getNumSuccessfulFieldUpdates(),
+                        translator.getConflictFields()));
                 context.setNextLocale(targetLocale);
+
             }
         }
 
+        /**
+         * Builds the HTML for the feedback screen.
+         *
+         * @param cms the CMS context
+         * @param sourceLocale the translation source locale
+         * @param targetLocale the translation target locale
+         * @param numSuccessfulFieldUpdates the number of translated fields
+         * @param conflictFields the list of fields with conflicts
+         * @return
+         */
+        private String buildFeedbackHtml(
+            CmsObject cms,
+            Locale sourceLocale,
+            Locale targetLocale,
+            int numSuccessfulFieldUpdates,
+            List<String> conflictFields) {
+
+            StringBuilder buffer = new StringBuilder();
+            Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+            buffer.append("<p>");
+            buffer.append(
+                Messages.get().getBundle(wpLocale).key(
+                    Messages.GUI_TRANSLATION_FEEDBACK_3,
+                    numSuccessfulFieldUpdates,
+                    sourceLocale.getDisplayName(wpLocale),
+                    targetLocale.getDisplayName(wpLocale)));
+            buffer.append("</p>");
+            if (conflictFields.size() > 0) {
+                buffer.append("<p>");
+                buffer.append(Messages.get().getBundle(wpLocale).key(Messages.GUI_TRANSLATION_FEEDBACK_CONFLICTS_0));
+                buffer.append("</p>");
+                buffer.append("<ul>");
+                for (String field : conflictFields) {
+                    buffer.append("<li>");
+                    buffer.append(field);
+                    buffer.append("</li>");
+                }
+                buffer.append("</ul>");
+            }
+            return buffer.toString();
+        }
     }
 
     /** Parameter from which the config file path is read. */

@@ -88,9 +88,9 @@ public class CmsAiTranslator {
     public static class HtmlParseResult {
 
         private final Document m_doc;
+        private final boolean m_isFullDocument;
         private final List<TextNode> m_textNodes;
         private String m_translateString;
-        private final boolean m_isFullDocument;
 
         /**
          * Creates a new parse result.<p>
@@ -224,8 +224,8 @@ public class CmsAiTranslator {
 
     private class FoundOrCreatedValue {
 
-        private I_CmsXmlContentValue m_value;
         private boolean m_created;
+        private I_CmsXmlContentValue m_value;
 
         public FoundOrCreatedValue(I_CmsXmlContentValue value, boolean created) {
 
@@ -254,11 +254,17 @@ public class CmsAiTranslator {
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAiTranslator.class);
 
-    /** The AI provider configuration. */
-    private CmsAiProviderConfig m_providerConfig;
-
     /** The current users OpenCms context.  */
     private CmsObject m_cms;
+
+    /** Keeps track of which fields failed to be updated. */
+    private List<String> m_conflictFields = new ArrayList<>();
+
+    /** Counts number of successfully translated fields. */
+    private int m_numSuccessfulFieldUpdates;
+
+    /** The AI provider configuration. */
+    private CmsAiProviderConfig m_providerConfig;
 
     /** The CmsXmlContent to translate. */
     private CmsXmlContent m_xmlContent;
@@ -396,6 +402,26 @@ public class CmsAiTranslator {
     }
 
     /**
+     * Gets the fields which couldn't be updated with a translation because of conflicts.
+     *
+     * @return the list of fields which couldn't be updated due to conflicts
+     */
+    public List<String> getConflictFields() {
+
+        return m_conflictFields;
+    }
+
+    /**
+     * Gets the number of fields which were successfully updated with their translation.
+     *
+     * @return the number of updated fields
+     */
+    public int getNumSuccessfulFieldUpdates() {
+
+        return m_numSuccessfulFieldUpdates;
+    }
+
+    /**
      * Collects the translatable XML values for the given locale.<p>
      *
      * @param xmlContent the XML content
@@ -448,6 +474,11 @@ public class CmsAiTranslator {
         if (!m_xmlContent.hasLocale(targetLocale)) {
             if (translationResult.size() > 0) {
                 m_xmlContent.copyLocale(srcLocale, targetLocale);
+            }
+        }
+        if (!m_xmlContent.hasLocale(targetLocale)) {
+            if (translationResult.size() > 0) {
+                m_xmlContent.copyLocale(srcLocale, targetLocale);
 
                 for (Map.Entry<String, String> entry : translationResult.entrySet()) {
                     String xpath = entry.getKey();
@@ -460,6 +491,7 @@ public class CmsAiTranslator {
                     }
                     I_CmsXmlContentValue tval = m_xmlContent.getValue(xpath, targetLocale);
                     tval.setStringValue(m_cms, text);
+                    m_numSuccessfulFieldUpdates += 1;
                 }
             }
         } else {
@@ -474,20 +506,17 @@ public class CmsAiTranslator {
                         text = parsed.setTranslatedString(text);
                     }
                     FoundOrCreatedValue val = findOrCreateValue(m_cms, m_xmlContent, targetLocale, entry.getKey());
-                    if (val != null) {
-                        // If the value already existed, we only want to write to it if it's empty.
-                        // But if it was just created, it might have a default value, which we need to overwrite.
-                        if (val.wasCreated()) {
-                            val.getValue().setStringValue(m_cms, text);
-                        } else {
-                            if (CmsStringUtil.isEmptyOrWhitespaceOnly(val.getValue().getStringValue(m_cms))) {
-                                val.getValue().setStringValue(m_cms, text);
-                            }
-                        }
+                    // If the value already existed, we only want to write to it if it's empty.
+                    // But if it was just created, it might have a default value, which we need to overwrite.
+                    if (val.wasCreated()
+                        || CmsStringUtil.isEmptyOrWhitespaceOnly(val.getValue().getStringValue(m_cms))) {
+                        val.getValue().setStringValue(m_cms, text);
+                        m_numSuccessfulFieldUpdates += 1;
                     }
+
                 } catch (Exception e) {
                     LOG.debug(e.getLocalizedMessage(), e);
-
+                    m_conflictFields.add(entry.getKey());
                 }
             }
         }

@@ -39,6 +39,10 @@ public final class Messages extends A_CmsMessageBundle {
 
     public static final String GUI_TRANSLATION_PROGRESS_1 = "GUI_TRANSLATION_PROGRESS_1";
 
+    public static final String GUI_TRANSLATION_FEEDBACK_3 = "GUI_TRANSLATION_FEEDBACK_3";
+
+    public static final String GUI_TRANSLATION_FEEDBACK_CONFLICTS_0 = "GUI_TRANSLATION_FEEDBACK_CONFLICTS_0";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ai.messages";
 
