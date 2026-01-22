@@ -28,6 +28,9 @@
 				class="org.opencms.workplace.editors.CmsPreEditorActionDefinitionXmlContent" />
 		</editorpreconditions>
 		<editor-max-locale-buttons>5</editor-max-locale-buttons>
+		<content-translation class="org.opencms.ade.contenteditor.CmsDummyTranslator">
+			<param name="exampleParam">foo</param>
+		</content-translation>
 		<directeditprovider
 			class="org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider" />
 		<exportpoints>

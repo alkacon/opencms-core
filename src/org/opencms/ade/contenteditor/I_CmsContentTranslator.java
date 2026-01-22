@@ -27,12 +27,36 @@
 
 package org.opencms.ade.contenteditor;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.configuration.I_CmsConfigurationParameterHandler;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import org.opencms.xml.content.I_CmsXmlContentAugmentation;
 
-public interface I_CmsContentTranslator {
+/**
+ * Interface for the content translator.
+ *
+ * <p>This is used by the translation button in the form based content editor.
+ *
+ * <p>The global content translator is available via CmsWorkplaceManager and is configured in opencms-workplace.xml.
+ */
+public interface I_CmsContentTranslator extends I_CmsConfigurationParameterHandler {
 
+    /**
+     * Returns a fresh content augmentation object for doing the actual translation work.
+     *
+     * @return the content augmentation object
+     */
     public I_CmsXmlContentAugmentation getContentAugmentation();
 
-    public String getName();
+    /**
+     * Checks if the translation should be enabled for the current context.
+     *
+     * @param cms the CMS context
+     * @param config the currently active ADE configuration
+     * @param file the edited file
+     * @return true if the translation should be enabled
+     */
+    public boolean isEnabled(CmsObject cms, CmsADEConfigData config, CmsFile file);
 
 }

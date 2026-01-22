@@ -28,6 +28,7 @@
 package org.opencms.configuration;
 
 import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementDeleteMode;
+import org.opencms.ade.contenteditor.I_CmsContentTranslator;
 import org.opencms.ade.upload.I_CmsUploadRestriction;
 import org.opencms.ade.upload.I_CmsVirusScanner;
 import org.opencms.configuration.preferences.I_CmsPreference;
@@ -84,6 +85,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The "autosetnavigation" attribute. */
     public static final String A_AUTOSETNAVIGATION = "autosetnavigation";
+
+    public static final String N_CONTENT_TRANSLATION = "content-translation";
 
     /** The "autosettitle" attribute. */
     public static final String A_AUTOSETTITLE = "autosettitle";
@@ -1157,6 +1160,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             }
         });
 
+        digester.addObjectCreate(
+            "*/" + N_WORKPLACE + "/" + N_CONTENT_TRANSLATION,
+            CmsConfigurationException.class.getName(),
+            A_CLASS);
+        digester.addSetNext("*/" + N_WORKPLACE + "/" + N_CONTENT_TRANSLATION, "setContentTranslation");
+
     }
 
     /**
@@ -1238,6 +1247,17 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
         Element maxLocaleElem = workplaceElement.addElement(N_EDITOR_MAX_LOCALE_BUTTONS);
         maxLocaleElem.setText("" + m_workplaceManager.getEditorMaxLocaleButtons());
+
+        I_CmsContentTranslator translator = m_workplaceManager.getContentTranslation(null);
+        if (translator != null) {
+            Element translationElement = workplaceElement.addElement(N_CONTENT_TRANSLATION);
+            translationElement.addAttribute(A_CLASS, translator.getClass().getName());
+            for (Map.Entry<String, String> entry : translator.getConfiguration().entrySet()) {
+                Element paramElement = translationElement.addElement(N_PARAM);
+                paramElement.addAttribute(A_NAME, entry.getKey());
+                paramElement.setText(entry.getValue());
+            }
+        }
 
         I_CmsConfigurationParameterHandler deProvider = m_workplaceManager.getDirectEditProvider();
         Element deProviderNode = workplaceElement.addElement(N_DIRECTEDITPROVIDER).addAttribute(

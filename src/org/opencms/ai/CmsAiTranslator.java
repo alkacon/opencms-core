@@ -31,8 +31,12 @@ import org.opencms.file.CmsObject;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
+import org.opencms.main.CmsLog;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayDeque;
@@ -43,7 +47,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+
+import org.apache.commons.logging.Log;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -63,6 +71,8 @@ import dev.langchain4j.model.chat.request.json.JsonObjectSchema;
 import dev.langchain4j.model.chat.request.json.JsonRawSchema;
 import dev.langchain4j.model.chat.request.json.JsonSchema;
 import dev.langchain4j.model.chat.response.ChatResponse;
+import dev.langchain4j.model.chat.response.PartialResponse;
+import dev.langchain4j.model.chat.response.PartialResponseContext;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 
 /**
@@ -212,12 +222,37 @@ public class CmsAiTranslator {
         }
     }
 
+    private class FoundOrCreatedValue {
+
+        private I_CmsXmlContentValue m_value;
+        private boolean m_created;
+
+        public FoundOrCreatedValue(I_CmsXmlContentValue value, boolean created) {
+
+            m_value = value;
+            m_created = created;
+        }
+
+        public I_CmsXmlContentValue getValue() {
+
+            return m_value;
+        }
+
+        public boolean wasCreated() {
+
+            return m_created;
+        }
+    }
+
     /** The XML content types that are considered translatable. */
     public static final List<String> translatedTypes = new ArrayList<String>(
         List.of(
             org.opencms.xml.types.CmsXmlStringValue.TYPE_NAME,
             org.opencms.xml.types.CmsXmlPlainTextStringValue.TYPE_NAME,
             org.opencms.xml.types.CmsXmlHtmlValue.TYPE_NAME));
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsAiTranslator.class);
 
     /** The AI provider configuration. */
     private CmsAiProviderConfig m_providerConfig;
@@ -373,20 +408,17 @@ public class CmsAiTranslator {
         List<I_CmsXmlContentValue> result = new ArrayList<I_CmsXmlContentValue>();
 
         if (m_xmlContent != null) {
-            org.dom4j.Document ocdoc = m_xmlContent.cloneDocument();
-            List<org.dom4j.Node> nodes = ocdoc.selectNodes("/*/*[@language='" + locale + "']//*");
-            if (nodes != null) {
-                for (org.dom4j.Node node : nodes) {
-                    String xpath = node.getUniquePath().replaceFirst("^/[^/]+/[^/]+/", "");
-                    I_CmsXmlContentValue val = m_xmlContent.getValue(xpath, locale);
-                    if ((val != null) && (translatedTypes.contains(val.getTypeName()))) {
-                        result.add(val);
-                    }
-                }
-            }
+            result = m_xmlContent.getValuesInDocumentOrder(locale).stream().filter(
+                val -> translatedTypes.contains(val.getTypeName())).collect(Collectors.toList());
         }
 
         return result;
+    }
+
+    public CmsXmlContent translateXmlContent(Locale srcLocale, Locale targetLocale)
+    throws JSONException, CmsXmlException, CmsAiException {
+
+        return translateXmlContent(srcLocale, targetLocale, null);
     }
 
     /**
@@ -401,16 +433,19 @@ public class CmsAiTranslator {
      * @throws CmsXmlException in case of problems accessing the XML content
      * @throws CmsAiException if the AI translation result does not match the required structure
      */
-    public CmsXmlContent translateXmlContent(Locale srcLocale, Locale targetLocale)
+    public CmsXmlContent translateXmlContent(
+        Locale srcLocale,
+        Locale targetLocale,
+        StreamingChatResponseHandler handler)
     throws JSONException, CmsXmlException, CmsAiException {
 
-        // ChatResponse llmResponse = translateXmlContentRaw(srcLocale, targetLocale);
-        String jsonText = translateXmlContentRaw(srcLocale, targetLocale, null);
+        String jsonText = translateXmlContentRaw(srcLocale, targetLocale, handler);
+        if (jsonText == null) {
+            return null;
+        }
 
+        Map<String, String> translationResult = parseTranslationResult(jsonText);
         if (!m_xmlContent.hasLocale(targetLocale)) {
-            // must also handle cases where locale exits, in this case translate only empty fields
-            Map<String, String> translationResult = parseTranslationResult(jsonText);
-
             if (translationResult.size() > 0) {
                 m_xmlContent.copyLocale(srcLocale, targetLocale);
 
@@ -425,6 +460,34 @@ public class CmsAiTranslator {
                     }
                     I_CmsXmlContentValue tval = m_xmlContent.getValue(xpath, targetLocale);
                     tval.setStringValue(m_cms, text);
+                }
+            }
+        } else {
+            for (Map.Entry<String, String> entry : translationResult.entrySet()) {
+                try {
+                    String xpath = entry.getKey();
+                    String text = entry.getValue();
+                    I_CmsXmlContentValue sval = m_xmlContent.getValue(xpath, srcLocale);
+                    String source = sval.getStringValue(m_cms);
+                    if (hasHtmlMarkup(source)) {
+                        HtmlParseResult parsed = parseHtmlTextNodes(source);
+                        text = parsed.setTranslatedString(text);
+                    }
+                    FoundOrCreatedValue val = findOrCreateValue(m_cms, m_xmlContent, targetLocale, entry.getKey());
+                    if (val != null) {
+                        // If the value already existed, we only want to write to it if it's empty.
+                        // But if it was just created, it might have a default value, which we need to overwrite.
+                        if (val.wasCreated()) {
+                            val.getValue().setStringValue(m_cms, text);
+                        } else {
+                            if (CmsStringUtil.isEmptyOrWhitespaceOnly(val.getValue().getStringValue(m_cms))) {
+                                val.getValue().setStringValue(m_cms, text);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    LOG.debug(e.getLocalizedMessage(), e);
+
                 }
             }
         }
@@ -448,6 +511,7 @@ public class CmsAiTranslator {
         String result = null;
 
         List<I_CmsXmlContentValue> xmlValues = getXmlValues(srcLocale);
+        AtomicBoolean cancelled = new AtomicBoolean(Boolean.FALSE);
         if (xmlValues.size() > 0) {
 
             JSONObject root = new JSONObject();
@@ -534,12 +598,16 @@ public class CmsAiTranslator {
                         COUNTDOWN.countDown();
                     }
 
-                    public void onPartialResponse(String partialResponse) {
+                    public void onPartialResponse(PartialResponse responsePart, PartialResponseContext context) {
 
-                        if (partialResponse != null) {
-                            partialBuffer.append(partialResponse);
+                        String responsePartText = responsePart.text();
+                        if (responsePartText != null) {
+                            partialBuffer.append(responsePartText);
                         }
-                        handler.onPartialResponse(partialResponse);
+                        handler.onPartialResponse(responsePart, context);
+                        if (context.streamingHandle().isCancelled()) {
+                            cancelled.set(true);
+                        }
                     }
                 });
 
@@ -552,12 +620,69 @@ public class CmsAiTranslator {
                 }
 
                 result = resultRef.get();
-                if ((result == null) && (partialBuffer.length() > 0)) {
+                if ((result == null) && !cancelled.get() && (partialBuffer.length() > 0)) {
                     result = partialBuffer.toString();
                 }
             }
         }
         return result;
+    }
+
+    /**
+     * Helper method to either find an existing value for a given xpath or to try and create it, along with its parent values if necessary.
+     *
+     * <p>The result object contains both the value and an indication whether it was created or found.
+     *
+     * <p>Note that this method will fail with an exception when the value can neither found nor created. This can happen if its creation
+     * would conflict with pre-existing values in the content, e.g. choice values with different choices than that indicated by the given path.
+     *
+     * @param cms the CMS context
+     * @param content the XML content
+     * @param locale the locale in which to find/create the value
+     * @param path the xpath of the value to find/create
+     * @return the result, containing both the value and a flag which indicates whether a pre-existing value was found or whether it had to be created
+     *
+     * @throws Exception if something goes wrong
+     */
+    private FoundOrCreatedValue findOrCreateValue(CmsObject cms, CmsXmlContent content, Locale locale, String path)
+    throws Exception {
+
+        I_CmsXmlContentValue value = content.getValue(path, locale);
+        if (value != null) {
+            return new FoundOrCreatedValue(value, false);
+        }
+        I_CmsXmlContentValue parent = null;
+        boolean isMultipleChoice = false;
+        if (CmsXmlUtils.isDeepXpath(path)) {
+
+            String parentPath = CmsXmlUtils.removeLastXpathElement(path);
+            parent = findOrCreateValue(cms, content, locale, parentPath).getValue();
+            isMultipleChoice = ((CmsXmlNestedContentDefinition)parent).getChoiceMaxOccurs() > 1;
+
+            // Maybe it got created by creating a parent value?
+            value = content.getValue(path, locale);
+            if (value != null) {
+                return new FoundOrCreatedValue(value, true);
+            }
+        }
+
+        int index = CmsXmlUtils.getXpathIndexInt(path); // 1-based
+        int numValues = 0;
+        if (isMultipleChoice) {
+            while ((numValues = content.getValues(path, locale).size()) < index) {
+                content.addValue(cms, path, locale, content.getSubValues(parent.getPath(), locale).size());
+            }
+        } else {
+            while ((numValues = content.getValues(path, locale).size()) < index) {
+                content.addValue(cms, path, locale, numValues);
+            }
+        }
+        value = content.getValue(path, locale);
+        if (value != null) {
+            return new FoundOrCreatedValue(value, true);
+        } else {
+            throw new RuntimeException("failed to find/create value " + path + " for unknown reasons.");
+        }
     }
 
 }

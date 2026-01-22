@@ -36,9 +36,14 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsContentAugmentationDetails implements IsSerializable {
 
+    /** Indicates that the job was aborted. */
+    public static final String PROGRESS_ABORTED = "ABORTED";
+
+    /** Indicates that the job has finished. */
     public static final String PROGRESS_DONE = "DONE";
 
-    public static final String PROGRESS_ABORTED = "ABORTED";
+    /** An error that happened on the server side. */
+    private Throwable m_exception;
 
     /** The message to display, as HTML (null for no message) . */
     private String m_htmlMessage;
@@ -48,18 +53,30 @@ public class CmsContentAugmentationDetails implements IsSerializable {
      */
     private List<String> m_locales;
 
-    private String m_resultCaption;
-
-    private String m_progress;
-
     /** The locale to switch to (null to not switch locale). */
     private String m_nextLocale;
+
+    /** The progress message. */
+    private String m_progress;
+
+    /** The result caption. */
+    private String m_resultCaption;
 
     /**
      * Creates a new instance.
      */
     public CmsContentAugmentationDetails() {
 
+    }
+
+    /**
+     * Gets the exception (if any) from the server side.
+     *
+     * @return the exception from the server side
+     */
+    public Throwable getException() {
+
+        return m_exception;
     }
 
     /**
@@ -113,6 +130,17 @@ public class CmsContentAugmentationDetails implements IsSerializable {
     }
 
     /**
+     * Checks if the augmentation job was aborted.
+     *
+     *
+     * @return true if the augmentation job was aborted.
+     */
+    public boolean isAborted() {
+
+        return PROGRESS_ABORTED.equals(m_progress);
+    }
+
+    /**
      * Checks if the content augmentation has sucessfully completed.
      *
      * @return true if the content augmentation has successfully completed
@@ -120,6 +148,16 @@ public class CmsContentAugmentationDetails implements IsSerializable {
     public boolean isDone() {
 
         return PROGRESS_DONE.equals(m_progress);
+    }
+
+    /**
+     * Sets the exception to display.
+     *
+     * @param exception the exception to display
+     */
+    public void setException(Throwable exception) {
+
+        m_exception = exception;
     }
 
     /**

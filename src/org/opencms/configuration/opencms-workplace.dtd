@@ -19,6 +19,7 @@
 	editorcsshandlers?,
 	editorpreconditions?,
 	editor-max-locale-buttons?,
+	content-translation?,
 	directeditprovider?,
 	exportpoints,
 	autolock?,
@@ -936,6 +937,11 @@ with-path: If true, categories' displayed labels are assembled into a path from 
 #	Role that is required to be able to create/delete detail pages in the sitemap editor. Leave empty for no role check.
 -->
 <!ELEMENT sitemap-editor-detail-page-management-role (#PCDATA)>
+
+
+<!ELEMENT content-translation (param*)>
+<!ATTLIST content-translation class CDATA #REQUIRED> 
+
 
 <!--
 # Include the explorer types DTD.

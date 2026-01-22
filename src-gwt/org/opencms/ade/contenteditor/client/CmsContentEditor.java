@@ -80,6 +80,7 @@ import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.I_CmsSimpleCallback;
+import org.opencms.gwt.shared.CmsBootstrapIcons;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -1948,6 +1949,9 @@ public final class CmsContentEditor extends CmsEditorBase {
                                         }
                                         replaceContentWithAugmentationOutput(details);
                                     }
+                                    if (details.isAborted() && (details.getException() != null)) {
+                                        CmsErrorDialog.handleException(details.getException());
+                                    }
                                 }
                             });
                     }
@@ -2789,9 +2793,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         });
         if (!inline && m_isTranslationEnabled && (m_availableLocales.size() > 1)) {
             String buttonText = Messages.get().key(Messages.GUI_CONTENT_EDITOR_TRANSLATE_BUTTON_0);
-            CmsPushButton transformButton = createButton(
-                buttonText,
-                I_CmsButton.ButtonData.SETTINGS_BUTTON.getIconClass());
+            CmsPushButton transformButton = createButton(buttonText, CmsBootstrapIcons.BI_TRANSLATE);
             transformButton.addClickHandler(event -> runTranslation());
             m_toolbar.addRight(transformButton);
         }

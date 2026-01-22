@@ -50,6 +50,7 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
             org.opencms.ade.publish.Messages.get(),
             org.opencms.ade.sitemap.Messages.get(),
             org.opencms.ade.upload.Messages.get(),
+            org.opencms.ai.Messages.get(),
             org.opencms.cache.Messages.get(),
             org.opencms.configuration.Messages.get(),
             org.opencms.db.Messages.get(),

@@ -210,7 +210,7 @@ public class CmsContentTranslationProgressView extends Composite {
             @Override
             public void onSuccess(CmsContentAugmentationDetails result) {
 
-                if (result.isDone()) {
+                if (result.isDone() || result.isAborted()) {
                     m_popup.hide();
                     m_action.accept(result);
                 } else {

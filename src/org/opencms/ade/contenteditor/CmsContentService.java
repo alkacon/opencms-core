@@ -152,6 +152,8 @@ import org.apache.commons.logging.Log;
 import org.dom4j.Element;
 
 import com.google.common.base.Suppliers;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Sets;
 
 /**
@@ -163,6 +165,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
      * The data associated with a content augmentation job.
      */
     protected class ContentAugmentationJob {
+
+        private volatile Throwable m_exception;
 
         /** The job state. */
         private volatile AugmentationJobState m_state = AugmentationJobState.running;
@@ -341,6 +345,11 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             if (m_state == AugmentationJobState.running) {
                 result.setProgress(m_progress);
             } else if (m_state == AugmentationJobState.aborted) {
+                if (m_exception != null) {
+                    CmsRpcException rpcEx = new CmsRpcException(m_exception);
+                    rpcEx.setOriginalMessage(m_exception.getMessage());
+                    result.setException(rpcEx);
+                }
                 result.setProgress(CmsContentAugmentationDetails.PROGRESS_ABORTED);
             } else if (m_state == AugmentationJobState.done) {
                 result.setProgress(CmsContentAugmentationDetails.PROGRESS_DONE);
@@ -370,13 +379,16 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             try {
                 m_augmentation.augmentContent(m_context);
             } catch (Exception e) {
+                m_exception = e;
                 abort();
                 LOG.error(e.getLocalizedMessage(), e);
             }
-            if (m_result == null) {
-                m_result = m_originalCopy;
+            if (m_state == AugmentationJobState.aborted) {
+                return;
             }
-            getSessionCache().setCacheXmlContent(m_structureId, m_result);
+            if (m_result != null) {
+                getSessionCache().setCacheXmlContent(m_structureId, m_result);
+            }
             finish();
         }
     }
@@ -1301,7 +1313,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 }
             };
             if (CmsGwtConstants.AUGMENTATION_TRANSLATION.equals(augmentationType)) {
-                I_CmsContentTranslator translator = CmsTranslatorRegistry.getDefaultTranslator();
+                I_CmsContentTranslator translator = OpenCms.getWorkplaceManager().getContentTranslation();
                 if ((translator != null) && (translator.getContentAugmentation() != null)) {
                     augmentation = translator.getContentAugmentation();
                 }
@@ -1322,7 +1334,9 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             Map<CmsUUID, ContentAugmentationJob> jobMap = (Map<CmsUUID, ContentAugmentationJob>)session.getAttribute(
                 ATTR_AUGMENTATION_JOBS);
             if (jobMap == null) {
-                jobMap = new ConcurrentHashMap<>();
+                Cache<CmsUUID, ContentAugmentationJob> cache = CacheBuilder.newBuilder().concurrencyLevel(
+                    2).expireAfterAccess(10, TimeUnit.MINUTES).build();
+                jobMap = cache.asMap();
                 session.setAttribute(ATTR_AUGMENTATION_JOBS, jobMap);
             }
             jobMap.put(augmentationJob.getId(), augmentationJob);
@@ -3073,8 +3087,8 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
             performedAutoCorrection,
             autoUnlock,
             getChangeHandlerScopes(content.getContentDefinition()));
-        I_CmsContentTranslator translator = CmsTranslatorRegistry.getDefaultTranslator();
-        boolean translationEnabled = translator != null;
+        I_CmsContentTranslator translator = OpenCms.getWorkplaceManager().getContentTranslation();
+        boolean translationEnabled = translator.isEnabled(cms, config, file);
         try {
             if (OpenCms.getResourceManager().getResourceType(file) instanceof CmsResourceTypeXmlAdeConfiguration) {
                 translationEnabled = false;

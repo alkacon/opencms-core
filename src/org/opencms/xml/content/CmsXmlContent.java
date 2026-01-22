@@ -681,6 +681,31 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     }
 
     /**
+     * Gets the content values for the given locale in the same order in which they appear in the XML document.
+     *
+     * @param locale the locale
+     * @return the list of content values
+     */
+    public List<I_CmsXmlContentValue> getValuesInDocumentOrder(Locale locale) {
+
+        List<I_CmsXmlContentValue> result = new ArrayList<I_CmsXmlContentValue>();
+
+        org.dom4j.Document ocdoc = m_document;
+        List<org.dom4j.Node> nodes = ocdoc.selectNodes("/*/*[@language='" + locale + "']//*");
+        if (nodes != null) {
+            for (org.dom4j.Node node : nodes) {
+                String xpath = node.getUniquePath().replaceFirst("^/[^/]+/[^/]+/", "");
+                I_CmsXmlContentValue val = getValue(xpath, locale);
+                if (val != null) {
+                    result.add(val);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Returns <code>true</code> if choice options exist for the given xpath in the selected locale.<p>
      *
      * In case the xpath does not select a nested choice content definition,
@@ -1152,16 +1177,6 @@ public class CmsXmlContent extends A_CmsXmlDocument {
                 int index = CmsXmlUtils.getXpathIndexInt(parentPath) - 1;
                 addValue(cms, parentPath, locale, index);
             }
-        }
-    }
-
-    private void removePreviousPropertyMappings(CmsObject cms) {
-
-        Set<String> mappings = new HashSet<>();
-        getHandler().getMappings().values().stream().forEach(mps -> mappings.addAll(mps));
-        Set<String> properties = new HashSet<>();
-        for (String mapping : mappings) {
-
         }
     }
 

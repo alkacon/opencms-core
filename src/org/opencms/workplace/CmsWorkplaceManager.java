@@ -29,6 +29,8 @@ package org.opencms.workplace;
 
 import org.opencms.ade.configuration.CmsElementView;
 import org.opencms.ade.containerpage.shared.CmsCntPageData.ElementDeleteMode;
+import org.opencms.ade.contenteditor.CmsDummyTranslator;
+import org.opencms.ade.contenteditor.I_CmsContentTranslator;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.ade.upload.CmsDefaultUploadRestriction;
 import org.opencms.ade.upload.I_CmsUploadRestriction;
@@ -224,8 +226,14 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The name of the local category folder(s). */
     private String m_categoryFolder;
 
+    /** The configured content translation engine. */
+    private I_CmsContentTranslator m_contentTranslation;
+
     /** The default access for explorer types. */
     private CmsExplorerTypeAccess m_defaultAccess;
+
+    /** The default content translation engine. */
+    private I_CmsContentTranslator m_defaultContentTranslation = new CmsDummyTranslator();
 
     /** The configured default locale of the workplace. */
     private Locale m_defaultLocale;
@@ -921,6 +929,30 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public List<CmsAccountInfo> getConfiguredAccountInfos() {
 
         return m_accountInfos;
+    }
+
+    /**
+     * Gets the content translation engine, and if none is configured, returns a dummy implementation.
+     *
+     * @return the content translation engine
+     */
+    public I_CmsContentTranslator getContentTranslation() {
+
+        return getContentTranslation(m_defaultContentTranslation);
+    }
+
+    /**
+     * Gets the configured content translation engine, or the provided default value if no content translation is configured.
+     *
+     * @param defaultValue the default value
+     * @return the content translation engine, or the default value if none is configured
+     */
+    public I_CmsContentTranslator getContentTranslation(I_CmsContentTranslator defaultValue) {
+
+        if (m_contentTranslation != null) {
+            return m_contentTranslation;
+        }
+        return defaultValue;
     }
 
     /**
@@ -2060,6 +2092,21 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public void setCategoryFolder(String categoryFolder) {
 
         m_categoryFolder = categoryFolder;
+    }
+
+    /**
+     * Sets the content translation engine.
+     *
+     * @param contentTranslation the instance of the content translator
+     */
+    public void setContentTranslation(I_CmsContentTranslator contentTranslation) {
+
+        m_contentTranslation = contentTranslation;
+        try {
+            m_contentTranslation.initConfiguration();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

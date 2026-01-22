@@ -27,6 +27,12 @@
 
 package org.opencms.ai;
 
+import java.io.File;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * Simple configuration bean for AI provider access settings.<p>
  *
@@ -50,11 +56,28 @@ public class CmsAiProviderConfig {
      * @param providerUrl the provider base URL
      * @param modelName the model name
      */
-    public CmsAiProviderConfig(String apiKey, String providerUrl, String modelName) {
+    @JsonCreator
+    public CmsAiProviderConfig(
+        @JsonProperty(value = "apiKey", required = true) String apiKey,
+        @JsonProperty(value = "providerUrl", required = true) String providerUrl,
+        @JsonProperty(value = "modelName", required = true) String modelName) {
 
         m_apiKey = apiKey;
         m_providerUrl = providerUrl;
         m_modelName = modelName;
+    }
+
+    /**
+     * Loads the provider configuration from a JSON file in the RFS.
+     *
+     * @param path the path of the config file
+     * @return the provider configuration
+     * @throws Exception if loading the file fails
+     */
+    public static CmsAiProviderConfig loadFromJsonFile(String path) throws Exception {
+
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(new File(path), CmsAiProviderConfig.class);
     }
 
     /**
