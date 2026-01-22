@@ -145,6 +145,7 @@ public class CmsContentTranslationView extends Composite {
 
         popup.setMainContent(view);
         popup.setModal(true);
+        popup.setGlassEnabled(true);
         view.setPopup(popup);
         for (CmsPushButton button : view.getButtons()) {
             popup.addButton(button);

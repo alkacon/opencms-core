@@ -155,6 +155,7 @@ public class CmsContentTranslationProgressView extends Composite {
         CmsContentTranslationProgressView view = new CmsContentTranslationProgressView(jobId, service, action);
         popup.setMainContent(view);
         popup.setModal(true);
+        popup.setGlassEnabled(true);
         view.setPopup(popup);
         for (CmsPushButton button : view.getButtons()) {
             popup.addButton(button);
