@@ -64,12 +64,6 @@ import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.request.ChatRequest;
-import dev.langchain4j.model.chat.request.ResponseFormat;
-import dev.langchain4j.model.chat.request.ResponseFormatType;
-import dev.langchain4j.model.chat.request.json.JsonArraySchema;
-import dev.langchain4j.model.chat.request.json.JsonObjectSchema;
-import dev.langchain4j.model.chat.request.json.JsonRawSchema;
-import dev.langchain4j.model.chat.request.json.JsonSchema;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.chat.response.PartialResponse;
 import dev.langchain4j.model.chat.response.PartialResponseContext;
@@ -576,28 +570,25 @@ public class CmsAiTranslator {
                 "- Do NOT add explanations, comments, or extra fields.",
                 "- Keep placeholders, markers, or tokens (e.g. ⟦#1#⟧, {{...}}, ${...}, [TAG1], etc.) intact.");
 
-            ResponseFormat.Builder schema = ResponseFormat.builder().type(ResponseFormatType.JSON);
-            JsonObjectSchema jsonSchema = JsonObjectSchema.builder().build();
-            JsonRawSchema raw = JsonRawSchema.from(llmPrompt);
-
-            ResponseFormat llmResponseFormat = ResponseFormat.builder().type(ResponseFormatType.JSON).jsonSchema(
-                JsonSchema.builder().name("TranslationResult").rootElement(
-                    JsonObjectSchema.builder().addProperty(
-                        "segments",
-                        JsonArraySchema.builder().items(
-                            JsonObjectSchema.builder().addStringProperty(
-                                "id",
-                                "The id for the text, must remain unchanged and kept in order").addStringProperty(
-                                    "text",
-                                    "The text to translate with optional placeholders like ⟦#1#⟧").required(
-                                        "id",
-                                        "text").build()).build()).required("segments").build()).build()).build();
+            //            ResponseFormat llmResponseFormat = ResponseFormat.builder().type(ResponseFormatType.JSON).jsonSchema(
+            //                JsonSchema.builder().name("TranslationResult").rootElement(
+            //                    JsonObjectSchema.builder().addProperty(
+            //                        "segments",
+            //                        JsonArraySchema.builder().items(
+            //                            JsonObjectSchema.builder().addStringProperty(
+            //                                "id",
+            //                                "The id for the text, must remain unchanged and kept in order").addStringProperty(
+            //                                    "text",
+            //                                    "The text to translate with optional placeholders like ⟦#1#⟧").required(
+            //                                        "id",
+            //                                        "text").build()).build()).required("segments").build()).build()).build();
 
             List<ChatMessage> messages = new ArrayList<ChatMessage>();
             messages.add(SystemMessage.from(llmPrompt));
             messages.add(UserMessage.from(textToTranslate));
 
-            ChatRequest llmRequest = ChatRequest.builder().messages(messages).responseFormat(llmResponseFormat).build();
+            // NOT setting response format for now, as it breaks streaming
+            ChatRequest llmRequest = ChatRequest.builder().messages(messages).build();
 
             if (handler == null) {
                 ChatModel chatModel = new CmsAiModel(m_providerConfig).getChatModel();
