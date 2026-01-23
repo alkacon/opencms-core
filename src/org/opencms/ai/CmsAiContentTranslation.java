@@ -65,6 +65,7 @@ public class CmsAiContentTranslation implements I_CmsContentTranslator {
         public void augmentContent(Context context) throws Exception {
 
             CmsObject cms = context.getCmsObject();
+            final Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
             CmsXmlContent content = context.getContent();
             Locale sourceLocale = context.getLocale();
             String targetLocaleParam = context.getParameter(CmsGwtConstants.PARAM_TARGET_LOCALE);
@@ -97,7 +98,10 @@ public class CmsAiContentTranslation implements I_CmsContentTranslator {
                         if (context.isAborted()) {
                             resContext.streamingHandle().cancel();
                         } else {
-                            context.progress("Translation progress: " + charsReceived.get());
+                            String msg = Messages.get().getBundle(wpLocale).key(
+                                Messages.GUI_TRANSLATION_PROGRESS_1,
+                                charsReceived.get());
+                            context.progress(msg);
                         }
                     }
                 });
