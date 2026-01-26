@@ -86,6 +86,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.commons.logging.Log;
 
 import com.vaadin.server.Page;
+import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServletRequest;
 import com.vaadin.server.VaadinServletResponse;
@@ -448,6 +449,10 @@ public class CmsLoginController {
         String logoutUri = OpenCms.getLoginManager().getLogoutUri();
         if (logoutUri != null) {
             String target = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, logoutUri, false);
+            target = OpenCms.getAuthorizationHandler().getLogoutRedirectUri(
+                cms,
+                (VaadinServletRequest)VaadinRequest.getCurrent(),
+                target);
             // open in top frame, so it still works when the Vaadin dialog is embedded
             Page.getCurrent().open(target, "_top", false);
         } else {
@@ -455,6 +460,11 @@ public class CmsLoginController {
                 cms,
                 CmsWorkplaceLoginHandler.LOGIN_HANDLER,
                 false);
+            loginLink = OpenCms.getAuthorizationHandler().getLogoutRedirectUri(
+                cms,
+                (VaadinServletRequest)VaadinRequest.getCurrent(),
+                loginLink);
+
             VaadinService.getCurrentRequest().getWrappedSession().invalidate();
             // open in top frame, so it still works when the Vaadin dialog is embedded
             Page.getCurrent().open(loginLink, "_top", false);
@@ -503,9 +513,14 @@ public class CmsLoginController {
                         cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri()),
                         cms.getRequestContext().getRemoteAddress()));
             }
-            response.sendRedirect(getFormLink(cms));
+            String redirectUri = OpenCms.getAuthorizationHandler().getLogoutRedirectUri(cms, request, getFormLink(cms));
+            response.sendRedirect(redirectUri);
         } else {
-            response.sendRedirect(OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, logoutUri, false));
+            String redirectUri = OpenCms.getAuthorizationHandler().getLogoutRedirectUri(
+                cms,
+                request,
+                OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, logoutUri, false));
+            response.sendRedirect(redirectUri);
         }
     }
 

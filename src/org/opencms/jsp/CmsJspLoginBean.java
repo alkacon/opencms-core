@@ -394,7 +394,8 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                     getRequestContext().getRemoteAddress()));
         }
         CmsUserLog.logLogout(getCmsObject());
-        getResponse().sendRedirect(getFormLink());
+        getResponse().sendRedirect(
+            OpenCms.getAuthorizationHandler().getLogoutRedirectUri(getCmsObject(), getRequest(), getFormLink()));
     }
 
     /**

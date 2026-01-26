@@ -51,20 +51,6 @@ public interface I_CmsAuthorizationHandler {
     interface I_PrivilegedLoginAction {
 
         /**
-         * Used to provide an initial cms object.<p>
-         *
-         * @param cms an initial cms object
-         */
-        void setCmsObject(CmsObject cms);
-
-        /**
-         * Returns the cms object.<p>
-         *
-         * @return the cms object
-         */
-        CmsObject getCmsObject();
-
-        /**
          * Performs a privileged login action and returns a cms object initialized for the principal.<p>
          *
          * @param request the current request
@@ -74,6 +60,20 @@ public interface I_CmsAuthorizationHandler {
          * @throws CmsException if the login action fails
          */
         CmsObject doLogin(HttpServletRequest request, String principal) throws CmsException;
+
+        /**
+         * Returns the cms object.<p>
+         *
+         * @return the cms object
+         */
+        CmsObject getCmsObject();
+
+        /**
+         * Used to provide an initial cms object.<p>
+         *
+         * @param cms an initial cms object
+         */
+        void setCmsObject(CmsObject cms);
     }
 
     /**
@@ -86,6 +86,21 @@ public interface I_CmsAuthorizationHandler {
      * @return the full URL used to call a login form
      */
     String getLoginFormURL(String loginFormURL, String params, String callbackURL);
+
+    /**
+     * Implementations can customize the logout redirect URI using this method.
+     *
+     * @param cms the current CmsObject
+     * @param request the current request
+     * @param cmsRedirectUri the normal redirect URI that would be used without a special authorization handler (might be null)
+     *
+     * @return the new redirect URI
+     * @throws Exception if something goes wrong
+     */
+    default String getLogoutRedirectUri(CmsObject cms, HttpServletRequest request, String cmsRedirectUri) {
+
+        return cmsRedirectUri;
+    }
 
     /**
      * Creates a new cms object from the given request object.<p>
