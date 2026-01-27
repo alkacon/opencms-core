@@ -735,7 +735,7 @@ public class CmsXmlContentDefinition implements Cloneable {
                         }
                     }
                 }
-                if ((minOccurs == 0) && (choiceMaxOccurs == 1)) {
+                if ((minOccurs <= 1) && (choiceMaxOccurs == 1)) {
                     // minOccurs 0 and maxOccurs 1, this is a single choice sequence
                     sequenceType = SequenceType.SINGLE_CHOICE;
                 } else {
