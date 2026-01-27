@@ -106,25 +106,29 @@ public class CmsAliasResourceHandler implements I_CmsResourceInit {
             CmsRewriteAliasMatcher rewriteAliases = OpenCms.getAliasManager().getRewriteAliasMatcher(cms, siteRoot);
             CmsRewriteAliasMatcher.RewriteResult rewriteResult = rewriteAliases.match(sitePath);
             if ((rewriteResult != null) && (res != null)) {
-                String link = OpenCms.getLinkManager().substituteLink(cms, rewriteResult.getNewPath());
                 if (rewriteResult.getAlias().getMode().isRedirect()) {
+                    String link = OpenCms.getLinkManager().substituteLink(cms, rewriteResult.getNewPath());
                     redirectToTarget(
                         cms,
                         req,
                         res,
                         link,
                         rewriteResult.getAlias().getMode() == CmsAliasMode.permanentRedirect);
+                    return null;
                 } else {
+                    CmsResource rewriteTarget = cms.readResource(rewriteResult.getNewPath());
+                    String uri = cms.getRequestContext().getUri();
+                    String query = req.getQueryString();
+                    res.setHeader("X-Forwarded-URI", (query == null ? uri : uri + "?" + query));
                     cms.getRequestContext().setUri(rewriteResult.getNewPath());
+                    return rewriteTarget;
                 }
-                return null;
             }
             List<CmsAlias> aliases = OpenCms.getAliasManager().getAliasesForPath(cms, siteRoot, sitePath);
             assert aliases.size() < 2;
             if (aliases.size() == 1) {
                 CmsAlias alias = aliases.get(0);
                 CmsResource aliasTarget = cms.readResource(alias.getStructureId());
-
                 if (alias.isRedirect()) {
                     String link = OpenCms.getLinkManager().substituteLink(cms, aliasTarget);
                     boolean isPermanent = alias.isPermanentRedirect();
