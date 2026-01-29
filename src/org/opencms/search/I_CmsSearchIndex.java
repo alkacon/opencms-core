@@ -29,6 +29,7 @@ package org.opencms.search;
 
 import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.report.I_CmsReport;
@@ -144,6 +145,30 @@ public interface I_CmsSearchIndex extends I_CmsConfigurationParameterHandler, Se
      * @param sourceName the index source name to add
      */
     void addSourceName(String sourceName);
+
+    /**
+     * Indexes can provide index-specific document transformations
+     * Field configuration may use these to alter the generated document.
+     *
+     * @param document the document to transform
+     * @param cms the context
+     * @param resource the resource the document was created for
+     * @param extractionResult the extraction result for the resource
+     * @param properties the direct properties of the resource
+     * @param propertiesSearched the recursively read properties of the resource
+     * @return the transformed document
+     */
+    @SuppressWarnings("unused")
+    default I_CmsSearchDocument applyDocumentTransformation(
+        I_CmsSearchDocument document,
+        CmsObject cms,
+        CmsResource resource,
+        I_CmsExtractionResult extractionResult,
+        List<CmsProperty> properties,
+        List<CmsProperty> propertiesSearched) {
+
+        return document;
+    }
 
     /**
      * Checks is this index has been configured correctly.<p>
@@ -337,5 +362,4 @@ public interface I_CmsSearchIndex extends I_CmsConfigurationParameterHandler, Se
      * This will close the local Lucene index searcher instance.<p>
      */
     void shutDown();
-
 }

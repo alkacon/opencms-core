@@ -36,6 +36,7 @@ import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -54,6 +55,7 @@ import org.opencms.search.CmsSearchResource;
 import org.opencms.search.CmsSearchResultList;
 import org.opencms.search.I_CmsIndexWriter;
 import org.opencms.search.I_CmsSearchDocument;
+import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.galleries.CmsGallerySearchParameters;
 import org.opencms.search.galleries.CmsGallerySearchResult;
@@ -123,6 +125,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
 
     /** Constant for additional parameter to set the post processor class name. */
     public static final String POST_PROCESSOR = "search.solr.postProcessor";
+
+    /** Constant for additional parameter to set an index-specific document transformer. */
+    public static final String DOCUMENT_TRANSFORMER = "search.solr.documentTransformer";
 
     /**
      * Constant for additional parameter to set the maximally processed results (start + rows) for searches with this index.
@@ -223,6 +228,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
     /** The post document manipulator. */
     private transient I_CmsSolrPostSearchProcessor m_postProcessor;
 
+    /** The index specific document transformer. */
+    private transient I_CmsSolrDocumentTransformer m_documentTransformer;
+
     /** The core name for the index. */
     private transient String m_coreName;
 
@@ -311,6 +319,20 @@ public class CmsSolrIndex extends CmsSearchIndex {
                     }
                 }
                 break;
+            case DOCUMENT_TRANSFORMER:
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
+                    try {
+                        Class<I_CmsSolrDocumentTransformer> transformerClass = (Class<I_CmsSolrDocumentTransformer>)Class.forName(
+                            value);
+                        setDocumentTransformer(transformerClass.getDeclaredConstructor().newInstance());
+                    } catch (Exception e) {
+                        CmsException ex = new CmsException(
+                            Messages.get().container(Messages.LOG_SOLR_ERR_DOCUMENT_TRANSFORMER_NOT_EXIST_1, value),
+                            e);
+                        LOG.error(ex.getMessage(), ex);
+                    }
+                }
+                break;
             case SOLR_HANDLER_ALLOWED_FIELDS:
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
                     m_handlerAllowedFields = Stream.of(value.split(",")).map(v -> v.trim()).toArray(String[]::new);
@@ -382,6 +404,30 @@ public class CmsSolrIndex extends CmsSearchIndex {
                 super.addConfigurationParameter(key, value);
                 break;
         }
+    }
+
+    /**
+     * @see org.opencms.search.I_CmsSearchIndex#applyDocumentTransformation(org.opencms.search.I_CmsSearchDocument, org.opencms.file.CmsObject, org.opencms.file.CmsResource, org.opencms.search.extractors.I_CmsExtractionResult, java.util.List, java.util.List)
+     */
+    @Override
+    public I_CmsSearchDocument applyDocumentTransformation(
+        I_CmsSearchDocument doc,
+        CmsObject cms,
+        CmsResource resource,
+        I_CmsExtractionResult extractionResult,
+        List<CmsProperty> properties,
+        List<CmsProperty> propertiesSearched) {
+
+        if (null != m_documentTransformer) {
+            return m_documentTransformer.transform(
+                doc,
+                cms,
+                resource,
+                extractionResult,
+                properties,
+                propertiesSearched);
+        }
+        return doc;
     }
 
     /**
@@ -1324,6 +1370,17 @@ public class CmsSolrIndex extends CmsSearchIndex {
         CmsResourceFilter filter = isOnline ? null : CmsResourceFilter.IGNORE_EXPIRATION;
 
         search(cms, query, ignoreMaxRows, response, false, filter);
+    }
+
+    /**
+     * Sets the document transformer.<p>
+     *
+     * @param documentTransformer the document transformer to set
+     */
+    public void setDocumentTransformer(I_CmsSolrDocumentTransformer documentTransformer) {
+
+        documentTransformer.init(this);
+        m_documentTransformer = documentTransformer;
     }
 
     /**

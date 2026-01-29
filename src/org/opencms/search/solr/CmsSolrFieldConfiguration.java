@@ -198,6 +198,14 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
             appendSpellFields(document);
         }
 
+        document = getIndex().applyDocumentTransformation(
+            document,
+            cms,
+            resource,
+            extractionResult,
+            properties,
+            propertiesSearched);
+
         return document;
     }
 
