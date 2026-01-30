@@ -1615,6 +1615,65 @@
 		padding-right: 0px;
 	}
 	
+	.o-login-top-divider {
+	  display: flex;
+	  align-items: center;
+	  text-align: center;
+	}
+
+	.o-login-top-divider::before,
+	.o-login-top-divider::after {
+	  content: "";
+	  flex: 1;
+	  border-bottom: 1px solid #ccc;
+	}
+
+	.o-login-top-divider span {
+	  padding: 0 0.75rem;
+	  color: #666;
+	  font-size: 0.9rem;
+	  white-space: nowrap;
+	}
+	
+	.o-login-bottom-divider {
+		display: flex;
+		align-items: center;
+		margin-top: 1em;
+	}
+	
+	.o-login-bottom-divider::before {
+		content: "";
+		flex: 1;
+		border-bottom: 1px solid #ccc;
+	}
+	
+	.o-custom-login-button {
+		margin-top: 5px;
+	}
+	
+	.o-custom-login-button::after {
+	    background: none !important;
+	}
+
+	.o-custom-login-button {
+	    background-color: green !important;
+	    background-image: none !important;
+	    border: none !important;
+	}
+	
+	.o-custom-login-button:hover {
+	    background-color: #009000 !important;
+	}
+
+	.o-custom-login-button .v-button-caption {
+	    color: white !important;
+	    font-weight: bold !important;
+	}
+
+	
+	.o-custom-login-ou-select {
+		margin-top: 5px;
+	}
 	
 }
 

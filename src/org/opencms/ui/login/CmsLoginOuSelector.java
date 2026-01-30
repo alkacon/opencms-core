@@ -68,6 +68,27 @@ public class CmsLoginOuSelector extends CustomComponent {
     }
 
     /**
+     * Gets the normalized OU name for a particular OU.
+     */
+    public static String getId(CmsOrganizationalUnit ou) {
+
+        return normalizeOuName(ou.getName());
+    }
+
+    /**
+     * Normalizes a given OU name.<p>
+     *
+     * @param ou the OU name
+     * @return the normalized version
+     */
+    public static String normalizeOuName(String ou) {
+
+        ou = CmsFileUtil.removeLeadingSeparator(ou);
+        ou = CmsFileUtil.removeTrailingSeparator(ou);
+        return ou;
+    }
+
+    /**
      * Gets the selected OU.<p<
      *
      * @return the selected OU
@@ -79,7 +100,7 @@ public class CmsLoginOuSelector extends CustomComponent {
 
     /**
      * Checks if a given OU is available for selection.
-     * 
+     *
      * @param ou the OU to check
      * @return true if the OU is available
      */
@@ -129,19 +150,6 @@ public class CmsLoginOuSelector extends CustomComponent {
     public void setValue(String value) {
 
         m_ouSelect.setValue(normalizeOuName(value));
-    }
-
-    /**
-     * Normalizes a given OU name.<p>
-     *
-     * @param ou the OU name
-     * @return the normalized version
-     */
-    String normalizeOuName(String ou) {
-
-        ou = CmsFileUtil.removeLeadingSeparator(ou);
-        ou = CmsFileUtil.removeTrailingSeparator(ou);
-        return ou;
     }
 
 }

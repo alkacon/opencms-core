@@ -35,6 +35,7 @@ import org.opencms.security.CmsAuthentificationException;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsUserDisabledException;
+import org.opencms.security.I_CmsCustomLogin;
 import org.opencms.security.Messages;
 import org.opencms.util.CmsStringUtil;
 
@@ -187,6 +188,9 @@ public class CmsLoginManager {
 
     /** The before login message. */
     private CmsLoginMessage m_beforeLoginMessage;
+
+    /** The configured custom login. */
+    private I_CmsCustomLogin m_customLogin;
 
     /** The login message, setting this may also disable logins for non-Admin users. */
     private CmsLoginMessage m_loginMessage;
@@ -384,6 +388,16 @@ public class CmsLoginManager {
     }
 
     /**
+     * Gets the configured custom login method, if any.
+     *
+     * @return the configured custom login method
+     */
+    public I_CmsCustomLogin getCustomLogin() {
+
+        return m_customLogin;
+    }
+
+    /**
      * Returns the minutes an account gets disabled after too many failed login attempts.<p>
      *
      * @return the minutes an account gets disabled after too many failed login attempts
@@ -416,6 +430,7 @@ public class CmsLoginManager {
     public String getLogoutUri() {
 
         return m_logoutUri;
+
     }
 
     /**
@@ -714,6 +729,19 @@ public class CmsLoginManager {
         if (m_beforeLoginMessage != null) {
             m_beforeLoginMessage.setFrozen();
         }
+    }
+
+    /**
+     * Sets the custom login method.
+     *
+     * @param customLogin the custom login method
+     */
+    public void setCustomLogin(I_CmsCustomLogin customLogin) {
+
+        if ((customLogin != null) && (m_customLogin != null)) {
+            throw new RuntimeException("Custom login is already set: " + m_customLogin.toString());
+        }
+        m_customLogin = customLogin;
     }
 
     /**

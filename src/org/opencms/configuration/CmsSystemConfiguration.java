@@ -59,6 +59,7 @@ import org.opencms.security.CmsDefaultCredentialsResolver;
 import org.opencms.security.CmsDefaultValidationHandler;
 import org.opencms.security.I_CmsAuthorizationHandler;
 import org.opencms.security.I_CmsCredentialsResolver;
+import org.opencms.security.I_CmsCustomLogin;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.security.twofactor.CmsTwoFactorAuthenticationConfig;
@@ -417,6 +418,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the password encoding. */
     public static final String N_PASSWORDENCODING = "encoding";
+
+    /** The node name for the custom login configuration. */
+    public static final String N_CUSTOM_LOGIN = "custom-login";
 
     /** The node name for the password handler. */
     public static final String N_PASSWORDHANDLER = "passwordhandler";
@@ -1053,6 +1057,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_REQUIRE_ORGUNIT, 7);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_LOGOUT_URI, 8);
 
+        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_CUSTOM_LOGIN, null, A_CLASS);
+        digester.addSetNext("*/" + N_SYSTEM + "/" + N_CUSTOM_LOGIN, "setCustomLogin");
+
         try {
             digester.addRule("*/" + N_TWO_FACTOR_AUTHENTICATION, new NodeCreateRule() {
 
@@ -1563,7 +1570,18 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             if (m_loginManager.getLogoutUri() != null) {
                 managerElement.addElement(N_LOGOUT_URI).addText(m_loginManager.getLogoutUri());
             }
+
+            if (m_loginManager.getCustomLogin() != null) {
+                Element customLoginElement = systemElement.addElement(N_CUSTOM_LOGIN);
+                customLoginElement.addAttribute(A_CLASS, m_loginManager.getCustomLogin().getClass().getName());
+                for (Map.Entry<String, String> entry : m_loginManager.getCustomLogin().getConfiguration().entrySet()) {
+                    Element paramElement = customLoginElement.addElement(N_PARAM);
+                    paramElement.addAttribute(A_NAME, entry.getKey());
+                    paramElement.setText(entry.getValue());
+                }
+            }
         }
+
         if (m_twoFactorConfig != null) {
             // the 2FA configuration is immutable, so we can just reuse the original element here
             systemElement.add(m_twoFactorConfig.getConfigElement());
@@ -2584,6 +2602,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         Class<?> resolverClass = Class.forName(className);
         m_credentialsResolver = (I_CmsCredentialsResolver)(resolverClass.newInstance());
         m_credentialsResolverClass = originalClassName;
+    }
+
+    /**
+     * Sets the custom login.
+     * 
+     * @param customLogin the custom login
+     */
+    public void setCustomLogin(I_CmsCustomLogin customLogin) {
+
+        getLoginManager().setCustomLogin(customLogin);
     }
 
     /**

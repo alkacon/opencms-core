@@ -18,6 +18,7 @@
 	passwordhandler,
 	validationhandler?,
 	loginmanager?,
+	custom-login?,
 	two-factor-authentication?,
 	loginmessage?,
 	sax-impl-system-properties?,
@@ -649,7 +650,8 @@
 <!ELEMENT userdata-domain (param*) >
 <!ATTLIST userdata-domain class CDATA #REQUIRED>
 
-
+<!ELEMENT custom-login (param*) >
+<!ATTLIST custom-login class CDATA #REQUIRED >
 
 
 

@@ -55,6 +55,10 @@
             <requireOrgUnit>true</requireOrgUnit>
 			<logoutUri>/foo/bar</logoutUri>
 		</loginmanager>
+		<custom-login class="org.opencms.configuration.CmsTestCustomLogin">
+			<param name="foo">bar</param>
+		</custom-login>		
+		
 		<two-factor-authentication>
 		  <enabled>false</enabled>
 		  <secret>password</secret>

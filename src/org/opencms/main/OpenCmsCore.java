@@ -1868,6 +1868,10 @@ public final class OpenCmsCore {
                 }
             }
 
+            if (m_loginManager.getCustomLogin() != null) {
+                m_loginManager.getCustomLogin().initialize(initCmsObject(adminCms));
+            }
+
             m_textEncryptions = new LinkedHashMap<>();
             for (I_CmsTextEncryption encryption : systemConfiguration.getTextEncryptions().values()) {
                 encryption.initialize(OpenCms.initCmsObject(adminCms));
@@ -2675,7 +2679,6 @@ public final class OpenCmsCore {
             setRunLevel(OpenCms.RUNLEVEL_4_SERVLET_ACCESS);
 
             afterUpgradeRunlevel();
-
             return m_instance;
         }
     }
