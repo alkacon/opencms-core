@@ -1506,6 +1506,25 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     }
 
     /**
+     * Checks if the 'copy' option for container elements should be enabled.
+     *
+     * @param cachedElementData the element data
+     * @return true if the copy option should be enabled
+     */
+    protected boolean isCopyableElement(CmsContainerElementData cachedElementData) {
+
+        if (cachedElementData.isModelGroup()
+            || cachedElementData.isCopyDisabled()
+            || cachedElementData.isWasModelGroup()) {
+            return false;
+        }
+        if (cachedElementData.hasNamePatternProperty() && !cachedElementData.hasWritePermission()) {
+            return false;
+        }
+        return CmsContainerpageController.get().isGalleryCreatableType(cachedElementData.getResourceType());
+    }
+
+    /**
      * Prepares all helper elements for the different drop targets.<p>
      *
      * @param elementData the element data
@@ -1981,11 +2000,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     }
                     if (reuseMode != ElementReuseMode.reuse) {
 
-                        if ((cachedElementData != null)
-                            && (!cachedElementData.hasWritePermission()
-                                || cachedElementData.isModelGroup()
-                                || cachedElementData.isCopyDisabled()
-                                || cachedElementData.isWasModelGroup())) {
+                        if ((cachedElementData != null) && !isCopyableElement(cachedElementData)) {
                             // User is not allowed to create this element in current view, so reuse the element instead
                             reuseMode = ElementReuseMode.reuse;
                         }

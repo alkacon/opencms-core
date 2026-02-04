@@ -48,6 +48,8 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -1004,6 +1006,20 @@ public class CmsElementUtil {
                 permissionInfo.setNoEditReason(
                     Messages.get().getBundle(wpLocale).key(Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0));
             }
+
+            try {
+                CmsProperty namePatternProp = m_cms.readPropertyObject(
+                    resource,
+                    CmsPropertyDefinition.PROPERTY_CONTENT_NAME_PATTERN,
+                    true);
+                String namePattern = namePatternProp.getValue();
+                if ((namePattern != null) && !"none".equals(namePattern)) {
+                    result.setHasNamePatternProperty(true);
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+
             CmsGallerySearchResult searchResult = CmsGallerySearch.searchById(
                 m_cms,
                 resource.getStructureId(),

@@ -193,6 +193,9 @@ public class CmsContainerElement implements IsSerializable, I_CmsHasIconClasses 
     /** True if the element is marked as 'reused'. */
     private boolean m_reused;
 
+    /** True if the element has the name pattern property. */
+    private boolean m_hasNamePatternProperty;
+
     /**
      * Default constructor.<p>
      */
@@ -229,6 +232,7 @@ public class CmsContainerElement implements IsSerializable, I_CmsHasIconClasses 
         result.m_wasModelGroup = m_wasModelGroup;
         result.m_isModelGroupAlwaysReplace = m_isModelGroupAlwaysReplace;
         result.m_reused = m_reused;
+        result.m_hasNamePatternProperty = m_hasNamePatternProperty;
         return result;
     }
 
@@ -354,6 +358,16 @@ public class CmsContainerElement implements IsSerializable, I_CmsHasIconClasses 
     public boolean hasEditHandler() {
 
         return m_hasEditHandler;
+    }
+
+    /**
+     * Checks if the element has the name pattern property.
+     *
+     * @return true if the element has the name pattern property
+     */
+    public boolean hasNamePatternProperty() {
+
+        return m_hasNamePatternProperty;
     }
 
     /**
@@ -549,6 +563,16 @@ public class CmsContainerElement implements IsSerializable, I_CmsHasIconClasses 
     public void setHasEditHandler(boolean hasEditHandler) {
 
         m_hasEditHandler = hasEditHandler;
+    }
+
+    /**
+     * Sets/clears the 'has name pattern property' status.
+     *
+     * @param hasNamePatternProperty true if the element has the name pattern property
+     */
+    public void setHasNamePatternProperty(boolean hasNamePatternProperty) {
+
+        m_hasNamePatternProperty = hasNamePatternProperty;
     }
 
     /**

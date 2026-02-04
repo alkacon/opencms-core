@@ -97,6 +97,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
@@ -921,6 +922,9 @@ public final class CmsContainerpageController {
 
     /** Alternative preview handler for events. */
     private NativePreviewHandler m_previewHandler;
+
+    /** The set of (currently) creatable types, as received from the gallery service. */
+    private Set<String> m_galleryCreatableTypes;
 
     /**
      * Constructor.<p>
@@ -2486,6 +2490,18 @@ public final class CmsContainerpageController {
         return (m_data == null)
             || CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_data.getNoEditReason())
             || (m_lockStatus == LockStatus.failed);
+    }
+
+    /**
+     * Checks if the given type name is contained in the list of currently creatable resource types (according to the gallery menu).
+     *
+     * @param type the type to check
+     * @return true if the type is creatable
+     */
+    public boolean isGalleryCreatableType(String type) {
+
+        /** If gallery data is not loaded for some reason, fall back to everything being allowed. */
+        return (m_galleryCreatableTypes == null) || m_galleryCreatableTypes.contains(type);
     }
 
     /**
@@ -4477,6 +4493,8 @@ public final class CmsContainerpageController {
             @Override
             protected void onResponse(CmsContainerPageGalleryData result) {
 
+                m_galleryCreatableTypes = result.getGalleryData().getTypes().stream().filter(
+                    type -> type.isCreatableType()).map(type -> type.getResourceType()).collect(Collectors.toSet());
                 m_handler.m_editor.getAdd().updateGalleryData(result, viewChanged);
                 if (nextAction != null) {
                     nextAction.run();
