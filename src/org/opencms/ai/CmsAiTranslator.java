@@ -468,11 +468,6 @@ public class CmsAiTranslator {
         if (!m_xmlContent.hasLocale(targetLocale)) {
             if (translationResult.size() > 0) {
                 m_xmlContent.copyLocale(srcLocale, targetLocale);
-            }
-        }
-        if (!m_xmlContent.hasLocale(targetLocale)) {
-            if (translationResult.size() > 0) {
-                m_xmlContent.copyLocale(srcLocale, targetLocale);
 
                 for (Map.Entry<String, String> entry : translationResult.entrySet()) {
                     String xpath = entry.getKey();
