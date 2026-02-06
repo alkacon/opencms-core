@@ -2759,6 +2759,13 @@ public final class CmsContentEditor extends CmsEditorBase {
         });
         m_toolbar.addLeft(m_openFormButton);
 
+        if (!inline && m_isTranslationEnabled && (m_availableLocales.size() > 1)) {
+            String buttonText = Messages.get().key(Messages.GUI_CONTENT_EDITOR_TRANSLATE_BUTTON_0);
+            CmsPushButton transformButton = createButton(buttonText, CmsBootstrapIcons.BI_TRANSLATE);
+            transformButton.addClickHandler(event -> runTranslation());
+            m_toolbar.addRight(transformButton);
+        }
+
         m_hideHelpBubblesButton = new CmsToggleButton();
 
         m_hideHelpBubblesButton.setImageClass(I_CmsButton.ButtonData.TOGGLE_HELP.getIconClass());
@@ -2791,12 +2798,6 @@ public final class CmsContentEditor extends CmsEditorBase {
                 confirmCancel();
             }
         });
-        if (!inline && m_isTranslationEnabled && (m_availableLocales.size() > 1)) {
-            String buttonText = Messages.get().key(Messages.GUI_CONTENT_EDITOR_TRANSLATE_BUTTON_0);
-            CmsPushButton transformButton = createButton(buttonText, CmsBootstrapIcons.BI_TRANSLATE);
-            transformButton.addClickHandler(event -> runTranslation());
-            m_toolbar.addRight(transformButton);
-        }
         m_toolbar.addRight(m_cancelButton);
         RootPanel.get().add(m_toolbar);
     }
