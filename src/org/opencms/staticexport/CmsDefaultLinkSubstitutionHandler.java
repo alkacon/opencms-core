@@ -136,6 +136,9 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             return CmsWorkplace.getStaticResourceUri(link);
         }
 
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(
+            cms,
+            cms.getRequestContext().getRootUri());
         CmsLinkFinisher linkFinisher;
         boolean fullLinkFinish = true;
 
@@ -379,6 +382,14 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                 resultLink = CmsLinkManager.getRelativeUri(uriBaseName, resultLink);
             }
 
+            // for exported resources, the 'force absolute links' mode shall override any RFS rule
+            if (exportManager.isExportLink(cms, oriUri)) {
+                String linkForceAbsoluteExportPrefix = config.getLinkForceAbsoluteExportPrefix(cms);
+                if (linkForceAbsoluteExportPrefix != null) {
+                    // prepend or replace the export prefix
+                    resultLink = CmsLinkManager.ensureServerPrefix(resultLink, linkForceAbsoluteExportPrefix);
+                }
+            }
         } else {
             // offline project, no export or secure handling required
             if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
@@ -401,10 +412,14 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             cms.getRequestContext().setAttribute(OVERRIDE_SITEROOT_PREFIX + resultLink, overrideSiteRoot);
         }
 
-        String result = serverPrefix.concat(resultLink);
-        CmsADEConfigData config = OpenCms.getADEManager().lookupConfigurationWithCache(
-            cms,
-            cms.getRequestContext().getRootUri());
+        String result = null;
+        if (CmsLinkManager.hasScheme(resultLink)) {
+            // in the case there is a rfs-rule that already includes a server host or we are in 'force absolute link'
+            // mode with a 'template.link.forceabsolute.exportprefix' attribute configured
+            result = resultLink;
+        } else {
+            result = serverPrefix.concat(resultLink);
+        }
         boolean isEditMode = !cms.getRequestContext().getCurrentProject().isOnlineProject()
             && (cms.getRequestContext().getAttribute(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT) == null);
 

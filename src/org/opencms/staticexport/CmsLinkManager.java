@@ -106,6 +106,39 @@ public class CmsLinkManager {
     }
 
     /**
+     * For a given link, ensures that it starts with the given server prefix.
+     * @param link the link
+     * @param serverPrefix the server prefix
+     * @return the link starting with the given server prefix
+     */
+    public static String ensureServerPrefix(String link, String serverPrefix) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(link) || CmsStringUtil.isEmptyOrWhitespaceOnly(serverPrefix)) {
+            return link;
+        }
+        if (link.startsWith(serverPrefix)) {
+            return link;
+        }
+        try {
+            URI uri = new URI(link);
+            StringBuffer result = new StringBuffer(serverPrefix);
+            result.append(uri.getRawPath());
+            if (uri.getRawQuery() != null) {
+                result.append('?');
+                result.append(uri.getRawQuery());
+            }
+            if (uri.getRawFragment() != null) {
+                result.append('#');
+                result.append(uri.getRawFragment());
+            }
+            return result.toString();
+        } catch (Exception e) {
+            LOG.debug(e.getLocalizedMessage(), e);
+            return link;
+        }
+    }
+
+    /**
      * Calculates the absolute URI for the "relativeUri" with the given absolute "baseUri" as start. <p>
      *
      * If "relativeUri" is already absolute, it is returned unchanged.

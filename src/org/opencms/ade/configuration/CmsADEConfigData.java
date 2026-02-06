@@ -225,6 +225,9 @@ public class CmsADEConfigData {
     /** Attribute for regex to exclude links from being run through the finisher if they match. */
     public static final String ATTRIBUTE_TEMPLATE_LINK_FINISHER_EXCLUDE = "template.link.finisher.exclude";
 
+    /** Sitemap attribute that stores a server prefix for exported resources, only relevant when 'force absolute links' mode enabled. */
+    public static final String ATTRIBUTE_LINK_FORCEABSOLUTE_EXPORTPREFIX = "template.link.forceabsolute.exportprefix";
+
     /** Prefix for logging special request log messages. */
     public static final String REQ_LOG_PREFIX = "[CmsADEConfigData] ";
 
@@ -291,6 +294,7 @@ public class CmsADEConfigData {
             }
         });
 
+    /** The configured link finisher. */
     private CmsLinkFinisher m_linkFinisher;
 
     /** Cached shared setting overrides. */
@@ -1314,6 +1318,21 @@ public class CmsADEConfigData {
         }
         return m_linkFinisher;
 
+    }
+
+    /**
+     * In case the 'force absolute links' mode is enabled, returns the optional server prefix for exported resources.
+     * If there is a server prefix configured here, this overrides any RFS rule configured for exported resources.
+     * @param cms the CMS context
+     * @return the optional server prefix for exported resources
+     */
+    public String getLinkForceAbsoluteExportPrefix(CmsObject cms) {
+
+        if (cms.getRequestContext().isForceAbsoluteLinks()) {
+            return getAttribute(CmsADEConfigData.ATTRIBUTE_LINK_FORCEABSOLUTE_EXPORTPREFIX, null);
+        } else {
+            return null;
+        }
     }
 
     /**
