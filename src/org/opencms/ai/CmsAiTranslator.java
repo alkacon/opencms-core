@@ -459,7 +459,6 @@ public class CmsAiTranslator {
                 }
                 for (I_CmsXmlContentValue value : valuesInOrder) {
                     try {
-
                         FoundOrCreatedValue valueInTargetLocaleInCopy = findOrCreateValue(
                             m_cms,
                             copy,
@@ -469,6 +468,12 @@ public class CmsAiTranslator {
                             || CmsStringUtil.isEmptyOrWhitespaceOnly(
                                 valueInTargetLocaleInCopy.getValue().getStringValue(m_cms))) {
                             result.add(value);
+                        } else {
+                            LOG.debug(
+                                "Excluding "
+                                    + value.getPath()
+                                    + " from translation because it would cause a conflict in the target locale."
+                                    + targetLocale);
                         }
                     } catch (Exception e) {
                         LOG.info(e.getLocalizedMessage(), e);
@@ -476,7 +481,6 @@ public class CmsAiTranslator {
                 }
             }
         }
-
         return result;
     }
 
@@ -519,7 +523,8 @@ public class CmsAiTranslator {
                     String text = entry.getValue();
                     I_CmsXmlContentValue sval = m_xmlContent.getValue(xpath, srcLocale);
                     if (sval == null) {
-                        System.out.println("Could not find original value for translation at path " + xpath);
+                        LOG.error("Could not find original value for translation at path " + xpath);
+                        continue;
                     }
                     String source = sval.getStringValue(m_cms);
                     if (hasHtmlMarkup(source)) {
@@ -537,6 +542,10 @@ public class CmsAiTranslator {
                     String xpath = entry.getKey();
                     String text = entry.getValue();
                     I_CmsXmlContentValue sval = m_xmlContent.getValue(xpath, srcLocale);
+                    if (sval == null) {
+                        LOG.error("Could not find original value for translation at path " + xpath);
+                        continue;
+                    }
                     String source = sval.getStringValue(m_cms);
                     if (hasHtmlMarkup(source)) {
                         HtmlParseResult parsed = parseHtmlTextNodes(source);
