@@ -130,7 +130,6 @@ public interface I_CmsXmlContentHandler {
             }
             return Collections.unmodifiableMap(m_params);
         }
-
     }
 
     /**
@@ -190,6 +189,16 @@ public interface I_CmsXmlContentHandler {
 
     /** Prefix for URL name mappings. */
     String MAPTO_URLNAME = "urlName";
+
+    /**
+     * Returns a (possibly empty set) of tags for the given field path (relative to the current content definition).
+     *
+     * <p>This is meant to provide metadata about a field for tools that process the content (e.g. translation).
+     *
+     * @param the path of a content field
+     * @return the set of agent tags
+     */
+    public Set<String> getAgentTags(String remainingPath);
 
     /**
      * Writes an availability date back to the content, if a mapping is defined for it.

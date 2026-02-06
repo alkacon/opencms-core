@@ -35,13 +35,18 @@ import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.I_CmsXmlDocument;
+import org.opencms.xml.content.CmsSynchronizationSpec;
 import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -238,6 +243,9 @@ public class CmsAiTranslator {
         }
     }
 
+    /** Metadata tag to disable translation for a content field. */
+    public static final String AGENT_TAG_NOTRANSLATE = "translate=false";
+
     /** The XML content types that are considered translatable. */
     public static final List<String> translatedTypes = new ArrayList<String>(
         List.of(
@@ -423,13 +431,50 @@ public class CmsAiTranslator {
      *
      * @return the translatable values
      */
-    public List<I_CmsXmlContentValue> getXmlValues(Locale locale) {
+    public List<I_CmsXmlContentValue> getValuesToTranslate(Locale locale, Locale targetLocale) {
 
         List<I_CmsXmlContentValue> result = new ArrayList<I_CmsXmlContentValue>();
 
         if (m_xmlContent != null) {
-            result = m_xmlContent.getValuesInDocumentOrder(locale).stream().filter(
-                val -> translatedTypes.contains(val.getTypeName())).collect(Collectors.toList());
+            List<I_CmsXmlContentValue> valuesInOrder = m_xmlContent.getValuesInDocumentOrder(locale).stream().filter(
+                val -> translatedTypes.contains(val.getTypeName())).filter(
+                    val -> !CmsStringUtil.isEmptyOrWhitespaceOnly(val.getStringValue(m_cms))).filter(
+                        val -> !isExcludedBySchema(val)).collect(Collectors.toList());
+
+            // Now find those values which we could actually write to if we translated them
+            if ((targetLocale == null) || !m_xmlContent.hasLocale(targetLocale)) {
+                // if the content doesn't already have the locale, translation involves copying the source to the target locale first,
+                // which means we can write all the values from the source locale
+                result = valuesInOrder;
+            } else {
+                // if the content does have the target locale, we can just try creating the values corresponding to the xpaths from the
+                // source locale. It doesn't matter that the values we are setting are not the actual translations, we are just checking
+                // if they can be created / written to.
+                CmsXmlContent copy = null;
+                try {
+                    copy = CmsXmlContentFactory.unmarshal(m_cms, m_xmlContent.getFile());
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    return Collections.emptyList();
+                }
+                for (I_CmsXmlContentValue value : valuesInOrder) {
+                    try {
+
+                        FoundOrCreatedValue valueInTargetLocaleInCopy = findOrCreateValue(
+                            m_cms,
+                            copy,
+                            targetLocale,
+                            value.getPath());
+                        if (valueInTargetLocaleInCopy.wasCreated()
+                            || CmsStringUtil.isEmptyOrWhitespaceOnly(
+                                valueInTargetLocaleInCopy.getValue().getStringValue(m_cms))) {
+                            result.add(value);
+                        }
+                    } catch (Exception e) {
+                        LOG.info(e.getLocalizedMessage(), e);
+                    }
+                }
+            }
         }
 
         return result;
@@ -473,6 +518,9 @@ public class CmsAiTranslator {
                     String xpath = entry.getKey();
                     String text = entry.getValue();
                     I_CmsXmlContentValue sval = m_xmlContent.getValue(xpath, srcLocale);
+                    if (sval == null) {
+                        System.out.println("Could not find original value for translation at path " + xpath);
+                    }
                     String source = sval.getStringValue(m_cms);
                     if (hasHtmlMarkup(source)) {
                         HtmlParseResult parsed = parseHtmlTextNodes(source);
@@ -528,7 +576,7 @@ public class CmsAiTranslator {
 
         String result = null;
 
-        List<I_CmsXmlContentValue> xmlValues = getXmlValues(srcLocale);
+        List<I_CmsXmlContentValue> xmlValues = getValuesToTranslate(srcLocale, targetLocale);
         AtomicBoolean cancelled = new AtomicBoolean(Boolean.FALSE);
         if (xmlValues.size() > 0) {
 
@@ -698,6 +746,41 @@ public class CmsAiTranslator {
         } else {
             throw new RuntimeException("failed to find/create value " + path + " for unknown reasons.");
         }
+    }
+
+    /**
+     * Checks if translation is disabled by schema settings for a specific content value.
+     *
+     * @param val the content value
+     * @return true if translation is disabled
+     */
+    private boolean isExcludedBySchema(I_CmsXmlContentValue val) {
+
+        // We just use AtomicBoolean here because it's a convenient way of having a boolean mutable from a closure, not because of concurrency
+        AtomicBoolean result = new AtomicBoolean(false);
+        String path = CmsXmlUtils.removeAllXpathIndices(val.getPath());
+        I_CmsXmlDocument content = val.getDocument();
+        I_CmsXmlContentHandler rootHandler = content.getContentDefinition().getContentHandler();
+        CmsSynchronizationSpec syncSpec = rootHandler.getSynchronizations(true);
+        if (syncSpec.getSynchronizationPaths().contains(path)) {
+            result.set(true);
+            LOG.debug("Excluding " + val.getPath() + " from translation because it's synchronized");
+        }
+        if (!result.get()) {
+            content.getContentDefinition().findSchemaTypesForPath(path, (schemaType, remainingPath) -> {
+                remainingPath = CmsXmlUtils.concatXpath(schemaType.getName(), remainingPath);
+                I_CmsXmlContentHandler handler = schemaType.getContentDefinition().getContentHandler();
+                if (handler.getAgentTags(remainingPath).contains(AGENT_TAG_NOTRANSLATE)) {
+                    if (result.compareAndSet(false, true)) {
+                        LOG.debug(
+                            "Excluding "
+                                + val.getPath()
+                                + " from translation because it's marked with translate=false");
+                    }
+                }
+            });
+        }
+        return result.get();
     }
 
 }

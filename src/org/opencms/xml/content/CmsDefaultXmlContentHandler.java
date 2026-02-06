@@ -218,6 +218,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
 
     /** Enum for field setting element names which are not already defined elsewhere. */
     enum FieldSettingElems {
+
+        /** Element name. */
+        Agents,
+
         /** Element name. */
         Class,
 
@@ -264,7 +268,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         UseDefault,
 
         /** Element name. */
-        Visibility
+        Visibility;
     }
 
     /**
@@ -774,6 +778,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
     }
 
+    /** The configured agent tags for fields. */
+    private Map<String, Set<String>> m_agentTags = new HashMap<>();
+
     /** The set of allowed templates. */
     protected CmsDefaultSet<String> m_allowedTemplates = new CmsDefaultSet<String>();
 
@@ -1188,6 +1195,19 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         }
         rootCms.getRequestContext().setSiteRoot("/");
         return rootCms;
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getAgentTags(java.lang.String)
+     */
+    public Set<String> getAgentTags(String remainingPath) {
+
+        Set<String> result = m_agentTags.get(remainingPath);
+        if (result == null) {
+            result = Collections.emptySet();
+        }
+        return result;
+
     }
 
     /**
@@ -3314,8 +3334,20 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             String className = changeHandlerElem.getText().trim();
             CmsChangeHandlerConfig entry = new CmsChangeHandlerConfig(name, className, config);
             m_changeHandlerConfigs.add(entry);
-
         }
+
+        String agentsStr = elem.elementTextTrim(FieldSettingElems.Agents.name());
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(agentsStr)) {
+            Set<String> agentTags = new HashSet<>();
+            for (String token : CmsStringUtil.splitAsList(agentsStr, ",")) {
+                token = token.trim();
+                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(token)) {
+                    agentTags.add(token);
+                }
+            }
+            m_agentTags.put(name, Collections.unmodifiableSet(agentTags));
+        }
+
     }
 
     /**
