@@ -8,7 +8,7 @@ apply plugin: 'eclipse'
 
 buildscript {
     dependencies {
-        classpath group: 'com.liferay', name: 'com.liferay.gradle.plugins.tlddoc.builder', version: '2.0.1'
+        classpath group: 'com.liferay', name: 'com.liferay.gradle.plugins.tlddoc.builder', version: '2.0.2'
         classpath("io.github.gradle-nexus.publish-plugin:io.github.gradle-nexus.publish-plugin.gradle.plugin:2.0.0")
     }
     repositories {
@@ -82,15 +82,15 @@ repositories {
     mavenLocal()
     if (project.hasProperty('additional_repositories')){
         additional_repositories.split(';').each{ repo ->
-            maven { url repo }
+            maven { url = repo }
         }
     }
     mavenCentral()
     maven {
-        url 'https://maven.restlet.talend.com'
+        url = 'https://maven.restlet.talend.com'
     }
     maven {
-        url 'https://maven.vaadin.com/vaadin-addons'
+        url = 'https://maven.vaadin.com/vaadin-addons'
     }
 }
 
@@ -294,7 +294,7 @@ jar {
     }
     archiveBaseName = 'opencms-core'
     archiveFileName = 'opencms.jar'
-    group 'OpenCms core JARs'
+    group = 'OpenCms core JARs'
 
     include 'org/opencms/**'
     include 'org/vaadin/risto/**'
@@ -378,7 +378,7 @@ task gwtJar(dependsOn: jar, type: Jar) {
         include '**/xml/content/CmsXmlContentProperty.java'
         include '**/workplace/editors/CmsTinyMceToolbarHelper.java'
     }
-    includeEmptyDirs false
+    includeEmptyDirs = false
     archiveFileName = 'opencms-gwt.jar'
     archiveBaseName = 'opencms-gwt'
     exclude '**/.gitignore'
@@ -388,7 +388,7 @@ task modulesJar(type: Jar) {
     from sourceSets.modules.output
     archiveFileName = 'opencms-modules.jar'
     archiveBaseName = 'opencms-modules'
-    group 'OpenCms core JARs'
+    group = 'OpenCms core JARs'
     exclude '**/.gitignore'
 }
 
@@ -471,7 +471,7 @@ task sourcesJarGwt(type: Jar) {
         include '**/xml/content/CmsXmlContentProperty.java'
         include '**/workplace/editors/CmsTinyMceToolbarHelper.java'
     }
-    includeEmptyDirs false
+    includeEmptyDirs = false
     archiveClassifier = 'sources'
     archiveBaseName = 'opencms-gwt'
 }
@@ -547,7 +547,7 @@ task resourcesJar(type: Jar, dependsOn: [workplaceTheme, opencmsFonts]){
     }
     archiveBaseName = 'opencms-resources'
     archiveFileName = 'opencms-resources.jar'
-    group 'OpenCms core JARs'
+    group = 'OpenCms core JARs'
     allModuleNames.each{ moduleName ->
         from ("${projectDir}/modules/${moduleName}/static"){
             into "OPENCMS"
@@ -686,7 +686,7 @@ task setupJar(dependsOn: jar, type: Jar) {
     from sourceSets.setup.output
     archiveFileName = 'opencms-setup.jar'
     archiveBaseName = 'opencms-setup'
-    group 'OpenCms core JARs'
+    group = 'OpenCms core JARs'
     exclude '**/.gitignore'
 }
 
@@ -727,16 +727,16 @@ task sourcesJarSetup(type: Jar) {
 }
 
 tlddoc {
-    source 'webapp/WEB-INF/opencms.tld'
+    source "${projectDir}/webapp/WEB-INF/opencms.tld"
 }
 
 
 task tlddocZip (type: Zip, dependsOn: tlddoc) {
     archiveFileName = 'tld.zip'
-    from ("${project.docsDir}/tlddoc/") {
+    from (layout.buildDirectory.dir("docs/tlddoc")) {
         include '**/*'
     }
-    destinationDirectory = file("${project.docsDir}")
+    destinationDirectory = layout.buildDirectory.dir("docs")
 }
 
 def preserveLibModules = ''
@@ -791,7 +791,7 @@ allModuleNames.each{ moduleName ->
 
         // TODO: set the module version to match the manifest.xml
         archiveBaseName = moduleName
-        group 'OpenCms module ZIPs'
+        group = 'OpenCms module ZIPs'
         doFirst {
             println '======================================================'
             println "Building ZIP for $moduleName version $moduleVersion"
@@ -820,7 +820,7 @@ allModuleNames.each{ moduleName ->
             from ("$moduleFolder/resources/system/workplace/locales/$workplacelocalization/messages")
             archiveFileName = moduleName+'.jar'
             archiveBaseName = moduleName
-            group 'OpenCms module JARs'
+            group = 'OpenCms module JARs'
             exclude '**/.gitignore'
             doFirst{
                 println '======================================================'
@@ -1128,21 +1128,21 @@ test {
     // We fix max heap size here, since with less heap size tests will fail.
     maxHeapSize = "2000m"
     useJUnit()
-    scanForTestClasses false
+    scanForTestClasses = false
     testClassesDirs = files(sourceSets.test.java.classesDirectory)
     systemProperties['test.data.path'] = "${projectDir}/test/data"
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
     systemProperties['test.project.path'] = "${projectDir}"
     systemProperties['test.build.folder'] =sourceSets.test.output.resourcesDir
     testLogging.showStandardStreams = true
-    ignoreFailures true
+    ignoreFailures = true
     filter {
         includeTestsMatching "org.opencms.test.AllTests"
     }
 }
 
 task testSingle(type: Test, dependsOn: [compileTestJava]) {
-    description "Runs a specified test case set like this: -PtestCaseToRun=org.opencms.main.TestCmsSystemInfo*"
+    description = "Runs a specified test case set like this: -PtestCaseToRun=org.opencms.main.TestCmsSystemInfo*"
     inputs.dir "${projectDir}/test/data"
     inputs.dir "${projectDir}/webapp"
 
@@ -1156,14 +1156,14 @@ task testSingle(type: Test, dependsOn: [compileTestJava]) {
     filter {
         includeTestsMatching testCaseToRun
     }
-    scanForTestClasses false
+    scanForTestClasses = false
     testClassesDirs = files(sourceSets.test.java.classesDirectory)
     systemProperties['test.data.path'] = "${projectDir}/test/data"
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
     systemProperties['test.build.folder'] =sourceSets.test.output.resourcesDir
     maxHeapSize = max_heap_size
     testLogging.showStandardStreams = true
-    ignoreFailures true
+    ignoreFailures = true
 }
 
 task testJar(dependsOn: compileTestJava, type: Jar) {
@@ -1201,13 +1201,13 @@ task testGwt(type: Test, dependsOn: [compileTestGwtJava]) {
     filter {
         includeTestsMatching 'org.opencms.client.test.AllTests'
     }
-    scanForTestClasses false
+    scanForTestClasses = false
     testClassesDirs = files(sourceSets.testGwt.java.classesDirectory)
     systemProperties['gwt.args'] = "-logLevel WARN -setProperty locale=en"
     systemProperties['java.awt.headless'] = "true"
     maxHeapSize = max_heap_size
     testLogging.showStandardStreams = true
-    ignoreFailures true
+    ignoreFailures = true
 }
 
 artifacts {
@@ -1268,8 +1268,8 @@ publishing {
             pom {
                 name = product_name
                 description = product_description
-                packaging 'jar'
-                groupId 'org.opencms'
+                packaging = 'jar'
+                groupId = 'org.opencms'
                 url = 'http://www.opencms.org'
                 scm {
                     url = 'scm:git@github.com:alkacon/opencms-core.git'
@@ -1368,11 +1368,11 @@ publishing {
                     artifact art
                 }
                 pom {
-                    artifactId "opencms-${pub.key}"
+                    artifactId = "opencms-${pub.key}"
                     name = product_name
                     description = product_description
-                    packaging 'jar'
-                    groupId 'org.opencms'
+                    packaging = 'jar'
+                    groupId = 'org.opencms'
                     url = 'http://www.opencms.org'
                     scm {
                         url = 'scm:git@github.com:alkacon/opencms-core.git'
@@ -1505,7 +1505,7 @@ tasks.withType(Javadoc) {
 }
 // all tasks implementing the CopySpec (Copy,Jar,Zip,...) should fail, in case they generate duplicate files
 tasks.withType(CopySpec) {
-    duplicatesStrategy 'fail'
+    duplicatesStrategy = 'fail'
 }
 
 

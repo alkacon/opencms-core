@@ -381,9 +381,8 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
                 }
                 resultLink = CmsLinkManager.getRelativeUri(uriBaseName, resultLink);
             }
-
             // for exported resources, the 'force absolute links' mode shall override any RFS rule
-            if (exportManager.isExportLink(cms, oriUri)) {
+            if (exportManager.isExportLink(cms, vfsName)) {
                 String linkForceAbsoluteExportPrefix = config.getLinkForceAbsoluteExportPrefix(cms);
                 if (linkForceAbsoluteExportPrefix != null) {
                     // prepend or replace the export prefix
