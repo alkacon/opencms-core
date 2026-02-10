@@ -37,10 +37,16 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TRANSLATION_PROGRESS_0 = "GUI_TRANSLATION_PROGRESS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TRANSLATION_PROGRESS_1 = "GUI_TRANSLATION_PROGRESS_1";
 
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TRANSLATION_FEEDBACK_3 = "GUI_TRANSLATION_FEEDBACK_3";
 
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TRANSLATION_FEEDBACK_CONFLICTS_0 = "GUI_TRANSLATION_FEEDBACK_CONFLICTS_0";
 
     /** Name of the used resource bundle. */
@@ -48,6 +54,8 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
+
+    public static final String GUI_TRANSLATION_NOTHING_TRANSLATED_0 = "GUI_TRANSLATION_NOTHING_TRANSLATED_0";
 
     /**
      * Hides the public constructor for this utility class.<p>

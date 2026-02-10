@@ -254,7 +254,12 @@ public class TestCmsAiConnection extends OpenCmsTestCase {
         }
 
         // ensure all values have been translated
-        List<I_CmsXmlContentValue> xmlValues = aiTranslator.getValuesToTranslate(Locale.GERMAN, null);
+
+        List<I_CmsXmlContentValue> xmlValues = CmsTranslationUtil.getValuesToTranslate(
+            cms,
+            xmlContent,
+            Locale.GERMAN,
+            null);
         Set<String> valSet = new HashSet<String>();
         for (I_CmsXmlContentValue xmlVal : xmlValues) {
             valSet.add(xmlVal.getPath());
@@ -314,7 +319,12 @@ public class TestCmsAiConnection extends OpenCmsTestCase {
         }
 
         // ensure all values have been translated
-        List<I_CmsXmlContentValue> xmlValues = aiTranslator.getValuesToTranslate(Locale.GERMAN, null);
+
+        List<I_CmsXmlContentValue> xmlValues = CmsTranslationUtil.getValuesToTranslate(
+            cms,
+            xmlContent,
+            Locale.GERMAN,
+            null);
         Set<String> valSet = new HashSet<String>();
         for (I_CmsXmlContentValue xmlVal : xmlValues) {
             valSet.add(xmlVal.getPath());
@@ -344,7 +354,7 @@ public class TestCmsAiConnection extends OpenCmsTestCase {
         xmlContent = aiTranslator.translateXmlContent(Locale.GERMAN, Locale.FRENCH);
         assertTrue(xmlContent.hasLocale(Locale.FRENCH));
         System.out.println(xmlContent.toString());
-        
+
         xmlContent = aiTranslator.translateXmlContent(Locale.GERMAN, Locale.ITALIAN);
         assertTrue(xmlContent.hasLocale(Locale.ITALIAN));
         System.out.println(xmlContent.toString());

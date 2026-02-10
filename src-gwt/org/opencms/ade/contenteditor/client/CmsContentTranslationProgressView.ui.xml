@@ -23,7 +23,7 @@
 	</ui:style>
 	<g:FlowPanel addStyleNames="{style.root}">
 		<g:FlowPanel addStyleNames="{style.box}">
-			<g:Label ui:field="m_message" addStyleNames="{style.message}"/>
+			<g:HTML ui:field="m_message" addStyleNames="{style.message}"/>
 		</g:FlowPanel>
 	</g:FlowPanel>
 </ui:UiBinder>

@@ -37,6 +37,7 @@ import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import com.google.gwt.core.client.GWT;
@@ -45,7 +46,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 
 /**
@@ -70,7 +71,7 @@ public class CmsContentTranslationProgressView extends Composite {
 
     /** The label used to display the progress. */
     @UiField
-    protected Label m_message;
+    protected HTML m_message;
 
     /** The action to execute after the translation has finished. */
     private Consumer<CmsContentAugmentationDetails> m_action;
@@ -83,6 +84,8 @@ public class CmsContentTranslationProgressView extends Composite {
 
     /** The popup in which the widget is displayed. */
     private CmsPopup m_popup;
+
+    private String m_lastProgress;
 
     /** The content service. */
     private I_CmsContentServiceAsync m_service;
@@ -216,7 +219,11 @@ public class CmsContentTranslationProgressView extends Composite {
                     m_action.accept(result);
                 } else {
                     if (result.getProgress() != null) {
-                        m_message.setText(result.getProgress());
+                        if (!Objects.equals(result.getProgress(), m_lastProgress)) {
+                            m_lastProgress = result.getProgress();
+
+                            m_message.setHTML(result.getProgress());
+                        }
                     }
                     m_timer = new Timer() {
 

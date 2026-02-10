@@ -98,12 +98,11 @@ public class CmsAiContentTranslation implements I_CmsContentTranslator {
                         if (context.isAborted()) {
                             resContext.streamingHandle().cancel();
                         } else {
-                            String msg = Messages.get().getBundle(wpLocale).key(
-                                Messages.GUI_TRANSLATION_PROGRESS_1,
-                                charsReceived.get());
-                            context.progress(msg);
+                            String html = CmsTranslationUtil.getWaitMessage(wpLocale);
+                            context.progress(html);
                         }
                     }
+
                 });
             if (errorRef.get() != null) {
                 throw (Exception)errorRef.get();
@@ -118,7 +117,10 @@ public class CmsAiContentTranslation implements I_CmsContentTranslator {
                         translator.getNumSuccessfulFieldUpdates(),
                         translator.getConflictFields()));
                 context.setNextLocale(targetLocale);
-
+            } else {
+                String nothingTranslated = Messages.get().getBundle(wpLocale).key(
+                    Messages.GUI_TRANSLATION_NOTHING_TRANSLATED_0);
+                context.setHtmlMessage("<p>" + nothingTranslated + "</p>");
             }
         }
 

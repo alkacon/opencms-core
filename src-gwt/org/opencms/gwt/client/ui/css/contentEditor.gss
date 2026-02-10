@@ -1,4 +1,4 @@
-@external oc-editor-reuse-marker;
+@external oc-editor-reuse-marker, oc-translation-message, oc-translation-message-dots;
 
 .contentEditor iframe{
 	height: 100%;
@@ -35,4 +35,45 @@
 	font-weight: bold !important;
 }
 
-	
+    .oc-translation-message {
+        display: flex;
+        align-items: center;
+    }
+
+    
+    .oc-translation-message-dots {
+      display: inline-flex;
+      gap: 8px;
+      margin-right: 10px !important;
+    }
+
+    /* Individual dot */
+    .oc-translation-message-dots span {
+      width: 8px;
+      height: 8px;
+      background: currentColor;
+      border-radius: 50%;
+      opacity: 0;
+      animation: dotPulse 1.5s infinite ease-in-out both;
+    }
+
+    /* Staggered animation */
+    .oc-translation-message-dots span:nth-child(1) { animation-delay: 0s; }
+    .oc-translation-message-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .oc-translation-message-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    /* Keyframes */
+    @keyframes dotPulse {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    }
