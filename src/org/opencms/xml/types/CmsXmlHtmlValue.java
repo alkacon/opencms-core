@@ -201,6 +201,24 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsJsonFo
     }
 
     /**
+     * Gets the raw content of the 'content' element directly, without any macro replacement.
+     *
+     * <p>This is mostly useful for translation applications, where we want to translate the HTML but do not care about links, embedded base64 images, etc.
+     *
+     *
+     * @return the raw content
+     */
+    public String getRawContent() {
+
+        Element data = m_element.element(CmsXmlPage.NODE_CONTENT);
+        if (data != null) {
+            return data.getText();
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#getSchemaDefinition()
      */
     public String getSchemaDefinition() {
@@ -238,6 +256,21 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsJsonFo
     public I_CmsXmlSchemaType newInstance(String name, String minOccurs, String maxOccurs) {
 
         return new CmsXmlHtmlValue(name, minOccurs, maxOccurs);
+    }
+
+    /**
+     * Sets the value of the content element directly, without any macro replacement.
+     *
+     * <p>This is mostly useful for translation applications, where we want to translate the HTML but do not care about links, embedded base64 images, etc. -
+     * if the translated HTML preserves the same macros, they will keep matching the
+     *
+     * @param rawContent the raw content to set
+     */
+    public void setRawContent(String rawContent) {
+
+        Element contentElem = ensureContentElement();
+        contentElem.setText(rawContent);
+        m_stringValue = null;
     }
 
     /**
@@ -311,6 +344,25 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsJsonFo
     }
 
     /**
+     * If this value already has a content element, returns it, otherwise create it and move the text from the current element to the content subelement.
+     * @return
+     */
+    protected Element ensureContentElement() {
+
+        Element data = m_element.element(CmsXmlPage.NODE_CONTENT);
+        if (data == null) {
+            String content = m_element.getText();
+            m_element.clearContent();
+            int index = m_element.getParent().elements(m_element.getQName()).indexOf(m_element);
+            m_element.addAttribute(CmsXmlPage.ATTRIBUTE_NAME, getName() + index);
+            m_element.addElement(CmsXmlPage.NODE_LINKS);
+            m_element.addElement(CmsXmlPage.NODE_CONTENT).addCDATA(content);
+            data = m_element.element(CmsXmlPage.NODE_CONTENT);
+        }
+        return data;
+    }
+
+    /**
      * JTidy sometimes erroneouslsy produces HTML containing 'null' characters (Unicode code point 0), which are
      * invalid in an XML document. Until we find a way to prevent JTidy doing that, we remove the null characters
      * from the HTML, and log a warning.<p>
@@ -342,16 +394,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsJsonFo
      */
     private String createStringValue(CmsObject cms, I_CmsXmlDocument document) {
 
-        Element data = m_element.element(CmsXmlPage.NODE_CONTENT);
-        if (data == null) {
-            String content = m_element.getText();
-            m_element.clearContent();
-            int index = m_element.getParent().elements(m_element.getQName()).indexOf(m_element);
-            m_element.addAttribute(CmsXmlPage.ATTRIBUTE_NAME, getName() + index);
-            m_element.addElement(CmsXmlPage.NODE_LINKS);
-            m_element.addElement(CmsXmlPage.NODE_CONTENT).addCDATA(content);
-            data = m_element.element(CmsXmlPage.NODE_CONTENT);
-        }
+        Element data = ensureContentElement();
         Attribute enabled = m_element.attribute(CmsXmlPage.ATTRIBUTE_ENABLED);
 
         String content = "";
