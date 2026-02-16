@@ -86,6 +86,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The "autosetnavigation" attribute. */
     public static final String A_AUTOSETNAVIGATION = "autosetnavigation";
 
+    /** The content-translation element. */
     public static final String N_CONTENT_TRANSLATION = "content-translation";
 
     /** The "autosettitle" attribute. */
