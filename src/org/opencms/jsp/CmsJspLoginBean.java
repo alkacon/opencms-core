@@ -378,6 +378,10 @@ public class CmsJspLoginBean extends CmsJspActionElement {
 
         String loggedInUserName = getRequestContext().getCurrentUser().getName();
         HttpSession session = getRequest().getSession(false);
+        String redirectUri = OpenCms.getAuthorizationHandler().getLogoutRedirectUri(
+            getCmsObject(),
+            getRequest(),
+            getFormLink());
         if (session != null) {
             session.invalidate();
             /* we need this because a new session might be created after this method,
@@ -394,8 +398,8 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                     getRequestContext().getRemoteAddress()));
         }
         CmsUserLog.logLogout(getCmsObject());
-        getResponse().sendRedirect(
-            OpenCms.getAuthorizationHandler().getLogoutRedirectUri(getCmsObject(), getRequest(), getFormLink()));
+        getResponse().sendRedirect(redirectUri);
+
     }
 
     /**
