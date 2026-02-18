@@ -56,6 +56,12 @@ public class CmsTestCustomLogin implements I_CmsCustomLogin {
     }
 
     @Override
+    public Mode getMode() {
+
+        return Mode.add;
+    }
+
+    @Override
     public String getRedirect(String orgUnit) {
 
         return orgUnit;

@@ -33,6 +33,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.I_CmsCustomLogin;
+import org.opencms.security.I_CmsCustomLogin.Mode;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
@@ -55,6 +56,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.v7.ui.Label;
@@ -68,14 +70,14 @@ import com.vaadin.v7.ui.VerticalLayout;
 @DesignRoot
 public class CmsLoginForm extends VerticalLayout {
 
-    /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsLoginForm.class);
-
     /** The private PC type constant. */
     public static final String PC_TYPE_PRIVATE = "private";
 
     /** The public PC type constant. */
     public static final String PC_TYPE_PUBLIC = "public";
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsLoginForm.class);
 
     /** Version id. */
     private static final long serialVersionUID = 1L;
@@ -83,23 +85,31 @@ public class CmsLoginForm extends VerticalLayout {
     /** The login controller. */
     protected CmsLoginController m_controller;
 
+    /** Label showing an optional configurable message.*/
+    private Label m_additionalMessage;
+
     /** The label showing the copyright information. */
     private Label m_copyright;
+
+    private CssLayout m_customControls;
 
     /** The error label. */
     private Label m_error;
 
-    /** Button for opening the "forgot password" dialog. */
-    private Button m_forgotPasswordButton;
-
     /**Fake window. */
     private CmsFakeWindow m_fakeWindow;
 
-    /** Label showing an optional configurable message.*/
-    private Label m_additionalMessage;
+    /** Button for opening the "forgot password" dialog. */
+    private Button m_forgotPasswordButton;
 
     /** Login button. */
     private Button m_loginButton;
+
+    private FormLayout m_mainForm;
+
+    private Label m_mainFormLabel;
+
+    private boolean m_multipleOus;
 
     /** Button to show / hide advanced options. */
     private Button m_optionsButton;
@@ -113,20 +123,16 @@ public class CmsLoginForm extends VerticalLayout {
     /** Widget for entering the password. */
     private CmsLoginPasswordField m_passwordField;
 
-    private CssLayout m_customControls;
+    /** The security field, which allows the user to choose between a private or public PC. */
+    private OptionGroup m_securityField;
+
+    private List<CmsOrganizationalUnit> m_selectableOus;
 
     /** The password visibility toggle. */
     private Button m_showPasswordButton;
 
-    /** The security field, which allows the user to choose between a private or public PC. */
-    private OptionGroup m_securityField;
-
     /** Widget for entering the user name.  */
     private TextField m_userField;
-
-    private boolean m_multipleOus;
-
-    private List<CmsOrganizationalUnit> m_selectableOus;
 
     /**
      * Creates a new instance.<p>
@@ -260,6 +266,16 @@ public class CmsLoginForm extends VerticalLayout {
                     LOG.error("getRedirect() returned null for " + customLogin.getClass().getName());
                 }
             });
+            if (customLogin.getMode() == Mode.replace) {
+                m_mainForm.setVisible(false);
+                m_mainFormLabel.setVisible(false);
+                m_securityField.setVisible(false);
+                m_loginButton.setVisible(false);
+                m_optionsButton.setVisible(false);
+                separator.setVisible(false);
+
+            }
+
         }
     }
 

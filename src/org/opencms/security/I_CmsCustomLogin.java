@@ -38,6 +38,25 @@ import java.util.Locale;
 public interface I_CmsCustomLogin extends I_CmsConfigurationParameterHandler {
 
     /**
+     * Mode enum indicating how the custom login should be displayed.
+     */
+    public enum Mode {
+
+        /** Add the custom login to the login dialog. */
+        add,
+
+        /** Completely replace the normal login dialog widgets with custom login.*/
+        replace;
+    }
+
+    /**
+     * Indicates how the custom login should be displayed.
+     *
+     * @return the display mode
+     */
+    public Mode getMode();
+
+    /**
      * Gets the page to redirect to after the user has clicked on the custom button.
      *
      * @param orgUnit the organizational unit that has been selected, or null if none was selected

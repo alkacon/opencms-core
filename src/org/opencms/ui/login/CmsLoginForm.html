@@ -16,8 +16,8 @@
 		  			<vaadin7-vertical-layout margin spacing>
 		  				<vaadin7-label _id="m_additionalMessage" style-name="o-login-additional" visible="false"></vaadin7-label> 
 		  				<vaadin7-option-group _id="m_securityField"  visible="%(showSecure)"></vaadin7-option-group>
-		  				<vaadin7-label>%(key.GUI_LOGIN_MESSAGE_0)</vaadin7-label> 
-		  				<v-form-layout>
+		  				<vaadin7-label _id="m_mainFormLabel">%(key.GUI_LOGIN_MESSAGE_0)</vaadin7-label> 
+		  				<v-form-layout _id="m_mainForm">
                             <w-cms-login-user-field _id="m_userField" caption="%(key.GUI_LOGIN_USERNAME_0)" :expand></w-cms-login-user-field>
                             <v-horizontal-layout style-name="o-login-passwordgroup" caption="%(key.GUI_LOGIN_PASSWORD_0)" width="100%">
 					    	  <w-cms-login-password-field _id="m_passwordField"  :expand></w-cms-login-password-field>
