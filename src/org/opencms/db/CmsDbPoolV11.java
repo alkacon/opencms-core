@@ -219,15 +219,31 @@ public final class CmsDbPoolV11 {
         if (driver != null) {
             hikariProps.put("driverClassName", driver);
         }
-        if (user != null) {
+
+        // If username/password are not empty, we process them with the credentials resolver.
+        // Otherwise, try to get them from the secret store.
+        // At this point, the secret store has not been initialized properly with a CmsObject,
+        // so VFS based secret stores won't work for that.
+
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(user)) {
             user = OpenCms.getCredentialsResolver().resolveCredential(I_CmsCredentialsResolver.DB_USER, user);
             hikariProps.put("username", user);
+        } else {
+            user = OpenCms.getSecretStore().getSecret(KEY_DATABASE_POOL + "." + key + "." + KEY_USERNAME);
+            if (user != null) {
+                hikariProps.put("username", user);
+            }
         }
-        if (password != null) {
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(password)) {
             password = OpenCms.getCredentialsResolver().resolveCredential(
                 I_CmsCredentialsResolver.DB_PASSWORD,
                 password);
             hikariProps.put("password", password);
+        } else {
+            password = OpenCms.getSecretStore().getSecret(KEY_DATABASE_POOL + "." + key + "." + KEY_PASSWORD);
+            if (password != null) {
+                hikariProps.put("password", password);
+            }
         }
 
         hikariProps.put("maximumPoolSize", "30");
