@@ -58,6 +58,7 @@ import org.opencms.security.CmsRoleManager;
 import org.opencms.security.I_CmsAuthorizationHandler;
 import org.opencms.security.I_CmsCredentialsResolver;
 import org.opencms.security.I_CmsPasswordHandler;
+import org.opencms.security.I_CmsSecretStore;
 import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.security.twofactor.CmsTwoFactorAuthenticationHandler;
 import org.opencms.site.CmsSiteManagerImpl;
@@ -547,6 +548,16 @@ public final class OpenCms {
     public static CmsSearchManager getSearchManager() {
 
         return OpenCmsCore.getInstance().getSearchManager();
+    }
+
+    /**
+     * Get the secret store.
+     *
+     * @return the secret store
+     */
+    public static I_CmsSecretStore getSecretStore() {
+
+        return OpenCmsCore.getInstance().getSecretStore();
     }
 
     /**

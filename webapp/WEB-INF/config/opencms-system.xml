@@ -120,10 +120,11 @@
             </ade-cache>
         </ade>
         <subscriptionmanager enabled="true" poolname="default" maxvisited="100" />
+        <secret-store />
         <shell-server enabled="false" port="1101" />
         <userdata autoload="true">
             <userdata-domain class="org.opencms.jsp.userdata.CmsUserDataHeader" />
             <userdata-domain class="org.opencms.jsp.userdata.CmsDefaultUserDataDomain" />
-        </userdata> 
+        </userdata>
     </system>
 </opencms>

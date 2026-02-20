@@ -159,11 +159,17 @@
             </ade-cache>
         </ade>
         <subscriptionmanager enabled="false" poolname="default" maxvisited="100" />
+        <secret-store class="org.opencms.configuration.CmsDummySecretStore">
+        	<param name="key1">value1</param>
+        	<param name="key2">value2</param>
+        </secret-store>
+        
         <detail-page-handler class="org.opencms.ade.detailpage.CmsDefaultDetailPageHandler">
             <param name="testKey1">testValue1</param>
             <param name="testKey2">testValue2</param>
             <param name="testKey3">testValue3</param>
         </detail-page-handler>
+        
         <userdata>
             <userdata-domain class="org.opencms.jsp.userdata.CmsUserDataHeader" />
             <userdata-domain class="org.opencms.jsp.userdata.CmsDefaultUserDataDomain" />

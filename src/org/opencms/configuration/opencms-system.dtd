@@ -44,6 +44,7 @@
 	workflow?,
 	user-session-mode?,
 	credentials-resolver?,
+	secret-store?,
 	publish-list-remove-mode?,
 	detail-page-handler?,
 	restrict-detail-contents?,
@@ -653,6 +654,7 @@
 <!ELEMENT custom-login (param*) >
 <!ATTLIST custom-login class CDATA #REQUIRED >
 
-
+<!ELEMENT secret-store (param*) >
+<!ATTLIST secret-store class CDATA #IMPLIED >
 
 

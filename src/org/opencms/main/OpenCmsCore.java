@@ -108,6 +108,7 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsAuthorizationHandler;
 import org.opencms.security.I_CmsCredentialsResolver;
 import org.opencms.security.I_CmsPasswordHandler;
+import org.opencms.security.I_CmsSecretStore;
 import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.security.twofactor.CmsTwoFactorAuthenticationHandler;
 import org.opencms.site.CmsSite;
@@ -389,6 +390,9 @@ public final class OpenCmsCore {
     private Future<CmsFolderSizeTracker> m_onlineFolderSizeTrackerFuture;
 
     private List<Runnable> m_shutdownActions = new CopyOnWriteArrayList<Runnable>();
+
+    /** The configured secret store. */
+    private I_CmsSecretStore m_secretStore;
 
     /**
      * Protected constructor that will initialize the singleton OpenCms instance
@@ -926,6 +930,16 @@ public final class OpenCmsCore {
     protected CmsSearchManager getSearchManager() {
 
         return m_searchManager;
+    }
+
+    /**
+     * Gets the secret store.
+     *
+     * @return the secret store
+     */
+    protected I_CmsSecretStore getSecretStore() {
+
+        return m_secretStore;
     }
 
     /**
@@ -1723,6 +1737,8 @@ public final class OpenCmsCore {
         // Credentials resolver - needs to be set before the driver manager is initialized
         m_credentialsResolver = systemConfiguration.getCredentialsResolver();
 
+        m_secretStore = systemConfiguration.getSecretStore();
+
         // init the OpenCms security manager
         m_securityManager = CmsSecurityManager.newInstance(
             m_configurationManager,
@@ -1881,6 +1897,8 @@ public final class OpenCmsCore {
             m_twoFactorAuthenticationHandler = new CmsTwoFactorAuthenticationHandler(
                 OpenCms.initCmsObject(adminCms),
                 systemConfiguration.getTwoFactorAuthenticationConfig());
+
+            m_secretStore.initialize(initCmsObject(adminCms));
 
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);

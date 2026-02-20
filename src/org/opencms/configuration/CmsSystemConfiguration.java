@@ -57,10 +57,12 @@ import org.opencms.rmi.CmsRemoteShellConstants;
 import org.opencms.security.CmsDefaultAuthorizationHandler;
 import org.opencms.security.CmsDefaultCredentialsResolver;
 import org.opencms.security.CmsDefaultValidationHandler;
+import org.opencms.security.CmsNullSecretStore;
 import org.opencms.security.I_CmsAuthorizationHandler;
 import org.opencms.security.I_CmsCredentialsResolver;
 import org.opencms.security.I_CmsCustomLogin;
 import org.opencms.security.I_CmsPasswordHandler;
+import org.opencms.security.I_CmsSecretStore;
 import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.security.twofactor.CmsTwoFactorAuthenticationConfig;
 import org.opencms.util.CmsStringUtil;
@@ -210,17 +212,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The "errorPage" attribute. */
     public static final String A_ERROR_PAGE = "errorPage";
 
-    /** The "id" attribute. */
-    public static final String A_ID = "id";
-
     /** The "exclusive" attribute. */
     public static final String A_EXCLUSIVE = "exclusive";
 
-    /** The "mailfrom" attribute. */
-    public static final String A_MAILFROM = "mailfrom";
+    /** The "id" attribute. */
+    public static final String A_ID = "id";
 
     /** The attribute name for the localization mode. */
     public static final String A_LOCALIZATION_MODE = "localizationMode";
+
+    /** The "mailfrom" attribute. */
+    public static final String A_MAILFROM = "mailfrom";
 
     /** The "maxvisited" attribute. */
     public static final String A_MAXVISITED = "maxvisited";
@@ -257,6 +259,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the authorization handler. */
     public static final String N_AUTHORIZATIONHANDLER = "authorizationhandler";
 
+    /** Node name for auto history cleanup setting. */
+    public static final String N_AUTO_CLEANUP_HISTORY_ENTRIES = "auto-cleanup-history-entries";
+
     /** The node name for the avgcachebytes node. */
     public static final String N_AVGCACHEBYTES = "avgcachebytes";
 
@@ -280,6 +285,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The duration after which responsible resource owners will be notified about out-dated content. */
     public static final String N_CONTENT_NOTIFICATION = "content-notification";
+
+    /** Node name for the credentials resolver setting. */
+    public static final String N_CREDENTIALS_RESOLVER = "credentials-resolver";
+
+    /** The node name for the custom login configuration. */
+    public static final String N_CUSTOM_LOGIN = "custom-login";
 
     /** The node name for the defaultcontentencoding node. */
     public static final String N_DEFAULT_CONTENT_ENCODING = "defaultcontentencoding";
@@ -386,6 +397,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the "mail host" node. */
     public static final String N_MAILHOST = "mailhost";
 
+    /** Node name for the user max inactive time. */
+    public static final String N_MAX_INACTIVE_TIME = "maxInactiveTime";
+
     /** The node name for the login manager bad attempt count. */
     public static final String N_MAXBADATTEMPTS = "maxBadAttempts";
 
@@ -418,9 +432,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the password encoding. */
     public static final String N_PASSWORDENCODING = "encoding";
-
-    /** The node name for the custom login configuration. */
-    public static final String N_CUSTOM_LOGIN = "custom-login";
 
     /** The node name for the password handler. */
     public static final String N_PASSWORDHANDLER = "passwordhandler";
@@ -458,6 +469,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the request handlers. */
     public static final String N_REQUESTHANDLERS = "requesthandlers";
 
+    /** Node name for the 'require org unit' option. */
+    public static final String N_REQUIRE_ORGUNIT = "requireOrgUnit";
+
     /** The node name for the resource init classes. */
     public static final String N_RESOURCEINIT = "resourceinit";
 
@@ -469,6 +483,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** the result cache node. */
     public static final String N_RESULTCACHE = "resultcache";
+
+    /** Node name for the element reuse mode. */
+    public static final String N_REUSE_ELEMENTS = "reuse-elements";
 
     /** The node name for the runtime info. */
     public static final String N_RUNTIMECLASSES = "runtimeclasses";
@@ -482,11 +499,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the sax-impl-system-properties node. */
     public static final String N_SAX_IMPL_SYSTEM_PROPERTIES = "sax-impl-system-properties";
 
+    /** Node name for the user secret store. */
+    public static final String N_SECRET_STORE = "secret-store";
+
     /** The node name for the servlet container settings. */
     public static final String N_SERVLETCONTAINERSETTINGS = "servletcontainer-settings";
 
     /** The node name for the session-storageprovider node. */
     public static final String N_SESSION_STORAGEPROVIDER = "session-storageprovider";
+
+    /** Node name for the shell server options. */
+    public static final String N_SHELL_SERVER = "shell-server";
 
     /** The sitemap node name. */
     public static final String N_SITEMAP = "sitemap";
@@ -554,6 +577,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** Node name for the authorization token lifetime. */
     public static final String N_TOKEN_LIFETIME = "tokenLifetime";
 
+    /** Node name for two-factor auth configuration. */
+    public static final String N_TWO_FACTOR_AUTHENTICATION = "two-factor-authentication";
+
     /** The node name for the user-admin node. */
     public static final String N_USER_ADMIN = "user-admin";
 
@@ -568,6 +594,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name for the user-guest node. */
     public static final String N_USER_GUEST = "user-guest";
+
+    /** Node name for the user session mode. */
+    public static final String N_USER_SESSION_MODE = "user-session-mode";
 
     /** The node name for the validation handler. */
     public static final String N_VALIDATIONHANDLER = "validationhandler";
@@ -598,30 +627,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSystemConfiguration.class);
-
-    /** Node name for auto history cleanup setting. */
-    private static final String N_AUTO_CLEANUP_HISTORY_ENTRIES = "auto-cleanup-history-entries";
-
-    /** Node name for the credentials resolver setting. */
-    private static final String N_CREDENTIALS_RESOLVER = "credentials-resolver";
-
-    /** Node name for the user max inactive time. */
-    private static final String N_MAX_INACTIVE_TIME = "maxInactiveTime";
-
-    /** Node name for the 'require org unit' option. */
-    private static final String N_REQUIRE_ORGUNIT = "requireOrgUnit";
-
-    /** Node name for the element reuse mode. */
-    private static final String N_REUSE_ELEMENTS = "reuse-elements";
-
-    /** Node name for the shell server options. */
-    private static final String N_SHELL_SERVER = "shell-server";
-
-    /** Node name for two-factor auth configuration. */
-    private static final String N_TWO_FACTOR_AUTHENTICATION = "two-factor-authentication";
-
-    /** Node name for the user session mode. */
-    private static final String N_USER_SESSION_MODE = "user-session-mode";
 
     /** The ADE cache settings. */
     private CmsADECacheSettings m_adeCacheSettings;
@@ -730,6 +735,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** Flag indicating if the SAX parser implementation classes should be stored in system properties
      *  to improve the unmarshalling performance. */
     private boolean m_saxImplProperties;
+
+    /** The secret store. */
+    private I_CmsSecretStore m_secretStore = new CmsNullSecretStore();
 
     /** The configured session storage provider class name. */
     private String m_sessionStorageProvider;
@@ -1403,6 +1411,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         String credentialsResolverPath = "*/" + N_SYSTEM + "/" + N_CREDENTIALS_RESOLVER;
         digester.addCallMethod(credentialsResolverPath, "setCredentialsResolver", 0);
 
+        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_SECRET_STORE, CmsNullSecretStore.class.getName(), A_CLASS);
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_SECRET_STORE,
+            I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD);
+        digester.addSetNext("*/" + N_SYSTEM + "/" + N_SECRET_STORE, "setSecretStore");
+
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_RESTRICT_DETAIL_CONTENTS, "setRestrictDetailContents", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_RESTRICT_DETAIL_CONTENTS, 0);
 
@@ -1866,6 +1880,19 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             systemElement.addElement(N_CREDENTIALS_RESOLVER).setText(m_credentialsResolverClass);
         }
 
+        if (m_secretStore != null) {
+            Element secretStoreElem = resourceinitElement.addElement(N_RESOURCEINITHANDLER);
+            if (!(m_secretStore instanceof CmsNullSecretStore)) {
+                secretStoreElem.addAttribute(A_CLASS, secretStoreElem.getClass().getName());
+                CmsParameterConfiguration config = m_secretStore.getConfiguration();
+                if (config != null) {
+                    for (String key : config.keySet()) {
+                        secretStoreElem.addElement(N_PARAM).addAttribute(A_NAME, key).addText(config.get(key));
+                    }
+                }
+            }
+        }
+
         if (m_publishListRemoveMode != null) {
             systemElement.addElement(N_PUBLISH_LIST_REMOVE_MODE).addAttribute(A_MODE, m_publishListRemoveMode);
         }
@@ -2292,6 +2319,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
+     * Gets the secret store.
+     *
+     * @return the configured secret store
+     */
+    public I_CmsSecretStore getSecretStore() {
+
+        return m_secretStore;
+    }
+
+    /**
      * Returns an instance of the configured session storage provider.<p>
      *
      * @return an instance of the configured session storage provider
@@ -2606,7 +2643,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Sets the custom login.
-     * 
+     *
      * @param customLogin the custom login
      */
     public void setCustomLogin(I_CmsCustomLogin customLogin) {
@@ -2908,6 +2945,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             }
         }
 
+    }
+
+    /**
+     * Sets the secret store from the configuration.
+     *
+     * @param secretStore the secret store
+     */
+    public void setSecretStore(I_CmsSecretStore secretStore) {
+
+        m_secretStore = secretStore;
     }
 
     /**
