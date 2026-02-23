@@ -83,11 +83,13 @@ public class CmsAiContentTranslation implements I_CmsContentTranslator {
                     @Override
                     public void onCompleteResponse(ChatResponse completeResponse) {
 
+                        LOG.debug("Response received: " + completeResponse.aiMessage().text());
                     }
 
                     @Override
                     public void onError(Throwable error) {
 
+                        LOG.error(error.getLocalizedMessage(), error);
                         errorRef.set(error);
                     }
 
