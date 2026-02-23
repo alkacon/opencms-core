@@ -177,7 +177,7 @@ public class CmsAiContentTranslation implements I_CmsContentTranslator {
     private CmsParameterConfiguration m_config = new CmsParameterConfiguration();
 
     /** The parsed provider configuration. */
-    private CmsAiProviderConfig m_providerConfig;
+    private volatile CmsAiProviderConfig m_providerConfig;
 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
@@ -213,12 +213,16 @@ public class CmsAiContentTranslation implements I_CmsContentTranslator {
     @Override
     public void initConfiguration() throws CmsConfigurationException {
 
-        String configPath = m_config.getString(PARAM_CONFIG_FILE, null);
-        try {
-            m_providerConfig = CmsAiProviderConfig.loadFromJsonFile(configPath);
-        } catch (Exception e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
+    }
+
+    /**
+     * @see org.opencms.ade.contenteditor.I_CmsContentTranslator#initialize(org.opencms.file.CmsObject)
+     */
+    @Override
+    public void initialize(CmsObject cms) {
+
+        m_providerConfig = CmsAiProviderConfig.loadFromSecretStore();
+
     }
 
     /**

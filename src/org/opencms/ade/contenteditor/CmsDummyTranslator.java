@@ -76,6 +76,11 @@ public class CmsDummyTranslator implements I_CmsContentTranslator {
 
     }
 
+    @Override
+    public void initialize(CmsObject cms) {
+
+    }
+
     /**
      * @see org.opencms.ade.contenteditor.I_CmsContentTranslator#isEnabled(org.opencms.file.CmsObject, org.opencms.ade.configuration.CmsADEConfigData, org.opencms.file.CmsFile)
      */

@@ -1834,6 +1834,10 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             flushMessageCache();
             getUploadRestriction().setAdminCmsObject(cms);
 
+            if (getContentTranslation() != null) {
+                getContentTranslation().initialize(cms);
+            }
+
             // register this object as event listener
             OpenCms.addCmsEventListener(this, new int[] {I_CmsEventListener.EVENT_CLEAR_CACHES});
         } catch (CmsException e) {

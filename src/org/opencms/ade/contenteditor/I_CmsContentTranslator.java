@@ -50,6 +50,15 @@ public interface I_CmsContentTranslator extends I_CmsConfigurationParameterHandl
     public I_CmsXmlContentAugmentation getContentAugmentation();
 
     /**
+     * Initializes the content translator with an admin CmsObject.
+     *
+     * <p>If the translator is already initialized, this should do nothing.
+     *
+     * @param cms an admin CmsObject
+     */
+    public void initialize(CmsObject cms);
+
+    /**
      * Checks if the translation should be enabled for the current context.
      *
      * @param cms the CMS context

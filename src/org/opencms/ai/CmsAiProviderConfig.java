@@ -27,7 +27,14 @@
 
 package org.opencms.ai;
 
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.security.I_CmsSecretStore;
+
 import java.io.File;
+import java.util.function.Function;
+
+import org.apache.commons.logging.Log;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -39,6 +46,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @since 21.0.0
  */
 public class CmsAiProviderConfig {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsAiProviderConfig.class);
+
+    public static final String SECRET_PREFIX = "contenteditor.translation.ai";
 
     /** The API key used to access the provider. */
     private String m_apiKey;
@@ -78,6 +90,34 @@ public class CmsAiProviderConfig {
 
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(new File(path), CmsAiProviderConfig.class);
+    }
+
+    /**
+     * Loads the configuration from the secret store.
+     *
+     * <p>Returns null if one or more of the credentials could not be read from the secret store.
+     *
+     * @return the loaded configuration
+     * @throws Exception if something goes wrong
+     */
+    public static CmsAiProviderConfig loadFromSecretStore() {
+
+        I_CmsSecretStore secrets = OpenCms.getSecretStore();
+        Function<String, String> getSecret = key -> {
+            String result = secrets.getSecret(key);
+            if (result == null) {
+                LOG.error("Could not read credentials for AI translation:" + key);
+            }
+            return result;
+        };
+        String apiKey = getSecret.apply(SECRET_PREFIX + ".apiKey");
+        String providerUrl = getSecret.apply(SECRET_PREFIX + ".providerUrl");
+        String modelName = getSecret.apply(SECRET_PREFIX + ".modelName");
+        if ((apiKey == null) || (providerUrl == null) || (modelName == null)) {
+            return null;
+        }
+        return new CmsAiProviderConfig(apiKey, providerUrl, modelName);
+
     }
 
     /**
