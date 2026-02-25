@@ -1881,9 +1881,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         }
 
         if (m_secretStore != null) {
-            Element secretStoreElem = resourceinitElement.addElement(N_RESOURCEINITHANDLER);
+            Element secretStoreElem = systemElement.addElement(N_SECRET_STORE);
             if (!(m_secretStore instanceof CmsNullSecretStore)) {
-                secretStoreElem.addAttribute(A_CLASS, secretStoreElem.getClass().getName());
+                secretStoreElem.addAttribute(A_CLASS, m_secretStore.getClass().getName());
                 CmsParameterConfiguration config = m_secretStore.getConfiguration();
                 if (config != null) {
                     for (String key : config.keySet()) {
