@@ -30,28 +30,104 @@ package org.opencms.security;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
+import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.apache.commons.logging.Log;
 
 /**
  * RFS secret store which just loads secrets from a .properties file, whose path is configured via the 'path' parameter.
  *
  * <p>This class already initializes itself in the initConfiguration() method, which means it can return secrets before the initialize()
  * method (which does nothing) is even called.
+ *
+ * <p>When OpenCms is running, this class will also track modifications in the configured secrets file and reload it.
  */
 public class CmsRfsSecretStore implements I_CmsSecretStore {
+
+    /**
+     * Tracks modifications of the secrets file.
+     */
+    class WatchThread extends Thread {
+
+        public WatchThread() {
+
+            super("CmsRfsSecretStore.WatchThread");
+            // needs to shut down when OpenCms shuts down
+            setDaemon(true);
+        }
+
+        public void run() {
+
+            try (WatchService watch = FileSystems.getDefault().newWatchService()) {
+                m_path.getParent().register(
+                    watch,
+                    StandardWatchEventKinds.ENTRY_CREATE,
+                    StandardWatchEventKinds.ENTRY_DELETE,
+                    StandardWatchEventKinds.ENTRY_MODIFY);
+                while (true) {
+                    try {
+                        WatchKey watchKey = watch.take();
+                        try {
+                            List<WatchEvent<?>> events = watchKey.pollEvents();
+                            for (WatchEvent<?> event : events) {
+                                if (event.kind() == StandardWatchEventKinds.OVERFLOW) {
+                                    continue;
+                                }
+                                WatchEvent<Path> ev = (WatchEvent<Path>)event;
+                                if (ev.context().getFileName().equals(m_path.getFileName())) {
+                                    m_needsReload.set(true);
+                                }
+                            }
+                        } finally {
+                            if (!watchKey.reset()) {
+                                LOG.error(
+                                    "Watch key for " + m_path.getParent() + " has become invalid, stop tracking it");
+                                return;
+                            }
+                        }
+                    } catch (InterruptedException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+
+            } catch (IOException | UnsupportedOperationException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+    }
 
     /** The parameter used to configure the path of the properties file. */
     public static final String PARAM_PATH = "path";
 
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsRfsSecretStore.class);
+
     /** The configuration. */
     private CmsParameterConfiguration m_config = new CmsParameterConfiguration();
 
+    /** True when the secrets file has changed and not been reloaded. */
+    private AtomicBoolean m_needsReload = new AtomicBoolean(false);
+
+    /** The path of the secrets file. */
+    private Path m_path;
+
     /** The properties. */
-    private Properties m_properties;
+    private volatile Properties m_properties;
 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
@@ -80,17 +156,21 @@ public class CmsRfsSecretStore implements I_CmsSecretStore {
         return m_properties.getProperty(key);
     }
 
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
+     */
     @Override
     public void initConfiguration() throws CmsConfigurationException {
 
-        String path = m_config.get(PARAM_PATH);
+        m_path = Path.of(m_config.get(PARAM_PATH));
         Properties props = new Properties();
-        try (InputStream stream = new FileInputStream(path)) {
+        m_properties = props;
+        try (InputStream stream = new FileInputStream(m_path.toString())) {
             props.load(stream);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        m_properties = props;
+
     }
 
     /**
@@ -99,7 +179,27 @@ public class CmsRfsSecretStore implements I_CmsSecretStore {
     @Override
     public void initialize(CmsObject cmsObject) {
 
-        // does nothing
+        WatchThread thread = new WatchThread();
+        thread.start();
+        OpenCms.getExecutor().scheduleWithFixedDelay(this::checkReload, 1000, 1000, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Reloads the properties file, if necessary.
+     */
+    private void checkReload() {
+
+        if (m_needsReload.compareAndSet(true, false)) {
+            LOG.info("Reloading secrets file...");
+            Properties props = new Properties();
+            try (InputStream stream = new FileInputStream(m_path.toString())) {
+                props.load(stream);
+                m_properties = props;
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+
+        }
     }
 
 }
