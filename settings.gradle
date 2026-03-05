@@ -1,5 +1,18 @@
 def external_directories = startParameter.projectProperties['external_directories'];
 if (null != external_directories) {
+    pluginManagement {
+        repositories {
+            mavenLocal()
+            mavenCentral()
+        }
+        resolutionStrategy {
+            eachPlugin {
+                if (requested.id.id.startsWith('org.opencms.modules')) {
+                    useModule('org.opencms:opencms-gradle-plugin:3.+')
+                }
+            }
+        }
+    }
     include external_directories
     project(':' + external_directories).name='extmodules'
     gradle.ext.withcore='true';
