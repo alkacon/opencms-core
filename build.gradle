@@ -966,6 +966,7 @@ task updater (dependsOn: [
         // without this declaration, Gradle 8 complains about implicit dependencies
         dependsOn {
             ':extmodules:bindist'
+            ':extmodules:copyProjectProps'
         }
     }
 
