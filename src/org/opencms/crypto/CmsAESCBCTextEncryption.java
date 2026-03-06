@@ -32,9 +32,11 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsLog;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.logging.Log;
@@ -48,7 +50,7 @@ import com.google.common.io.BaseEncoding;
 /**
  * Default text encryption class using AES, where the encryption key is generated from a string passed in as a parameter.
  */
-public class CmsAESTextEncryption implements I_CmsTextEncryption {
+public class CmsAESCBCTextEncryption implements I_CmsTextEncryption {
 
     /** The name of the algorithm. */
     public static final String AES = "AES";
@@ -60,10 +62,10 @@ public class CmsAESTextEncryption implements I_CmsTextEncryption {
     public static final String PARAM_SECRET = "secret";
 
     /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsAESTextEncryption.class);
+    private static final Log LOG = CmsLog.getLog(CmsAESCBCTextEncryption.class);
 
-    /** The default cipher - what you'd effectively get with Cipher.getInstance("AES"). */
-    protected String m_aesVariant = "AES/ECB/PKCS5Padding";
+    /** The cipher name. */
+    protected String m_aesVariant = "AES/CBC/PKCS5Padding";
 
     /** The parameter configuration. */
     private CmsParameterConfiguration m_config = new CmsParameterConfiguration();
@@ -77,7 +79,7 @@ public class CmsAESTextEncryption implements I_CmsTextEncryption {
     /**
      * Default constructor (used when instantiated automatically during OpenCms configuration).
      */
-    public CmsAESTextEncryption() {}
+    public CmsAESCBCTextEncryption() {}
 
     /**
      * Constructor used to manually, conveniently create a new encryption object with a given secret.
@@ -86,7 +88,7 @@ public class CmsAESTextEncryption implements I_CmsTextEncryption {
      *
      * @param secret the secret used to generate the key
      */
-    public CmsAESTextEncryption(String secret) {
+    public CmsAESCBCTextEncryption(String secret) {
 
         m_key = generateAESKey(secret);
     }
@@ -124,8 +126,12 @@ public class CmsAESTextEncryption implements I_CmsTextEncryption {
         byte[] encryptedBytes = BASE64.decode(input);
         try {
             Cipher cipher = Cipher.getInstance(m_aesVariant);
-            cipher.init(Cipher.DECRYPT_MODE, m_key);
-            byte[] decData = cipher.doFinal(encryptedBytes);
+
+            byte[] ciphertext = Arrays.copyOfRange(encryptedBytes, 16, encryptedBytes.length);
+            byte[] iv = Arrays.copyOfRange(encryptedBytes, 0, 16);
+            IvParameterSpec ivSpec = new IvParameterSpec(iv);
+            cipher.init(Cipher.DECRYPT_MODE, m_key, ivSpec);
+            byte[] decData = cipher.doFinal(ciphertext);
             String result = new String(decData, StandardCharsets.UTF_8);
             return result;
         } catch (Exception e) {
@@ -142,7 +148,10 @@ public class CmsAESTextEncryption implements I_CmsTextEncryption {
             Cipher cipher = Cipher.getInstance(m_aesVariant);
             cipher.init(Cipher.ENCRYPT_MODE, m_key);
             byte[] encData = cipher.doFinal(input.getBytes(StandardCharsets.UTF_8));
-            String lit = BASE64.encode(encData);
+            byte[] l = new byte[encData.length + 16];
+            System.arraycopy(cipher.getIV(), 0, l, 0, 16);
+            System.arraycopy(encData, 0, l, 16, encData.length);
+            String lit = BASE64.encode(l);
             return lit;
         } catch (Exception e) {
             throw new CmsEncryptionException(e.getLocalizedMessage(), e);
