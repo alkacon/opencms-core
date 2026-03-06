@@ -117,7 +117,13 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_GALLERY_OPTIMIZE_NO_UNUSED_0 = "GUI_GALLERY_OPTIMIZE_NO_UNUSED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_ONE_UNUSED_0 = "GUI_GALLERY_OPTIMIZE_ONE_UNUSED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_OPTIMIZE_NO_UNUSED_DOWNLOADS_0 = "GUI_GALLERY_OPTIMIZE_NO_UNUSED_DOWNLOADS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_OPTIMIZE_ONE_UNUSED_DOWNLOADS_0 = "GUI_GALLERY_OPTIMIZE_ONE_UNUSED_DOWNLOADS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_OPTIMIZE_NO_NOCOPYRIGHT_0 = "GUI_GALLERY_OPTIMIZE_NO_NOCOPYRIGHT_0";
