@@ -70,8 +70,12 @@ public class CmsAiContentTranslation implements I_CmsContentTranslator {
             Locale sourceLocale = context.getLocale();
             String targetLocaleParam = context.getParameter(CmsGwtConstants.PARAM_TARGET_LOCALE);
             Locale targetLocale = CmsLocaleManager.getLocale(targetLocaleParam);
+            CmsAiProviderConfig config = CmsAiProviderConfig.loadFromSecretStore();
+            if (config == null) {
+                return;
+            }
 
-            CmsAiTranslator translator = new CmsAiTranslator(cms, m_providerConfig, content);
+            CmsAiTranslator translator = new CmsAiTranslator(cms, config, content);
             AtomicInteger charsReceived = new AtomicInteger();
             AtomicReference<Throwable> errorRef = new AtomicReference<Throwable>();
 
@@ -178,9 +182,6 @@ public class CmsAiContentTranslation implements I_CmsContentTranslator {
     /** The configuration parameters. */
     private CmsParameterConfiguration m_config = new CmsParameterConfiguration();
 
-    /** The parsed provider configuration. */
-    private volatile CmsAiProviderConfig m_providerConfig;
-
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
@@ -223,8 +224,6 @@ public class CmsAiContentTranslation implements I_CmsContentTranslator {
     @Override
     public void initialize(CmsObject cms) {
 
-        m_providerConfig = CmsAiProviderConfig.loadFromSecretStore();
-
     }
 
     /**
@@ -233,7 +232,7 @@ public class CmsAiContentTranslation implements I_CmsContentTranslator {
     @Override
     public boolean isEnabled(CmsObject cms, CmsADEConfigData config, CmsFile file) {
 
-        return m_providerConfig != null;
+        return null != CmsAiProviderConfig.loadFromSecretStore();
     }
 
 }
