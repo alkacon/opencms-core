@@ -29,6 +29,8 @@ package org.opencms.security;
 
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsParameterConfiguration;
+import org.opencms.crypto.CmsAESCBCTextEncryption;
+import org.opencms.crypto.I_CmsTextEncryption;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -114,6 +116,9 @@ public class CmsRfsSecretStore implements I_CmsSecretStore {
     /** The parameter used to configure the path of the properties file. */
     public static final String PARAM_PATH = "path";
 
+    /** The parameter for the encryption password (use no encryption if not set) .*/
+    public static final String PARAM_PASSWORD = "password";
+
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsRfsSecretStore.class);
 
@@ -128,6 +133,9 @@ public class CmsRfsSecretStore implements I_CmsSecretStore {
 
     /** The properties. */
     private volatile Properties m_properties;
+
+    /** The encryption used to decrypt the property values (may be null). */
+    private I_CmsTextEncryption m_encryption;
 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
@@ -163,10 +171,15 @@ public class CmsRfsSecretStore implements I_CmsSecretStore {
     public void initConfiguration() throws CmsConfigurationException {
 
         m_path = Path.of(m_config.get(PARAM_PATH));
+        m_properties = new Properties();
         Properties props = new Properties();
-        m_properties = props;
+        String password = m_config.get(PARAM_PASSWORD);
+        if (password != null) {
+            m_encryption = new CmsAESCBCTextEncryption(password);
+        }
         try (InputStream stream = new FileInputStream(m_path.toString())) {
             props.load(stream);
+            m_properties = decrypt(props);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -194,11 +207,36 @@ public class CmsRfsSecretStore implements I_CmsSecretStore {
             Properties props = new Properties();
             try (InputStream stream = new FileInputStream(m_path.toString())) {
                 props.load(stream);
-                m_properties = props;
+                m_properties = decrypt(props);
             } catch (Exception e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
 
+        }
+    }
+
+    /**
+     * Decrypts the properties if necessary.
+     *
+     * @param originalProps the original properties
+     * @return the decrypted properties, or the original ones if no decryption is needed
+     */
+    private Properties decrypt(Properties originalProps) {
+
+        if (m_encryption != null) {
+            Properties result = new Properties();
+            for (String propName : originalProps.stringPropertyNames()) {
+                try {
+                    String encryptedValue = originalProps.getProperty(propName);
+                    String decryptedValue = m_encryption.decrypt(encryptedValue);
+                    result.setProperty(propName, decryptedValue);
+                } catch (Exception e) {
+                    LOG.error("Can't decrypt encrypted property " + propName, e);
+                }
+            }
+            return result;
+        } else {
+            return originalProps;
         }
     }
 
