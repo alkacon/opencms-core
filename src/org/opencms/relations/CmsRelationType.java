@@ -108,8 +108,9 @@ public final class CmsRelationType implements Serializable {
     /** Constant for the <code>&lt;a href=''&gt;</code> tag in a html page/element. */
     public static final CmsRelationType HYPERLINK = new CmsRelationType(1, "A", false, true, CopyBehavior.copy);
 
-    /** Constant for the index content relation, telling the content of a linked resource should be merged into
-     * the content of the linking XML.
+    /**
+     * Constant for the index content relation, telling that a change of a linked resource should trigger re-indexing
+     * of the content of the linking XML.
      */
     public static final CmsRelationType INDEX_CONTENT = new CmsRelationType(
         13,

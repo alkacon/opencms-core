@@ -138,7 +138,7 @@
 
     <xsd:simpleType name="OpenCmsDefaultAppinfoSearchsettingSearchContentType">
         <xsd:restriction base="xsd:string">
-            <xsd:pattern value="true|TRUE|false|FALSE|content|CONTENT" />
+            <xsd:pattern value="true|TRUE|false|FALSE|content|CONTENT|update|UPDATE" />
         </xsd:restriction>
     </xsd:simpleType>
 

@@ -28,6 +28,8 @@
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.xml.I_CmsXmlDocument;
 
 import java.util.Locale;
@@ -53,6 +55,10 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
         public static final CmsSearchContentConfig CONTENT = new CmsSearchContentConfig(
             SearchContentType.CONTENT,
             null);
+        /** Configuration for triggering re-indexing if the resource linked by the value to the content fields changes. */
+        public static final CmsSearchContentConfig UPDATE = new CmsSearchContentConfig(
+            SearchContentType.UPDATE,
+            null);
         /** Configuration for adding the value unchanged to the content fields. */
         public static final CmsSearchContentConfig TRUE = new CmsSearchContentConfig(SearchContentType.TRUE, null);
         /** The search content type. */
@@ -69,6 +75,16 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
 
             m_type = type;
             m_adjustmentClass = adjustmentClass;
+        }
+
+        /**
+         * Returns a flag, indicating if the the re-index relation should be added.
+         * @param config the search content config
+         * @return true, iff the re-indexing relation should be added.
+         */
+        public static boolean addReIndexRelation(CmsSearchContentConfig config) {
+
+            return null == config ? false : SearchContentType.addReIndexRelation(config.getSearchContentType());
         }
 
         /**
@@ -103,6 +119,8 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
                     : new CmsSearchContentConfig(SearchContentType.TRUE, adjustmentClass);
                 case CONTENT:
                     return CONTENT;
+                case UPDATE:
+                    return UPDATE;
                 default:
                     return null;
             }
@@ -123,6 +141,21 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
 
             return m_type;
         }
+
+        /**
+         * Checks if the re-index relation can be added for resources of the provided type.
+         * @param res the resource to add the relation to.
+         * @return true, iff the relation can be added.
+         */
+        public boolean isResourceSuitableForReIndexRelation(CmsResource res) {
+
+            switch (getSearchContentType()) {
+                case CONTENT:
+                    return CmsResourceTypeXmlContent.isXmlContent(res);
+                default:
+                    return true;
+            }
+        }
     }
 
     /**
@@ -135,7 +168,28 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
         /** Merge the value of the field into the content field. */
         TRUE,
         /** Merge the extracted content of the resource linked by the element into the content field. */
-        CONTENT;
+        CONTENT,
+        /** Do not merge the value of the field into the content field, but re-index if the resource linked in this field changed. */
+        UPDATE;
+
+        /**
+         * Returns a flag, indicating if the the re-index relation should be added.
+         * @param type the search content type
+         * @return true, iff the re-indexing relation should be added.
+         */
+        public static boolean addReIndexRelation(SearchContentType type) {
+
+            if (null == type) {
+                return false;
+            }
+            switch (type) {
+                case CONTENT:
+                case UPDATE:
+                    return true;
+                default:
+                    return false;
+            }
+        }
 
         /**
          * Converts the String into a SearchContentType. Returns <code>null</code> if conversion is not possible.
@@ -154,11 +208,12 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
                     return TRUE;
                 case "content":
                     return CONTENT;
+                case "update":
+                    return UPDATE;
                 default:
                     return null;
             }
         }
-
     }
 
     /**
