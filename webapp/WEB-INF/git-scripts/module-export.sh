@@ -125,17 +125,7 @@ setOptions() {
     done
 }
 
-getExportedModule() {
-    local file
-    for file in "${module}.zip"; do
-        if [[ -e "$file" ]]; then
-            echo "$file"
-            return
-        fi
-    done
-}
-
-testGitRepository(){
+testGitRepository() {
     # test git repository
     echoVerbose
     echoVerbose "Testing git repository and adjusting user information"
@@ -163,7 +153,7 @@ testGitRepository(){
     cd "$__pwd"
 }
 
-testModuleSourcePath(){
+testModuleSourcePath() {
     __pwd=$(pwd)
     cd "$moduleSourcePath"
     if [[ $? != 0 ]]; then
@@ -174,7 +164,7 @@ testModuleSourcePath(){
     cd "$__pwd"
 }
 
-testModuleTargetPath(){
+testModuleTargetPath() {
     __pwd=$(pwd)
     cd "$MODULE_TARGET_PATH"
     if [[ $? != 0 ]]; then
@@ -349,13 +339,19 @@ if [[ "$copyAndUnzip" == 1 ]]; then
     if [ ! -n "${OPT_VERBOSE}" ]; then
         unzipOptions="-qq"
     fi
+    cd "$moduleSourcePath"
+    moduleExportFileCache=$(ls)
     for module in $modulesToExport; do
         echoVerbose
         echo "* Exporting: ${cyan}${module}${normal}"
         echoVerbose
         cd "$moduleSourcePath"
-        fileName=$(getExportedModule)
+        fileName=$( echo $( printf '%s\n' "$moduleExportFileCache" | grep -F -x -m1 -- "${module}.zip" ) )
         if [[ ! -z "$fileName" ]]; then
+            if ! unzip -tqq "${fileName}" > /dev/null 2>&1; then
+                echo "${yellow}${bold}* WARNING:${normal}${yellow} Skipped module $module - \"${moduleSourcePath}/${fileName}\" is not a valid zip archive!${normal}"
+                continue
+            fi
             targetModule=${moduleMappings[$module]}
             if [ -z "$targetModule" ] ; then
                 targetModule=$module
