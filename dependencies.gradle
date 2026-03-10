@@ -1,3 +1,15 @@
+// Workaround to have the latest JPedal JAR available without the Nexus repository
+def jpedalJar = file("$buildDir/external-libs/jpedal-lgpl-4.92-p13.jar")
+tasks.register('downloadJPedal') {
+    outputs.file(jpedalJar)
+    doLast {
+        jpedalJar.parentFile.mkdirs()
+        new URL("https://github.com/Lonzak/JPedal/raw/refs/heads/master/dist/jpedal_lgpl-4.92-p13.jar").withInputStream { i ->
+            jpedalJar.withOutputStream { it << i }
+        }
+    }
+}
+
 dependencies {
 
     // internal source set dependencies
@@ -203,7 +215,7 @@ dependencies {
     distribution group: 'org.hibernate', name: 'jtidy', version: 'r8-20060801'
     distribution group: 'org.htmlparser', name: 'htmlparser', version: '2.1'
     distribution group: 'org.htmlparser', name: 'htmllexer', version: '2.1'
-    distribution group: 'org.jpedal.jpedal-lgpl', name: 'jpedal-lgpl', version: '4.92b23'
+    distribution files(jpedalJar) { builtBy 'downloadJPedal' }
     distribution group: 'org.jsoup', name: 'jsoup', version: '1.11.2'
     distribution group: 'org.jvnet.mimepull', name: 'mimepull', version: '1.9.7'
     distribution group: 'org.locationtech.spatial4j', name: 'spatial4j', version: '0.6'
