@@ -38,7 +38,7 @@ version = vprops['version.number']
 ext.ocmsVersion = version
 
 repositories {
-    mavenLocal()
+    mavenCentral()
     if (project.hasProperty('additional_repositories')){
         additional_repositories.split(';').each{ repo ->
             maven { url repo }
@@ -47,6 +47,9 @@ repositories {
     jcenter()
     maven {
         url "http://maven.vaadin.com/vaadin-addons"
+    }
+    maven {
+        url "https://maven.restlet.talend.com/"
     }
 }
 
