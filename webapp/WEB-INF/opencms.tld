@@ -2911,7 +2911,7 @@
                 <required>false</required>
                 <rtexprvalue>false</rtexprvalue>
                 <type>java.lang.String</type>
-            </attribute>
+        </attribute>
         <attribute>
             <description><![CDATA[
                 Instead of a configuration file, the JSON config can be directly given as String.
@@ -2920,6 +2920,16 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                Flag, indicating if the automatic filter for search_exclude:"false" should be omitted.
+                Use with care and ensure to establish your own filter.
+            ]]></description>
+            <name>ignoreSearchExclude</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Boolean</type>
         </attribute>
         <attribute>
             <description><![CDATA[

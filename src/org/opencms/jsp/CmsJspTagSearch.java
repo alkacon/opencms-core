@@ -118,6 +118,9 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
     /** The "fileFormat" tag attribute converted to type FileFormat. */
     private FileFormat m_fileFormat;
 
+    /** Flag, indicating that the search exclude filter should not be added. */
+    private boolean m_ignoreSearchExclude;
+
     /** Search controller keeping all the config and state from the search. */
     private I_CmsSearchControllerMain m_searchController;
 
@@ -257,6 +260,8 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
         m_index = null;
         m_controller = null;
         m_addContentInfoForEntries = null;
+        m_ignoreSearchExclude = false;
+
         super.release();
     }
 
@@ -304,6 +309,14 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
         if (fileFormat.toUpperCase().equals(FileFormat.JSON.toString())) {
             m_fileFormat = FileFormat.JSON;
         }
+    }
+
+    /** Setter for the "ignoreSearchExclude".
+     * @param ignoreSearchExclude The "ignoreSearchExclude".
+     */
+    public void setIgnoreSearchExclude(final Boolean ignoreSearchExclude) {
+
+        m_ignoreSearchExclude = ignoreSearchExclude == null ? false : ignoreSearchExclude.booleanValue();
     }
 
     /**
@@ -441,7 +454,7 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
                 query.clone(), // use a clone of the query, since the search function manipulates the query (removes highlighting parts), but we want to keep the original one.
                 true,
                 null,
-                false,
+                m_ignoreSearchExclude,
                 isEditMode ? CmsResourceFilter.IGNORE_EXPIRATION : null,
                 m_searchController.getCommon().getConfig().getMaxReturnedResults());
             return new CmsSearchResultWrapper(m_searchController, solrResultList, query, m_cms, null);
