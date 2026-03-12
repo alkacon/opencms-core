@@ -48,6 +48,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.page.CmsXmlPage;
@@ -124,7 +125,9 @@ public class CmsImportVersion3 extends A_CmsImport {
             helper.openFile();
             m_importResource = helper.getFolder();
             m_importZip = helper.getZipFile();
-            m_docXml = CmsXmlUtils.unmarshalHelper(helper.getFileBytes(CmsImportExportManager.EXPORT_MANIFEST), null);
+            m_docXml = CmsXmlUtils.unmarshalHelper(
+                helper.getFileBytes(CmsImportExportManager.EXPORT_MANIFEST),
+                new CmsXmlEntityResolver(null));
             // first import the user information
             if (OpenCms.getRoleManager().hasRole(m_cms, CmsRole.ACCOUNT_MANAGER)) {
                 importGroups();

@@ -50,6 +50,7 @@ import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 
@@ -140,7 +141,9 @@ public class CmsImportVersion5 extends A_CmsImport {
             helper.openFile();
             m_importResource = helper.getFolder();
             m_importZip = helper.getZipFile();
-            m_docXml = CmsXmlUtils.unmarshalHelper(helper.getFileBytes(CmsImportExportManager.EXPORT_MANIFEST), null);
+            m_docXml = CmsXmlUtils.unmarshalHelper(
+                helper.getFileBytes(CmsImportExportManager.EXPORT_MANIFEST),
+                new CmsXmlEntityResolver(null));
             // first import the user information
             if (OpenCms.getRoleManager().hasRole(m_cms, CmsRole.ACCOUNT_MANAGER)) {
                 importGroups();
@@ -703,15 +706,17 @@ public class CmsImportVersion5 extends A_CmsImport {
 
                                     String acflags = getChildElementTextValue(currentEntry, A_CmsImport.N_FLAGS);
 
-                                    String allowed = ((Element)currentEntry.selectNodes("./"
-                                        + A_CmsImport.N_ACCESSCONTROL_PERMISSIONSET
-                                        + "/"
-                                        + A_CmsImport.N_ACCESSCONTROL_ALLOWEDPERMISSIONS).get(0)).getTextTrim();
+                                    String allowed = ((Element)currentEntry.selectNodes(
+                                        "./"
+                                            + A_CmsImport.N_ACCESSCONTROL_PERMISSIONSET
+                                            + "/"
+                                            + A_CmsImport.N_ACCESSCONTROL_ALLOWEDPERMISSIONS).get(0)).getTextTrim();
 
-                                    String denied = ((Element)currentEntry.selectNodes("./"
-                                        + A_CmsImport.N_ACCESSCONTROL_PERMISSIONSET
-                                        + "/"
-                                        + A_CmsImport.N_ACCESSCONTROL_DENIEDPERMISSIONS).get(0)).getTextTrim();
+                                    String denied = ((Element)currentEntry.selectNodes(
+                                        "./"
+                                            + A_CmsImport.N_ACCESSCONTROL_PERMISSIONSET
+                                            + "/"
+                                            + A_CmsImport.N_ACCESSCONTROL_DENIEDPERMISSIONS).get(0)).getTextTrim();
 
                                     // add the entry to the list
                                     aceList.add(

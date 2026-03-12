@@ -30,6 +30,7 @@ package org.opencms.importexport;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.page.CmsXmlPage;
@@ -76,7 +77,7 @@ public final class CmsXmlPageConverter {
 
         CmsXmlPage xmlPage = null;
 
-        Document page = CmsXmlUtils.unmarshalHelper(content, null);
+        Document page = CmsXmlUtils.unmarshalHelper(content, new CmsXmlEntityResolver(null));
 
         Element xmltemplate = page.getRootElement();
         if ((xmltemplate == null) || !"XMLTEMPLATE".equals(xmltemplate.getName())) {
