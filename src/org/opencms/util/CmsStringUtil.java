@@ -51,6 +51,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -1719,7 +1720,7 @@ public final class CmsStringUtil {
                     if (ch == 0) {
                         nextEntry = true;
                         state = S_KEY;
-                    } else  {
+                    } else {
                         if (valueBuffer != null) {
                             valueBuffer.append(ch);
                         }
@@ -1739,7 +1740,7 @@ public final class CmsStringUtil {
                     value = value.replaceFirst("\\s+$", "");
                 } else {
                     // we just have a key, so we trim it on the right as well to get the same result as splitAsMap
-                    value ="";
+                    value = "";
                     key = key.replaceFirst("\\s+$", "");
                 }
                 if (key.length() > 0) {
@@ -1931,6 +1932,54 @@ public final class CmsStringUtil {
             }
             result.append(unicode);
         }
+        return result.toString();
+    }
+
+    /**
+     * Transforms the values of a .properties formatted string while preserving
+     * comments, empty lines.
+     *
+     * <p>Does not support multi-line values or escape characters that would be valid in .properties files.
+     *
+     * @param properties the raw properties string.
+     * @param valueFunc  the function to apply to each property value.
+     * @return the transformed properties string.
+     */
+    public static String transformProperties(String properties, Function<String, String> valueFunc) {
+
+        if (properties == null) {
+            return null;
+        }
+
+        StringBuilder result = new StringBuilder();
+        String[] lines = properties.split("\n");
+        Pattern propPattern = Pattern.compile("^\\s*[^\\s=:]+?\\s*[=:]\\s*(.*)$");
+
+        for (String line : lines) {
+            if (line.endsWith("\\")) {
+                LOG.warn("multiline values not supported");
+                continue;
+            }
+            String trimmed = line.trim();
+            if (trimmed.isEmpty() || trimmed.startsWith("#") || trimmed.startsWith("!") || line.endsWith("\\")) {
+                result.append(line);
+                result.append("\n");
+                continue;
+            }
+
+            Matcher matcher = propPattern.matcher(line);
+            if (matcher.find()) {
+                String replaced = line.substring(0, matcher.start(1))
+                    + valueFunc.apply(matcher.group(1))
+                    + line.substring(matcher.end(1));
+                result.append(replaced);
+                result.append("\n");
+            } else {
+                result.append(line);
+                result.append("\n");
+            }
+        }
+
         return result.toString();
     }
 

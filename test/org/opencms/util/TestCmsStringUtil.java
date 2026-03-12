@@ -411,7 +411,8 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
      * Test for the splitAsMap() method.
      */
     public void testSplitAsMap() throws Exception {
-        String config ="\n"
+
+        String config = "\n"
             + "        A:Label for A|\n"
             + "        B:Label for B|\n"
             + "        C:Label for C|\n"
@@ -528,12 +529,12 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
         assertEquals("c", listResult.get(3));
     }
 
-
     /**
      * Test for the splitOptions() method.
      */
     public void testSplitOptions() throws Exception {
-        String config ="\n"
+
+        String config = "\n"
             + "        A:Label for A|\n"
             + "        B:Label for B|\n"
             + "        C:Label for C \\\\|\n"
@@ -788,6 +789,22 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
         result = "REPLACED!/delim fake at startREPLACED!/not a delim/REPLACED!REPLACED!/delim fake at endREPLACED!";
         test = CmsStringUtil.substitute(content, "/delim/", "REPLACED!");
         assertEquals(test, result);
+    }
+
+    public void testTransformProperties() {
+
+        String nl = "\n";
+        String input = "# comment 1" + nl + " foo = bar" + nl + nl + "baz=qux" + nl + "#comment 2" + nl;
+        String expected = "# comment 1" + nl + " foo = (bar)" + nl + nl + "baz=(qux)" + nl + "#comment 2" + nl;
+        assertEquals(expected, CmsStringUtil.transformProperties(input, s -> "(" + s + ")"));
+        input = "url = http://foo.invalid?q=bar\n";
+        expected = "url = (http://foo.invalid?q=bar)\n";
+        assertEquals(expected, CmsStringUtil.transformProperties(input, s -> "(" + s + ")"));
+
+        input = "key = foo bar baz \n";
+        expected = "key = (foo bar baz )\n";
+        assertEquals(expected, CmsStringUtil.transformProperties(input, s -> "(" + s + ")"));
+
     }
 
     /**
