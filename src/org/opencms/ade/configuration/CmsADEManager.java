@@ -76,6 +76,7 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -883,6 +884,40 @@ public class CmsADEManager {
 
         return getCacheState(online).getParentFolderType(rootPath);
 
+    }
+
+    /**
+     * Gets the root paths to use for secret lookup in the current project and based on the given root path, ordered from most deeply nested to least deeply nested.
+     *
+     * <p>These consist of all subsite paths, up to and including the site root, even if the site root does not have a .content/.config file.
+     * <p>If the given root path is not part of a site, the list of all containing subsite roots is returned.
+     *
+     * @param cms the current CMS context
+     * @param rootPath the root path for which to get the secret lookup paths
+     * @return
+     */
+    public List<String> getPathsForSecretLookup(CmsObject cms, String rootPath) {
+
+        CmsADEConfigCacheState state = getCacheState(cms.getRequestContext().getCurrentProject().isOnlineProject());
+        Set<String> siteConfigPaths = state.getSiteConfigurationPaths(); // has trailing slashes
+        String currentPath = rootPath;
+        currentPath = CmsFileUtil.addTrailingSeparator(currentPath);
+        String siteRoot = OpenCms.getSiteManager().getSiteRoot(rootPath);
+        if (siteRoot != null) {
+            siteRoot = CmsFileUtil.addTrailingSeparator(siteRoot);
+        }
+        List<String> result = new ArrayList<>();
+        while (currentPath != null) {
+            boolean isSiteRoot = currentPath.equals(siteRoot);
+            if (isSiteRoot || siteConfigPaths.contains(currentPath)) {
+                result.add(CmsFileUtil.removeTrailingSeparator(currentPath));
+            }
+            if (isSiteRoot) {
+                break;
+            }
+            currentPath = CmsResource.getParentFolder(currentPath); //  has trailing slash
+        }
+        return result;
     }
 
     /**

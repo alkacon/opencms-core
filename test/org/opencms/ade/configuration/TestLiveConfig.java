@@ -300,9 +300,11 @@ public class TestLiveConfig extends OpenCmsTestCase {
         String rootPath = "/sites/bar/.content/blogentries/be_00001.xml";
         CmsResource res = rootCms().readResource(rootPath);
         String link = OpenCms.getLinkManager().getOnlineLink(cms, rootPath);
-        assertEquals(null, CmsLinkManager.getLinkSubsite(cms , "https://www.dummy.invalid/foo/bar/baz"));
+        assertEquals(null, CmsLinkManager.getLinkSubsite(cms, "https://www.dummy.invalid/foo/bar/baz"));
         assertEquals("/sites/foo/", CmsLinkManager.getLinkSubsite(cms, link));
-        assertEquals("/sites/bar/", CmsLinkManager.getLinkSubsite(cms, OpenCms.getLinkManager().getOnlineLink(cms, "/sites/bar/")));
+        assertEquals(
+            "/sites/bar/",
+            CmsLinkManager.getLinkSubsite(cms, OpenCms.getLinkManager().getOnlineLink(cms, "/sites/bar/")));
     }
 
     /**
@@ -958,6 +960,14 @@ public class TestLiveConfig extends OpenCmsTestCase {
             "/shared",
             CmsFileUtil.removeTrailingSeparator(OpenCms.getADEManager().getSubSiteRoot(cms, "/shared")));
 
+    }
+
+    public void testSiteConfigPathsSlashes() {
+
+        Set<String> paths = OpenCms.getADEManager().getCacheState(false).getSiteConfigurationPaths();
+        for (String path : paths) {
+            assertTrue("must end with slash: " + path, path.endsWith("/"));
+        }
     }
 
     /**

@@ -2052,6 +2052,22 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Looks up a path dependent secret in the secret store for the current sitemap config path.
+     *
+     *  <p>This is done as follows:
+     *  <p>For the root path of each subsitemap we are in, in ascending order, the key (prefix + &quot;.&quot; + path) is looked up.
+     *  The first match will be returned. As a special case, the key for the site root is always looked up, even if it's not configured as
+     *  a sitemap.
+     *
+     * @param prefix the key prefix
+     * @return the secret (or null, if nothing was found)
+     */
+    public String getPathDependentSecret(String prefix) {
+
+        return getSitemapConfigInternal().getPathDependentSecret(prefix);
+    }
+
+    /**
      * Gets the set of plugin group names.
      *
      * @return the set of plugin group names

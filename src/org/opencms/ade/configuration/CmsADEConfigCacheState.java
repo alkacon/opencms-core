@@ -109,7 +109,7 @@ public class CmsADEConfigCacheState {
 
     /** Site plugins. */
     private Map<CmsUUID, CmsSitePlugin> m_sitePlugins;
-    
+
     /** Cache for sitemap attribute overview maps. */
     private ConcurrentHashMap<String, Map<String, String>> m_attributeValuesByPathCache = new ConcurrentHashMap<>();
 
@@ -413,7 +413,7 @@ public class CmsADEConfigCacheState {
      */
     public Set<String> getSiteConfigurationPaths() {
 
-        return m_siteConfigurationsByPath.keySet();
+        return Collections.unmodifiableSet(m_siteConfigurationsByPath.keySet());
     }
 
     /**
