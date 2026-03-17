@@ -59,7 +59,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.request.SolrQuery;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -149,9 +149,9 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         CmsSearchResource res = results.get(0);
         assertEquals("/sites/default/extractLinked/el1.xml", res.getRootPath());
 
-        ////////////////
+        ///////////////
         // FIELD TEST //
-        ////////////////
+        ///////////////
         String contentFieldValue = res.getField("content_en");
         assertNotNull(contentFieldValue);
         assertTrue(
@@ -175,9 +175,9 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
             CmsRequestUtil.createParameterMap("q=path:\"/sites/default/xmlcontent/article_0001.html\""));
         CmsSolrResultList results = index.search(getCmsObject(), squery);
 
-        /////////////////
+        ////////////////
         // RESULT TEST //
-        /////////////////
+        ////////////////
 
         // Test the result count
         AllTests.printResults(getCmsObject(), results, false);
@@ -187,9 +187,9 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         CmsSearchResource res = results.get(0);
         assertEquals("/sites/default/xmlcontent/article_0001.html", res.getRootPath());
 
-        ////////////////
+        ///////////////
         // FIELD TEST //
-        ////////////////
+        ///////////////
 
         // Test multiple language field
         String fieldValue = res.getField("ahtml_en");
@@ -224,9 +224,9 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         fieldValue = res.getField("ahomepage_en");
         assertTrue(fieldValue.contains("/sites/default/index.html"));
 
-        //////////////////
+        /////////////////
         // MAPPING TEST //
-        //////////////////
+        /////////////////
 
         fieldValue = res.getField("Description_de");
         assertEquals(fieldValue, "My Special OpenCms Solr Description");

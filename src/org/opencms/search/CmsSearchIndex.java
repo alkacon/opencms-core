@@ -572,7 +572,7 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
 
         try {
             IndexSearcher searcher = getSearcher();
-            return new CmsLuceneDocument(searcher.doc(docId));
+            return new CmsLuceneDocument(searcher.storedFields().document(docId));
         } catch (IOException e) {
             // ignore, return null and assume document was not found
         }
@@ -617,7 +617,7 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
             try {
                 TopDocs hits = searcher.search(new TermQuery(resultTerm), 1);
                 if (hits.scoreDocs.length > 0) {
-                    result = searcher.doc(hits.scoreDocs[0].doc);
+                    result = searcher.storedFields().document(hits.scoreDocs[0].doc);
                 }
             } catch (IOException e) {
                 // ignore, return null and assume document was not found
@@ -1044,9 +1044,9 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
             timeResultProcessing = -System.currentTimeMillis();
 
             if (hits != null) {
-                long hitCount = hits.totalHits.value > hits.scoreDocs.length
+                long hitCount = hits.totalHits.value() > hits.scoreDocs.length
                 ? hits.scoreDocs.length
-                : hits.totalHits.value;
+                : hits.totalHits.value();
                 int page = params.getSearchPage();
                 long start = -1, end = -1;
                 if ((params.getMatchesPerPage() > 0) && (page > 0) && (hitCount > 0)) {
@@ -1068,7 +1068,7 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
                 long visibleHitCount = hitCount;
                 for (int i = 0, cnt = 0; (i < hitCount) && (cnt < end); i++) {
                     try {
-                        Document doc = searcher.doc(hits.scoreDocs[i].doc, returnFields);
+                        Document doc = searcher.storedFields().document(hits.scoreDocs[i].doc, returnFields);
                         I_CmsSearchDocument searchDoc = new CmsLuceneDocument(doc);
                         searchDoc.setScore(hits.scoreDocs[i].score);
                         if ((isInTimeRange(doc, params)) && (hasReadPermission(searchCms, searchDoc))) {
@@ -1077,7 +1077,9 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
                                 // do not use the resource to obtain the raw content, read it from the lucene document!
                                 String excerpt = null;
                                 if (isCreatingExcerpt() && (fieldsQuery != null)) {
-                                    Document exDoc = searcher.doc(hits.scoreDocs[i].doc, excerptFields);
+                                    Document exDoc = searcher.storedFields().document(
+                                        hits.scoreDocs[i].doc,
+                                        excerptFields);
                                     I_CmsTermHighlighter highlighter = OpenCms.getSearchManager().getHighlighter();
                                     excerpt = highlighter.getExcerpt(exDoc, this, params, fieldsQuery, getAnalyzer());
                                 }
@@ -1117,7 +1119,7 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
         if (LOG.isDebugEnabled()) {
             timeTotal += System.currentTimeMillis();
             Object[] logParams = new Object[] {
-                Long.valueOf(hits == null ? 0 : hits.totalHits.value),
+                Long.valueOf(hits == null ? 0 : hits.totalHits.value()),
                 Long.valueOf(timeTotal),
                 Long.valueOf(timeLucene),
                 Long.valueOf(timeResultProcessing)};

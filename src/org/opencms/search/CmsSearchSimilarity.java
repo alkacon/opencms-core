@@ -56,12 +56,14 @@ public class CmsSearchSimilarity extends Similarity {
     private static final double LOG10 = Math.log(10.0);
 
     /** Similarity implementation the CmsSearchSimilarity is based on. */
-    private final BM25Similarity m_bm25Sim = new BM25Similarity();
+    private static final BM25Similarity m_bm25Sim = new BM25Similarity();
 
     /**
      * Creates a new instance of the OpenCms search similarity.<p>
      */
     public CmsSearchSimilarity() {
+
+        super(m_bm25Sim.getDiscountOverlaps());
 
     }
 
@@ -82,18 +84,6 @@ public class CmsSearchSimilarity extends Similarity {
         } else {
             return SmallFloat.floatToByte315(lengthNorm(state, numTerms));
         }
-    }
-
-    /**
-     * Returns true iff overlap tokens are discounted from the document's length.
-     *
-     * @return true iff overlap tokens are discounted from the document's length.
-     *
-     * @see #setDiscountOverlaps(boolean)
-     */
-    public boolean getDiscountOverlaps() {
-
-        return m_bm25Sim.getDiscountOverlaps();
     }
 
     /**

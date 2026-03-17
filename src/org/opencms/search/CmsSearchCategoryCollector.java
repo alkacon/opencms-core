@@ -152,7 +152,7 @@ public class CmsSearchCategoryCollector extends SimpleCollector {
         String category = null;
         int rebasedId = m_docBase + id;
         try {
-            Document doc = m_searcher.doc(rebasedId);
+            Document doc = m_searcher.storedFields().document(rebasedId);
             category = doc.get(CmsSearchField.FIELD_CATEGORY);
         } catch (IOException e) {
             // category will be null

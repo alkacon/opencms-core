@@ -201,7 +201,6 @@ public class CmsSolrConfiguration {
      * @return the Solr configuration
      *
      */
-    @SuppressWarnings("deprecation")
     public SolrConfig getSolrConfig() {
 
         if (m_solrConfig == null) {
@@ -209,11 +208,7 @@ public class CmsSolrConfiguration {
                 Path instanceDir = Paths.get(getHome(), DEFAULT_CONFIGSET_FOLDER);
                 @SuppressWarnings("resource")
                 SolrResourceLoader loader = new SolrResourceLoader(instanceDir);
-                m_solrConfig = SolrConfig.readFromResourceLoader(
-                    loader,
-                    getSolrConfigFile().getName(),
-                    true,
-                    null); // the former loader.getCoreProperties() yielded null anyway
+                m_solrConfig = SolrConfig.readFromResourceLoader(loader, getSolrConfigFile().getName(), null); // the former loader.getCoreProperties() yielded null anyway
             } catch (FileNotFoundException e) {
                 CmsConfigurationException ex = new CmsConfigurationException(
                     Messages.get().container(Messages.LOG_SOLR_ERR_CONFIG_XML_NOT_FOUND_1, getSolrConfigFile()),

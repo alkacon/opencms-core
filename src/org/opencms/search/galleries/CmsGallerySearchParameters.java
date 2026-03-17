@@ -55,7 +55,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
-import org.apache.solr.client.solrj.SolrQuery.ORDER;
+import org.apache.solr.client.solrj.request.SolrQuery.ORDER;
 
 import com.google.common.base.Joiner;
 
@@ -417,15 +417,11 @@ public class CmsGallerySearchParameters {
                 getDateLastModifiedRange().m_endTime));
 
         // set scope / folders to search in
-        m_foldersToSearchIn = new ArrayList<String>();
+        m_foldersToSearchIn = new ArrayList<>();
         addFoldersToSearchIn(m_folders);
         addFoldersToSearchIn(m_galleries);
         setSearchFolders(cms);
-        query.addFilterQuery(
-            CmsSearchField.FIELD_PARENT_FOLDERS,
-            new ArrayList<String>(m_foldersToSearchIn),
-            false,
-            true);
+        query.addFilterQuery(CmsSearchField.FIELD_PARENT_FOLDERS, new ArrayList<>(m_foldersToSearchIn), false, true);
 
         if (!m_ignoreSearchExclude) {
             // Reference for the values: CmsGallerySearchIndex.java, field EXCLUDE_PROPERTY_VALUES
@@ -461,10 +457,10 @@ public class CmsGallerySearchParameters {
             List<Locale> locales = new ArrayList<>(3);
             locales.add(l);
             if (!l.getVariant().isEmpty()) {
-                locales.add(new Locale(l.getLanguage(), l.getCountry()));
+                locales.add(Locale.of(l.getLanguage(), l.getCountry()));
             }
             if (!l.getCountry().isEmpty()) {
-                locales.add(new Locale(l.getLanguage()));
+                locales.add(Locale.of(l.getLanguage()));
             }
             query.setLocales(locales);
         }
@@ -963,7 +959,7 @@ public class CmsGallerySearchParameters {
      *
      * @see #getSortOrder()
      */
-    private CmsPair<String, org.apache.solr.client.solrj.SolrQuery.ORDER> getSort() {
+    private CmsPair<String, org.apache.solr.client.solrj.request.SolrQuery.ORDER> getSort() {
 
         final String sortTitle = CmsSearchFieldConfiguration.getLocaleExtendedName(
             CmsSearchField.FIELD_DISPTITLE,

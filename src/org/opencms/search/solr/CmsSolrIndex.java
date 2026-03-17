@@ -85,8 +85,8 @@ import javax.servlet.ServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
+import org.apache.solr.client.solrj.request.SolrQuery;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -101,9 +101,9 @@ import org.apache.solr.handler.ReplicationHandler;
 import org.apache.solr.request.LocalSolrQueryRequest;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.request.SolrRequestHandler;
-import org.apache.solr.response.BinaryQueryResponseWriter;
 import org.apache.solr.response.QueryResponseWriter;
 import org.apache.solr.response.SolrQueryResponse;
+import org.apache.solr.response.TextQueryResponseWriter;
 
 import com.google.common.base.Objects;
 
@@ -1012,8 +1012,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
             CmsObject searchCms = OpenCms.initCmsObject(cms);
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////// QUERY
-            /// FOR PERMISSION CHECK, FACETS, SPELLCHECK, SUGGESTIONS //////////////////////////
-            /// / ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            /// FOR PERMISSION CHECK, FACETS, SPELLCHECK, SUGGESTIONS
 
             // Clone the query and keep the original one
             CmsSolrQuery checkQuery = query.clone();
@@ -1140,8 +1139,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
             }
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////// QUERY
-            /// FOR RESULTS AND HIGHLIGHTING ///////////////////////////////////////////////////
-            /// / ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            /// FOR RESULTS AND HIGHLIGHTING
 
             // the lists storing the found documents that will be returned
             List<CmsSearchResource> resourceDocumentList = new ArrayList<CmsSearchResource>(resultSolrIds.size());
@@ -1212,8 +1210,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
             long processTime = System.currentTimeMillis() - startTime - solrPermissionTime - solrResultTime;
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////////// CREATE
-            /// THE FINAL RESPONSE ////////////////////////////////////////////////////////
-            /// / ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            /// THE FINAL RESPONSE
 
             // we are manipulating the checkQueryResponse to set up the final response, we want to deliver.
 
@@ -1729,17 +1726,17 @@ public class CmsSolrIndex extends CmsSearchIndex {
                     response.setContentType(ct);
                 }
 
-                if (responseWriter instanceof BinaryQueryResponseWriter) {
-                    BinaryQueryResponseWriter binWriter = (BinaryQueryResponseWriter)responseWriter;
-                    binWriter.write(response.getOutputStream(), queryRequest, queryResponse);
-                } else {
+                if (responseWriter instanceof TextQueryResponseWriter) {
+                    TextQueryResponseWriter textWriter = (TextQueryResponseWriter)responseWriter;
                     String charset = ContentStreamBase.getCharsetFromContentType(ct);
                     out = ((charset == null) || charset.equalsIgnoreCase(UTF8.toString()))
                     ? new OutputStreamWriter(response.getOutputStream(), UTF8)
                     : new OutputStreamWriter(response.getOutputStream(), charset);
                     out = new FastWriter(out);
-                    responseWriter.write(out, queryRequest, queryResponse);
+                    textWriter.write(out, queryRequest, queryResponse);
                     out.flush();
+                } else {
+                    responseWriter.write(response.getOutputStream(), queryRequest, queryResponse);
                 }
             } finally {
                 core.close();

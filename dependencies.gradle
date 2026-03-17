@@ -81,7 +81,7 @@ dependencies {
     distribution group: 'com.google.gwt', name: 'gwt-elemental', version: '2.9.0', transitive: false
     distribution group: 'com.google.code.gson', name: 'gson', version: '2.10.1', transitive: false
     distribution group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1', transitive: false
-    distribution group: 'com.ibm.icu', name: 'icu4j', version: '74.2', transitive: false //for solr-analysis-extras
+    distribution group: 'com.ibm.icu', name: 'icu4j', version: '77.1', transitive: false //for solr-analysis-extras
     distribution group: 'org.json', name: 'json', version: '20240303', transitive: false
     distribution group: 'com.lambdaworks', name: 'scrypt', version: '1.4.0', transitive: false
     distribution group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2', transitive: false
@@ -146,7 +146,7 @@ dependencies {
         distribution('org.apache.cxf:cxf-rt-ws-policy:3.5.11')
         distribution('org.apache.cxf:cxf-rt-wsdl:3.5.11')
     }
-    
+
     distribution group: 'org.apache.commons', name: 'commons-email', version: '1.5', transitive: false
     distribution group: 'org.apache.commons', name: 'commons-exec', version: '1.4.0', transitive: false
     distribution group: 'org.apache.commons', name: 'commons-compress', version:'1.27.1', transitive: false
@@ -165,14 +165,14 @@ dependencies {
     distribution group: 'org.apache.logging.log4j', name: 'log4j-slf4j2-impl', version: '2.24.3', transitive: false
     distribution group: 'org.apache.logging.log4j', name: 'log4j-jcl', version: '2.24.3', transitive: false
     distribution group: 'org.apache.logging.log4j', name: 'log4j-web', version: '2.24.3', transitive: false
-    distribution group: 'org.apache.lucene', name: 'lucene-analysis-common', version: '9.11.1', transitive: true
-    distribution group: 'org.apache.lucene', name: 'lucene-core', version: '9.11.1', transitive: true
-    distribution group: 'org.apache.lucene', name: 'lucene-highlighter', version: '9.11.1', transitive: true
-    distribution group: 'org.apache.lucene', name: 'lucene-queryparser', version: '9.11.1', transitive: true
-    distribution group: 'org.apache.solr', name: 'solr-analysis-extras', version:'9.8.0', transitive: true
-    distribution group: 'org.apache.solr', name: 'solr-api', version:'9.8.0', transitive: true
-    distribution group: 'org.apache.solr', name: 'solr-core', version:'9.8.0', transitive: true
-    distribution group: 'org.apache.solr', name: 'solr-solrj', version:'9.8.0', transitive: true
+//    distribution group: 'org.apache.lucene', name: 'lucene-analysis-common', version: '10.3.2', transitive: true
+    distribution group: 'org.apache.lucene', name: 'lucene-core', version: '10.3.2', transitive: true
+    distribution group: 'org.apache.lucene', name: 'lucene-highlighter', version: '10.3.2', transitive: true
+    distribution group: 'org.apache.lucene', name: 'lucene-queryparser', version: '10.3.2', transitive: true
+    distribution group: 'org.apache.solr', name: 'solr-analysis-extras', version:'10.0.0', transitive: true
+    distribution group: 'org.apache.solr', name: 'solr-core', version:'10.0.0', transitive: true
+    distribution group: 'org.apache.solr', name: 'solr-solrj', version:'10.0.0', transitive: true
+    distribution group: 'org.apache.solr', name: 'solr-solrj-jetty', version:'10.0.0', transitive: true // for solr http client
     distribution group: 'org.apache.pdfbox', name: 'fontbox', version: '2.0.32', transitive: false
     distribution group: 'org.apache.pdfbox', name: 'jempbox', version: '1.8.17', transitive: false
     distribution group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.32', transitive: false
@@ -240,7 +240,7 @@ dependencies {
     testGwtCompile group: 'net.sourceforge.htmlunit', name: 'htmlunit-core-js', version: '2.69.0', transitive: false
     testGwtCompile group: 'org.eclipse.jetty', name: 'apache-jsp', version: '9.4.50.v20221201', transitive: false
     testGwtCompile(group: 'org.eclipse.jetty', name: 'jetty-annotations', version: '9.4.50.v20221201', transitive: false){
-    
+
         artifact {
             name = 'jetty-annotations'
             type = 'jar'
@@ -286,6 +286,10 @@ configurations.all {
     exclude group: 'org.apache.lucene', module: 'lucene-analysis-opennlp'
     exclude group: 'org.apache.opennlp', module: 'opennlp-tools'
     exclude group: 'org.eclipse.jetty.toolchain', module: 'jetty-servlet-api'
+    exclude group: 'com.microsoft.onnxruntime', module: 'onnxruntime'
+    exclude group: 'org.apache.solr', module: 'solr-solrj-zookeeper'
+    exclude group: 'org.apache.solr', module: 'solr-solrj-streaming'
+    exclude group: 'io.opentelemetry'
     exclude group: 'io.netty'
 }
 
