@@ -287,9 +287,6 @@ configurations.all {
     exclude group: 'org.apache.opennlp', module: 'opennlp-tools'
     exclude group: 'org.eclipse.jetty.toolchain', module: 'jetty-servlet-api'
     exclude group: 'com.microsoft.onnxruntime', module: 'onnxruntime'
-    exclude group: 'org.apache.solr', module: 'solr-solrj-zookeeper'
-    exclude group: 'org.apache.solr', module: 'solr-solrj-streaming'
-    exclude group: 'io.opentelemetry'
     exclude group: 'io.netty'
 }
 
