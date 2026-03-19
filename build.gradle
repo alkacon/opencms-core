@@ -156,9 +156,9 @@ configurations {
     api {
         extendsFrom distribution
     }
-    
+
     usedApis {
-    	description = "APIs that should normally be provided by the servlet container, but are also needed for the CmsShell, so they're bundled in the WAR." 
+        description = "APIs that should normally be provided by the servlet container, but are also needed for the CmsShell, so they're bundled in the WAR."
     }
 
     compile {
@@ -200,6 +200,7 @@ configurations {
     gwtCompile {
         description = 'needed to generate the GWT JavaScript resources'
         extendsFrom modulesCompile
+        exclude group: 'org.eclipse.jetty.http2'
     }
 
     // Default configuration of the java-library plugin
@@ -221,14 +222,20 @@ configurations {
 
     // Fix the jetty incompatibility for the version from distribution used by Solr and the one for the GWT test cases.
     testGwtRuntimeClasspath{
-        resolutionStrategy {
-            force 'org.eclipse.jetty:jetty-client:9.4.50.v20221201'
+       resolutionStrategy {
+           eachDependency { DependencyResolveDetails details ->
+                 if (details.requested.group == 'org.eclipse.jetty') {
+                    details.useVersion '9.4.51.v20230217'
+                    details.because 'GWT JUnitShell requires consistent Jetty 9.4.x'
+                }
+            }
+            /*force 'org.eclipse.jetty:jetty-client:9.4.50.v20221201'
             force 'org.eclipse.jetty:jetty-http:9.4.50.v20221201'
             force 'org.eclipse.jetty:jetty-io:9.4.50.v20221201'
             force 'org.eclipse.jetty:jetty-util:9.4.50.v20221201'
             force 'org.eclipse.jetty.http2:http2-common:9.4.50.v20221201'
             force 'org.eclipse.jetty.http2:http2-client:9.4.50.v20221201'
-            force 'org.eclipse.jetty.http2:http2-http-client-transport:9.4.50.v20221201'
+            force 'org.eclipse.jetty.http2:http2-http-client-transport:9.4.50.v20221201'*/
         }
     }
 
@@ -1214,7 +1221,7 @@ task testGwt(type: Test, dependsOn: [compileTestGwtJava]) {
 artifacts {
     archives sourcesJar
 
-	if (gradle.startParameter.taskNames.contains("uploadArchives")) {
+    if (gradle.startParameter.taskNames.contains("uploadArchives")) {
         // do not include the war if only running the install task, it takes ages to build
         archives war
         archives resourcesJar
@@ -1518,8 +1525,7 @@ tasks.withType(GenerateModuleMetadata) {
     enabled = false
 }
 
-
 afterEvaluate {
-	def uploadArchivesDeps = [tasks.findByName("publishToSonatype"), tasks.findByName("closeSonatypeStagingRepository")]
-	tasks.findByName("uploadArchives").dependsOn(uploadArchivesDeps) 
+    def uploadArchivesDeps = [tasks.findByName("publishToSonatype"), tasks.findByName("closeSonatypeStagingRepository")]
+    tasks.findByName("uploadArchives").dependsOn(uploadArchivesDeps)
 }
