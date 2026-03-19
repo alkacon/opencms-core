@@ -67,7 +67,6 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.Charset;
@@ -91,8 +90,6 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
-import org.apache.solr.common.util.ContentStreamBase;
-import org.apache.solr.common.util.FastWriter;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.solr.core.CoreContainer;
@@ -103,7 +100,6 @@ import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.request.SolrRequestHandler;
 import org.apache.solr.response.QueryResponseWriter;
 import org.apache.solr.response.SolrQueryResponse;
-import org.apache.solr.response.TextQueryResponseWriter;
 
 import com.google.common.base.Objects;
 
@@ -1726,18 +1722,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
                     response.setContentType(ct);
                 }
 
-                if (responseWriter instanceof TextQueryResponseWriter) {
-                    TextQueryResponseWriter textWriter = (TextQueryResponseWriter)responseWriter;
-                    String charset = ContentStreamBase.getCharsetFromContentType(ct);
-                    out = ((charset == null) || charset.equalsIgnoreCase(UTF8.toString()))
-                    ? new OutputStreamWriter(response.getOutputStream(), UTF8)
-                    : new OutputStreamWriter(response.getOutputStream(), charset);
-                    out = new FastWriter(out);
-                    textWriter.write(out, queryRequest, queryResponse);
-                    out.flush();
-                } else {
-                    responseWriter.write(response.getOutputStream(), queryRequest, queryResponse);
-                }
+                responseWriter.write(response.getOutputStream(), queryRequest, queryResponse);
             } finally {
                 core.close();
                 if (out != null) {
