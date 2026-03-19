@@ -931,11 +931,7 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
 
             if (!params.isIgnoreQuery()) {
                 // since OpenCms 8 the query can be empty in which case only filters are used for the result
-                if (params.getParsedQuery() != null) {
-                    // the query was already build, re-use it
-                    QueryParser p = new QueryParser(CmsSearchField.FIELD_CONTENT, getAnalyzer());
-                    fieldsQuery = p.parse(params.getParsedQuery());
-                } else if (params.getFieldQueries() != null) {
+                if (params.getFieldQueries() != null) {
                     // each field has an individual query
                     BooleanQuery.Builder mustOccur = null;
                     BooleanQuery.Builder shouldOccur = null;
@@ -1004,9 +1000,6 @@ public class CmsSearchIndex extends A_CmsSearchIndex {
             if (query == null) {
                 // if no text query is set, then we match all documents
                 query = new MatchAllDocsQuery();
-            } else {
-                // store the parsed query for page browsing
-                params.setParsedQuery(query.toString(CmsSearchField.FIELD_CONTENT));
             }
 
             // build the final query

@@ -105,9 +105,6 @@ public class CmsSearch {
     /** The total number of search results matching the query. */
     protected int m_searchResultCount;
 
-    /** Indicates if the parsed query was deliberately set on this instance. */
-    private boolean m_parsedQuerySet;
-
     /**
      * Default constructor, used to instantiate the search facility as a bean.<p>
      */
@@ -119,7 +116,6 @@ public class CmsSearch {
         m_searchResultCount = 0;
         m_parameters.setSort(CmsSearchParameters.SORT_DEFAULT);
         m_parameters.setFields(Arrays.asList(CmsSearchIndex.DOC_META_FIELDS));
-        m_parsedQuerySet = false;
     }
 
     /**
@@ -437,23 +433,6 @@ public class CmsSearch {
     }
 
     /**
-     * Returns the parsed query.<p>
-     *
-     * The parsed query is automatically set by the OpenCms search index when a query is created
-     * with either {@link #setQuery(String)} or {@link #addFieldQuery(CmsSearchFieldQuery)}.
-     * The Lucene query build from the parameters is stored here and can be later used
-     * for paging through the results.<p>
-     *
-     * Please note that this returns only to the query part, not the filter part of the search.<p>
-     *
-     * @return the parsed query
-     */
-    public String getParsedQuery() {
-
-        return m_parameters.getParsedQuery();
-    }
-
-    /**
      * Gets the URL for the link to the previous result page.<p>
      *
      * @return the URL to the previous result page
@@ -505,12 +484,9 @@ public class CmsSearch {
             && (m_parameters.getIndex() != null)
             && (m_parameters.isIgnoreQuery()
                 || CmsStringUtil.isNotEmpty(m_parameters.getQuery())
-                || CmsStringUtil.isNotEmpty(m_parameters.getParsedQuery())
                 || (m_parameters.getFieldQueries() != null))) {
 
-            if (!m_parameters.isIgnoreQuery()
-                && CmsStringUtil.isEmpty(m_parameters.getParsedQuery())
-                && (getQueryLength() > 0)) {
+            if (!m_parameters.isIgnoreQuery() && (getQueryLength() > 0)) {
 
                 if (m_parameters.getFieldQueries() != null) {
                     // check all field queries if the length of the query is ok
@@ -842,28 +818,6 @@ public class CmsSearch {
     }
 
     /**
-     * Sets the parsed query, which will be parameter decoded first.<p>
-     *
-     * The parsed query is automatically set by the OpenCms search index when a query is created
-     * with either {@link #setQuery(String)} or {@link #addFieldQuery(CmsSearchFieldQuery)}.
-     * The Lucene query build from the parameters is stored here and can be later used
-     * for paging through the results.<p>
-     *
-     * Please note that this applies only to the query part, not the filter part of the search.<p>
-     *
-     * @param parsedQuery the parsed query to set
-     */
-    public void setParsedQuery(String parsedQuery) {
-
-        try {
-            m_parsedQuerySet = true;
-            m_parameters.setParsedQuery(CmsEncoder.decodeParameter(parsedQuery));
-        } catch (CmsIllegalArgumentException iae) {
-            m_lastException = iae;
-        }
-    }
-
-    /**
      * Sets the search query.<p>
      *
      * The syntax of the query depends on the search engine used.
@@ -1000,9 +954,5 @@ public class CmsSearch {
         m_lastException = null;
         m_categoriesFound = null;
         m_parameterRestriction = null;
-        if (!m_parsedQuerySet) {
-            // don't reset parsed query if it was deliberately set, otherwise initializing search bean from JSP might fail
-            m_parameters.setParsedQuery(null);
-        }
     }
 }

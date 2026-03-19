@@ -270,9 +270,6 @@ public class CmsSearchParameters {
     /** The current result page. */
     private int m_page;
 
-    /** The pre-parsed query. */
-    private String m_parsedQuery;
-
     /** The search query to use. */
     private String m_query;
 
@@ -520,23 +517,6 @@ public class CmsSearchParameters {
     public long getMinDateLastModified() {
 
         return m_minDateLastModified;
-    }
-
-    /**
-     * Returns the parsed query.<p>
-     *
-     * The parsed query is automatically set by the OpenCms search index when a query is created
-     * with either {@link #setQuery(String)} or {@link #addFieldQuery(CmsSearchFieldQuery)}.
-     * The Lucene query build from the parameters is stored here and can be later used
-     * for paging through the results.<p>
-     *
-     * Please note that this returns only to the query part, not the filter part of the search.<p>
-     *
-     * @return the parsed query
-     */
-    public String getParsedQuery() {
-
-        return m_parsedQuery;
     }
 
     /**
@@ -950,23 +930,6 @@ public class CmsSearchParameters {
     }
 
     /**
-     * Sets the parsed query.<p>
-     *
-     * The parsed query is automatically set by the OpenCms search index when a query is created
-     * with either {@link #setQuery(String)} or {@link #addFieldQuery(CmsSearchFieldQuery)}.
-     * The Lucene query build from the parameters is stored here and can be later used
-     * for paging through the results.<p>
-     *
-     * Please note that this applies only to the query part, not the filter part of the search.<p>
-     *
-     * @param parsedQuery the parsed query to set
-     */
-    public void setParsedQuery(String parsedQuery) {
-
-        m_parsedQuery = parsedQuery;
-    }
-
-    /**
      * Sets the query to search for. <p>
      *
      * The decoding here is tailored for query strings that are
@@ -1107,13 +1070,8 @@ public class CmsSearchParameters {
 
         StringBuffer result = new StringBuffer(128);
         result.append("?action=search");
-        if (getParsedQuery() != null) {
-            result.append("&parsedQuery=");
-            result.append(CmsEncoder.encodeParameter(getParsedQuery()));
-        } else {
-            result.append("&query=");
-            result.append(CmsEncoder.encodeParameter(getQuery()));
-        }
+        result.append("&query=");
+        result.append(CmsEncoder.encodeParameter(getQuery()));
 
         result.append("&matchesPerPage=");
         result.append(getMatchesPerPage());
