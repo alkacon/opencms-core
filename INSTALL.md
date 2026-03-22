@@ -14,7 +14,7 @@ The following guide provides step-by-step instructions on how to manually instal
 
 - [Install Java](#install-java)
 - [Install Tomcat](#install-tomcat)
-- [Install Database. Option 1: MariaDB/MySQL](#install-database-option-mysqlmariadb)
+- [Install Database. Option 1: MySQL/MariaDB](#install-database-option-mysqlmariadb)
 - [Install Database. Option 2: Oracle](#install-database-option-oracle)
 - [Download and deploy the opencms.war file](#download-and-deploy-opencms)
 - [Follow the setup wizard](#follow-the-setup-wizard)
