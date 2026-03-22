@@ -14,8 +14,9 @@ The following guide provides step-by-step instructions on how to manually instal
 
 - [Install Java](#install-java)
 - [Install Tomcat](#install-tomcat)
-- [Install MariaDB/MySQL](#install-mariadb-mysql)
-- [Download and deploy the opencms.war file](#download-and-deploy-the-opencms-war-file)
+- [Install Database. Option 1: MySQL/MariaDB](#install-database-option-mysqlmariadb)
+- [Install Database. Option 2: Oracle](#install-database-option-oracle)
+- [Download and deploy the opencms.war file](#download-and-deploy-opencms)
 - [Follow the setup wizard](#follow-the-setup-wizard)
 - [Login to the OpenCms workplace](#login-to-the-opencms-workplace)
 - [Security settings](#security-settings)
@@ -48,7 +49,7 @@ If you are running a headless Linux system, image processing will not work unles
 
 Start Tomcat and make sure it is running properly.
 
-### Install MariaDB/MySQL
+### Install Database. Option "MySQL/MariaDB"
 
 OpenCms supports MariaDB/MySQL 5.5 and later.
 
@@ -60,6 +61,36 @@ This is required since OpenCms stores binary files such as images or PDF documen
 More information about database settings is available [here](https://documentation.opencms.org/opencms-documentation/server-administration/database-settings/).
 
 Start the database and make sure it is running properly.
+
+### Install Database. Option "Oracle"
+
+OpenCMS Oracle database driver has been tested with Oracle 9i, 10g and 11g. However, as the driver was released before the existence of PDBs, in order to use it with Oracle 12c and later versions, including XE, the following tasks must be performed in advanced:
+
+1- Edit %ORACLE_HOME%\network\admin\sqlnet.ora and enter the following configuration:
+
+`SQLNET.ALLOWED_LOGON_VERSION_SERVER=8`
+
+`SQLNET.ALLOWED_LOGON_VERSION_CLIENT=8`
+
+2- Using SQL*Plus as sysdba:
+
+`ALTER USER SYSTEM IDENTIFIED BY SameOrDifferentPass;`
+
+`CREATE TABLESPACE opencms_ts DATAFILE 'opencms_ts.dbf' SIZE 50M AUTOEXTEND ON NEXT 50M MAXSIZE UNLIMITED;`
+
+`CREATE USER C##opencmsuser IDENTIFIED BY PasswordForOpenCmsUser DEFAULT TABLESPACE opencms_ts TEMPORARY TABLESPACE temp;`
+
+`GRANT CREATE SESSION TO C##opencmsuser;`
+
+3- Optionally, you can also set the password life time to unlimited:
+
+`CREATE PROFILE C##opencms_profile LIMIT PASSWORD_LIFE_TIME UNLIMITED;`
+
+`ALTER USER C##opencmsuser PROFILE C##opencms_profile;`
+
+When using the OpenCms Installation Wizard, "Setup connection" will require your `SYSTEM` credentials and "OpencCms connection" will require your `C##opencmsuser` credentials.
+
+Note that, for Oracle XE default installation, "Connection string" will be `jdbc:oracle:thin:@localhost:1521:xe`.
 
 ### Download and deploy OpenCms
 
