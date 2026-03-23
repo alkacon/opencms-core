@@ -313,17 +313,20 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         }
     }
 
-    /** Runtime property key to enable / disable placement mode. */
-    public static final String PARAM_PAGE_EDITOR_PLACEMENT_MODE_ENABLED = "pageEditor.placementMode.enabled";
-
     /** Additional info key for storing the "edit small elements" setting on the user. */
     public static final String ADDINFO_EDIT_SMALL_ELEMENTS = "EDIT_SMALL_ELEMENTS";
 
     /** Session attribute name used to store the selected clipboard tab. */
     public static final String ATTR_CLIPBOARD_TAB = "clipboardtab";
 
+    /** Maximum number of reuse locations to display in the reuse warning dialog. */
+    public static final int MAX_VISIBLE_ELEMENT_USES = 100;
+
     /** The model group pages path fragment. */
     public static final String MODEL_GROUP_PATH_FRAGMENT = "/.content/.modelgroups/";
+
+    /** Runtime property key to enable / disable placement mode. */
+    public static final String PARAM_PAGE_EDITOR_PLACEMENT_MODE_ENABLED = "pageEditor.placementMode.enabled";
 
     /** The source container page id settings key. */
     public static final String SOURCE_CONTAINERPAGE_ID_SETTING = "source_containerpage_id";
@@ -333,9 +336,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
     /** Serial version UID. */
     private static final long serialVersionUID = -6188370638303594280L;
-
-    /** Maximum number of reuse locations to display in the reuse warning dialog. */
-    public static final int MAX_VISIBLE_ELEMENT_USES = 100;
 
     /** The configuration data of the current container page context. */
     private CmsADEConfigData m_configData;
@@ -1191,58 +1191,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         CmsGalleryDataBean data = null;
         try {
             CmsObject cms = getCmsObject();
-            String pageFolderRootPath = cms.getRequestContext().addSiteRoot(uri);
-            CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, pageFolderRootPath);
-            Map<String, CmsResourceTypeConfig> typesByName = config.getTypesByName();
-            final String templateContextStr = (templateContextInfo != null)
-                && (templateContextInfo.getCurrentContext() != null) ? templateContextInfo.getCurrentContext() : null;
-            CmsAddDialogTypeHelper typeHelper = new CmsAddDialogTypeHelper(CmsResourceTypeConfig.AddMenuType.ade) {
-
-                @Override
-                protected boolean exclude(CmsResourceTypeBean type) {
-
-                    CmsResourceTypeConfig typeConfig = typesByName.get(type.getType());
-                    if ((typeConfig != null)
-                        && (templateContextStr != null)
-                        && !typeConfig.isAvailableInTemplate(templateContextStr)) {
-                        return true;
-                    }
-                    return false;
-
-                }
-            };
-            if (detailContentId != null) {
-                try {
-                    CmsResource page = cms.readResource(uri, CmsResourceFilter.IGNORE_EXPIRATION);
-                    CmsResource detailContent = cms.readResource(detailContentId, CmsResourceFilter.IGNORE_EXPIRATION);
-                    pageFolderRootPath = CmsResource.getParentFolder(
-                        CmsDetailOnlyContainerUtil.getDetailOnlyPageName(
-                            cms,
-                            page,
-                            detailContent.getRootPath(),
-                            "" + locale));
-                } catch (Exception e) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-            }
-            List<CmsResourceTypeBean> resTypeBeans = typeHelper.getResourceTypes(
+            List<CmsResourceTypeBean> resTypeBeans = getGalleryTypesForView(
                 cms,
-                cms.getRequestContext().addSiteRoot(uri),
-                pageFolderRootPath,
+                containers,
+                elementView,
                 uri,
-                OpenCms.getADEManager().getElementViews(cms).get(elementView),
-                new I_CmsResourceTypeEnabledCheck() {
-
-                    public boolean checkEnabled(
-                        CmsObject paramCms,
-                        CmsADEConfigData config2,
-                        I_CmsResourceType resType) {
-
-                        boolean isModelGroup = CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME.equals(
-                            resType.getTypeName());
-                        return isModelGroup || config2.hasFormatters(paramCms, resType, containers);
-                    }
-                });
+                detailContentId,
+                locale,
+                templateContextInfo);
             CmsGalleryService srv = new CmsGalleryService();
             srv.setCms(cms);
             srv.setRequest(getRequest());
@@ -1304,6 +1260,39 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             result.setGalleryData(data);
             return result;
 
+        } catch (Exception e) {
+            error(e);
+            return null;
+        }
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getGalleryTypesForMultipleViews(java.util.List, java.util.List, java.lang.String, org.opencms.util.CmsUUID, java.lang.String, org.opencms.gwt.shared.CmsTemplateContextInfo)
+     */
+    public Map<CmsUUID, List<CmsResourceTypeBean>> getGalleryTypesForMultipleViews(
+        final List<CmsContainer> containers,
+        List<CmsUUID> views,
+        String uri,
+        CmsUUID detailContentId,
+        String locale,
+        CmsTemplateContextInfo templateContextInfo)
+    throws CmsRpcException {
+
+        try {
+            Map<CmsUUID, List<CmsResourceTypeBean>> result = new HashMap<>();
+            CmsObject cms = getCmsObject();
+            for (CmsUUID view : views) {
+                List<CmsResourceTypeBean> typesForView = getGalleryTypesForView(
+                    cms,
+                    containers,
+                    view,
+                    uri,
+                    detailContentId,
+                    locale,
+                    templateContextInfo);
+                result.put(view, typesForView);
+            }
+            return result;
         } catch (Exception e) {
             error(e);
             return null;
@@ -2323,6 +2312,84 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     public void setSessionCache(CmsADESessionCache cache) {
 
         m_sessionCache = cache;
+    }
+
+    /**
+     * Helper method for collecting the type information for the galleries in the container page editor.
+     *
+     *
+     * @param cms the CMS context
+     * @param containers the page containers
+     * @param elementView the element view
+     * @param uri the page URI
+     * @param detailContentId the detail content id
+     * @param locale the content locale
+     * @param contextInfo the template context information
+     *
+     * @return the type beans
+     *
+     * @throws CmsRpcException in case something goes wrong
+     */
+    protected List<CmsResourceTypeBean> getGalleryTypesForView(
+        CmsObject cms,
+        final List<CmsContainer> containers,
+        CmsUUID elementView,
+        String uri,
+        CmsUUID detailContentId,
+        String locale,
+        CmsTemplateContextInfo templateContextInfo)
+    throws CmsException {
+
+        String pageFolderRootPath = cms.getRequestContext().addSiteRoot(uri);
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, pageFolderRootPath);
+        Map<String, CmsResourceTypeConfig> typesByName = config.getTypesByName();
+        final String templateContextStr = (templateContextInfo != null)
+            && (templateContextInfo.getCurrentContext() != null) ? templateContextInfo.getCurrentContext() : null;
+        CmsAddDialogTypeHelper typeHelper = new CmsAddDialogTypeHelper(CmsResourceTypeConfig.AddMenuType.ade) {
+
+            @Override
+            protected boolean exclude(CmsResourceTypeBean type) {
+
+                CmsResourceTypeConfig typeConfig = typesByName.get(type.getType());
+                if ((typeConfig != null)
+                    && (templateContextStr != null)
+                    && !typeConfig.isAvailableInTemplate(templateContextStr)) {
+                    return true;
+                }
+                return false;
+
+            }
+        };
+        if (detailContentId != null) {
+            try {
+                CmsResource page = cms.readResource(uri, CmsResourceFilter.IGNORE_EXPIRATION);
+                CmsResource detailContent = cms.readResource(detailContentId, CmsResourceFilter.IGNORE_EXPIRATION);
+                pageFolderRootPath = CmsResource.getParentFolder(
+                    CmsDetailOnlyContainerUtil.getDetailOnlyPageName(
+                        cms,
+                        page,
+                        detailContent.getRootPath(),
+                        "" + locale));
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        List<CmsResourceTypeBean> resTypeBeans = typeHelper.getResourceTypes(
+            cms,
+            cms.getRequestContext().addSiteRoot(uri),
+            pageFolderRootPath,
+            uri,
+            OpenCms.getADEManager().getElementViews(cms).get(elementView),
+            new I_CmsResourceTypeEnabledCheck() {
+
+                public boolean checkEnabled(CmsObject paramCms, CmsADEConfigData config2, I_CmsResourceType resType) {
+
+                    boolean isModelGroup = CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME.equals(
+                        resType.getTypeName());
+                    return isModelGroup || config2.hasFormatters(paramCms, resType, containers);
+                }
+            });
+        return resTypeBeans;
     }
 
     /**

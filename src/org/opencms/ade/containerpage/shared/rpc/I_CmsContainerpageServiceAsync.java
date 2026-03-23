@@ -42,6 +42,8 @@ import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsPageSaveStatus;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
 import org.opencms.ade.containerpage.shared.CmsReuseInfo;
+import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
+import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsListElementCreationDialogData;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsUUID;
@@ -303,6 +305,28 @@ public interface I_CmsContainerpageServiceAsync {
         String locale,
         CmsTemplateContextInfo contextInfo,
         AsyncCallback<CmsContainerPageGalleryData> callback);
+
+    /**
+     * Loads the gallery resource type information for multiple views.
+     *
+     * @param containers the containers on the page
+     * @param views the views for which to load the type information
+     * @param uri the page URI
+     * @param detailContentId the detail content id
+     * @param locale the locale
+     * @param templateContextInfo the current template context information
+     * @param callback the callback for the result
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    void getGalleryTypesForMultipleViews(
+        final List<CmsContainer> containers,
+        List<CmsUUID> views,
+        String uri,
+        CmsUUID detailContentId,
+        String locale,
+        CmsTemplateContextInfo templateContextInfo,
+        AsyncCallback<Map<CmsUUID, List<CmsResourceTypeBean>>> callback);
 
     /**
      * Loads the data for the list element creation dialog.

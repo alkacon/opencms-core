@@ -42,6 +42,7 @@ import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
 import org.opencms.ade.containerpage.shared.CmsPageSaveStatus;
 import org.opencms.ade.containerpage.shared.CmsRemovedElementStatus;
 import org.opencms.ade.containerpage.shared.CmsReuseInfo;
+import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsListElementCreationDialogData;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
@@ -60,6 +61,28 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * @since 8.0.0
  */
 public interface I_CmsContainerpageService extends RemoteService {
+
+    /**
+     * Loads the gallery resource type information for multiple views.
+     *
+     * @param containers the containers on the page
+     * @param views the views for which to load the type information
+     * @param uri the page URI
+     * @param detailContentId the detail content id
+     * @param locale the locale
+     * @param templateContextInfo the current template context information
+     * @return a map from view ids to lists of type beans
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    public Map<CmsUUID, List<CmsResourceTypeBean>> getGalleryTypesForMultipleViews(
+        final List<CmsContainer> containers,
+        List<CmsUUID> views,
+        String uri,
+        CmsUUID detailContentId,
+        String locale,
+        CmsTemplateContextInfo templateContextInfo)
+    throws CmsRpcException;
 
     /**
      * Adds an element specified by it's id to the favorite list.<p>

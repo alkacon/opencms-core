@@ -60,6 +60,7 @@ import org.opencms.ade.containerpage.shared.CmsReuseInfo;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageServiceAsync;
 import org.opencms.ade.contenteditor.client.CmsContentEditor;
+import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsElementToolbarContext;
 import org.opencms.gwt.client.dnd.CmsCompositeDNDController;
@@ -2421,6 +2422,7 @@ public final class CmsContainerpageController {
         }
 
         updateGalleryData(false, null);
+        updateCreateData();
         addContainerpageEventHandler(event -> {
             updateDetailPreviewStyles();
         });
@@ -2501,7 +2503,8 @@ public final class CmsContainerpageController {
     public boolean isGalleryCreatableType(String type) {
 
         /** If gallery data is not loaded for some reason, fall back to everything being allowed. */
-        return (m_galleryCreatableTypes == null) || m_galleryCreatableTypes.contains(type);
+        boolean result = (m_galleryCreatableTypes == null) || m_galleryCreatableTypes.contains(type);
+        return result;
     }
 
     /**
@@ -4467,6 +4470,40 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Updates the data on which types are creatable - used to determine whether the "copy" function can be used for container elements.
+     */
+    void updateCreateData() {
+
+        CmsRpcAction<Map<CmsUUID, List<CmsResourceTypeBean>>> dataAction = new CmsRpcAction<Map<CmsUUID, List<CmsResourceTypeBean>>>() {
+
+            @Override
+            public void execute() {
+
+                getContainerpageService().getGalleryTypesForMultipleViews(
+                    getEditableContainers(),
+                    getData().getElementViews().stream().map(view -> view.getElementViewId()).collect(
+                        Collectors.toList()),
+                    CmsCoreProvider.get().getUri(),
+                    getData().getDetailId(),
+                    getData().getLocale(),
+                    CmsContainerpageController.get().getData().getTemplateContextInfo(),
+                    this);
+
+            }
+
+            @Override
+            protected void onResponse(Map<CmsUUID, List<CmsResourceTypeBean>> result) {
+
+                Set<String> typeStrings = result.values().stream().flatMap(types -> types.stream()).filter(
+                    type -> type.isCreatableType()).map(type -> type.getResourceType()).collect(Collectors.toSet());
+                m_galleryCreatableTypes = new HashSet<>(typeStrings);
+            }
+        };
+        dataAction.execute();
+
+    }
+
+    /**
      * Updates the gallery data according to the current element view and the editable containers.<p>
      * This method should only be called from the gallery update timer to avoid unnecessary requests.<p>
      *
@@ -4493,8 +4530,6 @@ public final class CmsContainerpageController {
             @Override
             protected void onResponse(CmsContainerPageGalleryData result) {
 
-                m_galleryCreatableTypes = result.getGalleryData().getTypes().stream().filter(
-                    type -> type.isCreatableType()).map(type -> type.getResourceType()).collect(Collectors.toSet());
                 m_handler.m_editor.getAdd().updateGalleryData(result, viewChanged);
                 if (nextAction != null) {
                     nextAction.run();
