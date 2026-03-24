@@ -115,7 +115,8 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.CharArraySet;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
-import org.apache.solr.client.solrj.jetty.HttpJettySolrClient.Builder;
+import org.apache.solr.client.solrj.impl.HttpJdkSolrClient;
+import org.apache.solr.client.solrj.impl.HttpJdkSolrClient.Builder;
 import org.apache.solr.core.CoreContainer;
 import org.apache.solr.core.CoreDescriptor;
 import org.apache.solr.core.SolrCore;
@@ -2210,7 +2211,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
 
         if (index.getServerUrl() != null) { // Use the index-specific Solr-Server if present.
-            index.setSolrServer(new Builder().withBaseSolrUrl(index.getServerUrl()).build());
+            HttpJdkSolrClient solrClient = new Builder().withBaseSolrUrl(index.getServerUrl()).build();
+            index.setSolrServer(solrClient);
         } else if (m_solrConfig.getServerUrl() != null) { // Use the globally configured external Solr-Server if present.
             // HTTP Server configured
             // TODO Implement multi core support for HTTP server
