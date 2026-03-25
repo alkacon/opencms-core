@@ -156,44 +156,45 @@ public class CmsExplorer extends CmsWorkplace {
         // split the root site:
         StringBuffer siteRoot = new StringBuffer();
         StringBuffer path = new StringBuffer('/');
-        Scanner scanner = new Scanner(explorerRootPath);
-        scanner.useDelimiter("/");
-        int count = 0;
-        while (scanner.hasNext()) {
-            if (count < 2) {
-                siteRoot.append('/').append(scanner.next());
-            } else {
-                if (count == 2) {
+        try (Scanner scanner = new Scanner(explorerRootPath)) {
+            scanner.useDelimiter("/");
+            int count = 0;
+            while (scanner.hasNext()) {
+                if (count < 2) {
+                    siteRoot.append('/').append(scanner.next());
+                } else {
+                    if (count == 2) {
+                        path.append('/');
+                    }
+                    path.append(scanner.next());
                     path.append('/');
                 }
-                path.append(scanner.next());
-                path.append('/');
+                count++;
             }
-            count++;
-        }
-        String targetSiteRoot = siteRoot.toString();
-        String targetVfsFolder = path.toString();
-        // build the link
-        StringBuilder link2Source = new StringBuilder();
-        link2Source.append("/system/workplace/views/workplace.jsp?");
-        link2Source.append(CmsWorkplace.PARAM_WP_EXPLORER_RESOURCE);
-        link2Source.append("=");
-        link2Source.append(targetVfsFolder);
-        link2Source.append("&");
-        link2Source.append(CmsFrameset.PARAM_WP_VIEW);
-        link2Source.append("=");
-        link2Source.append(
-            OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-                cms,
-                "/system/workplace/views/explorer/explorer_fs.jsp"));
-        link2Source.append("&");
-        link2Source.append(CmsWorkplace.PARAM_WP_SITE);
-        link2Source.append("=");
-        link2Source.append(targetSiteRoot);
+            String targetSiteRoot = siteRoot.toString();
+            String targetVfsFolder = path.toString();
+            // build the link
+            StringBuilder link2Source = new StringBuilder();
+            link2Source.append("/system/workplace/views/workplace.jsp?");
+            link2Source.append(CmsWorkplace.PARAM_WP_EXPLORER_RESOURCE);
+            link2Source.append("=");
+            link2Source.append(targetVfsFolder);
+            link2Source.append("&");
+            link2Source.append(CmsFrameset.PARAM_WP_VIEW);
+            link2Source.append("=");
+            link2Source.append(
+                OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                    cms,
+                    "/system/workplace/views/explorer/explorer_fs.jsp"));
+            link2Source.append("&");
+            link2Source.append(CmsWorkplace.PARAM_WP_SITE);
+            link2Source.append("=");
+            link2Source.append(targetSiteRoot);
 
-        String result = link2Source.toString();
-        result = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, result);
-        return result;
+            String result = link2Source.toString();
+            result = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, result);
+            return result;
+        }
     }
 
     /**
