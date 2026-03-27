@@ -32,7 +32,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
-import org.opencms.main.CmsStaticResourceHandler;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
@@ -48,6 +47,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 
@@ -68,6 +69,12 @@ public class CmsGwtServiceContext implements I_CmsEventListener {
 
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGwtServiceContext.class);
+
+    /** Vaadin widgetset serialization policy pattern. */
+    private static final Pattern vaadinPattern = Pattern.compile("/(VAADIN/.*)$");
+
+    /** Static GWT serialization policy pattern. */
+    private static final Pattern staticPattern = Pattern.compile("/handleStatic/(?:.*?)/(.*)$");
 
     /** The name, which is used for debugging. */
     private String m_name;
@@ -104,6 +111,32 @@ public class CmsGwtServiceContext implements I_CmsEventListener {
                 I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES,
                 I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES});
 
+    }
+
+    /**
+     * Checks if the serialization policy path refers to a resource loaded from a Jar (GWT resources served via /handleStatic  or Vaadin widget set), and if so, returns the corresponding resource name for use in {@link ClassLoader#getResource(String)}
+     *
+     * @param path the path to check
+     * @return the classloader path for the resource (or null, if the path is not for a resource loaded from a Jar)
+     */
+    private static String getStaticSerializationPolicyResourcePath(String path) {
+
+        // Note: the regexes used might seem overly broad; you'd think you'd only need to match cases where the VAADIN or handleStatic part
+        // comes directly after the context path. But there have been some weird non-reproducible cases where the serialization policy path
+        // also included the servlet name. For simplicity, we match handleStatic or VAADIN anywhere in the path, since the cases where this is actually
+        // a legitimate serialization policy in the VFS or RFS rather than a path in a JAR seem incredibly unlikely.
+
+        Matcher matcher = vaadinPattern.matcher(path);
+        String resourcePath = null;
+        if (matcher.find()) {
+            resourcePath = matcher.group(1);
+            return resourcePath;
+        }
+        matcher = staticPattern.matcher(path);
+        if (matcher.find()) {
+            resourcePath = "OPENCMS/" + matcher.group(1);
+        }
+        return resourcePath;
     }
 
     /**
@@ -236,8 +269,14 @@ public class CmsGwtServiceContext implements I_CmsEventListener {
         InputStream is = null;
         try {
             // check if this is a static resource request
-            if (m_serializationPolicyPath.startsWith(OpenCms.getSystemInfo().getStaticResourceContext())) {
-                URL resourceURL = CmsStaticResourceHandler.getStaticResourceURL(m_serializationPolicyPath);
+            String staticResourcePath = getStaticSerializationPolicyResourcePath(m_serializationPolicyPath);
+            if (staticResourcePath != null) {
+                LOG.debug(
+                    "Trying static serialization policy path: "
+                        + m_serializationPolicyPath
+                        + " => "
+                        + staticResourcePath);
+                URL resourceURL = OpenCms.getSystemInfo().getClass().getClassLoader().getResource(staticResourcePath);
                 URLConnection connection;
                 connection = resourceURL.openConnection();
                 is = connection.getInputStream();
@@ -267,7 +306,7 @@ public class CmsGwtServiceContext implements I_CmsEventListener {
 
         }
         if (is == null) {
-            return new CmsDummySerializationPolicy();
+            return null;
         }
 
         // read the policy
