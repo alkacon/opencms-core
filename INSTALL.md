@@ -14,8 +14,9 @@ The following guide provides step-by-step instructions on how to manually instal
 
 - [Install Java](#install-java)
 - [Install Tomcat](#install-tomcat)
-- [Install MariaDB/MySQL](#install-mariadb-mysql)
-- [Download and deploy the opencms.war file](#download-and-deploy-the-opencms-war-file)
+- [Install Database. Option MySQL/MariaDB](#install-database-option-mysqlmariadb)
+- [Install Database. Option Oracle](#install-database-option-oracle)
+- [Download and deploy the opencms.war file](#download-and-deploy-opencms)
 - [Follow the setup wizard](#follow-the-setup-wizard)
 - [Login to the OpenCms workplace](#login-to-the-opencms-workplace)
 - [Security settings](#security-settings)
@@ -48,7 +49,7 @@ If you are running a headless Linux system, image processing will not work unles
 
 Start Tomcat and make sure it is running properly.
 
-### Install MariaDB/MySQL
+### Install Database. Option "MySQL/MariaDB"
 
 OpenCms supports MariaDB/MySQL 5.5 and later.
 
@@ -60,6 +61,12 @@ This is required since OpenCms stores binary files such as images or PDF documen
 More information about database settings is available [here](https://documentation.opencms.org/opencms-documentation/server-administration/database-settings/).
 
 Start the database and make sure it is running properly.
+
+### Install Database. Option "Oracle"
+
+OpenCms Oracle database driver has been tested with multiple versions of Oracle Database, including Express Edition (XE).
+It is crucial to select the correct connector for your Oracle version during the installation wizard.
+If you are using Oracle 12.2 or later, you **must** be sure that the CDB or PDB you are connecting is in open state before installing OpenCms.
 
 ### Download and deploy OpenCms
 

@@ -161,8 +161,14 @@ public class CmsSetupBean implements I_CmsShellCommands {
     /** DB provider constant for mysql. */
     public static final String MYSQL_PROVIDER = "mysql";
 
-    /** DB provider constant for oracle. */
-    public static final String ORACLE_PROVIDER = "oracle";
+    /** DB provider constant for oracle9i. */
+    public static final String ORACLE9I_PROVIDER = "oracle9i";
+
+    /** DB provider constant for oracle12. */
+    public static final String ORACLE12_PROVIDER = "oracle12";
+
+    /** DB provider constant for oracle19c. */
+    public static final String ORACLE19C_PROVIDER = "oracle19c";
 
     /** DB provider constant for postgresql. */
     public static final String POSTGRESQL_PROVIDER = "postgresql";
@@ -1962,7 +1968,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
         if (!(MAXDB_PROVIDER.equals(provider)
             || MSSQL_PROVIDER.equals(provider)
             || MYSQL_PROVIDER.equals(provider)
-            || ORACLE_PROVIDER.equals(provider)
+            || ORACLE9I_PROVIDER.equals(provider)
+            || ORACLE12_PROVIDER.equals(provider)
+            || ORACLE19C_PROVIDER.equals(provider)
             || DB2_PROVIDER.equals(provider)
             || AS400_PROVIDER.equals(provider)
             || HSQLDB_PROVIDER.equals(provider)
@@ -2040,7 +2048,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 setDbWorkUser(dbWorkUser);
                 setDbWorkPwd(dbWorkPwd);
 
-                if (provider.equals(ORACLE_PROVIDER)) {
+                if (provider.equals(ORACLE9I_PROVIDER)
+                    || provider.equals(ORACLE12_PROVIDER)
+                    || provider.equals(ORACLE19C_PROVIDER)) {
                     String dbDefaultTablespace = getReqValue(request, "dbDefaultTablespace");
                     String dbTemporaryTablespace = getReqValue(request, "dbTemporaryTablespace");
                     String dbIndexTablespace = getReqValue(request, "dbIndexTablespace");
@@ -2059,7 +2069,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
                     || provider.equals(POSTGRESQL_PROVIDER)) {
                     replacer.put("${database}", database);
                 }
-                if (provider.equals(ORACLE_PROVIDER)) {
+                if (provider.equals(ORACLE9I_PROVIDER)
+                    || provider.equals(ORACLE12_PROVIDER)
+                    || provider.equals(ORACLE19C_PROVIDER)) {
                     replacer.put("${defaultTablespace}", getDbProperty(getDatabase() + ".defaultTablespace"));
                     replacer.put("${indexTablespace}", getDbProperty(getDatabase() + ".indexTablespace"));
                     replacer.put("${temporaryTablespace}", getDbProperty(getDatabase() + ".temporaryTablespace"));
@@ -2068,7 +2080,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
                 if (session != null) {
                     if (provider.equals(GENERIC_PROVIDER)
-                        || provider.equals(ORACLE_PROVIDER)
+                        || provider.equals(ORACLE9I_PROVIDER)
+                        || provider.equals(ORACLE12_PROVIDER)
+                        || provider.equals(ORACLE19C_PROVIDER)
                         || provider.equals(DB2_PROVIDER)
                         || provider.equals(AS400_PROVIDER)
                         || provider.equals(MAXDB_PROVIDER)) {
@@ -2082,7 +2096,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(contextPath)) {
                     dbName = contextPath.substring(1);
                 }
-                if (provider.equals(ORACLE_PROVIDER)
+                if (provider.equals(ORACLE9I_PROVIDER)
+                    || provider.equals(ORACLE12_PROVIDER)
+                    || provider.equals(ORACLE19C_PROVIDER)
                     || provider.equals(POSTGRESQL_PROVIDER)
                     || provider.equals(MAXDB_PROVIDER)) {
                     setDbWorkUser(dbName);

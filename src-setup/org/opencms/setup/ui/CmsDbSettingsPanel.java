@@ -215,7 +215,9 @@ public class CmsDbSettingsPanel extends VerticalLayout {
                 }
                 m_dbCreateConStr.setValue(createConStr);
                 break;
-            case "oracle":
+            case "oracle9i":
+            case "oracle12":
+            case "oracle19c":
                 setVisible(
                     m_dbCreateUser,
                     m_dbCreatePwd,

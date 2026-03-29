@@ -215,8 +215,14 @@ public class OpenCmsTestCase extends TestCase {
     /** Key for tests on MySql database. */
     public static final String DB_MYSQL = "mysql";
 
-    /** Key for tests on Oracle database. */
-    public static final String DB_ORACLE = "oracle";
+    /** Key for tests on Oracle 9i database. */
+    public static final String DB_ORACLE9I = "oracle9i";
+
+    /** Key for tests on Oracle 12 database. */
+    public static final String DB_ORACLE12 = "oracle12";
+
+    /** Key for tests on Oracle 19c database. */
+    public static final String DB_ORACLE19C = "oracle19c";
 
     /** The OpenCms/database configuration. */
     public static CmsParameterConfiguration m_configuration;
@@ -1477,7 +1483,9 @@ public class OpenCmsTestCase extends TestCase {
             connection.m_userPassword);
 
         // check for errors
-        if (!DB_ORACLE.equals(m_dbProduct)) {
+        if (!DB_ORACLE9I.equals(m_dbProduct)
+            && !DB_ORACLE12.equals(m_dbProduct)
+            && !DB_ORACLE19C.equals(m_dbProduct)) {
             checkErrors(setupDb);
         }
 

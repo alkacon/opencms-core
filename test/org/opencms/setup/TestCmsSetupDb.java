@@ -77,7 +77,9 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
      */
     public void testCreateDatabase() {
 
-        if (DB_ORACLE.equals(getDatabaseProduct())) {
+        if (DB_ORACLE9I.equals(getDatabaseProduct())
+            || DB_ORACLE12.equals(getDatabaseProduct())
+            || DB_ORACLE19C.equals(getDatabaseProduct())) {
             System.out.println("testCreateDatabase not applicable for oracle.");
             return;
         }
@@ -98,7 +100,9 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
      */
     public void testCreateTables() {
 
-        if (DB_ORACLE.equals(getDatabaseProduct())) {
+        if (DB_ORACLE9I.equals(getDatabaseProduct())
+            || DB_ORACLE12.equals(getDatabaseProduct())
+            || DB_ORACLE19C.equals(getDatabaseProduct())) {
             System.out.println("testDropDatabase not applicable for oracle.");
             return;
         }
@@ -119,7 +123,9 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
      */
     public void testDropDatabase() {
 
-        if (DB_ORACLE.equals(getDatabaseProduct())) {
+        if (DB_ORACLE9I.equals(getDatabaseProduct())
+            || DB_ORACLE12.equals(getDatabaseProduct())
+            || DB_ORACLE19C.equals(getDatabaseProduct())) {
             System.out.println("testDropDatabase not applicable for oracle.");
             return;
         }
@@ -140,7 +146,9 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
      */
     public void testDropTables() {
 
-        if (DB_ORACLE.equals(getDatabaseProduct())) {
+        if ((DB_ORACLE9I.equals(getDatabaseProduct())
+            || DB_ORACLE12.equals(getDatabaseProduct())
+            || DB_ORACLE19C.equals(getDatabaseProduct())) {
             System.out.println("testDropDatabase not applicable for oracle.");
             return;
         }

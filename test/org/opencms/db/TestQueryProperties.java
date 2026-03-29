@@ -137,7 +137,7 @@ public class TestQueryProperties extends OpenCmsTestCase {
      */
     public void testQueryPropertiesOracle() throws Exception {
 
-        // oracle8
+        // oracle
         parseQueryProperties("org/opencms/db/oracle/query.properties");
     }
 
