@@ -1243,8 +1243,9 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         CmsSiteMatcher testAlias = new CmsSiteMatcher(aliasName);
         int count = 0;
         for (Component c : m_aliases) {
-            if (c instanceof CmsRemovableFormRow<?>) {
-                String alName = (String)((CmsRemovableFormRow<? extends AbstractField<?>>)c).getInput().getValue();
+            if (c instanceof I_CmsEditableGroupRow) {
+                TextField field = getTextFieldForAliasRow((I_CmsEditableGroupRow)c);
+                String alName = field.getValue();
                 if (testAlias.equals(new CmsSiteMatcher(alName))) {
                     count++;
                 }
@@ -1281,8 +1282,8 @@ public class CmsEditSiteForm extends CmsBasicDialog {
         boolean ret = true;
 
         for (I_CmsEditableGroupRow row : m_aliasGroup.getRows()) {
-            FormLayout layout = (FormLayout)(row.getComponent());
-            TextField field = (TextField)layout.getComponent(0);
+
+            TextField field = getTextFieldForAliasRow(row);
             ret = ret & field.isValid();
         }
         return ret;
@@ -1715,7 +1716,11 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             FormLayout layout = (FormLayout)(row.getComponent());
             ComboBox box = (ComboBox)(layout.getComponent(1));
             TextField field = (TextField)layout.getComponent(0);
-            CmsSiteMatcher matcher = new CmsSiteMatcher(field.getValue());
+            String value = field.getValue();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+                continue;
+            }
+            CmsSiteMatcher matcher = new CmsSiteMatcher(value);
             matcher.setRedirectMode((RedirectMode)(box.getValue()));
             ret.add(matcher);
         }
@@ -1943,6 +1948,19 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             res = res.endsWith("/") ? res.substring(0, res.length() - 1) : res;
         }
         return res;
+    }
+
+    /**
+     * Gets the text field for the given alias row.
+     *
+     * @param row the alias row
+     * @return the text field in that row
+     */
+    private TextField getTextFieldForAliasRow(I_CmsEditableGroupRow row) {
+
+        FormLayout layout = (FormLayout)(row.getComponent());
+        TextField field = (TextField)layout.getComponent(0);
+        return field;
     }
 
     /**
