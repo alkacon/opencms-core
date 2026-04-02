@@ -54,6 +54,7 @@
 			<enableSecurity>false</enableSecurity>
             <requireOrgUnit>true</requireOrgUnit>
 			<logoutUri>/foo/bar</logoutUri>
+			<forceLogoutForUnprivilegedUsers>true</forceLogoutForUnprivilegedUsers>
 		</loginmanager>
 		<custom-login class="org.opencms.configuration.CmsTestCustomLogin">
 			<param name="foo">bar</param>

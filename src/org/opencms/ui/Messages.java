@@ -380,6 +380,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOGIN_OPTIONS_SHOW_0 = "GUI_LOGIN_OPTIONS_SHOW_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_AUTO_LOGOUT_0 = "GUI_AUTO_LOGOUT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NEW_CREATE_IN_PATH_1 = "GUI_NEW_CREATE_IN_PATH_1";
 
     /** Message constant for key in the resource bundle. */

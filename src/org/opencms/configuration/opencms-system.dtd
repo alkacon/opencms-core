@@ -155,7 +155,9 @@
 # Additionally, a login security option to choose the PC type (private or public) can be enabled.
 -->
 
-<!ELEMENT loginmanager (disableMinutes, maxBadAttempts, enableSecurity?, tokenLifetime?,maxInactiveTime?, passwordChangeInterval?, userDataCheckInterval?, requireOrgUnit?, logoutUri?)>
+<!ELEMENT loginmanager (disableMinutes, maxBadAttempts, enableSecurity?, tokenLifetime?,maxInactiveTime?, passwordChangeInterval?, userDataCheckInterval?, requireOrgUnit?, logoutUri?, forceLogoutForUnprivilegedUsers?)>
+
+
 
 
 <!ELEMENT maxBadAttempts (#PCDATA)>
@@ -167,6 +169,9 @@
 <!ELEMENT maxInactiveTime (#PCDATA)>
 <!ELEMENT passwordChangeInterval (#PCDATA)>
 <!ELEMENT userDataCheckInterval (#PCDATA)>
+
+<!ELEMENT forceLogoutForUnprivilegedUsers (#PCDATA)>
+
 <!ELEMENT logoutUri (#PCDATA)>
 
 

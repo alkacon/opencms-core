@@ -361,6 +361,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the http-authentication node. */
     public static final String N_HTTP_AUTHENTICATION = "http-authentication";
 
+    /** The node name for the forceLogoutForUnprivilegedUsers node. */
+    public static final String N_FORCE_LOGOUT_FOR_UNPRIVILEGED_USERS = "forceLogoutForUnprivilegedUsers";
+
     /** The node name for the internationalization node. */
     public static final String N_I18N = "internationalization";
 
@@ -1054,7 +1057,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_VALIDATIONHANDLER, 0, A_CLASS);
 
         // add login manager creation rules
-        digester.addCallMethod("*/" + N_LOGINMANAGER, "setLoginManager", 9);
+        digester.addCallMethod("*/" + N_LOGINMANAGER, "setLoginManager", 10);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_DISABLEMINUTES, 0);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_MAXBADATTEMPTS, 1);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_ENABLESCURITY, 2);
@@ -1064,6 +1067,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_USER_DATA_CHECK_INTERVAL, 6);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_REQUIRE_ORGUNIT, 7);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_LOGOUT_URI, 8);
+        digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_FORCE_LOGOUT_FOR_UNPRIVILEGED_USERS, 9);
 
         digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_CUSTOM_LOGIN, null, A_CLASS);
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_CUSTOM_LOGIN, "setCustomLogin");
@@ -1583,6 +1587,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
             if (m_loginManager.getLogoutUri() != null) {
                 managerElement.addElement(N_LOGOUT_URI).addText(m_loginManager.getLogoutUri());
+            }
+
+            if (m_loginManager.isForceLogoutForUnprivilegedUsers()) {
+                managerElement.addElement(N_FORCE_LOGOUT_FOR_UNPRIVILEGED_USERS).addText("" + true);
             }
 
             if (m_loginManager.getCustomLogin() != null) {
@@ -2177,7 +2185,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 null,
                 null,
                 false,
-                null);
+                null,
+                false);
         }
         return m_loginManager;
     }
@@ -2748,7 +2757,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         String passwordChangeInterval,
         String userDataCheckInterval,
         String requireOrgUnitStr,
-        String logoutUri) {
+        String logoutUri,
+        String forceLogoutForUnprivilegedUsersStr) {
 
         int disableMinutes;
         try {
@@ -2764,6 +2774,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         }
         boolean enableSecurity = Boolean.valueOf(enableSecurityStr).booleanValue();
         boolean requireOrgUnit = Boolean.valueOf(requireOrgUnitStr).booleanValue();
+        boolean forceLogoutForUnprivilegedUsers = Boolean.parseBoolean(forceLogoutForUnprivilegedUsersStr);
         m_loginManager = new CmsLoginManager(
             disableMinutes,
             maxBadAttempts,
@@ -2773,7 +2784,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             passwordChangeInterval,
             userDataCheckInterval,
             requireOrgUnit,
-            logoutUri);
+            logoutUri,
+            forceLogoutForUnprivilegedUsers);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(
                 Messages.get().getBundle().key(

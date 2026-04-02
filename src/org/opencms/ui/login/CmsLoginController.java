@@ -440,6 +440,17 @@ public class CmsLoginController {
      */
     public static void logout() {
 
+        logout(false);
+    }
+
+    /**
+     * Logs the current user out by invalidating the session an reloading the current URI.<p>
+     * Important:  This works only within vaadin apps.<p>
+     *
+     * @param autoLogout true if this logout is triggered as part of the auto-logout function
+     */
+    public static void logout(boolean autoLogout) {
+
         CmsObject cms = A_CmsUI.getCmsObject();
         if (UI.getCurrent() instanceof CmsAppWorkplaceUi) {
             ((CmsAppWorkplaceUi)UI.getCurrent()).onWindowClose();
@@ -456,9 +467,13 @@ public class CmsLoginController {
             // open in top frame, so it still works when the Vaadin dialog is embedded
             Page.getCurrent().open(target, "_top", false);
         } else {
+            String suffix = "";
+            if (autoLogout) {
+                suffix = "?" + CmsLoginHelper.PARAM_AUTOLOGOUT + "=true";
+            }
             String loginLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
                 cms,
-                CmsWorkplaceLoginHandler.LOGIN_HANDLER,
+                CmsWorkplaceLoginHandler.LOGIN_HANDLER + suffix,
                 false);
             loginLink = OpenCms.getAuthorizationHandler().getLogoutRedirectUri(
                 cms,
@@ -777,16 +792,21 @@ public class CmsLoginController {
         } else if (m_params.isReset()) {
             m_ui.showPasswordResetDialog(m_params.getOufqn());
         } else {
-            boolean loggedIn = !A_CmsUI.getCmsObject().getRequestContext().getCurrentUser().isGuestUser();
+            CmsUser user = A_CmsUI.getCmsObject().getRequestContext().getCurrentUser();
+            boolean loggedIn = !user.isGuestUser();
             m_ui.setSelectableOrgUnits(CmsLoginHelper.getOrgUnitsForLoginDialog(A_CmsUI.getCmsObject(), null));
             if (loggedIn) {
                 if (m_params.isLogout()) {
-                    logout();
+                    logout(false);
                 } else {
-                    m_ui.showAlreadyLoggedIn();
+                    if (CmsLoginHelper.shouldAutoLogout(A_CmsUI.getCmsObject())) {
+                        logout(true);
+                    } else {
+                        m_ui.showAlreadyLoggedIn();
+                    }
                 }
             } else {
-                m_ui.showLoginView(m_params.getOufqn());
+                m_ui.showLoginView(m_params.getOufqn(), m_params.isAutoLogout());
             }
         }
 

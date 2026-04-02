@@ -41,6 +41,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsDefaultAuthorizationHandler;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.security.CmsRole;
 import org.opencms.ui.apps.CmsAppHierarchyConfiguration;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.apps.CmsPageEditorConfiguration;
@@ -103,6 +104,9 @@ public class CmsLoginHelper extends CmsJspLoginBean {
         /** Reset password flag. */
         private boolean m_reset;
 
+        /** Indicates that user was automatically logged out. */
+        private boolean m_autoLogout;
+
         /**
          * Constructor.<p>
          *
@@ -114,6 +118,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
          * @param authToken the authorization token
          * @param logout the logout flag
          * @param reset flag to indicate whether we are in 'reset password' mode
+         * @param autoLogout if true, show message about automatic logout
          */
         public LoginParameters(
             String username,
@@ -123,7 +128,8 @@ public class CmsLoginHelper extends CmsJspLoginBean {
             Locale locale,
             String authToken,
             boolean logout,
-            boolean reset) {
+            boolean reset,
+            boolean autoLogout) {
 
             m_username = username;
             m_pcType = pcType;
@@ -133,6 +139,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
             m_authToken = authToken;
             m_logout = logout;
             m_reset = reset;
+            m_autoLogout = autoLogout;
         }
 
         /**
@@ -196,6 +203,16 @@ public class CmsLoginHelper extends CmsJspLoginBean {
         }
 
         /**
+         * True if we should show a message about the user having been automatically logged out.
+         *
+         * @return true if we should show a message about the user having been automatically logged out
+         */
+        public boolean isAutoLogout() {
+
+            return m_autoLogout;
+        }
+
+        /**
          * Returns if a logout is requested.<p>
          *
          * @return the logout flag
@@ -246,6 +263,9 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
     /** Parameter name for the authorization token. */
     public static final String PARAM_AUTHTOKEN = "at";
+
+    /** Parameter name for the auto-logout notification. */
+    public static final String PARAM_AUTOLOGOUT = "auto_logout";
 
     /** The html id for the login form. */
     public static final String PARAM_FORM = "ocLoginForm";
@@ -369,6 +389,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
         boolean workplaceUiRequest) {
 
         String authToken = request.getParameter(PARAM_AUTHTOKEN);
+        String autoLogout = request.getParameter(PARAM_AUTOLOGOUT);
 
         String actionLogout = CmsRequestUtil.getNotEmptyParameter(request, PARAM_ACTION_LOGOUT);
         boolean logout = Boolean.valueOf(actionLogout).booleanValue();
@@ -429,7 +450,16 @@ public class CmsLoginHelper extends CmsJspLoginBean {
         Locale locale = getLocaleForRequest(request);
         String resetStr = request.getParameter(PARAM_RESET_PASSWORD);
         boolean reset = (resetStr != null);
-        return new LoginParameters(username, pcType, oufqn, requestedResource, locale, authToken, logout, reset);
+        return new LoginParameters(
+            username,
+            pcType,
+            oufqn,
+            requestedResource,
+            locale,
+            authToken,
+            logout,
+            reset,
+            Boolean.parseBoolean(autoLogout));
     }
 
     /**
@@ -583,6 +613,18 @@ public class CmsLoginHelper extends CmsJspLoginBean {
             setCookie(ouFqnCookie, true, request, response);
 
         }
+    }
+
+    /**
+     * Checks if the current user should be logged out automatically when opening the login dialog page.
+     *
+     * @param cms the current CMS context
+     * @return true if the user should be logged out
+     */
+    public static boolean shouldAutoLogout(CmsObject cms) {
+
+        return OpenCms.getLoginManager().isForceLogoutForUnprivilegedUsers()
+            && !OpenCms.getRoleManager().hasRole(cms, CmsRole.ELEMENT_AUTHOR);
     }
 
     /**

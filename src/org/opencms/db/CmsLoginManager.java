@@ -210,6 +210,9 @@ public class CmsLoginManager {
     /** User data check interval. */
     private String m_userDateCheckInterval;
 
+    /** If true, forces logout for non-ELEMENT_AUTHOR users when opening /system/login. */
+    private boolean m_forceLogoutForUnprivilegedUsers;
+
     /**
      * Creates a new storage for invalid logins.<p>
      *
@@ -232,7 +235,8 @@ public class CmsLoginManager {
         String passwordChangeInterval,
         String userDataCheckInterval,
         boolean requireOrgUnit,
-        String logoutUri) {
+        String logoutUri,
+        boolean forceLogoutForUnprivilegedUsers) {
 
         m_maxBadAttempts = maxBadAttempts;
         if (TEMP_DISABLED_USER == null) {
@@ -252,6 +256,7 @@ public class CmsLoginManager {
         m_userDateCheckInterval = userDataCheckInterval;
         m_requireOrgUnit = requireOrgUnit;
         m_logoutUri = logoutUri;
+        m_forceLogoutForUnprivilegedUsers = forceLogoutForUnprivilegedUsers;
     }
 
     /**
@@ -544,6 +549,16 @@ public class CmsLoginManager {
     public boolean isExcludedFromPasswordReset(CmsObject cms, CmsUser user) {
 
         return user.isManaged() || user.isWebuser() || OpenCms.getDefaultUsers().isDefaultUser(user.getName());
+    }
+
+    /**
+     * Checks if non-ELEMENT_AUTHOR users should be logged out when visiting /system/login.
+     *
+     * @return true if unprivileged users should be logged out
+     */
+    public boolean isForceLogoutForUnprivilegedUsers() {
+
+        return m_forceLogoutForUnprivilegedUsers;
     }
 
     /**

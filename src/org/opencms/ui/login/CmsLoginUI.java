@@ -70,6 +70,7 @@ import org.apache.commons.logging.Log;
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
+import com.vaadin.server.VaadinServletRequest;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.Version;
 import com.vaadin.ui.Alignment;
@@ -244,22 +245,29 @@ public class CmsLoginUI extends A_CmsUI {
             CmsLoginController.logout(cms, request, response);
             return null;
         }
-
         if (!cms.getRequestContext().getCurrentUser().isGuestUser()) {
-            String encryptedTarget = request.getParameter(CmsGwtConstants.PARAM_LOGIN_REDIRECT);
-            String target = null;
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(encryptedTarget)) {
-                target = CmsLoginController.getLoginTarget(cms, getWorkplaceSettings(cms, request.getSession()), null);
+            if (CmsLoginHelper.shouldAutoLogout(cms)) {
+                LOG.info("Auto logout for current user");
+                // the dialog does the actual logout, so here we do nothing
             } else {
-                try {
-                    target = OpenCms.getDefaultTextEncryption().decrypt(encryptedTarget);
-                } catch (CmsEncryptionException e) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                    return null;
+                String encryptedTarget = request.getParameter(CmsGwtConstants.PARAM_LOGIN_REDIRECT);
+                String target = null;
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(encryptedTarget)) {
+                    target = CmsLoginController.getLoginTarget(
+                        cms,
+                        getWorkplaceSettings(cms, request.getSession()),
+                        null);
+                } else {
+                    try {
+                        target = OpenCms.getDefaultTextEncryption().decrypt(encryptedTarget);
+                    } catch (CmsEncryptionException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                        return null;
+                    }
                 }
+                response.sendRedirect(target);
+                return null;
             }
-            response.sendRedirect(target);
-            return null;
         }
         CmsLoginHelper.LoginParameters params = CmsLoginHelper.getLoginParameters(cms, request, false);
         request.getSession().setAttribute(CmsLoginUI.INIT_DATA_SESSION_ATTR, params);
@@ -524,8 +532,9 @@ public class CmsLoginUI extends A_CmsUI {
      * Initializes the login view.<p>
      *
      * @param preselectedOu a potential preselected OU
+     * @param isAutoLogout true if user was automatically logged out
      */
-    public void showLoginView(String preselectedOu) {
+    public void showLoginView(String preselectedOu, boolean isAutoLogout) {
 
         VerticalLayout content = new VerticalLayout();
         content.setSizeFull();
@@ -539,12 +548,16 @@ public class CmsLoginUI extends A_CmsUI {
         setContent(content);
 
         m_loginForm.selectOrgUnit(preselectedOu);
+        if (isAutoLogout) {
+            String text = CmsVaadinUtils.getMessageText(Messages.GUI_AUTO_LOGOUT_0);
+            m_loginForm.displayError(text);
+        }
 
     }
 
     /**
      * Shows the password reset dialog.<p>
-     * 
+     *
      * @param orgUnit the OU that should be preselected
      */
     public void showPasswordResetDialog(String orgUnit) {
@@ -598,6 +611,8 @@ public class CmsLoginUI extends A_CmsUI {
         m_controller.setUi(this);
         setLocale(params.getLocale());
         m_loginForm = new CmsLoginForm(m_controller, params.getLocale());
+        VaadinServletRequest r1 = ((VaadinServletRequest)request);
+        r1.getLocale();
         m_controller.onInit();
         getPage().setTitle(
             CmsAppWorkplaceUi.WINDOW_TITLE_PREFIX
