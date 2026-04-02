@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>16.0</opencms_version>
-		<createdate>Tue, 16 Jan 2024 15:18:57 GMT</createdate>
+		<opencms_version>21.0</opencms_version>
+		<createdate>Thu, 02 Apr 2026 11:18:57 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>10</export_version>
 	</info>
@@ -16,7 +16,7 @@
 		<site>/</site>
 		<export-mode name="default"/>
 		<description><![CDATA[This module contains the French language localization files for the OpenCms workplace. Some important keywords in english are kept , like 'Explorer', 'Launchpad', 'Workplace', 'Online', 'Offline' , 'Workflow', 'Formatter' ...]]></description>
-		<version>20.0.0</version>
+		<version>21.0.0</version>
 		<authorname/>
 		<authoremail/>
 		<datecreated>Mon, 15 Jan 2024 17:38:13 GMT</datecreated>
@@ -581,14 +581,27 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/locales/fr/messages/org/opencms/ade/upload/messages_fr.properties</source>
-			<destination>system/workplace/locales/fr/messages/org/opencms/ade/upload/messages_fr.properties</destination>
-			<type>plain</type>
-			<uuidstructure>2b6e976e-b482-11ee-9bbb-f09e4a37616c</uuidstructure>
-			<uuidresource>2b6e976f-b482-11ee-9bbb-f09e4a37616c</uuidresource>
-			<datelastmodified>Tue, 16 Jan 2024 15:16:06 GMT</datelastmodified>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ai</destination>
+			<type>folder</type>
+			<uuidstructure>8154c8c6-2e73-11f1-a567-0242ac11002b</uuidstructure>
+			<datelastmodified>Thu, 02 Apr 2026 11:16:05 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 16 Jan 2024 15:16:06 GMT</datecreated>
+			<datecreated>Thu, 02 Apr 2026 11:16:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/fr/messages/org/opencms/ai/messages_fr.properties</source>
+			<destination>system/workplace/locales/fr/messages/org/opencms/ai/messages_fr.properties</destination>
+			<type>plain</type>
+			<uuidstructure>f4b8944b-2e73-11f1-a567-0242ac11002b</uuidstructure>
+			<uuidresource>04de2f6f-2e74-11f1-a567-0242ac11002b</uuidresource>
+			<datelastmodified>Thu, 02 Apr 2026 11:16:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 02 Apr 2026 11:16:05 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
