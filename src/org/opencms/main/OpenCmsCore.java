@@ -170,6 +170,7 @@ import org.apache.commons.logging.Log;
 import org.apache.logging.log4j.CloseableThreadContext;
 
 import org.antlr.stringtemplate.StringTemplate;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
@@ -198,6 +199,11 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
  * @since 6.0.0
  */
 public final class OpenCmsCore {
+
+    static {
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+    }
 
     /** Parameter to control whether generated links should always include the host. */
     public static final String PARAM_FORCE_ABSOLUTE_LINKS = "__forceAbsoluteLinks";
