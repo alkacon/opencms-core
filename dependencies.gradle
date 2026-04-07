@@ -17,8 +17,10 @@ dependencies {
     gwtCompile group: 'ant', name: 'ant', version: '1.6.5', transitive: false
     gwtCompile group: 'colt', name: 'colt', version: '1.2.0', transitive: false
     gwtCompile group: 'com.google.code.gson', name: 'gson', version: '2.10.1', transitive: false
-    gwtCompile group: 'org.gwtproject', name: 'gwt-dev', version: '2.12.2', transitive: false
-    gwtCompile group: 'org.gwtproject', name: 'gwt-user', version: '2.12.2', transitive: false
+    gwtCompile('org.gwtproject:gwt-dev:2.13.0') {
+    	exclude group: 'xml-apis', module: 'xml-apis'
+    }
+    gwtCompile group: 'org.gwtproject', name: 'gwt-user', version: '2.13.0', transitive: true
     gwtCompile group: 'com.google.jsinterop', name: 'jsinterop-annotations', version: '2.0.2', transitive: false
     gwtCompile(group: 'com.google.jsinterop', name: 'jsinterop-annotations', version: '1.0.2', transitive: false){
         artifact {
@@ -77,7 +79,7 @@ dependencies {
     distribution group: 'com.google.elemental2', name: 'elemental2-core', version: '1.2.3', transitive: false
     distribution group: 'com.google.elemental2', name: 'elemental2-dom', version: '1.2.3', transitive: false
     distribution group: 'com.google.elemental2', name: 'elemental2-webstorage', version: '1.2.3', transitive: false
-    distribution group: 'org.gwtproject', name: 'gwt-servlet', version: '2.12.2', transitive: false
+    distribution group: 'org.gwtproject', name: 'gwt-servlet', version: '2.13.0', transitive: false
     distribution group: 'com.google.gwt', name: 'gwt-elemental', version: '2.9.0', transitive: false
     distribution group: 'com.google.code.gson', name: 'gson', version: '2.10.1', transitive: false
     distribution group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1', transitive: false
