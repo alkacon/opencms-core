@@ -192,9 +192,9 @@ dependencies {
     distribution group: 'org.apache.xmlgraphics', name: 'batik-css', version:'1.16', transitive: false
     distribution group: 'org.apache.xmlgraphics', name: 'batik-i18n', version:'1.16', transitive: false
     distribution group: 'org.apache.xmlgraphics', name: 'batik-util', version:'1.16', transitive: false
-    distribution group: 'org.bouncycastle', name: 'bcpkix-jdk18on', version: '1.78.1', transitive: false
-    distribution group: 'org.bouncycastle', name: 'bcprov-jdk18on', version: '1.78.1', transitive: false
-    distribution group: 'org.bouncycastle', name: 'bcutil-jdk18on', version: '1.78.1', transitive: false
+    distribution group: 'org.bouncycastle', name: 'bcpkix-jdk18on', version: '1.79', transitive: false
+    distribution group: 'org.bouncycastle', name: 'bcprov-jdk18on', version: '1.79', transitive: false
+    distribution group: 'org.bouncycastle', name: 'bcutil-jdk18on', version: '1.79', transitive: false
     distribution group: 'org.codehaus.mojo', name: 'animal-sniffer-annotations', version: '1.19', transitive: false
     distribution group: 'org.dom4j', name: 'dom4j', version: '2.1.4', transitive: false
     distribution group: 'org.glassfish.web', name: 'javax.servlet.jsp.jstl', version: '1.2.5-b03', transitive: false
