@@ -242,7 +242,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
 
     /** Visibility check for undelete option. */
     public static final CmsStandardVisibilityCheck UNDELETE = new CmsStandardVisibilityCheck(
-        roleeditor,
+        roleelementauthor,
         notonline,
         deleted,
         writepermisssion,
