@@ -240,13 +240,12 @@ public class CmsFileTable extends CmsResourceTable {
          */
         @Override
         protected int compareProperty(Object propertyId, boolean sortDirection, Item item1, Item item2) {
-
             //@formatter:off
             if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME.equals(propertyId)) {
                 Boolean isFolder1 = (Boolean)item1.getItemProperty(
-                    CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
+                        CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
                 Boolean isFolder2 = (Boolean)item2.getItemProperty(
-                    CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
+                        CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
                 if (!isFolder1.equals(isFolder2)) {
                     int result = isFolder1.booleanValue() ? -1 : 1;
                     if (!sortDirection) {
@@ -255,17 +254,17 @@ public class CmsFileTable extends CmsResourceTable {
                     return result;
                 }
             } else if ((CmsResourceTableProperty.PROPERTY_TYPE_ICON.equals(propertyId)
-                || CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT.equals(propertyId))
-                && (item1.getItemProperty(CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION) != null)) {
+                    || CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT.equals(propertyId))
+                    && (item1.getItemProperty(CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION) != null)) {
                 int result;
                 Float pos1 = (Float)item1.getItemProperty(
-                    CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
+                        CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
                 Float pos2 = (Float)item2.getItemProperty(
-                    CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
+                        CmsResourceTableProperty.PROPERTY_NAVIGATION_POSITION).getValue();
                 if (pos1 == null) {
                     result = pos2 == null
-                    ? compareProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, true, item1, item2)
-                    : 1;
+                            ? compareProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, true, item1, item2)
+                            : 1;
                 } else {
                     result = pos2 == null ? -1 : Float.compare(pos1.floatValue(), pos2.floatValue());
                 }
@@ -273,13 +272,15 @@ public class CmsFileTable extends CmsResourceTable {
                     result = result * (-1);
                 }
                 return result;
-            } else if (((CmsResourceTableProperty)propertyId).getColumnType().equals(String.class)) {
+            }
+
+            if (((CmsResourceTableProperty)propertyId).getColumnType().equals(String.class)) {
                 String value1 = (String)item1.getItemProperty(propertyId).getValue();
                 String value2 = (String)item2.getItemProperty(propertyId).getValue();
                 // Java collators obtained by java.text.Collator.getInstance(...) ignore spaces, and we don't want to ignore them, so we use
                 // ICU collators instead
                 com.ibm.icu.text.Collator collator = com.ibm.icu.text.Collator.getInstance(
-                    com.ibm.icu.util.ULocale.ROOT);
+                        com.ibm.icu.util.ULocale.ROOT);
                 int result = collator.compare(value1, value2);
                 if (!sortDirection) {
                     result = -result;
