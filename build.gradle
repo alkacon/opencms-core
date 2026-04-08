@@ -1,13 +1,5 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-buildscript {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
-
 plugins {
     id 'java-library'
     id 'maven-publish'

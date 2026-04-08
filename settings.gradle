@@ -4,6 +4,7 @@ if (null != external_directories) {
         repositories {
             mavenLocal()
             mavenCentral()
+            gradlePluginPortal()
         }
         resolutionStrategy {
             eachPlugin {
