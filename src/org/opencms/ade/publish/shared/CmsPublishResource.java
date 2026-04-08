@@ -55,6 +55,9 @@ public class CmsPublishResource extends CmsListInfoBean {
     /** The additional information, if any. */
     private CmsPublishResourceInfo m_info;
 
+    /** Is the resource an XML content? */
+    private boolean m_isXmlContent;
+
     /** The resource name.*/
     private String m_name;
 
@@ -79,6 +82,7 @@ public class CmsPublishResource extends CmsListInfoBean {
      * @param resourceType the resource type name
      * @param state the resource state
      * @param permissionInfo the permission info
+     * @þaram isXmlContent if the resource is an XML content
      * @param dateLastModified the last modification date
      * @param userLastModified name of the user who last modified the resource
      * @param dateLastModifiedStr the last modification date as a formatted string
@@ -93,12 +97,14 @@ public class CmsPublishResource extends CmsListInfoBean {
         String resourceType,
         CmsResourceState state,
         CmsPermissionInfo permissionInfo,
+        boolean isXmlContent,
         long dateLastModified,
         String userLastModified,
         String dateLastModifiedStr,
         boolean removable,
         CmsPublishResourceInfo info,
         List<CmsPublishResource> related) {
+
         super(CmsStringUtil.isEmptyOrWhitespaceOnly(title) ? name : title, name, null);
         setResourceType(resourceType);
         setResourceState(state);
@@ -107,6 +113,7 @@ public class CmsPublishResource extends CmsListInfoBean {
         m_name = name;
         m_related = ((related == null) ? new ArrayList<CmsPublishResource>() : related);
         m_permissionInfo = permissionInfo;
+        m_isXmlContent = isXmlContent;
         m_removable = removable;
         m_info = info;
         m_dateLastModified = dateLastModified;
@@ -226,6 +233,16 @@ public class CmsPublishResource extends CmsListInfoBean {
     public boolean isRemovable() {
 
         return m_removable;
+    }
+
+    /**
+     * Checks if the resource is an XML content.
+     *
+     * @return true if the resource is an XML content
+     */
+    public boolean isXmlContent() {
+
+        return m_isXmlContent;
     }
 
     /**

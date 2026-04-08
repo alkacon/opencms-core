@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.gwt.CmsIconUtil;
 import org.opencms.gwt.CmsVfsService;
 import org.opencms.gwt.shared.CmsPermissionInfo;
@@ -334,6 +335,7 @@ public class CmsPublish {
             CmsResourceTypePlain.getStaticTypeName(),
             CmsResourceState.STATE_UNCHANGED,
             permissionInfo,
+            false /*type doesn't matter, we can't edit it anyway. */ ,
             0,
             null,
             null,
@@ -389,6 +391,7 @@ public class CmsPublish {
             typeName,
             resource.getState(),
             permissionInfo,
+            CmsResourceTypeXmlContent.isXmlContent(resource),
             resource.getDateLastModified(),
             resUtil.getUserLastModified(),
             CmsVfsService.formatDateTime(m_cms, resource.getDateLastModified()),

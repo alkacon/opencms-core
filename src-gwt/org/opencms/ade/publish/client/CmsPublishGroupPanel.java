@@ -366,7 +366,9 @@ public class CmsPublishGroupPanel extends Composite {
         boolean isSubItem) {
 
         CmsListItemWidget itemWidget = createListItemWidget(resourceBean, DEFAULT_SLOT_MAPPING);
-        if ((m_editorHandler != null) && resourceBean.getPermissionInfo().hasWritePermission()) {
+        if ((m_editorHandler != null)
+            && resourceBean.isXmlContent()
+            && resourceBean.getPermissionInfo().hasWritePermission()) {
             CmsPushButton editButton = new CmsPushButton();
             editButton.setImageClass(I_CmsButton.PEN_SMALL);
             editButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
