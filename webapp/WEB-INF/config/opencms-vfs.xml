@@ -51,6 +51,7 @@
                         <mapping suffix=".otf" />
                         <mapping suffix=".ttc" />
                         <mapping suffix=".ttf" />
+                        <mapping suffix=".csv" />
                     </mappings>
                     <param name="gallery.type.names">downloadgallery</param>
                 </type>
@@ -88,6 +89,7 @@
                         <mapping suffix=".qt" />
                         <mapping suffix=".avi" />
                         <mapping suffix=".pkpass" />
+                        <mapping suffix=".ai" />
                     </mappings>
                     <param name="gallery.type.names">downloadgallery</param>
                 </type>
