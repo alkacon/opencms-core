@@ -185,6 +185,7 @@ configurations {
     // It corresponds to our compile configuration, that's why we have to use extendsFrom here
     testImplementation {
         extendsFrom testCompile
+        extendsFrom setupImplementation
     }
 
     gwtCompile {
@@ -1132,47 +1133,64 @@ tasks.register('bindist', Zip) {
 }
 
 
-test {
-    // We fix max heap size here, since with less heap size tests will fail.
+// Shared configuration for all test tasks
+tasks.withType(Test).configureEach {
     maxHeapSize = "2000m"
     useJUnit()
     scanForTestClasses = false
+    testLogging.showStandardStreams = true
+    ignoreFailures = true
+}
+
+def coreTestConfig = {
     testClassesDirs = files(sourceSets.test.java.classesDirectory)
     systemProperties['test.data.path'] = "${projectDir}/test/data"
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
     systemProperties['test.project.path'] = "${projectDir}"
-    systemProperties['test.build.folder'] =sourceSets.test.output.resourcesDir
-    testLogging.showStandardStreams = true
-    ignoreFailures = true
-    filter {
-        includeTestsMatching "org.opencms.test.AllTests"
-    }
+    systemProperties['test.build.folder'] = sourceSets.test.output.resourcesDir
+    inputs.dir "${projectDir}/test/data"
+    inputs.dir "${projectDir}/webapp"
+}
+
+test {
+    configure coreTestConfig
+    description "Runs the complete test suite 'org.opencms.test.AllTests'."
+
+    filter.includeTestsMatching("org.opencms.test.AllTests")
 }
 
 tasks.register('testSingle', Test) {
-    dependsOn compileTestJava
-    description "Runs a specified test case set like this: -PtestCaseToRun=org.opencms.main.TestCmsSystemInfo*"
-    inputs.dir "${projectDir}/test/data"
-    inputs.dir "${projectDir}/webapp"
+    description "Runs a specified test case. Equivalent to standard 'test' task. \n" +
+                "NOTE: Usage of legacy '-PtestCaseToRun' property is DEPRECATED. Use standard '--tests' filtering instead. \n" +
+                "Conflict Resolution: If both '-PtestCaseToRun' and '--tests' are defined, standard '--tests' takes precedence. \n" +
+                "Default: Runs TestCmsSystemInfo test case if no filters are provided."
+    group 'verification'
+    configure coreTestConfig
 
-    useJUnit()
-    if (!project.hasProperty('testCaseToRun')){
-        project.ext.testCaseToRun='org.opencms.main.TestCmsSystemInfo*'
-    }
     doFirst{
-        println "Running test case : ${testCaseToRun}"
+        logger.info("Test filter configuration - commandLineIncludePatterns: ${filter.commandLineIncludePatterns}, includePatterns: ${filter.includePatterns}")
+
+        boolean hasExplicit = !filter.commandLineIncludePatterns.empty || !filter.includePatterns.empty
+        
+        // Backward compatibility: Check for -PtestCaseToRun property
+        if (project.hasProperty('testCaseToRun')) {
+             if (hasExplicit) {
+                 logger.warn("WARNING: Both -PtestCaseToRun and --tests filters are present. Using standard Gradle filters and ignoring legacy property.")
+             } else {
+                 def legacyTestInfo = project.property('testCaseToRun')
+                 logger.warn("DEPRECATION WARNING: The 'testCaseToRun' property is deprecated. Please use standard Gradle filtering: ./gradlew testSingle --tests ${legacyTestInfo}")
+                 filter.includeTestsMatching "${legacyTestInfo}*"
+                 hasExplicit = true
+             }
+        }
+
+        logger.debug("hasExplicitTestSelection: ${hasExplicit}")
+
+        if (!hasExplicit) {
+            logger.lifecycle("No specific tests requested, applying default filter: org.opencms.main.TestCmsSystemInfo*")
+            filter.includeTestsMatching "org.opencms.main.TestCmsSystemInfo*"
+        }
     }
-    filter {
-        includeTestsMatching testCaseToRun
-    }
-    scanForTestClasses = false
-    testClassesDirs = files(sourceSets.test.java.classesDirectory)
-    systemProperties['test.data.path'] = "${projectDir}/test/data"
-    systemProperties['test.webapp.path'] = "${projectDir}/webapp"
-    systemProperties['test.build.folder'] =sourceSets.test.output.resourcesDir
-    maxHeapSize = max_heap_size
-    testLogging.showStandardStreams = true
-    ignoreFailures = true
 }
 
 tasks.register('testJar', Jar) {
