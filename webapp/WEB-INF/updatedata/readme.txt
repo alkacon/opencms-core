@@ -21,7 +21,7 @@ IMPORTANT: Alkacon OCEE versions less than @OPENCMS_VERSION@ will not work with 
 IMPORTANT: The updater is only compatible with the database engines MySQL,
            Oracle and PostgreSQL.
 
-IMPORTANT: This version of OpenCms requires at least Java 11.
+IMPORTANT: This version of OpenCms requires at least Java 21.
 
 IMPORTANT: The upgrade wizard will replace all VFS resources of the updated modules.
            If you made modifications to these modules, their changes will be lost.

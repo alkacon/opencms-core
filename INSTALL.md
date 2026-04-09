@@ -24,7 +24,7 @@ There is [additional documentation](https://documentation.opencms.org/opencms-do
 
 ### Install Java
 
-OpenCms supports Java 11 and Java 17.
+OpenCms requires Java 21.
 
 Download and install Java, e.g., from one of the following repositories:
 
