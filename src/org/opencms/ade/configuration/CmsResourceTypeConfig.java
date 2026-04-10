@@ -44,6 +44,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.CmsRole;
 import org.opencms.ui.util.CmsNewResourceBuilder;
 import org.opencms.util.CmsStringUtil;
@@ -286,8 +287,10 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             try {
                 permissionCheckFolder = cms.readResource(currentPath);
                 break;
-            } catch (CmsVfsResourceNotFoundException e) {
-                // ignore
+            } catch (CmsVfsResourceNotFoundException | CmsPermissionViolationException e) {
+                LOG.debug(e.getLocalizedMessage(), e);
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         try {
