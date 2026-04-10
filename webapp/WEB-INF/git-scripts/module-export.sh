@@ -47,6 +47,36 @@ requireOptionValue() {
 
 ##################
 #
+# Print command line usage information.
+#
+printHelp() {
+    cat <<EOF
+Usage: ${0##*/} [options] [configfile]
+
+Export OpenCms modules from a mounted instance into a local Git repository.
+
+Arguments:
+  configfile                 Configuration file to load.
+                             Default: module-export.conf
+
+Options:
+  -mo <variable>             Export modules definy by <variable> in the config.
+  -m, --modules <modules>    Export the given space-separated modules.
+  -s, --substring <text>     Export modules containing the substring.
+  -v, --verbose              Enable verbose output.
+  -t, --no-copy-and-unzip    Do not copy and unzip exported modules.
+  -h, --help                 Show this help and exit.
+      --export-folder <dir>  Override the module export source folder.
+      --exclude-libs         Exclude library modules.
+      --no-exclude-libs      Do not exclude library modules.
+      --ignore-unclean       Continue with an unclean Git repository.
+      --no-ignore-unclean    Fail on an unclean Git repository.
+      --copy-and-unzip       Copy ZIPs and unzip them into the target folder.
+EOF
+}
+
+##################
+#
 # Set env variable for options.
 #
 setOptions() {
@@ -77,6 +107,9 @@ setOptions() {
     #read commandline arguments
     while [ "$1" != "" ]; do
         case $1 in
+            -h | --help )          printHelp
+                                    exit 0
+                                    ;;
             -v | --verbose )		OPT_VERBOSE="true"
                                     echoVerbose "* Activated option: --verbose"
                                     ;;
