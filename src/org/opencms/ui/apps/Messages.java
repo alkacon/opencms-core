@@ -2478,6 +2478,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SITE_INFORMATION_0 = "GUI_SITE_INFORMATION_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SITE_INVALID_URI_0 = "GUI_SITE_INVALID_URI_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITE_KEEP_TEMPLATE_0 = "GUI_SITE_KEEP_TEMPLATE_0";
 
     /** Message constant for key in the resource bundle. */

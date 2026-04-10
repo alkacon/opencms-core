@@ -72,6 +72,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -190,6 +192,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             if (enteredServer.isEmpty()) {
                 return;
             }
+            checkUriAuthority(enteredServer);
             if (m_alreadyUsedURL.contains(new CmsSiteMatcher(enteredServer))) {
                 if (!OpenCms.getSiteManager().getSites().get(new CmsSiteMatcher(enteredServer)).equals(m_site)) {
                     throw new InvalidValueException(
@@ -438,6 +441,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
             if (enteredServer.isEmpty()) {
                 throw new InvalidValueException(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SERVER_EMPTY_0));
             }
+            checkUriAuthority(enteredServer);
             if (m_alreadyUsedURL.contains(new CmsSiteMatcher(enteredServer))) {
                 throw new InvalidValueException(
                     CmsVaadinUtils.getMessageText(Messages.GUI_SITE_SERVER_ALREADYUSED_1, enteredServer));
@@ -1003,6 +1007,30 @@ public class CmsEditSiteForm extends CmsBasicDialog {
     static String getFolderNameFromSiteRoot(String siteRoot) {
 
         return siteRoot.split("/")[siteRoot.split("/").length - 1];
+    }
+
+    /**
+     * Validates a site URI is syntactically correct
+     * .
+     * @param enteredServer the site URI to check
+     * @throws InvalidValueException if the site URI is invalid
+     */
+    public void checkUriAuthority(String enteredServer) throws InvalidValueException {
+
+        boolean invalid = false;
+        try {
+            URI uri = new URI(enteredServer);
+            if (uri.getAuthority() == null) {
+                LOG.debug("missing authority: " + enteredServer);
+                invalid = true;
+            }
+        } catch (URISyntaxException e) {
+            invalid = true;
+        }
+        if (invalid) {
+            throw new InvalidValueException(CmsVaadinUtils.getMessageText(Messages.GUI_SITE_INVALID_URI_0));
+        }
+
     }
 
     /**
