@@ -133,7 +133,7 @@ You should now be able to log into the OpenCms workplace as before.
 As the search libraries and configuration may have changed, it is necessary to rebuild all search indexes.
 Log into OpenCms and navigate to Launchpad > Database -> Search Indexes and rebuild all indexes.
 
-If you update from OpenCms 10.x or 11.x, you must delete the files under WEB-INF/index/ first and restart your
+If you update from OpenCms 17 or older, you must delete the files under WEB-INF/index/ first and restart your
 servlet container and then reindex your search indexes as shown above.
 
 
