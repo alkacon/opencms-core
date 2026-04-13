@@ -60,9 +60,9 @@ Arguments:
                              Default: module-export.conf
 
 Options:
-  -mo <variable>             Export modules definy by <variable> in the config.
+  -mo <variable>             Export modules defined by <variable> in the config.
   -m, --modules <modules>    Export the given space-separated modules.
-  -s, --substring <text>     Export modules containing the substring.
+  -s, --substring <text>     Export modules containing the substring <text>.
   -v, --verbose              Enable verbose output.
   -t, --no-copy-and-unzip    Do not copy and unzip exported modules.
   -h, --help                 Show this help and exit.

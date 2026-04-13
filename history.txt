@@ -15,6 +15,59 @@ Legend:
 - Minor improvement or general comment
 * Bug fixed
 
+OpenCms 21.0.0 - April 14, 2026
+
+! AI/LLM based translation added to the XML content editor
+! AI/LLM translation workflows for OpenAI and DeepL API
+! Added a configurable secret provider
+! Edit properties of multiple files in the upload dialog
+! Added support for Java 25
+! OpenCms now requires at least Java 21
+
+- Sitemap editor: Option to hide the “Detail Pages” tab
+- Page editor: Allow copying write-protected elements
+- Workplace: Added users’ full names to the principal selection dialog
+- Workplace: Improved the “Edit new module” dialog
+- Workplace: Optimize gallery new option "Sort by file size"
+- Workplace: Optimize gallery new option "Delete all unused images at once"
+- Workplace: Improved folder size formatting in the resource info dialog
+- Workplace: Confirm file selection filter with Enter key
+- Gradle build: Updated configuration for Gradle 8.10
+- Gradle build: Improved handling of module JARs
+- Solr: added update option for searchcontent in XSD searchsettings
+- Solr: Improved module import performance for external servers
+- Solr: Improved indexing performance for resources with relations
+- Solr: Updated Solr to version 10
+- Added test case for improved handling of missing XSDs
+- Cleaned up redundant legacy javax.* and jakarta.* API JARs in WEB-INF/lib
+
+- Pull request #825 file sorting by name in explorer table and tree (partial merge)
+- Pull request #827 removes mavenLocal for more stable Gradle dependency resolution
+- Pull request #831 modernizes Gradle plugin usage and build directory handling
+- Pull request #832 updates Gradle to use lazy task registration
+- Pull request #833 standardizes test execution for Gradle and IDE integration
+- Pull request #837 Added .csv and .ai file type mappings to VFS resource types
+
+* Security: Fixed RCE vulnerability related to UGC
+* Security: Fixed CVEs by upgrading Apache Tika
+* Security: Fixed XXE issue for old import versions
+
+* Fixed flex cache issue with wrong entry after direct page open following publish
+* Fixed wrong accordion heading in the container page “Info” dialog
+* Fixed inactive save buttons in the i18n bundle editor
+* Fixed Solr highlighter configuration to use hl.method
+* Fixed dummy elements displayed on default detail pages
+* Fixed missing input validation in the resource type app
+* Fixed edge case issue when moving a user between OUs
+* Fixed upgrade wizard including demo template JARs
+* Fixed exception for unreadable content folders in resource type config
+* Fixed websites app error when server URL has no protocol
+* Fixed websites app removing a site on empty or invalid input
+* Fixed issue with reloaded element HTML sanitation breaking inline editing
+* Fixed issue #836 edit button shown for non-editable resources in the publish dialog
+* Fixed issue #838 undelete for Element Authors without the Editor role
+
+
 OpenCms 20.0.0 - October 14, 2025
 
 ! Support for "online only" folders
