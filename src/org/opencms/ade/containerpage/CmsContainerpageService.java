@@ -2681,11 +2681,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         containerType = container.getType();
         I_CmsFormatterBean formatter = null;
         String formatterConfigId = null;
-        if ((element.getIndividualSettings() != null)
-            && (element.getIndividualSettings().get(
-                CmsFormatterConfig.getSettingsKeyForContainer(container.getName())) != null)) {
-            formatterConfigId = element.getIndividualSettings().get(
-                CmsFormatterConfig.getSettingsKeyForContainer(container.getName()));
+        formatterConfigId = element.getFormatterKey(container.getName());
+        if (formatterConfigId != null) {
             I_CmsFormatterBean dynamicFmt = config.findFormatter(formatterConfigId);
             if (dynamicFmt != null) {
                 formatter = dynamicFmt;
