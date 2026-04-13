@@ -75,7 +75,7 @@ Receive updates about the OpenCms development and get in touch with the core dev
 
 ## Compatibility
 
-OpenCms is compatible with Java 21.
+OpenCms is compatible with Java 21 and 25.
 
 OpenCms requires a Java Servlet 4.0 compatible web container. We have tested this release using Jetty and Tomcat. It works "out of the box" with Jetty 12 or Tomcat 9. Others have reported deploying OpenCms successfully on other web servlet containers like WildFly, GlassFish, WebLogic, WebSphere and Resin.
 

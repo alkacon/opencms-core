@@ -19,7 +19,7 @@ OpenCms 21.0.0 - April 14, 2026
 
 ! AI/LLM based translation added to the XML content editor
 ! AI/LLM translation workflows for OpenAI and DeepL API
-! Added a configurable secret provider
+! Configurable secret provider for securely storing encrypted passwords or API keys
 ! Edit properties of multiple files in the upload dialog
 ! Added support for Java 25
 ! OpenCms now requires at least Java 21
