@@ -1380,32 +1380,6 @@ public class CmsADEConfigData {
     }
 
     /**
-     * Looks up a path dependent secret in the secret store for the current sitemap config path.
-     *
-     *  <p>This is done as follows:
-     *  <p>For the root path of each subsitemap we are in, in ascending order, the key (prefix + &quot;.&quot; + path) is looked up.
-     *  The first match will be returned. As a special case, the key for the site root is always looked up, even if it's not configured as
-     *  a sitemap.
-     *
-     * @param prefix the key prefix
-     * @return the secret (or null, if nothing was found)
-     */
-    public String getPathDependentSecret(String prefix) {
-
-        if (getBasePath() == null) {
-            return null;
-        }
-        List<String> paths = OpenCms.getADEManager().getPathsForSecretLookup(getCms(), getBasePath());
-        for (String path : paths) {
-            String secret = OpenCms.getSecretStore().getSecret(prefix + "." + path);
-            if (secret != null) {
-                return secret;
-            }
-        }
-        return null;
-    }
-
-    /**
      * Gets the configuration for the available properties.<p>
      *
      * @return the configuration for the available properties
@@ -1531,6 +1505,32 @@ public class CmsADEConfigData {
     public Collection<CmsResourceTypeConfig> getSearchableTypes(CmsObject cms) {
 
         return getResourceTypes();
+    }
+
+    /**
+     * Looks up a path dependent secret in the secret store for the current sitemap config path.
+     *
+     *  <p>This is done as follows:
+     *  <p>For the root path of each subsitemap we are in, in ascending order, the key (prefix + &quot;.&quot; + path) is looked up.
+     *  The first match will be returned. As a special case, the key for the site root is always looked up, even if it's not configured as
+     *  a sitemap.
+     *
+     * @param prefix the key prefix
+     * @return the secret (or null, if nothing was found)
+     */
+    public String getSecretForUri(String prefix) {
+
+        if (getBasePath() == null) {
+            return null;
+        }
+        List<String> paths = OpenCms.getADEManager().getPathsForSecretLookup(getCms(), getBasePath());
+        for (String path : paths) {
+            String secret = OpenCms.getSecretStore().getSecret(prefix + "." + path);
+            if (secret != null) {
+                return secret;
+            }
+        }
+        return OpenCms.getSecretStore().getSecret(prefix);
     }
 
     /**
