@@ -1094,6 +1094,7 @@ public class CmsElementUtil {
         result.setHasSettings(hasSettings(m_cms, elementBean.getResource()));
         result.setPermissionInfo(permissionInfo);
         result.setReleasedAndNotExpired(elementBean.isReleasedAndNotExpired());
+        result.setAvailabilityInfo(CmsVfsService.getAvailabilityInfo(m_cms, resource));
         if (elementBean.isModelGroup()) {
             String modelId = elementBean.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_ID);
             result.setModelGroupId(modelId != null ? new CmsUUID(modelId) : CmsUUID.getNullUUID());

@@ -39,6 +39,8 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.gwt.CmsVfsService;
+import org.opencms.gwt.shared.CmsAvailabilityInfo;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.I_CmsAutoBeanFactory;
 import org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo;
@@ -528,6 +530,11 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
                 String typePart = newLink.substring(pipePos + 1);
                 isUploadType = uploadTypes.contains(typePart);
             }
+        }
+        if (resource != null) {
+            CmsAvailabilityInfo availabilityInfo = CmsVfsService.getAvailabilityInfo(m_cms, resource);
+            extensions.as().setReleasedText(availabilityInfo.getReleasedText());
+            extensions.as().setExpiredText(availabilityInfo.getExpiredText());
         }
         String uploadFolder = params.getUploadFolder();
         hasNew = params.getButtonSelection().isShowNew();

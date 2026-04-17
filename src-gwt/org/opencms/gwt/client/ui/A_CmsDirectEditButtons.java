@@ -39,7 +39,9 @@ import org.opencms.gwt.client.util.CmsNewLinkFunctionTable;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.CmsScriptCallbackHelper;
 import org.opencms.gwt.client.util.I_CmsUniqueActiveItem;
+import org.opencms.gwt.shared.CmsAvailabilityInfo;
 import org.opencms.gwt.shared.CmsGwtConstants;
+import org.opencms.gwt.shared.I_CmsEditableDataExtensions;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Collections;
@@ -182,6 +184,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem, I_C
      * @param parentId the parent element id
      */
     public A_CmsDirectEditButtons(Element editable, String parentId) {
+
         super(CmsGwtConstants.TAG_OC_EDITPOINT);
         try {
             setStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.directEditCss().directEditButtons());
@@ -236,6 +239,15 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem, I_C
                 buttonMap.put(Integer.valueOf(200), m_new);
                 m_new.addClickHandler(handler);
             }
+            I_CmsEditableDataExtensions extensions = m_editableData.getExtensions();
+            CmsAvailabilityInfo availInfo = new CmsAvailabilityInfo(
+                extensions.getReleasedText(),
+                extensions.getExpiredText());
+            CmsAvailabilityBadge availBadge = CmsAvailabilityBadge.create(availInfo);
+            if (availBadge != null) {
+                add(availBadge);
+            }
+
             Map<Integer, CmsPushButton> additionalButtons = getAdditionalButtons();
             buttonMap.putAll(additionalButtons);
             if ((buttonMap.size() > 0) || m_editableData.hasEdit()) {

@@ -52,7 +52,6 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHACC_MODIFY_ENTRY_0 = "ERR_CHACC_MODIFY_ENTRY_0";
 
-
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHANGE_LINK_TARGET_0 = "ERR_CHANGE_LINK_TARGET_0";
 
@@ -1035,10 +1034,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PREF_BUTTONSTYLE_TXT_0 = "GUI_PREF_BUTTONSTYLE_TXT_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREF_CHECK_REUSE_WARNING_OPTION_FALSE_0="GUI_PREF_CHECK_REUSE_WARNING_OPTION_FALSE_0";
+    public static final String GUI_PREF_CHECK_REUSE_WARNING_OPTION_FALSE_0 = "GUI_PREF_CHECK_REUSE_WARNING_OPTION_FALSE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREF_CHECK_REUSE_WARNING_OPTION_TRUE_0="GUI_PREF_CHECK_REUSE_WARNING_OPTION_TRUE_0";
+    public static final String GUI_PREF_CHECK_REUSE_WARNING_OPTION_TRUE_0 = "GUI_PREF_CHECK_REUSE_WARNING_OPTION_TRUE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_CHOOSE_UPLOAD_VARIANT_0 = "GUI_PREF_CHOOSE_UPLOAD_VARIANT_0";
@@ -1179,13 +1178,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PREF_SETTINGS_STARTUP_0 = "GUI_PREF_SETTINGS_STARTUP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_SHOW_ELEMENT_AVAILABILITY_0 = "GUI_PREF_SHOW_ELEMENT_AVAILABILITY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_SHOW_LOCK_DIALOG_0 = "GUI_PREF_SHOW_LOCK_DIALOG_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_SHOW_PUBLISHNOTIFICATION_0 = "GUI_PREF_SHOW_PUBLISHNOTIFICATION_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String  GUI_PREF_SHOW_REUSE_WARNING_0          ="GUI_PREF_SHOW_REUSE_WARNING_0";
+    public static final String GUI_PREF_SHOW_REUSE_WARNING_0 = "GUI_PREF_SHOW_REUSE_WARNING_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_STARTGALLERY_NONE_0 = "GUI_PREF_STARTGALLERY_NONE_0";

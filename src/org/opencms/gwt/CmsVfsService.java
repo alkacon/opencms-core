@@ -30,6 +30,7 @@ package org.opencms.gwt;
 import org.opencms.ade.containerpage.CmsDetailOnlyContainerUtil;
 import org.opencms.ade.galleries.CmsPreviewService;
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -50,6 +51,7 @@ import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.gwt.shared.CmsAvailabilityInfo;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsClientDateBean;
 import org.opencms.gwt.shared.CmsDataViewConstants;
@@ -142,6 +144,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /** Serialization id. */
     private static final long serialVersionUID = -383483666952834348L;
 
+    /** A helper object containing the implementations of the alias-related service methods. */
+    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
+
     /** Initialize the preview mime types. */
     static {
         CollectionUtils.addAll(
@@ -153,9 +158,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 "application/mspowerpoint",
                 "application/zip"}));
     }
-
-    /** A helper object containing the implementations of the alias-related service methods. */
-    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
 
     /**
      * Adds the lock state information to the resource info bean.<p>
@@ -282,6 +284,43 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             new Date(date),
             DateFormat.MEDIUM,
             OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+    }
+
+    /**
+     * Gets the availability info for container elements / list elements in the page editor.
+     *
+     * @param cms the current CMS context
+     * @param res the resource for which to get the availability info
+     *
+     * @return the availability info
+     */
+    public static CmsAvailabilityInfo getAvailabilityInfo(CmsObject cms, CmsResource res) {
+
+        if (res == null) {
+            return new CmsAvailabilityInfo(null, null);
+        }
+        String releasedStr = null;
+        String expiredStr = null;
+        CmsUserSettings userSettings = new CmsUserSettings(cms.getRequestContext().getCurrentUser());
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+        CmsMessages msg = Messages.get().getBundle(locale);
+        if (Boolean.parseBoolean(userSettings.getAdditionalPreference("showElementAvailability", true))) {
+            DateFormat fmt = DateFormat.getDateTimeInstance(
+                DateFormat.SHORT,
+                DateFormat.SHORT,
+                OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+            if (res.getDateReleased() != CmsResource.DATE_RELEASED_DEFAULT) {
+                releasedStr = msg.key(
+                    Messages.GUI_AVAILABILITY_INFO_RELEASE_1,
+                    fmt.format(new Date(res.getDateReleased())));
+            }
+            if (res.getDateExpired() != CmsResource.DATE_EXPIRED_DEFAULT) {
+                expiredStr = msg.key(
+                    Messages.GUI_AVAILABILITY_INFO_EXPIRE_1,
+                    fmt.format(new Date(res.getDateExpired())));
+            }
+        }
+        return new CmsAvailabilityInfo(releasedStr, expiredStr);
     }
 
     /**

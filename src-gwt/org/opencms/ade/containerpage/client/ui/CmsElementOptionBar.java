@@ -32,6 +32,7 @@ import org.opencms.gwt.client.CmsPageEditorTouchHandler;
 import org.opencms.gwt.client.I_CmsElementToolbarContext;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.A_CmsHoverHandler;
+import org.opencms.gwt.client.ui.CmsAvailabilityBadge;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.I_CmsUniqueActiveItem;
 import org.opencms.gwt.shared.CmsGwtConstants;
@@ -133,6 +134,11 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem, I_C
             removeStyleName(
                 org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().reusedElement());
         }
+        CmsAvailabilityBadge availability = CmsAvailabilityBadge.create(containerElement.getAvailabilityInfo());
+        if (availability != null) {
+            m_panel.add(availability);
+        }
+
     }
 
     /**

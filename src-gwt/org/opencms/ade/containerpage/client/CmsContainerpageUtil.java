@@ -508,6 +508,7 @@ public class CmsContainerpageUtil {
             elementData.hasViewPermission(),
             elementData.hasWritePermission(),
             elementData.isReleasedAndNotExpired(),
+            elementData.getAvailabilityInfo(),
             elementData.isNewEditorDisabled(),
             elementData.hasEditHandler(),
             elementData.getModelGroupId(),

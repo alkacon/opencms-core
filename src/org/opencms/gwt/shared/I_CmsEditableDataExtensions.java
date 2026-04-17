@@ -36,6 +36,12 @@ package org.opencms.gwt.shared;
  */
 public interface I_CmsEditableDataExtensions {
 
+    /** Gets the 'expired' text for the availability information. */
+    String getExpiredText();
+
+    /** Gets the 'released' text for the availability information. */
+    String getReleasedText();
+
     /**
      * Gets the upload folder.
      *
@@ -49,6 +55,20 @@ public interface I_CmsEditableDataExtensions {
      * @return true if the upload is enabled
      */
     boolean isUploadEnabled();
+
+    /**
+     * Sets the 'expire' text for the availability information.
+     *
+     * @param expiredText the text
+     */
+    void setExpiredText(String expiredText);
+
+    /**
+     * Sets the 'release' text for the availability information.
+     *
+     * @param releasedText the text
+     */
+    void setReleasedText(String releasedText);
 
     /**
      * Enables/disables uploading.

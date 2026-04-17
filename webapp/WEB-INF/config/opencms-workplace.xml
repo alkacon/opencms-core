@@ -237,6 +237,7 @@
                 <preference name="elementView" nice-name="%(key.GUI_PREF_ELEMENT_VIEW_0)" value="00000000-0000-0000-0000-000000000000" />
                 <preference name="explorerElementView" nice-name="%(key.GUI_PREF_EXPLORER_ELEMENT_VIEW_0)" value="505c1305-271f-3b09-925f-a33a067c98cf" />
                 <preference name="galleryShowInvalidDefault" value="false" nice-name="%(key.GUI_PREF_GALLERY_SHOW_INVALID_DEFAULT_0)" widget="checkbox" />
+                <preference name="showElementAvailability" nice-name="%(key.GUI_PREF_SHOW_ELEMENT_AVAILABILITY_0)" widget="checkbox" value="false" />
             </preference-tab>
             <preference-tab name="extended">
                 <preference name="workplaceMode" value="new" nice-name="%(key.GUI_PREF_WORKPLACE_MODE_0)" widget="select" widget-config="old:%(key.GUI_PREF_WORKPLACE_MODE_OLD_0)|new:%(key.GUI_PREF_WORKPLACE_MODE_NEW_0)" />

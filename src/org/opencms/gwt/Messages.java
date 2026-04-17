@@ -66,12 +66,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INSTANTIATION_INCORRECT_TYPE_2 = "ERR_INSTANTIATION_INCORRECT_TYPE_2";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOCKING_MODIFIED_RESOURCE_1 = "ERR_LOCKING_MODIFIED_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOCKING_MODIFIED_RESOURCE_2 = "ERR_LOCKING_MODIFIED_RESOURCE_2";
-
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_PERMUTATION_AVAILABLE_0 = "ERR_NO_PERMUTATION_AVAILABLE_0";
 
@@ -95,6 +95,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ALIAS_0 = "GUI_ALIAS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_AVAILABILITY_INFO_EXPIRE_1 = "GUI_AVAILABILITY_INFO_EXPIRE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_AVAILABILITY_INFO_RELEASE_1 = "GUI_AVAILABILITY_INFO_RELEASE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DEPENDENCY_PAGE_PATH_0 = "GUI_DEPENDENCY_PAGE_PATH_0";

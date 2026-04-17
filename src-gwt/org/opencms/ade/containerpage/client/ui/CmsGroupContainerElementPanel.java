@@ -129,6 +129,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
             hasViewPermission,
             hasWritePermission,
             releasedAndNotExpired,
+            null,
             true,
             false,
             null,

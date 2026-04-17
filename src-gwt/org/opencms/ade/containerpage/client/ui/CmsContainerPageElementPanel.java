@@ -37,6 +37,7 @@ import org.opencms.ade.contenteditor.client.CmsContentEditor;
 import org.opencms.gwt.client.I_CmsElementToolbarContext;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
+import org.opencms.gwt.client.ui.CmsAvailabilityBadge;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.I_CmsButton;
@@ -44,6 +45,7 @@ import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Tag;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.gwt.shared.CmsAvailabilityInfo;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
@@ -299,6 +301,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      **/
     private boolean m_writePermission;
 
+    /** The availability information. */
+    private CmsAvailabilityInfo m_availabilityInfo;
+
     /**
      * Constructor.<p>
      *
@@ -337,6 +342,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         boolean hasViewPermission,
         boolean hasWritePermission,
         boolean releasedAndNotExpired,
+        CmsAvailabilityInfo availabilityInfo,
         boolean disableNewEditor,
         boolean hasEditHandler,
         CmsUUID modelGroupId,
@@ -360,6 +366,8 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         m_modelGroupId = modelGroupId;
         m_wasModelGroup = wasModelGroup;
         m_hasEditHandler = hasEditHandler;
+        m_availabilityInfo = availabilityInfo;
+
         setViewPermission(hasViewPermission);
         setWritePermission(hasWritePermission);
         setReleasedAndNotExpired(releasedAndNotExpired);
@@ -405,6 +413,11 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
         getChildren().add(widget.asWidget());
         adopt(widget.asWidget());
+    }
+
+    public CmsAvailabilityInfo getAvailabilityInfo() {
+
+        return m_availabilityInfo;
     }
 
     /**
@@ -1078,55 +1091,61 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
         // only if attached to the DOM
         if ((m_elementOptionBar != null) && RootPanel.getBodyElement().isOrHasChild(getElement())) {
-            int absoluteTop = getElement().getAbsoluteTop();
-            int absoluteRight = getElement().getAbsoluteRight();
-            CmsPositionBean dimensions = CmsPositionBean.getBoundingClientRect(getElement());
+            // we don't want to include the availability badge in the measurements for button positioning
+            m_elementOptionBar.addStyleName(CmsAvailabilityBadge.CLASS_HIDE_AVAILABILITY_BADGE);
+            try {
+                int absoluteTop = getElement().getAbsoluteTop();
+                int absoluteRight = getElement().getAbsoluteRight();
+                CmsPositionBean dimensions = CmsPositionBean.getBoundingClientRect(getElement());
 
-            int top = 0;
-            int right = 0;
-            int offsetLeft = 0;
-            int offsetTop = 0;
+                int top = 0;
+                int right = 0;
+                int offsetLeft = 0;
+                int offsetTop = 0;
 
-            final Style style = m_elementOptionBar.getElement().getStyle();
+                final Style style = m_elementOptionBar.getElement().getStyle();
 
-            if (m_positioningInstructionParser.tryParse(getElement().getClassName())) {
-                offsetLeft = m_positioningInstructionParser.getOffsetLeft();
-                offsetTop = m_positioningInstructionParser.getOffsetTop();
-            }
-
-            if (Math.abs(absoluteTop - dimensions.getTop()) > 20) {
-                absoluteTop = (dimensions.getTop() - absoluteTop) + 2;
-                top = absoluteTop;
-            }
-            if (Math.abs(absoluteRight - dimensions.getLeft() - dimensions.getWidth()) > 20) {
-                absoluteRight = (absoluteRight - dimensions.getLeft() - dimensions.getWidth()) + 2;
-                right = absoluteRight;
-            }
-
-            top += offsetTop;
-            right -= offsetLeft;
-
-            if (top != 0) {
-                style.setTop(top, Unit.PX);
-            } else {
-                style.clearTop();
-            }
-
-            if (right != 0) {
-                style.setRight(right, Unit.PX);
-            } else {
-                style.clearRight();
-            }
-
-            if (isOptionbarIFrameCollision(absoluteTop, m_elementOptionBar.getCalculatedWidth())) {
-                style.setPosition(Position.RELATIVE);
-                int marginLeft = getElement().getClientWidth() - m_elementOptionBar.getCalculatedWidth();
-                if (marginLeft > 0) {
-                    style.setMarginLeft(marginLeft, Unit.PX);
+                if (m_positioningInstructionParser.tryParse(getElement().getClassName())) {
+                    offsetLeft = m_positioningInstructionParser.getOffsetLeft();
+                    offsetTop = m_positioningInstructionParser.getOffsetTop();
                 }
-            } else {
-                style.clearPosition();
-                style.clearMarginLeft();
+
+                if (Math.abs(absoluteTop - dimensions.getTop()) > 20) {
+                    absoluteTop = (dimensions.getTop() - absoluteTop) + 2;
+                    top = absoluteTop;
+                }
+                if (Math.abs(absoluteRight - dimensions.getLeft() - dimensions.getWidth()) > 20) {
+                    absoluteRight = (absoluteRight - dimensions.getLeft() - dimensions.getWidth()) + 2;
+                    right = absoluteRight;
+                }
+
+                top += offsetTop;
+                right -= offsetLeft;
+
+                if (top != 0) {
+                    style.setTop(top, Unit.PX);
+                } else {
+                    style.clearTop();
+                }
+
+                if (right != 0) {
+                    style.setRight(right, Unit.PX);
+                } else {
+                    style.clearRight();
+                }
+
+                if (isOptionbarIFrameCollision(absoluteTop, m_elementOptionBar.getCalculatedWidth())) {
+                    style.setPosition(Position.RELATIVE);
+                    int marginLeft = getElement().getClientWidth() - m_elementOptionBar.getCalculatedWidth();
+                    if (marginLeft > 0) {
+                        style.setMarginLeft(marginLeft, Unit.PX);
+                    }
+                } else {
+                    style.clearPosition();
+                    style.clearMarginLeft();
+                }
+            } finally {
+                m_elementOptionBar.removeStyleName(CmsAvailabilityBadge.CLASS_HIDE_AVAILABILITY_BADGE);
             }
         }
     }
