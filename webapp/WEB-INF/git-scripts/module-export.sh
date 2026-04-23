@@ -60,9 +60,10 @@ Arguments:
                              Default: module-export.conf
 
 Options:
-  -mo <variable>             Export modules defined by <variable> in the config.
-  -m, --modules <modules>    Export the given space-separated modules.
+  -mo <group>                Export modules defined by <group> in the config.
+  -m, --modules <modules>    Export the given space-separated module(s).
   -s, --substring <text>     Export modules containing the substring <text>.
+  -l, --list                 List module groups defined in the config and exit.
   -v, --verbose              Enable verbose output.
   -t, --no-copy-and-unzip    Do not copy and unzip exported modules.
   -h, --help                 Show this help and exit.
@@ -107,7 +108,7 @@ setOptions() {
     #read commandline arguments
     while [ "$1" != "" ]; do
         case $1 in
-            -h | --help )          printHelp
+            -h | --help )           printHelp
                                     exit 0
                                     ;;
             -v | --verbose )		OPT_VERBOSE="true"
@@ -127,6 +128,8 @@ setOptions() {
                                     requireOptionValue "$1" "-s|--substring"
                                     moduleSubstring=$1
                                     echoVerbose "* Modules to export with substring filter: \"$moduleSubstring\""
+                                    ;;
+            -l | --list )		    OPT_LIST="true"
                                     ;;
             --export-folder )		shift
                                     requireOptionValue "$1" "--export-folder"
@@ -155,6 +158,111 @@ setOptions() {
                                     echoVerbose "* Configuration file: \"$configfile\"."
         esac
         shift
+    done
+}
+
+##################
+#
+# Normalize a space-separated list of modules, remove duplicates and print one
+# module per line.
+#
+normalizeModuleList() {
+    local module
+    declare -A seenModules
+    for module in $1; do
+        if [[ -z "${seenModules[$module]}" ]]; then
+            seenModules[$module]=1
+            echo "$module"
+        fi
+    done
+}
+
+##################
+#
+# Return true if ${1} looks like a space-separated module list.
+#
+isModuleList() {
+    local module
+    local moduleCount=0
+    for module in $1; do
+        if [[ ! "$module" =~ ^[A-Za-z0-9_-]+([.][A-Za-z0-9_-]+)+$ ]]; then
+            return 1
+        fi
+        moduleCount=$((moduleCount + 1))
+    done
+    [[ $moduleCount -gt 0 ]]
+}
+
+##################
+#
+# Print a module list group with a blank line before it, except for the first
+# group.
+#
+printModuleGroup() {
+    local groupName=$1
+    local modules=$2
+    local module
+    local normalizedModules
+
+    normalizedModules=$(normalizeModuleList "$modules")
+    if [[ -z "$normalizedModules" ]]; then
+        return
+    fi
+
+    if [[ -n "$moduleListGroupPrinted" ]]; then
+        echo
+    fi
+    moduleListGroupPrinted=1
+
+    echo "${groupName}:"
+    while IFS= read -r module; do
+        echo "- ${module}"
+    done <<< "$normalizedModules"
+}
+
+##################
+#
+# List the module groups defined by the configuration file.
+#
+listModuleGroups() {
+    local varName
+    local varValue
+    local normalizedDefaultModules
+    local normalizedModules
+    local moduleListKey
+    declare -A listedModuleLists
+
+    echoVerbose "* Listing the available module groups in the config file:"
+
+    moduleListGroupPrinted=""
+    normalizedDefaultModules=$(normalizeModuleList "$DEFAULT_MODULES_TO_EXPORT")
+    printModuleGroup "Default" "$DEFAULT_MODULES_TO_EXPORT"
+    if [[ -n "$normalizedDefaultModules" ]]; then
+        moduleListKey=${normalizedDefaultModules//$'\n'/ }
+        listedModuleLists[$moduleListKey]=1
+    fi
+
+    for varName in "${configVariables[@]}"; do
+        if [[ "$varName" == "DEFAULT_MODULES_TO_EXPORT" ]]; then
+            continue
+        fi
+
+        varValue=${!varName}
+        if [[ -z "$varValue" ]]; then
+            continue
+        fi
+        if ! isModuleList "$varValue"; then
+            continue
+        fi
+
+        normalizedModules=$(normalizeModuleList "$varValue")
+        moduleListKey=${normalizedModules//$'\n'/ }
+        if [[ -n "${listedModuleLists[$moduleListKey]}" ]]; then
+            continue
+        fi
+        listedModuleLists[$moduleListKey]=1
+
+        printModuleGroup "$varName" "$varValue"
     done
 }
 
@@ -216,10 +324,6 @@ testModuleTargetPath() {
 # Initialize command line parameters
 setOptions "${@}"
 
-echo
-echo "${green}${bold}Exporting modules from OpenCms to local git repository.${normal}"
-echo
-
 if [[ -z "$configfile" ]]; then
     echoError "No config file provided!" 3
 fi
@@ -227,12 +331,35 @@ if [[ ! -f "$configfile" ]]; then
     echoError "Config file '${configfile}' does not exit!" 3
 fi
 
+declare -A variablesBeforeConfig
+configVariables=()
+variableName=""
+for variableName in $(compgen -v); do
+    variablesBeforeConfig[$variableName]=1
+done
+
 source "$configfile"
+
+for variableName in $(compgen -v); do
+    if [[ -z "${variablesBeforeConfig[$variableName]}" ]]; then
+        configVariables+=("$variableName")
+    fi
+done
+
 echoVerbose "* Contents of configuration file \"$configfile\":"
 
 if [ -n "${OPT_VERBOSE}" ]; then
     cat "$configfile" | awk '$0="   * "$0'
 fi
+
+if [[ -n "$OPT_LIST" ]]; then
+    listModuleGroups
+    exit 0
+fi
+
+echo
+echo "${green}${bold}Exporting modules from OpenCms to local git repository.${normal}"
+echo
 
 if [[ ! -z "$modulesExportVar" ]]; then
     MODULES_TO_EXPORT=${!modulesExportVar}
