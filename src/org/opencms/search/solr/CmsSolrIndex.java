@@ -1411,6 +1411,24 @@ public class CmsSolrIndex extends CmsSearchIndex {
     }
 
     /**
+     * Shuts down the search index.<p>
+     *
+     * This will close the local Lucene index searcher instance.<p>
+     */
+    @Override
+    public void shutDown() {
+
+        super.shutDown();
+        if (m_solr != null) {
+            try {
+                m_solr.close();
+            } catch (IOException e) {
+                LOG.warn("Failed to close the solr client.", e);
+            }
+        }
+    }
+
+    /**
      * Executes a spell checking Solr query and returns the Solr query response.<p>
      *
      * @param res the servlet response
