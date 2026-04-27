@@ -114,8 +114,8 @@ import org.apache.commons.logging.Log;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.CharArraySet;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
-import org.apache.solr.client.solrj.impl.HttpJdkSolrClient;
 import org.apache.solr.client.solrj.impl.HttpJdkSolrClient.Builder;
 import org.apache.solr.core.CoreContainer;
 import org.apache.solr.core.CoreDescriptor;
@@ -2211,13 +2211,13 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
 
         if (index.getServerUrl() != null) { // Use the index-specific Solr-Server if present.
-            HttpJdkSolrClient solrClient = new Builder().withBaseSolrUrl(index.getServerUrl()).build();
+            SolrClient solrClient = getSolrClient(index.getServerUrl());
             index.setSolrServer(solrClient);
         } else if (m_solrConfig.getServerUrl() != null) { // Use the globally configured external Solr-Server if present.
             // HTTP Server configured
             // TODO Implement multi core support for HTTP server
             // @see http://lucidworks.lucidimagination.com/display/solr/Configuring+solr.xml
-            index.setSolrServer(new Builder().withBaseSolrUrl(m_solrConfig.getServerUrl()).build());
+            index.setSolrServer(getSolrClient(m_solrConfig.getServerUrl()));
         } else { // Default to the embedded Solr Server
 
             // get the core container that contains one core for each configured index
@@ -3776,6 +3776,19 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
         result.retainAll(deletedSet);
         return result;
+    }
+
+    /**
+     * Initializes the Solr client for external Solr servers
+     * @param serverUrl the external server url
+     * @return the solr client
+     */
+    private SolrClient getSolrClient(String serverUrl) {
+
+        SolrClient client = new Builder().withBaseSolrUrl(serverUrl).withConnectionTimeout(
+            15,
+            TimeUnit.SECONDS).withRequestTimeout(120, TimeUnit.SECONDS).build();
+        return client;
     }
 
     /**
