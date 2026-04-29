@@ -12,7 +12,11 @@ plugins {
 
 group = "org.opencms"
 
-layout.buildDirectory.set(file(build_directory))
+def configuredBuildDirectory = providers.gradleProperty('opencms_build_directory')
+    .orElse(providers.environmentVariable('OPENCMS_BUILD_DIR'))
+    .orElse(providers.gradleProperty('build_directory'))
+    .get()
+layout.buildDirectory.set(file(configuredBuildDirectory))
 
 java {
     sourceCompatibility = JavaVersion.toVersion(java_target_version)
