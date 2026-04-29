@@ -3787,7 +3787,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         SolrClient client = new Builder().withBaseSolrUrl(serverUrl).withConnectionTimeout(
             15,
-            TimeUnit.SECONDS).withRequestTimeout(120, TimeUnit.SECONDS).build();
+            TimeUnit.SECONDS).withRequestTimeout(120, TimeUnit.SECONDS).useHttp1_1(true).build();
         return client;
     }
 
