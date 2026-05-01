@@ -36,6 +36,7 @@ import junit.framework.TestSuite;
 /**
  * All tests for the org.opencms.ade.configuration package.<p>
  */
+@org.junit.runner.RunWith(org.junit.runners.AllTests.class)
 public final class AllTests {
 
     /**

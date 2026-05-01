@@ -35,6 +35,7 @@ import junit.framework.TestSuite;
 /**
  * Test suite for this package.<p>
  */
+@org.junit.runner.RunWith(org.junit.runners.AllTests.class)
 public final class AllTests {
 
     /**

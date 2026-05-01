@@ -35,6 +35,7 @@ import junit.framework.TestSuite;
 /**
  * Suite to test ADE editor functions.<p>
  */
+@org.junit.runner.RunWith(org.junit.runners.AllTests.class)
 public final class AllTests {
 
     /**

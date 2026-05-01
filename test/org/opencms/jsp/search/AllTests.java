@@ -38,6 +38,7 @@ import junit.framework.TestSuite;
  *
  * @since 11.0.2
  */
+@org.junit.runner.RunWith(org.junit.runners.AllTests.class)
 public final class AllTests {
 
     /**

@@ -39,6 +39,7 @@ import junit.framework.TestSuite;
 /**
  * All tests for the {@link org.opencms.ade.containerpage.inherited} package.<p>
  */
+@org.junit.runner.RunWith(org.junit.runners.AllTests.class)
 public final class AllTests {
 
     /**

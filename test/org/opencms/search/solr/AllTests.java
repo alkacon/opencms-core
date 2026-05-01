@@ -57,6 +57,7 @@ import junit.framework.TestSuite;
  *
  * @since 8.5.0
  */
+@org.junit.runner.RunWith(org.junit.runners.AllTests.class)
 public final class AllTests {
 
     /** Name of a search index created using API. */

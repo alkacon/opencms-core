@@ -35,6 +35,7 @@ import junit.framework.TestSuite;
 /**
  * Tests for the org.opencms.ade.sitemap package.<p>
  */
+@org.junit.runner.RunWith(org.junit.runners.AllTests.class)
 public class AllTests {
 
     /**
