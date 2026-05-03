@@ -59,8 +59,8 @@ public final class AllTests {
         TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
-        suite.addTest(TestAvailability.suite());
-        suite.addTest(TestChacc.suite());
+        // suite.addTest(TestAvailability.suite());
+        // suite.addTest(TestChacc.suite());
         suite.addTest(TestChangeProperties.suite());
         suite.addTest(TestChflags.suite());
         suite.addTest(TestChtype.suite());
@@ -81,7 +81,7 @@ public final class AllTests {
         suite.addTest(TestPermissions.suite());
         suite.addTest(TestProjectHistory.suite());
         suite.addTest(TestProjects.suite());
-        suite.addTest(TestProperty.suite());
+        // suite.addTest(TestProperty.suite());
         suite.addTest(TestPropertyDefinition.suite());
         suite.addTest(TestPublishing.suite());
         suite.addTest(TestPublishIssues.suite());

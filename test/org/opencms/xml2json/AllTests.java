@@ -25,39 +25,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.util;
+package org.opencms.xml2json;
 
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 /**
- * Main test suite for the package <code>{@link org.opencms.util}</code>.<p>
- *
- * @since 6.0
+ * Empty suite to satisfy script; TestXml2Json is actually executed in org.opencms.xml.AllTests.
  */
 @Suite
-@SelectClasses({
-    TestCmsBrowserMatcher.class,
-    TestCmsDateUtil.class,
-    TestCmsExportFolderMatcher.class,
-    TestCmsFileUtil.class,
-    TestCmsHtml2TextConverter.class,
-    TestCmsHtmlConverter.class,
-    TestCmsHtmlExtractor.class,
-    TestCmsHtmlParser.class,
-    TestCmsHtmlStripper.class,
-    TestCmsMacroResolver.class,
-    TestCmsResourceTranslator.class,
-    TestCmsStringUtil.class,
-    TestCmsUriSplitter.class,
-    TestCmsUUID.class,
-    TestCmsXmlSaxWriter.class,
-    TestValidFilename.class,
-    TestCmsManyToOneMap.class,
-    TestCmsPathMap.class,
-    TestCmsHtmlValidator.class,
-    TestCmsColorContrastCalculator.class,
-    TestCmsPriorityLock.class,
-    TestCmsLinkFinisher.class
-})
+@SelectClasses({})
 public final class AllTests {}

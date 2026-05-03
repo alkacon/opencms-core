@@ -29,20 +29,33 @@ package org.opencms.util;
 
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test cases for file name validation.<p>
  *
  * @since 6.0.0
  */
-public class TestValidFilename extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestValidFilename extends OpenCmsJupiterTestCase {
+
+    @Override
+    protected boolean shouldBootOpenCms() {
+        return false;
+    }
 
     /**
      * Tests the file name validation method in the class CmsDriverManager.<p>
      *
      * @throws Exception if something goes wrong
      */
+    @Test
     public void testCheckNameForResource() throws Exception {
 
         // according to windows, the following characters are illegal:

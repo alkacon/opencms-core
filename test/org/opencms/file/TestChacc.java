@@ -33,31 +33,58 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
+import org.junit.jupiter.api.Disabled;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
 import java.util.Iterator;
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.BeforeEach;
+import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestResourceStorage;
+
+
 
 /**
  * Unit test for the "chacc" method of the CmsObject.<p>
  *
  */
-public class TestChacc extends OpenCmsTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestChacc extends OpenCmsJupiterTestCase {
+
+    private OpenCmsTestCase tc = new OpenCmsTestCase("helper");
+
+    @BeforeEach
+    public void setupStorage() throws Exception {
+        tc.createStorage("chaccFolderGroup");
+        tc.switchStorage("chaccFolderGroup");
+    }
+
+    @Override
+    public CmsObject getCmsObject() {
+        try {
+            CmsObject cms = super.getCmsObject();
+            cms.loginUser("Admin", "admin");
+            cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+            cms.getRequestContext().setSiteRoot("/sites/default/");
+            return cms;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * Default JUnit constructor.<p>
      *
      * @param arg0 JUnit parameters
      */
-    public TestChacc(String arg0) {
-
-        super(arg0);
-    }
+    
 
     /**
      * Test the chacc method on a file and a group.<p>
@@ -248,42 +275,15 @@ public class TestChacc extends OpenCmsTestCase {
      *
      * @return the test suite
      */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestChacc.class.getName());
-
-        suite.addTest(new TestChacc("testChaccFileGroup"));
-        suite.addTest(new TestChacc("testChaccFileUser"));
-        suite.addTest(new TestChacc("testChaccFileAllOthers"));
-        suite.addTest(new TestChacc("testChaccFileOverwriteAll"));
-        suite.addTest(new TestChacc("testChaccAddRemove"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+    
 
     /**
      * Test the creation and deletion of access control entries and checks permissions of a test user.<p>
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @org.junit.jupiter.api.Order(5)
     public void testChaccAddRemove() throws Throwable {
 
         echo("Testing adding and removing ACEs on files and folders");
@@ -315,9 +315,9 @@ public class TestChacc extends OpenCmsTestCase {
         cms.loginUser("testuser", "test");
         cms.getRequestContext().setCurrentProject(offline);
         cms.lockResource(resName);
-        assertTrue(cms.hasPermissions(cms.readResource(resName), permissions));
-        assertTrue(cms.hasPermissions(cms.readResource("/folder2/index.html"), permissions));
-        assertFalse(cms.hasPermissions(cms.readResource("/folder1/"), permissions));
+        tc.assertTrue(cms.hasPermissions(cms.readResource(resName), permissions));
+        tc.assertTrue(cms.hasPermissions(cms.readResource("/folder2/index.html"), permissions));
+        tc.assertFalse(cms.hasPermissions(cms.readResource("/folder1/"), permissions));
         cms.unlockResource(resName);
 
         // switch back to Admin user and remove ACE
@@ -331,7 +331,7 @@ public class TestChacc extends OpenCmsTestCase {
 
         cms.loginUser("testuser", "test");
         cms.getRequestContext().setCurrentProject(offline);
-        assertFalse(cms.hasPermissions(cms.readResource(resName), CmsPermissionSet.ACCESS_WRITE));
+        tc.assertFalse(cms.hasPermissions(cms.readResource(resName), CmsPermissionSet.ACCESS_WRITE));
 
         cms.loginUser("Admin", "admin");
         cms.getRequestContext().setCurrentProject(offline);
@@ -343,7 +343,7 @@ public class TestChacc extends OpenCmsTestCase {
 
         // re-check permissions of test user after removing ACE
         cms.loginUser("testuser", "test");
-        assertFalse(cms.hasPermissions(cms.readResource(resName), permissions));
+        tc.assertFalse(cms.hasPermissions(cms.readResource(resName), permissions));
     }
 
     /**
@@ -351,6 +351,8 @@ public class TestChacc extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @org.junit.jupiter.api.Order(3)
     public void testChaccFileAllOthers() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -362,7 +364,7 @@ public class TestChacc extends OpenCmsTestCase {
             + CmsAccessControlEntry.ACCESS_FLAGS_ALLOTHERS
             + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT;
 
-        storeResources(cms, resource, true);
+        tc.storeResources(cms, resource, true);
 
         cms.lockResource(resource);
         cms.chacc(
@@ -375,7 +377,7 @@ public class TestChacc extends OpenCmsTestCase {
         cms.unlockResource(resource);
 
         // now evaluate the result
-        assertFilter(cms, resource, OpenCmsTestResourceFilter.FILTER_CHACC);
+        tc.assertFilter(cms, resource, OpenCmsTestResourceFilter.FILTER_CHACC);
         // test the ace of the new permission
         // add the all others flag to the acl
         CmsResource res = cms.readResource(resource, CmsResourceFilter.ALL);
@@ -385,14 +387,14 @@ public class TestChacc extends OpenCmsTestCase {
             permissions.getAllowedPermissions(),
             permissions.getDeniedPermissions(),
             flags);
-        assertAce(cms, resource, ace);
+        tc.assertAce(cms, resource, ace);
         // test the acl with the permission set
         int denied = permissions.getDeniedPermissions();
         if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE) > 0) {
             denied = 0;
         }
         CmsPermissionSet permission = new CmsPermissionSet(permissions.getAllowedPermissions(), denied);
-        assertAcl(cms, resource, CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID, permission);
+        tc.assertAcl(cms, resource, CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID, permission);
 
         // now check all the subresources in the folder, access must be modified as well
         List subresources = cms.readResources(resource, CmsResourceFilter.ALL);
@@ -402,7 +404,7 @@ public class TestChacc extends OpenCmsTestCase {
             CmsResource subRes = (CmsResource)j.next();
             String subResName = cms.getSitePath(subRes);
             // now evaluate the result
-            assertFilter(cms, subResName, OpenCmsTestResourceFilter.FILTER_CHACC);
+            tc.assertFilter(cms, subResName, OpenCmsTestResourceFilter.FILTER_CHACC);
             // test the ace of the new permission
             // add the group and the inherited flag to the acl
             ace = new CmsAccessControlEntry(
@@ -411,11 +413,11 @@ public class TestChacc extends OpenCmsTestCase {
                 permissions.getAllowedPermissions(),
                 permissions.getDeniedPermissions(),
                 flags + CmsAccessControlEntry.ACCESS_FLAGS_INHERITED);
-            assertAce(cms, subResName, ace);
+            tc.assertAce(cms, subResName, ace);
 
             // test the acl with the permission set
             permission = new CmsPermissionSet(permissions.getAllowedPermissions(), denied);
-            assertAcl(cms, resource, subResName, CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID, permission);
+            tc.assertAcl(cms, resource, subResName, CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID, permission);
         }
     }
 
@@ -424,12 +426,14 @@ public class TestChacc extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @org.junit.jupiter.api.Order(1)
     public void testChaccFileGroup() throws Throwable {
 
         CmsObject cms = getCmsObject();
         echo("Testing chacc on a file and a group");
         chaccFileGroup(
-            this,
+            tc,
             cms,
             "/index.html",
             cms.readGroup("Users"),
@@ -442,6 +446,8 @@ public class TestChacc extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @org.junit.jupiter.api.Order(4)
     public void testChaccFileOverwriteAll() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -453,7 +459,7 @@ public class TestChacc extends OpenCmsTestCase {
             + CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE_ALL
             + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT;
 
-        storeResources(cms, resource, true);
+        tc.storeResources(cms, resource, true);
 
         cms.lockResource(resource);
         cms.chacc(
@@ -466,7 +472,7 @@ public class TestChacc extends OpenCmsTestCase {
         cms.unlockResource(resource);
 
         // now evaluate the result
-        assertFilter(cms, resource, OpenCmsTestResourceFilter.FILTER_CHACC);
+        tc.assertFilter(cms, resource, OpenCmsTestResourceFilter.FILTER_CHACC);
         // test the ace of the new permission
         // add the all others flag to the acl
         CmsResource res = cms.readResource(resource, CmsResourceFilter.ALL);
@@ -476,14 +482,14 @@ public class TestChacc extends OpenCmsTestCase {
             permissions.getAllowedPermissions(),
             permissions.getDeniedPermissions(),
             flags);
-        assertAce(cms, resource, ace);
+        tc.assertAce(cms, resource, ace);
         // test the acl with the permission set
         int denied = permissions.getDeniedPermissions();
         if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE) > 0) {
             denied = 0;
         }
         CmsPermissionSet permission = new CmsPermissionSet(permissions.getAllowedPermissions(), denied);
-        assertAcl(cms, resource, CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID, permission);
+        tc.assertAcl(cms, resource, CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID, permission);
 
         // now check all the subresources in the folder, access must be modified as well
         List subresources = cms.readResources(resource, CmsResourceFilter.ALL);
@@ -493,7 +499,7 @@ public class TestChacc extends OpenCmsTestCase {
             CmsResource subRes = (CmsResource)j.next();
             String subResName = cms.getSitePath(subRes);
             // now evaluate the result
-            assertFilter(cms, subResName, OpenCmsTestResourceFilter.FILTER_CHACC);
+            tc.assertFilter(cms, subResName, OpenCmsTestResourceFilter.FILTER_CHACC);
             // test the ace of the new permission
             // add the group and the inherited flag to the acl
             ace = new CmsAccessControlEntry(
@@ -502,11 +508,11 @@ public class TestChacc extends OpenCmsTestCase {
                 permissions.getAllowedPermissions(),
                 permissions.getDeniedPermissions(),
                 flags + CmsAccessControlEntry.ACCESS_FLAGS_INHERITED);
-            assertAce(cms, subResName, ace);
+            tc.assertAce(cms, subResName, ace);
 
             // test the acl with the permission set
             permission = new CmsPermissionSet(permissions.getAllowedPermissions(), denied);
-            assertAcl(cms, resource, subResName, CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID, permission);
+            tc.assertAcl(cms, resource, subResName, CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID, permission);
         }
     }
 
@@ -515,11 +521,13 @@ public class TestChacc extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @org.junit.jupiter.api.Order(2)
     public void testChaccFileUser() throws Throwable {
 
         CmsObject cms = getCmsObject();
         echo("Testing chacc on a file and a user");
-        chaccFileUser(this, cms, "/folder1/index.html", cms.readUser("Guest"), CmsPermissionSet.ACCESS_WRITE, 0);
+        chaccFileUser(tc, cms, "/folder1/index.html", cms.readUser("Guest"), CmsPermissionSet.ACCESS_WRITE, 0);
     }
 
     /**
@@ -527,13 +535,16 @@ public class TestChacc extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Disabled("TODO: This test is not working correctly so far!")
+    @org.junit.jupiter.api.Order(6)
     public void testChaccFolderGroup() throws Throwable {
 
         //TODO: This test is not working correctly so far!
         CmsObject cms = getCmsObject();
         echo("Testing chacc on a folder and a group");
         chaccFolderGroup(
-            this,
+            tc,
             cms,
             "/folder2/",
             cms.readGroup("Guests"),

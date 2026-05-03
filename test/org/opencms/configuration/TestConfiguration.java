@@ -29,7 +29,7 @@ package org.opencms.configuration;
 
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlUtils;
@@ -42,21 +42,35 @@ import java.util.List;
 import org.dom4j.Document;
 import org.xml.sax.InputSource;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
 /**
  * Tests for the OpenCms configuration handling.<p>
  *
  * @since 6.0.0
  */
-public class TestConfiguration extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestConfiguration extends OpenCmsJupiterTestCase {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
      */
-    public TestConfiguration(String arg0) {
+    @Override
+    protected boolean shouldBootOpenCms() {
 
-        super(arg0, false);
+        return false;
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
+     */
+    @Override
+    protected boolean shouldInitConfiguration() {
+
+        return false;
     }
 
     /**
@@ -66,6 +80,8 @@ public class TestConfiguration extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testLoadXmlConfiguration() throws Exception {
 
         // get the file name of the input resource
@@ -114,7 +130,7 @@ public class TestConfiguration extends OpenCmsTestCase {
             //            System.out.println(CmsXmlUtils.marshal(inputDoc, CmsEncoder.ENCODING_UTF_8));
             //            System.out.println("+++");
 
-            assertEquals(outputDoc, inputDoc);
+            assertXmlEquals(inputDoc, outputDoc);
         }
     }
 }

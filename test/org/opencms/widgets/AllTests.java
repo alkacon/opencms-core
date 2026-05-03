@@ -27,10 +27,8 @@
 
 package org.opencms.widgets;
 
-import org.opencms.test.OpenCmsTestProperties;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Main test suite for the package <code>{@link org.opencms.widgets}</code>.<p>
@@ -38,7 +36,8 @@ import junit.framework.TestSuite;
  *
  * @since 6.0
  */
-@org.junit.runner.RunWith(org.junit.runners.AllTests.class)
+@Suite
+@SelectClasses({TestSelectWidgetOption.class, TestHtmlWidgetOption.class, org.opencms.widgets.serialdate.AllTests.class})
 public final class AllTests {
 
     /**
@@ -48,21 +47,4 @@ public final class AllTests {
 
         // empty
     }
-
-    /**
-     * Returns the JUnit test suite for this package.<p>
-     *
-     * @return the JUnit test suite for this package
-     */
-    public static Test suite() {
-
-        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(TestSelectWidgetOption.class));
-        suite.addTest(new TestSuite(TestHtmlWidgetOption.class));
-        //$JUnit-END$
-        return suite;
-    }
-
 }

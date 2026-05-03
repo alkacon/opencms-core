@@ -27,6 +27,11 @@
 
 package org.opencms.widgets;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestCase;
 
 import java.util.ArrayList;
@@ -38,13 +43,22 @@ import java.util.List;
  * Test cases for the parsing of select widget options.<p>
  *
  */
-public class TestSelectWidgetOption extends OpenCmsTestCase {
+@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
+@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
+public class TestSelectWidgetOption extends OpenCmsJupiterTestCase {
+
+    @Override
+    protected boolean shouldBootOpenCms() {
+        return false;
+    }
 
     /**
      * Tests parsing of select widget options.<p>
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(1)
     public void testOptionParser() throws Exception {
 
         List<CmsSelectWidgetOption> res = CmsSelectWidgetOption.parseOptions(null);
@@ -239,6 +253,8 @@ public class TestSelectWidgetOption extends OpenCmsTestCase {
     /**
      * Tests if options are split correctly.
      */
+    @Test
+    @Order(2)
     public void testOptionSplitter() {
 
         String testString = "a|b|c";
@@ -258,6 +274,8 @@ public class TestSelectWidgetOption extends OpenCmsTestCase {
     /**
      * Incomplete test for the creation of the options string from a list of options, just checking if escapings are added as necessary.
      */
+    @Test
+    @Order(3)
     public void testOptionStringCreation() {
 
         String expected = "value='a\\|b'|value='c\\|'|value='\\|d'";

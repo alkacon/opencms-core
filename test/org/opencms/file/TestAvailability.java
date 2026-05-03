@@ -27,6 +27,13 @@
 
 package org.opencms.file;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.BeforeAll;
+
 import org.opencms.db.CmsDriverManager;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsContextInfo;
@@ -34,7 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsVfsUtil;
 
@@ -42,36 +49,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
-import junit.framework.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit test for the "setDateExpired" and "setDateReleased" method of the CmsObject.<p>
  */
-public class TestAvailability extends OpenCmsTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestAvailability extends OpenCmsJupiterTestCase {
 
     private static final long MSECS_PER_DAY = 1000 * 60 * 60 * 12;
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestAvailability(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        return generateSetupTestWrapper(TestAvailability.class, "simpletest", "/");
-
-    }
 
     /**
      * Test to set release date on a resource.<p>
@@ -80,7 +71,7 @@ public class TestAvailability extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
-
+    @Test
     public void testDateExpired() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -104,6 +95,7 @@ public class TestAvailability extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
     public void testDateReleased() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -126,9 +118,10 @@ public class TestAvailability extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testExclusiveAccess() throws Exception {
 
-        String testName = getName();
+        String testName = "testExclusiveAccess";
         String folder = "/system/" + testName;
         String path = folder + "/" + "file1.txt";
         CmsObject cms = getCmsObject();
@@ -175,9 +168,10 @@ public class TestAvailability extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testExclusiveAccessOnlineTimeDependent() throws Exception {
 
-        String testName = getName();
+        String testName = "testExclusiveAccessOnlineTimeDependent";
         String folder = "/system/" + testName;
         String path = folder + "/" + "file1.txt";
         CmsObject cms = getCmsObject();
@@ -227,9 +221,10 @@ public class TestAvailability extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testExclusiveAccessTimeDependent() throws Exception {
 
-        String testName = getName();
+        String testName = "testExclusiveAccessTimeDependent";
         String folder = "/system/" + testName;
         String path = folder + "/" + "file1.txt";
         CmsObject cms = getCmsObject();
@@ -276,9 +271,10 @@ public class TestAvailability extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testExclusiveAccessTimeDependentMultipleResponsibleGroups() throws Exception {
 
-        String testName = getName();
+        String testName = "testExclusiveAccessTimeDependentMultipleResponsibleGroups";
         String folder = "/system/" + testName;
         String path = folder + "/" + "file1.txt";
         CmsObject cms = getCmsObject();
@@ -328,6 +324,7 @@ public class TestAvailability extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
     public void testFolderDateExpired() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -354,6 +351,7 @@ public class TestAvailability extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
     public void testFolderDateReleased() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -373,9 +371,10 @@ public class TestAvailability extends OpenCmsTestCase {
         cms.unlockResource(folderName);
     }
 
+    @Test
     public void testSetRestricted() throws Exception {
 
-        String testName = getName();
+        String testName = "testSetRestricted";
         String folder = "/system/" + testName;
         String path = folder + "/" + "file1.txt";
         CmsObject cms = getCmsObject();
@@ -411,20 +410,20 @@ public class TestAvailability extends OpenCmsTestCase {
         goodCms.setRestricted(resource, goodGroup.getName(), true);
 
         assertTrue(
-            "Responsible entry not found",
             goodCms.getAccessControlEntries(path).stream().anyMatch(
-                ace -> ace.getPrincipal().equals(goodGroup.getId()) && ace.isResponsible()));
+                ace -> ace.getPrincipal().equals(goodGroup.getId()) && ace.isResponsible()),
+            "Responsible entry not found");
 
         goodCms.setRestricted(resource, goodGroup.getName(), false);
 
         assertFalse(
-            "Responsible entry found when it shouldn't exist",
             goodCms.getAccessControlEntries(path).stream().anyMatch(
-                ace -> ace.getPrincipal().equals(goodGroup.getId()) && ace.isResponsible()));
+                ace -> ace.getPrincipal().equals(goodGroup.getId()) && ace.isResponsible()),
+            "Responsible entry found when it shouldn't exist");
         assertFalse(
-            "Entry for the  good group shouldn't exist",
             goodCms.getAccessControlEntries(path).stream().anyMatch(
-                ace -> ace.getPrincipal().equals(goodGroup.getId())));
+                ace -> ace.getPrincipal().equals(goodGroup.getId())),
+            "Entry for the  good group shouldn't exist");
     }
 
     /**
@@ -434,6 +433,7 @@ public class TestAvailability extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
     public void testSubFolderDateExpired() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -462,6 +462,7 @@ public class TestAvailability extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
     public void testSubFolderDateReleased() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -509,11 +510,11 @@ public class TestAvailability extends OpenCmsTestCase {
         String folder = CmsResource.getParentFolder(path);
         List<CmsResource> filesInFolder = cms.readResources(folder, filter);
         assertTrue(
+            filesInFolder.contains(resource),
             "List of files in folder should include "
                 + resource.getRootPath()
                 + " for "
-                + cms.getRequestContext().getCurrentUser().getName(),
-            filesInFolder.contains(resource));
+                + cms.getRequestContext().getCurrentUser().getName());
     }
 
     /**
@@ -532,21 +533,21 @@ public class TestAvailability extends OpenCmsTestCase {
             ex1 = ex;
         }
         assertNotNull(
+            ex1,
             "readResource should not have succeeded for path "
                 + path
                 + " and user "
-                + cms.getRequestContext().getCurrentUser().getName(),
-            ex1);
+                + cms.getRequestContext().getCurrentUser().getName());
         String folder = CmsResource.getParentFolder(path);
         List<CmsResource> filesInFolder = cms.readResources(folder, CmsResourceFilter.IGNORE_EXPIRATION);
         assertFalse(
+            filesInFolder.stream().anyMatch(res -> path.equals(res.getRootPath())),
             "List of files in folder "
                 + folder
                 + " should not include "
                 + path
                 + " for user "
-                + cms.getRequestContext().getCurrentUser().getName(),
-            filesInFolder.stream().anyMatch(res -> path.equals(res.getRootPath())));
+                + cms.getRequestContext().getCurrentUser().getName());
     }
 
     /**

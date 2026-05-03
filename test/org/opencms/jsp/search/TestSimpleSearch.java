@@ -27,6 +27,10 @@
 
 package org.opencms.jsp.search;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.search.config.CmsSearchConfiguration;
@@ -43,6 +47,7 @@ import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrResultList;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsStringUtil;
@@ -50,75 +55,63 @@ import org.opencms.util.CmsStringUtil;
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /** Test cases for the simple search configuration via contents of type "list_config". */
-public class TestSimpleSearch extends OpenCmsTestCase {
+@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
+@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
+public class TestSimpleSearch extends OpenCmsJupiterTestCase {
+
+    @Override
+    protected String getImportFolder() {
+        return "simpletest";
+    }
+
+    @Override
+    protected String getTargetFolder() {
+        return "/";
+    }
+
+    @Override
+    protected String getSpecialConfigFolder() {
+        return "/../org/opencms/search/solr";
+    }
+
+    @org.junit.jupiter.api.BeforeAll
+    public void disableIndexes() {
+        for (String indexName : org.opencms.main.OpenCms.getSearchManager().getIndexNames()) {
+            if (!indexName.equalsIgnoreCase(org.opencms.search.solr.CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE)) {
+                org.opencms.search.I_CmsSearchIndex index = org.opencms.main.OpenCms.getSearchManager().getIndex(indexName);
+                if (index != null) {
+                    index.setEnabled(false);
+                }
+            }
+        }
+    }
+
 
     /** The VFS folder where the list contents are placed in. */
     private static final String LIST_BASE_FOLDER = "/system/modules/org.opencms.test.modules.listtype/resources/lists/";
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestSimpleSearch(String arg0) {
-
-        super(arg0);
-    }
+    
 
     /**
      * Test suite for this test class.<p>
      *
      * @return the test suite
      */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.addTest(new TestSimpleSearch("testFolderAndCategoryRestrictions"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/", "/../org/opencms/search/solr");
-                // disable all lucene indexes
-                for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
-                    if (!indexName.equalsIgnoreCase(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE)) {
-                        I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
-                        if (index != null) {
-                            index.setEnabled(false);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+    
 
     /**
      * Executes several searches with list configurations that differ in the
      * combined category folder restrictions and examines if the results are as expected.
      * @throws CmsException thrown if something unexpected goes wrong.
      */
-    @org.junit.Test
+        @Test
+    @Order(1)
     public void testFolderAndCategoryRestrictions() throws CmsException {
 
         CmsObject cms = OpenCms.initCmsObject(getCmsObject());
-        importModule(cms, "org.opencms.test.modules.listtype");
+        org.opencms.test.OpenCmsTestCase.importModule(cms, "org.opencms.test.modules.listtype");
 
         // All with category 1
         Set<String> result = searchForConfig(cms, "list_00001.xml");

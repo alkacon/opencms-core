@@ -29,16 +29,28 @@ package org.opencms.util;
 
 import com.google.common.collect.Sets;
 
-import junit.framework.TestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test case for CmsPathMap.<p>
  */
-public class TestCmsPathMap extends TestCase {
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestCmsPathMap extends OpenCmsJupiterTestCase {
+
+    @Override
+    protected boolean shouldBootOpenCms() {
+        return false;
+    }
 
     /**
      * Tests paths with common prefixes.<p>
      */
+    @Test
     public void testCommonPrefix() {
 
         CmsPathMap<String> pm = new CmsPathMap<String>();
@@ -51,6 +63,7 @@ public class TestCmsPathMap extends TestCase {
     /**
      * Tests the empty path.<p>
      */
+    @Test
     public void testEmptyPath() {
 
         CmsPathMap<String> pm = new CmsPathMap<String>();
@@ -64,6 +77,7 @@ public class TestCmsPathMap extends TestCase {
     /**
      * Basic tests.<p>
      */
+    @Test
     public void testPathMap() {
 
         CmsPathMap<String> pm = new CmsPathMap<String>();

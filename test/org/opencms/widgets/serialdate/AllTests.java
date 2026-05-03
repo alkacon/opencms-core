@@ -27,49 +27,23 @@
 
 package org.opencms.widgets.serialdate;
 
-import org.opencms.test.OpenCmsTestProperties;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
- * Main test suite for the package <code>{@link org.opencms.widgets}</code>.<p>
- *
- *
- * @since 6.0
+ * Main test suite for the package {@link org.opencms.widgets.serialdate}.<p>
  */
-@org.junit.runner.RunWith(org.junit.runners.AllTests.class)
+@Suite
+@SelectClasses({
+    TestSerialDateBeanDaily.class,
+    TestSerialDateBeanMonthly.class,
+    TestSerialDateBeanMonthlyWeeks.class,
+    TestSerialDateBeanWeekly.class,
+    TestSerialDateBeanWorkingDays.class,
+    TestSerialDateBeanYearly.class,
+    TestSerialDateBeanYearlyWeekday.class,
+    TestSerialDateValue.class
+})
 public final class AllTests {
-
-    /**
-     * Hide constructor to prevent generation of class instances.<p>
-     */
-    private AllTests() {
-
-        // empty
-    }
-
-    /**
-     * Returns the JUnit test suite for this package.<p>
-     *
-     * @return the JUnit test suite for this package
-     */
-    public static Test suite() {
-
-        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(TestSerialDateBeanDaily.class));
-        suite.addTest(new TestSuite(TestSerialDateBeanMonthly.class));
-        suite.addTest(new TestSuite(TestSerialDateBeanDaily.class));
-        suite.addTest(new TestSuite(TestSerialDateBeanMonthlyWeeks.class));
-        suite.addTest(new TestSuite(TestSerialDateBeanWeekly.class));
-        suite.addTest(new TestSuite(TestSerialDateBeanWorkingDays.class));
-        suite.addTest(new TestSuite(TestSerialDateBeanYearly.class));
-        suite.addTest(new TestSuite(TestSerialDateBeanYearlyWeekday.class));
-        suite.addTest(new TestSuite(TestSerialDateValue.class));
-        //$JUnit-END$
-        return suite;
-    }
-
+    // Empty class for JUnit 5 suite
 }

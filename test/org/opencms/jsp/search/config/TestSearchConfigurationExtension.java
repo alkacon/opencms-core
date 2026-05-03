@@ -27,12 +27,17 @@
 
 package org.opencms.jsp.search.config;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.opencms.json.JSONException;
 import org.opencms.jsp.search.config.parser.CmsJSONSearchConfigurationParser;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.solr.CmsSolrIndex;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -41,61 +46,48 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /** Test cases for the class {@link org.opencms.jsp.search.config.CmsSearchConfigurationPagination}. */
-public class TestSearchConfigurationExtension extends OpenCmsTestCase {
+@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
+@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
+public class TestSearchConfigurationExtension extends OpenCmsJupiterTestCase {
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestSearchConfigurationExtension(String arg0) {
-
-        super(arg0);
+    @Override
+    protected String getImportFolder() {
+        return "simpletest";
     }
+
+    @Override
+    protected String getTargetFolder() {
+        return "/";
+    }
+
+    @Override
+    protected String getSpecialConfigFolder() {
+        return "/../org/opencms/search/solr";
+    }
+
+    @org.junit.jupiter.api.BeforeAll
+    public void disableIndexes() {
+        for (String indexName : org.opencms.main.OpenCms.getSearchManager().getIndexNames()) {
+            if (!indexName.equalsIgnoreCase(org.opencms.search.solr.CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE)) {
+                org.opencms.search.I_CmsSearchIndex index = org.opencms.main.OpenCms.getSearchManager().getIndex(indexName);
+                if (index != null) {
+                    index.setEnabled(false);
+                }
+            }
+        }
+    }
+
+
+    
 
     /**
      * Test suite for this test class.<p>
      *
      * @return the test suite
      */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.addTest(new TestSearchConfigurationExtension("testConfigurationExtension"));
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/", "/../org/opencms/search/solr");
-                // disable all lucene indexes
-                for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
-                    if (!indexName.equalsIgnoreCase(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE)) {
-                        I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
-                        if (index != null) {
-                            index.setEnabled(false);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-
-    }
+    
 
     /**
      * Tests if the configurations are extended as expected.
@@ -105,7 +97,8 @@ public class TestSearchConfigurationExtension extends OpenCmsTestCase {
      * @throws URISyntaxException
      * @throws CmsException
      */
-    @org.junit.Test
+        @Test
+    @Order(1)
     public void testConfigurationExtension() throws IOException, URISyntaxException, CmsException {
 
         String configString = new String(

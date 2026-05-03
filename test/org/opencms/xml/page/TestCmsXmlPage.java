@@ -27,11 +27,16 @@
 
 package org.opencms.xml.page;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.staticexport.CmsLinkTable;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
@@ -45,14 +50,15 @@ import org.opencms.xml.types.CmsXmlHtmlValue;
 import java.util.List;
 import java.util.Locale;
 
-import junit.framework.Test;
 
 /**
  * Tests for the XML page that doesn't require a running OpenCms system.<p>
  *
  * @since 6.0.0
  */
-public class TestCmsXmlPage extends OpenCmsTestCase {
+@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
+@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
+public class TestCmsXmlPage extends OpenCmsJupiterTestCase {
 
     private static final String XMLPAGE_SCHEMA_SYSTEM_ID = CmsXmlPage.XMLPAGE_XSD_SYSTEM_ID;
 
@@ -61,32 +67,19 @@ public class TestCmsXmlPage extends OpenCmsTestCase {
     /** The current VFS prefix as added to internal links according to the configuration in opencms-importexport.xml. */
     private String m_vfsPrefix;
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsXmlPage(String arg0) {
-
-        super(arg0);
-    }
+    
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * Replaces the suite method.
      */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        return generateSetupTestWrapper(TestCmsXmlPage.class, "simpletest", "/");
-    }
 
     /**
      * Tests reading and updating link elements from the XML page.<p>
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(1)
     public void testUpdateXmlPageLink() throws Exception {
 
         // create a XML entity resolver
@@ -160,6 +153,8 @@ public class TestCmsXmlPage extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(2)
     public void testValidateXmlPageWithSchema() throws Exception {
 
         CmsXmlContentTypeManager typeManager = OpenCms.getXmlContentTypeManager();
@@ -191,6 +186,8 @@ public class TestCmsXmlPage extends OpenCmsTestCase {
      *
      * @throws Exception  in case something goes wrong
      */
+    @Test
+    @Order(3)
     public void testXmlPageAsXmlContentDefinition() throws Exception {
 
         CmsXmlContentTypeManager typeManager = OpenCms.getXmlContentTypeManager();
@@ -225,6 +222,8 @@ public class TestCmsXmlPage extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(4)
     public void testXmlPageCreateMinimal() throws Exception {
 
         // create a XML entity resolver
@@ -252,6 +251,8 @@ public class TestCmsXmlPage extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(5)
     public void testXmlPageElementNames() throws Exception {
 
         // create a XML entity resolver
@@ -326,6 +327,8 @@ public class TestCmsXmlPage extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(6)
     public void testXmlPageLocaleAccess() throws Exception {
 
         // create a XML entity resolver
@@ -354,6 +357,8 @@ public class TestCmsXmlPage extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(7)
     public void testXmlPageLocaleCopyMoveRemove() throws Exception {
 
         // create a XML entity resolver
@@ -396,6 +401,8 @@ public class TestCmsXmlPage extends OpenCmsTestCase {
      *
      * @throws Exception  in case something goes wrong
      */
+    @Test
+    @Order(8)
     public void testXmlPageReadFinalVersion() throws Exception {
 
         // create a XML entity resolver
@@ -434,6 +441,8 @@ public class TestCmsXmlPage extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(9)
     public void testXmlPageReadOldVersion() throws Exception {
 
         // create a XML entity resolver
@@ -472,6 +481,8 @@ public class TestCmsXmlPage extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(10)
     public void testXmlPageRenameElement() throws Exception {
 
         // create a XML entity resolver for test case
@@ -500,6 +511,8 @@ public class TestCmsXmlPage extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(11)
     public void testXmlPageWriteFinalVersion() throws Exception {
 
         // create a XML entity resolver
@@ -530,6 +543,8 @@ public class TestCmsXmlPage extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(12)
     public void testXmlPageWriteOldVersion() throws Exception {
 
         // create a XML entity resolver

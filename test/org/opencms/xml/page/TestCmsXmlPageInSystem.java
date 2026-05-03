@@ -27,6 +27,10 @@
 
 package org.opencms.xml.page;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -37,6 +41,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.report.CmsShellReport;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
@@ -48,16 +53,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * Tests for the XML page that require a running OpenCms system.<p>
  *
  * @since 6.0.0
  */
-public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
+@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
+@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
+public class TestCmsXmlPageInSystem extends OpenCmsJupiterTestCase {
 
     /** Used encoding. */
     private static final String UTF8 = CmsEncoder.ENCODING_UTF_8;
@@ -65,62 +69,22 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
     /** The current VFS prefix as added to internal links according to the configuration in opencms-importexport.xml. */
     private String m_vfsPrefix;
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsXmlPageInSystem(String arg0) {
-
-        super(arg0);
-    }
+    
 
     /**
      * Test suite for this test class.<p>
      *
      * @return the test suite
      */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsXmlPageInSystem.class.getName());
-
-        suite.addTest(new TestCmsXmlPageInSystem("testLinksWithSpecialChars"));
-        suite.addTest(new TestCmsXmlPageInSystem("testLinkParameterIssue"));
-        suite.addTest(new TestCmsXmlPageInSystem("testSchemaCachePublishIssue"));
-        suite.addTest(new TestCmsXmlPageInSystem("testLinkReplacement"));
-        suite.addTest(new TestCmsXmlPageInSystem("testCommentInSource"));
-        suite.addTest(new TestCmsXmlPageInSystem("testXmlPageRenameElement"));
-        suite.addTest(new TestCmsXmlPageInSystem("testMalformedPage"));
-        suite.addTest(new TestCmsXmlPageInSystem("testXmlPageCreate"));
-        suite.addTest(new TestCmsXmlPageInSystem("testAnchorLink"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-
-        };
-
-        return wrapper;
-    }
+    
 
     /**
      * Tests the usage of an anchor link.<p>
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(9)
     public void testAnchorLink() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -159,6 +123,8 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testCommentInSource() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -233,6 +199,8 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testLinkParameterIssue() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -292,6 +260,8 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testLinkReplacement() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -365,6 +335,8 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testLinksWithSpecialChars() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -421,6 +393,8 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(7)
     public void testMalformedPage() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -447,6 +421,8 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(3)
     public void testSchemaCachePublishIssue() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -483,6 +459,8 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(8)
     public void testXmlPageCreate() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -509,6 +487,8 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(6)
     public void testXmlPageRenameElement() throws Exception {
 
         String folder = "/folder1/";

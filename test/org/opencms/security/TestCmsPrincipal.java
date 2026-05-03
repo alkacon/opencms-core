@@ -27,6 +27,10 @@
 
 package org.opencms.security;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
@@ -34,68 +38,35 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * Tests for <code>{@link org.opencms.security.CmsPrincipal}</code> (and it's subclasses).<p>
  */
-public class TestCmsPrincipal extends OpenCmsTestCase {
+@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
+@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
+public class TestCmsPrincipal extends OpenCmsJupiterTestCase {
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsPrincipal(String arg0) {
-
-        super(arg0);
-    }
+    
 
     /**
      * Test suite for this test class.<p>
      *
      * @return the test suite
      */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsPrincipal.class.getName());
-
-        suite.addTest(new TestCmsPrincipal("testBasicReadOperation"));
-        suite.addTest(new TestCmsPrincipal("testUserHistory"));
-        suite.addTest(new TestCmsPrincipal("testGroupHistory"));
-        suite.addTest(new TestCmsPrincipal("testPrefixMethods"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+    
 
     /**
      * Tests basic principal read operation.<p>
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(1)
     public void testBasicReadOperation() throws Exception {
 
         echo("Testing basic principal read operation");
@@ -164,6 +135,8 @@ public class TestCmsPrincipal extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testGroupHistory() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -191,57 +164,47 @@ public class TestCmsPrincipal extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(3)
     public void testPrefixMethods() throws Exception {
 
         // User checks
-        assertTrue("User prefix check with correct user name 1 failed", CmsUser.hasPrefix("USER.hans"));
-        assertTrue("User prefix check with correct user name 2 failed", CmsUser.hasPrefix("  USER.hans"));
-        assertTrue("User prefix check with correct user name 3 failed", CmsUser.hasPrefix("USER.hans   "));
-        assertTrue("User prefix check with correct user name 4 failed", CmsUser.hasPrefix("User.hans   "));
-        assertTrue(
-            "User prefix removal with correct user name failed",
-            CmsUser.removePrefix("USER.hans").equals("hans"));
-        assertTrue(
-            "User prefix removal with correct user name failed",
-            CmsUser.removePrefix("   USER.hans").equals("hans"));
-        assertFalse("User prefix check with null failed", CmsUser.hasPrefix(null));
-        assertFalse("User prefix check with empty String failed", CmsUser.hasPrefix(""));
-        assertFalse("User prefix check with wrong user name 1 failed", CmsUser.hasPrefix("USERhans"));
-        assertFalse("User prefix check with wrong user name 2 failed", CmsUser.hasPrefix("USERS.hans"));
+        assertTrue(CmsUser.hasPrefix("USER.hans"), "User prefix check with correct user name 1 failed");
+        assertTrue(CmsUser.hasPrefix("  USER.hans"), "User prefix check with correct user name 2 failed");
+        assertTrue(CmsUser.hasPrefix("USER.hans   "), "User prefix check with correct user name 3 failed");
+        assertTrue(CmsUser.hasPrefix("User.hans   "), "User prefix check with correct user name 4 failed");
+        assertTrue(CmsUser.removePrefix("USER.hans").equals("hans"), "User prefix removal with correct user name failed");
+        assertTrue(CmsUser.removePrefix("   USER.hans").equals("hans"), "User prefix removal with correct user name failed");
+        assertFalse(CmsUser.hasPrefix(null), "User prefix check with null failed");
+        assertFalse(CmsUser.hasPrefix(""), "User prefix check with empty String failed");
+        assertFalse(CmsUser.hasPrefix("USERhans"), "User prefix check with wrong user name 1 failed");
+        assertFalse(CmsUser.hasPrefix("USERS.hans"), "User prefix check with wrong user name 2 failed");
 
         // Group checks
-        assertTrue("Group prefix check with correct group name 1 failed", CmsGroup.hasPrefix("GROUP.Users"));
-        assertTrue("Group prefix check with correct group name 2 failed", CmsGroup.hasPrefix("  GROUP.Users"));
-        assertTrue("Group prefix check with correct group name 3 failed", CmsGroup.hasPrefix("GROUP.Users   "));
-        assertTrue("Group prefix check with correct group name 4 failed", CmsGroup.hasPrefix("Group.Users   "));
-        assertTrue(
-            "Group prefix removal with correct group name failed",
-            CmsGroup.removePrefix("GROUP.Users").equals("Users"));
-        assertTrue(
-            "Group prefix removal with correct group name failed",
-            CmsGroup.removePrefix("   GROUP.Users").equals("Users"));
-        assertFalse("Group prefix check with null failed", CmsGroup.hasPrefix(null));
-        assertFalse("Group prefix check with empty String failed", CmsGroup.hasPrefix(""));
-        assertFalse("Group prefix check with wrong group name 1 failed", CmsGroup.hasPrefix("GROUPUsers"));
-        assertFalse("Group prefix check with wrong group name 2 failed", CmsGroup.hasPrefix("GROUPS.Users"));
-        assertFalse("Group prefix check with wrong group name 3 failed", CmsGroup.hasPrefix("SGROUPS.Users"));
+        assertTrue(CmsGroup.hasPrefix("GROUP.Users"), "Group prefix check with correct group name 1 failed");
+        assertTrue(CmsGroup.hasPrefix("  GROUP.Users"), "Group prefix check with correct group name 2 failed");
+        assertTrue(CmsGroup.hasPrefix("GROUP.Users   "), "Group prefix check with correct group name 3 failed");
+        assertTrue(CmsGroup.hasPrefix("Group.Users   "), "Group prefix check with correct group name 4 failed");
+        assertTrue(CmsGroup.removePrefix("GROUP.Users").equals("Users"), "Group prefix removal with correct group name failed");
+        assertTrue(CmsGroup.removePrefix("   GROUP.Users").equals("Users"), "Group prefix removal with correct group name failed");
+        assertFalse(CmsGroup.hasPrefix(null), "Group prefix check with null failed");
+        assertFalse(CmsGroup.hasPrefix(""), "Group prefix check with empty String failed");
+        assertFalse(CmsGroup.hasPrefix("GROUPUsers"), "Group prefix check with wrong group name 1 failed");
+        assertFalse(CmsGroup.hasPrefix("GROUPS.Users"), "Group prefix check with wrong group name 2 failed");
+        assertFalse(CmsGroup.hasPrefix("SGROUPS.Users"), "Group prefix check with wrong group name 3 failed");
 
         // Role checks
-        assertTrue("Role prefix check with correct role name 1 failed", CmsRole.hasPrefix("ROLE.EDITOR"));
-        assertTrue("Role prefix check with correct role name 2 failed", CmsRole.hasPrefix("  ROLE.EDITOR"));
-        assertTrue("Role prefix check with correct role name 3 failed", CmsRole.hasPrefix("ROLE.EDITOR   "));
-        assertTrue("Role prefix check with correct role name 3 failed", CmsRole.hasPrefix("Role.EDITOR   "));
-        assertTrue(
-            "Role prefix removal with correct role name failed",
-            CmsRole.removePrefix("ROLE.EDITOR").equals("EDITOR"));
-        assertTrue(
-            "Role prefix removal with correct role name failed",
-            CmsRole.removePrefix("   ROLE.EDITOR").equals("EDITOR"));
-        assertFalse("Role prefix check with null failed", CmsRole.hasPrefix(null));
-        assertFalse("Role prefix check with empty String failed", CmsRole.hasPrefix(""));
-        assertFalse("Role prefix check with wrong role name 1 failed", CmsRole.hasPrefix("ROLEEDITOR"));
-        assertFalse("Role prefix check with wrong role name 2 failed", CmsRole.hasPrefix("ROLES.EDITOR"));
-        assertFalse("Role prefix check with wrong role name 3 failed", CmsRole.hasPrefix("SROLES.EDITOR"));
+        assertTrue(CmsRole.hasPrefix("ROLE.EDITOR"), "Role prefix check with correct role name 1 failed");
+        assertTrue(CmsRole.hasPrefix("  ROLE.EDITOR"), "Role prefix check with correct role name 2 failed");
+        assertTrue(CmsRole.hasPrefix("ROLE.EDITOR   "), "Role prefix check with correct role name 3 failed");
+        assertTrue(CmsRole.hasPrefix("Role.EDITOR   "), "Role prefix check with correct role name 3 failed");
+        assertTrue(CmsRole.removePrefix("ROLE.EDITOR").equals("EDITOR"), "Role prefix removal with correct role name failed");
+        assertTrue(CmsRole.removePrefix("   ROLE.EDITOR").equals("EDITOR"), "Role prefix removal with correct role name failed");
+        assertFalse(CmsRole.hasPrefix(null), "Role prefix check with null failed");
+        assertFalse(CmsRole.hasPrefix(""), "Role prefix check with empty String failed");
+        assertFalse(CmsRole.hasPrefix("ROLEEDITOR"), "Role prefix check with wrong role name 1 failed");
+        assertFalse(CmsRole.hasPrefix("ROLES.EDITOR"), "Role prefix check with wrong role name 2 failed");
+        assertFalse(CmsRole.hasPrefix("SROLES.EDITOR"), "Role prefix check with wrong role name 3 failed");
     }
 
     /**
@@ -249,6 +212,8 @@ public class TestCmsPrincipal extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testUserHistory() throws Throwable {
 
         CmsObject cms = getCmsObject();

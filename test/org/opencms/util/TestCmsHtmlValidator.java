@@ -27,20 +27,34 @@
 
 package org.opencms.util;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
 import org.htmlparser.util.ParserException;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests the HTML validator.<p>
  */
-public class TestCmsHtmlValidator extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestCmsHtmlValidator extends OpenCmsJupiterTestCase {
+
+    @Override
+    protected boolean shouldBootOpenCms() {
+        return false;
+    }
 
     /**
      * Test HTML validation.<p>
      *
      * @throws ParserException in case parsing fails
      */
+    @Test
     public void testValidation() throws ParserException {
 
         CmsHtmlValidator validator = new CmsHtmlValidator();

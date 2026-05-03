@@ -28,20 +28,32 @@
 package org.opencms.util;
 
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test case for <code>{@link org.opencms.util.CmsHtmlParser}</code>.<p>
  *
  * @since 6.2.0
  */
-public class TestCmsHtmlParser extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestCmsHtmlParser extends OpenCmsJupiterTestCase {
+
+    @Override
+    protected boolean shouldBootOpenCms() {
+        return false;
+    }
 
     /**
      * Tests the HTML extractor.<p>
      *
      * @throws Exception in case the test fails
      */
+    @Test
     public void testHtmlExtractor() throws Exception {
 
         I_CmsHtmlNodeVisitor visitor1 = new CmsHtmlParser(true);

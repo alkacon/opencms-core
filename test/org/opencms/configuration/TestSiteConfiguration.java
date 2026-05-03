@@ -27,65 +27,46 @@
 
 package org.opencms.configuration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.site.CmsSiteMatcher;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for site configuration.<p>
  */
-public class TestSiteConfiguration extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestSiteConfiguration extends OpenCmsJupiterTestCase {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
      */
-    public TestSiteConfiguration(String arg0) {
+    @Override
+    protected String getTargetFolder() {
 
-        super(arg0);
+        return null;
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public static Test suite() {
+    @Override
+    protected String getImportFolder() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestSiteConfiguration.class.getName());
-
-        suite.addTest(new TestSiteConfiguration("testConfiguredSites"));
-        suite.addTest(new TestSiteConfiguration("testConfiguredRelationTypes"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms(null, null);
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        return null;
     }
 
     /**
@@ -93,6 +74,8 @@ public class TestSiteConfiguration extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testConfiguredSites() throws Throwable {
 
         echo("Testing Site Configuration");
@@ -121,6 +104,8 @@ public class TestSiteConfiguration extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testConfiguredRelationTypes() throws Throwable {
 
         echo("Testing Relation Types Configuration");

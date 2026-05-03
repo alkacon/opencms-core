@@ -27,14 +27,21 @@
 
 package org.opencms.util;
 
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestCase;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test cases for the resource translator.<p>
  *
  * @since 6.0.0
  */
-public class TestCmsResourceTranslator extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestCmsResourceTranslator extends OpenCmsJupiterTestCase {
 
     // default rules (same as in "opencms.properties")
     private static String[] rules = {
@@ -60,29 +67,30 @@ public class TestCmsResourceTranslator extends OpenCmsTestCase {
         "s#[^0-9a-zA-Z_\\.\\-\\/]#!#g",
         "s#!+#x#g"};
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsResourceTranslator(String arg0) {
+    @Override
+    protected boolean shouldBootOpenCms() {
+        return false;
+    }
 
-        super(arg0);
+    @Override
+    protected boolean shouldInitConfiguration() {
+        return true;
     }
 
     /**
      * Tests for the resource name translation.<p>
      */
+    @Test
     public void testTranslateResource() {
 
         CmsResourceTranslator translator = new CmsResourceTranslator(rules, false);
         String test;
 
         test = translator.translateResource("/default/vfs/content/bodys/test/index.html");
-        assertEquals(test, "/default/vfs/system/bodies/test/index.html");
+        assertEquals("/default/vfs/system/bodies/test/index.html", test);
 
         test = translator.translateResource("/default/vfs/system/workplace/templates/js/test.js");
-        assertEquals(test, "/default/vfs/system/workplace/scripts/test.js");
+        assertEquals("/default/vfs/system/workplace/scripts/test.js", test);
 
         translator = new CmsResourceTranslator(rules, true);
         test = translator.translateResource(
@@ -93,7 +101,7 @@ public class TestCmsResourceTranslator extends OpenCmsTestCase {
                 + "bung mit Fu"
                 + OpenCmsTestCase.C_SHARP_S
                 + ".js");
-        assertEquals(test, "Schoene_Uebung_mit_Fuss.js");
+        assertEquals("Schoene_Uebung_mit_Fuss.js", test);
     }
 
 }

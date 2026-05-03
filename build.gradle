@@ -1191,6 +1191,7 @@ tasks.withType(Test).configureEach {
 }
 
 def coreTestConfig = {
+    useJUnitPlatform()
     testClassesDirs = files(sourceSets.test.java.classesDirectory)
     systemProperties['test.data.path'] = "${projectDir}/test/data"
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
@@ -1204,7 +1205,7 @@ test {
     configure coreTestConfig
     description = "Runs the complete test suite 'org.opencms.test.AllTests'."
 
-    includes = ['org/opencms/test/AllTestsBridge.class']
+    includes = ['org/opencms/test/AllTestsBridge.class', 'org/opencms/test/AllJupiterTests.class']
     scanForTestClasses = true
 }
 
@@ -1217,6 +1218,7 @@ tasks.register('testSingle', Test) {
     configure coreTestConfig
     classpath = sourceSets.test.runtimeClasspath
     testClassesDirs = files(sourceSets.test.java.classesDirectory)
+    useJUnitPlatform()
     doNotTrackState("Single-test execution uses ad hoc filters and generated result paths.")
 
     doFirst{
@@ -1243,6 +1245,18 @@ tasks.register('testSingle', Test) {
             filter.includeTestsMatching "org.opencms.main.TestCmsSystemInfo*"
         }
     }
+}
+
+tasks.register('testJupiter', Test) {
+    description = "Spike: runs JUnit 6 Jupiter PoC (TestReadResourceJupiter)."
+    group = 'verification'
+    configure coreTestConfig
+    classpath = sourceSets.test.runtimeClasspath
+    testClassesDirs = files(sourceSets.test.java.classesDirectory)
+    useJUnitPlatform()
+    includes = ['org/opencms/file/TestReadResourceJupiter.class']
+    scanForTestClasses = false
+    doNotTrackState("Jupiter PoC uses ad hoc filters and generated result paths.")
 }
 
 tasks.register('testJar', Jar) {

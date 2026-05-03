@@ -27,32 +27,40 @@
 
 package org.opencms.util;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test cases for {@link org.opencms.util.CmsColorContrastCalculator} focusing on WCAG 2.2 compliance.
  * Test values validated against WebAIM Contrast Checker (https://webaim.org/resources/contrastchecker/).
  */
-public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestCmsColorContrastCalculator extends OpenCmsJupiterTestCase {
 
     private CmsColorContrastCalculator m_calculator;
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsColorContrastCalculator(String arg0) {
+    @Override
+    protected boolean shouldBootOpenCms() {
+        return false;
+    }
 
-        super(arg0);
+    @BeforeEach
+    public void setUp() {
         m_calculator = new CmsColorContrastCalculator();
     }
 
@@ -219,6 +227,7 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
         assertEquals(CmsColorContrastCalculator.INVALID_FOREGROUND, m_calculator.getForeground("transparent"));
     }
 
+    @Test
     public void testHasSufficientContrast() {
 
         // Test WCAG AA compliance (4.5:1 minimum for normal text)
@@ -472,6 +481,6 @@ public class TestCmsColorContrastCalculator extends OpenCmsTestCase {
     private void assertContrast(String color1, String color2, double expectedRatio) {
 
         double actualRatio = m_calculator.getContrast(color1, color2);
-        assertEquals("Contrast ratio between " + color1 + " and " + color2, expectedRatio, actualRatio, 0.01);
+        assertEquals(expectedRatio, actualRatio, 0.01, "Contrast ratio between " + color1 + " and " + color2);
     }
 }

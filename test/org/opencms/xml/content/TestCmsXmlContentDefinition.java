@@ -27,7 +27,12 @@
 
 package org.opencms.xml.content;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -47,26 +52,28 @@ import org.dom4j.io.XMLWriter;
  * Tests for generating an XML content definition.<p>
  *
  */
-public class TestCmsXmlContentDefinition extends OpenCmsTestCase {
+@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
+@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
+public class TestCmsXmlContentDefinition extends OpenCmsJupiterTestCase {
+
+    @Override
+    protected boolean shouldBootOpenCms() {
+        return false;
+    }
+
 
     /** The schema id. */
     private static final String SCHEMA_SYSTEM_ID_1B = "http://www.opencms.org/test1b.xsd";
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsXmlContentDefinition(String arg0) {
-
-        super(arg0);
-    }
+    
 
     /**
      * Basic test for xml content definitions.<p>
      *
      * @throws Exception in case an error occurred
      */
+    @Test
+    @Order(1)
     public void testCmsXmlContentDefiniton() throws Exception {
 
         CmsXmlContentDefinition cd1 = new CmsXmlContentDefinition("Article", null);
@@ -114,6 +121,8 @@ public class TestCmsXmlContentDefinition extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testCreateXmlContent() throws Exception {
 
         String schemaUri = "http://www.opencms.org/test.xsd";
@@ -171,6 +180,8 @@ public class TestCmsXmlContentDefinition extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testDifferentInnerOuterName() throws Exception {
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);

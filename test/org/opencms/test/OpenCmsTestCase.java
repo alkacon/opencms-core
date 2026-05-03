@@ -291,16 +291,7 @@ public class OpenCmsTestCase extends TestCase {
 
         super(arg0);
         if (initialize) {
-            OpenCmsTestLogAppender.setBreakOnError(false);
-            if (m_resourceStorages == null) {
-                m_resourceStorages = new HashMap<String, OpenCmsTestResourceStorage>();
-            }
-
-            // initialize configuration
             initConfiguration();
-
-            // set "OpenCmsLog" system property to enable the logger
-            OpenCmsTestLogAppender.setBreakOnError(true);
         }
     }
 
@@ -1691,7 +1682,7 @@ public class OpenCmsTestCase extends TestCase {
      * @return string of non matching properties
      * @throws CmsException if something goes wrong
      */
-    private static String compareProperties(
+    public static String compareProperties(
         CmsObject cms,
         String resourceName,
         OpenCmsTestResourceStorageEntry storedResource,
@@ -2306,34 +2297,50 @@ public class OpenCmsTestCase extends TestCase {
     /**
      * Tests if the given xml document objects are equals (or both null).<p>
      *
-     * @param d1 first document to compare
-     * @param d2 second document to compare
+     * @param expected first document to compare
+     * @param actual second document to compare
+     * 
+     * @return an error message if the documents are not equal, otherwise null
      */
-    public void assertEquals(Document d1, Document d2) {
+    public static String compareXmlDocuments(Document expected, Document actual) {
 
-        if ((d1 == null) && (d2 == null)) {
-            return;
+        if ((expected == null) && (actual == null)) {
+            return null;
         }
 
-        if (((d1 == null) && (d2 != null)) || ((d1 != null) && (d2 == null))) {
-            fail("Documents not equal (not both null)");
+        if (((expected == null) && (actual != null)) || ((expected != null) && (actual == null))) {
+            return "Documents not equal (not both null)";
         }
 
-        if ((d1 != null) && (d2 != null)) {
+        if ((expected != null) && (actual != null)) {
             InternalNodeComparator comparator = new InternalNodeComparator();
-            if (comparator.compare((Node)d1, (Node)d2) != 0) {
-                fail(
-                    "Comparison of documents failed: "
+            if (comparator.compare((Node)expected, (Node)actual) != 0) {
+                return "Comparison of documents failed: "
                         + "name = "
-                        + d1.getName()
+                        + expected.getName()
                         + ", "
                         + "path = "
                         + comparator.m_node1.getUniquePath()
                         + "\nNode 1:"
                         + comparator.m_node1.asXML()
                         + "\nNode 2:"
-                        + comparator.m_node2.asXML());
+                        + comparator.m_node2.asXML();
             }
+        }
+        return null;
+    }
+
+    /**
+     * Tests if the given xml document objects are equals (or both null).<p>
+     *
+     * @param d1 first document to compare
+     * @param d2 second document to compare
+     */
+    public void assertEquals(Document d1, Document d2) {
+
+        String errorMsg = compareXmlDocuments(d1, d2);
+        if (errorMsg != null) {
+            fail(errorMsg);
         }
     }
 
@@ -3664,7 +3671,7 @@ public class OpenCmsTestCase extends TestCase {
      *
      * @return the name of the additional connection
      */
-    public String getConnectionName() {
+    public static String getConnectionName() {
 
         return "additional";
     }
@@ -4163,7 +4170,7 @@ public class OpenCmsTestCase extends TestCase {
      *
      * @throws CmsException if one of the users can't be read
      */
-    private String createUserFailMessage(CmsObject cms, String message, CmsUUID user1, CmsUUID user2)
+    public static String createUserFailMessage(CmsObject cms, String message, CmsUUID user1, CmsUUID user2)
     throws CmsException {
 
         StringBuffer result = new StringBuffer();
@@ -4212,9 +4219,17 @@ public class OpenCmsTestCase extends TestCase {
      * Initializes the OpenCms/database configuration
      * by reading the appropriate values from opencms.properties.<p>
      */
-    private void initConfiguration() {
+    /**
+     * Initializes the OpenCms configuration and test data paths.<p>
+     */
+    public static void initConfiguration() {
 
         if (m_configuration == null) {
+            OpenCmsTestLogAppender.setBreakOnError(false);
+            if (m_resourceStorages == null) {
+                m_resourceStorages = new HashMap<String, OpenCmsTestResourceStorage>();
+            }
+
             initTestDataPath();
             m_configuration = OpenCmsTestProperties.getInstance().getConfiguration();
             m_dbProduct = OpenCmsTestProperties.getInstance().getDbProduct();
@@ -4297,6 +4312,9 @@ public class OpenCmsTestCase extends TestCase {
                     + m_setupConnection.m_jdbcUrl
                     + ") "
                     + "-----");
+
+            // set "OpenCmsLog" system property to enable the logger
+            OpenCmsTestLogAppender.setBreakOnError(true);
         }
     }
 

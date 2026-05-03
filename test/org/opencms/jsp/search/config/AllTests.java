@@ -27,10 +27,10 @@
 
 package org.opencms.jsp.search.config;
 
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 import org.opencms.test.OpenCmsTestProperties;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * Main test suite for the package <code>{@link org.opencms.staticexport}</code>.<p>
@@ -38,7 +38,11 @@ import junit.framework.TestSuite;
  *
  * @since 6.0
  */
-@org.junit.runner.RunWith(org.junit.runners.AllTests.class)
+@org.junit.platform.suite.api.Suite
+@org.junit.platform.suite.api.SelectClasses({
+    TestSearchConfigurationPagination.class,
+    TestSearchConfigurationExtension.class
+})
 public final class AllTests {
 
     /**
@@ -54,14 +58,5 @@ public final class AllTests {
      *
      * @return the JUnit test suite for this package
      */
-    public static Test suite() {
-
-        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        //$JUnit-BEGIN$
-        suite.addTest(TestSearchConfigurationPagination.suite());
-        suite.addTest(TestSearchConfigurationExtension.suite());
-        //$JUnit-END$
-        return suite;
-    }
+    
 }

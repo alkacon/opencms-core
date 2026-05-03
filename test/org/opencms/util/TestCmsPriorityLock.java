@@ -27,7 +27,7 @@
 
 package org.opencms.util;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,11 +38,30 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
  * Test cases for org.opencms.util.CmsPriorityLock.
  */
-public class TestCmsPriorityLock extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestCmsPriorityLock extends OpenCmsJupiterTestCase {
 
+    @Override
+    protected boolean shouldBootOpenCms() {
+        return false;
+    }
+
+    @Override
+    protected boolean shouldInitConfiguration() {
+        return true;
+    }
+
+    @Test
     public void testFairness() throws Exception {
 
         CmsPriorityLock lock = new CmsPriorityLock();
@@ -77,6 +96,7 @@ public class TestCmsPriorityLock extends OpenCmsTestCase {
         assertEquals(List.of("H0", "H1"), order);
     }
 
+    @Test
     public void testPriority() throws Exception {
 
         CmsPriorityLock lock = new CmsPriorityLock();
@@ -118,6 +138,7 @@ public class TestCmsPriorityLock extends OpenCmsTestCase {
 
     }
 
+    @Test
     public void testReentrantLocking() throws Exception {
 
         CmsPriorityLock lock = new CmsPriorityLock();
@@ -131,7 +152,7 @@ public class TestCmsPriorityLock extends OpenCmsTestCase {
         });
         lock.unlock();
         Thread.sleep(50);
-        assertFalse("Should still be blocked", blocked.isDone());
+        assertFalse(blocked.isDone(), "Should still be blocked");
         lock.unlock();
         assertTrue(blocked.get(100, TimeUnit.MILLISECONDS));
         ex.shutdownNow();

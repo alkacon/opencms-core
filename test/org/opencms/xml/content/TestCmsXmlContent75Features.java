@@ -27,6 +27,10 @@
 
 package org.opencms.xml.content;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.util.CmsJspContentAccessBean;
@@ -34,6 +38,7 @@ import org.opencms.jsp.util.CmsJspContentAccessValueWrapper;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
@@ -43,63 +48,31 @@ import org.opencms.xml.CmsXmlEntityResolver;
 import java.util.HashMap;
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * Tests the OpenCms XML contents with real VFS operations for features introduced in OpenCms 7.5.<p>
  *
  */
-public class TestCmsXmlContent75Features extends OpenCmsTestCase {
+@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
+@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
+public class TestCmsXmlContent75Features extends OpenCmsJupiterTestCase {
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsXmlContent75Features(String arg0) {
-
-        super(arg0);
-    }
+    
 
     /**
      * Test suite for this test class.<p>
      *
      * @return the test suite
      */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsXmlContent75Features.class.getName());
-
-        suite.addTest(new TestCmsXmlContent75Features("testDirectXmlAccesss"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+    
 
     /**
      * Test accessing the XML through a value wrapper.<p>
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(1)
     public void testDirectXmlAccesss() throws Exception {
 
         CmsObject cms = getCmsObject();

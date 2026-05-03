@@ -27,49 +27,22 @@
 
 package org.opencms.xml.content;
 
-import org.opencms.test.OpenCmsTestProperties;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
-/**
- * Main test suite for the package <code>{@link org.opencms.xml.content}</code>.<p>
- *
- *
- * @since 6.0
- */
-@org.junit.runner.RunWith(org.junit.runners.AllTests.class)
-public final class AllTests {
-
-    /**
-     * Hide constructor to prevent generation of class instances.<p>
-     */
-    private AllTests() {
-
-        // empty
-    }
-
-    /**
-     * Returns the JUnit test suite for this package.<p>
-     *
-     * @return the JUnit test suite for this package
-     */
-    public static Test suite() {
-
-        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(TestCmsXmlContent.class));
-        suite.addTest(new TestSuite(TestCmsXmlContentDefinition.class));
-        suite.addTest(TestCmsXmlContentSearchSettings.suite());
-        suite.addTest(TestCmsXmlContentWithVfs.suite());
-        suite.addTest(TestCmsXmlContentResourceBundlesGerman.suite());
-        suite.addTest(TestCmsXmlContentSchemaModifications.suite());
-        suite.addTest(TestCmsXmlContentLinks.suite());
-        suite.addTest(TestCmsXmlContent75Features.suite());
-        suite.addTest(TestCmsXmlContentChoice.suite());
-        suite.addTest(TestCmsXmlContentVersions.suite());
-        //$JUnit-END$
-        return suite;
-    }
+@Suite
+@SelectClasses({
+    TestCmsXmlContent.class,
+    TestCmsXmlContentDefinition.class,
+    TestCmsXmlContentSearchSettings.class,
+    TestCmsXmlContentWithVfs.class,
+    TestCmsXmlContentResourceBundlesGerman.class,
+    TestCmsXmlContentSchemaModifications.class,
+    TestCmsXmlContentLinks.class,
+    TestCmsXmlContent75Features.class,
+    TestCmsXmlContentChoice.class,
+    TestCmsXmlContentVersions.class,
+    TestCmsXmlContentValidation.class
+})
+public class AllTests {
 }

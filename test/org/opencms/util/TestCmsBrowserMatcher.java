@@ -27,17 +27,23 @@
 
 package org.opencms.util;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test case for browser matcher.<p>
  *
  * @since 6.0.0
  */
-public class TestCmsBrowserMatcher extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestCmsBrowserMatcher extends OpenCmsJupiterTestCase {
 
     private static String[] browser = {
         "MSIE_6.x",
@@ -78,18 +84,24 @@ public class TestCmsBrowserMatcher extends OpenCmsTestCase {
         "^Mozilla/5\\.0 \\(.* rv:1.0.1\\) Gecko/2002\\d* Netscape/.*$",
         ".*"};
 
+    @Override
+    protected boolean shouldBootOpenCms() {
+        return false;
+    }
+
     /**
      * Tests the browser matching regular expressions.<p>
      */
+    @Test
     public void testMatchBrowser() {
 
-        ArrayList pattern = new ArrayList(useragent.length);
+        ArrayList<Pattern> pattern = new ArrayList<Pattern>(useragent.length);
         for (int i = 0; i < useragent.length; i++) {
             pattern.add(Pattern.compile(useragent[i]));
         }
         for (int i = 0; i < sampleagent.length; i++) {
             for (int j = 0; j < pattern.size(); j++) {
-                boolean matches = ((Pattern)pattern.get(j)).matcher(sampleagent[i]).matches();
+                boolean matches = pattern.get(j).matcher(sampleagent[i]).matches();
                 if (matches) {
                     System.out.println(browser[j] + "\t matches " + sampleagent[i]);
                     break;
@@ -101,6 +113,7 @@ public class TestCmsBrowserMatcher extends OpenCmsTestCase {
     /**
      * Tests for regular expressions.<p>
      */
+    @Test
     public void testRegex() {
 
         String source = "addMenuEntry(resource_id, \"language_key(explorer.context.copy)\", \"/WORKPLACE/copy.html?initial=true\", \"''\", \"rules_key(d d aaai aaai dddd dddd dddd)\");";
@@ -110,7 +123,7 @@ public class TestCmsBrowserMatcher extends OpenCmsTestCase {
 
         String result = source.replaceAll(regex, replace);
         System.out.println(result);
-        assertEquals(result, target);
+        assertEquals(target, result);
     }
 
 }

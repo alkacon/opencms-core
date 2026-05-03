@@ -27,6 +27,10 @@
 
 package org.opencms.xml.containerpage;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.opencms.ade.configuration.CmsConfigurationReader;
 import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.CmsContainer;
@@ -39,6 +43,7 @@ import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsUUID;
@@ -58,22 +63,30 @@ import java.util.Map.Entry;
 
 import org.antlr.stringtemplate.StringTemplate;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * Tests the OpenCms XML container pages.<p>
  */
-public class TestCmsXmlContainerPage extends OpenCmsTestCase {
+@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
+@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
+public class TestCmsXmlContainerPage extends OpenCmsJupiterTestCase {
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param name JUnit parameters
-     */
-    public TestCmsXmlContainerPage(String name) {
+    @Override
+    protected String getImportFolder() {
 
-        super(name);
+        return "adetest";
+    }
+
+    @Override
+    protected String getTargetFolder() {
+
+        return "/sites/default/";
+    }
+
+    @Override
+    protected String getSpecialConfigFolder() {
+
+        return "ade-setup";
     }
 
     /**
@@ -127,20 +140,6 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsXmlContainerPage.class.getName());
-        return generateSetupTestWrapper(TestCmsXmlContainerPage.class, "adetest", "/sites/default/", "ade-setup");
-    }
-
-    /**
      * Surrounds a given string with an opening and closing XML element with a given name.
      *
      * @param name the name of the XML element
@@ -174,6 +173,8 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
      *
      * @throws Exception if anything goes wrong
      */
+    @Test
+    @Order(1)
     public void testContainerBeanIsFromMasterLocaleIfAvailable() throws Exception {
 
         CmsResource a = createElementResource();
@@ -201,7 +202,7 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
         CmsContainerPageBean pageBean = cntPage.getContainerPage(cms);
         List<CmsContainerElementBean> elems = pageBean.getContainers().get("cnt").getElements();
         assertEquals(1, elems.size());
-        assertEquals("structure id of the variable 'a' expected", a.getStructureId(), elems.get(0).getId());
+        assertEquals(a.getStructureId(), elems.get(0).getId(), "structure id of the variable 'a' expected");
     }
 
     /**
@@ -209,6 +210,8 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
      *
      * @throws Exception if anything goes wrong
      */
+    @Test
+    @Order(2)
     public void testGetContainerBeanFromDifferentLocaleIfMasterLocaleNotAvailable() throws Exception {
 
         CmsResource b = createElementResource();
@@ -231,7 +234,7 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
         CmsContainerPageBean pageBean = cntPage.getContainerPage(cms);
         List<CmsContainerElementBean> elems = pageBean.getContainers().get("cnt").getElements();
         assertEquals(1, elems.size());
-        assertEquals("structure id of the variable 'b' expected", b.getStructureId(), elems.get(0).getId());
+        assertEquals(b.getStructureId(), elems.get(0).getId(), "structure id of the variable 'b' expected");
     }
 
     /**
@@ -239,6 +242,8 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
      *
      * @throws Exception if anything goes wrong
      */
+    @Test
+    @Order(3)
     public void testOverwriteExistingLocales() throws Exception {
 
         CmsResource a = createElementResource();
@@ -296,6 +301,8 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(4)
     public void testUnmarshal() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -400,11 +407,13 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testWriteNewFormat() throws Exception {
 
         CmsObject cms = getCmsObject();
-        importCoreModule(cms, "org.opencms.base");
-        importModule(cms, "test.containerpagev2");
+        OpenCmsTestCase.importCoreModule(cms, "org.opencms.base");
+        OpenCmsTestCase.importModule(cms, "test.containerpagev2");
         String origPage = "/subsitemap/page1.html";
         setNewPageFormatEnabled(cms, "/subsitemap/.content/.config", false);
         String copy1 = "/subsitemap/page1-copy.html";

@@ -27,43 +27,19 @@
 
 package org.opencms.security;
 
-import org.opencms.test.OpenCmsTestProperties;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
- * Main test suite for the package <code>{@link org.opencms.security}</code>.<p>
- *
- *
- * @since 6.0
+ * Main test suite for the package {@link org.opencms.security}.<p>
  */
-@org.junit.runner.RunWith(org.junit.runners.AllTests.class)
+@Suite
+@SelectClasses({
+    TestCmsPrincipal.class,
+    TestLoginAndPasswordHandler.class,
+    TestRoles.class,
+    TestOrganizationalUnits.class
+})
 public final class AllTests {
-
-    /**
-     * Hide constructor to prevent generation of class instances.<p>
-     */
-    private AllTests() {
-
-        // empty
-    }
-
-    /**
-     * Returns the JUnit test suite for this package.<p>
-     *
-     * @return the JUnit test suite for this package
-     */
-    public static Test suite() {
-
-        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        //$JUnit-BEGIN$
-        suite.addTest(TestCmsPrincipal.suite());
-        suite.addTest(TestLoginAndPasswordHandler.suite());
-        suite.addTest(TestOrganizationalUnits.suite());
-        suite.addTest(TestRoles.suite());
-        //$JUnit-END$
-        return suite;
-    }
+    // Empty class for JUnit 5 suite
 }

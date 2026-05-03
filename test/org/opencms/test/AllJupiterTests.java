@@ -25,39 +25,34 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.util;
+package org.opencms.test;
 
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 /**
- * Main test suite for the package <code>{@link org.opencms.util}</code>.<p>
+ * Top-level Jupiter aggregator for migrated package suites.<p>
  *
- * @since 6.0
+ * Coexists with the legacy {@link AllTests} (which still drives unmigrated
+ * packages via {@link AllTestsBridge}) until every package has been migrated.
+ * At that point this class will be renamed to {@code AllTests} and the
+ * legacy parent plus {@link AllTestsBridge} will be deleted.<p>
+ *
+ * Cross-package order MUST mirror the legacy {@link AllTests} order; insert
+ * new entries at the same relative position they had in the legacy parent.
  */
 @Suite
 @SelectClasses({
-    TestCmsBrowserMatcher.class,
-    TestCmsDateUtil.class,
-    TestCmsExportFolderMatcher.class,
-    TestCmsFileUtil.class,
-    TestCmsHtml2TextConverter.class,
-    TestCmsHtmlConverter.class,
-    TestCmsHtmlExtractor.class,
-    TestCmsHtmlParser.class,
-    TestCmsHtmlStripper.class,
-    TestCmsMacroResolver.class,
-    TestCmsResourceTranslator.class,
-    TestCmsStringUtil.class,
-    TestCmsUriSplitter.class,
-    TestCmsUUID.class,
-    TestCmsXmlSaxWriter.class,
-    TestValidFilename.class,
-    TestCmsManyToOneMap.class,
-    TestCmsPathMap.class,
-    TestCmsHtmlValidator.class,
-    TestCmsColorContrastCalculator.class,
-    TestCmsPriorityLock.class,
-    TestCmsLinkFinisher.class
+    org.opencms.configuration.AllTests.class,
+    org.opencms.db.AllTests.class,
+    org.opencms.util.AllTests.class,
+    org.opencms.xml.AllTests.class,
+    org.opencms.xml.containerpage.AllTests.class,
+    org.opencms.xml.content.AllTests.class,
+    org.opencms.xml.page.AllTests.class,
+    org.opencms.widgets.AllTests.class,
+    org.opencms.workplace.AllTests.class,
+    org.opencms.security.AllTests.class,
+    org.opencms.jsp.decorator.AllTests.class
 })
-public final class AllTests {}
+public final class AllJupiterTests {}

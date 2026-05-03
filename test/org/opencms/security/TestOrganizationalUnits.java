@@ -27,6 +27,10 @@
 
 package org.opencms.security;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.opencms.db.CmsDbConsistencyException;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.file.CmsDataAccessException;
@@ -46,6 +50,7 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsUUID;
@@ -55,25 +60,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * Unit tests for operations with organizational units.<p>
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class TestOrganizationalUnits extends OpenCmsTestCase {
+@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
+@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
+public class TestOrganizationalUnits extends OpenCmsJupiterTestCase {
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestOrganizationalUnits(String arg0) {
-
-        super(arg0);
-    }
+    
 
     /**
      * Returns all organizational unit dependent roles.<p>
@@ -100,55 +96,15 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
      *
      * @return the test suite
      */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestOrganizationalUnits.class.getName());
-
-        suite.addTest(new TestOrganizationalUnits("testOuNotFound"));
-        suite.addTest(new TestOrganizationalUnits("testRootOu"));
-        suite.addTest(new TestOrganizationalUnits("testRootRoles"));
-        suite.addTest(new TestOrganizationalUnits("testFirstLevelOu"));
-        suite.addTest(new TestOrganizationalUnits("testFirstLevelRoles"));
-        suite.addTest(new TestOrganizationalUnits("testDeeperLevelOu"));
-        suite.addTest(new TestOrganizationalUnits("testDeeperLevelRoles"));
-        suite.addTest(new TestOrganizationalUnits("testResourceAssociations"));
-        suite.addTest(new TestOrganizationalUnits("testPrincipalAssociations"));
-        suite.addTest(new TestOrganizationalUnits("testRoleInheritance"));
-        suite.addTest(new TestOrganizationalUnits("testParallelRoles"));
-        suite.addTest(new TestOrganizationalUnits("testUserLogin"));
-        suite.addTest(new TestOrganizationalUnits("testMembership"));
-        suite.addTest(new TestOrganizationalUnits("testPersistence"));
-        suite.addTest(new TestOrganizationalUnits("testDelete"));
-        suite.addTest(new TestOrganizationalUnits("testRoleCacheIssue"));
-        suite.addTest(new TestOrganizationalUnits("testBadName"));
-        suite.addTest(new TestOrganizationalUnits("testWebuserOU"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+    
 
     /**
      * Tests ou creation with illegal name.<p>
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(17)
     public void testBadName() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -171,6 +127,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testDeeperLevelOu() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -252,6 +210,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(7)
     public void testDeeperLevelRoles() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -355,6 +315,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(15)
     public void testDelete() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -456,6 +418,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testFirstLevelOu() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -688,6 +652,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testFirstLevelRoles() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -749,6 +715,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(13)
     public void testMembership() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -827,6 +795,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testOuNotFound() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -844,6 +814,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(11)
     public void testParallelRoles() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -896,6 +868,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(14)
     public void testPersistence() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -975,6 +949,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(9)
     public void testPrincipalAssociations() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -1067,6 +1043,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(8)
     public void testResourceAssociations() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -1244,6 +1222,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(16)
     public void testRoleCacheIssue() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -1277,6 +1257,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(10)
     public void testRoleInheritance() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -1439,6 +1421,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testRootOu() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -1518,6 +1502,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testRootRoles() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -1548,6 +1534,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(12)
     public void testUserLogin() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -1580,6 +1568,8 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(18)
     public void testWebuserOU() throws Throwable {
 
         CmsObject cms = getCmsObject();

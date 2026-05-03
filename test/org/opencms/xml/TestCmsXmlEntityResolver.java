@@ -30,63 +30,25 @@ package org.opencms.xml;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests the OpenCms XML entity resolver.<p>
  *
  */
-public class TestCmsXmlEntityResolver extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsXmlEntityResolver(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsXmlEntityResolver.class.getName());
-
-        suite.addTest(new TestCmsXmlEntityResolver("testRemoveNestedSubschemaFromCacheIssue"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestCmsXmlEntityResolver extends OpenCmsJupiterTestCase {
 
     /**
      * Tests the "wrong version of nested subschema still cached after change in VFS" issue.<p>
@@ -97,10 +59,11 @@ public class TestCmsXmlEntityResolver extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testRemoveNestedSubschemaFromCacheIssue() throws Exception {
 
         CmsObject cms = getCmsObject();
-        echo("Testing the \"wrong version of nested subschema still cached after change in VFS\" issue");
+        System.out.println("Testing the \"wrong version of nested subschema still cached after change in VFS\" issue");
 
         // this test replaces the predefined article schema with an "articlelist"
         // schema that contains the original article as nested subschema
@@ -145,7 +108,7 @@ public class TestCmsXmlEntityResolver extends OpenCmsTestCase {
         } catch (CmsXmlException e) {
             ex = e;
         }
-        assertNotNull("Validation of XML did not fail even though nested subschema was changed", ex);
+        assertNotNull(ex, "Validation of XML did not fail even though nested subschema was changed");
 
         // now set the "auto correct" runtime property and write the XML (which will auto correct it)
         cms.getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);

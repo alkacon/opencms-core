@@ -27,10 +27,15 @@
 
 package org.opencms.widgets.serialdate;
 
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.opencms.acacia.shared.I_CmsSerialDateValue.EndType;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.Month;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekOfMonth;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestCase;
 
 import java.util.ArrayList;
@@ -44,12 +49,22 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 /** Test cases for @{link org.opencms.widgets.serialdate.CmsSerialDateBeanYearly}. */
-public class TestSerialDateBeanYearlyWeekday extends OpenCmsTestCase {
+@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
+@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
+public class TestSerialDateBeanYearlyWeekday extends OpenCmsJupiterTestCase {
+
+    @Override
+    protected boolean shouldBootOpenCms() {
+        return false;
+    }
+
 
     /** empty sorted set of dates. */
     private static final SortedSet<Date> EMPTY_SORTED_SET_DATES = new TreeSet<>();
 
     /** Test for 5th Monday in January. */
+    @Test
+    @Order(1)
     public void testGetDatesWeekDayComplex() {
 
         Calendar startDate = new GregorianCalendar(2017, 05, 28, 15, 05); // 28.06.2017 15:05 Mi
@@ -84,7 +99,7 @@ public class TestSerialDateBeanYearlyWeekday extends OpenCmsTestCase {
             WeekDay.MONDAY); //weekday
         beanDates = bean.getDatesAsLong();
         Iterator<Long> it = beanDates.iterator();
-        assertEquals("There should be four dates", 4, beanDates.size());
+        assertEquals(4, beanDates.size(), "There should be four dates");
         for (int i = 0; i < 4; i++) {
             assertEquals(dates.get(i).getTimeInMillis(), it.next().longValue());
         }
@@ -103,13 +118,15 @@ public class TestSerialDateBeanYearlyWeekday extends OpenCmsTestCase {
             WeekDay.MONDAY); //weekday
         beanDates = bean.getDatesAsLong();
         it = beanDates.iterator();
-        assertEquals("There should be four dates", 4, beanDates.size());
+        assertEquals(4, beanDates.size(), "There should be four dates");
         for (int i = 0; i < 4; i++) {
             assertEquals(dates.get(i).getTimeInMillis(), it.next().longValue());
         }
     }
 
     /** Test for 3rd Monday in January. */
+    @Test
+    @Order(2)
     public void testGetDatesWeekDaySimple() {
 
         Calendar startDate = new GregorianCalendar(2017, 05, 28, 15, 05); // 28.06.2017 15:05 Mi
@@ -144,7 +161,7 @@ public class TestSerialDateBeanYearlyWeekday extends OpenCmsTestCase {
             WeekDay.MONDAY); //weekday
         beanDates = bean.getDatesAsLong();
         Iterator<Long> it = beanDates.iterator();
-        assertEquals("There should be four dates", 4, beanDates.size());
+        assertEquals(4, beanDates.size(), "There should be four dates");
         for (int i = 0; i < 4; i++) {
             assertEquals(dates.get(i).getTimeInMillis(), it.next().longValue());
         }
@@ -163,7 +180,7 @@ public class TestSerialDateBeanYearlyWeekday extends OpenCmsTestCase {
             WeekDay.MONDAY); //weekday
         beanDates = bean.getDatesAsLong();
         it = beanDates.iterator();
-        assertEquals("There should be four dates", 4, beanDates.size());
+        assertEquals(4, beanDates.size(), "There should be four dates");
         for (int i = 0; i < 4; i++) {
             assertEquals(dates.get(i).getTimeInMillis(), it.next().longValue());
         }

@@ -34,7 +34,12 @@ import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
+import static org.junit.jupiter.api.Assertions.*;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsUUID;
 
@@ -45,14 +50,15 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+
+
+
 
 /**
  * Unit tests for OpenCms publish history.<p>
  */
-public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventListener {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestPublishHistory extends OpenCmsJupiterTestCase implements I_CmsEventListener {
 
     /** Internal shared variable to test the right publish history. */
     private static CmsResourceState m_test;
@@ -67,47 +73,6 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
      * Default JUnit constructor.<p>
      *
      * @param arg0 JUnit parameters
-     */
-    public TestPublishHistory(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestPublishHistory.class.getName());
-        suite.addTest(new TestPublishHistory("testCleanupPublishHistory1"));
-        suite.addTest(new TestPublishHistory("testCleanupPublishHistory2"));
-        suite.addTest(new TestPublishHistory("testPublishNewFile"));
-        suite.addTest(new TestPublishHistory("testPublishChangedFile"));
-        suite.addTest(new TestPublishHistory("testPublishMovedFile"));
-        suite.addTest(new TestPublishHistory("testPublishDeletedFile"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
 
     /**
      * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
@@ -188,6 +153,8 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
      * Tests publish history cleanup.
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testCleanupPublishHistory1() throws Exception {
 
         String prefix = "tph1_";
@@ -218,6 +185,8 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
      * Tests publish history cleanup.
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testCleanupPublishHistory2() throws Exception {
 
         Connection conn = null;
@@ -283,10 +252,12 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testPublishChangedFile() throws Throwable {
 
         CmsObject cms = getCmsObject();
-        echo("Testing publish history for a changed file");
+        System.out.println("Testing publish history for a changed file");
 
         // set the test to changed file
         m_test = CmsResource.STATE_CHANGED;
@@ -303,10 +274,12 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testPublishDeletedFile() throws Throwable {
 
         CmsObject cms = getCmsObject();
-        echo("Testing publish history for a deleted file");
+        System.out.println("Testing publish history for a deleted file");
 
         // set the test to deleted file
         m_test = CmsResource.STATE_DELETED;
@@ -323,10 +296,12 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testPublishMovedFile() throws Throwable {
 
         CmsObject cms = getCmsObject();
-        echo("Testing publish history for a moved file");
+        System.out.println("Testing publish history for a moved file");
 
         // set the test to new file
         m_test = CmsPublishedResource.STATE_MOVED_SOURCE;
@@ -343,10 +318,12 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testPublishNewFile() throws Throwable {
 
         CmsObject cms = getCmsObject();
-        echo("Testing publish history for a new file");
+        System.out.println("Testing publish history for a new file");
 
         // THIS is the first test case, so register the event listener here!
         OpenCms.addCmsEventListener(this, new int[] {I_CmsEventListener.EVENT_PUBLISH_PROJECT});

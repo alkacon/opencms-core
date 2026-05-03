@@ -27,71 +27,54 @@
 
 package org.opencms.jsp.decorator;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * Tests for the decoration postprocessor.<p>
  *
  * @since 6.1.3
  */
-public class TestDecorator extends OpenCmsTestCase {
+@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
+@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
+public class TestDecorator extends OpenCmsJupiterTestCase {
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestDecorator(String arg0) {
-
-        super(arg0);
+    @Override
+    protected String getImportFolder() {
+        return "decoration";
     }
+
+    @Override
+    protected String getTargetFolder() {
+        return "/sites/default/";
+    }
+
+
+    
 
     /**
      * Test suite for this test class.<p>
      *
      * @return the test suite
      */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestDecorator.class.getName());
-
-        suite.addTest(new TestDecorator("testDecoratorBasics"));
-        suite.addTest(new TestDecorator("testDecoratorConfiguration"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("decoration", "/sites/default/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+    
 
     /**
      * Tests the decoration postprocessor.<p>
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testDecoratorBasics() throws Exception {
 
         // define test values and results
@@ -324,6 +307,8 @@ public class TestDecorator extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testDecoratorConfiguration() throws Exception {
 
         String configFile = "/decoration/configuration.xml";

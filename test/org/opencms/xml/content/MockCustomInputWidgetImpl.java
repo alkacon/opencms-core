@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH & Co. KG, please see the
+ * For further information about Alkacon Software, please see the
  * company website: https://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -27,18 +27,48 @@
 
 package org.opencms.xml.content;
 
-/**
- * Test handler for XML content.
- *
- * @since 6.0.0
- */
-public class TestXmlContentHandler extends CmsDefaultXmlContentHandler {
+import org.opencms.widgets.CmsInputWidget;
+import org.opencms.widgets.I_CmsWidget;
 
-    /**
-     * Creates a new instance.<p>
+/**
+ * Extension of the base select widget for testing the "custom widget class" function in the XML content
+ * schema annotation.<p>
+ */
+public class MockCustomInputWidgetImpl extends CmsInputWidget {
+
+    /***
+     * Base constructor.<p>
      */
-    public TestXmlContentHandler() {
+    public MockCustomInputWidgetImpl() {
 
         super();
+    }
+
+    /***
+     * Base constructor with configuration String.<p>
+     *
+     * @param configuration the configuration String to use
+     */
+    public MockCustomInputWidgetImpl(String configuration) {
+
+        super(configuration);
+    }
+
+    /**
+     * @see org.opencms.widgets.CmsInputWidget#newInstance()
+     */
+    @Override
+    public I_CmsWidget newInstance() {
+
+        return new MockCustomInputWidgetImpl(getConfiguration());
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsWidget#setConfiguration(java.lang.String)
+     */
+    @Override
+    public void setConfiguration(String configuration) {
+
+        super.setConfiguration(configuration + "[some addition here]");
     }
 }

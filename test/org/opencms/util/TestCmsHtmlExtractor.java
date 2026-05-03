@@ -28,7 +28,7 @@
 package org.opencms.util;
 
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
 import org.htmlparser.Node;
 import org.htmlparser.NodeFilter;
@@ -36,12 +36,18 @@ import org.htmlparser.Parser;
 import org.htmlparser.filters.NodeClassFilter;
 import org.htmlparser.nodes.TextNode;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 /**
  * Test case for <code>{@link org.opencms.util.CmsHtmlExtractor}</code>.<p>
  *
  * @since 6.2.0
  */
-public class TestCmsHtmlExtractor extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestCmsHtmlExtractor extends OpenCmsJupiterTestCase {
 
     private static final String HTML_PAGE_1 = "<html><title>This is the title</title><body><h1>A headline</h1>This is a test.<br>"
         + "This  is&nbsp;a <a href=\"http://www.opencms.org\">link</a> in a    paragraph.<p>Some more text here. "
@@ -55,6 +61,11 @@ public class TestCmsHtmlExtractor extends OpenCmsTestCase {
         + "This is a very long line, because this is long line, because this is long line, because this is long line, because this is long line. "
         + "<div><p>This is a p in a div<p>This is another p in a div<p></div>"
         + "</body></html>";
+
+    @Override
+    protected boolean shouldBootOpenCms() {
+        return false;
+    }
 
     /**
      * Extracts plain text from a String that contains HTML.<p>
@@ -84,6 +95,7 @@ public class TestCmsHtmlExtractor extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
     public void testHtmlExtractor() throws Exception {
 
         String result;
@@ -103,20 +115,21 @@ public class TestCmsHtmlExtractor extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
     public void testHtmlExtractorWithEmptyInput() throws Exception {
 
         String input, result;
         input = "";
         result = CmsHtmlExtractor.extractText(input, CmsEncoder.ENCODING_ISO_8859_1);
-        assertEquals("Empty input should generate empty output", input, result);
+        assertEquals(input, result, "Empty input should generate empty output");
 
         input = null;
         result = CmsHtmlExtractor.extractText(input, CmsEncoder.ENCODING_ISO_8859_1);
-        assertEquals("null input should generate null output", input, result);
+        assertEquals(input, result, "null input should generate null output");
 
         input = "   \t\r\n  ";
         result = CmsHtmlExtractor.extractText(input, CmsEncoder.ENCODING_ISO_8859_1);
-        assertEquals("Whitespace only input should generate empty String output", "", result);
+        assertEquals("", result, "Whitespace only input should generate empty String output");
     }
 
     /**

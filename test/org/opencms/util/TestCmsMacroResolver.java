@@ -28,15 +28,23 @@
 package org.opencms.util;
 
 import org.opencms.i18n.CmsMessages;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
 import java.util.Locale;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test cases for {@link org.opencms.util.CmsMacroResolver}.<p>
  *
  */
-public class TestCmsMacroResolver extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestCmsMacroResolver extends OpenCmsJupiterTestCase {
 
     private static final String MACRO_TEST_I1 = "<div class=\'pathbar\'>&nbsp;</div>\r\n"
         + "<div class=\'screenTitle\'>\r\n"
@@ -60,9 +68,15 @@ public class TestCmsMacroResolver extends OpenCmsTestCase {
         + "   </table>\r\n"
         + "</div>";
 
+    @Override
+    protected boolean shouldBootOpenCms() {
+        return false;
+    }
+
     /**
      * Tests some basic resolver functions.<p>
      */
+    @Test
     public void testBasicResolverFunctions() {
 
         String value = "VALUE";
@@ -80,6 +94,7 @@ public class TestCmsMacroResolver extends OpenCmsTestCase {
     /**
      * Tests macro util functions.<p>
      */
+    @Test
     public void testMacroUtils() {
 
         assertTrue(CmsMacroResolver.isMacro("%(newStyle)"));
@@ -95,6 +110,7 @@ public class TestCmsMacroResolver extends OpenCmsTestCase {
     /**
      * Tests the macro resolver "recursive" functions.<p>
      */
+    @Test
     public void testResolveLocalizedMacros() {
 
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();
@@ -147,6 +163,7 @@ public class TestCmsMacroResolver extends OpenCmsTestCase {
     /**
      * Tests the macro resolver main functions.<p>
      */
+    @Test
     public void testResolveMacros() {
 
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();
@@ -255,6 +272,7 @@ public class TestCmsMacroResolver extends OpenCmsTestCase {
     /**
      * Tests the macro resolver main functions, combined syntax.<p>
      */
+    @Test
     public void testResolveMacrosCombinedSyntax() {
 
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();
@@ -350,6 +368,7 @@ public class TestCmsMacroResolver extends OpenCmsTestCase {
     /**
      * Tests the macro resolver main functions, new syntax.<p>
      */
+    @Test
     public void testResolveMacrosNewSyntax() {
 
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();
@@ -458,6 +477,7 @@ public class TestCmsMacroResolver extends OpenCmsTestCase {
     /**
      * Tests the macro resolver "nested macro" functions.<p>
      */
+    @Test
     public void testResolveNestedMacros() {
 
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();
@@ -492,6 +512,7 @@ public class TestCmsMacroResolver extends OpenCmsTestCase {
     /**
      * Tests a minimal interface implementation.<p>
      */
+    @Test
     public void testResolverInterface() {
 
         I_CmsMacroResolver resolver = new I_CmsMacroResolver() {
@@ -598,6 +619,7 @@ public class TestCmsMacroResolver extends OpenCmsTestCase {
     /**
      * Tests some issues encounteerd when introducing the new macro style.<p>
      */
+    @Test
     public void testResolverIssues() {
 
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();

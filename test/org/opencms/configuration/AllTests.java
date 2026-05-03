@@ -27,42 +27,19 @@
 
 package org.opencms.configuration;
 
-import org.opencms.test.OpenCmsTestProperties;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Main test suite for the package <code>{@link org.opencms.configuration}</code>.<p>
  *
- *
  * @since 6.0
  */
-@org.junit.runner.RunWith(org.junit.runners.AllTests.class)
-public final class AllTests {
-
-    /**
-     * Hide constructor to prevent generation of class instances.<p>
-     */
-    private AllTests() {
-
-        // empty
-    }
-
-    /**
-     * Returns the JUnit test suite for this package.<p>
-     *
-     * @return the JUnit test suite for this package
-     */
-    public static Test suite() {
-
-        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(TestParameterConfiguration.class));
-        suite.addTest(new TestSuite(TestConfiguration.class));
-        suite.addTest(TestSiteConfiguration.suite());
-        //$JUnit-END$
-        return suite;
-    }
-}
+@Suite
+@SelectClasses({
+    TestParameterConfiguration.class,
+    TestConfiguration.class,
+    TestSiteConfiguration.class,
+    TestFullWorkplaceConfiguration.class
+})
+public final class AllTests {}

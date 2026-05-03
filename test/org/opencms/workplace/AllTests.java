@@ -27,10 +27,9 @@
 
 package org.opencms.workplace;
 
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 import org.opencms.test.OpenCmsTestProperties;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * Main test suite for the package <code>{@link org.opencms.workplace}</code>.<p>
@@ -38,7 +37,8 @@ import junit.framework.TestSuite;
  *
  * @since 6.0
  */
-@org.junit.runner.RunWith(org.junit.runners.AllTests.class)
+@Suite
+@SelectClasses({TestWorkplace.class})
 public final class AllTests {
 
     /**
@@ -47,20 +47,5 @@ public final class AllTests {
     private AllTests() {
 
         // empty
-    }
-
-    /**
-     * Returns the JUnit test suite for this package.<p>
-     *
-     * @return the JUnit test suite for this package
-     */
-    public static Test suite() {
-
-        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        //$JUnit-BEGIN$
-        suite.addTest(TestWorkplace.suite());
-        //$JUnit-END$
-        return suite;
     }
 }

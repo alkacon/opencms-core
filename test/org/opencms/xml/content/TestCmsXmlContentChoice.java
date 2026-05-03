@@ -27,12 +27,17 @@
 
 package org.opencms.xml.content;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
@@ -51,66 +56,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * Tests the OpenCms XML content support for <code>xsd:choice</code>.<p>
  *
  */
-public class TestCmsXmlContentChoice extends OpenCmsTestCase {
+@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
+@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
+public class TestCmsXmlContentChoice extends OpenCmsJupiterTestCase {
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsXmlContentChoice(String arg0) {
 
-        super(arg0);
-    }
+
+    
 
     /**
      * Test suite for this test class.<p>
      *
      * @return the test suite
      */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsXmlContentChoice.class.getName());
-
-        suite.addTest(new TestCmsXmlContentChoice("testSimpleChoiceSchemaValidation"));
-        suite.addTest(new TestCmsXmlContentChoice("testChoiceXmlContentDefinitionCreation"));
-        suite.addTest(new TestCmsXmlContentChoice("testChoiceXmlContent"));
-        suite.addTest(new TestCmsXmlContentChoice("testChoiceAdvancedXmlContentDefinitionCreation"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+    
 
     /**
      * Tests a simple XML file validation for a schema that contains xsd:choice.<p>
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(1)
     public void testSimpleChoiceSchemaValidation() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -159,6 +131,8 @@ public class TestCmsXmlContentChoice extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(2)
     public void testChoiceXmlContentDefinitionCreation() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -194,13 +168,8 @@ public class TestCmsXmlContentChoice extends OpenCmsTestCase {
             "http://www.opencms.org/testChoice1.xsd",
             definition.getSchema().asXML().getBytes(CmsEncoder.ENCODING_UTF_8));
 
-        assertSame(
-            "Content definition sequence not of required type SEQUENCE",
-            definition.getSequenceType(),
-            CmsXmlContentDefinition.SequenceType.SEQUENCE);
-        assertTrue(
-            "Content definition sequence choice maxOccurs is " + definition.getChoiceMaxOccurs() + " but must be 0",
-            definition.getChoiceMaxOccurs() == 0);
+        assertSame(definition.getSequenceType(), CmsXmlContentDefinition.SequenceType.SEQUENCE, "Content definition sequence not of required type SEQUENCE");
+        assertTrue(definition.getChoiceMaxOccurs() == 0, "Content definition sequence choice maxOccurs is " + definition.getChoiceMaxOccurs() + " but must be 0");
 
         // now read the XML content
         byte[] content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-choice-1.xml");
@@ -222,27 +191,12 @@ public class TestCmsXmlContentChoice extends OpenCmsTestCase {
         CmsXmlContentDefinition testB = nestB.getNestedContentDefinition();
         CmsXmlContentDefinition testC = nestC.getNestedContentDefinition();
 
-        assertSame(
-            "Choice sequence A not of required type MULTIPLE_CHOICE",
-            testA.getSequenceType(),
-            CmsXmlContentDefinition.SequenceType.MULTIPLE_CHOICE);
-        assertTrue(
-            "Choice sequence A maxOccurs is " + testA.getChoiceMaxOccurs() + " but must be 5",
-            testA.getChoiceMaxOccurs() == 5);
-        assertSame(
-            "Choice sequence B not of required type MULTIPLE_CHOICE",
-            testB.getSequenceType(),
-            CmsXmlContentDefinition.SequenceType.MULTIPLE_CHOICE);
-        assertTrue(
-            "Choice sequence B maxOccurs is " + testB.getChoiceMaxOccurs() + " but must be 5",
-            testB.getChoiceMaxOccurs() == 5);
-        assertSame(
-            "Choice sequence C not of required type SINGLE_CHOICE",
-            testC.getSequenceType(),
-            CmsXmlContentDefinition.SequenceType.SINGLE_CHOICE);
-        assertTrue(
-            "Choice sequence C maxOccurs is " + testC.getChoiceMaxOccurs() + " but must be 1",
-            testC.getChoiceMaxOccurs() == 1);
+        assertSame(testA.getSequenceType(), CmsXmlContentDefinition.SequenceType.MULTIPLE_CHOICE, "Choice sequence A not of required type MULTIPLE_CHOICE");
+        assertTrue(testA.getChoiceMaxOccurs() == 5, "Choice sequence A maxOccurs is " + testA.getChoiceMaxOccurs() + " but must be 5");
+        assertSame(testB.getSequenceType(), CmsXmlContentDefinition.SequenceType.MULTIPLE_CHOICE, "Choice sequence B not of required type MULTIPLE_CHOICE");
+        assertTrue(testB.getChoiceMaxOccurs() == 5, "Choice sequence B maxOccurs is " + testB.getChoiceMaxOccurs() + " but must be 5");
+        assertSame(testC.getSequenceType(), CmsXmlContentDefinition.SequenceType.SINGLE_CHOICE, "Choice sequence C not of required type SINGLE_CHOICE");
+        assertTrue(testC.getChoiceMaxOccurs() == 1, "Choice sequence C maxOccurs is " + testC.getChoiceMaxOccurs() + " but must be 1");
 
     }
 
@@ -251,6 +205,8 @@ public class TestCmsXmlContentChoice extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(3)
     public void testChoiceXmlContent() throws Exception {
 
         // please note: this test relies on the "testChoiceXmlContentDefinitionCreation" test
@@ -274,14 +230,14 @@ public class TestCmsXmlContentChoice extends OpenCmsTestCase {
         I_CmsXmlContentValue v3 = xmlcontent.getValue("ChoiceTestA/DateTimeChoice", Locale.ENGLISH);
         I_CmsXmlContentValue v4 = xmlcontent.getValue("ChoiceTestA/StringChoice[2]", Locale.ENGLISH);
 
-        assertNotNull("ChoiceTestA element must not be null", v1);
-        assertNotNull("ChoiceTestA/StringChoice element must not be null", v2);
-        assertNotNull("ChoiceTestA/DateTimeChoice element must not be null", v3);
-        assertNotNull("ChoiceTestA/StringChoice[2] element must not be null", v4);
+        assertNotNull(v1, "ChoiceTestA element must not be null");
+        assertNotNull(v2, "ChoiceTestA/StringChoice element must not be null");
+        assertNotNull(v3, "ChoiceTestA/DateTimeChoice element must not be null");
+        assertNotNull(v4, "ChoiceTestA/StringChoice[2] element must not be null");
 
         xmlcontent.addValue(cms, "ChoiceTestA/StringChoice", Locale.ENGLISH, 3);
         I_CmsXmlContentValue v5 = xmlcontent.getValue("ChoiceTestA/StringChoice[3]", Locale.ENGLISH);
-        assertNotNull("Value added at ChoiceTestA/StringChoice[3] must not be null", v5);
+        assertNotNull(v5, "Value added at ChoiceTestA/StringChoice[3] must not be null");
 
         CmsRuntimeException caught = null;
         try {
@@ -289,44 +245,38 @@ public class TestCmsXmlContentChoice extends OpenCmsTestCase {
         } catch (CmsRuntimeException e) {
             caught = e;
         }
-        assertNotNull("Required exception not thrown when adding an element beyond index end", caught);
+        assertNotNull(caught, "Required exception not thrown when adding an element beyond index end");
 
         CmsXmlContentValueSequence sequence = xmlcontent.getValueSequence("ChoiceTestA/StringChoice", Locale.ENGLISH);
-        assertNotNull("ChoiceTestA value sequence must not be null", sequence);
+        assertNotNull(sequence, "ChoiceTestA value sequence must not be null");
 
-        assertTrue("Choice sequence A not recognized", xmlcontent.hasChoiceOptions("ChoiceTestA", Locale.ENGLISH));
-        assertTrue("Choice sequence B not recognized", xmlcontent.hasChoiceOptions("ChoiceTestB", Locale.ENGLISH));
-        assertTrue("Choice sequence C not recognized", xmlcontent.hasChoiceOptions("ChoiceTestC", Locale.ENGLISH));
+        assertTrue(xmlcontent.hasChoiceOptions("ChoiceTestA", Locale.ENGLISH), "Choice sequence A not recognized");
+        assertTrue(xmlcontent.hasChoiceOptions("ChoiceTestB", Locale.ENGLISH), "Choice sequence B not recognized");
+        assertTrue(xmlcontent.hasChoiceOptions("ChoiceTestC", Locale.ENGLISH), "Choice sequence C not recognized");
 
-        assertTrue(
-            "Choice sequence A sub-options not recognized",
-            xmlcontent.hasChoiceOptions("ChoiceTestA/DateTimeChoice", Locale.ENGLISH));
-        assertTrue(
-            "Choice sequence B sub-options not recognized",
-            xmlcontent.hasChoiceOptions("ChoiceTestB/HtmlChoice", Locale.ENGLISH));
-        assertFalse(
-            "Choice sequence C sub-options wrongly recognized",
-            xmlcontent.hasChoiceOptions("ChoiceTestC/NameChoiceC", Locale.ENGLISH));
+        assertTrue(xmlcontent.hasChoiceOptions("ChoiceTestA/DateTimeChoice", Locale.ENGLISH), "Choice sequence A sub-options not recognized");
+        assertTrue(xmlcontent.hasChoiceOptions("ChoiceTestB/HtmlChoice", Locale.ENGLISH), "Choice sequence B sub-options not recognized");
+        assertFalse(xmlcontent.hasChoiceOptions("ChoiceTestC/NameChoiceC", Locale.ENGLISH), "Choice sequence C sub-options wrongly recognized");
 
         List<I_CmsXmlSchemaType> choices = xmlcontent.getChoiceOptions("ChoiceTestA", Locale.ENGLISH);
-        assertTrue("Choice sequence A must have 2 choice options", choices.size() == 2);
+        assertTrue(choices.size() == 2, "Choice sequence A must have 2 choice options");
         assertTrue(choices.get(0) instanceof CmsXmlStringValue);
         assertTrue(choices.get(1) instanceof CmsXmlDateTimeValue);
 
         choices = xmlcontent.getChoiceOptions("ChoiceTestB", Locale.ENGLISH);
-        assertTrue("Choice sequence B must have 3 choice options", choices.size() == 3);
+        assertTrue(choices.size() == 3, "Choice sequence B must have 3 choice options");
         assertTrue(choices.get(0) instanceof CmsXmlStringValue);
         assertTrue(choices.get(1) instanceof CmsXmlHtmlValue);
         assertTrue(choices.get(2) instanceof CmsXmlStringValue);
 
         xmlcontent.addValue(cms, "ChoiceTestC", Locale.ENGLISH, 1);
         choices = xmlcontent.getChoiceOptions("ChoiceTestC[2]", Locale.ENGLISH);
-        assertTrue("Choice sequence C [2] must have 2 choice options", choices.size() == 2);
+        assertTrue(choices.size() == 2, "Choice sequence C [2] must have 2 choice options");
         assertTrue(choices.get(0) instanceof CmsXmlStringValue);
         assertTrue(choices.get(1) instanceof CmsXmlHtmlValue);
 
         choices = xmlcontent.getChoiceOptions("ChoiceTestC/NameChoiceC", Locale.ENGLISH);
-        assertNull("ChoiceTestC/NameChoiceC choice list must be null", choices);
+        assertNull(choices, "ChoiceTestC/NameChoiceC choice list must be null");
 
         xmlcontent.addValue(cms, "ChoiceTestA", Locale.ENGLISH, 2);
         xmlcontent.addValue(cms, "ChoiceTestA[3]/DateTimeChoice", Locale.ENGLISH, 0);
@@ -337,6 +287,8 @@ public class TestCmsXmlContentChoice extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(4)
     public void testChoiceAdvancedXmlContentDefinitionCreation() throws Exception {
 
         // please note: this test relies on the "testChoiceXmlContentDefinitionCreation" test
@@ -375,7 +327,7 @@ public class TestCmsXmlContentChoice extends OpenCmsTestCase {
         content.validateXmlStructure(resolver);
 
         int indexCount = content.getIndexCount("String", Locale.ENGLISH);
-        assertTrue("Index count " + indexCount + " not as expected", indexCount == 0);
+        assertTrue(indexCount == 0, "Index count " + indexCount + " not as expected");
 
         content.addValue(cms, "ChoiceTestA", Locale.ENGLISH, 0);
         content.addValue(cms, "ChoiceTestA/DateTimeChoice", Locale.ENGLISH, 0);
@@ -384,9 +336,9 @@ public class TestCmsXmlContentChoice extends OpenCmsTestCase {
 
         I_CmsXmlContentValue v1 = content.getValue("ChoiceTestA/StringChoice", Locale.ENGLISH);
         I_CmsXmlContentValue v2 = content.getValue("ChoiceTestA/StringChoice", Locale.ENGLISH, 0);
-        assertTrue("StringChoice value must be available through xpath lookup", v1 != null);
-        assertTrue("StringChoice value must be available through index lookup 1", v2 != null);
-        assertSame("Value from index and xpath lookup must be the same", v1, v2);
+        assertTrue(v1 != null, "StringChoice value must be available through xpath lookup");
+        assertTrue(v2 != null, "StringChoice value must be available through index lookup 1");
+        assertSame(v1, v2, "Value from index and xpath lookup must be the same");
 
         content.removeValue("ChoiceTestA/StringChoice", Locale.ENGLISH, 0);
         content.removeValue("ChoiceTestA/DateTimeChoice", Locale.ENGLISH, 0);
