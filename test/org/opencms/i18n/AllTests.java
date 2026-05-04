@@ -59,11 +59,11 @@ public final class AllTests {
         TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
-        suite.addTestSuite(TestCmsCoreMessageBundles.class);
-        suite.addTestSuite(TestCmsEncoder.class);
-        suite.addTestSuite(TestCmsLocaleManager.class);
-        suite.addTestSuite(TestCmsMessages.class);
-        suite.addTestSuite(TestCmsModuleMessageBundles.class);
+        // suite.addTestSuite(TestCmsCoreMessageBundles.class); // migrated to JUnit 6
+        // suite.addTestSuite(TestCmsEncoder.class); // migrated to JUnit 6
+        // suite.addTestSuite(TestCmsLocaleManager.class); // migrated to JUnit 6
+        // suite.addTestSuite(TestCmsMessages.class); // migrated to JUnit 6
+        // suite.addTestSuite(TestCmsModuleMessageBundles.class); // migrated to JUnit 6
         //$JUnit-END$
         return suite;
     }

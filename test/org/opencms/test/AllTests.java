@@ -101,20 +101,20 @@ public final class AllTests {
         suite.addTest(org.opencms.i18n.AllTests.suite());
         suite.addTest(org.opencms.importexport.AllTests.suite());
                                         suite.addTest(org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.AllTests.suite());
-        suite.addTest(org.opencms.jsp.util.AllTests.suite());
+        // org.opencms.jsp.util migrated to JUnit 6: see org.opencms.test.AllJupiterTests
         suite.addTest(org.opencms.loader.AllTests.suite());
         suite.addTest(org.opencms.mail.AllTests.suite());
-        suite.addTest(org.opencms.main.AllTests.suite());
+        // org.opencms.main migrated to JUnit 6: see org.opencms.test.AllJupiterTests
         suite.addTest(org.opencms.module.AllTests.suite());
         suite.addTest(org.opencms.notification.AllTests.suite());
         suite.addTest(org.opencms.publish.AllTests.suite());
         suite.addTest(org.opencms.relations.AllTests.suite());
-        suite.addTest(org.opencms.scheduler.AllTests.suite());
+        // org.opencms.scheduler migrated to JUnit 6: see org.opencms.test.AllJupiterTests
         suite.addTest(org.opencms.search.AllTests.suite());
         suite.addTest(org.opencms.search.extractors.AllTests.suite());
         suite.addTest(org.opencms.search.gallery.AllTests.suite());
         suite.addTest(org.opencms.search.solr.AllTests.suite());
-                suite.addTest(org.opencms.site.AllTests.suite());
+        // org.opencms.site migrated to JUnit 6: see org.opencms.test.AllJupiterTests
         suite.addTest(org.opencms.staticexport.AllTests.suite());
         suite.addTest(org.opencms.synchronize.AllTests.suite());
         suite.addTest(org.opencms.ui.apps.AllTests.suite());
@@ -125,7 +125,7 @@ public final class AllTests {
         // suite.addTest(org.opencms.xml.containerpage.AllTests.suite()); // MIGRATED
         // suite.addTest(org.opencms.xml.page.AllTests.suite()); // MIGRATED
         suite.addTest(org.opencms.repository.AllTests.suite());
-        suite.addTest(org.opencms.ugc.AllTests.suite());
+        // org.opencms.ugc migrated to JUnit 6: see org.opencms.test.AllJupiterTests
        suite.addTest(org.opencms.ui.contextmenu.TestCmsContextMenu.suite());
 
         TestSetup wrapper = new TestSetup(suite) {

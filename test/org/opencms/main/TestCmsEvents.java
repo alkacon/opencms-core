@@ -27,60 +27,42 @@
 
 package org.opencms.main;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for OpenCms events.<p>
  */
-public class TestCmsEvents extends OpenCmsTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsEvents extends OpenCmsJupiterTestCase {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public TestCmsEvents(String arg0) {
+    @Override
+    protected String getImportFolder() {
 
-        super(arg0);
+        return "simpletest";
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
      */
-    public static Test suite() {
+    @Override
+    protected String getTargetFolder() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsEvents.class.getName());
-
-        suite.addTest(new TestCmsEvents("testBeforeAfterPublishEvent"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        return "/";
     }
 
     /**
@@ -88,6 +70,8 @@ public class TestCmsEvents extends OpenCmsTestCase {
      *
      * @throws Throwable if the test fails
      */
+    @Order(1)
+    @Test
     public void testBeforeAfterPublishEvent() throws Throwable {
 
         CmsObject cms = getCmsObject();

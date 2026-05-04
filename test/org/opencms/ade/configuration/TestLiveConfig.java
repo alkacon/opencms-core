@@ -41,8 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.ui.components.CmsExtendedSiteSelector;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -67,17 +66,25 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
 import org.antlr.stringtemplate.StringTemplate;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import junit.framework.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for the ADE configuration mechanism which read the configuration data from multiple files in the VFS.<p>
  *
  */
-public class TestLiveConfig extends OpenCmsTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestLiveConfig extends OpenCmsJupiterTestCase {
 
     /** Pattern for matching path segment consisting of two characters from {a, b}. */
     private static final Pattern detailPageTestSubsitePattern = Pattern.compile("/([ab][ab])/");
@@ -85,14 +92,18 @@ public class TestLiveConfig extends OpenCmsTestCase {
     /** The current VFS prefix as added to internal links according to the configuration in opencms-importexport.xml. */
     String m_vfsPrefix;
 
-    /**
-     * Test constructor.<p>
-     *
-     * @param name the name of the test
-     */
-    public TestLiveConfig(String name) {
+    static {
 
-        super(name);
+        CmsConfigurationCache.DEBUG = true;
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
+     */
+    @Override
+    protected String getImportFolder() {
+
+        return "ade-config";
     }
 
     /**
@@ -134,22 +145,11 @@ public class TestLiveConfig extends OpenCmsTestCase {
     }
 
     /**
-     * Returns the test suite.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        CmsConfigurationCache.DEBUG = true;
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        return generateSetupTestWrapper(TestLiveConfig.class, "ade-config", "/");
-    }
-
-    /**
      * Tests programmatic updating of sitemap attributes.
      *
      * @throws Exception
      */
+    @Test
     public void testAttributeUpdates() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -196,6 +196,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      * Tests category-based detail page selection.
      * @throws Exception
      */
+    @Test
     public void testCategoryDetailPages() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -235,6 +236,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testCrossSiteDetailPageLinks1() throws Exception {
 
         // Link from site foo to site bar, where a detail page exists in foo
@@ -253,6 +255,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testCrossSiteDetailPageLinks1a() throws Exception {
 
         // Link from site foo to site bar, where a detail page exists in foo
@@ -273,6 +276,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testCrossSiteDetailPageLinks2() throws Exception {
 
         // Link from site bar to site foo, where a detail page exists in foo
@@ -291,6 +295,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testCrossSiteDetailPageLinkUtilityFunctions() throws Exception {
 
         // Link from site foo to site bar, where a detail page exists in foo
@@ -312,6 +317,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testDefaultDetailPagesPreserved() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -340,6 +346,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testDeleted() throws Exception {
 
         try {
@@ -362,6 +369,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testDetailPage1() throws Exception {
 
         // root site
@@ -390,6 +398,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testIncludeInSiteSelector() throws Exception {
 
         try {
@@ -419,8 +428,8 @@ public class TestLiveConfig extends OpenCmsTestCase {
                 if (option.getPath() != null) {
                     actual.add(option.getPath());
                     assertTrue(
-                        "Site does not match",
-                        CmsStringUtil.comparePaths(option.getSite(), getCmsObject().getRequestContext().getSiteRoot()));
+                        CmsStringUtil.comparePaths(option.getSite(), getCmsObject().getRequestContext().getSiteRoot()),
+                        "Site does not match");
                 }
             }
             expected = new HashSet<>(
@@ -436,6 +445,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      * Tests the configuration in top-level sitemaps.<p>
      * @throws Exception -
      */
+    @Test
     public void testLevel1Configuration() throws Exception {
 
         CmsObject offlineCms = getCmsObject();
@@ -451,6 +461,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      * Tests the configuration in level 2 subsitemaps.<p>
      * @throws Exception -
      */
+    @Test
     public void testLevel2Configuration() throws Exception {
 
         CmsObject offlineCms = getCmsObject();
@@ -472,6 +483,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testMasterConfiguration() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -533,6 +545,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testMasterConfigurationChaining() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -593,6 +606,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testMasterConfigurationMultiple() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -662,6 +676,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
     public void testMergedMasterConfigurations() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -796,6 +811,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      * @throws Exception -
      */
     @SuppressWarnings("deprecation")
+    @Test
     public void testModuleConfig1() throws Exception {
 
         CmsObject cms = rootCms();
@@ -832,6 +848,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testMove1() throws Exception {
 
         try {
@@ -851,6 +868,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testMoveDetailPages() throws Exception {
 
         CmsObject cms = rootCms();
@@ -873,6 +891,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      * Tests that the configuration is empty at paths where no configuration is defined.<p>
      * @throws Exception -
      */
+    @Test
     public void testNoConfiguration() throws Exception {
 
         CmsObject offlineCms = getCmsObject();
@@ -886,6 +905,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      * Tests that publishing a changed configuration file updates the online configuration object.<p>
      * @throws Exception -
      */
+    @Test
     public void testPublish() throws Exception {
 
         CmsObject cms = rootCms();
@@ -913,6 +933,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testPublishDeleted() throws Exception {
 
         CmsObject cms = rootCms();
@@ -940,6 +961,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      * @throws Exception in case resource creation fails
      */
     @SuppressWarnings("deprecation")
+    @Test
     public void testSharedGetSubSite() throws Exception {
 
         CmsObject cms = rootCms();
@@ -962,11 +984,12 @@ public class TestLiveConfig extends OpenCmsTestCase {
 
     }
 
+    @Test
     public void testSiteConfigPathsSlashes() {
 
         Set<String> paths = OpenCms.getADEManager().getCacheState(false).getSiteConfigurationPaths();
         for (String path : paths) {
-            assertTrue("must end with slash: " + path, path.endsWith("/"));
+            assertTrue(path.endsWith("/"), "must end with slash: " + path);
         }
     }
 
@@ -975,6 +998,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      * @throws Exception -
      */
     @SuppressWarnings("deprecation")
+    @Test
     public void testSitemapFolderTypesOverrideModuleFolderTypes() throws Exception {
 
         CmsObject cms = rootCms();
@@ -1013,6 +1037,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testSpecialDetailPageOptions() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -1054,7 +1079,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
         assertEquals("bb", getABSubsite(link));
 
         link = createLinkFromTo(ba, bb);
-        assertFalse("Link should not be a detail link", link.contains("detail"));
+        assertFalse(link.contains("detail"), "Link should not be a detail link");
 
         link = createLinkFromTo(bb, aa);
         assertTrue(link.contains("detail"));
@@ -1078,31 +1103,31 @@ public class TestLiveConfig extends OpenCmsTestCase {
         I_CmsDetailPageHandler handler = OpenCms.getADEManager().getDetailPageHandler();
         page = cms.readResource(bb + "/detail/index.html");
         content = cms.readResource(ab + articlePath);
-        assertFalse("Should not be a valid detail page", handler.isValidDetailPage(cms, page, content));
+        assertFalse(handler.isValidDetailPage(cms, page, content), "Should not be a valid detail page");
 
         page = cms.readResource(ab + "/detail/index.html");
         content = cms.readResource(bb + articlePath);
-        assertTrue("Should be a valid detail page", handler.isValidDetailPage(cms, page, content));
+        assertTrue(handler.isValidDetailPage(cms, page, content), "Should be a valid detail page");
 
         page = cms.readResource(ab + "/detail/index.html");
         content = cms.readResource(ab + articlePath);
-        assertTrue("Should be a valid detail page", handler.isValidDetailPage(cms, page, content));
+        assertTrue(handler.isValidDetailPage(cms, page, content), "Should be a valid detail page");
 
         page = cms.readResource(ba + "/detail/index.html");
         content = cms.readResource(bb + articlePath);
-        assertFalse("Should not be a valid detail page", handler.isValidDetailPage(cms, page, content));
+        assertFalse(handler.isValidDetailPage(cms, page, content), "Should not be a valid detail page");
 
         page = cms.readResource(ba + "/detail/index.html");
         content = cms.readResource(ab + articlePath);
-        assertFalse("Should not be a valid detail page", handler.isValidDetailPage(cms, page, content));
+        assertFalse(handler.isValidDetailPage(cms, page, content), "Should not be a valid detail page");
 
         page = cms.readResource(ba + "/detail/index.html");
         content = cms.readResource(bb + articlePath);
-        assertFalse("Should not be a valid detail page", handler.isValidDetailPage(cms, page, content));
+        assertFalse(handler.isValidDetailPage(cms, page, content), "Should not be a valid detail page");
 
         page = cms.readResource(ba + "/detail/index.html");
         content = cms.readResource(ba + articlePath);
-        assertTrue("Should be a valid detail page", handler.isValidDetailPage(cms, page, content));
+        assertTrue(handler.isValidDetailPage(cms, page, content), "Should be a valid detail page");
 
     }
 
@@ -1111,6 +1136,7 @@ public class TestLiveConfig extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testSpecifiedTargetDetailPage() throws Exception {
 
         waitForUpdate(false);

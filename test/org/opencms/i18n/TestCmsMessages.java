@@ -27,23 +27,54 @@
 
 package org.opencms.i18n;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.util.CmsMacroResolver;
 
 import java.util.Locale;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for the CmsMessages.<p>
  *
  * @since 6.0.0
  */
-public class TestCmsMessages extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsMessages extends OpenCmsJupiterTestCase {
+
+    @Override
+    protected boolean shouldBootOpenCms() {
+
+        return false;
+    }
+
+    @Override
+    protected boolean shouldInitConfiguration() {
+
+        return true;
+    }
+
+    @Override
+    protected boolean shouldBreakOnErrorAfterInitConfiguration() {
+
+        // This legacy test verifies that invalid MessageFormat patterns are logged but do not fail the test.
+        return false;
+    }
 
     /**
      * Tests if message will be returned in the correct locale.<p>
      *
      * @throws Exception if the test fails
      */
+    @Order(3)
+    @Test
     public void testLocale() throws Exception {
 
         CmsMessages messages = new CmsMessages("org.opencms.i18n.messages", Locale.GERMANY);
@@ -56,6 +87,8 @@ public class TestCmsMessages extends OpenCmsTestCase {
      *
      * @throws Exception  if the test fails
      */
+    @Order(1)
+    @Test
     public void testMessagesWhichAreInvalidMessageFormats() throws Exception {
 
         CmsMacroResolver resolver = new CmsMacroResolver();
@@ -71,6 +104,8 @@ public class TestCmsMessages extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(4)
+    @Test
     public void testMessageWithParameters() throws Exception {
 
         String value;
@@ -89,6 +124,8 @@ public class TestCmsMessages extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(2)
+    @Test
     public void testUnknownKeys() throws Exception {
 
         String value = null;

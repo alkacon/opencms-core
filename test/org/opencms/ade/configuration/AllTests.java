@@ -57,10 +57,10 @@ public final class AllTests {
         TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
-        suite.addTest(TestConfig.suite());
-        suite.addTest(TestLiveConfig.suite());
+        // suite.addTest(TestConfig.suite()); // MIGRATED
+        // suite.addTest(TestLiveConfig.suite()); // MIGRATED
         suite.addTest(TestFormatterConfiguration.suite());
-        suite.addTest(TestBaseModule.suite());
+        // suite.addTest(TestBaseModule.suite()); // MIGRATED
         //$JUnit-END$
         return suite;
     }

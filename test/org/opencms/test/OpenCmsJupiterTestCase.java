@@ -69,6 +69,9 @@ public abstract class OpenCmsJupiterTestCase {
     /** The OpenCms context. */
     private CmsObject m_cms;
 
+    /** The current test method name. */
+    private String m_currentTestName;
+
     /**
      * Default constructor.<p>
      */
@@ -143,6 +146,16 @@ public abstract class OpenCmsJupiterTestCase {
     }
 
     /**
+     * Returns the current test method name.<p>
+     *
+     * @return the current test method name
+     */
+    protected String getName() {
+
+        return m_currentTestName;
+    }
+
+    /**
      * Returns whether to run the publish script during setup.<p>
      * Subclasses can override this.
      *
@@ -197,13 +210,25 @@ public abstract class OpenCmsJupiterTestCase {
     }
 
     /**
+     * Returns whether logged errors should fail the test after configuration-only setup.<p>
+     * Subclasses can override this to preserve legacy tests which intentionally exercise
+     * code paths that log errors without failing.
+     *
+     * @return true if logged errors should fail the test after init, false otherwise
+     */
+    protected boolean shouldBreakOnErrorAfterInitConfiguration() {
+
+        return true;
+    }
+
+    /**
      * Boots OpenCms once before any test method in the class runs.<p>
      */
     @BeforeAll
     void setUpOpenCms() {
 
         if (shouldInitConfiguration()) {
-            OpenCmsTestCase.initConfiguration();
+            OpenCmsTestCase.initConfiguration(shouldBreakOnErrorAfterInitConfiguration());
         }
         if (!shouldBootOpenCms()) {
             return;
@@ -239,11 +264,12 @@ public abstract class OpenCmsJupiterTestCase {
     @BeforeEach
     void logTestStart(TestInfo testInfo) {
 
+        m_currentTestName = testInfo.getTestMethod().map(m -> m.getName()).orElse("unknown");
         System.out.println();
         System.out.println();
         System.out.println(" +------------------------------------------------------------------------------");
         System.out.println(" | Running OpenCms test case:");
-        System.out.println(" | " + getClass().getName() + "#" + testInfo.getTestMethod().map(m -> m.getName()).orElse("unknown"));
+        System.out.println(" | " + getClass().getName() + "#" + m_currentTestName);
         System.out.println(" +------------------------------------------------------------------------------");
         System.out.println();
         System.out.println();
@@ -385,5 +411,68 @@ public abstract class OpenCmsJupiterTestCase {
 
     public void assertDateReleased(CmsObject cms, String resourceName, long dateReleased) {
         m_legacyTestCase.assertDateReleased(cms, resourceName, dateReleased);
+    }
+
+    /**
+     * Sets up the test database.<p>
+     */
+    protected void setupDatabase() {
+
+        OpenCmsTestCase.setupDatabase();
+    }
+
+    /**
+     * Removes the test database.<p>
+     */
+    protected void removeDatabase() {
+
+        OpenCmsTestCase.removeDatabase();
+    }
+
+    /**
+     * Imports resources into the VFS.<p>
+     *
+     * @param cms the CMS context
+     * @param importFile the import folder
+     * @param targetPath the target path
+     *
+     * @throws org.opencms.main.CmsException if importing fails
+     */
+    protected void importResources(CmsObject cms, String importFile, String targetPath) throws org.opencms.main.CmsException {
+
+        OpenCmsTestCase.importResources(cms, importFile, targetPath);
+    }
+
+    /**
+     * Returns the test data path for the given file name.<p>
+     *
+     * @param filename the file name
+     *
+     * @return the test data path
+     */
+    protected String getTestDataPath(String filename) {
+
+        return OpenCmsTestCase.getTestDataPath(filename);
+    }
+
+    /**
+     * Sets up OpenCms for the current test.<p>
+     *
+     * @param importFolder the import folder
+     * @param targetFolder the target folder
+     *
+     * @return the initialized CMS object
+     */
+    protected CmsObject setupOpenCms(String importFolder, String targetFolder) {
+
+        return OpenCmsTestCase.setupOpenCms(importFolder, targetFolder, null, null, getClass().getName(), true);
+    }
+
+    /**
+     * Removes OpenCms for the current test.<p>
+     */
+    protected void removeOpenCms() {
+
+        OpenCmsTestCase.removeOpenCms(getClass().getName());
     }
 }

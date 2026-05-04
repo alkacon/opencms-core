@@ -27,12 +27,13 @@
 
 package org.opencms.ugc;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.ugc.shared.CmsUgcException;
 import org.opencms.util.CmsUUID;
 
@@ -40,41 +41,23 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import com.google.common.base.Optional;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.Test;
+import com.google.common.base.Optional;
 
 /**
  * Test cases for the org.opencms.editors.usergenerated package.
  */
-public class TestFormSessionSecurityLimits extends OpenCmsTestCase {
-
-    /**
-     * Creates a new test instance.<p<
-     *
-     * @param name the test name
-     */
-    public TestFormSessionSecurityLimits(String name) {
-
-        super(name);
-    }
-
-    /**
-     * Returns the test suite.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        return generateSetupTestWrapper(TestFormSessionSecurityLimits.class, "systemtest", "/");
-    }
+@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
+@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.MethodName.class)
+public class TestFormSessionSecurityLimits extends OpenCmsJupiterTestCase {
 
     /**
      * Tests that an error occurs when trying to upload without a configured upload folder.<p>
      *
      * @throws Exception -
      */
+    @Test
     public void testErrorNoUploadsAllowed() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -111,6 +94,7 @@ public class TestFormSessionSecurityLimits extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testLimits() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -198,6 +182,7 @@ public class TestFormSessionSecurityLimits extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testNoLimits() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -227,5 +212,16 @@ public class TestFormSessionSecurityLimits extends OpenCmsTestCase {
         } catch (CmsUgcException e) {
             fail("Exception was thrown: " + e);
         }
+    }
+
+    /**
+     * Returns the import fixture folder under {@code test/data/imports/}.<p>
+     *
+     * @return import fixture folder name
+     */
+    @Override
+    protected String getImportFolder() {
+
+        return "systemtest";
     }
 }

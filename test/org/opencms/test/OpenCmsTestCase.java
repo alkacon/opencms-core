@@ -4216,13 +4216,26 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Initializes the OpenCms/database configuration
-     * by reading the appropriate values from opencms.properties.<p>
-     */
-    /**
-     * Initializes the OpenCms configuration and test data paths.<p>
+     * Initializes the OpenCms configuration and test data paths, and restores the
+     * JUnit 6 default of failing tests on later logged errors unless callers opt out.<p>
      */
     public static void initConfiguration() {
+
+        initConfiguration(true);
+    }
+
+    /**
+     * Initializes the OpenCms configuration and test data paths.<p>
+     *
+     * <p>The {@code breakOnErrorAfterInit} flag controls the log-appender behavior after
+     * configuration-only setup. Most Jupiter tests keep the stricter JUnit 6 default and
+     * fail on later logged errors. Some migrated legacy tests intentionally assert behavior
+     * that logs an error without failing, and can pass {@code false} to preserve that mode.
+     *
+     * @param breakOnErrorAfterInit if true, later logged errors fail the test; if false,
+     *     later logged errors stay non-breaking after configuration-only setup
+     */
+    public static void initConfiguration(boolean breakOnErrorAfterInit) {
 
         if (m_configuration == null) {
             OpenCmsTestLogAppender.setBreakOnError(false);
@@ -4313,9 +4326,10 @@ public class OpenCmsTestCase extends TestCase {
                     + ") "
                     + "-----");
 
-            // set "OpenCmsLog" system property to enable the logger
-            OpenCmsTestLogAppender.setBreakOnError(true);
         }
+
+        // Apply the requested post-init logging mode even when the configuration was already initialized.
+        OpenCmsTestLogAppender.setBreakOnError(breakOnErrorAfterInit);
     }
 
 }

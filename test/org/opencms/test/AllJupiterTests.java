@@ -45,6 +45,10 @@ import org.junit.platform.suite.api.Suite;
 @SelectClasses({
     org.opencms.configuration.AllTests.class,
     org.opencms.db.AllTests.class,
+    org.opencms.jsp.util.AllTests.class,
+    org.opencms.main.AllTests.class,
+    org.opencms.scheduler.AllTests.class,
+    org.opencms.site.AllTests.class,
     org.opencms.util.AllTests.class,
     org.opencms.xml.AllTests.class,
     org.opencms.xml.containerpage.AllTests.class,
@@ -52,6 +56,7 @@ import org.junit.platform.suite.api.Suite;
     org.opencms.xml.page.AllTests.class,
     org.opencms.widgets.AllTests.class,
     org.opencms.workplace.AllTests.class,
+    org.opencms.ugc.AllTests.class,
     org.opencms.security.AllTests.class,
     org.opencms.jsp.decorator.AllTests.class
 })

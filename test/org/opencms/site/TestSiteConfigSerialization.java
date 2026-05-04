@@ -27,30 +27,44 @@
 
 package org.opencms.site;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSitesConfiguration;
 import org.opencms.file.CmsResource;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.workplace.tools.sites.CmsSiteBean;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests that conversion from CmsSite to CmsSiteBean and back preserves data.
  */
-public class TestSiteConfigSerialization extends OpenCmsTestCase {
+@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
+@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.MethodName.class)
+public class TestSiteConfigSerialization extends OpenCmsJupiterTestCase {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
      */
-    public TestSiteConfigSerialization(String arg0) {
+    @Override
+    protected boolean shouldBootOpenCms() {
 
-        super(arg0, false);
+        return false;
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
+     */
+    @Override
+    protected boolean shouldInitConfiguration() {
+
+        return true;
     }
 
     /**
@@ -58,6 +72,7 @@ public class TestSiteConfigSerialization extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testSiteBeanConversion() throws Exception {
 
         // get the file name of the input resource
@@ -84,6 +99,7 @@ public class TestSiteConfigSerialization extends OpenCmsTestCase {
      * Test case.
      * @throws Exception -
      */
+    @Test
     public void testSiteBeanEquals() throws Exception {
 
         // get the file name of the input resource

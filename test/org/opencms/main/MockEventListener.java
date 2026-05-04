@@ -31,11 +31,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Simple event listener for test purposes.
+ * Simple event listener mock for test purposes.
  *
  * @since 6.1
  */
-public class TestEventListener implements I_CmsEventListener {
+public class MockEventListener implements I_CmsEventListener {
 
     /** The list of recieved events. */
     List m_events;
@@ -43,7 +43,7 @@ public class TestEventListener implements I_CmsEventListener {
     /**
      * Default constructor.<p>
      */
-    public TestEventListener() {
+    public MockEventListener() {
 
         m_events = new ArrayList();
     }

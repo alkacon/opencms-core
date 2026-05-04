@@ -27,13 +27,15 @@
 
 package org.opencms.main;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeJsp;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestServletRequest;
 import org.opencms.test.OpenCmsTestServletResponse;
 import org.opencms.util.CmsMacroResolver;
@@ -45,59 +47,36 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test the static OpenCms singleton object.<p>
  *
  */
-public class TestOpenCmsSingleton extends OpenCmsTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestOpenCmsSingleton extends OpenCmsJupiterTestCase {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public TestOpenCmsSingleton(String arg0) {
+    @Override
+    protected String getImportFolder() {
 
-        super(arg0);
+        return "simpletest";
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
      */
-    public static Test suite() {
+    @Override
+    protected String getTargetFolder() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestOpenCmsSingleton.class.getName());
-
-        suite.addTest(new TestOpenCmsSingleton("testInitCmsObject"));
-        suite.addTest(new TestOpenCmsSingleton("testInitResource"));
-        suite.addTest(new TestOpenCmsSingleton("testLog"));
-        suite.addTest(new TestOpenCmsSingleton("testEncoding"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        return "/";
     }
 
     /**
@@ -105,6 +84,8 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(4)
+    @Test
     public void testEncoding() throws Exception {
 
         echo("Testing the encoding settings");
@@ -117,7 +98,7 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
             CmsResourceTypeJsp.getJSPTypeId());
         // note: default test configuration is done in opencms-vfs.xml and may be different from standard installation
         List defaultProperties = jsp.getConfiguredDefaultProperties();
-        assertEquals("Test configuration has 2 default properties configured for JSP", 2, defaultProperties.size());
+        assertEquals(2, defaultProperties.size(), "Test configuration has 2 default properties configured for JSP");
         Iterator i = defaultProperties.iterator();
         String jspEncoding = null;
         while (i.hasNext()) {
@@ -125,9 +106,9 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
             if (CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING.equals(property.getName())) {
                 jspEncoding = property.getValue();
                 assertEquals(
-                    "Test configuration has property value '${opencms.default.encoding}' configured for JSP",
                     2,
-                    defaultProperties.size());
+                    defaultProperties.size(),
+                    "Test configuration has property value '${opencms.default.encoding}' configured for JSP");
                 // resolve the macro
                 CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
                 jspEncoding = CmsMacroResolver.newInstance().setCmsObject(cms).resolveMacros(jspEncoding);
@@ -145,6 +126,8 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(1)
+    @Test
     public void testInitCmsObject() throws Exception {
 
         CmsObject cms;
@@ -232,6 +215,8 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(2)
+    @Test
     public void testInitResource() throws Exception {
 
         echo("Testing access to initResource method");
@@ -261,6 +246,8 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(3)
+    @Test
     public void testLog() throws Exception {
 
         // first 4 log levels are uncritical

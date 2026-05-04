@@ -28,6 +28,7 @@
 package org.opencms.i18n;
 
 import org.opencms.gwt.I_CmsClientMessageBundle;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestCase;
 
 import java.util.ArrayList;
@@ -35,16 +36,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.jupiter.api.TestInstance;
+
 /**
  * Tests all {@link org.opencms.i18n.I_CmsMessageBundle} instances for the OpenCms
  * module classes (folder src-modules, org.* packages). <p>
  *
  * @since 6.0.0
  */
-public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public final class TestCmsModuleMessageBundles extends A_TestCmsMessageBundles {
+
+    @SuppressWarnings("unused")
+    private static final Class<?> JUPITER_BASE_MARKER = OpenCmsJupiterTestCase.class;
 
     /**
-     * @see org.opencms.i18n.TestCmsMessageBundles#getNotLocalizedBundles(Locale)
+     * @see org.opencms.i18n.A_TestCmsMessageBundles#getNotLocalizedBundles(Locale)
      */
     @Override
     protected List<I_CmsMessageBundle> getNotLocalizedBundles(Locale locale) {
@@ -53,7 +60,7 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
     }
 
     /**
-     * @see org.opencms.i18n.TestCmsMessageBundles#getTestClientMessageBundles()
+     * @see org.opencms.i18n.A_TestCmsMessageBundles#getTestClientMessageBundles()
      */
     @Override
     protected List<I_CmsClientMessageBundle> getTestClientMessageBundles() throws Exception {
@@ -75,7 +82,7 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
     }
 
     /**
-     * @see org.opencms.i18n.TestCmsMessageBundles#getTestMessageBundles()
+     * @see org.opencms.i18n.A_TestCmsMessageBundles#getTestMessageBundles()
      */
     @Override
     protected I_CmsMessageBundle[] getTestMessageBundles() {

@@ -27,49 +27,41 @@
 
 package org.opencms.jsp.util;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 
 /** Test cases for teh CmsJspInstanceDate bean. */
-public class TestCmsJspInstanceDateBean extends OpenCmsTestCase {
+@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
+@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
+public class TestCmsJspInstanceDateBean extends OpenCmsJupiterTestCase {
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsJspInstanceDateBean(String arg0) {
+    @Override
+    protected boolean shouldBootOpenCms() {
 
-        super(arg0);
+        return false;
     }
 
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
+    @Override
+    protected boolean shouldInitConfiguration() {
 
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsJspInstanceDateBean.class.getName());
-
-        suite.addTest(new TestCmsJspInstanceDateBean("testDateFormatting"));
-        suite.addTest(new TestCmsJspInstanceDateBean("testExplicitDateChanges"));
-
-        return suite;
+        return false;
     }
 
     /**
      * Tests if the correct event info is returned.
      */
+    @Test
+    @Order(1)
     public void testDateFormatting() {
 
         Date d1 = new Date(1506948000000L); // Mon Oct 02 2017 12:40:00
@@ -135,6 +127,8 @@ public class TestCmsJspInstanceDateBean extends OpenCmsTestCase {
     /**
      * Test if explictely setting the end date and/or setting the whole day option behaves as expected.
      */
+    @Test
+    @Order(2)
     public void testExplicitDateChanges() {
 
         TimeZone currentTimeZone = TimeZone.getDefault();

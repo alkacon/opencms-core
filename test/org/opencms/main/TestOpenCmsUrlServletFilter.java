@@ -27,13 +27,21 @@
 
 package org.opencms.main;
 
-import org.opencms.test.OpenCmsTestCase;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.opencms.test.OpenCmsJupiterTestCase;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /** Unit tests the {@link org.opencms.main.OpenCmsUrlServletFilter}. */
-public class TestOpenCmsUrlServletFilter extends OpenCmsTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestOpenCmsUrlServletFilter extends OpenCmsJupiterTestCase {
 
     /** Servlet context. */
     static String SERVLETCONTEXT = "/opencms";
@@ -67,34 +75,28 @@ public class TestOpenCmsUrlServletFilter extends OpenCmsTestCase {
     private static String ADDITIONAL_CONFIG = "/test1|/test2/";
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
      */
-    public TestOpenCmsUrlServletFilter(String arg0) {
+    @Override
+    protected boolean shouldBootOpenCms() {
 
-        super(arg0);
+        return false;
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
      */
-    public static Test suite() {
+    @Override
+    protected boolean shouldInitConfiguration() {
 
-        TestSuite suite = new TestSuite();
-        suite.setName(TestOpenCmsUrlServletFilter.class.getName());
-
-        suite.addTest(new TestOpenCmsUrlServletFilter("testDefaultRegex"));
-        suite.addTest(new TestOpenCmsUrlServletFilter("testRegexWithConfiguration"));
-
-        return suite;
+        return false;
     }
 
     /**
      * Test default regex.
      */
+    @Order(1)
+    @Test
     public void testDefaultRegex() {
 
         System.out.println("Testing the Regex for URL rewriting via the servlet filter");
@@ -120,6 +122,8 @@ public class TestOpenCmsUrlServletFilter extends OpenCmsTestCase {
     /**
      * Test regex build with extra configuration.<p>
      */
+    @Order(2)
+    @Test
     public void testRegexWithConfiguration() {
 
         System.out.println("Testing the Regex for URL rewriting via the servlet filter with extra configuration");
@@ -156,9 +160,9 @@ public class TestOpenCmsUrlServletFilter extends OpenCmsTestCase {
         System.out.println(
             "Testing for url (with context): " + url + " (should " + (shouldMatch ? "" : " not ") + "match).");
         if (shouldMatch) {
-            assertTrue("Folder " + prefix + " should be matched.", url.matches(regex));
+            assertTrue(url.matches(regex), "Folder " + prefix + " should be matched.");
         } else {
-            assertFalse("Folder " + prefix + " should not be matched.", url.matches(regex));
+            assertFalse(url.matches(regex), "Folder " + prefix + " should not be matched.");
         }
 
     }

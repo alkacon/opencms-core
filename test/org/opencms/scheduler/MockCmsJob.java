@@ -33,7 +33,7 @@ import org.quartz.JobExecutionContext;
 /**
  * Class that implements the Job interface.<p>
  */
-public class TestCmsJob implements Job {
+public class MockCmsJob implements Job {
 
     /** Count of individual thread. */
     private int m_myCount;
@@ -47,27 +47,28 @@ public class TestCmsJob implements Job {
     /**
      * Default constructor.<p>
      */
-    public TestCmsJob() {
+    public MockCmsJob() {
 
-        TestCmsJob.m_count++;
-        m_myCount = TestCmsJob.m_count;
+        MockCmsJob.m_count++;
+        m_myCount = MockCmsJob.m_count;
     }
 
     /**
      * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
      */
+    @Override
     public void execute(JobExecutionContext context) {
 
         System.out.println(
-            getClass().getName() + " " + m_myCount + " is starting (running: " + TestCmsJob.m_running + ").");
-        TestCmsJob.m_running++;
+            getClass().getName() + " " + m_myCount + " is starting (running: " + MockCmsJob.m_running + ").");
+        MockCmsJob.m_running++;
         try {
             Thread.sleep(1000 + (long)(4000.0 * Math.random()));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        TestCmsJob.m_running--;
+        MockCmsJob.m_running--;
         System.out.println(
-            getClass().getName() + " " + m_myCount + " is finished (running: " + TestCmsJob.m_running + ").");
+            getClass().getName() + " " + m_myCount + " is finished (running: " + MockCmsJob.m_running + ").");
     }
 }

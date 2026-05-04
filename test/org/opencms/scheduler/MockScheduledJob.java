@@ -32,9 +32,9 @@ import org.opencms.file.CmsObject;
 import java.util.Map;
 
 /**
- * Test class for OpenCms scheduled jobs.<p>
+ * Mock class for OpenCms scheduled jobs.<p>
  */
-public class TestScheduledJob implements I_CmsScheduledJob {
+public class MockScheduledJob implements I_CmsScheduledJob {
 
     /** Indicates if this class was run. */
     static int m_runCount;
@@ -48,7 +48,7 @@ public class TestScheduledJob implements I_CmsScheduledJob {
     /**
      * Default constructor.<p>
      */
-    public TestScheduledJob() {
+    public MockScheduledJob() {
 
         m_instanceRunCount = 0;
     }
@@ -56,6 +56,7 @@ public class TestScheduledJob implements I_CmsScheduledJob {
     /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(CmsObject, Map)
      */
+    @Override
     public String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
 
         m_runCount++;

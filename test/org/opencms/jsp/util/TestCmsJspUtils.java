@@ -27,46 +27,31 @@
 
 package org.opencms.jsp.util;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.opencms.file.CmsObject;
 import org.opencms.jsp.CmsJspResourceWrapper;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
-import junit.framework.Test;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for the <code>{@link CmsJspResourceWrapper}</code>.<p>
  */
-public class TestCmsJspUtils extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsJspUtils(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        return generateSetupTestWrapper(TestCmsJspUtils.class, "simpletest", "/");
-    }
+@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
+@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.MethodName.class)
+public class TestCmsJspUtils extends OpenCmsJupiterTestCase {
 
     /**
      * Tests for link wrapper.<p>
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(1)
     public void testLinkWrapper() throws Exception {
 
         CmsObject cms = getCmsObject();

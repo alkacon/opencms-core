@@ -27,6 +27,8 @@
 
 package org.opencms.jsp.util;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
@@ -35,68 +37,28 @@ import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.jsp.CmsJspTagNavigation.Type;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 
 /** Tests for the {@link CmsJspNavigationBean} - and thus indirectly for the tag cms:navigation. */
-public class TestCmsJspNavigationBean extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsJspNavigationBean(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsJspNavigationBean.class.getName());
-
-        suite.addTest(new TestCmsJspNavigationBean("testLocaleSpecificNavigation"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
+@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
+public class TestCmsJspNavigationBean extends OpenCmsJupiterTestCase {
 
     /**
      * Tests locale specific property access.
      *
      * @throws CmsException thrown if creation of the test resource or property writing/reading fails.
      */
+    @Test
+    @Order(1)
     public void testLocaleSpecificNavigation() throws CmsException {
 
         CmsObject cms = getCmsObject();

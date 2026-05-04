@@ -27,79 +27,57 @@
 
 package org.opencms.main;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.security.CmsRole;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
 import java.awt.event.KeyEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test cases for the OpenCms shell when used "inline".<p>
  *
  * @since 9.5.0
  */
-public class TestCmsShellInline extends OpenCmsTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsShellInline extends OpenCmsJupiterTestCase {
 
     /** Default inline shell prompt for most test cases. */
     private static final String PROMPT = "Inline shell: ${user}@${siteroot}${uri}> ";
 
     /** Default escape sequence in linux for the arrow up key. */
-    final private String ARROW_UP = new String(new byte[]{KeyEvent.VK_ESCAPE, KeyEvent.VK_OPEN_BRACKET, 'A'});
+    private final String m_arrowUp = new String(new byte[] {KeyEvent.VK_ESCAPE, KeyEvent.VK_OPEN_BRACKET, 'A'});
 
     /**
-     * Default JUnit constructor.
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public TestCmsShellInline(String arg0) {
+    @Override
+    protected String getImportFolder() {
 
-        super(arg0);
+        return null;
     }
 
     /**
-     * Test suite for this test class.
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
      */
-    public static Test suite() {
+    @Override
+    protected String getTargetFolder() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsShellInline.class.getName());
-
-        suite.addTest(new TestCmsShellInline("testShellInline"));
-        suite.addTest(new TestCmsShellInline("testShellSetProperties"));
-        suite.addTest(new TestCmsShellInline("testShellCreateUser"));
-        suite.addTest(new TestCmsShellInline("testShellEchoOff"));
-        suite.addTest(new TestCmsShellInline("testShellLineParsing"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms(null, "/sites/default/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        return "/sites/default/";
     }
 
     /**
@@ -107,6 +85,8 @@ public class TestCmsShellInline extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Order(3)
+    @Test
     public void testShellCreateUser() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -118,8 +98,8 @@ public class TestCmsShellInline extends OpenCmsTestCase {
         shell.execute("addUserToRole 'Editor' 'EDITOR'");
 
         assertTrue(
-            "Editor does not have EDITOR role",
-            OpenCms.getRoleManager().hasRole(cms, "Editor", CmsRole.EDITOR));
+            OpenCms.getRoleManager().hasRole(cms, "Editor", CmsRole.EDITOR),
+            "Editor does not have EDITOR role");
         List<CmsGroup> groups = cms.getGroupsOfUser("Editor", true);
         boolean found = false;
         for (CmsGroup g : groups) {
@@ -128,7 +108,7 @@ public class TestCmsShellInline extends OpenCmsTestCase {
                 break;
             }
         }
-        assertTrue("Editor not a member of the Users group", found);
+        assertTrue(found, "Editor not a member of the Users group");
     }
 
     /**
@@ -136,6 +116,8 @@ public class TestCmsShellInline extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Order(4)
+    @Test
     public void testShellEchoOff() throws Exception {
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -170,7 +152,7 @@ public class TestCmsShellInline extends OpenCmsTestCase {
             + ".\n";
 
         String result = bytes.toString();
-        assertEquals("Shell did not produce expected output", expected, result);
+        assertEquals(expected, result, "Shell did not produce expected output");
     }
 
     /**
@@ -178,6 +160,8 @@ public class TestCmsShellInline extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Order(1)
+    @Test
     public void testShellInline() throws Exception {
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -213,7 +197,7 @@ public class TestCmsShellInline extends OpenCmsTestCase {
             + "Goodbye!\n";
 
         String result = bytes.toString();
-        assertEquals("Shell did not produce expected output", expected, result);
+        assertEquals(expected, result, "Shell did not produce expected output");
     }
 
     /**
@@ -221,6 +205,8 @@ public class TestCmsShellInline extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Order(5)
+    @Test
     public void testShellLineParsing() throws Exception {
 
         ByteArrayOutputStream bOut = new ByteArrayOutputStream();
@@ -232,20 +218,20 @@ public class TestCmsShellInline extends OpenCmsTestCase {
         CmsShell shell = new CmsShell(cms, PROMPT, null, out, err);
 
         String commands = "echo on\n"     // This should be processed
-                + ARROW_UP + "echo off\n" // The shell should detect the escape sequence and ignore the rest
-                + "\n"
-                + ".\n"         // This should be ignored and shouldn't break the shell
-                + "/\n"         // Same here -- Parsed as StreamTokenizer.TT_NUMBER
-                + "*\n"         // Same here -- Parsed as StreamTokenizer.TT_NUMBER
-                + "(\n"         // Same here -- Parsed as NOT StreamTokenizer.TT_NUMBER
-                + "-\n"         // Same here -- Parsed as NOT StreamTokenizer.TT_NUMBER
-                + "( ( (\n"     // Same here -- Parsed as NOT StreamTokenizer.TT_NUMBER
-                + "setRequestTime(11)\n"  // Test parsing of numerical parameters
-                + "setRequestTime 12\n"   // Test parsing of numerical parameters
-                + "setRequestTime /\n"    // Test parsing of numerical parameters
-                + "setRequestTime / 13\n" // Test parsing of numerical parameters
-                + "setRequestTime /14\n"  // Test parsing of numerical parameters
-                + "exit\n";     // Should exit gracefully
+            + m_arrowUp + "echo off\n" // The shell should detect the escape sequence and ignore the rest
+            + "\n"
+            + ".\n"         // This should be ignored and shouldn't break the shell
+            + "/\n"         // Same here -- Parsed as StreamTokenizer.TT_NUMBER
+            + "*\n"         // Same here -- Parsed as StreamTokenizer.TT_NUMBER
+            + "(\n"         // Same here -- Parsed as NOT StreamTokenizer.TT_NUMBER
+            + "-\n"         // Same here -- Parsed as NOT StreamTokenizer.TT_NUMBER
+            + "( ( (\n"     // Same here -- Parsed as NOT StreamTokenizer.TT_NUMBER
+            + "setRequestTime(11)\n"  // Test parsing of numerical parameters
+            + "setRequestTime 12\n"   // Test parsing of numerical parameters
+            + "setRequestTime /\n"    // Test parsing of numerical parameters
+            + "setRequestTime / 13\n" // Test parsing of numerical parameters
+            + "setRequestTime /14\n"  // Test parsing of numerical parameters
+            + "exit\n";     // Should exit gracefully
         shell.execute(commands);
 
         String resultOut = bOut.toString();
@@ -253,9 +239,11 @@ public class TestCmsShellInline extends OpenCmsTestCase {
         System.out.println(resultOut);
         System.err.println(resultErr);
         CmsMessages messages = Messages.get().getBundle(shell.getLocale());
-        assertTrue("Escape sequence not detected", resultOut.contains(messages.key(Messages.GUI_SHELL_ESCAPE_SEQUENCES_NOT_SUPPORTED_0)));
-        assertTrue("Command 'echo on' skipped", resultOut.contains("Echo is now on"));
-        assertTrue("Shell didn't exit gracefully.", resultOut.contains("Goodbye!"));
+        assertTrue(
+            resultOut.contains(messages.key(Messages.GUI_SHELL_ESCAPE_SEQUENCES_NOT_SUPPORTED_0)),
+            "Escape sequence not detected");
+        assertTrue(resultOut.contains("Echo is now on"), "Command 'echo on' skipped");
+        assertTrue(resultOut.contains("Goodbye!"), "Shell didn't exit gracefully.");
     }
 
     /**
@@ -263,6 +251,8 @@ public class TestCmsShellInline extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Order(2)
+    @Test
     public void testShellSetProperties() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -272,11 +262,11 @@ public class TestCmsShellInline extends OpenCmsTestCase {
         value = "This is a test";
         shell.execute("echo on\n help * \n writeProperty '/' 'Title' '" + value + "'");
         read = cms.readPropertyObject("/", "Title", false).getValue();
-        assertEquals("Title property not set as expected", value, read);
+        assertEquals(value, read, "Title property not set as expected");
 
         value = "This is on the sites folder";
         shell.execute("setSiteRoot '/' \n writeProperty '/sites/' 'Title' '" + value + "'");
         read = cms.readPropertyObject("/sites/", "Title", false).getValue();
-        assertEquals("Title property not set as expected", value, read);
+        assertEquals(value, read, "Title property not set as expected");
     }
 }

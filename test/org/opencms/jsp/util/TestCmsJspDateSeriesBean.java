@@ -27,46 +27,38 @@
 
 package org.opencms.jsp.util;
 
-import org.opencms.test.OpenCmsTestCase;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.opencms.test.OpenCmsJupiterTestCase;
 
 import java.util.Date;
 import java.util.Locale;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 
 /** Test cases for the {@link CmsJspDateSeriesBean}. */
-public class TestCmsJspDateSeriesBean extends OpenCmsTestCase {
+@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
+@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
+public class TestCmsJspDateSeriesBean extends OpenCmsJupiterTestCase {
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsJspDateSeriesBean(String arg0) {
+    @Override
+    protected boolean shouldBootOpenCms() {
 
-        super(arg0);
+        return false;
     }
 
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
+    @Override
+    protected boolean shouldInitConfiguration() {
 
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsJspDateSeriesBean.class.getName());
-
-        suite.addTest(new TestCmsJspDateSeriesBean("testGetEventInfo"));
-        suite.addTest(new TestCmsJspDateSeriesBean("testGetSpecialInstances"));
-
-        return suite;
+        return false;
     }
 
     /**
      * Tests if the correct event info is returned, specifically if for missing insatncedate, the first instance is returned.
      */
+    @Test
+    @Order(1)
     public void testGetEventInfo() {
 
         String config = "{\"from\":\"1508396400000\", \"to\":\"1508511600000\", \"pattern\":{\"type\":\"NONE\"}}";
@@ -87,6 +79,8 @@ public class TestCmsJspDateSeriesBean extends OpenCmsTestCase {
     /**
      * Test the methods to get specific instances of a date series.
      */
+    @Test
+    @Order(2)
     public void testGetSpecialInstances() {
 
         long currentTime = new Date().getTime();

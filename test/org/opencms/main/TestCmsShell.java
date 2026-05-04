@@ -27,36 +27,59 @@
 
 package org.opencms.main;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 import org.opencms.file.CmsObject;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsFileUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileFilter;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.apache.commons.io.filefilter.FileFilterUtils;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test cases for the OpenCms shell.<p>
  *
  * @since 6.0.0
  */
-public class TestCmsShell extends OpenCmsTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsShell extends OpenCmsJupiterTestCase {
 
     public static final String PROMPT = "${user}@${project}>";
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
      */
-    public TestCmsShell(String arg0) {
+    @Override
+    protected boolean shouldBootOpenCms() {
 
-        super(arg0);
+        return false;
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
+     */
+    @Override
+    protected boolean shouldInitConfiguration() {
+
+        return true;
     }
 
     /**
@@ -64,6 +87,8 @@ public class TestCmsShell extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(2)
+    @Test
     public void testCmsSetup() throws Throwable {
 
         CmsObject cms;
@@ -91,6 +116,8 @@ public class TestCmsShell extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(3)
+    @Test
     public void testCmsShell() throws Throwable {
 
         // create a new database first
@@ -145,25 +172,30 @@ public class TestCmsShell extends OpenCmsTestCase {
         // exit the shell
         shell.exit();
 
-        // remove the database
-        removeDatabase();
-
-        // remove the backup configuration files
-        CmsFileUtil.purgeDirectory(configBackupDir);
+        cleanupShellRuntimeState(configBackupDir);
     }
 
-    private static I_CmsShellCommands createCmsShellCommands(String identifier, final String markInit, final String markShellExit, final String markShellStart, String markInErrOutputStream) {
+    private static I_CmsShellCommands createCmsShellCommands(
+        String identifier,
+        final String markInit,
+        final String markShellExit,
+        final String markShellStart,
+        String markInErrOutputStream) {
+
         return new I_CmsShellCommands() {
+
             private CmsShell shell;
 
             @Override
             public void initShellCmsObject(CmsObject cms, CmsShell shell) {
+
                 this.shell = shell;
                 shell.getOut().println(markInit + identifier);
             }
 
             @Override
             public void shellExit() {
+
                 // shellExit can (and in fact is) invoked before initShellCmsObject
                 if (shell != null) {
                     shell.getOut().println(markShellExit + identifier);
@@ -172,6 +204,7 @@ public class TestCmsShell extends OpenCmsTestCase {
 
             @Override
             public void shellStart() {
+
                 shell.getOut().println(markShellStart + identifier);
                 shell.getErr().println(markInErrOutputStream + identifier);
             }
@@ -182,6 +215,8 @@ public class TestCmsShell extends OpenCmsTestCase {
      * Tests the CmsShell and setup procedure.<p>
      *
      */
+    @Order(1)
+    @Test
     public void testShouldLoadCmsShellWithAllAdditionalCommandsClasses() {
 
         // create a new database first
@@ -201,16 +236,16 @@ public class TestCmsShell extends OpenCmsTestCase {
         final String MARK_IN_ERR_OUTPUT_STREAM = "mark in error OutputStream on ";
         List<String> commandsIds = Arrays.asList("0001", "0002", "0003");
         List<I_CmsShellCommands> cmsShellCommands = commandsIds.stream()
-                .map(id -> createCmsShellCommands(id, MARK_INIT, MARK_SHELL_EXIT, MARK_SHELL_START, MARK_IN_ERR_OUTPUT_STREAM))
-                .collect(Collectors.toList());
+            .map(id -> createCmsShellCommands(id, MARK_INIT, MARK_SHELL_EXIT, MARK_SHELL_START, MARK_IN_ERR_OUTPUT_STREAM))
+            .collect(Collectors.toList());
 
         // create a shell instance
         final CmsShell shell = new CmsShell(
-                getTestDataPath("WEB-INF" + File.separator),
+            getTestDataPath("WEB-INF" + File.separator),
             null,
             null,
-                PROMPT,
-                cmsShellCommands,
+            PROMPT,
+            cmsShellCommands,
             out,
             err,
             false);
@@ -221,11 +256,7 @@ public class TestCmsShell extends OpenCmsTestCase {
         // exit the shell
         shell.exit();
 
-        // remove the database
-        removeDatabase();
-
-        // remove the backup configuration files
-        CmsFileUtil.purgeDirectory(configBackupDir);
+        cleanupShellRuntimeState(configBackupDir);
 
         final String resultOut = baosOut.toString();
         final String resultErr = baosErr.toString();
@@ -238,11 +269,71 @@ public class TestCmsShell extends OpenCmsTestCase {
 
         assertContains(resultOut, "OpenCms WEB-INF path:");
         assertContains(resultOut, "OpenCms property file:");
-        for (String id: commandsIds) {
+        for (String id : commandsIds) {
             assertContains(resultOut, MARK_INIT + id);
             assertContains(resultOut, MARK_SHELL_EXIT + id);
             assertContains(resultOut, MARK_SHELL_START + id);
             assertContains(resultErr, MARK_IN_ERR_OUTPUT_STREAM + id);
+        }
+    }
+
+    /**
+     * Restores the shared test runtime after manual shell bootstraps.
+     *
+     * @param configBackupDir the config backup directory created by OpenCms
+     */
+    private void cleanupShellRuntimeState(File configBackupDir) {
+
+        removeDatabase();
+        restoreConfiguration();
+        purgeTestPath("WEB-INF/classes/");
+        purgeTestPath("WEB-INF/logs/publish");
+        purgeTestPath("WEB-INF/lib/");
+        if (configBackupDir != null) {
+            CmsFileUtil.purgeDirectory(configBackupDir);
+        }
+        purgeTestPath("WEB-INF/index/");
+        purgeTestPath("export/");
+    }
+
+    /**
+     * Restores the default runtime configuration files used by the shell tests.
+     */
+    private void restoreConfiguration() {
+
+        String sourceDir = getTestDataPath("WEB-INF/config." + OpenCmsTestCase.getDbProduct() + "/");
+        String targetDir = getTestDataPath("WEB-INF/" + CmsSystemInfo.FOLDER_CONFIG_DEFAULT);
+        File configDir = new File(targetDir);
+        File configSourceDir = new File(sourceDir);
+        FileFilter filter = FileFilterUtils.orFileFilter(
+            FileFilterUtils.suffixFileFilter(".xml"),
+            FileFilterUtils.suffixFileFilter(".properties"));
+        File[] sourceFiles = configSourceDir.listFiles(filter);
+        if (sourceFiles == null) {
+            return;
+        }
+        for (File source : sourceFiles) {
+            if (!source.isFile()) {
+                continue;
+            }
+            try {
+                CmsFileUtil.copy(source.getAbsolutePath(), new File(configDir, source.getName()).getAbsolutePath());
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to restore configuration file " + source.getName(), e);
+            }
+        }
+    }
+
+    /**
+     * Purges a runtime test directory if it exists.
+     *
+     * @param path the test-relative path
+     */
+    private void purgeTestPath(String path) {
+
+        String absolutePath = getTestDataPath(path);
+        if (absolutePath != null) {
+            CmsFileUtil.purgeDirectory(new File(absolutePath));
         }
     }
 }
