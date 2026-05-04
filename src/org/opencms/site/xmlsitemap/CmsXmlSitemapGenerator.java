@@ -38,6 +38,7 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.collectors.CmsDateResourceComparator;
 import org.opencms.file.types.CmsResourceTypeHtmlRedirect;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.I_CmsResourceType;
@@ -62,6 +63,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -70,6 +72,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 
@@ -167,8 +170,14 @@ public class CmsXmlSitemapGenerator {
     /** The include/exclude configuration used for choosing pages for the XML sitemap. */
     protected CmsPathIncludeExcludeSet m_includeExcludeSet = new CmsPathIncludeExcludeSet();
 
+    /** The mode the generator is running with. */
+    protected String m_mode;
+
     /** A map from structure ids to page aliases below the base folder which point to the given structure id. */
     protected Multimap<CmsUUID, CmsAlias> m_pageAliasesBelowBaseFolderByStructureId = ArrayListMultimap.create();
+
+    /** The prefix for the generated output. */
+    protected String m_prefix;
 
     /** The map used for storing the results, with URLs as keys. */
     protected Map<String, ResultEntry> m_resultMap = new LinkedHashMap<String, ResultEntry>();
@@ -212,7 +221,7 @@ public class CmsXmlSitemapGenerator {
      *
      * @param link the link to change
      * @param server the server URI string
-    
+
      * @return the changed link
      */
     public static String replaceServerUri(String link, String server) {
@@ -369,24 +378,34 @@ public class CmsXmlSitemapGenerator {
     }
 
     /**
-     * Generates a sitemap and formats it as a string.<p>
+     * Depending on the mode , generates a sitemap or a llms.txt content and formats it as a string.<p>
      *
-     * @return the sitemap XML data
+     * @return the sitemap XML data or llms.txt content
      *
      * @throws CmsException if something goes wrong
      */
-    public String renderSitemap() throws CmsException {
+    public String renderSitemap() throws Exception {
 
-        StringBuffer buffer = new StringBuffer();
         List<CmsXmlSitemapUrlBean> urlBeans = generateSitemapBeans();
-        buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-        buffer.append(getUrlSetOpenTag() + "\n");
-        for (CmsXmlSitemapUrlBean bean : urlBeans) {
-            buffer.append(getXmlForEntry(bean));
-            buffer.append("\n");
+        if (m_mode.equals(CmsXmlSeoConfiguration.MODE_LLMS_TXT)) {
+            CmsXmlSitemapLlmsGenerator llmGenerator = new CmsXmlSitemapLlmsGenerator(urlBeans, m_guestCms);
+            String result = llmGenerator.getLlmsTextForUrls();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_prefix)) {
+                result = m_prefix + "\n\n" + result;
+            }
+            return result;
+        } else {
+            StringBuffer buffer = new StringBuffer();
+            buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+            buffer.append(getUrlSetOpenTag() + "\n");
+            for (CmsXmlSitemapUrlBean bean : urlBeans) {
+                buffer.append(getXmlForEntry(bean));
+                buffer.append("\n");
+            }
+            buffer.append("</urlset>");
+            return buffer.toString();
         }
-        buffer.append("</urlset>");
-        return buffer.toString();
+
     }
 
     /**
@@ -397,6 +416,26 @@ public class CmsXmlSitemapGenerator {
     public void setComputeContainerPageDates(boolean computeContainerPageDates) {
 
         m_computeContainerPageDates = computeContainerPageDates;
+    }
+
+    /**
+     * Sets the mode that is currently active, either XML sitemap or llms.txt.<p>
+     *
+     * @param mode the mode
+     */
+    public void setMode(String mode) {
+
+        m_mode = mode;
+    }
+
+    /**
+     * Sets the prefix that can be added to the generated output.<p>
+     *
+     * @param prefix the prefix to add
+     */
+    public void setPrefix(String prefix) {
+
+        m_prefix = prefix;
     }
 
     /**
@@ -832,6 +871,12 @@ public class CmsXmlSitemapGenerator {
             if (shared != null) {
                 List<CmsResource> sharedFiles = m_guestCms.readResources(shared, filter, true);
                 result.addAll(sharedFiles);
+            }
+            if (m_mode.equals(CmsXmlSeoConfiguration.MODE_LLMS_TXT)) {
+                Collections.sort(
+                    result,
+                    new CmsDateResourceComparator(m_guestCms, CmsDateResourceComparator.DATE_ATTRIBUTES_LIST, false));
+                result = result.stream().limit(10).collect(Collectors.toList());
             }
             m_detailResources.put(typeName, result);
         }

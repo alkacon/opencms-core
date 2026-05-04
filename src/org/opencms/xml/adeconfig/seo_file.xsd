@@ -32,7 +32,7 @@
                 <xmlbundle name="org.opencms.xml.adeconfig.seo_file.xml">
                 <bundle locale="en">
                     <resource key="label.SeoFile.Mode">Mode</resource>
-                    <resource key="label.SeoFile.Mode.help">Depending on the mode, this file will be either rendered as an XML sitemap or a robots.txt file which lists all sitemaps from  the site.</resource>
+                    <resource key="label.SeoFile.Mode.help">Depending on the mode, this file will be rendered as an XML sitemap, a robots.txt file which lists all sitemaps from the site, or a llms.txt file for AI bots.</resource>
                     <resource key="label.SeoFile.ComputeContPageDates">Container page dates</resource>
                     <resource key="label.SeoFile.ComputeContPageDates.help">Enables or disables the (relatively expensive) computation of container page modification dates for the XML sitemap.</resource>
                     <resource key="label.SeoFile.Cache">Cache</resource>
@@ -41,18 +41,19 @@
                     <resource key="label.SeoFile.SitemapInclude.help">Include folder in XML sitemap.</resource>
                     <resource key="label.SeoFile.SitemapExclude">Exclude folder</resource>
                     <resource key="label.SeoFile.SitemapExclude.help">Exclude folder from XML sitemap.</resource>
-                    <resource key="label.SeoFile.RobotsTxtText">robots.txt content</resource>
-                    <resource key="label.SeoFile.RobotsTxtText.help">The text which will be inserted after the sitemap references if robots.txt mode is selected.</resource>
+                    <resource key="label.SeoFile.RobotsTxtText">robots.txt content / llms.txt intro</resource>
+                    <resource key="label.SeoFile.RobotsTxtText.help">The text which will be inserted after the sitemap references if robots.txt mode is selected or as intro text if llms.txt mode is selected.</resource>
                     <resource key="label.SeoFile.GeneratorClass">Sitemap generator class</resource>
                     <resource key="label.SeoFile.GeneratorClass.help">The name of the custom Java class to use for sitemap generation (optional).</resource>
                     <resource key="label.SeoFile.ServerUrl">Server URL</resource>
                     <resource key="label.SeoFile.ServerUrl.help">Can be used to override the server URL for the generated links in an XML sitemap.</resource>
                     <resource key="choice.xmlsitemap">XML sitemap</resource>
                     <resource key="choice.robotstxt">robots.txt</resource>
+                    <resource key="choice.llmstxt">llms.txt</resource>
                 </bundle>
                 <bundle locale="de">
                     <resource key="label.SeoFile.Mode">Modus</resource>
-                    <resource key="label.SeoFile.Mode.help">Abhängig vom Modus wird diese Datei entweder als XML-Sitemap oder als robots.txt Datei, welche alle Sitemaps der Site referenziert, dargestellt.</resource>
+                    <resource key="label.SeoFile.Mode.help">Abhängig vom Modus wird diese Datei als XML-Sitemap, als robots.txt Datei, welche alle Sitemaps der Site referenziert, oder als llms.txt Datei für KI-Bots dargestellt.</resource>
                     <resource key="label.SeoFile.ComputeContPageDates">Containerpage-Änderungsdaten</resource>
                     <resource key="label.SeoFile.ComputeContPageDates.help">Aktiviert oder deaktiviert die relativ aufwendige Berechnung von Containerpage-Änderungsdaten für die XML-Sitemap.</resource>
                     <resource key="label.SeoFile.Cache">Cache</resource>
@@ -61,15 +62,15 @@
                     <resource key="label.SeoFile.SitemapInclude.help">Fügt einen Ordner zur XML-Sitemap hinzu.</resource>
                     <resource key="label.SeoFile.SitemapExclude">Ordner ausschließen</resource>
                     <resource key="label.SeoFile.SitemapExclude.help">Schließt einen Ordner von der XML-Sitemap aus.</resource>
-                    <resource key="label.SeoFile.RobotsTxtText">robots.txt-Inhalt</resource>
-                    <resource key="label.SeoFile.RobotsTxtText.help">Der Text, der im robots.txt-Modus nach den Sitemap-Referenzen eingefügt wird.</resource>
+                    <resource key="label.SeoFile.RobotsTxtText">robots.txt-Inhalt / llms.txt Einleitung</resource>
+                    <resource key="label.SeoFile.RobotsTxtText.help">Der Text, der im robots.txt-Modus nach den Sitemap-Referenzen eingefügt oder im llms.txt-Modus als Einleitung angezeigt wird.</resource>
                     <resource key="label.SeoFile.GeneratorClass">Sitemapgenerator-Klasse</resource>
                     <resource key="label.SeoFile.GeneratorClass.help">Der Name der Java-Klasse, die für die Erzeugung der Sitemap verwendet werden soll (optional).</resource>
                     <resource key="label.SeoFile.ServerUrl">Server-URL</resource>
                     <resource key="label.SeoFile.ServerUrl.help">Kann verwendet werden, um den Servernamen in den erzeugten Links der XML-Sitemap zu überschreiben.</resource>
-
                     <resource key="choice.xmlsitemap">XML-Sitemap</resource>
                     <resource key="choice.robotstxt">robots.txt</resource>
+                    <resource key="choice.llmstxt">llms.txt</resource>
                 </bundle>
                 </xmlbundle>
             </resourcebundles>
@@ -77,7 +78,7 @@
                 <default element="Mode" value="xmlsitemap" />
             </defaults>
             <layouts>
-                <layout element="Mode" widget="SelectorWidget" configuration="xmlsitemap*:%(key.choice.xmlsitemap)|robotstxt:%(key.choice.robotstxt)" />
+                <layout element="Mode" widget="SelectorWidget" configuration="xmlsitemap*:%(key.choice.xmlsitemap)|robotstxt:%(key.choice.robotstxt)|llmstxt:%(key.choice.llmstxt)" />
                 <layout element="RobotsTxtText" widget="TextareaWidget" />
                 <layout element="Cache" widget="BooleanWidget" />
             </layouts>

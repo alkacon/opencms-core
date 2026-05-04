@@ -114,14 +114,15 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
      * @param seoFileRes the sitemap XML file
      * @param config the parsed configuration
      *
-     * @return the sitemap generator, or null if the given configuration is not an XML sitemap configuration
+     * @return the sitemap generator, or null if the given configuration is not an XML sitemap or llms.txt configuration
      *
      * @throws CmsException if something goes wrong
      */
     public static CmsXmlSitemapGenerator prepareSitemapGenerator(CmsResource seoFileRes, CmsXmlSeoConfiguration config)
     throws CmsException {
 
-        if (config.getMode().equals(CmsXmlSeoConfiguration.MODE_XML_SITEMAP)) {
+        if (config.getMode().equals(CmsXmlSeoConfiguration.MODE_XML_SITEMAP)
+            || config.getMode().equals(CmsXmlSeoConfiguration.MODE_LLMS_TXT)) {
             String baseFolderRootPath = CmsFileUtil.removeTrailingSeparator(
                 CmsResource.getParentFolder(seoFileRes.getRootPath()));
             CmsXmlSitemapGenerator xmlSitemapGenerator = createSitemapGenerator(
@@ -136,6 +137,8 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
                 inexcludeSet.addExclude(exclude);
             }
             xmlSitemapGenerator.setServerUrl(config.getServerUrl());
+            xmlSitemapGenerator.setMode(config.getMode());
+            xmlSitemapGenerator.setPrefix(config.getRobotsTxtText());
             return xmlSitemapGenerator;
         }
         return null;

@@ -48,6 +48,9 @@ import java.util.Locale;
 public class CmsXmlSeoConfiguration {
 
     /** Mode name constant. */
+    public static final Object MODE_LLMS_TXT = "llmstxt";
+
+    /** Mode name constant. */
     public static final Object MODE_ROBOTS_TXT = "robotstxt";
 
     /** Mode name constant. */
