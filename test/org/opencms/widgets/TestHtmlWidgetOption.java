@@ -32,7 +32,6 @@ import org.junit.jupiter.api.Order;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 

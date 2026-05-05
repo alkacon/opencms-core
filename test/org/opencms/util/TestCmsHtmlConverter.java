@@ -29,7 +29,7 @@ package org.opencms.util;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestEnvironment;
 
 import java.io.File;
 
@@ -133,7 +133,7 @@ public class TestCmsHtmlConverter extends OpenCmsJupiterTestCase {
             CmsHtmlConverter.PARAM_WORD + ";" + CmsHtmlConverter.PARAM_XHTML);
 
         // read a file and convert it
-        File inputfile = new File(OpenCmsTestCase.getTestDataPath("test2.html"));
+        File inputfile = new File(OpenCmsTestEnvironment.getTestDataPath("test2.html"));
         byte[] htmlInput = CmsFileUtil.readFile(inputfile);
         String outputContent = converter.convertToString(htmlInput);
         System.out.println(outputContent);

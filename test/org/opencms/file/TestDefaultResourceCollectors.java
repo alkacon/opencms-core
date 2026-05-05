@@ -32,67 +32,27 @@ import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests the default resource collectors.<p>
  */
-public class TestDefaultResourceCollectors extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestDefaultResourceCollectors(String arg0) {
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestDefaultResourceCollectors.class.getName());
-
-        suite.addTest(new TestDefaultResourceCollectors("testCollectSingleFile"));
-        suite.addTest(new TestDefaultResourceCollectors("testCollectAllInFolder"));
-        suite.addTest(new TestDefaultResourceCollectors("testCollectAllInFolderDateReleasedDesc"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                CmsObject cms = setupOpenCms(null, null, false);
-                try {
-                    initResources(cms);
-                } catch (CmsException exc) {
-                    fail(exc.getMessage());
-                }
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestDefaultResourceCollectors extends OpenCmsJupiterTestCase {
 
     /**
      * Initializes the resources needed for the tests.<p>
@@ -116,10 +76,52 @@ public class TestDefaultResourceCollectors extends OpenCmsTestCase {
     }
 
     /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
+     */
+    @Override
+    protected String getImportFolder() {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
+     */
+    @Override
+    protected String getTargetFolder() {
+
+        return null;
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getPublish()
+     */
+    @Override
+    protected boolean getPublish() {
+
+        return false;
+    }
+
+    /**
+     * Initializes the test resources after OpenCms setup.<p>
+     */
+    @BeforeAll
+    public void setUpResources() {
+
+        try {
+            initResources(getCmsObject());
+        } catch (CmsException exc) {
+            fail(exc.getMessage());
+        }
+    }
+
+    /**
      * Tests the "singleFile" resource collector.<p>
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testCollectSingleFile() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -137,6 +139,8 @@ public class TestDefaultResourceCollectors extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testCollectAllInFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -162,6 +166,8 @@ public class TestDefaultResourceCollectors extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testCollectAllInFolderDateReleasedDesc() throws Throwable {
 
         CmsObject cms = getCmsObject();

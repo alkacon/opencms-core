@@ -35,7 +35,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -54,14 +53,14 @@ import java.util.Locale;
 @org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
 public class TestCmsXmlContentResourceBundlesGerman extends OpenCmsJupiterTestCase {
 
-    
+
 
     /**
      * Test suite for this test class.<p>
      *
      * @return the test suite
      */
-    
+
 
     /**
      * Tests whether the bundle messages are correct.<p>

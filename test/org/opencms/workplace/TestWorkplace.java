@@ -32,7 +32,6 @@ import org.junit.jupiter.api.Order;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 import org.opencms.workplace.galleries.CmsAjaxDownloadGallery;

@@ -45,7 +45,6 @@ import org.opencms.relations.CmsRelationType;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.staticexport.CmsLinkTable.LinkKeyComparator;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -97,7 +96,7 @@ public class TestCmsXmlContentLinks extends OpenCmsJupiterTestCase {
     /** The current VFS prefix as added to internal links according to the configuration in opencms-importexport.xml. */
     private String m_vfsPrefix;
 
-    
+
 
     /**
      * Compares two link objects.<p>
@@ -163,7 +162,7 @@ public class TestCmsXmlContentLinks extends OpenCmsJupiterTestCase {
      *
      * @return the test suite
      */
-    
+
 
     /**
      * Initializes all schema definitions.<p>

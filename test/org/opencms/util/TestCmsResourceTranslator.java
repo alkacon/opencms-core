@@ -28,7 +28,7 @@
 package org.opencms.util;
 
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestEnvironment;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -57,13 +57,13 @@ public class TestCmsResourceTranslator extends OpenCmsJupiterTestCase {
         "s#/default/vfs/system/workplace/css/(.*)#/default/vfs/system/workplace/resources/$1#",
         "s#/default/vfs/system/workplace/templates/js/(.*)#/default/vfs/system/workplace/scripts/$1#",
         "s#[\\s]+#_#g",
-        "s#[" + OpenCmsTestCase.C_AUML_LOWER + "]#ae#g",
-        "s#[" + OpenCmsTestCase.C_AUML_UPPER + "]#Ae#g",
-        "s#[" + OpenCmsTestCase.C_OUML_LOWER + "]#oe#g",
-        "s#[" + OpenCmsTestCase.C_OUML_UPPER + "]#Oe#g",
-        "s#[" + OpenCmsTestCase.C_UUML_LOWER + "]#ue#g",
-        "s#[" + OpenCmsTestCase.C_UUML_UPPER + "]#Ue#g",
-        "s#[" + OpenCmsTestCase.C_SHARP_S + "]#ss#g",
+        "s#[" + OpenCmsTestEnvironment.C_AUML_LOWER + "]#ae#g",
+        "s#[" + OpenCmsTestEnvironment.C_AUML_UPPER + "]#Ae#g",
+        "s#[" + OpenCmsTestEnvironment.C_OUML_LOWER + "]#oe#g",
+        "s#[" + OpenCmsTestEnvironment.C_OUML_UPPER + "]#Oe#g",
+        "s#[" + OpenCmsTestEnvironment.C_UUML_LOWER + "]#ue#g",
+        "s#[" + OpenCmsTestEnvironment.C_UUML_UPPER + "]#Ue#g",
+        "s#[" + OpenCmsTestEnvironment.C_SHARP_S + "]#ss#g",
         "s#[^0-9a-zA-Z_\\.\\-\\/]#!#g",
         "s#!+#x#g"};
 
@@ -95,11 +95,11 @@ public class TestCmsResourceTranslator extends OpenCmsJupiterTestCase {
         translator = new CmsResourceTranslator(rules, true);
         test = translator.translateResource(
             "Sch"
-                + OpenCmsTestCase.C_OUML_LOWER
+                + OpenCmsTestEnvironment.C_OUML_LOWER
                 + "ne "
-                + OpenCmsTestCase.C_UUML_UPPER
+                + OpenCmsTestEnvironment.C_UUML_UPPER
                 + "bung mit Fu"
-                + OpenCmsTestCase.C_SHARP_S
+                + OpenCmsTestEnvironment.C_SHARP_S
                 + ".js");
         assertEquals("Schoene_Uebung_mit_Fuss.js", test);
     }

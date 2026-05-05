@@ -31,7 +31,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestEnvironment;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -85,7 +85,7 @@ public class TestCmsXmlEntityResolver extends OpenCmsJupiterTestCase {
         cms.writeFile(schemaFile);
 
         // create a new xml content article with the updated schema
-        cms.createResource(xmlContentUri, OpenCmsTestCase.ARTICLE_TYPEID);
+        cms.createResource(xmlContentUri, OpenCmsTestEnvironment.ARTICLE_TYPEID);
         CmsFile xmlContentFile = cms.readFile(xmlContentUri);
         CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms, xmlContentFile);
 

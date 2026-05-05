@@ -36,77 +36,36 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
 import java.util.Iterator;
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit tests for VFS permissions.<p>
  */
-public class TestDeletion extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestDeletion(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestDeletion.class.getName());
-
-        suite.addTest(new TestDeletion("testGroupDeletion"));
-        suite.addTest(new TestDeletion("testDeleteFolderAfterMove"));
-        suite.addTest(new TestDeletion("testDeleteFolderAfterMoveWithLock"));
-        suite.addTest(new TestDeletion("testDeleteFolderAfterDeleteWithLock"));
-        suite.addTest(new TestDeletion("testAdvancedGroupDeletion"));
-        suite.addTest(new TestDeletion("testUserDeletion"));
-        suite.addTest(new TestDeletion("testDeleteFolderWithUnvisibleResources"));
-        suite.addTest(new TestDeletion("testDeleteFolderWithLockedSiblings"));
-        suite.addTest(new TestDeletion("testDeleteFolderWithLockedResources"));
-        suite.addTest(new TestDeletion("testDeleteWithoutWritePermissions"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestDeletion extends OpenCmsJupiterTestCase {
 
     /**
      * Tests an advanced group deletion.<p>
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testAdvancedGroupDeletion() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -179,6 +138,8 @@ public class TestDeletion extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(4)
     public void testDeleteFolderAfterDeleteWithLock() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -214,6 +175,8 @@ public class TestDeletion extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(2)
     public void testDeleteFolderAfterMove() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -244,6 +207,8 @@ public class TestDeletion extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(3)
     public void testDeleteFolderAfterMoveWithLock() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -285,6 +250,8 @@ public class TestDeletion extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(9)
     public void testDeleteFolderWithLockedResources() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -329,6 +296,8 @@ public class TestDeletion extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(8)
     public void testDeleteFolderWithLockedSiblings() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -372,6 +341,8 @@ public class TestDeletion extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(7)
     public void testDeleteFolderWithUnvisibleResources() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -410,6 +381,8 @@ public class TestDeletion extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(10)
     public void testDeleteWithoutWritePermissions() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -446,9 +419,9 @@ public class TestDeletion extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
 
         assertEquals(
-            "there missing files after deletion try",
             files,
-            cms.readResources(folder, CmsResourceFilter.ALL, true).size());
+            cms.readResources(folder, CmsResourceFilter.ALL, true).size(),
+            "there missing files after deletion try");
     }
 
     /**
@@ -456,6 +429,8 @@ public class TestDeletion extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testGroupDeletion() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -481,6 +456,8 @@ public class TestDeletion extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testUserDeletion() throws Throwable {
 
         CmsObject cms = getCmsObject();

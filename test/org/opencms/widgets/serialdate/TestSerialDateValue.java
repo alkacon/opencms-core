@@ -38,7 +38,6 @@ import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekOfMonth;
 import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsUUID;
 
 import java.util.Date;

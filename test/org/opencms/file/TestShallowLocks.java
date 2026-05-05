@@ -31,7 +31,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,55 +39,42 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import junit.framework.Test;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test cases for shallow locks.
  */
-public class TestShallowLocks extends OpenCmsTestCase {
-
-    /**
-     * Creates a new test instance.
-     *
-     * @param name the test name
-     */
-    public TestShallowLocks(String name) {
-
-        super(name);
-
-    }
-
-    /**
-     * Creates the test suite.
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        return generateSetupTestWrapper(TestShallowLocks.class, "simpletest", "/");
-    }
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestShallowLocks extends OpenCmsJupiterTestCase {
 
     /**
      * Test case.
      *
      * @throws Exception
      */
+    @Test
     public void testGetBlockingResources() throws Exception {
 
         CmsObject cms = getCmsObject();
-        CmsResource file = makeTestFile(cms, "/testGetBlockingResources/folder/file.txt");
+        makeTestFile(cms, "/testGetBlockingResources/folder/file.txt");
         cms.lockResourceShallow(cms.readResource("/testGetBlockingResources"));
         CmsObject otherCms = OpenCms.initCmsObject(cms);
         setupUsers();
         otherCms.loginUser("Beta", "beta");
         otherCms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-        List<CmsResource> b1 = otherCms.getBlockingLockedResources("/testGetBlockingResources");
+        otherCms.getBlockingLockedResources("/testGetBlockingResources");
         List<CmsResource> blocking = otherCms.getBlockingLockedResources("/testGetBlockingResources/folder");
         assertEquals(
-            "Folder with shallow lock should not appear as a blocking resource for its children",
             0,
-            blocking.size());
-
+            blocking.size(),
+            "Folder with shallow lock should not appear as a blocking resource for its children");
     }
 
     /**
@@ -95,6 +82,7 @@ public class TestShallowLocks extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testLockType() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -108,13 +96,14 @@ public class TestShallowLocks extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testPublish() throws Exception {
 
         CmsObject cms = getCmsObject();
 
         CmsProject tempProject = cms.createTempfileProject();
         cms.getRequestContext().setCurrentProject(tempProject);
-        CmsResource tb = makeTestFile(cms, "/testPublish/file.txt");
+        makeTestFile(cms, "/testPublish/file.txt");
         cms.lockResourceShallow(cms.readResource("/testPublish"));
         assertLock(cms, "/testPublish", CmsLockType.SHALLOW);
         OpenCms.getPublishManager().publishProject(cms);
@@ -123,7 +112,7 @@ public class TestShallowLocks extends OpenCmsTestCase {
 
         tempProject = cms.createTempfileProject();
         cms.getRequestContext().setCurrentProject(tempProject);
-        tb = makeTestFile(cms, "/testPublish2/subfolder/file.txt");
+        makeTestFile(cms, "/testPublish2/subfolder/file.txt");
         cms.lockResourceShallow(cms.readResource("/testPublish2/subfolder"));
         assertLock(cms, "/testPublish2/subfolder", CmsLockType.SHALLOW);
         OpenCms.getPublishManager().publishProject(cms);
@@ -136,6 +125,7 @@ public class TestShallowLocks extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testShallowLockBasic() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -145,7 +135,7 @@ public class TestShallowLocks extends OpenCmsTestCase {
         String filePath = "/testShallowLockBasic/folder/file.txt";
         otherCms.loginUser("Beta", "beta");
         otherCms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-        CmsResource testfile1 = makeTestFile(cms, filePath);
+        makeTestFile(cms, filePath);
         CmsResource folder = cms.readResource(folderPath);
         CmsResource file = cms.readResource(filePath);
         cms.lockResourceShallow(folder);
@@ -160,6 +150,7 @@ public class TestShallowLocks extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testShallowLockBasic2() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -169,7 +160,7 @@ public class TestShallowLocks extends OpenCmsTestCase {
         String filePath = "/testShallowLockBasic2/folder/file.txt";
         otherCms.loginUser("Beta", "beta");
         otherCms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-        CmsResource testfile1 = makeTestFile(cms, filePath);
+        makeTestFile(cms, filePath);
         CmsResource folder = cms.readResource(folderPath);
         CmsResource file = cms.readResource(filePath);
         cms.lockResourceShallow(folder);
@@ -183,6 +174,7 @@ public class TestShallowLocks extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testShallowLockBasic3() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -192,7 +184,7 @@ public class TestShallowLocks extends OpenCmsTestCase {
         String filePath = "/testShallowLockBasic3/folder/file.txt";
         otherCms.loginUser("Beta", "beta");
         otherCms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-        CmsResource testfile1 = makeTestFile(cms, filePath);
+        makeTestFile(cms, filePath);
         CmsResource folder = cms.readResource(folderPath);
         CmsResource file = cms.readResource(filePath);
         cms.lockResource(folder);
@@ -206,10 +198,11 @@ public class TestShallowLocks extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testShallowLockDoesNotAllowDelete() throws Exception {
 
         CmsObject cms = getCmsObject();
-        CmsResource file = makeTestFile(cms, "/testShallowLockDoesNotAllowDelete/file.txt");
+        makeTestFile(cms, "/testShallowLockDoesNotAllowDelete/file.txt");
         cms.lockResourceShallow(cms.readResource("/testShallowLockDoesNotAllowDelete"));
         assertThrows(
             "Shallow lock should not allow delete operations",
@@ -221,10 +214,11 @@ public class TestShallowLocks extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testShallowLockDoesNotAllowMove() throws Exception {
 
         CmsObject cms = getCmsObject();
-        CmsResource file = makeTestFile(cms, "/testShallowLockDoesNotAllowMove/file.txt");
+        makeTestFile(cms, "/testShallowLockDoesNotAllowMove/file.txt");
         cms.lockResourceShallow(cms.readResource("/testShallowLockDoesNotAllowMove"));
         assertThrows(
             "Shallow lock should not allow move operations",
@@ -236,6 +230,7 @@ public class TestShallowLocks extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testShallowLockOnFolderDoesNotOverrideChildLock() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -245,7 +240,7 @@ public class TestShallowLocks extends OpenCmsTestCase {
         String filePath = "/testShallowLockOnFolderDoesNotOverrideChildLock/folder/file.txt";
         otherCms.loginUser("Beta", "beta");
         otherCms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-        CmsResource testfile1 = makeTestFile(cms, filePath);
+        makeTestFile(cms, filePath);
         CmsResource folder = cms.readResource(folderPath);
         CmsResource file = cms.readResource(filePath);
         otherCms.lockResource(file);
@@ -260,6 +255,7 @@ public class TestShallowLocks extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testUnlock() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -279,10 +275,10 @@ public class TestShallowLocks extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testUpgradeLockFails() throws Exception {
 
         CmsObject cms = getCmsObject();
-        // CmsResource testFolder = ensureTestFolder(cms);
         CmsResource tb = makeTestFile(cms, "testUpgradeLock");
         cms.lockResourceShallow(tb);
         assertThrows("Trying to normally lock a shallow-locked folder should fail.", () -> cms.lockResource(tb));
@@ -293,6 +289,7 @@ public class TestShallowLocks extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testWriteProps() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -349,7 +346,7 @@ public class TestShallowLocks extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();
         try {
-            CmsUser user = cms.readUser("Beta");
+            cms.readUser("Beta");
         } catch (Exception e) {
             cms.createUser("Beta", "beta", "desc", new HashMap<>());
             cms.addUserToGroup("Beta", "Administrators");
@@ -369,7 +366,5 @@ public class TestShallowLocks extends OpenCmsTestCase {
         cms.writePropertyObjects(cms.readResource(path), Arrays.asList(new CmsProperty("Title", s, null)));
         cms.readPropertyObject(path, "Title", false);
         assertEquals(s, cms.readPropertyObject(path, "Title", false).getStructureValue());
-
     }
-
 }

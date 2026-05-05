@@ -48,7 +48,7 @@ import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrResultList;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestEnvironment;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsStringUtil;
 
@@ -111,7 +111,7 @@ public class TestSimpleSearch extends OpenCmsJupiterTestCase {
     public void testFolderAndCategoryRestrictions() throws CmsException {
 
         CmsObject cms = OpenCms.initCmsObject(getCmsObject());
-        org.opencms.test.OpenCmsTestCase.importModule(cms, "org.opencms.test.modules.listtype");
+        OpenCmsTestEnvironment.importModule(cms, "org.opencms.test.modules.listtype");
 
         // All with category 1
         Set<String> result = searchForConfig(cms, "list_00001.xml");

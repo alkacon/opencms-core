@@ -32,49 +32,42 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit test for the "readFileHeader" method of the CmsObject to test the release and expiration date.<p>
  *
  */
-public class TestReadResource extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestReadResource(String arg0) {
-
-        super(arg0);
-    }
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestReadResource extends OpenCmsJupiterTestCase {
 
     /**
      * Test readResource of a file after its expirationrelease date.<p>
      *
-     * @param tc the OpenCmsTestCase
      * @param cms the CmsObject
      * @param resource1 the resource to touch
      * @param filter the filter to use
      * @throws Throwable if something goes wrong
      */
-    public static void readAfterExpirationDate(
-        OpenCmsTestCase tc,
-        CmsObject cms,
-        String resource1,
-        CmsResourceFilter filter)
+    private void readAfterExpirationDate(CmsObject cms, String resource1, CmsResourceFilter filter)
     throws Throwable {
 
-        tc.storeResources(cms, resource1);
+        storeResources(cms, resource1);
 
         // preperation, modify the expiration date
         CmsFile preperationRes = cms.readFile(resource1, CmsResourceFilter.ALL);
@@ -102,20 +95,15 @@ public class TestReadResource extends OpenCmsTestCase {
     /**
      * Test readResource of a file before its release date.<p>
      *
-     * @param tc the OpenCmsTestCase
      * @param cms the CmsObject
      * @param resource1 the resource to touch
      * @param filter the filter to use
      * @throws Throwable if something goes wrong
      */
-    public static void readBeforeReleaseDate(
-        OpenCmsTestCase tc,
-        CmsObject cms,
-        String resource1,
-        CmsResourceFilter filter)
+    private void readBeforeReleaseDate(CmsObject cms, String resource1, CmsResourceFilter filter)
     throws Throwable {
 
-        tc.storeResources(cms, resource1);
+        storeResources(cms, resource1);
 
         // preperation, modify the release date
         CmsFile preperationRes = cms.readFile(resource1, CmsResourceFilter.ALL);
@@ -143,20 +131,15 @@ public class TestReadResource extends OpenCmsTestCase {
     /**
      * Test readResource of a file in its valid time range.<p>
      *
-     * @param tc the OpenCmsTestCase
      * @param cms the CmsObject
      * @param resource1 the resource to touch
      * @param filter the filter to use
      * @throws Throwable if something goes wrong
      */
-    public static void readInValidTimeRange(
-        OpenCmsTestCase tc,
-        CmsObject cms,
-        String resource1,
-        CmsResourceFilter filter)
+    private void readInValidTimeRange(CmsObject cms, String resource1, CmsResourceFilter filter)
     throws Throwable {
 
-        tc.storeResources(cms, resource1);
+        storeResources(cms, resource1);
 
         // preperation, modify the expiration date
         CmsFile preperationRes = cms.readFile(resource1, CmsResourceFilter.ALL);
@@ -177,47 +160,8 @@ public class TestReadResource extends OpenCmsTestCase {
         }
     }
 
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestReadResource.class.getName());
-
-        suite.addTest(new TestReadResource("testReadBeforeReleaseDate"));
-        suite.addTest(new TestReadResource("testReadInValidTimeRange"));
-        suite.addTest(new TestReadResource("testReadAfterExpirationDate"));
-        suite.addTest(new TestReadResource("testReadBeforeReleaseDateIgnore"));
-        suite.addTest(new TestReadResource("testReadInValidTimeRangeIgnore"));
-        suite.addTest(new TestReadResource("testReadAfterExpirationDateIgnore"));
-        suite.addTest(new TestReadResource("testReadWithResourceID"));
-        suite.addTest(new TestReadResource("testReadWithWrongResourceID"));
-        suite.addTest(new TestReadResource("testReadFileWithResourceID"));
-        suite.addTest(new TestReadResource("testExcludeType"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
-
+    @Test
+    @Order(10)
     public void testExcludeType() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -245,11 +189,13 @@ public class TestReadResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testReadAfterExpirationDate() throws Throwable {
 
         CmsObject cms = getCmsObject();
         echo("Testing readFileHeader of a file after the expiration date");
-        readAfterExpirationDate(this, cms, "/folder1/page2.html", CmsResourceFilter.DEFAULT);
+        readAfterExpirationDate(cms, "/folder1/page2.html", CmsResourceFilter.DEFAULT);
     }
 
     /**
@@ -258,11 +204,13 @@ public class TestReadResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testReadAfterExpirationDateIgnore() throws Throwable {
 
         CmsObject cms = getCmsObject();
         echo("Testing readFileHeader of a file after the expiration date, ignoring valid timerange");
-        readAfterExpirationDate(this, cms, "/folder1/page2.html", CmsResourceFilter.ALL);
+        readAfterExpirationDate(cms, "/folder1/page2.html", CmsResourceFilter.ALL);
     }
 
     /**
@@ -270,11 +218,13 @@ public class TestReadResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testReadBeforeReleaseDate() throws Throwable {
 
         CmsObject cms = getCmsObject();
         echo("Testing readFileHeader of a file before the release date");
-        readBeforeReleaseDate(this, cms, "/folder1/page1.html", CmsResourceFilter.DEFAULT);
+        readBeforeReleaseDate(cms, "/folder1/page1.html", CmsResourceFilter.DEFAULT);
     }
 
     /**
@@ -283,11 +233,13 @@ public class TestReadResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testReadBeforeReleaseDateIgnore() throws Throwable {
 
         CmsObject cms = getCmsObject();
         echo("Testing readFileHeader of a file before the release date, ignoring valid timerange");
-        readBeforeReleaseDate(this, cms, "/folder1/page1.html", CmsResourceFilter.ALL);
+        readBeforeReleaseDate(cms, "/folder1/page1.html", CmsResourceFilter.ALL);
     }
 
     /**
@@ -295,6 +247,8 @@ public class TestReadResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something is wrong
      */
+    @Test
+    @Order(9)
     public void testReadFileWithResourceID() throws Throwable {
 
         String path = "/folder1/subfolder11/index.html";
@@ -328,11 +282,13 @@ public class TestReadResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testReadInValidTimeRange() throws Throwable {
 
         CmsObject cms = getCmsObject();
         echo("Testing readFileHeader of a file in its valid time range");
-        readInValidTimeRange(this, cms, "/folder1/page3.html", CmsResourceFilter.DEFAULT);
+        readInValidTimeRange(cms, "/folder1/page3.html", CmsResourceFilter.DEFAULT);
     }
 
     /**
@@ -341,11 +297,13 @@ public class TestReadResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testReadInValidTimeRangeIgnore() throws Throwable {
 
         CmsObject cms = getCmsObject();
         echo("Testing readFileHeader of a file in its valid time range, ignoring valid timerange");
-        readInValidTimeRange(this, cms, "/folder1/page3.html", CmsResourceFilter.ALL);
+        readInValidTimeRange(cms, "/folder1/page3.html", CmsResourceFilter.ALL);
     }
 
     /**
@@ -353,6 +311,8 @@ public class TestReadResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(7)
     public void testReadWithResourceID() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -392,6 +352,8 @@ public class TestReadResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(8)
     public void testReadWithWrongResourceID() throws Throwable {
 
         CmsObject cms = getCmsObject();

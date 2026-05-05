@@ -32,21 +32,20 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestCase;
-import org.junit.jupiter.api.Disabled;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestEnvironment;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
 import java.util.Iterator;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.BeforeEach;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestResourceStorage;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 
@@ -58,16 +57,18 @@ import org.opencms.test.OpenCmsTestResourceStorage;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestChacc extends OpenCmsJupiterTestCase {
 
-    private OpenCmsTestCase tc = new OpenCmsTestCase("helper");
+    private final OpenCmsTestEnvironment tc = new OpenCmsTestEnvironment("helper");
 
     @BeforeEach
     public void setupStorage() throws Exception {
+
         tc.createStorage("chaccFolderGroup");
         tc.switchStorage("chaccFolderGroup");
     }
 
     @Override
     public CmsObject getCmsObject() {
+
         try {
             CmsObject cms = super.getCmsObject();
             cms.loginUser("Admin", "admin");
@@ -84,12 +85,12 @@ public class TestChacc extends OpenCmsJupiterTestCase {
      *
      * @param arg0 JUnit parameters
      */
-    
+
 
     /**
      * Test the chacc method on a file and a group.<p>
      *
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to change permissions
      * @param group the group to change the permissions from
@@ -98,7 +99,7 @@ public class TestChacc extends OpenCmsJupiterTestCase {
      * @throws Throwable if something goes wrong
      */
     public static void chaccFileGroup(
-        OpenCmsTestCase tc,
+        OpenCmsTestEnvironment tc,
         CmsObject cms,
         String resource1,
         CmsGroup group,
@@ -139,10 +140,10 @@ public class TestChacc extends OpenCmsJupiterTestCase {
         tc.assertAcl(cms, resource1, group.getId(), permission);
     }
 
-    /**
+     /**
      * Test the chacc method on a file and a user.<p>
      *
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to change permissions
      * @param user the user to change the permissions from
@@ -151,7 +152,7 @@ public class TestChacc extends OpenCmsJupiterTestCase {
      * @throws Throwable if something goes wrong
      */
     public static void chaccFileUser(
-        OpenCmsTestCase tc,
+        OpenCmsTestEnvironment tc,
         CmsObject cms,
         String resource1,
         CmsUser user,
@@ -192,10 +193,10 @@ public class TestChacc extends OpenCmsJupiterTestCase {
         tc.assertAcl(cms, resource1, user.getId(), permission);
     }
 
-    /**
+     /**
      * Test the chacc method on a file and a group.<p>
      *
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to change permissions
      * @param group the group to change the permissions from
@@ -204,7 +205,7 @@ public class TestChacc extends OpenCmsJupiterTestCase {
      * @throws Throwable if something goes wrong
      */
     public static void chaccFolderGroup(
-        OpenCmsTestCase tc,
+        OpenCmsTestEnvironment tc,
         CmsObject cms,
         String resource1,
         CmsGroup group,
@@ -275,7 +276,7 @@ public class TestChacc extends OpenCmsJupiterTestCase {
      *
      * @return the test suite
      */
-    
+
 
     /**
      * Test the creation and deletion of access control entries and checks permissions of a test user.<p>
@@ -317,7 +318,7 @@ public class TestChacc extends OpenCmsJupiterTestCase {
         cms.lockResource(resName);
         tc.assertTrue(cms.hasPermissions(cms.readResource(resName), permissions));
         tc.assertTrue(cms.hasPermissions(cms.readResource("/folder2/index.html"), permissions));
-        tc.assertFalse(cms.hasPermissions(cms.readResource("/folder1/"), permissions));
+        assertFalse(cms.hasPermissions(cms.readResource("/folder1/"), permissions));
         cms.unlockResource(resName);
 
         // switch back to Admin user and remove ACE
@@ -331,7 +332,7 @@ public class TestChacc extends OpenCmsJupiterTestCase {
 
         cms.loginUser("testuser", "test");
         cms.getRequestContext().setCurrentProject(offline);
-        tc.assertFalse(cms.hasPermissions(cms.readResource(resName), CmsPermissionSet.ACCESS_WRITE));
+        assertFalse(cms.hasPermissions(cms.readResource(resName), CmsPermissionSet.ACCESS_WRITE));
 
         cms.loginUser("Admin", "admin");
         cms.getRequestContext().setCurrentProject(offline);
@@ -343,7 +344,7 @@ public class TestChacc extends OpenCmsJupiterTestCase {
 
         // re-check permissions of test user after removing ACE
         cms.loginUser("testuser", "test");
-        tc.assertFalse(cms.hasPermissions(cms.readResource(resName), permissions));
+        assertFalse(cms.hasPermissions(cms.readResource(resName), permissions));
     }
 
     /**
@@ -535,12 +536,10 @@ public class TestChacc extends OpenCmsJupiterTestCase {
      *
      * @throws Throwable if something goes wrong
      */
-    @Test
-    @Disabled("TODO: This test is not working correctly so far!")
-    @org.junit.jupiter.api.Order(6)
     public void testChaccFolderGroup() throws Throwable {
 
-        //TODO: This test is not working correctly so far!
+        // TODO: This test is not working correctly so far!
+        // The JUnit 3 source carried this TODO and omitted the method from suite(), so the migration keeps it unannotated.
         CmsObject cms = getCmsObject();
         echo("Testing chacc on a folder and a group");
         chaccFolderGroup(

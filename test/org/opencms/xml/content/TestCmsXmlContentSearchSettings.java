@@ -33,7 +33,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -65,14 +64,14 @@ public class TestCmsXmlContentSearchSettings extends OpenCmsJupiterTestCase {
     /** The schema id. */
     private static final String SCHEMA_SYSTEM_ID_2 = "http://www.opencms.org/xmlcontent-searchsettings.xsd";
 
-    
+
 
     /**
      * Test suite for this test class.<p>
      *
      * @return the test suite
      */
-    
+
 
     /**
      * Test unmarshalling an XML content from a String.<p>

@@ -34,7 +34,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.EndType;
 import org.opencms.acacia.shared.I_CmsSerialDateValue.WeekDay;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 
 import java.util.ArrayList;
 import java.util.Calendar;

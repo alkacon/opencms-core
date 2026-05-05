@@ -34,7 +34,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -69,7 +68,7 @@ public class TestCmsXmlContent extends OpenCmsJupiterTestCase {
     /** The schema id. */
     private static final String SCHEMA_SYSTEM_ID_1 = "http://www.opencms.org/test1.xsd";
 
-    
+
 
     /**
      * Test that reading a schema containing ampersands in the appinfo section doesn't cause errors.

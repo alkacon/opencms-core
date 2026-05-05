@@ -27,75 +27,53 @@
 
 package org.opencms.file;
 
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestEnvironment;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
 import java.util.Iterator;
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for the "touch" method of the CmsObject.<p>
  *
  */
-public class TestTouch extends OpenCmsTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestTouch extends OpenCmsJupiterTestCase {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public TestTouch(String arg0) {
+    @Override
+    protected String getImportFolder() {
 
-        super(arg0);
+        return "simpletest";
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
      */
-    public static Test suite() {
+    @Override
+    protected String getTargetFolder() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestTouch.class.getName());
-
-        suite.addTest(new TestTouch("testTouchFile"));
-        suite.addTest(new TestTouch("testTouchFolder"));
-        suite.addTest(new TestTouch("testTouchFolderRecursive"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        return "/";
     }
 
     /**
      * Test the touch method to touch a single resource.<p>
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to touch
      * @throws Throwable if something goes wrong
      */
-    public static void touchResource(OpenCmsTestCase tc, CmsObject cms, String resource1) throws Throwable {
+    public static void touchResource(OpenCmsTestEnvironment tc, CmsObject cms, String resource1) throws Throwable {
 
         tc.storeResources(cms, resource1);
 
@@ -118,12 +96,12 @@ public class TestTouch extends OpenCmsTestCase {
 
     /**
      * Test the touch method to touch a single folder.<p>
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to touch
      * @throws Throwable if something goes wrong
      */
-    public static void touchResources(OpenCmsTestCase tc, CmsObject cms, String resource1) throws Throwable {
+    public static void touchResources(OpenCmsTestEnvironment tc, CmsObject cms, String resource1) throws Throwable {
 
         tc.storeResources(cms, resource1);
 
@@ -158,12 +136,13 @@ public class TestTouch extends OpenCmsTestCase {
 
     /**
      * Test the touch method to touch a complete subtree.<p>
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to touch
      * @throws Throwable if something goes wrong
      */
-    public static void touchResourcesRecursive(OpenCmsTestCase tc, CmsObject cms, String resource1) throws Throwable {
+    public static void touchResourcesRecursive(OpenCmsTestEnvironment tc, CmsObject cms, String resource1)
+    throws Throwable {
 
         tc.storeResources(cms, resource1);
 
@@ -209,11 +188,13 @@ public class TestTouch extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testTouchFile() throws Throwable {
 
         CmsObject cms = getCmsObject();
         echo("Testing touch on file");
-        touchResource(this, cms, "/index.html");
+        touchResource(m_testEnvironment, cms, "/index.html");
     }
 
     /**
@@ -221,11 +202,13 @@ public class TestTouch extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testTouchFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();
         echo("Testing touch on a folder (without recursion)");
-        touchResources(this, cms, "/folder1/");
+        touchResources(m_testEnvironment, cms, "/folder1/");
     }
 
     /**
@@ -233,10 +216,12 @@ public class TestTouch extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testTouchFolderRecursive() throws Throwable {
 
         CmsObject cms = getCmsObject();
         echo("Testing touch on a folder (_with_ recursion)");
-        touchResourcesRecursive(this, cms, "/folder2/");
+        touchResourcesRecursive(m_testEnvironment, cms, "/folder2/");
     }
 }

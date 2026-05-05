@@ -39,7 +39,6 @@ import org.opencms.main.CmsEvent;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsResourceTranslator;
@@ -110,14 +109,14 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsJupiterTestCase
     /** The schema id. */
     private static final String SCHEMA_SYSTEM_ID_1 = "http://www.opencms.org/test1.xsd";
 
-    
+
 
     /**
      * Test suite for this test class.<p>
      *
      * @return the test suite
      */
-    
+
 
     /**
      * Test adding new nodes to the XML schema.<p>

@@ -29,7 +29,6 @@ package org.opencms.util;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 
 import java.util.Arrays;
 import java.util.HashMap;

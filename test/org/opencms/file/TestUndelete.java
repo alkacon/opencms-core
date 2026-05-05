@@ -30,82 +30,39 @@ package org.opencms.file;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSetCustom;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
 import java.util.Iterator;
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit test for the "undelete" method of the CmsObject.<p>
  */
-public class TestUndelete extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestUndelete(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestUndelete.class.getName());
-
-        suite.addTest(new TestUndelete("testUndeleteFile"));
-        suite.addTest(new TestUndelete("testUndeleteFileWrong"));
-        suite.addTest(new TestUndelete("testUndeleteSibling"));
-        suite.addTest(new TestUndelete("testUndeleteWithACE"));
-        suite.addTest(new TestUndelete("testUndeleteFolder"));
-        suite.addTest(new TestUndelete("testUndeleteFolderWrong"));
-        suite.addTest(new TestUndelete("testUndeleteFolderRecursive"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestUndelete extends OpenCmsJupiterTestCase {
 
     /**
      * Test the undelete method to undelete a file.<p>
      *
-     * @param tc the OpenCmsTestCase
      * @param cms the CmsObject
      * @param file the file to undelete
      *
      * @throws Throwable if something goes wrong
      */
-    public static void undeleteFile(OpenCmsTestCase tc, CmsObject cms, String file) throws Throwable {
+    private void undeleteFile(CmsObject cms, String file) throws Throwable {
 
-        tc.storeResources(cms, file);
+        storeResources(cms, file);
 
         long timestamp = System.currentTimeMillis();
         cms.lockResource(file);
@@ -113,29 +70,28 @@ public class TestUndelete extends OpenCmsTestCase {
         cms.unlockResource(file);
 
         // now evaluate the result
-        tc.assertFilter(cms, file, OpenCmsTestResourceFilter.FILTER_TOUCH);
+        assertFilter(cms, file, OpenCmsTestResourceFilter.FILTER_TOUCH);
         // project must be current project
-        tc.assertProject(cms, file, cms.getRequestContext().getCurrentProject());
+        assertProject(cms, file, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
-        tc.assertState(cms, file, CmsResource.STATE_CHANGED);
+        assertState(cms, file, CmsResource.STATE_CHANGED);
         // date last modified must be the date set in the undelete operation
-        tc.assertDateLastModifiedAfter(cms, file, timestamp);
+        assertDateLastModifiedAfter(cms, file, timestamp);
         // the user last modified must be the current user
-        tc.assertUserLastModified(cms, file, cms.getRequestContext().getCurrentUser());
+        assertUserLastModified(cms, file, cms.getRequestContext().getCurrentUser());
     }
 
     /**
      * Test the undelete method to undelete a single folder.<p>
      *
-     * @param tc the OpenCmsTestCase
      * @param cms the CmsObject
      * @param folder the folder to undelete
      *
      * @throws Throwable if something goes wrong
      */
-    public static void undeleteFolder(OpenCmsTestCase tc, CmsObject cms, String folder) throws Throwable {
+    private void undeleteFolder(CmsObject cms, String folder) throws Throwable {
 
-        tc.storeResources(cms, folder);
+        storeResources(cms, folder);
 
         long timestamp = System.currentTimeMillis();
         cms.lockResource(folder);
@@ -143,15 +99,15 @@ public class TestUndelete extends OpenCmsTestCase {
         cms.unlockResource(folder);
 
         // now evaluate the result
-        tc.assertFilter(cms, folder, OpenCmsTestResourceFilter.FILTER_TOUCH);
+        assertFilter(cms, folder, OpenCmsTestResourceFilter.FILTER_TOUCH);
         // project must be current project
-        tc.assertProject(cms, folder, cms.getRequestContext().getCurrentProject());
+        assertProject(cms, folder, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
-        tc.assertState(cms, folder, CmsResource.STATE_CHANGED);
+        assertState(cms, folder, CmsResource.STATE_CHANGED);
         // date last modified must be the date set in the tough operation
-        tc.assertDateLastModifiedAfter(cms, folder, timestamp);
+        assertDateLastModifiedAfter(cms, folder, timestamp);
         // the user last modified must be the current user
-        tc.assertUserLastModified(cms, folder, cms.getRequestContext().getCurrentUser());
+        assertUserLastModified(cms, folder, cms.getRequestContext().getCurrentUser());
 
         // evaluate all subresources
         List subresources = cms.readResources(folder, CmsResourceFilter.ALL);
@@ -161,22 +117,21 @@ public class TestUndelete extends OpenCmsTestCase {
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
             String resName = cms.getSitePath(res);
-            tc.assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_EQUAL);
+            assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_EQUAL);
         }
     }
 
     /**
      * Test the undelete method to undelete a complete subtree.<p>
      *
-     * @param tc the OpenCmsTestCase
      * @param cms the CmsObject
      * @param folder the folder to undelete
      *
      * @throws Throwable if something goes wrong
      */
-    public static void undeleteFolderRecursive(OpenCmsTestCase tc, CmsObject cms, String folder) throws Throwable {
+    private void undeleteFolderRecursive(CmsObject cms, String folder) throws Throwable {
 
-        tc.storeResources(cms, folder);
+        storeResources(cms, folder);
 
         long timestamp = System.currentTimeMillis();
         cms.lockResource(folder);
@@ -184,15 +139,15 @@ public class TestUndelete extends OpenCmsTestCase {
         cms.unlockResource(folder);
 
         // now evaluate the result
-        tc.assertFilter(cms, folder, OpenCmsTestResourceFilter.FILTER_TOUCH);
+        assertFilter(cms, folder, OpenCmsTestResourceFilter.FILTER_TOUCH);
         // project must be current project
-        tc.assertProject(cms, folder, cms.getRequestContext().getCurrentProject());
+        assertProject(cms, folder, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
-        tc.assertState(cms, folder, CmsResource.STATE_CHANGED);
+        assertState(cms, folder, CmsResource.STATE_CHANGED);
         // date last modified must be the date set in the undelete operation
-        tc.assertDateLastModifiedAfter(cms, folder, timestamp);
+        assertDateLastModifiedAfter(cms, folder, timestamp);
         // the user last modified must be the current user
-        tc.assertUserLastModified(cms, folder, cms.getRequestContext().getCurrentUser());
+        assertUserLastModified(cms, folder, cms.getRequestContext().getCurrentUser());
 
         // evaluate all subresources
         List subresources = cms.readResources(folder, CmsResourceFilter.ALL);
@@ -203,15 +158,15 @@ public class TestUndelete extends OpenCmsTestCase {
             CmsResource res = (CmsResource)i.next();
             String resName = cms.getSitePath(res);
             // now evaluate the result
-            tc.assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_TOUCH);
+            assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_TOUCH);
             // project must be current project
-            tc.assertProject(cms, resName, cms.getRequestContext().getCurrentProject());
+            assertProject(cms, resName, cms.getRequestContext().getCurrentProject());
             // state must be "changed"
-            tc.assertState(cms, resName, CmsResource.STATE_CHANGED);
+            assertState(cms, resName, CmsResource.STATE_CHANGED);
             // date last modified must be the date set in the undelete operation
-            tc.assertDateLastModifiedAfter(cms, resName, timestamp);
+            assertDateLastModifiedAfter(cms, resName, timestamp);
             // the user last modified must be the current user
-            tc.assertUserLastModified(cms, resName, cms.getRequestContext().getCurrentUser());
+            assertUserLastModified(cms, resName, cms.getRequestContext().getCurrentUser());
         }
     }
 
@@ -220,6 +175,8 @@ public class TestUndelete extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testUndeleteFile() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -230,7 +187,7 @@ public class TestUndelete extends OpenCmsTestCase {
         cms.deleteResource(resourceName, CmsResource.DELETE_PRESERVE_SIBLINGS);
         cms.unlockResource(resourceName);
 
-        undeleteFile(this, cms, resourceName);
+        undeleteFile(cms, resourceName);
     }
 
     /**
@@ -238,6 +195,8 @@ public class TestUndelete extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testUndeleteWithACE() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -275,6 +234,8 @@ public class TestUndelete extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testUndeleteFileWrong() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -295,6 +256,8 @@ public class TestUndelete extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testUndeleteFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -305,7 +268,7 @@ public class TestUndelete extends OpenCmsTestCase {
         cms.deleteResource(folderName, CmsResource.DELETE_PRESERVE_SIBLINGS);
         cms.unlockResource(folderName);
 
-        undeleteFolder(this, cms, folderName);
+        undeleteFolder(cms, folderName);
     }
 
     /**
@@ -313,6 +276,8 @@ public class TestUndelete extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(7)
     public void testUndeleteFolderRecursive() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -323,7 +288,7 @@ public class TestUndelete extends OpenCmsTestCase {
         cms.deleteResource(folderName, CmsResource.DELETE_PRESERVE_SIBLINGS);
         cms.unlockResource(folderName);
 
-        undeleteFolderRecursive(this, cms, folderName);
+        undeleteFolderRecursive(cms, folderName);
     }
 
     /**
@@ -331,6 +296,8 @@ public class TestUndelete extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testUndeleteFolderWrong() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -357,6 +324,8 @@ public class TestUndelete extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testUndeleteSibling() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -379,7 +348,7 @@ public class TestUndelete extends OpenCmsTestCase {
         storeResources(cms, siblingName);
         long timestamp = System.currentTimeMillis();
 
-        undeleteFile(this, cms, resourceName);
+        undeleteFile(cms, resourceName);
 
         // now evaluate the result
         assertFilter(cms, siblingName, OpenCmsTestResourceFilter.FILTER_TOUCH);

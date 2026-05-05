@@ -37,7 +37,6 @@ import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
 import java.util.HashSet;
@@ -54,7 +53,7 @@ import java.util.Locale;
 @org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
 public class TestRoles extends OpenCmsJupiterTestCase {
 
-    
+
 
     /**
      * Test suite for this test class.<p>
@@ -62,7 +61,7 @@ public class TestRoles extends OpenCmsJupiterTestCase {
      *
      * @return the test suite
      */
-    
+
 
     /**
      * Check the given message.<p>

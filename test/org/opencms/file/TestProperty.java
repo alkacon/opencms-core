@@ -37,7 +37,6 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestEnvironment;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
@@ -59,7 +58,7 @@ import java.util.Map;
 @org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
 public class TestProperty extends OpenCmsJupiterTestCase {
 
-    
+
 
     /**
      * Test the writeProperty method to create a list of properties.<p>
@@ -194,13 +193,6 @@ public class TestProperty extends OpenCmsJupiterTestCase {
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    
-
-    /**
      * Test the writeProperty method with a list of properties.<p>
      * @param tc the OpenCms test environment
      * @param cms the CmsObject
@@ -242,39 +234,6 @@ public class TestProperty extends OpenCmsJupiterTestCase {
      * @throws Throwable if something goes wrong
      */
     public static void writeProperty(OpenCmsTestEnvironment tc, CmsObject cms, String resource1, CmsProperty property1)
-    throws Throwable {
-
-        tc.storeResources(cms, resource1);
-
-        long timestamp = System.currentTimeMillis();
-
-        cms.lockResource(resource1);
-        cms.writePropertyObject(resource1, property1);
-        cms.unlockResource(resource1);
-
-        // now evaluate the result
-        tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
-        // project must be current project
-        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
-        // state must be "changed"
-        tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
-        // date last modified must be after the test timestamp
-        tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
-        // the user last modified must be the current user
-        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
-        // the property must have the new value
-        tc.assertPropertyChanged(cms, resource1, property1);
-    }
-
-    /**
-     * Test the writeProperty method with one property.<p>
-     * @param tc the OpenCmsTestCase
-     * @param cms the CmsObject
-     * @param resource1 the resource to write a propery
-     * @param property1 the property to write
-     * @throws Throwable if something goes wrong
-     */
-    public static void writeProperty(OpenCmsTestCase tc, CmsObject cms, String resource1, CmsProperty property1)
     throws Throwable {
 
         tc.storeResources(cms, resource1);
@@ -370,10 +329,10 @@ public class TestProperty extends OpenCmsJupiterTestCase {
         byte[] content = new byte[0];
 
         // resource 27 is article (xml content) with default properties
-        cms.createResource(resourcename, OpenCmsTestCase.ARTICLE_TYPEID, content, null);
+        cms.createResource(resourcename, OpenCmsTestEnvironment.ARTICLE_TYPEID, content, null);
 
         // ensure created resource type
-        assertEquals(OpenCmsTestCase.ARTICLE_TYPEID, cms.readResource(resourcename).getTypeId());
+        assertEquals(OpenCmsTestEnvironment.ARTICLE_TYPEID, cms.readResource(resourcename).getTypeId());
         // project must be current project
         assertProject(cms, resourcename, cms.getRequestContext().getCurrentProject());
         // state must be "new"

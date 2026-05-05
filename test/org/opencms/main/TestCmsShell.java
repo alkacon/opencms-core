@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 import org.opencms.file.CmsObject;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestEnvironment;
 import org.opencms.util.CmsFileUtil;
 
 import java.io.ByteArrayOutputStream;
@@ -301,7 +301,7 @@ public class TestCmsShell extends OpenCmsJupiterTestCase {
      */
     private void restoreConfiguration() {
 
-        String sourceDir = getTestDataPath("WEB-INF/config." + OpenCmsTestCase.getDbProduct() + "/");
+        String sourceDir = getTestDataPath("WEB-INF/config." + OpenCmsTestEnvironment.getDbProduct() + "/");
         String targetDir = getTestDataPath("WEB-INF/" + CmsSystemInfo.FOLDER_CONFIG_DEFAULT);
         File configDir = new File(targetDir);
         File configSourceDir = new File(sourceDir);

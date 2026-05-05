@@ -37,80 +37,37 @@ import org.opencms.main.CmsPermalinkResourceHandler;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit tests for move/rename operation.<p>
  */
-public class TestMoveRename extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestMoveRename(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestMoveRename.class.getName());
-
-        suite.addTest(new TestMoveRename("testMoveToDeletedFolder"));
-        suite.addTest(new TestMoveRename("testPublishDeletedFolderWithMovedResource"));
-        suite.addTest(new TestMoveRename("testPermaLink"));
-        suite.addTest(new TestMoveRename("testMoveSingleResource"));
-        suite.addTest(new TestMoveRename("testMoveSingleNewResource"));
-        suite.addTest(new TestMoveRename("testMultipleMoveResource"));
-        suite.addTest(new TestMoveRename("testMoveFolderToOwnSubfolder"));
-        suite.addTest(new TestMoveRename("testOverwriteMovedResource"));
-        suite.addTest(new TestMoveRename("testMoveTargetWithoutPermissions"));
-        suite.addTest(new TestMoveRename("testMoveDeleted"));
-        suite.addTest(new TestMoveRename("testMoveDeletedWithSubfolders"));
-        suite.addTest(new TestMoveRename("testMoveSourceWithoutReadPermissions"));
-        suite.addTest(new TestMoveRename("testMoveSourceWithoutWritePermissions"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestMoveRename extends OpenCmsJupiterTestCase {
 
     /**
      * Tests to move a folder with deleted subresources.<p>
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(10)
     public void testMoveDeleted() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -169,6 +126,8 @@ public class TestMoveRename extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(11)
     public void testMoveDeletedWithSubfolders() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -236,6 +195,8 @@ public class TestMoveRename extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(7)
     public void testMoveFolderToOwnSubfolder() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -260,6 +221,8 @@ public class TestMoveRename extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testMoveSingleNewResource() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -306,6 +269,8 @@ public class TestMoveRename extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testMoveSingleResource() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -351,6 +316,8 @@ public class TestMoveRename extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(12)
     public void testMoveSourceWithoutReadPermissions() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -386,9 +353,9 @@ public class TestMoveRename extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
 
         assertEquals(
-            "there missing files after moving",
             files,
-            cms.readResources(destinationFolder, CmsResourceFilter.ALL, true).size());
+            cms.readResources(destinationFolder, CmsResourceFilter.ALL, true).size(),
+            "there missing files after moving");
     }
 
     /**
@@ -396,6 +363,8 @@ public class TestMoveRename extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(13)
     public void testMoveSourceWithoutWritePermissions() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -436,9 +405,9 @@ public class TestMoveRename extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
 
         assertEquals(
-            "there missing files after moving",
             files,
-            cms.readResources(folder, CmsResourceFilter.ALL, true).size());
+            cms.readResources(folder, CmsResourceFilter.ALL, true).size(),
+            "there missing files after moving");
     }
 
     /**
@@ -446,6 +415,8 @@ public class TestMoveRename extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(9)
     public void testMoveTargetWithoutPermissions() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -491,6 +462,8 @@ public class TestMoveRename extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(1)
     public void testMoveToDeletedFolder() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -522,6 +495,8 @@ public class TestMoveRename extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testMultipleMoveResource() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -589,6 +564,8 @@ public class TestMoveRename extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(8)
     public void testOverwriteMovedResource() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -663,6 +640,8 @@ public class TestMoveRename extends OpenCmsTestCase {
      *
      * @throws Throwable if the test fails
      */
+    @Test
+    @Order(3)
     public void testPermaLink() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -702,6 +681,8 @@ public class TestMoveRename extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(2)
     public void testPublishDeletedFolderWithMovedResource() throws Exception {
 
         CmsObject cms = getCmsObject();

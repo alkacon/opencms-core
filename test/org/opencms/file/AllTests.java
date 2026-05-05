@@ -27,10 +27,8 @@
 
 package org.opencms.file;
 
-import org.opencms.test.OpenCmsTestProperties;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Main test suite for the package <code>{@link org.opencms.file}</code>.<p>
@@ -38,68 +36,51 @@ import junit.framework.TestSuite;
  *
  * @since 6.0
  */
-@org.junit.runner.RunWith(org.junit.runners.AllTests.class)
-public final class AllTests {
-
-    /**
-     * Hide constructor to prevent generation of class instances.<p>
-     */
-    private AllTests() {
-
-        // empty
-    }
-
-    /**
-     * Returns the JUnit test suite for this package.<p>
-     *
-     * @return the JUnit test suite for this package
-     */
-    public static Test suite() {
-
-        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        //$JUnit-BEGIN$
-        // suite.addTest(TestAvailability.suite());
-        // suite.addTest(TestChacc.suite());
-        suite.addTest(TestChangeProperties.suite());
-        suite.addTest(TestChflags.suite());
-        suite.addTest(TestChtype.suite());
-        // suite.addTest(TestConcurrentOperations.suite());
-        suite.addTest(TestCopy.suite());
-        suite.addTest(TestCreateWriteResource.suite());
-        suite.addTest(TestDefaultResourceCollectors.suite());
-        suite.addTest(TestDeletion.suite());
-        suite.addTest(TestExists.suite());
-        suite.addTest(TestGroupOperations.suite());
-        suite.addTest(TestHistory.suite());
-        suite.addTest(TestLinkValidation.suite());
-        suite.addTest(TestLock.suite());
-        suite.addTest(TestShallowLocks.suite());
-        suite.addTest(TestMoveRename.suite());
-        suite.addTest(TestMoveRename2.suite());
-        suite.addTest(TestMoveRename3.suite());
-        suite.addTest(TestPermissions.suite());
-        suite.addTest(TestProjectHistory.suite());
-        suite.addTest(TestProjects.suite());
-        // suite.addTest(TestProperty.suite());
-        suite.addTest(TestPropertyDefinition.suite());
-        suite.addTest(TestPublishing.suite());
-        suite.addTest(TestPublishIssues.suite());
-        suite.addTest(TestReadResource.suite());
-        suite.addTest(TestReadResourceTree.suite());
-        suite.addTest(TestReplace.suite());
-        suite.addTest(TestResourceFilter.suite());
-        suite.addTest(TestResourceOperations.suite());
-        suite.addTest(TestRestoreFromHistory.suite());
-        suite.addTest(TestSiblings.suite());
-        suite.addTest(TestTouch.suite());
-        suite.addTest(TestUndelete.suite());
-        suite.addTest(TestUndoChanges.suite());
-        suite.addTest(TestUser.suite());
-        suite.addTest(TestLinkRewriter.suite());
-        suite.addTest(TestOnlineFolder.suite());
-        suite.addTest(TestFolderSize.suite());
-        //$JUnit-END$
-        return suite;
-    }
-}
+@Suite
+@SelectClasses({
+    // Order MUST mirror the deleted AllTests.suite() exactly.
+    // Hidden cross-class state may depend on it; do NOT alphabetize.
+    TestAvailability.class,
+    TestChacc.class,
+    TestChangeProperties.class,
+    TestChflags.class,
+    TestChtype.class,
+    TestConcurrentOperations.class,
+    TestCopy.class,
+    TestCreateWriteResource.class,
+    TestDefaultResourceCollectors.class,
+    TestDeletion.class,
+    TestExists.class,
+    TestGroupOperations.class,
+    TestHistory.class,
+    TestLinkValidation.class,
+    TestLock.class,
+    TestShallowLocks.class,
+    TestMoveRename.class,
+    TestMoveRename2.class,
+    TestMoveRename3.class,
+    TestPermissions.class,
+    TestProjectHistory.class,
+    TestProjects.class,
+    TestProperty.class,
+    TestPropertyDefinition.class,
+    TestPublishing.class,
+    TestPublishIssues.class,
+    TestReadResource.class,
+    TestReadResourceTree.class,
+    TestReplace.class,
+    TestResourceFilter.class,
+    TestResourceOperations.class,
+    TestRestoreFromHistory.class,
+    TestSiblings.class,
+    TestTouch.class,
+    TestUndelete.class,
+    TestUndoChanges.class,
+    TestUser.class,
+    TestLinkRewriter.class,
+    TestOnlineFolder.class,
+    TestFolderSize.class,
+    // Not included in the legacy JUnit 3 package suite; appended after the legacy-ordered entries.
+    TestCounters.class,
+})
+public final class AllTests {}

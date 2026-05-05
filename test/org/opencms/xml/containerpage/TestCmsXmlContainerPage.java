@@ -44,7 +44,7 @@ import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestEnvironment;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlUtils;
@@ -412,8 +412,8 @@ public class TestCmsXmlContainerPage extends OpenCmsJupiterTestCase {
     public void testWriteNewFormat() throws Exception {
 
         CmsObject cms = getCmsObject();
-        OpenCmsTestCase.importCoreModule(cms, "org.opencms.base");
-        OpenCmsTestCase.importModule(cms, "test.containerpagev2");
+        OpenCmsTestEnvironment.importCoreModule(cms, "org.opencms.base");
+        OpenCmsTestEnvironment.importModule(cms, "test.containerpagev2");
         String origPage = "/subsitemap/page1.html";
         setNewPageFormatEnabled(cms, "/subsitemap/.content/.config", false);
         String copy1 = "/subsitemap/page1-copy.html";

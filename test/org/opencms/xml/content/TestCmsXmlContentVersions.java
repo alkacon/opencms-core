@@ -39,7 +39,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -67,7 +66,7 @@ public class TestCmsXmlContentVersions extends OpenCmsJupiterTestCase {
      */
     public TestCmsXmlContentVersions() {
 
-        
+
     }
 
 

@@ -39,7 +39,6 @@ import org.opencms.main.CmsEvent;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -57,14 +56,14 @@ import java.util.Locale;
 @org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
 public class TestCmsXmlContent75Features extends OpenCmsJupiterTestCase {
 
-    
+
 
     /**
      * Test suite for this test class.<p>
      *
      * @return the test suite
      */
-    
+
 
     /**
      * Test accessing the XML through a value wrapper.<p>

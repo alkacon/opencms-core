@@ -43,7 +43,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.twofactor.CmsSecondFactorInfo;
 import org.opencms.security.twofactor.CmsSecondFactorSetupInfo;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
 import java.util.HashMap;

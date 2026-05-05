@@ -33,7 +33,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -65,7 +64,7 @@ public class TestCmsXmlContentDefinition extends OpenCmsJupiterTestCase {
     /** The schema id. */
     private static final String SCHEMA_SYSTEM_ID_1B = "http://www.opencms.org/test1b.xsd";
 
-    
+
 
     /**
      * Basic test for xml content definitions.<p>

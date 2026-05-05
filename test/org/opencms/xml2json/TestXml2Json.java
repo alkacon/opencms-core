@@ -35,7 +35,7 @@ import org.opencms.json.JSONObject;
 import org.opencms.jsp.util.CmsJspJsonWrapper;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestEnvironment;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
@@ -175,7 +175,7 @@ public class TestXml2Json extends OpenCmsJupiterTestCase {
         }
         cms.createResource(folder, 0);
         I_CmsResourceType contentType = OpenCms.getResourceManager().getResourceType("xjparent");
-        CmsParameterConfiguration data = OpenCmsTestCase.readXmlTestData(getClass(), "custom-test.xml");
+        CmsParameterConfiguration data = OpenCmsTestEnvironment.readXmlTestData(getClass(), "custom-test.xml");
         String testFile = folder + "/test.xml";
         CmsResource testFileRes = cms.createResource(
             testFile,
@@ -315,7 +315,7 @@ public class TestXml2Json extends OpenCmsJupiterTestCase {
         }
         cms.createResource(folder, 0);
         I_CmsResourceType contentType = OpenCms.getResourceManager().getResourceType("xjparent");
-        CmsParameterConfiguration data = OpenCmsTestCase.readXmlTestData(getClass(), name);
+        CmsParameterConfiguration data = OpenCmsTestEnvironment.readXmlTestData(getClass(), name);
         String testFile = folder + "/test.xml";
         cms.createResource(testFile, contentType, data.get("input").trim().getBytes("UTF-8"), new ArrayList<>());
         String expected = new String(data.get("output").trim());
@@ -338,7 +338,7 @@ public class TestXml2Json extends OpenCmsJupiterTestCase {
      */
     protected void runRemoveTest(String name) throws Exception {
 
-        CmsParameterConfiguration data = OpenCmsTestCase.readXmlTestData(getClass(), name);
+        CmsParameterConfiguration data = OpenCmsTestEnvironment.readXmlTestData(getClass(), name);
         String inputJson = data.get("input");
         String path = data.get("path");
         String outputJson = data.get("output");

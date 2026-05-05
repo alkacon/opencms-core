@@ -40,7 +40,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
 
@@ -51,14 +50,14 @@ import org.opencms.test.OpenCmsTestProperties;
 @org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
 public class TestCmsPrincipal extends OpenCmsJupiterTestCase {
 
-    
+
 
     /**
      * Test suite for this test class.<p>
      *
      * @return the test suite
      */
-    
+
 
     /**
      * Tests basic principal read operation.<p>

@@ -36,7 +36,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestEnvironment;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -87,7 +87,7 @@ public class TestBaseModule extends OpenCmsJupiterTestCase {
         try {
             OpenCmsTestLogAppender.setBreakOnError(false);
 
-            File moduleZip = OpenCmsTestCase.createBaseModuleZip();
+            File moduleZip = OpenCmsTestEnvironment.createBaseModuleZip();
             CmsObject cms = getCmsObject();
             OpenCms.getModuleManager().replaceModule(
                 cms,

@@ -35,7 +35,6 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigurationBean;
 import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionsBean;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
 import java.util.ArrayList;

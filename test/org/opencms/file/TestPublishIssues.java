@@ -36,8 +36,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
@@ -45,9 +44,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit tests for special publish issues.<p>
@@ -55,62 +62,9 @@ import junit.framework.TestSuite;
 /**
  * Comment for <code>TestPermissions</code>.<p>
  */
-public class TestPublishIssues extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestPublishIssues(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestPublishIssues.class.getName());
-
-        suite.addTest(new TestPublishIssues("testPublishFolderWithNewFileFromOtherProject"));
-        suite.addTest(new TestPublishIssues("testPublishFolderWithChangedFileFromOtherProject"));
-        suite.addTest(new TestPublishIssues("testPublishFolderWithDeletedFileFromOtherProject"));
-        suite.addTest(new TestPublishIssues("testPublishScenarioA"));
-        suite.addTest(new TestPublishIssues("testPublishScenarioB"));
-        suite.addTest(new TestPublishIssues("testPublishScenarioC"));
-        suite.addTest(new TestPublishIssues("testMultipleProjectCreation"));
-        suite.addTest(new TestPublishIssues("testMultipleProjectCreationGalore"));
-        suite.addTest(new TestPublishIssues("testDirectPublishWithSiblings"));
-        suite.addTest(new TestPublishIssues("testPublishScenarioD"));
-        suite.addTest(new TestPublishIssues("testPublishScenarioE"));
-        suite.addTest(new TestPublishIssues("testPublishScenarioF"));
-        suite.addTest(new TestPublishIssues("testPublishScenarioG"));
-        suite.addTest(new TestPublishIssues("testPublishScenarioH"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestPublishIssues extends OpenCmsJupiterTestCase {
 
     /**
      * Tests publish scenario "publish all Siblings".<p>
@@ -122,6 +76,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(9)
     public void testDirectPublishWithSiblings() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -151,6 +107,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
+    @Order(7)
     public void testMultipleProjectCreation() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -222,6 +180,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
+    @Order(8)
     public void testMultipleProjectCreationGalore() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -241,6 +201,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testPublishFolderWithChangedFileFromOtherProject() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -291,6 +253,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testPublishFolderWithDeletedFileFromOtherProject() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -341,6 +305,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testPublishFolderWithNewFileFromOtherProject() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -406,6 +372,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testPublishScenarioA() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -497,6 +465,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testPublishScenarioB() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -561,6 +531,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testPublishScenarioC() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -613,6 +585,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(10)
     public void testPublishScenarioD() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -646,6 +620,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(11)
     public void testPublishScenarioE() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -701,6 +677,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(12)
     public void testPublishScenarioF() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -748,6 +726,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(13)
     public void testPublishScenarioG() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -797,6 +777,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(14)
     public void testPublishScenarioH() throws Throwable {
 
         CmsObject cms = getCmsObject();

@@ -93,10 +93,10 @@ public final class AllTests {
         // org.opencms.configuration migrated to JUnit 6: see org.opencms.test.AllJupiterTests
         suite.addTest(org.opencms.crypto.AllTests.suite());
         // org.opencms.db migrated to JUnit 6: see org.opencms.test.AllJupiterTests
-        suite.addTest(org.opencms.file.AllTests.suite());
-        suite.addTest(org.opencms.file.collectors.AllTests.suite());
-        suite.addTest(org.opencms.file.types.AllTests.suite());
-        suite.addTest(org.opencms.file.wrapper.AllTests.suite());
+        // org.opencms.file migrated to JUnit 6: see org.opencms.test.AllJupiterTests
+        // org.opencms.file.collectors migrated to JUnit 6: see org.opencms.test.AllJupiterTests
+        // org.opencms.file.types migrated to JUnit 6: see org.opencms.test.AllJupiterTests
+        // org.opencms.file.wrapper migrated to JUnit 6: see org.opencms.test.AllJupiterTests
         // org.opencms.flex migrated to JUnit 6: see org.opencms.test.AllJupiterTests
         suite.addTest(org.opencms.i18n.AllTests.suite());
         suite.addTest(org.opencms.importexport.AllTests.suite());

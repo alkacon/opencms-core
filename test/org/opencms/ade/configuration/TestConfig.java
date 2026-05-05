@@ -60,8 +60,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import junit.framework.ComparisonFailure;
+import org.opentest4j.AssertionFailedError;
 
 import com.google.common.collect.Lists;
 
@@ -1464,7 +1463,7 @@ public class TestConfig extends OpenCmsJupiterTestCase {
             return;
         }
         if ((path1 == null) || (path2 == null)) {
-            throw new ComparisonFailure("comparison failure", path1, path2);
+            throw new AssertionFailedError("comparison failure", path1, path2);
         }
         assertEquals(CmsStringUtil.joinPaths("/", path1, "/"), CmsStringUtil.joinPaths("/", path2, "/"));
     }

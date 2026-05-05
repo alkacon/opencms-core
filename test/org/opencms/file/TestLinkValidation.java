@@ -39,8 +39,8 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestEnvironment;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -54,29 +54,27 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Unit tests for OpenCms link validation.<p>
  */
-public class TestLinkValidation extends OpenCmsTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestLinkValidation extends OpenCmsJupiterTestCase {
 
     private static final int MODE_XMLCONTENT_BOTH = 1;
     private static final int MODE_XMLCONTENT_FILEREF_ONLY = 3;
     private static final int MODE_XMLCONTENT_HTML_ONLY = 2;
     private static final int MODE_XMLPAGE = 0;
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestLinkValidation(String arg0) {
-
-        super(arg0);
-    }
 
     /**
      * Sets the content of a resource.<p>
@@ -130,48 +128,12 @@ public class TestLinkValidation extends OpenCmsTestCase {
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestLinkValidation.class.getName());
-
-        suite.addTest(new TestLinkValidation("testInternalLinkValidation"));
-        suite.addTest(new TestLinkValidation("testLinkValidationXmlPages"));
-        suite.addTest(new TestLinkValidation("testLinkValidationXmlContents"));
-        suite.addTest(new TestLinkValidation("testLinkValidationXmlContentsHtml"));
-        suite.addTest(new TestLinkValidation("testLinkValidationXmlContentsFileRef"));
-        suite.addTest(new TestLinkValidation("testBrokenLinkFile"));
-        suite.addTest(new TestLinkValidation("testBrokenLinkFolder"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
-
-    /**
      * Test internal link validation.<p>
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testInternalLinkValidation() throws Throwable {
 
         echo("Testing internal link validation");
@@ -213,6 +175,8 @@ public class TestLinkValidation extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testBrokenLinkFile() throws Throwable {
 
         echo("Testing broken link issue with files");
@@ -268,6 +232,8 @@ public class TestLinkValidation extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(7)
     public void testBrokenLinkFolder() throws Throwable {
 
         echo("Testing broken link issue with folder");
@@ -350,6 +316,8 @@ public class TestLinkValidation extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testLinkValidationXmlContents() throws Throwable {
 
         echo("Testing link validation for xml contents with html and file references");
@@ -362,6 +330,8 @@ public class TestLinkValidation extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testLinkValidationXmlContentsFileRef() throws Throwable {
 
         echo("Testing link validation for xml contents with only file references");
@@ -374,6 +344,8 @@ public class TestLinkValidation extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testLinkValidationXmlContentsHtml() throws Throwable {
 
         echo("Testing link validation for xml contents with only html");
@@ -386,6 +358,8 @@ public class TestLinkValidation extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testLinkValidationXmlPages() throws Throwable {
 
         echo("Testing link validation for xml pages");
@@ -558,7 +532,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
         // create files
         int type;
         if (mode > MODE_XMLPAGE) {
-            type = OpenCmsTestCase.ARTICLE_TYPEID; // article
+            type = OpenCmsTestEnvironment.ARTICLE_TYPEID; // article
         } else {
             type = CmsResourceTypeXmlPage.getStaticTypeId();
         }

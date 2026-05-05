@@ -261,11 +261,13 @@ public abstract class OpenCmsJupiterTestCase {
     void logTestStart(TestInfo testInfo) {
 
         m_currentTestName = testInfo.getTestMethod().map(m -> m.getName()).orElse("unknown");
+        String displayName = testInfo.getDisplayName();
+        String logTestName = displayName.equals(m_currentTestName + "()") ? m_currentTestName : displayName;
         System.out.println();
         System.out.println();
         System.out.println(" +------------------------------------------------------------------------------");
         System.out.println(" | Running OpenCms test case:");
-        System.out.println(" | " + getClass().getName() + "#" + m_currentTestName);
+        System.out.println(" | " + getClass().getName() + "#" + logTestName);
         System.out.println(" +------------------------------------------------------------------------------");
         System.out.println();
         System.out.println();
@@ -330,14 +332,63 @@ public abstract class OpenCmsJupiterTestCase {
         m_testEnvironment.storeResources(cms, resourceName);
     }
 
+    public void storeResources(org.opencms.file.CmsObject cms, String resourceName, boolean storeSubresources) {
+
+        m_testEnvironment.storeResources(cms, resourceName, storeSubresources);
+    }
+
     public void assertFilter(org.opencms.file.CmsObject cms, String resourceName, org.opencms.test.OpenCmsTestResourceFilter filter) throws org.opencms.main.CmsException {
 
         m_testEnvironment.assertFilter(cms, resourceName, filter);
     }
 
+    public void assertFilter(
+        org.opencms.file.CmsObject cms,
+        org.opencms.file.CmsResource resource,
+        org.opencms.test.OpenCmsTestResourceFilter filter) {
+
+        m_testEnvironment.assertFilter(cms, resource, filter);
+    }
+
+    public void assertFilter(
+        org.opencms.file.CmsObject cms,
+        String resourceName1,
+        String resourceName2,
+        org.opencms.test.OpenCmsTestResourceFilter filter) {
+
+        m_testEnvironment.assertFilter(cms, resourceName1, resourceName2, filter);
+    }
+
     public void assertProject(org.opencms.file.CmsObject cms, String resourceName, org.opencms.file.CmsProject project) {
 
         m_testEnvironment.assertProject(cms, resourceName, project);
+    }
+
+    public void assertAce(
+        org.opencms.file.CmsObject cms,
+        String resourceName,
+        org.opencms.security.CmsAccessControlEntry ace) {
+
+        m_testEnvironment.assertAce(cms, resourceName, ace);
+    }
+
+    public void assertAcl(
+        org.opencms.file.CmsObject cms,
+        String resourceName,
+        org.opencms.util.CmsUUID principal,
+        org.opencms.security.CmsPermissionSet permission) {
+
+        m_testEnvironment.assertAcl(cms, resourceName, principal, permission);
+    }
+
+    public void assertAcl(
+        org.opencms.file.CmsObject cms,
+        String modifiedResource,
+        String resourceName,
+        org.opencms.util.CmsUUID principal,
+        org.opencms.security.CmsPermissionSet permission) {
+
+        m_testEnvironment.assertAcl(cms, modifiedResource, resourceName, principal, permission);
     }
 
     public void assertState(org.opencms.file.CmsObject cms, String resourceName, org.opencms.db.CmsResourceState state) {
@@ -355,9 +406,80 @@ public abstract class OpenCmsJupiterTestCase {
         m_testEnvironment.assertDateLastModifiedAfter(cms, resourceName, dateLastModified);
     }
 
+    public void assertDateLastModified(org.opencms.file.CmsObject cms, String resourceName, long dateLastModified) {
+
+        m_testEnvironment.assertDateLastModified(cms, resourceName, dateLastModified);
+    }
+
+    public void assertDateCreatedAfter(org.opencms.file.CmsObject cms, String resourceName, long dateCreated) {
+
+        m_testEnvironment.assertDateCreatedAfter(cms, resourceName, dateCreated);
+    }
+
+    public void assertDateCreated(org.opencms.file.CmsObject cms, String resourceName, long dateCreated) {
+
+        m_testEnvironment.assertDateCreated(cms, resourceName, dateCreated);
+    }
+
+    public void assertDateContent(org.opencms.file.CmsObject cms, String resourceName, long dateContent) {
+
+        m_testEnvironment.assertDateContent(cms, resourceName, dateContent);
+    }
+
+    public void assertDateContentAfter(org.opencms.file.CmsObject cms, String resourceName, long dateContent) {
+
+        m_testEnvironment.assertDateContentAfter(cms, resourceName, dateContent);
+    }
+
+    public void assertContent(org.opencms.file.CmsObject cms, String resourceName, byte[] content) {
+
+        m_testEnvironment.assertContent(cms, resourceName, content);
+    }
+
+    public void assertIsFolder(org.opencms.file.CmsObject cms, String resourceName) {
+
+        m_testEnvironment.assertIsFolder(cms, resourceName);
+    }
+
     public void assertUserLastModified(org.opencms.file.CmsObject cms, String resourceName, org.opencms.file.CmsUser user) {
 
         m_testEnvironment.assertUserLastModified(cms, resourceName, user);
+    }
+
+    public void assertUserCreated(org.opencms.file.CmsObject cms, String resourceName, org.opencms.file.CmsUser user) {
+
+        m_testEnvironment.assertUserCreated(cms, resourceName, user);
+    }
+
+    public void assertFlags(org.opencms.file.CmsObject cms, String resourceName, int flag) {
+
+        m_testEnvironment.assertFlags(cms, resourceName, flag);
+    }
+
+    public void assertResourceType(org.opencms.file.CmsObject cms, String resourceName, int resourceType) {
+
+        m_testEnvironment.assertResourceType(cms, resourceName, resourceType);
+    }
+
+    public void assertThrows(String message, OpenCmsTestEnvironment.CodeBlock block) {
+
+        m_testEnvironment.assertThrows(message, block);
+    }
+
+    public void assertVersion(org.opencms.file.CmsObject cms, String resourceName, int version) {
+
+        m_testEnvironment.assertVersion(cms, resourceName, version);
+    }
+
+    public void assertHistory(org.opencms.file.CmsObject cms, String resourceName, int versionCount) throws Exception {
+
+        m_testEnvironment.assertHistory(cms, resourceName, versionCount);
+    }
+
+    public void assertHistoryForRestored(org.opencms.file.CmsObject cms, String resourceName, int versionCount)
+    throws Exception {
+
+        m_testEnvironment.assertHistoryForRestored(cms, resourceName, versionCount);
     }
 
     public void assertPropertyNew(org.opencms.file.CmsObject cms, String resourceName, java.util.List<org.opencms.file.CmsProperty> excludeList) {
@@ -390,6 +512,21 @@ public abstract class OpenCmsJupiterTestCase {
         m_testEnvironment.assertPropertyChanged(cms, resourceName, property);
     }
 
+    public void assertPropertydefinitionExist(
+        org.opencms.file.CmsObject cms,
+        org.opencms.file.CmsPropertyDefinition propertyDefinition) {
+
+        m_testEnvironment.assertPropertydefinitionExist(cms, propertyDefinition);
+    }
+
+    public void assertPropertydefinitions(
+        org.opencms.file.CmsObject cms,
+        java.util.List propertyDefinitions,
+        org.opencms.file.CmsPropertyDefinition propertyDefinition) {
+
+        m_testEnvironment.assertPropertydefinitions(cms, propertyDefinitions, propertyDefinition);
+    }
+
 
     public void assertContains(String content, String pattern) {
 
@@ -404,6 +541,16 @@ public abstract class OpenCmsJupiterTestCase {
     public void switchStorage(String name) throws org.opencms.main.CmsException {
 
         m_testEnvironment.switchStorage(name);
+    }
+
+    public void setMapping(String source, String target) {
+
+        m_testEnvironment.setMapping(source, target);
+    }
+
+    public void resetMapping() {
+
+        m_testEnvironment.resetMapping();
     }
 
     public int getCurrentResourceStorageSize() {
@@ -431,6 +578,21 @@ public abstract class OpenCmsJupiterTestCase {
         m_testEnvironment.assertLock(cms, resourceName, lockType, user);
     }
 
+    public void assertModifiedInCurrentProject(CmsObject cms, String resourceName, boolean shouldHaveRedFlag) {
+
+        m_testEnvironment.assertModifiedInCurrentProject(cms, resourceName, shouldHaveRedFlag);
+    }
+
+    public void assertSiblingCount(CmsObject cms, String resourceName, int count) {
+
+        m_testEnvironment.assertSiblingCount(cms, resourceName, count);
+    }
+
+    public void assertSiblingCountIncremented(CmsObject cms, String resourceName, int increment) {
+
+        m_testEnvironment.assertSiblingCountIncremented(cms, resourceName, increment);
+    }
+
     public void assertDateReleased(CmsObject cms, String resourceName, long dateReleased) {
 
         m_testEnvironment.assertDateReleased(cms, resourceName, dateReleased);
@@ -452,6 +614,16 @@ public abstract class OpenCmsJupiterTestCase {
             }
             cms.deleteResource(path, org.opencms.file.CmsResource.DELETE_PRESERVE_SIBLINGS);
         }
+    }
+
+    /**
+     * Deletes a file from the RFS.<p>
+     *
+     * @param absolutePath the absolute path to delete
+     */
+    protected void deleteFile(String absolutePath) {
+
+        m_testEnvironment.deleteFile(absolutePath);
     }
 
     /**

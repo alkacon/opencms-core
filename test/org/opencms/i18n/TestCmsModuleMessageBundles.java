@@ -29,7 +29,7 @@ package org.opencms.i18n;
 
 import org.opencms.gwt.I_CmsClientMessageBundle;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestEnvironment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,7 +66,7 @@ public final class TestCmsModuleMessageBundles extends A_TestCmsMessageBundles {
     protected List<I_CmsClientMessageBundle> getTestClientMessageBundles() throws Exception {
 
         List<I_CmsClientMessageBundle> result = new ArrayList<I_CmsClientMessageBundle>();
-        List<String> classNames = OpenCmsTestCase.getClassNames();
+        List<String> classNames = OpenCmsTestEnvironment.getClassNames();
         for (String className : classNames) {
             if (className.endsWith("ClientMessages")) {
                 Class<?> cls = Class.forName(className);

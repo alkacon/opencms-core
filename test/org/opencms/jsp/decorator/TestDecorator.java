@@ -33,7 +33,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
 import java.util.Locale;

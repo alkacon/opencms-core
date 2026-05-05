@@ -51,7 +51,7 @@ import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestEnvironment;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
@@ -764,7 +764,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsJupiterTestCase {
 
         // create a new xml content article
         String xmlContentFile = "/xmlcontent/article_0005.html";
-        cms.createResource(xmlContentFile, OpenCmsTestCase.ARTICLE_TYPEID);
+        cms.createResource(xmlContentFile, OpenCmsTestEnvironment.ARTICLE_TYPEID);
 
         CmsFile file = cms.readFile(xmlContentFile);
         String content = new String(file.getContents(), CmsEncoder.ENCODING_UTF_8);
@@ -2797,7 +2797,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsJupiterTestCase {
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
 
         String filename = "xmlcontent.html";
-        CmsResource res = cms.createResource(filename, OpenCmsTestCase.ARTICLE_TYPEID);
+        CmsResource res = cms.createResource(filename, OpenCmsTestEnvironment.ARTICLE_TYPEID);
         CmsFile file = cms.readFile(res);
         String content = new String(file.getContents(), CmsEncoder.ENCODING_UTF_8);
         CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);

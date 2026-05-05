@@ -33,8 +33,7 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.test.I_CmsLogHandler;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -48,7 +47,16 @@ import java.util.TreeSet;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
-import junit.framework.Test;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test class for the CmsLinkRewriter class.<p>
@@ -56,7 +64,9 @@ import junit.framework.Test;
 /**
  *
  */
-public class TestLinkRewriter extends OpenCmsTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestLinkRewriter extends OpenCmsJupiterTestCase {
 
     /**
      * A log handler which detects whether an error message containing a given string is written to the log.<p>
@@ -105,25 +115,12 @@ public class TestLinkRewriter extends OpenCmsTestCase {
     }
 
     /**
-     * Creates a new test suite instance.<p>
-     *
-     * @param name test case init parameter
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public TestLinkRewriter(String name) {
+    @Override
+    protected String getImportFolder() {
 
-        super(name);
-
-    }
-
-    /**
-     * Returns the test suite.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        return generateSetupTestWrapper(TestLinkRewriter.class, "linkrewrite", "/");
+        return "linkrewrite";
     }
 
     /**
@@ -316,6 +313,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
     public void testAdjustWithMissingFile() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -345,6 +343,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
     public void testCopy() throws Exception {
 
         Set<String> expected = null;
@@ -365,6 +364,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
     public void testCopyToSite() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -389,6 +389,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
     public void testEncodingConversion() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -419,6 +420,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
     public void testFailIfTargetIsSubdirectory() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -440,6 +442,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
     public void testMultiCopy() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -466,6 +469,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
      * @throws Exception in case the test fails
      */
     @SuppressWarnings("deprecation")
+    @Test
     public void testNotAbort() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -520,6 +524,7 @@ public class TestLinkRewriter extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
     public void testVerifySetup() throws Exception {
 
         assertSetEquals(getBaseLinks("/system/base"), links("/system/base", "/system/base"));

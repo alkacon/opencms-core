@@ -42,7 +42,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;

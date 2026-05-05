@@ -27,71 +27,37 @@
 
 package org.opencms.file;
 
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * Unit test for the "chflags" method of the CmsObject.<p>
  *
  * @since 6.0 alpha 2
  */
-public class TestChflags extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestChflags(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestChflags.class.getName());
-
-        suite.addTest(new TestChflags("testAddFlagInternal"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestChflags extends OpenCmsJupiterTestCase {
 
     /**
      * Tests setting the "internal" flag on a resource.<p>
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testAddFlagInternal() throws Throwable {
 
-        CmsObject cms = getCmsObject();
+        final CmsObject cms = getCmsObject();
 
         echo("Tests setting the \"internal\" flag on a resource");
         addFlagInternal(this, cms);
@@ -100,11 +66,11 @@ public class TestChflags extends OpenCmsTestCase {
     /**
      * Tests setting the "internal" flag on a resource.<p>
      *
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCmsJupiterTestCase
      * @param cms the CmsObject
      * @throws Throwable if something goes wrong
      */
-    public static void addFlagInternal(OpenCmsTestCase tc, CmsObject cms) throws Throwable {
+    public static void addFlagInternal(OpenCmsJupiterTestCase tc, CmsObject cms) throws Throwable {
 
         String resource1 = "/index.html";
 

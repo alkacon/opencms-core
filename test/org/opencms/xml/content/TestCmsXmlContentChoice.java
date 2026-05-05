@@ -38,7 +38,6 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -67,14 +66,14 @@ public class TestCmsXmlContentChoice extends OpenCmsJupiterTestCase {
 
 
 
-    
+
 
     /**
      * Test suite for this test class.<p>
      *
      * @return the test suite
      */
-    
+
 
     /**
      * Tests a simple XML file validation for a schema that contains xsd:choice.<p>

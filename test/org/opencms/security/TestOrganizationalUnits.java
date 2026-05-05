@@ -51,7 +51,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsUUID;
 
@@ -69,7 +68,7 @@ import java.util.Locale;
 @org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
 public class TestOrganizationalUnits extends OpenCmsJupiterTestCase {
 
-    
+
 
     /**
      * Returns all organizational unit dependent roles.<p>
@@ -96,7 +95,7 @@ public class TestOrganizationalUnits extends OpenCmsJupiterTestCase {
      *
      * @return the test suite
      */
-    
+
 
     /**
      * Tests ou creation with illegal name.<p>

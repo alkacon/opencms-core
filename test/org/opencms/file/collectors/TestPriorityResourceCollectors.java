@@ -34,30 +34,28 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests the priority resource collectors.<p>
  */
-public class TestPriorityResourceCollectors extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestPriorityResourceCollectors(String arg0) {
-
-        super(arg0);
-    }
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestPriorityResourceCollectors extends OpenCmsJupiterTestCase {
 
     /**
      * Initializes the resources needed for the tests.<p>
@@ -156,43 +154,44 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public static Test suite() {
+    @Override
+    protected String getImportFolder() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+        return null;
+    }
 
-        TestSuite suite = new TestSuite();
-        suite.setName(TestPriorityResourceCollectors.class.getName());
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
+     */
+    @Override
+    protected String getTargetFolder() {
 
-        suite.addTest(new TestPriorityResourceCollectors("testCollectAllInFolderPriority"));
-        suite.addTest(new TestPriorityResourceCollectors("testCollectAllInFolderPriorityExcludeTimerange"));
-        suite.addTest(new TestPriorityResourceCollectors("testCollectAllInSubTreePriority"));
+        return null;
+    }
 
-        TestSetup wrapper = new TestSetup(suite) {
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getPublish()
+     */
+    @Override
+    protected boolean getPublish() {
 
-            @Override
-            protected void setUp() {
+        return false;
+    }
 
-                CmsObject cms = setupOpenCms(null, null, false);
-                try {
-                    initResources(cms);
-                } catch (CmsException exc) {
-                    exc.printStackTrace();
-                    fail(exc.getMessage());
-                }
-            }
+    /**
+     * Initializes the test resources after OpenCms setup.<p>
+     */
+    @BeforeAll
+    public void setUpResources() {
 
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        try {
+            initResources(getCmsObject());
+        } catch (CmsException exc) {
+            exc.printStackTrace();
+            fail(exc.getMessage());
+        }
     }
 
     /**
@@ -200,6 +199,8 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testCollectAllInFolderPriority() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -233,6 +234,8 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testCollectAllInFolderPriorityExcludeTimerange() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -280,6 +283,8 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testCollectAllInSubTreePriority() throws Throwable {
 
         CmsObject cms = getCmsObject();

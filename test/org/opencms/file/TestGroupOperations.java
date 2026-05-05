@@ -29,64 +29,54 @@ package org.opencms.file;
 
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit tests for basic group operations without test import.<p>
  */
-public class TestGroupOperations extends OpenCmsTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestGroupOperations extends OpenCmsJupiterTestCase {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public TestGroupOperations(String arg0) {
+    @Override
+    protected String getImportFolder() {
 
-        super(arg0);
+        return null;
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
      */
-    public static Test suite() {
+    @Override
+    protected String getTargetFolder() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+        return null;
+    }
 
-        TestSuite suite = new TestSuite();
-        suite.setName(TestGroupOperations.class.getName());
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getPublish()
+     */
+    @Override
+    protected boolean getPublish() {
 
-        suite.addTest(new TestGroupOperations("testGetUsersOfGroup"));
-        suite.addTest(new TestGroupOperations("testParentGroups"));
-        suite.addTest(new TestGroupOperations("testChildGroups"));
-        suite.addTest(new TestGroupOperations("testDeleteGroup"));
-        suite.addTest(new TestGroupOperations("testDeleteGroupWithChildren"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms(null, null, false);
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        return false;
     }
 
     /**
@@ -94,6 +84,8 @@ public class TestGroupOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testChildGroups() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -142,6 +134,8 @@ public class TestGroupOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testDeleteGroup() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -185,6 +179,8 @@ public class TestGroupOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testDeleteGroupWithChildren() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -217,6 +213,8 @@ public class TestGroupOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testGetUsersOfGroup() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -233,6 +231,8 @@ public class TestGroupOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testParentGroups() throws Throwable {
 
         CmsObject cms = getCmsObject();

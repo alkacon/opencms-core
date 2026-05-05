@@ -37,84 +37,38 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit tests for lock operation.<p>
  */
-public class TestLock extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestLock(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestLock.class.getName());
-
-        suite.addTest(new TestLock("testLockFilter"));
-        suite.addTest(new TestLock("testLockWithDeletedNewFiles"));
-        suite.addTest(new TestLock("testLockOtherUser"));
-        suite.addTest(new TestLock("testLockForFile"));
-        suite.addTest(new TestLock("testLockForFolder"));
-        suite.addTest(new TestLock("testLockForFolderPrelockedShared"));
-        suite.addTest(new TestLock("testLockForFolderPrelockedExclusive"));
-        suite.addTest(new TestLock("testLockSteal"));
-        suite.addTest(new TestLock("testLockRequired"));
-        suite.addTest(new TestLock("testLockInherit"));
-        suite.addTest(new TestLock("testLockForSiblings"));
-        suite.addTest(new TestLock("testLockForBaseOperations"));
-        suite.addTest(new TestLock("testCopyToLockedFolder"));
-        suite.addTest(new TestLock("testCreationInLockedFolder"));
-        suite.addTest(new TestLock("testTempFileCreationInLockedFolder"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestLock extends OpenCmsJupiterTestCase {
 
     /**
      * Tests copying a file to a folder locked by another user.<p>
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(13)
     public void testCopyToLockedFolder() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -145,6 +99,8 @@ public class TestLock extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(14)
     public void testCreationInLockedFolder() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -170,6 +126,8 @@ public class TestLock extends OpenCmsTestCase {
      *
      * @throws Throwable is something goes wrong
      */
+    @Test
+    @Order(1)
     public void testLockFilter() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -197,6 +155,8 @@ public class TestLock extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(12)
     public void testLockForBaseOperations() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -240,6 +200,8 @@ public class TestLock extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testLockForFile() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -273,6 +235,8 @@ public class TestLock extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testLockForFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -329,6 +293,8 @@ public class TestLock extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(7)
     public void testLockForFolderPrelockedExclusive() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -391,6 +357,8 @@ public class TestLock extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testLockForFolderPrelockedShared() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -470,6 +438,8 @@ public class TestLock extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(11)
     public void testLockForSiblings() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -543,6 +513,8 @@ public class TestLock extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(10)
     public void testLockInherit() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -568,6 +540,8 @@ public class TestLock extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testLockOtherUser() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -603,6 +577,8 @@ public class TestLock extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(9)
     public void testLockRequired() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -772,6 +748,8 @@ public class TestLock extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(8)
     public void testLockSteal() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -883,6 +861,8 @@ public class TestLock extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testLockWithDeletedNewFiles() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -913,6 +893,8 @@ public class TestLock extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(15)
     public void testTempFileCreationInLockedFolder() throws Exception {
 
         CmsObject cms = getCmsObject();

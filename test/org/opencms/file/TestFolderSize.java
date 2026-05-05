@@ -32,7 +32,7 @@ import org.opencms.file.quota.CmsFolderSizeEntry;
 import org.opencms.file.quota.CmsFolderSizeOptions;
 import org.opencms.file.quota.CmsFolderSizeTracker;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -41,28 +41,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import junit.framework.Test;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests for features related to measuring folder sizes.
  */
-public class TestFolderSize extends OpenCmsTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestFolderSize extends OpenCmsJupiterTestCase {
 
-    public TestFolderSize(String name) {
-
-        super(name);
-    }
-
-    /**
-     * Returns the test suite.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        return generateSetupTestWrapper(TestFolderSize.class, "simpletest", "/");
-    }
-
+    @Test
     public void testDelete() throws Exception {
 
         CmsFolderSizeTracker tracker = OpenCms.getFolderSizeTracker(false);
@@ -90,6 +84,7 @@ public class TestFolderSize extends OpenCmsTestCase {
         assertEquals(100, tracker.getTotalFolderSize("/sites/default/" + folder));
     }
 
+    @Test
     public void testExtendedFolderName() throws Exception {
 
         byte[] data = new byte[100];
@@ -104,9 +99,9 @@ public class TestFolderSize extends OpenCmsTestCase {
                 false,
                 true));
         assertEquals(0, entries.stream().collect(Collectors.summingLong(entry -> entry.getSize())).longValue());
-
     }
 
+    @Test
     public void testFolderSize() throws Exception {
 
         byte[] data = new byte[100];
@@ -129,9 +124,9 @@ public class TestFolderSize extends OpenCmsTestCase {
         assertEquals(
             data.length,
             entries.stream().filter(entry -> entry.getRootPath().endsWith("subfolder/")).findFirst().get().getSize());
-
     }
 
+    @Test
     public void testSingleSize() throws Exception {
 
         byte[] data = new byte[100];
@@ -160,9 +155,9 @@ public class TestFolderSize extends OpenCmsTestCase {
         assertEquals(
             data.length,
             entries.stream().filter(entry -> entry.getRootPath().endsWith("subfolder/")).findFirst().get().getSize());
-
     }
 
+    @Test
     public void testTracker() throws Exception {
 
         byte[] data = new byte[100];
@@ -197,12 +192,14 @@ public class TestFolderSize extends OpenCmsTestCase {
         assertEquals(100, tracker.getTotalFolderSizeExclusive(folders.get(3), folders));
     }
 
+    @Test
     public void testTrackerInterval() throws Exception {
 
         CmsFolderSizeTracker tracker = OpenCms.getFolderSizeTracker(false);
         assertEquals(1000, tracker.getTimerInterval());
     }
 
+    @Test
     public void testTrackerOnline() throws Exception {
 
         byte[] data = new byte[100];
@@ -232,9 +229,9 @@ public class TestFolderSize extends OpenCmsTestCase {
         OpenCms.getPublishManager().waitWhileRunning();
         tracker.processUpdates();
         assertEquals(400, tracker.getTotalFolderSize(folders.get(0)));
-
     }
 
+    @Test
     public void testTrackerReportMethod() throws Exception {
 
         byte[] data = new byte[100];
@@ -272,7 +269,5 @@ public class TestFolderSize extends OpenCmsTestCase {
         assertEquals(100, beta.getTreeSizeExclusive());
         assertEquals(100, ext.getTreeSize());
         assertEquals(100, ext.getTreeSizeExclusive());
-
     }
-
 }

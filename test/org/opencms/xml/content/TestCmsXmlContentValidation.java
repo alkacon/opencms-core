@@ -38,7 +38,6 @@ import org.opencms.main.CmsEvent;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -56,14 +55,14 @@ import java.util.Locale;
 public class TestCmsXmlContentValidation extends OpenCmsJupiterTestCase {
 	final String SCHEMA_SYSTEM_ID = "dummy://xmlcontent-definition-testregex.xsd";
 
-	
+
 
 	/**
 	 * Test suite for this test class.<p>
 	 *
 	 * @return the test suite
 	 */
-	
+
 
 	@Test
     @Order(2)

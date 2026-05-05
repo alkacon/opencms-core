@@ -32,8 +32,8 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestEnvironment;
 import org.opencms.test.OpenCmsTestResourceFilter;
 import org.opencms.test.OpenCmsTestResourceStorage;
 import org.opencms.util.CmsStringUtil;
@@ -41,81 +41,50 @@ import org.opencms.util.CmsStringUtil;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  *
  */
-public class TestUndoChanges extends OpenCmsTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestUndoChanges extends OpenCmsJupiterTestCase {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public TestUndoChanges(String arg0) {
+    @Override
+    protected String getImportFolder() {
 
-        super(arg0);
+        return "simpletest";
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
      */
-    public static Test suite() {
+    @Override
+    protected String getTargetFolder() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestUndoChanges.class.getName());
-
-        suite.addTest(new TestUndoChanges("testUndoChangesResource"));
-        suite.addTest(new TestUndoChanges("testUndoChangesOnNewResource"));
-        suite.addTest(new TestUndoChanges("testUndoChangesFolder"));
-        suite.addTest(new TestUndoChanges("testUndoChangesFolderRecursive"));
-        suite.addTest(new TestUndoChanges("testUndoChangesAfterCopyNewOverDeleted"));
-        suite.addTest(new TestUndoChanges("testUndoChangesAfterCopySiblingOverDeleted"));
-        suite.addTest(new TestUndoChanges("testUndoChangesWithAce"));
-        suite.addTest(new TestUndoChanges("testUndoChangesSharedProperty"));
-        suite.addTest(new TestUndoChanges("testUndoChangesMove"));
-        suite.addTest(new TestUndoChanges("testUndoChangesMoveContent"));
-        suite.addTest(new TestUndoChanges("testUndoChangesMovedFolder"));
-        suite.addTest(new TestUndoChanges("testUndoChangesMovedFolderAfterEdit"));
-        suite.addTest(new TestUndoChanges("testUndoChangesMovedFolderNewFile"));
-        suite.addTest(new TestUndoChanges("testUndoChangesSubfolderAfterMoving"));
-        suite.addTest(new TestUndoChanges("testUndoChangesMovedFileAfterEdit"));
-        suite.addTest(new TestUndoChanges("testUndoChangesScenario1"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        return "/";
     }
 
     /**
      * Test the touch method to touch a single resource.<p>
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to touch
      * @throws Throwable if something goes wrong
      */
-    public static void undoChanges(OpenCmsTestCase tc, CmsObject cms, String resource1) throws Throwable {
+    public static void undoChanges(OpenCmsTestEnvironment tc, CmsObject cms, String resource1) throws Throwable {
 
         // create a global storage and store the resource
         tc.createStorage("undoChanges");
@@ -145,12 +114,12 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
     /**
      *  Test undoChanges method to a single folder.<p>
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to touch
      * @throws Throwable if something goes wrong
      */
-    public static void undoChangesFolder(OpenCmsTestCase tc, CmsObject cms, String resource1) throws Throwable {
+    public static void undoChangesFolder(OpenCmsTestEnvironment tc, CmsObject cms, String resource1) throws Throwable {
 
         // create a global storage and store the resource
         tc.createStorage("undoChanges");
@@ -206,12 +175,12 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
     /**
      * Test undoChanges method to a single folder and all resources within the folder.<p>
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to touch
      * @throws Throwable if something goes wrong
      */
-    public static void undoChangesFolderRecursive(OpenCmsTestCase tc, CmsObject cms, String resource1)
+    public static void undoChangesFolderRecursive(OpenCmsTestEnvironment tc, CmsObject cms, String resource1)
     throws Throwable {
 
         // create a global storage and store the resource
@@ -264,6 +233,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testUndoChangesAfterCopyNewOverDeleted() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -318,6 +289,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(16)
     public void testUndoChangesScenario1() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -401,6 +374,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testUndoChangesAfterCopySiblingOverDeleted() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -438,11 +413,13 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testUndoChangesFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();
         echo("Testing undoChanges on a folder without recursion");
-        undoChangesFolder(this, cms, "/folder2/");
+        undoChangesFolder(m_testEnvironment, cms, "/folder2/");
     }
 
     /**
@@ -450,11 +427,13 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testUndoChangesFolderRecursive() throws Throwable {
 
         CmsObject cms = getCmsObject();
         echo("Testing undoChanges on a folder _with_ recursion");
-        undoChangesFolderRecursive(this, cms, "/folder1/");
+        undoChangesFolderRecursive(m_testEnvironment, cms, "/folder1/");
     }
 
     /**
@@ -462,6 +441,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(9)
     public void testUndoChangesMove() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -524,6 +505,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(10)
     public void testUndoChangesMoveContent() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -611,6 +594,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(15)
     public void testUndoChangesMovedFileAfterEdit() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -658,6 +643,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(11)
     public void testUndoChangesMovedFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -690,6 +677,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(12)
     public void testUndoChangesMovedFolderAfterEdit() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -738,6 +727,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(13)
     public void testUndoChangesMovedFolderNewFile() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -791,6 +782,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testUndoChangesOnNewResource() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -816,6 +809,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testUndoChangesResource() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -828,7 +823,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         switchStorage(OpenCmsTestResourceStorage.DEFAULT_STORAGE);
 
         echo("Testing undoChanges on a file");
-        undoChanges(this, cms, "/index.html");
+        undoChanges(m_testEnvironment, cms, "/index.html");
     }
 
     /**
@@ -884,6 +879,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(8)
     public void testUndoChangesSharedProperty() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -898,7 +895,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         OpenCms.getPublishManager().waitWhileRunning();
 
         String sibling = "/b";
-        TestSiblings.createSibling(this, cms, file, sibling);
+        TestSiblings.createSibling(m_testEnvironment, cms, file, sibling);
         // write a persistent no-shared property to test with
         CmsProperty property = new CmsProperty(CmsPropertyDefinition.PROPERTY_NAVTEXT, "undoChanges navText", null);
         cms.writePropertyObject(sibling, property);
@@ -950,6 +947,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(14)
     public void testUndoChangesSubfolderAfterMoving() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -984,11 +983,13 @@ public class TestUndoChanges extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(7)
     public void testUndoChangesWithAce() throws Throwable {
 
         CmsObject cms = getCmsObject();
         echo("Testing undoChanges on a resource with an ACE");
-        undoChanges(this, cms, "/folder2/index.html");
+        undoChanges(m_testEnvironment, cms, "/folder2/index.html");
     }
 
 }

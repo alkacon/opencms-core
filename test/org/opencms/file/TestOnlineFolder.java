@@ -40,7 +40,7 @@ import org.opencms.search.solr.CmsSolrResultList;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.util.CmsUUID;
 
 import java.nio.charset.StandardCharsets;
@@ -51,41 +51,37 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.function.FailableFunction;
 
-import junit.framework.Test;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test cases for the online folder feature.
  */
-public class TestOnlineFolder extends OpenCmsTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestOnlineFolder extends OpenCmsJupiterTestCase {
 
     public static final String ONLINE_FOLDER = "/shared/online";
 
     private CmsObject m_onlineCms;
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getSpecialConfigFolder()
      */
-    public TestOnlineFolder(String arg0) {
+    @Override
+    protected String getSpecialConfigFolder() {
 
-        super(arg0);
+        return "/../org/opencms/search/solr/defaultconfig";
     }
 
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        return generateSetupTestWrapper(
-            TestOnlineFolder.class,
-            "simpletest",
-            "/",
-            "/../org/opencms/search/solr/defaultconfig");
-    }
-
+    @Test
     public void testCategories() throws Exception {
 
         String name = getName();
@@ -115,6 +111,7 @@ public class TestOnlineFolder extends OpenCmsTestCase {
 
     }
 
+    @Test
     public void testChacc() throws Exception {
 
         String name = getName();
@@ -137,6 +134,7 @@ public class TestOnlineFolder extends OpenCmsTestCase {
 
     }
 
+    @Test
     public void testChangeType() throws Exception {
 
         String name = getName();
@@ -152,6 +150,7 @@ public class TestOnlineFolder extends OpenCmsTestCase {
             OpenCms.getResourceManager().getResourceType(onlineCms.readResource(path)).getTypeId());
     }
 
+    @Test
     public void testCopy() throws Throwable {
 
         String name = getName();
@@ -168,6 +167,7 @@ public class TestOnlineFolder extends OpenCmsTestCase {
         });
     }
 
+    @Test
     public void testDelete() throws Exception {
 
         String name = getName();
@@ -177,14 +177,15 @@ public class TestOnlineFolder extends OpenCmsTestCase {
         CmsObject onlineCms = getOnlineCms();
         cms.createResource(ONLINE_FOLDER + "/" + name, 0);
         cms.createResource(ONLINE_FOLDER + "/" + name + "/test.txt", 1);
-        assertTrue("Should be available online", onlineCms.existsResource(ONLINE_FOLDER + "/" + name));
+        assertTrue(onlineCms.existsResource(ONLINE_FOLDER + "/" + name), "Should be available online");
         cms.deleteResource(ONLINE_FOLDER + "/" + name, CmsResource.DELETE_PRESERVE_SIBLINGS);
-        assertFalse("Should have been removed online", onlineCms.existsResource(ONLINE_FOLDER + "/" + name));
+        assertFalse(onlineCms.existsResource(ONLINE_FOLDER + "/" + name), "Should have been removed online");
         assertFalse(
-            "Should have been removed online",
-            onlineCms.existsResource(ONLINE_FOLDER + "/" + name + "/test.txt"));
+            onlineCms.existsResource(ONLINE_FOLDER + "/" + name + "/test.txt"),
+            "Should have been removed online");
     }
 
+    @Test
     public void testMove() throws Exception {
 
         String name = getName();
@@ -198,6 +199,7 @@ public class TestOnlineFolder extends OpenCmsTestCase {
         assertTrue(onlineCms.existsResource(ONLINE_FOLDER + "/" + name + "_moved/alpha/beta"));
     }
 
+    @Test
     public void testMoveIntoOnlineFolder() throws Exception {
 
         String name = getName();
@@ -210,6 +212,7 @@ public class TestOnlineFolder extends OpenCmsTestCase {
         assertTrue(onlineCms.existsResource(ONLINE_FOLDER + "/" + name));
     }
 
+    @Test
     public void testMoveOutOfOnlineFolder() throws Exception {
 
         String name = getName();
@@ -221,6 +224,7 @@ public class TestOnlineFolder extends OpenCmsTestCase {
         assertEquals(CmsResource.STATE_CHANGED, cms.readResource("/system/" + name).getState());
     }
 
+    @Test
     public void testOnlineFolder() throws Throwable {
 
         CmsObject offlineCms = getCmsObject();
@@ -257,6 +261,7 @@ public class TestOnlineFolder extends OpenCmsTestCase {
         });
     }
 
+    @Test
     public void testPublishEvents() throws Throwable {
 
         String name = getName();
@@ -283,7 +288,7 @@ public class TestOnlineFolder extends OpenCmsTestCase {
             return null;
         });
         OpenCms.getEventManager().removeCmsEventListener(listener);
-        assertEquals("Only one publish event expected", 1, events.size());
+        assertEquals(1, events.size(), "Only one publish event expected");
         checkEqualsOfflineOnline(_cms -> {
             return Integer.valueOf(_cms.readResource(path).getFlags());
         });
@@ -297,6 +302,7 @@ public class TestOnlineFolder extends OpenCmsTestCase {
 
     }
 
+    @Test
     public void testSearch() throws Exception {
 
         String name = getName();
