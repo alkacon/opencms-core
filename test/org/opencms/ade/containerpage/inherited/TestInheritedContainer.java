@@ -47,8 +47,7 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishManager;
 import org.opencms.test.I_CmsLogHandler;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -76,14 +75,18 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
-import junit.framework.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
 
 /**
  * Test case for inherited containers.
  * <p>
  *
  */
-public class TestInheritedContainer extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestInheritedContainer extends OpenCmsJupiterTestCase {
 
     /**
      * A special log handler which intercepts log messages from the inherited container configuration
@@ -183,32 +186,17 @@ public class TestInheritedContainer extends OpenCmsTestCase {
     /** Constant which represents the online project. */
     public static final boolean ONLINE = true;
 
-    /**
-     * The test case constructor.<p>
-     *
-     * @param name the name of the test case
-     */
-    public TestInheritedContainer(String name) {
+    @Override
+    protected String getImportFolder() {
 
-        super(name);
-    }
-
-    /**
-     * Returns the test suite.
-     * <p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        return generateSetupTestWrapper(TestInheritedContainer.class, "inheritcontainer", "/");
+        return "inheritcontainer";
     }
 
     /**
      * Tests that new elements in parent configurations which are not explicitly referenced by
      * a child configuration's ordering are inserted at the end of the element list.<p>
      */
+    @Test
     public void testAppendNew() {
 
         CmsInheritedContainerState result = new CmsInheritedContainerState();
@@ -259,6 +247,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      *
      * @throws Exception in case writing configuration fails
      */
+    @Test
     public void testCacheCorrectnessOffline() throws Exception {
 
         OpenCms.getEventManager().fireEvent(I_CmsEventListener.EVENT_CLEAR_CACHES);
@@ -296,6 +285,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      *
      * @throws Exception in case writing configuration fails
      */
+    @Test
     public void testCacheCorrectnessOnline() throws Exception {
 
         OpenCms.getEventManager().fireEvent(I_CmsEventListener.EVENT_CLEAR_CACHES);
@@ -357,6 +347,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      *
      * @throws Exception in case writing configuration fails
      */
+    @Test
     public void testCacheLoadCounts() throws Exception {
 
         try {
@@ -406,6 +397,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      * Tests rearrangement of inherited elements.
      * <p>
      */
+    @Test
     public void testChangeOrder() {
 
         CmsInheritedContainerState result = new CmsInheritedContainerState();
@@ -424,6 +416,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      *
      * @throws Exception in case writing configuration fails
      */
+    @Test
     public void testClearCaches() throws Exception {
 
         try {
@@ -448,6 +441,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      * Test for hiding of inherited elements.
      * <p>
      */
+    @Test
     public void testHideElements() {
 
         CmsInheritedContainerState result = new CmsInheritedContainerState();
@@ -468,6 +462,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
     /**
      * Tests that the 'new' states of inherited container elements are correct.<p>
      */
+    @Test
     public void testNewElements() {
 
         CmsInheritedContainerState result = new CmsInheritedContainerState();
@@ -488,6 +483,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      *
      * @throws Exception in case writing configuration fails
      */
+    @Test
     public void testNoConfigurations() throws Exception {
 
         try {
@@ -516,6 +512,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      *
      * @throws Exception in case writing configuration fails
      */
+    @Test
     public void testOnlyReadProperlyNamedFiles() throws Exception {
 
         try {
@@ -544,6 +541,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      *
      * @throws Exception in case parsing configuration fails
      */
+    @Test
     public void testParseContainerConfiguration() throws Exception {
 
         String xmlText = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
@@ -630,6 +628,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      *
      * @throws Exception in case writing configuration fails
      */
+    @Test
     public void testReadAndSaveBack() throws Exception {
 
         writeConfiguration(1, "a");
@@ -653,6 +652,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      *
      * @throws Exception in case writing configuration fails
      */
+    @Test
     public void testReverseLookup() throws Exception {
 
         publish();
@@ -681,6 +681,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      *
      * @throws Exception in case writing configuration fails
      */
+    @Test
     public void testSaveChangeVisibility() throws Exception {
 
         try {
@@ -720,6 +721,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      *
      * @throws Exception in case writing configuration fails
      */
+    @Test
     public void testSaveNewElements() throws Exception {
 
         try {
@@ -762,6 +764,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      *
      * @throws Exception in case writing configuration fails
      */
+    @Test
     public void testSaveRemoveDanglingKeys() throws Exception {
 
         try {
@@ -814,6 +817,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      *
      * @throws Exception in case writing configuration fails
      */
+    @Test
     public void testSaveReorder() throws Exception {
 
         try {
@@ -853,6 +857,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      *
      * @throws Exception in case writing configuration fails
      */
+    @Test
     public void testSerialization1() throws Exception {
 
         Document document = createDocument("<dummy></dummy>");
@@ -932,6 +937,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      *
      * @throws Exception in case writing configuration fails
      */
+    @Test
     public void testUpdateAndRemove() throws Exception {
 
         try {
@@ -1060,8 +1066,8 @@ public class TestInheritedContainer extends OpenCmsTestCase {
     protected void checkConfiguration(List<CmsContainerElementBean> elements, String... specs) {
 
         assertTrue(
-            "Number of elements does not match the number of specification strings!",
-            specs.length == elements.size());
+            specs.length == elements.size(),
+            "Number of elements does not match the number of specification strings!");
         for (int i = 0; i < elements.size(); i++) {
             CmsContainerElementBean elementBean = elements.get(i);
             String spec = specs[i];
@@ -1341,6 +1347,7 @@ public class TestInheritedContainer extends OpenCmsTestCase {
      * @throws CmsException if something goes wrong
      * @throws UnsupportedEncodingException in case of an unsupported encoding
      */
+    @SuppressWarnings("deprecation")
     protected void writeConfiguration(int level, String name) throws CmsException, UnsupportedEncodingException {
 
         OpenCms.getADEManager();

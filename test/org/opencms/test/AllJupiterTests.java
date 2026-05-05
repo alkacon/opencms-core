@@ -43,10 +43,15 @@ import org.junit.platform.suite.api.Suite;
  */
 @Suite
 @SelectClasses({
+    org.opencms.ade.configuration.AllTests.class,
+    org.opencms.ade.containerpage.inherited.AllTests.class,
+    org.opencms.ade.contenteditor.AllTests.class,
+    org.opencms.ade.sitemap.AllTests.class,
     org.opencms.configuration.AllTests.class,
     org.opencms.db.AllTests.class,
     org.opencms.jsp.util.AllTests.class,
     org.opencms.main.AllTests.class,
+    org.opencms.module.AllTests.class,
     org.opencms.scheduler.AllTests.class,
     org.opencms.site.AllTests.class,
     org.opencms.util.AllTests.class,

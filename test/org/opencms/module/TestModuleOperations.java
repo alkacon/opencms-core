@@ -40,8 +40,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsSecurityException;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -51,70 +50,30 @@ import java.util.Map;
 
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit tests for OpenCms module operations.<p>
  */
-public class TestModuleOperations extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestModuleOperations(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestModuleOperations.class.getName());
-
-        suite.addTest(new TestModuleOperations("testModuleImport"));
-        suite.addTest(new TestModuleOperations("testModuleExport"));
-        suite.addTest(new TestModuleOperations("testOldModuleImport"));
-        suite.addTest(new TestModuleOperations("testModuleImportConflictId"));
-        suite.addTest(new TestModuleOperations("testModuleUpdateWithResourceId"));
-        suite.addTest(new TestModuleOperations("testModuleImportMissingResTypeClass"));
-        suite.addTest(new TestModuleOperations("testModuleDependencies"));
-        suite.addTest(new TestModuleOperations("testModuleAdditionalResourcesWorkaround"));
-        suite.addTest(new TestModuleOperations("testModuleActionClass"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestModuleOperations extends OpenCmsJupiterTestCase {
 
     /**
      * Tests a module action class.<p>
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(9)
+    @Test
     public void testModuleActionClass() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -134,27 +93,27 @@ public class TestModuleOperations extends OpenCmsTestCase {
             fail("Module '" + moduleName + "' has no action instance!");
         }
 
-        if (!(actionInstance instanceof TestModuleActionImpl)) {
+        if (!(actionInstance instanceof MockModuleActionImpl)) {
             fail("Module '" + moduleName + "' has action class of unexpected type!");
         }
 
         // since module is configured by default, initialize must have been already called
-        assertEquals(true, TestModuleActionImpl.m_initialize);
+        assertEquals(true, MockModuleActionImpl.m_initialize);
         // since something was published during setup, module method must habe been called
-        assertEquals(true, TestModuleActionImpl.m_publishProject);
+        assertEquals(true, MockModuleActionImpl.m_publishProject);
         // other values should not have been changed
-        assertEquals(false, TestModuleActionImpl.m_moduleUpdate);
-        assertEquals(false, TestModuleActionImpl.m_moduleUninstall);
-        assertEquals(false, TestModuleActionImpl.m_shutDown);
+        assertEquals(false, MockModuleActionImpl.m_moduleUpdate);
+        assertEquals(false, MockModuleActionImpl.m_moduleUninstall);
+        assertEquals(false, MockModuleActionImpl.m_shutDown);
         // reset other module action values
-        TestModuleActionImpl.m_cmsEvent = -1;
-        TestModuleActionImpl.m_publishProject = false;
+        MockModuleActionImpl.m_cmsEvent = -1;
+        MockModuleActionImpl.m_publishProject = false;
 
         // publish the current project
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
-        assertEquals(true, TestModuleActionImpl.m_publishProject);
-        assertTrue(TestModuleActionImpl.m_cmsEvent == I_CmsEventListener.EVENT_PUBLISH_PROJECT);
+        assertEquals(true, MockModuleActionImpl.m_publishProject);
+        assertTrue(MockModuleActionImpl.m_cmsEvent == I_CmsEventListener.EVENT_PUBLISH_PROJECT);
 
         // update the module
         CmsModule newModule = new CmsModule(
@@ -181,7 +140,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
         // update the module
         OpenCms.getModuleManager().updateModule(cms, newModule);
-        assertEquals(true, TestModuleActionImpl.m_moduleUpdate);
+        assertEquals(true, MockModuleActionImpl.m_moduleUpdate);
 
         // make sure we are in the "Offline" project
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
@@ -193,18 +152,18 @@ public class TestModuleOperations extends OpenCmsTestCase {
             module.getName(),
             false,
             new CmsShellReport(cms.getRequestContext().getLocale()));
-        assertEquals(true, TestModuleActionImpl.m_moduleUninstall);
+        assertEquals(true, MockModuleActionImpl.m_moduleUninstall);
 
         // reset module action values
-        TestModuleActionImpl.m_cmsEvent = -1;
-        TestModuleActionImpl.m_publishProject = false;
+        MockModuleActionImpl.m_cmsEvent = -1;
+        MockModuleActionImpl.m_publishProject = false;
 
         // publish the current project
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
         // since module was uninstalled, no update on action class must have happend
-        assertEquals(false, TestModuleActionImpl.m_publishProject);
-        assertTrue(TestModuleActionImpl.m_cmsEvent == -1);
+        assertEquals(false, MockModuleActionImpl.m_publishProject);
+        assertTrue(MockModuleActionImpl.m_cmsEvent == -1);
     }
 
     /**
@@ -212,6 +171,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(8)
+    @Test
     public void testModuleAdditionalResourcesWorkaround() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -281,6 +242,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(7)
+    @Test
     public void testModuleDependencies() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -457,6 +420,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(2)
+    @Test
     public void testModuleExport() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -557,6 +522,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(1)
+    @Test
     public void testModuleImport() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -596,6 +563,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(4)
+    @Test
     public void testModuleImportConflictId() throws Exception {
 
         // this test imports a module with the id "12" and name "article"
@@ -649,6 +618,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
      * @throws Throwable if something goes wrong
      */
     @SuppressWarnings("deprecation")
+    @Order(6)
+    @Test
     public void testModuleImportMissingResTypeClass() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -708,6 +679,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(5)
+    @Test
     public void testModuleUpdateWithResourceId() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -760,6 +733,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(3)
+    @Test
     public void testOldModuleImport() throws Throwable {
 
         CmsObject cms = getCmsObject();

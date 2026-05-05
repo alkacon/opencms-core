@@ -38,7 +38,7 @@ import org.opencms.report.I_CmsReport;
 /**
  * Simple test implementation of the module action interface.<p>
  */
-public class TestModuleActionImpl extends A_CmsModuleAction {
+public class MockModuleActionImpl extends A_CmsModuleAction {
 
     /** Indicates the last event type caught. */
     public static int m_cmsEvent = -1;
@@ -61,7 +61,7 @@ public class TestModuleActionImpl extends A_CmsModuleAction {
     /**
      * Default constructor.<p>
      */
-    public TestModuleActionImpl() {
+    public MockModuleActionImpl() {
 
         // noop
     }

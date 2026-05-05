@@ -27,16 +27,30 @@
 
 package org.opencms.module;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests the module name generation.<p>
  */
-public class TestCmsModuleNameGeneration extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestCmsModuleNameGeneration extends OpenCmsJupiterTestCase {
+
+    @Override
+    protected boolean shouldBootOpenCms() {
+
+        return false;
+    }
 
     /**
      * Tests version increment.<p>
      */
+    @Test
     public void testNameGeneration() {
 
         String name;

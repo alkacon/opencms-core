@@ -31,8 +31,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestEnvironment;
 import org.opencms.workplace.threads.CmsExportThread;
 
 import java.io.File;
@@ -41,93 +41,85 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /** Tests concerning the "exclude resources" feature. */
-public class TestModuleExcludeResources extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestModuleExcludeResources extends OpenCmsJupiterTestCase {
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestModuleExcludeResources(String arg0) {
+    @Override
+    protected String getImportFolder() {
 
-        super(arg0);
+        return "simpletest";
     }
 
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
+    @Override
+    protected String getTargetFolder() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+        return "/";
+    }
 
-        TestSuite suite = new TestSuite();
-        suite.setName(TestModuleExcludeResources.class.getName());
+    @Override
+    protected boolean shouldBreakOnErrorAfterInitConfiguration() {
 
-        suite.addTest(new TestModuleExcludeResources("testModuleExcludeResourcesRootPath"));
-        suite.addTest(new TestModuleExcludeResources("testModuleExcludeResourcesSitePath"));
+        return false;
+    }
 
-        TestSetup wrapper = new TestSetup(suite) {
+    @BeforeAll
+    void createModulesDir() {
 
-            @Override
-            protected void setUp() {
+        String path = OpenCms.getSystemInfo().getPackagesRfsPath() + CmsSystemInfo.FOLDER_MODULES;
+        File modulesDir = new File(path);
 
-                setupOpenCms("simpletest", "/");
-                String path = OpenCms.getSystemInfo().getPackagesRfsPath() + CmsSystemInfo.FOLDER_MODULES;
-                File modulesDir = new File(path);
+        if (!modulesDir.exists()) {
+            System.out.println("creating directory: " + path);
 
-                if (!modulesDir.exists()) {
-                    System.out.println("creating directory: " + path);
-
-                    try {
-                        modulesDir.mkdir();
-                        System.out.println("created directory " + path);
-                    } catch (SecurityException se) {
-                        System.err.println("unable to create directory " + path);
-                        se.printStackTrace();
-                    }
-                }
-
-                // this test causes issues that are written to the error log channel
-                OpenCmsTestLogAppender.setBreakOnError(false);
+            try {
+                modulesDir.mkdir();
+                System.out.println("created directory " + path);
+            } catch (SecurityException se) {
+                System.err.println("unable to create directory " + path);
+                se.printStackTrace();
             }
+        }
 
-            @Override
-            protected void tearDown() {
+        OpenCmsTestLogAppender.setBreakOnError(false);
+    }
 
-                String path = OpenCms.getSystemInfo().getPackagesRfsPath() + CmsSystemInfo.FOLDER_MODULES;
-                File modulesDir = new File(path);
+    @AfterAll
+    void cleanModulesDir() {
 
-                if (modulesDir.exists()) {
-                    System.out.println("removing directory: " + path);
+        String path = OpenCms.getSystemInfo().getPackagesRfsPath() + CmsSystemInfo.FOLDER_MODULES;
+        File modulesDir = new File(path);
 
-                    try {
-                        FileUtils.deleteDirectory(modulesDir);
-                        System.out.println("created directory " + path);
-                    } catch (IOException se) {
-                        System.err.println("unable to create directory " + path);
-                        se.printStackTrace();
-                    }
-                }
+        if (modulesDir.exists()) {
+            System.out.println("removing directory: " + path);
 
-                removeOpenCms();
-
+            try {
+                FileUtils.deleteDirectory(modulesDir);
+                System.out.println("created directory " + path);
+            } catch (IOException se) {
+                System.err.println("unable to create directory " + path);
+                se.printStackTrace();
             }
-        };
-
-        return wrapper;
+        }
+        OpenCmsTestLogAppender.setBreakOnError(true);
     }
 
     /**
      * Tests module import, export and deletion where excluded resources are relevant.
      * All actions are performed relative to the root site.
      */
+    @Order(1)
+    @Test
     public void testModuleExcludeResourcesRootPath() {
 
         testModuleExcludeResources("/");
@@ -137,6 +129,8 @@ public class TestModuleExcludeResources extends OpenCmsTestCase {
      * Tests module import, export and deletion where excluded resources are relevant.
      * All actions are performed relative to the "/sites/default".
      */
+    @Order(2)
+    @Test
     public void testModuleExcludeResourcesSitePath() {
 
         testModuleExcludeResources("/sites/default/");
@@ -165,15 +159,15 @@ public class TestModuleExcludeResources extends OpenCmsTestCase {
 
             String mainModule = "org.opencms.test.modules.excluderesource.main";
 
-            importModule(cms, mainModule);
+            OpenCmsTestEnvironment.importModule(cms, mainModule);
 
             String subModule = "org.opencms.test.modules.excluderesource.sub";
 
-            importModule(cms, subModule);
+            OpenCmsTestEnvironment.importModule(cms, subModule);
 
             assertTrue(
-                "After sub-module import, the expected resource " + excludedResource + "does not exist.",
-                cms.existsResource(excludedResource));
+                cms.existsResource(excludedResource),
+                "After sub-module import, the expected resource " + excludedResource + "does not exist.");
 
             // export the main module
             CmsModule module = OpenCms.getModuleManager().getModule(mainModule);
@@ -190,11 +184,11 @@ public class TestModuleExcludeResources extends OpenCmsTestCase {
             moduleManager.deleteModule(cms, mainModule, false, new CmsShellReport(cms.getRequestContext().getLocale()));
 
             assertTrue(
-                "After main-module deletion, the resource " + includedResource + "is still present.",
-                !cms.existsResource(includedResource));
+                !cms.existsResource(includedResource),
+                "After main-module deletion, the resource " + includedResource + "is still present.");
             assertTrue(
-                "After main-module deletion, the expected resource " + excludedResource + "does not exist anymore.",
-                cms.existsResource(excludedResource));
+                cms.existsResource(excludedResource),
+                "After main-module deletion, the expected resource " + excludedResource + "does not exist anymore.");
 
             OpenCms.getModuleManager().deleteModule(
                 cms,
@@ -203,14 +197,14 @@ public class TestModuleExcludeResources extends OpenCmsTestCase {
                 new CmsShellReport(cms.getRequestContext().getLocale()));
 
             assertTrue(
-                "After sub-module deletion, the resource " + excludedResource + "is still present.",
-                !cms.existsResource(excludedResource));
+                !cms.existsResource(excludedResource),
+                "After sub-module deletion, the resource " + excludedResource + "is still present.");
 
-            importModule(cms, mainModule, "_0.1", "modules");
+            OpenCmsTestEnvironment.importModule(cms, mainModule, "_0.1", "modules");
 
             assertTrue(
-                "After main-module re-import, the resource " + excludedResource + "is present again.",
-                !cms.existsResource(excludedResource));
+                !cms.existsResource(excludedResource),
+                "After main-module re-import, the resource " + excludedResource + "is present again.");
 
             OpenCms.getModuleManager().deleteModule(
                 cms,

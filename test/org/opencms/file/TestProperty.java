@@ -38,6 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestEnvironment;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
 import org.opencms.util.CmsStringUtil;
@@ -62,13 +63,13 @@ public class TestProperty extends OpenCmsJupiterTestCase {
 
     /**
      * Test the writeProperty method to create a list of properties.<p>
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to create the properies
      * @param propertyList1 the properties to create
      * @throws Throwable if something goes wrong
      */
-    public static void createProperties(OpenCmsTestCase tc, CmsObject cms, String resource1, List propertyList1)
+    public static void createProperties(OpenCmsTestEnvironment tc, CmsObject cms, String resource1, List propertyList1)
     throws Throwable {
 
         tc.storeResources(cms, resource1);
@@ -95,13 +96,13 @@ public class TestProperty extends OpenCmsJupiterTestCase {
 
     /**
      * Test the writeProperty method to create one property.<p>
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to add a propery
      * @param property1 the property to create
      * @throws Throwable if something goes wrong
      */
-    public static void createProperty(OpenCmsTestCase tc, CmsObject cms, String resource1, CmsProperty property1)
+    public static void createProperty(OpenCmsTestEnvironment tc, CmsObject cms, String resource1, CmsProperty property1)
     throws Throwable {
 
         tc.storeResources(cms, resource1);
@@ -128,13 +129,13 @@ public class TestProperty extends OpenCmsJupiterTestCase {
 
     /**
      * Test the writeProperty method to remove a list of properties.<p>
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to remove the properies
      * @param propertyList1 the properties to remove
      * @throws Throwable if something goes wrong
      */
-    public static void removeProperties(OpenCmsTestCase tc, CmsObject cms, String resource1, List propertyList1)
+    public static void removeProperties(OpenCmsTestEnvironment tc, CmsObject cms, String resource1, List propertyList1)
     throws Throwable {
 
         tc.storeResources(cms, resource1);
@@ -161,13 +162,13 @@ public class TestProperty extends OpenCmsJupiterTestCase {
 
     /**
      * Test the writeProperty method to remove one property.<p>
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to remove a propery
      * @param property1 the property to remove
      * @throws Throwable if something goes wrong
      */
-    public static void removeProperty(OpenCmsTestCase tc, CmsObject cms, String resource1, CmsProperty property1)
+    public static void removeProperty(OpenCmsTestEnvironment tc, CmsObject cms, String resource1, CmsProperty property1)
     throws Throwable {
 
         tc.storeResources(cms, resource1);
@@ -201,13 +202,13 @@ public class TestProperty extends OpenCmsJupiterTestCase {
 
     /**
      * Test the writeProperty method with a list of properties.<p>
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to write the properies
      * @param propertyList1 the properties to write
      * @throws Throwable if something goes wrong
      */
-    public static void writeProperties(OpenCmsTestCase tc, CmsObject cms, String resource1, List propertyList1)
+    public static void writeProperties(OpenCmsTestEnvironment tc, CmsObject cms, String resource1, List propertyList1)
     throws Throwable {
 
         tc.storeResources(cms, resource1);
@@ -230,6 +231,39 @@ public class TestProperty extends OpenCmsJupiterTestCase {
         tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
         // the property must have the new value
         tc.assertPropertyChanged(cms, resource1, propertyList1);
+    }
+
+    /**
+     * Test the writeProperty method with one property.<p>
+     * @param tc the OpenCms test environment
+     * @param cms the CmsObject
+     * @param resource1 the resource to write a propery
+     * @param property1 the property to write
+     * @throws Throwable if something goes wrong
+     */
+    public static void writeProperty(OpenCmsTestEnvironment tc, CmsObject cms, String resource1, CmsProperty property1)
+    throws Throwable {
+
+        tc.storeResources(cms, resource1);
+
+        long timestamp = System.currentTimeMillis();
+
+        cms.lockResource(resource1);
+        cms.writePropertyObject(resource1, property1);
+        cms.unlockResource(resource1);
+
+        // now evaluate the result
+        tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
+        // project must be current project
+        tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
+        // state must be "changed"
+        tc.assertState(cms, resource1, tc.getPreCalculatedState(resource1));
+        // date last modified must be after the test timestamp
+        tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
+        // the user last modified must be the current user
+        tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
+        // the property must have the new value
+        tc.assertPropertyChanged(cms, resource1, property1);
     }
 
     /**
@@ -302,7 +336,7 @@ public class TestProperty extends OpenCmsJupiterTestCase {
         List propertyList3 = new ArrayList();
         propertyList3.add(property8);
         propertyList3.add(property9);
-        createProperties(m_legacyTestCase, cms, "/index.html", propertyList3);
+        createProperties(m_testEnvironment, cms, "/index.html", propertyList3);
     }
 
     /**
@@ -317,7 +351,7 @@ public class TestProperty extends OpenCmsJupiterTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing creating one property on a resource");
         CmsProperty property7 = new CmsProperty("Newproperty", "testvalue1", "testvalue2");
-        createProperty(m_legacyTestCase, cms, "/folder1/index.html", property7);
+        createProperty(m_testEnvironment, cms, "/folder1/index.html", property7);
     }
 
     /**
@@ -711,7 +745,7 @@ public class TestProperty extends OpenCmsJupiterTestCase {
         List propertyList2 = new ArrayList();
         propertyList2.add(property5);
         propertyList2.add(property6);
-        removeProperties(m_legacyTestCase, cms, "/folder1/page1.html", propertyList2);
+        removeProperties(m_testEnvironment, cms, "/folder1/page1.html", propertyList2);
     }
 
     /**
@@ -726,7 +760,7 @@ public class TestProperty extends OpenCmsJupiterTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing removing one property on a resource");
         CmsProperty property4 = new CmsProperty("Title", CmsProperty.DELETE_VALUE, CmsProperty.DELETE_VALUE);
-        removeProperty(m_legacyTestCase, cms, "/folder1/page2.html", property4);
+        removeProperty(m_testEnvironment, cms, "/folder1/page2.html", property4);
     }
 
     /**
@@ -797,7 +831,7 @@ public class TestProperty extends OpenCmsJupiterTestCase {
         List propertyList1 = new ArrayList();
         propertyList1.add(property2);
         propertyList1.add(property3);
-        writeProperties(m_legacyTestCase, cms, "/folder1/page3.html", propertyList1);
+        writeProperties(m_testEnvironment, cms, "/folder1/page3.html", propertyList1);
     }
 
     /**
@@ -812,7 +846,7 @@ public class TestProperty extends OpenCmsJupiterTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing writing one  property on a resource");
         CmsProperty property1 = new CmsProperty("Title", "OpenCms", null);
-        writeProperty(m_legacyTestCase, cms, "/folder1/image1.gif", property1);
+        writeProperty(m_testEnvironment, cms, "/folder1/image1.gif", property1);
     }
 
     /**
@@ -827,6 +861,6 @@ public class TestProperty extends OpenCmsJupiterTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing writing one property on a folder");
         CmsProperty property10 = new CmsProperty("Title", "OpenCms", null);
-        writeProperty(m_legacyTestCase, cms, "/folder2/", property10);
+        writeProperty(m_testEnvironment, cms, "/folder2/", property10);
     }
 }

@@ -30,7 +30,7 @@ package org.opencms.ade.sitemap;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspNavElement;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -38,17 +38,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
 /**
  * Unit test for the ADE sitemap navigation position calculation algorithm.<p>
  */
-public class TestNavPosCalculator extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestNavPosCalculator extends OpenCmsJupiterTestCase {
 
-    /**
-     * Test constructor.<p>
-     */
-    public TestNavPosCalculator() {
+    @Override
+    protected boolean shouldBootOpenCms() {
 
-        super("TestNavPosCalculator");
+        return false;
+    }
+
+    @Override
+    protected boolean shouldInitConfiguration() {
+
+        return false;
     }
 
     /**
@@ -70,6 +81,8 @@ public class TestNavPosCalculator extends OpenCmsTestCase {
     /**
      * Tests filtering of non-navigation entries from the navigation list.<p>
      */
+    @Test
+    @Order(4)
     public void testFilterNonNavEntries() {
 
         CmsJspNavElement a = dummyNav("foo", 1);
@@ -85,6 +98,8 @@ public class TestNavPosCalculator extends OpenCmsTestCase {
     /**
      * Tests insertion between entries with the same nav pos value.<p>
      */
+    @Test
+    @Order(9)
     public void testInserBetweenEquals() {
 
         CmsJspNavElement a = dummyNav("foo", 1);
@@ -101,6 +116,8 @@ public class TestNavPosCalculator extends OpenCmsTestCase {
      * Tests insertion after a Float.MAX_VALUE navigation entry.<p>
      *
      */
+    @Test
+    @Order(7)
     public void testInsertAfterMax() {
 
         CmsJspNavElement a = dummyNav("foo", 1);
@@ -119,6 +136,8 @@ public class TestNavPosCalculator extends OpenCmsTestCase {
     /**
      * Tests insertion between two Float.MAX_VALUE navigation entries.<p>
      */
+    @Test
+    @Order(2)
     public void testInsertAtMax() {
 
         CmsJspNavElement a = dummyNav("foo", 1);
@@ -136,6 +155,8 @@ public class TestNavPosCalculator extends OpenCmsTestCase {
     /**
      * Tests insertion before a Float.MAX_VALUE navigation entry.<p>
      */
+    @Test
+    @Order(5)
     public void testInsertBeforeMax() {
 
         CmsJspNavElement a = dummyNav("foo", 1);
@@ -153,6 +174,8 @@ public class TestNavPosCalculator extends OpenCmsTestCase {
     /**
      * Tests insertion between navigation entries with different NavPos values.<p>
      */
+    @Test
+    @Order(6)
     public void testInsertBetweenBlocks() {
 
         CmsJspNavElement a = dummyNav("foo", 1);
@@ -174,6 +197,8 @@ public class TestNavPosCalculator extends OpenCmsTestCase {
     /**
      * Tests insertion at the end of the navigation.<p>
      */
+    @Test
+    @Order(3)
     public void testInsertEndNormal() {
 
         CmsJspNavElement a = dummyNav("foo", 1);
@@ -192,6 +217,8 @@ public class TestNavPosCalculator extends OpenCmsTestCase {
     /**
      * Tests insertion at the front of the  navigation.<p>
      */
+    @Test
+    @Order(1)
     public void testInsertFrontNormal() {
 
         CmsJspNavElement a = dummyNav("foo", 1);
@@ -209,6 +236,8 @@ public class TestNavPosCalculator extends OpenCmsTestCase {
     /**
      * Tests the normal insertion case.<p>
      */
+    @Test
+    @Order(8)
     public void testInsertNormal() {
 
         CmsJspNavElement a = dummyNav("foo", 1);

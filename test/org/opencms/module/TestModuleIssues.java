@@ -37,73 +37,33 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit tests for issues found in the new module mechanism.<p>
  */
-public class TestModuleIssues extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestModuleIssues extends OpenCmsJupiterTestCase {
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestModuleIssues(String arg0) {
+    /** Indicates whether OpenCms was already removed inside a test method. */
+    private boolean m_openCmsRemoved;
 
-        super(arg0);
-    }
+    @Override
+    protected boolean shouldBootOpenCms() {
 
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestModuleIssues.class.getName());
-
-        suite.addTest(new TestModuleIssues("testAdditionalSystemFolder"));
-        suite.addTest(new TestModuleIssues("testModuleDeletion"));
-
-        // important: this must be the last called method since the OpenCms installation is removed from there
-        suite.addTest(new TestModuleIssues("testShutdownMethod"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            /**
-             * @see junit.extensions.TestSetup#setUp()
-             */
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            /**
-             * @see junit.extensions.TestSetup#tearDown()
-             */
-            @Override
-            protected void tearDown() {
-
-                // done in "testShutdownMethod"
-                // removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        return !m_openCmsRemoved;
     }
 
     /**
@@ -111,6 +71,8 @@ public class TestModuleIssues extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(1)
+    @Test
     public void testAdditionalSystemFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -148,6 +110,8 @@ public class TestModuleIssues extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(2)
+    @Test
     public void testModuleDeletion() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -273,6 +237,8 @@ public class TestModuleIssues extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Order(3)
+    @Test
     public void testShutdownMethod() throws Exception {
 
         echo("Testing module shutdown method");
@@ -290,17 +256,18 @@ public class TestModuleIssues extends OpenCmsTestCase {
             fail("Module '" + moduleName + "' has no action instance!");
         }
 
-        if (!(actionInstance instanceof TestModuleActionImpl)) {
+        if (!(actionInstance instanceof MockModuleActionImpl)) {
             fail("Module '" + moduleName + "' has action class of unexpected type!");
         }
 
         // remove OpenCms installations, must call shutdown
         removeOpenCms();
+        m_openCmsRemoved = true;
 
         // check if shutdown flag was set to "true"
-        assertTrue(TestModuleActionImpl.m_shutDown);
+        assertTrue(MockModuleActionImpl.m_shutDown);
 
         // reset flag for next test
-        TestModuleActionImpl.m_shutDown = false;
+        MockModuleActionImpl.m_shutDown = false;
     }
 }

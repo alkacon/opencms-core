@@ -44,8 +44,8 @@ import org.junit.jupiter.api.Order;
 
 /**
  * Jupiter base class: boots OpenCms once per test class via
- * {@link OpenCmsTestCase#setupOpenCms(String, String)} and tears it down via
- * {@link OpenCmsTestCase#removeOpenCms(String)}.<p>
+ * {@link OpenCmsTestEnvironment#setupOpenCms(String, String)} and tears it down via
+ * {@link OpenCmsTestEnvironment#removeOpenCms(String)}.<p>
  *
  * Subclasses override {@link #getImportFolder()} and {@link #getTargetFolder()}
  * if they need a different fixture than {@code simpletest} at site root {@code /}.<p>
@@ -71,6 +71,9 @@ public abstract class OpenCmsJupiterTestCase {
 
     /** The current test method name. */
     private String m_currentTestName;
+
+    /** The OpenCms test environment. */
+    protected final OpenCmsTestEnvironment m_testEnvironment = new OpenCmsTestEnvironment();
 
     /**
      * Default constructor.<p>
@@ -172,16 +175,9 @@ public abstract class OpenCmsJupiterTestCase {
      * @return the Admin {@link CmsObject} in the Offline project
      */
     protected CmsObject getCmsObject() {
-        try {
-            // Emulate OpenCmsTestCase.getCmsObject() behavior for VFS state tracking
-            org.opencms.file.CmsObject cms = org.opencms.main.OpenCms.initCmsObject(org.opencms.main.OpenCms.getDefaultUsers().getUserGuest());
-            cms.loginUser("Admin", "admin");
-            cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-            cms.getRequestContext().setSiteRoot("/sites/default/");
 
-            m_legacyTestCase.createStorage(org.opencms.test.OpenCmsTestResourceStorage.DEFAULT_STORAGE);
-            m_legacyTestCase.switchStorage(org.opencms.test.OpenCmsTestResourceStorage.DEFAULT_STORAGE);
-            return cms;
+        try {
+            return m_testEnvironment.getCmsObject();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -228,12 +224,12 @@ public abstract class OpenCmsJupiterTestCase {
     void setUpOpenCms() {
 
         if (shouldInitConfiguration()) {
-            OpenCmsTestCase.initConfiguration(shouldBreakOnErrorAfterInitConfiguration());
+            OpenCmsTestEnvironment.initConfiguration(shouldBreakOnErrorAfterInitConfiguration());
         }
         if (!shouldBootOpenCms()) {
             return;
         }
-        m_cms = OpenCmsTestCase.setupOpenCms(
+        m_cms = OpenCmsTestEnvironment.setupOpenCms(
             getImportFolder(),
             getTargetFolder(),
             getConfigFolder(),
@@ -253,7 +249,7 @@ public abstract class OpenCmsJupiterTestCase {
         if (!shouldBootOpenCms()) {
             return;
         }
-        OpenCmsTestCase.removeOpenCms(getClass().getName());
+        OpenCmsTestEnvironment.removeOpenCms(getClass().getName());
     }
 
     /**
@@ -290,15 +286,13 @@ public abstract class OpenCmsJupiterTestCase {
      * @param obj the message to print
      */
     protected void echo(Object obj) {
-        try {
-            // Need to use reflection because echo(String) might be protected
-            java.lang.reflect.Method m = org.opencms.test.OpenCmsTestCase.class.getDeclaredMethod("echo", String.class);
-            m.setAccessible(true);
-            m.invoke(m_legacyTestCase, String.valueOf(obj));
-        } catch (Exception e) {
-            System.out.println();
-            System.out.println(obj);
-        }
+
+        OpenCmsTestEnvironment.echo(String.valueOf(obj));
+    }
+
+    protected void printExceptionWarning() {
+
+        OpenCmsTestEnvironment.printExceptionWarning();
     }
 
     /**
@@ -321,7 +315,7 @@ public abstract class OpenCmsJupiterTestCase {
      */
     public static void assertXmlEquals(Document expected, Document actual, String message) {
 
-        String errorMsg = OpenCmsTestCase.compareXmlDocuments(expected, actual);
+        String errorMsg = OpenCmsTestEnvironment.compareXmlDocuments(expected, actual);
         if (errorMsg != null) {
             if (message != null) {
                 Assertions.fail(message + " ==> " + errorMsg);
@@ -331,86 +325,133 @@ public abstract class OpenCmsJupiterTestCase {
         }
     }
 
-
-    /** Legacy test case used for VFS state tracking delegation. */
-    protected org.opencms.test.OpenCmsTestCase m_legacyTestCase = new org.opencms.test.OpenCmsTestCase();
-
     public void storeResources(org.opencms.file.CmsObject cms, String resourceName) {
-        m_legacyTestCase.storeResources(cms, resourceName);
+
+        m_testEnvironment.storeResources(cms, resourceName);
     }
 
     public void assertFilter(org.opencms.file.CmsObject cms, String resourceName, org.opencms.test.OpenCmsTestResourceFilter filter) throws org.opencms.main.CmsException {
-        m_legacyTestCase.assertFilter(cms, resourceName, filter);
+
+        m_testEnvironment.assertFilter(cms, resourceName, filter);
     }
 
     public void assertProject(org.opencms.file.CmsObject cms, String resourceName, org.opencms.file.CmsProject project) {
-        m_legacyTestCase.assertProject(cms, resourceName, project);
+
+        m_testEnvironment.assertProject(cms, resourceName, project);
     }
 
     public void assertState(org.opencms.file.CmsObject cms, String resourceName, org.opencms.db.CmsResourceState state) {
-        m_legacyTestCase.assertState(cms, resourceName, state);
+
+        m_testEnvironment.assertState(cms, resourceName, state);
     }
 
     public org.opencms.db.CmsResourceState getPreCalculatedState(String resourceName) throws Exception {
-        return m_legacyTestCase.getPreCalculatedState(resourceName);
+
+        return m_testEnvironment.getPreCalculatedState(resourceName);
     }
 
     public void assertDateLastModifiedAfter(org.opencms.file.CmsObject cms, String resourceName, long dateLastModified) {
-        m_legacyTestCase.assertDateLastModifiedAfter(cms, resourceName, dateLastModified);
+
+        m_testEnvironment.assertDateLastModifiedAfter(cms, resourceName, dateLastModified);
     }
 
     public void assertUserLastModified(org.opencms.file.CmsObject cms, String resourceName, org.opencms.file.CmsUser user) {
-        m_legacyTestCase.assertUserLastModified(cms, resourceName, user);
+
+        m_testEnvironment.assertUserLastModified(cms, resourceName, user);
     }
 
     public void assertPropertyNew(org.opencms.file.CmsObject cms, String resourceName, java.util.List<org.opencms.file.CmsProperty> excludeList) {
-        m_legacyTestCase.assertPropertyNew(cms, resourceName, excludeList);
+
+        m_testEnvironment.assertPropertyNew(cms, resourceName, excludeList);
     }
 
     public void assertPropertyNew(org.opencms.file.CmsObject cms, String resourceName, org.opencms.file.CmsProperty property) {
-        m_legacyTestCase.assertPropertyNew(cms, resourceName, property);
+
+        m_testEnvironment.assertPropertyNew(cms, resourceName, property);
     }
 
     public void assertPropertyRemoved(org.opencms.file.CmsObject cms, String resourceName, java.util.List<org.opencms.file.CmsProperty> excludeList) {
-        m_legacyTestCase.assertPropertyRemoved(cms, resourceName, excludeList);
+
+        m_testEnvironment.assertPropertyRemoved(cms, resourceName, excludeList);
     }
 
     public void assertPropertyRemoved(org.opencms.file.CmsObject cms, String resourceName, org.opencms.file.CmsProperty property) {
-        m_legacyTestCase.assertPropertyRemoved(cms, resourceName, property);
+
+        m_testEnvironment.assertPropertyRemoved(cms, resourceName, property);
     }
 
     public void assertPropertyChanged(org.opencms.file.CmsObject cms, String resourceName, java.util.List<org.opencms.file.CmsProperty> excludeList) {
-        m_legacyTestCase.assertPropertyChanged(cms, resourceName, excludeList);
+
+        m_testEnvironment.assertPropertyChanged(cms, resourceName, excludeList);
     }
 
     public void assertPropertyChanged(org.opencms.file.CmsObject cms, String resourceName, org.opencms.file.CmsProperty property) {
-        m_legacyTestCase.assertPropertyChanged(cms, resourceName, property);
+
+        m_testEnvironment.assertPropertyChanged(cms, resourceName, property);
     }
 
 
     public void assertContains(String content, String pattern) {
-        m_legacyTestCase.assertContains(content, pattern);
+
+        m_testEnvironment.assertContains(content, pattern);
+    }
+
+    public void createStorage(String name) {
+
+        m_testEnvironment.createStorage(name);
+    }
+
+    public void switchStorage(String name) throws org.opencms.main.CmsException {
+
+        m_testEnvironment.switchStorage(name);
+    }
+
+    public int getCurrentResourceStorageSize() {
+
+        return m_testEnvironment.m_currentResourceStrorage.size();
     }
 
     public void assertRelation(org.opencms.relations.CmsRelation expected, org.opencms.relations.CmsRelation actual) {
-        m_legacyTestCase.assertRelation(expected, actual);
+
+        m_testEnvironment.assertRelation(expected, actual);
     }
 
-    
     public void assertLock(CmsObject cms, String resourceName) {
-        m_legacyTestCase.assertLock(cms, resourceName);
+
+        m_testEnvironment.assertLock(cms, resourceName);
     }
 
     public void assertLock(CmsObject cms, String resourceName, org.opencms.lock.CmsLockType lockType) {
-        m_legacyTestCase.assertLock(cms, resourceName, lockType);
+
+        m_testEnvironment.assertLock(cms, resourceName, lockType);
     }
 
     public void assertLock(CmsObject cms, String resourceName, org.opencms.lock.CmsLockType lockType, org.opencms.file.CmsUser user) {
-        m_legacyTestCase.assertLock(cms, resourceName, lockType, user);
+
+        m_testEnvironment.assertLock(cms, resourceName, lockType, user);
     }
 
     public void assertDateReleased(CmsObject cms, String resourceName, long dateReleased) {
-        m_legacyTestCase.assertDateReleased(cms, resourceName, dateReleased);
+
+        m_testEnvironment.assertDateReleased(cms, resourceName, dateReleased);
+    }
+
+    /**
+     * Deletes a VFS resource, locking it first if necessary.<p>
+     *
+     * @param path the resource path
+     * @throws org.opencms.main.CmsException if something goes wrong
+     */
+    protected void delete(String path) throws org.opencms.main.CmsException {
+
+        CmsObject cms = getCmsObject();
+        if (cms.existsResource(path)) {
+            org.opencms.lock.CmsLock lock = cms.getLock(path);
+            if (lock.isUnlocked() || !lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
+                cms.lockResource(path);
+            }
+            cms.deleteResource(path, org.opencms.file.CmsResource.DELETE_PRESERVE_SIBLINGS);
+        }
     }
 
     /**
@@ -418,7 +459,7 @@ public abstract class OpenCmsJupiterTestCase {
      */
     protected void setupDatabase() {
 
-        OpenCmsTestCase.setupDatabase();
+        OpenCmsTestEnvironment.setupDatabase();
     }
 
     /**
@@ -426,7 +467,7 @@ public abstract class OpenCmsJupiterTestCase {
      */
     protected void removeDatabase() {
 
-        OpenCmsTestCase.removeDatabase();
+        OpenCmsTestEnvironment.removeDatabase();
     }
 
     /**
@@ -440,7 +481,7 @@ public abstract class OpenCmsJupiterTestCase {
      */
     protected void importResources(CmsObject cms, String importFile, String targetPath) throws org.opencms.main.CmsException {
 
-        OpenCmsTestCase.importResources(cms, importFile, targetPath);
+        OpenCmsTestEnvironment.importResources(cms, importFile, targetPath);
     }
 
     /**
@@ -452,7 +493,7 @@ public abstract class OpenCmsJupiterTestCase {
      */
     protected String getTestDataPath(String filename) {
 
-        return OpenCmsTestCase.getTestDataPath(filename);
+        return OpenCmsTestEnvironment.getTestDataPath(filename);
     }
 
     /**
@@ -465,7 +506,7 @@ public abstract class OpenCmsJupiterTestCase {
      */
     protected CmsObject setupOpenCms(String importFolder, String targetFolder) {
 
-        return OpenCmsTestCase.setupOpenCms(importFolder, targetFolder, null, null, getClass().getName(), true);
+        return OpenCmsTestEnvironment.setupOpenCms(importFolder, targetFolder, null, null, getClass().getName(), true);
     }
 
     /**
@@ -473,6 +514,6 @@ public abstract class OpenCmsJupiterTestCase {
      */
     protected void removeOpenCms() {
 
-        OpenCmsTestCase.removeOpenCms(getClass().getName());
+        OpenCmsTestEnvironment.removeOpenCms(getClass().getName());
     }
 }

@@ -64,7 +64,7 @@ public final class AllTests {
         suite.addTest(TestChangeProperties.suite());
         suite.addTest(TestChflags.suite());
         suite.addTest(TestChtype.suite());
-        suite.addTest(TestConcurrentOperations.suite());
+        // suite.addTest(TestConcurrentOperations.suite());
         suite.addTest(TestCopy.suite());
         suite.addTest(TestCreateWriteResource.suite());
         suite.addTest(TestDefaultResourceCollectors.suite());

@@ -85,10 +85,10 @@ public final class AllTests {
         TestSuite suite = new TestSuite("OpenCms complete tests");
         suite.addTest(org.opencms.test.TestTests.suite());
         suite.addTest(org.opencms.setup.AllTests.suite());
-        suite.addTest(org.opencms.ade.configuration.AllTests.suite());
-        suite.addTest(org.opencms.ade.containerpage.inherited.AllTests.suite());
-        suite.addTest(org.opencms.ade.contenteditor.AllTests.suite());
-        suite.addTest(org.opencms.ade.sitemap.AllTests.suite());
+        // org.opencms.ade.configuration migrated to JUnit 6: see org.opencms.test.AllJupiterTests
+        // org.opencms.ade.containerpage.inherited migrated to JUnit 6: see org.opencms.test.AllJupiterTests
+        // org.opencms.ade.contenteditor migrated to JUnit 6: see org.opencms.test.AllJupiterTests
+        // org.opencms.ade.sitemap migrated to JUnit 6: see org.opencms.test.AllJupiterTests
         suite.addTest(org.opencms.cache.AllTests.suite());
         // org.opencms.configuration migrated to JUnit 6: see org.opencms.test.AllJupiterTests
         suite.addTest(org.opencms.crypto.AllTests.suite());
@@ -105,7 +105,7 @@ public final class AllTests {
         suite.addTest(org.opencms.loader.AllTests.suite());
         suite.addTest(org.opencms.mail.AllTests.suite());
         // org.opencms.main migrated to JUnit 6: see org.opencms.test.AllJupiterTests
-        suite.addTest(org.opencms.module.AllTests.suite());
+        // org.opencms.module migrated to JUnit 6: see org.opencms.test.AllJupiterTests
         suite.addTest(org.opencms.notification.AllTests.suite());
         suite.addTest(org.opencms.publish.AllTests.suite());
         suite.addTest(org.opencms.relations.AllTests.suite());
