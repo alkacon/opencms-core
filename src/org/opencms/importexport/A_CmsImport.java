@@ -42,6 +42,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsRole;
+import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -52,6 +53,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputFilter;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -884,6 +886,7 @@ public abstract class A_CmsImport implements I_CmsImport {
         String name, description, flags, password, firstname, lastname, email, address, pwd, infoNode, defaultGroup;
         // try to get the import resource
         //getImportResource();
+        ObjectInputFilter deserializationFilter = CmsDataTypeUtil.getDeserializationFilter();
         try {
             // getAll user nodes
             userNodes = m_docXml.selectNodes("//" + A_CmsImport.N_USERDATA);
@@ -910,6 +913,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                     // deserialize the object
                     ByteArrayInputStream bin = new ByteArrayInputStream(value);
                     ObjectInputStream oin = new ObjectInputStream(bin);
+                    oin.setObjectInputFilter(deserializationFilter);
                     userInfo = (Map<String, Object>)oin.readObject();
                 } catch (IOException ioex) {
                     m_report.println(ioex);

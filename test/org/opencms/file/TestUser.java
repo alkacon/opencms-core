@@ -36,8 +36,13 @@ import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsDataTypeUtil;
+import org.opencms.util.CmsUUID;
 
 import java.io.File;
+import java.io.InvalidClassException;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -59,6 +64,22 @@ import junit.framework.TestSuite;
  */
 public class TestUser extends OpenCmsTestCase {
 
+    static class Evil implements Serializable {
+
+        private String m_text;
+
+        public Evil(String text) {
+
+            m_text = text;
+        }
+
+        @Override
+        public String toString() {
+
+            return getClass().getSimpleName() + "[" + m_text + "]";
+        }
+    }
+
     /**
      * Default JUnit constructor.<p>
      *
@@ -76,8 +97,6 @@ public class TestUser extends OpenCmsTestCase {
      */
     public static Test suite() {
 
-        //return OpenCmsTestCase.generateSetupTestWrapper(TestUser.class, "simpletest", "/");
-
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
 
         TestSuite suite = new TestSuite();
@@ -89,6 +108,7 @@ public class TestUser extends OpenCmsTestCase {
         suite.addTest(new TestUser("testUserSelfManagement"));
         suite.addTest(new TestUser("testSearchByEmail"));
         suite.addTest(new TestUser("testSearchByAnyGroups"));
+        suite.addTest(new TestUser("testSerializationFiltering"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -166,6 +186,30 @@ public class TestUser extends OpenCmsTestCase {
             Sets.newHashSet("xtest2", "xtest4"),
             users2.stream().map(user -> user.getName()).collect(Collectors.toSet()));
         assertEquals(0, users3.size());
+    }
+
+    /**
+     * Tests serialization filtering.
+     */
+    public void testSerializationFiltering() throws Exception {
+
+        List<Object> list = new ArrayList<>();
+        list.add(new CmsUUID());
+        list.add(Long.valueOf(42));
+        list.add(Boolean.TRUE);
+        list.add("foo");
+        list.add(new ArrayList<>());
+        assertEquals(list, CmsDataTypeUtil.dataDeserialize(CmsDataTypeUtil.dataSerialize(list), "java.util.List"));
+
+        list.add(new Evil("don't deserialize me"));
+        byte[] serialized = CmsDataTypeUtil.dataSerialize(list);
+        try {
+            CmsDataTypeUtil.dataDeserialize(serialized, "java.util.List");
+            fail("deserialization should have failed");
+        } catch (InvalidClassException e) {
+
+        }
+
     }
 
     /**
