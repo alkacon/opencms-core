@@ -57,6 +57,24 @@ import org.apache.solr.client.solrj.util.ClientUtils;
 @org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
 public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase {
 
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
+     */
+    @Override
+    protected boolean shouldBootOpenCms() {
+
+        return false;
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
+     */
+    @Override
+    protected boolean shouldInitConfiguration() {
+
+        return true;
+    }
+
     
 
     /**
@@ -70,7 +88,7 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase 
      * Test if excact is correctly added.
      */
         @Test
-    @Order(7)
+    @Order(11)
     public void testExactRule() {
 
         // Set up the configuration bean
@@ -100,7 +118,7 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase 
      * Test if infix is correctly added.
      */
         @Test
-    @Order(4)
+    @Order(8)
     public void testInfixRule() {
 
         // Set up the configuration bean
@@ -129,7 +147,7 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase 
      * Test the type restriction if no predefined restriction is present.
      */
         @Test
-    @Order(2)
+    @Order(6)
     public void testMultipleRestrictionsWithType() {
 
         // Set up the configuration bean
@@ -162,7 +180,7 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase 
      * Test if postfix is correctly added.
      */
         @Test
-    @Order(6)
+    @Order(10)
     public void testPostfixRule() {
 
         // Set up the configuration bean
@@ -190,7 +208,7 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase 
      * Test if prefix is correctly added.
      */
         @Test
-    @Order(5)
+    @Order(9)
     public void testPrefixRule() {
 
         // Set up the configuration bean
@@ -218,7 +236,7 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase 
      * Check, if the restriction is ignored, if it is for a type that is not present.
      */
         @Test
-    @Order(3)
+    @Order(7)
     public void testRuleForUnknownType() {
 
         // Set up the configuration bean
@@ -245,7 +263,9 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase 
     /**
      * Test the type restriction if no predefined restriction is present.
      */
-        public void testTypeRestrictionWithComplexExactPreconfiguredRestriction() {
+        @Test
+    @Order(5)
+    public void testTypeRestrictionWithComplexExactPreconfiguredRestriction() {
 
         // Set up the configuration bean
         CmsConfigurationBean bean = getBasicBean("article", "event");
@@ -283,7 +303,9 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase 
     /**
      * Test the type restriction if no predefined restriction is present.
      */
-        public void testTypeRestrictionWithComplexPreconfiguredRestriction() {
+        @Test
+    @Order(4)
+    public void testTypeRestrictionWithComplexPreconfiguredRestriction() {
 
         // Set up the configuration bean
         CmsConfigurationBean bean = getBasicBean("article", "event");
@@ -344,7 +366,9 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase 
     /**
      * Test the type restriction if no predefined restriction is present.
      */
-        public void testTypeRestrictionWithPreconfiguredRestrictionWithoutType() {
+        @Test
+    @Order(2)
+    public void testTypeRestrictionWithPreconfiguredRestrictionWithoutType() {
 
         // Set up the configuration bean
         CmsConfigurationBean bean = getBasicBean("article", "event");
@@ -373,7 +397,9 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase 
     /**
      * Test the type restriction if no predefined restriction is present.
      */
-        public void testTypeRestrictionWithPreconfiguredRestrictionWithType() {
+        @Test
+    @Order(3)
+    public void testTypeRestrictionWithPreconfiguredRestrictionWithType() {
 
         // Set up the configuration bean
         CmsConfigurationBean bean = getBasicBean("article", "event");

@@ -34,78 +34,79 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchResource;
 import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.fields.CmsSearchField;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /** Test cases for indexing of contents using serial dates. */
-public class TestSolrSerialDateIndexing extends OpenCmsTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestSolrSerialDateIndexing extends OpenCmsJupiterTestCase {
 
     /** Name of the module to import. */
     protected static final String TEST_MODULE_NAME = "org.opencms.test.modules.solr.serialdate";
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public TestSolrSerialDateIndexing(String arg0) {
+    @Override
+    protected String getImportFolder() {
 
-        super(arg0);
+        return null;
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
      */
-    public static Test suite() {
+    @Override
+    protected String getTargetFolder() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+        return null;
+    }
 
-        TestSuite suite = new TestSuite();
-        suite.setName(TestSolrSerialDateIndexing.class.getName());
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getSpecialConfigFolder()
+     */
+    @Override
+    protected String getSpecialConfigFolder() {
 
-        suite.addTest(new TestSolrSerialDateIndexing("testIndexingAndDeletion"));
-        suite.addTest(new TestSolrSerialDateIndexing("testIndexedDates"));
+        return "/../org/opencms/search/solr";
+    }
 
-        TestSetup wrapper = new TestSetup(suite) {
+    /**
+     * Disables all non-Solr indexes used by the legacy suite setup.<p>
+     */
+    @BeforeAll
+    public void disableNonSolrIndexes() {
 
-            @Override
-            protected void setUp() {
-
-                setupOpenCms(null, null, "/../org/opencms/search/solr");
-                // disable all lucene indexes
-                for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
-                    if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
-                        I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
-                        if (index != null) {
-                            index.setEnabled(false);
-                        }
-                    }
+        for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
+            if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
+                I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
+                if (index != null) {
+                    index.setEnabled(false);
                 }
             }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        }
     }
 
     /** Tests if for a series content the correct special dates are indexed.
      * @throws Exception if module import or read/write fails.
      */
+    @Order(2)
+    @Test
     public void testIndexedDates() throws Exception {
 
         String path = "/sites/default/content/sdt_00001.xml";
@@ -118,7 +119,7 @@ public class TestSolrSerialDateIndexing extends OpenCmsTestCase {
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE);
         CmsSolrResultList results = index.search(cms, query);
 
-        assertEquals("The content should be indexed 5 times", 5, results.getNumFound());
+        assertEquals(5, results.getNumFound(), "The content should be indexed 5 times");
 
         Set<Long> expectedStartDates = new HashSet<Long>();
         long startDate = 1491202800000L;
@@ -186,6 +187,8 @@ public class TestSolrSerialDateIndexing extends OpenCmsTestCase {
     /** Tests if a series content is indexed correctly many times and if all entries are removed, if the content is removed.
      * @throws Exception if module import or read/write fails.
      */
+    @Order(1)
+    @Test
     public void testIndexingAndDeletion() throws Exception {
 
         String path = "/sites/default/content/sdt_00001.xml";
@@ -198,7 +201,7 @@ public class TestSolrSerialDateIndexing extends OpenCmsTestCase {
         CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE);
         CmsSolrResultList results = index.search(cms, query);
 
-        assertEquals("The content should be indexed 5 times", 5, results.getNumFound());
+        assertEquals(5, results.getNumFound(), "The content should be indexed 5 times");
 
         cms.lockResource(path);
         cms.deleteResource(path, CmsResource.DELETE_REMOVE_SIBLINGS);
@@ -206,11 +209,11 @@ public class TestSolrSerialDateIndexing extends OpenCmsTestCase {
         OpenCms.getPublishManager().waitWhileRunning();
 
         results = index.search(cms, query);
-        assertEquals("The content should not be found anymore, since it was deleted.", 0, results.getNumFound());
+        assertEquals(0, results.getNumFound(), "The content should not be found anymore, since it was deleted.");
 
         importModule(cms, TEST_MODULE_NAME);
         results = index.search(cms, query);
-        assertEquals("The content should be indexed 5 times", 5, results.getNumFound());
+        assertEquals(5, results.getNumFound(), "The content should be indexed 5 times");
 
     }
 

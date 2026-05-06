@@ -28,19 +28,52 @@
 package org.opencms.loader;
 
 import org.opencms.jsp.CmsJspTagImage;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.util.CmsFileUtil;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /**
  * Tests the OpenCms image scaler.<p>
  */
-public class TestCmsImageScaler extends OpenCmsTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsImageScaler extends OpenCmsJupiterTestCase {
+
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
+     */
+    @Override
+    protected boolean shouldBootOpenCms() {
+
+        return false;
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
+     */
+    @Override
+    protected boolean shouldInitConfiguration() {
+
+        return false;
+    }
 
     /**
      * Tests the image downscaling option.<p>
      *
      * @throws Exception in case the test fails
      */
+    @Order(3)
+    @Test
     public void testDownScaling() throws Exception {
 
         // read the image from the test directory, usually this would be from the VFS
@@ -115,6 +148,8 @@ public class TestCmsImageScaler extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Order(1)
+    @Test
     public void testScaleType5() throws Exception {
 
         CmsImageScaler baseImage;
@@ -176,6 +211,8 @@ public class TestCmsImageScaler extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Order(4)
+    @Test
     public void testScaleType5InImageTag() throws Exception {
 
         CmsImageScaler baseImage;
@@ -241,6 +278,8 @@ public class TestCmsImageScaler extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Order(2)
+    @Test
     public void testScaleType9() throws Exception {
 
         CmsImageScaler baseImage;

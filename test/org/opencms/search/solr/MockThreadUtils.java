@@ -9,12 +9,12 @@ import java.lang.management.ThreadMXBean;
 /**
  * Utility class for thread analyzing.<p>
  */
-public final class TestThreadUtils {
+public final class MockThreadUtils {
 
     /**
      * Hide default constructor.<p>
      */
-    private TestThreadUtils() {
+    private MockThreadUtils() {
 
         // noop
     }

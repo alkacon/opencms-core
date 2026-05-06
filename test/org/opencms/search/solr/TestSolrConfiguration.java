@@ -47,9 +47,13 @@ import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.documents.CmsExtractionResultCache;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.extractors.CmsExtractionResult;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.util.CmsFileUtil;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -61,81 +65,74 @@ import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.core.CoreContainer;
 import org.apache.solr.core.SolrCore;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /**
  * Tests the Solr configuration.<p>
  *
  * @since 8.5.0
  */
-public class TestSolrConfiguration extends OpenCmsTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestSolrConfiguration extends OpenCmsJupiterTestCase {
 
     /** The current VFS prefix as added to internal links according to the configuration in opencms-importexport.xml. */
     private String m_vfsPrefix;
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public TestSolrConfiguration(String arg0) {
+    @Override
+    protected String getImportFolder() {
 
-        super(arg0);
+        return "solrtest";
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
      */
-    public static Test suite() {
+    @Override
+    protected String getTargetFolder() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+        return "";
+    }
 
-        TestSuite suite = new TestSuite();
-        suite.setName(TestSolrConfiguration.class.getName());
-        suite.addTest(new TestSolrConfiguration("testPermissionHandling"));
-        suite.addTest(new TestSolrConfiguration("testExtractionResults"));
-        // suite.addTest(new TestSolrConfiguration("testIndexingPerformance"));
-        // suite.addTest(new TestSolrConfiguration("testMultipleIndices"));
-        // suite.addTest(new TestSolrConfiguration("testMultipleLanguages"));
-        suite.addTest(new TestSolrConfiguration("testReindexPublishedSiblings"));
-        suite.addTest(new TestSolrConfiguration("testPostProcessor"));
-        suite.addTest(new TestSolrConfiguration("testMaxResultConfiguration"));
-        suite.addTest(new TestSolrConfiguration("testShutDown"));
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getSpecialConfigFolder()
+     */
+    @Override
+    protected String getSpecialConfigFolder() {
 
-        TestSetup wrapper = new TestSetup(suite) {
+        return "/../org/opencms/search/solr";
+    }
 
-            @Override
-            protected void setUp() {
+    /**
+     * Disables all non-Solr indexes used by the legacy suite setup.<p>
+     */
+    @BeforeAll
+    public void disableNonSolrIndexes() {
 
-                setupOpenCms("solrtest", "", "/../org/opencms/search/solr");
-                // disable all lucene indexes
-                for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
-                    if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
-                        I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
-                        if (index != null) {
-                            index.setEnabled(false);
-                        }
-                    }
+        for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
+            if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
+                I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
+                if (index != null) {
+                    index.setEnabled(false);
                 }
             }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        }
     }
 
     /**
      * @throws Throwable
      */
+    @Order(2)
+    @Test
     public void testExtractionResults() throws Throwable {
 
         echo("Testing extraction results");
@@ -175,6 +172,8 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
     /**
      * Tests, if the configuration for the maximally processed search results is read correctly.
      */
+    @Order(5)
+    @Test
     public void testMaxResultConfiguration() {
 
         assertEquals(
@@ -204,6 +203,8 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
     /**
      * @throws Throwable
      */
+    @Order(1)
+    @Test
     public void testPermissionHandling() throws Throwable {
 
         echo("Testing search for permission check by comparing result counts");
@@ -232,6 +233,8 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Order(4)
+    @Test
     public void testPostProcessor() throws Exception {
 
         echo("Testing Solr link processor");
@@ -249,6 +252,8 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(3)
+    @Test
     public void testReindexPublishedSiblings() throws Throwable {
 
         echo("Test result count for changed content of two siblings");
@@ -297,41 +302,41 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         // Offline and Online both siblings should be found for the new content
         CmsSolrIndex oindex = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
         CmsSolrResultList rl = oindex.search(cms, query);
-        assertEquals("Both siblings must be found, they have the same content.", 2, rl.size());
+        assertEquals(2, rl.size(), "Both siblings must be found, they have the same content.");
 
         CmsSearchResource brotherDoc = rl.get(0);
         CmsSearchResource sisterDoc = rl.get(1);
 
         assertEquals(
-            "Brother must be there",
             "/sites/default/reindexPublishedSiblings/test_brother.pdf",
-            brotherDoc.getRootPath());
+            brotherDoc.getRootPath(),
+            "Brother must be there");
         assertEquals(
-            "Sister must be there",
             "/sites/default/reindexPublishedSiblings/test_sister.pdf",
-            sisterDoc.getRootPath());
+            sisterDoc.getRootPath(),
+            "Sister must be there");
 
         assertEquals(
-            "The content must be",
             "OpenCms Enterprise Content Management System",
-            brotherDoc.getField("content").trim());
+            brotherDoc.getField("content").trim(),
+            "The content must be");
 
         assertEquals(
-            "The content of the found documents must be equal",
             brotherDoc.getField("content"),
-            sisterDoc.getField("content"));
+            sisterDoc.getField("content"),
+            "The content of the found documents must be equal");
 
         query.setQuery("\"Solr Enterprise Serach\"");
         CmsSolrResultList rl2 = oindex.search(cms, query);
-        assertEquals("Old content must not be found anymore", 0, rl2.size());
+        assertEquals(0, rl2.size(), "Old content must not be found anymore");
 
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
         String sisterContent = new String(cms.readFile(sister).getContents());
         String brotherContent = new String(cms.readFile(brother).getContents());
         assertEquals(
-            "Sister and brother must have the same content in the online project",
             sisterContent,
-            brotherContent);
+            brotherContent,
+            "Sister and brother must have the same content in the online project");
     }
 
     /**
@@ -339,6 +344,8 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
      *
      * @throws Throwable
      */
+    @Order(6)
+    @Test
     public void testShutDown() throws Throwable {
 
         echo("Testing Solr shutdown");
@@ -367,8 +374,8 @@ public class TestSolrConfiguration extends OpenCmsTestCase {
         // success ?
         CmsFileUtil.purgeDirectory(new File(index.getPath()));
         assertTrue(
-            "The index folder must be deleted, otherwise some index lock may have prevent a successful purge.",
-            !new File(index.getPath()).exists());
+            !new File(index.getPath()).exists(),
+            "The index folder must be deleted, otherwise some index lock may have prevent a successful purge.");
     }
 
     /**

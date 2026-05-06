@@ -34,8 +34,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -43,63 +42,124 @@ import org.opencms.xml.CmsXmlEntityResolver;
 import java.util.Collections;
 import java.util.regex.Pattern;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for static export manager.<p>
  *
  * @since 6.0.0
  */
-public class TestCmsStaticExportManager extends OpenCmsTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsStaticExportManager extends OpenCmsJupiterTestCase {
 
     /** simple xml content schema system id, with attachment relation type. */
     private static final String SCHEMA_SYSTEM_ID_14 = "http://www.opencms.org/test14.xsd";
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public TestCmsStaticExportManager(String arg0) {
+    @Override
+    protected String getImportFolder() {
 
-        super(arg0);
+        return "simpletest";
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
      */
-    public static Test suite() {
+    @Override
+    protected String getTargetFolder() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+        return "/";
+    }
 
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsStaticExportManager.class.getName());
+    /**
+     * Tests the link generation for statically exported JSP files.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Order(1)
+    public void testExportJspLinkGeneration() throws Exception {
 
-        suite.addTest(new TestCmsStaticExportManager("testExportJspLinkGeneration"));
-        suite.addTest(new TestCmsStaticExportManager("testDefaultSuffixLinkGeneration"));
-        suite.addTest(new TestCmsStaticExportManager("testSiteExport"));
+        CmsObject cms = getCmsObject();
+        echo("Testing the link generation for exported JSP pages");
 
-        TestSetup wrapper = new TestSetup(suite) {
+        String folder = "/types/";
+        String vfsName = folder + "jsp.jsp";
+        CmsProperty exportProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORT, CmsStringUtil.TRUE, null);
+        cms.lockResource(folder);
+        cms.writePropertyObject(folder, exportProp);
+        cms.unlockResource(folder);
+        cms.lockResource(vfsName);
+        cms.writePropertyObject(vfsName, exportProp);
+        cms.unlockResource(vfsName);
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
 
-            @Override
-            protected void setUp() {
+        String rfsPrefix = OpenCms.getStaticExportManager().getRfsPrefix(
+            cms.getRequestContext().getSiteRoot() + folder);
+        String expected;
 
-                setupOpenCms("simpletest", "/");
-            }
+        echo("Testing basic export name generating functions for a JSP");
 
-            @Override
-            protected void tearDown() {
+        expected = rfsPrefix + cms.getRequestContext().getSiteRoot() + vfsName + ".html";
+        checkLinkWithoutParameters(cms, vfsName, expected);
+        checkLinkWithParameters(cms, vfsName, expected);
 
-                removeOpenCms();
-            }
+        echo("Testing export name generating functions for a JSP with 'exportname' property set");
 
-        };
+        cms.lockResource(folder);
+        cms.writePropertyObject(folder, new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME, "myfolder", null));
+        cms.unlockResource(folder);
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
 
-        return wrapper;
+        expected = rfsPrefix + "/myfolder/jsp.jsp.html";
+        checkLinkWithoutParameters(cms, vfsName, expected);
+        checkLinkWithParameters(cms, vfsName, expected);
+
+        echo(
+            "Testing export name generating functions for a JSP with 'exportname' property AND 'exportsuffix' property set");
+
+        cms.lockResource(vfsName);
+        cms.writePropertyObject(vfsName, new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTSUFFIX, ".txt", null));
+        cms.unlockResource(vfsName);
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        expected = rfsPrefix + "/myfolder/jsp.jsp.txt";
+        checkLinkWithoutParameters(cms, vfsName, expected);
+        checkLinkWithParameters(cms, vfsName, expected);
+
+        echo("Testing export name generating functions for a JSP with only 'exportsuffix' property set");
+
+        cms.lockResource(folder);
+        cms.writePropertyObject(
+            folder,
+            new CmsProperty(
+                CmsPropertyDefinition.PROPERTY_EXPORTNAME,
+                CmsProperty.DELETE_VALUE,
+                CmsProperty.DELETE_VALUE));
+        cms.unlockResource(folder);
+        cms.lockResource(vfsName);
+        cms.writePropertyObject(vfsName, new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTSUFFIX, ".pdf", null));
+        cms.unlockResource(vfsName);
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        expected = rfsPrefix + cms.getRequestContext().getSiteRoot() + vfsName + ".pdf";
+        checkLinkWithoutParameters(cms, vfsName, expected);
+        checkLinkWithParameters(cms, vfsName, expected);
     }
 
     /**
@@ -107,6 +167,8 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(2)
     public void testDefaultSuffixLinkGeneration() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -115,15 +177,14 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
         String folder = "/folder1/subfolder11/subsubfolder111/";
         String vfsName1 = folder + "image.gif";
         String vfsName2 = folder + "xml.xml";
-        // make sure "export" is not set for the folder
         CmsProperty exportProp = cms.readPropertyObject(vfsName1, CmsPropertyDefinition.PROPERTY_EXPORT, true);
         assertTrue(exportProp.isNullProperty());
 
-        // make sure static export on default is disabled
         OpenCms.getStaticExportManager().setDefault(CmsStringUtil.FALSE);
         String rfsPrefix = OpenCms.getStaticExportManager().getRfsPrefix(
             cms.getRequestContext().getSiteRoot() + folder);
-        String expected1, expected2;
+        String expected1;
+        String expected2;
 
         cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
 
@@ -146,11 +207,9 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
 
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
 
-        // set "exportname" property to JSP
         cms.lockResource(folder);
         cms.writePropertyObject(folder, new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME, "testfolder", null));
         cms.unlockResource(folder);
-        // publish the changes
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -171,135 +230,43 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
     }
 
     /**
-     * Tests the link generation for statically exported JSP files.<p>
-     *
-     * @throws Exception if the test fails
-     */
-    public void testExportJspLinkGeneration() throws Exception {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing the link generation for exported JSP pages");
-
-        // fist setup a little test scenario with the imported data
-        String folder = "/types/";
-        String vfsName = folder + "jsp.jsp";
-        CmsProperty exportProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORT, CmsStringUtil.TRUE, null);
-        cms.lockResource(folder);
-        cms.writePropertyObject(folder, exportProp);
-        cms.unlockResource(folder);
-        cms.lockResource(vfsName);
-        cms.writePropertyObject(vfsName, exportProp);
-        cms.unlockResource(vfsName);
-        // publish the changes
-        OpenCms.getPublishManager().publishProject(cms);
-        OpenCms.getPublishManager().waitWhileRunning();
-
-        String rfsPrefix = OpenCms.getStaticExportManager().getRfsPrefix(
-            cms.getRequestContext().getSiteRoot() + folder);
-        String expected;
-
-        echo("Testing basic export name generating functions for a JSP");
-
-        expected = rfsPrefix + cms.getRequestContext().getSiteRoot() + vfsName + ".html";
-        checkLinkWithoutParameters(cms, vfsName, expected);
-        checkLinkWithParameters(cms, vfsName, expected);
-
-        echo("Testing export name generating functions for a JSP with 'exportname' property set");
-
-        // set "exportname" property to JSP
-        cms.lockResource(folder);
-        cms.writePropertyObject(folder, new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME, "myfolder", null));
-        cms.unlockResource(folder);
-        // publish the changes
-        OpenCms.getPublishManager().publishProject(cms);
-        OpenCms.getPublishManager().waitWhileRunning();
-
-        expected = rfsPrefix + "/myfolder/jsp.jsp.html";
-        checkLinkWithoutParameters(cms, vfsName, expected);
-        checkLinkWithParameters(cms, vfsName, expected);
-
-        echo(
-            "Testing export name generating functions for a JSP with 'exportname' property AND 'exportsuffix' property set");
-
-        // set "exportsuffix" property to JSP
-        cms.lockResource(vfsName);
-        cms.writePropertyObject(vfsName, new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTSUFFIX, ".txt", null));
-        cms.unlockResource(vfsName);
-        // publish the changes
-        OpenCms.getPublishManager().publishProject(cms);
-        OpenCms.getPublishManager().waitWhileRunning();
-
-        expected = rfsPrefix + "/myfolder/jsp.jsp.txt";
-        checkLinkWithoutParameters(cms, vfsName, expected);
-        checkLinkWithParameters(cms, vfsName, expected);
-
-        echo("Testing export name generating functions for a JSP with only 'exportsuffix' property set");
-
-        // remove "exportname" property from JSP
-        cms.lockResource(folder);
-        cms.writePropertyObject(
-            folder,
-            new CmsProperty(
-                CmsPropertyDefinition.PROPERTY_EXPORTNAME,
-                CmsProperty.DELETE_VALUE,
-                CmsProperty.DELETE_VALUE));
-        cms.unlockResource(folder);
-        cms.lockResource(vfsName);
-        cms.writePropertyObject(vfsName, new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTSUFFIX, ".pdf", null));
-        cms.unlockResource(vfsName);
-        // publish the changes
-        OpenCms.getPublishManager().publishProject(cms);
-        OpenCms.getPublishManager().waitWhileRunning();
-
-        expected = rfsPrefix + cms.getRequestContext().getSiteRoot() + vfsName + ".pdf";
-        checkLinkWithoutParameters(cms, vfsName, expected);
-        checkLinkWithParameters(cms, vfsName, expected);
-    }
-
-    /**
      * Tests saving XML contents with links from/to various sites.<p>
-     * 
-     * @throws Exception 
+     *
+     * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testSiteExport() throws Exception {
 
-        // set the site root to the root site
         CmsObject cms = getCmsObject();
         cms.getRequestContext().setSiteRoot("");
 
         CmsProperty exportProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORT, CmsStringUtil.TRUE, null);
         CmsProperty exportNameProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME, "/", null);
 
-        // create site folder one
         CmsResource siteFolder = cms.createResource("/sites/site-one/", CmsResourceTypeFolder.getStaticTypeId());
         cms.writePropertyObject(siteFolder.getRootPath(), exportProp);
         cms.writePropertyObject(siteFolder.getRootPath(), exportNameProp);
         cms.unlockResource(siteFolder.getRootPath());
 
-        // create site folder two
         siteFolder = cms.createResource("/sites/site-two/", CmsResourceTypeFolder.getStaticTypeId());
         cms.writePropertyObject(siteFolder.getRootPath(), exportProp);
         cms.writePropertyObject(siteFolder.getRootPath(), exportNameProp);
         cms.unlockResource(siteFolder.getRootPath());
 
-        // unmarshal content definition
         String content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-14.xsd",
             CmsEncoder.ENCODING_UTF_8);
-        // store content definition in entitiy resolver
         CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_14, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
-        // Create files for site one
         createTestFile("/sites/site-one/testfile-file1.html");
         createTestFile("/sites/site-one/testfile-file2.html");
         createTestFile("/sites/site-one/testfile-file3.html");
 
-        // Create files for site two
         createTestFile("/sites/site-two/testfile-file1.html");
         createTestFile("/sites/site-two/testfile-file2.html");
         createTestFile("/sites/site-two/testfile-file3.html");
 
-        // publish the created site folders
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
@@ -318,7 +285,6 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
         checkLinkWithParameters(cms, "/testfile-file1.html", "/data/export/testfile-file1.html");
         checkLinkWithParameters(cms, "/testfile-file2.html", "/data/export/testfile-file2.html");
         checkLinkWithParameters(cms, "/testfile-file3.html", "/data/export/testfile-file3.html");
-
     }
 
     /**
@@ -330,7 +296,6 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
      */
     private void checkLinkWithoutParameters(CmsObject cms, String vfsName, String expected) {
 
-        // check JSP without parameters
         String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
         System.out.println("RFS name: " + rfsName + " VFS name: " + vfsName);
         assertEquals(expected, rfsName);
@@ -346,7 +311,6 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
      */
     private void checkLinkWithParameters(CmsObject cms, String vfsName, String expected) {
 
-        // check JSP WITH parameters
         String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName, "?a=b&c=d", null);
         System.out.println("RFS name: " + rfsName + " VFS name: " + vfsName);
         String extension = expected.substring(expected.lastIndexOf('.'));
@@ -358,10 +322,10 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
 
     /**
      * Creates a test file for the testSiteLinks test.<p>
-     * 
-     * @param rootPath the test file path 
-     * @return the new test file 
-     * @throws Exception if something goes wrong 
+     *
+     * @param rootPath the test file path
+     * @return the new test file
+     * @throws Exception if something goes wrong
      */
     private CmsResource createTestFile(String rootPath) throws Exception {
 
@@ -369,7 +333,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
         cms.getRequestContext().setSiteRoot("");
         int xmlcontentType = OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId();
         byte[] content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-14.xml");
-        CmsResource tsl = cms.createResource(rootPath, xmlcontentType, content, Collections.<CmsProperty> emptyList());
+        CmsResource tsl = cms.createResource(rootPath, xmlcontentType, content, Collections.<CmsProperty>emptyList());
         cms.unlockResource(tsl);
         return tsl;
     }

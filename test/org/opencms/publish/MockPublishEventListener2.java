@@ -33,11 +33,11 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
 /**
- * Test event listener implementation, restarting the engine while a publish job is running.<p>
+ * Mock event listener implementation, restarting the engine while a publish job is running.<p>
  *
  * @since 6.5.5
  */
-public class TestPublishEventListener2 implements I_CmsPublishEventListener {
+public class MockPublishEventListener2 implements I_CmsPublishEventListener {
 
     /** The cms object. */
     private CmsObject m_cms;
@@ -47,7 +47,7 @@ public class TestPublishEventListener2 implements I_CmsPublishEventListener {
      *
      * @param cms the cms object
      */
-    public TestPublishEventListener2(CmsObject cms) {
+    public MockPublishEventListener2(CmsObject cms) {
 
         m_cms = cms;
     }

@@ -43,6 +43,7 @@ import org.junit.platform.suite.api.Suite;
  */
 @Suite
 @SelectClasses({
+    org.opencms.setup.AllTests.class,
     org.opencms.ade.configuration.AllTests.class,
     org.opencms.ade.containerpage.inherited.AllTests.class,
     org.opencms.ade.contenteditor.AllTests.class,
@@ -53,11 +54,29 @@ import org.junit.platform.suite.api.Suite;
     org.opencms.file.collectors.AllTests.class,
     org.opencms.file.types.AllTests.class,
     org.opencms.file.wrapper.AllTests.class,
+    org.opencms.flex.AllTests.class,
+    org.opencms.importexport.AllTests.class,
+    org.opencms.jsp.decorator.AllTests.class,
+    org.opencms.jsp.search.AllTests.class,
+    org.opencms.jsp.search.config.AllTests.class,
+    org.opencms.jsp.search.config.parser.AllTests.class,
+    org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.AllTests.class,
+    // Not included directly in the legacy top-level suite; appended for jsp.search subtree coverage.
+    org.opencms.jsp.search.controller.AllTests.class,
+    org.opencms.jsp.search.result.AllTests.class,
     org.opencms.jsp.util.AllTests.class,
+    org.opencms.loader.AllTests.class,
     org.opencms.main.AllTests.class,
     org.opencms.module.AllTests.class,
+    org.opencms.notification.AllTests.class,
+    org.opencms.publish.AllTests.class,
     org.opencms.scheduler.AllTests.class,
+    org.opencms.search.AllTests.class,
+    org.opencms.search.extractors.AllTests.class,
+    org.opencms.search.gallery.AllTests.class,
+    org.opencms.search.solr.AllTests.class,
     org.opencms.site.AllTests.class,
+    org.opencms.staticexport.AllTests.class,
     org.opencms.util.AllTests.class,
     org.opencms.xml.AllTests.class,
     org.opencms.xml.containerpage.AllTests.class,
@@ -66,7 +85,6 @@ import org.junit.platform.suite.api.Suite;
     org.opencms.widgets.AllTests.class,
     org.opencms.workplace.AllTests.class,
     org.opencms.ugc.AllTests.class,
-    org.opencms.security.AllTests.class,
-    org.opencms.jsp.decorator.AllTests.class
+    org.opencms.security.AllTests.class
 })
 public final class AllJupiterTests {}

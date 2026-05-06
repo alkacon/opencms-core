@@ -38,8 +38,7 @@ import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfigurationOldCategories;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -47,15 +46,26 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Unit test for advanced search features.<p>
  *
  */
-public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsSearchAdvancedFeatures extends OpenCmsJupiterTestCase {
 
     /** Name of the index used for testing. */
     public static final String INDEX_OFFLINE = "Offline project (VFS)";
@@ -64,51 +74,21 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
     public static final String INDEX_ONLINE = "Online project (VFS)";
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public TestCmsSearchAdvancedFeatures(String arg0) {
+    @Override
+    protected String getImportFolder() {
 
-        super(arg0);
+        return "simpletest";
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
      */
-    public static Test suite() {
+    @Override
+    protected String getTargetFolder() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsSearchAdvancedFeatures.class.getName());
-
-        suite.addTest(new TestCmsSearchAdvancedFeatures("testSortSearchResults"));
-        suite.addTest(new TestCmsSearchAdvancedFeatures("testSearchCategories"));
-        suite.addTest(new TestCmsSearchAdvancedFeatures("testMultipleSearchRoots"));
-        suite.addTest(new TestCmsSearchAdvancedFeatures("testSearchRestriction"));
-        suite.addTest(new TestCmsSearchAdvancedFeatures("testLimitTimeRanges"));
-        suite.addTest(new TestCmsSearchAdvancedFeatures("testLimitTimeRangesOptimized"));
-        suite.addTest(new TestCmsSearchAdvancedFeatures("testOnlyFilterSearch"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        return "/";
     }
 
     /**
@@ -116,6 +96,8 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(5)
+    @Test
     public void testLimitTimeRanges() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -123,7 +105,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
         CmsSearchIndex index = (CmsSearchIndex)OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
         index.addConfigurationParameter(CmsSearchIndex.TIME_RANGE, "true");
-        assertTrue("Index '" + INDEX_OFFLINE + "' not checking time range as expected", index.isCheckingTimeRange());
+        assertTrue(index.isCheckingTimeRange(), "Index '" + INDEX_OFFLINE + "' not checking time range as expected");
 
         CmsSearch searchBean = new CmsSearch();
         List<CmsSearchResult> searchResult;
@@ -206,6 +188,8 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(6)
+    @Test
     public void testLimitTimeRangesOptimized() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -213,7 +197,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
         CmsSearchIndex index = (CmsSearchIndex)OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
         index.addConfigurationParameter(CmsSearchIndex.TIME_RANGE, "false");
-        assertFalse("Index '" + INDEX_OFFLINE + "' checking time range but should not", index.isCheckingTimeRange());
+        assertFalse(index.isCheckingTimeRange(), "Index '" + INDEX_OFFLINE + "' checking time range but should not");
 
         CmsSearch searchBean = new CmsSearch();
         List<CmsSearchResult> searchResult;
@@ -303,6 +287,8 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(3)
+    @Test
     public void testMultipleSearchRoots() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -345,6 +331,8 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(7)
+    @Test
     public void testOnlyFilterSearch() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -352,7 +340,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
         CmsSearchIndex index = (CmsSearchIndex)OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
         index.addConfigurationParameter(CmsSearchIndex.TIME_RANGE, "false");
-        assertFalse("Index '" + INDEX_OFFLINE + "' checking time range but should not", index.isCheckingTimeRange());
+        assertFalse(index.isCheckingTimeRange(), "Index '" + INDEX_OFFLINE + "' checking time range but should not");
 
         CmsSearch searchBean = new CmsSearch();
         List<CmsSearchResult> searchResult;
@@ -403,6 +391,8 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(2)
+    @Test
     public void testSearchCategories() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -496,6 +486,8 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(4)
+    @Test
     public void testSearchRestriction() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -611,6 +603,8 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(1)
+    @Test
     public void testSortSearchResults() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -634,18 +628,18 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         System.out.println("Result sorted by relevance:");
         TestCmsSearch.printResults(searchResult, cms);
         assertTrue(
-            "Best match by sore must always be 100 but is " + searchResult.get(0).getScore(),
-            searchResult.get(0).getScore() == 100);
+            searchResult.get(0).getScore() == 100,
+            "Best match by sore must always be 100 but is " + searchResult.get(0).getScore());
         for (int i = 1; i < searchResult.size(); i++) {
             assertTrue(
+                searchResult.get(i - 1).getScore() >= searchResult.get(i).getScore(),
                 "Resource "
                     + searchResult.get(i - 1).getPath()
                     + " not sorted as expected - index ["
                     + (i - 1)
                     + "/"
                     + i
-                    + "]",
-                searchResult.get(i - 1).getScore() >= searchResult.get(i).getScore());
+                    + "]");
         }
 
         // second run use Title sort order

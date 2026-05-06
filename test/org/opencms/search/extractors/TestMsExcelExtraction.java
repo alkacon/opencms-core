@@ -27,22 +27,52 @@
 
 package org.opencms.search.extractors;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+
 /**
  * Tests the text extraction form an Excel file.<p>
  */
-public class TestMsExcelExtraction extends OpenCmsTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestMsExcelExtraction extends OpenCmsJupiterTestCase {
+
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
+     */
+    @Override
+    protected boolean shouldBootOpenCms() {
+
+        return false;
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
+     */
+    @Override
+    protected boolean shouldInitConfiguration() {
+
+        return false;
+    }
 
     /**
      * Tests the Excel text extraction for old OLE2 documents.<p>
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testExcelExtractionOLE2() throws Exception {
 
         // open an input stream for the test file
@@ -92,6 +122,7 @@ public class TestMsExcelExtraction extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testExcelExtractionOOXML() throws Exception {
 
         // open an input stream for the test file

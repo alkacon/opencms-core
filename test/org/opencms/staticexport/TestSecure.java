@@ -33,23 +33,29 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for the XML page that require a running OpenCms system.<p>
  *
  * @since 6.0.0
  */
-public class TestSecure extends OpenCmsTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestSecure extends OpenCmsJupiterTestCase {
 
     /** the prefix of the normal server. */
     private static final String SERVER_NORMAL = "http://localhost";
@@ -58,49 +64,21 @@ public class TestSecure extends OpenCmsTestCase {
     private static final String SERVER_SECURE = "https://localhost";
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public TestSecure(String arg0) {
+    @Override
+    protected String getImportFolder() {
 
-        super(arg0);
+        return "simpletest";
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
      */
-    public static Test suite() {
+    @Override
+    protected String getTargetFolder() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestSecure.class.getName());
-
-        suite.addTest(new TestSecure("testSecureServerConfig"));
-        suite.addTest(new TestSecure("testLinkInXmlPage"));
-        suite.addTest(new TestSecure("testSecureLinkProcessing"));
-        suite.addTest(new TestSecure("testSetupSecondSite"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-
-        };
-
-        return wrapper;
+        return "/";
     }
 
     /**
@@ -109,6 +87,8 @@ public class TestSecure extends OpenCmsTestCase {
      * make a link from one site to another site, and check, if the correct prefixes are set
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(2)
     public void testLinkInXmlPage() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -139,6 +119,8 @@ public class TestSecure extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(3)
     public void testSecureLinkProcessing() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -173,6 +155,8 @@ public class TestSecure extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(1)
     public void testSecureServerConfig() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -192,6 +176,8 @@ public class TestSecure extends OpenCmsTestCase {
      * make a link from one site to another site, and check, if the correct prefixes are set
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(4)
     public void testSetupSecondSite() throws Exception {
 
         CmsObject cms = getCmsObject();

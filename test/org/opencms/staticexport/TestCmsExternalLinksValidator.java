@@ -29,60 +29,44 @@ package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
 import org.opencms.relations.CmsExternalLinksValidator;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.util.CmsUriSplitter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
  * @since 7.0.4
  */
-public class TestCmsExternalLinksValidator extends OpenCmsTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsExternalLinksValidator extends OpenCmsJupiterTestCase {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public TestCmsExternalLinksValidator(String arg0) {
+    @Override
+    protected String getImportFolder() {
 
-        super(arg0);
+        return "simpletest";
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
      */
-    public static Test suite() {
+    @Override
+    protected String getTargetFolder() {
 
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsExternalLinksValidator.class.getName());
-        suite.addTest(new TestCmsExternalLinksValidator("testExternalLinksOutside"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-
-        };
-
-        return wrapper;
+        return "/";
     }
 
     /**
@@ -93,6 +77,8 @@ public class TestCmsExternalLinksValidator extends OpenCmsTestCase {
      *
      * @throws Exception if test fails
      */
+    @Test
+    @Order(1)
     public void testExternalLinksOutside() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -112,7 +98,7 @@ public class TestCmsExternalLinksValidator extends OpenCmsTestCase {
             String url = list.get(i);
             System.out.println("Checking external link: " + url);
             System.out.println("  Extenal link encoded: " + new CmsUriSplitter(url, true).toURI().toURL());
-            assertTrue("External link check failed:" + url, CmsExternalLinksValidator.checkUrl(cms, url));
+            assertTrue(CmsExternalLinksValidator.checkUrl(cms, url), "External link check failed:" + url);
         }
     }
 }

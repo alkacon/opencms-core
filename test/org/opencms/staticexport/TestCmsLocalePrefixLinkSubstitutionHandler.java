@@ -31,68 +31,60 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.util.CmsPair;
 
 import java.util.TreeMap;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /** Tests for the {@link CmsLocalePrefixLinkSubstitutionHandler}. */
-public class TestCmsLocalePrefixLinkSubstitutionHandler extends OpenCmsTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsLocalePrefixLinkSubstitutionHandler extends OpenCmsJupiterTestCase {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public TestCmsLocalePrefixLinkSubstitutionHandler(String arg0) {
+    @Override
+    protected String getImportFolder() {
 
-        super(arg0);
+        return "multisite";
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
      */
-    public static Test suite() {
+    @Override
+    protected String getTargetFolder() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+        return "/";
+    }
 
-        TestSuite suite = new TestSuite();
-        suite.addTest(new TestCmsLocalePrefixLinkSubstitutionHandler("testAddVfsPrefix"));
-        suite.addTest(new TestCmsLocalePrefixLinkSubstitutionHandler("testGetRootPath"));
+    /**
+     * Preserves the legacy suite setup which switched the default site to single-tree localization.<p>
+     */
+    @BeforeAll
+    public void setUpLocalizationMode() {
 
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("multisite", "/");
-                TreeMap<String, String> parameters = new TreeMap<String, String>();
-                parameters.put("localizationMode", "singleTree");
-                OpenCms.getSiteManager().getSite("/sites/default/", null).setParameters(parameters);
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-
-        };
-
-        return wrapper;
+        TreeMap<String, String> parameters = new TreeMap<String, String>();
+        parameters.put("localizationMode", "singleTree");
+        OpenCms.getSiteManager().getSite("/sites/default/", null).setParameters(parameters);
     }
 
     /**
      * Test path and parameter adjustment in the single tree scenario.
      * @throws CmsException thrown if getting the CmsObject fails
      */
+    @Test
+    @Order(1)
     public void testAddVfsPrefix() throws CmsException {
 
         CmsLocalePrefixLinkSubstitutionHandler handler = new CmsLocalePrefixLinkSubstitutionHandler();
@@ -130,6 +122,8 @@ public class TestCmsLocalePrefixLinkSubstitutionHandler extends OpenCmsTestCase 
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(2)
     public void testGetRootPath() throws Exception {
 
         CmsObject cms = getCmsObject();

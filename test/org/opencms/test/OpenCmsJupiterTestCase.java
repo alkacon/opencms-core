@@ -28,6 +28,8 @@
 package org.opencms.test;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.OpenCms;
+import org.opencms.setup.CmsSetupDb;
 
 import org.dom4j.Document;
 import org.junit.jupiter.api.AfterAll;
@@ -57,6 +59,7 @@ public abstract class OpenCmsJupiterTestCase {
     public static final String C_AUML_LOWER = "\u00e4";
     public static final String C_AUML_UPPER = "\u00c4";
     public static final String C_EURO = "\u20ac";
+    public static final String DB_ORACLE = OpenCmsTestEnvironment.DB_ORACLE;
     public static final String C_OUML_LOWER = "\u00f6";
     public static final String C_OUML_UPPER = "\u00d6";
     public static final String C_SHARP_S = "\u00df";
@@ -159,6 +162,16 @@ public abstract class OpenCmsJupiterTestCase {
     }
 
     /**
+     * Returns the configured database product.<p>
+     *
+     * @return the configured database product
+     */
+    protected String getDatabaseProduct() {
+
+        return m_testEnvironment.getDatabaseProduct();
+    }
+
+    /**
      * Returns whether to run the publish script during setup.<p>
      * Subclasses can override this.
      *
@@ -218,6 +231,20 @@ public abstract class OpenCmsJupiterTestCase {
     }
 
     /**
+     * Returns whether the standard per-test start header should be logged from the base
+     * {@link BeforeEach} callback.<p>
+     *
+     * Subclasses can override this if they need to preserve a legacy setup-first output order
+     * and log the header themselves after custom setup.
+     *
+     * @return true to log from the base callback, false otherwise
+     */
+    protected boolean shouldLogTestStartBeforeEach() {
+
+        return true;
+    }
+
+    /**
      * Boots OpenCms once before any test method in the class runs.<p>
      */
     @BeforeAll
@@ -249,6 +276,7 @@ public abstract class OpenCmsJupiterTestCase {
         if (!shouldBootOpenCms()) {
             return;
         }
+        OpenCms.getPublishManager().waitWhileRunning();
         OpenCmsTestEnvironment.removeOpenCms(getClass().getName());
     }
 
@@ -260,7 +288,30 @@ public abstract class OpenCmsJupiterTestCase {
     @BeforeEach
     void logTestStart(TestInfo testInfo) {
 
+        prepareCurrentTest(testInfo);
+        if (!shouldLogTestStartBeforeEach()) {
+            return;
+        }
+        printTestStart(testInfo);
+    }
+
+    /**
+     * Prepares the current test method name.<p>
+     *
+     * @param testInfo the test info
+     */
+    protected final void prepareCurrentTest(TestInfo testInfo) {
+
         m_currentTestName = testInfo.getTestMethod().map(m -> m.getName()).orElse("unknown");
+    }
+
+    /**
+     * Prints the standard test start header.<p>
+     *
+     * @param testInfo the test info
+     */
+    protected final void printTestStart(TestInfo testInfo) {
+
         String displayName = testInfo.getDisplayName();
         String logTestName = displayName.equals(m_currentTestName + "()") ? m_currentTestName : displayName;
         System.out.println();
@@ -583,6 +634,15 @@ public abstract class OpenCmsJupiterTestCase {
         m_testEnvironment.assertModifiedInCurrentProject(cms, resourceName, shouldHaveRedFlag);
     }
 
+    public void assertPermissionString(
+        CmsObject cms,
+        String resourceName,
+        org.opencms.file.CmsUser user,
+        String expectedPermissionString) throws org.opencms.main.CmsException {
+
+        m_testEnvironment.assertPermissionString(cms, resourceName, user, expectedPermissionString);
+    }
+
     public void assertSiblingCount(CmsObject cms, String resourceName, int count) {
 
         m_testEnvironment.assertSiblingCount(cms, resourceName, count);
@@ -635,6 +695,56 @@ public abstract class OpenCmsJupiterTestCase {
     }
 
     /**
+     * Returns the configured database product key.<p>
+     *
+     * @return the configured database product key
+     */
+    protected String getDbProduct() {
+
+        return OpenCmsTestEnvironment.getDbProduct();
+    }
+
+    /**
+     * Returns a setup DB instance using the default database connection.<p>
+     *
+     * @return the setup DB instance
+     */
+    protected CmsSetupDb getSetupDbForDefaultConnection() {
+
+        return OpenCmsTestEnvironment.getSetupDb(OpenCmsTestEnvironment.m_defaultConnection);
+    }
+
+    /**
+     * Returns a setup DB instance using the setup database connection.<p>
+     *
+     * @return the setup DB instance
+     */
+    protected CmsSetupDb getSetupDbForSetupConnection() {
+
+        return OpenCmsTestEnvironment.getSetupDb(OpenCmsTestEnvironment.m_setupConnection);
+    }
+
+    /**
+     * Returns the replacer map for the default database connection.<p>
+     *
+     * @return the replacer map
+     */
+    protected java.util.Map<String, String> getDefaultConnectionReplacer() {
+
+        return OpenCmsTestEnvironment.getReplacer(OpenCmsTestEnvironment.m_defaultConnection);
+    }
+
+    /**
+     * Checks the setup DB instance for errors.<p>
+     *
+     * @param setupDb the setup DB instance
+     */
+    protected void checkErrors(CmsSetupDb setupDb) {
+
+        OpenCmsTestEnvironment.checkErrors(setupDb);
+    }
+
+    /**
      * Removes the test database.<p>
      */
     protected void removeDatabase() {
@@ -654,6 +764,76 @@ public abstract class OpenCmsJupiterTestCase {
     protected void importResources(CmsObject cms, String importFile, String targetPath) throws org.opencms.main.CmsException {
 
         OpenCmsTestEnvironment.importResources(cms, importFile, targetPath);
+    }
+
+    /**
+     * Imports a module from the test package path.<p>
+     *
+     * @param cms the CMS context
+     * @param moduleName the module name
+     *
+     * @throws org.opencms.main.CmsException if importing fails
+     */
+    protected void importModule(CmsObject cms, String moduleName) throws org.opencms.main.CmsException {
+
+        OpenCmsTestEnvironment.importModule(cms, moduleName);
+    }
+
+    /**
+     * Imports a module from the test package path using a suffix and subfolder.<p>
+     *
+     * @param cms the CMS context
+     * @param moduleName the module name
+     * @param suffix the module file suffix
+     * @param subfolder the module subfolder
+     *
+     * @throws org.opencms.main.CmsException if importing fails
+     */
+    protected void importModule(CmsObject cms, String moduleName, String suffix, String subfolder)
+    throws org.opencms.main.CmsException {
+
+        OpenCmsTestEnvironment.importModule(cms, moduleName, suffix, subfolder);
+    }
+
+    /**
+     * Imports a test resource into the VFS.<p>
+     *
+     * @param cms the CMS context
+     * @param rfsPath the resource path on the classpath
+     * @param vfsPath the VFS target path
+     * @param type the resource type id
+     * @param properties the resource properties
+     *
+     * @return the imported resource
+     *
+     * @throws Exception if importing fails
+     */
+    protected org.opencms.file.CmsResource importTestResource(
+        CmsObject cms,
+        String rfsPath,
+        String vfsPath,
+        int type,
+        java.util.List<org.opencms.file.CmsProperty> properties)
+    throws Exception {
+
+        return OpenCmsTestEnvironment.importTestResource(cms, rfsPath, vfsPath, type, properties);
+    }
+
+    /**
+     * Tests if the given publish jobs are internally equal.<p>
+     *
+     * @param j1 first job to compare
+     * @param j2 second job to compare
+     * @param comparePublishLists if the publish lists should be compared, too
+     * @param compareTime if the timestamps should be compared, too
+     */
+    protected void assertPublishJobEquals(
+        org.opencms.publish.CmsPublishJobBase j1,
+        org.opencms.publish.CmsPublishJobBase j2,
+        boolean comparePublishLists,
+        boolean compareTime) {
+
+        m_testEnvironment.assertEquals(j1, j2, comparePublishLists, compareTime);
     }
 
     /**

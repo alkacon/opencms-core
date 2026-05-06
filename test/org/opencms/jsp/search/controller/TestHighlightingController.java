@@ -27,50 +27,55 @@
 
 package org.opencms.jsp.search.controller;
 
-import static org.junit.Assert.assertArrayEquals;
-
 import org.opencms.jsp.search.config.CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
 import org.opencms.search.solr.CmsSolrQuery;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /** Tests for the highlighting controller. */
-public class TestHighlightingController extends OpenCmsTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestHighlightingController extends OpenCmsJupiterTestCase {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
      */
-    public TestHighlightingController(String arg0) {
+    @Override
+    protected boolean shouldBootOpenCms() {
 
-        super(arg0);
+        return false;
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
      */
-    public static Test suite() {
+    @Override
+    protected boolean shouldInitConfiguration() {
 
-        TestSuite suite = new TestSuite();
-        suite.addTest(new TestHighlightingController("testQueryParts"));
-        return suite;
+        return false;
     }
 
     /**
      * Tests if the query parts are correctly added according to the provided configuration.
      */
-    @org.junit.Test
+    @Order(1)
+    @Test
     public void testQueryParts() {
 
         Map<String, String> hlParams = new LinkedHashMap<>(10);

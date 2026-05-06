@@ -27,28 +27,57 @@
 
 package org.opencms.flex;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /**
  * Tests for the CmsFlexCacheEntry.<p>
  */
-public class TestCmsFlexCacheEntry extends OpenCmsTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestCmsFlexCacheEntry extends OpenCmsJupiterTestCase {
+
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
+     */
+    @Override
+    protected boolean shouldBootOpenCms() {
+
+        return false;
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
+     */
+    @Override
+    protected boolean shouldInitConfiguration() {
+
+        return false;
+    }
 
     /**
      * Tests the method getAbsoluteUri.<p>
      */
+    @Test
     public void testSetDateLastModifiedToPreviousTimeout() {
 
-        CmsFlexCacheEntry entry = new CmsFlexCacheEntry();
-        long timeout = 1;
+        final CmsFlexCacheEntry entry = new CmsFlexCacheEntry();
+        final long timeout = 1;
 
         entry.complete();
         entry.setDateExpiresToNextTimeout(timeout);
         entry.setDateLastModifiedToPreviousTimeout(timeout);
 
-        long timeExpire = entry.getDateExpires();
-        long timeLastMod = entry.getDateLastModified();
-        long timeoutDiff = (timeExpire - timeLastMod) / 60000;
+        final long timeExpire = entry.getDateExpires();
+        final long timeLastMod = entry.getDateLastModified();
+        final long timeoutDiff = (timeExpire - timeLastMod) / 60000;
         assertEquals(timeout, timeoutDiff);
 
     }

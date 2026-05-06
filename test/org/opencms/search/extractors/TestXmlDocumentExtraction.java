@@ -32,71 +32,37 @@ import org.opencms.file.CmsResource;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.documents.CmsDocumentXmlContent;
 import org.opencms.search.documents.CmsDocumentXmlPage;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /**
  * Tests the text extraction for <code>xmlpage</code> and <code>xmlcontent</code> resources.<p>
  *
  */
-public class TestXmlDocumentExtraction extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestXmlDocumentExtraction(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestXmlDocumentExtraction.class.getName());
-
-        suite.addTest(new TestXmlDocumentExtraction("textXmlPageExtraction"));
-        suite.addTest(new TestXmlDocumentExtraction("textXmlContentExtraction"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestXmlDocumentExtraction extends OpenCmsJupiterTestCase {
 
     /**
      * Tests the <code>xmlpage</code> content extraction.<p>
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(1)
     public void textXmlPageExtraction() throws Exception {
 
         CmsDocumentXmlPage doc = new CmsDocumentXmlPage("xmlpage");
@@ -118,6 +84,8 @@ public class TestXmlDocumentExtraction extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(2)
     public void textXmlContentExtraction() throws Exception {
 
         CmsDocumentXmlContent doc = new CmsDocumentXmlContent("xmlcontent");

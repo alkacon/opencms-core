@@ -27,21 +27,51 @@
 
 package org.opencms.search.extractors;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
 import java.util.Map;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+
 /**
  * Tests the text extraction form an Excel file.<p>
  */
-public class TestHtmllExtraction extends OpenCmsTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestHtmllExtraction extends OpenCmsJupiterTestCase {
+
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
+     */
+    @Override
+    protected boolean shouldBootOpenCms() {
+
+        return false;
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
+     */
+    @Override
+    protected boolean shouldInitConfiguration() {
+
+        return false;
+    }
 
     /**
      * Tests the basic Html extraction.<p>
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testBasicHtmlExtraction() throws Exception {
 
         // open an input stream for the test file
@@ -55,7 +85,7 @@ public class TestHtmllExtraction extends OpenCmsTestCase {
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
         String result = extractionResult.getContent();
-        assertEquals(result, items.get(I_CmsExtractionResult.ITEM_CONTENT));
+        assertEquals(items.get(I_CmsExtractionResult.ITEM_CONTENT), result);
 
         System.out.println("---------------------------------------------------------------");
         System.out.println("Extracted from HTML:");

@@ -81,6 +81,49 @@ import java.util.Map;
 @org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
 public class TestJSONSearchConfigurationParser extends OpenCmsJupiterTestCase {
 
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
+     */
+    @Override
+    protected String getImportFolder() {
+
+        return "simpletest";
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
+     */
+    @Override
+    protected String getTargetFolder() {
+
+        return "/";
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getSpecialConfigFolder()
+     */
+    @Override
+    protected String getSpecialConfigFolder() {
+
+        return "/../org/opencms/search/solr";
+    }
+
+    /**
+     * Disables all Lucene indexes to match the legacy suite wrapper setup.<p>
+     */
+    @org.junit.jupiter.api.BeforeAll
+    public void disableIndexes() {
+
+        for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
+            if (!indexName.equalsIgnoreCase(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE)) {
+                I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
+                if (index != null) {
+                    index.setEnabled(false);
+                }
+            }
+        }
+    }
+
     
 
     /**

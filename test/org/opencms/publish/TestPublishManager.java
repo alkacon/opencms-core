@@ -37,67 +37,45 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
 import java.util.Iterator;
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit tests for the publish manager.<p>
  */
-public class TestPublishManager extends OpenCmsTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestPublishManager extends OpenCmsJupiterTestCase {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public TestPublishManager(String arg0) {
+    @Override
+    protected String getImportFolder() {
 
-        super(arg0);
+        return "simpletest";
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
      */
-    public static Test suite() {
+    @Override
+    protected String getTargetFolder() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestPublishManager.class.getName());
-
-        suite.addTest(new TestPublishManager("testPublishReport"));
-        suite.addTest(new TestPublishManager("testAbortJob"));
-        suite.addTest(new TestPublishManager("testRunning"));
-        suite.addTest(new TestPublishManager("testStop"));
-        suite.addTest(new TestPublishManager("testListener"));
-        suite.addTest(new TestPublishManager("testInitialization1"));
-        suite.addTest(new TestPublishManager("testInitialization2"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        return "/";
     }
 
     /**
@@ -105,6 +83,8 @@ public class TestPublishManager extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testAbortJob() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -187,6 +167,8 @@ public class TestPublishManager extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testInitialization1() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -238,7 +220,7 @@ public class TestPublishManager extends OpenCmsTestCase {
         while (n.hasNext() && o.hasNext()) {
             CmsPublishJobEnqueued newJob = (CmsPublishJobEnqueued)n.next();
             CmsPublishJobEnqueued oldJob = (CmsPublishJobEnqueued)o.next();
-            assertEquals(newJob, oldJob, true, true);
+            assertPublishJobEquals(newJob, oldJob, true, true);
         }
 
         // compare old and new history
@@ -256,7 +238,7 @@ public class TestPublishManager extends OpenCmsTestCase {
         while (n.hasNext() && o.hasNext()) {
             CmsPublishJobFinished newJob = (CmsPublishJobFinished)n.next();
             CmsPublishJobFinished oldJob = (CmsPublishJobFinished)o.next();
-            assertEquals(newJob, oldJob, false, true);
+            assertPublishJobEquals(newJob, oldJob, false, true);
         }
 
         // start the publish engine and wait until all jobs are published
@@ -269,6 +251,8 @@ public class TestPublishManager extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(7)
     public void testInitialization2() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -297,7 +281,7 @@ public class TestPublishManager extends OpenCmsTestCase {
         List oldQueue = OpenCms.getPublishManager().getPublishQueue();
 
         // add an event listener used to restart the engine when ther job was started
-        OpenCms.getPublishManager().addPublishListener(new TestPublishEventListener2(cms));
+        OpenCms.getPublishManager().addPublishListener(new MockPublishEventListener2(cms));
 
         // now start publishing again and reinitialize the publish manager and engine while it is running
         OpenCms.getPublishManager().startPublishing();
@@ -314,7 +298,7 @@ public class TestPublishManager extends OpenCmsTestCase {
         // but it should be stored as last entry in the history
         CmsPublishJobEnqueued jobInQueue = (CmsPublishJobEnqueued)oldQueue.get(0);
         CmsPublishJobFinished jobInHistory = (CmsPublishJobFinished)newHistory.get(newHistory.size() - 1);
-        assertEquals(jobInQueue, jobInHistory, false, false);
+        assertPublishJobEquals(jobInQueue, jobInHistory, false, false);
 
         // and it should be aborted
     }
@@ -324,6 +308,8 @@ public class TestPublishManager extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testListener() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -339,11 +325,11 @@ public class TestPublishManager extends OpenCmsTestCase {
         }
 
         // set the listener for the first job
-        TestPublishEventListener firstListener = new TestPublishEventListener(cms.readResource(destination + "1.gif"));
+        MockPublishEventListener firstListener = new MockPublishEventListener(cms.readResource(destination + "1.gif"));
         OpenCms.getPublishManager().addPublishListener(firstListener);
 
         // set the listener for the last job
-        TestPublishEventListener lastListener = new TestPublishEventListener(
+        MockPublishEventListener lastListener = new MockPublishEventListener(
             cms.readResource(destination + max + ".gif"));
         OpenCms.getPublishManager().addPublishListener(lastListener);
 
@@ -444,6 +430,8 @@ public class TestPublishManager extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testPublishReport() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -473,6 +461,8 @@ public class TestPublishManager extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testRunning() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -543,6 +533,8 @@ public class TestPublishManager extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testStop() throws Throwable {
 
         CmsObject cms = getCmsObject();

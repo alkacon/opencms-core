@@ -35,72 +35,68 @@ import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.main.OpenCms;
 import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.fields.CmsSearchField;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the priority resource collectors.<p>
  */
-public class TestCmsSolrCollector extends OpenCmsTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsSolrCollector extends OpenCmsJupiterTestCase {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public TestCmsSolrCollector(String arg0) {
+    @Override
+    protected String getImportFolder() {
 
-        super(arg0);
+        return "solrtest";
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
      */
-    public static Test suite() {
+    @Override
+    protected String getTargetFolder() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+        return "/";
+    }
 
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsSolrCollector.class.getName());
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getSpecialConfigFolder()
+     */
+    @Override
+    protected String getSpecialConfigFolder() {
 
-        suite.addTest(new TestCmsSolrCollector("testByQuery"));
-        suite.addTest(new TestCmsSolrCollector("testByContext"));
-        suite.addTest(new TestCmsSolrCollector("testByContextWithQuery"));
+        return "/../org/opencms/search/solr";
+    }
 
-        TestSetup wrapper = new TestSetup(suite) {
+    /**
+     * Disables all non-Solr indexes used by the legacy suite setup.<p>
+     */
+    @BeforeAll
+    public void disableNonSolrIndexes() {
 
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("solrtest", "/", "/../org/opencms/search/solr");
-                // disable all lucene indexes
-                for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
-                    if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
-                        I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
-                        if (index != null) {
-                            index.setEnabled(false);
-                        }
-                    }
+        for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
+            if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
+                I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
+                if (index != null) {
+                    index.setEnabled(false);
                 }
-
             }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        }
     }
 
     /**
@@ -108,6 +104,8 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(2)
+    @Test
     public void testByContext() throws Throwable {
 
         echo("Testing testByContext resource collector");
@@ -125,6 +123,8 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(3)
+    @Test
     public void testByContextWithQuery() throws Throwable {
 
         echo("Testing testByContextWithQuery resource collector");
@@ -156,6 +156,8 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(1)
+    @Test
     public void testByQuery() throws Throwable {
 
         echo("Testing if Solr is able to do the same as: allInFolderPriorityDateDesc resource collector");

@@ -27,10 +27,8 @@
 
 package org.opencms.search;
 
-import org.opencms.test.OpenCmsTestProperties;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Main test suite for the package <code>{@link org.opencms.search}</code>.<p>
@@ -38,35 +36,17 @@ import junit.framework.TestSuite;
  *
  * @since 6.0
  */
-@org.junit.runner.RunWith(org.junit.runners.AllTests.class)
+@Suite
+@SelectClasses({
+    // Order MUST mirror the deleted AllTests.suite() exactly.
+    // Hidden cross-class state may depend on it; do NOT alphabetize.
+    TestCmsSearchUtils.class,
+    TestCmsSearch.class,
+    TestCmsSearchOffline.class,
+    TestCmsSearchFields.class,
+    TestCmsSearchInDocuments.class,
+    TestCmsSearchAdvancedFeatures.class,
+    TestCmsSearchSpecialFeatures.class
+})
 public final class AllTests {
-
-    /**
-     * Hide constructor to prevent generation of class instances.<p>
-     */
-    private AllTests() {
-
-        // empty
-    }
-
-    /**
-     * Returns the JUnit test suite for this package.<p>
-     *
-     * @return the JUnit test suite for this package
-     */
-    public static Test suite() {
-
-        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(TestCmsSearchUtils.class));
-        suite.addTest(TestCmsSearch.suite());
-        suite.addTest(TestCmsSearchOffline.suite());
-        suite.addTest(TestCmsSearchFields.suite());
-        suite.addTest(TestCmsSearchInDocuments.suite());
-        suite.addTest(TestCmsSearchAdvancedFeatures.suite());
-        suite.addTest(TestCmsSearchSpecialFeatures.suite());
-        //$JUnit-END$
-        return suite;
-    }
 }

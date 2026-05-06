@@ -29,8 +29,6 @@ package org.opencms.jsp.search;
 
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
-import org.opencms.test.OpenCmsTestProperties;
-
 
 /**
  * Main test suite for the package <code>{@link org.opencms.jsp.search}</code>.<p>
@@ -38,22 +36,8 @@ import org.opencms.test.OpenCmsTestProperties;
  *
  * @since 11.0.2
  */
-@org.junit.platform.suite.api.Suite
-@org.junit.platform.suite.api.SelectClasses({TestSimpleSearch.class})
-public final class AllTests {
-
-    /**
-     * Hide constructor to prevent generation of class instances.<p>
-     */
-    private AllTests() {
-
-        // empty
-    }
-
-    /**
-     * Returns the JUnit test suite for this package.<p>
-     *
-     * @return the JUnit test suite for this package
-     */
-    
-}
+@Suite
+@SelectClasses({
+    TestSimpleSearch.class
+})
+public final class AllTests {}

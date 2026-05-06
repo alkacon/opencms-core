@@ -36,9 +36,11 @@ import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.OpenCms;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.util.CmsStringUtil;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Calendar;
 import java.util.Collection;
@@ -48,75 +50,41 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TimeZone;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /**
  * Unit test for the OpenCms content notification.<p>
  *
  */
-public class TestContentNotification extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestContentNotification(String arg0) {
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestContentNotification.class.getName());
-
-        suite.addTest(new TestContentNotification("testContentNotification"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestContentNotification extends OpenCmsJupiterTestCase {
 
     /**
      * Sets responsibles to a file and then tests the readResponsibleUsers method of CmsObject .<p>
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(1)
+    @Test
     public void testContentNotification() throws Throwable {
 
         echo("Testing OpenCms content notification");
-        CmsObject cms = getCmsObject();
+        final CmsObject cms = getCmsObject();
         // initialize calendars
 
-        GregorianCalendar today = new GregorianCalendar(TimeZone.getDefault(), CmsLocaleManager.getDefaultLocale());
+        final GregorianCalendar today = new GregorianCalendar(TimeZone.getDefault(), CmsLocaleManager.getDefaultLocale());
         today.setTimeInMillis(cms.getRequestContext().getRequestTime());
-        GregorianCalendar inFiveDays = (GregorianCalendar)today.clone();
+        final GregorianCalendar inFiveDays = (GregorianCalendar)today.clone();
         inFiveDays.add(Calendar.DAY_OF_YEAR, 5);
-        GregorianCalendar inEightDays = (GregorianCalendar)today.clone();
+        final GregorianCalendar inEightDays = (GregorianCalendar)today.clone();
         inEightDays.add(Calendar.DAY_OF_YEAR, 8);
-        GregorianCalendar oneDayBefore = (GregorianCalendar)today.clone();
+        final GregorianCalendar oneDayBefore = (GregorianCalendar)today.clone();
         oneDayBefore.add(Calendar.DAY_OF_YEAR, -1);
 
         echo("yesterday: " + oneDayBefore.getTimeInMillis());
@@ -125,36 +93,36 @@ public class TestContentNotification extends OpenCmsTestCase {
         echo("inEightDays: " + inEightDays.getTimeInMillis());
 
         // create three users, two of them belonging to a group
-        CmsUser fry = cms.createUser("fry", "password", "First test user", new HashMap());
+        final CmsUser fry = cms.createUser("fry", "password", "First test user", new HashMap());
 
         // create a number of resources
-        String folder = "folder1/";
-        String expired01 = "folder1/expired01.html";
-        CmsResource expired = cms.createResource(expired01, CmsResourceTypeXmlPage.getStaticTypeId());
+        final String folder = "folder1/";
+        final String expired01 = "folder1/expired01.html";
+        final CmsResource expired = cms.createResource(expired01, CmsResourceTypeXmlPage.getStaticTypeId());
         cms.chacc(expired01, I_CmsPrincipal.PRINCIPAL_USER, fry.getName(), "+s");
         cms.setDateExpired(expired01, inFiveDays.getTimeInMillis(), false);
 
-        String expired02 = "folder1/expired02.html";
+        final String expired02 = "folder1/expired02.html";
         cms.createResource(expired02, CmsResourceTypeXmlPage.getStaticTypeId());
         cms.chacc(expired02, I_CmsPrincipal.PRINCIPAL_USER, fry.getName(), "+s");
         cms.setDateExpired(expired02, inEightDays.getTimeInMillis(), false);
 
-        String expired03 = "folder1/expired03.html";
+        final String expired03 = "folder1/expired03.html";
         cms.createResource(expired03, CmsResourceTypeXmlPage.getStaticTypeId());
         cms.chacc(expired03, I_CmsPrincipal.PRINCIPAL_USER, fry.getName(), "+s");
         cms.setDateExpired(expired03, oneDayBefore.getTimeInMillis(), false);
 
-        String released01 = "folder1/released01.html";
-        CmsResource released = cms.createResource(released01, CmsResourceTypeXmlPage.getStaticTypeId());
+        final String released01 = "folder1/released01.html";
+        final CmsResource released = cms.createResource(released01, CmsResourceTypeXmlPage.getStaticTypeId());
         cms.chacc(released01, I_CmsPrincipal.PRINCIPAL_USER, fry.getName(), "+s");
         cms.setDateReleased(released01, inFiveDays.getTimeInMillis(), false);
 
-        String released02Name = "folder1/released02.html";
+        final String released02Name = "folder1/released02.html";
         cms.createResource(released02Name, CmsResourceTypeXmlPage.getStaticTypeId());
         cms.chacc(released02Name, I_CmsPrincipal.PRINCIPAL_USER, fry.getName(), "+s");
         cms.setDateReleased(released02Name, inEightDays.getTimeInMillis(), false);
 
-        String released03 = "folder1/released03.html";
+        final String released03 = "folder1/released03.html";
         cms.createResource(released03, CmsResourceTypeXmlPage.getStaticTypeId());
         cms.chacc(released03, I_CmsPrincipal.PRINCIPAL_USER, fry.getName(), "+s");
         cms.setDateReleased(released03, oneDayBefore.getTimeInMillis(), false);
@@ -169,12 +137,12 @@ public class TestContentNotification extends OpenCmsTestCase {
         cms.unlockResource(folder);
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
-        Iterator notifications = new CmsNotificationCandidates(cms).getContentNotifications().iterator();
+        final Iterator notifications = new CmsNotificationCandidates(cms).getContentNotifications().iterator();
         // there should be exactly one notification
         while (notifications.hasNext()) {
-            CmsContentNotification notification = (CmsContentNotification)notifications.next();
+            final CmsContentNotification notification = (CmsContentNotification)notifications.next();
             assertTrue(notification.getResponsible().equals(fry)); // fry should be notified;
-            Collection notificationCauses = notification.getNotificationCauses();
+            final Collection notificationCauses = notification.getNotificationCauses();
             assertTrue(
                 notificationCauses.contains(new CmsExtendedNotificationCause(
                     expired,
@@ -186,7 +154,7 @@ public class TestContentNotification extends OpenCmsTestCase {
                     CmsExtendedNotificationCause.RESOURCE_RELEASE,
                     new Date(released.getDateReleased()))));
             // there should be no other resources contained in the notification
-            assertEquals(notificationCauses.size(), 2);
+            assertEquals(2, notificationCauses.size());
         }
     }
 }

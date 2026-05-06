@@ -31,7 +31,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.search.CmsSearchResource;
 import org.opencms.search.fields.CmsSearchField;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -49,15 +48,24 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Main test suite for the package <code>{@link org.opencms.search.solr}</code>.<p>
  *
  * @since 8.5.0
  */
-@org.junit.runner.RunWith(org.junit.runners.AllTests.class)
+@Suite
+@SelectClasses({
+    // Order MUST mirror the deleted AllTests.suite() exactly.
+    // Hidden cross-class state may depend on it; do NOT alphabetize.
+    TestSolrConfiguration.class,
+    TestSolrFieldConfiguration.class,
+    TestSolrSearch.class,
+    TestCmsSolrCollector.class,
+    TestSolrSerialDateIndexing.class
+})
 public final class AllTests {
 
     /** Name of a search index created using API. */
@@ -68,14 +76,6 @@ public final class AllTests {
 
     /** Name of an index used for testing. */
     public static final String SOLR_ONLINE = "Solr Online";
-
-    /**
-     * Hide constructor to prevent generation of class instances.<p>
-     */
-    private AllTests() {
-
-        // empty
-    }
 
     /**
      * Returns the search resource from the result by the given path.<p>
@@ -110,25 +110,6 @@ public final class AllTests {
             printResultCount(results);
             printResults(results, cms);
         }
-    }
-
-    /**
-     * Returns the JUnit test suite for this package.<p>
-     *
-     * @return the JUnit test suite for this package
-     */
-    public static Test suite() {
-
-        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        //$JUnit-BEGIN$
-        suite.addTest(TestSolrConfiguration.suite());
-        suite.addTest(TestSolrFieldConfiguration.suite());
-        suite.addTest(TestSolrSearch.suite());
-        suite.addTest(TestCmsSolrCollector.suite());
-        suite.addTest(TestSolrSerialDateIndexing.suite());
-        //$JUnit-END$
-        return suite;
     }
 
     /**
@@ -232,7 +213,6 @@ public final class AllTests {
                 CmsStringUtil.padRight(
                     "" + CmsDateUtil.getDateTime(new Date(res.getDateLastModified()), DateFormat.SHORT, Locale.GERMAN),
                     17));
-
             System.out.println("score: " + res.getScore(results.getMaxScore().floatValue()));
         }
     }

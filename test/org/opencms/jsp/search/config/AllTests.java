@@ -29,34 +29,16 @@ package org.opencms.jsp.search.config;
 
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
-import org.opencms.test.OpenCmsTestProperties;
-
 
 /**
- * Main test suite for the package <code>{@link org.opencms.staticexport}</code>.<p>
+ * Main test suite for the package <code>{@link org.opencms.jsp.search.config}</code>.<p>
  *
  *
  * @since 6.0
  */
-@org.junit.platform.suite.api.Suite
-@org.junit.platform.suite.api.SelectClasses({
+@Suite
+@SelectClasses({
     TestSearchConfigurationPagination.class,
     TestSearchConfigurationExtension.class
 })
-public final class AllTests {
-
-    /**
-     * Hide constructor to prevent generation of class instances.<p>
-     */
-    private AllTests() {
-
-        // empty
-    }
-
-    /**
-     * Returns the JUnit test suite for this package.<p>
-     *
-     * @return the JUnit test suite for this package
-     */
-    
-}
+public final class AllTests {}

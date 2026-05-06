@@ -28,7 +28,10 @@
 package org.opencms.setup;
 
 import org.opencms.configuration.CmsParameterConfiguration;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,19 +39,35 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.List;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+
 /**
  * @since 6.0.0
  */
-public class TestCmsSetupBean extends OpenCmsTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestCmsSetupBean extends OpenCmsJupiterTestCase {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
      */
-    public TestCmsSetupBean(String arg0) {
+    @Override
+    protected boolean shouldBootOpenCms() {
 
-        super(arg0);
+        return false;
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
+     */
+    @Override
+    protected boolean shouldInitConfiguration() {
+
+        return true;
     }
 
     /**
@@ -56,6 +75,7 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
      *
      * @throws IOException if something goes wrong
      */
+    @Test
     public void testSaveProperties() throws IOException {
 
         CmsSetupBean bean = new CmsSetupBean();
@@ -69,7 +89,7 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
         System.out.println("URL path decoded: '" + decodedPath + "'");
         System.out.println("File: '" + input + "'");
         // make sure the test properties file is found
-        assertTrue("Test property file '" + input.getAbsolutePath() + "' not found", input.exists());
+        assertTrue(input.exists(), "Test property file '" + input.getAbsolutePath() + "' not found");
 
         String inputFile = input.getAbsolutePath();
         String outputFile = input.getParent() + "/output.properties";
@@ -83,14 +103,14 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
             for (String message : bean.getErrors()) {
                 System.out.println(message);
             }
-            assertTrue("There shouldn't be any errors copying the properties files", !bean.getErrors().isEmpty());
+            assertTrue(!bean.getErrors().isEmpty(), "There shouldn't be any errors copying the properties files");
         }
         bean.saveProperties(oldProperties, outputFile, false);
         if (!bean.getErrors().isEmpty()) {
             for (String message : bean.getErrors()) {
                 System.out.println(message);
             }
-            assertTrue("There shouldn't be any errors saving the properties files", !bean.getErrors().isEmpty());
+            assertTrue(!bean.getErrors().isEmpty(), "There shouldn't be any errors saving the properties files");
         }
         System.out.println("Checking properties from " + outputFile);
         CmsParameterConfiguration newProperties = new CmsParameterConfiguration(outputFile);

@@ -27,10 +27,8 @@
 
 package org.opencms.setup;
 
-import org.opencms.test.OpenCmsTestProperties;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Main test suite for the package <code>{@link org.opencms.setup}</code>.<p>
@@ -38,31 +36,11 @@ import junit.framework.TestSuite;
  *
  * @since 6.0
  */
-@org.junit.runner.RunWith(org.junit.runners.AllTests.class)
-public final class AllTests {
-
-    /**
-     * Hide constructor to prevent generation of class instances.<p>
-     */
-    private AllTests() {
-
-        // empty
-    }
-
-    /**
-     * Returns the JUnit test suite for this package.<p>
-     *
-     * @return the JUnit test suite for this package
-     */
-    public static Test suite() {
-
-        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(TestCmsSetupBean.class));
-        suite.addTest(TestCmsSetupDb.suite());
-        suite.addTest(new TestSuite(TestCmsSetupXmlHelper.class));
-        //$JUnit-END$
-        return suite;
-    }
-}
+@Suite
+@SelectClasses({
+    // Order MUST mirror the deleted AllTests.suite() exactly.
+    TestCmsSetupBean.class,
+    TestCmsSetupDb.class,
+    TestCmsSetupXmlHelper.class
+})
+public final class AllTests {}

@@ -30,62 +30,52 @@ package org.opencms.staticexport;
 import org.opencms.file.CmsObject;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.util.CmsFileUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @since 6.0.0
  */
-public class TestExportFile extends OpenCmsTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestExportFile extends OpenCmsJupiterTestCase {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getPublish()
      */
-    public TestExportFile(String arg0) {
+    @Override
+    protected boolean getPublish() {
 
-        super(arg0);
+        return true;
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public static Test suite() {
+    @Override
+    protected String getImportFolder() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+        return null;
+    }
 
-        TestSuite suite = new TestSuite();
-        suite.setName(TestExportFile.class.getName());
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
+     */
+    @Override
+    protected String getTargetFolder() {
 
-        suite.addTest(new TestExportFile("testStaticexportFile"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms(null, null, true);
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        return null;
     }
 
     /**
@@ -93,36 +83,32 @@ public class TestExportFile extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testStaticexportFile() throws Throwable {
 
         CmsObject cms = getCmsObject();
         echo("Testing file export");
 
-        // set the export mode to export immediately after publishing resources
         OpenCms.getStaticExportManager().setHandler("org.opencms.staticexport.CmsAfterPublishStaticExportHandler");
 
         String resourcename = "/file1.txt";
         String content = "this is a test content";
 
-        // create a file in the root directory
         cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), content.getBytes(), null);
         cms.unlockResource(resourcename);
 
-        // read and check the content
         assertContent(cms, resourcename, content.getBytes());
 
-        // now publish (and export) the resource
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
-        // now read the exported file in the file system and check its content
         String rootPath = cms.getRequestContext().addSiteRoot(resourcename);
         String exportPath = CmsFileUtil.normalizePath(
             OpenCms.getStaticExportManager().getExportPath(rootPath) + rootPath);
         File f = new File(exportPath);
         assertTrue(f.exists());
 
-        // check the exported content
         byte[] exportContent = new byte[(int)f.length()];
         FileInputStream fileStream = new FileInputStream(f);
         fileStream.read(exportContent);

@@ -36,5 +36,4 @@ import org.junit.platform.suite.api.Suite;
     TestPlainQuerySearchConfigurationParser.class,
     TestSimpleSearchConfigurationParser.class,
 })
-public class AllTests {
-}
+public final class AllTests {}

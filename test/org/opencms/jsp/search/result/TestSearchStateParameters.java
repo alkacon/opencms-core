@@ -41,8 +41,10 @@ import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrResultList;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -51,60 +53,60 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /** Test cases for the class {@link org.opencms.jsp.search.config.CmsSearchConfigurationPagination}. */
-public class TestSearchStateParameters extends OpenCmsTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestSearchStateParameters extends OpenCmsJupiterTestCase {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public TestSearchStateParameters(String arg0) {
+    @Override
+    protected String getImportFolder() {
 
-        super(arg0);
+        return "simpletest";
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
      */
-    public static Test suite() {
+    @Override
+    protected String getTargetFolder() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+        return "/";
+    }
 
-        TestSuite suite = new TestSuite();
-        suite.addTest(new TestSearchStateParameters("testCheckAndUncheckFacetItems"));
-        suite.addTest(new TestSearchStateParameters("testAddRemoveAdditionalParam"));
-        TestSetup wrapper = new TestSetup(suite) {
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getSpecialConfigFolder()
+     */
+    @Override
+    protected String getSpecialConfigFolder() {
 
-            @Override
-            protected void setUp() {
+        return "/../org/opencms/search/solr";
+    }
 
-                setupOpenCms("simpletest", "/", "/../org/opencms/search/solr");
-                // disable all lucene indexes
-                for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
-                    if (!indexName.equalsIgnoreCase(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE)) {
-                        I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
-                        if (index != null) {
-                            index.setEnabled(false);
-                        }
-                    }
+    /**
+     * Disables all Lucene indexes to match the legacy suite wrapper setup.<p>
+     */
+    @BeforeAll
+    public void disableIndexes() {
+
+        for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
+            if (!indexName.equalsIgnoreCase(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE)) {
+                I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
+                if (index != null) {
+                    index.setEnabled(false);
                 }
             }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        }
     }
 
     /**
@@ -115,7 +117,8 @@ public class TestSearchStateParameters extends OpenCmsTestCase {
      * @throws URISyntaxException ...
      * @throws JSONException ...
      */
-    @org.junit.Test
+    @Order(2)
+    @Test
     public void testAddRemoveAdditionalParam() throws CmsException, IOException, URISyntaxException, JSONException {
 
         I_CmsSearchResultWrapper result = search();
@@ -150,7 +153,8 @@ public class TestSearchStateParameters extends OpenCmsTestCase {
      * @throws URISyntaxException ...
      * @throws JSONException ...
      */
-    @org.junit.Test
+    @Order(1)
+    @Test
     public void testCheckAndUncheckFacetItems() throws CmsException, IOException, URISyntaxException, JSONException {
 
         I_CmsSearchResultWrapper result = search();

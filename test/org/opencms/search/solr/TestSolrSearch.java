@@ -45,11 +45,14 @@ import org.opencms.search.CmsSearchUtil;
 import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -65,86 +68,71 @@ import java.util.Map;
 import org.apache.solr.client.solrj.request.SolrQuery;
 import org.apache.solr.client.solrj.request.SolrQuery.ORDER;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests if Solr search queries are able to do what was earlier done with Lucene.<p>
  *
  * @since 8.5.0
  */
-public class TestSolrSearch extends OpenCmsTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestSolrSearch extends OpenCmsJupiterTestCase {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public TestSolrSearch(String arg0) {
+    @Override
+    protected String getImportFolder() {
 
-        super(arg0);
+        return "simpletest";
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
      */
-    public static Test suite() {
+    @Override
+    protected String getTargetFolder() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+        return "/";
+    }
 
-        TestSuite suite = new TestSuite();
-        suite.setName(TestSolrSearch.class.getName());
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getSpecialConfigFolder()
+     */
+    @Override
+    protected String getSpecialConfigFolder() {
 
-        suite.addTest(new TestSolrSearch("testDocumentTypes"));
-        suite.addTest(new TestSolrSearch("testFolderName"));
-        suite.addTest(new TestSolrSearch("testIndexer"));
-        suite.addTest(new TestSolrSearch("testIndexGeneration"));
-        suite.addTest(new TestSolrSearch("testIssueWithSpecialFoldernames"));
-        suite.addTest(new TestSolrSearch("testLimitTimeRanges"));
-        suite.addTest(new TestSolrSearch("testLimitTimeRangesOptimized"));
-        suite.addTest(new TestSolrSearch("testLocaleRestriction"));
-        suite.addTest(new TestSolrSearch("testMultipleSearchRoots"));
-        suite.addTest(new TestSolrSearch("testQueryDefaults"));
-        suite.addTest(new TestSolrSearch("testQueryParameterStrength"));
-        suite.addTest(new TestSolrSearch("testSortResults"));
-        suite.addTest(new TestSolrSearch("testXmlContent"));
-        suite.addTest(new TestSolrSearch("testAdvancedFacetting"));
-        suite.addTest(new TestSolrSearch("testAdvancedHighlighting"));
-        suite.addTest(new TestSolrSearch("testPermissionFilterAndLimits"));
+        return "/../org/opencms/search/solr";
+    }
 
-        TestSetup wrapper = new TestSetup(suite) {
+    /**
+     * Disables all non-Solr indexes used by the legacy suite setup.<p>
+     */
+    @BeforeAll
+    public void disableNonSolrIndexes() {
 
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/", "/../org/opencms/search/solr");
-                // disable all lucene indexes
-                for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
-                    if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
-                        I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
-                        if (index != null) {
-                            index.setEnabled(false);
-                        }
-                    }
+        for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
+            if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
+                I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
+                if (index != null) {
+                    index.setEnabled(false);
                 }
             }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        }
     }
 
     /**
      * @throws Throwable if something goes wrong
      */
+    @Order(14)
+    @Test
     public void testAdvancedFacetting() throws Throwable {
 
         echo("Testing facet query count");
@@ -188,6 +176,8 @@ public class TestSolrSearch extends OpenCmsTestCase {
     /**
      * @throws Throwable
      */
+    @Order(15)
+    @Test
     public void testAdvancedHighlighting() throws Throwable {
 
         // TODO: improve
@@ -214,20 +204,22 @@ public class TestSolrSearch extends OpenCmsTestCase {
         q.setHighlightFields("content_en");
         CmsSolrResultList res = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE).search(getCmsObject(), q);
         Map<String, Map<String, List<String>>> highlighting = res.getHighLighting();
-        assertTrue("There should be some highlighted documents", highlighting != null);
+        assertTrue(highlighting != null, "There should be some highlighted documents");
 
         if (highlighting != null) {
             for (Map<String, List<String>> map : highlighting.values()) {
                 for (List<String> entry : map.values()) {
                     for (String s : entry) {
                         assertTrue(
-                            "There must occure OpenCms in the highlighting",
-                            s.toLowerCase().contains("OpenCms".toLowerCase()));
+                            s.toLowerCase().contains("OpenCms".toLowerCase()),
+                            "There must occure OpenCms in the highlighting");
                     }
                 }
             }
         }
     }
+
+    // These TODO methods were not part of the legacy JUnit 3 suite and stay unannotated on purpose.
 
     /**
      * @throws Throwable
@@ -298,6 +290,8 @@ public class TestSolrSearch extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(1)
+    @Test
     public void testDocumentTypes() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -318,6 +312,8 @@ public class TestSolrSearch extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Order(2)
+    @Test
     public void testFolderName() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -341,6 +337,8 @@ public class TestSolrSearch extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(3)
+    @Test
     public void testIndexer() throws Throwable {
 
         OpenCms.getSearchManager().rebuildAllIndexes(new CmsShellReport(Locale.ENGLISH));
@@ -354,6 +352,8 @@ public class TestSolrSearch extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(4)
+    @Test
     public void testIndexGeneration() throws Throwable {
 
         CmsSolrIndex index = new CmsSolrIndex(AllTests.INDEX_TEST);
@@ -402,6 +402,8 @@ public class TestSolrSearch extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(5)
+    @Test
     public void testIssueWithSpecialFoldernames() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -438,6 +440,8 @@ public class TestSolrSearch extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(6)
+    @Test
     public void testLimitTimeRanges() throws Exception {
 
         DateFormat DF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -516,6 +520,8 @@ public class TestSolrSearch extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(7)
+    @Test
     public void testLimitTimeRangesOptimized() throws Exception {
 
         DateFormat DF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -600,6 +606,8 @@ public class TestSolrSearch extends OpenCmsTestCase {
     /**
      * @throws Throwable
      */
+    @Order(8)
+    @Test
     public void testLocaleRestriction() throws Throwable {
 
         // turn off the language detection
@@ -700,6 +708,8 @@ public class TestSolrSearch extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(9)
+    @Test
     public void testMultipleSearchRoots() throws Exception {
 
         echo("Testing searching with multiple search roots");
@@ -737,6 +747,8 @@ public class TestSolrSearch extends OpenCmsTestCase {
         }
     }
 
+    @Order(16)
+    @Test
     public void testPermissionFilterAndLimits() throws Throwable {
 
         echo("Testing permission filter");
@@ -818,6 +830,8 @@ public class TestSolrSearch extends OpenCmsTestCase {
     /**
      * @throws Throwable
      */
+    @Order(10)
+    @Test
     public void testQueryDefaults() throws Throwable {
 
         // test default query
@@ -846,6 +860,8 @@ public class TestSolrSearch extends OpenCmsTestCase {
     /**
      * @throws Throwable
      */
+    @Order(11)
+    @Test
     public void testQueryParameterStrength() throws Throwable {
 
         String defaultContextQuery = "q=*:*&fl=*,score&qt=edismax&rows=10&fq=con_locales:en&fq=parent-folders:\"/sites/default/\"&fq=expired:[NOW TO *]&fq=released:[* TO NOW]";
@@ -893,6 +909,8 @@ public class TestSolrSearch extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Order(12)
+    @Test
     public void testSortResults() throws Exception {
 
         echo("Testing sorting of search results");
@@ -906,17 +924,17 @@ public class TestSolrSearch extends OpenCmsTestCase {
         // first run is default sort order
         float maxScore = results.getMaxScore().floatValue();
         int score = results.get(0).getScore(maxScore);
-        assertTrue("Best match by score must always be 100 but is " + score, score == 100);
+        assertTrue(score == 100, "Best match by score must always be 100 but is " + score);
         for (int i = 1; i < results.size(); i++) {
             assertTrue(
+                results.get(i - 1).getScore(maxScore) >= results.get(i).getScore(maxScore),
                 "Resource "
                     + results.get(i - 1).getRootPath()
                     + " not sorted as expected - index ["
                     + (i - 1)
                     + "/"
                     + i
-                    + "]",
-                results.get(i - 1).getScore(maxScore) >= results.get(i).getScore(maxScore));
+                    + "]");
         }
 
         // second run use Title sort order
@@ -966,6 +984,8 @@ public class TestSolrSearch extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(13)
+    @Test
     public void testXmlContent() throws Throwable {
 
         CmsObject cms = getCmsObject();

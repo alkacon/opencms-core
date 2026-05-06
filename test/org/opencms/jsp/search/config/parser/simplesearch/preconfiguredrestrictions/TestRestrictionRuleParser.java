@@ -30,49 +30,49 @@ package org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestricti
 import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigurationBean.CombinationMode;
 import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionRule.MatchType;
 import org.opencms.main.CmsException;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Locale;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /** Test cases for the restriction rule parser. */
-public class TestRestrictionRuleParser extends OpenCmsTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestRestrictionRuleParser extends OpenCmsJupiterTestCase {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
      */
-    public TestRestrictionRuleParser(String arg0) {
+    @Override
+    protected boolean shouldBootOpenCms() {
 
-        super(arg0);
+        return false;
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
      */
-    public static Test suite() {
+    @Override
+    protected boolean shouldInitConfiguration() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.addTest(new TestRestrictionRuleParser("testComplexRules"));
-        suite.addTest(new TestRestrictionRuleParser("testLocalePlaceholder"));
-        suite.addTest(new TestRestrictionRuleParser("testSimpleRule"));
-
-        return suite;
+        return true;
     }
 
     /**
      * Tests complex rule
      * @throws CmsException thrown when rule parsing fails
      */
-    @org.junit.Test
+    @Order(1)
+    @Test
     public void testComplexRules() throws CmsException {
 
         // Only field
@@ -125,7 +125,8 @@ public class TestRestrictionRuleParser extends OpenCmsTestCase {
      * Tests locale placeholder
      * @throws CmsException thrown when rule parsing fails
      */
-    @org.junit.Test
+    @Order(2)
+    @Test
     public void testLocalePlaceholder() throws CmsException {
 
         CmsRestrictionRule rule = CmsRestrictionRuleParser.parseRule("test_#");
@@ -138,7 +139,8 @@ public class TestRestrictionRuleParser extends OpenCmsTestCase {
      * Tests simple rule
      * @throws CmsException thrown when rule parsing fails
      */
-    @org.junit.Test
+    @Order(3)
+    @Test
     public void testSimpleRule() throws CmsException {
 
         CmsRestrictionRule rule = CmsRestrictionRuleParser.parseRule("test");

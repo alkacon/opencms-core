@@ -35,20 +35,37 @@ import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestEnvironment;
 import org.opencms.xml.page.CmsXmlPage;
 
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @since 6.0.0
  */
-public class TestCmsLinkManager extends OpenCmsTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsLinkManager extends OpenCmsJupiterTestCase {
+
+    /** Legacy suite setup groups. */
+    private enum SetupGroup {
+        DEFAULT,
+        ADJUSTED_VFS_PREFIX,
+        SINGLE_TREE,
+        EMPTY_CONTEXT
+    }
 
     /** Content for a simple test page. */
     private static final String PAGE_01 = "<html><body><a href=\"/system/news/test.html?__locale=de\">test</a></body></html>";
@@ -56,263 +73,179 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
     /** The current VFS prefix as added to internal links according to the configuration in opencms-importexport.xml. */
     private String m_vfsPrefix;
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsLinkManager(String arg0) {
+    /** The currently active legacy setup group. */
+    private SetupGroup m_activeSetupGroup;
 
-        super(arg0);
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
+     */
+    @Override
+    protected boolean shouldBootOpenCms() {
+
+        return false;
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
      */
-    public static Test suite() {
+    @Override
+    protected boolean shouldInitConfiguration() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        TestSuite suite1 = new TestSuite();
-        TestSuite suite2 = new TestSuite();
-        TestSuite suite3 = new TestSuite();
-        suite1.setName(TestCmsLinkManager.class.getName());
-
-        suite1.addTest(new TestCmsLinkManager("testToAbsolute"));
-        suite1.addTest(new TestCmsLinkManager("testLinkSubstitution"));
-        suite1.addTest(new TestCmsLinkManager("testSymmetricSubstitution"));
-        suite1.addTest(new TestCmsLinkManager("testCustomLinkHandler"));
-        suite1.addTest(new TestCmsLinkManager("testRootPathAdjustment"));
-        suite1.addTest(new TestCmsLinkManager("testAbsolutePathAdjustment"));
-        suite1.addTest(new TestCmsLinkManager("testLinkSubstitutionPreserveSpecialChars"));
-
-        suite2.addTest(new TestCmsLinkManager("testToAbsoluteWithAdjustedVfsPrefix"));
-        suite2.addTest(new TestCmsLinkManager("testLinkSubstitutionWithAdjustedVfsPrefix"));
-        suite2.addTest(new TestCmsLinkManager("testSymmetricSubstitutionWithAdjustedVfsPrefix"));
-        suite2.addTest(new TestCmsLinkManager("testCustomLinkHandlerWithAdjustedVfsPrefix"));
-        suite2.addTest(new TestCmsLinkManager("testRootPathAdjustmentWithAdjustedVfsPrefix"));
-        suite2.addTest(new TestCmsLinkManager("testAbsolutePathAdjustmentWithAdjustedVfsPrefix"));
-
-        suite3.addTest(new TestCmsLinkManager("testSingleTreeLinkSubstitution"));
-        suite3.addTest(new TestCmsLinkManager("testSymmetricSubstitutionForSingleTree"));
-        suite3.addTest(new TestCmsLinkManager("testRootPathAdjustmentForSingleTree"));
-        suite3.addTest(new TestCmsLinkManager("testAbsolutePathAdjustmentForSingleTree"));
-
-        TestSetup wrapper1 = new TestSetup(suite1) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-
-        };
-
-        // Test where the vfsPrefix is only the webapp-name, i.e., "/data",
-        // not webappname/servletname, i.e., "/data/opencms".
-        TestSetup wrapper2 = new TestSetup(suite2) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/", "/../org/opencms/staticexport");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-
-        };
-
-        TestSetup wrapper3 = new TestSetup(suite3) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/", "localizationConfig");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-
-        };
-
-        suite.addTest(wrapper1);
-        suite.addTest(wrapper2);
-        suite.addTest(wrapper3);
-        // Test adjustment when OpenCms context is empty
-        suite.addTest(wrapTest("*", "/data", "", "testRootPathAdjustmentWithEmptyOpenCmsContext"));
-
-        return suite;
+        return true;
     }
 
     /**
-     * Runs the given test wrapped in an OpenCms instance where servletName and defaultWebAppName
-     * are adjusted to test for different OpenCms contexts.
-     *
-     * @param servletName the servlet name used for the OpenCms instance
-     * @param defaultWebAppName the default webapp name used for the OpenCms instance
-     * @param vfsPrefix The vfsPrefix attached to absolute internal links.
-     * @param testCase the name of the test case to wrap
-     * @return the wrapped test case
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldLogTestStartBeforeEach()
      */
-    protected static Test wrapTest(
-        final String servletName,
-        final String defaultWebAppName,
-        final String vfsPrefix,
-        final String testCase) {
+    @Override
+    protected boolean shouldLogTestStartBeforeEach() {
 
-        return new TestSetup(new TestCmsLinkManager(testCase)) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/", null, null, null, servletName, defaultWebAppName, true);
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-
-        };
+        return false;
     }
 
     /**
-     * Test how the OpenCms context is removed from URLs when getting URLs with http://....
-     * Intended behavior: if and only if a link starts with "${server-url}/${context}/" the
-     * context is removed.
+     * Sets up the required OpenCms variant for the current legacy test order entry.<p>
      *
-     * Example: with context "http://localhost:8080/opencms":
-     * input link: http://localhost:8080/opencms/path  output link: /path
-     * input link: http://localhost:8080/opencmswhatever/path output link: /opencmswhatever/path
-     *
-     * Assumption: OpenCms context never ends with "/".
-     *
-     * @throws CmsException from getCmsObject()
-     *
+     * @throws Exception if setup fails
      */
-    public void testAbsolutePathAdjustment() throws CmsException {
+    @BeforeEach
+    public void setUpOpenCmsForTest(TestInfo testInfo) throws Exception {
 
-        echo("Testing root path adjustment / context removement for absolute paths");
-        String context = OpenCms.getSystemInfo().getOpenCmsContext();
-        echo("Using OpenCms context: " + context);
-
-        // put resource to access
-        CmsObject cms = getCmsObject();
-        cms.getRequestContext().setSiteRoot("/");
-        String link = context + "-test";
-        String[] folders = context.split("/");
-        String parents = "";
-        for (int i = 1; i < (folders.length - 1); i++) {
-            parents += "/" + folders[i];
-            cms.createResource(parents, new CmsResourceTypeFolder());
+        prepareCurrentTest(testInfo);
+        SetupGroup targetGroup = getSetupGroup();
+        if ((m_activeSetupGroup != null) && (m_activeSetupGroup != targetGroup)) {
+            removeOpenCms();
+            m_activeSetupGroup = null;
         }
-        cms.createResource(link, new CmsResourceTypeFolder());
-        CmsLinkManager lm = OpenCms.getLinkManager();
-        String serverlink = lm.getServerLink(cms, "/");
-        serverlink = serverlink.substring(0, serverlink.length() - 1);
-        String inputlink = serverlink + link;
-        echo(
-            "Checking link "
-                + inputlink
-                + " in context "
-                + context
-                + " and site \""
-                + cms.getRequestContext().getSiteRoot()
-                + "\"");
-        String outputlink = lm.getRootPath(cms, inputlink);
-        echo("Result: " + outputlink);
-        assertEquals(link, outputlink);
-
+        if (m_activeSetupGroup == targetGroup) {
+            printTestStart(testInfo);
+            return;
+        }
+        m_vfsPrefix = null;
+        switch (targetGroup) {
+            case DEFAULT:
+                OpenCmsTestEnvironment.setupOpenCms("simpletest", "/");
+                break;
+            case ADJUSTED_VFS_PREFIX:
+                OpenCmsTestEnvironment.setupOpenCms(
+                    "simpletest",
+                    "/",
+                    null,
+                    "/../org/opencms/staticexport",
+                    getClass().getName(),
+                    true);
+                break;
+            case SINGLE_TREE:
+                OpenCmsTestEnvironment.setupOpenCms(
+                    "simpletest",
+                    "/",
+                    null,
+                    "localizationConfig",
+                    getClass().getName(),
+                    true);
+                break;
+            case EMPTY_CONTEXT:
+                OpenCmsTestEnvironment.setupOpenCms(
+                    "simpletest",
+                    "/",
+                    null,
+                    null,
+                    getClass().getName(),
+                    "*",
+                    "/data",
+                    true);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected setup group: " + targetGroup);
+        }
+        m_activeSetupGroup = targetGroup;
+        printTestStart(testInfo);
     }
 
     /**
-     * @throws CmsException  from getCmsObject()
-     * @see #testAbsolutePathAdjustment()
+     * Removes the last active OpenCms instance.<p>
      */
-    public void testAbsolutePathAdjustmentForSingleTree() throws CmsException {
+    @AfterEach
+    public void resetCachedState() {
 
-        testAbsolutePathAdjustment();
+        m_vfsPrefix = null;
     }
 
     /**
-     * @throws CmsException  from getCmsObject()
-     * @see #testAbsolutePathAdjustment()
+     * Removes the final legacy setup group instance.<p>
      */
-    public void testAbsolutePathAdjustmentWithAdjustedVfsPrefix() throws CmsException {
+    @org.junit.jupiter.api.AfterAll
+    public void tearDownOpenCmsForLastGroup() {
 
-        testAbsolutePathAdjustment();
+        if (m_activeSetupGroup != null) {
+            removeOpenCms();
+            m_activeSetupGroup = null;
+        }
     }
 
     /**
-     * Tests symmetric link / root path substitution with a custom link handler.<p>
+     * Returns the legacy setup group for the current test method.<p>
      *
-     * @throws Exception if test fails
+     * @return the setup group
      */
-    public void testCustomLinkHandler() throws Exception {
+    private SetupGroup getSetupGroup() {
 
-        CmsObject cms = getCmsObject();
-        echo("Testing symmetric link / root path substitution with a custom link handler");
-
-        CmsLinkManager lm = OpenCms.getLinkManager();
-        I_CmsLinkSubstitutionHandler lh = new CmsTestLinkSubstitutionHandler();
-        lm.setLinkSubstitutionHandler(cms, lh);
-
-        // create required special "/system/news/" folder with a resource
-        cms.createResource("/system/news", CmsResourceTypeFolder.getStaticTypeId());
-        String resName = "/system/news/test.html";
-        cms.createResource(resName, CmsResourceTypeXmlPage.getStaticTypeId());
-        OpenCms.getPublishManager().publishResource(cms, "/system/news");
-        OpenCms.getPublishManager().waitWhileRunning();
-        CmsResource res = cms.readResource(resName);
-
-        // test with default setup
-        testCustomLinkHandler(cms, res.getRootPath());
-        // test with "empty" VFS prefix
-        OpenCms.getStaticExportManager().setVfsPrefix("");
-        OpenCms.getStaticExportManager().initialize(cms);
-        testCustomLinkHandler(cms, res.getRootPath());
-        // test when current URI is in "/system/" folder and current site root is empty
-        cms.getRequestContext().setUri(resName);
-        cms.getRequestContext().setSiteRoot("");
-        testCustomLinkHandler(cms, res.getRootPath());
-        // test with localized information
-        testCustomLinkHandler(cms, res.getRootPath() + "?__locale=de");
-
-        // now try with some real content on a page
-        CmsXmlPage page = new CmsXmlPage(Locale.ENGLISH, CmsEncoder.ENCODING_UTF_8);
-        page.addValue("body", Locale.ENGLISH);
-        page.setStringValue(cms, "body", Locale.ENGLISH, PAGE_01);
-
-        cms.lockResource(resName);
-        CmsFile file = cms.readFile(res);
-        file.setContents(page.marshal());
-        cms.writeFile(file);
+        switch (getName()) {
+            case "testToAbsolute":
+            case "testLinkSubstitution":
+            case "testSymmetricSubstitution":
+            case "testCustomLinkHandler":
+            case "testRootPathAdjustment":
+            case "testAbsolutePathAdjustment":
+            case "testLinkSubstitutionPreserveSpecialChars":
+                return SetupGroup.DEFAULT;
+            case "testToAbsoluteWithAdjustedVfsPrefix":
+            case "testLinkSubstitutionWithAdjustedVfsPrefix":
+            case "testSymmetricSubstitutionWithAdjustedVfsPrefix":
+            case "testCustomLinkHandlerWithAdjustedVfsPrefix":
+            case "testRootPathAdjustmentWithAdjustedVfsPrefix":
+            case "testAbsolutePathAdjustmentWithAdjustedVfsPrefix":
+                return SetupGroup.ADJUSTED_VFS_PREFIX;
+            case "testSingleTreeLinkSubstitution":
+            case "testSymmetricSubstitutionForSingleTree":
+            case "testRootPathAdjustmentForSingleTree":
+            case "testAbsolutePathAdjustmentForSingleTree":
+                return SetupGroup.SINGLE_TREE;
+            case "testRootPathAdjustmentWithEmptyOpenCmsContext":
+                return SetupGroup.EMPTY_CONTEXT;
+            default:
+                throw new IllegalStateException("Unexpected test method: " + getName());
+        }
     }
 
     /**
-     * @throws Exception if tests fail
-     * @see #testCustomLinkHandler()
+     * Tests the method getAbsoluteUri.<p>
      */
-    public void testCustomLinkHandlerWithAdjustedVfsPrefix() throws Exception {
+    @Test
+    @Order(1)
+    public void testToAbsolute() {
 
-        testCustomLinkHandler();
+        String test;
+
+        test = CmsLinkManager.getRelativeUri("/dir1/dir2/index.html", "/dir1/dirB/index.html");
+        System.out.println(test);
+        assertEquals(test, "../dirB/index.html");
+
+        test = CmsLinkManager.getRelativeUri("/exp/en/test/index.html", "/exp/de/test/index.html");
+        System.out.println(test);
+        assertEquals(test, "../../de/test/index.html");
+
+        test = CmsLinkManager.getAbsoluteUri("../../index.html", "/dir1/dir2/dir3/");
+        System.out.println(test);
+        assertEquals(test, "/dir1/index.html");
+
+        test = CmsLinkManager.getAbsoluteUri("./../././.././dir2/./../index.html", "/dir1/dir2/dir3/");
+        System.out.println(test);
+        assertEquals(test, "/dir1/index.html");
+
+        test = CmsLinkManager.getAbsoluteUri("/dirA/index.html", "/dir1/dir2/dir3/");
+        System.out.println(test);
+        assertEquals(test, "/dirA/index.html");
     }
 
     /**
@@ -320,6 +253,8 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
      *
      * @throws Exception if test fails
      */
+    @Test
+    @Order(2)
     public void testLinkSubstitution() throws Exception {
 
         String test;
@@ -369,25 +304,69 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
     }
 
     /**
-     * Tests the link substitution.<p>
+     * Tests symmetric link / root path substitution.<p>
      *
      * @throws Exception if test fails
      */
-    public void testLinkSubstitutionPreserveSpecialChars() throws Exception {
+    @Test
+    @Order(3)
+    public void testSymmetricSubstitution() throws Exception {
 
         CmsObject cms = getCmsObject();
-        CmsLinkManager linkManager = OpenCms.getLinkManager();
-        String link = "http://foo.invalid/%26/x?f=%26&g=%26";
-        assertEquals(link, linkManager.substituteLinkForUnknownTarget(cms, link));
+        echo("Testing symmetric link / root path substitution substitution");
+
+        CmsResource res = cms.readResource("/xmlcontent/article_0001.html");
+        CmsLinkManager lm = OpenCms.getLinkManager();
+
+        String link = lm.substituteLinkForRootPath(cms, res.getRootPath());
+        String rootPath = lm.getRootPath(cms, link);
+        assertEquals(res.getRootPath(), rootPath);
+
+        link = lm.getServerLink(cms, res.getRootPath());
+        rootPath = lm.getRootPath(cms, link);
+        assertEquals(res.getRootPath(), rootPath);
     }
 
     /**
-     * @throws Exception if tests fail
-     * @see #testLinkSubstitution()
+     * Tests symmetric link / root path substitution with a custom link handler.<p>
+     *
+     * @throws Exception if test fails
      */
-    public void testLinkSubstitutionWithAdjustedVfsPrefix() throws Exception {
+    @Test
+    @Order(4)
+    public void testCustomLinkHandler() throws Exception {
 
-        testLinkSubstitution();
+        CmsObject cms = getCmsObject();
+        echo("Testing symmetric link / root path substitution with a custom link handler");
+
+        CmsLinkManager lm = OpenCms.getLinkManager();
+        I_CmsLinkSubstitutionHandler lh = new CmsTestLinkSubstitutionHandler();
+        lm.setLinkSubstitutionHandler(cms, lh);
+
+        cms.createResource("/system/news", CmsResourceTypeFolder.getStaticTypeId());
+        String resName = "/system/news/test.html";
+        cms.createResource(resName, CmsResourceTypeXmlPage.getStaticTypeId());
+        OpenCms.getPublishManager().publishResource(cms, "/system/news");
+        OpenCms.getPublishManager().waitWhileRunning();
+        CmsResource res = cms.readResource(resName);
+
+        testCustomLinkHandler(cms, res.getRootPath());
+        OpenCms.getStaticExportManager().setVfsPrefix("");
+        OpenCms.getStaticExportManager().initialize(cms);
+        testCustomLinkHandler(cms, res.getRootPath());
+        cms.getRequestContext().setUri(resName);
+        cms.getRequestContext().setSiteRoot("");
+        testCustomLinkHandler(cms, res.getRootPath());
+        testCustomLinkHandler(cms, res.getRootPath() + "?__locale=de");
+
+        CmsXmlPage page = new CmsXmlPage(Locale.ENGLISH, CmsEncoder.ENCODING_UTF_8);
+        page.addValue("body", Locale.ENGLISH);
+        page.setStringValue(cms, "body", Locale.ENGLISH, PAGE_01);
+
+        cms.lockResource(resName);
+        CmsFile file = cms.readFile(res);
+        file.setContents(page.marshal());
+        cms.writeFile(file);
     }
 
     /**
@@ -402,15 +381,15 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
      * Assumption: OpenCms context never ends with "/".
      *
      * @throws CmsException from getCmsObject()
-     *
      */
+    @Test
+    @Order(5)
     public void testRootPathAdjustment() throws CmsException {
 
         echo("Testing root path adjustment / context removement");
         String context = OpenCms.getSystemInfo().getOpenCmsContext();
 
         echo("Using OpenCms context \"" + context + "\"");
-        //Switch to root site
         CmsObject cms = getCmsObject();
         cms.getRequestContext().setSiteRoot("/");
         String link1 = "/test";
@@ -422,33 +401,51 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
     }
 
     /**
-     * @throws CmsException from getCmsObject()
-     * @see #testRootPathAdjustment()
-     */
-    public void testRootPathAdjustmentForSingleTree() throws CmsException {
-
-        testRootPathAdjustment();
-    }
-
-    /**
-     * @throws CmsException from getCmsObject()
-     * @see #testRootPathAdjustment()
-     */
-    public void testRootPathAdjustmentWithAdjustedVfsPrefix() throws CmsException {
-
-        testRootPathAdjustment();
-    }
-
-    /**
-     * Just a copy of the called method - if the same method is called twice,
-     * the JUnit Eclipse plugin (or JUnit itself?) behaves strange (if the test failed or succeeded is only mentioned
-     * for the last test occurrence.
+     * Test how the OpenCms context is removed from URLs when getting URLs with http://....
+     * Intended behavior: if and only if a link starts with "${server-url}/${context}/" the
+     * context is removed.
+     *
+     * Example: with context "http://localhost:8080/opencms":
+     * input link: http://localhost:8080/opencms/path  output link: /path
+     * input link: http://localhost:8080/opencmswhatever/path output link: /opencmswhatever/path
+     *
+     * Assumption: OpenCms context never ends with "/".
      *
      * @throws CmsException from getCmsObject()
      */
-    public void testRootPathAdjustmentWithEmptyOpenCmsContext() throws CmsException {
+    @Test
+    @Order(6)
+    public void testAbsolutePathAdjustment() throws CmsException {
 
-        testRootPathAdjustment();
+        echo("Testing root path adjustment / context removement for absolute paths");
+        String context = OpenCms.getSystemInfo().getOpenCmsContext();
+        echo("Using OpenCms context: " + context);
+
+        CmsObject cms = getCmsObject();
+        cms.getRequestContext().setSiteRoot("/");
+        String link = context + "-test";
+        String[] folders = context.split("/");
+        String parents = "";
+        for (int i = 1; i < (folders.length - 1); i++) {
+            parents += "/" + folders[i];
+            cms.createResource(parents, new CmsResourceTypeFolder());
+        }
+        cms.createResource(link, new CmsResourceTypeFolder());
+        CmsLinkManager lm = OpenCms.getLinkManager();
+        String serverlink = lm.getServerLink(cms, "/");
+        serverlink = serverlink.substring(0, serverlink.length() - 1);
+        String inputlink = serverlink + link;
+        echo(
+            "Checking link "
+                + inputlink
+                + " in context "
+                + context
+                + " and site \""
+                + cms.getRequestContext().getSiteRoot()
+                + "\"");
+        String outputlink = lm.getRootPath(cms, inputlink);
+        echo("Result: " + outputlink);
+        assertEquals(link, outputlink);
     }
 
     /**
@@ -456,6 +453,88 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
      *
      * @throws Exception if test fails
      */
+    @Test
+    @Order(7)
+    public void testLinkSubstitutionPreserveSpecialChars() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsLinkManager linkManager = OpenCms.getLinkManager();
+        String link = "http://foo.invalid/%26/x?f=%26&g=%26";
+        assertEquals(link, linkManager.substituteLinkForUnknownTarget(cms, link));
+    }
+
+    /**
+     * @see #testToAbsolute()
+     */
+    @Test
+    @Order(8)
+    public void testToAbsoluteWithAdjustedVfsPrefix() {
+
+        testToAbsolute();
+    }
+
+    /**
+     * @throws Exception if tests fail
+     * @see #testLinkSubstitution()
+     */
+    @Test
+    @Order(9)
+    public void testLinkSubstitutionWithAdjustedVfsPrefix() throws Exception {
+
+        testLinkSubstitution();
+    }
+
+    /**
+     * @throws Exception if tests fail
+     * @see #testSymmetricSubstitution()
+     */
+    @Test
+    @Order(10)
+    public void testSymmetricSubstitutionWithAdjustedVfsPrefix() throws Exception {
+
+        testSymmetricSubstitution();
+    }
+
+    /**
+     * @throws Exception if tests fail
+     * @see #testCustomLinkHandler()
+     */
+    @Test
+    @Order(11)
+    public void testCustomLinkHandlerWithAdjustedVfsPrefix() throws Exception {
+
+        testCustomLinkHandler();
+    }
+
+    /**
+     * @throws CmsException from getCmsObject()
+     * @see #testRootPathAdjustment()
+     */
+    @Test
+    @Order(12)
+    public void testRootPathAdjustmentWithAdjustedVfsPrefix() throws CmsException {
+
+        testRootPathAdjustment();
+    }
+
+    /**
+     * @throws CmsException  from getCmsObject()
+     * @see #testAbsolutePathAdjustment()
+     */
+    @Test
+    @Order(13)
+    public void testAbsolutePathAdjustmentWithAdjustedVfsPrefix() throws CmsException {
+
+        testAbsolutePathAdjustment();
+    }
+
+    /**
+     * Tests the link substitution.<p>
+     *
+     * @throws Exception if test fails
+     */
+    @Test
+    @Order(14)
     public void testSingleTreeLinkSubstitution() throws Exception {
 
         String test;
@@ -505,87 +584,60 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
     }
 
     /**
-     * Tests symmetric link / root path substitution.<p>
-     *
-     * @throws Exception if test fails
+     * @throws Exception if tests fail
+     * @see #testSymmetricSubstitution()
      */
-    public void testSymmetricSubstitution() throws Exception {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing symmetric link / root path substitution substitution");
-
-        // read the resource to make sure we certainly use an existing root path
-        CmsResource res = cms.readResource("/xmlcontent/article_0001.html");
-        CmsLinkManager lm = OpenCms.getLinkManager();
-
-        // first try: no server info
-        String link = lm.substituteLinkForRootPath(cms, res.getRootPath());
-        String rootPath = lm.getRootPath(cms, link);
-        assertEquals(res.getRootPath(), rootPath);
-
-        // second try: with server and protocol
-        link = lm.getServerLink(cms, res.getRootPath());
-        rootPath = lm.getRootPath(cms, link);
-        assertEquals(res.getRootPath(), rootPath);
-    }
-
+    @Test
+    @Order(15)
     public void testSymmetricSubstitutionForSingleTree() throws Exception {
 
         testSymmetricSubstitution();
     }
 
     /**
-     * @throws Exception if tests fail
-     * @see #testSymmetricSubstitution()
+     * @throws CmsException from getCmsObject()
+     * @see #testRootPathAdjustment()
      */
-    public void testSymmetricSubstitutionWithAdjustedVfsPrefix() throws Exception {
+    @Test
+    @Order(16)
+    public void testRootPathAdjustmentForSingleTree() throws CmsException {
 
-        testSymmetricSubstitution();
+        testRootPathAdjustment();
     }
 
     /**
-     * Tests the method getAbsoluteUri.<p>
+     * @throws CmsException  from getCmsObject()
+     * @see #testAbsolutePathAdjustment()
      */
-    public void testToAbsolute() {
+    @Test
+    @Order(17)
+    public void testAbsolutePathAdjustmentForSingleTree() throws CmsException {
 
-        String test;
-
-        test = CmsLinkManager.getRelativeUri("/dir1/dir2/index.html", "/dir1/dirB/index.html");
-        System.out.println(test);
-        assertEquals(test, "../dirB/index.html");
-
-        test = CmsLinkManager.getRelativeUri("/exp/en/test/index.html", "/exp/de/test/index.html");
-        System.out.println(test);
-        assertEquals(test, "../../de/test/index.html");
-
-        test = CmsLinkManager.getAbsoluteUri("../../index.html", "/dir1/dir2/dir3/");
-        System.out.println(test);
-        assertEquals(test, "/dir1/index.html");
-
-        test = CmsLinkManager.getAbsoluteUri("./../././.././dir2/./../index.html", "/dir1/dir2/dir3/");
-        System.out.println(test);
-        assertEquals(test, "/dir1/index.html");
-
-        test = CmsLinkManager.getAbsoluteUri("/dirA/index.html", "/dir1/dir2/dir3/");
-        System.out.println(test);
-        assertEquals(test, "/dirA/index.html");
+        testAbsolutePathAdjustment();
     }
 
     /**
-     * @see #testToAbsolute()
+     * Just a copy of the called method - if the same method is called twice,
+     * the JUnit Eclipse plugin (or JUnit itself?) behaves strange (if the test failed or succeeded is only mentioned
+     * for the last test occurrence.
+     *
+     * @throws CmsException from getCmsObject()
      */
-    public void testToAbsoluteWithAdjustedVfsPrefix() {
+    @Test
+    @Order(18)
+    public void testRootPathAdjustmentWithEmptyOpenCmsContext() throws CmsException {
 
-        testToAbsolute();
+        testRootPathAdjustment();
     }
 
     /**
      * Initializes m_vfsPrefix lazily, otherwise it does not work.
+     *
      * @return the VFS prefix as added to internal links
      */
     protected String getVfsPrefix() {
 
-        if (null == m_vfsPrefix) {
+        if (m_vfsPrefix == null) {
             m_vfsPrefix = OpenCms.getStaticExportManager().getVfsPrefix();
         }
         return m_vfsPrefix;
@@ -603,12 +655,10 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
 
         CmsLinkManager lm = OpenCms.getLinkManager();
 
-        // first try: no server info
         String link = lm.substituteLinkForRootPath(cms, path);
         String rootPath = lm.getRootPath(cms, link);
         assertEquals(path, rootPath);
 
-        // second try: with server and protocol
         link = lm.getServerLink(cms, path);
         rootPath = lm.getRootPath(cms, link);
         assertEquals(path, rootPath);

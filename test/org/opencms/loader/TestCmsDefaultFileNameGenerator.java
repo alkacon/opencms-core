@@ -27,17 +27,26 @@
 
 package org.opencms.loader;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsJupiterTestCase;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /**
  * Tests the default file name generation.<p>
  */
-public class TestCmsDefaultFileNameGenerator extends OpenCmsTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestCmsDefaultFileNameGenerator extends OpenCmsJupiterTestCase {
 
     /** List of names with 5 digits. */
     public static final Set<String> NAMES_5 = new HashSet<>(
@@ -48,10 +57,29 @@ public class TestCmsDefaultFileNameGenerator extends OpenCmsTestCase {
         Arrays.asList(new String[] {"/file_0001.xml", "/file_0002.xml"}));
 
     /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
+     */
+    @Override
+    protected boolean shouldBootOpenCms() {
+
+        return false;
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
+     */
+    @Override
+    protected boolean shouldInitConfiguration() {
+
+        return false;
+    }
+
+    /**
      * Tests the default file name generation.<p>
      *
      * @throws Exception in case the test fails
      */
+    @Test
     public void testFileNumbering() throws Exception {
 
         CmsDefaultFileNameGenerator defaultGenerator = new CmsDefaultFileNameGenerator();

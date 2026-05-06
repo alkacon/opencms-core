@@ -36,8 +36,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.fields.CmsSearchField;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsJupiterTestCase;
 
 import java.util.Collections;
 import java.util.List;
@@ -45,60 +44,42 @@ import java.util.Locale;
 
 import org.apache.lucene.document.Document;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Unit test for special search features added for OpenCms 7.5.<p>
  */
-public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsSearchSpecialFeatures extends OpenCmsJupiterTestCase {
 
     /** Name of the search index created using API. */
     public static final String INDEX_SPECIAL = "Special Test Index";
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
      */
-    public TestCmsSearchSpecialFeatures(String arg0) {
+    @Override
+    protected String getImportFolder() {
 
-        super(arg0);
+        return "simpletest";
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
      */
-    public static Test suite() {
+    @Override
+    protected String getTargetFolder() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsSearchSpecialFeatures.class.getName());
-
-        suite.addTest(new TestCmsSearchSpecialFeatures("testSearchIndexSetup"));
-        suite.addTest(new TestCmsSearchSpecialFeatures("testIncrementalIndexUpdate"));
-        suite.addTest(new TestCmsSearchSpecialFeatures("testLazyContentFields"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        return "/";
     }
 
     /**
@@ -106,6 +87,8 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Order(2)
+    @Test
     public void testIncrementalIndexUpdate() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -151,6 +134,8 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Order(3)
+    @Test
     public void testLazyContentFields() throws Exception {
 
         echo("Testing lazy status of content fields in search index");
@@ -160,12 +145,12 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
         CmsSearchIndex searchIndex = (CmsSearchIndex)OpenCms.getSearchManager().getIndex(INDEX_SPECIAL);
         Document doc = (Document)searchIndex.getDocument(CmsSearchField.FIELD_PATH, fileName).getDocument();
 
-        assertNotNull("Document '" + fileName + "' not found", doc);
-        assertNotNull("No 'title' field available", doc.getField(CmsSearchField.FIELD_TITLE));
+        assertNotNull(doc, "Document '" + fileName + "' not found");
+        assertNotNull(doc.getField(CmsSearchField.FIELD_TITLE), "No 'title' field available");
         // assertFalse("title must not be lazy loaded", doc.getField(CmsSearchField.FIELD_TITLE). isLazy());
-        assertNotNull("No 'content' field available", doc.getField(CmsSearchField.FIELD_CONTENT));
+        assertNotNull(doc.getField(CmsSearchField.FIELD_CONTENT), "No 'content' field available");
         // assertTrue("Content field not lazy", doc.getField(CmsSearchField.FIELD_CONTENT).isLazy());
-        assertNotNull("No 'content blob' field available", doc.getField(CmsSearchField.FIELD_CONTENT_BLOB));
+        assertNotNull(doc.getField(CmsSearchField.FIELD_CONTENT_BLOB), "No 'content blob' field available");
         // assertTrue("Content blob field not lazy", doc.getField(CmsSearchField.FIELD_CONTENT_BLOB).isLazy());
     }
 
@@ -174,6 +159,8 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Order(1)
+    @Test
     public void testSearchIndexSetup() throws Exception {
 
         CmsSearchIndex searchIndex = new CmsSearchIndex(INDEX_SPECIAL);
