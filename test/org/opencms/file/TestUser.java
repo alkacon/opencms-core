@@ -35,8 +35,13 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.util.CmsDataTypeUtil;
+import org.opencms.util.CmsUUID;
 
 import java.io.File;
+import java.io.InvalidClassException;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -67,6 +72,22 @@ import static org.junit.jupiter.api.Assertions.fail;
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestUser extends OpenCmsJupiterTestCase {
+
+    static class Evil implements Serializable {
+
+        private String m_text;
+
+        public Evil(String text) {
+
+            m_text = text;
+        }
+
+        @Override
+        public String toString() {
+
+            return getClass().getSimpleName() + "[" + m_text + "]";
+        }
+    }
 
     /**
      * @see org.opencms.test.OpenCmsJupiterTestCase#getPublish()
@@ -139,6 +160,34 @@ public class TestUser extends OpenCmsJupiterTestCase {
             Sets.newHashSet("xtest2", "xtest4"),
             users2.stream().map(user -> user.getName()).collect(Collectors.toSet()));
         assertEquals(0, users3.size());
+    }
+
+    /**
+     * Tests serialization filtering.
+     *
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    @Order(7)
+    public void testSerializationFiltering() throws Exception {
+
+        List<Object> list = new ArrayList<>();
+        list.add(new CmsUUID());
+        list.add(Long.valueOf(42));
+        list.add(Boolean.TRUE);
+        list.add("foo");
+        list.add(new ArrayList<>());
+        assertEquals(list, CmsDataTypeUtil.dataDeserialize(CmsDataTypeUtil.dataSerialize(list), "java.util.List"));
+
+        list.add(new Evil("don't deserialize me"));
+        byte[] serialized = CmsDataTypeUtil.dataSerialize(list);
+        try {
+            CmsDataTypeUtil.dataDeserialize(serialized, "java.util.List");
+            fail("deserialization should have failed");
+        } catch (InvalidClassException e) {
+            // ignore, ok
+        }
+
     }
 
     /**
