@@ -33,13 +33,14 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategoryService;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsJunitTestCase;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
 import java.util.Iterator;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -55,7 +56,17 @@ import static org.junit.jupiter.api.Assertions.fail;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCopy extends OpenCmsJupiterTestCase {
+public class TestCopy extends OpenCmsJunitTestCase {
+
+    /**
+     * @see org.opencms.test.OpenCmsJunitTestCase#openCmsSetUp()
+     */
+    @Override
+    @BeforeAll
+    protected void openCmsSetUp() {
+
+        setupOpenCms("simpletest", "/");
+    }
 
     /**
      * Tests the copy of a resource with assigned categories.<p>

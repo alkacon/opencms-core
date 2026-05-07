@@ -37,7 +37,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsJunitTestCase;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
 import org.opencms.test.OpenCmsTestResourceFilter;
 import org.opencms.util.CmsUUID;
@@ -45,6 +45,7 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -62,7 +63,17 @@ import static org.junit.jupiter.api.Assertions.fail;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCreateWriteResource extends OpenCmsJupiterTestCase {
+public class TestCreateWriteResource extends OpenCmsJunitTestCase {
+
+    /**
+     * @see org.opencms.test.OpenCmsJunitTestCase#openCmsSetUp()
+     */
+    @Override
+    @BeforeAll
+    protected void openCmsSetUp() {
+
+        setupOpenCms("simpletest", "/");
+    }
 
     /**
      * Test creation of invalid resources that have only dots in their name.<p>

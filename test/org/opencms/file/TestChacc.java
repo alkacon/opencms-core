@@ -81,13 +81,6 @@ public class TestChacc extends OpenCmsJupiterTestCase {
     }
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-
-
-    /**
      * Test the chacc method on a file and a group.<p>
      *
      * @param tc the OpenCms test environment
