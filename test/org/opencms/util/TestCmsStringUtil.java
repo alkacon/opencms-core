@@ -791,6 +791,27 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
         assertEquals(test, result);
     }
 
+    public void testToggleKeyword() {
+
+        assertEquals("foo bar", CmsStringUtil.toggleKeyword("foo xyz bar", "xyz", false));
+        assertEquals("foo bar", CmsStringUtil.toggleKeyword("foo xyz xyz bar", "xyz", false));
+        assertEquals("foo xyzbar", CmsStringUtil.toggleKeyword("foo xyzbar", "xyz", false));
+        assertEquals("fooxyz bar", CmsStringUtil.toggleKeyword("fooxyz bar", "xyz", false));
+        assertEquals("foo", CmsStringUtil.toggleKeyword("foo bar", "bar", false));
+        assertEquals("bar", CmsStringUtil.toggleKeyword("foo bar", "foo", false));
+
+        assertEquals("foo bar xyz", CmsStringUtil.toggleKeyword("foo bar", "xyz", true));
+        assertEquals("foo bar xyz", CmsStringUtil.toggleKeyword("foo bar     ", "xyz", true));
+        assertEquals("foo barxyz xyz", CmsStringUtil.toggleKeyword("foo barxyz", "xyz", true));
+        assertEquals("foo xyz bar", CmsStringUtil.toggleKeyword("foo xyz bar", "xyz", true));
+        assertEquals("xyz foo bar", CmsStringUtil.toggleKeyword("xyz foo bar", "xyz", true));
+
+        assertEquals("", CmsStringUtil.toggleKeyword("xyz", "xyz", false));
+        assertEquals("", CmsStringUtil.toggleKeyword("", "xyz", false));
+        assertEquals("xyz", CmsStringUtil.toggleKeyword("", "xyz", true));
+
+    }
+
     public void testTransformProperties() {
 
         String nl = "\n";
