@@ -65,10 +65,10 @@ import com.google.gwt.user.server.rpc.SerializationPolicyLoader;
  * @since 8.0.0
  *
  */
-public class CmsGwtServiceContext implements I_CmsEventListener {
+public class CmsGwtServiceContext2 implements I_CmsEventListener {
 
     /** The static log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsGwtServiceContext.class);
+    private static final Log LOG = CmsLog.getLog(CmsGwtServiceContext2.class);
 
     /** Vaadin widgetset serialization policy pattern. */
     private static final Pattern vaadinPattern = Pattern.compile("/(VAADIN/.*)$");
@@ -93,7 +93,7 @@ public class CmsGwtServiceContext implements I_CmsEventListener {
      *
      * @param name an identifier which is used for debugging
      */
-    public CmsGwtServiceContext(String name) {
+    public CmsGwtServiceContext2(String name) {
 
         m_name = name;
 

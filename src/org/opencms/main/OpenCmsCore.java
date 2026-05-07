@@ -69,7 +69,7 @@ import org.opencms.flex.CmsFlexCache;
 import org.opencms.flex.CmsFlexCacheConfiguration;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtService;
-import org.opencms.gwt.CmsGwtServiceContext;
+import org.opencms.gwt.CmsGwtServiceContext2;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsI18nInfo;
@@ -267,7 +267,7 @@ public final class OpenCmsCore {
     private CmsFlexCache m_flexCache;
 
     /** The context objects for GWT services. */
-    private Map<String, CmsGwtServiceContext> m_gwtServiceContexts;
+    private Map<String, CmsGwtServiceContext2> m_gwtServiceContexts;
 
     /** The site manager contains information about the Cms import/export. */
     private CmsImportExportManager m_importExportManager;
@@ -1948,7 +1948,7 @@ public final class OpenCmsCore {
      */
     protected synchronized void initContext(ServletContext context) throws CmsInitException {
 
-        m_gwtServiceContexts = new HashMap<String, CmsGwtServiceContext>();
+        m_gwtServiceContexts = new HashMap<String, CmsGwtServiceContext2>();
 
         // automatic servlet container recognition and specific behavior:
         CmsServletContainerSettings servletContainerSettings = new CmsServletContainerSettings(context);
@@ -2980,9 +2980,9 @@ public final class OpenCmsCore {
      */
     private synchronized CmsGwtService getGwtService(String serviceName, ServletConfig servletConfig) throws Throwable {
 
-        CmsGwtServiceContext context = m_gwtServiceContexts.get(serviceName);
+        CmsGwtServiceContext2 context = m_gwtServiceContexts.get(serviceName);
         if (context == null) {
-            context = new CmsGwtServiceContext(serviceName);
+            context = new CmsGwtServiceContext2(serviceName);
             m_gwtServiceContexts.put(serviceName, context);
         }
         CmsGwtService gwtService = (CmsGwtService)Class.forName(serviceName).newInstance();
