@@ -27,58 +27,36 @@
 
 package org.opencms.jsp.search.config.parser;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Order;
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.opencms.file.CmsObject;
 import org.opencms.jsp.search.config.CmsSearchConfiguration;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.solr.CmsSolrIndex;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /** Test cases for the plain query search configuration parser. */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class TestPlainQuerySearchConfigurationParser extends OpenCmsJupiterTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestPlainQuerySearchConfigurationParser extends OpenCmsTestRunner {
 
     /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
     @Override
-    protected String getImportFolder() {
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        return "simpletest";
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
-     */
-    @Override
-    protected String getTargetFolder() {
-
-        return "/";
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getSpecialConfigFolder()
-     */
-    @Override
-    protected String getSpecialConfigFolder() {
-
-        return "/../org/opencms/search/solr";
-    }
-
-    /**
-     * Disables all Lucene indexes to match the legacy suite wrapper setup.<p>
-     */
-    @org.junit.jupiter.api.BeforeAll
-    public void disableIndexes() {
-
+        setupOpenCms(testInfo, "simpletest", "/", "/../org/opencms/search/solr");
         for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
             if (!indexName.equalsIgnoreCase(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE)) {
                 I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
@@ -89,20 +67,11 @@ public class TestPlainQuerySearchConfigurationParser extends OpenCmsJupiterTestC
         }
     }
 
-    
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    
-
     /**
      * Tests the extraction of the core, index and maxresults parameters.
      * @throws CmsException if the cms object cannot be retrieved.
      */
-        @Test
+    @Test
     @Order(1)
     public void testSpecialParamExtraction() throws CmsException {
 

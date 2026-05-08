@@ -27,11 +27,7 @@
 
 package org.opencms.configuration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.io.File;
 import java.net.URL;
@@ -49,16 +45,7 @@ import org.junit.jupiter.api.TestMethodOrder;
  * Test cases for the parameter configuration.<p>
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestParameterConfiguration extends OpenCmsJupiterTestCase {
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
-     */
-    @Override
-    protected boolean shouldBootOpenCms() {
-
-        return false;
-    }
+public class TestParameterConfiguration extends OpenCmsTestRunner {
 
     /**
      * Tests escaping and unescaping values in the parameter configuration.<p>
@@ -66,7 +53,7 @@ public class TestParameterConfiguration extends OpenCmsJupiterTestCase {
      * @throws Exception in case the test fails
      */
     @Test
-    @Order(1)
+    @Order(3)
     public void testEscapeUnescapeParameterConfiguration() throws Exception {
 
         CmsParameterConfiguration config = new CmsParameterConfiguration();
@@ -80,74 +67,6 @@ public class TestParameterConfiguration extends OpenCmsJupiterTestCase {
         config.add("test3", "test \\= drei");
         assertEquals("test \\= drei", config.get("test3"));
 
-    }
-
-    /**
-     * Test merging the parameter configuration.<p>
-     *
-     * @throws Exception in case the test fails
-     */
-    @Test
-    @Order(2)
-    public void testMergeParameterConfiguration() throws Exception {
-
-        CmsParameterConfiguration config1 = new CmsParameterConfiguration();
-        String p = "testParam";
-        config1.add(p, "1");
-        config1.add(p, "2");
-        config1.add(p, "3");
-        config1.add("x", "y");
-
-        CmsParameterConfiguration config2 = new CmsParameterConfiguration();
-        config2.add(p, "a");
-        config2.add(p, "b");
-        config2.add(p, "c");
-        config2.add("v", "w");
-
-        config1.putAll(config2);
-
-        assertEquals("1,2,3,a,b,c", config1.get(p));
-        assertEquals(6, config1.getList(p).size());
-        assertEquals("y", config1.get("x"));
-        assertEquals("w", config1.get("v"));
-    }
-
-    /**
-     * Test reading the parameter configuration.<p>
-     *
-     * @throws Exception in case the test fails
-     */
-    @Test
-    @Order(3)
-    public void testReadParameterConfiguration() throws Exception {
-
-        String testPropPath = "org/opencms/configuration/opencms-test.properties";
-        URL url = this.getClass().getClassLoader().getResource(testPropPath);
-        String decodedPath = URLDecoder.decode(url.getPath(), "UTF-8");
-        File file = new File(decodedPath);
-        System.out.println("URL: '" + url + "'");
-        System.out.println("URL path decoded: '" + decodedPath + "'");
-        System.out.println("File: '" + file + "'");
-        // make sure the test properties file is found
-        assertTrue(file.exists(), "Test property file '" + file.getAbsolutePath() + "' not found");
-
-        CmsParameterConfiguration cmsProp = new CmsParameterConfiguration(file.getAbsolutePath());
-        assertEquals("C:\\dev\\workspace\\opencms-core\\test\\data", cmsProp.get("test.path.one"));
-
-        // test some of the more advanced features
-        assertEquals(4, cmsProp.getList("test.list").size());
-        assertEquals(3, cmsProp.getList("test.otherlist").size());
-        assertEquals("comma, escaped with \\ backslash", cmsProp.get("test.escaping"));
-        assertEquals("this is a long long long long long long line!", cmsProp.get("test.multiline"));
-
-        // test compatibility with Collection Extended Properties
-        ExtendedProperties extProp = new ExtendedProperties(file.getAbsolutePath());
-        assertEquals(extProp.size(), cmsProp.size());
-        for (String key : cmsProp.keySet()) {
-            Object value = cmsProp.getObject(key);
-            assertTrue(extProp.containsKey(key), "Key '" + key + "' not found in CmsConfiguration");
-            assertEquals(extProp.getProperty(key), value, "Objects for " + key + " not equal");
-        }
     }
 
     /**
@@ -179,5 +98,73 @@ public class TestParameterConfiguration extends OpenCmsJupiterTestCase {
         assertEquals("value_a.b1.c2", result.getProperty("c2"), "Incorrect value of key c2 (a.b1.c2)");
         assertEquals("value_a.b1.c3", result.getProperty("c3"), "Incorrect value of key c2 (a.b1.c3)");
         assertEquals(3, result.size(), "Incorrect number of properties");
+    }
+
+    /**
+     * Test merging the parameter configuration.<p>
+     *
+     * @throws Exception in case the test fails
+     */
+    @Test
+    @Order(1)
+    public void testMergeParameterConfiguration() throws Exception {
+
+        CmsParameterConfiguration config1 = new CmsParameterConfiguration();
+        String p = "testParam";
+        config1.add(p, "1");
+        config1.add(p, "2");
+        config1.add(p, "3");
+        config1.add("x", "y");
+
+        CmsParameterConfiguration config2 = new CmsParameterConfiguration();
+        config2.add(p, "a");
+        config2.add(p, "b");
+        config2.add(p, "c");
+        config2.add("v", "w");
+
+        config1.putAll(config2);
+
+        assertEquals("1,2,3,a,b,c", config1.get(p));
+        assertEquals(6, config1.getList(p).size());
+        assertEquals("y", config1.get("x"));
+        assertEquals("w", config1.get("v"));
+    }
+
+    /**
+     * Test reading the parameter configuration.<p>
+     *
+     * @throws Exception in case the test fails
+     */
+    @Test
+    @Order(2)
+    public void testReadParameterConfiguration() throws Exception {
+
+        String testPropPath = "org/opencms/configuration/opencms-test.properties";
+        URL url = this.getClass().getClassLoader().getResource(testPropPath);
+        String decodedPath = URLDecoder.decode(url.getPath(), "UTF-8");
+        File file = new File(decodedPath);
+        System.out.println("URL: '" + url + "'");
+        System.out.println("URL path decoded: '" + decodedPath + "'");
+        System.out.println("File: '" + file + "'");
+        // make sure the test properties file is found
+        assertTrue(file.exists(), "Test property file '" + file.getAbsolutePath() + "' not found");
+
+        CmsParameterConfiguration cmsProp = new CmsParameterConfiguration(file.getAbsolutePath());
+        assertEquals("C:\\dev\\workspace\\opencms-core\\test\\data", cmsProp.get("test.path.one"));
+
+        // test some of the more advanced features
+        assertEquals(4, cmsProp.getList("test.list").size());
+        assertEquals(3, cmsProp.getList("test.otherlist").size());
+        assertEquals("comma, escaped with \\ backslash", cmsProp.get("test.escaping"));
+        assertEquals("this is a long long long long long long line!", cmsProp.get("test.multiline"));
+
+        // test compatibility with Collection Extended Properties
+        ExtendedProperties extProp = new ExtendedProperties(file.getAbsolutePath());
+        assertEquals(extProp.size(), cmsProp.size());
+        for (String key : cmsProp.keySet()) {
+            Object value = cmsProp.getObject(key);
+            assertTrue(extProp.containsKey(key), "Key '" + key + "' not found in CmsConfiguration");
+            assertEquals(extProp.getProperty(key), value, "Objects for " + key + " not equal");
+        }
     }
 }

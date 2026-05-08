@@ -27,10 +27,6 @@
 
 package org.opencms.xml.content;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Order;
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -44,8 +40,7 @@ import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.staticexport.CmsLinkTable.LinkKeyComparator;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.types.CmsXmlHtmlValue;
@@ -58,22 +53,20 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the OpenCms XML contents with real VFS operations.<p>
  */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class TestCmsXmlContentLinks extends OpenCmsJupiterTestCase {
-
-    @BeforeAll
-    public void setUpAll() throws Exception {
-        initSchemas();
-    }
-
-
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsXmlContentLinks extends OpenCmsTestRunner {
 
     /** The link original filename. */
     private static final String FILENAME = "/folder1/image2.gif";
@@ -95,8 +88,6 @@ public class TestCmsXmlContentLinks extends OpenCmsJupiterTestCase {
 
     /** The current VFS prefix as added to internal links according to the configuration in opencms-importexport.xml. */
     private String m_vfsPrefix;
-
-
 
     /**
      * Compares two link objects.<p>
@@ -156,13 +147,6 @@ public class TestCmsXmlContentLinks extends OpenCmsJupiterTestCase {
         assertNotNull(link);
         return link;
     }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-
 
     /**
      * Initializes all schema definitions.<p>
@@ -233,6 +217,21 @@ public class TestCmsXmlContentLinks extends OpenCmsJupiterTestCase {
         link.checkConsistency(cms);
         assertEquals(resource.getRootPath(), link.getTarget());
         assertEquals(resource.getStructureId(), link.getStructureId());
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+        try {
+            initSchemas();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -310,7 +309,10 @@ public class TestCmsXmlContentLinks extends OpenCmsJupiterTestCase {
             for (int j = 0; j < ascendingKeys.size(); j++) {
                 String firstKey = ascendingKeys.get(i);
                 String secondKey = ascendingKeys.get(j);
-                assertEquals(Integer.compare(i, j), comparator.compare(firstKey, secondKey), "Wrong comparator result for values " + firstKey + ", " + secondKey);
+                assertEquals(
+                    Integer.compare(i, j),
+                    comparator.compare(firstKey, secondKey),
+                    "Wrong comparator result for values " + firstKey + ", " + secondKey);
             }
         }
 
@@ -1142,7 +1144,9 @@ public class TestCmsXmlContentLinks extends OpenCmsJupiterTestCase {
         cms.writeFile(file);
         file = cms.readFile(source);
         String newData = new String(file.getContents(), "UTF-8");
-        assertTrue(newData.contains(expected.getStructureId().toString()), "[" + newData + "] does not contain " + expected.getStructureId());
+        assertTrue(
+            newData.contains(expected.getStructureId().toString()),
+            "[" + newData + "] does not contain " + expected.getStructureId());
         file.setContents(originalContent);
         cms.writeFile(file);
     }

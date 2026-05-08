@@ -27,7 +27,7 @@
 
 package org.opencms.util;
 
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,30 +38,28 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test cases for org.opencms.util.CmsPriorityLock.
  */
-@TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestCmsPriorityLock extends OpenCmsJupiterTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsPriorityLock extends OpenCmsTestRunner {
 
-    @Override
-    protected boolean shouldBootOpenCms() {
-        return false;
-    }
+    @BeforeAll
+    public void setUpConfiguration() {
 
-    @Override
-    protected boolean shouldInitConfiguration() {
-        return true;
+        initConfiguration();
     }
 
     @Test
+    @Order(3)
     public void testFairness() throws Exception {
 
         CmsPriorityLock lock = new CmsPriorityLock();
@@ -97,6 +95,7 @@ public class TestCmsPriorityLock extends OpenCmsJupiterTestCase {
     }
 
     @Test
+    @Order(2)
     public void testPriority() throws Exception {
 
         CmsPriorityLock lock = new CmsPriorityLock();
@@ -139,6 +138,7 @@ public class TestCmsPriorityLock extends OpenCmsJupiterTestCase {
     }
 
     @Test
+    @Order(1)
     public void testReentrantLocking() throws Exception {
 
         CmsPriorityLock lock = new CmsPriorityLock();

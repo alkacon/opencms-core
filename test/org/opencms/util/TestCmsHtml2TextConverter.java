@@ -28,12 +28,11 @@
 package org.opencms.util;
 
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test case for <code>{@link org.opencms.util.CmsHtml2TextConverter}</code>.<p>
@@ -41,12 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @since 6.2.0
  */
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestCmsHtml2TextConverter extends OpenCmsJupiterTestCase {
-
-    @Override
-    protected boolean shouldBootOpenCms() {
-        return false;
-    }
+public class TestCmsHtml2TextConverter extends OpenCmsTestRunner {
 
     /**
      * Tests the HTML extractor.<p>

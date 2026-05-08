@@ -36,7 +36,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.List;
 import java.util.Locale;
@@ -45,46 +45,29 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for searching in "offline" indexes, added with OpenCms version 7.5.<p>
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCmsSearchOffline extends OpenCmsJupiterTestCase {
+public class TestCmsSearchOffline extends OpenCmsTestRunner {
 
     /** Name of the search index created using API. */
     public static final String INDEX_SPECIAL = "Offline Index";
 
     /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
     @Override
-    protected String getImportFolder() {
-
-        return "simpletest";
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
-     */
-    @Override
-    protected String getTargetFolder() {
-
-        return "/";
-    }
-
-    /**
-     * Preserves the legacy suite setup side effect for offline indexing.<p>
-     */
     @BeforeAll
-    public void configureOfflineUpdateFrequency() {
+    public void $openCmsSetUp(TestInfo testInfo) {
 
+        setupOpenCms(testInfo, "simpletest", "/");
         OpenCms.getSearchManager().setOfflineUpdateFrequency(1000);
     }
 
@@ -212,7 +195,7 @@ public class TestCmsSearchOffline extends OpenCmsJupiterTestCase {
         CmsSearchIndex searchIndex = new CmsSearchIndex(INDEX_SPECIAL);
         searchIndex.setProject("Offline");
         searchIndex.setLocale(Locale.ENGLISH);
-        searchIndex.setRebuildMode(CmsSearchIndex.REBUILD_MODE_OFFLINE);
+        searchIndex.setRebuildMode(I_CmsSearchIndex.REBUILD_MODE_OFFLINE);
         // available pre-configured in the test configuration files opencms-search.xml
         searchIndex.addSourceName("source1");
 

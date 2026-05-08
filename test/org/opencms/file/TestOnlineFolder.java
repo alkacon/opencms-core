@@ -40,7 +40,7 @@ import org.opencms.search.solr.CmsSolrResultList;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsUUID;
 
 import java.nio.charset.StandardCharsets;
@@ -51,34 +51,33 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.function.FailableFunction;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test cases for the online folder feature.
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestOnlineFolder extends OpenCmsJupiterTestCase {
+public class TestOnlineFolder extends OpenCmsTestRunner {
 
     public static final String ONLINE_FOLDER = "/shared/online";
 
     private CmsObject m_onlineCms;
 
     /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getSpecialConfigFolder()
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
     @Override
-    protected String getSpecialConfigFolder() {
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        return "/../org/opencms/search/solr/defaultconfig";
+        setupOpenCms(testInfo, "simpletest", "/", "/../org/opencms/search/solr/defaultconfig");
     }
 
     @Test

@@ -43,60 +43,31 @@ import org.opencms.search.galleries.CmsGallerySearchResultList;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrResultList;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.text.DateFormat;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for the basic OpenCms gallery search functions.<p>
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCmsGallerySearchBasic extends OpenCmsJupiterTestCase {
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
-     */
-    @Override
-    protected String getImportFolder() {
-
-        return "simpletest";
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
-     */
-    @Override
-    protected String getTargetFolder() {
-
-        return "";
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getSpecialConfigFolder()
-     */
-    @Override
-    protected String getSpecialConfigFolder() {
-
-        return "/../org/opencms/search/gallery";
-    }
+public class TestCmsGallerySearchBasic extends OpenCmsTestRunner {
 
     /**
      * Prints the given list of search results to STDOUT.<p>
@@ -163,6 +134,16 @@ public class TestCmsGallerySearchBasic extends OpenCmsJupiterTestCase {
                 System.out.println(res.getExcerpt());
             }
         }
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "", "/../org/opencms/search/gallery");
     }
 
     /**

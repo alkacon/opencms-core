@@ -27,10 +27,6 @@
 
 package org.opencms.jsp.search;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Order;
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.search.config.CmsSearchConfiguration;
@@ -47,40 +43,41 @@ import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrResultList;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestEnvironment;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /** Test cases for the simple search configuration via contents of type "list_config". */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class TestSimpleSearch extends OpenCmsJupiterTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestSimpleSearch extends OpenCmsTestRunner {
 
+    /** The VFS folder where the list contents are placed in. */
+    private static final String LIST_BASE_FOLDER = "/system/modules/org.opencms.test.modules.listtype/resources/lists/";
+
+    /**
+     * @see org.opencms.test.OpenCmsJunitTestCase#openCmsSetUp()
+     */
     @Override
-    protected String getImportFolder() {
-        return "simpletest";
-    }
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-    @Override
-    protected String getTargetFolder() {
-        return "/";
-    }
-
-    @Override
-    protected String getSpecialConfigFolder() {
-        return "/../org/opencms/search/solr";
-    }
-
-    @org.junit.jupiter.api.BeforeAll
-    public void disableIndexes() {
-        for (String indexName : org.opencms.main.OpenCms.getSearchManager().getIndexNames()) {
-            if (!indexName.equalsIgnoreCase(org.opencms.search.solr.CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE)) {
-                org.opencms.search.I_CmsSearchIndex index = org.opencms.main.OpenCms.getSearchManager().getIndex(indexName);
+        setupOpenCms(testInfo, "simpletest", "/", "/../org/opencms/search/solr");
+        // disable all lucene indexes
+        for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
+            if (!indexName.equalsIgnoreCase(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE)) {
+                I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
                 if (index != null) {
                     index.setEnabled(false);
                 }
@@ -88,30 +85,17 @@ public class TestSimpleSearch extends OpenCmsJupiterTestCase {
         }
     }
 
-
-    /** The VFS folder where the list contents are placed in. */
-    private static final String LIST_BASE_FOLDER = "/system/modules/org.opencms.test.modules.listtype/resources/lists/";
-
-    
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    
-
     /**
      * Executes several searches with list configurations that differ in the
      * combined category folder restrictions and examines if the results are as expected.
      * @throws CmsException thrown if something unexpected goes wrong.
      */
-        @Test
+    @Test
     @Order(1)
     public void testFolderAndCategoryRestrictions() throws CmsException {
 
         CmsObject cms = OpenCms.initCmsObject(getCmsObject());
-        OpenCmsTestEnvironment.importModule(cms, "org.opencms.test.modules.listtype");
+        importModule(cms, "org.opencms.test.modules.listtype");
 
         // All with category 1
         Set<String> result = searchForConfig(cms, "list_00001.xml");

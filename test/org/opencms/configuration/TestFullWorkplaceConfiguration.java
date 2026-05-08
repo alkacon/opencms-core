@@ -29,8 +29,8 @@ package org.opencms.configuration;
 
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlUtils;
 
@@ -40,12 +40,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.dom4j.Document;
-import org.xml.sax.InputSource;
-
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.xml.sax.InputSource;
 
 /**
  * Tests for the OpenCms configuration handling.<p>
@@ -55,25 +54,7 @@ import org.junit.jupiter.api.TestMethodOrder;
  * @since 11.0.0
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestFullWorkplaceConfiguration extends OpenCmsJupiterTestCase {
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
-     */
-    @Override
-    protected boolean shouldBootOpenCms() {
-
-        return false;
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
-     */
-    @Override
-    protected boolean shouldInitConfiguration() {
-
-        return false;
-    }
+public class TestFullWorkplaceConfiguration extends OpenCmsTestRunner {
 
     /**
      * Loads the configuration using the configuration manager,

@@ -32,22 +32,20 @@ import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
 import org.opencms.setup.xml.CmsXmlConfigUpdater;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 
 import org.dom4j.Document;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the setup xml helper class.<p>
@@ -56,24 +54,12 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCmsSetupXmlHelper extends OpenCmsJupiterTestCase {
+public class TestCmsSetupXmlHelper extends OpenCmsTestRunner {
 
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
-     */
-    @Override
-    protected boolean shouldBootOpenCms() {
+    @BeforeAll
+    public void setUpConfiguration(TestInfo testInfo) {
 
-        return false;
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
-     */
-    @Override
-    protected boolean shouldInitConfiguration() {
-
-        return true;
+        initConfiguration();
     }
 
     /**

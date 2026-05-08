@@ -27,21 +27,20 @@
 
 package org.opencms.setup;
 
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.setup.CmsSetupDb;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the database creation / removal used during setup.<p>
@@ -50,24 +49,12 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCmsSetupDb extends OpenCmsJupiterTestCase {
+public class TestCmsSetupDb extends OpenCmsTestRunner {
 
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
-     */
-    @Override
-    protected boolean shouldBootOpenCms() {
+    @BeforeAll
+    public void setUpConfiguration(TestInfo testInfo) {
 
-        return false;
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
-     */
-    @Override
-    protected boolean shouldInitConfiguration() {
-
-        return true;
+        initConfiguration();
     }
 
     /**

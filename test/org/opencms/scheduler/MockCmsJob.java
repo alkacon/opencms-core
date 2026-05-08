@@ -35,14 +35,14 @@ import org.quartz.JobExecutionContext;
  */
 public class MockCmsJob implements Job {
 
-    /** Count of individual thread. */
-    private int m_myCount;
-
     /** Current count. */
     static int m_count;
 
     /** Currently running instances. */
     static int m_running;
+
+    /** Count of individual thread. */
+    private int m_myCount;
 
     /**
      * Default constructor.<p>

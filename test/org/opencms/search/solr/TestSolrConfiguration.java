@@ -47,13 +47,8 @@ import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.documents.CmsExtractionResultCache;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.extractors.CmsExtractionResult;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -69,9 +64,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the Solr configuration.<p>
@@ -80,44 +76,20 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestSolrConfiguration extends OpenCmsJupiterTestCase {
+public class TestSolrConfiguration extends OpenCmsTestRunner {
 
     /** The current VFS prefix as added to internal links according to the configuration in opencms-importexport.xml. */
     private String m_vfsPrefix;
 
     /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
     @Override
-    protected String getImportFolder() {
-
-        return "solrtest";
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
-     */
-    @Override
-    protected String getTargetFolder() {
-
-        return "";
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getSpecialConfigFolder()
-     */
-    @Override
-    protected String getSpecialConfigFolder() {
-
-        return "/../org/opencms/search/solr";
-    }
-
-    /**
-     * Disables all non-Solr indexes used by the legacy suite setup.<p>
-     */
     @BeforeAll
-    public void disableNonSolrIndexes() {
+    public void $openCmsSetUp(TestInfo testInfo) {
 
+        setupOpenCms(testInfo, "solrtest", "", "/../org/opencms/search/solr");
+        // disable all lucene indexes
         for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
             if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
                 I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);

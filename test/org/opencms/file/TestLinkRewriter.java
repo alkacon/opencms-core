@@ -33,7 +33,7 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.test.I_CmsLogHandler;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -47,16 +47,13 @@ import java.util.TreeSet;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test class for the CmsLinkRewriter class.<p>
@@ -66,7 +63,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestLinkRewriter extends OpenCmsJupiterTestCase {
+public class TestLinkRewriter extends OpenCmsTestRunner {
 
     /**
      * A log handler which detects whether an error message containing a given string is written to the log.<p>
@@ -115,12 +112,13 @@ public class TestLinkRewriter extends OpenCmsJupiterTestCase {
     }
 
     /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
     @Override
-    protected String getImportFolder() {
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        return "linkrewrite";
+        setupOpenCms(testInfo, "linkrewrite", "/");
     }
 
     /**

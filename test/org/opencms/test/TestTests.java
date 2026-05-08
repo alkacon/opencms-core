@@ -31,28 +31,23 @@ import org.opencms.main.CmsLog;
 
 import org.apache.commons.logging.Log;
 
-import junit.framework.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
-public class TestTests extends OpenCmsTestCase {
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestTests(String arg0) {
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestTests extends OpenCmsTestRunner {
 
-        super(arg0);
+    @BeforeEach
+    public void setUp() {
+
+        initConfiguration(true);
     }
 
-    public static Test suite() {
-        try {
-            return generateTestSuite(TestTests.class);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
+    @Test
     public void testErrorLog() {
+
         Log log = CmsLog.getLog("org.opencms.test.TestTest");
         try {
             log.error("logging an error should cause an exception to be thrown");
@@ -61,7 +56,5 @@ public class TestTests extends OpenCmsTestCase {
 
         }
     }
-
-
 
 }

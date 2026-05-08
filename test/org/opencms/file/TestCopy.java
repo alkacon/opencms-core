@@ -33,9 +33,9 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategoryService;
-import org.opencms.test.OpenCmsJunitTestCase;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
 import org.opencms.test.OpenCmsTestResourceFilter;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Iterator;
 import java.util.List;
@@ -44,28 +44,26 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit tests for copy operation.<p>
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCopy extends OpenCmsJunitTestCase {
+public class TestCopy extends OpenCmsTestRunner {
 
     /**
      * @see org.opencms.test.OpenCmsJunitTestCase#openCmsSetUp()
      */
     @Override
     @BeforeAll
-    protected void openCmsSetUp() {
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        setupOpenCms("simpletest", "/");
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**

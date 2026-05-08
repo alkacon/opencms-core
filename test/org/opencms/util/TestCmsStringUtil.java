@@ -28,34 +28,25 @@
 package org.opencms.util;
 
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.base.Optional;
-
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import com.google.common.base.Optional;
 
 /**
  * Test cases for {@link org.opencms.util.CmsStringUtil}.<p>
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCmsStringUtil extends OpenCmsJupiterTestCase {
-
-    @Override
-    protected boolean shouldBootOpenCms() {
-        return false;
-    }
+public class TestCmsStringUtil extends OpenCmsTestRunner {
 
     /**
      * Tests content replacement during import.<p>

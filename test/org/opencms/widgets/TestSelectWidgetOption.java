@@ -27,29 +27,24 @@
 
 package org.opencms.widgets;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Order;
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
 /**
  * Test cases for the parsing of select widget options.<p>
  *
  */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class TestSelectWidgetOption extends OpenCmsJupiterTestCase {
-
-    @Override
-    protected boolean shouldBootOpenCms() {
-        return false;
-    }
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestSelectWidgetOption extends OpenCmsTestRunner {
 
     /**
      * Tests parsing of select widget options.<p>

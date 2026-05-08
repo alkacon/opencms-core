@@ -27,22 +27,73 @@
 
 package org.opencms.scheduler;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for the OpenCms scheduler in a running system.<p>
  *
  */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class TestCmsSchedulerInSystem extends OpenCmsJupiterTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsSchedulerInSystem extends OpenCmsTestRunner {
+
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
+
+    /**
+     * Test case for accessing the {@link org.opencms.file.CmsObject} in a scheduled job.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Order(2)
+    public void testAccessToCmsObject() throws Exception {
+
+        System.out.println("Trying to run an OpenCms job with access to the CmsObject the OpenCms system scheduler.");
+
+        // generate job description
+        CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
+        CmsContextInfo contextInfo = new CmsContextInfo(OpenCms.getDefaultUsers().getUserAdmin());
+        jobInfo.setContextInfo(contextInfo);
+        jobInfo.setJobName("Test job for CmsObject access");
+        jobInfo.setClassName(MockScheduledJobWithCmsAccess.class.getName());
+        jobInfo.setReuseInstance(false);
+        jobInfo.setCronExpression("0/2 * * * * ?");
+
+        // add the job to the manager
+        OpenCms.getScheduleManager().scheduleJob(getCmsObject(), jobInfo);
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            fail("Something caused the waiting test thread to interrupt!");
+        }
+
+        // unschedule the job from the manager (to avoid confilcts with other test cases)
+        OpenCms.getScheduleManager().unscheduleJob(getCmsObject(), jobInfo.getId());
+
+        if (!MockScheduledJobWithCmsAccess.m_success) {
+            fail("CmsObject in scheduled job was null!");
+        }
+    }
 
     /**
      * Test case for the initCmsObject methods.<p>
@@ -91,43 +142,6 @@ public class TestCmsSchedulerInSystem extends OpenCmsJupiterTestCase {
             System.out.println("Instance counter was correctly incremented 5 times.");
         } else {
             fail("Instance counter was not incremented!");
-        }
-    }
-
-    /**
-     * Test case for accessing the {@link org.opencms.file.CmsObject} in a scheduled job.<p>
-     *
-     * @throws Exception if the test fails
-     */
-    @Test
-    @Order(2)
-    public void testAccessToCmsObject() throws Exception {
-
-        System.out.println("Trying to run an OpenCms job with access to the CmsObject the OpenCms system scheduler.");
-
-        // generate job description
-        CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
-        CmsContextInfo contextInfo = new CmsContextInfo(OpenCms.getDefaultUsers().getUserAdmin());
-        jobInfo.setContextInfo(contextInfo);
-        jobInfo.setJobName("Test job for CmsObject access");
-        jobInfo.setClassName(MockScheduledJobWithCmsAccess.class.getName());
-        jobInfo.setReuseInstance(false);
-        jobInfo.setCronExpression("0/2 * * * * ?");
-
-        // add the job to the manager
-        OpenCms.getScheduleManager().scheduleJob(getCmsObject(), jobInfo);
-
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            fail("Something caused the waiting test thread to interrupt!");
-        }
-
-        // unschedule the job from the manager (to avoid confilcts with other test cases)
-        OpenCms.getScheduleManager().unscheduleJob(getCmsObject(), jobInfo.getId());
-
-        if (!MockScheduledJobWithCmsAccess.m_success) {
-            fail("CmsObject in scheduled job was null!");
         }
     }
 }

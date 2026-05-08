@@ -29,23 +29,33 @@ package org.opencms.file;
 
 import org.opencms.main.OpenCms;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Unit tests for resource availability operations.<p>
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestExists extends OpenCmsJupiterTestCase {
+public class TestExists extends OpenCmsTestRunner {
+
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
 
     /**
      * Tests the availability of a file that exists and with proper permissions.<p>
@@ -61,22 +71,6 @@ public class TestExists extends OpenCmsJupiterTestCase {
         String filename = "index.html";
 
         assertEquals(true, cms.existsResource(filename));
-    }
-
-    /**
-     * Tests the availability of a file that does not exist.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    @Test
-    @Order(2)
-    public void testExistsForUnexistingFile() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing the availability of a file that does not exist");
-        String filename = "xxx.yyy";
-
-        assertEquals(false, cms.existsResource(filename));
     }
 
     /**
@@ -108,5 +102,21 @@ public class TestExists extends OpenCmsJupiterTestCase {
 
         cms.loginUser("testuser", "test");
         assertEquals(false, cms.existsResource(resName));
+    }
+
+    /**
+     * Tests the availability of a file that does not exist.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    @Order(2)
+    public void testExistsForUnexistingFile() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing the availability of a file that does not exist");
+        String filename = "xxx.yyy";
+
+        assertEquals(false, cms.existsResource(filename));
     }
 }

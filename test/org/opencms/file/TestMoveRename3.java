@@ -34,8 +34,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -47,21 +47,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Unit tests for move/delete/publish operations.<p>
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestMoveRename3 extends OpenCmsJupiterTestCase {
+public class TestMoveRename3 extends OpenCmsTestRunner {
 
     /**
      * Container for structure entries.<p>
@@ -137,6 +137,16 @@ public class TestMoveRename3 extends OpenCmsJupiterTestCase {
 
             return m_structureId;
         }
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**

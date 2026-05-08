@@ -38,7 +38,7 @@ import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfigurationOldCategories;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -46,18 +46,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for advanced search features.<p>
@@ -65,7 +61,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCmsSearchAdvancedFeatures extends OpenCmsJupiterTestCase {
+public class TestCmsSearchAdvancedFeatures extends OpenCmsTestRunner {
 
     /** Name of the index used for testing. */
     public static final String INDEX_OFFLINE = "Offline project (VFS)";
@@ -74,21 +70,13 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsJupiterTestCase {
     public static final String INDEX_ONLINE = "Online project (VFS)";
 
     /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
     @Override
-    protected String getImportFolder() {
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        return "simpletest";
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
-     */
-    @Override
-    protected String getTargetFolder() {
-
-        return "/";
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**

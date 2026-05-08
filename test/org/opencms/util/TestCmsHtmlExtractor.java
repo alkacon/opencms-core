@@ -28,18 +28,16 @@
 package org.opencms.util;
 
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import org.htmlparser.Node;
 import org.htmlparser.NodeFilter;
 import org.htmlparser.Parser;
 import org.htmlparser.filters.NodeClassFilter;
 import org.htmlparser.nodes.TextNode;
-
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test case for <code>{@link org.opencms.util.CmsHtmlExtractor}</code>.<p>
@@ -47,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @since 6.2.0
  */
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestCmsHtmlExtractor extends OpenCmsJupiterTestCase {
+public class TestCmsHtmlExtractor extends OpenCmsTestRunner {
 
     private static final String HTML_PAGE_1 = "<html><title>This is the title</title><body><h1>A headline</h1>This is a test.<br>"
         + "This  is&nbsp;a <a href=\"http://www.opencms.org\">link</a> in a    paragraph.<p>Some more text here. "
@@ -61,11 +59,6 @@ public class TestCmsHtmlExtractor extends OpenCmsJupiterTestCase {
         + "This is a very long line, because this is long line, because this is long line, because this is long line, because this is long line. "
         + "<div><p>This is a p in a div<p>This is another p in a div<p></div>"
         + "</body></html>";
-
-    @Override
-    protected boolean shouldBootOpenCms() {
-        return false;
-    }
 
     /**
      * Extracts plain text from a String that contains HTML.<p>

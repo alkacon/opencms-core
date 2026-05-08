@@ -27,12 +27,7 @@
 
 package org.opencms.db;
 
-
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
@@ -40,8 +35,10 @@ import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.util.StringTokenizer;
 
-
-
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests that checks the "query.properties" files used by the various drivers for correct
@@ -69,13 +66,7 @@ import java.util.StringTokenizer;
  * <p>
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestQueryProperties extends OpenCmsJupiterTestCase {
-
-    @Override
-    protected boolean shouldBootOpenCms() {
-
-        return false;
-    }
+public class TestQueryProperties extends OpenCmsTestRunner {
 
     /**
      * Test the generic query.properties file within the workspace for format errors.<p>

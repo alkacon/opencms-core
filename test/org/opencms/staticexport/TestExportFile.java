@@ -30,52 +30,32 @@ package org.opencms.staticexport;
 import org.opencms.file.CmsObject;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @since 6.0.0
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestExportFile extends OpenCmsJupiterTestCase {
+public class TestExportFile extends OpenCmsTestRunner {
 
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getPublish()
-     */
     @Override
-    protected boolean getPublish() {
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        return true;
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
-     */
-    @Override
-    protected String getImportFolder() {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
-     */
-    @Override
-    protected String getTargetFolder() {
-
-        return null;
+        setupOpenCms(testInfo, null, null, true);
     }
 
     /**

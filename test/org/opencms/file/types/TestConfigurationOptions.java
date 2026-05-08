@@ -33,74 +33,34 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestEnvironment;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Unit tests for the resource type configuration options.<p>
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestConfigurationOptions extends OpenCmsJupiterTestCase {
+public class TestConfigurationOptions extends OpenCmsTestRunner {
 
     /**
-     * Test default property creation (from resource type configuration).<p>
-     *
-     * @throws Throwable if something goes wrong
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    @Test
-    @Order(1)
-    public void testDefaultPropertyCreation() throws Throwable {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        CmsObject cms = getCmsObject();
-        echo("Testing default property creation");
-
-        String resourcename = "/folder1/article_test.html";
-        byte[] content = new byte[0];
-
-        cms.createResource(resourcename, OpenCmsTestEnvironment.ARTICLE_TYPEID, content, null);
-
-        assertResourceType(cms, resourcename, OpenCmsTestEnvironment.ARTICLE_TYPEID);
-        assertProject(cms, resourcename, cms.getRequestContext().getCurrentProject());
-        assertState(cms, resourcename, CmsResource.STATE_NEW);
-        assertUserLastModified(cms, resourcename, cms.getRequestContext().getCurrentUser());
-
-        CmsProperty property1;
-        CmsProperty property2;
-        property1 = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "Test title", null);
-        property2 = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
-        assertTrue(property1.isIdentical(property2));
-
-        property1 = new CmsProperty(
-            "template-elements",
-            "/system/modules/org.opencms.frontend.templateone.form/pages/form.html",
-            null);
-        property2 = cms.readPropertyObject(resourcename, "template-elements", false);
-        assertTrue(property1.isIdentical(property2));
-
-        property1 = new CmsProperty(
-            CmsPropertyDefinition.PROPERTY_DESCRIPTION,
-            null,
-            "Admin_/folder1/article_test.html_/sites/default/folder1/article_test.html");
-        property2 = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
-        assertTrue(property1.isIdentical(property2));
-
-        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
-        OpenCms.getPublishManager().publishProject(cms);
-        OpenCms.getPublishManager().waitWhileRunning();
-
-        assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -133,5 +93,54 @@ public class TestConfigurationOptions extends OpenCmsJupiterTestCase {
 
         cms.readResource(resourcename + "subfolder11");
         cms.readResource(resourcename + "subfolder11/subsubfolder111");
+    }
+
+    /**
+     * Test default property creation (from resource type configuration).<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    @Order(1)
+    public void testDefaultPropertyCreation() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing default property creation");
+
+        String resourcename = "/folder1/article_test.html";
+        byte[] content = new byte[0];
+
+        cms.createResource(resourcename, ARTICLE_TYPEID, content, null);
+
+        assertResourceType(cms, resourcename, ARTICLE_TYPEID);
+        assertProject(cms, resourcename, cms.getRequestContext().getCurrentProject());
+        assertState(cms, resourcename, CmsResource.STATE_NEW);
+        assertUserLastModified(cms, resourcename, cms.getRequestContext().getCurrentUser());
+
+        CmsProperty property1;
+        CmsProperty property2;
+        property1 = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "Test title", null);
+        property2 = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        assertTrue(property1.isIdentical(property2));
+
+        property1 = new CmsProperty(
+            "template-elements",
+            "/system/modules/org.opencms.frontend.templateone.form/pages/form.html",
+            null);
+        property2 = cms.readPropertyObject(resourcename, "template-elements", false);
+        assertTrue(property1.isIdentical(property2));
+
+        property1 = new CmsProperty(
+            CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+            null,
+            "Admin_/folder1/article_test.html_/sites/default/folder1/article_test.html");
+        property2 = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
+        assertTrue(property1.isIdentical(property2));
+
+        cms.unlockProject(cms.getRequestContext().getCurrentProject().getUuid());
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);
     }
 }

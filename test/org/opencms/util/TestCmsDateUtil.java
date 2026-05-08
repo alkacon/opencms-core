@@ -27,15 +27,13 @@
 
 package org.opencms.util;
 
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.TimeZone;
 
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test cases for the class "CmsDateUtil".<p>
@@ -43,12 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
  * @since 6.0.0
  */
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestCmsDateUtil extends OpenCmsJupiterTestCase {
-
-    @Override
-    protected boolean shouldBootOpenCms() {
-        return false;
-    }
+public class TestCmsDateUtil extends OpenCmsTestRunner {
 
     /**
      * Tests HTTP-Header date format generation.<p>

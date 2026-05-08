@@ -27,10 +27,6 @@
 
 package org.opencms.xml.content;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Order;
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -38,8 +34,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -52,15 +47,20 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests for XML content schema changes.<p>
  */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class TestCmsXmlContentSchemaModifications extends OpenCmsJupiterTestCase {
-
-
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsXmlContentSchemaModifications extends OpenCmsTestRunner {
 
     /**
      * Simple schema data container structure.<p>
@@ -109,14 +109,15 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsJupiterTestCase
     /** The schema id. */
     private static final String SCHEMA_SYSTEM_ID_1 = "http://www.opencms.org/test1.xsd";
 
-
-
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
 
     /**
      * Test adding new nodes to the XML schema.<p>
@@ -570,7 +571,8 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsJupiterTestCase
         String originalSchema,
         String originalFile,
         String changedSchema,
-        String changedFile) throws Exception {
+        String changedFile)
+    throws Exception {
 
         List<SchemaDef> originalSchemas = new ArrayList<SchemaDef>();
         List<SchemaDef> changedSchemas = new ArrayList<SchemaDef>();
@@ -598,7 +600,8 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsJupiterTestCase
         List<SchemaDef> originalSchemas,
         String originalFile,
         List<SchemaDef> changedSchemas,
-        String changedFile) throws Exception {
+        String changedFile)
+    throws Exception {
 
         CmsObject cms = getCmsObject();
         String rfsPrefix = "org/opencms/xml/content/";

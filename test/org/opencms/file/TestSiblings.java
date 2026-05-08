@@ -44,9 +44,8 @@ import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestEnvironment;
 import org.opencms.test.OpenCmsTestResourceFilter;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsResourceTranslator;
 
 import java.util.ArrayList;
@@ -54,42 +53,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit test for operations on siblings.<p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestSiblings extends OpenCmsJupiterTestCase {
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
-     */
-    @Override
-    protected String getImportFolder() {
-
-        return "simpletest";
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
-     */
-    @Override
-    protected String getTargetFolder() {
-
-        return "/";
-    }
+public class TestSiblings extends OpenCmsTestRunner {
 
     /**
      * Creates a copy of a resource as a new sibling.<p>
@@ -100,7 +77,7 @@ public class TestSiblings extends OpenCmsJupiterTestCase {
      * @param target path/resource name of the new sibling
      * @throws Exception if something goes wrong
      */
-    public static void copyResourceAsSibling(OpenCmsTestEnvironment tc, CmsObject cms, String source, String target)
+    public static void copyResourceAsSibling(OpenCmsTestRunner tc, CmsObject cms, String source, String target)
     throws Exception {
 
         // save the source in the store
@@ -143,7 +120,7 @@ public class TestSiblings extends OpenCmsJupiterTestCase {
      * @param target path/resource name of the new sibling
      * @throws Exception if something goes wrong
      */
-    public static void createSibling(OpenCmsTestEnvironment tc, CmsObject cms, String source, String target)
+    public static void createSibling(OpenCmsTestRunner tc, CmsObject cms, String source, String target)
     throws Exception {
 
         // save the source in the store
@@ -176,6 +153,16 @@ public class TestSiblings extends OpenCmsJupiterTestCase {
         tc.assertModifiedInCurrentProject(cms, target, true);
         // validate if the lock is an exclusive lock for the current user
         tc.assertLock(cms, target, CmsLockType.EXCLUSIVE);
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -310,7 +297,7 @@ public class TestSiblings extends OpenCmsJupiterTestCase {
 
         String source = "/folder1/image1.gif";
         String target = "/folder2/image1_sibling2.gif";
-        createSibling(m_testEnvironment, cms, source, target);
+        createSibling(this, cms, source, target);
 
         OpenCms.getPublishManager().publishResource(cms, target, true, new CmsShellReport(Locale.ENGLISH));
         OpenCms.getPublishManager().waitWhileRunning();
@@ -444,7 +431,7 @@ public class TestSiblings extends OpenCmsJupiterTestCase {
         String source = "/index.html";
         String target = "/index_sibling.html";
         echo("Copying " + source + " as a new sibling to " + target);
-        copyResourceAsSibling(m_testEnvironment, cms, source, target);
+        copyResourceAsSibling(this, cms, source, target);
     }
 
     /**
@@ -460,7 +447,7 @@ public class TestSiblings extends OpenCmsJupiterTestCase {
      // - this is to ensure that the new/changed/deleted other sibling still have a valid
      // state which consist of the last-modified-in-project ID plus the resource state
      // - otherwise this may result in grey flags
-    
+
      Another issue:
      What happens if a user A has an exclusive lock on a resource X,
      and user B does a "copy as sibling Y" of X, or "create
@@ -468,7 +455,7 @@ public class TestSiblings extends OpenCmsJupiterTestCase {
      to A, but test implies that it would be switched to B after operation!
      Maybe copy as / create new sibling must not be allowed if original is
      currently locked by another user?
-    
+
      }
      */
 
@@ -485,7 +472,7 @@ public class TestSiblings extends OpenCmsJupiterTestCase {
         String source = "/folder1/image1.gif";
         String target = "/folder1/image1_sibling.gif";
         echo("Creating a new sibling " + target + " from " + source);
-        createSibling(m_testEnvironment, cms, source, target);
+        createSibling(this, cms, source, target);
     }
 
     /**
@@ -901,7 +888,7 @@ public class TestSiblings extends OpenCmsJupiterTestCase {
 
         // create a new sibling using the "copy as" option
         String sibling = folder + "test_de.txt";
-        copyResourceAsSibling(m_testEnvironment, cms, source, sibling);
+        copyResourceAsSibling(this, cms, source, sibling);
         assertState(cms, sibling, CmsResourceState.STATE_NEW);
         assertContent(cms, sibling, firstContentBytes);
 

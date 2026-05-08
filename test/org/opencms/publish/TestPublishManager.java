@@ -37,45 +37,35 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Iterator;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit tests for the publish manager.<p>
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestPublishManager extends OpenCmsJupiterTestCase {
+public class TestPublishManager extends OpenCmsTestRunner {
 
     /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
     @Override
-    protected String getImportFolder() {
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        return "simpletest";
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
-     */
-    @Override
-    protected String getTargetFolder() {
-
-        return "/";
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -220,7 +210,7 @@ public class TestPublishManager extends OpenCmsJupiterTestCase {
         while (n.hasNext() && o.hasNext()) {
             CmsPublishJobEnqueued newJob = (CmsPublishJobEnqueued)n.next();
             CmsPublishJobEnqueued oldJob = (CmsPublishJobEnqueued)o.next();
-            assertPublishJobEquals(newJob, oldJob, true, true);
+            assertEquals(newJob, oldJob, true, true);
         }
 
         // compare old and new history
@@ -238,7 +228,7 @@ public class TestPublishManager extends OpenCmsJupiterTestCase {
         while (n.hasNext() && o.hasNext()) {
             CmsPublishJobFinished newJob = (CmsPublishJobFinished)n.next();
             CmsPublishJobFinished oldJob = (CmsPublishJobFinished)o.next();
-            assertPublishJobEquals(newJob, oldJob, false, true);
+            assertEquals(newJob, oldJob, false, true);
         }
 
         // start the publish engine and wait until all jobs are published
@@ -298,7 +288,7 @@ public class TestPublishManager extends OpenCmsJupiterTestCase {
         // but it should be stored as last entry in the history
         CmsPublishJobEnqueued jobInQueue = (CmsPublishJobEnqueued)oldQueue.get(0);
         CmsPublishJobFinished jobInHistory = (CmsPublishJobFinished)newHistory.get(newHistory.size() - 1);
-        assertPublishJobEquals(jobInQueue, jobInHistory, false, false);
+        assertEquals(jobInQueue, jobInHistory, false, false);
 
         // and it should be aborted
     }

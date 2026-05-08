@@ -29,13 +29,7 @@ package org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestricti
 
 import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionsBean.FieldValues;
 import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionsBean.FieldValues.FieldType;
-import org.opencms.test.OpenCmsJupiterTestCase;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -46,35 +40,15 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.apache.solr.client.solrj.util.ClientUtils;
+
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /** Test cases for the preconfigured restriction bean. */
-@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestRestrictionsBean extends OpenCmsJupiterTestCase {
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
-     */
-    @Override
-    protected boolean shouldBootOpenCms() {
-
-        return false;
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
-     */
-    @Override
-    protected boolean shouldInitConfiguration() {
-
-        return true;
-    }
+public class TestRestrictionsBean extends OpenCmsTestRunner {
 
     /**
      * Tests empty checks and simple restrictions.

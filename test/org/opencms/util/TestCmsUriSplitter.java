@@ -27,24 +27,17 @@
 
 package org.opencms.util;
 
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test case for the URI splitter.<p>
  */
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestCmsUriSplitter extends OpenCmsJupiterTestCase {
-
-    @Override
-    protected boolean shouldBootOpenCms() {
-        return false;
-    }
+public class TestCmsUriSplitter extends OpenCmsTestRunner {
 
     /**
      * Tests basic splitting operations.<p>

@@ -40,7 +40,10 @@ import org.junit.platform.suite.api.Suite;
 @SelectClasses({
     // Order MUST mirror the deleted AllTests.suite() exactly.
     // Hidden cross-class state may depend on it; do NOT alphabetize.
-    TestCmsLinkManager.class,
+    TestCmsLinkManager1.class,
+    TestCmsLinkManager2.class,
+    TestCmsLinkManager3.class,
+    TestCmsLinkManager4.class,
     TestCmsStaticExportManager.class,
     TestExportFile.class,
     TestSecure.class,

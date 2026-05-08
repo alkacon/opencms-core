@@ -27,16 +27,6 @@
 
 package org.opencms.db;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -47,14 +37,22 @@ import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import com.google.common.collect.Lists;
 
@@ -63,17 +61,12 @@ import com.google.common.collect.Lists;
  *
  * @since 8.0.0
  */
+@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestUrlNameMapping extends OpenCmsJupiterTestCase {
+public class TestUrlNameMapping extends OpenCmsTestRunner {
 
     /** The counter used for generating new file names. */
     private static int m_fileCounter;
-
-    @Override
-    protected String getImportFolder() {
-        return "systemtest";
-    }
-
 
     /**
      * Creates an XML content for testing URL name mappings.<p>
@@ -98,6 +91,16 @@ public class TestUrlNameMapping extends OpenCmsJupiterTestCase {
             + "  </UrlNameTest>\n"
             + "</UrlNameTests>\n"
             + "";
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsJunitTestCase#openCmsSetUp()
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "systemtest", "/");
     }
 
     /**

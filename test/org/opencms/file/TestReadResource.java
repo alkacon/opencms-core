@@ -32,21 +32,19 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit test for the "readFileHeader" method of the CmsObject to test the release and expiration date.<p>
@@ -54,110 +52,16 @@ import static org.junit.jupiter.api.Assertions.fail;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestReadResource extends OpenCmsJupiterTestCase {
+public class TestReadResource extends OpenCmsTestRunner {
 
     /**
-     * Test readResource of a file after its expirationrelease date.<p>
-     *
-     * @param cms the CmsObject
-     * @param resource1 the resource to touch
-     * @param filter the filter to use
-     * @throws Throwable if something goes wrong
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    private void readAfterExpirationDate(CmsObject cms, String resource1, CmsResourceFilter filter)
-    throws Throwable {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        storeResources(cms, resource1);
-
-        // preperation, modify the expiration date
-        CmsFile preperationRes = cms.readFile(resource1, CmsResourceFilter.ALL);
-        // set the expiration date to one hour in the past
-        preperationRes.setDateExpired(System.currentTimeMillis() - (60 * 60 * 1000));
-
-        cms.lockResource(resource1);
-        cms.writeFile(preperationRes);
-        cms.unlockResource(resource1);
-
-        // now try to access the resource
-        try {
-            cms.readResource(resource1, filter);
-            if (!filter.includeDeleted()) {
-                // the file could be read, despite the expiration date was set to the past
-                fail("Resource " + resource1 + " could be read after the expiration date");
-            }
-        } catch (CmsException e) {
-            if (filter.includeDeleted()) {
-                fail("Resource " + resource1 + " could not be read");
-            }
-        }
-    }
-
-    /**
-     * Test readResource of a file before its release date.<p>
-     *
-     * @param cms the CmsObject
-     * @param resource1 the resource to touch
-     * @param filter the filter to use
-     * @throws Throwable if something goes wrong
-     */
-    private void readBeforeReleaseDate(CmsObject cms, String resource1, CmsResourceFilter filter)
-    throws Throwable {
-
-        storeResources(cms, resource1);
-
-        // preperation, modify the release date
-        CmsFile preperationRes = cms.readFile(resource1, CmsResourceFilter.ALL);
-        // set the release date to one hour in the future
-        preperationRes.setDateReleased(System.currentTimeMillis() + (60 * 60 * 1000));
-
-        cms.lockResource(resource1);
-        cms.writeFile(preperationRes);
-        cms.unlockResource(resource1);
-
-        // now try to access the resource
-        try {
-            cms.readResource(resource1, filter);
-            if (!filter.includeDeleted()) {
-                // the file could be read, despite the release date set in the future
-                fail("Resource " + resource1 + " could be read before release date");
-            }
-        } catch (CmsException e) {
-            if (filter.includeDeleted()) {
-                fail("Resource " + resource1 + " could not be read");
-            }
-        }
-    }
-
-    /**
-     * Test readResource of a file in its valid time range.<p>
-     *
-     * @param cms the CmsObject
-     * @param resource1 the resource to touch
-     * @param filter the filter to use
-     * @throws Throwable if something goes wrong
-     */
-    private void readInValidTimeRange(CmsObject cms, String resource1, CmsResourceFilter filter)
-    throws Throwable {
-
-        storeResources(cms, resource1);
-
-        // preperation, modify the expiration date
-        CmsFile preperationRes = cms.readFile(resource1, CmsResourceFilter.ALL);
-        // set the release date to one hour in the future
-        preperationRes.setDateReleased(System.currentTimeMillis() - (60 * 60 * 1000));
-        // set the expiration date to one hour in the past
-        preperationRes.setDateExpired(System.currentTimeMillis() + (60 * 60 * 1000));
-
-        cms.lockResource(resource1);
-        cms.writeFile(preperationRes);
-        cms.unlockResource(resource1);
-
-        // now try to access the resource
-        try {
-            cms.readResource(resource1, filter);
-        } catch (CmsException e) {
-            fail("Resource " + resource1 + " could not be read");
-        }
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     @Test
@@ -363,6 +267,107 @@ public class TestReadResource extends OpenCmsJupiterTestCase {
             fail("The Id is correct");
         } catch (Exception e) {
             // expected
+        }
+    }
+
+    /**
+     * Test readResource of a file after its expirationrelease date.<p>
+     *
+     * @param cms the CmsObject
+     * @param resource1 the resource to touch
+     * @param filter the filter to use
+     * @throws Throwable if something goes wrong
+     */
+    private void readAfterExpirationDate(CmsObject cms, String resource1, CmsResourceFilter filter) throws Throwable {
+
+        storeResources(cms, resource1);
+
+        // preperation, modify the expiration date
+        CmsFile preperationRes = cms.readFile(resource1, CmsResourceFilter.ALL);
+        // set the expiration date to one hour in the past
+        preperationRes.setDateExpired(System.currentTimeMillis() - (60 * 60 * 1000));
+
+        cms.lockResource(resource1);
+        cms.writeFile(preperationRes);
+        cms.unlockResource(resource1);
+
+        // now try to access the resource
+        try {
+            cms.readResource(resource1, filter);
+            if (!filter.includeDeleted()) {
+                // the file could be read, despite the expiration date was set to the past
+                fail("Resource " + resource1 + " could be read after the expiration date");
+            }
+        } catch (CmsException e) {
+            if (filter.includeDeleted()) {
+                fail("Resource " + resource1 + " could not be read");
+            }
+        }
+    }
+
+    /**
+     * Test readResource of a file before its release date.<p>
+     *
+     * @param cms the CmsObject
+     * @param resource1 the resource to touch
+     * @param filter the filter to use
+     * @throws Throwable if something goes wrong
+     */
+    private void readBeforeReleaseDate(CmsObject cms, String resource1, CmsResourceFilter filter) throws Throwable {
+
+        storeResources(cms, resource1);
+
+        // preperation, modify the release date
+        CmsFile preperationRes = cms.readFile(resource1, CmsResourceFilter.ALL);
+        // set the release date to one hour in the future
+        preperationRes.setDateReleased(System.currentTimeMillis() + (60 * 60 * 1000));
+
+        cms.lockResource(resource1);
+        cms.writeFile(preperationRes);
+        cms.unlockResource(resource1);
+
+        // now try to access the resource
+        try {
+            cms.readResource(resource1, filter);
+            if (!filter.includeDeleted()) {
+                // the file could be read, despite the release date set in the future
+                fail("Resource " + resource1 + " could be read before release date");
+            }
+        } catch (CmsException e) {
+            if (filter.includeDeleted()) {
+                fail("Resource " + resource1 + " could not be read");
+            }
+        }
+    }
+
+    /**
+     * Test readResource of a file in its valid time range.<p>
+     *
+     * @param cms the CmsObject
+     * @param resource1 the resource to touch
+     * @param filter the filter to use
+     * @throws Throwable if something goes wrong
+     */
+    private void readInValidTimeRange(CmsObject cms, String resource1, CmsResourceFilter filter) throws Throwable {
+
+        storeResources(cms, resource1);
+
+        // preperation, modify the expiration date
+        CmsFile preperationRes = cms.readFile(resource1, CmsResourceFilter.ALL);
+        // set the release date to one hour in the future
+        preperationRes.setDateReleased(System.currentTimeMillis() - (60 * 60 * 1000));
+        // set the expiration date to one hour in the past
+        preperationRes.setDateExpired(System.currentTimeMillis() + (60 * 60 * 1000));
+
+        cms.lockResource(resource1);
+        cms.writeFile(preperationRes);
+        cms.unlockResource(resource1);
+
+        // now try to access the resource
+        try {
+            cms.readResource(resource1, filter);
+        } catch (CmsException e) {
+            fail("Resource " + resource1 + " could not be read");
         }
     }
 

@@ -27,35 +27,22 @@
 
 package org.opencms.jsp.util;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /** Test cases for teh CmsJspInstanceDate bean. */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class TestCmsJspInstanceDateBean extends OpenCmsJupiterTestCase {
-
-    @Override
-    protected boolean shouldBootOpenCms() {
-
-        return false;
-    }
-
-    @Override
-    protected boolean shouldInitConfiguration() {
-
-        return false;
-    }
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsJspInstanceDateBean extends OpenCmsTestRunner {
 
     /**
      * Tests if the correct event info is returned.

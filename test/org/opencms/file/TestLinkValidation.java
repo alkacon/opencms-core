@@ -39,8 +39,7 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestEnvironment;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -54,22 +53,21 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Unit tests for OpenCms link validation.<p>
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestLinkValidation extends OpenCmsJupiterTestCase {
+public class TestLinkValidation extends OpenCmsTestRunner {
 
     private static final int MODE_XMLCONTENT_BOTH = 1;
     private static final int MODE_XMLCONTENT_FILEREF_ONLY = 3;
@@ -128,46 +126,13 @@ public class TestLinkValidation extends OpenCmsJupiterTestCase {
     }
 
     /**
-     * Test internal link validation.<p>
-     *
-     * @throws Throwable if something goes wrong
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    @Test
-    @Order(1)
-    public void testInternalLinkValidation() throws Throwable {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        echo("Testing internal link validation");
-        CmsObject cms = getCmsObject();
-
-        CmsInternalLinksValidator validator = new CmsInternalLinksValidator(cms, Collections.singletonList("/"));
-        assertTrue(validator.getResourcesWithBrokenLinks().isEmpty());
-
-        String resName = "testInternalLinkValidation.html";
-        String linkName = "brokenlink.gif";
-
-        CmsResource res = cms.createResource(resName, CmsResourceTypeXmlPage.getStaticTypeId());
-        setContent(cms, resName, "<img src='" + linkName + "' >");
-
-        validator = new CmsInternalLinksValidator(cms, Collections.singletonList("/"));
-        assertEquals(1, validator.getResourcesWithBrokenLinks().size());
-        assertEquals(res, validator.getResourcesWithBrokenLinks().get(0));
-
-        cms.createResource(linkName, CmsResourceTypeBinary.getStaticTypeId());
-
-        validator = new CmsInternalLinksValidator(cms, Collections.singletonList("/"));
-        assertTrue(validator.getResourcesWithBrokenLinks().isEmpty());
-
-        String linkMoved = "brokenlink2.gif";
-        cms.moveResource(linkName, linkMoved);
-
-        validator = new CmsInternalLinksValidator(cms, Collections.singletonList("/"));
-        assertTrue(validator.getResourcesWithBrokenLinks().isEmpty());
-
-        cms.deleteResource(linkMoved, CmsResource.DELETE_REMOVE_SIBLINGS);
-
-        validator = new CmsInternalLinksValidator(cms, Collections.singletonList("/"));
-        assertEquals(1, validator.getResourcesWithBrokenLinks().size());
-        assertEquals(res, validator.getResourcesWithBrokenLinks().get(0));
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -309,6 +274,49 @@ public class TestLinkValidation extends OpenCmsJupiterTestCase {
         relations = cms.getRelationsForResource(resName, CmsRelationFilter.TARGETS);
         assertEquals(1, relations.size());
         assertRelation(expected, (CmsRelation)relations.get(0));
+    }
+
+    /**
+     * Test internal link validation.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    @Order(1)
+    public void testInternalLinkValidation() throws Throwable {
+
+        echo("Testing internal link validation");
+        CmsObject cms = getCmsObject();
+
+        CmsInternalLinksValidator validator = new CmsInternalLinksValidator(cms, Collections.singletonList("/"));
+        assertTrue(validator.getResourcesWithBrokenLinks().isEmpty());
+
+        String resName = "testInternalLinkValidation.html";
+        String linkName = "brokenlink.gif";
+
+        CmsResource res = cms.createResource(resName, CmsResourceTypeXmlPage.getStaticTypeId());
+        setContent(cms, resName, "<img src='" + linkName + "' >");
+
+        validator = new CmsInternalLinksValidator(cms, Collections.singletonList("/"));
+        assertEquals(1, validator.getResourcesWithBrokenLinks().size());
+        assertEquals(res, validator.getResourcesWithBrokenLinks().get(0));
+
+        cms.createResource(linkName, CmsResourceTypeBinary.getStaticTypeId());
+
+        validator = new CmsInternalLinksValidator(cms, Collections.singletonList("/"));
+        assertTrue(validator.getResourcesWithBrokenLinks().isEmpty());
+
+        String linkMoved = "brokenlink2.gif";
+        cms.moveResource(linkName, linkMoved);
+
+        validator = new CmsInternalLinksValidator(cms, Collections.singletonList("/"));
+        assertTrue(validator.getResourcesWithBrokenLinks().isEmpty());
+
+        cms.deleteResource(linkMoved, CmsResource.DELETE_REMOVE_SIBLINGS);
+
+        validator = new CmsInternalLinksValidator(cms, Collections.singletonList("/"));
+        assertEquals(1, validator.getResourcesWithBrokenLinks().size());
+        assertEquals(res, validator.getResourcesWithBrokenLinks().get(0));
     }
 
     /**
@@ -532,7 +540,7 @@ public class TestLinkValidation extends OpenCmsJupiterTestCase {
         // create files
         int type;
         if (mode > MODE_XMLPAGE) {
-            type = OpenCmsTestEnvironment.ARTICLE_TYPEID; // article
+            type = ARTICLE_TYPEID; // article
         } else {
             type = CmsResourceTypeXmlPage.getStaticTypeId();
         }

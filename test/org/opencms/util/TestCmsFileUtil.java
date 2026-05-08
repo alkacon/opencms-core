@@ -27,7 +27,7 @@
 
 package org.opencms.util;
 
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -35,22 +35,14 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * @since 6.2.2
  */
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestCmsFileUtil extends OpenCmsJupiterTestCase {
-
-    @Override
-    protected boolean shouldBootOpenCms() {
-        return false;
-    }
+public class TestCmsFileUtil extends OpenCmsTestRunner {
 
     /**
      * An input stream that provides 24 bytes of data in two chunks, the first of 16 bytes,

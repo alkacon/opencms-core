@@ -27,11 +27,9 @@
 
 package org.opencms.i18n;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 import org.opencms.gwt.I_CmsClientMessageBundle;
-import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -56,7 +54,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 6.0.0
  */
-public abstract class A_TestCmsMessageBundles extends OpenCmsJupiterTestCase {
+public abstract class A_TestCmsMessageBundles extends OpenCmsTestRunner {
 
     /** Prefix for the error messages in the bundles. */
     private static final String KEY_PREFIX_ERR = "ERR_";
@@ -84,24 +82,6 @@ public abstract class A_TestCmsMessageBundles extends OpenCmsJupiterTestCase {
 
     /** Cache the resource bundle to exclude from additional locales tests. */
     private Map<Locale, List<I_CmsMessageBundle>> m_excludedBundles = new HashMap<Locale, List<I_CmsMessageBundle>>();
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
-     */
-    @Override
-    protected boolean shouldBootOpenCms() {
-
-        return false;
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
-     */
-    @Override
-    protected boolean shouldInitConfiguration() {
-
-        return false;
-    }
 
     /**
      * Checks all message bundles for the DE locale.<p>
@@ -186,7 +166,7 @@ public abstract class A_TestCmsMessageBundles extends OpenCmsJupiterTestCase {
         Field[] fields = clazz.getDeclaredFields();
         for (int i = 0; i < fields.length; i++) {
             Field field = fields[i];
-            boolean ignoreArgCount  = null != field.getAnnotation(IgnoreArgCountInTests.class);
+            boolean ignoreArgCount = null != field.getAnnotation(IgnoreArgCountInTests.class);
             if (!field.getType().equals(String.class) || !Modifier.isStatic(field.getModifiers())) {
                 continue;
             }

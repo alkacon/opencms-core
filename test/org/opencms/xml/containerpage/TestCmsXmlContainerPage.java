@@ -27,10 +27,6 @@
 
 package org.opencms.xml.containerpage;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Order;
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.opencms.ade.configuration.CmsConfigurationReader;
 import org.opencms.ade.containerpage.CmsContainerpageService;
 import org.opencms.ade.containerpage.shared.CmsContainer;
@@ -43,9 +39,7 @@ import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestEnvironment;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
@@ -62,32 +56,21 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.antlr.stringtemplate.StringTemplate;
-
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the OpenCms XML container pages.<p>
  */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class TestCmsXmlContainerPage extends OpenCmsJupiterTestCase {
-
-    @Override
-    protected String getImportFolder() {
-
-        return "adetest";
-    }
-
-    @Override
-    protected String getTargetFolder() {
-
-        return "/sites/default/";
-    }
-
-    @Override
-    protected String getSpecialConfigFolder() {
-
-        return "ade-setup";
-    }
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsXmlContainerPage extends OpenCmsTestRunner {
 
     /**
      * Helper method which generates the XML for a container page with the specified contents.<p>
@@ -150,6 +133,16 @@ public class TestCmsXmlContainerPage extends OpenCmsJupiterTestCase {
     public static final String tagWrap(String name, String content) {
 
         return "<" + name + ">" + content + "</" + name + ">";
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsJunitTestCase#openCmsSetUp()
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "adetest", "/sites/default/", "ade-setup");
     }
 
     /**
@@ -412,8 +405,8 @@ public class TestCmsXmlContainerPage extends OpenCmsJupiterTestCase {
     public void testWriteNewFormat() throws Exception {
 
         CmsObject cms = getCmsObject();
-        OpenCmsTestEnvironment.importCoreModule(cms, "org.opencms.base");
-        OpenCmsTestEnvironment.importModule(cms, "test.containerpagev2");
+        importCoreModule(cms, "org.opencms.base");
+        importModule(cms, "test.containerpagev2");
         String origPage = "/subsitemap/page1.html";
         setNewPageFormatEnabled(cms, "/subsitemap/.content/.config", false);
         String copy1 = "/subsitemap/page1-copy.html";

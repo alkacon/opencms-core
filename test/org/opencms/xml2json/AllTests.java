@@ -35,4 +35,5 @@ import org.junit.platform.suite.api.Suite;
  */
 @Suite
 @SelectClasses({})
-public final class AllTests {}
+public final class AllTests {
+}

@@ -36,11 +36,8 @@ import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.OpenCms;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsStringUtil;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Calendar;
 import java.util.Collection;
@@ -50,12 +47,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TimeZone;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for the OpenCms content notification.<p>
@@ -63,7 +62,17 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestContentNotification extends OpenCmsJupiterTestCase {
+public class TestContentNotification extends OpenCmsTestRunner {
+
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
 
     /**
      * Sets responsibles to a file and then tests the readResponsibleUsers method of CmsObject .<p>
@@ -78,7 +87,9 @@ public class TestContentNotification extends OpenCmsJupiterTestCase {
         final CmsObject cms = getCmsObject();
         // initialize calendars
 
-        final GregorianCalendar today = new GregorianCalendar(TimeZone.getDefault(), CmsLocaleManager.getDefaultLocale());
+        final GregorianCalendar today = new GregorianCalendar(
+            TimeZone.getDefault(),
+            CmsLocaleManager.getDefaultLocale());
         today.setTimeInMillis(cms.getRequestContext().getRequestTime());
         final GregorianCalendar inFiveDays = (GregorianCalendar)today.clone();
         inFiveDays.add(Calendar.DAY_OF_YEAR, 5);
@@ -144,15 +155,17 @@ public class TestContentNotification extends OpenCmsJupiterTestCase {
             assertTrue(notification.getResponsible().equals(fry)); // fry should be notified;
             final Collection notificationCauses = notification.getNotificationCauses();
             assertTrue(
-                notificationCauses.contains(new CmsExtendedNotificationCause(
-                    expired,
-                    CmsExtendedNotificationCause.RESOURCE_EXPIRES,
-                    new Date(expired.getDateExpired()))));
+                notificationCauses.contains(
+                    new CmsExtendedNotificationCause(
+                        expired,
+                        CmsExtendedNotificationCause.RESOURCE_EXPIRES,
+                        new Date(expired.getDateExpired()))));
             assertTrue(
-                notificationCauses.contains(new CmsExtendedNotificationCause(
-                    released,
-                    CmsExtendedNotificationCause.RESOURCE_RELEASE,
-                    new Date(released.getDateReleased()))));
+                notificationCauses.contains(
+                    new CmsExtendedNotificationCause(
+                        released,
+                        CmsExtendedNotificationCause.RESOURCE_RELEASE,
+                        new Date(released.getDateReleased()))));
             // there should be no other resources contained in the notification
             assertEquals(2, notificationCauses.size());
         }

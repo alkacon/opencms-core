@@ -28,27 +28,18 @@
 package org.opencms.module;
 
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-
 /**
  * Tests the module version.<p>
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCmsModuleVersion extends OpenCmsJupiterTestCase {
-
-    @Override
-    protected boolean shouldBootOpenCms() {
-
-        return false;
-    }
+public class TestCmsModuleVersion extends OpenCmsTestRunner {
 
     /**
      * Tests version generation.<p>

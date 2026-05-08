@@ -27,10 +27,6 @@
 
 package org.opencms.security;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Order;
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
@@ -38,26 +34,33 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests for <code>{@link org.opencms.security.CmsPrincipal}</code> (and it's subclasses).<p>
  */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class TestCmsPrincipal extends OpenCmsJupiterTestCase {
-
-
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsPrincipal extends OpenCmsTestRunner {
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
 
     /**
      * Tests basic principal read operation.<p>
@@ -164,7 +167,7 @@ public class TestCmsPrincipal extends OpenCmsJupiterTestCase {
      * @throws Exception if the test fails
      */
     @Test
-    @Order(3)
+    @Order(4)
     public void testPrefixMethods() throws Exception {
 
         // User checks
@@ -172,8 +175,12 @@ public class TestCmsPrincipal extends OpenCmsJupiterTestCase {
         assertTrue(CmsUser.hasPrefix("  USER.hans"), "User prefix check with correct user name 2 failed");
         assertTrue(CmsUser.hasPrefix("USER.hans   "), "User prefix check with correct user name 3 failed");
         assertTrue(CmsUser.hasPrefix("User.hans   "), "User prefix check with correct user name 4 failed");
-        assertTrue(CmsUser.removePrefix("USER.hans").equals("hans"), "User prefix removal with correct user name failed");
-        assertTrue(CmsUser.removePrefix("   USER.hans").equals("hans"), "User prefix removal with correct user name failed");
+        assertTrue(
+            CmsUser.removePrefix("USER.hans").equals("hans"),
+            "User prefix removal with correct user name failed");
+        assertTrue(
+            CmsUser.removePrefix("   USER.hans").equals("hans"),
+            "User prefix removal with correct user name failed");
         assertFalse(CmsUser.hasPrefix(null), "User prefix check with null failed");
         assertFalse(CmsUser.hasPrefix(""), "User prefix check with empty String failed");
         assertFalse(CmsUser.hasPrefix("USERhans"), "User prefix check with wrong user name 1 failed");
@@ -184,8 +191,12 @@ public class TestCmsPrincipal extends OpenCmsJupiterTestCase {
         assertTrue(CmsGroup.hasPrefix("  GROUP.Users"), "Group prefix check with correct group name 2 failed");
         assertTrue(CmsGroup.hasPrefix("GROUP.Users   "), "Group prefix check with correct group name 3 failed");
         assertTrue(CmsGroup.hasPrefix("Group.Users   "), "Group prefix check with correct group name 4 failed");
-        assertTrue(CmsGroup.removePrefix("GROUP.Users").equals("Users"), "Group prefix removal with correct group name failed");
-        assertTrue(CmsGroup.removePrefix("   GROUP.Users").equals("Users"), "Group prefix removal with correct group name failed");
+        assertTrue(
+            CmsGroup.removePrefix("GROUP.Users").equals("Users"),
+            "Group prefix removal with correct group name failed");
+        assertTrue(
+            CmsGroup.removePrefix("   GROUP.Users").equals("Users"),
+            "Group prefix removal with correct group name failed");
         assertFalse(CmsGroup.hasPrefix(null), "Group prefix check with null failed");
         assertFalse(CmsGroup.hasPrefix(""), "Group prefix check with empty String failed");
         assertFalse(CmsGroup.hasPrefix("GROUPUsers"), "Group prefix check with wrong group name 1 failed");
@@ -197,8 +208,12 @@ public class TestCmsPrincipal extends OpenCmsJupiterTestCase {
         assertTrue(CmsRole.hasPrefix("  ROLE.EDITOR"), "Role prefix check with correct role name 2 failed");
         assertTrue(CmsRole.hasPrefix("ROLE.EDITOR   "), "Role prefix check with correct role name 3 failed");
         assertTrue(CmsRole.hasPrefix("Role.EDITOR   "), "Role prefix check with correct role name 3 failed");
-        assertTrue(CmsRole.removePrefix("ROLE.EDITOR").equals("EDITOR"), "Role prefix removal with correct role name failed");
-        assertTrue(CmsRole.removePrefix("   ROLE.EDITOR").equals("EDITOR"), "Role prefix removal with correct role name failed");
+        assertTrue(
+            CmsRole.removePrefix("ROLE.EDITOR").equals("EDITOR"),
+            "Role prefix removal with correct role name failed");
+        assertTrue(
+            CmsRole.removePrefix("   ROLE.EDITOR").equals("EDITOR"),
+            "Role prefix removal with correct role name failed");
         assertFalse(CmsRole.hasPrefix(null), "Role prefix check with null failed");
         assertFalse(CmsRole.hasPrefix(""), "Role prefix check with empty String failed");
         assertFalse(CmsRole.hasPrefix("ROLEEDITOR"), "Role prefix check with wrong role name 1 failed");

@@ -47,7 +47,7 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishManager;
 import org.opencms.test.I_CmsLogHandler;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -74,19 +74,23 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
-
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.xml.sax.InputSource;
 
 /**
  * Test case for inherited containers.
  * <p>
  *
  */
+@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestInheritedContainer extends OpenCmsJupiterTestCase {
+public class TestInheritedContainer extends OpenCmsTestRunner {
 
     /**
      * A special log handler which intercepts log messages from the inherited container configuration
@@ -186,10 +190,14 @@ public class TestInheritedContainer extends OpenCmsJupiterTestCase {
     /** Constant which represents the online project. */
     public static final boolean ONLINE = true;
 
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
     @Override
-    protected String getImportFolder() {
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        return "inheritcontainer";
+        setupOpenCms(testInfo, "inheritcontainer", "/");
     }
 
     /**
@@ -879,9 +887,7 @@ public class TestInheritedContainer extends OpenCmsJupiterTestCase {
         CmsContainerConfigurationWriter writer = new CmsContainerConfigurationWriter() {
 
             @Override
-            protected java.util.Map<String, CmsXmlContentProperty> getSettingConfiguration(
-                CmsObject cms,
-                CmsResource resource) {
+            protected Map<String, CmsXmlContentProperty> getSettingConfiguration(CmsObject cms, CmsResource resource) {
 
                 return settingDefs;
             }
@@ -1110,7 +1116,7 @@ public class TestInheritedContainer extends OpenCmsJupiterTestCase {
     protected Document createDocument(String rootElement) throws Exception {
 
         SAXReader reader = new SAXReader();
-        return reader.read(new StringReader(rootElement));
+        return reader.read(new InputSource(new StringReader(rootElement)));
 
     }
 

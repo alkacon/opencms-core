@@ -27,23 +27,18 @@
 
 package org.opencms.xml;
 
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * @since 6.0.0
  */
-@TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestXmlUtils extends OpenCmsJupiterTestCase {
-
-    @Override
-    protected boolean shouldBootOpenCms() {
-        return false;
-    }
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestXmlUtils extends OpenCmsTestRunner {
 
     /**
      * Test case for the Xpath generation methods.
@@ -51,6 +46,7 @@ public class TestXmlUtils extends OpenCmsJupiterTestCase {
      * @throws Exception in case the test fails
      */
     @Test
+    @Order(1)
     public void testCreateXpath() throws Exception {
 
         assertEquals("Title[1]", CmsXmlUtils.createXpath("Title", 1));
@@ -67,6 +63,7 @@ public class TestXmlUtils extends OpenCmsJupiterTestCase {
      * @throws Exception in case the test fails
      */
     @Test
+    @Order(3)
     public void testGetXpathIndex() throws Exception {
 
         assertEquals("", CmsXmlUtils.getXpathIndex("Title"));
@@ -82,6 +79,7 @@ public class TestXmlUtils extends OpenCmsJupiterTestCase {
      * @throws Exception in case the test fails
      */
     @Test
+    @Order(2)
     public void testRemoveXpath() throws Exception {
 
         assertEquals("Title", CmsXmlUtils.removeXpath("Title[1]"));
@@ -98,6 +96,7 @@ public class TestXmlUtils extends OpenCmsJupiterTestCase {
      * @throws Exception in case the test fails
      */
     @Test
+    @Order(4)
     public void testSimplifyXpath() throws Exception {
 
         assertEquals("Title[1]", CmsXmlUtils.simplifyXpath("/Title[1]"));

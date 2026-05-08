@@ -28,7 +28,7 @@
 package org.opencms.search;
 
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Iterator;
 import java.util.List;
@@ -37,24 +37,13 @@ import org.apache.lucene.document.DateTools;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests some search utilities that don't require an OpenCms context.<p>
  */
-@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestCmsSearchUtils extends OpenCmsJupiterTestCase {
-
-    @Override
-    protected boolean shouldBootOpenCms() {
-
-        return false;
-    }
+public class TestCmsSearchUtils extends OpenCmsTestRunner {
 
     /**
      * Prints a list of String to System.out.<p>

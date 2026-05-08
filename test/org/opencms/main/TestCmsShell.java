@@ -27,18 +27,14 @@
 
 package org.opencms.main;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 import org.opencms.file.CmsObject;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestEnvironment;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -46,11 +42,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 
 /**
@@ -58,28 +59,56 @@ import org.junit.jupiter.api.TestMethodOrder;
  *
  * @since 6.0.0
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCmsShell extends OpenCmsJupiterTestCase {
+public class TestCmsShell extends OpenCmsTestRunner {
 
     public static final String PROMPT = "${user}@${project}>";
 
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
-     */
-    @Override
-    protected boolean shouldBootOpenCms() {
+    private static I_CmsShellCommands createCmsShellCommands(
+        String identifier,
+        final String markInit,
+        final String markShellExit,
+        final String markShellStart,
+        String markInErrOutputStream) {
 
-        return false;
+        return new I_CmsShellCommands() {
+
+            private CmsShell shell;
+
+            @Override
+            public void initShellCmsObject(CmsObject cms, CmsShell shell) {
+
+                this.shell = shell;
+                shell.getOut().println(markInit + identifier);
+            }
+
+            @Override
+            public void shellExit() {
+
+                // shellExit can (and in fact is) invoked before initShellCmsObject
+                if (shell != null) {
+                    shell.getOut().println(markShellExit + identifier);
+                }
+            }
+
+            @Override
+            public void shellStart() {
+
+                shell.getOut().println(markShellStart + identifier);
+                shell.getErr().println(markInErrOutputStream + identifier);
+            }
+        };
     }
 
     /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
     @Override
-    protected boolean shouldInitConfiguration() {
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        return true;
+        initConfiguration();
     }
 
     /**
@@ -89,12 +118,13 @@ public class TestCmsShell extends OpenCmsJupiterTestCase {
      */
     @Order(2)
     @Test
-    public void testCmsSetup() throws Throwable {
+    @DisplayName("testCmsSetup")
+    public void testCmsSetup(TestInfo testInfo) throws Throwable {
 
         CmsObject cms;
 
         // setup OpenCms using the base test class
-        cms = setupOpenCms("simpletest", "/");
+        cms = setupOpenCms(testInfo, "simpletest", "/");
         // check the returned CmsObject
         assertEquals(cms.getRequestContext().getCurrentUser(), cms.readUser("Admin"));
         assertEquals(cms.getRequestContext().getCurrentProject(), cms.readProject("Offline"));
@@ -108,7 +138,7 @@ public class TestCmsShell extends OpenCmsJupiterTestCase {
         assertEquals(cms.getRequestContext().getSiteRoot(), "/sites/default");
 
         // remove OpenCms
-        removeOpenCms();
+        removeOpenCms(testInfo);
     }
 
     /**
@@ -175,42 +205,6 @@ public class TestCmsShell extends OpenCmsJupiterTestCase {
         cleanupShellRuntimeState(configBackupDir);
     }
 
-    private static I_CmsShellCommands createCmsShellCommands(
-        String identifier,
-        final String markInit,
-        final String markShellExit,
-        final String markShellStart,
-        String markInErrOutputStream) {
-
-        return new I_CmsShellCommands() {
-
-            private CmsShell shell;
-
-            @Override
-            public void initShellCmsObject(CmsObject cms, CmsShell shell) {
-
-                this.shell = shell;
-                shell.getOut().println(markInit + identifier);
-            }
-
-            @Override
-            public void shellExit() {
-
-                // shellExit can (and in fact is) invoked before initShellCmsObject
-                if (shell != null) {
-                    shell.getOut().println(markShellExit + identifier);
-                }
-            }
-
-            @Override
-            public void shellStart() {
-
-                shell.getOut().println(markShellStart + identifier);
-                shell.getErr().println(markInErrOutputStream + identifier);
-            }
-        };
-    }
-
     /**
      * Tests the CmsShell and setup procedure.<p>
      *
@@ -229,15 +223,18 @@ public class TestCmsShell extends OpenCmsJupiterTestCase {
         final ByteArrayOutputStream baosErr = new ByteArrayOutputStream();
         final PrintStream err = new PrintStream(baosErr);
 
-
         final String MARK_INIT = "initShellCmsObject on ";
         final String MARK_SHELL_EXIT = "shellExit on ";
         final String MARK_SHELL_START = "shellStart on ";
         final String MARK_IN_ERR_OUTPUT_STREAM = "mark in error OutputStream on ";
         List<String> commandsIds = Arrays.asList("0001", "0002", "0003");
-        List<I_CmsShellCommands> cmsShellCommands = commandsIds.stream()
-            .map(id -> createCmsShellCommands(id, MARK_INIT, MARK_SHELL_EXIT, MARK_SHELL_START, MARK_IN_ERR_OUTPUT_STREAM))
-            .collect(Collectors.toList());
+        List<I_CmsShellCommands> cmsShellCommands = commandsIds.stream().map(
+            id -> createCmsShellCommands(
+                id,
+                MARK_INIT,
+                MARK_SHELL_EXIT,
+                MARK_SHELL_START,
+                MARK_IN_ERR_OUTPUT_STREAM)).collect(Collectors.toList());
 
         // create a shell instance
         final CmsShell shell = new CmsShell(
@@ -297,11 +294,24 @@ public class TestCmsShell extends OpenCmsJupiterTestCase {
     }
 
     /**
+     * Purges a runtime test directory if it exists.
+     *
+     * @param path the test-relative path
+     */
+    private void purgeTestPath(String path) {
+
+        String absolutePath = getTestDataPath(path);
+        if (absolutePath != null) {
+            CmsFileUtil.purgeDirectory(new File(absolutePath));
+        }
+    }
+
+    /**
      * Restores the default runtime configuration files used by the shell tests.
      */
     private void restoreConfiguration() {
 
-        String sourceDir = getTestDataPath("WEB-INF/config." + OpenCmsTestEnvironment.getDbProduct() + "/");
+        String sourceDir = getTestDataPath("WEB-INF/config." + getDbProduct() + "/");
         String targetDir = getTestDataPath("WEB-INF/" + CmsSystemInfo.FOLDER_CONFIG_DEFAULT);
         File configDir = new File(targetDir);
         File configSourceDir = new File(sourceDir);
@@ -321,19 +331,6 @@ public class TestCmsShell extends OpenCmsJupiterTestCase {
             } catch (IOException e) {
                 throw new RuntimeException("Failed to restore configuration file " + source.getName(), e);
             }
-        }
-    }
-
-    /**
-     * Purges a runtime test directory if it exists.
-     *
-     * @param path the test-relative path
-     */
-    private void purgeTestPath(String path) {
-
-        String absolutePath = getTestDataPath(path);
-        if (absolutePath != null) {
-            CmsFileUtil.purgeDirectory(new File(absolutePath));
         }
     }
 }

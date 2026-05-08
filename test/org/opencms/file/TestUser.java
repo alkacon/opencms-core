@@ -34,7 +34,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsUUID;
 
@@ -52,26 +52,23 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.Sets;
-
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import com.google.common.collect.Sets;
 
 /**
  * Unit tests for OpenCms user object.<p>
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestUser extends OpenCmsJupiterTestCase {
+public class TestUser extends OpenCmsTestRunner {
 
     static class Evil implements Serializable {
 
@@ -90,12 +87,13 @@ public class TestUser extends OpenCmsJupiterTestCase {
     }
 
     /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getPublish()
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
     @Override
-    protected boolean getPublish() {
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        return false;
+        setupOpenCms(testInfo, "simpletest", "/", false);
     }
 
     /**

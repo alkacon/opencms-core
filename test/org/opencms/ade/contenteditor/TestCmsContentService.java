@@ -30,7 +30,7 @@ package org.opencms.ade.contenteditor;
 import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.acacia.shared.CmsType;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -41,21 +41,34 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.dom4j.Element;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.MethodOrderer;
 
 /**
  * Tests the content service for generating serializable XML content entities and type definitions and persisting those entities.<p>
  */
+@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCmsContentService extends OpenCmsJupiterTestCase {
+public class TestCmsContentService extends OpenCmsTestRunner {
 
     /** The schema id. */
     private static final String SCHEMA_SYSTEM_ID_1 = "http://www.opencms.org/test1.xsd";
+
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
 
     /**
      * Tests the read entity method.<p>
@@ -119,9 +132,7 @@ public class TestCmsContentService extends OpenCmsJupiterTestCase {
         Map<String, CmsType> registeredTypes = service.readTypes(definition, new Locale("en"));
 
         assertFalse(registeredTypes.isEmpty(), "Registered types should not be empty");
-        assertTrue(
-            registeredTypes.containsKey(baseTypeName),
-            "Registered types should contain type: " + baseTypeName);
+        assertTrue(registeredTypes.containsKey(baseTypeName), "Registered types should contain type: " + baseTypeName);
         assertEquals(5, registeredTypes.size(), "Should contain 5 types, the base type and 4 simple types");
     }
 }

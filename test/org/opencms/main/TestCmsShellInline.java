@@ -27,24 +27,24 @@
 
 package org.opencms.main;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.security.CmsRole;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.awt.event.KeyEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 
 /**
@@ -52,9 +52,9 @@ import org.junit.jupiter.api.TestMethodOrder;
  *
  * @since 9.5.0
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCmsShellInline extends OpenCmsJupiterTestCase {
+public class TestCmsShellInline extends OpenCmsTestRunner {
 
     /** Default inline shell prompt for most test cases. */
     private static final String PROMPT = "Inline shell: ${user}@${siteroot}${uri}> ";
@@ -63,21 +63,13 @@ public class TestCmsShellInline extends OpenCmsJupiterTestCase {
     private final String m_arrowUp = new String(new byte[] {KeyEvent.VK_ESCAPE, KeyEvent.VK_OPEN_BRACKET, 'A'});
 
     /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
     @Override
-    protected String getImportFolder() {
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        return null;
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
-     */
-    @Override
-    protected String getTargetFolder() {
-
-        return "/sites/default/";
+        setupOpenCms(testInfo, null, "/sites/default/");
     }
 
     /**
@@ -97,9 +89,7 @@ public class TestCmsShellInline extends OpenCmsJupiterTestCase {
         shell.execute("addUserToGroup 'Editor' 'Users'");
         shell.execute("addUserToRole 'Editor' 'EDITOR'");
 
-        assertTrue(
-            OpenCms.getRoleManager().hasRole(cms, "Editor", CmsRole.EDITOR),
-            "Editor does not have EDITOR role");
+        assertTrue(OpenCms.getRoleManager().hasRole(cms, "Editor", CmsRole.EDITOR), "Editor does not have EDITOR role");
         List<CmsGroup> groups = cms.getGroupsOfUser("Editor", true);
         boolean found = false;
         for (CmsGroup g : groups) {
@@ -217,21 +207,22 @@ public class TestCmsShellInline extends OpenCmsJupiterTestCase {
         CmsObject cms = getCmsObject();
         CmsShell shell = new CmsShell(cms, PROMPT, null, out, err);
 
-        String commands = "echo on\n"     // This should be processed
-            + m_arrowUp + "echo off\n" // The shell should detect the escape sequence and ignore the rest
+        String commands = "echo on\n" // This should be processed
+            + m_arrowUp
+            + "echo off\n" // The shell should detect the escape sequence and ignore the rest
             + "\n"
-            + ".\n"         // This should be ignored and shouldn't break the shell
-            + "/\n"         // Same here -- Parsed as StreamTokenizer.TT_NUMBER
-            + "*\n"         // Same here -- Parsed as StreamTokenizer.TT_NUMBER
-            + "(\n"         // Same here -- Parsed as NOT StreamTokenizer.TT_NUMBER
-            + "-\n"         // Same here -- Parsed as NOT StreamTokenizer.TT_NUMBER
-            + "( ( (\n"     // Same here -- Parsed as NOT StreamTokenizer.TT_NUMBER
-            + "setRequestTime(11)\n"  // Test parsing of numerical parameters
-            + "setRequestTime 12\n"   // Test parsing of numerical parameters
-            + "setRequestTime /\n"    // Test parsing of numerical parameters
+            + ".\n" // This should be ignored and shouldn't break the shell
+            + "/\n" // Same here -- Parsed as StreamTokenizer.TT_NUMBER
+            + "*\n" // Same here -- Parsed as StreamTokenizer.TT_NUMBER
+            + "(\n" // Same here -- Parsed as NOT StreamTokenizer.TT_NUMBER
+            + "-\n" // Same here -- Parsed as NOT StreamTokenizer.TT_NUMBER
+            + "( ( (\n" // Same here -- Parsed as NOT StreamTokenizer.TT_NUMBER
+            + "setRequestTime(11)\n" // Test parsing of numerical parameters
+            + "setRequestTime 12\n" // Test parsing of numerical parameters
+            + "setRequestTime /\n" // Test parsing of numerical parameters
             + "setRequestTime / 13\n" // Test parsing of numerical parameters
-            + "setRequestTime /14\n"  // Test parsing of numerical parameters
-            + "exit\n";     // Should exit gracefully
+            + "setRequestTime /14\n" // Test parsing of numerical parameters
+            + "exit\n"; // Should exit gracefully
         shell.execute(commands);
 
         String resultOut = bOut.toString();

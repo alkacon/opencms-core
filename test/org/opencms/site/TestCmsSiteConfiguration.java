@@ -27,12 +27,8 @@
 
 package org.opencms.site;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +36,12 @@ import java.util.Map;
 
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the site configuration.<p>
@@ -48,9 +49,16 @@ import org.junit.jupiter.api.Test;
  *
  * @since 9.5
  */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.MethodName.class)
-public class TestCmsSiteConfiguration extends OpenCmsJupiterTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestCmsSiteConfiguration extends OpenCmsTestRunner {
+
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
 
     /**
      * Tests the basic site configuration.<p>
@@ -77,16 +85,13 @@ public class TestCmsSiteConfiguration extends OpenCmsJupiterTestCase {
 
         assertTrue(
             sites.contains(new CmsSite("/sites/default/", "http://localhost:8080")),
-            "Default site at http://localhost:8080 not found"
-        );
+            "Default site at http://localhost:8080 not found");
         assertTrue(
             sites.contains(new CmsSite("/sites/default/folder1/", "http://localhost:8081")),
-            "Site at http://localhost:8081 not found"
-        );
+            "Site at http://localhost:8081 not found");
         assertTrue(
             sites.contains(new CmsSite("/sites/testsite/", "http://localhost:8082")),
-            "Site at http://localhost:8082 not found"
-        );
+            "Site at http://localhost:8082 not found");
     }
 
     /**

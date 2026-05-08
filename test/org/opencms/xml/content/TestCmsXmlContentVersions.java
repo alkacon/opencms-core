@@ -27,10 +27,6 @@
 
 package org.opencms.xml.content;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Order;
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -38,8 +34,7 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -50,25 +45,30 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class TestCmsXmlContentVersions extends OpenCmsJupiterTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestCmsXmlContentVersions extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestCmsXmlContentVersions() {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-
+        setupOpenCms(testInfo, "simpletest", "/");
     }
-
 
     /**
      * Tests that the schema version is set in newly created contents.
@@ -76,7 +76,6 @@ public class TestCmsXmlContentVersions extends OpenCmsJupiterTestCase {
      * @throws Exception if something goes wrong
      */
     @Test
-    @Order(1)
     public void testNewFileVersion() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -112,7 +111,6 @@ public class TestCmsXmlContentVersions extends OpenCmsJupiterTestCase {
      * @throws Exception if something goes wrong
      */
     @Test
-    @Order(2)
     public void testVersionTransformation() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -153,18 +151,26 @@ public class TestCmsXmlContentVersions extends OpenCmsJupiterTestCase {
             byte[] newData = c1.marshal();
 
             org.dom4j.Document doc = CmsXmlUtils.unmarshalHelper(newData, new CmsXmlEntityResolver(cms));
-            assertEquals("1", doc.getRootElement().attributeValue("version"), "Version must be 1 in transformed content XML");
+            assertEquals(
+                "1",
+                doc.getRootElement().attributeValue("version"),
+                "Version must be 1 in transformed content XML");
 
             updateFile(cms, base + "news.xml", newData);
             c1 = CmsXmlContentFactory.unmarshal(cms, cms.readFile(base + "news.xml"));
-            assertTrue(new String(cms.readFile(base + "news.xml").getContents(), "UTF-8").contains(
-                    "<Heading><![CDATA[" + originalTitle + "]]></Heading>"), "Heading should be using CDATA in saved file");
+            assertTrue(
+                new String(cms.readFile(base + "news.xml").getContents(), "UTF-8").contains(
+                    "<Heading><![CDATA[" + originalTitle + "]]></Heading>"),
+                "Heading should be using CDATA in saved file");
 
             title2 = c1.getValue("Heading", en).getStringValue(cms);
             assertFalse(c1.hasValue("Title", en), "Updated version must not have 'Title'");
             assertTrue(c1.hasValue("Heading", en), "Updated content must have 'Heading'");
             assertEquals(originalTitle, title2, "Heading must match original Title");
-            assertEquals("modified " + originalIntro, c1.getValue("Intro", Locale.ENGLISH).getStringValue(cms), "Intro should have been modified exactly once");
+            assertEquals(
+                "modified " + originalIntro,
+                c1.getValue("Intro", Locale.ENGLISH).getStringValue(cms),
+                "Intro should have been modified exactly once");
         } finally {
             cms.deleteResource("/system/news.xsl", CmsResource.DELETE_PRESERVE_SIBLINGS);
             cms.deleteResource(base, CmsResource.DELETE_PRESERVE_SIBLINGS);
@@ -178,7 +184,6 @@ public class TestCmsXmlContentVersions extends OpenCmsJupiterTestCase {
      * @throws Exception
      */
     @Test
-    @Order(3)
     public void testVersionTransformationWithModelResource() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -211,10 +216,15 @@ public class TestCmsXmlContentVersions extends OpenCmsJupiterTestCase {
             cms.createResource(base + "news.xml", xmlcontent, null, new ArrayList<>());
             byte[] newFileData = cms.readFile(base + "news.xml").getContents();
             String newFileDataStr = new String(newFileData, "UTF-8");
-            assertTrue(newFileDataStr.contains("<Heading><![CDATA[" + originalTitle + "]]></Heading>"), "CDATA should have been used for Heading \n newFileData = " + newFileDataStr);
+            assertTrue(
+                newFileDataStr.contains("<Heading><![CDATA[" + originalTitle + "]]></Heading>"),
+                "CDATA should have been used for Heading \n newFileData = " + newFileDataStr);
 
             CmsXmlContent c1 = CmsXmlContentFactory.unmarshal(cms, cms.readFile(base + "news.xml"));
-            assertEquals(originalTitle, c1.getValue("Heading", Locale.ENGLISH).getStringValue(cms), "Should have been the original title");
+            assertEquals(
+                originalTitle,
+                c1.getValue("Heading", Locale.ENGLISH).getStringValue(cms),
+                "Should have been the original title");
         } finally {
             cms.deleteResource("/system/news.xsl", CmsResource.DELETE_PRESERVE_SIBLINGS);
             cms.deleteResource(base, CmsResource.DELETE_PRESERVE_SIBLINGS);

@@ -36,7 +36,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
@@ -44,17 +44,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit tests for special publish issues.<p>
@@ -64,7 +61,17 @@ import static org.junit.jupiter.api.Assertions.fail;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestPublishIssues extends OpenCmsJupiterTestCase {
+public class TestPublishIssues extends OpenCmsTestRunner {
+
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
 
     /**
      * Tests publish scenario "publish all Siblings".<p>
@@ -138,13 +145,13 @@ public class TestPublishIssues extends OpenCmsJupiterTestCase {
         // check if the project was created as planned
         List resources = cms.readProjectResources(project);
         assertEquals(1, resources.size());
-        assertEquals("/sites/default/folder1/", (String)resources.get(0));
+        assertEquals("/sites/default/folder1/", resources.get(0));
 
         // copy the root folder of the sito to the project - this must remove the "/folder1/" folder
         cms.copyResourceToProject("/");
         resources = cms.readProjectResources(project);
         assertEquals(1, resources.size());
-        assertEquals("/sites/default/", (String)resources.get(0));
+        assertEquals("/sites/default/", resources.get(0));
 
         // now create the project again - this must NOT throw an exception since projects may have the same name
         CmsProject newProject = cms.createProject(
@@ -400,7 +407,7 @@ public class TestPublishIssues extends OpenCmsJupiterTestCase {
         // check if the project was created as planned
         List resources = cms.readProjectResources(project2);
         assertEquals(1, resources.size());
-        assertEquals("/sites/default" + projectRes1, (String)resources.get(0));
+        assertEquals("/sites/default" + projectRes1, resources.get(0));
 
         // login as user "test2"
         cms.loginUser("test2", "test2");
@@ -517,7 +524,7 @@ public class TestPublishIssues extends OpenCmsJupiterTestCase {
         // check if the project was created as planned
         List resources = cms.readProjectResources(projectB);
         assertEquals(1, resources.size());
-        assertEquals("/sites/default/", (String)resources.get(0));
+        assertEquals("/sites/default/", resources.get(0));
 
         // TODO: The wanted behaviour in this case must be defined!
     }

@@ -29,13 +29,11 @@ package org.opencms.util;
 
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test cases for file name validation.<p>
@@ -43,12 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @since 6.0.0
  */
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestValidFilename extends OpenCmsJupiterTestCase {
-
-    @Override
-    protected boolean shouldBootOpenCms() {
-        return false;
-    }
+public class TestValidFilename extends OpenCmsTestRunner {
 
     /**
      * Tests the file name validation method in the class CmsDriverManager.<p>

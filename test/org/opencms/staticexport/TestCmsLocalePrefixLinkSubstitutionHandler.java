@@ -31,7 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsPair;
 
 import java.util.TreeMap;
@@ -40,43 +40,21 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /** Tests for the {@link CmsLocalePrefixLinkSubstitutionHandler}. */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCmsLocalePrefixLinkSubstitutionHandler extends OpenCmsJupiterTestCase {
+public class TestCmsLocalePrefixLinkSubstitutionHandler extends OpenCmsTestRunner {
 
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
-     */
     @Override
-    protected String getImportFolder() {
-
-        return "multisite";
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
-     */
-    @Override
-    protected String getTargetFolder() {
-
-        return "/";
-    }
-
-    /**
-     * Preserves the legacy suite setup which switched the default site to single-tree localization.<p>
-     */
     @BeforeAll
-    public void setUpLocalizationMode() {
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        TreeMap<String, String> parameters = new TreeMap<String, String>();
-        parameters.put("localizationMode", "singleTree");
-        OpenCms.getSiteManager().getSite("/sites/default/", null).setParameters(parameters);
+        setupOpenCms(testInfo, "multisite", "/");
+        setUpLocalizationMode();
     }
 
     /**
@@ -134,6 +112,16 @@ public class TestCmsLocalePrefixLinkSubstitutionHandler extends OpenCmsJupiterTe
         lm.setLinkSubstitutionHandler(cms, lh);
         testGetRootPath(cms, "/sites/default/index.html");
         testGetRootPath(cms, "/shared/sharedFile.txt");
+    }
+
+    /**
+     * Preserves the legacy suite setup which switched the default site to single-tree localization.<p>
+     */
+    private void setUpLocalizationMode() {
+
+        TreeMap<String, String> parameters = new TreeMap<String, String>();
+        parameters.put("localizationMode", "singleTree");
+        OpenCms.getSiteManager().getSite("/sites/default/", null).setParameters(parameters);
     }
 
     /**

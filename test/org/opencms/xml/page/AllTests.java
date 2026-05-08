@@ -29,7 +29,6 @@ package org.opencms.xml.page;
 
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
-import org.opencms.test.OpenCmsTestProperties;
 
 /**
  * Main test suite for the package <code>{@link org.opencms.xml.page}</code>.<p>

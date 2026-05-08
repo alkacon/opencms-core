@@ -27,15 +27,14 @@
 
 package org.opencms.util;
 
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test case for browser matcher.<p>
@@ -43,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @since 6.0.0
  */
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestCmsBrowserMatcher extends OpenCmsJupiterTestCase {
+public class TestCmsBrowserMatcher extends OpenCmsTestRunner {
 
     private static String[] browser = {
         "MSIE_6.x",
@@ -83,11 +82,6 @@ public class TestCmsBrowserMatcher extends OpenCmsJupiterTestCase {
         "^Mozilla/5\\.0 \\(.* rv:1.0.2\\) Gecko/2003\\d* Netscape/.*$",
         "^Mozilla/5\\.0 \\(.* rv:1.0.1\\) Gecko/2002\\d* Netscape/.*$",
         ".*"};
-
-    @Override
-    protected boolean shouldBootOpenCms() {
-        return false;
-    }
 
     /**
      * Tests the browser matching regular expressions.<p>

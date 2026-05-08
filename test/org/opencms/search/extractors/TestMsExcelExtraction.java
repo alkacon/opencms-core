@@ -27,10 +27,7 @@
 
 package org.opencms.search.extractors;
 
-import org.opencms.test.OpenCmsJupiterTestCase;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.io.InputStream;
 import java.util.Iterator;
@@ -38,34 +35,13 @@ import java.util.Map;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /**
  * Tests the text extraction form an Excel file.<p>
  */
-@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestMsExcelExtraction extends OpenCmsJupiterTestCase {
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
-     */
-    @Override
-    protected boolean shouldBootOpenCms() {
-
-        return false;
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
-     */
-    @Override
-    protected boolean shouldInitConfiguration() {
-
-        return false;
-    }
+public class TestMsExcelExtraction extends OpenCmsTestRunner {
 
     /**
      * Tests the Excel text extraction for old OLE2 documents.<p>

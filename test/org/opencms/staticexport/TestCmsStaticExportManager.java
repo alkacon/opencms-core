@@ -34,7 +34,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -42,15 +42,13 @@ import org.opencms.xml.CmsXmlEntityResolver;
 import java.util.Collections;
 import java.util.regex.Pattern;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for static export manager.<p>
@@ -59,27 +57,83 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCmsStaticExportManager extends OpenCmsJupiterTestCase {
+public class TestCmsStaticExportManager extends OpenCmsTestRunner {
 
     /** simple xml content schema system id, with attachment relation type. */
     private static final String SCHEMA_SYSTEM_ID_14 = "http://www.opencms.org/test14.xsd";
 
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
-     */
     @Override
-    protected String getImportFolder() {
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        return "simpletest";
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
+     * Tests the link generation for statically exported files by default suffix.<p>
+     *
+     * @throws Exception if the test fails
      */
-    @Override
-    protected String getTargetFolder() {
+    @Test
+    @Order(2)
+    public void testDefaultSuffixLinkGeneration() throws Exception {
 
-        return "/";
+        CmsObject cms = getCmsObject();
+        echo("Testing default suffix statix export link generation");
+
+        String folder = "/folder1/subfolder11/subsubfolder111/";
+        String vfsName1 = folder + "image.gif";
+        String vfsName2 = folder + "xml.xml";
+        CmsProperty exportProp = cms.readPropertyObject(vfsName1, CmsPropertyDefinition.PROPERTY_EXPORT, true);
+        assertTrue(exportProp.isNullProperty());
+
+        OpenCms.getStaticExportManager().setDefault(CmsStringUtil.FALSE);
+        String rfsPrefix = OpenCms.getStaticExportManager().getRfsPrefix(
+            cms.getRequestContext().getSiteRoot() + folder);
+        String expected1;
+        String expected2;
+
+        cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
+
+        echo("Testing default export based on file suffix");
+
+        assertTrue(OpenCms.getStaticExportManager().isSuffixExportable(vfsName1));
+        expected1 = rfsPrefix + cms.getRequestContext().getSiteRoot() + vfsName1;
+        checkLinkWithoutParameters(cms, vfsName1, expected1);
+        checkLinkWithParameters(cms, vfsName1, expected1);
+        assertEquals(expected1, OpenCms.getLinkManager().substituteLink(cms, vfsName1));
+
+        assertFalse(OpenCms.getStaticExportManager().isSuffixExportable(vfsName2));
+        expected1 = rfsPrefix + cms.getRequestContext().getSiteRoot() + vfsName2;
+        checkLinkWithoutParameters(cms, vfsName2, expected1);
+        checkLinkWithParameters(cms, vfsName2, expected1);
+        expected2 = OpenCms.getStaticExportManager().getVfsPrefix() + vfsName2;
+        assertEquals(expected2, OpenCms.getLinkManager().substituteLink(cms, vfsName2));
+
+        echo("Testing default export based on file suffix with 'exportname' property set");
+
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+
+        cms.lockResource(folder);
+        cms.writePropertyObject(folder, new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME, "testfolder", null));
+        cms.unlockResource(folder);
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
+
+        assertTrue(OpenCms.getStaticExportManager().isSuffixExportable(vfsName1));
+        expected1 = rfsPrefix + "/testfolder/image.gif";
+        checkLinkWithoutParameters(cms, vfsName1, expected1);
+        checkLinkWithParameters(cms, vfsName1, expected1);
+        assertEquals(expected1, OpenCms.getLinkManager().substituteLink(cms, vfsName1));
+
+        assertFalse(OpenCms.getStaticExportManager().isSuffixExportable(vfsName2));
+        expected1 = rfsPrefix + "/testfolder/xml.xml";
+        checkLinkWithoutParameters(cms, vfsName2, expected1);
+        checkLinkWithParameters(cms, vfsName2, expected1);
+        expected2 = OpenCms.getStaticExportManager().getVfsPrefix() + vfsName2;
+        assertEquals(expected2, OpenCms.getLinkManager().substituteLink(cms, vfsName2));
     }
 
     /**
@@ -160,73 +214,6 @@ public class TestCmsStaticExportManager extends OpenCmsJupiterTestCase {
         expected = rfsPrefix + cms.getRequestContext().getSiteRoot() + vfsName + ".pdf";
         checkLinkWithoutParameters(cms, vfsName, expected);
         checkLinkWithParameters(cms, vfsName, expected);
-    }
-
-    /**
-     * Tests the link generation for statically exported files by default suffix.<p>
-     *
-     * @throws Exception if the test fails
-     */
-    @Test
-    @Order(2)
-    public void testDefaultSuffixLinkGeneration() throws Exception {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing default suffix statix export link generation");
-
-        String folder = "/folder1/subfolder11/subsubfolder111/";
-        String vfsName1 = folder + "image.gif";
-        String vfsName2 = folder + "xml.xml";
-        CmsProperty exportProp = cms.readPropertyObject(vfsName1, CmsPropertyDefinition.PROPERTY_EXPORT, true);
-        assertTrue(exportProp.isNullProperty());
-
-        OpenCms.getStaticExportManager().setDefault(CmsStringUtil.FALSE);
-        String rfsPrefix = OpenCms.getStaticExportManager().getRfsPrefix(
-            cms.getRequestContext().getSiteRoot() + folder);
-        String expected1;
-        String expected2;
-
-        cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
-
-        echo("Testing default export based on file suffix");
-
-        assertTrue(OpenCms.getStaticExportManager().isSuffixExportable(vfsName1));
-        expected1 = rfsPrefix + cms.getRequestContext().getSiteRoot() + vfsName1;
-        checkLinkWithoutParameters(cms, vfsName1, expected1);
-        checkLinkWithParameters(cms, vfsName1, expected1);
-        assertEquals(expected1, OpenCms.getLinkManager().substituteLink(cms, vfsName1));
-
-        assertFalse(OpenCms.getStaticExportManager().isSuffixExportable(vfsName2));
-        expected1 = rfsPrefix + cms.getRequestContext().getSiteRoot() + vfsName2;
-        checkLinkWithoutParameters(cms, vfsName2, expected1);
-        checkLinkWithParameters(cms, vfsName2, expected1);
-        expected2 = OpenCms.getStaticExportManager().getVfsPrefix() + vfsName2;
-        assertEquals(expected2, OpenCms.getLinkManager().substituteLink(cms, vfsName2));
-
-        echo("Testing default export based on file suffix with 'exportname' property set");
-
-        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-
-        cms.lockResource(folder);
-        cms.writePropertyObject(folder, new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME, "testfolder", null));
-        cms.unlockResource(folder);
-        OpenCms.getPublishManager().publishProject(cms);
-        OpenCms.getPublishManager().waitWhileRunning();
-
-        cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
-
-        assertTrue(OpenCms.getStaticExportManager().isSuffixExportable(vfsName1));
-        expected1 = rfsPrefix + "/testfolder/image.gif";
-        checkLinkWithoutParameters(cms, vfsName1, expected1);
-        checkLinkWithParameters(cms, vfsName1, expected1);
-        assertEquals(expected1, OpenCms.getLinkManager().substituteLink(cms, vfsName1));
-
-        assertFalse(OpenCms.getStaticExportManager().isSuffixExportable(vfsName2));
-        expected1 = rfsPrefix + "/testfolder/xml.xml";
-        checkLinkWithoutParameters(cms, vfsName2, expected1);
-        checkLinkWithParameters(cms, vfsName2, expected1);
-        expected2 = OpenCms.getStaticExportManager().getVfsPrefix() + vfsName2;
-        assertEquals(expected2, OpenCms.getLinkManager().substituteLink(cms, vfsName2));
     }
 
     /**
@@ -333,7 +320,7 @@ public class TestCmsStaticExportManager extends OpenCmsJupiterTestCase {
         cms.getRequestContext().setSiteRoot("");
         int xmlcontentType = OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId();
         byte[] content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-14.xml");
-        CmsResource tsl = cms.createResource(rootPath, xmlcontentType, content, Collections.<CmsProperty>emptyList());
+        CmsResource tsl = cms.createResource(rootPath, xmlcontentType, content, Collections.<CmsProperty> emptyList());
         cms.unlockResource(tsl);
         return tsl;
     }

@@ -27,33 +27,33 @@
 
 package org.opencms.util;
 
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.xml.CmsLinkFinisher;
 
 import java.util.Arrays;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test cases for {@link org.opencms.xml.CmsLinkFinisher}.<p>
  */
-@TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestCmsLinkFinisher extends OpenCmsJupiterTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsLinkFinisher extends OpenCmsTestRunner {
 
-    @Override
-    protected boolean shouldBootOpenCms() {
-        return false;
-    }
+    @BeforeAll
+    public void setUpConfiguration() {
 
-    @Override
-    protected boolean shouldInitConfiguration() {
-        return true;
+        initConfiguration();
     }
 
     @Test
+    @Order(1)
     public void testExclude() throws Exception {
 
         CmsLinkFinisher lf = new CmsLinkFinisher(true, Arrays.asList("index.html"), ".*?/exclude/.*");
@@ -69,6 +69,7 @@ public class TestCmsLinkFinisher extends OpenCmsJupiterTestCase {
     }
 
     @Test
+    @Order(3)
     public void testLinkFinisherFull() throws Exception {
 
         CmsLinkFinisher lf = new CmsLinkFinisher(true, Arrays.asList("index.html"), null);
@@ -88,6 +89,7 @@ public class TestCmsLinkFinisher extends OpenCmsJupiterTestCase {
     }
 
     @Test
+    @Order(2)
     public void testLinkFinisherSlashesOnly() throws Exception {
 
         CmsLinkFinisher lf = new CmsLinkFinisher(true, Arrays.asList("index.html"), null);

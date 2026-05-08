@@ -27,10 +27,6 @@
 
 package org.opencms.xml.content;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Order;
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.opencms.ade.contenteditor.CmsWidgetUtil;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -50,9 +46,7 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.staticexport.CmsLinkTable;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestEnvironment;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsHtmlWidget;
@@ -73,14 +67,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class TestCmsXmlContentWithVfs extends OpenCmsJupiterTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsXmlContentWithVfs extends OpenCmsTestRunner {
 
     /** Schema id 1L1. */
     public static final String SCHEMA_SYSTEM_ID_1L1 = "http://www.opencms.org/test1_localized1.xsd";
@@ -124,14 +125,15 @@ public class TestCmsXmlContentWithVfs extends OpenCmsJupiterTestCase {
     /** The current VFS prefix as added to internal links according to the configuration in opencms-importexport.xml. */
     private String m_vfsPrefix;
 
-    
-
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
 
     /**
      * Test accessing elements in nested schemas.<p>
@@ -764,7 +766,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsJupiterTestCase {
 
         // create a new xml content article
         String xmlContentFile = "/xmlcontent/article_0005.html";
-        cms.createResource(xmlContentFile, OpenCmsTestEnvironment.ARTICLE_TYPEID);
+        cms.createResource(xmlContentFile, ARTICLE_TYPEID);
 
         CmsFile file = cms.readFile(xmlContentFile);
         String content = new String(file.getContents(), CmsEncoder.ENCODING_UTF_8);
@@ -971,7 +973,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsJupiterTestCase {
         CmsLinkTable table;
 
         String retranslatedOutput = htmlValue.getStringValue(cms);
-        assertEquals("<a href=\"http://www.alkacon.com\">Alkacon</a>\n"
+        assertEquals(
+            "<a href=\"http://www.alkacon.com\">Alkacon</a>\n"
                 + "<a href=\""
                 + getVfsPrefix()
                 + "/index.html\">Index page</a>\n"
@@ -981,7 +984,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsJupiterTestCase {
                 + "<a href=\""
                 + getVfsPrefix()
                 + "/folder1/index.html?a2=b2&amp;c2=d2\">Index page with unescaped ampersand</a>", // note that the & in the links appear correctly escaped here
-            retranslatedOutput.trim(), "Incorrect links in resulting output");
+            retranslatedOutput.trim(),
+            "Incorrect links in resulting output");
 
         table = htmlValue.getLinkTable();
         assertEquals(4, table.size());
@@ -1738,20 +1742,35 @@ public class TestCmsXmlContentWithVfs extends OpenCmsJupiterTestCase {
         titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
         assertEquals(titleStrEn, titleProperty.getValue());
         titlePropertyEn = cms.readPropertyObject(resourcename, titlePropEn, false);
-        assertTrue(titlePropertyEn.isNullProperty(), "The property should be empty, since it would double the default property value");
+        assertTrue(
+            titlePropertyEn.isNullProperty(),
+            "The property should be empty, since it would double the default property value");
         titlePropertyEnGB = cms.readPropertyObject(resourcename, titlePropEnGB, false);
-        assertEquals(titleStrEnGB, titlePropertyEnGB.getValue(), "The property should be filled, since it is different from the default value");
+        assertEquals(
+            titleStrEnGB,
+            titlePropertyEnGB.getValue(),
+            "The property should be filled, since it is different from the default value");
         titlePropertyDe = cms.readPropertyObject(resourcename, titlePropDe, false);
-        assertEquals(titleStrDe, titlePropertyDe.getValue(), "The property should be filled, since it is different from the default value");
+        assertEquals(
+            titleStrDe,
+            titlePropertyDe.getValue(),
+            "The property should be filled, since it is different from the default value");
 
         descProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
         assertEquals(descStrEn, descProperty.getValue());
         descPropertyEn = cms.readPropertyObject(resourcename, descPropEn, false);
-        assertTrue(descPropertyEn.isNullProperty(), "The property should be empty, since it would double the default property value");
+        assertTrue(
+            descPropertyEn.isNullProperty(),
+            "The property should be empty, since it would double the default property value");
         descPropertyEnGB = cms.readPropertyObject(resourcename, descPropEnGB, false);
-        assertTrue(descPropertyEnGB.isNullProperty(), "The property should be empty, since it would double the default property value");
+        assertTrue(
+            descPropertyEnGB.isNullProperty(),
+            "The property should be empty, since it would double the default property value");
         descPropertyDe = cms.readPropertyObject(resourcename, descPropDe, false);
-        assertEquals(descStrDe, descPropertyDe.getValue(), "The property should be filled, since it is different from the default value");
+        assertEquals(
+            descStrDe,
+            descPropertyDe.getValue(),
+            "The property should be filled, since it is different from the default value");
 
         // We manually add a property that should be removed by the mapping.
         cms.lockResource(resourcename);
@@ -1775,9 +1794,13 @@ public class TestCmsXmlContentWithVfs extends OpenCmsJupiterTestCase {
         titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
         assertEquals(titleStrEn, titleProperty.getValue());
         titlePropertyEn = cms.readPropertyObject(resourcename, titlePropEn, false);
-        assertTrue(titlePropertyEn.isNullProperty(), "The property should be empty, since it would double the default property value");
+        assertTrue(
+            titlePropertyEn.isNullProperty(),
+            "The property should be empty, since it would double the default property value");
         titlePropertyEnGB = cms.readPropertyObject(resourcename, titlePropEnGB, false);
-        assertTrue(titlePropertyEnGB.isNullProperty(), "The property should be empty, since it would double the default property value");
+        assertTrue(
+            titlePropertyEnGB.isNullProperty(),
+            "The property should be empty, since it would double the default property value");
 
         // We check if property values are removed correctly
         cms.lockResource(resourcename);
@@ -1791,20 +1814,33 @@ public class TestCmsXmlContentWithVfs extends OpenCmsJupiterTestCase {
         titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
         assertEquals(titleStrEn, titleProperty.getValue());
         titlePropertyEn = cms.readPropertyObject(resourcename, titlePropEn, false);
-        assertTrue(titlePropertyEn.isNullProperty(), "The property should be empty, since it would double the default property value");
+        assertTrue(
+            titlePropertyEn.isNullProperty(),
+            "The property should be empty, since it would double the default property value");
         titlePropertyEnGB = cms.readPropertyObject(resourcename, titlePropEnGB, false);
-        assertTrue(titlePropertyEnGB.isNullProperty(), "The property should be empty, since the whole locale is removed");
+        assertTrue(
+            titlePropertyEnGB.isNullProperty(),
+            "The property should be empty, since the whole locale is removed");
         titlePropertyDe = cms.readPropertyObject(resourcename, titlePropDe, false);
-        assertTrue(titlePropertyDe.isNullProperty(), "The property should be empty, since it would double the default property value");
+        assertTrue(
+            titlePropertyDe.isNullProperty(),
+            "The property should be empty, since it would double the default property value");
 
         descProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
         assertEquals(descStrEn, descProperty.getValue());
         descPropertyEn = cms.readPropertyObject(resourcename, descPropEn, false);
-        assertTrue(descPropertyEn.isNullProperty(), "The property should be empty, since it would double the default property value");
+        assertTrue(
+            descPropertyEn.isNullProperty(),
+            "The property should be empty, since it would double the default property value");
         descPropertyEnGB = cms.readPropertyObject(resourcename, descPropEnGB, false);
-        assertTrue(descPropertyEnGB.isNullProperty(), "The property should be empty, since the whole locale is removed");
+        assertTrue(
+            descPropertyEnGB.isNullProperty(),
+            "The property should be empty, since the whole locale is removed");
         descPropertyDe = cms.readPropertyObject(resourcename, descPropDe, false);
-        assertEquals(descStrDe, descPropertyDe.getValue(), "The property should be filled, since it is different from the default value");
+        assertEquals(
+            descStrDe,
+            descPropertyDe.getValue(),
+            "The property should be filled, since it is different from the default value");
 
         // The manually added property should be removed
         assertTrue(cms.readPropertyObject(cms.readFile(resourcename), titlePropFr, false).isNullProperty());
@@ -2797,7 +2833,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsJupiterTestCase {
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
 
         String filename = "xmlcontent.html";
-        CmsResource res = cms.createResource(filename, OpenCmsTestEnvironment.ARTICLE_TYPEID);
+        CmsResource res = cms.createResource(filename, ARTICLE_TYPEID);
         CmsFile file = cms.readFile(res);
         String content = new String(file.getContents(), CmsEncoder.ENCODING_UTF_8);
         CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);

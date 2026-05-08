@@ -31,17 +31,17 @@ import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.security.CmsSecurityException;
-import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestResourceFilter;
+import org.opencms.test.OpenCmsTestRunner;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit test for the "chtype" method of the CmsObject.<p>
@@ -49,24 +49,25 @@ import static org.junit.jupiter.api.Assertions.fail;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestChtype extends OpenCmsJupiterTestCase {
+public class TestChtype extends OpenCmsTestRunner {
 
     /**
      * Test the chtype method on a new file.<p>
      *
-     * @param tc the OpenCmsJupiterTestCase
+     * @param tc the OpenCmsTestRunner
      * @param cms the CmsObject
      * @param resource1 the resource to change permissions
      * @param originalResType the original resource type
      * @param newResType the new resource tpye
      * @throws Throwable if something goes wrong
-     */
+    */
     public static void chtypeNewFile(
-        OpenCmsJupiterTestCase tc,
+        OpenCmsTestRunner tc,
         CmsObject cms,
         String resource1,
         int originalResType,
-        int newResType) throws Throwable {
+        int newResType)
+    throws Throwable {
 
         // create a new resource
         cms.createResource(resource1, originalResType);
@@ -84,22 +85,13 @@ public class TestChtype extends OpenCmsJupiterTestCase {
     }
 
     /**
-     * Test the chtype method on a new file.<p>
-     *
-     * @throws Throwable if something goes wrong
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    @Test
-    @Order(1)
-    public void testChtypeNewFile() throws Throwable {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        final CmsObject cms = getCmsObject();
-        echo("Testing chtype on a new file");
-        chtypeNewFile(
-            this,
-            cms,
-            "/chtype.txt",
-            CmsResourceTypePlain.getStaticTypeId(),
-            CmsResourceTypeBinary.getStaticTypeId());
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -132,5 +124,24 @@ public class TestChtype extends OpenCmsJupiterTestCase {
         } catch (CmsSecurityException e) {
             // ok
         }
+    }
+
+    /**
+     * Test the chtype method on a new file.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    @Order(1)
+    public void testChtypeNewFile() throws Throwable {
+
+        final CmsObject cms = getCmsObject();
+        echo("Testing chtype on a new file");
+        chtypeNewFile(
+            this,
+            cms,
+            "/chtype.txt",
+            CmsResourceTypePlain.getStaticTypeId(),
+            CmsResourceTypeBinary.getStaticTypeId());
     }
 }

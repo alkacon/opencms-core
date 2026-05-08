@@ -37,33 +37,37 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit tests for issues found in the new module mechanism.<p>
  */
+@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestModuleIssues extends OpenCmsJupiterTestCase {
+public class TestModuleIssues extends OpenCmsTestRunner {
 
-    /** Indicates whether OpenCms was already removed inside a test method. */
-    private boolean m_openCmsRemoved;
-
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
     @Override
-    protected boolean shouldBootOpenCms() {
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        return !m_openCmsRemoved;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -238,8 +242,9 @@ public class TestModuleIssues extends OpenCmsJupiterTestCase {
      * @throws Exception if something goes wrong
      */
     @Order(3)
+    @DisplayName("testShutdownMethod")
     @Test
-    public void testShutdownMethod() throws Exception {
+    public void testShutdownMethod(TestInfo testInfo) throws Exception {
 
         echo("Testing module shutdown method");
 
@@ -261,8 +266,7 @@ public class TestModuleIssues extends OpenCmsJupiterTestCase {
         }
 
         // remove OpenCms installations, must call shutdown
-        removeOpenCms();
-        m_openCmsRemoved = true;
+        removeOpenCms(testInfo);
 
         // check if shutdown flag was set to "true"
         assertTrue(MockModuleActionImpl.m_shutDown);

@@ -27,15 +27,10 @@
 
 package org.opencms.scheduler;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -44,8 +39,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
@@ -64,9 +65,9 @@ import org.quartz.impl.triggers.SimpleTriggerImpl;
  *
  * @since 6.0.0
  */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class TestCmsScheduler extends OpenCmsJupiterTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsScheduler extends OpenCmsTestRunner {
 
     /** Number of seconds to wait. */
     public static final int SECONDS_TO_WAIT = 30;
@@ -74,16 +75,14 @@ public class TestCmsScheduler extends OpenCmsJupiterTestCase {
     /** Number of threads to run. */
     public static final int THREADS_TO_RUN = 20;
 
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
     @Override
-    protected boolean shouldBootOpenCms() {
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        return false;
-    }
-
-    @Override
-    protected boolean shouldInitConfiguration() {
-
-        return true;
+        initConfiguration();
     }
 
     /**
@@ -140,7 +139,7 @@ public class TestCmsScheduler extends OpenCmsJupiterTestCase {
         assertNull(info.getExecutionTimeNext());
 
         // no set the job active and re-schedule it
-        info = (CmsScheduledJobInfo)info.clone();
+        info = info.clone();
         info.setActive(true);
         scheduler.scheduleJob(null, info);
 
@@ -171,7 +170,7 @@ public class TestCmsScheduler extends OpenCmsJupiterTestCase {
         MockScheduledJob.m_runCount = 0;
 
         // deactivate the job again and re-schedule it
-        info = (CmsScheduledJobInfo)info.clone();
+        info = info.clone();
         info.setActive(false);
         scheduler.scheduleJob(null, info);
 
@@ -309,7 +308,7 @@ public class TestCmsScheduler extends OpenCmsJupiterTestCase {
         jobInfo = scheduler.getJob(jobInfo.getId());
         assertEquals("My job", jobInfo.getJobName());
 
-        CmsScheduledJobInfo newInfo = (CmsScheduledJobInfo)jobInfo.clone();
+        CmsScheduledJobInfo newInfo = jobInfo.clone();
         newInfo.setJobName("My CHANGED name");
         newInfo.setActive(true);
         assertEquals(1, scheduler.getJobs().size());
@@ -323,7 +322,7 @@ public class TestCmsScheduler extends OpenCmsJupiterTestCase {
         assertEquals("My CHANGED name", jobInfo.getJobName());
 
         // change cron expression to something invalid
-        newInfo = (CmsScheduledJobInfo)jobInfo.clone();
+        newInfo = jobInfo.clone();
         newInfo.setActive(true);
 
         // uncomment because of rolled back quartz due to bugs in version 1.6.x

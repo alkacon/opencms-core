@@ -27,13 +27,11 @@
 
 package org.opencms.ugc;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.ugc.shared.CmsUgcException;
 import org.opencms.util.CmsUUID;
 
@@ -41,16 +39,32 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import com.google.common.base.Optional;
 
 /**
  * Test cases for the org.opencms.editors.usergenerated package.
  */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.MethodName.class)
-public class TestFormSessionSecurityLimits extends OpenCmsJupiterTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestFormSessionSecurityLimits extends OpenCmsTestRunner {
+
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "systemtest", "/");
+    }
 
     /**
      * Tests that an error occurs when trying to upload without a configured upload folder.<p>
@@ -214,14 +228,4 @@ public class TestFormSessionSecurityLimits extends OpenCmsJupiterTestCase {
         }
     }
 
-    /**
-     * Returns the import fixture folder under {@code test/data/imports/}.<p>
-     *
-     * @return import fixture folder name
-     */
-    @Override
-    protected String getImportFolder() {
-
-        return "systemtest";
-    }
 }

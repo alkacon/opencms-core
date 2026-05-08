@@ -27,38 +27,19 @@
 
 package org.opencms.jsp.search.config;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Order;
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 
 /** Test cases for the class {@link org.opencms.jsp.search.config.CmsSearchConfigurationPagination}. */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
 @org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class TestSearchConfigurationPagination extends OpenCmsJupiterTestCase {
+public class TestSearchConfigurationPagination extends OpenCmsTestRunner {
 
-    @Override
-    protected boolean shouldBootOpenCms() {
-        return false;
-    }
-
-
-    
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    
-
-        @Test
+    @Test
     @Order(1)
     public void testGetNumPagesForSingleMultiplePageSizes() {
 
@@ -78,7 +59,7 @@ public class TestSearchConfigurationPagination extends OpenCmsJupiterTestCase {
         assertEquals(5, config.getNumPages(30));
     }
 
-        @Test
+    @Test
     @Order(2)
     public void testGetNumPagesForSinglePageSize() {
 
@@ -94,7 +75,7 @@ public class TestSearchConfigurationPagination extends OpenCmsJupiterTestCase {
      * Test if the page sizes and the index of the first items on the page are
      * calculated correctly, if all pages have the same size.
      */
-        @Test
+    @Test
     @Order(3)
     public void testPageSizeAndStartForMultiplePageSizes() {
 
@@ -116,7 +97,7 @@ public class TestSearchConfigurationPagination extends OpenCmsJupiterTestCase {
      * Test if the page sizes and the index of the first items on the page are
      * calculated correctly, if the first few pages have different sizes.
      */
-        @Test
+    @Test
     @Order(4)
     public void testPageSizeAndStartForSinglePageSize() {
 

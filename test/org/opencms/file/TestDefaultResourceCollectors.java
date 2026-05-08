@@ -32,7 +32,7 @@ import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.List;
 
@@ -40,19 +40,17 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests the default resource collectors.<p>
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestDefaultResourceCollectors extends OpenCmsJupiterTestCase {
+public class TestDefaultResourceCollectors extends OpenCmsTestRunner {
 
     /**
      * Initializes the resources needed for the tests.<p>
@@ -76,62 +74,18 @@ public class TestDefaultResourceCollectors extends OpenCmsJupiterTestCase {
     }
 
     /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
     @Override
-    protected String getImportFolder() {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
-     */
-    @Override
-    protected String getTargetFolder() {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getPublish()
-     */
-    @Override
-    protected boolean getPublish() {
-
-        return false;
-    }
-
-    /**
-     * Initializes the test resources after OpenCms setup.<p>
-     */
     @BeforeAll
-    public void setUpResources() {
+    public void $openCmsSetUp(TestInfo testInfo) {
 
+        CmsObject cms = setupOpenCms(testInfo, null, null, false);
         try {
-            initResources(getCmsObject());
+            initResources(cms);
         } catch (CmsException exc) {
             fail(exc.getMessage());
         }
-    }
-
-    /**
-     * Tests the "singleFile" resource collector.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    @Test
-    @Order(1)
-    public void testCollectSingleFile() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing singleFile resource collector");
-
-        I_CmsResourceCollector collector = new CmsDefaultResourceCollector();
-        List resources = collector.getResults(cms, "singleFile", "/file1");
-
-        CmsResource res = (CmsResource)resources.get(0);
-        assertEquals("/sites/default/file1", res.getRootPath());
     }
 
     /**
@@ -211,5 +165,24 @@ public class TestDefaultResourceCollectors extends OpenCmsJupiterTestCase {
 
         res = (CmsResource)resources.get(1);
         assertEquals("/sites/default/folder1/file2", res.getRootPath());
+    }
+
+    /**
+     * Tests the "singleFile" resource collector.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    @Order(1)
+    public void testCollectSingleFile() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing singleFile resource collector");
+
+        I_CmsResourceCollector collector = new CmsDefaultResourceCollector();
+        List resources = collector.getResults(cms, "singleFile", "/file1");
+
+        CmsResource res = (CmsResource)resources.get(0);
+        assertEquals("/sites/default/file1", res.getRootPath());
     }
 }

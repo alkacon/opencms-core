@@ -56,10 +56,9 @@ import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.report.CmsShellReport;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.staticexport.CmsLinkTable;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestEnvironment;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
 import org.opencms.test.OpenCmsTestResourceFilter;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
@@ -77,16 +76,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Comment for <code>TestCmsImportExport</code>.<p>
@@ -94,7 +90,17 @@ import static org.junit.jupiter.api.Assertions.fail;
 @SuppressWarnings({"unchecked", "rawtypes"})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCmsImportExport extends OpenCmsJupiterTestCase {
+public class TestCmsImportExport extends OpenCmsTestRunner {
+
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
 
     /**
      * Creates a temporary file for module exports.<p>
@@ -523,9 +529,9 @@ public class TestCmsImportExport extends OpenCmsJupiterTestCase {
         cms.getRequestContext().setSiteRoot("/sites/default/");
 
         // create files
-        CmsResource res1 = cms.createResource(filename1, OpenCmsTestEnvironment.ARTICLE_TYPEID);
+        CmsResource res1 = cms.createResource(filename1, ARTICLE_TYPEID);
 
-        CmsResource res2 = cms.createResource(filename2, OpenCmsTestEnvironment.ARTICLE_TYPEID);
+        CmsResource res2 = cms.createResource(filename2, ARTICLE_TYPEID);
         CmsFile file2 = cms.readFile(res2);
         String content2 = new String(file2.getContents(), CmsEncoder.ENCODING_UTF_8);
         CmsXmlContent xmlcontent2 = CmsXmlContentFactory.unmarshal(content2, CmsEncoder.ENCODING_UTF_8, resolver);
@@ -596,7 +602,7 @@ public class TestCmsImportExport extends OpenCmsJupiterTestCase {
                 new CmsShellReport(cms.getRequestContext().getLocale()),
                 new CmsImportParameters(zipExportFilename, "/", true));
 
-            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(OpenCmsTestEnvironment.ARTICLE_TYPEID);
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(ARTICLE_TYPEID);
             I_CmsLinkParseable validatable = (I_CmsLinkParseable)type;
 
             // check the links

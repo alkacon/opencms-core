@@ -27,10 +27,6 @@
 
 package org.opencms.jsp.search.config.parser;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Order;
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.opencms.json.JSONException;
 import org.opencms.jsp.search.config.CmsSearchConfiguration;
 import org.opencms.jsp.search.config.CmsSearchConfigurationCommon;
@@ -61,8 +57,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.solr.CmsSolrIndex;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -75,45 +70,25 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /** Tests the JSON configuration parser of cms:search. */
 @org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
 @org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class TestJSONSearchConfigurationParser extends OpenCmsJupiterTestCase {
+public class TestJSONSearchConfigurationParser extends OpenCmsTestRunner {
 
     /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
     @Override
-    protected String getImportFolder() {
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        return "simpletest";
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
-     */
-    @Override
-    protected String getTargetFolder() {
-
-        return "/";
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getSpecialConfigFolder()
-     */
-    @Override
-    protected String getSpecialConfigFolder() {
-
-        return "/../org/opencms/search/solr";
-    }
-
-    /**
-     * Disables all Lucene indexes to match the legacy suite wrapper setup.<p>
-     */
-    @org.junit.jupiter.api.BeforeAll
-    public void disableIndexes() {
-
+        setupOpenCms(testInfo, "simpletest", "/", "/../org/opencms/search/solr");
+        // disable all lucene indexes
         for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
             if (!indexName.equalsIgnoreCase(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE)) {
                 I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
@@ -124,15 +99,6 @@ public class TestJSONSearchConfigurationParser extends OpenCmsJupiterTestCase {
         }
     }
 
-    
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    
-
     /**
      * Reads a complete configuration (with all options used) and tests if it matches the expectation.
      *
@@ -140,7 +106,7 @@ public class TestJSONSearchConfigurationParser extends OpenCmsJupiterTestCase {
      * @throws URISyntaxException thrown if reading the configuration file with the test configuration fails
      * @throws CmsException thrown if the CmsObject cannot be retrieved.
      */
-        @Test
+    @Test
     @Order(1)
     public void testParseCompleteConfiguration() throws IOException, URISyntaxException, CmsException {
 
@@ -163,7 +129,7 @@ public class TestJSONSearchConfigurationParser extends OpenCmsJupiterTestCase {
      * @throws URISyntaxException
      * @throws CmsException
      */
-        @Test
+    @Test
     @Order(2)
     public void testParseMultiplePageSizes() throws IOException, URISyntaxException, CmsException {
 

@@ -31,8 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestEnvironment;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.workplace.threads.CmsExportThread;
 
 import java.io.File;
@@ -46,36 +45,24 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 /** Tests concerning the "exclude resources" feature. */
+@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestModuleExcludeResources extends OpenCmsJupiterTestCase {
+public class TestModuleExcludeResources extends OpenCmsTestRunner {
 
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
     @Override
-    protected String getImportFolder() {
-
-        return "simpletest";
-    }
-
-    @Override
-    protected String getTargetFolder() {
-
-        return "/";
-    }
-
-    @Override
-    protected boolean shouldBreakOnErrorAfterInitConfiguration() {
-
-        return false;
-    }
-
     @BeforeAll
-    void createModulesDir() {
+    public void $openCmsSetUp(TestInfo testInfo) {
 
+        setupOpenCms(testInfo, "simpletest", "/");
         String path = OpenCms.getSystemInfo().getPackagesRfsPath() + CmsSystemInfo.FOLDER_MODULES;
         File modulesDir = new File(path);
 
@@ -91,27 +78,8 @@ public class TestModuleExcludeResources extends OpenCmsJupiterTestCase {
             }
         }
 
+        // this test causes issues that are written to the error log channel
         OpenCmsTestLogAppender.setBreakOnError(false);
-    }
-
-    @AfterAll
-    void cleanModulesDir() {
-
-        String path = OpenCms.getSystemInfo().getPackagesRfsPath() + CmsSystemInfo.FOLDER_MODULES;
-        File modulesDir = new File(path);
-
-        if (modulesDir.exists()) {
-            System.out.println("removing directory: " + path);
-
-            try {
-                FileUtils.deleteDirectory(modulesDir);
-                System.out.println("created directory " + path);
-            } catch (IOException se) {
-                System.err.println("unable to create directory " + path);
-                se.printStackTrace();
-            }
-        }
-        OpenCmsTestLogAppender.setBreakOnError(true);
     }
 
     /**
@@ -137,6 +105,26 @@ public class TestModuleExcludeResources extends OpenCmsJupiterTestCase {
 
     }
 
+    @AfterAll
+    void cleanModulesDir() {
+
+        String path = OpenCms.getSystemInfo().getPackagesRfsPath() + CmsSystemInfo.FOLDER_MODULES;
+        File modulesDir = new File(path);
+
+        if (modulesDir.exists()) {
+            System.out.println("removing directory: " + path);
+
+            try {
+                FileUtils.deleteDirectory(modulesDir);
+                System.out.println("created directory " + path);
+            } catch (IOException se) {
+                System.err.println("unable to create directory " + path);
+                se.printStackTrace();
+            }
+        }
+        OpenCmsTestLogAppender.setBreakOnError(true);
+    }
+
     /** The test method used by both tests of the class.
      * It imports, exports and deletes modules and checks if the exclude resources set for one module
      * do the job correctly.
@@ -159,11 +147,11 @@ public class TestModuleExcludeResources extends OpenCmsJupiterTestCase {
 
             String mainModule = "org.opencms.test.modules.excluderesource.main";
 
-            OpenCmsTestEnvironment.importModule(cms, mainModule);
+            importModule(cms, mainModule);
 
             String subModule = "org.opencms.test.modules.excluderesource.sub";
 
-            OpenCmsTestEnvironment.importModule(cms, subModule);
+            importModule(cms, subModule);
 
             assertTrue(
                 cms.existsResource(excludedResource),
@@ -200,7 +188,7 @@ public class TestModuleExcludeResources extends OpenCmsJupiterTestCase {
                 !cms.existsResource(excludedResource),
                 "After sub-module deletion, the resource " + excludedResource + "is still present.");
 
-            OpenCmsTestEnvironment.importModule(cms, mainModule, "_0.1", "modules");
+            importModule(cms, mainModule, "_0.1", "modules");
 
             assertTrue(
                 !cms.existsResource(excludedResource),

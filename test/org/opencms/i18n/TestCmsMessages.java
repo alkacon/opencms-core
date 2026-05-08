@@ -27,19 +27,18 @@
 
 package org.opencms.i18n;
 
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsMacroResolver;
 
 import java.util.Locale;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for the CmsMessages.<p>
@@ -47,25 +46,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @since 6.0.0
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCmsMessages extends OpenCmsJupiterTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public class TestCmsMessages extends OpenCmsTestRunner {
 
-    @Override
-    protected boolean shouldBootOpenCms() {
-
-        return false;
-    }
-
-    @Override
-    protected boolean shouldInitConfiguration() {
-
-        return true;
-    }
-
-    @Override
-    protected boolean shouldBreakOnErrorAfterInitConfiguration() {
+    /**
+     * Initializes the shared test configuration without booting OpenCms.<p>
+     */
+    @BeforeAll
+    public void setUpConfiguration(TestInfo testInfo) {
 
         // This legacy test verifies that invalid MessageFormat patterns are logged but do not fail the test.
-        return false;
+        initConfiguration(false);
     }
 
     /**

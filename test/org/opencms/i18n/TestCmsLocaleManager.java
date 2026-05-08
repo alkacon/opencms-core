@@ -27,19 +27,20 @@
 
 package org.opencms.i18n;
 
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests for the OpenCms locale manager.<p>
@@ -47,18 +48,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @since 6.0.0
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCmsLocaleManager extends OpenCmsJupiterTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public class TestCmsLocaleManager extends OpenCmsTestRunner {
 
-    @Override
-    protected boolean shouldBootOpenCms() {
+    /**
+     * Initializes the shared test configuration without booting OpenCms.<p>
+     */
+    @BeforeAll
+    public void setUpConfiguration(TestInfo testInfo) {
 
-        return false;
-    }
-
-    @Override
-    protected boolean shouldInitConfiguration() {
-
-        return true;
+        initConfiguration();
     }
 
     /**

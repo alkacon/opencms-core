@@ -27,9 +27,7 @@
 
 package org.opencms.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,34 +35,27 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test cases for {@link org.opencms.util.CmsColorContrastCalculator} focusing on WCAG 2.2 compliance.
  * Test values validated against WebAIM Contrast Checker (https://webaim.org/resources/contrastchecker/).
  */
-@TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestCmsColorContrastCalculator extends OpenCmsJupiterTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsColorContrastCalculator extends OpenCmsTestRunner {
 
     private CmsColorContrastCalculator m_calculator;
 
-    @Override
-    protected boolean shouldBootOpenCms() {
-        return false;
-    }
-
     @BeforeEach
     public void setUp() {
+
         m_calculator = new CmsColorContrastCalculator();
     }
 
     @Test
+    @Order(1)
     public void testCheckForeground() {
 
         // Test that compliant colors are preserved
@@ -118,6 +109,7 @@ public class TestCmsColorContrastCalculator extends OpenCmsJupiterTestCase {
     }
 
     @Test
+    @Order(9)
     public void testCheckForegroundList() {
 
         // Test list with compliant colors
@@ -162,6 +154,7 @@ public class TestCmsColorContrastCalculator extends OpenCmsJupiterTestCase {
     }
 
     @Test
+    @Order(7)
     public void testGetContrast() {
 
         // Test cases from WebAIM with known contrast ratios
@@ -210,6 +203,7 @@ public class TestCmsColorContrastCalculator extends OpenCmsJupiterTestCase {
     }
 
     @Test
+    @Order(5)
     public void testGetForeground() {
 
         // Test color suggestions for non-compliant colors
@@ -228,6 +222,7 @@ public class TestCmsColorContrastCalculator extends OpenCmsJupiterTestCase {
     }
 
     @Test
+    @Order(10)
     public void testHasSufficientContrast() {
 
         // Test WCAG AA compliance (4.5:1 minimum for normal text)
@@ -270,6 +265,7 @@ public class TestCmsColorContrastCalculator extends OpenCmsJupiterTestCase {
     }
 
     @Test
+    @Order(11)
     public void testIsValid() {
 
         assertTrue(m_calculator.isValid("#ffffff"));
@@ -297,6 +293,7 @@ public class TestCmsColorContrastCalculator extends OpenCmsJupiterTestCase {
     }
 
     @Test
+    @Order(8)
     public void testNormalize() {
 
         // Valid hex colors
@@ -325,6 +322,7 @@ public class TestCmsColorContrastCalculator extends OpenCmsJupiterTestCase {
     }
 
     @Test
+    @Order(4)
     public void testSuggestForeground() {
 
         // Test suggestions maintain WCAG compliance
@@ -370,6 +368,7 @@ public class TestCmsColorContrastCalculator extends OpenCmsJupiterTestCase {
     }
 
     @Test
+    @Order(2)
     public void testToHex() {
 
         assertEquals("#ffffff", m_calculator.toHex("#ffffff"));
@@ -379,6 +378,7 @@ public class TestCmsColorContrastCalculator extends OpenCmsJupiterTestCase {
     }
 
     @Test
+    @Order(3)
     public void testToRgb() {
 
         // Valid hex values
@@ -426,6 +426,7 @@ public class TestCmsColorContrastCalculator extends OpenCmsJupiterTestCase {
     }
 
     @Test
+    @Order(6)
     public void testToRgbArray() {
 
         // Valid hex values

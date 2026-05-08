@@ -28,21 +28,19 @@
 package org.opencms.file;
 
 import org.opencms.main.CmsException;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit test for the "createPropertyDefinition", "readPropertyDefiniton" and
@@ -51,15 +49,18 @@ import static org.junit.jupiter.api.Assertions.fail;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestPropertyDefinition extends OpenCmsJupiterTestCase {
+public class TestPropertyDefinition extends OpenCmsTestRunner {
 
     /**
      * Test the createPropertyDefintion method.<p>
+     *
+     * @param tc the OpenCms test runner
      * @param cms the CmsObject
      * @param propertyDefiniton1 the property definition to create
      * @throws Throwable if something goes wrong
      */
-    public void createPropertyDefinition(CmsObject cms, String propertyDefiniton1) throws Throwable {
+    public static void createPropertyDefinition(OpenCmsTestRunner tc, CmsObject cms, String propertyDefiniton1)
+    throws Throwable {
 
         // get all propertydefintions
         List allPropertydefintions = cms.readAllPropertyDefinitions();
@@ -69,38 +70,9 @@ public class TestPropertyDefinition extends OpenCmsJupiterTestCase {
         cms.createPropertyDefinition(propertyDefiniton1);
 
         // check if the propertsdefintion was written
-        assertPropertydefinitionExist(cms, prop);
+        tc.assertPropertydefinitionExist(cms, prop);
         // check if all other properties are still identical
-        assertPropertydefinitions(cms, allPropertydefintions, prop);
-    }
-
-    /**
-     * Test the createPropertyDefintion method.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    @Test
-    @Order(1)
-    public void testCreatePropertyDefinition() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing createPropetyDefinition and readPropertyDefiniton");
-        createPropertyDefinition(cms, "NewPropertyDefinition");
-    }
-
-    /**
-     * Test to create, read and delete a property definition through the cache driver.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    @Test
-    @Order(2)
-    public void testCreateReadDeletePropertyDefinition() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-
-        echo("Testing creation of a new property definition");
-        createReadDeletePropertyDefinition(cms);
+        tc.assertPropertydefinitions(cms, allPropertydefintions, prop);
     }
 
     /**
@@ -206,6 +178,45 @@ public class TestPropertyDefinition extends OpenCmsJupiterTestCase {
             fail("Property definition " + propertyDefinitionName + " is still in the list of all property definitions");
         }
 
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
+
+    /**
+     * Test the createPropertyDefintion method.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    @Order(1)
+    public void testCreatePropertyDefinition() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing createPropetyDefinition and readPropertyDefiniton");
+        createPropertyDefinition(this, cms, "NewPropertyDefinition");
+    }
+
+    /**
+     * Test to create, read and delete a property definition through the cache driver.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    @Order(2)
+    public void testCreateReadDeletePropertyDefinition() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+
+        echo("Testing creation of a new property definition");
+        createReadDeletePropertyDefinition(cms);
     }
 
     /**

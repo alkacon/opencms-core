@@ -27,15 +27,10 @@
 
 package org.opencms.jsp.search.config.parser;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Order;
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.search.config.parser.simplesearch.CmsConfigurationBean;
 import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionsBean;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,47 +42,23 @@ import java.util.Locale;
 
 import org.apache.solr.client.solrj.util.ClientUtils;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the simple configuration parser used by cms:simplesearch.
  *
  * TODO: We have very low test coverage - improve.
  */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase {
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
-     */
-    @Override
-    protected boolean shouldBootOpenCms() {
-
-        return false;
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
-     */
-    @Override
-    protected boolean shouldInitConfiguration() {
-
-        return true;
-    }
-
-    
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestSimpleSearchConfigurationParser extends OpenCmsTestRunner {
 
     /**
      * Test if excact is correctly added.
      */
-        @Test
+    @Test
     @Order(11)
     public void testExactRule() {
 
@@ -117,7 +88,7 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase 
     /**
      * Test if infix is correctly added.
      */
-        @Test
+    @Test
     @Order(8)
     public void testInfixRule() {
 
@@ -146,7 +117,7 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase 
     /**
      * Test the type restriction if no predefined restriction is present.
      */
-        @Test
+    @Test
     @Order(6)
     public void testMultipleRestrictionsWithType() {
 
@@ -179,7 +150,7 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase 
     /**
      * Test if postfix is correctly added.
      */
-        @Test
+    @Test
     @Order(10)
     public void testPostfixRule() {
 
@@ -207,7 +178,7 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase 
     /**
      * Test if prefix is correctly added.
      */
-        @Test
+    @Test
     @Order(9)
     public void testPrefixRule() {
 
@@ -235,7 +206,7 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase 
     /**
      * Check, if the restriction is ignored, if it is for a type that is not present.
      */
-        @Test
+    @Test
     @Order(7)
     public void testRuleForUnknownType() {
 
@@ -263,7 +234,7 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase 
     /**
      * Test the type restriction if no predefined restriction is present.
      */
-        @Test
+    @Test
     @Order(5)
     public void testTypeRestrictionWithComplexExactPreconfiguredRestriction() {
 
@@ -303,7 +274,7 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase 
     /**
      * Test the type restriction if no predefined restriction is present.
      */
-        @Test
+    @Test
     @Order(4)
     public void testTypeRestrictionWithComplexPreconfiguredRestriction() {
 
@@ -345,7 +316,7 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase 
     /**
      * Test the type restriction if no predefined restriction is present.
      */
-        @Test
+    @Test
     @Order(1)
     public void testTypeRestrictionWithoutPreconfiguredRestrictions() {
 
@@ -366,7 +337,7 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase 
     /**
      * Test the type restriction if no predefined restriction is present.
      */
-        @Test
+    @Test
     @Order(2)
     public void testTypeRestrictionWithPreconfiguredRestrictionWithoutType() {
 
@@ -397,7 +368,7 @@ public class TestSimpleSearchConfigurationParser extends OpenCmsJupiterTestCase 
     /**
      * Test the type restriction if no predefined restriction is present.
      */
-        @Test
+    @Test
     @Order(3)
     public void testTypeRestrictionWithPreconfiguredRestrictionWithType() {
 

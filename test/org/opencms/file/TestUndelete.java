@@ -30,144 +30,36 @@ package org.opencms.file;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSetCustom;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestResourceFilter;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Iterator;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit test for the "undelete" method of the CmsObject.<p>
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestUndelete extends OpenCmsJupiterTestCase {
+public class TestUndelete extends OpenCmsTestRunner {
 
     /**
-     * Test the undelete method to undelete a file.<p>
-     *
-     * @param cms the CmsObject
-     * @param file the file to undelete
-     *
-     * @throws Throwable if something goes wrong
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    private void undeleteFile(CmsObject cms, String file) throws Throwable {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        storeResources(cms, file);
-
-        long timestamp = System.currentTimeMillis();
-        cms.lockResource(file);
-        cms.undeleteResource(file, false);
-        cms.unlockResource(file);
-
-        // now evaluate the result
-        assertFilter(cms, file, OpenCmsTestResourceFilter.FILTER_TOUCH);
-        // project must be current project
-        assertProject(cms, file, cms.getRequestContext().getCurrentProject());
-        // state must be "changed"
-        assertState(cms, file, CmsResource.STATE_CHANGED);
-        // date last modified must be the date set in the undelete operation
-        assertDateLastModifiedAfter(cms, file, timestamp);
-        // the user last modified must be the current user
-        assertUserLastModified(cms, file, cms.getRequestContext().getCurrentUser());
-    }
-
-    /**
-     * Test the undelete method to undelete a single folder.<p>
-     *
-     * @param cms the CmsObject
-     * @param folder the folder to undelete
-     *
-     * @throws Throwable if something goes wrong
-     */
-    private void undeleteFolder(CmsObject cms, String folder) throws Throwable {
-
-        storeResources(cms, folder);
-
-        long timestamp = System.currentTimeMillis();
-        cms.lockResource(folder);
-        cms.undeleteResource(folder, false);
-        cms.unlockResource(folder);
-
-        // now evaluate the result
-        assertFilter(cms, folder, OpenCmsTestResourceFilter.FILTER_TOUCH);
-        // project must be current project
-        assertProject(cms, folder, cms.getRequestContext().getCurrentProject());
-        // state must be "changed"
-        assertState(cms, folder, CmsResource.STATE_CHANGED);
-        // date last modified must be the date set in the tough operation
-        assertDateLastModifiedAfter(cms, folder, timestamp);
-        // the user last modified must be the current user
-        assertUserLastModified(cms, folder, cms.getRequestContext().getCurrentUser());
-
-        // evaluate all subresources
-        List subresources = cms.readResources(folder, CmsResourceFilter.ALL);
-
-        // iterate through the subresources
-        Iterator i = subresources.iterator();
-        while (i.hasNext()) {
-            CmsResource res = (CmsResource)i.next();
-            String resName = cms.getSitePath(res);
-            assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_EQUAL);
-        }
-    }
-
-    /**
-     * Test the undelete method to undelete a complete subtree.<p>
-     *
-     * @param cms the CmsObject
-     * @param folder the folder to undelete
-     *
-     * @throws Throwable if something goes wrong
-     */
-    private void undeleteFolderRecursive(CmsObject cms, String folder) throws Throwable {
-
-        storeResources(cms, folder);
-
-        long timestamp = System.currentTimeMillis();
-        cms.lockResource(folder);
-        cms.undeleteResource(folder, true);
-        cms.unlockResource(folder);
-
-        // now evaluate the result
-        assertFilter(cms, folder, OpenCmsTestResourceFilter.FILTER_TOUCH);
-        // project must be current project
-        assertProject(cms, folder, cms.getRequestContext().getCurrentProject());
-        // state must be "changed"
-        assertState(cms, folder, CmsResource.STATE_CHANGED);
-        // date last modified must be the date set in the undelete operation
-        assertDateLastModifiedAfter(cms, folder, timestamp);
-        // the user last modified must be the current user
-        assertUserLastModified(cms, folder, cms.getRequestContext().getCurrentUser());
-
-        // evaluate all subresources
-        List subresources = cms.readResources(folder, CmsResourceFilter.ALL);
-
-        // iterate through the subresources
-        Iterator i = subresources.iterator();
-        while (i.hasNext()) {
-            CmsResource res = (CmsResource)i.next();
-            String resName = cms.getSitePath(res);
-            // now evaluate the result
-            assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_TOUCH);
-            // project must be current project
-            assertProject(cms, resName, cms.getRequestContext().getCurrentProject());
-            // state must be "changed"
-            assertState(cms, resName, CmsResource.STATE_CHANGED);
-            // date last modified must be the date set in the undelete operation
-            assertDateLastModifiedAfter(cms, resName, timestamp);
-            // the user last modified must be the current user
-            assertUserLastModified(cms, resName, cms.getRequestContext().getCurrentUser());
-        }
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -188,45 +80,6 @@ public class TestUndelete extends OpenCmsJupiterTestCase {
         cms.unlockResource(resourceName);
 
         undeleteFile(cms, resourceName);
-    }
-
-    /**
-     * Test the undelete method on a file.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    @Test
-    @Order(4)
-    public void testUndeleteWithACE() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing undelete on file");
-
-        String resourceName = "/index.html";
-
-        // set some permissions
-        cms.lockResource(resourceName);
-        cms.chacc(resourceName, I_CmsPrincipal.PRINCIPAL_GROUP, "group2", "+r-w");
-
-        storeResources(cms, resourceName);
-
-        cms.deleteResource(resourceName, CmsResource.DELETE_PRESERVE_SIBLINGS);
-
-        long timestamp = System.currentTimeMillis();
-        cms.undeleteResource(resourceName, false);
-
-        // now evaluate the result
-        assertFilter(cms, resourceName, OpenCmsTestResourceFilter.FILTER_TOUCH);
-        // project must be current project
-        assertProject(cms, resourceName, cms.getRequestContext().getCurrentProject());
-        // state must be "changed"
-        assertState(cms, resourceName, CmsResource.STATE_CHANGED);
-        // date last modified must be the date set in the undelete operation
-        assertDateLastModifiedAfter(cms, resourceName, timestamp);
-        // the user last modified must be the current user
-        assertUserLastModified(cms, resourceName, cms.getRequestContext().getCurrentUser());
-        // test the acl
-        assertAcl(cms, resourceName, cms.readGroup("group2").getId(), new CmsPermissionSetCustom("+r-w"));
     }
 
     /**
@@ -360,5 +213,162 @@ public class TestUndelete extends OpenCmsJupiterTestCase {
         assertDateLastModifiedAfter(cms, siblingName, timestamp);
         // the user last modified must be the current user
         assertUserLastModified(cms, siblingName, cms.getRequestContext().getCurrentUser());
+    }
+
+    /**
+     * Test the undelete method on a file.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    @Order(4)
+    public void testUndeleteWithACE() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing undelete on file");
+
+        String resourceName = "/index.html";
+
+        // set some permissions
+        cms.lockResource(resourceName);
+        cms.chacc(resourceName, I_CmsPrincipal.PRINCIPAL_GROUP, "group2", "+r-w");
+
+        storeResources(cms, resourceName);
+
+        cms.deleteResource(resourceName, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        long timestamp = System.currentTimeMillis();
+        cms.undeleteResource(resourceName, false);
+
+        // now evaluate the result
+        assertFilter(cms, resourceName, OpenCmsTestResourceFilter.FILTER_TOUCH);
+        // project must be current project
+        assertProject(cms, resourceName, cms.getRequestContext().getCurrentProject());
+        // state must be "changed"
+        assertState(cms, resourceName, CmsResource.STATE_CHANGED);
+        // date last modified must be the date set in the undelete operation
+        assertDateLastModifiedAfter(cms, resourceName, timestamp);
+        // the user last modified must be the current user
+        assertUserLastModified(cms, resourceName, cms.getRequestContext().getCurrentUser());
+        // test the acl
+        assertAcl(cms, resourceName, cms.readGroup("group2").getId(), new CmsPermissionSetCustom("+r-w"));
+    }
+
+    /**
+     * Test the undelete method to undelete a file.<p>
+     *
+     * @param cms the CmsObject
+     * @param file the file to undelete
+     *
+     * @throws Throwable if something goes wrong
+     */
+    private void undeleteFile(CmsObject cms, String file) throws Throwable {
+
+        storeResources(cms, file);
+
+        long timestamp = System.currentTimeMillis();
+        cms.lockResource(file);
+        cms.undeleteResource(file, false);
+        cms.unlockResource(file);
+
+        // now evaluate the result
+        assertFilter(cms, file, OpenCmsTestResourceFilter.FILTER_TOUCH);
+        // project must be current project
+        assertProject(cms, file, cms.getRequestContext().getCurrentProject());
+        // state must be "changed"
+        assertState(cms, file, CmsResource.STATE_CHANGED);
+        // date last modified must be the date set in the undelete operation
+        assertDateLastModifiedAfter(cms, file, timestamp);
+        // the user last modified must be the current user
+        assertUserLastModified(cms, file, cms.getRequestContext().getCurrentUser());
+    }
+
+    /**
+     * Test the undelete method to undelete a single folder.<p>
+     *
+     * @param cms the CmsObject
+     * @param folder the folder to undelete
+     *
+     * @throws Throwable if something goes wrong
+     */
+    private void undeleteFolder(CmsObject cms, String folder) throws Throwable {
+
+        storeResources(cms, folder);
+
+        long timestamp = System.currentTimeMillis();
+        cms.lockResource(folder);
+        cms.undeleteResource(folder, false);
+        cms.unlockResource(folder);
+
+        // now evaluate the result
+        assertFilter(cms, folder, OpenCmsTestResourceFilter.FILTER_TOUCH);
+        // project must be current project
+        assertProject(cms, folder, cms.getRequestContext().getCurrentProject());
+        // state must be "changed"
+        assertState(cms, folder, CmsResource.STATE_CHANGED);
+        // date last modified must be the date set in the tough operation
+        assertDateLastModifiedAfter(cms, folder, timestamp);
+        // the user last modified must be the current user
+        assertUserLastModified(cms, folder, cms.getRequestContext().getCurrentUser());
+
+        // evaluate all subresources
+        List subresources = cms.readResources(folder, CmsResourceFilter.ALL);
+
+        // iterate through the subresources
+        Iterator i = subresources.iterator();
+        while (i.hasNext()) {
+            CmsResource res = (CmsResource)i.next();
+            String resName = cms.getSitePath(res);
+            assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_EQUAL);
+        }
+    }
+
+    /**
+     * Test the undelete method to undelete a complete subtree.<p>
+     *
+     * @param cms the CmsObject
+     * @param folder the folder to undelete
+     *
+     * @throws Throwable if something goes wrong
+     */
+    private void undeleteFolderRecursive(CmsObject cms, String folder) throws Throwable {
+
+        storeResources(cms, folder);
+
+        long timestamp = System.currentTimeMillis();
+        cms.lockResource(folder);
+        cms.undeleteResource(folder, true);
+        cms.unlockResource(folder);
+
+        // now evaluate the result
+        assertFilter(cms, folder, OpenCmsTestResourceFilter.FILTER_TOUCH);
+        // project must be current project
+        assertProject(cms, folder, cms.getRequestContext().getCurrentProject());
+        // state must be "changed"
+        assertState(cms, folder, CmsResource.STATE_CHANGED);
+        // date last modified must be the date set in the undelete operation
+        assertDateLastModifiedAfter(cms, folder, timestamp);
+        // the user last modified must be the current user
+        assertUserLastModified(cms, folder, cms.getRequestContext().getCurrentUser());
+
+        // evaluate all subresources
+        List subresources = cms.readResources(folder, CmsResourceFilter.ALL);
+
+        // iterate through the subresources
+        Iterator i = subresources.iterator();
+        while (i.hasNext()) {
+            CmsResource res = (CmsResource)i.next();
+            String resName = cms.getSitePath(res);
+            // now evaluate the result
+            assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_TOUCH);
+            // project must be current project
+            assertProject(cms, resName, cms.getRequestContext().getCurrentProject());
+            // state must be "changed"
+            assertState(cms, resName, CmsResource.STATE_CHANGED);
+            // date last modified must be the date set in the undelete operation
+            assertDateLastModifiedAfter(cms, resName, timestamp);
+            // the user last modified must be the current user
+            assertUserLastModified(cms, resName, cms.getRequestContext().getCurrentUser());
+        }
     }
 }

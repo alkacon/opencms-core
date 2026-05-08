@@ -27,32 +27,19 @@
 
 package org.opencms.jsp.util;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Date;
 import java.util.Locale;
 
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /** Test cases for the {@link CmsJspDateSeriesBean}. */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class TestCmsJspDateSeriesBean extends OpenCmsJupiterTestCase {
-
-    @Override
-    protected boolean shouldBootOpenCms() {
-
-        return false;
-    }
-
-    @Override
-    protected boolean shouldInitConfiguration() {
-
-        return false;
-    }
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsJspDateSeriesBean extends OpenCmsTestRunner {
 
     /**
      * Tests if the correct event info is returned, specifically if for missing insatncedate, the first instance is returned.

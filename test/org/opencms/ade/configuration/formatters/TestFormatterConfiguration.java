@@ -37,7 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
@@ -56,20 +56,23 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.MethodOrderer;
 
 /**
  * Tests for formatter configurations.<p>
  */
+@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestFormatterConfiguration extends OpenCmsJupiterTestCase {
+public class TestFormatterConfiguration extends OpenCmsTestRunner {
 
     /** A resource type which is used for the formatter configuration tests. */
     public static final String TYPE_A = "article";
@@ -102,22 +105,18 @@ public class TestFormatterConfiguration extends OpenCmsJupiterTestCase {
     }
 
     /**
-     * Sets up additional resources needed by formatter tests.<p>
-     *
-     * @throws Exception if resource creation fails
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
+    @Override
     @BeforeAll
-    void setUpResources() throws Exception {
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        CmsObject cms = getCmsObject();
-        CmsFormatterConfigurationCache.UPDATE_DELAY_MILLIS = 100;
-        m_exampleFormatter = cms.createResource("/system/f1.jsp", getTypeId("jsp"));
-        m_exampleResourceA = cms.createResource("/system/xa.xml", getTypeId(TYPE_A));
-        m_exampleResourceB = cms.createResource("/system/xb.xml", getTypeId(TYPE_B));
-        // add jsps referenced as formatters in article1.xsd
-        cms.createResource("/system/formatters", getTypeId("folder"));
-        cms.createResource("/system/formatters/article1_f1.jsp", getTypeId("jsp"));
-        cms.createResource("/system/formatters/article1_f2.jsp", getTypeId("jsp"));
+        setupOpenCms(testInfo, "simpletest", "/");
+        try {
+            setUpResources();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -261,9 +260,7 @@ public class TestFormatterConfiguration extends OpenCmsJupiterTestCase {
                 !getFormatterNames(formatters).contains("foobarx"),
                 "Formatter 'foobarx' should not be available anymore, but is.");
 
-            assertTrue(
-                getFormatterNames(formatters).contains("foobar2"),
-                "Formatter 'foobar2' should be available.");
+            assertTrue(getFormatterNames(formatters).contains("foobar2"), "Formatter 'foobar2' should be available.");
 
         } finally {
             delete("/system/formatter1.fc");
@@ -774,6 +771,24 @@ public class TestFormatterConfiguration extends OpenCmsJupiterTestCase {
             actualNames.add(formatter.getNiceName(java.util.Locale.ENGLISH));
         }
         assertEquals(expectedNames, actualNames, "Formatter names don't match the active formatters for this type");
+    }
+
+    /**
+     * Sets up additional resources needed by formatter tests.<p>
+     *
+     * @throws Exception if resource creation fails
+     */
+    void setUpResources() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsFormatterConfigurationCache.UPDATE_DELAY_MILLIS = 100;
+        m_exampleFormatter = cms.createResource("/system/f1.jsp", getTypeId("jsp"));
+        m_exampleResourceA = cms.createResource("/system/xa.xml", getTypeId(TYPE_A));
+        m_exampleResourceB = cms.createResource("/system/xb.xml", getTypeId(TYPE_B));
+        // add jsps referenced as formatters in article1.xsd
+        cms.createResource("/system/formatters", getTypeId("folder"));
+        cms.createResource("/system/formatters/article1_f1.jsp", getTypeId("jsp"));
+        cms.createResource("/system/formatters/article1_f2.jsp", getTypeId("jsp"));
     }
 
     /**

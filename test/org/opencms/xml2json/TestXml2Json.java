@@ -34,9 +34,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.json.JSONObject;
 import org.opencms.jsp.util.CmsJspJsonWrapper;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestEnvironment;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -51,34 +49,22 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests for the XML2JSON feature.
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestXml2Json extends OpenCmsJupiterTestCase {
+public class TestXml2Json extends OpenCmsTestRunner {
 
     /** The module path for the test data. */
     public static final String MOD_PATH = "/system/modules/org.opencms.test.xml2json";
-
-    @Override
-    protected String getImportFolder() {
-        return "xml2json";
-    }
-
-    @Override
-    protected String getTargetFolder() {
-        return "/";
-    }
-
-    @Override
-    protected String getSpecialConfigFolder() {
-        return "WEB-INF/xml2json";
-    }
 
     /**
      * Helper module for generating a full path from the sub-path below the module folder.
@@ -92,12 +78,21 @@ public class TestXml2Json extends OpenCmsJupiterTestCase {
     }
 
     /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "xml2json", "/", "WEB-INF/xml2json");
+    }
+
+    /**
      * Test for access policy.
      *
      * @throws Exception
      */
     @Test
-    @org.junit.jupiter.api.Order(9)
     public void testAccessExclude() throws Exception {
 
         CmsJsonAccessPolicy access = CmsJsonAccessPolicy.parse(getClass().getResourceAsStream("access-ex.xml"));
@@ -114,7 +109,6 @@ public class TestXml2Json extends OpenCmsJupiterTestCase {
      * @throws Exception
      */
     @Test
-    @org.junit.jupiter.api.Order(1)
     public void testAccessGroup() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -136,7 +130,6 @@ public class TestXml2Json extends OpenCmsJupiterTestCase {
      * @throws Exception
      */
     @Test
-    @org.junit.jupiter.api.Order(5)
     public void testAccessIncludeExclude() throws Exception {
 
         CmsJsonAccessPolicy access = CmsJsonAccessPolicy.parse(getClass().getResourceAsStream("access-in-ex.xml"));
@@ -153,7 +146,6 @@ public class TestXml2Json extends OpenCmsJupiterTestCase {
      * @throws Exception
      */
     @Test
-    @org.junit.jupiter.api.Order(11)
     public void testChoice() throws Exception {
 
         runDataTest("choice-test.xml");
@@ -165,7 +157,6 @@ public class TestXml2Json extends OpenCmsJupiterTestCase {
      * @throws Exception
      */
     @Test
-    @org.junit.jupiter.api.Order(6)
     public void testCustomRenderer() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -175,7 +166,7 @@ public class TestXml2Json extends OpenCmsJupiterTestCase {
         }
         cms.createResource(folder, 0);
         I_CmsResourceType contentType = OpenCms.getResourceManager().getResourceType("xjparent");
-        CmsParameterConfiguration data = OpenCmsTestEnvironment.readXmlTestData(getClass(), "custom-test.xml");
+        CmsParameterConfiguration data = readXmlTestData(getClass(), "custom-test.xml");
         String testFile = folder + "/test.xml";
         CmsResource testFileRes = cms.createResource(
             testFile,
@@ -210,7 +201,6 @@ public class TestXml2Json extends OpenCmsJupiterTestCase {
      * @throws Exception
      */
     @Test
-    @org.junit.jupiter.api.Order(2)
     public void testEmpty() throws Exception {
 
         runDataTest("empty-test.xml");
@@ -222,7 +212,6 @@ public class TestXml2Json extends OpenCmsJupiterTestCase {
      * @throws Exception
      */
     @Test
-    @org.junit.jupiter.api.Order(10)
     public void testRemoveInArray() throws Exception {
 
         runRemoveTest("remove-array.xml");
@@ -234,7 +223,6 @@ public class TestXml2Json extends OpenCmsJupiterTestCase {
      * @throws Exception
      */
     @Test
-    @org.junit.jupiter.api.Order(3)
     public void testRemoveInvalidType() throws Exception {
 
         runRemoveTest("remove-invalid-type.xml");
@@ -246,7 +234,6 @@ public class TestXml2Json extends OpenCmsJupiterTestCase {
      * @throws Exception
      */
     @Test
-    @org.junit.jupiter.api.Order(7)
     public void testRemoveSimple() throws Exception {
 
         runRemoveTest("remove-simple.xml");
@@ -258,7 +245,6 @@ public class TestXml2Json extends OpenCmsJupiterTestCase {
      * @throws Exception
      */
     @Test
-    @org.junit.jupiter.api.Order(12)
     public void testRemoveSuperfluousCharacters() throws Exception {
 
         runRemoveTest("remove-superfluous-characters.xml");
@@ -270,7 +256,6 @@ public class TestXml2Json extends OpenCmsJupiterTestCase {
      * @throws Exception
      */
     @Test
-    @org.junit.jupiter.api.Order(8)
     public void testRemoveWildcard() throws Exception {
 
         runRemoveTest("remove-wildcard.xml");
@@ -282,7 +267,6 @@ public class TestXml2Json extends OpenCmsJupiterTestCase {
      * @throws Exception
      */
     @Test
-    @org.junit.jupiter.api.Order(13)
     public void testSimple() throws Exception {
 
         runDataTest("simple-test.xml");
@@ -294,7 +278,6 @@ public class TestXml2Json extends OpenCmsJupiterTestCase {
      * @throws Exception
      */
     @Test
-    @org.junit.jupiter.api.Order(4)
     public void testTypes() throws Exception {
 
         runDataTest("types-test.xml");
@@ -315,7 +298,7 @@ public class TestXml2Json extends OpenCmsJupiterTestCase {
         }
         cms.createResource(folder, 0);
         I_CmsResourceType contentType = OpenCms.getResourceManager().getResourceType("xjparent");
-        CmsParameterConfiguration data = OpenCmsTestEnvironment.readXmlTestData(getClass(), name);
+        CmsParameterConfiguration data = readXmlTestData(getClass(), name);
         String testFile = folder + "/test.xml";
         cms.createResource(testFile, contentType, data.get("input").trim().getBytes("UTF-8"), new ArrayList<>());
         String expected = new String(data.get("output").trim());
@@ -338,7 +321,7 @@ public class TestXml2Json extends OpenCmsJupiterTestCase {
      */
     protected void runRemoveTest(String name) throws Exception {
 
-        CmsParameterConfiguration data = OpenCmsTestEnvironment.readXmlTestData(getClass(), name);
+        CmsParameterConfiguration data = readXmlTestData(getClass(), name);
         String inputJson = data.get("input");
         String path = data.get("path");
         String outputJson = data.get("output");

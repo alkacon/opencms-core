@@ -27,16 +27,15 @@
 
 package org.opencms.jsp.decorator;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Order;
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Locale;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Tests for the decoration postprocessor.<p>
@@ -45,27 +44,17 @@ import java.util.Locale;
  */
 @org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
 @org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class TestDecorator extends OpenCmsJupiterTestCase {
-
-    @Override
-    protected String getImportFolder() {
-        return "decoration";
-    }
-
-    @Override
-    protected String getTargetFolder() {
-        return "/sites/default/";
-    }
-
-
-    
+public class TestDecorator extends OpenCmsTestRunner {
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "decoration", "/sites/default/");
+    }
 
     /**
      * Tests the decoration postprocessor.<p>

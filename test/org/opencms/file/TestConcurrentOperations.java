@@ -32,8 +32,7 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishJobFinished;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.test.OpenCmsThreadedTestCase;
 import org.opencms.test.OpenCmsThreadedTestCaseSuite;
 import org.opencms.util.CmsStringUtil;
@@ -44,40 +43,30 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.MethodOrderer;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit test for concurrent operations of the CmsObject.<p>
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestConcurrentOperations extends OpenCmsJupiterTestCase {
+public class TestConcurrentOperations extends OpenCmsTestRunner {
 
     /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
     @Override
-    protected boolean shouldBootOpenCms() {
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        return true;
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
-     */
-    @Override
-    protected boolean shouldInitConfiguration() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        return true;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -272,9 +261,10 @@ public class TestConcurrentOperations extends OpenCmsJupiterTestCase {
             // the "concurrent creation" exception was thrown one or mote times - this must be an error
             fail("Did catch concurrent creation exception at least once - no concurrent exceptions expected!");
         }
-        echo("Concurrent folder creation test success: No duplicates created - "
-            + ec
-            + " concurrent modification exceptions caught");
+        echo(
+            "Concurrent folder creation test success: No duplicates created - "
+                + ec
+                + " concurrent modification exceptions caught");
         echo("Total runtime of concurrent test suite: " + CmsStringUtil.formatRuntime(suite.getRuntime()));
     }
 

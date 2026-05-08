@@ -100,7 +100,8 @@ public class CmsFlexDummyLoader implements I_CmsResourceLoader, I_CmsFlexCacheEn
         String element,
         Locale locale,
         HttpServletRequest req,
-        HttpServletResponse res) throws ServletException {
+        HttpServletResponse res)
+    throws ServletException {
 
         throw new ServletException("Not implemented");
     }

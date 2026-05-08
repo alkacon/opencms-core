@@ -36,8 +36,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.gwt.CmsUsedCategoriesList;
 import org.opencms.main.OpenCms;
 import org.opencms.test.I_CmsLogHandler;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,32 +48,28 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
-import com.google.common.collect.Sets;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestResult;
-import junit.framework.TestSuite;
+import com.google.common.collect.Sets;
 
 /**
  * Tests for the memory monitor.<p>
  *
  * @since 6.0.0
  */
-public class TestCategories extends OpenCmsTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCategories extends OpenCmsTestRunner {
 
     /** Stores an error. */
     private static String m_storedError;
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCategories(String arg0) {
-
-        super(arg0);
-    }
 
     /**
      * Stores an error message which will cause the test to fail.<p>
@@ -86,66 +81,23 @@ public class TestCategories extends OpenCmsTestCase {
         m_storedError = error;
     }
 
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCategories.class.getName());
-
-        // the order is important
-        suite.addTest(new TestCategories("testCategoryTree"));
-        suite.addTest(new TestCategories("testCategoryTreeAssign"));
-        suite.addTest(new TestCategories("testCategoryBaseFolder"));
-        suite.addTest(new TestCategories("testCategoryBaseFolderRepair"));
-        suite.addTest(new TestCategories("testCategoryBaseFolderAssign"));
-        suite.addTest(new TestCategories("testCategoryConflict"));
-        suite.addTest(new TestCategories("testCategoryConflictAssign"));
-        suite.addTest(new TestCategories("testCategoryConflictRepair"));
-        suite.addTest(new TestCategories("testCopyValid"));
-        // TODO: some more test cases, copyInvalid, moveValid, moveInvalid
-        suite.addTest(new TestCategories("testPublishMovedResourceWithCategories1"));
-        suite.addTest(new TestCategories("testPublishMovedResourceWithCategories2"));
-        suite.addTest(new TestCategories("testMoveParentFolder"));
-
-        suite.addTest(new TestCategories("testAdditionalRepository"));
-        suite.addTest(new TestCategories("testUsedCategoriesList"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
-     * @see junit.framework.TestCase#run(junit.framework.TestResult)
+     * Checks for errors stored from background threads after each test.<p>
      */
-    @Override
-    public void run(TestResult result) {
+    @AfterEach
+    public void checkStoredError() {
 
-        super.run(result);
-        // We do this to fail the test if there is an error log message inside a different thread
         if (m_storedError != null) {
             String error = m_storedError;
             m_storedError = null;
-            result.addError(this, new RuntimeException(error));
+            throw new RuntimeException(error);
         }
     }
 
@@ -154,6 +106,8 @@ public class TestCategories extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
+    @Order(13)
     public void testAdditionalRepository() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -228,6 +182,8 @@ public class TestCategories extends OpenCmsTestCase {
      * @throws Exception if something goes wrong
      */
     @SuppressWarnings("deprecation")
+    @Test
+    @Order(3)
     public void testCategoryBaseFolder() throws Exception {
 
         System.out.println("Testing changing the base folder name of the category repositories.");
@@ -299,6 +255,8 @@ public class TestCategories extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testCategoryBaseFolderAssign() throws Exception {
 
         System.out.println(
@@ -395,6 +353,8 @@ public class TestCategories extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testCategoryBaseFolderRepair() throws Exception {
 
         System.out.println(
@@ -505,6 +465,8 @@ public class TestCategories extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testCategoryConflict() throws Exception {
 
         System.out.println("Testing the categories when several repositories define the same category.");
@@ -556,6 +518,8 @@ public class TestCategories extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(7)
     public void testCategoryConflictAssign() throws Exception {
 
         System.out.println("Testing the categories assignment when several repositories define the same category.");
@@ -599,6 +563,8 @@ public class TestCategories extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(8)
     public void testCategoryConflictRepair() throws Exception {
 
         System.out.println("Testing resource categories reparation after deleting/adding a centralized category.");
@@ -735,6 +701,8 @@ public class TestCategories extends OpenCmsTestCase {
      * @throws Exception if something goes wrong
      */
     @SuppressWarnings("deprecation")
+    @Test
+    @Order(1)
     public void testCategoryTree() throws Exception {
 
         System.out.println("Testing the category tree access with different repositories.");
@@ -848,6 +816,8 @@ public class TestCategories extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testCategoryTreeAssign() throws Exception {
 
         System.out.println("Testing the category assignment with different repositories.");
@@ -989,6 +959,8 @@ public class TestCategories extends OpenCmsTestCase {
      * @throws Exception if something goes wrong
      */
     @SuppressWarnings("deprecation")
+    @Test
+    @Order(9)
     public void testCopyValid() throws Exception {
 
         System.out.println(
@@ -1041,6 +1013,8 @@ public class TestCategories extends OpenCmsTestCase {
      * @throws Exception in case the test fails
      */
     @SuppressWarnings("deprecation")
+    @Test
+    @Order(12)
     public void testMoveParentFolder() throws Exception {
 
         CmsObject cms = OpenCms.initCmsObject(getCmsObject());
@@ -1072,6 +1046,8 @@ public class TestCategories extends OpenCmsTestCase {
      * @throws Exception in case the test fails
      */
     @SuppressWarnings("deprecation")
+    @Test
+    @Order(10)
     public void testPublishMovedResourceWithCategories1() throws Exception {
 
         CmsObject cms = OpenCms.initCmsObject(getCmsObject());
@@ -1121,6 +1097,8 @@ public class TestCategories extends OpenCmsTestCase {
      * @throws Exception in case the test fails
      */
     @SuppressWarnings("deprecation")
+    @Test
+    @Order(11)
     public void testPublishMovedResourceWithCategories2() throws Exception {
 
         CmsObject cms = OpenCms.initCmsObject(getCmsObject());
@@ -1166,6 +1144,8 @@ public class TestCategories extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
+    @Order(14)
     public void testUsedCategoriesList() throws Exception {
 
         CmsUsedCategoriesList list = new CmsUsedCategoriesList();

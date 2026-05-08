@@ -28,21 +28,24 @@
 package org.opencms.util;
 
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestEnvironment;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.io.File;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Order;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  */
+@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCmsHtmlConverter extends OpenCmsJupiterTestCase {
+public class TestCmsHtmlConverter extends OpenCmsTestRunner {
 
     private static final String SIMPLE_HTML = "<h1>Test</h1><div><p>This is a test<p>some content<p>last line</div><pre>Some pre<br>\r\n   More pre\r\n</pre>Final line.";
     // some test Strings
@@ -52,14 +55,40 @@ public class TestCmsHtmlConverter extends OpenCmsJupiterTestCase {
 
     private static final String STRING_2_UTF8_RESULT = "Test: \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df\u20ac";
 
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
     @Override
-    protected String getImportFolder() {
-        return "simpletest";
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
-    @Override
-    protected String getTargetFolder() {
-        return "/";
+    /**
+     * Tests an issue with white space insertion after href tags.<p>
+     *
+     * Tidy sometimes inserts unwanted, visible whitespace in a href tag because of
+     * the formatting used.<p>
+     *
+     * @throws Exception in case the test fails
+     */
+    @Test
+    @Order(5)
+    public void testHrefWhitespaceIssue() throws Exception {
+
+        System.out.println("Testing href whitespace issue");
+        CmsHtmlConverter converter = new CmsHtmlConverter(CmsEncoder.ENCODING_UTF_8, CmsHtmlConverter.PARAM_XHTML);
+        String input = CmsFileUtil.readFile("org/opencms/util/testConverter_03.html", CmsEncoder.ENCODING_ISO_8859_1);
+        // the input has the right (that is no) white-spacing between the tags
+        org.junit.jupiter.api.Assertions.assertTrue(input.contains("</a></code>)."));
+        String output = converter.convertToString(input);
+        System.out.println("----------------");
+        System.out.println(output);
+        System.out.println("----------------");
+        // PARAM_XHTML will cause closing tags on new lines
+        org.junit.jupiter.api.Assertions.assertTrue(
+            output.contains("</a>" + System.getProperty("line.separator") + "</code>)."));
     }
 
     /**
@@ -78,24 +107,6 @@ public class TestCmsHtmlConverter extends OpenCmsJupiterTestCase {
 
         assertEquals(STRING_1, convertedHtml1);
         assertEquals(STRING_2, convertedHtml2);
-    }
-
-    /**
-     * Tests conversion of UTF8-encoded entities.<p>
-     *
-     * @throws Exception in case the test fails
-     */
-    @Test
-    @Order(2)
-    public void testUTF8() throws Exception {
-
-        System.out.println("Testing UTF-8 conversion");
-        CmsHtmlConverter converter = new CmsHtmlConverter(CmsEncoder.ENCODING_UTF_8, CmsHtmlConverter.PARAM_WORD);
-        String convertedHtml1 = converter.convertToString(STRING_1);
-        String convertedHtml2 = converter.convertToString(STRING_2);
-
-        assertEquals(STRING_1_UTF8_RESULT, convertedHtml1);
-        assertEquals(STRING_2_UTF8_RESULT, convertedHtml2);
     }
 
     /**
@@ -133,7 +144,7 @@ public class TestCmsHtmlConverter extends OpenCmsJupiterTestCase {
             CmsHtmlConverter.PARAM_WORD + ";" + CmsHtmlConverter.PARAM_XHTML);
 
         // read a file and convert it
-        File inputfile = new File(OpenCmsTestEnvironment.getTestDataPath("test2.html"));
+        File inputfile = new File(getTestDataPath("test2.html"));
         byte[] htmlInput = CmsFileUtil.readFile(inputfile);
         String outputContent = converter.convertToString(htmlInput);
         System.out.println(outputContent);
@@ -144,28 +155,21 @@ public class TestCmsHtmlConverter extends OpenCmsJupiterTestCase {
     }
 
     /**
-     * Tests an issue with white space insertion after href tags.<p>
-     *
-     * Tidy sometimes inserts unwanted, visible whitespace in a href tag because of
-     * the formatting used.<p>
+     * Tests conversion of UTF8-encoded entities.<p>
      *
      * @throws Exception in case the test fails
      */
     @Test
-    @Order(5)
-    public void testHrefWhitespaceIssue() throws Exception {
+    @Order(2)
+    public void testUTF8() throws Exception {
 
-        System.out.println("Testing href whitespace issue");
-        CmsHtmlConverter converter = new CmsHtmlConverter(CmsEncoder.ENCODING_UTF_8, CmsHtmlConverter.PARAM_XHTML);
-        String input = CmsFileUtil.readFile("org/opencms/util/testConverter_03.html", CmsEncoder.ENCODING_ISO_8859_1);
-        // the input has the right (that is no) white-spacing between the tags
-        org.junit.jupiter.api.Assertions.assertTrue(input.contains("</a></code>)."));
-        String output = converter.convertToString(input);
-        System.out.println("----------------");
-        System.out.println(output);
-        System.out.println("----------------");
-        // PARAM_XHTML will cause closing tags on new lines
-        org.junit.jupiter.api.Assertions.assertTrue(output.contains("</a>" + System.getProperty("line.separator") + "</code>)."));
+        System.out.println("Testing UTF-8 conversion");
+        CmsHtmlConverter converter = new CmsHtmlConverter(CmsEncoder.ENCODING_UTF_8, CmsHtmlConverter.PARAM_WORD);
+        String convertedHtml1 = converter.convertToString(STRING_1);
+        String convertedHtml2 = converter.convertToString(STRING_2);
+
+        assertEquals(STRING_1_UTF8_RESULT, convertedHtml1);
+        assertEquals(STRING_2_UTF8_RESULT, convertedHtml2);
     }
 
 }

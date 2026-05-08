@@ -28,18 +28,18 @@
 package org.opencms.file;
 
 import org.opencms.file.history.CmsHistoryProject;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Unit test for the project history function of the CmsObject.<p>
@@ -48,22 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestProjectHistory extends OpenCmsJupiterTestCase {
-
-    /**
-     * Tests the project history function of the CmsObject.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    @Test
-    @Order(1)
-    public void testProjectHistory() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-
-        echo("Testing the project history function");
-        projectHistory(cms);
-    }
+public class TestProjectHistory extends OpenCmsTestRunner {
 
     /**
      * Tests the project history function of the CmsObject.<p>
@@ -82,6 +67,31 @@ public class TestProjectHistory extends OpenCmsJupiterTestCase {
         assertEquals(1, projectHistory.size());
         historyProject = (CmsHistoryProject)projectHistory.get(0);
         assertEquals("_setupProject", historyProject.getName());
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
+
+    /**
+     * Tests the project history function of the CmsObject.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    @Order(1)
+    public void testProjectHistory() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+
+        echo("Testing the project history function");
+        projectHistory(cms);
     }
 
 }

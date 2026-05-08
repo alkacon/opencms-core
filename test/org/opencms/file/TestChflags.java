@@ -27,17 +27,17 @@
 
 package org.opencms.file;
 
-import org.opencms.test.OpenCmsJupiterTestCase;
 import org.opencms.test.OpenCmsTestResourceFilter;
+import org.opencms.test.OpenCmsTestRunner;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * Unit test for the "chflags" method of the CmsObject.<p>
@@ -46,31 +46,16 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestChflags extends OpenCmsJupiterTestCase {
+public class TestChflags extends OpenCmsTestRunner {
 
     /**
      * Tests setting the "internal" flag on a resource.<p>
      *
-     * @throws Throwable if something goes wrong
-     */
-    @Test
-    @Order(1)
-    public void testAddFlagInternal() throws Throwable {
-
-        final CmsObject cms = getCmsObject();
-
-        echo("Tests setting the \"internal\" flag on a resource");
-        addFlagInternal(this, cms);
-    }
-
-    /**
-     * Tests setting the "internal" flag on a resource.<p>
-     *
-     * @param tc the OpenCmsJupiterTestCase
+     * @param tc the OpenCmsTestRunner
      * @param cms the CmsObject
      * @throws Throwable if something goes wrong
      */
-    public static void addFlagInternal(OpenCmsJupiterTestCase tc, CmsObject cms) throws Throwable {
+    public static void addFlagInternal(OpenCmsTestRunner tc, CmsObject cms) throws Throwable {
 
         String resource1 = "/index.html";
 
@@ -99,6 +84,31 @@ public class TestChflags extends OpenCmsJupiterTestCase {
         tc.assertUserLastModified(cms, resource1, cms.getRequestContext().getCurrentUser());
         tc.assertFlags(cms, resource1, CmsResource.FLAG_INTERNAL);
         tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
+
+    /**
+     * Tests setting the "internal" flag on a resource.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    @Order(1)
+    public void testAddFlagInternal() throws Throwable {
+
+        final CmsObject cms = getCmsObject();
+
+        echo("Tests setting the \"internal\" flag on a resource");
+        addFlagInternal(this, cms);
     }
 
 }

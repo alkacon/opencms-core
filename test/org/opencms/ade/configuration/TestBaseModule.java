@@ -35,8 +35,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestEnvironment;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -51,29 +50,35 @@ import java.util.Set;
 
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
-
-import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests involving the resource types from the org.opencms.base module.
  *
  */
+@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestBaseModule extends OpenCmsJupiterTestCase {
+public class TestBaseModule extends OpenCmsTestRunner {
 
-    @Override
-    protected String getImportFolder() {
+    static {
 
-        return "simpletest";
+        CmsConfigurationCache.DEBUG = true;
     }
 
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
     @Override
-    protected String getTargetFolder() {
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        return "/";
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -87,7 +92,7 @@ public class TestBaseModule extends OpenCmsJupiterTestCase {
         try {
             OpenCmsTestLogAppender.setBreakOnError(false);
 
-            File moduleZip = OpenCmsTestEnvironment.createBaseModuleZip();
+            File moduleZip = createBaseModuleZip();
             CmsObject cms = getCmsObject();
             OpenCms.getModuleManager().replaceModule(
                 cms,

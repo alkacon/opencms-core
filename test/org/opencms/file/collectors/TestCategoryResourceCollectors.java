@@ -34,7 +34,7 @@ import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -48,19 +48,17 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit test for the {@link CmsCategoryResourceCollector}.<p>
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCategoryResourceCollectors extends OpenCmsJupiterTestCase {
+public class TestCategoryResourceCollectors extends OpenCmsTestRunner {
 
     /**
      * Initializes the resources needed for the tests.<p>
@@ -130,38 +128,36 @@ public class TestCategoryResourceCollectors extends OpenCmsJupiterTestCase {
     }
 
     /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
+     * Prints the given list of search results to STDOUT.<p>
+     *
+     * @param resources the list to print
      */
-    @Override
-    protected String getImportFolder() {
+    public static void printResults(List resources) {
 
-        return null;
+        Iterator i = resources.iterator();
+        int count = 0;
+        i = resources.iterator();
+        System.out.println("\n\n--------------------------");
+        while (i.hasNext()) {
+            CmsResource res = (CmsResource)i.next();
+            count++;
+            System.out.print(CmsStringUtil.padRight("" + count, 4));
+            System.out.print(CmsStringUtil.padRight(res.getRootPath(), 40));
+            System.out.println(
+                CmsStringUtil.padRight(
+                    "" + CmsDateUtil.getDateTime(new Date(res.getDateLastModified()), DateFormat.LONG, Locale.GERMAN),
+                    17));
+        }
     }
 
     /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
     @Override
-    protected String getTargetFolder() {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getPublish()
-     */
-    @Override
-    protected boolean getPublish() {
-
-        return false;
-    }
-
-    /**
-     * Initializes the test resources after OpenCms setup.<p>
-     */
     @BeforeAll
-    public void setUpResources() {
+    public void $openCmsSetUp(TestInfo testInfo) {
 
+        setupOpenCms(testInfo, null, null, false);
         try {
             initResources(getCmsObject());
         } catch (Exception e) {
@@ -281,29 +277,6 @@ public class TestCategoryResourceCollectors extends OpenCmsJupiterTestCase {
 
         res = (CmsResource)resources.get(0);
         assertEquals("/sites/default/folder1/file2", res.getRootPath());
-    }
-
-    /**
-     * Prints the given list of search results to STDOUT.<p>
-     *
-     * @param resources the list to print
-     */
-    public static void printResults(List resources) {
-
-        Iterator i = resources.iterator();
-        int count = 0;
-        i = resources.iterator();
-        System.out.println("\n\n--------------------------");
-        while (i.hasNext()) {
-            CmsResource res = (CmsResource)i.next();
-            count++;
-            System.out.print(CmsStringUtil.padRight("" + count, 4));
-            System.out.print(CmsStringUtil.padRight(res.getRootPath(), 40));
-            System.out.println(
-                CmsStringUtil.padRight(
-                    "" + CmsDateUtil.getDateTime(new Date(res.getDateLastModified()), DateFormat.LONG, Locale.GERMAN),
-                    17));
-        }
     }
 
     /**

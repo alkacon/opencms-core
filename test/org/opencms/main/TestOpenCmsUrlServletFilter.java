@@ -27,21 +27,16 @@
 
 package org.opencms.main;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 
 /** Unit tests the {@link org.opencms.main.OpenCmsUrlServletFilter}. */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestOpenCmsUrlServletFilter extends OpenCmsJupiterTestCase {
+public class TestOpenCmsUrlServletFilter extends OpenCmsTestRunner {
 
     /** Servlet context. */
     static String SERVLETCONTEXT = "/opencms";
@@ -73,24 +68,6 @@ public class TestOpenCmsUrlServletFilter extends OpenCmsJupiterTestCase {
     private static String TESTPREFIX_THREE = "/test2";
     /** Additional configuration as can be given via the filter's init-param. */
     private static String ADDITIONAL_CONFIG = "/test1|/test2/";
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldBootOpenCms()
-     */
-    @Override
-    protected boolean shouldBootOpenCms() {
-
-        return false;
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#shouldInitConfiguration()
-     */
-    @Override
-    protected boolean shouldInitConfiguration() {
-
-        return false;
-    }
 
     /**
      * Test default regex.

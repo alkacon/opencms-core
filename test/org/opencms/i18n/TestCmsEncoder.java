@@ -27,7 +27,7 @@
 
 package org.opencms.i18n;
 
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
@@ -35,13 +35,13 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * Tests for the CmsEncoder.<p>
@@ -49,35 +49,24 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
  * @since 6.0.0
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCmsEncoder extends OpenCmsJupiterTestCase {
-
-    @Override
-    protected boolean shouldBootOpenCms() {
-
-        return false;
-    }
-
-    @Override
-    protected boolean shouldInitConfiguration() {
-
-        return true;
-    }
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public class TestCmsEncoder extends OpenCmsTestRunner {
 
     private static final String ENC_ISO_8859_1 = CmsEncoder.ENCODING_ISO_8859_1;
+
     private static final String ENC_ISO_8859_15 = "ISO-8859-15";
     private static final String ENC_US_ASCII = CmsEncoder.ENCODING_US_ASCII;
     private static final String ENC_UTF_8 = CmsEncoder.ENCODING_UTF_8;
     private static final String ENC_WINDOWS_1252 = "Cp1252";
-
     // working around encoding issues (e.g. of CVS) by using unicode values
     // the values of C_STRING_1 are: ae oe ue Ae Oe Ue scharfes-s euro-symbol
     private static final String STRING_1 = "Test: \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df\u20ac";
+
     private static final String STRING_2 = "Test: \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df&#8364;";
     private static final String STRING_3 = "Test: &#228;&#246;&#252;&#196;&#214;&#220;&#223;&#8364;";
     private static final String STRING_4 = "\u00e4\u00f6\u00fc\u20ac#|#12|&#12|&#;\u00c4\u00d6\u00dctest";
     private static final String STRING_5 = "&#228;&#246;&#252;&#8364;#|#12|&#12|&#;&#196;&#214;&#220;test";
     private static final String STRING_6 = "Test: \\u00e4\\u00f6\\u00fc\\u00c4\\u00d6\\u00dc\\u00df\\u20ac";
-
     private static final String[][] TESTS_DECODE = {
         {STRING_3, STRING_2, ENC_ISO_8859_1},
         {STRING_3, STRING_1, ENC_ISO_8859_15},
@@ -93,6 +82,15 @@ public class TestCmsEncoder extends OpenCmsJupiterTestCase {
         {STRING_1, STRING_3, ENC_US_ASCII},
         {STRING_1, STRING_1, ENC_WINDOWS_1252},
         {STRING_4, STRING_5, ENC_US_ASCII}};
+
+    /**
+     * Initializes the shared test configuration without booting OpenCms.<p>
+     */
+    @BeforeAll
+    public void setUpConfiguration(TestInfo testInfo) {
+
+        initConfiguration();
+    }
 
     /**
      * @see CmsEncoder#decodeHtmlEntities(String, String)
@@ -190,9 +188,7 @@ public class TestCmsEncoder extends OpenCmsJupiterTestCase {
         assertFalse(original.equals(encoded), "A single '%' charater must be transformed by encoding.");
         original = "%25 abc";
         encoded = CmsEncoder.encode(original);
-        assertFalse(
-            original.equals(encoded),
-            "A encoded sequence \"%25\" must be transformed by a further encoding.");
+        assertFalse(original.equals(encoded), "A encoded sequence \"%25\" must be transformed by a further encoding.");
     }
 
     /**

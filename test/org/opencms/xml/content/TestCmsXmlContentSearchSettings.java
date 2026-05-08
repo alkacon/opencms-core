@@ -27,12 +27,8 @@
 
 package org.opencms.xml.content;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Order;
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -44,19 +40,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for search settings.<p>
  */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class TestCmsXmlContentSearchSettings extends OpenCmsJupiterTestCase {
-
-    @Override
-    protected boolean shouldBootOpenCms() {
-        return false;
-    }
-
+public class TestCmsXmlContentSearchSettings extends OpenCmsTestRunner {
 
     /** The schema id. */
     private static final String SCHEMA_SYSTEM_ID_1 = "http://www.opencms.org/xmlcontent-searchsettings-image.xsd";
@@ -64,22 +53,12 @@ public class TestCmsXmlContentSearchSettings extends OpenCmsJupiterTestCase {
     /** The schema id. */
     private static final String SCHEMA_SYSTEM_ID_2 = "http://www.opencms.org/xmlcontent-searchsettings.xsd";
 
-
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-
-
     /**
      * Test unmarshalling an XML content from a String.<p>
      *
      * @throws Exception in case something goes wrong
      */
     @Test
-    @Order(1)
     public void testSearchSettings() throws Exception {
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);

@@ -28,27 +28,21 @@
 package org.opencms.util;
 
 import org.opencms.staticexport.CmsExportFolderMatcher;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * @since 6.0.0
  */
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestCmsExportFolderMatcher extends OpenCmsJupiterTestCase {
+public class TestCmsExportFolderMatcher extends OpenCmsTestRunner {
 
     private static String checkRes = "/system/opencms.ini";
-
-    @Override
-    protected boolean shouldBootOpenCms() {
-        return false;
-    }
 
     /**
      * Tests for the resource name translation.<p>

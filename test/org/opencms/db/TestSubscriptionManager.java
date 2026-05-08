@@ -34,27 +34,38 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.main.OpenCms;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import static org.junit.jupiter.api.Assertions.*;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.List;
 
-
-
-
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for OpenCms subscription manager.<p>
  */
+@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestSubscriptionManager extends OpenCmsJupiterTestCase {
+public class TestSubscriptionManager extends OpenCmsTestRunner {
 
     /** Time to wait for a database operation to finish. */
     private static final long WAIT_FOR_DB_MILLIS = 300;
+
+    /**
+     * @see org.opencms.test.OpenCmsJunitTestCase#openCmsSetUp()
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
 
     /**
      * Test reading subscribed resources.<p>

@@ -28,7 +28,7 @@
 package org.opencms.util;
 
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 
@@ -38,15 +38,12 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXWriter;
-
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test cases for the class <code>{@link org.opencms.util.CmsXmlSaxWriter}</code>.<p>
@@ -54,7 +51,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @since 6.0.0
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCmsXmlSaxWriter extends OpenCmsJupiterTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public class TestCmsXmlSaxWriter extends OpenCmsTestRunner {
 
     private static final String TEXT_1 = " This is a simple text ";
 
@@ -68,14 +66,10 @@ public class TestCmsXmlSaxWriter extends OpenCmsJupiterTestCase {
 
     private static final String TEXT_4_ESC = " This is a text with &#228;&#246;&#252;&#196;&#214;&#220;&#223;&#8364; as well as &lt;&gt; and &amp; ";
 
-    @Override
-    protected boolean shouldBootOpenCms() {
-        return false;
-    }
+    @BeforeAll
+    public void setUpConfiguration() {
 
-    @Override
-    protected boolean shouldInitConfiguration() {
-        return true;
+        initConfiguration();
     }
 
     /**

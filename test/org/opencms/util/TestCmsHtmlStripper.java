@@ -28,15 +28,12 @@
 package org.opencms.util;
 
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test case for <code>{@link org.opencms.util.CmsHtmlStripper}</code>.<p>
@@ -44,12 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @since 6.9.2
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCmsHtmlStripper extends OpenCmsJupiterTestCase {
-
-    @Override
-    protected boolean shouldBootOpenCms() {
-        return false;
-    }
+public class TestCmsHtmlStripper extends OpenCmsTestRunner {
 
     /**
      * Tests <code>{@link CmsHtmlStripper#stripHtml(String)}</code>
@@ -93,7 +85,7 @@ public class TestCmsHtmlStripper extends OpenCmsJupiterTestCase {
     }
 
     /**
-     * @throws Exception if something goes wrong 
+     * @throws Exception if something goes wrong
      */
     @Test
     @Order(2)

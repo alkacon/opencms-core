@@ -27,11 +27,6 @@
 
 package org.opencms.ugc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
@@ -46,7 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.ugc.CmsUgcSession.PathComparator;
 import org.opencms.ugc.shared.CmsUgcException;
 import org.opencms.util.CmsFileUtil;
@@ -65,16 +60,22 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import com.google.common.base.Optional;
 
 /**
  * Tests the form session methods.<p>
  */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.MethodName.class)
-public class TestFormSession extends OpenCmsJupiterTestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.MethodName.class)
+public class TestFormSession extends OpenCmsTestRunner {
 
     /** Schema id. */
     private static final String SCHEMA_ID_IMAGE = "http://www.opencms.org/image.xsd";
@@ -87,6 +88,16 @@ public class TestFormSession extends OpenCmsJupiterTestCase {
 
     /** Schema id. */
     private static final String SCHEMA_ID_TEXTBLOCK = "http://www.opencms.org/textblock.xsd";
+
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
 
     /**
      * Publishes the offline project.<p>

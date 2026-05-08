@@ -27,12 +27,7 @@
 
 package org.opencms.security;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Order;
-import static org.junit.jupiter.api.Assertions.*;
-
 import static com.lambdaworks.codec.Base64.decode;
-import static org.junit.Assert.assertNotEquals;
 
 import org.opencms.db.CmsLoginMessage;
 import org.opencms.file.CmsObject;
@@ -42,10 +37,17 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.twofactor.CmsSecondFactorInfo;
 import org.opencms.security.twofactor.CmsSecondFactorSetupInfo;
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.HashMap;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import com.lambdaworks.crypto.SCryptUtil;
 
@@ -58,18 +60,16 @@ import dev.samstevens.totp.time.SystemTimeProvider;
  *
  * @since 6.0
  */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
-public class TestLoginAndPasswordHandler extends OpenCmsJupiterTestCase {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestLoginAndPasswordHandler extends OpenCmsTestRunner {
 
-    
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
 
     /**
      * Tests if the password is digested and stored correctly.<p>
@@ -99,8 +99,13 @@ public class TestLoginAndPasswordHandler extends OpenCmsJupiterTestCase {
         echo("Digested password: " + newPasswordDigested);
         echo("User password    : " + adminUserPassword);
 
-        assertTrue(OpenCms.getPasswordHandler().checkPassword(newPassword, newPasswordDigested, false), "Passwords do not validate");
-        assertEquals(adminUserPassword.length(), newPasswordDigested.length(), "Password length for Admin user not equal to expected digested password length");
+        assertTrue(
+            OpenCms.getPasswordHandler().checkPassword(newPassword, newPasswordDigested, false),
+            "Passwords do not validate");
+        assertEquals(
+            adminUserPassword.length(),
+            newPasswordDigested.length(),
+            "Password length for Admin user not equal to expected digested password length");
     }
 
     /**
@@ -283,17 +288,22 @@ public class TestLoginAndPasswordHandler extends OpenCmsJupiterTestCase {
 
         // because of old setup data, this should be MD5 encoded but the new standard is SCRYPT
         echo("Old stored password hash: " + testUser.getPassword());
-        assertEquals(testUser.getPassword(), OpenCms.getPasswordHandler().digest(
+        assertEquals(
+            testUser.getPassword(),
+            OpenCms.getPasswordHandler().digest(
                 testData,
                 I_CmsPasswordHandler.DIGEST_TYPE_MD5,
-                CmsEncoder.ENCODING_UTF_8), "Password of user 'test1' not as expected");
+                CmsEncoder.ENCODING_UTF_8),
+            "Password of user 'test1' not as expected");
 
         // now login the user, this should update the password to the new hash algorithm
         cms.loginUser(testData, testData);
         testUser = cms.readUser(testData);
 
         echo("New stored password hash: " + testUser.getPassword());
-        assertTrue(OpenCms.getPasswordHandler().checkPassword(testData, testUser.getPassword(), false), "Password validation with new hash algorithm failed");
+        assertTrue(
+            OpenCms.getPasswordHandler().checkPassword(testData, testUser.getPassword(), false),
+            "Password validation with new hash algorithm failed");
     }
 
     /**
@@ -530,11 +540,15 @@ public class TestLoginAndPasswordHandler extends OpenCmsJupiterTestCase {
 
         // check the admin user
         user = cms.readUser(OpenCms.getDefaultUsers().getUserAdmin());
-        assertTrue(passwordHandler.checkPassword("admin", user.getPassword(), false), "Admin user password does not check");
+        assertTrue(
+            passwordHandler.checkPassword("admin", user.getPassword(), false),
+            "Admin user password does not check");
 
         // check the guest user
         user = cms.readUser(OpenCms.getDefaultUsers().getUserGuest());
-        assertFalse(passwordHandler.checkPassword("", user.getPassword(), true), "Guest user password does check with old default (empty String) but should fail becasue it is now a random UUID");
+        assertFalse(
+            passwordHandler.checkPassword("", user.getPassword(), true),
+            "Guest user password does check with old default (empty String) but should fail becasue it is now a random UUID");
         try {
             SCryptUtil.check("{random-value}", user.getPassword());
         } catch (IllegalArgumentException e) {
@@ -560,13 +574,21 @@ public class TestLoginAndPasswordHandler extends OpenCmsJupiterTestCase {
 
         // check the test1 user
         user = cms.readUser("test1");
-        assertFalse(passwordHandler.checkPassword("test1", user.getPassword(), false), "test1 user password does check with default SCrypt but should fail becasuse it is encoded in MD5");
-        assertTrue(passwordHandler.checkPassword("test1", user.getPassword(), true), "test1 user password does not check with fallback to MD5");
+        assertFalse(
+            passwordHandler.checkPassword("test1", user.getPassword(), false),
+            "test1 user password does check with default SCrypt but should fail becasuse it is encoded in MD5");
+        assertTrue(
+            passwordHandler.checkPassword("test1", user.getPassword(), true),
+            "test1 user password does not check with fallback to MD5");
 
         // check the test2 user
         user = cms.readUser("test2");
-        assertFalse(passwordHandler.checkPassword("test2", user.getPassword(), false), "test2 user password does check with default SCrypt but should fail becasuse it is encoded in MD5");
-        assertTrue(passwordHandler.checkPassword("test2", user.getPassword(), true), "test2 user password does not check with fallback to MD5");
+        assertFalse(
+            passwordHandler.checkPassword("test2", user.getPassword(), false),
+            "test2 user password does check with default SCrypt but should fail becasuse it is encoded in MD5");
+        assertTrue(
+            passwordHandler.checkPassword("test2", user.getPassword(), true),
+            "test2 user password does not check with fallback to MD5");
     }
 
 }

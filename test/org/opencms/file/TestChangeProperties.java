@@ -27,18 +27,18 @@
 
 package org.opencms.file;
 
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Unit tests for the <code>{@link CmsObject#changeResourcesInFolderWithProperty(String, String, String, String, boolean)}</code>
@@ -46,53 +46,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestChangeProperties extends OpenCmsJupiterTestCase {
+public class TestChangeProperties extends OpenCmsTestRunner {
 
     /**
-     * Tries to change the "Description" property of the two files
-     * "/folder1/index.html" and "/folder2/index.html" with the site-root
-     * "/sites/default".
-     *
-     * The test fails, if the <code>recursive</code> parameter of
-     * <code>changeResourcesInFolderWithProperty()</code> changes the
-     * semantics of the method call.<p>
-     *
-     * @throws Throwable if an error occurs while the test is running
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    @Test
-    @Order(1)
-    public void testChangeResourcesRelativePath() throws Throwable {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        CmsObject cms = getCmsObject();
-
-        String resource1 = "/folder1/subfolder11/index.html";
-        String resource2 = "/folder1/subfolder12/index.html";
-        cms.lockResource(resource1);
-        cms.lockResource(resource2);
-        assertLock(cms, resource1);
-        assertLock(cms, resource2);
-
-        System.out.println(
-            "Changing property of \"" + resource1 + "\" in \"" + cms.getRequestContext().getSiteRoot() + "\"");
-
-        List l1 = cms.changeResourcesInFolderWithProperty(
-            resource1,
-            CmsPropertyDefinition.PROPERTY_DESCRIPTION,
-            "This is the index page of subfolder11",
-            "Changed Value",
-            true);
-
-        System.out.println(
-            "Changing property of \"" + resource2 + "\" in \"" + cms.getRequestContext().getSiteRoot() + "\"");
-
-        List l2 = cms.changeResourcesInFolderWithProperty(
-            resource2,
-            CmsPropertyDefinition.PROPERTY_DESCRIPTION,
-            "This is the index in subfolder12",
-            "Changed value",
-            false);
-
-        assertEquals(l1.size(), l2.size());
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -139,6 +102,53 @@ public class TestChangeProperties extends OpenCmsJupiterTestCase {
             resource2,
             CmsPropertyDefinition.PROPERTY_DESCRIPTION,
             "This is the index page in subfolder22",
+            "Changed value",
+            false);
+
+        assertEquals(l1.size(), l2.size());
+    }
+
+    /**
+     * Tries to change the "Description" property of the two files
+     * "/folder1/index.html" and "/folder2/index.html" with the site-root
+     * "/sites/default".
+     *
+     * The test fails, if the <code>recursive</code> parameter of
+     * <code>changeResourcesInFolderWithProperty()</code> changes the
+     * semantics of the method call.<p>
+     *
+     * @throws Throwable if an error occurs while the test is running
+     */
+    @Test
+    @Order(1)
+    public void testChangeResourcesRelativePath() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+
+        String resource1 = "/folder1/subfolder11/index.html";
+        String resource2 = "/folder1/subfolder12/index.html";
+        cms.lockResource(resource1);
+        cms.lockResource(resource2);
+        assertLock(cms, resource1);
+        assertLock(cms, resource2);
+
+        System.out.println(
+            "Changing property of \"" + resource1 + "\" in \"" + cms.getRequestContext().getSiteRoot() + "\"");
+
+        List l1 = cms.changeResourcesInFolderWithProperty(
+            resource1,
+            CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+            "This is the index page of subfolder11",
+            "Changed Value",
+            true);
+
+        System.out.println(
+            "Changing property of \"" + resource2 + "\" in \"" + cms.getRequestContext().getSiteRoot() + "\"");
+
+        List l2 = cms.changeResourcesInFolderWithProperty(
+            resource2,
+            CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+            "This is the index in subfolder12",
             "Changed value",
             false);
 

@@ -47,13 +47,8 @@ import org.opencms.search.CmsSearchResource;
 import org.opencms.search.documents.CmsDocumentDependency;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.security.CmsRoleViolationException;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsRequestUtil;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -65,12 +60,14 @@ import java.util.Map;
 
 import org.apache.solr.client.solrj.request.SolrQuery;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the Solr field mapping.<p>
@@ -79,33 +76,16 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestSolrFieldConfiguration extends OpenCmsJupiterTestCase {
+public class TestSolrFieldConfiguration extends OpenCmsTestRunner {
 
     /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
     @Override
-    protected String getImportFolder() {
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        return "solrtest";
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
-     */
-    @Override
-    protected String getTargetFolder() {
-
-        return "/";
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getSpecialConfigFolder()
-     */
-    @Override
-    protected String getSpecialConfigFolder() {
-
-        return "/../org/opencms/search/solr";
+        setupOpenCms(testInfo, "solrtest", "/", "/../org/opencms/search/solr");
     }
 
     /**
@@ -135,9 +115,9 @@ public class TestSolrFieldConfiguration extends OpenCmsJupiterTestCase {
         CmsSearchResource res = results.get(0);
         assertEquals("/sites/default/extractLinked/el1.xml", res.getRootPath());
 
-        ///////////////
+        //////////////
         // FIELD TEST //
-        ///////////////
+        //////////////
         String contentFieldValue = res.getField("content_en");
         assertNotNull(contentFieldValue);
         assertTrue(
@@ -163,9 +143,9 @@ public class TestSolrFieldConfiguration extends OpenCmsJupiterTestCase {
             CmsRequestUtil.createParameterMap("q=path:\"/sites/default/xmlcontent/article_0001.html\""));
         CmsSolrResultList results = index.search(getCmsObject(), squery);
 
-        ////////////////
+        ///////////////
         // RESULT TEST //
-        ////////////////
+        ///////////////
 
         // Test the result count
         AllTests.printResults(getCmsObject(), results, false);
@@ -175,9 +155,9 @@ public class TestSolrFieldConfiguration extends OpenCmsJupiterTestCase {
         CmsSearchResource res = results.get(0);
         assertEquals("/sites/default/xmlcontent/article_0001.html", res.getRootPath());
 
-        ///////////////
+        //////////////
         // FIELD TEST //
-        ///////////////
+        //////////////
 
         // Test multiple language field
         String fieldValue = res.getField("ahtml_en");
@@ -212,9 +192,9 @@ public class TestSolrFieldConfiguration extends OpenCmsJupiterTestCase {
         fieldValue = res.getField("ahomepage_en");
         assertTrue(fieldValue.contains("/sites/default/index.html"));
 
-        /////////////////
+        ////////////////
         // MAPPING TEST //
-        /////////////////
+        ////////////////
 
         fieldValue = res.getField("Description_de");
         assertEquals(fieldValue, "My Special OpenCms Solr Description");

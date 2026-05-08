@@ -34,10 +34,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchResource;
 import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.fields.CmsSearchField;
-import org.opencms.test.OpenCmsJupiterTestCase;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -47,6 +44,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -54,44 +52,20 @@ import org.junit.jupiter.api.TestMethodOrder;
 /** Test cases for indexing of contents using serial dates. */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestSolrSerialDateIndexing extends OpenCmsJupiterTestCase {
+public class TestSolrSerialDateIndexing extends OpenCmsTestRunner {
 
     /** Name of the module to import. */
     protected static final String TEST_MODULE_NAME = "org.opencms.test.modules.solr.serialdate";
 
     /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
     @Override
-    protected String getImportFolder() {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
-     */
-    @Override
-    protected String getTargetFolder() {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getSpecialConfigFolder()
-     */
-    @Override
-    protected String getSpecialConfigFolder() {
-
-        return "/../org/opencms/search/solr";
-    }
-
-    /**
-     * Disables all non-Solr indexes used by the legacy suite setup.<p>
-     */
     @BeforeAll
-    public void disableNonSolrIndexes() {
+    public void $openCmsSetUp(TestInfo testInfo) {
 
+        setupOpenCms(testInfo, null, null, "/../org/opencms/search/solr");
+        // disable all lucene indexes
         for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
             if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
                 I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);

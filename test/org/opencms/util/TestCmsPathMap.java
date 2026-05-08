@@ -27,24 +27,30 @@
 
 package org.opencms.util;
 
-import com.google.common.collect.Sets;
+import org.opencms.test.OpenCmsTestRunner;
 
-import org.opencms.test.OpenCmsJupiterTestCase;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import com.google.common.collect.Sets;
 
 /**
  * Test case for CmsPathMap.<p>
  */
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestCmsPathMap extends OpenCmsJupiterTestCase {
+public class TestCmsPathMap extends OpenCmsTestRunner {
 
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$testStart(org.junit.jupiter.api.TestInfo)
+     */
     @Override
-    protected boolean shouldBootOpenCms() {
-        return false;
+    @BeforeEach
+    public void $testStart(TestInfo testInfo) {
+
+        // Legacy TestCase did not print OpenCms test headers.
     }
 
     /**

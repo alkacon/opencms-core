@@ -27,21 +27,22 @@
 
 package org.opencms.util;
 
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestEnvironment;
+import org.opencms.test.OpenCmsTestRunner;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test cases for the resource translator.<p>
  *
  * @since 6.0.0
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestCmsResourceTranslator extends OpenCmsJupiterTestCase {
+public class TestCmsResourceTranslator extends OpenCmsTestRunner {
 
     // default rules (same as in "opencms.properties")
     private static String[] rules = {
@@ -57,24 +58,20 @@ public class TestCmsResourceTranslator extends OpenCmsJupiterTestCase {
         "s#/default/vfs/system/workplace/css/(.*)#/default/vfs/system/workplace/resources/$1#",
         "s#/default/vfs/system/workplace/templates/js/(.*)#/default/vfs/system/workplace/scripts/$1#",
         "s#[\\s]+#_#g",
-        "s#[" + OpenCmsTestEnvironment.C_AUML_LOWER + "]#ae#g",
-        "s#[" + OpenCmsTestEnvironment.C_AUML_UPPER + "]#Ae#g",
-        "s#[" + OpenCmsTestEnvironment.C_OUML_LOWER + "]#oe#g",
-        "s#[" + OpenCmsTestEnvironment.C_OUML_UPPER + "]#Oe#g",
-        "s#[" + OpenCmsTestEnvironment.C_UUML_LOWER + "]#ue#g",
-        "s#[" + OpenCmsTestEnvironment.C_UUML_UPPER + "]#Ue#g",
-        "s#[" + OpenCmsTestEnvironment.C_SHARP_S + "]#ss#g",
+        "s#[" + C_AUML_LOWER + "]#ae#g",
+        "s#[" + C_AUML_UPPER + "]#Ae#g",
+        "s#[" + C_OUML_LOWER + "]#oe#g",
+        "s#[" + C_OUML_UPPER + "]#Oe#g",
+        "s#[" + C_UUML_LOWER + "]#ue#g",
+        "s#[" + C_UUML_UPPER + "]#Ue#g",
+        "s#[" + C_SHARP_S + "]#ss#g",
         "s#[^0-9a-zA-Z_\\.\\-\\/]#!#g",
         "s#!+#x#g"};
 
-    @Override
-    protected boolean shouldBootOpenCms() {
-        return false;
-    }
+    @BeforeAll
+    public void setUpConfiguration() {
 
-    @Override
-    protected boolean shouldInitConfiguration() {
-        return true;
+        initConfiguration();
     }
 
     /**
@@ -94,13 +91,7 @@ public class TestCmsResourceTranslator extends OpenCmsJupiterTestCase {
 
         translator = new CmsResourceTranslator(rules, true);
         test = translator.translateResource(
-            "Sch"
-                + OpenCmsTestEnvironment.C_OUML_LOWER
-                + "ne "
-                + OpenCmsTestEnvironment.C_UUML_UPPER
-                + "bung mit Fu"
-                + OpenCmsTestEnvironment.C_SHARP_S
-                + ".js");
+            "Sch" + C_OUML_LOWER + "ne " + C_UUML_UPPER + "bung mit Fu" + C_SHARP_S + ".js");
         assertEquals("Schoene_Uebung_mit_Fuss.js", test);
     }
 

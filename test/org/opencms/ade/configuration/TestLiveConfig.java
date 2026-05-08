@@ -41,7 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.ui.components.CmsExtendedSiteSelector;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -66,17 +66,15 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
 import org.antlr.stringtemplate.StringTemplate;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for the ADE configuration mechanism which read the configuration data from multiple files in the VFS.<p>
@@ -84,27 +82,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class TestLiveConfig extends OpenCmsJupiterTestCase {
+public class TestLiveConfig extends OpenCmsTestRunner {
 
     /** Pattern for matching path segment consisting of two characters from {a, b}. */
     private static final Pattern detailPageTestSubsitePattern = Pattern.compile("/([ab][ab])/");
-
-    /** The current VFS prefix as added to internal links according to the configuration in opencms-importexport.xml. */
-    String m_vfsPrefix;
 
     static {
 
         CmsConfigurationCache.DEBUG = true;
     }
 
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
-     */
-    @Override
-    protected String getImportFolder() {
-
-        return "ade-config";
-    }
+    /** The current VFS prefix as added to internal links according to the configuration in opencms-importexport.xml. */
+    String m_vfsPrefix;
 
     /**
      * Generates a sitemap config XML with the given types.<p>
@@ -142,6 +131,16 @@ public class TestLiveConfig extends OpenCmsJupiterTestCase {
         st.setAttribute("types", types);
         st.setAttribute("masterConfigs", masterConfigIds != null ? masterConfigIds : Collections.emptyList());
         return st.toString();
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "ade-config", "/");
     }
 
     /**

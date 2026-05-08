@@ -29,12 +29,8 @@ package org.opencms.flex;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsRequestUtil;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -46,13 +42,16 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for the {@link CmsFlexResponse}.<p>
@@ -65,7 +64,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestCmsFlexResponse extends OpenCmsJupiterTestCase {
+public class TestCmsFlexResponse extends OpenCmsTestRunner {
 
     /**
      * An InvocationHandler which simply records the arguments for each method that was called.<p>
@@ -206,6 +205,17 @@ public class TestCmsFlexResponse extends OpenCmsJupiterTestCase {
     /** Method for setContentType(String) from the HttpServletResponse class. */
     static Method SET_CONTENT_TYPE;
 
+    /**
+     * Static initializer for this test case.<p>
+     */
+    static {
+        try {
+            SET_CONTENT_TYPE = HttpServletResponse.class.getMethod("setContentType", new Class[] {String.class});
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException("HttpServletResponse linkage error", e);
+        }
+    }
+
     /** Flex controller to be used by the tests. */
     private CmsFlexController m_controller;
 
@@ -220,17 +230,6 @@ public class TestCmsFlexResponse extends OpenCmsJupiterTestCase {
 
     /** Servlet response to use with the tests. */
     private HttpServletResponse m_response;
-
-    /**
-     * Static initializer for this test case.<p>
-     */
-    static {
-        try {
-            SET_CONTENT_TYPE = HttpServletResponse.class.getMethod("setContentType", new Class[] {String.class});
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException("HttpServletResponse linkage error", e);
-        }
-    }
 
     /**
      * Convenience method to create a mock {@link HttpServletRequest} backed by the given invocation handler.<p>
@@ -262,6 +261,61 @@ public class TestCmsFlexResponse extends OpenCmsJupiterTestCase {
             Thread.currentThread().getContextClassLoader(),
             new Class[] {interfaceClass},
             handler);
+    }
+
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
+
+    /**
+     * Initializes a flex cache controller and mock servlet request and response objects to be
+     * used by this unit tests.<p>
+     *
+     * @throws Exception if the setup fails
+     *
+     * @throws Exception if the setup fails
+     */
+    @BeforeEach
+    public void setUp() throws Exception {
+
+        CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+        if (!OpenCms.getDefaultUsers().isUserGuest(cms.getRequestContext().getCurrentUser().getName())) {
+            fail("'Guest' user could not be properly initialized!");
+        }
+
+        m_reqMock = new RecordingMock(new RequestStub());
+        m_request = createMockRequest(m_reqMock);
+        m_resMock = new RecordingMock();
+        m_response = createMockResponse(m_resMock);
+
+        m_controller = new CmsFlexController(
+            cms,
+            null,
+            CmsFlexDummyLoader.getFlexCache(),
+            m_request,
+            m_response,
+            false,
+            true);
+        CmsFlexController.setController(m_request, m_controller);
+    }
+
+    /**
+     * Clears the per-test mock state.<p>
+     */
+    @AfterEach
+    public void tearDown() {
+
+        m_reqMock = null;
+        m_resMock = null;
+        m_request = null;
+        m_response = null;
+        m_controller = null;
     }
 
     /**
@@ -314,37 +368,5 @@ public class TestCmsFlexResponse extends OpenCmsJupiterTestCase {
         f_res.setHeader(CmsRequestUtil.HEADER_CONTENT_TYPE, "text/arg");
         assertEquals(2, setCalls.size(), "no further calls to setContentType");
         assertEquals(1, m_resMock.m_invocations.size(), "no other methods called");
-    }
-
-    /**
-     * Initializes a flex cache controller and mock servlet request and response objects to be
-     * used by this unit tests.<p>
-     *
-     * @throws Exception if the setup fails
-     *
-     * @throws Exception if the setup fails
-     */
-    @BeforeEach
-    public void setUp() throws Exception {
-
-        CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-        if (!OpenCms.getDefaultUsers().isUserGuest(cms.getRequestContext().getCurrentUser().getName())) {
-            fail("'Guest' user could not be properly initialized!");
-        }
-
-        m_reqMock = new RecordingMock(new RequestStub());
-        m_request = createMockRequest(m_reqMock);
-        m_resMock = new RecordingMock();
-        m_response = createMockResponse(m_resMock);
-
-        m_controller = new CmsFlexController(
-            cms,
-            null,
-            CmsFlexDummyLoader.getFlexCache(),
-            m_request,
-            m_response,
-            false,
-            true);
-        CmsFlexController.setController(m_request, m_controller);
     }
 }

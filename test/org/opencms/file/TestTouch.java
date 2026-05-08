@@ -27,16 +27,17 @@
 
 package org.opencms.file;
 
-import org.opencms.test.OpenCmsJupiterTestCase;
-import org.opencms.test.OpenCmsTestEnvironment;
 import org.opencms.test.OpenCmsTestResourceFilter;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Iterator;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 
@@ -46,25 +47,7 @@ import org.junit.jupiter.api.TestMethodOrder;
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestTouch extends OpenCmsJupiterTestCase {
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
-     */
-    @Override
-    protected String getImportFolder() {
-
-        return "simpletest";
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
-     */
-    @Override
-    protected String getTargetFolder() {
-
-        return "/";
-    }
+public class TestTouch extends OpenCmsTestRunner {
 
     /**
      * Test the touch method to touch a single resource.<p>
@@ -73,7 +56,7 @@ public class TestTouch extends OpenCmsJupiterTestCase {
      * @param resource1 the resource to touch
      * @throws Throwable if something goes wrong
      */
-    public static void touchResource(OpenCmsTestEnvironment tc, CmsObject cms, String resource1) throws Throwable {
+    public static void touchResource(OpenCmsTestRunner tc, CmsObject cms, String resource1) throws Throwable {
 
         tc.storeResources(cms, resource1);
 
@@ -101,7 +84,7 @@ public class TestTouch extends OpenCmsJupiterTestCase {
      * @param resource1 the resource to touch
      * @throws Throwable if something goes wrong
      */
-    public static void touchResources(OpenCmsTestEnvironment tc, CmsObject cms, String resource1) throws Throwable {
+    public static void touchResources(OpenCmsTestRunner tc, CmsObject cms, String resource1) throws Throwable {
 
         tc.storeResources(cms, resource1);
 
@@ -141,8 +124,7 @@ public class TestTouch extends OpenCmsJupiterTestCase {
      * @param resource1 the resource to touch
      * @throws Throwable if something goes wrong
      */
-    public static void touchResourcesRecursive(OpenCmsTestEnvironment tc, CmsObject cms, String resource1)
-    throws Throwable {
+    public static void touchResourcesRecursive(OpenCmsTestRunner tc, CmsObject cms, String resource1) throws Throwable {
 
         tc.storeResources(cms, resource1);
 
@@ -184,6 +166,16 @@ public class TestTouch extends OpenCmsJupiterTestCase {
     }
 
     /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
+
+    /**
      * Test the touch method on a file.<p>
      *
      * @throws Throwable if something goes wrong
@@ -194,7 +186,7 @@ public class TestTouch extends OpenCmsJupiterTestCase {
 
         CmsObject cms = getCmsObject();
         echo("Testing touch on file");
-        touchResource(m_testEnvironment, cms, "/index.html");
+        touchResource(this, cms, "/index.html");
     }
 
     /**
@@ -208,7 +200,7 @@ public class TestTouch extends OpenCmsJupiterTestCase {
 
         CmsObject cms = getCmsObject();
         echo("Testing touch on a folder (without recursion)");
-        touchResources(m_testEnvironment, cms, "/folder1/");
+        touchResources(this, cms, "/folder1/");
     }
 
     /**
@@ -222,6 +214,6 @@ public class TestTouch extends OpenCmsJupiterTestCase {
 
         CmsObject cms = getCmsObject();
         echo("Testing touch on a folder (_with_ recursion)");
-        touchResourcesRecursive(m_testEnvironment, cms, "/folder2/");
+        touchResourcesRecursive(this, cms, "/folder2/");
     }
 }

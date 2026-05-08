@@ -27,18 +27,25 @@
 
 package org.opencms.crypto;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests for text en/decryption.
  */
-public class TestTextEncryption extends TestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestTextEncryption {
 
     /**
      * This is mostly an integration test to show that the crypto libraries work.
      */
+    @Test
+    @Order(1)
     public void testAES() throws Exception {
 
         String key1 = "key1";
@@ -58,6 +65,8 @@ public class TestTextEncryption extends TestCase {
     /**
      * Test for AES in CBC mode.
      */
+    @Test
+    @Order(2)
     public void testAESCBC() throws Exception {
 
         String key1 = "key1";

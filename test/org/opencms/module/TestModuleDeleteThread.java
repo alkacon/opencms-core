@@ -31,7 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.workplace.threads.CmsModuleDeleteThread;
 
 import java.util.ArrayList;
@@ -39,45 +39,32 @@ import java.util.List;
 
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests the deleting of modules using the module delete thread,
  * comparing this to the deletion using the module manager alone.<p>
  */
+@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestModuleDeleteThread extends OpenCmsJupiterTestCase {
+public class TestModuleDeleteThread extends OpenCmsTestRunner {
 
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
     @Override
-    protected String getImportFolder() {
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        return "simpletest";
-    }
-
-    @Override
-    protected String getTargetFolder() {
-
-        return "/";
-    }
-
-    @Override
-    protected boolean shouldBreakOnErrorAfterInitConfiguration() {
-
-        return false;
-    }
-
-    @AfterAll
-    void resetBreakOnError() {
-
-        OpenCmsTestLogAppender.setBreakOnError(true);
+        setupOpenCms(testInfo, "simpletest", "/");
+        OpenCmsTestLogAppender.setBreakOnError(false);
     }
 
     /**

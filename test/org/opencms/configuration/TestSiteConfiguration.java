@@ -27,76 +27,38 @@
 
 package org.opencms.configuration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.site.CmsSiteMatcher;
-import org.opencms.test.OpenCmsJupiterTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for site configuration.<p>
  */
+@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestSiteConfiguration extends OpenCmsJupiterTestCase {
+public class TestSiteConfiguration extends OpenCmsTestRunner {
 
     /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getTargetFolder()
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
     @Override
-    protected String getTargetFolder() {
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        return null;
-    }
-
-    /**
-     * @see org.opencms.test.OpenCmsJupiterTestCase#getImportFolder()
-     */
-    @Override
-    protected String getImportFolder() {
-
-        return null;
-    }
-
-    /**
-     * Tests the configured site settings.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    @Test
-    @Order(1)
-    public void testConfiguredSites() throws Throwable {
-
-        echo("Testing Site Configuration");
-        CmsSiteManagerImpl siteManager = OpenCms.getSiteManager();
-        echo("Testing default Uri");
-        assertEquals("/sites/default/", siteManager.getDefaultUri());
-        echo("Testing workplace server");
-        assertEquals("http://localhost:8080", siteManager.getWorkplaceServer());
-        CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot("/sites/default/folder1");
-        if (site != null) {
-            echo("Testing Site: '" + site.toString() + "'");
-            CmsSiteMatcher matcher = site.getSiteMatcher();
-            echo("Testing Server Protocol");
-            assertEquals("http", matcher.getServerProtocol());
-            echo("Testing Server Name");
-            assertEquals("localhost", matcher.getServerName());
-            echo("Testing Server Port");
-            assertEquals(8081, matcher.getServerPort());
-        } else {
-            fail("Test failed: site was null!");
-        }
+        setupOpenCms(testInfo, null, null);
     }
 
     /**
@@ -128,5 +90,35 @@ public class TestSiteConfiguration extends OpenCmsJupiterTestCase {
         assertEquals(101, relationType.getId());
         assertEquals("TESTRELATION2", relationType.getName());
         assertEquals("STRONG", relationType.getType());
+    }
+
+    /**
+     * Tests the configured site settings.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    @Order(1)
+    public void testConfiguredSites() throws Throwable {
+
+        echo("Testing Site Configuration");
+        CmsSiteManagerImpl siteManager = OpenCms.getSiteManager();
+        echo("Testing default Uri");
+        assertEquals("/sites/default/", siteManager.getDefaultUri());
+        echo("Testing workplace server");
+        assertEquals("http://localhost:8080", siteManager.getWorkplaceServer());
+        CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot("/sites/default/folder1");
+        if (site != null) {
+            echo("Testing Site: '" + site.toString() + "'");
+            CmsSiteMatcher matcher = site.getSiteMatcher();
+            echo("Testing Server Protocol");
+            assertEquals("http", matcher.getServerProtocol());
+            echo("Testing Server Name");
+            assertEquals("localhost", matcher.getServerName());
+            echo("Testing Server Port");
+            assertEquals(8081, matcher.getServerPort());
+        } else {
+            fail("Test failed: site was null!");
+        }
     }
 }
