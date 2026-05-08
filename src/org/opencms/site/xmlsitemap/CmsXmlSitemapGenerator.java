@@ -387,25 +387,16 @@ public class CmsXmlSitemapGenerator {
     public String renderSitemap() throws Exception {
 
         List<CmsXmlSitemapUrlBean> urlBeans = generateSitemapBeans();
-        if (m_mode.equals(CmsXmlSeoConfiguration.MODE_LLMS_TXT)) {
-            CmsXmlSitemapLlmsGenerator llmGenerator = new CmsXmlSitemapLlmsGenerator(urlBeans, m_guestCms);
-            String result = llmGenerator.getLlmsTextForUrls();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_prefix)) {
-                result = m_prefix + "\n\n" + result;
-            }
-            return result;
-        } else {
-            StringBuffer buffer = new StringBuffer();
-            buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-            buffer.append(getUrlSetOpenTag() + "\n");
-            for (CmsXmlSitemapUrlBean bean : urlBeans) {
-                buffer.append(getXmlForEntry(bean));
-                buffer.append("\n");
-            }
-            buffer.append("</urlset>");
-            return buffer.toString();
-        }
 
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        buffer.append(getUrlSetOpenTag() + "\n");
+        for (CmsXmlSitemapUrlBean bean : urlBeans) {
+            buffer.append(getXmlForEntry(bean));
+            buffer.append("\n");
+        }
+        buffer.append("</urlset>");
+        return buffer.toString();
     }
 
     /**

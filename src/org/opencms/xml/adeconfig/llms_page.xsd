@@ -1,0 +1,44 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <!-- File: seo_file.xsd -->
+
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+
+    <xsd:element name="LlmsFilePages" type="OpenCmsLlmsFilePages" />
+
+    <xsd:complexType name="OpenCmsLlmsFilePages">
+        <xsd:sequence>
+            <xsd:element name="LlmsFilePage" type="OpenCmsLlmsFilePage" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsLlmsFilePage">
+        <xsd:sequence>
+            <xsd:element name="URL" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="ID" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="Date" type="OpenCmsDateTime" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="Title" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="Summary" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="OverrideSummary" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
+    </xsd:complexType>
+
+    <xsd:annotation>
+        <xsd:appinfo>
+            <defaults>
+                <default element="Date" value="%(currenttime)" />
+            </defaults>
+            <layouts>
+                <layout element="URL" widget="DisplayWidget" />
+                <layout element="ID" widget="DisplayWidget" />
+                <layout element="Date" widget="DisplayWidget" />
+                <layout element="Title" widget="DisplayWidget" />
+                <layout element="Summary" widget="DisplayWidget" />
+                <layout element="OverrideSummary" widget="TextareaWidget" />
+            </layouts>
+        </xsd:appinfo>
+    </xsd:annotation>
+
+</xsd:schema>
+

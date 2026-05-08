@@ -71,7 +71,7 @@ public class CmsUpdateXmlSitemapCacheJob implements I_CmsScheduledJob {
             try {
                 LOG.info("Processing file " + res.getRootPath() + " [" + i + "/" + resources.size() + "]");
                 String name = res.getName();
-                if (name.contains("robots") || name.contains("test")) {
+                if (name.contains("llms") || name.contains("robots") || name.contains("test")) {
                     LOG.info("Ignoring file " + res.getRootPath());
                     continue;
                 }

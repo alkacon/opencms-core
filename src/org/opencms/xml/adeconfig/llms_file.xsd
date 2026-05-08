@@ -1,0 +1,63 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <!-- File: seo_file.xsd -->
+
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/llms_page.xsd" />
+
+    <xsd:element name="LlmsFiles" type="OpenCmsLlmsFiles" />
+
+    <xsd:complexType name="OpenCmsLlmsFiles">
+        <xsd:sequence>
+            <xsd:element name="LlmsFile" type="OpenCmsLlmsFile" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="OpenCmsLlmsFile">
+        <xsd:sequence>
+            <xsd:element name="Date" type="OpenCmsDateTime" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="Page" type="OpenCmsLlmsFilePage" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="Result" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
+    </xsd:complexType>
+
+    <xsd:annotation>
+        <xsd:appinfo>
+            <resourcebundles>
+                <xmlbundle name="org.opencms.xml.adeconfig.llms_file.xml">
+                <bundle locale="en">
+                    <resource key="label.LlmsFile.Date">Date</resource>
+                    <resource key="label.LlmsFile.Date.help">Bla (en).</resource>
+                    <resource key="label.LlmsFilePage.Date">Date</resource>
+                    <resource key="label.LlmsFilePage.Date.help">Bla (en).</resource>
+                </bundle>
+                <bundle locale="de">
+                    <resource key="label.LlmsFile.Date">Date</resource>
+                    <resource key="label.LlmsFile.Date.help">Bla (de).</resource>
+                    <resource key="label.LlmsFilePage.Date">Date</resource>
+                    <resource key="label.LlmsFilePage.Date.help">Bla (de).</resource>
+                </bundle>
+                </xmlbundle>
+            </resourcebundles>
+            <defaults>
+                <default element="Date" value="%(currenttime)" />
+            </defaults>
+            <layouts>
+                <layout element="Result" widget="DisplayWidget" />
+            </layouts>
+            <FieldSettings>
+                <Setting>
+                    <PropertyName>Page/ID</PropertyName>
+                    
+                </Setting>
+                <Setting>
+                    <PropertyName>Page/Date</PropertyName>
+                    <Visibility>hidden</Visibility>
+                </Setting>
+            </FieldSettings>
+        </xsd:appinfo>
+    </xsd:annotation>
+
+</xsd:schema>
+
