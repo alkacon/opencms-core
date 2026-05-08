@@ -43,7 +43,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
-import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -66,6 +65,9 @@ import dev.langchain4j.model.openai.OpenAiChatModel;
  * Generates the output for llms.txt files using the configured AI chat model.<p>
  */
 public class CmsLlmsGenerator {
+
+    /** Helper container for storing update results. */
+    protected record CmsLlmsFileContainer(CmsLlmsFile llmsbean, CmsFile llmsFile, boolean updated) {}
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLlmsGenerator.class);
@@ -195,109 +197,117 @@ public class CmsLlmsGenerator {
      * @return a formatted text containing either AI-generated summaries/groupings
      *         or a fallback list of site documents in markdown format
      */
-    public String getLlmsTextForUrls() throws CmsException {
+    public String getLlmsText() throws CmsException {
 
-        // first check if XML content with generated summary is present
-        String pathLlmsFile = m_cms.getSitePath(m_configRes) + ".xml";
-        CmsResource llmsFileRes = null;
-        if (!m_cms.existsResource(pathLlmsFile)) {
-            // check if we are online
-            if (m_cms.getRequestContext().getCurrentProject().isOnlineProject()) {
-                return "";
-            } else {
-                // offline, create new XML content file
-                CmsXmlContent content = CmsXmlContentFactory.createDocument(
-                    m_cms,
-                    Locale.ENGLISH,
-                    (CmsResourceTypeXmlContent)OpenCms.getResourceManager().getResourceType("llms_file"));
-                llmsFileRes = m_cms.createResource(
-                    pathLlmsFile,
-                    OpenCms.getResourceManager().getResourceType("llms_file"),
-                    content.marshal(),
-                    null);
-
-            }
+        String result = "";
+        // update the llms file in offline mode
+        CmsLlmsFileContainer updateResult = updateLlmsFile();
+        if (updateResult.updated()) {
+            // directly use the updated result
+            result = updateResult.llmsbean().getResult();
         } else {
-            // read existing XML content file
-            llmsFileRes = m_cms.readResource(pathLlmsFile);
-        }
-        CmsFile llmsFile = m_cms.readFile(llmsFileRes);
-
-        // create objects from file entries
-        CmsLlmsFile llmsBean = CmsLlmsFile.createLlmsFileFromContent(
-            CmsXmlContentFactory.unmarshal(m_cms, llmsFile),
-            m_cms);
-
-        // check if overrides have to be updated due to a file modification
-        boolean updateOverrides = llmsFile.getDateLastModified() > llmsBean.getDate();
-
-        CmsXmlSitemapGenerator xmlSitemapGenerator = CmsXmlSitemapActionElement.prepareSitemapGenerator(
-            m_configRes,
-            m_config);
-        // compute URLs of current sitemap
-        List<CmsXmlSitemapUrlBean> urls = xmlSitemapGenerator.generateSitemapBeans();
-        // after that, compare entries from file with entries of current sitemap
-        List<CmsLlmsPage> resultPages = new ArrayList<CmsLlmsPage>(urls.size());
-        boolean changed = false;
-        for (CmsXmlSitemapUrlBean url : urls) {
-            CmsUUID resId = url.getOriginalResource().getStructureId();
-            CmsLlmsPage testPage = llmsBean.getPagesMap().get(resId);
-            if (testPage == null) {
-                // new page
-                changed = true;
-                testPage = getSummaryForPage(url, null);
-                LOG.debug("Adding new URL " + url.getUrl() + " to page list.");
-            } else if (testPage.getDate() < url.getDateLastModified().getTime()) {
-                // updated page
-                changed = true;
-                testPage = getSummaryForPage(url, testPage.getOverrideSummary());
-                llmsBean.getPagesMap().remove(resId);
-                LOG.debug("Updated URL " + url.getUrl() + " of page list.");
-            } else {
-                // unchanged page, check override
-                if (updateOverrides && CmsStringUtil.isNotEmptyOrWhitespaceOnly(testPage.getOverrideSummary())) {
-                    // in case an override has been updated, we need to refresh the result
-                    changed = true;
-                }
-                llmsBean.getPagesMap().remove(resId);
-                LOG.debug("Skipped unchanged URL " + url.getUrl() + " of page list.");
+            // read the llms file and get the result if present
+            CmsFile llmsFile = getLlmsVfsFile();
+            if (llmsFile != null) {
+                CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, llmsFile);
+                result = content.getStringValue(m_cms, CmsLlmsFile.NODE_RESULT, CmsLlmsFile.LOCALE);
             }
-            // add page to result
-            resultPages.add(testPage);
         }
 
-        if (llmsBean.getPagesMap().size() > 0) {
-            // at least one page is not in the current sitemap any more, set change flag
-            changed = true;
-        }
-
-        if (changed) {
-            // store the updated pages in object
-            llmsBean.setPages(resultPages);
-            // generate final result output for llms.txt
-            llmsBean.setResult(getFinalLlmsText(llmsBean));
-
-            // generate XML from updated pages and set it to file content
-            llmsFile.setContents(getXmlContentFromLlmsFile(llmsBean).marshal());
-
-            // check lock state
-            CmsLock lock = m_cms.getLock(llmsFile);
-            if (lock.isUnlocked() && lock.isLockableBy(m_cms.getRequestContext().getCurrentUser())) {
-                m_cms.lockResource(llmsFile);
-            } else if (!lock.isOwnedBy(m_cms.getRequestContext().getCurrentUser())) {
-
-            }
-
-            // write file
-            m_cms.writeFile(llmsFile);
-            LOG.debug("XML file " + llmsFile.getRootPath() + " successfully updated.");
-        }
-
-        String result = llmsBean.getResult();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_config.getRobotsTxtText())) {
             result = m_config.getRobotsTxtText() + "\n" + result;
         }
         return result;
+    }
+
+    /**
+     * Updates the llms summary file if necessary in offline mode.<p>
+     *
+     * @return the update results
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public CmsLlmsFileContainer updateLlmsFile() throws CmsException {
+
+        if (!m_cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            // first get XML content file with generated summary
+            CmsFile llmsFile = getLlmsVfsFile();
+
+            // create objects from file entries
+            CmsLlmsFile llmsBean = CmsLlmsFile.createLlmsFileFromContent(
+                CmsXmlContentFactory.unmarshal(m_cms, llmsFile),
+                m_cms);
+
+            // check if overrides have to be updated due to a file modification
+            boolean updateOverrides = llmsFile.getDateLastModified() > llmsBean.getDate();
+
+            CmsXmlSitemapGenerator xmlSitemapGenerator = CmsXmlSitemapActionElement.prepareSitemapGenerator(
+                m_configRes,
+                m_config);
+            // compute URLs of current sitemap
+            List<CmsXmlSitemapUrlBean> urls = xmlSitemapGenerator.generateSitemapBeans();
+            // after that, compare entries from file with entries of current sitemap
+            List<CmsLlmsPage> resultPages = new ArrayList<CmsLlmsPage>(urls.size());
+            boolean changed = false;
+            for (CmsXmlSitemapUrlBean url : urls) {
+                CmsUUID resId = url.getOriginalResource().getStructureId();
+                CmsLlmsPage testPage = llmsBean.getPagesMap().get(resId);
+                if (testPage == null) {
+                    // new page
+                    changed = true;
+                    testPage = getSummaryForPage(url, null);
+                    LOG.debug("Adding new URL " + url.getUrl() + " to page list.");
+                } else if (testPage.getDate() < url.getDateLastModified().getTime()) {
+                    // updated page
+                    changed = true;
+                    testPage = getSummaryForPage(url, testPage.getOverrideSummary());
+                    llmsBean.getPagesMap().remove(resId);
+                    LOG.debug("Updated URL " + url.getUrl() + " of page list.");
+                } else {
+                    // unchanged page, check override
+                    if (updateOverrides && CmsStringUtil.isNotEmptyOrWhitespaceOnly(testPage.getOverrideSummary())) {
+                        // in case an override has been updated, we need to refresh the result
+                        changed = true;
+                    }
+                    llmsBean.getPagesMap().remove(resId);
+                    LOG.debug("Skipped unchanged URL " + url.getUrl() + " of page list.");
+                }
+                // add page to result
+                resultPages.add(testPage);
+            }
+
+            if (llmsBean.getPagesMap().size() > 0) {
+                // at least one page is not in the current sitemap any more
+                changed = true;
+            }
+
+            if (changed) {
+                // store the updated pages in object
+                llmsBean.setPages(resultPages);
+                // generate final result output for llms.txt
+                llmsBean.setResult(getFinalLlmsText(llmsBean));
+
+                // set time stamp for updated content (10 seconds in future to be sure to be newer than last modified date of the file)
+                llmsBean.setDate(new Date().getTime() + 10000);
+
+                // generate XML from updated pages and set it to file content
+                llmsFile.setContents(llmsBean.getXmlContentFromLlmsFile(m_cms).marshal());
+
+                // check lock state
+                CmsLock lock = m_cms.getLock(llmsFile);
+                if (lock.isUnlocked() && lock.isLockableBy(m_cms.getRequestContext().getCurrentUser())) {
+                    m_cms.lockResource(llmsFile);
+                } else if (!lock.isOwnedBy(m_cms.getRequestContext().getCurrentUser())) {
+
+                }
+
+                // write file
+                m_cms.writeFile(llmsFile);
+                LOG.debug("XML file " + llmsFile.getRootPath() + " successfully updated.");
+                return new CmsLlmsFileContainer(llmsBean, llmsFile, true);
+            }
+        }
+        return new CmsLlmsFileContainer(null, null, false);
     }
 
     /**
@@ -369,6 +379,40 @@ public class CmsLlmsGenerator {
         }
 
         return result;
+    }
+
+    /**
+     * Returns the VFS file for the generated summaries.<p>
+     *
+     * If the file does not exist and cannot be created, <code>null</code> is returned.<p>
+     *
+     * @return the VFS file for the generated summaries, or <code>null</code> if it is not present
+     *
+     * @throws CmsException if reading or creating the file fails
+     */
+    private CmsFile getLlmsVfsFile() throws CmsException {
+
+        // first check if XML content with generated summary is present
+        String pathLlmsFile = m_cms.getSitePath(m_configRes) + ".xml";
+        CmsResource llmsFileRes = null;
+        if (!m_cms.existsResource(pathLlmsFile) && !m_cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            // create new XML content file
+            CmsXmlContent content = CmsXmlContentFactory.createDocument(
+                m_cms,
+                CmsLlmsFile.LOCALE,
+                (CmsResourceTypeXmlContent)OpenCms.getResourceManager().getResourceType(
+                    CmsLlmsFile.VFS_FILE_TYPE_NAME));
+            llmsFileRes = m_cms.createResource(
+                pathLlmsFile,
+                OpenCms.getResourceManager().getResourceType(CmsLlmsFile.VFS_FILE_TYPE_NAME),
+                content.marshal(),
+                null);
+        } else {
+            // read existing XML content file
+            llmsFileRes = m_cms.readResource(pathLlmsFile);
+        }
+        return llmsFileRes != null ? m_cms.readFile(llmsFileRes) : null;
+
     }
 
     /**
@@ -470,59 +514,6 @@ public class CmsLlmsGenerator {
         userQuery.put("excerpt", excerpt);
         userQuery.put("question", "Please generate a summary for this title and excerpt usable in an llms.txt file.");
         return userQuery.toString();
-    }
-
-    private CmsXmlContent getXmlContentFromLlmsFile(CmsLlmsFile llmsObjects) throws CmsException {
-
-        // create empty content to fill with updated data
-        CmsXmlContent content = CmsXmlContentFactory.createDocument(
-            m_cms,
-            Locale.ENGLISH,
-            (CmsResourceTypeXmlContent)OpenCms.getResourceManager().getResourceType("llms_file"));
-
-        // iterate the updated pages, generate XML content values from them
-        int pageIndex = 0;
-        for (CmsLlmsPage page : llmsObjects.getPages()) {
-            I_CmsXmlContentValue pageValue = content.addValue(
-                m_cms,
-                CmsLlmsFile.NODE_PAGE,
-                CmsLlmsFile.LOCALE,
-                pageIndex);
-            String pageXmlPathPrefix = pageValue.getPath() + "/";
-
-            content.getValue(pageXmlPathPrefix + CmsLlmsPage.NODE_DATE, CmsLlmsFile.LOCALE).setStringValue(
-                m_cms,
-                String.valueOf(page.getDate()));
-            content.getValue(pageXmlPathPrefix + CmsLlmsPage.NODE_ID, CmsLlmsFile.LOCALE).setStringValue(
-                m_cms,
-                page.getId().getStringValue());
-            content.getValue(pageXmlPathPrefix + CmsLlmsPage.NODE_URL, CmsLlmsFile.LOCALE).setStringValue(
-                m_cms,
-                page.getUrl());
-            content.getValue(pageXmlPathPrefix + CmsLlmsPage.NODE_TITLE, CmsLlmsFile.LOCALE).setStringValue(
-                m_cms,
-                page.getTitle());
-            content.getValue(pageXmlPathPrefix + CmsLlmsPage.NODE_SUMMARY, CmsLlmsFile.LOCALE).setStringValue(
-                m_cms,
-                page.getSummary());
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(page.getOverrideSummary())) {
-                content.addValue(m_cms, pageXmlPathPrefix + CmsLlmsPage.NODE_OVERRIDESUMMARY, CmsLlmsFile.LOCALE, 0);
-                content.getValue(
-                    pageXmlPathPrefix + CmsLlmsPage.NODE_OVERRIDESUMMARY,
-                    CmsLlmsFile.LOCALE).setStringValue(m_cms, page.getOverrideSummary());
-            }
-            pageIndex++;
-        }
-
-        // set the result value
-        content.getValue(CmsLlmsFile.NODE_RESULT, CmsLlmsFile.LOCALE).setStringValue(m_cms, llmsObjects.getResult());
-
-        // set time stamp for updated file (10 seconds in future to be sure to be newer than last modified date)
-        llmsObjects.setDate(new Date().getTime() + 10000);
-        content.getValue(CmsLlmsFile.NODE_DATE, CmsLlmsFile.LOCALE).setStringValue(
-            m_cms,
-            String.valueOf(llmsObjects.getDate()));
-        return content;
     }
 
 }

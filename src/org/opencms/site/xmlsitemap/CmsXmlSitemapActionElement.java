@@ -205,7 +205,7 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
             m_configuration,
             seoFile,
             getCmsObject());
-        result = llmsGenerator.getLlmsTextForUrls();
+        result = llmsGenerator.getLlmsText();
 
         return result;
     }

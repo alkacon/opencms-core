@@ -28,8 +28,13 @@
 package org.opencms.site.xmlsitemap;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
@@ -54,6 +59,9 @@ public class CmsLlmsFile {
 
     /** The locale to use for reading the generated XML content. */
     protected static final Locale LOCALE = Locale.ENGLISH;
+
+    /** The type name of the llms file. */
+    protected static final String VFS_FILE_TYPE_NAME = "llms_file";
 
     /** The last modification date of the generated information. */
     private long m_date;
@@ -140,6 +148,57 @@ public class CmsLlmsFile {
     public String getResult() {
 
         return m_result;
+    }
+
+    /**
+     * Returns the XML content generated from the llms file bean.<p>
+     *
+     * @param cms the current users instance to use for setting the values
+     * @return the generated XML content
+     *
+     * @throws CmsException if generation of the XML content fails
+     */
+    public CmsXmlContent getXmlContentFromLlmsFile(CmsObject cms) throws CmsException {
+
+        // create empty content to fill with updated data
+        CmsXmlContent content = CmsXmlContentFactory.createDocument(
+            cms,
+            LOCALE,
+            (CmsResourceTypeXmlContent)OpenCms.getResourceManager().getResourceType(VFS_FILE_TYPE_NAME));
+
+        // iterate the updated pages, generate XML content values from them
+        int pageIndex = 0;
+        for (CmsLlmsPage page : getPages()) {
+            I_CmsXmlContentValue pageValue = content.addValue(cms, NODE_PAGE, LOCALE, pageIndex);
+            String pageXmlPathPrefix = pageValue.getPath() + "/";
+
+            content.getValue(pageXmlPathPrefix + CmsLlmsPage.NODE_DATE, LOCALE).setStringValue(
+                cms,
+                String.valueOf(page.getDate()));
+            content.getValue(pageXmlPathPrefix + CmsLlmsPage.NODE_ID, LOCALE).setStringValue(
+                cms,
+                page.getId().getStringValue());
+            content.getValue(pageXmlPathPrefix + CmsLlmsPage.NODE_URL, LOCALE).setStringValue(cms, page.getUrl());
+            content.getValue(pageXmlPathPrefix + CmsLlmsPage.NODE_TITLE, LOCALE).setStringValue(cms, page.getTitle());
+            content.getValue(pageXmlPathPrefix + CmsLlmsPage.NODE_SUMMARY, LOCALE).setStringValue(
+                cms,
+                page.getSummary());
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(page.getOverrideSummary())) {
+                content.addValue(cms, pageXmlPathPrefix + CmsLlmsPage.NODE_OVERRIDESUMMARY, LOCALE, 0);
+                content.getValue(pageXmlPathPrefix + CmsLlmsPage.NODE_OVERRIDESUMMARY, LOCALE).setStringValue(
+                    cms,
+                    page.getOverrideSummary());
+            }
+            pageIndex++;
+        }
+
+        // set the result value
+        content.getValue(NODE_RESULT, LOCALE).setStringValue(cms, getResult());
+
+        // set time stamp
+        content.getValue(NODE_DATE, LOCALE).setStringValue(cms, String.valueOf(getDate()));
+
+        return content;
     }
 
     /**
