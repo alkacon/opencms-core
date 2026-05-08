@@ -229,7 +229,7 @@ public class CmsTreeItem extends CmsListItem {
      * @return the path level
      */
     protected static native int getPathLevel(String path)/*-{
-		return path.match(/\//g).length - 1;
+        return path.match(/\//g).length - 1;
     }-*/;
 
     /**
