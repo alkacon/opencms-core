@@ -8,6 +8,7 @@ plugins {
     id 'signing'
     id 'eclipse'
     id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
+    id 'com.diffplug.spotless' version '8.4.0'
 }
 
 group = "org.opencms"
