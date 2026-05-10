@@ -48,25 +48,12 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 
-import org.junit.platform.suite.api.SelectClasses;
-import org.junit.platform.suite.api.Suite;
-
 /**
  * Main test suite for the package <code>{@link org.opencms.search.solr}</code>.<p>
  *
  * @since 8.5.0
  */
-@Suite
-@SelectClasses({
-    // Order MUST mirror the deleted AllTests.suite() exactly.
-    // Hidden cross-class state may depend on it; do NOT alphabetize.
-    TestSolrConfiguration.class,
-    TestSolrFieldConfiguration.class,
-    TestSolrSearch.class,
-    TestCmsSolrCollector.class,
-    TestSolrSerialDateIndexing.class
-})
-public final class AllTests {
+public final class CmsTestSolrHelper {
 
     /** Name of a search index created using API. */
     public static final String INDEX_TEST = "Test new index";

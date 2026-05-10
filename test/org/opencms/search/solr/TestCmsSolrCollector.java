@@ -65,7 +65,7 @@ public class TestCmsSolrCollector extends OpenCmsTestRunner {
         setupOpenCms(testInfo, "solrtest", "/", "/../org/opencms/search/solr");
         // disable all lucene indexes
         for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
-            if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
+            if (!indexName.equalsIgnoreCase(CmsTestSolrHelper.SOLR_ONLINE)) {
                 I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
                 if (index != null) {
                     index.setEnabled(false);

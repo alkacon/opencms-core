@@ -72,6 +72,9 @@ public final class OpenCmsTestProperties {
     /** The singleton instance. */
     private static OpenCmsTestProperties m_testSingleton;
 
+    /** Path for the test.properties file. */
+    public static final String TEST_PROPERTIES_PATH = getResourcePathFromClassloader("");
+
     /** The path to the test.properties file. */
     private String m_basePath;
 

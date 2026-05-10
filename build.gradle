@@ -1252,9 +1252,9 @@ def coreTestConfig = {
 
 test {
     configure coreTestConfig
-    description = "Runs the complete test suite 'org.opencms.test.AllTests'."
+    description = "Runs the complete OpenCms core test suite."
 
-    includes = ['org/opencms/test/AllTestsBridge.class', 'org/opencms/test/AllJupiterTests.class']
+    includes = ['**/Test*.class']
     scanForTestClasses = true
 }
 
@@ -1294,18 +1294,6 @@ tasks.register('testSingle', Test) {
             filter.includeTestsMatching "org.opencms.main.TestCmsSystemInfo*"
         }
     }
-}
-
-tasks.register('testJupiter', Test) {
-    description = "Spike: runs JUnit 6 Jupiter PoC (TestReadResourceJupiter)."
-    group = 'verification'
-    configure coreTestConfig
-    classpath = sourceSets.test.runtimeClasspath
-    testClassesDirs = files(sourceSets.test.java.classesDirectory)
-    useJUnitPlatform()
-    includes = ['org/opencms/file/TestReadResourceJupiter.class']
-    scanForTestClasses = false
-    doNotTrackState("Jupiter PoC uses ad hoc filters and generated result paths.")
 }
 
 tasks.register('testJar', Jar) {

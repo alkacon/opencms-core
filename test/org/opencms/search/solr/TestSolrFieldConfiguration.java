@@ -101,14 +101,14 @@ public class TestSolrFieldConfiguration extends OpenCmsTestRunner {
     @Test
     public void testAppinfoSearchTypeContent() throws Throwable {
 
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
         CmsSolrQuery squery = new CmsSolrQuery(
             null,
             CmsRequestUtil.createParameterMap("q=path:\"/sites/default/extractLinked/el1.xml\""));
         CmsSolrResultList results = index.search(getCmsObject(), squery);
 
         // Test the result count
-        AllTests.printResults(getCmsObject(), results, false);
+        CmsTestSolrHelper.printResults(getCmsObject(), results, false);
         assertEquals(1, results.size());
 
         // Test if the result contains the expected resource
@@ -137,7 +137,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestRunner {
     @Test
     public void testAppinfoSolrField() throws Throwable {
 
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
         CmsSolrQuery squery = new CmsSolrQuery(
             null,
             CmsRequestUtil.createParameterMap("q=path:\"/sites/default/xmlcontent/article_0001.html\""));
@@ -148,7 +148,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestRunner {
         ///////////////
 
         // Test the result count
-        AllTests.printResults(getCmsObject(), results, false);
+        CmsTestSolrHelper.printResults(getCmsObject(), results, false);
         assertEquals(1, results.size());
 
         // Test if the result contains the expected resource
@@ -313,11 +313,11 @@ public class TestSolrFieldConfiguration extends OpenCmsTestRunner {
         OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
 
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
         CmsSolrQuery query = new CmsSolrQuery();
         query.setSearchRoots(cms.getRequestContext().addSiteRoot(folderName));
         CmsSolrResultList results = index.search(cms, query);
-        AllTests.printResults(cms, results, false);
+        CmsTestSolrHelper.printResults(cms, results, false);
         assertEquals(10, results.getNumFound());
 
         for (Map.Entry<String, List<String>> filename : filenames.entrySet()) {
@@ -400,11 +400,11 @@ public class TestSolrFieldConfiguration extends OpenCmsTestRunner {
         OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
 
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
         CmsSolrQuery query = new CmsSolrQuery();
         query.setSearchRoots(Collections.singletonList(cms.getRequestContext().addSiteRoot(folderName)));
         CmsSolrResultList results = index.search(cms, query, false);
-        AllTests.printResults(cms, results, false);
+        CmsTestSolrHelper.printResults(cms, results, false);
         int count = 0;
         for (CmsSearchResource res : results) {
             System.out.println("---------------------");
@@ -460,7 +460,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestRunner {
         echo("Testing the ignore max rows argument.");
         String query = "?fq=con_locales:*&fq=parent-folders:*&fl=path&rows=99999";
         CmsSolrQuery squery = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(query));
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
         CmsSolrResultList result = index.search(getCmsObject(), squery, true);
         int found = result.size();
         assertTrue(
@@ -491,7 +491,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestRunner {
         // publish the project and update the search index
         OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
         // index.setLanguageDetection(true);
         // is the default configured in opencms-search.xml
         CmsSolrQuery query = new CmsSolrQuery(cms, null);
@@ -719,11 +719,11 @@ public class TestSolrFieldConfiguration extends OpenCmsTestRunner {
         OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
 
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
         CmsSolrQuery query = new CmsSolrQuery();
         query.setSearchRoots(Collections.singletonList(cms.getRequestContext().addSiteRoot(folderName)));
         CmsSolrResultList results = index.search(cms, query, false);
-        AllTests.printResults(cms, results, false);
+        CmsTestSolrHelper.printResults(cms, results, false);
         // assertEquals(10, results.getNumFound());
 
         for (Map.Entry<String, List<String>> filename : filenames.entrySet()) {
@@ -743,7 +743,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestRunner {
     @Test
     public void testLuceneMigration() throws Throwable {
 
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
 
         CmsSolrFieldConfiguration conf = (CmsSolrFieldConfiguration)index.getFieldConfiguration();
         assertNotNull(conf.getSolrFields().get("meta"));
@@ -773,13 +773,13 @@ public class TestSolrFieldConfiguration extends OpenCmsTestRunner {
 
         echo("Testing offline index access with the guest user.");
         CmsObject guest = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-        CmsSolrIndex solrIndex = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrIndex solrIndex = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
         echo("First execute a search on the online index.");
         solrIndex.search(guest, "q=*:*&rows=0");
         echo("OK, search could be executed on the online index.");
 
         echo("Now try to execute a search on the Solr Offline index.");
-        solrIndex = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_OFFLINE);
+        solrIndex = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_OFFLINE);
         solrIndex.setEnabled(true);
         try {
             solrIndex.search(guest, "q=*:*&rows=0");

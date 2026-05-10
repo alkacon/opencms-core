@@ -408,7 +408,7 @@ public abstract class A_TestCmsMessageBundles extends OpenCmsTestRunner {
         }
         String source = getMessageBundleSourceName(bundleName, locale);
         String fileName = CmsStringUtil.substitute(bundleName, ".", "/") + "_" + locale.toString() + ".properties";
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+        OpenCmsTestProperties.initialize(org.opencms.test.OpenCmsTestProperties.TEST_PROPERTIES_PATH);
         String target = OpenCmsTestProperties.getInstance().getTestBuildFolder() + "/" + fileName;
         CmsFileUtil.copy(source, target);
         return new CmsMessages(bundleName + "_" + locale.toString(), locale);

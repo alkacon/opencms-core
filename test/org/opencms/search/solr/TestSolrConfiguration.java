@@ -91,7 +91,7 @@ public class TestSolrConfiguration extends OpenCmsTestRunner {
         setupOpenCms(testInfo, "solrtest", "", "/../org/opencms/search/solr");
         // disable all lucene indexes
         for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
-            if (!indexName.equalsIgnoreCase(AllTests.SOLR_ONLINE)) {
+            if (!indexName.equalsIgnoreCase(CmsTestSolrHelper.SOLR_ONLINE)) {
                 I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
                 if (index != null) {
                     index.setEnabled(false);
@@ -180,23 +180,23 @@ public class TestSolrConfiguration extends OpenCmsTestRunner {
     public void testPermissionHandling() throws Throwable {
 
         echo("Testing search for permission check by comparing result counts");
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
 
         CmsSolrQuery squery = new CmsSolrQuery(getCmsObject(), null);
         squery.setSearchRoots("/sites/default/");
         squery.setRows(Integer.valueOf(100));
         CmsSolrResultList results = index.search(getCmsObject(), squery);
-        AllTests.printResults(getCmsObject(), results, true);
+        CmsTestSolrHelper.printResults(getCmsObject(), results, true);
         assertEquals(60, results.getNumFound());
 
         CmsObject cms = OpenCms.initCmsObject(getCmsObject(), new CmsContextInfo("test1"));
         results = index.search(cms, squery);
-        AllTests.printResults(cms, results, false);
+        CmsTestSolrHelper.printResults(cms, results, false);
         assertEquals(54, results.getNumFound());
 
         cms = OpenCms.initCmsObject(getCmsObject(), new CmsContextInfo("test2"));
         results = index.search(cms, squery);
-        AllTests.printResults(cms, results, true);
+        CmsTestSolrHelper.printResults(cms, results, true);
         assertEquals(56, results.getNumFound());
     }
 
@@ -211,10 +211,10 @@ public class TestSolrConfiguration extends OpenCmsTestRunner {
 
         echo("Testing Solr link processor");
         CmsObject cms = getCmsObject();
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
         String query = "q=+text:>>SearchEgg1<<";
         CmsSolrResultList results = index.search(cms, query);
-        CmsSearchResource res = AllTests.getByPath(results, "/sites/default/xmlcontent/article_0001.html");
+        CmsSearchResource res = CmsTestSolrHelper.getByPath(results, "/sites/default/xmlcontent/article_0001.html");
         String link = res.getDocument().getFieldValueAsString("link");
         assertEquals(getVfsPrefix() + "/xmlcontent/article_0001.html", link);
     }
@@ -272,7 +272,7 @@ public class TestSolrConfiguration extends OpenCmsTestRunner {
         query.setRows(Integer.valueOf(10));
 
         // Offline and Online both siblings should be found for the new content
-        CmsSolrIndex oindex = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrIndex oindex = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
         CmsSolrResultList rl = oindex.search(cms, query);
         assertEquals(2, rl.size(), "Both siblings must be found, they have the same content.");
 
@@ -321,14 +321,14 @@ public class TestSolrConfiguration extends OpenCmsTestRunner {
     public void testShutDown() throws Throwable {
 
         echo("Testing Solr shutdown");
-        CmsSolrIndex index = new CmsSolrIndex(AllTests.INDEX_TEST);
+        CmsSolrIndex index = new CmsSolrIndex(CmsTestSolrHelper.INDEX_TEST);
         index.setProject("Offline");
         index.setLocale(Locale.GERMAN);
         index.setRebuildMode(I_CmsSearchIndex.REBUILD_MODE_AUTO);
         index.setFieldConfigurationName("solr_fields");
         index.addSourceName("solr_source2");
         OpenCms.getSearchManager().addSearchIndex(index);
-        OpenCms.getSearchManager().rebuildIndex(AllTests.INDEX_TEST, new CmsShellReport(Locale.ENGLISH));
+        OpenCms.getSearchManager().rebuildIndex(CmsTestSolrHelper.INDEX_TEST, new CmsShellReport(Locale.ENGLISH));
         for (int i = 0; i < 250; i++) {
             index.search(getCmsObject(), "q=*:*");
         }

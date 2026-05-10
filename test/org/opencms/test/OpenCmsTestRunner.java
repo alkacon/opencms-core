@@ -3437,7 +3437,7 @@ public class OpenCmsTestRunner extends Assertions {
             try {
                 OpenCmsTestProperties.getInstance();
             } catch (RuntimeException rte) {
-                OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+                OpenCmsTestProperties.initialize(org.opencms.test.OpenCmsTestProperties.TEST_PROPERTIES_PATH);
             }
             // set data path
             addTestDataPath(OpenCmsTestProperties.getInstance().getTestDataPath());
