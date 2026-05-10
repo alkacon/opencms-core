@@ -271,7 +271,7 @@ public class TestPublishManager extends OpenCmsTestRunner {
         List oldQueue = OpenCms.getPublishManager().getPublishQueue();
 
         // add an event listener used to restart the engine when ther job was started
-        OpenCms.getPublishManager().addPublishListener(new MockPublishEventListener2(cms));
+        OpenCms.getPublishManager().addPublishListener(new CmsTestPublishEventListener2(cms));
 
         // now start publishing again and reinitialize the publish manager and engine while it is running
         OpenCms.getPublishManager().startPublishing();
@@ -315,11 +315,11 @@ public class TestPublishManager extends OpenCmsTestRunner {
         }
 
         // set the listener for the first job
-        MockPublishEventListener firstListener = new MockPublishEventListener(cms.readResource(destination + "1.gif"));
+        CmsTestPublishEventListener firstListener = new CmsTestPublishEventListener(cms.readResource(destination + "1.gif"));
         OpenCms.getPublishManager().addPublishListener(firstListener);
 
         // set the listener for the last job
-        MockPublishEventListener lastListener = new MockPublishEventListener(
+        CmsTestPublishEventListener lastListener = new CmsTestPublishEventListener(
             cms.readResource(destination + max + ".gif"));
         OpenCms.getPublishManager().addPublishListener(lastListener);
 

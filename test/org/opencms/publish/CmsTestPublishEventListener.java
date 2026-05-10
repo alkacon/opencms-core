@@ -36,7 +36,7 @@ import org.opencms.util.CmsUUID;
  *
  * @since 6.5.5
  */
-public class MockPublishEventListener implements I_CmsPublishEventListener {
+public class CmsTestPublishEventListener implements I_CmsPublishEventListener {
 
     private long m_aborted;
     private long m_enqueued;
@@ -55,7 +55,7 @@ public class MockPublishEventListener implements I_CmsPublishEventListener {
      *
      * @param resource the resource to track
      */
-    public MockPublishEventListener(CmsResource resource) {
+    public CmsTestPublishEventListener(CmsResource resource) {
 
         m_resource = resource;
     }

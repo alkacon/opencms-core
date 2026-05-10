@@ -29,14 +29,11 @@ package org.opencms.module;
 
 import org.opencms.test.OpenCmsTestRunner;
 
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the module name generation.<p>
  */
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestCmsModuleNameGeneration extends OpenCmsTestRunner {
 
     /**

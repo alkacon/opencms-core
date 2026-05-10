@@ -45,8 +45,8 @@ import org.junit.jupiter.api.TestMethodOrder;
  *
  * @since 6.0.0
  */
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestCmsMessages extends OpenCmsTestRunner {
 
     /**

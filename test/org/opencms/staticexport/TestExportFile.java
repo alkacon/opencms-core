@@ -37,18 +37,14 @@ import java.io.File;
 import java.io.FileInputStream;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * @since 6.0.0
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestExportFile extends OpenCmsTestRunner {
 
     @Override
@@ -64,7 +60,6 @@ public class TestExportFile extends OpenCmsTestRunner {
      * @throws Throwable if something goes wrong
      */
     @Test
-    @Order(1)
     public void testStaticexportFile() throws Throwable {
 
         CmsObject cms = getCmsObject();

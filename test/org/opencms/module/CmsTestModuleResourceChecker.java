@@ -45,7 +45,7 @@ import org.dom4j.io.SAXReader;
 /**
  * Helper class to list files in modules which are missing from the modules' manifests.<p>
  */
-public class CmsModuleResourceChecker {
+public class CmsTestModuleResourceChecker {
 
     /** Default module path . */
     public static final String DEFAULT_MODULE_PATH = "C:/dev/workspace/opencms/modules";
@@ -59,7 +59,7 @@ public class CmsModuleResourceChecker {
     public static void main(String[] args) throws Exception {
 
         String path = args.length > 0 ? args[0] : DEFAULT_MODULE_PATH;
-        (new CmsModuleResourceChecker()).checkAllModules(path);
+        (new CmsTestModuleResourceChecker()).checkAllModules(path);
 
     }
 

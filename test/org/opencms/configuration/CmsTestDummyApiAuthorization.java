@@ -25,31 +25,32 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml2json;
+package org.opencms.configuration;
 
-import org.opencms.json.JSONException;
-import org.opencms.xml.xml2json.CmsXmlContentTree.Field;
-import org.opencms.xml.xml2json.renderer.CmsJsonRendererXmlContent;
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
+import org.opencms.xml.xml2json.I_CmsApiAuthorizationHandler;
 
-import java.util.AbstractMap.SimpleEntry;
+import javax.servlet.http.HttpServletRequest;
 
-/**
- * Dummy XML content renderer.
- *
- * Throws out everything except 'Text' field.
- */
-public class CmsDummyContentRenderer extends CmsJsonRendererXmlContent {
+public class CmsTestDummyApiAuthorization implements I_CmsApiAuthorizationHandler {
 
-    /**
-     * @see org.opencms.xml.xml2json.renderer.CmsJsonRendererXmlContent#renderField(org.opencms.xml.xml2json.CmsXmlContentTree.Field)
-     */
-    @Override
-    protected SimpleEntry<String, Object> renderField(Field field) throws JSONException {
+    public CmsObject initCmsObject(CmsObject adminCms, HttpServletRequest request) throws CmsException {
 
-        if (!field.getName().equals("Text")) {
-            return null;
-        }
-        return super.renderField(field);
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void initialize(CmsObject cms) {
+
+        // TODO Auto-generated method stub
+
+    }
+
+    public void setParameters(CmsParameterConfiguration params) {
+
+        // TODO Auto-generated method stub
+
     }
 
 }

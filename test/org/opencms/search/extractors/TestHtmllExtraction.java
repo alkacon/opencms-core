@@ -32,14 +32,11 @@ import org.opencms.test.OpenCmsTestRunner;
 import java.io.InputStream;
 import java.util.Map;
 
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the text extraction form an Excel file.<p>
  */
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestHtmllExtraction extends OpenCmsTestRunner {
 
     /**

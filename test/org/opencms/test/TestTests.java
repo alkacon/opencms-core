@@ -31,18 +31,16 @@ import org.opencms.main.CmsLog;
 
 import org.apache.commons.logging.Log;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.TestInfo;
 
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestTests extends OpenCmsTestRunner {
 
-    @BeforeEach
-    public void setUp() {
+    @BeforeAll
+    public void setUpConfiguration(TestInfo testInfo) {
 
-        initConfiguration(true);
+        initConfiguration();
     }
 
     @Test

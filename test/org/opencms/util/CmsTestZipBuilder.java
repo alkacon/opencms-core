@@ -41,7 +41,7 @@ import java.util.zip.ZipOutputStream;
 /**
  * Helper class for programmatically building zip files for test cases.<p>
  */
-public class CmsZipBuilder {
+public class CmsTestZipBuilder {
 
     /** The file contents, with the paths as keys. */
     private Map<String, byte[]> m_entries = new HashMap<>();

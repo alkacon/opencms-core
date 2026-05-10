@@ -45,7 +45,6 @@ import org.junit.jupiter.api.TestMethodOrder;
  * Unit tests for the <code>{@link CmsJspResourceWrapper}</code>.<p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestCmsJspUtils extends OpenCmsTestRunner {
 
     /**
@@ -64,7 +63,6 @@ public class TestCmsJspUtils extends OpenCmsTestRunner {
      * @throws Exception if the test fails
      */
     @Test
-    @Order(1)
     public void testLinkWrapper() throws Exception {
 
         CmsObject cms = getCmsObject();

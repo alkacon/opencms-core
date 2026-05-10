@@ -30,10 +30,8 @@ package org.opencms.util;
 import org.opencms.test.OpenCmsTestRunner;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test cases for the resource translator.<p>
@@ -41,7 +39,6 @@ import org.junit.jupiter.api.TestMethodOrder;
  * @since 6.0.0
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestCmsResourceTranslator extends OpenCmsTestRunner {
 
     // default rules (same as in "opencms.properties")

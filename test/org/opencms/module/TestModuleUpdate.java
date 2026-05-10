@@ -46,7 +46,7 @@ import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
 import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.util.CmsZipBuilder;
+import org.opencms.util.CmsTestZipBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -1171,7 +1171,7 @@ public class TestModuleUpdate extends OpenCmsTestRunner {
                 + "</export>\n"
                 + "";
 
-            CmsZipBuilder zipBuilder = new CmsZipBuilder();
+            CmsTestZipBuilder zipBuilder = new CmsTestZipBuilder();
             zipBuilder.addFile("manifest.xml", manifest);
             zipBuilder.addFile("system/test1234", "test1234");
             File importZip = zipBuilder.writeZip();
@@ -1299,7 +1299,7 @@ public class TestModuleUpdate extends OpenCmsTestRunner {
             + "   </files>\n"
             + "</export>\n"
             + "";
-        CmsZipBuilder zipBuilder = new CmsZipBuilder();
+        CmsTestZipBuilder zipBuilder = new CmsTestZipBuilder();
         zipBuilder.addFile("manifest.xml", manifest);
         zipBuilder.addFile("system/test123", "test123");
         File importZip = zipBuilder.writeZip();

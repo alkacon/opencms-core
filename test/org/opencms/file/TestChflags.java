@@ -31,13 +31,10 @@ import org.opencms.test.OpenCmsTestResourceFilter;
 import org.opencms.test.OpenCmsTestRunner;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for the "chflags" method of the CmsObject.<p>
@@ -45,7 +42,6 @@ import org.junit.jupiter.api.TestMethodOrder;
  * @since 6.0 alpha 2
  */
 @TestInstance(Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestChflags extends OpenCmsTestRunner {
 
     /**
@@ -102,7 +98,6 @@ public class TestChflags extends OpenCmsTestRunner {
      * @throws Throwable if something goes wrong
      */
     @Test
-    @Order(1)
     public void testAddFlagInternal() throws Throwable {
 
         final CmsObject cms = getCmsObject();

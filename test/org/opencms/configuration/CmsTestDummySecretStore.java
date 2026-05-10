@@ -27,13 +27,10 @@
 
 package org.opencms.configuration;
 
-import org.opencms.ade.upload.I_CmsVirusScanner;
+import org.opencms.file.CmsObject;
+import org.opencms.security.I_CmsSecretStore;
 
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.List;
-
-public class CmsDummyVirusScanner implements I_CmsVirusScanner {
+public class CmsTestDummySecretStore implements I_CmsSecretStore {
 
     private CmsParameterConfiguration m_config = new CmsParameterConfiguration();
 
@@ -41,13 +38,19 @@ public class CmsDummyVirusScanner implements I_CmsVirusScanner {
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         m_config.add(paramName, paramValue);
-
     }
 
     @Override
     public CmsParameterConfiguration getConfiguration() {
 
         return m_config;
+
+    }
+
+    @Override
+    public String getSecret(String key) {
+
+        return null;
     }
 
     @Override
@@ -56,13 +59,9 @@ public class CmsDummyVirusScanner implements I_CmsVirusScanner {
     }
 
     @Override
-    public List<String> scan(InputStream stream) {
+    public void initialize(CmsObject cmsObject) {
 
-        return Collections.emptyList();
-    }
-
-    @Override
-    public void test() {
+        // TODO Auto-generated method stub
 
     }
 

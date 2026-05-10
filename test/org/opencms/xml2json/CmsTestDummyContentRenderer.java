@@ -25,50 +25,31 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.content;
+package org.opencms.xml2json;
 
-import org.opencms.widgets.CmsInputWidget;
-import org.opencms.widgets.I_CmsWidget;
+import org.opencms.json.JSONException;
+import org.opencms.xml.xml2json.CmsXmlContentTree.Field;
+import org.opencms.xml.xml2json.renderer.CmsJsonRendererXmlContent;
+
+import java.util.AbstractMap.SimpleEntry;
 
 /**
- * Extension of the base select widget for testing the "custom widget class" function in the XML content
- * schema annotation.<p>
+ * Dummy XML content renderer.
+ *
+ * Throws out everything except 'Text' field.
  */
-public class MockCustomInputWidgetImpl extends CmsInputWidget {
-
-    /***
-     * Base constructor.<p>
-     */
-    public MockCustomInputWidgetImpl() {
-
-        super();
-    }
-
-    /***
-     * Base constructor with configuration String.<p>
-     *
-     * @param configuration the configuration String to use
-     */
-    public MockCustomInputWidgetImpl(String configuration) {
-
-        super(configuration);
-    }
+public class CmsTestDummyContentRenderer extends CmsJsonRendererXmlContent {
 
     /**
-     * @see org.opencms.widgets.CmsInputWidget#newInstance()
+     * @see org.opencms.xml.xml2json.renderer.CmsJsonRendererXmlContent#renderField(org.opencms.xml.xml2json.CmsXmlContentTree.Field)
      */
     @Override
-    public I_CmsWidget newInstance() {
+    protected SimpleEntry<String, Object> renderField(Field field) throws JSONException {
 
-        return new MockCustomInputWidgetImpl(getConfiguration());
+        if (!field.getName().equals("Text")) {
+            return null;
+        }
+        return super.renderField(field);
     }
 
-    /**
-     * @see org.opencms.widgets.I_CmsWidget#setConfiguration(java.lang.String)
-     */
-    @Override
-    public void setConfiguration(String configuration) {
-
-        super.setConfiguration(configuration + "[some addition here]");
-    }
 }

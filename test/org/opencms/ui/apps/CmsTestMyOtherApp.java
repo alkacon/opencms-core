@@ -34,20 +34,38 @@ import java.util.Locale;
 
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
+import com.vaadin.v7.ui.Label;
 
-public class AppConfiguration implements I_CmsWorkplaceAppConfiguration {
+public class CmsTestMyOtherApp implements I_CmsWorkplaceAppConfiguration {
+
+    public static class MyOtherAppComponent extends Label implements I_CmsWorkplaceApp {
+
+        public MyOtherAppComponent() {
+
+            super("CmsTestMyOtherApp");
+        }
+
+        public void initUI(I_CmsAppUIContext context) {
+
+            context.setAppContent(this);
+        }
+
+        public void onStateChange(String state) {
+
+            // TODO Auto-generated method stub
+
+        }
+    }
 
     public String getAppCategory() {
 
         // TODO Auto-generated method stub
         return null;
-
     }
 
     public I_CmsWorkplaceApp getAppInstance() {
 
-        // TODO Auto-generated method stub
-        return null;
+        return new MyOtherAppComponent();
     }
 
     public String getButtonStyle() {
@@ -68,13 +86,18 @@ public class AppConfiguration implements I_CmsWorkplaceAppConfiguration {
 
     public String getId() {
 
-        return "/";
+        return "myotherapp";
+    }
+
+    public String getName() {
+
+        // TODO Auto-generated method stub
+        return null;
     }
 
     public String getName(Locale locale) {
 
-        // TODO Auto-generated method stub
-        return "testApp1";
+        return "myotherapp";
     }
 
     public int getOrder() {
@@ -99,7 +122,7 @@ public class AppConfiguration implements I_CmsWorkplaceAppConfiguration {
 
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
-        // TODO Auto-generated method stub
-        return new CmsAppVisibilityStatus(false, false, "visible");
+        return new CmsAppVisibilityStatus(true, true, "");
     }
+
 }

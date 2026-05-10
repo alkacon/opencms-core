@@ -43,16 +43,12 @@ import java.util.List;
 import java.util.Locale;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /** Tests for the {@link CmsJspNavigationBean} - and thus indirectly for the tag cms:navigation. */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestCmsJspNavigationBean extends OpenCmsTestRunner {
 
     /**
@@ -71,7 +67,6 @@ public class TestCmsJspNavigationBean extends OpenCmsTestRunner {
      * @throws CmsException thrown if creation of the test resource or property writing/reading fails.
      */
     @Test
-    @Order(1)
     public void testLocaleSpecificNavigation() throws CmsException {
 
         CmsObject cms = getCmsObject();

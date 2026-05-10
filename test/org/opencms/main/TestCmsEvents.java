@@ -32,19 +32,15 @@ import org.opencms.file.CmsProject;
 import org.opencms.test.OpenCmsTestRunner;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for OpenCms events.<p>
  */
 @TestInstance(Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestCmsEvents extends OpenCmsTestRunner {
 
     /**
@@ -62,7 +58,6 @@ public class TestCmsEvents extends OpenCmsTestRunner {
      *
      * @throws Throwable if the test fails
      */
-    @Order(1)
     @Test
     public void testBeforeAfterPublishEvent() throws Throwable {
 

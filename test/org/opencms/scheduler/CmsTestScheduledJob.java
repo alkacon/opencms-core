@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: https://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -25,23 +25,43 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.configuration;
+package org.opencms.scheduler;
 
-import org.opencms.main.CmsLog;
-import org.opencms.search.CmsSearchManager;
+import org.opencms.file.CmsObject;
+
+import java.util.Map;
 
 /**
- * Dummy implementation for a search manager, to test the configuration.<p>
+ * Mock class for OpenCms scheduled jobs.<p>
  */
-public class CmsCustomSearchManager extends CmsSearchManager {
+public class CmsTestScheduledJob implements I_CmsScheduledJob {
+
+    /** Indicates if this class was run. */
+    static int m_runCount;
+
+    /** Static copy of the instance run count for easy test access. */
+    static int m_instanceCountCopy;
+
+    /** Instance run count. */
+    private int m_instanceRunCount;
 
     /**
-     * Public constructor.<p>
+     * Default constructor.<p>
      */
-    public CmsCustomSearchManager() {
+    public CmsTestScheduledJob() {
 
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info("!!!!!!!!!!!!!!!!!!!!!! My very special custom search manager !!!!!!!!!!!!!!!!!");
-        }
+        m_instanceRunCount = 0;
+    }
+
+    /**
+     * @see org.opencms.scheduler.I_CmsScheduledJob#launch(CmsObject, Map)
+     */
+    @Override
+    public String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
+
+        m_runCount++;
+        m_instanceRunCount++;
+        m_instanceCountCopy = m_instanceRunCount;
+        return "OpenCms scheduler test job " + m_runCount + " was run (instance count: " + m_instanceRunCount + ").";
     }
 }

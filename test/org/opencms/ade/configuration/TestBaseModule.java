@@ -51,19 +51,16 @@ import java.util.Set;
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests involving the resource types from the org.opencms.base module.
  *
  */
 @TestInstance(Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestBaseModule extends OpenCmsTestRunner {
 
     static {

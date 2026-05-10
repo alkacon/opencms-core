@@ -30,14 +30,11 @@ package org.opencms.util;
 import org.opencms.test.OpenCmsTestRunner;
 
 import org.htmlparser.util.ParserException;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the HTML validator.<p>
  */
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestCmsHtmlValidator extends OpenCmsTestRunner {
 
     /**

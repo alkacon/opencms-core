@@ -37,7 +37,7 @@ import org.opencms.util.CmsUUID;
  *
  * @since 6.5.5
  */
-public class MockPublishEventListener2 implements I_CmsPublishEventListener {
+public class CmsTestPublishEventListener2 implements I_CmsPublishEventListener {
 
     /** The cms object. */
     private CmsObject m_cms;
@@ -47,7 +47,7 @@ public class MockPublishEventListener2 implements I_CmsPublishEventListener {
      *
      * @param cms the cms object
      */
-    public MockPublishEventListener2(CmsObject cms) {
+    public CmsTestPublishEventListener2(CmsObject cms) {
 
         m_cms = cms;
     }

@@ -31,16 +31,13 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.test.OpenCmsTestRunner;
 
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test cases for file name validation.<p>
  *
  * @since 6.0.0
  */
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestValidFilename extends OpenCmsTestRunner {
 
     /**

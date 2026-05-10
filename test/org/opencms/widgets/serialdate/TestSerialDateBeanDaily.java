@@ -40,13 +40,9 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /** Test cases for @{link org.opencms.widgets.serialdate.CmsSerialDateBeanDaily}. */
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestSerialDateBeanDaily extends OpenCmsTestRunner {
 
     /** empty sorted set of dates. */
@@ -54,7 +50,6 @@ public class TestSerialDateBeanDaily extends OpenCmsTestRunner {
 
     /** Several tests for @{link org.opencms.widgets.serialdate.I_CmsSerialDateBean#getDates}. */
     @Test
-    @Order(1)
     public void testGetDates() {
 
         Calendar startDate = new GregorianCalendar(2017, 05, 28, 15, 05); // 28.06.2017 15:05 Mi

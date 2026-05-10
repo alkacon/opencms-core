@@ -632,7 +632,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestRunner {
 
         assertTrue(xmlcontent.hasValue("Html", Locale.ENGLISH));
         assertTrue(xmlcontent.hasValue("VfsLink", Locale.ENGLISH));
-        assertSame(definition.getContentHandler().getClass().getName(), MockXmlContentHandler.class.getName());
+        assertSame(definition.getContentHandler().getClass().getName(), CmsTestXmlContentHandler.class.getName());
     }
 
     /**
@@ -924,7 +924,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestRunner {
         // make sure the custom class name works
         widget = CmsWidgetUtil.collectWidgetInfo(cms, xmlcontent.getValue("Toast", Locale.ENGLISH)).getWidget();
         assertNotNull(widget);
-        assertEquals(MockCustomInputWidgetImpl.class.getName(), widget.getClass().getName());
+        assertEquals(CmsTestCustomInputWidgetImpl.class.getName(), widget.getClass().getName());
         assertEquals("Configuration for Toast", handler.getConfiguration(xmlcontent.getValue("Toast", Locale.ENGLISH)));
         // custom widget configuration has extended the handler String
         assertEquals("Configuration for Toast[some addition here]", widget.getConfiguration());
@@ -1958,7 +1958,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestRunner {
         value1 = xmlcontent.getValue(xpath, Locale.ENGLISH);
         assertEquals(CmsXmlUtils.createXpath(xpath, 1), value1.getPath());
 
-        assertSame(definition.getContentHandler().getClass().getName(), MockXmlContentHandler.class.getName());
+        assertSame(definition.getContentHandler().getClass().getName(), CmsTestXmlContentHandler.class.getName());
     }
 
     /**
@@ -1987,7 +1987,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestRunner {
         I_CmsXmlContentHandler contentHandler;
 
         contentHandler = definition.getContentHandler();
-        assertSame(definition.getContentHandler().getClass().getName(), MockXmlContentHandler.class.getName());
+        assertSame(definition.getContentHandler().getClass().getName(), CmsTestXmlContentHandler.class.getName());
         // the messages will always contain the org.opencms.xml.content.messages bundle
         assertNotNull(contentHandler.getMessages(Locale.ENGLISH));
 
@@ -2646,12 +2646,12 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestRunner {
         // check content handlers for nested elements
         I_CmsXmlContentValue value1 = xmlcontent.getValue("Test", Locale.ENGLISH);
         assertSame(
-            MockXmlContentHandler.class.getName(),
+            CmsTestXmlContentHandler.class.getName(),
             value1.getContentDefinition().getContentHandler().getClass().getName());
 
         value1 = xmlcontent.getValue("Cascade", Locale.ENGLISH);
         assertSame(
-            MockXmlContentHandler.class.getName(),
+            CmsTestXmlContentHandler.class.getName(),
             value1.getContentDefinition().getContentHandler().getClass().getName());
 
         value1 = xmlcontent.getValue("Cascade/Title", Locale.ENGLISH);

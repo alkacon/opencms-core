@@ -45,13 +45,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for the {@link CmsFlexResponse}.<p>
@@ -63,7 +60,6 @@ import org.junit.jupiter.api.TestMethodOrder;
  * @since 6.0.1
  */
 @TestInstance(Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestCmsFlexResponse extends OpenCmsTestRunner {
 
     /**
@@ -297,7 +293,7 @@ public class TestCmsFlexResponse extends OpenCmsTestRunner {
         m_controller = new CmsFlexController(
             cms,
             null,
-            CmsFlexDummyLoader.getFlexCache(),
+            CmsTestFlexDummyLoader.getFlexCache(),
             m_request,
             m_response,
             false,
@@ -324,7 +320,6 @@ public class TestCmsFlexResponse extends OpenCmsTestRunner {
      *
      * @throws Exception if the test fails
      */
-    @Order(1)
     @Test
     public void testContentTypeRules() throws Exception {
 

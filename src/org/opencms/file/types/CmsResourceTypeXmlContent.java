@@ -90,6 +90,9 @@ import com.google.common.collect.Lists;
  */
 public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
+    /** The name of this resource type. */
+    public static final String RESOURCE_TYPE_NAME = "xmlcontent";
+
     /** Request context attribute used to enable reverse availability mapping. */
     public static final String ATTR_REVERSE_AVAILABILITY_MAPPING = "REVERSE_AVAILABILITY_MAPPING";
 
@@ -98,9 +101,6 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
     /** The name for the choose model file form action. */
     public static final String DIALOG_CHOOSEMODEL = "choosemodel";
-
-    /** The name of this resource type. */
-    public static final String RESOURCE_TYPE_NAME = "xmlcontent";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlContent.class);

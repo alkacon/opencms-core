@@ -40,10 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.dom4j.Document;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.xml.sax.InputSource;
 
 /**
@@ -51,18 +48,15 @@ import org.xml.sax.InputSource;
  *
  * @since 6.0.0
  */
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestConfiguration extends OpenCmsTestRunner {
 
     /**
      * Loads the configuration using the configuration manager,
      * if anyting goes wrong an exception is thrown and the test fails.<p>
      *
-     *
      * @throws Exception if something goes wrong
      */
     @Test
-    @Order(1)
     public void testLoadXmlConfiguration() throws Exception {
 
         // get the file name of the input resource

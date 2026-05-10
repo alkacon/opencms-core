@@ -32,14 +32,11 @@ import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.ArrayList;
 
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * @since 6.0.0
  */
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestCmsExportFolderMatcher extends OpenCmsTestRunner {
 
     private static String checkRes = "/system/opencms.ini";

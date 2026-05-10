@@ -110,7 +110,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 /**
  * Provides an environment to run OpenCms test cases with a database backend.<p>
  *
- * Subclasses can override {@link #openCmsSetUp()} and {@link #openCmsTearDown()}
+ * Subclasses can override {@link #$openCmsSetUp(TestInfo)} and {@link #$openCmsTearDown(TestInfo)}
  * to show their OpenCms setup explicitly.<p>
  *
  * The required configuration files are located in the
@@ -2452,7 +2452,7 @@ public class OpenCmsTestRunner extends Assertions {
         CmsGitCheckin.zipRfsFolder(base, new FileOutputStream(tempZip));
         File renamedFile = new File(
             tempZip.getParentFile(),
-            RandomStringUtils.randomNumeric(6) + "_org.opencms.base.zip");
+            RandomStringUtils.insecure().nextNumeric(6) + "_org.opencms.base.zip");
         boolean renameOk = tempZip.renameTo(renamedFile);
         if (!renameOk) {
             throw new RuntimeException("renaming temp file failed in generateBaseModule()");
@@ -2638,7 +2638,11 @@ public class OpenCmsTestRunner extends Assertions {
             // generate folder
             String vfsName = vfsFolder + generateName(fileNameLength) + i;
             List<CmsProperty> props = generateProperties(cms, maxProps, propValueLength, propertyDistribution);
-            cms.createResource(vfsName, CmsResourceTypeFolder.getStaticTypeId(), new byte[0], props);
+            cms.createResource(
+                vfsName,
+                OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.RESOURCE_TYPE_NAME),
+                new byte[0],
+                props);
             cms.unlockResource(vfsName);
 
             int numberOfFiles = rnd.nextInt(maxNumberOfFiles) + 1;
@@ -3300,7 +3304,11 @@ public class OpenCmsTestRunner extends Assertions {
     throws Exception {
 
         byte[] content = CmsFileUtil.readFile(rfsPath);
-        CmsResource result = cms.createResource(vfsPath, type, content, properties);
+        CmsResource result = cms.createResource(
+            vfsPath,
+            OpenCms.getResourceManager().getResourceType(type),
+            content,
+            properties);
         cms.unlockResource(vfsPath);
         return result;
     }
@@ -4244,7 +4252,7 @@ public class OpenCmsTestRunner extends Assertions {
             getTestDataPath("WEB-INF" + File.separatorChar + CmsSystemInfo.FOLDER_CONFIG_DEFAULT));
         File configOriDir = new File(newConfig);
 
-        FileFilter filter = FileFilterUtils.orFileFilter(
+        FileFilter filter = FileFilterUtils.or(
             FileFilterUtils.suffixFileFilter(".xml"),
             FileFilterUtils.suffixFileFilter(".properties"));
         if (configOriDir.exists()) {

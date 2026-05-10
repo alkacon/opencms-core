@@ -42,12 +42,9 @@ import java.util.List;
 import java.util.Locale;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for the <code>{@link CmsJspVfsAccessBean}</code>.<p>
@@ -55,7 +52,6 @@ import org.junit.jupiter.api.TestMethodOrder;
  * @since 7.0.2
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestCmsJspResourceAccessBean extends OpenCmsTestRunner {
 
     /**
@@ -69,7 +65,6 @@ public class TestCmsJspResourceAccessBean extends OpenCmsTestRunner {
     }
 
     @Test
-    @Order(1)
     public void testReadPropertyLocale() throws CmsException {
 
         CmsObject cms = getCmsObject();

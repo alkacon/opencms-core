@@ -74,7 +74,7 @@ public class TestCmsHtmlExtractor extends OpenCmsTestRunner {
         Parser parser = new Parser();
         parser.setInputHTML(content);
 
-        StringBean stringBean = new StringBean();
+        CmsTestStringBean stringBean = new CmsTestStringBean();
         stringBean.setLinks(true);
         stringBean.setCollapse(true);
 

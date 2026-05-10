@@ -33,14 +33,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the default file name generation.<p>
  */
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestCmsDefaultFileNameGenerator extends OpenCmsTestRunner {
 
     /** List of names with 5 digits. */

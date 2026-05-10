@@ -33,23 +33,18 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.Map;
 
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test cases for the parsing of select widget options.<p>
  *
  */
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestHtmlWidgetOption extends OpenCmsTestRunner {
 
     /**
      * Tests parsing of the embedded gallery configuration.<p>
      */
     @Test
-    @Order(1)
     public void testParseEmbeddedGalleryOptions() {
 
         String config = "imagegallery{foo},xyzzy,downloadgallery{bar},bbb,endswithimagegallery{ttt}";

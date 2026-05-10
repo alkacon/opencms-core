@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @since 6.0.1
  */
-public class CmsFlexDummyLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledLoader {
+public class CmsTestFlexDummyLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledLoader {
 
     /** The dummy id of this dummy loader. */
     public static final int LOADER_ID = 100;

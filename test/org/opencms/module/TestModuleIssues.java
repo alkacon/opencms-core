@@ -261,7 +261,7 @@ public class TestModuleIssues extends OpenCmsTestRunner {
             fail("Module '" + moduleName + "' has no action instance!");
         }
 
-        if (!(actionInstance instanceof MockModuleActionImpl)) {
+        if (!(actionInstance instanceof CmsTestModuleActionImpl)) {
             fail("Module '" + moduleName + "' has action class of unexpected type!");
         }
 
@@ -269,9 +269,9 @@ public class TestModuleIssues extends OpenCmsTestRunner {
         removeOpenCms(testInfo);
 
         // check if shutdown flag was set to "true"
-        assertTrue(MockModuleActionImpl.m_shutDown);
+        assertTrue(CmsTestModuleActionImpl.m_shutDown);
 
         // reset flag for next test
-        MockModuleActionImpl.m_shutDown = false;
+        CmsTestModuleActionImpl.m_shutDown = false;
     }
 }

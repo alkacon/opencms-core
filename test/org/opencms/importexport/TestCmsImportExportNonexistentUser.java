@@ -41,19 +41,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests exporting/import VFS data with nonexistent users.<p>
  *
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestCmsImportExportNonexistentUser extends OpenCmsTestRunner {
 
     /**
@@ -75,7 +71,6 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestRunner {
      * @throws Exception if something goes wrong
      */
     @Test
-    @Order(1)
     public void testImportExportNonexistentUser() throws Exception {
 
         String zipExportFilename = null;

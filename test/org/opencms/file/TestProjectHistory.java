@@ -33,13 +33,10 @@ import org.opencms.test.OpenCmsTestRunner;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for the project history function of the CmsObject.<p>
@@ -47,7 +44,6 @@ import org.junit.jupiter.api.TestMethodOrder;
  * @since 6.0 alpha 2
  */
 @TestInstance(Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestProjectHistory extends OpenCmsTestRunner {
 
     /**
@@ -85,7 +81,6 @@ public class TestProjectHistory extends OpenCmsTestRunner {
      * @throws Throwable if something goes wrong
      */
     @Test
-    @Order(1)
     public void testProjectHistory() throws Throwable {
 
         CmsObject cms = getCmsObject();

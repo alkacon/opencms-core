@@ -52,15 +52,15 @@ import java.util.Set;
  */
 public class CmsResourceTypePlain extends A_CmsResourceType {
 
-    /** Static type id. */
-    private static int m_staticTypeId;
-
     /** The type id of this resource type. */
     @SuppressWarnings("unused")
-    private static final int RESOURCE_TYPE_ID = 1;
+    public static final int RESOURCE_TYPE_ID = 1;
 
     /** The name of this resource type. */
-    private static final String RESOURCE_TYPE_NAME = "plain";
+    public static final String RESOURCE_TYPE_NAME = "plain";
+
+    /** Static type id. */
+    private static int m_staticTypeId;
 
     /** The serial version id. */
     private static final long serialVersionUID = -4496210486951893369L;

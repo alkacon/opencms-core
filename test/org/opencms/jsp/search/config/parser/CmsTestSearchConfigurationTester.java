@@ -46,7 +46,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /** Helper to compare two configurations. */
-public class ConfigurationTester {
+public class CmsTestSearchConfigurationTester {
 
     /**
      * Tests if expected and actual configuration are identically.

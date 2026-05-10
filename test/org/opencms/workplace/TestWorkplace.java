@@ -34,19 +34,15 @@ import org.opencms.workplace.galleries.CmsAjaxImageGallery;
 import org.opencms.workplace.galleries.CmsAjaxLinkGallery;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * @since 6.0.0
  */
 @TestInstance(Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestWorkplace extends OpenCmsTestRunner {
 
     /**
@@ -65,7 +61,6 @@ public class TestWorkplace extends OpenCmsTestRunner {
      * @throws Exception in case the test fails
      */
     @Test
-    @Order(1)
     public void testGalleryClassCreation() throws Exception {
 
         A_CmsAjaxGallery gallery;

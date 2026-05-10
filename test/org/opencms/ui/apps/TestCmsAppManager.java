@@ -31,15 +31,11 @@ import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Collection;
 
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the configuration loading.<p>
  */
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestCmsAppManager extends OpenCmsTestRunner {
 
     /**
@@ -48,7 +44,6 @@ public class TestCmsAppManager extends OpenCmsTestRunner {
      * @throws Exception if something fails
      */
     @Test
-    @Order(1)
     public void testCollectAppConfigurations() throws Exception {
 
         CmsWorkplaceAppManager manager = new CmsWorkplaceAppManager();

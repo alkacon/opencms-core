@@ -102,27 +102,27 @@ public class TestModuleOperations extends OpenCmsTestRunner {
             fail("Module '" + moduleName + "' has no action instance!");
         }
 
-        if (!(actionInstance instanceof MockModuleActionImpl)) {
+        if (!(actionInstance instanceof CmsTestModuleActionImpl)) {
             fail("Module '" + moduleName + "' has action class of unexpected type!");
         }
 
         // since module is configured by default, initialize must have been already called
-        assertEquals(true, MockModuleActionImpl.m_initialize);
+        assertEquals(true, CmsTestModuleActionImpl.m_initialize);
         // since something was published during setup, module method must habe been called
-        assertEquals(true, MockModuleActionImpl.m_publishProject);
+        assertEquals(true, CmsTestModuleActionImpl.m_publishProject);
         // other values should not have been changed
-        assertEquals(false, MockModuleActionImpl.m_moduleUpdate);
-        assertEquals(false, MockModuleActionImpl.m_moduleUninstall);
-        assertEquals(false, MockModuleActionImpl.m_shutDown);
+        assertEquals(false, CmsTestModuleActionImpl.m_moduleUpdate);
+        assertEquals(false, CmsTestModuleActionImpl.m_moduleUninstall);
+        assertEquals(false, CmsTestModuleActionImpl.m_shutDown);
         // reset other module action values
-        MockModuleActionImpl.m_cmsEvent = -1;
-        MockModuleActionImpl.m_publishProject = false;
+        CmsTestModuleActionImpl.m_cmsEvent = -1;
+        CmsTestModuleActionImpl.m_publishProject = false;
 
         // publish the current project
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
-        assertEquals(true, MockModuleActionImpl.m_publishProject);
-        assertTrue(MockModuleActionImpl.m_cmsEvent == I_CmsEventListener.EVENT_PUBLISH_PROJECT);
+        assertEquals(true, CmsTestModuleActionImpl.m_publishProject);
+        assertTrue(CmsTestModuleActionImpl.m_cmsEvent == I_CmsEventListener.EVENT_PUBLISH_PROJECT);
 
         // update the module
         CmsModule newModule = new CmsModule(
@@ -149,7 +149,7 @@ public class TestModuleOperations extends OpenCmsTestRunner {
 
         // update the module
         OpenCms.getModuleManager().updateModule(cms, newModule);
-        assertEquals(true, MockModuleActionImpl.m_moduleUpdate);
+        assertEquals(true, CmsTestModuleActionImpl.m_moduleUpdate);
 
         // make sure we are in the "Offline" project
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
@@ -161,18 +161,18 @@ public class TestModuleOperations extends OpenCmsTestRunner {
             module.getName(),
             false,
             new CmsShellReport(cms.getRequestContext().getLocale()));
-        assertEquals(true, MockModuleActionImpl.m_moduleUninstall);
+        assertEquals(true, CmsTestModuleActionImpl.m_moduleUninstall);
 
         // reset module action values
-        MockModuleActionImpl.m_cmsEvent = -1;
-        MockModuleActionImpl.m_publishProject = false;
+        CmsTestModuleActionImpl.m_cmsEvent = -1;
+        CmsTestModuleActionImpl.m_publishProject = false;
 
         // publish the current project
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
         // since module was uninstalled, no update on action class must have happend
-        assertEquals(false, MockModuleActionImpl.m_publishProject);
-        assertTrue(MockModuleActionImpl.m_cmsEvent == -1);
+        assertEquals(false, CmsTestModuleActionImpl.m_publishProject);
+        assertTrue(CmsTestModuleActionImpl.m_cmsEvent == -1);
     }
 
     /**

@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH & Co. KG, please see the
+ * For further information about Alkacon Software, please see the
  * company website: https://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -25,38 +25,23 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.scheduler;
+package org.opencms.configuration;
 
-import org.opencms.file.CmsObject;
-
-import java.util.Map;
+import org.opencms.main.CmsLog;
+import org.opencms.search.CmsSearchManager;
 
 /**
- * Mock class for OpenCms scheduled jobs with access to the {@link CmsObject}.<p>
+ * Dummy implementation for a search manager, to test the configuration.<p>
  */
-public class MockScheduledJobWithCmsAccess implements I_CmsScheduledJob {
-
-    /** Indicates if the run was a success. */
-    static boolean m_success;
+public class CmsTestCustomSearchManager extends CmsSearchManager {
 
     /**
-     * Default constructor.<p>
+     * Public constructor.<p>
      */
-    public MockScheduledJobWithCmsAccess() {
+    public CmsTestCustomSearchManager() {
 
-        m_success = false;
-    }
-
-    /**
-     * @see org.opencms.scheduler.I_CmsScheduledJob#launch(CmsObject, Map)
-     */
-    @Override
-    public String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
-
-        if ((cms == null) || (parameters == null)) {
-            throw new RuntimeException("CmsObject in MockScheduledJobWithCmsAccess (or parameter Map) is null!");
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info("!!!!!!!!!!!!!!!!!!!!!! My very special custom search manager !!!!!!!!!!!!!!!!!");
         }
-        m_success = true;
-        return "success";
     }
 }

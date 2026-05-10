@@ -40,13 +40,13 @@ import java.util.Locale;
  *
  * @since 6.0.0
  */
-public final class TestCmsModuleMessageBundles extends A_TestCmsMessageBundles {
+public final class TestCmsModuleMessageBundles extends CmsTestMessageBundles {
 
     @SuppressWarnings("unused")
     private static final Class<?> TEST_MARKER = org.junit.jupiter.api.Test.class;
 
     /**
-     * @see org.opencms.i18n.A_TestCmsMessageBundles#getNotLocalizedBundles(Locale)
+     * @see org.opencms.i18n.CmsTestMessageBundles#getNotLocalizedBundles(Locale)
      */
     @Override
     protected List<I_CmsMessageBundle> getNotLocalizedBundles(Locale locale) {
@@ -55,7 +55,7 @@ public final class TestCmsModuleMessageBundles extends A_TestCmsMessageBundles {
     }
 
     /**
-     * @see org.opencms.i18n.A_TestCmsMessageBundles#getTestClientMessageBundles()
+     * @see org.opencms.i18n.CmsTestMessageBundles#getTestClientMessageBundles()
      */
     @Override
     protected List<I_CmsClientMessageBundle> getTestClientMessageBundles() throws Exception {
@@ -77,7 +77,7 @@ public final class TestCmsModuleMessageBundles extends A_TestCmsMessageBundles {
     }
 
     /**
-     * @see org.opencms.i18n.A_TestCmsMessageBundles#getTestMessageBundles()
+     * @see org.opencms.i18n.CmsTestMessageBundles#getTestMessageBundles()
      */
     @Override
     protected I_CmsMessageBundle[] getTestMessageBundles() {

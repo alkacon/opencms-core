@@ -33,12 +33,9 @@ import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestRunner;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests for TestCmsLinkManager suite 4: empty OpenCms context (servletName="*", defaultWebAppName="/data").<p>
@@ -46,7 +43,6 @@ import org.junit.jupiter.api.TestMethodOrder;
  * @since 6.0.0
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestCmsLinkManager4 extends OpenCmsTestRunner {
 
     @Override
@@ -57,7 +53,6 @@ public class TestCmsLinkManager4 extends OpenCmsTestRunner {
     }
 
     @Test
-    @Order(1)
     public void testRootPathAdjustmentWithEmptyOpenCmsContext() throws CmsException {
 
         echo("Testing root path adjustment / context removement");

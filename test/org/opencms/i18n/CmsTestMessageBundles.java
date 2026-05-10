@@ -54,7 +54,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 6.0.0
  */
-public abstract class A_TestCmsMessageBundles extends OpenCmsTestRunner {
+public abstract class CmsTestMessageBundles extends OpenCmsTestRunner {
 
     /** Prefix for the error messages in the bundles. */
     private static final String KEY_PREFIX_ERR = "ERR_";

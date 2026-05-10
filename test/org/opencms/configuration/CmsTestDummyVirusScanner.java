@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH & Co. KG, please see the
+ * For further information about Alkacon Software, please see the
  * company website: https://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -25,20 +25,45 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.xml.content;
+package org.opencms.configuration;
 
-/**
- * Test handler for XML content.
- *
- * @since 6.0.0
- */
-public class MockXmlContentHandler extends CmsDefaultXmlContentHandler {
+import org.opencms.ade.upload.I_CmsVirusScanner;
 
-    /**
-     * Creates a new instance.<p>
-     */
-    public MockXmlContentHandler() {
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.List;
 
-        super();
+public class CmsTestDummyVirusScanner implements I_CmsVirusScanner {
+
+    private CmsParameterConfiguration m_config = new CmsParameterConfiguration();
+
+    @Override
+    public void addConfigurationParameter(String paramName, String paramValue) {
+
+        m_config.add(paramName, paramValue);
+
     }
+
+    @Override
+    public CmsParameterConfiguration getConfiguration() {
+
+        return m_config;
+    }
+
+    @Override
+    public void initConfiguration() throws CmsConfigurationException {
+
+    }
+
+    @Override
+    public List<String> scan(InputStream stream) {
+
+        return Collections.emptyList();
+    }
+
+    @Override
+    public void test() {
+
+    }
+
 }

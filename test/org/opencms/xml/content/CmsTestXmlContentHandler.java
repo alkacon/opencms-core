@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: https://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -25,43 +25,20 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.configuration;
-
-import org.opencms.main.I_CmsRequestHandler;
-
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+package org.opencms.xml.content;
 
 /**
- * Dummy handler which does nothing except stores its configuration.
+ * Test handler for XML content.
+ *
+ * @since 6.0.0
  */
-public class CmsDummyRequestHandler implements I_CmsRequestHandler {
+public class CmsTestXmlContentHandler extends CmsDefaultXmlContentHandler {
 
-    private CmsParameterConfiguration m_config;
+    /**
+     * Creates a new instance.<p>
+     */
+    public CmsTestXmlContentHandler() {
 
-    public CmsParameterConfiguration getConfiguration() {
-
-        return m_config;
+        super();
     }
-
-    public String[] getHandlerNames() {
-
-        return null;
-    }
-
-    public void handle(HttpServletRequest req, HttpServletResponse res, String name)
-    throws IOException, ServletException {
-
-        // do nothing
-
-    }
-
-    public void initParameters(CmsParameterConfiguration params) {
-
-        m_config = params;
-    }
-
 }

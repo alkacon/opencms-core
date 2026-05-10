@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software, please see the
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
  * company website: https://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -25,32 +25,38 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.configuration;
+package org.opencms.scheduler;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.CmsException;
-import org.opencms.xml.xml2json.I_CmsApiAuthorizationHandler;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
-public class CmsDummyApiAuthorization implements I_CmsApiAuthorizationHandler {
+/**
+ * Mock class for OpenCms scheduled jobs with access to the {@link CmsObject}.<p>
+ */
+public class CmsTestScheduledJobWithCmsAccess implements I_CmsScheduledJob {
 
-    public CmsObject initCmsObject(CmsObject adminCms, HttpServletRequest request) throws CmsException {
+    /** Indicates if the run was a success. */
+    static boolean m_success;
 
-        // TODO Auto-generated method stub
-        return null;
+    /**
+     * Default constructor.<p>
+     */
+    public CmsTestScheduledJobWithCmsAccess() {
+
+        m_success = false;
     }
 
-    public void initialize(CmsObject cms) {
+    /**
+     * @see org.opencms.scheduler.I_CmsScheduledJob#launch(CmsObject, Map)
+     */
+    @Override
+    public String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
 
-        // TODO Auto-generated method stub
-
+        if ((cms == null) || (parameters == null)) {
+            throw new RuntimeException("CmsObject in CmsTestScheduledJobWithCmsAccess (or parameter Map) is null!");
+        }
+        m_success = true;
+        return "success";
     }
-
-    public void setParameters(CmsParameterConfiguration params) {
-
-        // TODO Auto-generated method stub
-
-    }
-
 }

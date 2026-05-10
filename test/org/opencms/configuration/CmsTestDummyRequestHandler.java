@@ -14,7 +14,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH & Co. KG, please see the
+ * For further information about Alkacon Software, please see the
  * company website: https://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -25,43 +25,43 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.scheduler;
+package org.opencms.configuration;
 
-import org.opencms.file.CmsObject;
+import org.opencms.main.I_CmsRequestHandler;
 
-import java.util.Map;
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
- * Mock class for OpenCms scheduled jobs.<p>
+ * Dummy handler which does nothing except stores its configuration.
  */
-public class MockScheduledJob implements I_CmsScheduledJob {
+public class CmsTestDummyRequestHandler implements I_CmsRequestHandler {
 
-    /** Indicates if this class was run. */
-    static int m_runCount;
+    private CmsParameterConfiguration m_config;
 
-    /** Static copy of the instance run count for easy test access. */
-    static int m_instanceCountCopy;
+    public CmsParameterConfiguration getConfiguration() {
 
-    /** Instance run count. */
-    private int m_instanceRunCount;
-
-    /**
-     * Default constructor.<p>
-     */
-    public MockScheduledJob() {
-
-        m_instanceRunCount = 0;
+        return m_config;
     }
 
-    /**
-     * @see org.opencms.scheduler.I_CmsScheduledJob#launch(CmsObject, Map)
-     */
-    @Override
-    public String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
+    public String[] getHandlerNames() {
 
-        m_runCount++;
-        m_instanceRunCount++;
-        m_instanceCountCopy = m_instanceRunCount;
-        return "OpenCms scheduler test job " + m_runCount + " was run (instance count: " + m_instanceRunCount + ").";
+        return null;
     }
+
+    public void handle(HttpServletRequest req, HttpServletResponse res, String name)
+    throws IOException, ServletException {
+
+        // do nothing
+
+    }
+
+    public void initParameters(CmsParameterConfiguration params) {
+
+        m_config = params;
+    }
+
 }

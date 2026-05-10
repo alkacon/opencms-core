@@ -36,17 +36,13 @@ import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.test.OpenCmsTestRunner;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /** Test cases for the plain query search configuration parser. */
 @TestInstance(Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestPlainQuerySearchConfigurationParser extends OpenCmsTestRunner {
 
     /**
@@ -72,7 +68,6 @@ public class TestPlainQuerySearchConfigurationParser extends OpenCmsTestRunner {
      * @throws CmsException if the cms object cannot be retrieved.
      */
     @Test
-    @Order(1)
     public void testSpecialParamExtraction() throws CmsException {
 
         CmsObject cms = getCmsObject();

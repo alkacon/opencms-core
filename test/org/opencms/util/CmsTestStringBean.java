@@ -13,7 +13,7 @@ import org.htmlparser.visitors.NodeVisitor;
 /**
  * Extracts the HTML page content.<p>
  */
-public class StringBean extends NodeVisitor implements Serializable {
+public class CmsTestStringBean extends NodeVisitor implements Serializable {
 
     /**
      * A newline.
@@ -64,7 +64,7 @@ public class StringBean extends NodeVisitor implements Serializable {
     protected String m_strings;
 
     /**
-     * Create a StringBean object.
+     * Create a CmsTestStringBean object.
      * Default property values are set to 'do the right thing':
      * <p><code>Links</code> is set <code>false</code> so text appears like a
      * browser would display it, albeit without the colour or underline clues
@@ -75,7 +75,7 @@ public class StringBean extends NodeVisitor implements Serializable {
      * <p><code>Collapse</code> is set <code>true</code>, so text appears
      * compact like a browser would display it.</p>
      */
-    public StringBean() {
+    public CmsTestStringBean() {
 
         super(true, true);
         m_strings = null;

@@ -35,18 +35,14 @@ import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsStringUtil;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
- * Test for Webdav repositories.<p>
+ * Test for WebDav repositories.<p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestRepository extends OpenCmsTestRunner {
 
     @Override
@@ -62,7 +58,6 @@ public class TestRepository extends OpenCmsTestRunner {
      * @throws Exception
      */
     @Test
-    @Order(1)
     public void testPropertyCachingBug() throws Exception {
 
         OpenCms.getEventManager().fireEvent(I_CmsEventListener.EVENT_CLEAR_CACHES);

@@ -57,7 +57,7 @@ import com.google.common.collect.Maps;
  * Test class for alias methods.
  */
 @TestInstance(Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.MethodName.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestAliases extends OpenCmsTestRunner {
 
     /**
@@ -112,8 +112,12 @@ public class TestAliases extends OpenCmsTestRunner {
 
         CmsObject cms = getCmsObject();
         CmsAliasManager aliasManager = OpenCms.getAliasManager();
-        CmsResource foo1 = cms.createResource("/system/foo1", CmsResourceTypePlain.getStaticTypeId());
-        CmsResource bar1 = cms.createResource("/system/bar1", CmsResourceTypePlain.getStaticTypeId());
+        CmsResource foo1 = cms.createResource(
+            "/system/foo1",
+            OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.RESOURCE_TYPE_NAME));
+        CmsResource bar1 = cms.createResource(
+            "/system/bar1",
+            OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.RESOURCE_TYPE_NAME));
         CmsAlias alias = new CmsAlias(foo1.getStructureId(), "", "/xyzzy1", CmsAliasMode.page);
         CmsAlias alias2 = new CmsAlias(bar1.getStructureId(), "", "/xyzzy2", CmsAliasMode.page);
         aliasManager.saveAliases(cms, foo1.getStructureId(), Collections.singletonList(alias));

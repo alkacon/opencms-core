@@ -38,18 +38,14 @@ import org.opencms.xml.CmsXmlEntityResolver;
 import java.util.Locale;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test cases for resource bundles in schemas with a different configured default locale.<p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestCmsXmlContentResourceBundlesGerman extends OpenCmsTestRunner {
 
     /**
@@ -68,7 +64,6 @@ public class TestCmsXmlContentResourceBundlesGerman extends OpenCmsTestRunner {
      * @throws Exception
      */
     @Test
-    @Order(1)
     public void testReadBundleMessages() throws Exception {
 
         CmsObject cms = getCmsObject();

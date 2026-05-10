@@ -50,17 +50,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /** Test cases for the simple search configuration via contents of type "list_config". */
 @TestInstance(Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestSimpleSearch extends OpenCmsTestRunner {
 
     /** The VFS folder where the list contents are placed in. */
@@ -91,7 +87,6 @@ public class TestSimpleSearch extends OpenCmsTestRunner {
      * @throws CmsException thrown if something unexpected goes wrong.
      */
     @Test
-    @Order(1)
     public void testFolderAndCategoryRestrictions() throws CmsException {
 
         CmsObject cms = OpenCms.initCmsObject(getCmsObject());

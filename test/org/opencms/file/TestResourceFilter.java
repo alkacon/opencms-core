@@ -36,19 +36,15 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for {@link org.opencms.file.CmsResourceFilter}.<p>
  */
 @TestInstance(Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestResourceFilter extends OpenCmsTestRunner {
 
     /**
@@ -96,7 +92,6 @@ public class TestResourceFilter extends OpenCmsTestRunner {
      * @throws Exception if the test fails
      */
     @Test
-    @Order(1)
     public void testAddRequireFolder() throws Exception {
 
         CmsResourceFilter filterFolder = CmsResourceFilter.ALL.addRequireFolder();

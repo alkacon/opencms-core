@@ -29,14 +29,11 @@ package org.opencms.flex;
 
 import org.opencms.test.OpenCmsTestRunner;
 
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests for the CmsFlexCacheEntry.<p>
  */
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestCmsFlexCacheEntry extends OpenCmsTestRunner {
 
     /**

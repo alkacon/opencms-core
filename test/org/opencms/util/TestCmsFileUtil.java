@@ -41,7 +41,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 /**
  * @since 6.2.2
  */
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestCmsFileUtil extends OpenCmsTestRunner {
 
     /**

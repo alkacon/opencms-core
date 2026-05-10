@@ -36,19 +36,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  *
  * @since 7.0.4
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestCmsExternalLinksValidator extends OpenCmsTestRunner {
 
     @Override
@@ -67,7 +63,6 @@ public class TestCmsExternalLinksValidator extends OpenCmsTestRunner {
      * @throws Exception if test fails
      */
     @Test
-    @Order(1)
     public void testExternalLinksOutside() throws Exception {
 
         CmsObject cms = getCmsObject();

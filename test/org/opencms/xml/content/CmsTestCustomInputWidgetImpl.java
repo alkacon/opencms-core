@@ -25,56 +25,50 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.main;
+package org.opencms.xml.content;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.opencms.widgets.CmsInputWidget;
+import org.opencms.widgets.I_CmsWidget;
 
 /**
- * Simple event listener mock for test purposes.
- *
- * @since 6.1
+ * Extension of the base select widget for testing the "custom widget class" function in the XML content
+ * schema annotation.<p>
  */
-public class MockEventListener implements I_CmsEventListener {
+public class CmsTestCustomInputWidgetImpl extends CmsInputWidget {
 
-    /** The list of recieved events. */
-    List m_events;
-
-    /**
-     * Default constructor.<p>
+    /***
+     * Base constructor.<p>
      */
-    public MockEventListener() {
+    public CmsTestCustomInputWidgetImpl() {
 
-        m_events = new ArrayList();
+        super();
+    }
+
+    /***
+     * Base constructor with configuration String.<p>
+     *
+     * @param configuration the configuration String to use
+     */
+    public CmsTestCustomInputWidgetImpl(String configuration) {
+
+        super(configuration);
     }
 
     /**
-     * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
+     * @see org.opencms.widgets.CmsInputWidget#newInstance()
      */
-    public void cmsEvent(CmsEvent event) {
+    @Override
+    public I_CmsWidget newInstance() {
 
-        m_events.add(event);
+        return new CmsTestCustomInputWidgetImpl(getConfiguration());
     }
 
     /**
-     * Returns a list of all recieved events.<p>
-     *
-     * @return a list of all recieved events
+     * @see org.opencms.widgets.I_CmsWidget#setConfiguration(java.lang.String)
      */
-    public List getEvents() {
+    @Override
+    public void setConfiguration(String configuration) {
 
-        return m_events;
-    }
-
-    /**
-     * Returns <code>true</code> in case this listener has recieved at last one event of the given type.<p>
-     *
-     * @param event the event id to check
-     *
-     * @return <code>true</code> in case this listener has recieved at last one event of the given type
-     */
-    public boolean hasRecievedEvent(int event) {
-
-        return m_events.contains(new CmsEvent(event, null));
+        super.setConfiguration(configuration + "[some addition here]");
     }
 }
