@@ -50,14 +50,11 @@ import java.util.TimeZone;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /**
  * Unit test for the OpenCms content notification.<p>
  *
  */
-@TestInstance(Lifecycle.PER_CLASS)
 public class TestContentNotification extends OpenCmsTestRunner {
 
     /**

@@ -35,14 +35,11 @@ import java.util.List;
 
 import org.apache.lucene.document.DateTools;
 
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests some search utilities that don't require an OpenCms context.<p>
  */
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestCmsSearchUtils extends OpenCmsTestRunner {
 
     /**

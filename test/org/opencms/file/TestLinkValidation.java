@@ -58,14 +58,11 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for OpenCms link validation.<p>
  */
-@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestLinkValidation extends OpenCmsTestRunner {
 
@@ -330,7 +327,7 @@ public class TestLinkValidation extends OpenCmsTestRunner {
 
         echo("Testing link validation for xml contents with html and file references");
 
-        testLinkValidation(MODE_XMLCONTENT_BOTH);
+        checkLinkValidation(MODE_XMLCONTENT_BOTH);
     }
 
     /**
@@ -344,7 +341,7 @@ public class TestLinkValidation extends OpenCmsTestRunner {
 
         echo("Testing link validation for xml contents with only file references");
 
-        testLinkValidation(MODE_XMLCONTENT_FILEREF_ONLY);
+        checkLinkValidation(MODE_XMLCONTENT_FILEREF_ONLY);
     }
 
     /**
@@ -358,7 +355,7 @@ public class TestLinkValidation extends OpenCmsTestRunner {
 
         echo("Testing link validation for xml contents with only html");
 
-        testLinkValidation(MODE_XMLCONTENT_HTML_ONLY);
+        checkLinkValidation(MODE_XMLCONTENT_HTML_ONLY);
     }
 
     /**
@@ -372,111 +369,7 @@ public class TestLinkValidation extends OpenCmsTestRunner {
 
         echo("Testing link validation for xml pages");
 
-        testLinkValidation(MODE_XMLPAGE);
-    }
-
-    /**
-     * Deletes a resource and publish it.<p>
-     *
-     * @param cms the cms context
-     * @param resName the resource name
-     * @param report the report
-     *
-     * @throws Exception if something goes wrong
-     */
-    private void delete(CmsObject cms, String resName, CmsShellReport report) throws Exception {
-
-        cms.lockResource(resName);
-        cms.deleteResource(resName, CmsResource.DELETE_REMOVE_SIBLINGS);
-        cms.unlockResource(resName);
-        OpenCms.getPublishManager().publishResource(cms, resName, true, report);
-        OpenCms.getPublishManager().waitWhileRunning();
-    }
-
-    /**
-     * Restores the first version of a resource.<p>
-     *
-     * @param cms the cms context
-     * @param resource the resource
-     * @param report the report
-     *
-     * @throws Exception if something goes wrong
-     */
-    private void restore(CmsObject cms, CmsResource resource, CmsShellReport report) throws Exception {
-
-        String resName = cms.getRequestContext().getSitePath(resource);
-        // restore the first historical resource
-        cms.importResource(resName, resource, "import".getBytes(), null);
-        List historicalVersions = cms.readAllAvailableVersions(resName);
-        I_CmsHistoryResource history = (I_CmsHistoryResource)historicalVersions.get(historicalVersions.size() - 1);
-        cms.restoreResourceVersion(history.getStructureId(), history.getVersion());
-        cms.unlockResource(resName);
-        OpenCms.getPublishManager().publishResource(cms, resName, true, report);
-        OpenCms.getPublishManager().waitWhileRunning();
-        cms.lockResource(resName);
-    }
-
-    /**
-     * Sets the content of a xmlcontent resource.<p>
-     *
-     * @param cms the cms context
-     * @param filename the resource name
-     * @param link1 the 1st vfs file reference to set
-     * @param link2 the 2nd vfs file reference to set
-     *
-     * @throws CmsException if something goes wrong
-     */
-    private void setXmlContentFileRef(CmsObject cms, String filename, String link1, String link2) throws CmsException {
-
-        CmsResource res = cms.readResource(filename);
-        CmsFile file = cms.readFile(res);
-        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
-        if (!content.hasValue("Homepage", Locale.ENGLISH, 0) && (link1 != null)) {
-            content.addValue(cms, "Homepage", Locale.ENGLISH, 0);
-        }
-        if (link1 != null) {
-            content.getValue("Homepage", Locale.ENGLISH, 0).setStringValue(cms, link1);
-        } else {
-            if (content.hasValue("Homepage", Locale.ENGLISH, 0)) {
-                content.removeValue("Homepage", Locale.ENGLISH, 0);
-            }
-        }
-        if (!content.hasValue("Homepage", Locale.ENGLISH, 1) && (link2 != null)) {
-            content.addValue(cms, "Homepage", Locale.ENGLISH, 1);
-        }
-        if (link2 != null) {
-            content.getValue("Homepage", Locale.ENGLISH, 1).setStringValue(cms, link2);
-        } else {
-            if (content.hasValue("Homepage", Locale.ENGLISH, 1)) {
-                content.removeValue("Homepage", Locale.ENGLISH, 1);
-            }
-        }
-        file.setContents(content.marshal());
-        cms.lockResource(filename);
-        cms.writeFile(file);
-    }
-
-    /**
-     * Sets the content of a xmlcontent resource.<p>
-     *
-     * @param cms the cms context
-     * @param filename the resource name
-     * @param html the content to set in the text field
-     *
-     * @throws CmsException if something goes wrong
-     */
-    private void setXmlContentHtml(CmsObject cms, String filename, String html) throws CmsException {
-
-        CmsResource res = cms.readResource(filename);
-        CmsFile file = cms.readFile(res);
-        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
-        if (!content.hasValue("Text", Locale.ENGLISH, 0)) {
-            content.addValue(cms, "Text", Locale.ENGLISH, 0);
-        }
-        content.getValue("Text", Locale.ENGLISH, 0).setStringValue(cms, html);
-        file.setContents(content.marshal());
-        cms.lockResource(filename);
-        cms.writeFile(file);
+        checkLinkValidation(MODE_XMLPAGE);
     }
 
     /**
@@ -490,7 +383,7 @@ public class TestLinkValidation extends OpenCmsTestRunner {
      *
      * @throws Exception if something goes wrong
      */
-    private void testLinkValidation(int mode) throws Exception {
+    private void checkLinkValidation(int mode) throws Exception {
 
         CmsObject cms = getCmsObject();
         String filename1, filename2, filename3, filename4, filename5, filename6, filename7, filename8;
@@ -957,6 +850,110 @@ public class TestLinkValidation extends OpenCmsTestRunner {
 
         assertTrue(validation.isEmpty());
 
+    }
+
+    /**
+     * Deletes a resource and publish it.<p>
+     *
+     * @param cms the cms context
+     * @param resName the resource name
+     * @param report the report
+     *
+     * @throws Exception if something goes wrong
+     */
+    private void delete(CmsObject cms, String resName, CmsShellReport report) throws Exception {
+
+        cms.lockResource(resName);
+        cms.deleteResource(resName, CmsResource.DELETE_REMOVE_SIBLINGS);
+        cms.unlockResource(resName);
+        OpenCms.getPublishManager().publishResource(cms, resName, true, report);
+        OpenCms.getPublishManager().waitWhileRunning();
+    }
+
+    /**
+     * Restores the first version of a resource.<p>
+     *
+     * @param cms the cms context
+     * @param resource the resource
+     * @param report the report
+     *
+     * @throws Exception if something goes wrong
+     */
+    private void restore(CmsObject cms, CmsResource resource, CmsShellReport report) throws Exception {
+
+        String resName = cms.getRequestContext().getSitePath(resource);
+        // restore the first historical resource
+        cms.importResource(resName, resource, "import".getBytes(), null);
+        List historicalVersions = cms.readAllAvailableVersions(resName);
+        I_CmsHistoryResource history = (I_CmsHistoryResource)historicalVersions.get(historicalVersions.size() - 1);
+        cms.restoreResourceVersion(history.getStructureId(), history.getVersion());
+        cms.unlockResource(resName);
+        OpenCms.getPublishManager().publishResource(cms, resName, true, report);
+        OpenCms.getPublishManager().waitWhileRunning();
+        cms.lockResource(resName);
+    }
+
+    /**
+     * Sets the content of a xmlcontent resource.<p>
+     *
+     * @param cms the cms context
+     * @param filename the resource name
+     * @param link1 the 1st vfs file reference to set
+     * @param link2 the 2nd vfs file reference to set
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private void setXmlContentFileRef(CmsObject cms, String filename, String link1, String link2) throws CmsException {
+
+        CmsResource res = cms.readResource(filename);
+        CmsFile file = cms.readFile(res);
+        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+        if (!content.hasValue("Homepage", Locale.ENGLISH, 0) && (link1 != null)) {
+            content.addValue(cms, "Homepage", Locale.ENGLISH, 0);
+        }
+        if (link1 != null) {
+            content.getValue("Homepage", Locale.ENGLISH, 0).setStringValue(cms, link1);
+        } else {
+            if (content.hasValue("Homepage", Locale.ENGLISH, 0)) {
+                content.removeValue("Homepage", Locale.ENGLISH, 0);
+            }
+        }
+        if (!content.hasValue("Homepage", Locale.ENGLISH, 1) && (link2 != null)) {
+            content.addValue(cms, "Homepage", Locale.ENGLISH, 1);
+        }
+        if (link2 != null) {
+            content.getValue("Homepage", Locale.ENGLISH, 1).setStringValue(cms, link2);
+        } else {
+            if (content.hasValue("Homepage", Locale.ENGLISH, 1)) {
+                content.removeValue("Homepage", Locale.ENGLISH, 1);
+            }
+        }
+        file.setContents(content.marshal());
+        cms.lockResource(filename);
+        cms.writeFile(file);
+    }
+
+    /**
+     * Sets the content of a xmlcontent resource.<p>
+     *
+     * @param cms the cms context
+     * @param filename the resource name
+     * @param html the content to set in the text field
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private void setXmlContentHtml(CmsObject cms, String filename, String html) throws CmsException {
+
+        CmsResource res = cms.readResource(filename);
+        CmsFile file = cms.readFile(res);
+        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
+        if (!content.hasValue("Text", Locale.ENGLISH, 0)) {
+            content.addValue(cms, "Text", Locale.ENGLISH, 0);
+        }
+        content.getValue("Text", Locale.ENGLISH, 0).setStringValue(cms, html);
+        file.setContents(content.marshal());
+        cms.lockResource(filename);
+        cms.writeFile(file);
     }
 
     /**

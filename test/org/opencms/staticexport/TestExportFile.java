@@ -39,12 +39,10 @@ import java.io.FileInputStream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
 
 /**
  * @since 6.0.0
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestExportFile extends OpenCmsTestRunner {
 
     @Override

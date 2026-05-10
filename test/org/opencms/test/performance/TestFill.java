@@ -40,13 +40,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
 
 /**
  * Unit tests for lock operation.<p>
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestFill extends OpenCmsTestRunner {
 
     @Override
@@ -67,7 +67,8 @@ public class TestFill extends OpenCmsTestRunner {
      *
      * @throws Throwable if something goes wrong
      */
-    // @Test
+    @Test
+    @Disabled("Long-runnig performance tests are disabled by default")
     public void testFillResources() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -83,7 +84,8 @@ public class TestFill extends OpenCmsTestRunner {
      *
      * @throws Throwable if something goes wrong
      */
-    // @Test
+    @Test
+    @Disabled("Long-runnig performance tests are disabled by default")
     public void testPermissionsWithOUs() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -140,7 +142,8 @@ public class TestFill extends OpenCmsTestRunner {
      *
      * @throws Throwable if something goes wrong
      */
-    // @Test
+    @Test
+    @Disabled("Long-runnig performance tests are disabled by default")
     public void testReadFile() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -166,7 +169,8 @@ public class TestFill extends OpenCmsTestRunner {
      *
      * @throws Throwable if something goes wrong
      */
-    // @Test
+    @Test
+    @Disabled("Long-runnig performance tests are disabled by default")
     public void testResWithProps() throws Throwable {
 
         CmsObject cms = getCmsObject();

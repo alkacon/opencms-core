@@ -81,14 +81,12 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Comment for <code>TestCmsImportExport</code>.<p>
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestCmsImportExport extends OpenCmsTestRunner {
 

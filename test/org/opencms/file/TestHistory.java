@@ -51,8 +51,6 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 
 /**
@@ -60,7 +58,6 @@ import org.junit.jupiter.api.TestMethodOrder;
  *
  * @since 6.9.1
  */
-@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestHistory extends OpenCmsTestRunner {
 
@@ -892,13 +889,13 @@ public class TestHistory extends OpenCmsTestRunner {
         assertHistory(cms, sibName, 6);
 
         /*
-        
+
          restore res version 2
          assert res version == 6 (res = 4, str = 2)
          assert sib version == 6 (res = 4, sib = 2)
-        
+
          move
-        
+
          */
     }
 

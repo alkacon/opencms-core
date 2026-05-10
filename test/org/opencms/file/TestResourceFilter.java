@@ -38,13 +38,10 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /**
  * Unit test for {@link org.opencms.file.CmsResourceFilter}.<p>
  */
-@TestInstance(Lifecycle.PER_CLASS)
 public class TestResourceFilter extends OpenCmsTestRunner {
 
     /**

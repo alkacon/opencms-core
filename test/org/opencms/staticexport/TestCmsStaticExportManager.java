@@ -47,7 +47,6 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 
 /**
@@ -55,7 +54,6 @@ import org.junit.jupiter.api.TestMethodOrder;
  *
  * @since 6.0.0
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestCmsStaticExportManager extends OpenCmsTestRunner {
 

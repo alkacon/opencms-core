@@ -37,11 +37,8 @@ import java.util.Map;
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the site configuration.<p>
@@ -49,8 +46,6 @@ import org.junit.jupiter.api.TestMethodOrder;
  *
  * @since 9.5
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestCmsSiteConfiguration extends OpenCmsTestRunner {
 
     @Override

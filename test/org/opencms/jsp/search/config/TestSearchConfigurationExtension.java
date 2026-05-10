@@ -41,17 +41,14 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
 /** Test cases for the class {@link org.opencms.jsp.search.config.CmsSearchConfigurationPagination}. */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
 public class TestSearchConfigurationExtension extends OpenCmsTestRunner {
 
     /**
-     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(TestInfo)
      */
     @Override
     @BeforeAll
@@ -78,7 +75,6 @@ public class TestSearchConfigurationExtension extends OpenCmsTestRunner {
      * @throws CmsException
      */
     @Test
-    @Order(1)
     public void testConfigurationExtension() throws IOException, URISyntaxException, CmsException {
 
         String configString = new String(

@@ -70,7 +70,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import com.google.common.collect.Maps;
@@ -78,10 +77,8 @@ import com.google.common.collect.Sets;
 
 /**
  * Tests for the ADE configuration mechanism which read the configuration data from multiple files in the VFS.<p>
- *
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.MethodName.class)
+@TestMethodOrder(MethodOrderer.MethodName.class) // method order by name is required
 public class TestLiveConfig extends OpenCmsTestRunner {
 
     /** Pattern for matching path segment consisting of two characters from {a, b}. */

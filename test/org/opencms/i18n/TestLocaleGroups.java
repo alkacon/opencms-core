@@ -43,20 +43,14 @@ import java.util.List;
 import java.util.Locale;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 
 import com.google.common.collect.Sets;
 
 /**
  * Test cases for locale variants.
  */
-@TestInstance(Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestLocaleGroups extends OpenCmsTestRunner {
 
     public static int NAME_COUNTER = 10;

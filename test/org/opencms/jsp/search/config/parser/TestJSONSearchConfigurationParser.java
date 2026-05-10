@@ -71,17 +71,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /** Tests the JSON configuration parser of cms:search. */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestJSONSearchConfigurationParser extends OpenCmsTestRunner {
 
     /**
-     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(TestInfo)
      */
     @Override
     @BeforeAll
@@ -250,8 +251,12 @@ public class TestJSONSearchConfigurationParser extends OpenCmsTestRunner {
 
         Map<String, I_CmsSearchConfigurationFacetField> actualFieldFacetConfigs = config.getFieldFacetConfigs();
         assertEquals(2, actualFieldFacetConfigs.size());
-        CmsTestSearchConfigurationTester.testFieldFacetConfiguration(fieldFacet1, actualFieldFacetConfigs.get("category"));
-        CmsTestSearchConfigurationTester.testFieldFacetConfiguration(fieldFacet2, actualFieldFacetConfigs.get("Keywords"));
+        CmsTestSearchConfigurationTester.testFieldFacetConfiguration(
+            fieldFacet1,
+            actualFieldFacetConfigs.get("category"));
+        CmsTestSearchConfigurationTester.testFieldFacetConfiguration(
+            fieldFacet2,
+            actualFieldFacetConfigs.get("Keywords"));
 
         // Test range facet configuration
         Collection<I_CmsSearchConfigurationFacetRange.Other> other = new ArrayList<I_CmsSearchConfigurationFacetRange.Other>(
@@ -298,7 +303,9 @@ public class TestJSONSearchConfigurationParser extends OpenCmsTestRunner {
             null);
         Map<String, I_CmsSearchConfigurationFacetRange> actualRangeFacets = config.getRangeFacetConfigs();
         assertEquals(2, actualFieldFacetConfigs.size());
-        CmsTestSearchConfigurationTester.testRangeFacetConfiguration(rangeFacet1, actualRangeFacets.get("modification"));
+        CmsTestSearchConfigurationTester.testRangeFacetConfiguration(
+            rangeFacet1,
+            actualRangeFacets.get("modification"));
         CmsTestSearchConfigurationTester.testRangeFacetConfiguration(rangeFacet2, actualRangeFacets.get("size"));
 
         // Test query facet configuration
@@ -337,7 +344,9 @@ public class TestJSONSearchConfigurationParser extends OpenCmsTestRunner {
         hlParams.put("usePhraseHighlighter", "true");
 
         I_CmsSearchConfigurationHighlighting highlightingConfig = new CmsSearchConfigurationHighlighting(hlParams);
-        CmsTestSearchConfigurationTester.testHighlightingConfiguration(highlightingConfig, config.getHighlighterConfig());
+        CmsTestSearchConfigurationTester.testHighlightingConfiguration(
+            highlightingConfig,
+            config.getHighlighterConfig());
 
         // Test DidYouMean configuration
         I_CmsSearchConfigurationDidYouMean didYouMeanConfig = new CmsSearchConfigurationDidYouMean(

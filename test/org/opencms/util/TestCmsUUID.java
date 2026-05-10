@@ -44,7 +44,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.safehaus.uuid.UUID;
 
@@ -54,7 +53,6 @@ import org.safehaus.uuid.UUID;
  * @since 6.0.0
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestCmsUUID extends OpenCmsTestRunner {
 
     /** Map to store serialized objects with a name. */

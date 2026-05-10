@@ -1250,6 +1250,8 @@ def coreTestConfig = {
     inputs.dir "${projectDir}/webapp"
 }
 
+def legacyTestCaseToRun = providers.gradleProperty('testCaseToRun')
+
 test {
     configure coreTestConfig
     description = "Runs the complete OpenCms core test suite."
@@ -1276,11 +1278,11 @@ tasks.register('testSingle', Test) {
         boolean hasExplicit = !filter.commandLineIncludePatterns.empty || !filter.includePatterns.empty
 
         // Backward compatibility: Check for -PtestCaseToRun property
-        if (project.hasProperty('testCaseToRun')) {
+        if (legacyTestCaseToRun.present) {
              if (hasExplicit) {
                  logger.warn("WARNING: Both -PtestCaseToRun and --tests filters are present. Using standard Gradle filters and ignoring legacy property.")
              } else {
-                 def legacyTestInfo = project.property('testCaseToRun')
+                 def legacyTestInfo = legacyTestCaseToRun.get()
                  logger.warn("DEPRECATION WARNING: The 'testCaseToRun' property is deprecated. Please use standard Gradle filtering: ./gradlew testSingle --tests ${legacyTestInfo}")
                  filter.includeTestsMatching "${legacyTestInfo}*"
                  hasExplicit = true

@@ -101,11 +101,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Provides an environment to run OpenCms test cases with a database backend.<p>
@@ -122,7 +120,6 @@ import org.junit.jupiter.api.TestMethodOrder;
  * @since 22.0.0
  */
 @TestInstance(Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class OpenCmsTestRunner extends Assertions {
 
     /**
@@ -285,7 +282,8 @@ public class OpenCmsTestRunner extends Assertions {
     @BeforeAll
     public void $openCmsSetUp(TestInfo testInfo) {
 
-        // must be overwritten by subclasses calling one of the #setupOpenCms(...) methods
+        // can be overwritten by subclasses calling one of the #setupOpenCms(...) methods
+        printTestClassStartBox(testInfo, null, null);
     }
 
     /**
@@ -297,6 +295,7 @@ public class OpenCmsTestRunner extends Assertions {
         if (m_shell != null) {
             removeOpenCms(testInfo);
         }
+        printTestClassEndBox(testInfo);
     }
 
     /**
@@ -2897,16 +2896,6 @@ public class OpenCmsTestRunner extends Assertions {
     }
 
     /**
-     * Returns the class name of the current test class.<p>
-     *
-     * @return the class name of the current test class
-     */
-    protected String getCurrentTestClass(TestInfo testInfo) {
-
-        return testInfo.getTestClass().map(Class::getName).orElse(getClass().getName());
-    }
-
-    /**
      * Returns the name of the database product.<p>
      *
      * @return returns either oracle or mysql
@@ -3055,6 +3044,16 @@ public class OpenCmsTestRunner extends Assertions {
     protected CmsSetupDb getSetupDbForSetupConnection() {
 
         return getSetupDb(m_setupConnection);
+    }
+
+    /**
+     * Returns the class name of the current test class.<p>
+     *
+     * @return the class name of the current test class
+     */
+    protected String getTestClassName(TestInfo testInfo) {
+
+        return testInfo.getTestClass().map(Class::getName).orElse(getClass().getName());
     }
 
     /**
@@ -3469,9 +3468,40 @@ public class OpenCmsTestRunner extends Assertions {
 
         System.out.print("\n\n +------------------------------------------------------------------------------");
         for (String line : lines) {
-            System.out.print("\n | " + line);
+            if (line != null) {
+                System.out.print("\n | " + line);
+            }
         }
         System.out.println("\n +------------------------------------------------------------------------------\n");
+    }
+
+    /**
+     * Logs end start of a test class.<p>
+     *
+     * @param testInfo the test info
+     */
+    protected void printTestClassEndBox(TestInfo testInfo) {
+
+        printInfoBox(new String[] {"FINISHED OpenCms test class:", getTestClassName(testInfo)});
+    }
+
+    /**
+     * Logs end start of a test class.<p>
+     *
+     * @param testInfo the test info
+     * @param importFolder the import folder message, or null for no message
+     * @param targetFolder the target folder message, or null for no message
+     */
+    protected void printTestClassStartBox(TestInfo testInfo, String importFolder, String targetFolder) {
+
+        printInfoBox(
+            new String[] {
+                "STARTING OpenCms test class:",
+                getTestClassName(testInfo),
+                (importFolder != null ? "" : null),
+                (importFolder != null ? "Setting up OpenCms test database" : null),
+                importFolder,
+                targetFolder});
     }
 
     /**
@@ -3487,7 +3517,7 @@ public class OpenCmsTestRunner extends Assertions {
         } else {
             m_currentTestName = (method != null) ? method.getName() : "unknown";
         }
-        String runInfo = getCurrentTestClass(testInfo) + "#" + m_currentTestName;
+        String runInfo = getTestClassName(testInfo) + "#" + m_currentTestName;
         printInfoBox(new String[] {"Running OpenCms test case:", runInfo});
     }
 
@@ -3636,8 +3666,6 @@ public class OpenCmsTestRunner extends Assertions {
         if (path != null) {
             CmsFileUtil.purgeDirectory(new File(path));
         }
-
-        printInfoBox(new String[] {"Finished OpenCms test class:", getCurrentTestClass(testInfo)});
 
         // experimental addition
         m_shell = null;
@@ -3927,16 +3955,8 @@ public class OpenCmsTestRunner extends Assertions {
         String defaultWebAppName,
         boolean publish) {
 
+        printTestClassStartBox(testInfo, "Importing from: " + importFolder, "Importing to  : " + targetFolder);
         initConfiguration();
-        String testName = getCurrentTestClass(testInfo);
-
-        printInfoBox(
-            new String[] {
-                "Setting up OpenCms test class:",
-                testName,
-                "",
-                "Importing from: " + importFolder,
-                "Importing to  : " + targetFolder});
 
         // set default values, if parameters are null
         configFolder = configFolder == null ? getTestDataPath("WEB-INF/config." + m_dbProduct + "/") : configFolder;
@@ -3947,8 +3967,6 @@ public class OpenCmsTestRunner extends Assertions {
 
         // turn off exceptions after error logging during setup (won't work otherwise)
         OpenCmsTestLogAppender.setBreakOnError(false);
-        // output a message
-        System.out.println("\n\n\n----- Starting test case: Importing OpenCms VFS data -----");
 
         // kill any old shell that might have remained from a previous test
         if (m_shell != null) {
@@ -4044,7 +4062,13 @@ public class OpenCmsTestRunner extends Assertions {
             cms.getRequestContext().setSiteRoot("/sites/default/");
 
             // output a message
-            System.out.println("----- Starting test cases -----");
+            printInfoBox(
+                new String[] {
+                    "Setup finished for OpenCms test class:",
+                    getTestClassName(testInfo),
+                    "",
+                    "Running OpenCms test cases next"});
+
         } catch (Throwable t) {
             t.printStackTrace(System.err);
             fail("Unable to setup OpenCms\n" + CmsException.getStackTraceAsString(t));

@@ -36,22 +36,19 @@ import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.mail.EmailException;
 
-import com.dumbster.smtp.SimpleSmtpServer;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import com.dumbster.smtp.SimpleSmtpServer;
 
 /**
  * Unit test for the cms mail functionality.<p>
  */
-@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestCmsMail extends OpenCmsTestRunner {
 

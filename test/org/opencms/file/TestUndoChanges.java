@@ -41,18 +41,17 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  *
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestUndoChanges extends OpenCmsTestRunner {
 
@@ -820,6 +819,9 @@ public class TestUndoChanges extends OpenCmsTestRunner {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(17)
+    @Disabled
     public void testUndoChangesSeveralMovedFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();

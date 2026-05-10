@@ -39,7 +39,6 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 
 /**
@@ -47,7 +46,6 @@ import org.junit.jupiter.api.TestMethodOrder;
  *
  * @since 6.0.0
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestCmsLinkManager3 extends OpenCmsTestRunner {
 
@@ -56,6 +54,59 @@ public class TestCmsLinkManager3 extends OpenCmsTestRunner {
     public void $openCmsSetUp(TestInfo testInfo) {
 
         setupOpenCms(testInfo, "simpletest", "/", "localizationConfig");
+    }
+
+    @Test
+    @Order(4)
+    public void testAbsolutePathAdjustmentForSingleTree() throws CmsException {
+
+        echo("Testing root path adjustment / context removement for absolute paths");
+        String context = OpenCms.getSystemInfo().getOpenCmsContext();
+        echo("Using OpenCms context: " + context);
+
+        CmsObject cms = getCmsObject();
+        cms.getRequestContext().setSiteRoot("/");
+        String link = context + "-test";
+        String[] folders = context.split("/");
+        String parents = "";
+        for (int i = 1; i < (folders.length - 1); i++) {
+            parents += "/" + folders[i];
+            cms.createResource(parents, new CmsResourceTypeFolder());
+        }
+        cms.createResource(link, new CmsResourceTypeFolder());
+        CmsLinkManager lm = OpenCms.getLinkManager();
+        String serverlink = lm.getServerLink(cms, "/");
+        serverlink = serverlink.substring(0, serverlink.length() - 1);
+        String inputlink = serverlink + link;
+        echo(
+            "Checking link "
+                + inputlink
+                + " in context "
+                + context
+                + " and site \""
+                + cms.getRequestContext().getSiteRoot()
+                + "\"");
+        String outputlink = lm.getRootPath(cms, inputlink);
+        echo("Result: " + outputlink);
+        assertEquals(link, outputlink);
+    }
+
+    @Test
+    @Order(3)
+    public void testRootPathAdjustmentForSingleTree() throws CmsException {
+
+        echo("Testing root path adjustment / context removement");
+        String context = OpenCms.getSystemInfo().getOpenCmsContext();
+        echo("Using OpenCms context \"" + context + "\"");
+
+        CmsObject cms = getCmsObject();
+        cms.getRequestContext().setSiteRoot("/");
+        String link1 = "/test";
+        CmsLinkManager lm = OpenCms.getLinkManager();
+        assertEquals(link1, lm.getRootPath(cms, context + link1));
+
+        String link2 = context.isEmpty() ? "/test" : "test";
+        assertEquals(context + link2, lm.getRootPath(cms, context + link2));
     }
 
     @Test
@@ -125,59 +176,6 @@ public class TestCmsLinkManager3 extends OpenCmsTestRunner {
         link = lm.getServerLink(cms, res.getRootPath());
         rootPath = lm.getRootPath(cms, link);
         assertEquals(res.getRootPath(), rootPath);
-    }
-
-    @Test
-    @Order(3)
-    public void testRootPathAdjustmentForSingleTree() throws CmsException {
-
-        echo("Testing root path adjustment / context removement");
-        String context = OpenCms.getSystemInfo().getOpenCmsContext();
-        echo("Using OpenCms context \"" + context + "\"");
-
-        CmsObject cms = getCmsObject();
-        cms.getRequestContext().setSiteRoot("/");
-        String link1 = "/test";
-        CmsLinkManager lm = OpenCms.getLinkManager();
-        assertEquals(link1, lm.getRootPath(cms, context + link1));
-
-        String link2 = context.isEmpty() ? "/test" : "test";
-        assertEquals(context + link2, lm.getRootPath(cms, context + link2));
-    }
-
-    @Test
-    @Order(4)
-    public void testAbsolutePathAdjustmentForSingleTree() throws CmsException {
-
-        echo("Testing root path adjustment / context removement for absolute paths");
-        String context = OpenCms.getSystemInfo().getOpenCmsContext();
-        echo("Using OpenCms context: " + context);
-
-        CmsObject cms = getCmsObject();
-        cms.getRequestContext().setSiteRoot("/");
-        String link = context + "-test";
-        String[] folders = context.split("/");
-        String parents = "";
-        for (int i = 1; i < (folders.length - 1); i++) {
-            parents += "/" + folders[i];
-            cms.createResource(parents, new CmsResourceTypeFolder());
-        }
-        cms.createResource(link, new CmsResourceTypeFolder());
-        CmsLinkManager lm = OpenCms.getLinkManager();
-        String serverlink = lm.getServerLink(cms, "/");
-        serverlink = serverlink.substring(0, serverlink.length() - 1);
-        String inputlink = serverlink + link;
-        echo(
-            "Checking link "
-                + inputlink
-                + " in context "
-                + context
-                + " and site \""
-                + cms.getRequestContext().getSiteRoot()
-                + "\"");
-        String outputlink = lm.getRootPath(cms, inputlink);
-        echo("Result: " + outputlink);
-        assertEquals(link, outputlink);
     }
 
     protected String getVfsPrefix() {

@@ -45,10 +45,8 @@ import java.util.Locale;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
 
 /** Tests for the {@link CmsJspNavigationBean} - and thus indirectly for the tag cms:navigation. */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestCmsJspNavigationBean extends OpenCmsTestRunner {
 
     /**

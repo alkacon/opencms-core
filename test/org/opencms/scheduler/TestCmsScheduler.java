@@ -44,8 +44,6 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
@@ -65,7 +63,6 @@ import org.quartz.impl.triggers.SimpleTriggerImpl;
  *
  * @since 6.0.0
  */
-@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestCmsScheduler extends OpenCmsTestRunner {
 

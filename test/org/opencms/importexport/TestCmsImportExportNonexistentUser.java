@@ -43,13 +43,11 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
 
 /**
  * Tests exporting/import VFS data with nonexistent users.<p>
  *
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestCmsImportExportNonexistentUser extends OpenCmsTestRunner {
 
     /**

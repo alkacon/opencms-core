@@ -33,14 +33,11 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the text extraction form an Excel file.<p>
  */
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestMsExcelExtraction extends OpenCmsTestRunner {
 
     /**

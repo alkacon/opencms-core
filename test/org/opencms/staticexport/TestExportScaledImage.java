@@ -68,13 +68,10 @@ import javax.servlet.http.Part;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /**
  * @since 6.0.0
  */
-@TestInstance(Lifecycle.PER_CLASS)
 public class TestExportScaledImage extends OpenCmsTestRunner {
 
     /**

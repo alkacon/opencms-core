@@ -42,18 +42,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests for features related to measuring folder sizes.
  */
-@TestInstance(Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestFolderSize extends OpenCmsTestRunner {
 
     /**

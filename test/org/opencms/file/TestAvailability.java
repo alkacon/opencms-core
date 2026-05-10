@@ -42,18 +42,12 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for the "setDateExpired" and "setDateReleased" method of the CmsObject.<p>
  */
-@TestInstance(Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestAvailability extends OpenCmsTestRunner {
 
     private static final long MSECS_PER_DAY = 1000 * 60 * 60 * 12;
@@ -88,7 +82,7 @@ public class TestAvailability extends OpenCmsTestRunner {
         cms.setDateExpired(resourceName, yesterday, false);
         cms.unlockResource(resourceName);
 
-        testOutsideTimeRange(cms, resourceName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
+        checkOutsideTimeRange(cms, resourceName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
         cms.lockResource(resourceName);
         cms.undoChanges(resourceName, CmsResource.UNDO_CONTENT);
         cms.unlockResource(resourceName);
@@ -111,7 +105,7 @@ public class TestAvailability extends OpenCmsTestRunner {
         cms.setDateReleased(resourceName, tomorrow, false);
         cms.unlockResource(resourceName);
 
-        testOutsideTimeRange(cms, resourceName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
+        checkOutsideTimeRange(cms, resourceName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
         cms.lockResource(resourceName);
         cms.undoChanges(resourceName, CmsResource.UNDO_CONTENT);
         cms.unlockResource(resourceName);
@@ -341,8 +335,8 @@ public class TestAvailability extends OpenCmsTestRunner {
         cms.setDateExpired(folderName, yesterday, true);
         cms.unlockResource(folderName);
 
-        testOutsideTimeRange(cms, folderName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
-        testOutsideTimeRange(cms, resName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
+        checkOutsideTimeRange(cms, folderName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
+        checkOutsideTimeRange(cms, resName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
         cms.lockResource(folderName);
         cms.undoChanges(folderName, CmsResource.UNDO_CONTENT_RECURSIVE);
         cms.unlockResource(folderName);
@@ -368,8 +362,8 @@ public class TestAvailability extends OpenCmsTestRunner {
         cms.setDateReleased(folderName, tomorrow, true);
         cms.unlockResource(folderName);
 
-        testOutsideTimeRange(cms, folderName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
-        testOutsideTimeRange(cms, resName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
+        checkOutsideTimeRange(cms, folderName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
+        checkOutsideTimeRange(cms, resName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
         cms.lockResource(folderName);
         cms.undoChanges(folderName, CmsResource.UNDO_CONTENT_RECURSIVE);
         cms.unlockResource(folderName);
@@ -451,9 +445,9 @@ public class TestAvailability extends OpenCmsTestRunner {
         cms.setDateExpired(folderName, yesterday, true);
         cms.unlockResource(folderName);
 
-        testOutsideTimeRange(cms, folderName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
-        testOutsideTimeRange(cms, folderName + resName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
-        testOutsideTimeRange(cms, folderName + folderName2 + resName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
+        checkOutsideTimeRange(cms, folderName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
+        checkOutsideTimeRange(cms, folderName + resName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
+        checkOutsideTimeRange(cms, folderName + folderName2 + resName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
         cms.lockResource(folderName);
         cms.undoChanges(folderName, CmsResource.UNDO_CONTENT_RECURSIVE);
         cms.unlockResource(folderName);
@@ -480,12 +474,35 @@ public class TestAvailability extends OpenCmsTestRunner {
         cms.setDateReleased(folderName, tomorrow, true);
         cms.unlockResource(folderName);
 
-        testOutsideTimeRange(cms, folderName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
-        testOutsideTimeRange(cms, folderName + resName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
-        testOutsideTimeRange(cms, folderName + folderName2 + resName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
+        checkOutsideTimeRange(cms, folderName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
+        checkOutsideTimeRange(cms, folderName + resName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
+        checkOutsideTimeRange(cms, folderName + folderName2 + resName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
         cms.lockResource(folderName);
         cms.undoChanges(folderName, CmsResource.UNDO_CONTENT_RECURSIVE);
         cms.unlockResource(folderName);
+    }
+
+    private void checkOutsideTimeRange(CmsObject cms, String resourceName, long released, long expired)
+    throws CmsException {
+
+        try {
+            // should throw exception
+            cms.readResource(resourceName, CmsResourceFilter.DEFAULT);
+            fail("Read outside-of-time-range resource with filter CmsResourceFilter.DEFAULT");
+        } catch (CmsVfsResourceNotFoundException e) {
+            // ok
+        }
+
+        CmsResource resource;
+        try {
+            resource = cms.readResource(resourceName, CmsResourceFilter.ALL);
+        } catch (CmsException e) {
+            fail("Unable to read outside-of-time-range resource with filter CmsResourceFilter.ALL");
+            return;
+        }
+        assertEquals(released, resource.getDateReleased());
+        assertEquals(expired, resource.getDateExpired());
+        assertEquals(cms.getRequestContext().getCurrentProject().getUuid(), resource.getProjectLastModified());
     }
 
     /**
@@ -601,29 +618,6 @@ public class TestAvailability extends OpenCmsTestRunner {
         context.setUserName(user.getName());
         return OpenCms.initCmsObject(cms, context);
 
-    }
-
-    private void testOutsideTimeRange(CmsObject cms, String resourceName, long released, long expired)
-    throws CmsException {
-
-        try {
-            // should throw exception
-            cms.readResource(resourceName, CmsResourceFilter.DEFAULT);
-            fail("Read outside-of-time-range resource with filter CmsResourceFilter.DEFAULT");
-        } catch (CmsVfsResourceNotFoundException e) {
-            // ok
-        }
-
-        CmsResource resource;
-        try {
-            resource = cms.readResource(resourceName, CmsResourceFilter.ALL);
-        } catch (CmsException e) {
-            fail("Unable to read outside-of-time-range resource with filter CmsResourceFilter.ALL");
-            return;
-        }
-        assertEquals(released, resource.getDateReleased());
-        assertEquals(expired, resource.getDateExpired());
-        assertEquals(cms.getRequestContext().getCurrentProject().getUuid(), resource.getProjectLastModified());
     }
 
 }

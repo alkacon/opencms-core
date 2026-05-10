@@ -41,14 +41,11 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /**
  * Unit test for the "readResponsibleUsers" method of the CmsObject.<p>
  *
  */
-@TestInstance(Lifecycle.PER_CLASS)
 public class TestResponsibles extends OpenCmsTestRunner {
 
     /**

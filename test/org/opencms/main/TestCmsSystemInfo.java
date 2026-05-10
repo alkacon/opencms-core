@@ -42,8 +42,6 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 
 /**
@@ -52,7 +50,6 @@ import org.junit.jupiter.api.TestMethodOrder;
  *
  * @since 6.0.0
  */
-@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestCmsSystemInfo extends OpenCmsTestRunner {
 
@@ -179,12 +176,12 @@ public class TestCmsSystemInfo extends OpenCmsTestRunner {
 
         /*
         // some extra calls to make sure the version check method really works as expected
-        
+
         checkVersions("9.5", expectedVersion, true);
         checkVersions("9.5_customer", expectedVersion, true);
         checkVersions("9.7.x", expectedVersion, true);
         checkVersions("10.0.x Specialname", expectedVersion, true);
-        
+
         checkVersions("9.4_customer", expectedVersion, false);
         checkVersions("9.4.x", expectedVersion, false);
         checkVersions("Nothing", expectedVersion, false);
@@ -221,37 +218,35 @@ public class TestCmsSystemInfo extends OpenCmsTestRunner {
             || versionId.startsWith("Nightly")
             || versionId.startsWith("Auto")
             || versionId.startsWith("Milestone")) {
-                // assume a build triggered by the Jenkins CI system
+            // assume a build triggered by the Jenkins CI system
 
-                Map<String, CmsSystemInfo.BuildInfoItem> info = OpenCms.getSystemInfo().getBuildInfo();
-                // make sure we have the required values set
-                assertNotNull(info.get("build.date"), "build.date not set");
-                assertNotNull(info.get("build.type"), "build.type not set");
-                assertNotNull(info.get("build.system"), "build.system not set");
-                assertNotNull(info.get("build.gitid"), "build.gitid not set");
-                assertNotNull(info.get("build.gitbranch"), "build.gitbranch not set");
+            Map<String, CmsSystemInfo.BuildInfoItem> info = OpenCms.getSystemInfo().getBuildInfo();
+            // make sure we have the required values set
+            assertNotNull(info.get("build.date"), "build.date not set");
+            assertNotNull(info.get("build.type"), "build.type not set");
+            assertNotNull(info.get("build.system"), "build.system not set");
+            assertNotNull(info.get("build.gitid"), "build.gitid not set");
+            assertNotNull(info.get("build.gitbranch"), "build.gitbranch not set");
 
-                if (!versionId.startsWith("Milestone")) {
-                    // don't use build number for Milestone builds as the continuation in the numbers is not assured
-                    assertNotNull(info.get("build.number"), "build.number not set");
-                    assertEquals("build.number", info.get("build.number").getKeyName(), "Expected keys do not match");
-                }
-
-                assertEquals("build.date", info.get("build.date").getKeyName(), "Expected keys do not match");
-                assertEquals("build.system", info.get("build.system").getKeyName(), "Expected keys do not match");
-
-                assertTrue(
-                    info.get("build.gitid").getValue().length() == 7,
-                    "The git commit ID should be 7 chars long");
-                assertTrue(
-                    info.get("build.system").getValue().startsWith("Jenkins"),
-                    "We always assume the build system name starts with 'Jenkins'");
-            } else {
-                fail(
-                    "No valid version information for test cases found, version id is '"
-                        + OpenCms.getSystemInfo().getVersionId()
-                        + "'\n\nThis indicates manual unexpected changes in 'src/org/opencms/main/version.properties'");
+            if (!versionId.startsWith("Milestone")) {
+                // don't use build number for Milestone builds as the continuation in the numbers is not assured
+                assertNotNull(info.get("build.number"), "build.number not set");
+                assertEquals("build.number", info.get("build.number").getKeyName(), "Expected keys do not match");
             }
+
+            assertEquals("build.date", info.get("build.date").getKeyName(), "Expected keys do not match");
+            assertEquals("build.system", info.get("build.system").getKeyName(), "Expected keys do not match");
+
+            assertTrue(info.get("build.gitid").getValue().length() == 7, "The git commit ID should be 7 chars long");
+            assertTrue(
+                info.get("build.system").getValue().startsWith("Jenkins"),
+                "We always assume the build system name starts with 'Jenkins'");
+        } else {
+            fail(
+                "No valid version information for test cases found, version id is '"
+                    + OpenCms.getSystemInfo().getVersionId()
+                    + "'\n\nThis indicates manual unexpected changes in 'src/org/opencms/main/version.properties'");
+        }
     }
 
     /**

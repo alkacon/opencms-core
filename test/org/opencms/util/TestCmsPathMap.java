@@ -30,17 +30,14 @@ package org.opencms.util;
 import org.opencms.test.OpenCmsTestRunner;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestMethodOrder;
 
 import com.google.common.collect.Sets;
 
 /**
  * Test case for CmsPathMap.<p>
  */
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestCmsPathMap extends OpenCmsTestRunner {
 
     /**

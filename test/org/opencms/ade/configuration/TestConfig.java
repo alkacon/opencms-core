@@ -57,11 +57,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.opentest4j.AssertionFailedError;
 
 import com.google.common.collect.Lists;
@@ -69,8 +66,6 @@ import com.google.common.collect.Lists;
 /**
  * Lightweight tests for the ADE configuration mechanism which mostly do not read the configuration data from the VFS.<p>
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestConfig extends OpenCmsTestRunner {
 
     /** Empty detail page list. **/

@@ -202,21 +202,6 @@ public class CmsTestStringBean extends NodeVisitor implements Serializable {
         }
     }
 
-    private boolean isTitleTag(String name) {
-
-        return "TITLE".equals(name);
-    }
-
-    private boolean isHeadTag(String name) {
-
-        return "H1".equals(name)
-            || "H2".equals(name)
-            || "H3".equals(name)
-            || "H4".equals(name)
-            || "H5".equals(name)
-            || "H6".equals(name);
-    }
-
     /**
      * Appends the text to the output.
      * @param string The text node.
@@ -291,8 +276,9 @@ public class CmsTestStringBean extends NodeVisitor implements Serializable {
 
         length = m_buffer.length();
         if ((0 != length) // don't append newlines to the beginning of a buffer
-            && (check || ((NEWLINE_SIZE <= length) // not enough chars to hold a NEWLINE
-                && (!m_buffer.substring(length - NEWLINE_SIZE, length).equals(NEWLINE))))) {
+            && (check
+                || ((NEWLINE_SIZE <= length) // not enough chars to hold a NEWLINE
+                    && (!m_buffer.substring(length - NEWLINE_SIZE, length).equals(NEWLINE))))) {
 
             m_buffer.append(NEWLINE);
         }
@@ -378,5 +364,20 @@ public class CmsTestStringBean extends NodeVisitor implements Serializable {
         if ((null == m_strings) || !m_strings.equals(strings)) {
             m_strings = strings;
         }
+    }
+
+    private boolean isHeadTag(String name) {
+
+        return "H1".equals(name)
+            || "H2".equals(name)
+            || "H3".equals(name)
+            || "H4".equals(name)
+            || "H5".equals(name)
+            || "H6".equals(name);
+    }
+
+    private boolean isTitleTag(String name) {
+
+        return "TITLE".equals(name);
     }
 }

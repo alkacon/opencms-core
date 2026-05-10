@@ -45,13 +45,10 @@ import java.util.Locale;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /**
  * Tests the OpenCms XML contents with real VFS operations for features introduced in OpenCms 7.5.<p>
  */
-@TestInstance(Lifecycle.PER_CLASS)
 public class TestCmsXmlContent75Features extends OpenCmsTestRunner {
 
     /**

@@ -75,12 +75,8 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.xml.sax.InputSource;
 
 /**
@@ -88,8 +84,6 @@ import org.xml.sax.InputSource;
  * <p>
  *
  */
-@TestInstance(Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestInheritedContainer extends OpenCmsTestRunner {
 
     /**

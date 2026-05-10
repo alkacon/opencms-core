@@ -72,14 +72,12 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestCmsXmlContentWithVfs extends OpenCmsTestRunner {
 
@@ -1003,12 +1001,12 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestRunner {
                 && link.getQuery().equals("a=b&c=d") // at this point the & in the link should be unescaped
                 && link.getAnchor().equals("anchor")
                 && link.isInternal()) {
-                    result++;
-                } else if (link.getTarget().equals("/sites/default/folder1/index.html")
-                    && link.getQuery().equals("a2=b2&c2=d2") // at this point the & in the link should be unescaped
-                    && link.isInternal()) {
-                        result++;
-                    }
+                result++;
+            } else if (link.getTarget().equals("/sites/default/folder1/index.html")
+                && link.getQuery().equals("a2=b2&c2=d2") // at this point the & in the link should be unescaped
+                && link.isInternal()) {
+                result++;
+            }
         }
 
         assertEquals(4, result);

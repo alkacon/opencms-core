@@ -46,7 +46,6 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import com.lambdaworks.crypto.SCryptUtil;
@@ -60,7 +59,6 @@ import dev.samstevens.totp.time.SystemTimeProvider;
  *
  * @since 6.0
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestLoginAndPasswordHandler extends OpenCmsTestRunner {
 

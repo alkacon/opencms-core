@@ -31,14 +31,12 @@ import org.opencms.test.OpenCmsTestRunner;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 
 /**
  * Test cases for the resource translator.<p>
  *
  * @since 6.0.0
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestCmsResourceTranslator extends OpenCmsTestRunner {
 
     // default rules (same as in "opencms.properties")

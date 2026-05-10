@@ -30,18 +30,12 @@ package org.opencms.file;
 import org.opencms.test.OpenCmsTestRunner;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for the counters.<p>
  */
-@TestInstance(Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestCounters extends OpenCmsTestRunner {
 
     /**

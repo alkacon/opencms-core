@@ -36,13 +36,10 @@ import org.opencms.workplace.galleries.CmsAjaxLinkGallery;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /**
  * @since 6.0.0
  */
-@TestInstance(Lifecycle.PER_CLASS)
 public class TestWorkplace extends OpenCmsTestRunner {
 
     /**

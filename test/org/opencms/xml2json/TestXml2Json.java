@@ -50,17 +50,12 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests for the XML2JSON feature.
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestXml2Json extends OpenCmsTestRunner {
 
     /** The module path for the test data. */

@@ -268,6 +268,14 @@ public class OpenCmsTestServletResponse implements HttpServletResponse {
     }
 
     /**
+     * @see javax.servlet.ServletResponse#setContentLengthLong(long)
+     */
+    public void setContentLengthLong(long len) {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    /**
      * @see javax.servlet.ServletResponse#setContentType(java.lang.String)
      */
     public void setContentType(String arg0) {
@@ -322,14 +330,6 @@ public class OpenCmsTestServletResponse implements HttpServletResponse {
      */
     @Deprecated
     public void setStatus(int arg0, String arg1) {
-
-        throw new RuntimeException("Not implemented");
-    }
-
-    /**
-     * @see javax.servlet.ServletResponse#setContentLengthLong(long)
-     */
-    public void setContentLengthLong(long len) {
 
         throw new RuntimeException("Not implemented");
     }

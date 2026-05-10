@@ -69,8 +69,6 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 
 /**
@@ -78,7 +76,6 @@ import org.junit.jupiter.api.TestMethodOrder;
  *
  * @since 8.5.0
  */
-@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestSolrSearch extends OpenCmsTestRunner {
 
@@ -175,7 +172,9 @@ public class TestSolrSearch extends OpenCmsTestRunner {
         q.setHighlight(true);
         q.setHighlightFragsize(200);
         q.setHighlightFields("content_en");
-        CmsSolrResultList res = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE).search(getCmsObject(), q);
+        CmsSolrResultList res = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE).search(
+            getCmsObject(),
+            q);
         Map<String, Map<String, List<String>>> highlighting = res.getHighLighting();
         assertTrue(highlighting != null, "There should be some highlighted documents");
 

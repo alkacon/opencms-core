@@ -33,15 +33,12 @@ import org.opencms.test.OpenCmsTestRunner;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /**
  * Unit test for the "chflags" method of the CmsObject.<p>
  *
  * @since 6.0 alpha 2
  */
-@TestInstance(Lifecycle.PER_CLASS)
 public class TestChflags extends OpenCmsTestRunner {
 
     /**

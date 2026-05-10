@@ -38,13 +38,11 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
 
 /**
  *
  * @since 7.0.4
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestCmsExternalLinksValidator extends OpenCmsTestRunner {
 
     @Override

@@ -39,18 +39,17 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for the "chacc" method of the CmsObject.<p>
  *
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestChacc extends OpenCmsTestRunner {
 
@@ -509,6 +508,9 @@ public class TestChacc extends OpenCmsTestRunner {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
+    @Disabled
     public void testChaccFolderGroup() throws Throwable {
 
         // TODO: This test is not working correctly so far!

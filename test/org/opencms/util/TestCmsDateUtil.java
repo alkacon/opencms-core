@@ -31,16 +31,13 @@ import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.TimeZone;
 
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test cases for the class "CmsDateUtil".<p>
  *
  * @since 6.0.0
  */
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestCmsDateUtil extends OpenCmsTestRunner {
 
     /**

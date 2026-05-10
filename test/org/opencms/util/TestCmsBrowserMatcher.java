@@ -32,16 +32,13 @@ import org.opencms.test.OpenCmsTestRunner;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test case for browser matcher.<p>
  *
  * @since 6.0.0
  */
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestCmsBrowserMatcher extends OpenCmsTestRunner {
 
     private static String[] browser = {

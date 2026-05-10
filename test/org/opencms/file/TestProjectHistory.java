@@ -35,15 +35,12 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /**
  * Unit test for the project history function of the CmsObject.<p>
  *
  * @since 6.0 alpha 2
  */
-@TestInstance(Lifecycle.PER_CLASS)
 public class TestProjectHistory extends OpenCmsTestRunner {
 
     /**

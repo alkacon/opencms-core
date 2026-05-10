@@ -37,12 +37,10 @@ import org.opencms.util.CmsStringUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
 
 /**
  * Test for WebDav repositories.<p>
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestRepository extends OpenCmsTestRunner {
 
     @Override

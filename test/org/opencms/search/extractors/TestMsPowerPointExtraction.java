@@ -34,14 +34,11 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the text extraction form a Pdf file.<p>
  */
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestMsPowerPointExtraction extends OpenCmsTestRunner {
 
     /**

@@ -45,8 +45,8 @@ import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
 import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsTestZipBuilder;
+import org.opencms.util.CmsUUID;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,18 +57,12 @@ import java.util.List;
 import java.util.Locale;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for OpenCms module  updates.<p>
  */
-@TestInstance(Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestModuleUpdate extends OpenCmsTestRunner {
 
     /** Module name. */

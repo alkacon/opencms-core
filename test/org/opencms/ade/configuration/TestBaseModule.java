@@ -53,14 +53,11 @@ import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /**
  * Tests involving the resource types from the org.opencms.base module.
  *
  */
-@TestInstance(Lifecycle.PER_CLASS)
 public class TestBaseModule extends OpenCmsTestRunner {
 
     static {

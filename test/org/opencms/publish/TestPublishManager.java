@@ -47,14 +47,11 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for the publish manager.<p>
  */
-@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestPublishManager extends OpenCmsTestRunner {
 
@@ -315,7 +312,8 @@ public class TestPublishManager extends OpenCmsTestRunner {
         }
 
         // set the listener for the first job
-        CmsTestPublishEventListener firstListener = new CmsTestPublishEventListener(cms.readResource(destination + "1.gif"));
+        CmsTestPublishEventListener firstListener = new CmsTestPublishEventListener(
+            cms.readResource(destination + "1.gif"));
         OpenCms.getPublishManager().addPublishListener(firstListener);
 
         // set the listener for the last job

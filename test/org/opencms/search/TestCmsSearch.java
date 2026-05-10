@@ -50,18 +50,16 @@ import java.util.List;
 import java.util.Locale;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for the cms search indexer.<p>
  */
-@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestCmsSearch extends OpenCmsTestRunner {
 
@@ -191,6 +189,9 @@ public class TestCmsSearch extends OpenCmsTestRunner {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(10)
+    @Test
+    @Disabled
     public void testCmsSearchLargeResult() throws Throwable {
 
         CmsObject cms = getCmsObject();

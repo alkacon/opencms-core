@@ -47,8 +47,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /**
  * Unit tests for the {@link CmsFlexResponse}.<p>
@@ -59,7 +57,6 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
  *
  * @since 6.0.1
  */
-@TestInstance(Lifecycle.PER_CLASS)
 public class TestCmsFlexResponse extends OpenCmsTestRunner {
 
     /**

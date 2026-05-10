@@ -32,11 +32,13 @@ import org.opencms.test.OpenCmsTestRunner;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /** Test cases for the class {@link org.opencms.jsp.search.config.CmsSearchConfigurationPagination}. */
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestSearchConfigurationPagination extends OpenCmsTestRunner {
 
     @Test

@@ -38,11 +38,8 @@ import org.opencms.test.OpenCmsTestRunner;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /** Test cases for the plain query search configuration parser. */
-@TestInstance(Lifecycle.PER_CLASS)
 public class TestPlainQuerySearchConfigurationParser extends OpenCmsTestRunner {
 
     /**

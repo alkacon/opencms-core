@@ -42,9 +42,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Window;
@@ -52,7 +50,6 @@ import com.vaadin.ui.Window;
 /**
  * Tests context menu construction.<p>
  */
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestCmsContextMenu extends OpenCmsTestRunner {
 
     /**

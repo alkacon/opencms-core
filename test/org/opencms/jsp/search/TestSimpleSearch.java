@@ -52,11 +52,8 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 /** Test cases for the simple search configuration via contents of type "list_config". */
-@TestInstance(Lifecycle.PER_CLASS)
 public class TestSimpleSearch extends OpenCmsTestRunner {
 
     /** The VFS folder where the list contents are placed in. */

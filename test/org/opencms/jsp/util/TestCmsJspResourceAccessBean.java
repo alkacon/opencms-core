@@ -44,14 +44,12 @@ import java.util.Locale;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
 
 /**
  * Unit tests for the <code>{@link CmsJspVfsAccessBean}</code>.<p>
  *
  * @since 7.0.2
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestCmsJspResourceAccessBean extends OpenCmsTestRunner {
 
     /**

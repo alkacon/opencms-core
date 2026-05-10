@@ -44,17 +44,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for the <code>{@link CmsJspResourceWrapper}</code>.<p>
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestCmsJspResourceWrapper extends OpenCmsTestRunner {
 
     /**

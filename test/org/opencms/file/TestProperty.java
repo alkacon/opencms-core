@@ -44,15 +44,17 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  *
  */
-@org.junit.jupiter.api.TestInstance(org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS)
-@org.junit.jupiter.api.TestMethodOrder(org.junit.jupiter.api.MethodOrderer.OrderAnnotation.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestProperty extends OpenCmsTestRunner {
 
     /**
@@ -254,10 +256,10 @@ public class TestProperty extends OpenCmsTestRunner {
     }
 
     /**
-     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(TestInfo)
      */
     @Override
-    @org.junit.jupiter.api.BeforeAll
+    @BeforeAll
     public void $openCmsSetUp(org.junit.jupiter.api.TestInfo testInfo) {
 
         setupOpenCms(testInfo, "simpletest", "/");

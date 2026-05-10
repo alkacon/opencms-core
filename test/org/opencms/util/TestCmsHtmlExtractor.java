@@ -35,16 +35,13 @@ import org.htmlparser.NodeFilter;
 import org.htmlparser.Parser;
 import org.htmlparser.filters.NodeClassFilter;
 import org.htmlparser.nodes.TextNode;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test case for <code>{@link org.opencms.util.CmsHtmlExtractor}</code>.<p>
  *
  * @since 6.2.0
  */
-@TestMethodOrder(MethodOrderer.MethodName.class)
 public class TestCmsHtmlExtractor extends OpenCmsTestRunner {
 
     private static final String HTML_PAGE_1 = "<html><title>This is the title</title><body><h1>A headline</h1>This is a test.<br>"

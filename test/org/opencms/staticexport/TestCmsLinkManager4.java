@@ -35,14 +35,12 @@ import org.opencms.test.OpenCmsTestRunner;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
 
 /**
  * Tests for TestCmsLinkManager suite 4: empty OpenCms context (servletName="*", defaultWebAppName="/data").<p>
  *
  * @since 6.0.0
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestCmsLinkManager4 extends OpenCmsTestRunner {
 
     @Override

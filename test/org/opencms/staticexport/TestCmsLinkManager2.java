@@ -45,7 +45,6 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 
 /**
@@ -53,7 +52,6 @@ import org.junit.jupiter.api.TestMethodOrder;
  *
  * @since 6.0.0
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestCmsLinkManager2 extends OpenCmsTestRunner {
 
@@ -67,30 +65,75 @@ public class TestCmsLinkManager2 extends OpenCmsTestRunner {
     }
 
     @Test
-    @Order(1)
-    public void testToAbsoluteWithAdjustedVfsPrefix() {
+    @Order(6)
+    public void testAbsolutePathAdjustmentWithAdjustedVfsPrefix() throws CmsException {
 
-        String test;
+        echo("Testing root path adjustment / context removement for absolute paths");
+        String context = OpenCms.getSystemInfo().getOpenCmsContext();
+        echo("Using OpenCms context: " + context);
 
-        test = CmsLinkManager.getRelativeUri("/dir1/dir2/index.html", "/dir1/dirB/index.html");
-        System.out.println(test);
-        assertEquals(test, "../dirB/index.html");
+        CmsObject cms = getCmsObject();
+        cms.getRequestContext().setSiteRoot("/");
+        String link = context + "-test";
+        String[] folders = context.split("/");
+        String parents = "";
+        for (int i = 1; i < (folders.length - 1); i++) {
+            parents += "/" + folders[i];
+            cms.createResource(parents, new CmsResourceTypeFolder());
+        }
+        cms.createResource(link, new CmsResourceTypeFolder());
+        CmsLinkManager lm = OpenCms.getLinkManager();
+        String serverlink = lm.getServerLink(cms, "/");
+        serverlink = serverlink.substring(0, serverlink.length() - 1);
+        String inputlink = serverlink + link;
+        echo(
+            "Checking link "
+                + inputlink
+                + " in context "
+                + context
+                + " and site \""
+                + cms.getRequestContext().getSiteRoot()
+                + "\"");
+        String outputlink = lm.getRootPath(cms, inputlink);
+        echo("Result: " + outputlink);
+        assertEquals(link, outputlink);
+    }
 
-        test = CmsLinkManager.getRelativeUri("/exp/en/test/index.html", "/exp/de/test/index.html");
-        System.out.println(test);
-        assertEquals(test, "../../de/test/index.html");
+    @Test
+    @Order(4)
+    public void testCustomLinkHandlerWithAdjustedVfsPrefix() throws Exception {
 
-        test = CmsLinkManager.getAbsoluteUri("../../index.html", "/dir1/dir2/dir3/");
-        System.out.println(test);
-        assertEquals(test, "/dir1/index.html");
+        CmsObject cms = getCmsObject();
+        echo("Testing symmetric link / root path substitution with a custom link handler");
 
-        test = CmsLinkManager.getAbsoluteUri("./../././.././dir2/./../index.html", "/dir1/dir2/dir3/");
-        System.out.println(test);
-        assertEquals(test, "/dir1/index.html");
+        CmsLinkManager lm = OpenCms.getLinkManager();
+        I_CmsLinkSubstitutionHandler lh = new CmsTestLinkSubstitutionHandler();
+        lm.setLinkSubstitutionHandler(cms, lh);
 
-        test = CmsLinkManager.getAbsoluteUri("/dirA/index.html", "/dir1/dir2/dir3/");
-        System.out.println(test);
-        assertEquals(test, "/dirA/index.html");
+        cms.createResource("/system/news", CmsResourceTypeFolder.getStaticTypeId());
+        String resName = "/system/news/test.html";
+        cms.createResource(resName, CmsResourceTypeXmlPage.getStaticTypeId());
+        OpenCms.getPublishManager().publishResource(cms, "/system/news");
+        OpenCms.getPublishManager().waitWhileRunning();
+        CmsResource res = cms.readResource(resName);
+
+        testCustomLinkHandlerHelper(cms, res.getRootPath());
+        OpenCms.getStaticExportManager().setVfsPrefix("");
+        OpenCms.getStaticExportManager().initialize(cms);
+        testCustomLinkHandlerHelper(cms, res.getRootPath());
+        cms.getRequestContext().setUri(resName);
+        cms.getRequestContext().setSiteRoot("");
+        testCustomLinkHandlerHelper(cms, res.getRootPath());
+        testCustomLinkHandlerHelper(cms, res.getRootPath() + "?__locale=de");
+
+        CmsXmlPage page = new CmsXmlPage(Locale.ENGLISH, CmsEncoder.ENCODING_UTF_8);
+        page.addValue("body", Locale.ENGLISH);
+        page.setStringValue(cms, "body", Locale.ENGLISH, PAGE_01);
+
+        cms.lockResource(resName);
+        CmsFile file = cms.readFile(res);
+        file.setContents(page.marshal());
+        cms.writeFile(file);
     }
 
     @Test
@@ -144,6 +187,24 @@ public class TestCmsLinkManager2 extends OpenCmsTestRunner {
     }
 
     @Test
+    @Order(5)
+    public void testRootPathAdjustmentWithAdjustedVfsPrefix() throws CmsException {
+
+        echo("Testing root path adjustment / context removement");
+        String context = OpenCms.getSystemInfo().getOpenCmsContext();
+        echo("Using OpenCms context \"" + context + "\"");
+
+        CmsObject cms = getCmsObject();
+        cms.getRequestContext().setSiteRoot("/");
+        String link1 = "/test";
+        CmsLinkManager lm = OpenCms.getLinkManager();
+        assertEquals(link1, lm.getRootPath(cms, context + link1));
+
+        String link2 = context.isEmpty() ? "/test" : "test";
+        assertEquals(context + link2, lm.getRootPath(cms, context + link2));
+    }
+
+    @Test
     @Order(3)
     public void testSymmetricSubstitutionWithAdjustedVfsPrefix() throws Exception {
 
@@ -163,93 +224,30 @@ public class TestCmsLinkManager2 extends OpenCmsTestRunner {
     }
 
     @Test
-    @Order(4)
-    public void testCustomLinkHandlerWithAdjustedVfsPrefix() throws Exception {
+    @Order(1)
+    public void testToAbsoluteWithAdjustedVfsPrefix() {
 
-        CmsObject cms = getCmsObject();
-        echo("Testing symmetric link / root path substitution with a custom link handler");
+        String test;
 
-        CmsLinkManager lm = OpenCms.getLinkManager();
-        I_CmsLinkSubstitutionHandler lh = new CmsTestLinkSubstitutionHandler();
-        lm.setLinkSubstitutionHandler(cms, lh);
+        test = CmsLinkManager.getRelativeUri("/dir1/dir2/index.html", "/dir1/dirB/index.html");
+        System.out.println(test);
+        assertEquals(test, "../dirB/index.html");
 
-        cms.createResource("/system/news", CmsResourceTypeFolder.getStaticTypeId());
-        String resName = "/system/news/test.html";
-        cms.createResource(resName, CmsResourceTypeXmlPage.getStaticTypeId());
-        OpenCms.getPublishManager().publishResource(cms, "/system/news");
-        OpenCms.getPublishManager().waitWhileRunning();
-        CmsResource res = cms.readResource(resName);
+        test = CmsLinkManager.getRelativeUri("/exp/en/test/index.html", "/exp/de/test/index.html");
+        System.out.println(test);
+        assertEquals(test, "../../de/test/index.html");
 
-        testCustomLinkHandlerHelper(cms, res.getRootPath());
-        OpenCms.getStaticExportManager().setVfsPrefix("");
-        OpenCms.getStaticExportManager().initialize(cms);
-        testCustomLinkHandlerHelper(cms, res.getRootPath());
-        cms.getRequestContext().setUri(resName);
-        cms.getRequestContext().setSiteRoot("");
-        testCustomLinkHandlerHelper(cms, res.getRootPath());
-        testCustomLinkHandlerHelper(cms, res.getRootPath() + "?__locale=de");
+        test = CmsLinkManager.getAbsoluteUri("../../index.html", "/dir1/dir2/dir3/");
+        System.out.println(test);
+        assertEquals(test, "/dir1/index.html");
 
-        CmsXmlPage page = new CmsXmlPage(Locale.ENGLISH, CmsEncoder.ENCODING_UTF_8);
-        page.addValue("body", Locale.ENGLISH);
-        page.setStringValue(cms, "body", Locale.ENGLISH, PAGE_01);
+        test = CmsLinkManager.getAbsoluteUri("./../././.././dir2/./../index.html", "/dir1/dir2/dir3/");
+        System.out.println(test);
+        assertEquals(test, "/dir1/index.html");
 
-        cms.lockResource(resName);
-        CmsFile file = cms.readFile(res);
-        file.setContents(page.marshal());
-        cms.writeFile(file);
-    }
-
-    @Test
-    @Order(5)
-    public void testRootPathAdjustmentWithAdjustedVfsPrefix() throws CmsException {
-
-        echo("Testing root path adjustment / context removement");
-        String context = OpenCms.getSystemInfo().getOpenCmsContext();
-        echo("Using OpenCms context \"" + context + "\"");
-
-        CmsObject cms = getCmsObject();
-        cms.getRequestContext().setSiteRoot("/");
-        String link1 = "/test";
-        CmsLinkManager lm = OpenCms.getLinkManager();
-        assertEquals(link1, lm.getRootPath(cms, context + link1));
-
-        String link2 = context.isEmpty() ? "/test" : "test";
-        assertEquals(context + link2, lm.getRootPath(cms, context + link2));
-    }
-
-    @Test
-    @Order(6)
-    public void testAbsolutePathAdjustmentWithAdjustedVfsPrefix() throws CmsException {
-
-        echo("Testing root path adjustment / context removement for absolute paths");
-        String context = OpenCms.getSystemInfo().getOpenCmsContext();
-        echo("Using OpenCms context: " + context);
-
-        CmsObject cms = getCmsObject();
-        cms.getRequestContext().setSiteRoot("/");
-        String link = context + "-test";
-        String[] folders = context.split("/");
-        String parents = "";
-        for (int i = 1; i < (folders.length - 1); i++) {
-            parents += "/" + folders[i];
-            cms.createResource(parents, new CmsResourceTypeFolder());
-        }
-        cms.createResource(link, new CmsResourceTypeFolder());
-        CmsLinkManager lm = OpenCms.getLinkManager();
-        String serverlink = lm.getServerLink(cms, "/");
-        serverlink = serverlink.substring(0, serverlink.length() - 1);
-        String inputlink = serverlink + link;
-        echo(
-            "Checking link "
-                + inputlink
-                + " in context "
-                + context
-                + " and site \""
-                + cms.getRequestContext().getSiteRoot()
-                + "\"");
-        String outputlink = lm.getRootPath(cms, inputlink);
-        echo("Result: " + outputlink);
-        assertEquals(link, outputlink);
+        test = CmsLinkManager.getAbsoluteUri("/dirA/index.html", "/dir1/dir2/dir3/");
+        System.out.println(test);
+        assertEquals(test, "/dirA/index.html");
     }
 
     protected String getVfsPrefix() {
