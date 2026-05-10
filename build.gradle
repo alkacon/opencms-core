@@ -145,6 +145,55 @@ sourceSets{
     }
 }
 
+def spotlessImportOrderFile = file('/Users/alex/workspace/ak-work/agents/config/OrganizeImports_OpenCms.importorder')
+def spotlessFormatterConfigFile = file('/Users/alex/workspace/ak-work/agents/config/Formatter_OpenCms.xml')
+def spotlessEclipseVersion = '4.39'
+def hasSpotlessFilesProperty = project.hasProperty('spotlessFiles')
+def spotlessFilePaths = hasSpotlessFilesProperty
+    ? spotlessFiles.split(',').collect { it.trim() }.findAll { it }
+    : []
+def selectedSpotlessJavaTargets = []
+spotlessFilePaths.each { path ->
+    def targetFile = file(path)
+    if (!targetFile.exists()) {
+        throw new GradleException("spotlessFiles entry does not exist: $path")
+    }
+    selectedSpotlessJavaTargets.add(targetFile.isDirectory() ? fileTree(dir: targetFile, include: '**/*.java') : targetFile)
+}
+def spotlessJavaTargets = hasSpotlessFilesProperty
+    ? files(selectedSpotlessJavaTargets)
+    : files(
+        sourceSets.main.allJava,
+        sourceSets.modules.allJava,
+        sourceSets.gwt.allJava,
+        sourceSets.setup.allJava,
+        sourceSets.test.allJava,
+        sourceSets.testGwt.allJava)
+
+spotless {
+    java {
+        target spotlessJavaTargets
+
+        if (spotlessImportOrderFile.exists()) {
+            importOrderFile spotlessImportOrderFile
+        }
+        expandWildcardImports()
+        removeUnusedImports()
+        if (spotlessFormatterConfigFile.exists()) {
+            eclipse(spotlessEclipseVersion)
+                .configFile(spotlessFormatterConfigFile)
+                .sortMembersEnabled(true)
+                .sortMembersOrder("T,SF,F,C,SI,I,SM,M")
+                .sortMembersDoNotSortFields(true)
+                .sortMembersVisibilityOrderEnabled(true)
+                .sortMembersVisibilityOrder("B,R,D,V")
+        }
+        formatAnnotations()
+        trimTrailingWhitespace()
+        leadingTabsToSpaces(4)
+    }
+}
+
 configurations {
 
     distribution {
@@ -1225,7 +1274,7 @@ tasks.register('testSingle', Test) {
         logger.info("Test filter configuration - commandLineIncludePatterns: ${filter.commandLineIncludePatterns}, includePatterns: ${filter.includePatterns}")
 
         boolean hasExplicit = !filter.commandLineIncludePatterns.empty || !filter.includePatterns.empty
-        
+
         // Backward compatibility: Check for -PtestCaseToRun property
         if (project.hasProperty('testCaseToRun')) {
              if (hasExplicit) {

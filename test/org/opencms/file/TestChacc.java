@@ -40,6 +40,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
@@ -256,7 +257,7 @@ public class TestChacc extends OpenCmsTestRunner {
      * @throws Throwable if something goes wrong
      */
     @Test
-    @org.junit.jupiter.api.Order(5)
+    @Order(5)
     public void testChaccAddRemove() throws Throwable {
 
         echo("Testing adding and removing ACEs on files and folders");
@@ -325,7 +326,7 @@ public class TestChacc extends OpenCmsTestRunner {
      * @throws Throwable if something goes wrong
      */
     @Test
-    @org.junit.jupiter.api.Order(3)
+    @Order(3)
     public void testChaccFileAllOthers() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -400,7 +401,7 @@ public class TestChacc extends OpenCmsTestRunner {
      * @throws Throwable if something goes wrong
      */
     @Test
-    @org.junit.jupiter.api.Order(1)
+    @Order(1)
     public void testChaccFileGroup() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -420,7 +421,7 @@ public class TestChacc extends OpenCmsTestRunner {
      * @throws Throwable if something goes wrong
      */
     @Test
-    @org.junit.jupiter.api.Order(4)
+    @Order(4)
     public void testChaccFileOverwriteAll() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -495,7 +496,7 @@ public class TestChacc extends OpenCmsTestRunner {
      * @throws Throwable if something goes wrong
      */
     @Test
-    @org.junit.jupiter.api.Order(2)
+    @Order(2)
     public void testChaccFileUser() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -511,7 +512,6 @@ public class TestChacc extends OpenCmsTestRunner {
     public void testChaccFolderGroup() throws Throwable {
 
         // TODO: This test is not working correctly so far!
-        // The JUnit 3 source carried this TODO and omitted the method from suite(), so the migration keeps it unannotated.
         CmsObject cms = getCmsObject();
         echo("Testing chacc on a folder and a group");
         chaccFolderGroup(

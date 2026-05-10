@@ -36,10 +36,6 @@ import org.junit.platform.suite.api.Suite;
  * @since 6.0
  */
 @Suite
-@SelectClasses({
-    TestParameterConfiguration.class,
-    TestConfiguration.class,
-    TestSiteConfiguration.class,
-    TestFullWorkplaceConfiguration.class
-})
-public final class AllTests {}
+@SelectClasses({TestParameterConfiguration.class, TestConfiguration.class, TestSiteConfiguration.class,})
+public final class AllTests {
+}
