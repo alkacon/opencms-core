@@ -27,22 +27,25 @@
 
 package org.opencms.search.extractors;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Tests the text extraction form an Excel file.<p>
  */
-public class TestMsExcelExtraction extends OpenCmsTestCase {
+public class TestMsExcelExtraction extends OpenCmsTestRunner {
 
     /**
      * Tests the Excel text extraction for old OLE2 documents.<p>
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testExcelExtractionOLE2() throws Exception {
 
         // open an input stream for the test file
@@ -92,6 +95,7 @@ public class TestMsExcelExtraction extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testExcelExtractionOOXML() throws Exception {
 
         // open an input stream for the test file

@@ -33,61 +33,29 @@ import org.opencms.file.CmsUser;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Unit test for the "readResponsibleUsers" method of the CmsObject.<p>
  *
  */
-public class TestResponsibles extends OpenCmsTestCase {
+public class TestResponsibles extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestResponsibles(String arg0) {
-        super(arg0);
-    }
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestResponsibles.class.getName());
-
-        suite.addTest(new TestResponsibles("testResponsibles"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -95,25 +63,26 @@ public class TestResponsibles extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
     public void testResponsibles() throws Throwable {
 
         echo("Testing responsibles of resources");
 
         // create three users, two of them belonging to a group
-        CmsObject cms = getCmsObject();
-        CmsGroup tastycrats = cms.createGroup("tastycrats", "A test group", 0, null);
-        CmsUser fry = cms.createUser("fry", "password", "First test user", null);
-        CmsUser bender = cms.createUser(
+        final CmsObject cms = getCmsObject();
+        final CmsGroup tastycrats = cms.createGroup("tastycrats", "A test group", 0, null);
+        final CmsUser fry = cms.createUser("fry", "password", "First test user", null);
+        final CmsUser bender = cms.createUser(
             "bender",
             "password",
             "Second test user, belonging to the tastycrats group.",
             null);
-        CmsUser leela = cms.createUser(
+        final CmsUser leela = cms.createUser(
             "leela",
             "password",
             "Third test user, belonging to the tastycrats group.",
             null);
-        CmsUser farnsworth = cms.createUser(
+        final CmsUser farnsworth = cms.createUser(
             "farnsworth",
             "password",
             "Another test user, which is not responsible.",
@@ -122,8 +91,8 @@ public class TestResponsibles extends OpenCmsTestCase {
         cms.addUserToGroup("leela", "tastycrats");
 
         // make group and user responsible for the group
-        String resource1 = "/folder1/index.html";
-        CmsPermissionSet permissions = new CmsPermissionSet(
+        final String resource1 = "/folder1/index.html";
+        final CmsPermissionSet permissions = new CmsPermissionSet(
             CmsPermissionSet.PERMISSION_WRITE,
             CmsPermissionSet.PERMISSION_READ);
         cms.lockResource(resource1);
@@ -151,8 +120,8 @@ public class TestResponsibles extends OpenCmsTestCase {
         cms.unlockResource(resource1);
 
         // check, if the three users are indeed responsible for the resource.
-        Set responsibles = cms.readResponsibleUsers(cms.readResource(resource1));
-        Set expectedResponsibles = new HashSet();
+        final Set responsibles = cms.readResponsibleUsers(cms.readResource(resource1));
+        final Set expectedResponsibles = new HashSet();
         expectedResponsibles.add(fry);
         expectedResponsibles.add(leela);
         expectedResponsibles.add(bender);

@@ -32,37 +32,31 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Iterator;
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for the "chacc" method of the CmsObject.<p>
  *
  */
-public class TestChacc extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestChacc(String arg0) {
-
-        super(arg0);
-    }
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestChacc extends OpenCmsTestRunner {
 
     /**
      * Test the chacc method on a file and a group.<p>
      *
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test runner
      * @param cms the CmsObject
      * @param resource1 the resource to change permissions
      * @param group the group to change the permissions from
@@ -71,12 +65,13 @@ public class TestChacc extends OpenCmsTestCase {
      * @throws Throwable if something goes wrong
      */
     public static void chaccFileGroup(
-        OpenCmsTestCase tc,
+        OpenCmsTestRunner tc,
         CmsObject cms,
         String resource1,
         CmsGroup group,
         CmsPermissionSet permissions,
-        int flags) throws Throwable {
+        int flags)
+    throws Throwable {
 
         tc.storeResources(cms, resource1);
 
@@ -115,7 +110,7 @@ public class TestChacc extends OpenCmsTestCase {
     /**
      * Test the chacc method on a file and a user.<p>
      *
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test runner
      * @param cms the CmsObject
      * @param resource1 the resource to change permissions
      * @param user the user to change the permissions from
@@ -124,12 +119,13 @@ public class TestChacc extends OpenCmsTestCase {
      * @throws Throwable if something goes wrong
      */
     public static void chaccFileUser(
-        OpenCmsTestCase tc,
+        OpenCmsTestRunner tc,
         CmsObject cms,
         String resource1,
         CmsUser user,
         CmsPermissionSet permissions,
-        int flags) throws Throwable {
+        int flags)
+    throws Throwable {
 
         tc.storeResources(cms, resource1);
 
@@ -168,7 +164,7 @@ public class TestChacc extends OpenCmsTestCase {
     /**
      * Test the chacc method on a file and a group.<p>
      *
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test runner
      * @param cms the CmsObject
      * @param resource1 the resource to change permissions
      * @param group the group to change the permissions from
@@ -177,12 +173,13 @@ public class TestChacc extends OpenCmsTestCase {
      * @throws Throwable if something goes wrong
      */
     public static void chaccFolderGroup(
-        OpenCmsTestCase tc,
+        OpenCmsTestRunner tc,
         CmsObject cms,
         String resource1,
         CmsGroup group,
         CmsPermissionSet permissions,
-        int flags) throws Throwable {
+        int flags)
+    throws Throwable {
 
         tc.storeResources(cms, resource1);
 
@@ -244,39 +241,13 @@ public class TestChacc extends OpenCmsTestCase {
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public static Test suite() {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestChacc.class.getName());
-
-        suite.addTest(new TestChacc("testChaccFileGroup"));
-        suite.addTest(new TestChacc("testChaccFileUser"));
-        suite.addTest(new TestChacc("testChaccFileAllOthers"));
-        suite.addTest(new TestChacc("testChaccFileOverwriteAll"));
-        suite.addTest(new TestChacc("testChaccAddRemove"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -284,6 +255,8 @@ public class TestChacc extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testChaccAddRemove() throws Throwable {
 
         echo("Testing adding and removing ACEs on files and folders");
@@ -351,6 +324,8 @@ public class TestChacc extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testChaccFileAllOthers() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -424,6 +399,8 @@ public class TestChacc extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testChaccFileGroup() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -442,6 +419,8 @@ public class TestChacc extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testChaccFileOverwriteAll() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -515,6 +494,8 @@ public class TestChacc extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testChaccFileUser() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -527,9 +508,12 @@ public class TestChacc extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
+    @Disabled
     public void testChaccFolderGroup() throws Throwable {
 
-        //TODO: This test is not working correctly so far!
+        // TODO: This test is not working correctly so far!
         CmsObject cms = getCmsObject();
         echo("Testing chacc on a folder and a group");
         chaccFolderGroup(

@@ -60,10 +60,12 @@ public class CmsDiagnosticsMXBean implements I_CmsDiagnosticsMXBean {
      */
     public static void register(CmsObject cms) throws Exception {
 
-        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-        adminCms = OpenCms.initCmsObject(cms);
-        ObjectName mxbeanName = new ObjectName("org.opencms.mx:type=CmsDiagnosticsMXBean");
-        mbs.registerMBean(INSTANCE, mxbeanName);
+        final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        final ObjectName mxbeanName = new ObjectName("org.opencms.mx:type=CmsDiagnosticsMXBean");
+        if (!mbs.isRegistered(mxbeanName)) {
+            adminCms = OpenCms.initCmsObject(cms);
+            mbs.registerMBean(INSTANCE, mxbeanName);
+        }
     }
 
     /**

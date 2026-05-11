@@ -27,7 +27,7 @@
 
 package org.opencms.util;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,11 +38,26 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
 /**
  * Test cases for org.opencms.util.CmsPriorityLock.
  */
-public class TestCmsPriorityLock extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsPriorityLock extends OpenCmsTestRunner {
 
+    @BeforeAll
+    public void setUpConfiguration() {
+
+        initConfiguration();
+    }
+
+    @Test
+    @Order(3)
     public void testFairness() throws Exception {
 
         CmsPriorityLock lock = new CmsPriorityLock();
@@ -77,6 +92,8 @@ public class TestCmsPriorityLock extends OpenCmsTestCase {
         assertEquals(List.of("H0", "H1"), order);
     }
 
+    @Test
+    @Order(2)
     public void testPriority() throws Exception {
 
         CmsPriorityLock lock = new CmsPriorityLock();
@@ -118,6 +135,8 @@ public class TestCmsPriorityLock extends OpenCmsTestCase {
 
     }
 
+    @Test
+    @Order(1)
     public void testReentrantLocking() throws Exception {
 
         CmsPriorityLock lock = new CmsPriorityLock();
@@ -131,7 +150,7 @@ public class TestCmsPriorityLock extends OpenCmsTestCase {
         });
         lock.unlock();
         Thread.sleep(50);
-        assertFalse("Should still be blocked", blocked.isDone());
+        assertFalse(blocked.isDone(), "Should still be blocked");
         lock.unlock();
         assertTrue(blocked.get(100, TimeUnit.MILLISECONDS));
         ex.shutdownNow();

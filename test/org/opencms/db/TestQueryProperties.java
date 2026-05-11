@@ -27,7 +27,7 @@
 
 package org.opencms.db;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
@@ -35,8 +35,10 @@ import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.util.StringTokenizer;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests that checks the "query.properties" files used by the various drivers for correct
@@ -63,44 +65,16 @@ import junit.framework.TestSuite;
  * </ul>
  * <p>
  */
-public class TestQueryProperties extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.
-     * <p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestQueryProperties(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.
-     * <p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestQueryProperties.class.getName());
-
-        suite.addTest(new TestQueryProperties("testQueryPropertiesGeneric"));
-        suite.addTest(new TestQueryProperties("testQueryPropertiesMssql"));
-        suite.addTest(new TestQueryProperties("testQueryPropertiesMysql"));
-        suite.addTest(new TestQueryProperties("testQueryPropertiesOracle"));
-        suite.addTest(new TestQueryProperties("testQueryPropertiesPostgresql"));
-
-        return suite;
-    }
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestQueryProperties extends OpenCmsTestRunner {
 
     /**
      * Test the generic query.properties file within the workspace for format errors.<p>
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testQueryPropertiesGeneric() throws Exception {
 
         // generic
@@ -113,6 +87,8 @@ public class TestQueryProperties extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testQueryPropertiesMssql() throws Exception {
 
         // mssql
@@ -124,6 +100,8 @@ public class TestQueryProperties extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testQueryPropertiesMysql() throws Exception {
 
         // mysql
@@ -135,6 +113,8 @@ public class TestQueryProperties extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testQueryPropertiesOracle() throws Exception {
 
         // oracle8
@@ -146,6 +126,8 @@ public class TestQueryProperties extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testQueryPropertiesPostgresql() throws Exception {
 
         // postgresql

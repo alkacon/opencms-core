@@ -27,21 +27,24 @@
 
 package org.opencms.widgets;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Map;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Test cases for the parsing of select widget options.<p>
  *
  */
-public class TestHtmlWidgetOption extends OpenCmsTestCase {
+public class TestHtmlWidgetOption extends OpenCmsTestRunner {
 
     /**
      * Tests parsing of the embedded gallery configuration.<p>
      */
+    @Test
     public void testParseEmbeddedGalleryOptions() {
 
         String config = "imagegallery{foo},xyzzy,downloadgallery{bar},bbb,endswithimagegallery{ttt}";

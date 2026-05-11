@@ -27,54 +27,38 @@
 
 package org.opencms.setup;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the database creation / removal used during setup.<p>
  *
  * @since 6.0.0
  */
-public class TestCmsSetupDb extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsSetupDb extends OpenCmsTestRunner {
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsSetupDb(String arg0) {
+    @BeforeAll
+    public void setUpConfiguration(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class (becasue the order of test cases is important here).<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsSetupDb.class.getName());
-
-        suite.addTest(new TestCmsSetupDb("testCreateDatabase"));
-        suite.addTest(new TestCmsSetupDb("testCreateTables"));
-        suite.addTest(new TestCmsSetupDb("testDropTables"));
-        suite.addTest(new TestCmsSetupDb("testDropDatabase"));
-        suite.addTest(new TestCmsSetupDb("testJdbcDriverVersions"));
-
-        return suite;
+        initConfiguration();
     }
 
     /**
      * Tests database creation.<p>
      */
+    @Order(1)
+    @Test
     public void testCreateDatabase() {
 
         if (DB_ORACLE.equals(getDatabaseProduct())) {
@@ -83,8 +67,8 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
         }
 
         // use create method form superclass
-        CmsSetupDb setupDb = getSetupDb(m_setupConnection);
-        setupDb.createDatabase(getDbProduct(), getReplacer(m_defaultConnection), true);
+        CmsSetupDb setupDb = getSetupDbForSetupConnection();
+        setupDb.createDatabase(getDbProduct(), getDefaultConnectionReplacer(), true);
 
         // check for errors
         checkErrors(setupDb);
@@ -96,6 +80,8 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
     /**
      * Tests table creation.<p>
      */
+    @Order(2)
+    @Test
     public void testCreateTables() {
 
         if (DB_ORACLE.equals(getDatabaseProduct())) {
@@ -104,8 +90,8 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
         }
 
         // use create method form superclass
-        CmsSetupDb setupDb = getSetupDb(m_defaultConnection);
-        setupDb.createTables(getDbProduct(), getReplacer(m_defaultConnection), true);
+        CmsSetupDb setupDb = getSetupDbForDefaultConnection();
+        setupDb.createTables(getDbProduct(), getDefaultConnectionReplacer(), true);
 
         // check for errors
         checkErrors(setupDb);
@@ -117,6 +103,8 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
     /**
      * Tests database removal.<p>
      */
+    @Order(4)
+    @Test
     public void testDropDatabase() {
 
         if (DB_ORACLE.equals(getDatabaseProduct())) {
@@ -125,8 +113,8 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
         }
 
         // use drop method form superclass
-        CmsSetupDb setupDb = getSetupDb(m_setupConnection);
-        setupDb.dropDatabase(getDbProduct(), getReplacer(m_defaultConnection), true);
+        CmsSetupDb setupDb = getSetupDbForSetupConnection();
+        setupDb.dropDatabase(getDbProduct(), getDefaultConnectionReplacer(), true);
 
         // check for errors
         checkErrors(setupDb);
@@ -138,6 +126,8 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
     /**
      * Tests table removal.<p>
      */
+    @Order(3)
+    @Test
     public void testDropTables() {
 
         if (DB_ORACLE.equals(getDatabaseProduct())) {
@@ -146,8 +136,8 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
         }
 
         // use drop method form superclass
-        CmsSetupDb setupDb = getSetupDb(m_defaultConnection);
-        setupDb.dropTables(getDbProduct(), getReplacer(m_defaultConnection), true);
+        CmsSetupDb setupDb = getSetupDbForDefaultConnection();
+        setupDb.dropTables(getDbProduct(), getDefaultConnectionReplacer(), true);
 
         // check for errors
         checkErrors(setupDb);
@@ -161,6 +151,8 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Order(5)
+    @Test
     public void testJdbcDriverVersions() throws Exception {
 
         File baseFolder = new File("./webapp/WEB-INF/setupdata/database");
@@ -175,7 +167,7 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
                 String name = dbFolder.getName();
                 String lib = (String)props.get(name + ".libs");
                 File driverFile = new File(dbFolder, lib);
-                assertTrue("JDBC driver not found or wrong version: " + driverFile, driverFile.exists());
+                assertTrue(driverFile.exists(), "JDBC driver not found or wrong version: " + driverFile);
             }
         }
     }

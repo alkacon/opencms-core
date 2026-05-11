@@ -29,8 +29,7 @@ package org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestricti
 
 import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionsBean.FieldValues;
 import org.opencms.jsp.search.config.parser.simplesearch.preconfiguredrestrictions.CmsRestrictionsBean.FieldValues.FieldType;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -42,45 +41,20 @@ import java.util.stream.Collectors;
 
 import org.apache.solr.client.solrj.util.ClientUtils;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /** Test cases for the preconfigured restriction bean. */
-public class TestRestrictionsBean extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestRestrictionsBean(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.addTest(new TestRestrictionsBean("testEmptyCheckAndSimpleRestrictions"));
-        suite.addTest(new TestRestrictionsBean("testMultipleRestrictions"));
-        suite.addTest(new TestRestrictionsBean("testValueHandling"));
-        suite.addTest(new TestRestrictionsBean("testIgnoredRule"));
-        suite.addTest(new TestRestrictionsBean("testFieldValues"));
-
-        return suite;
-    }
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestRestrictionsBean extends OpenCmsTestRunner {
 
     /**
      * Tests empty checks and simple restrictions.
      */
-    @org.junit.Test
+    @Order(1)
+    @Test
     public void testEmptyCheckAndSimpleRestrictions() {
 
         CmsRestrictionsBean bean = new CmsRestrictionsBean();
@@ -114,7 +88,8 @@ public class TestRestrictionsBean extends OpenCmsTestCase {
     /**
      * Tests field values behavior.
      */
-    @org.junit.Test
+    @Order(5)
+    @Test
     public void testFieldValues() {
 
         // simple rule
@@ -165,7 +140,8 @@ public class TestRestrictionsBean extends OpenCmsTestCase {
     /**
      * Tests if rule "none" is ignored.
      */
-    @org.junit.Test
+    @Order(4)
+    @Test
     public void testIgnoredRule() {
 
         // Test escaping of special characters
@@ -177,7 +153,8 @@ public class TestRestrictionsBean extends OpenCmsTestCase {
     /**
      * Tests multiple restrictions on the same type.
      */
-    @org.junit.Test
+    @Order(2)
+    @Test
     public void testMultipleRestrictions() {
 
         CmsRestrictionsBean bean = new CmsRestrictionsBean();
@@ -210,7 +187,8 @@ public class TestRestrictionsBean extends OpenCmsTestCase {
     /**
      * Tests value handling for the different match types.
      */
-    @org.junit.Test
+    @Order(3)
+    @Test
     public void testValueHandling() {
 
         // Test escaping of special characters

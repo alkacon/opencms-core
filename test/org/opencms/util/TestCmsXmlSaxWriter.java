@@ -28,7 +28,7 @@
 package org.opencms.util;
 
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 
@@ -38,13 +38,19 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXWriter;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test cases for the class <code>{@link org.opencms.util.CmsXmlSaxWriter}</code>.<p>
  *
  * @since 6.0.0
  */
-public class TestCmsXmlSaxWriter extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsXmlSaxWriter extends OpenCmsTestRunner {
 
     private static final String TEXT_1 = " This is a simple text ";
 
@@ -58,14 +64,10 @@ public class TestCmsXmlSaxWriter extends OpenCmsTestCase {
 
     private static final String TEXT_4_ESC = " This is a text with &#228;&#246;&#252;&#196;&#214;&#220;&#223;&#8364; as well as &lt;&gt; and &amp; ";
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsXmlSaxWriter(String arg0) {
+    @BeforeAll
+    public void setUpConfiguration() {
 
-        super(arg0);
+        initConfiguration();
     }
 
     /**
@@ -73,6 +75,8 @@ public class TestCmsXmlSaxWriter extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(3)
     public void testEntityExcapeInXml() throws Exception {
 
         // generate the SAX XML writer
@@ -105,6 +109,8 @@ public class TestCmsXmlSaxWriter extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(2)
     public void testWithoutEntityEscaping() throws Exception {
 
         // generate the SAX XML writer
@@ -127,7 +133,7 @@ public class TestCmsXmlSaxWriter extends OpenCmsTestCase {
         } catch (CmsXmlException e) {
             error = e;
         }
-        assertNotNull("Expected Exception was not thrown", error);
+        assertNotNull(error, "Expected Exception was not thrown");
         if (error != null) {
             assertSame(org.opencms.xml.Messages.ERR_UNMARSHALLING_XML_DOC_1, error.getMessageContainer().getKey());
         }
@@ -138,6 +144,8 @@ public class TestCmsXmlSaxWriter extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(1)
     public void testXmlRoundtrip() throws Exception {
 
         // generate the SAX XML writer
@@ -172,7 +180,7 @@ public class TestCmsXmlSaxWriter extends OpenCmsTestCase {
 
         // both docs must be equal, String and XML
         assertEquals(result1, result2);
-        assertEquals(doc1, doc2);
+        assertEquals(doc1.asXML(), doc2.asXML());
         // check content of doc2
         docTestCheck(doc2);
     }

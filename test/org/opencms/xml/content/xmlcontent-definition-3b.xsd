@@ -24,7 +24,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<handler class="org.opencms.xml.content.TestXmlContentHandler" />
+			<handler class="org.opencms.xml.content.CmsTestXmlContentHandler" />
 			<defaults>
 				<default element="Option" value="Default value from the appinfos" />
 				<default element="VfsLink" value="/system/modules/index.html" />

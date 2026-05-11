@@ -29,7 +29,7 @@ package org.opencms.xml.content;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -44,11 +44,17 @@ import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
 /**
  * Tests for generating an XML content.<p>
  *
  */
-public class TestCmsXmlContent extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsXmlContent extends OpenCmsTestRunner {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(TestCmsXmlContent.class);
@@ -57,20 +63,12 @@ public class TestCmsXmlContent extends OpenCmsTestCase {
     private static final String SCHEMA_SYSTEM_ID_1 = "http://www.opencms.org/test1.xsd";
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsXmlContent(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
      * Test that reading a schema containing ampersands in the appinfo section doesn't cause errors.
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(1)
     public void testAppInfoWithSpecialChars() throws Exception {
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
@@ -91,6 +89,8 @@ public class TestCmsXmlContent extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
+    @Order(4)
     public void testMoveUpDown() throws Exception {
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
@@ -163,6 +163,8 @@ public class TestCmsXmlContent extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(3)
     public void testUnmarshalFromString() throws Exception {
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
@@ -204,6 +206,8 @@ public class TestCmsXmlContent extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(2)
     public void testUnmarshalXsdWithInvalidNestedSchema() throws Exception {
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);

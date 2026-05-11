@@ -42,8 +42,7 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
@@ -52,69 +51,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for the link parseable resource types.<p>
  */
-public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestLinkParseableResourceTypes extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestLinkParseableResourceTypes(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestLinkParseableResourceTypes.class.getName());
-
-        suite.addTest(new TestLinkParseableResourceTypes("testInitialSetup"));
-        suite.addTest(new TestLinkParseableResourceTypes("testCopyResource"));
-        suite.addTest(new TestLinkParseableResourceTypes("testCreateResource"));
-        suite.addTest(new TestLinkParseableResourceTypes("testCreateSibling"));
-        suite.addTest(new TestLinkParseableResourceTypes("testMoveResource"));
-        suite.addTest(new TestLinkParseableResourceTypes("testReplaceLinkParseableResource"));
-        suite.addTest(new TestLinkParseableResourceTypes("testReplaceNonLinkParseableResource"));
-        suite.addTest(new TestLinkParseableResourceTypes("testChTypeLinkParseable"));
-        suite.addTest(new TestLinkParseableResourceTypes("testChTypeNonLinkParseable"));
-        suite.addTest(new TestLinkParseableResourceTypes("testWriteFile"));
-        suite.addTest(new TestLinkParseableResourceTypes("testImportResourceLinkParseable"));
-        suite.addTest(new TestLinkParseableResourceTypes("testImportResourceNonLinkParseable"));
-        suite.addTest(new TestLinkParseableResourceTypes("testDeleteResource"));
-        suite.addTest(new TestLinkParseableResourceTypes("testDeleteFolder"));
-        suite.addTest(new TestLinkParseableResourceTypes("testUndoChanges"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -122,6 +79,8 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(8)
     public void testChTypeLinkParseable() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -166,6 +125,8 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(9)
     public void testChTypeNonLinkParseable() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -210,6 +171,8 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testCopyResource() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -257,6 +220,8 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testCreateResource() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -303,6 +268,8 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testCreateSibling() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -350,6 +317,8 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(14)
     public void testDeleteFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -391,6 +360,8 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(13)
     public void testDeleteResource() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -462,6 +433,8 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(11)
     public void testImportResourceLinkParseable() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -541,6 +514,8 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(12)
     public void testImportResourceNonLinkParseable() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -609,6 +584,8 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testInitialSetup() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -636,6 +613,8 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testMoveResource() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -680,6 +659,8 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testReplaceLinkParseableResource() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -730,6 +711,8 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(7)
     public void testReplaceNonLinkParseableResource() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -776,6 +759,8 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(15)
     public void testUndoChanges() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -831,6 +816,8 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(10)
     public void testWriteFile() throws Throwable {
 
         CmsObject cms = getCmsObject();

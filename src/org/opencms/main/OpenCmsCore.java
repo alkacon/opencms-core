@@ -2583,6 +2583,16 @@ public final class OpenCmsCore {
                 System.err.println(Messages.get().getBundle().key(Messages.LOG_CONSOLE_TOTAL_RUNTIME_1, runtime));
 
             }
+            try {
+                final javax.management.MBeanServer mbs = java.lang.management.ManagementFactory.getPlatformMBeanServer();
+                final javax.management.ObjectName mxbeanName = new javax.management.ObjectName(
+                    "org.opencms.mx:type=CmsDiagnosticsMXBean");
+                if (mbs.isRegistered(mxbeanName)) {
+                    mbs.unregisterMBean(mxbeanName);
+                }
+            } catch (Throwable e) {
+                CmsLog.INIT.error(e.getLocalizedMessage(), e);
+            }
             m_instance = null;
         }
     }

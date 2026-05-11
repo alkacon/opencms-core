@@ -44,9 +44,8 @@ import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsResourceTranslator;
 
 import java.util.ArrayList;
@@ -54,24 +53,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for operations on siblings.<p>
  */
-public class TestSiblings extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestSiblings(String arg0) {
-
-        super(arg0);
-    }
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestSiblings extends OpenCmsTestRunner {
 
     /**
      * Creates a copy of a resource as a new sibling.<p>
@@ -82,7 +75,7 @@ public class TestSiblings extends OpenCmsTestCase {
      * @param target path/resource name of the new sibling
      * @throws Exception if something goes wrong
      */
-    public static void copyResourceAsSibling(OpenCmsTestCase tc, CmsObject cms, String source, String target)
+    public static void copyResourceAsSibling(OpenCmsTestRunner tc, CmsObject cms, String source, String target)
     throws Exception {
 
         // save the source in the store
@@ -125,7 +118,8 @@ public class TestSiblings extends OpenCmsTestCase {
      * @param target path/resource name of the new sibling
      * @throws Exception if something goes wrong
      */
-    public static void createSibling(OpenCmsTestCase tc, CmsObject cms, String source, String target) throws Exception {
+    public static void createSibling(OpenCmsTestRunner tc, CmsObject cms, String source, String target)
+    throws Exception {
 
         // save the source in the store
         tc.storeResources(cms, source);
@@ -160,44 +154,13 @@ public class TestSiblings extends OpenCmsTestCase {
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public static Test suite() {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestSiblings.class.getName());
-
-        suite.addTest(new TestSiblings("testSiblingsCopy"));
-        suite.addTest(new TestSiblings("testSiblingsCreate"));
-        suite.addTest(new TestSiblings("testSiblingIssueAfterImport"));
-        suite.addTest(new TestSiblings("testDeleteAllSiblings"));
-        suite.addTest(new TestSiblings("testSiblingStateIssue"));
-        suite.addTest(new TestSiblings("testSiblingsRelations"));
-        suite.addTest(new TestSiblings("testSiblingProjects"));
-        suite.addTest(new TestSiblings("testSiblingsCreateIssue"));
-        suite.addTest(new TestSiblings("testSiblingsV7PublishIssue"));
-        suite.addTest(new TestSiblings("testSiblingsNewDeletePublishIssue"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -205,6 +168,8 @@ public class TestSiblings extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testDeleteAllSiblings() throws Throwable {
 
         echo("Creating a new resource with 2 siblings, then deleting it with all siblings again");
@@ -248,6 +213,8 @@ public class TestSiblings extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testSiblingIssueAfterImport() throws Exception {
 
         echo("Testing sibling issue after import");
@@ -319,6 +286,8 @@ public class TestSiblings extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(7)
     public void testSiblingProjects() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -452,6 +421,8 @@ public class TestSiblings extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testSiblingsCopy() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -474,7 +445,7 @@ public class TestSiblings extends OpenCmsTestCase {
      // - this is to ensure that the new/changed/deleted other sibling still have a valid
      // state which consist of the last-modified-in-project ID plus the resource state
      // - otherwise this may result in grey flags
-    
+
      Another issue:
      What happens if a user A has an exclusive lock on a resource X,
      and user B does a "copy as sibling Y" of X, or "create
@@ -482,7 +453,7 @@ public class TestSiblings extends OpenCmsTestCase {
      to A, but test implies that it would be switched to B after operation!
      Maybe copy as / create new sibling must not be allowed if original is
      currently locked by another user?
-    
+
      }
      */
 
@@ -491,6 +462,8 @@ public class TestSiblings extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testSiblingsCreate() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -505,6 +478,8 @@ public class TestSiblings extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(8)
     public void testSiblingsCreateIssue() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -531,6 +506,8 @@ public class TestSiblings extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(10)
     public void testSiblingsNewDeletePublishIssue() throws Exception {
 
         echo("Tests publish issue with two siblings (one new sibling and one deleted sibling) of the same resource.");
@@ -641,7 +618,7 @@ public class TestSiblings extends OpenCmsTestCase {
             offReadSiblDe = e.toString();
         }
         // validate the publish result string
-        assertNotNull("The sibling /test/de/testabc.xml is not deleted in the 'Offline' project.", offReadSiblDe);
+        assertNotNull(offReadSiblDe, "The sibling /test/de/testabc.xml is not deleted in the 'Offline' project.");
 
         // check that the sibling to delete is really deleted in the "Online" project
         cms.getRequestContext().setCurrentProject(onlineProject);
@@ -652,7 +629,7 @@ public class TestSiblings extends OpenCmsTestCase {
             onReadSiblDe = e.toString();
         }
         // validate the publish result string
-        assertNotNull("The sibling /test/de/testabc.xml is not deleted in the 'Online' project.", onReadSiblDe);
+        assertNotNull(onReadSiblDe, "The sibling /test/de/testabc.xml is not deleted in the 'Online' project.");
 
         // check both online and offline project
         cms.getRequestContext().setCurrentProject(offlineProject);
@@ -678,6 +655,8 @@ public class TestSiblings extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testSiblingsRelations() throws Throwable {
 
         echo("Testing link management features with siblings");
@@ -759,6 +738,8 @@ public class TestSiblings extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testSiblingStateIssue() throws Throwable {
 
         echo("Tests issue with resource state and siblings");
@@ -862,6 +843,8 @@ public class TestSiblings extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(9)
     public void testSiblingsV7PublishIssue() throws Exception {
 
         echo("Tests OpenCms v7 publish issue with siblings");

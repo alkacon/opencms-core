@@ -40,8 +40,7 @@ import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.staticexport.CmsLinkTable.LinkKeyComparator;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.types.CmsXmlHtmlValue;
@@ -54,14 +53,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the OpenCms XML contents with real VFS operations.<p>
  */
-public class TestCmsXmlContentLinks extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsXmlContentLinks extends OpenCmsTestRunner {
 
     /** The link original filename. */
     private static final String FILENAME = "/folder1/image2.gif";
@@ -83,16 +86,6 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
     /** The current VFS prefix as added to internal links according to the configuration in opencms-importexport.xml. */
     private String m_vfsPrefix;
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsXmlContentLinks(String arg0) {
-
-        super(arg0);
-    }
 
     /**
      * Compares two link objects.<p>
@@ -151,50 +144,6 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         CmsLink link = ((CmsXmlVfsFileValue)xmlcontent.getValue(nodeName, Locale.ENGLISH)).getLink(cms);
         assertNotNull(link);
         return link;
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsXmlContentLinks.class.getName());
-
-        suite.addTest(new TestCmsXmlContentLinks("testSiteLinks"));
-        suite.addTest(new TestCmsXmlContentLinks("testUpdatePath"));
-        suite.addTest(new TestCmsXmlContentLinks("testUpdateId"));
-        suite.addTest(new TestCmsXmlContentLinks("testRemoveNode"));
-        suite.addTest(new TestCmsXmlContentLinks("testRemoveParent"));
-        suite.addTest(new TestCmsXmlContentLinks("testRelationType"));
-        suite.addTest(new TestCmsXmlContentLinks("testInvalidateFalse"));
-        suite.addTest(new TestCmsXmlContentLinks("testLinkComparator"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-                try {
-                    initSchemas();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
     }
 
     /**
@@ -269,10 +218,27 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
     }
 
     /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+        try {
+            initSchemas();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * Test the option to do not invalidate a broken link node.<p>
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(7)
     public void testInvalidateFalse() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -331,6 +297,8 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(8)
     public void testLinkComparator() throws Exception {
 
         LinkKeyComparator comparator = new LinkKeyComparator();
@@ -340,9 +308,9 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
                 String firstKey = ascendingKeys.get(i);
                 String secondKey = ascendingKeys.get(j);
                 assertEquals(
-                    "Wrong comparator result for values " + firstKey + ", " + secondKey,
                     Integer.compare(i, j),
-                    comparator.compare(firstKey, secondKey));
+                    comparator.compare(firstKey, secondKey),
+                    "Wrong comparator result for values " + firstKey + ", " + secondKey);
             }
         }
 
@@ -353,6 +321,8 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(6)
     public void testRelationType() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -387,6 +357,8 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(4)
     public void testRemoveNode() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -604,6 +576,8 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(5)
     public void testRemoveParent() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -826,6 +800,8 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
+    @Order(1)
     public void testSiteLinks() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -1004,6 +980,8 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(3)
     public void testUpdateId() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -1058,6 +1036,8 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(2)
     public void testUpdatePath() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -1163,8 +1143,8 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         file = cms.readFile(source);
         String newData = new String(file.getContents(), "UTF-8");
         assertTrue(
-            "[" + newData + "] does not contain " + expected.getStructureId(),
-            newData.contains(expected.getStructureId().toString()));
+            newData.contains(expected.getStructureId().toString()),
+            "[" + newData + "] does not contain " + expected.getStructureId());
         file.setContents(originalContent);
         cms.writeFile(file);
     }

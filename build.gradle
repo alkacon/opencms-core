@@ -8,11 +8,15 @@ plugins {
     id 'signing'
     id 'eclipse'
     id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
+    id 'com.diffplug.spotless' version '8.4.0'
 }
 
 group = "org.opencms"
 
-def configuredBuildDirectory = providers.gradleProperty('build_directory').get()
+def configuredBuildDirectory = providers.gradleProperty('opencms_build_directory')
+    .orElse(providers.environmentVariable('OPENCMS_BUILD_DIR'))
+    .orElse(providers.gradleProperty('build_directory'))
+    .get()
 layout.buildDirectory.set(file(configuredBuildDirectory))
 
 java {
@@ -139,6 +143,55 @@ sourceSets{
             srcDirs=['test-gwt']
             exclude '**/super_src/**'
         }
+    }
+}
+
+def spotlessImportOrderFile = file('/Users/alex/workspace/ak-work/agents/config/OrganizeImports_OpenCms.importorder')
+def spotlessFormatterConfigFile = file('/Users/alex/workspace/ak-work/agents/config/Formatter_OpenCms.xml')
+def spotlessEclipseVersion = '4.39'
+def hasSpotlessFilesProperty = project.hasProperty('spotlessFiles')
+def spotlessFilePaths = hasSpotlessFilesProperty
+    ? spotlessFiles.split(',').collect { it.trim() }.findAll { it }
+    : []
+def selectedSpotlessJavaTargets = []
+spotlessFilePaths.each { path ->
+    def targetFile = file(path)
+    if (!targetFile.exists()) {
+        throw new GradleException("spotlessFiles entry does not exist: $path")
+    }
+    selectedSpotlessJavaTargets.add(targetFile.isDirectory() ? fileTree(dir: targetFile, include: '**/*.java') : targetFile)
+}
+def spotlessJavaTargets = hasSpotlessFilesProperty
+    ? files(selectedSpotlessJavaTargets)
+    : files(
+        sourceSets.main.allJava,
+        sourceSets.modules.allJava,
+        sourceSets.gwt.allJava,
+        sourceSets.setup.allJava,
+        sourceSets.test.allJava,
+        sourceSets.testGwt.allJava)
+
+spotless {
+    java {
+        target spotlessJavaTargets
+
+        if (spotlessImportOrderFile.exists()) {
+            importOrderFile spotlessImportOrderFile
+        }
+        expandWildcardImports()
+        removeUnusedImports()
+        if (spotlessFormatterConfigFile.exists()) {
+            eclipse(spotlessEclipseVersion)
+                .configFile(spotlessFormatterConfigFile)
+                .sortMembersEnabled(true)
+                .sortMembersOrder("T,SF,F,C,SI,I,SM,M")
+                .sortMembersDoNotSortFields(true)
+                .sortMembersVisibilityOrderEnabled(true)
+                .sortMembersVisibilityOrder("B,R,D,V")
+        }
+        formatAnnotations()
+        trimTrailingWhitespace()
+        leadingTabsToSpaces(4)
     }
 }
 
@@ -1180,6 +1233,7 @@ tasks.register('bindist', Zip) {
 // Shared configuration for all test tasks
 tasks.withType(Test).configureEach {
     maxHeapSize = "2000m"
+    jvmArgs += ['--enable-native-access=ALL-UNNAMED']
     useJUnit()
     scanForTestClasses = false
     testLogging.showStandardStreams = true
@@ -1187,6 +1241,7 @@ tasks.withType(Test).configureEach {
 }
 
 def coreTestConfig = {
+    useJUnitPlatform()
     testClassesDirs = files(sourceSets.test.java.classesDirectory)
     systemProperties['test.data.path'] = "${projectDir}/test/data"
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
@@ -1196,11 +1251,14 @@ def coreTestConfig = {
     inputs.dir "${projectDir}/webapp"
 }
 
+def legacyTestCaseToRun = providers.gradleProperty('testCaseToRun')
+
 test {
     configure coreTestConfig
-    description = "Runs the complete test suite 'org.opencms.test.AllTests'."
+    // includes = ['org/opencms/test/AllTestsBridge.class']
+    description = "Runs the complete OpenCms core test suite."
 
-    includes = ['org/opencms/test/AllTestsBridge.class']
+    includes = ['**/Test*.class']
     scanForTestClasses = true
 }
 
@@ -1213,19 +1271,20 @@ tasks.register('testSingle', Test) {
     configure coreTestConfig
     classpath = sourceSets.test.runtimeClasspath
     testClassesDirs = files(sourceSets.test.java.classesDirectory)
+    useJUnitPlatform()
     doNotTrackState("Single-test execution uses ad hoc filters and generated result paths.")
 
     doFirst{
         logger.info("Test filter configuration - commandLineIncludePatterns: ${filter.commandLineIncludePatterns}, includePatterns: ${filter.includePatterns}")
 
         boolean hasExplicit = !filter.commandLineIncludePatterns.empty || !filter.includePatterns.empty
-        
+
         // Backward compatibility: Check for -PtestCaseToRun property
-        if (project.hasProperty('testCaseToRun')) {
+        if (legacyTestCaseToRun.present) {
              if (hasExplicit) {
                  logger.warn("WARNING: Both -PtestCaseToRun and --tests filters are present. Using standard Gradle filters and ignoring legacy property.")
              } else {
-                 def legacyTestInfo = project.property('testCaseToRun')
+                 def legacyTestInfo = legacyTestCaseToRun.get()
                  logger.warn("DEPRECATION WARNING: The 'testCaseToRun' property is deprecated. Please use standard Gradle filtering: ./gradlew testSingle --tests ${legacyTestInfo}")
                  filter.includeTestsMatching "${legacyTestInfo}*"
                  hasExplicit = true

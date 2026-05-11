@@ -27,18 +27,33 @@
 
 package org.opencms.util;
 
-import com.google.common.collect.Sets;
+import org.opencms.test.OpenCmsTestRunner;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+
+import com.google.common.collect.Sets;
 
 /**
  * Test case for CmsPathMap.<p>
  */
-public class TestCmsPathMap extends TestCase {
+public class TestCmsPathMap extends OpenCmsTestRunner {
+
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$testStart(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeEach
+    public void $testStart(TestInfo testInfo) {
+
+        // Legacy TestCase did not print OpenCms test headers.
+    }
 
     /**
      * Tests paths with common prefixes.<p>
      */
+    @Test
     public void testCommonPrefix() {
 
         CmsPathMap<String> pm = new CmsPathMap<String>();
@@ -51,6 +66,7 @@ public class TestCmsPathMap extends TestCase {
     /**
      * Tests the empty path.<p>
      */
+    @Test
     public void testEmptyPath() {
 
         CmsPathMap<String> pm = new CmsPathMap<String>();
@@ -64,6 +80,7 @@ public class TestCmsPathMap extends TestCase {
     /**
      * Basic tests.<p>
      */
+    @Test
     public void testPathMap() {
 
         CmsPathMap<String> pm = new CmsPathMap<String>();

@@ -27,46 +27,25 @@
 
 package org.opencms.jsp.util;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Date;
 import java.util.Locale;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /** Test cases for the {@link CmsJspDateSeriesBean}. */
-public class TestCmsJspDateSeriesBean extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsJspDateSeriesBean(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsJspDateSeriesBean.class.getName());
-
-        suite.addTest(new TestCmsJspDateSeriesBean("testGetEventInfo"));
-        suite.addTest(new TestCmsJspDateSeriesBean("testGetSpecialInstances"));
-
-        return suite;
-    }
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsJspDateSeriesBean extends OpenCmsTestRunner {
 
     /**
      * Tests if the correct event info is returned, specifically if for missing insatncedate, the first instance is returned.
      */
+    @Test
+    @Order(1)
     public void testGetEventInfo() {
 
         String config = "{\"from\":\"1508396400000\", \"to\":\"1508511600000\", \"pattern\":{\"type\":\"NONE\"}}";
@@ -87,6 +66,8 @@ public class TestCmsJspDateSeriesBean extends OpenCmsTestCase {
     /**
      * Test the methods to get specific instances of a date series.
      */
+    @Test
+    @Order(2)
     public void testGetSpecialInstances() {
 
         long currentTime = new Date().getTime();

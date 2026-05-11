@@ -35,8 +35,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -47,16 +46,20 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for the <code>{@link CmsJspContentAccessBean}</code>.<p>
  *
  * @since 7.0.2
  */
-public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsJspContentAccessBean extends OpenCmsTestRunner {
 
     /** Schema id 3. */
     private static final String SCHEMA_SYSTEM_ID_3 = "http://www.opencms.org/test3.xsd";
@@ -65,47 +68,13 @@ public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
     private static final String SCHEMA_SYSTEM_ID_4 = "http://www.opencms.org/test4.xsd";
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestCmsJspContentAccessBean(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsJspContentAccessBean.class.getName());
-
-        suite.addTest(new TestCmsJspContentAccessBean("testContentAccess"));
-        suite.addTest(new TestCmsJspContentAccessBean("testContentAccessNestedSchema"));
-        suite.addTest(new TestCmsJspContentAccessBean("testIsEditable"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -113,6 +82,8 @@ public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(1)
     public void testContentAccess() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -197,6 +168,8 @@ public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(2)
     public void testContentAccessNestedSchema() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -255,6 +228,8 @@ public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(3)
     public void testIsEditable() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -272,11 +247,11 @@ public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
         CmsProject offline = cms.getRequestContext().getCurrentProject();
 
         // make sure the Admin user can edit OFFLINE
-        assertTrue("Failed editable check for admin user in offline project", bean.getIsEditable());
+        assertTrue(bean.getIsEditable(), "Failed editable check for admin user in offline project");
         // switch to the online project
         cms.getRequestContext().setCurrentProject(online);
         // make sure the Admin user can edit ONLINE
-        assertTrue("Failed editable check for admin user in online project", bean.getIsEditable());
+        assertTrue(bean.getIsEditable(), "Failed editable check for admin user in online project");
 
         // create a test user and a test group
         cms.createUser("testuser", "test", "A test user", null);
@@ -285,9 +260,9 @@ public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
 
         // login as user "test"
         cms.loginUser("testuser", "test");
-        assertFalse("Passed editable check for test user in online project", bean.getIsEditable());
+        assertFalse(bean.getIsEditable(), "Passed editable check for test user in online project");
         cms.getRequestContext().setCurrentProject(offline);
-        assertFalse("Passed editable check for test user in offline project", bean.getIsEditable());
+        assertFalse(bean.getIsEditable(), "Passed editable check for test user in offline project");
 
         // change the permissions to allow the test user write access
         CmsObject adminCms = getCmsObject();
@@ -298,19 +273,19 @@ public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
         // add user to required role
         OpenCms.getRoleManager().addUserToRole(adminCms, CmsRole.ELEMENT_AUTHOR, "testuser");
 
-        assertTrue("Failed editable check for test user in offline project", bean.getIsEditable());
+        assertTrue(bean.getIsEditable(), "Failed editable check for test user in offline project");
 
         // lock the file with the admin user
         adminCms.lockResource(file);
         assertFalse(
-            "Passed editable check with locked resource for test user in offline project",
-            bean.getIsEditable());
+            bean.getIsEditable(),
+            "Passed editable check with locked resource for test user in offline project");
         adminCms.unlockResource(file);
 
         // try from the online project
         cms.getRequestContext().setCurrentProject(online);
         // add the user to the default users group, otherwise no projects will be available
         adminCms.addUserToGroup("testuser", OpenCms.getDefaultUsers().getGroupUsers());
-        assertTrue("Failed editable check for test user in online project", bean.getIsEditable());
+        assertTrue(bean.getIsEditable(), "Failed editable check for test user in online project");
     }
 }

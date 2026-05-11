@@ -911,32 +911,6 @@
 						permissions="+r+v+w+c" />
 				</accesscontrol>
 			</defaultaccesscontrol>
-			<multicontextmenu>
-				<entry key="GUI_EXPLORER_CONTEXT_LOCK_0"
-					uri="commons/lock.jsp" rule="multistandard" />
-				<entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0"
-					uri="commons/unlock.jsp" rule="multistandard" />
-				<entry key="GUI_EXPLORER_CONTEXT_LOCKS_0"
-					uri="commons/locks.jsp" rule="multistandard" />
-				<separator />
-				<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0"
-					uri="commons/publishresource.jsp" rule="multistandard" />
-				<separator />
-				<entry key="GUI_EXPLORER_CONTEXT_COPY_0"
-					uri="commons/copy.jsp" rule="multistandard" />
-				<entry key="GUI_EXPLORER_CONTEXT_MOVE_MULTI_0"
-					uri="commons/move.jsp" rule="multistandard" />
-				<entry key="GUI_EXPLORER_CONTEXT_DELETE_0"
-					uri="commons/delete.jsp" rule="multistandard" />
-				<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0"
-					uri="commons/touch.jsp" rule="multistandard" />
-				<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
-					uri="commons/availability.jsp" rule="multistandard" />
-				<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0"
-					uri="commons/undochanges.jsp" rule="multistandard" />
-				<entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0"
-					uri="commons/undelete.jsp" rule="multistandard" />
-			</multicontextmenu>
 			<menurules>
 				<menurule name="standard">
 					<menuitemrule

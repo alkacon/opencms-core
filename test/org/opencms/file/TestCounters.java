@@ -27,35 +27,25 @@
 
 package org.opencms.file;
 
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
-import junit.framework.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Unit tests for the counters.<p>
  */
-public class TestCounters extends OpenCmsTestCase {
+public class TestCounters extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestCounters(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        return generateSetupTestWrapper(TestCounters.class, "systemtest", "/");
+        setupOpenCms(testInfo, "systemtest", "/");
     }
 
     /**
@@ -63,6 +53,7 @@ public class TestCounters extends OpenCmsTestCase {
      *
      * @throws Exception when an error occurs
      */
+    @Test
     public void testReadCounter() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -77,6 +68,7 @@ public class TestCounters extends OpenCmsTestCase {
      *
      * @throws Exception when an error occurs
      */
+    @Test
     public void testReadCountersInterleaved() throws Exception {
 
         CmsObject cms = getCmsObject();

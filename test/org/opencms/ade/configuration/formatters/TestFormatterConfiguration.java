@@ -37,8 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsFormatterBean;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
@@ -57,17 +56,17 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * Tests for formatter configurations.<p>
  */
-public class TestFormatterConfiguration extends OpenCmsTestCase {
+public class TestFormatterConfiguration extends OpenCmsTestRunner {
 
     /** A resource type which is used for the formatter configuration tests. */
     public static final String TYPE_A = "article";
@@ -76,71 +75,13 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
     public static final String TYPE_B = "article1";
 
     /** Formatter resource. */
-    static CmsResource m_exampleFormatter;
+    CmsResource m_exampleFormatter;
 
     /** Example content resource. */
-    static CmsResource m_exampleResourceA;
+    CmsResource m_exampleResourceA;
 
     /** Example content resource. */
-    static CmsResource m_exampleResourceB;
-
-    /**
-     * Test constructor.<p>
-     *
-     * @param name the name of the test
-     */
-    public TestFormatterConfiguration(String name) {
-
-        super(name);
-    }
-
-    /**
-     * Returns the test suite.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        try {
-            TestSuite suite = generateTestSuite(TestFormatterConfiguration.class);
-            TestSetup wrapper = new TestSetup(suite) {
-
-                /**
-                 * @see junit.extensions.TestSetup#setUp()
-                 */
-                @Override
-                protected void setUp() {
-
-                    CmsObject cms = setupOpenCms("simpletest", "/");
-                    try {
-                        CmsFormatterConfigurationCache.UPDATE_DELAY_MILLIS = 100;
-                        m_exampleFormatter = cms.createResource("/system/f1.jsp", getTypeId("jsp"));
-                        m_exampleResourceA = cms.createResource("/system/xa.xml", getTypeId(TYPE_A));
-                        m_exampleResourceB = cms.createResource("/system/xb.xml", getTypeId(TYPE_B));
-                        // add jsps referenced as formatters in article1.xsd
-                        cms.createResource("/system/formatters", getTypeId("folder"));
-                        cms.createResource("/system/formatters/article1_f1.jsp", getTypeId("jsp"));
-                        cms.createResource("/system/formatters/article1_f2.jsp", getTypeId("jsp"));
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-
-                /**
-                 * @see junit.extensions.TestSetup#tearDown()
-                 */
-                @Override
-                protected void tearDown() {
-
-                    removeOpenCms();
-                }
-            };
-            return wrapper;
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
-    }
+    CmsResource m_exampleResourceB;
 
     /**
      * Gets the type id for a given name.<p>
@@ -158,10 +99,26 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
     }
 
     /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+        try {
+            setUpResources();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * Tests adding a formatter through the configuration.
      *
      * @throws CmsException
      */
+    @Test
     public void testAddFormatter() throws CmsException {
 
         I_CmsFormatterBean f1 = createFormatter(TYPE_A, "f1", 1000, true);
@@ -187,7 +144,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         for (I_CmsFormatterBean formatter : formatterConfig.getAllFormatters()) {
             actualNames.add(formatter.getNiceName(java.util.Locale.ENGLISH));
         }
-        assertEquals("Formatter names don't match the active formatters for this type", expectedNames, actualNames);
+        assertEquals(expectedNames, actualNames, "Formatter names don't match the active formatters for this type");
     }
 
     /**
@@ -195,6 +152,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
      *
      * @throws CmsException
      */
+    @Test
     public void testAutoEnabled() throws CmsException {
 
         I_CmsFormatterBean f1 = createFormatter(TYPE_A, "f1", 1000, true);
@@ -211,9 +169,9 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             actualNames.add(formatter.getNiceName(java.util.Locale.ENGLISH));
         }
         assertEquals(
-            "Formatter names don't match the auto-enabled formatters for this type",
             expectedNames,
-            actualNames);
+            actualNames,
+            "Formatter names don't match the auto-enabled formatters for this type");
     }
 
     /**
@@ -221,6 +179,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testDefaultFormatterSelection() throws Exception {
 
         I_CmsFormatterBean f1 = createWidthBasedFormatter("f1", 100, 100, 999);
@@ -230,29 +189,29 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         CmsTestConfigData config = createConfig("/", f1, f2, f3, f4);
         CmsFormatterConfiguration formatterConfig = config.getFormatters(getCmsObject(), m_exampleResourceA);
         assertEquals(
-            "Widest formtter with width < 250 should have matched",
             "f2",
-            formatterConfig.getDefaultFormatter("foo", 250).getNiceName(java.util.Locale.ENGLISH));
+            formatterConfig.getDefaultFormatter("foo", 250).getNiceName(java.util.Locale.ENGLISH),
+            "Widest formtter with width < 250 should have matched");
         assertEquals(
-            "Widest formatter with width < 350 and maxWidth >= 350 should have matched",
             "f3",
-            formatterConfig.getDefaultFormatter("foo", 350).getNiceName(java.util.Locale.ENGLISH));
+            formatterConfig.getDefaultFormatter("foo", 350).getNiceName(java.util.Locale.ENGLISH),
+            "Widest formatter with width < 350 and maxWidth >= 350 should have matched");
 
         I_CmsFormatterBean f5 = createTypeBasedFormatter("f5", 100, "foo");
         config = createConfig("/", f1, f2, f3, f4, f5);
         formatterConfig = config.getFormatters(getCmsObject(), m_exampleResourceA);
         assertEquals(
-            "Type based formatter should have matched",
             "f5",
-            formatterConfig.getDefaultFormatter("foo", 350).getNiceName(java.util.Locale.ENGLISH));
+            formatterConfig.getDefaultFormatter("foo", 350).getNiceName(java.util.Locale.ENGLISH),
+            "Type based formatter should have matched");
 
         I_CmsFormatterBean f6 = createWidthBasedFormatter("f6", 200, 200, 999);
         config = createConfig("/", f1, f2, f3, f4, f5, f6);
         formatterConfig = config.getFormatters(getCmsObject(), m_exampleResourceA);
         assertEquals(
-            "Formatter with higher ranking should have matched",
             "f6",
-            formatterConfig.getDefaultFormatter("foo", 350).getNiceName(java.util.Locale.ENGLISH));
+            formatterConfig.getDefaultFormatter("foo", 350).getNiceName(java.util.Locale.ENGLISH),
+            "Formatter with higher ranking should have matched");
 
     }
 
@@ -261,6 +220,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testLiveFormatterConfig() throws Exception {
 
         try {
@@ -285,16 +245,16 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             Collection<I_CmsFormatterBean> formatters = OpenCms.getADEManager().getCachedFormatters(
                 false).getFormatters().values();
             assertTrue(
-                "Formatter 'foobarx' should have been in cached formatter configuration, but was not there",
-                getFormatterNames(formatters).contains("foobarx"));
+                getFormatterNames(formatters).contains("foobarx"),
+                "Formatter 'foobarx' should have been in cached formatter configuration, but was not there");
             cms.deleteResource("/system/formatter1.fc", CmsResource.DELETE_PRESERVE_SIBLINGS);
             OpenCms.getADEManager().waitForFormatterCache(false);
             formatters = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().values();
             assertTrue(
-                "Formatter 'foobarx' should not be available anymore, but is.",
-                !getFormatterNames(formatters).contains("foobarx"));
+                !getFormatterNames(formatters).contains("foobarx"),
+                "Formatter 'foobarx' should not be available anymore, but is.");
 
-            assertTrue("Formatter 'foobar2' should be available.", getFormatterNames(formatters).contains("foobar2"));
+            assertTrue(getFormatterNames(formatters).contains("foobar2"), "Formatter 'foobar2' should be available.");
 
         } finally {
             delete("/system/formatter1.fc");
@@ -308,6 +268,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testOverrideSettings() throws Exception {
 
         CmsObject cms = OpenCms.initCmsObject(getCmsObject());
@@ -435,6 +396,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testOverwriteFormatterConfig() throws Exception {
 
         try {
@@ -470,6 +432,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
      *
      * @throws CmsException
      */
+    @Test
     public void testRemoveAllFormattersAndAddExplicitly() throws CmsException {
 
         int typeB = OpenCms.getResourceManager().getResourceType(TYPE_B).getTypeId();
@@ -507,7 +470,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         for (I_CmsFormatterBean formatter : formatterConfigB.getAllFormatters()) {
             actualNames.add(formatter.getNiceName(java.util.Locale.ENGLISH));
         }
-        assertEquals("There should be no formatters available at all.", expectedNames, actualNames);
+        assertEquals(expectedNames, actualNames, "There should be no formatters available at all.");
         CmsFormatterChangeSet changeSet2 = new CmsFormatterChangeSet(
             Collections.EMPTY_LIST,
             Arrays.asList("" + CmsUUID.getConstantUUID("f1"), "type_" + TYPE_B),
@@ -528,7 +491,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         for (I_CmsFormatterBean formatter : formatterConfigB.getAllFormatters()) {
             actualNames.add(formatter.getNiceName(java.util.Locale.ENGLISH));
         }
-        assertEquals("Only explicitly added formatters should be available.", expectedNames, actualNames);
+        assertEquals(expectedNames, actualNames, "Only explicitly added formatters should be available.");
     }
 
     /**
@@ -537,6 +500,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
      * @throws CmsException
      */
     @SuppressWarnings("unchecked")
+    @Test
     public void testRemoveAndAddSchemaFormatters() throws CmsException {
 
         int typeA = OpenCms.getResourceManager().getResourceType(TYPE_A).getTypeId();
@@ -576,27 +540,27 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
 
         CmsFormatterConfiguration formatterConfig = config.getFormatters(cms, m_exampleResourceA);
         assertEquals(
-            "Schema formatters for TYPE_A should have been removed",
             names("f1"),
-            getFormatterNames(formatterConfig.getAllFormatters()));
+            getFormatterNames(formatterConfig.getAllFormatters()),
+            "Schema formatters for TYPE_A should have been removed");
 
         CmsFormatterConfiguration formatterConfig2 = config2.getFormatters(cms, m_exampleResourceA);
         assertEquals(
-            "Schema formatters for TYPE_A should have been added again.",
             names("f1", "s1", "s2"),
-            getFormatterNames(formatterConfig2.getAllFormatters()));
+            getFormatterNames(formatterConfig2.getAllFormatters()),
+            "Schema formatters for TYPE_A should have been added again.");
 
         CmsFormatterConfiguration formatterConfig3 = config2.getFormatters(cms, m_exampleResourceB);
         assertEquals(
-            "Schema formatters for TYPE_B should not be affected",
             names("s3"),
-            getFormatterNames(formatterConfig3.getAllFormatters()));
+            getFormatterNames(formatterConfig3.getAllFormatters()),
+            "Schema formatters for TYPE_B should not be affected");
 
         CmsFormatterConfiguration formatterConfig4 = config.getFormatters(cms, m_exampleResourceB);
         assertEquals(
-            "Schema formatters for TYPE_B should not be affected",
             names("s3"),
-            getFormatterNames(formatterConfig4.getAllFormatters()));
+            getFormatterNames(formatterConfig4.getAllFormatters()),
+            "Schema formatters for TYPE_B should not be affected");
 
     }
 
@@ -605,6 +569,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
      *
      * @throws CmsException
      */
+    @Test
     public void testRemoveFormatter() throws CmsException {
 
         I_CmsFormatterBean f1 = createFormatter(TYPE_A, "f1", 1000, true);
@@ -630,7 +595,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         for (I_CmsFormatterBean formatter : formatterConfig.getAllFormatters()) {
             actualNames.add(formatter.getNiceName(java.util.Locale.ENGLISH));
         }
-        assertEquals("Formatter names don't match the active formatters for this type", expectedNames, actualNames);
+        assertEquals(expectedNames, actualNames, "Formatter names don't match the active formatters for this type");
     }
 
     /**
@@ -638,6 +603,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
      *
      * @throws CmsException if something goes wrong
      */
+    @Test
     public void testReplaceFormatterWithOverlappingKeys1() throws CmsException {
 
         I_CmsFormatterBean f1 = createFormatterWithKey(TYPE_A, "f1", 1000, true, "alpha", "beta");
@@ -656,7 +622,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             null,
             null);
         config2.setFormatterChangeSet(changeSet);
-        assertEquals("only two formatters should be active", 2, config2.getActiveFormatters().size());
+        assertEquals(2, config2.getActiveFormatters().size(), "only two formatters should be active");
         assertEquals("f2", config2.findFormatter("alpha").getNiceName(Locale.ENGLISH));
         assertEquals("f2", config2.findFormatter("beta").getNiceName(Locale.ENGLISH));
         assertEquals("f2", config2.findFormatter("gamma").getNiceName(Locale.ENGLISH));
@@ -671,6 +637,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
      *
      * @throws CmsException if something goes wrong
      */
+    @Test
     public void testReplaceFormatterWithOverlappingKeys2() throws CmsException {
 
         I_CmsFormatterBean f1 = createFormatterWithKey(TYPE_A, "f1", 1000, true, "alpha", "beta");
@@ -689,7 +656,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             null,
             null);
         config2.setFormatterChangeSet(changeSet);
-        assertEquals("only two formatters should be active", 2, config2.getActiveFormatters().size());
+        assertEquals(2, config2.getActiveFormatters().size(), "only two formatters should be active");
         assertEquals("f2", config2.findFormatter("alpha").getNiceName(Locale.ENGLISH));
         assertEquals("f2", config2.findFormatter("beta").getNiceName(Locale.ENGLISH));
         assertEquals("f2", config2.findFormatter("gamma").getNiceName(Locale.ENGLISH));
@@ -704,6 +671,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
      *
      * @throws CmsException if something goes wrong
      */
+    @Test
     public void testReplaceFormatterWithOverlappingKeys3() throws CmsException {
 
         I_CmsFormatterBean f1 = createFormatterWithKey(TYPE_A, "f1", 1000, true, "alpha", "beta");
@@ -722,7 +690,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             null,
             null);
         config2.setFormatterChangeSet(changeSet);
-        assertEquals("only two formatters should be active", 2, config2.getActiveFormatters().size());
+        assertEquals(2, config2.getActiveFormatters().size(), "only two formatters should be active");
         assertEquals("f2", config2.findFormatter("alpha").getNiceName(Locale.ENGLISH));
         assertEquals("f2", config2.findFormatter("beta").getNiceName(Locale.ENGLISH));
         assertEquals("f2", config2.findFormatter("gamma").getNiceName(Locale.ENGLISH));
@@ -737,6 +705,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
      *
      * @throws CmsException if something goes wrong
      */
+    @Test
     public void testReplaceFormatterWithSameKey() throws CmsException {
 
         I_CmsFormatterBean f1 = createFormatterWithKey(TYPE_A, "f1", 1000, true, "alpha");
@@ -765,7 +734,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         for (I_CmsFormatterBean formatter : formatterConfig.getAllFormatters()) {
             actualNames.add(formatter.getNiceName(java.util.Locale.ENGLISH));
         }
-        assertEquals("Formatter names don't match the active formatters for this type", expectedNames, actualNames);
+        assertEquals(expectedNames, actualNames, "Formatter names don't match the active formatters for this type");
 
     }
 
@@ -774,6 +743,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
      *
      * @throws CmsException
      */
+    @Test
     public void testSchemaFormatters() throws CmsException {
 
         int typeA = OpenCms.getResourceManager().getResourceType(TYPE_A).getTypeId();
@@ -794,7 +764,25 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
         for (I_CmsFormatterBean formatter : formatterConfig.getAllFormatters()) {
             actualNames.add(formatter.getNiceName(java.util.Locale.ENGLISH));
         }
-        assertEquals("Formatter names don't match the active formatters for this type", expectedNames, actualNames);
+        assertEquals(expectedNames, actualNames, "Formatter names don't match the active formatters for this type");
+    }
+
+    /**
+     * Sets up additional resources needed by formatter tests.<p>
+     *
+     * @throws Exception if resource creation fails
+     */
+    void setUpResources() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsFormatterConfigurationCache.UPDATE_DELAY_MILLIS = 100;
+        m_exampleFormatter = cms.createResource("/system/f1.jsp", getTypeId("jsp"));
+        m_exampleResourceA = cms.createResource("/system/xa.xml", getTypeId(TYPE_A));
+        m_exampleResourceB = cms.createResource("/system/xb.xml", getTypeId(TYPE_B));
+        // add jsps referenced as formatters in article1.xsd
+        cms.createResource("/system/formatters", getTypeId("folder"));
+        cms.createResource("/system/formatters/article1_f1.jsp", getTypeId("jsp"));
+        cms.createResource("/system/formatters/article1_f2.jsp", getTypeId("jsp"));
     }
 
     /**

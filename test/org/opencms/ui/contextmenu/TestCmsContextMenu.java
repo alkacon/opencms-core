@@ -30,48 +30,32 @@ package org.opencms.ui.contextmenu;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.util.CmsTreeNode;
 import org.opencms.util.CmsUUID;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.jupiter.api.Test;
+
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Window;
-
-import junit.framework.TestSuite;
 
 /**
  * Tests context menu construction.<p>
  */
-public class TestCmsContextMenu extends OpenCmsTestCase {
-
-    public TestCmsContextMenu(String name) {
-
-        super(name);
-    }
-
-    public static TestSuite suite() {
-
-        try {
-            return generateTestSuite(TestCmsContextMenu.class);
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException
-        | InvocationTargetException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+public class TestCmsContextMenu extends OpenCmsTestRunner {
 
     /**
      * Tests building the context menu tree.<p>
      */
+    @Test
     public void testBuildTree() {
 
         List<I_CmsContextMenuItem> items = Arrays.asList(
@@ -96,6 +80,7 @@ public class TestCmsContextMenu extends OpenCmsTestCase {
     /**
      * Tests that context menu items with higher priorities override those  with lower ones.<p>
      */
+    @Test
     public void testOverride() {
 
         List<I_CmsContextMenuItem> items = Arrays.asList(
@@ -114,6 +99,7 @@ public class TestCmsContextMenu extends OpenCmsTestCase {
     /**
      * Tests that items cyclically referring to each other via the parent id are not included in the context menu tree.<p>
      */
+    @Test
     public void testRemoveCycles() {
 
         List<I_CmsContextMenuItem> items = Arrays.asList(
@@ -132,6 +118,7 @@ public class TestCmsContextMenu extends OpenCmsTestCase {
     /**
      * Tests the USE_NEXT visibility mode.
      */
+    @Test
     public void testUseNext1() {
 
         I_CmsContextMenuItem foo1 = entry("foo", null, 1, 100, CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE);
@@ -150,6 +137,7 @@ public class TestCmsContextMenu extends OpenCmsTestCase {
     /**
      * Tests the USE_NEXT visibility mode.
      */
+    @Test
     public void testUseNext2() {
 
         I_CmsContextMenuItem foo1 = entry("foo", null, 1, 100, CmsMenuItemVisibilityMode.VISIBILITY_USE_NEXT);
@@ -167,6 +155,7 @@ public class TestCmsContextMenu extends OpenCmsTestCase {
     /**
      * Tests the USE_NEXT visibility mode.
      */
+    @Test
     public void testUseNext3() {
 
         I_CmsContextMenuItem foo1 = entry("foo", null, 1, 100, CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE);

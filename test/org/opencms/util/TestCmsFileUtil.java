@@ -27,17 +27,19 @@
 
 package org.opencms.util;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * @since 6.2.2
  */
-public class TestCmsFileUtil extends OpenCmsTestCase {
+public class TestCmsFileUtil extends OpenCmsTestRunner {
 
     /**
      * An input stream that provides 24 bytes of data in two chunks, the first of 16 bytes,
@@ -141,6 +143,7 @@ public class TestCmsFileUtil extends OpenCmsTestCase {
      *
      * @throws IOException in case the test fails
      */
+    @Test
     public void testMultiPassReadFully() throws IOException {
 
         // this test is written especially to exploit an array bounds bug (bug 1131)
@@ -148,17 +151,17 @@ public class TestCmsFileUtil extends OpenCmsTestCase {
         // a value greater than the second call to available(), an IndexOutOfBoundsException is thrown.
         TestInputStream is = new TestInputStream();
         byte[] data = CmsFileUtil.readFully(is);
-        assertNotNull("new byte array returned by readFully", data);
+        assertNotNull(data, "new byte array returned by readFully");
 
         // test that all the data from both chunks of the input stream was read correctly.
-        assertEquals("all data returned", 24, data.length);
+        assertEquals(24, data.length, "all data returned");
         for (int i = 0; i < 16; ++i) {
-            assertEquals("first chunk data[" + i + "] has correct value", 1, data[i]);
+            assertEquals(1, data[i], "first chunk data[" + i + "] has correct value");
         }
         for (int i = 16; i < 24; ++i) {
-            assertEquals("second chunk data[" + i + "] has correct value", 2, data[i]);
+            assertEquals(2, data[i], "second chunk data[" + i + "] has correct value");
         }
 
-        assertTrue("input stream was closed", is.isClosed());
+        assertTrue(is.isClosed(), "input stream was closed");
     }
 }

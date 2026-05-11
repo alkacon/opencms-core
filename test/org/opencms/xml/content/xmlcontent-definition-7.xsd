@@ -27,7 +27,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<handler class="org.opencms.xml.content.TestXmlContentHandler" />
+			<handler class="org.opencms.xml.content.CmsTestXmlContentHandler" />
 			<mappings>
 				<mapping element="Test" mapto="property:Title" />
 				<mapping element="Cascade/Toast" mapto="property:Description" />

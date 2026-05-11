@@ -37,67 +37,32 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.Iterator;
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for the publish manager.<p>
  */
-public class TestPublishManager extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestPublishManager extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestPublishManager(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestPublishManager.class.getName());
-
-        suite.addTest(new TestPublishManager("testPublishReport"));
-        suite.addTest(new TestPublishManager("testAbortJob"));
-        suite.addTest(new TestPublishManager("testRunning"));
-        suite.addTest(new TestPublishManager("testStop"));
-        suite.addTest(new TestPublishManager("testListener"));
-        suite.addTest(new TestPublishManager("testInitialization1"));
-        suite.addTest(new TestPublishManager("testInitialization2"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -105,6 +70,8 @@ public class TestPublishManager extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testAbortJob() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -187,6 +154,8 @@ public class TestPublishManager extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testInitialization1() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -269,6 +238,8 @@ public class TestPublishManager extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(7)
     public void testInitialization2() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -297,7 +268,7 @@ public class TestPublishManager extends OpenCmsTestCase {
         List oldQueue = OpenCms.getPublishManager().getPublishQueue();
 
         // add an event listener used to restart the engine when ther job was started
-        OpenCms.getPublishManager().addPublishListener(new TestPublishEventListener2(cms));
+        OpenCms.getPublishManager().addPublishListener(new CmsTestPublishEventListener2(cms));
 
         // now start publishing again and reinitialize the publish manager and engine while it is running
         OpenCms.getPublishManager().startPublishing();
@@ -324,6 +295,8 @@ public class TestPublishManager extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testListener() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -339,11 +312,12 @@ public class TestPublishManager extends OpenCmsTestCase {
         }
 
         // set the listener for the first job
-        TestPublishEventListener firstListener = new TestPublishEventListener(cms.readResource(destination + "1.gif"));
+        CmsTestPublishEventListener firstListener = new CmsTestPublishEventListener(
+            cms.readResource(destination + "1.gif"));
         OpenCms.getPublishManager().addPublishListener(firstListener);
 
         // set the listener for the last job
-        TestPublishEventListener lastListener = new TestPublishEventListener(
+        CmsTestPublishEventListener lastListener = new CmsTestPublishEventListener(
             cms.readResource(destination + max + ".gif"));
         OpenCms.getPublishManager().addPublishListener(lastListener);
 
@@ -444,6 +418,8 @@ public class TestPublishManager extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testPublishReport() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -473,6 +449,8 @@ public class TestPublishManager extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testRunning() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -543,6 +521,8 @@ public class TestPublishManager extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testStop() throws Throwable {
 
         CmsObject cms = getCmsObject();

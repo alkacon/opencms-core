@@ -30,7 +30,7 @@ package org.opencms.scheduler;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -39,6 +39,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
@@ -57,7 +63,8 @@ import org.quartz.impl.triggers.SimpleTriggerImpl;
  *
  * @since 6.0.0
  */
-public class TestCmsScheduler extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsScheduler extends OpenCmsTestRunner {
 
     /** Number of seconds to wait. */
     public static final int SECONDS_TO_WAIT = 30;
@@ -66,14 +73,26 @@ public class TestCmsScheduler extends OpenCmsTestCase {
     public static final int THREADS_TO_RUN = 20;
 
     /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        initConfiguration();
+    }
+
+    /**
      * Tests activating and deactivating of scheduled jobs.<p>
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testActivateAndDeactivateJob() throws Exception {
 
         System.out.println("Trying to activate and deactivate an OpenCms job from the OpenCms scheduler.");
-        TestScheduledJob.m_runCount = 0;
+        CmsTestScheduledJob.m_runCount = 0;
         // also make sure CmsUUID is initialized
         CmsUUID.init(CmsUUID.getDummyEthernetAddress());
 
@@ -81,7 +100,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
         CmsContextInfo contextInfo = new CmsContextInfo();
         contextInfo.setUserName(OpenCms.getDefaultUsers().getUserAdmin());
         jobInfo.setContextInfo(contextInfo);
-        jobInfo.setClassName(TestScheduledJob.class.getName());
+        jobInfo.setClassName(CmsTestScheduledJob.class.getName());
         jobInfo.setCronExpression("0/2 * * * * ?");
 
         // set this job as "not active"
@@ -106,8 +125,8 @@ public class TestCmsScheduler extends OpenCmsTestCase {
         } while (seconds < 5);
 
         // make sure the job was not run but still exists in the OpenCms scheduler
-        if (TestScheduledJob.m_runCount > 0) {
-            fail("Test job was incorrectly run '" + TestScheduledJob.m_runCount + "' times in OpenCms scheduler.");
+        if (CmsTestScheduledJob.m_runCount > 0) {
+            fail("Test job was incorrectly run '" + CmsTestScheduledJob.m_runCount + "' times in OpenCms scheduler.");
         }
         assertEquals(1, scheduler.getJobs().size());
         CmsScheduledJobInfo info = scheduler.getJobs().get(0);
@@ -117,7 +136,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
         assertNull(info.getExecutionTimeNext());
 
         // no set the job active and re-schedule it
-        info = (CmsScheduledJobInfo)info.clone();
+        info = info.clone();
         info.setActive(true);
         scheduler.scheduleJob(null, info);
 
@@ -129,9 +148,9 @@ public class TestCmsScheduler extends OpenCmsTestCase {
                 fail("Something caused the waiting test thread to interrupt!");
             }
             seconds++;
-        } while ((seconds < SECONDS_TO_WAIT) && (TestScheduledJob.m_runCount < 3));
+        } while ((seconds < SECONDS_TO_WAIT) && (CmsTestScheduledJob.m_runCount < 3));
 
-        if (TestScheduledJob.m_runCount == 3) {
+        if (CmsTestScheduledJob.m_runCount == 3) {
             System.out.println("Test job was correctly run 3 times in OpenCms scheduler.");
         } else {
             fail("Test class not run after " + SECONDS_TO_WAIT + " seconds.");
@@ -145,10 +164,10 @@ public class TestCmsScheduler extends OpenCmsTestCase {
         assertNotNull(info.getExecutionTimeNext());
 
         // reset the count
-        TestScheduledJob.m_runCount = 0;
+        CmsTestScheduledJob.m_runCount = 0;
 
         // deactivate the job again and re-schedule it
-        info = (CmsScheduledJobInfo)info.clone();
+        info = info.clone();
         info.setActive(false);
         scheduler.scheduleJob(null, info);
 
@@ -163,8 +182,8 @@ public class TestCmsScheduler extends OpenCmsTestCase {
         } while (seconds < 5);
 
         // make sure the job was not run but still exists in the OpenCms scheduler
-        if (TestScheduledJob.m_runCount > 0) {
-            fail("Test job was incorrectly run '" + TestScheduledJob.m_runCount + "' times in OpenCms scheduler.");
+        if (CmsTestScheduledJob.m_runCount > 0) {
+            fail("Test job was incorrectly run '" + CmsTestScheduledJob.m_runCount + "' times in OpenCms scheduler.");
         }
         assertEquals(1, scheduler.getJobs().size());
         info = scheduler.getJobs().get(0);
@@ -182,10 +201,12 @@ public class TestCmsScheduler extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testAddAndRemoveJobFromScheduler() throws Exception {
 
         System.out.println("Trying to add and remove an OpenCms job from the OpenCms scheduler.");
-        TestScheduledJob.m_runCount = 0;
+        CmsTestScheduledJob.m_runCount = 0;
         // also make sure CmsUUID is initialized
         CmsUUID.init(CmsUUID.getDummyEthernetAddress());
 
@@ -193,7 +214,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
         CmsContextInfo contextInfo = new CmsContextInfo();
         contextInfo.setUserName(OpenCms.getDefaultUsers().getUserAdmin());
         jobInfo.setContextInfo(contextInfo);
-        jobInfo.setClassName(TestScheduledJob.class.getName());
+        jobInfo.setClassName(CmsTestScheduledJob.class.getName());
 
         jobInfo.setCronExpression("0/2 * * * * ?");
 
@@ -213,9 +234,9 @@ public class TestCmsScheduler extends OpenCmsTestCase {
                 fail("Something caused the waiting test thread to interrupt!");
             }
             seconds++;
-        } while ((seconds < SECONDS_TO_WAIT) && (TestScheduledJob.m_runCount < 3));
+        } while ((seconds < SECONDS_TO_WAIT) && (CmsTestScheduledJob.m_runCount < 3));
 
-        if (TestScheduledJob.m_runCount == 3) {
+        if (CmsTestScheduledJob.m_runCount == 3) {
             System.out.println("Test job was correctly run 3 times in OpenCms scheduler.");
         } else {
             fail("Test class not run after " + SECONDS_TO_WAIT + " seconds.");
@@ -239,10 +260,12 @@ public class TestCmsScheduler extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(7)
     public void testAddExistingJobAgainToScheduler() throws Exception {
 
         System.out.println("Trying to schedule an existing job again with the OpenCms scheduler.");
-        TestScheduledJob.m_runCount = 0;
+        CmsTestScheduledJob.m_runCount = 0;
         // also make sure CmsUUID is initialized
         CmsUUID.init(CmsUUID.getDummyEthernetAddress());
 
@@ -251,7 +274,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
         contextInfo.setUserName(OpenCms.getDefaultUsers().getUserAdmin());
         jobInfo.setContextInfo(contextInfo);
         jobInfo.setJobName("My job");
-        jobInfo.setClassName(TestScheduledJob.class.getName());
+        jobInfo.setClassName(CmsTestScheduledJob.class.getName());
 
         jobInfo.setCronExpression("0/2 * * * * ?");
 
@@ -271,9 +294,9 @@ public class TestCmsScheduler extends OpenCmsTestCase {
                 fail("Something caused the waiting test thread to interrupt!");
             }
             seconds++;
-        } while ((seconds < SECONDS_TO_WAIT) && (TestScheduledJob.m_runCount < 3));
+        } while ((seconds < SECONDS_TO_WAIT) && (CmsTestScheduledJob.m_runCount < 3));
 
-        if (TestScheduledJob.m_runCount == 3) {
+        if (CmsTestScheduledJob.m_runCount == 3) {
             System.out.println("Test job was correctly run 3 times in OpenCms scheduler.");
         } else {
             fail("Test class not run after " + SECONDS_TO_WAIT + " seconds.");
@@ -282,7 +305,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
         jobInfo = scheduler.getJob(jobInfo.getId());
         assertEquals("My job", jobInfo.getJobName());
 
-        CmsScheduledJobInfo newInfo = (CmsScheduledJobInfo)jobInfo.clone();
+        CmsScheduledJobInfo newInfo = jobInfo.clone();
         newInfo.setJobName("My CHANGED name");
         newInfo.setActive(true);
         assertEquals(1, scheduler.getJobs().size());
@@ -296,7 +319,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
         assertEquals("My CHANGED name", jobInfo.getJobName());
 
         // change cron expression to something invalid
-        newInfo = (CmsScheduledJobInfo)jobInfo.clone();
+        newInfo = jobInfo.clone();
         newInfo.setActive(true);
 
         // uncomment because of rolled back quartz due to bugs in version 1.6.x
@@ -307,7 +330,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
         } catch (CmsIllegalArgumentException e) {
             ex = e;
         }
-        assertNotNull("Expected exception not thrown when using invalid CRON expression", ex);
+        assertNotNull(ex, "Expected exception not thrown when using invalid CRON expression");
         //FORMAT:Seconds,Minutes,Hours,Day-of-month,Month,Day-of-Week
         //NOTE:"Support for specifying both a day-of-week AND a day-of-month parameter is not implemented."
         newInfo.setCronExpression("* * * * * ?");
@@ -322,6 +345,8 @@ public class TestCmsScheduler extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testBasicJobExecution() throws Exception {
 
         System.out.println("Testing the OpenCms tread pool.");
@@ -332,7 +357,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
 
         for (int i = 0; i < jobDetail.length; i++) {
 
-            JobDetailImpl tmp = (JobDetailImpl)JobBuilder.newJob(TestCmsJob.class).build();
+            JobDetailImpl tmp = (JobDetailImpl)JobBuilder.newJob(CmsTestJob.class).build();
             tmp.setName("myJob" + i);
             tmp.setGroup(Scheduler.DEFAULT_GROUP);
 
@@ -360,9 +385,9 @@ public class TestCmsScheduler extends OpenCmsTestCase {
                 fail("Something caused the waiting test thread to interrupt!");
             }
             seconds++;
-        } while ((seconds < SECONDS_TO_WAIT) && (TestCmsJob.m_running > 0));
+        } while ((seconds < SECONDS_TO_WAIT) && (CmsTestJob.m_running > 0));
 
-        if (TestCmsJob.m_running <= 0) {
+        if (CmsTestJob.m_running <= 0) {
             System.out.println("Success: All threads are finished.");
         } else {
             fail("Some threads in the pool are still running after " + SECONDS_TO_WAIT + " seconds.");
@@ -376,10 +401,12 @@ public class TestCmsScheduler extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testCmsJobLaunch() throws Exception {
 
         System.out.println("Trying to run an OpenCms job 5x.");
-        TestScheduledJob.m_runCount = 0;
+        CmsTestScheduledJob.m_runCount = 0;
 
         Scheduler scheduler = initOpenCmsScheduler();
 
@@ -390,7 +417,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
         CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
         CmsContextInfo contextInfo = new CmsContextInfo(OpenCms.getDefaultUsers().getUserAdmin());
         jobInfo.setContextInfo(contextInfo);
-        jobInfo.setClassName(TestScheduledJob.class.getName());
+        jobInfo.setClassName(CmsTestScheduledJob.class.getName());
 
         JobDataMap jobData = new JobDataMap();
         jobData.put(CmsScheduleManager.SCHEDULER_JOB_INFO, jobInfo);
@@ -411,9 +438,9 @@ public class TestCmsScheduler extends OpenCmsTestCase {
                 fail("Something caused the waiting test thread to interrupt!");
             }
             seconds++;
-        } while ((seconds < SECONDS_TO_WAIT) && (TestScheduledJob.m_runCount < 5));
+        } while ((seconds < SECONDS_TO_WAIT) && (CmsTestScheduledJob.m_runCount < 5));
 
-        if (TestScheduledJob.m_runCount == 5) {
+        if (CmsTestScheduledJob.m_runCount == 5) {
             System.out.println("Success: Test job was run 5 times.");
         } else {
             fail("Test class not run after " + SECONDS_TO_WAIT + " seconds.");
@@ -427,16 +454,18 @@ public class TestCmsScheduler extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testJobInOpenCmsScheduler() throws Exception {
 
         System.out.println("Trying to run an OpenCms job 5x with the OpenCms scheduler.");
-        TestScheduledJob.m_runCount = 0;
+        CmsTestScheduledJob.m_runCount = 0;
 
         CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
         CmsContextInfo contextInfo = new CmsContextInfo();
         contextInfo.setUserName(OpenCms.getDefaultUsers().getUserAdmin());
         jobInfo.setContextInfo(contextInfo);
-        jobInfo.setClassName(TestScheduledJob.class.getName());
+        jobInfo.setClassName(CmsTestScheduledJob.class.getName());
 
         jobInfo.setCronExpression("0/2 * * * * ?");
 
@@ -456,18 +485,18 @@ public class TestCmsScheduler extends OpenCmsTestCase {
                 fail("Something caused the waiting test thread to interrupt!");
             }
             seconds++;
-        } while ((seconds < SECONDS_TO_WAIT) && (TestScheduledJob.m_runCount < 5));
+        } while ((seconds < SECONDS_TO_WAIT) && (CmsTestScheduledJob.m_runCount < 5));
 
-        if (TestScheduledJob.m_runCount == 5) {
+        if (CmsTestScheduledJob.m_runCount == 5) {
             System.out.println("Test job was correctly run 5 times in OpenCms scheduler.");
         } else {
             fail("Test class not run after " + SECONDS_TO_WAIT + " seconds.");
         }
 
-        if (TestScheduledJob.m_instanceCountCopy == 1) {
+        if (CmsTestScheduledJob.m_instanceCountCopy == 1) {
             System.out.println("Instance counter has correct value of 1.");
         } else {
-            fail("Instance counter value of " + TestScheduledJob.m_instanceCountCopy + " invalid!");
+            fail("Instance counter value of " + CmsTestScheduledJob.m_instanceCountCopy + " invalid!");
         }
 
         // shutdown the scheduler
@@ -479,15 +508,17 @@ public class TestCmsScheduler extends OpenCmsTestCase {
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testPersitentJobInOpenCmsScheduler() throws Exception {
 
         System.out.println("Trying to run a persistent OpenCms job 5x with the OpenCms scheduler.");
-        TestScheduledJob.m_runCount = 0;
+        CmsTestScheduledJob.m_runCount = 0;
 
         CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
         CmsContextInfo contextInfo = new CmsContextInfo(OpenCms.getDefaultUsers().getUserAdmin());
         jobInfo.setContextInfo(contextInfo);
-        jobInfo.setClassName(TestScheduledJob.class.getName());
+        jobInfo.setClassName(CmsTestScheduledJob.class.getName());
         jobInfo.setReuseInstance(true);
         jobInfo.setCronExpression("0/2 * * * * ?");
 
@@ -507,15 +538,15 @@ public class TestCmsScheduler extends OpenCmsTestCase {
                 fail("Something caused the waiting test thread to interrupt!");
             }
             seconds++;
-        } while ((seconds < SECONDS_TO_WAIT) && (TestScheduledJob.m_runCount < 5));
+        } while ((seconds < SECONDS_TO_WAIT) && (CmsTestScheduledJob.m_runCount < 5));
 
-        if (TestScheduledJob.m_runCount == 5) {
+        if (CmsTestScheduledJob.m_runCount == 5) {
             System.out.println("Test job was correctly run 5 times in OpenCms scheduler.");
         } else {
             fail("Test class not run after " + SECONDS_TO_WAIT + " seconds.");
         }
 
-        if (TestScheduledJob.m_instanceCountCopy == 5) {
+        if (CmsTestScheduledJob.m_instanceCountCopy == 5) {
             System.out.println("Instance counter was correctly incremented 5 times.");
         } else {
             fail("Instance counter was not incremented!");

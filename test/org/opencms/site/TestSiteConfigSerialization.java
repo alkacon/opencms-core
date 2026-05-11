@@ -30,27 +30,27 @@ package org.opencms.site;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSitesConfiguration;
 import org.opencms.file.CmsResource;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.workplace.tools.sites.CmsSiteBean;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+
 /**
  * Tests that conversion from CmsSite to CmsSiteBean and back preserves data.
  */
-public class TestSiteConfigSerialization extends OpenCmsTestCase {
+public class TestSiteConfigSerialization extends OpenCmsTestRunner {
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestSiteConfigSerialization(String arg0) {
+    @BeforeAll
+    public void setUpConfiguration(TestInfo testInfo) {
 
-        super(arg0, false);
+        initConfiguration();
     }
 
     /**
@@ -58,6 +58,7 @@ public class TestSiteConfigSerialization extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testSiteBeanConversion() throws Exception {
 
         // get the file name of the input resource
@@ -84,6 +85,7 @@ public class TestSiteConfigSerialization extends OpenCmsTestCase {
      * Test case.
      * @throws Exception -
      */
+    @Test
     public void testSiteBeanEquals() throws Exception {
 
         // get the file name of the input resource

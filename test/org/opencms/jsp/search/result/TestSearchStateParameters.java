@@ -41,8 +41,7 @@ import org.opencms.search.I_CmsSearchIndex;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrResultList;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -51,60 +50,41 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /** Test cases for the class {@link org.opencms.jsp.search.config.CmsSearchConfigurationPagination}. */
-public class TestSearchStateParameters extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestSearchStateParameters extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestSearchStateParameters(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
+        setupOpenCms(testInfo, "simpletest", "/", "/../org/opencms/search/solr");
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * Disables all Lucene indexes to match the legacy suite wrapper setup.<p>
      */
-    public static Test suite() {
+    @BeforeAll
+    public void disableIndexes() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.addTest(new TestSearchStateParameters("testCheckAndUncheckFacetItems"));
-        suite.addTest(new TestSearchStateParameters("testAddRemoveAdditionalParam"));
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/", "/../org/opencms/search/solr");
-                // disable all lucene indexes
-                for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
-                    if (!indexName.equalsIgnoreCase(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE)) {
-                        I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
-                        if (index != null) {
-                            index.setEnabled(false);
-                        }
-                    }
+        for (String indexName : OpenCms.getSearchManager().getIndexNames()) {
+            if (!indexName.equalsIgnoreCase(CmsSolrIndex.DEFAULT_INDEX_NAME_ONLINE)) {
+                I_CmsSearchIndex index = OpenCms.getSearchManager().getIndex(indexName);
+                if (index != null) {
+                    index.setEnabled(false);
                 }
             }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        }
     }
 
     /**
@@ -115,7 +95,8 @@ public class TestSearchStateParameters extends OpenCmsTestCase {
      * @throws URISyntaxException ...
      * @throws JSONException ...
      */
-    @org.junit.Test
+    @Order(2)
+    @Test
     public void testAddRemoveAdditionalParam() throws CmsException, IOException, URISyntaxException, JSONException {
 
         I_CmsSearchResultWrapper result = search();
@@ -150,7 +131,8 @@ public class TestSearchStateParameters extends OpenCmsTestCase {
      * @throws URISyntaxException ...
      * @throws JSONException ...
      */
-    @org.junit.Test
+    @Order(1)
+    @Test
     public void testCheckAndUncheckFacetItems() throws CmsException, IOException, URISyntaxException, JSONException {
 
         I_CmsSearchResultWrapper result = search();

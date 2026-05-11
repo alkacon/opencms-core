@@ -27,21 +27,24 @@
 
 package org.opencms.search.extractors;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.io.InputStream;
 import java.util.Map;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Tests the text extraction form a RTF file.<p>
  */
-public class TestRtfExtraction extends OpenCmsTestCase {
+public class TestRtfExtraction extends OpenCmsTestRunner {
 
     /**
      * Tests the basic RTF extraction.<p>
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testBasicRtfExtraction() throws Exception {
 
         // open an input stream for the test file

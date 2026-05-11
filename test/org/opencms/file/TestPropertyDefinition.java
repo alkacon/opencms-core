@@ -28,75 +28,35 @@
 package org.opencms.file;
 
 import org.opencms.main.CmsException;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for the "createPropertyDefinition", "readPropertyDefiniton" and
  * "readAllPropertyDefintions" methods of the CmsObject.<p>
  *
  */
-public class TestPropertyDefinition extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestPropertyDefinition(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestPropertyDefinition.class.getName());
-
-        suite.addTest(new TestPropertyDefinition("testCreatePropertyDefinition"));
-        suite.addTest(new TestPropertyDefinition("testCreateReadDeletePropertyDefinition"));
-        suite.addTest(new TestPropertyDefinition("testGetResourcesWithProperty"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestPropertyDefinition extends OpenCmsTestRunner {
 
     /**
      * Test the createPropertyDefintion method.<p>
-     * @param tc the OpenCmsTestCase
+     *
+     * @param tc the OpenCms test runner
      * @param cms the CmsObject
      * @param propertyDefiniton1 the property definition to create
      * @throws Throwable if something goes wrong
      */
-    public static void createPropertyDefinition(OpenCmsTestCase tc, CmsObject cms, String propertyDefiniton1)
+    public static void createPropertyDefinition(OpenCmsTestRunner tc, CmsObject cms, String propertyDefiniton1)
     throws Throwable {
 
         // get all propertydefintions
@@ -110,31 +70,6 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
         tc.assertPropertydefinitionExist(cms, prop);
         // check if all other properties are still identical
         tc.assertPropertydefinitions(cms, allPropertydefintions, prop);
-    }
-
-    /**
-     * Test the createPropertyDefintion method.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    public void testCreatePropertyDefinition() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing createPropetyDefinition and readPropertyDefiniton");
-        createPropertyDefinition(this, cms, "NewPropertyDefinition");
-    }
-
-    /**
-     * Test to create, read and delete a property definition through the cache driver.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    public void testCreateReadDeletePropertyDefinition() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-
-        echo("Testing creation of a new property definition");
-        createReadDeletePropertyDefinition(cms);
     }
 
     /**
@@ -158,7 +93,7 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
             return;
         }
 
-        assertEquals(propertyDefinition.getName(), propertyDefinitionName);
+        assertEquals(propertyDefinitionName, propertyDefinition.getName());
 
         // 2) read the created property definition
 
@@ -171,7 +106,7 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
             return;
         }
 
-        assertEquals(propertyDefinition.getName(), propertyDefinitionName);
+        assertEquals(propertyDefinitionName, propertyDefinition.getName());
 
         // 3) check if the new created property is contained in the list of all property definitions
 
@@ -243,10 +178,51 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
     }
 
     /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
+
+    /**
+     * Test the createPropertyDefintion method.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    @Order(1)
+    public void testCreatePropertyDefinition() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing createPropetyDefinition and readPropertyDefiniton");
+        createPropertyDefinition(this, cms, "NewPropertyDefinition");
+    }
+
+    /**
+     * Test to create, read and delete a property definition through the cache driver.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    @Order(2)
+    public void testCreateReadDeletePropertyDefinition() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+
+        echo("Testing creation of a new property definition");
+        createReadDeletePropertyDefinition(cms);
+    }
+
+    /**
      * Tests reading all resources that have a specific property definition set.<p>
      *
      * @throws Exception if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testGetResourcesWithProperty() throws Exception {
 
         echo("Testing reading all resources with a specific property");

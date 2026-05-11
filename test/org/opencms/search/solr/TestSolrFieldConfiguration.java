@@ -47,8 +47,7 @@ import org.opencms.search.CmsSearchResource;
 import org.opencms.search.documents.CmsDocumentDependency;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.security.CmsRoleViolationException;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsRequestUtil;
 
 import java.util.ArrayList;
@@ -61,67 +60,29 @@ import java.util.Map;
 
 import org.apache.solr.client.solrj.request.SolrQuery;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the Solr field mapping.<p>
  *
  * @since 8.5.0
  */
-public class TestSolrFieldConfiguration extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestSolrFieldConfiguration extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestSolrFieldConfiguration(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestSolrFieldConfiguration.class.getName());
-        suite.addTest(new TestSolrFieldConfiguration("testAppinfoSolrField"));
-        suite.addTest(new TestSolrFieldConfiguration("testAppinfoSearchTypeContent"));
-        suite.addTest(new TestSolrFieldConfiguration("testContentLocalesField"));
-        suite.addTest(new TestSolrFieldConfiguration("testDependencies"));
-        suite.addTest(new TestSolrFieldConfiguration("testLanguageDetection"));
-        suite.addTest(new TestSolrFieldConfiguration("testLocaleDependenciesField"));
-        suite.addTest(new TestSolrFieldConfiguration("testLuceneMigration"));
-        suite.addTest(new TestSolrFieldConfiguration("testOfflineIndexAccess"));
-        suite.addTest(new TestSolrFieldConfiguration("testListSortOptionFields"));
-        suite.addTest(new TestSolrFieldConfiguration("testListSearchFields"));
-        // this test case must be the last one
-        suite.addTest(new TestSolrFieldConfiguration("testIngnoreMaxRows"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("solrtest", "/", "/../org/opencms/search/solr");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "solrtest", "/", "/../org/opencms/search/solr");
     }
 
     /**
@@ -133,30 +94,32 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(2)
+    @Test
     public void testAppinfoSearchTypeContent() throws Throwable {
 
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
         CmsSolrQuery squery = new CmsSolrQuery(
             null,
             CmsRequestUtil.createParameterMap("q=path:\"/sites/default/extractLinked/el1.xml\""));
         CmsSolrResultList results = index.search(getCmsObject(), squery);
 
         // Test the result count
-        AllTests.printResults(getCmsObject(), results, false);
+        CmsTestSolrHelper.printResults(getCmsObject(), results, false);
         assertEquals(1, results.size());
 
         // Test if the result contains the expected resource
         CmsSearchResource res = results.get(0);
         assertEquals("/sites/default/extractLinked/el1.xml", res.getRootPath());
 
-        ///////////////
+        //////////////
         // FIELD TEST //
-        ///////////////
+        //////////////
         String contentFieldValue = res.getField("content_en");
         assertNotNull(contentFieldValue);
         assertTrue(
-            "Field should contain 'Hund' and 'Rind', i.e. the values of el1.xml and el2.xml",
-            contentFieldValue.contains("Hund") && contentFieldValue.contains("Rind"));
+            contentFieldValue.contains("Hund") && contentFieldValue.contains("Rind"),
+            "Field should contain 'Hund' and 'Rind', i.e. the values of el1.xml and el2.xml");
 
     }
 
@@ -167,29 +130,31 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(1)
+    @Test
     public void testAppinfoSolrField() throws Throwable {
 
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
         CmsSolrQuery squery = new CmsSolrQuery(
             null,
             CmsRequestUtil.createParameterMap("q=path:\"/sites/default/xmlcontent/article_0001.html\""));
         CmsSolrResultList results = index.search(getCmsObject(), squery);
 
-        ////////////////
+        ///////////////
         // RESULT TEST //
-        ////////////////
+        ///////////////
 
         // Test the result count
-        AllTests.printResults(getCmsObject(), results, false);
+        CmsTestSolrHelper.printResults(getCmsObject(), results, false);
         assertEquals(1, results.size());
 
         // Test if the result contains the expected resource
         CmsSearchResource res = results.get(0);
         assertEquals("/sites/default/xmlcontent/article_0001.html", res.getRootPath());
 
-        ///////////////
+        //////////////
         // FIELD TEST //
-        ///////////////
+        //////////////
 
         // Test multiple language field
         String fieldValue = res.getField("ahtml_en");
@@ -224,9 +189,9 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         fieldValue = res.getField("ahomepage_en");
         assertTrue(fieldValue.contains("/sites/default/index.html"));
 
-        /////////////////
+        ////////////////
         // MAPPING TEST //
-        /////////////////
+        ////////////////
 
         fieldValue = res.getField("Description_de");
         assertEquals(fieldValue, "My Special OpenCms Solr Description");
@@ -306,6 +271,8 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(3)
+    @Test
     public void testContentLocalesField() throws Throwable {
 
         Map<String, List<String>> filenames = new HashMap<String, List<String>>();
@@ -343,11 +310,11 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
 
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
         CmsSolrQuery query = new CmsSolrQuery();
         query.setSearchRoots(cms.getRequestContext().addSiteRoot(folderName));
         CmsSolrResultList results = index.search(cms, query);
-        AllTests.printResults(cms, results, false);
+        CmsTestSolrHelper.printResults(cms, results, false);
         assertEquals(10, results.getNumFound());
 
         for (Map.Entry<String, List<String>> filename : filenames.entrySet()) {
@@ -401,6 +368,8 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
      *
      * @throws Throwable
      */
+    @Order(4)
+    @Test
     public void testDependencies() throws Throwable {
 
         List<String> filenames = new ArrayList<String>();
@@ -428,11 +397,11 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
 
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
         CmsSolrQuery query = new CmsSolrQuery();
         query.setSearchRoots(Collections.singletonList(cms.getRequestContext().addSiteRoot(folderName)));
         CmsSolrResultList results = index.search(cms, query, false);
-        AllTests.printResults(cms, results, false);
+        CmsTestSolrHelper.printResults(cms, results, false);
         int count = 0;
         for (CmsSearchResource res : results) {
             System.out.println("---------------------");
@@ -481,22 +450,26 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
     /**
      * @throws Throwable if something goes wrong
      */
+    @Order(11)
+    @Test
     public void testIngnoreMaxRows() throws Throwable {
 
         echo("Testing the ignore max rows argument.");
         String query = "?fq=con_locales:*&fq=parent-folders:*&fl=path&rows=99999";
         CmsSolrQuery squery = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(query));
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
         CmsSolrResultList result = index.search(getCmsObject(), squery, true);
         int found = result.size();
         assertTrue(
-            "The number of found documents must be greater than org.opencms.search.solr.CmsSolrIndex.ROWS_MAX",
-            found > CmsSolrIndex.ROWS_MAX);
+            found > CmsSolrIndex.ROWS_MAX,
+            "The number of found documents must be greater than org.opencms.search.solr.CmsSolrIndex.ROWS_MAX");
     }
 
     /**
      * @throws Throwable
      */
+    @Order(5)
+    @Test
     public void testLanguageDetection() throws Throwable {
 
         CmsObject cms = OpenCms.initCmsObject(getCmsObject());
@@ -515,7 +488,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         // publish the project and update the search index
         OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
         // index.setLanguageDetection(true);
         // is the default configured in opencms-search.xml
         CmsSolrQuery query = new CmsSolrQuery(cms, null);
@@ -558,6 +531,8 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
      * Checks if the extra fields for list sort options are index correctly.
      * @throws Exception should not happen
      */
+    @Order(10)
+    @Test
     public void testListSearchFields() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -613,6 +588,8 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
      * Checks if the extra fields for list sort options are index correctly.
      * @throws Exception should not happen
      */
+    @Order(9)
+    @Test
     public void testListSortOptionFields() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -694,6 +671,8 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
      *
      * @throws Throwable
      */
+    @Order(6)
+    @Test
     public void testLocaleDependenciesField() throws Throwable {
 
         Map<String, List<String>> filenames = new HashMap<String, List<String>>();
@@ -737,11 +716,11 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
 
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
         CmsSolrQuery query = new CmsSolrQuery();
         query.setSearchRoots(Collections.singletonList(cms.getRequestContext().addSiteRoot(folderName)));
         CmsSolrResultList results = index.search(cms, query, false);
-        AllTests.printResults(cms, results, false);
+        CmsTestSolrHelper.printResults(cms, results, false);
         // assertEquals(10, results.getNumFound());
 
         for (Map.Entry<String, List<String>> filename : filenames.entrySet()) {
@@ -757,9 +736,11 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Order(7)
+    @Test
     public void testLuceneMigration() throws Throwable {
 
-        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
 
         CmsSolrFieldConfiguration conf = (CmsSolrFieldConfiguration)index.getFieldConfiguration();
         assertNotNull(conf.getSolrFields().get("meta"));
@@ -783,24 +764,26 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
      *
      * @throws Throwable if sth. goes wrong
      */
+    @Order(8)
+    @Test
     public void testOfflineIndexAccess() throws Throwable {
 
         echo("Testing offline index access with the guest user.");
         CmsObject guest = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-        CmsSolrIndex solrIndex = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_ONLINE);
+        CmsSolrIndex solrIndex = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_ONLINE);
         echo("First execute a search on the online index.");
         solrIndex.search(guest, "q=*:*&rows=0");
         echo("OK, search could be executed on the online index.");
 
         echo("Now try to execute a search on the Solr Offline index.");
-        solrIndex = OpenCms.getSearchManager().getIndexSolr(AllTests.SOLR_OFFLINE);
+        solrIndex = OpenCms.getSearchManager().getIndexSolr(CmsTestSolrHelper.SOLR_OFFLINE);
         solrIndex.setEnabled(true);
         try {
             solrIndex.search(guest, "q=*:*&rows=0");
         } catch (CmsSearchException e) {
             assertTrue(
-                "The cause must be a CmsRoleViolationException",
-                e.getCause() instanceof CmsRoleViolationException);
+                e.getCause() instanceof CmsRoleViolationException,
+                "The cause must be a CmsRoleViolationException");
             if (!(e.getCause() instanceof CmsRoleViolationException)) {
                 throw e;
             }

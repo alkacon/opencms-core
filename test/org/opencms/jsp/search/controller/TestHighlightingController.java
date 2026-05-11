@@ -27,50 +27,25 @@
 
 package org.opencms.jsp.search.controller;
 
-import static org.junit.Assert.assertArrayEquals;
-
 import org.opencms.jsp.search.config.CmsSearchConfigurationHighlighting;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
 import org.opencms.search.solr.CmsSolrQuery;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.Test;
 
 /** Tests for the highlighting controller. */
-public class TestHighlightingController extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestHighlightingController(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        TestSuite suite = new TestSuite();
-        suite.addTest(new TestHighlightingController("testQueryParts"));
-        return suite;
-    }
+public class TestHighlightingController extends OpenCmsTestRunner {
 
     /**
      * Tests if the query parts are correctly added according to the provided configuration.
      */
-    @org.junit.Test
+    @Test
     public void testQueryParts() {
 
         Map<String, String> hlParams = new LinkedHashMap<>(10);

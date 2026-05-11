@@ -28,19 +28,27 @@
 package org.opencms.loader;
 
 import org.opencms.jsp.CmsJspTagImage;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the OpenCms image scaler.<p>
  */
-public class TestCmsImageScaler extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsImageScaler extends OpenCmsTestRunner {
 
     /**
      * Tests the image downscaling option.<p>
      *
      * @throws Exception in case the test fails
      */
+    @Order(3)
+    @Test
     public void testDownScaling() throws Exception {
 
         // read the image from the test directory, usually this would be from the VFS
@@ -115,6 +123,8 @@ public class TestCmsImageScaler extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Order(1)
+    @Test
     public void testScaleType5() throws Exception {
 
         CmsImageScaler baseImage;
@@ -176,6 +186,8 @@ public class TestCmsImageScaler extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Order(4)
+    @Test
     public void testScaleType5InImageTag() throws Exception {
 
         CmsImageScaler baseImage;
@@ -241,6 +253,8 @@ public class TestCmsImageScaler extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Order(2)
+    @Test
     public void testScaleType9() throws Exception {
 
         CmsImageScaler baseImage;

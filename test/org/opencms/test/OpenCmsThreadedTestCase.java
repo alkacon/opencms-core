@@ -31,7 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * Allows to run an {@link org.opencms.test.OpenCmsTestCase} in a separate Thread,
+ * Allows to run an {@link org.opencms.test.OpenCmsTestRunner} in a separate Thread,
  * for concurrent execution.<p>
  *
  * Usually this class is created by a {@link org.opencms.test.OpenCmsThreadedTestCaseSuite}.<p>
@@ -53,7 +53,7 @@ public class OpenCmsThreadedTestCase extends Thread {
     private long m_runtime;
 
     /** The base test case class to run the method from. */
-    private OpenCmsTestCase m_testCase;
+    private OpenCmsTestRunner m_testCase;
 
     /** Error that occurred when running the test method. */
     private Throwable m_throwable;
@@ -65,7 +65,7 @@ public class OpenCmsThreadedTestCase extends Thread {
      * @param method the method to execute on the test case
      * @param parameters the parameter values for the method
      */
-    public OpenCmsThreadedTestCase(OpenCmsTestCase testCase, Method method, Object[] parameters) {
+    public OpenCmsThreadedTestCase(OpenCmsTestRunner testCase, Method method, Object[] parameters) {
 
         m_throwable = null;
         m_result = null;

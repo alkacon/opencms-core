@@ -28,20 +28,23 @@
 package org.opencms.util;
 
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Test case for <code>{@link org.opencms.util.CmsHtmlParser}</code>.<p>
  *
  * @since 6.2.0
  */
-public class TestCmsHtmlParser extends OpenCmsTestCase {
+public class TestCmsHtmlParser extends OpenCmsTestRunner {
 
     /**
      * Tests the HTML extractor.<p>
      *
      * @throws Exception in case the test fails
      */
+    @Test
     public void testHtmlExtractor() throws Exception {
 
         I_CmsHtmlNodeVisitor visitor1 = new CmsHtmlParser(true);

@@ -29,60 +29,29 @@ package org.opencms.file;
 
 import org.opencms.main.OpenCms;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for resource availability operations.<p>
  */
-public class TestExists extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestExists extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestExists(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestExists.class.getName());
-
-        suite.addTest(new TestExists("testExistsForExistingFile"));
-        suite.addTest(new TestExists("testExistsForUnexistingFile"));
-        suite.addTest(new TestExists("testExistsForUnauthorizedFile"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -90,6 +59,8 @@ public class TestExists extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testExistsForExistingFile() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -100,24 +71,12 @@ public class TestExists extends OpenCmsTestCase {
     }
 
     /**
-     * Tests the availability of a file that does not exist.<p>
-     *
-     * @throws Throwable if something goes wrong
-     */
-    public void testExistsForUnexistingFile() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing the availability of a file that does not exist");
-        String filename = "xxx.yyy";
-
-        assertEquals(false, cms.existsResource(filename));
-    }
-
-    /**
      * Tests the availability of a file that exists but with not enough permissions.<p>
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testExistsForUnauthorizedFile() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -142,4 +101,19 @@ public class TestExists extends OpenCmsTestCase {
         assertEquals(false, cms.existsResource(resName));
     }
 
+    /**
+     * Tests the availability of a file that does not exist.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    @Order(2)
+    public void testExistsForUnexistingFile() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing the availability of a file that does not exist");
+        String filename = "xxx.yyy";
+
+        assertEquals(false, cms.existsResource(filename));
+    }
 }

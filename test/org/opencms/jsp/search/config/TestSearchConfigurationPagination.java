@@ -27,46 +27,22 @@
 
 package org.opencms.jsp.search.config;
 
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /** Test cases for the class {@link org.opencms.jsp.search.config.CmsSearchConfigurationPagination}. */
-public class TestSearchConfigurationPagination extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestSearchConfigurationPagination extends OpenCmsTestRunner {
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestSearchConfigurationPagination(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.addTest(new TestSearchConfigurationPagination("testGetNumPagesForSingleMultiplePageSizes"));
-        suite.addTest(new TestSearchConfigurationPagination("testGetNumPagesForSinglePageSize"));
-        suite.addTest(new TestSearchConfigurationPagination("testPageSizeAndStartForMultiplePageSizes"));
-        suite.addTest(new TestSearchConfigurationPagination("testPageSizeAndStartForSinglePageSize"));
-        return suite;
-    }
-
-    @org.junit.Test
+    @Test
+    @Order(1)
     public void testGetNumPagesForSingleMultiplePageSizes() {
 
         List<Integer> pageSizes = new ArrayList<>(2);
@@ -85,7 +61,8 @@ public class TestSearchConfigurationPagination extends OpenCmsTestCase {
         assertEquals(5, config.getNumPages(30));
     }
 
-    @org.junit.Test
+    @Test
+    @Order(2)
     public void testGetNumPagesForSinglePageSize() {
 
         I_CmsSearchConfigurationPagination config = new CmsSearchConfigurationPagination(null, 5, null);
@@ -100,7 +77,8 @@ public class TestSearchConfigurationPagination extends OpenCmsTestCase {
      * Test if the page sizes and the index of the first items on the page are
      * calculated correctly, if all pages have the same size.
      */
-    @org.junit.Test
+    @Test
+    @Order(3)
     public void testPageSizeAndStartForMultiplePageSizes() {
 
         List<Integer> pageSizes = new ArrayList<>(2);
@@ -121,7 +99,8 @@ public class TestSearchConfigurationPagination extends OpenCmsTestCase {
      * Test if the page sizes and the index of the first items on the page are
      * calculated correctly, if the first few pages have different sizes.
      */
-    @org.junit.Test
+    @Test
+    @Order(4)
     public void testPageSizeAndStartForSinglePageSize() {
 
         I_CmsSearchConfigurationPagination config = new CmsSearchConfigurationPagination(null, 5, null);

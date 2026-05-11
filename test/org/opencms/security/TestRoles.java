@@ -32,71 +32,26 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the OpenCms system roles.<p>
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class TestRoles extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestRoles(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     * Setup is done without importing vfs data.
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestRoles.class.getName());
-
-        suite.addTest(new TestRoles("testRoleExceptionMessages"));
-        suite.addTest(new TestRoles("testRoleAssignments"));
-        suite.addTest(new TestRoles("testSubRoles"));
-        suite.addTest(new TestRoles("testVirtualRoleGroups"));
-        suite.addTest(new TestRoles("testRoleDelegating"));
-        suite.addTest(new TestRoles("testSpecialUserConfirmation"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestRoles extends OpenCmsTestRunner {
 
     /**
      * Check the given message.<p>
@@ -112,11 +67,20 @@ public class TestRoles extends OpenCmsTestCase {
         assertFalse(message.indexOf('{') >= 0);
     }
 
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
+
     /**
      * Tests role assignments.<p>
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(2)
     public void testRoleAssignments() throws Exception {
 
         echo("Testing role assignments");
@@ -216,6 +180,8 @@ public class TestRoles extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(5)
     public void testRoleDelegating() throws Exception {
 
         echo("Testing role delegating");
@@ -243,6 +209,8 @@ public class TestRoles extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(1)
     public void testRoleExceptionMessages() throws Exception {
 
         echo("Testing role exception messages");
@@ -267,6 +235,8 @@ public class TestRoles extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(6)
     public void testSpecialUserConfirmation() throws Exception {
 
         echo("Testing special user based role confirmation");
@@ -373,6 +343,8 @@ public class TestRoles extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(3)
     public void testSubRoles() throws Exception {
 
         echo("Testing subroles operations");
@@ -452,6 +424,8 @@ public class TestRoles extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(4)
     public void testVirtualRoleGroups() throws Exception {
 
         echo("Testing virtual role groups");

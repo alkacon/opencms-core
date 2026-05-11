@@ -29,8 +29,8 @@ package org.opencms.configuration;
 
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlUtils;
 
@@ -40,6 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.dom4j.Document;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.InputSource;
 
 /**
@@ -47,25 +48,15 @@ import org.xml.sax.InputSource;
  *
  * @since 6.0.0
  */
-public class TestConfiguration extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestConfiguration(String arg0) {
-
-        super(arg0, false);
-    }
+public class TestConfiguration extends OpenCmsTestRunner {
 
     /**
      * Loads the configuration using the configuration manager,
      * if anyting goes wrong an exception is thrown and the test fails.<p>
      *
-     *
      * @throws Exception if something goes wrong
      */
+    @Test
     public void testLoadXmlConfiguration() throws Exception {
 
         // get the file name of the input resource
@@ -114,7 +105,7 @@ public class TestConfiguration extends OpenCmsTestCase {
             //            System.out.println(CmsXmlUtils.marshal(inputDoc, CmsEncoder.ENCODING_UTF_8));
             //            System.out.println("+++");
 
-            assertEquals(outputDoc, inputDoc);
+            assertXmlEquals(inputDoc, outputDoc);
         }
     }
 }

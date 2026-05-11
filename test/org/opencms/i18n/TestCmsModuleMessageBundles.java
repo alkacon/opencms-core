@@ -28,7 +28,6 @@
 package org.opencms.i18n;
 
 import org.opencms.gwt.I_CmsClientMessageBundle;
-import org.opencms.test.OpenCmsTestCase;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,10 +40,13 @@ import java.util.Locale;
  *
  * @since 6.0.0
  */
-public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
+public final class TestCmsModuleMessageBundles extends CmsTestMessageBundles {
+
+    @SuppressWarnings("unused")
+    private static final Class<?> TEST_MARKER = org.junit.jupiter.api.Test.class;
 
     /**
-     * @see org.opencms.i18n.TestCmsMessageBundles#getNotLocalizedBundles(Locale)
+     * @see org.opencms.i18n.CmsTestMessageBundles#getNotLocalizedBundles(Locale)
      */
     @Override
     protected List<I_CmsMessageBundle> getNotLocalizedBundles(Locale locale) {
@@ -53,13 +55,13 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
     }
 
     /**
-     * @see org.opencms.i18n.TestCmsMessageBundles#getTestClientMessageBundles()
+     * @see org.opencms.i18n.CmsTestMessageBundles#getTestClientMessageBundles()
      */
     @Override
     protected List<I_CmsClientMessageBundle> getTestClientMessageBundles() throws Exception {
 
         List<I_CmsClientMessageBundle> result = new ArrayList<I_CmsClientMessageBundle>();
-        List<String> classNames = OpenCmsTestCase.getClassNames();
+        List<String> classNames = getClassNames();
         for (String className : classNames) {
             if (className.endsWith("ClientMessages")) {
                 Class<?> cls = Class.forName(className);
@@ -75,7 +77,7 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
     }
 
     /**
-     * @see org.opencms.i18n.TestCmsMessageBundles#getTestMessageBundles()
+     * @see org.opencms.i18n.CmsTestMessageBundles#getTestMessageBundles()
      */
     @Override
     protected I_CmsMessageBundle[] getTestMessageBundles() {

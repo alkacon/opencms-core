@@ -35,7 +35,7 @@
 			<resourceinithandler class="org.opencms.main.CmsPermalinkResourceHandler"/>
 		</resourceinit>
 		<requesthandlers>
-            <requesthandler class="org.opencms.configuration.CmsDummyRequestHandler">
+            <requesthandler class="org.opencms.configuration.CmsTestDummyRequestHandler">
                 <param name="key1">value1</param>
                 <param name="key2">value2</param>
                 <param name="key3">value3</param>
@@ -130,7 +130,7 @@
 		<api-authorizations>
             <api-authorization>
                 <name>test</name>
-                <class>org.opencms.configuration.CmsDummyApiAuthorization</class>
+                <class>org.opencms.configuration.CmsTestDummyApiAuthorization</class>
                 <param name="alpha">1</param>
                 <param name="beta">2</param>
             </api-authorization>
@@ -160,7 +160,7 @@
             </ade-cache>
         </ade>
         <subscriptionmanager enabled="false" poolname="default" maxvisited="100" />
-        <secret-store class="org.opencms.configuration.CmsDummySecretStore">
+        <secret-store class="org.opencms.configuration.CmsTestDummySecretStore">
         	<param name="key1">value1</param>
         	<param name="key2">value2</param>
         </secret-store>

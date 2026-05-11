@@ -69,6 +69,14 @@ public class OpenCmsTestServletRequest implements HttpServletRequest {
         throw new RuntimeException("Not implemented");
     }
 
+    /**
+     * @see javax.servlet.http.HttpServletRequest#changeSessionId()
+     */
+    public String changeSessionId() {
+
+        throw new RuntimeException("Not implemented");
+    }
+
     public AsyncContext getAsyncContext() {
 
         throw new RuntimeException("Not implemented");
@@ -110,6 +118,14 @@ public class OpenCmsTestServletRequest implements HttpServletRequest {
      * @see javax.servlet.ServletRequest#getContentLength()
      */
     public int getContentLength() {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    /**
+     * @see javax.servlet.ServletRequest#getContentLengthLong()
+     */
+    public long getContentLengthLong() {
 
         throw new RuntimeException("Not implemented");
     }
@@ -561,22 +577,6 @@ public class OpenCmsTestServletRequest implements HttpServletRequest {
 
     public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse)
     throws IllegalStateException {
-
-        throw new RuntimeException("Not implemented");
-    }
-
-    /**
-     * @see javax.servlet.ServletRequest#getContentLengthLong()
-     */
-    public long getContentLengthLong() {
-
-        throw new RuntimeException("Not implemented");
-    }
-
-    /**
-     * @see javax.servlet.http.HttpServletRequest#changeSessionId()
-     */
-    public String changeSessionId() {
 
         throw new RuntimeException("Not implemented");
     }

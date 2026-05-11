@@ -27,6 +27,8 @@
 
 package org.opencms.file;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -37,77 +39,35 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
 import org.opencms.test.OpenCmsTestResourceFilter;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit tests for the create and import methods.<p>
  */
-public class TestCreateWriteResource extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCreateWriteResource extends OpenCmsTestRunner {
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(TestInfo)
      */
-    public TestCreateWriteResource(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCreateWriteResource.class.getName());
-
-        suite.addTest(new TestCreateWriteResource("testCreateResourceLockedFolder"));
-        suite.addTest(new TestCreateWriteResource("testImportResource"));
-        suite.addTest(new TestCreateWriteResource("testImportResourceAgain"));
-        suite.addTest(new TestCreateWriteResource("testImportSibling"));
-        suite.addTest(new TestCreateWriteResource("testImportFolder"));
-        suite.addTest(new TestCreateWriteResource("testImportFolderAgain"));
-        suite.addTest(new TestCreateWriteResource("testCreateResource"));
-        suite.addTest(new TestCreateWriteResource("testCreateResourceJsp"));
-        suite.addTest(new TestCreateWriteResource("testCreateResourceAgain"));
-        suite.addTest(new TestCreateWriteResource("testCreateFolder"));
-        suite.addTest(new TestCreateWriteResource("testCreateFolderAgain"));
-        suite.addTest(new TestCreateWriteResource("testCreateDotnameResources"));
-        suite.addTest(new TestCreateWriteResource("testOverwriteInvisibleResource"));
-        suite.addTest(new TestCreateWriteResource("testCreateResourceWithSpecialChars"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -115,6 +75,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(12)
     public void testCreateDotnameResources() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -167,6 +129,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(10)
     public void testCreateFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -210,6 +174,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(11)
     public void testCreateFolderAgain() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -274,6 +240,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(7)
     public void testCreateResource() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -315,6 +283,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(9)
     public void testCreateResourceAgain() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -383,6 +353,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(8)
     public void testCreateResourceJsp() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -412,6 +384,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testCreateResourceLockedFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -446,6 +420,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(14)
     public void testCreateResourceWithSpecialChars() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -487,6 +463,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(5)
     public void testImportFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -545,6 +523,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testImportFolderAgain() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -606,6 +586,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testImportResource() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -668,6 +650,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testImportResourceAgain() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -732,6 +716,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(4)
     public void testImportSibling() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -892,6 +878,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(13)
     public void testOverwriteInvisibleResource() throws Exception {
 
         CmsObject cms = getCmsObject();

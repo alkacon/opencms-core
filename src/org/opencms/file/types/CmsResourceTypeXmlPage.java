@@ -64,6 +64,12 @@ import org.apache.commons.logging.Log;
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
 
+    /** The type id of this resource type. */
+    public static final int RESOURCE_TYPE_ID = 6;
+
+    /** The name of this resource type. */
+    public static final String RESOURCE_TYPE_NAME = "xmlpage";
+
     /** The default XML page body. */
     private static final String DEFAULT_BODY = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         + "\n"
@@ -75,12 +81,6 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
 
     /** The static type id of this resource type. */
     private static int m_staticTypeId;
-
-    /** The type id of this resource type. */
-    private static final int RESOURCE_TYPE_ID = 6;
-
-    /** The name of this resource type. */
-    private static final String RESOURCE_TYPE_NAME = "xmlpage";
 
     /** The serial version id. */
     private static final long serialVersionUID = 4218077530657122699L;

@@ -35,43 +35,34 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import com.google.common.collect.Sets;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
-import junit.framework.Test;
+import com.google.common.collect.Sets;
 
 /**
  * Test cases for locale variants.
  */
-public class TestLocaleGroups extends OpenCmsTestCase {
+public class TestLocaleGroups extends OpenCmsTestRunner {
 
     public static int NAME_COUNTER = 10;
 
     /**
-     * Creates a new instance.<p>
-     *
-     * @param name the test name
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestLocaleGroups(String name) {
-        super(name);
-    }
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-    /**
-     * Returns the test suite.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        return generateSetupTestWrapper(TestLocaleGroups.class, "ade-config", "/");
+        setupOpenCms(testInfo, "ade-config", "/");
     }
 
     public CmsResource makeResource(String path, Locale locale) throws Exception {
@@ -81,6 +72,7 @@ public class TestLocaleGroups extends OpenCmsTestCase {
         return cms.createResource(path, CmsResourceTypePlain.getStaticTypeId(), null, Arrays.asList(prop));
     }
 
+    @Test
     public void testFailWhenAddingResourceFromExistingGroup() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -123,6 +115,7 @@ public class TestLocaleGroups extends OpenCmsTestCase {
 
     }
 
+    @Test
     public void testJoinLocaleGroup() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -133,21 +126,22 @@ public class TestLocaleGroups extends OpenCmsTestCase {
         CmsLocaleGroupService service = new CmsLocaleGroupService(cms);
         service.attachLocaleGroup(r1, r2);
         CmsLocaleGroup localeGroup = service.readLocaleGroup(r2);
-        assertEquals("wrong primary resource in locale group", r2, localeGroup.getPrimaryResource());
+        assertEquals(r2, localeGroup.getPrimaryResource(), "wrong primary resource in locale group");
         assertEquals(
-            "wrong secondary resources in locale group",
             Sets.newHashSet(r1),
-            localeGroup.getSecondaryResources());
+            localeGroup.getSecondaryResources(),
+            "wrong secondary resources in locale group");
 
         CmsLocaleGroup localeGroup2 = service.readLocaleGroup(r1);
-        assertEquals("wrong primary resource in locale group", r2, localeGroup2.getPrimaryResource());
+        assertEquals(r2, localeGroup2.getPrimaryResource(), "wrong primary resource in locale group");
         assertEquals(
-            "wrong secondary resources in locale group",
             Sets.newHashSet(r1),
-            localeGroup2.getSecondaryResources());
+            localeGroup2.getSecondaryResources(),
+            "wrong secondary resources in locale group");
 
     }
 
+    @Test
     public void testLocales1() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -160,19 +154,19 @@ public class TestLocaleGroups extends OpenCmsTestCase {
         service.attachLocaleGroup(r1, r2);
         service.attachLocaleGroup(r3, r2);
         CmsLocaleGroup group = service.readLocaleGroup(r1);
-        assertEquals("wrong primary resource", r2, group.getPrimaryResource());
+        assertEquals(r2, group.getPrimaryResource(), "wrong primary resource");
         assertEquals(
-            "wrong secondary resources",
             Sets.newHashSet(r1, r3),
-            Sets.newHashSet(group.getSecondaryResources()));
+            Sets.newHashSet(group.getSecondaryResources()),
+            "wrong secondary resources");
         assertEquals(
-            "wrong resource for French",
             Sets.newHashSet(r3),
-            Sets.newHashSet(group.getResourcesForLocale(Locale.FRENCH)));
+            Sets.newHashSet(group.getResourcesForLocale(Locale.FRENCH)),
+            "wrong resource for French");
         assertEquals(
-            "wrong resource for German",
             Sets.newHashSet(r2),
-            Sets.newHashSet(group.getResourcesForLocale(Locale.GERMAN)));
+            Sets.newHashSet(group.getResourcesForLocale(Locale.GERMAN)),
+            "wrong resource for German");
     }
 
     /**
@@ -180,6 +174,7 @@ public class TestLocaleGroups extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testLocaleVariantRelationsNotCopied() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -191,9 +186,10 @@ public class TestLocaleGroups extends OpenCmsTestCase {
         cms.copyResource(sourcePath, copyPath, CmsResource.COPY_AS_NEW);
         CmsResource copy = cms.readResource(copyPath);
         List<CmsRelation> rels = cms.readRelations(CmsRelationFilter.ALL.filterStructureId(copy.getStructureId()));
-        assertEquals("no relations should exist on copy of locale variant", new ArrayList<CmsRelation>(), rels);
+        assertEquals(new ArrayList<CmsRelation>(), rels, "no relations should exist on copy of locale variant");
     }
 
+    @Test
     public void testNormalizeRelations1() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -232,6 +228,7 @@ public class TestLocaleGroups extends OpenCmsTestCase {
 
     }
 
+    @Test
     public void testNormalizeRelations2() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -254,6 +251,7 @@ public class TestLocaleGroups extends OpenCmsTestCase {
 
     }
 
+    @Test
     public void testSameLocaleGroupWhenReadFromDifferentResources() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -278,6 +276,7 @@ public class TestLocaleGroups extends OpenCmsTestCase {
         assertEquals(localeGroup2.getSecondaryResources(), localeGroup3.getSecondaryResources());
     }
 
+    @Test
     public void testSingleResourceGroup() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -285,7 +284,7 @@ public class TestLocaleGroups extends OpenCmsTestCase {
         CmsResource r1 = makeResource(path, Locale.ENGLISH);
         CmsLocaleGroupService service = new CmsLocaleGroupService(cms);
         CmsLocaleGroup group = service.readLocaleGroup(r1);
-        assertFalse("single-resource groups are not 'real' groups", group.isRealGroup());
+        assertFalse(group.isRealGroup(), "single-resource groups are not 'real' groups");
         assertEquals(r1, group.getPrimaryResource());
 
     }

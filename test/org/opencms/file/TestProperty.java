@@ -32,9 +32,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -44,35 +43,29 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  *
  */
-public class TestProperty extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestProperty(String arg0) {
-
-        super(arg0);
-    }
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestProperty extends OpenCmsTestRunner {
 
     /**
      * Test the writeProperty method to create a list of properties.<p>
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to create the properies
      * @param propertyList1 the properties to create
      * @throws Throwable if something goes wrong
      */
-    public static void createProperties(OpenCmsTestCase tc, CmsObject cms, String resource1, List propertyList1)
+    public static void createProperties(OpenCmsTestRunner tc, CmsObject cms, String resource1, List propertyList1)
     throws Throwable {
 
         tc.storeResources(cms, resource1);
@@ -99,13 +92,13 @@ public class TestProperty extends OpenCmsTestCase {
 
     /**
      * Test the writeProperty method to create one property.<p>
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to add a propery
      * @param property1 the property to create
      * @throws Throwable if something goes wrong
      */
-    public static void createProperty(OpenCmsTestCase tc, CmsObject cms, String resource1, CmsProperty property1)
+    public static void createProperty(OpenCmsTestRunner tc, CmsObject cms, String resource1, CmsProperty property1)
     throws Throwable {
 
         tc.storeResources(cms, resource1);
@@ -132,13 +125,13 @@ public class TestProperty extends OpenCmsTestCase {
 
     /**
      * Test the writeProperty method to remove a list of properties.<p>
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to remove the properies
      * @param propertyList1 the properties to remove
      * @throws Throwable if something goes wrong
      */
-    public static void removeProperties(OpenCmsTestCase tc, CmsObject cms, String resource1, List propertyList1)
+    public static void removeProperties(OpenCmsTestRunner tc, CmsObject cms, String resource1, List propertyList1)
     throws Throwable {
 
         tc.storeResources(cms, resource1);
@@ -165,13 +158,13 @@ public class TestProperty extends OpenCmsTestCase {
 
     /**
      * Test the writeProperty method to remove one property.<p>
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to remove a propery
      * @param property1 the property to remove
      * @throws Throwable if something goes wrong
      */
-    public static void removeProperty(OpenCmsTestCase tc, CmsObject cms, String resource1, CmsProperty property1)
+    public static void removeProperty(OpenCmsTestRunner tc, CmsObject cms, String resource1, CmsProperty property1)
     throws Throwable {
 
         tc.storeResources(cms, resource1);
@@ -197,61 +190,14 @@ public class TestProperty extends OpenCmsTestCase {
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestProperty.class.getName());
-
-        suite.addTest(new TestProperty("testFrozenProperty"));
-        suite.addTest(new TestProperty("testNullProperty"));
-        suite.addTest(new TestProperty("testSharedPropertyIssue1"));
-        suite.addTest(new TestProperty("testPropertyLists"));
-        suite.addTest(new TestProperty("testPropertyMaps"));
-        suite.addTest(new TestProperty("testWriteProperty"));
-        suite.addTest(new TestProperty("testWriteProperties"));
-        suite.addTest(new TestProperty("testRemoveProperty"));
-        suite.addTest(new TestProperty("testRemoveProperties"));
-        suite.addTest(new TestProperty("testCreateProperty"));
-        suite.addTest(new TestProperty("testCreateProperties"));
-        suite.addTest(new TestProperty("testWritePropertyOnFolder"));
-        suite.addTest(new TestProperty("testDefaultPropertyCreation"));
-        suite.addTest(new TestProperty("testCaseSensitiveProperties"));
-        suite.addTest(new TestProperty("testReadResourcesWithProperty"));
-        suite.addTest(new TestProperty("testReadLocalizedProperty"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
-
-    /**
      * Test the writeProperty method with a list of properties.<p>
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to write the properies
      * @param propertyList1 the properties to write
      * @throws Throwable if something goes wrong
      */
-    public static void writeProperties(OpenCmsTestCase tc, CmsObject cms, String resource1, List propertyList1)
+    public static void writeProperties(OpenCmsTestRunner tc, CmsObject cms, String resource1, List propertyList1)
     throws Throwable {
 
         tc.storeResources(cms, resource1);
@@ -267,7 +213,7 @@ public class TestProperty extends OpenCmsTestCase {
         // project must be current project
         tc.assertProject(cms, resource1, cms.getRequestContext().getCurrentProject());
         // state must be "changed"
-        tc.assertState(cms, resource1, CmsResource.STATE_CHANGED);
+        Assertions.assertEquals(CmsResource.STATE_CHANGED, cms.readResource(resource1).getState());
         // date last modified must be after the test timestamp
         tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
         // the user last modified must be the current user
@@ -278,13 +224,13 @@ public class TestProperty extends OpenCmsTestCase {
 
     /**
      * Test the writeProperty method with one property.<p>
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCms test environment
      * @param cms the CmsObject
      * @param resource1 the resource to write a propery
      * @param property1 the property to write
      * @throws Throwable if something goes wrong
      */
-    public static void writeProperty(OpenCmsTestCase tc, CmsObject cms, String resource1, CmsProperty property1)
+    public static void writeProperty(OpenCmsTestRunner tc, CmsObject cms, String resource1, CmsProperty property1)
     throws Throwable {
 
         tc.storeResources(cms, resource1);
@@ -310,10 +256,22 @@ public class TestProperty extends OpenCmsTestCase {
     }
 
     /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(org.junit.jupiter.api.TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+    }
+
+    /**
      * Tests the proper behaviour for case sensitiveness in property definition names.<p>
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(14)
     public void testCaseSensitiveProperties() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -333,6 +291,8 @@ public class TestProperty extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(11)
     public void testCreateProperties() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -350,6 +310,8 @@ public class TestProperty extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(10)
     public void testCreateProperty() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -363,6 +325,8 @@ public class TestProperty extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(13)
     public void testDefaultPropertyCreation() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -372,14 +336,14 @@ public class TestProperty extends OpenCmsTestCase {
         byte[] content = new byte[0];
 
         // resource 27 is article (xml content) with default properties
-        cms.createResource(resourcename, OpenCmsTestCase.ARTICLE_TYPEID, content, null);
+        cms.createResource(resourcename, ARTICLE_TYPEID, content, null);
 
         // ensure created resource type
-        assertResourceType(cms, resourcename, OpenCmsTestCase.ARTICLE_TYPEID);
+        assertResourceType(cms, resourcename, ARTICLE_TYPEID);
         // project must be current project
         assertProject(cms, resourcename, cms.getRequestContext().getCurrentProject());
         // state must be "new"
-        assertState(cms, resourcename, CmsResource.STATE_NEW);
+        assertEquals(CmsResource.STATE_NEW, cms.readResource(resourcename).getState());
         // the user last modified must be the current user
         assertUserLastModified(cms, resourcename, cms.getRequestContext().getCurrentUser());
 
@@ -407,7 +371,7 @@ public class TestProperty extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
-        assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);
+        assertEquals(CmsResource.STATE_UNCHANGED, cms.readResource(resourcename).getState());
     }
 
     /**
@@ -415,6 +379,8 @@ public class TestProperty extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testFrozenProperty() throws Throwable {
 
         CmsProperty property = CmsProperty.getNullProperty();
@@ -428,7 +394,7 @@ public class TestProperty extends OpenCmsTestCase {
             assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
             gotException = true;
         }
-        assertTrue("Operation did not throw the required Exception", gotException);
+        assertTrue(gotException, "Operation did not throw the required Exception");
         gotException = false;
         try {
             property.setFrozen(false);
@@ -436,7 +402,7 @@ public class TestProperty extends OpenCmsTestCase {
             assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
             gotException = true;
         }
-        assertTrue("Operation did not throw the required Exception", gotException);
+        assertTrue(gotException, "Operation did not throw the required Exception");
         gotException = false;
         try {
             property.setName("SomeString");
@@ -444,7 +410,7 @@ public class TestProperty extends OpenCmsTestCase {
             assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
             gotException = true;
         }
-        assertTrue("Operation did not throw the required Exception", gotException);
+        assertTrue(gotException, "Operation did not throw the required Exception");
         gotException = false;
         try {
             property.setValue("SomeString", CmsProperty.TYPE_INDIVIDUAL);
@@ -452,7 +418,7 @@ public class TestProperty extends OpenCmsTestCase {
             assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
             gotException = true;
         }
-        assertTrue("Operation did not throw the required Exception", gotException);
+        assertTrue(gotException, "Operation did not throw the required Exception");
         gotException = false;
         try {
             property.setResourceValue("SomeString");
@@ -460,7 +426,7 @@ public class TestProperty extends OpenCmsTestCase {
             assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
             gotException = true;
         }
-        assertTrue("Operation did not throw the required Exception", gotException);
+        assertTrue(gotException, "Operation did not throw the required Exception");
         gotException = false;
         try {
             property.setStructureValue("SomeString");
@@ -468,7 +434,7 @@ public class TestProperty extends OpenCmsTestCase {
             assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
             gotException = true;
         }
-        assertTrue("Operation did not throw the required Exception", gotException);
+        assertTrue(gotException, "Operation did not throw the required Exception");
         gotException = false;
         try {
             property.setResourceValueList(Collections.singletonList("SomeString"));
@@ -476,7 +442,7 @@ public class TestProperty extends OpenCmsTestCase {
             assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
             gotException = true;
         }
-        assertTrue("Operation did not throw the required Exception", gotException);
+        assertTrue(gotException, "Operation did not throw the required Exception");
         gotException = false;
         try {
             property.setStructureValueList(Collections.singletonList("SomeString"));
@@ -484,7 +450,7 @@ public class TestProperty extends OpenCmsTestCase {
             assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
             gotException = true;
         }
-        assertTrue("Operation did not throw the required Exception", gotException);
+        assertTrue(gotException, "Operation did not throw the required Exception");
     }
 
     /**
@@ -492,6 +458,8 @@ public class TestProperty extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(2)
     public void testNullProperty() throws Exception {
 
         // get the null property
@@ -499,10 +467,10 @@ public class TestProperty extends OpenCmsTestCase {
         // create another property
         CmsProperty p = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "Some title", null);
         // do a comparison
-        assertFalse("Created property must not be equal to NULL_PROPERTY", p.equals(nullProperty));
-        assertFalse("NULL_PROPERTY must not be equal to created Property", nullProperty.equals(p));
-        assertTrue("NULL_PROPERTY must be equal to itself", nullProperty.equals(nullProperty));
-        assertTrue("NULL_PROPERTY must be identical to itself", nullProperty == CmsProperty.getNullProperty());
+        assertFalse(p.equals(nullProperty), "Created property must not be equal to NULL_PROPERTY");
+        assertFalse(nullProperty.equals(p), "NULL_PROPERTY must not be equal to created Property");
+        assertTrue(nullProperty.equals(nullProperty), "NULL_PROPERTY must be equal to itself");
+        assertTrue(nullProperty == CmsProperty.getNullProperty(), "NULL_PROPERTY must be identical to itself");
     }
 
     /**
@@ -510,6 +478,8 @@ public class TestProperty extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(4)
     public void testPropertyLists() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -613,6 +583,8 @@ public class TestProperty extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(5)
     public void testPropertyMaps() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -655,6 +627,8 @@ public class TestProperty extends OpenCmsTestCase {
      * Test for reading locale specific properties
      * @throws CmsException thrown if writing or reading the properties fails.
      */
+    @Test
+    @Order(16)
     public void testReadLocalizedProperty() throws CmsException {
 
         CmsObject cms = getCmsObject();
@@ -701,6 +675,8 @@ public class TestProperty extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(15)
     public void testReadResourcesWithProperty() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -724,6 +700,8 @@ public class TestProperty extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(9)
     public void testRemoveProperties() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -741,6 +719,8 @@ public class TestProperty extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(8)
     public void testRemoveProperty() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -759,6 +739,8 @@ public class TestProperty extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(3)
     public void testSharedPropertyIssue1() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -795,8 +777,8 @@ public class TestProperty extends OpenCmsTestCase {
         CmsProperty resultProperty = cms.readPropertyObject(dest, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
         assertEquals("A shared value", descProperty.getResourceValue());
         assertTrue(
-            "Property '" + CmsPropertyDefinition.PROPERTY_DESCRIPTION + "' must be identical",
-            descProperty.isIdentical(resultProperty));
+            descProperty.isIdentical(resultProperty),
+            "Property '" + CmsPropertyDefinition.PROPERTY_DESCRIPTION + "' must be identical");
     }
 
     /**
@@ -804,6 +786,8 @@ public class TestProperty extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(7)
     public void testWriteProperties() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -821,6 +805,8 @@ public class TestProperty extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(6)
     public void testWriteProperty() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -834,6 +820,8 @@ public class TestProperty extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(12)
     public void testWritePropertyOnFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();

@@ -34,8 +34,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -48,14 +47,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests for XML content schema changes.<p>
  */
-public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsXmlContentSchemaModifications extends OpenCmsTestRunner {
 
     /**
      * Simple schema data container structure.<p>
@@ -105,53 +108,13 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
     private static final String SCHEMA_SYSTEM_ID_1 = "http://www.opencms.org/test1.xsd";
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestCmsXmlContentSchemaModifications(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsXmlContentSchemaModifications.class.getName());
-
-        suite.addTest(new TestCmsXmlContentSchemaModifications("testVfsFile"));
-        suite.addTest(new TestCmsXmlContentSchemaModifications("testUsageDemo"));
-        suite.addTest(new TestCmsXmlContentSchemaModifications("testAddSchemaNodes"));
-        suite.addTest(new TestCmsXmlContentSchemaModifications("testRemoveSchemaNodes"));
-        suite.addTest(new TestCmsXmlContentSchemaModifications("testReArrangeSchemaNodes"));
-        suite.addTest(new TestCmsXmlContentSchemaModifications("testCombinedChangeSchemaNodes"));
-        suite.addTest(new TestCmsXmlContentSchemaModifications("testNestedChangeSchemaNodes"));
-        suite.addTest(new TestCmsXmlContentSchemaModifications("testXsdTranslation"));
-        suite.addTest(new TestCmsXmlContentSchemaModifications("testMaintainOrderInChoiceAfterSchemaChange"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -159,6 +122,8 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
+    @Order(3)
     public void testAddSchemaNodes() throws Exception {
 
         echo("Testing adding new nodes to XML schema");
@@ -177,6 +142,8 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
+    @Order(6)
     public void testCombinedChangeSchemaNodes() throws Exception {
 
         echo("Combined modification test for simple (non-nested) XML schema");
@@ -212,6 +179,8 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
+    @Order(9)
     public void testMaintainOrderInChoiceAfterSchemaChange() throws Exception {
 
         echo("Testing if changes in the XML schema structure maintains the order of an existing xsd:choice list.");
@@ -238,6 +207,8 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
+    @Order(7)
     public void testNestedChangeSchemaNodes() throws Exception {
 
         echo("Combined modification test for a nested XML schema");
@@ -276,6 +247,8 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
+    @Order(5)
     public void testReArrangeSchemaNodes() throws Exception {
 
         echo("Test re-arranging nodes in the XML schema");
@@ -294,6 +267,8 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
+    @Order(4)
     public void testRemoveSchemaNodes() throws Exception {
 
         echo("Testing removing nodes from an XML schema");
@@ -312,6 +287,8 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
+    @Order(2)
     public void testUsageDemo() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -411,6 +388,8 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
+    @Order(1)
     public void testVfsFile() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -487,6 +466,8 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
+    @Order(8)
     public void testXsdTranslation() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -522,7 +503,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
         // output the XML content (modified version)
         System.out.println(strContent);
 
-        assertTrue("Translated XSD schema not found", strContent.indexOf(newSchema) > 0);
+        assertTrue(strContent.indexOf(newSchema) > 0, "Translated XSD schema not found");
 
         // restore original XSD translator
         OpenCms.getResourceManager().setTranslators(
@@ -545,7 +526,7 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
         System.out.println(xmlcontent.toString());
         String content = CmsFileUtil.readFile(filename, CmsEncoder.ENCODING_UTF_8);
-        assertEquals(
+        assertXmlEquals(
             CmsXmlUtils.unmarshalHelper(xmlcontent.toString(), resolver),
             CmsXmlUtils.unmarshalHelper(content, resolver));
     }
@@ -588,7 +569,8 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
         String originalSchema,
         String originalFile,
         String changedSchema,
-        String changedFile) throws Exception {
+        String changedFile)
+    throws Exception {
 
         List<SchemaDef> originalSchemas = new ArrayList<SchemaDef>();
         List<SchemaDef> changedSchemas = new ArrayList<SchemaDef>();
@@ -616,7 +598,8 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
         List<SchemaDef> originalSchemas,
         String originalFile,
         List<SchemaDef> changedSchemas,
-        String changedFile) throws Exception {
+        String changedFile)
+    throws Exception {
 
         CmsObject cms = getCmsObject();
         String rfsPrefix = "org/opencms/xml/content/";

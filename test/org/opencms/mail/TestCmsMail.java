@@ -28,8 +28,7 @@
 package org.opencms.mail;
 
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import javax.mail.Address;
 import javax.mail.SendFailedException;
@@ -37,16 +36,21 @@ import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.mail.EmailException;
 
-import com.dumbster.smtp.SimpleSmtpServer;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import com.dumbster.smtp.SimpleSmtpServer;
 
 /**
  * Unit test for the cms mail functionality.<p>
  */
-public class TestCmsMail extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsMail extends OpenCmsTestRunner {
 
     /**
      * Port the SMTP server will listen to. Must be greater than 1000, depending
@@ -54,60 +58,38 @@ public class TestCmsMail extends OpenCmsTestCase {
      */
     private static final int SMTP_PORT = 2525;
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsMail(String arg0) {
+    // SMTP Server running locally (c.f. library dumbster-1.6.jar)
+    private SimpleSmtpServer m_server;
 
-        super(arg0);
+    /**
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
+     */
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
+
+        setupOpenCms(testInfo, "simpletest", "/");
+        // start SMTP server
+        m_server = SimpleSmtpServer.start(SMTP_PORT);
     }
 
     /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsTearDown(org.junit.jupiter.api.TestInfo)
      */
-    public static Test suite() {
+    @Override
+    @AfterAll
+    public void $openCmsTearDown(TestInfo testInfo) {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsMail.class.getName());
-
-        suite.addTest(new TestCmsMail("testCmsSendSimpleMail"));
-        suite.addTest(new TestCmsMail("testCmsSendHtmlMail"));
-        suite.addTest(new TestCmsMail("testCmsInvalidMailAddress"));
-        TestSetup wrapper = new TestSetup(suite) {
-
-            // SMTP Server running locally (c.f. library dumbster-1.6.jar)
-            SimpleSmtpServer m_server;
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-                // start SMTP server
-                m_server = SimpleSmtpServer.start(SMTP_PORT);
-
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-                // stop SMTP server
-                m_server.stop();
-            }
-        };
-
-        return wrapper;
+        super.$openCmsTearDown(testInfo);
+        // stop SMTP server
+        m_server.stop();
     }
 
     /**
      * Tests sending mails to invalid email address.<p>
      */
+    @Test
+    @Order(3)
     public void testCmsInvalidMailAddress() {
 
         echo("Trying to send an HTML mail to invalid mail address ...");
@@ -146,6 +128,8 @@ public class TestCmsMail extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testCmsSendHtmlMail() throws Throwable {
 
         echo("Trying to send an HTML mail ...");
@@ -174,6 +158,8 @@ public class TestCmsMail extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(1)
     public void testCmsSendSimpleMail() throws Throwable {
 
         echo("Trying to send a plain text mail ...");

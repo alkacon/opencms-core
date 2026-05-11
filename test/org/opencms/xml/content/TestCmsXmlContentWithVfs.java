@@ -46,8 +46,7 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.staticexport.CmsLinkTable;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsHtmlWidget;
@@ -68,15 +67,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  */
-public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsXmlContentWithVfs extends OpenCmsTestRunner {
 
     /** Schema id 1L1. */
     public static final String SCHEMA_SYSTEM_ID_1L1 = "http://www.opencms.org/test1_localized1.xsd";
@@ -121,75 +124,13 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
     private String m_vfsPrefix;
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestCmsXmlContentWithVfs(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsXmlContentWithVfs.class.getName());
-
-        suite.addTest(new TestCmsXmlContentWithVfs("testAutoXsd"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testAddRemoveElements"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testContentHandler"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testDefaultOnCreation"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testDefaultOnCreationWithNested"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testDefaultNested"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testNestedSchema"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testAddRemoveNestedElements"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testAccessNestedElements"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testValueIndex"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testLayoutWidgetMapping"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testLinkResolver"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testVarLinkResolver"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testEmptyLocale"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testCopyMoveRemoveLocale"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testValidation"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testValidationExtended"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testValidationLocale"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testMappings"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testMappingsWithManyLocales"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testMappingsOfNestedContent"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testMappingsAsList"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testMappingWithLocaleSpecificProperties"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testResourceBundle"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testResourceBundleFromXml"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testResourceBundleFromXmlWithDefault"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testResourceMultiBundle"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testMacros"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testAddFileReference"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testXmlContentCreate"));
-        suite.addTest(new TestCmsXmlContentWithVfs("testVarLinkPreservePercentEncodingForSpecialCharacters"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -197,6 +138,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(9)
     public void testAccessNestedElements() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -340,6 +283,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(29)
     public void testAddFileReference() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -413,6 +358,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(2)
     public void testAddRemoveElements() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -553,6 +500,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(8)
     public void testAddRemoveNestedElements() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -638,6 +587,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(1)
     public void testAutoXsd() throws Exception {
 
         org.opencms.xml.CmsXmlEntityResolver resolver = new org.opencms.xml.CmsXmlEntityResolver(null);
@@ -654,6 +605,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(3)
     public void testContentHandler() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -677,7 +630,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         assertTrue(xmlcontent.hasValue("Html", Locale.ENGLISH));
         assertTrue(xmlcontent.hasValue("VfsLink", Locale.ENGLISH));
-        assertSame(definition.getContentHandler().getClass().getName(), TestXmlContentHandler.class.getName());
+        assertSame(definition.getContentHandler().getClass().getName(), CmsTestXmlContentHandler.class.getName());
     }
 
     /**
@@ -685,6 +638,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(15)
     public void testCopyMoveRemoveLocale() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -746,6 +701,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(6)
     public void testDefaultNested() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -796,6 +753,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
+    @Order(4)
     public void testDefaultOnCreation() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -805,7 +764,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         // create a new xml content article
         String xmlContentFile = "/xmlcontent/article_0005.html";
-        cms.createResource(xmlContentFile, OpenCmsTestCase.ARTICLE_TYPEID);
+        cms.createResource(xmlContentFile, ARTICLE_TYPEID);
 
         CmsFile file = cms.readFile(xmlContentFile);
         String content = new String(file.getContents(), CmsEncoder.ENCODING_UTF_8);
@@ -828,6 +787,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(5)
     public void testDefaultOnCreationWithNested() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -872,6 +833,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(14)
     public void testEmptyLocale() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -915,6 +878,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(11)
     public void testLayoutWidgetMapping() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -957,7 +922,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // make sure the custom class name works
         widget = CmsWidgetUtil.collectWidgetInfo(cms, xmlcontent.getValue("Toast", Locale.ENGLISH)).getWidget();
         assertNotNull(widget);
-        assertEquals(TestCustomInputWidgetImpl.class.getName(), widget.getClass().getName());
+        assertEquals(CmsTestCustomInputWidgetImpl.class.getName(), widget.getClass().getName());
         assertEquals("Configuration for Toast", handler.getConfiguration(xmlcontent.getValue("Toast", Locale.ENGLISH)));
         // custom widget configuration has extended the handler String
         assertEquals("Configuration for Toast[some addition here]", widget.getConfiguration());
@@ -968,6 +933,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(12)
     public void testLinkResolver() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -1005,7 +972,6 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         String retranslatedOutput = htmlValue.getStringValue(cms);
         assertEquals(
-            "Incorrect links in resulting output",
             "<a href=\"http://www.alkacon.com\">Alkacon</a>\n"
                 + "<a href=\""
                 + getVfsPrefix()
@@ -1015,9 +981,9 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
                 + "/folder1/index.html?a=b&amp;c=d#anchor\">Index page</a>\n"
                 + "<a href=\""
                 + getVfsPrefix()
-                + "/folder1/index.html?a2=b2&amp;c2=d2\">Index page with unescaped ampersand</a>",
-            // note that the & in the links appear correctly escaped here
-            retranslatedOutput.trim());
+                + "/folder1/index.html?a2=b2&amp;c2=d2\">Index page with unescaped ampersand</a>", // note that the & in the links appear correctly escaped here
+            retranslatedOutput.trim(),
+            "Incorrect links in resulting output");
 
         table = htmlValue.getLinkTable();
         assertEquals(4, table.size());
@@ -1035,12 +1001,12 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
                 && link.getQuery().equals("a=b&c=d") // at this point the & in the link should be unescaped
                 && link.getAnchor().equals("anchor")
                 && link.isInternal()) {
-                    result++;
-                } else if (link.getTarget().equals("/sites/default/folder1/index.html")
-                    && link.getQuery().equals("a2=b2&c2=d2") // at this point the & in the link should be unescaped
-                    && link.isInternal()) {
-                        result++;
-                    }
+                result++;
+            } else if (link.getTarget().equals("/sites/default/folder1/index.html")
+                && link.getQuery().equals("a2=b2&c2=d2") // at this point the & in the link should be unescaped
+                && link.isInternal()) {
+                result++;
+            }
         }
 
         assertEquals(4, result);
@@ -1056,6 +1022,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(28)
     public void testMacros() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -1141,6 +1109,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(19)
     public void testMappings() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -1256,6 +1226,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
+    @Order(22)
     public void testMappingsAsList() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -1430,6 +1402,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(21)
     public void testMappingsOfNestedContent() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -1491,6 +1465,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(20)
     public void testMappingsWithManyLocales() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -1589,6 +1565,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(23)
     public void testMappingWithLocaleSpecificProperties() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -1763,34 +1741,34 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(titleStrEn, titleProperty.getValue());
         titlePropertyEn = cms.readPropertyObject(resourcename, titlePropEn, false);
         assertTrue(
-            "The property should be empty, since it would double the default property value",
-            titlePropertyEn.isNullProperty());
+            titlePropertyEn.isNullProperty(),
+            "The property should be empty, since it would double the default property value");
         titlePropertyEnGB = cms.readPropertyObject(resourcename, titlePropEnGB, false);
         assertEquals(
-            "The property should be filled, since it is different from the default value",
             titleStrEnGB,
-            titlePropertyEnGB.getValue());
+            titlePropertyEnGB.getValue(),
+            "The property should be filled, since it is different from the default value");
         titlePropertyDe = cms.readPropertyObject(resourcename, titlePropDe, false);
         assertEquals(
-            "The property should be filled, since it is different from the default value",
             titleStrDe,
-            titlePropertyDe.getValue());
+            titlePropertyDe.getValue(),
+            "The property should be filled, since it is different from the default value");
 
         descProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
         assertEquals(descStrEn, descProperty.getValue());
         descPropertyEn = cms.readPropertyObject(resourcename, descPropEn, false);
         assertTrue(
-            "The property should be empty, since it would double the default property value",
-            descPropertyEn.isNullProperty());
+            descPropertyEn.isNullProperty(),
+            "The property should be empty, since it would double the default property value");
         descPropertyEnGB = cms.readPropertyObject(resourcename, descPropEnGB, false);
         assertTrue(
-            "The property should be empty, since it would double the default property value",
-            descPropertyEnGB.isNullProperty());
+            descPropertyEnGB.isNullProperty(),
+            "The property should be empty, since it would double the default property value");
         descPropertyDe = cms.readPropertyObject(resourcename, descPropDe, false);
         assertEquals(
-            "The property should be filled, since it is different from the default value",
             descStrDe,
-            descPropertyDe.getValue());
+            descPropertyDe.getValue(),
+            "The property should be filled, since it is different from the default value");
 
         // We manually add a property that should be removed by the mapping.
         cms.lockResource(resourcename);
@@ -1815,12 +1793,12 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(titleStrEn, titleProperty.getValue());
         titlePropertyEn = cms.readPropertyObject(resourcename, titlePropEn, false);
         assertTrue(
-            "The property should be empty, since it would double the default property value",
-            titlePropertyEn.isNullProperty());
+            titlePropertyEn.isNullProperty(),
+            "The property should be empty, since it would double the default property value");
         titlePropertyEnGB = cms.readPropertyObject(resourcename, titlePropEnGB, false);
         assertTrue(
-            "The property should be empty, since it would double the default property value",
-            titlePropertyEnGB.isNullProperty());
+            titlePropertyEnGB.isNullProperty(),
+            "The property should be empty, since it would double the default property value");
 
         // We check if property values are removed correctly
         cms.lockResource(resourcename);
@@ -1835,32 +1813,32 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(titleStrEn, titleProperty.getValue());
         titlePropertyEn = cms.readPropertyObject(resourcename, titlePropEn, false);
         assertTrue(
-            "The property should be empty, since it would double the default property value",
-            titlePropertyEn.isNullProperty());
+            titlePropertyEn.isNullProperty(),
+            "The property should be empty, since it would double the default property value");
         titlePropertyEnGB = cms.readPropertyObject(resourcename, titlePropEnGB, false);
         assertTrue(
-            "The property should be empty, since the whole locale is removed",
-            titlePropertyEnGB.isNullProperty());
+            titlePropertyEnGB.isNullProperty(),
+            "The property should be empty, since the whole locale is removed");
         titlePropertyDe = cms.readPropertyObject(resourcename, titlePropDe, false);
         assertTrue(
-            "The property should be empty, since it would double the default property value",
-            titlePropertyDe.isNullProperty());
+            titlePropertyDe.isNullProperty(),
+            "The property should be empty, since it would double the default property value");
 
         descProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
         assertEquals(descStrEn, descProperty.getValue());
         descPropertyEn = cms.readPropertyObject(resourcename, descPropEn, false);
         assertTrue(
-            "The property should be empty, since it would double the default property value",
-            descPropertyEn.isNullProperty());
+            descPropertyEn.isNullProperty(),
+            "The property should be empty, since it would double the default property value");
         descPropertyEnGB = cms.readPropertyObject(resourcename, descPropEnGB, false);
         assertTrue(
-            "The property should be empty, since the whole locale is removed",
-            descPropertyEnGB.isNullProperty());
+            descPropertyEnGB.isNullProperty(),
+            "The property should be empty, since the whole locale is removed");
         descPropertyDe = cms.readPropertyObject(resourcename, descPropDe, false);
         assertEquals(
-            "The property should be filled, since it is different from the default value",
             descStrDe,
-            descPropertyDe.getValue());
+            descPropertyDe.getValue(),
+            "The property should be filled, since it is different from the default value");
 
         // The manually added property should be removed
         assertTrue(cms.readPropertyObject(cms.readFile(resourcename), titlePropFr, false).isNullProperty());
@@ -1901,6 +1879,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(7)
     public void testNestedSchema() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -1976,7 +1956,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         value1 = xmlcontent.getValue(xpath, Locale.ENGLISH);
         assertEquals(CmsXmlUtils.createXpath(xpath, 1), value1.getPath());
 
-        assertSame(definition.getContentHandler().getClass().getName(), TestXmlContentHandler.class.getName());
+        assertSame(definition.getContentHandler().getClass().getName(), CmsTestXmlContentHandler.class.getName());
     }
 
     /**
@@ -1984,6 +1964,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(24)
     public void testResourceBundle() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -2003,7 +1985,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         I_CmsXmlContentHandler contentHandler;
 
         contentHandler = definition.getContentHandler();
-        assertSame(definition.getContentHandler().getClass().getName(), TestXmlContentHandler.class.getName());
+        assertSame(definition.getContentHandler().getClass().getName(), CmsTestXmlContentHandler.class.getName());
         // the messages will always contain the org.opencms.xml.content.messages bundle
         assertNotNull(contentHandler.getMessages(Locale.ENGLISH));
 
@@ -2028,6 +2010,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(25)
     public void testResourceBundleFromXml() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -2149,6 +2133,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(26)
     public void testResourceBundleFromXmlWithDefault() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -2224,6 +2210,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(27)
     public void testResourceMultiBundle() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -2276,6 +2264,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(16)
     public void testValidation() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -2387,6 +2377,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(17)
     public void testValidationExtended() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -2540,6 +2532,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(18)
     public void testValidationLocale() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -2602,6 +2596,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(10)
     public void testValueIndex() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -2648,12 +2644,12 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // check content handlers for nested elements
         I_CmsXmlContentValue value1 = xmlcontent.getValue("Test", Locale.ENGLISH);
         assertSame(
-            TestXmlContentHandler.class.getName(),
+            CmsTestXmlContentHandler.class.getName(),
             value1.getContentDefinition().getContentHandler().getClass().getName());
 
         value1 = xmlcontent.getValue("Cascade", Locale.ENGLISH);
         assertSame(
-            TestXmlContentHandler.class.getName(),
+            CmsTestXmlContentHandler.class.getName(),
             value1.getContentDefinition().getContentHandler().getClass().getName());
 
         value1 = xmlcontent.getValue("Cascade/Title", Locale.ENGLISH);
@@ -2667,6 +2663,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(31)
     public void testVarLinkPreservePercentEncodingForSpecialCharacters() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -2704,6 +2702,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(13)
     public void testVarLinkResolver() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -2822,6 +2822,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
      *
      * @throws Exception in case something goes wrong
      */
+    @Test
+    @Order(30)
     public void testXmlContentCreate() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -2829,7 +2831,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
 
         String filename = "xmlcontent.html";
-        CmsResource res = cms.createResource(filename, OpenCmsTestCase.ARTICLE_TYPEID);
+        CmsResource res = cms.createResource(filename, ARTICLE_TYPEID);
         CmsFile file = cms.readFile(res);
         String content = new String(file.getContents(), CmsEncoder.ENCODING_UTF_8);
         CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);

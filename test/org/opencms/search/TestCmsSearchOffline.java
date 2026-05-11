@@ -36,66 +36,36 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.util.List;
 import java.util.Locale;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for searching in "offline" indexes, added with OpenCms version 7.5.<p>
  */
-public class TestCmsSearchOffline extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestCmsSearchOffline extends OpenCmsTestRunner {
 
     /** Name of the search index created using API. */
     public static final String INDEX_SPECIAL = "Offline Index";
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestCmsSearchOffline(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsSearchOffline.class.getName());
-
-        suite.addTest(new TestCmsSearchOffline("testSearchIndexSetup"));
-        suite.addTest(new TestCmsSearchOffline("testIndexUpdateOnModification"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-                OpenCms.getSearchManager().setOfflineUpdateFrequency(1000);
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
+        OpenCms.getSearchManager().setOfflineUpdateFrequency(1000);
     }
 
     /**
@@ -103,6 +73,8 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Order(2)
+    @Test
     public void testIndexUpdateOnModification() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -213,12 +185,14 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Order(1)
+    @Test
     public void testSearchIndexSetup() throws Exception {
 
         CmsSearchIndex searchIndex = new CmsSearchIndex(INDEX_SPECIAL);
         searchIndex.setProject("Offline");
         searchIndex.setLocale(Locale.ENGLISH);
-        searchIndex.setRebuildMode(CmsSearchIndex.REBUILD_MODE_OFFLINE);
+        searchIndex.setRebuildMode(I_CmsSearchIndex.REBUILD_MODE_OFFLINE);
         // available pre-configured in the test configuration files opencms-search.xml
         searchIndex.addSourceName("source1");
 

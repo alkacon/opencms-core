@@ -73,6 +73,12 @@ import org.apache.commons.logging.Log;
  */
 public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
 
+    /** The type id of the JSP resource type. */
+    public static final int JSP_RESOURCE_TYPE_ID = 4;
+
+    /** The name of this resource type. */
+    public static final String RESOURCE_TYPE_NAME = "jsp";
+
     /** Key for formatter setting container maximum width. */
     public static final String FORMATTER_SETTING_MAX_WIDTH = "maxwidth";
 
@@ -88,17 +94,11 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     /** The type name of the containerpage_template resource type. */
     private static final String CONTAINERPAGE_TEMPLATE_TYPE_NAME = "containerpage_template";
 
-    /** The type id of the JSP resource type. */
-    private static final int JSP_RESOURCE_TYPE_ID = 4;
-
     /** Static reference to the log. */
     private static final Log LOG = CmsLog.getLog(org.opencms.file.types.CmsResourceTypeJsp.class);
 
     /** The registered JSP resource type id's.    */
     private static List<Integer> m_jspResourceTypeIds = new ArrayList<Integer>();
-
-    /** The name of this resource type. */
-    private static final String RESOURCE_TYPE_NAME = "jsp";
 
     /** The serial version id. */
     private static final long serialVersionUID = 6852747481533451911L;

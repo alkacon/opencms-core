@@ -31,79 +31,40 @@ import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.security.CmsSecurityException;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
+import org.opencms.test.OpenCmsTestRunner;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Unit test for the "chtype" method of the CmsObject.<p>
  *
  */
-public class TestChtype extends OpenCmsTestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestChtype(String arg0) {
-
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestChtype.class.getName());
-
-        suite.addTest(new TestChtype("testChtypeNewFile"));
-        suite.addTest(new TestChtype("testChtypeJspFile"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
-    }
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestChtype extends OpenCmsTestRunner {
 
     /**
      * Test the chtype method on a new file.<p>
      *
-     * @param tc the OpenCmsTestCase
+     * @param tc the OpenCmsTestRunner
      * @param cms the CmsObject
      * @param resource1 the resource to change permissions
      * @param originalResType the original resource type
      * @param newResType the new resource tpye
      * @throws Throwable if something goes wrong
-     */
+    */
     public static void chtypeNewFile(
-        OpenCmsTestCase tc,
+        OpenCmsTestRunner tc,
         CmsObject cms,
         String resource1,
         int originalResType,
-        int newResType) throws Throwable {
+        int newResType)
+    throws Throwable {
 
         // create a new resource
         cms.createResource(resource1, originalResType);
@@ -121,20 +82,13 @@ public class TestChtype extends OpenCmsTestCase {
     }
 
     /**
-     * Test the chtype method on a new file.<p>
-     *
-     * @throws Throwable if something goes wrong
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public void testChtypeNewFile() throws Throwable {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        CmsObject cms = getCmsObject();
-        echo("Testing chtype on a new file");
-        chtypeNewFile(
-            this,
-            cms,
-            "/chtype.txt",
-            CmsResourceTypePlain.getStaticTypeId(),
-            CmsResourceTypeBinary.getStaticTypeId());
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -142,6 +96,8 @@ public class TestChtype extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
+    @Order(2)
     public void testChtypeJspFile() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -165,5 +121,24 @@ public class TestChtype extends OpenCmsTestCase {
         } catch (CmsSecurityException e) {
             // ok
         }
+    }
+
+    /**
+     * Test the chtype method on a new file.<p>
+     *
+     * @throws Throwable if something goes wrong
+     */
+    @Test
+    @Order(1)
+    public void testChtypeNewFile() throws Throwable {
+
+        final CmsObject cms = getCmsObject();
+        echo("Testing chtype on a new file");
+        chtypeNewFile(
+            this,
+            cms,
+            "/chtype.txt",
+            CmsResourceTypePlain.getStaticTypeId(),
+            CmsResourceTypeBinary.getStaticTypeId());
     }
 }

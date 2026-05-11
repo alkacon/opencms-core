@@ -29,60 +29,27 @@ package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
 import org.opencms.relations.CmsExternalLinksValidator;
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsUriSplitter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  *
  * @since 7.0.4
  */
-public class TestCmsExternalLinksValidator extends OpenCmsTestCase {
+public class TestCmsExternalLinksValidator extends OpenCmsTestRunner {
 
-    /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsExternalLinksValidator(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        TestSuite suite = new TestSuite();
-        suite.setName(TestCmsExternalLinksValidator.class.getName());
-        suite.addTest(new TestCmsExternalLinksValidator("testExternalLinksOutside"));
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-
-        };
-
-        return wrapper;
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -93,6 +60,7 @@ public class TestCmsExternalLinksValidator extends OpenCmsTestCase {
      *
      * @throws Exception if test fails
      */
+    @Test
     public void testExternalLinksOutside() throws Exception {
 
         CmsObject cms = getCmsObject();
@@ -112,7 +80,7 @@ public class TestCmsExternalLinksValidator extends OpenCmsTestCase {
             String url = list.get(i);
             System.out.println("Checking external link: " + url);
             System.out.println("  Extenal link encoded: " + new CmsUriSplitter(url, true).toURI().toURL());
-            assertTrue("External link check failed:" + url, CmsExternalLinksValidator.checkUrl(cms, url));
+            assertTrue(CmsExternalLinksValidator.checkUrl(cms, url), "External link check failed:" + url);
         }
     }
 }

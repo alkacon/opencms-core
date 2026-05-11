@@ -27,7 +27,7 @@
 
 package org.opencms.configuration;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.io.File;
 import java.net.URL;
@@ -36,16 +36,24 @@ import java.util.Properties;
 
 import org.apache.commons.collections.ExtendedProperties;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
 /**
  * Test cases for the parameter configuration.<p>
  */
-public class TestParameterConfiguration extends OpenCmsTestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestParameterConfiguration extends OpenCmsTestRunner {
 
     /**
      * Tests escaping and unescaping values in the parameter configuration.<p>
      *
      * @throws Exception in case the test fails
      */
+    @Test
+    @Order(3)
     public void testEscapeUnescapeParameterConfiguration() throws Exception {
 
         CmsParameterConfiguration config = new CmsParameterConfiguration();
@@ -62,10 +70,43 @@ public class TestParameterConfiguration extends OpenCmsTestCase {
     }
 
     /**
+     * Tests the extraction of properties.
+     *
+     * @throws Exception
+     */
+    @Test
+    @Order(4)
+    public void testExtractionOfPrefixedConfiguration() throws Exception {
+
+        CmsParameterConfiguration config = new CmsParameterConfiguration();
+
+        config.add("a", "value_a");
+        config.add("a.b1", "value_a.b1");
+        config.add("a.b2", "value_a.b2");
+        config.add("a.b1.c1", "value_a.b1.c1"); // These three will be retrieved
+        config.add("a.b1.c2", "value_a.b1.c2"); // These three will be retrieved
+        config.add("a.b1.c3", "value_a.b1.c3"); // These three will be retrieved
+        config.add("a.b2.c1", "value_a.b2.c1");
+        config.add("a.b2.c2", "value_a.b2.c2");
+        config.add("a.b2.c3", "value_a.b2.c3");
+        Properties result = config.getPrefixedProperties("a.b1");
+        assertNull(result.getProperty("a"), "Key 'a' found in Properties");
+        assertNull(result.getProperty("a.b1"), "Key 'a.b1' found in Properties");
+        assertNull(result.getProperty("b1"), "Key 'b1' found in Properties");
+        assertNull(result.getProperty(""), "Empty key '' found in Properties");
+        assertEquals("value_a.b1.c1", result.getProperty("c1"), "Incorrect value of key c1 (a.b1.c1)");
+        assertEquals("value_a.b1.c2", result.getProperty("c2"), "Incorrect value of key c2 (a.b1.c2)");
+        assertEquals("value_a.b1.c3", result.getProperty("c3"), "Incorrect value of key c2 (a.b1.c3)");
+        assertEquals(3, result.size(), "Incorrect number of properties");
+    }
+
+    /**
      * Test merging the parameter configuration.<p>
      *
      * @throws Exception in case the test fails
      */
+    @Test
+    @Order(1)
     public void testMergeParameterConfiguration() throws Exception {
 
         CmsParameterConfiguration config1 = new CmsParameterConfiguration();
@@ -94,6 +135,8 @@ public class TestParameterConfiguration extends OpenCmsTestCase {
      *
      * @throws Exception in case the test fails
      */
+    @Test
+    @Order(2)
     public void testReadParameterConfiguration() throws Exception {
 
         String testPropPath = "org/opencms/configuration/opencms-test.properties";
@@ -104,7 +147,7 @@ public class TestParameterConfiguration extends OpenCmsTestCase {
         System.out.println("URL path decoded: '" + decodedPath + "'");
         System.out.println("File: '" + file + "'");
         // make sure the test properties file is found
-        assertTrue("Test property file '" + file.getAbsolutePath() + "' not found", file.exists());
+        assertTrue(file.exists(), "Test property file '" + file.getAbsolutePath() + "' not found");
 
         CmsParameterConfiguration cmsProp = new CmsParameterConfiguration(file.getAbsolutePath());
         assertEquals("C:\\dev\\workspace\\opencms-core\\test\\data", cmsProp.get("test.path.one"));
@@ -120,37 +163,8 @@ public class TestParameterConfiguration extends OpenCmsTestCase {
         assertEquals(extProp.size(), cmsProp.size());
         for (String key : cmsProp.keySet()) {
             Object value = cmsProp.getObject(key);
-            assertTrue("Key '" + key + "' not found in CmsConfiguration", extProp.containsKey(key));
-            assertEquals("Objects for " + key + " not equal", extProp.getProperty(key), value);
+            assertTrue(extProp.containsKey(key), "Key '" + key + "' not found in CmsConfiguration");
+            assertEquals(extProp.getProperty(key), value, "Objects for " + key + " not equal");
         }
-    }
-
-    /**
-     * Tests the extraction of properties.
-     *
-     * @throws Exception
-     */
-    public void testExtractionOfPrefixedConfiguration() throws Exception {
-
-        CmsParameterConfiguration config = new CmsParameterConfiguration();
-
-        config.add("a", "value_a");
-        config.add("a.b1", "value_a.b1");
-        config.add("a.b2", "value_a.b2");
-        config.add("a.b1.c1", "value_a.b1.c1"); // These three will be retrieved
-        config.add("a.b1.c2", "value_a.b1.c2"); // These three will be retrieved
-        config.add("a.b1.c3", "value_a.b1.c3"); // These three will be retrieved
-        config.add("a.b2.c1", "value_a.b2.c1");
-        config.add("a.b2.c2", "value_a.b2.c2");
-        config.add("a.b2.c3", "value_a.b2.c3");
-        Properties result = config.getPrefixedProperties("a.b1");
-        assertNull("Key 'a' found in Properties", result.getProperty("a"));
-        assertNull("Key 'a.b1' found in Properties", result.getProperty("a.b1"));
-        assertNull("Key 'b1' found in Properties", result.getProperty("b1"));
-        assertNull("Empty key '' found in Properties", result.getProperty(""));
-        assertEquals("Incorrect value of key c1 (a.b1.c1)", "value_a.b1.c1", result.getProperty("c1"));
-        assertEquals("Incorrect value of key c2 (a.b1.c2)", "value_a.b1.c2", result.getProperty("c2"));
-        assertEquals("Incorrect value of key c2 (a.b1.c3)", "value_a.b1.c3", result.getProperty("c3"));
-        assertEquals("Incorrect number of properties", 3, result.size());
     }
 }

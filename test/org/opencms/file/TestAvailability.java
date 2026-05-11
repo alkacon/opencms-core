@@ -34,43 +34,32 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsVfsUtil;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
-import junit.framework.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Unit test for the "setDateExpired" and "setDateReleased" method of the CmsObject.<p>
  */
-public class TestAvailability extends OpenCmsTestCase {
+public class TestAvailability extends OpenCmsTestRunner {
 
     private static final long MSECS_PER_DAY = 1000 * 60 * 60 * 12;
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestAvailability(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        return generateSetupTestWrapper(TestAvailability.class, "simpletest", "/");
-
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -80,7 +69,7 @@ public class TestAvailability extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
-
+    @Test
     public void testDateExpired() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -93,7 +82,7 @@ public class TestAvailability extends OpenCmsTestCase {
         cms.setDateExpired(resourceName, yesterday, false);
         cms.unlockResource(resourceName);
 
-        testOutsideTimeRange(cms, resourceName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
+        checkOutsideTimeRange(cms, resourceName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
         cms.lockResource(resourceName);
         cms.undoChanges(resourceName, CmsResource.UNDO_CONTENT);
         cms.unlockResource(resourceName);
@@ -104,6 +93,7 @@ public class TestAvailability extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
     public void testDateReleased() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -115,7 +105,7 @@ public class TestAvailability extends OpenCmsTestCase {
         cms.setDateReleased(resourceName, tomorrow, false);
         cms.unlockResource(resourceName);
 
-        testOutsideTimeRange(cms, resourceName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
+        checkOutsideTimeRange(cms, resourceName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
         cms.lockResource(resourceName);
         cms.undoChanges(resourceName, CmsResource.UNDO_CONTENT);
         cms.unlockResource(resourceName);
@@ -126,9 +116,10 @@ public class TestAvailability extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testExclusiveAccess() throws Exception {
 
-        String testName = getName();
+        String testName = "testExclusiveAccess";
         String folder = "/system/" + testName;
         String path = folder + "/" + "file1.txt";
         CmsObject cms = getCmsObject();
@@ -175,9 +166,10 @@ public class TestAvailability extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testExclusiveAccessOnlineTimeDependent() throws Exception {
 
-        String testName = getName();
+        String testName = "testExclusiveAccessOnlineTimeDependent";
         String folder = "/system/" + testName;
         String path = folder + "/" + "file1.txt";
         CmsObject cms = getCmsObject();
@@ -227,9 +219,10 @@ public class TestAvailability extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testExclusiveAccessTimeDependent() throws Exception {
 
-        String testName = getName();
+        String testName = "testExclusiveAccessTimeDependent";
         String folder = "/system/" + testName;
         String path = folder + "/" + "file1.txt";
         CmsObject cms = getCmsObject();
@@ -276,9 +269,10 @@ public class TestAvailability extends OpenCmsTestCase {
      *
      * @throws Exception -
      */
+    @Test
     public void testExclusiveAccessTimeDependentMultipleResponsibleGroups() throws Exception {
 
-        String testName = getName();
+        String testName = "testExclusiveAccessTimeDependentMultipleResponsibleGroups";
         String folder = "/system/" + testName;
         String path = folder + "/" + "file1.txt";
         CmsObject cms = getCmsObject();
@@ -328,6 +322,7 @@ public class TestAvailability extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
     public void testFolderDateExpired() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -340,8 +335,8 @@ public class TestAvailability extends OpenCmsTestCase {
         cms.setDateExpired(folderName, yesterday, true);
         cms.unlockResource(folderName);
 
-        testOutsideTimeRange(cms, folderName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
-        testOutsideTimeRange(cms, resName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
+        checkOutsideTimeRange(cms, folderName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
+        checkOutsideTimeRange(cms, resName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
         cms.lockResource(folderName);
         cms.undoChanges(folderName, CmsResource.UNDO_CONTENT_RECURSIVE);
         cms.unlockResource(folderName);
@@ -354,6 +349,7 @@ public class TestAvailability extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
     public void testFolderDateReleased() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -366,16 +362,17 @@ public class TestAvailability extends OpenCmsTestCase {
         cms.setDateReleased(folderName, tomorrow, true);
         cms.unlockResource(folderName);
 
-        testOutsideTimeRange(cms, folderName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
-        testOutsideTimeRange(cms, resName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
+        checkOutsideTimeRange(cms, folderName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
+        checkOutsideTimeRange(cms, resName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
         cms.lockResource(folderName);
         cms.undoChanges(folderName, CmsResource.UNDO_CONTENT_RECURSIVE);
         cms.unlockResource(folderName);
     }
 
+    @Test
     public void testSetRestricted() throws Exception {
 
-        String testName = getName();
+        String testName = "testSetRestricted";
         String folder = "/system/" + testName;
         String path = folder + "/" + "file1.txt";
         CmsObject cms = getCmsObject();
@@ -411,20 +408,20 @@ public class TestAvailability extends OpenCmsTestCase {
         goodCms.setRestricted(resource, goodGroup.getName(), true);
 
         assertTrue(
-            "Responsible entry not found",
             goodCms.getAccessControlEntries(path).stream().anyMatch(
-                ace -> ace.getPrincipal().equals(goodGroup.getId()) && ace.isResponsible()));
+                ace -> ace.getPrincipal().equals(goodGroup.getId()) && ace.isResponsible()),
+            "Responsible entry not found");
 
         goodCms.setRestricted(resource, goodGroup.getName(), false);
 
         assertFalse(
-            "Responsible entry found when it shouldn't exist",
             goodCms.getAccessControlEntries(path).stream().anyMatch(
-                ace -> ace.getPrincipal().equals(goodGroup.getId()) && ace.isResponsible()));
+                ace -> ace.getPrincipal().equals(goodGroup.getId()) && ace.isResponsible()),
+            "Responsible entry found when it shouldn't exist");
         assertFalse(
-            "Entry for the  good group shouldn't exist",
             goodCms.getAccessControlEntries(path).stream().anyMatch(
-                ace -> ace.getPrincipal().equals(goodGroup.getId())));
+                ace -> ace.getPrincipal().equals(goodGroup.getId())),
+            "Entry for the  good group shouldn't exist");
     }
 
     /**
@@ -434,6 +431,7 @@ public class TestAvailability extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
     public void testSubFolderDateExpired() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -447,9 +445,9 @@ public class TestAvailability extends OpenCmsTestCase {
         cms.setDateExpired(folderName, yesterday, true);
         cms.unlockResource(folderName);
 
-        testOutsideTimeRange(cms, folderName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
-        testOutsideTimeRange(cms, folderName + resName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
-        testOutsideTimeRange(cms, folderName + folderName2 + resName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
+        checkOutsideTimeRange(cms, folderName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
+        checkOutsideTimeRange(cms, folderName + resName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
+        checkOutsideTimeRange(cms, folderName + folderName2 + resName, CmsResource.DATE_RELEASED_DEFAULT, yesterday);
         cms.lockResource(folderName);
         cms.undoChanges(folderName, CmsResource.UNDO_CONTENT_RECURSIVE);
         cms.unlockResource(folderName);
@@ -462,6 +460,7 @@ public class TestAvailability extends OpenCmsTestCase {
      *
      * @throws Throwable if something goes wrong
      */
+    @Test
     public void testSubFolderDateReleased() throws Throwable {
 
         CmsObject cms = getCmsObject();
@@ -475,12 +474,35 @@ public class TestAvailability extends OpenCmsTestCase {
         cms.setDateReleased(folderName, tomorrow, true);
         cms.unlockResource(folderName);
 
-        testOutsideTimeRange(cms, folderName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
-        testOutsideTimeRange(cms, folderName + resName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
-        testOutsideTimeRange(cms, folderName + folderName2 + resName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
+        checkOutsideTimeRange(cms, folderName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
+        checkOutsideTimeRange(cms, folderName + resName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
+        checkOutsideTimeRange(cms, folderName + folderName2 + resName, tomorrow, CmsResource.DATE_EXPIRED_DEFAULT);
         cms.lockResource(folderName);
         cms.undoChanges(folderName, CmsResource.UNDO_CONTENT_RECURSIVE);
         cms.unlockResource(folderName);
+    }
+
+    private void checkOutsideTimeRange(CmsObject cms, String resourceName, long released, long expired)
+    throws CmsException {
+
+        try {
+            // should throw exception
+            cms.readResource(resourceName, CmsResourceFilter.DEFAULT);
+            fail("Read outside-of-time-range resource with filter CmsResourceFilter.DEFAULT");
+        } catch (CmsVfsResourceNotFoundException e) {
+            // ok
+        }
+
+        CmsResource resource;
+        try {
+            resource = cms.readResource(resourceName, CmsResourceFilter.ALL);
+        } catch (CmsException e) {
+            fail("Unable to read outside-of-time-range resource with filter CmsResourceFilter.ALL");
+            return;
+        }
+        assertEquals(released, resource.getDateReleased());
+        assertEquals(expired, resource.getDateExpired());
+        assertEquals(cms.getRequestContext().getCurrentProject().getUuid(), resource.getProjectLastModified());
     }
 
     /**
@@ -509,11 +531,11 @@ public class TestAvailability extends OpenCmsTestCase {
         String folder = CmsResource.getParentFolder(path);
         List<CmsResource> filesInFolder = cms.readResources(folder, filter);
         assertTrue(
+            filesInFolder.contains(resource),
             "List of files in folder should include "
                 + resource.getRootPath()
                 + " for "
-                + cms.getRequestContext().getCurrentUser().getName(),
-            filesInFolder.contains(resource));
+                + cms.getRequestContext().getCurrentUser().getName());
     }
 
     /**
@@ -532,21 +554,21 @@ public class TestAvailability extends OpenCmsTestCase {
             ex1 = ex;
         }
         assertNotNull(
+            ex1,
             "readResource should not have succeeded for path "
                 + path
                 + " and user "
-                + cms.getRequestContext().getCurrentUser().getName(),
-            ex1);
+                + cms.getRequestContext().getCurrentUser().getName());
         String folder = CmsResource.getParentFolder(path);
         List<CmsResource> filesInFolder = cms.readResources(folder, CmsResourceFilter.IGNORE_EXPIRATION);
         assertFalse(
+            filesInFolder.stream().anyMatch(res -> path.equals(res.getRootPath())),
             "List of files in folder "
                 + folder
                 + " should not include "
                 + path
                 + " for user "
-                + cms.getRequestContext().getCurrentUser().getName(),
-            filesInFolder.stream().anyMatch(res -> path.equals(res.getRootPath())));
+                + cms.getRequestContext().getCurrentUser().getName());
     }
 
     /**
@@ -596,29 +618,6 @@ public class TestAvailability extends OpenCmsTestCase {
         context.setUserName(user.getName());
         return OpenCms.initCmsObject(cms, context);
 
-    }
-
-    private void testOutsideTimeRange(CmsObject cms, String resourceName, long released, long expired)
-    throws CmsException {
-
-        try {
-            // should throw exception
-            cms.readResource(resourceName, CmsResourceFilter.DEFAULT);
-            fail("Read outside-of-time-range resource with filter CmsResourceFilter.DEFAULT");
-        } catch (CmsVfsResourceNotFoundException e) {
-            // ok
-        }
-
-        CmsResource resource;
-        try {
-            resource = cms.readResource(resourceName, CmsResourceFilter.ALL);
-        } catch (CmsException e) {
-            fail("Unable to read outside-of-time-range resource with filter CmsResourceFilter.ALL");
-            return;
-        }
-        assertEquals(released, resource.getDateReleased());
-        assertEquals(expired, resource.getDateExpired());
-        assertEquals(cms.getRequestContext().getCurrentProject().getUuid(), resource.getProjectLastModified());
     }
 
 }

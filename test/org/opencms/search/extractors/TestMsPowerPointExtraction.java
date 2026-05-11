@@ -27,17 +27,19 @@
 
 package org.opencms.search.extractors;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Tests the text extraction form a Pdf file.<p>
  */
-public class TestMsPowerPointExtraction extends OpenCmsTestCase {
+public class TestMsPowerPointExtraction extends OpenCmsTestRunner {
 
     /**
      * Tests the PowerPoint text extraction for old OLE2 documents.<p>
@@ -46,6 +48,7 @@ public class TestMsPowerPointExtraction extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testPPtExtractionOLE2() throws Exception {
 
         ClassLoader classloader = org.apache.poi.poifs.filesystem.POIFSFileSystem.class.getClassLoader();
@@ -101,6 +104,7 @@ public class TestMsPowerPointExtraction extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testPPtExtractionOOXML() throws Exception {
 
         // open an input stream for the test file

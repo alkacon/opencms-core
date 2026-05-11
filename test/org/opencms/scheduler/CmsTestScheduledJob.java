@@ -1,0 +1,67 @@
+/*
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (c) Alkacon Software GmbH & Co. KG (https://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software GmbH & Co. KG, please see the
+ * company website: https://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: https://www.opencms.org
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.scheduler;
+
+import org.opencms.file.CmsObject;
+
+import java.util.Map;
+
+/**
+ * Mock class for OpenCms scheduled jobs.<p>
+ */
+public class CmsTestScheduledJob implements I_CmsScheduledJob {
+
+    /** Indicates if this class was run. */
+    static int m_runCount;
+
+    /** Static copy of the instance run count for easy test access. */
+    static int m_instanceCountCopy;
+
+    /** Instance run count. */
+    private int m_instanceRunCount;
+
+    /**
+     * Default constructor.<p>
+     */
+    public CmsTestScheduledJob() {
+
+        m_instanceRunCount = 0;
+    }
+
+    /**
+     * @see org.opencms.scheduler.I_CmsScheduledJob#launch(CmsObject, Map)
+     */
+    @Override
+    public String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
+
+        m_runCount++;
+        m_instanceRunCount++;
+        m_instanceCountCopy = m_instanceRunCount;
+        return "OpenCms scheduler test job " + m_runCount + " was run (instance count: " + m_instanceRunCount + ").";
+    }
+}

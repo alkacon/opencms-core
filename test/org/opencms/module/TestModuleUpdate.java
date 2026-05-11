@@ -42,12 +42,11 @@ import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
+import org.opencms.test.OpenCmsTestRunner;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsTestZipBuilder;
 import org.opencms.util.CmsUUID;
-import org.opencms.util.CmsZipBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,12 +56,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import junit.framework.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Unit tests for OpenCms module  updates.<p>
  */
-public class TestModuleUpdate extends OpenCmsTestCase {
+public class TestModuleUpdate extends OpenCmsTestRunner {
 
     /** Module name. */
     public static final String MODULE = "org.test.foo";
@@ -71,24 +72,13 @@ public class TestModuleUpdate extends OpenCmsTestCase {
     public static final String MODULE_PATH = "/system/modules/" + MODULE;
 
     /**
-     * Default JUnit constructor.<p>
-     *
-     * @param arg0 JUnit parameters
+     * @see org.opencms.test.OpenCmsTestRunner#$openCmsSetUp(org.junit.jupiter.api.TestInfo)
      */
-    public TestModuleUpdate(String arg0) {
+    @Override
+    @BeforeAll
+    public void $openCmsSetUp(TestInfo testInfo) {
 
-        super(arg0);
-    }
-
-    /**
-     * Test suite for this test class.<p>
-     *
-     * @return the test suite
-     */
-    public static Test suite() {
-
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        return generateSetupTestWrapper(TestModuleUpdate.class, "simpletest", "/");
+        setupOpenCms(testInfo, "simpletest", "/");
     }
 
     /**
@@ -108,6 +98,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    @Test
     public void testAcl() throws Exception {
 
         CmsObject cms = cms();
@@ -147,7 +138,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             cms,
             export.getAbsolutePath(),
             new CmsShellReport(Locale.ENGLISH));
-        assertTrue("should have used update mechanism", result.usedUpdater());
+        assertTrue(result.usedUpdater(), "should have used update mechanism");
         OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
         filter.disableProjectLastModifiedTest();
         filter.disableDateContentTest();
@@ -162,7 +153,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             System.out.println("Comparing " + resource.getRootPath());
             assertFilter(cms, resource.getRootPath(), filter);
         }
-        assertEquals("Resource count doesn't match", m_currentResourceStrorage.size(), resources.size());
+        assertEquals(getCurrentResourceStorageSize(), resources.size(), "Resource count doesn't match");
 
     }
 
@@ -170,6 +161,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    @Test
     public void testExplodedModule() throws Exception {
 
         CmsObject cms = cms();
@@ -225,9 +217,9 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             cms,
             export.getAbsolutePath(),
             new CmsShellReport(Locale.ENGLISH));
-        assertTrue("Should have used new module updater", info.usedUpdater());
+        assertTrue(info.usedUpdater(), "Should have used new module updater");
         cms.readResource("/system/modules/org.opencms.bar/notinmodule.txt");
-        assertFalse("file should have been deleted", cms.existsResource("/system/module/org.opencms.bar/todelete.txt"));
+        assertFalse(cms.existsResource("/system/module/org.opencms.bar/todelete.txt"), "file should have been deleted");
 
     }
 
@@ -235,6 +227,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    @Test
     public void testExportPoints() throws Exception {
 
         File target = File.createTempFile("ocms-test-exportpoint-", ".dat");
@@ -264,20 +257,21 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             builder.addFolder("");
             builder.publish();
         }
-        assertFalse("Export point should not exist", target.exists());
+        assertFalse(target.exists(), "Export point should not exist");
         CmsReplaceModuleInfo info = OpenCms.getModuleManager().replaceModule(
             cms,
             export.getAbsolutePath(),
             new CmsShellReport(Locale.ENGLISH));
 
-        assertTrue("Export point has not been exported", target.exists());
-        assertTrue("Module update should have been used", info.usedUpdater());
+        assertTrue(target.exists(), "Export point has not been exported");
+        assertTrue(info.usedUpdater(), "Module update should have been used");
     }
 
     /**
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    @Test
     public void testImportScript() throws Exception {
 
         CmsObject cms = cms();
@@ -308,7 +302,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             cms,
             export.getAbsolutePath(),
             new CmsShellReport(Locale.ENGLISH));
-        assertTrue("should have used update mechanism", result.usedUpdater());
+        assertTrue(result.usedUpdater(), "should have used update mechanism");
         cms.readResource("/system/testImportScriptFolder");
     }
 
@@ -316,6 +310,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    @Test
     public void testModuleResourceChangeToSubfolder() throws Exception {
 
         CmsObject cms = cms();
@@ -354,6 +349,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    @Test
     public void testMoveNewDelete() throws Exception {
 
         CmsObject cms = cms();
@@ -401,7 +397,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             cms,
             export.getAbsolutePath(),
             new CmsShellReport(Locale.ENGLISH));
-        assertTrue("should have used update mechanism", result.usedUpdater());
+        assertTrue(result.usedUpdater(), "should have used update mechanism");
         List<CmsResource> resources = new ArrayList<>();
         resources.add(cms.readResource(MODULE_PATH, CmsResourceFilter.ALL));
         resources.addAll(cms.readResources(MODULE_PATH, CmsResourceFilter.ALL, true));
@@ -411,13 +407,14 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             System.out.println("Comparing " + resource.getRootPath());
             assertFilter(cms, resource.getRootPath(), filter);
         }
-        assertEquals("Resource count doesn't match", m_currentResourceStrorage.size(), resources.size());
+        assertEquals(getCurrentResourceStorageSize(), resources.size(), "Resource count doesn't match");
     }
 
     /**
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    @Test
     public void testNestedMove() throws Exception {
 
         CmsObject cms = cms();
@@ -462,7 +459,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             cms,
             export.getAbsolutePath(),
             new CmsShellReport(Locale.ENGLISH));
-        assertFalse("new module update mechanism should not have been used", replaceInfo.usedUpdater());
+        assertFalse(replaceInfo.usedUpdater(), "new module update mechanism should not have been used");
 
     }
 
@@ -470,6 +467,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    @Test
     public void testNewTypeWithContents() throws Exception {
 
         CmsObject cms = cms();
@@ -505,6 +503,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    @Test
     public void testParseLinks() throws Exception {
 
         CmsObject cms = cms();
@@ -536,12 +535,12 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             cms,
             export.getAbsolutePath(),
             new CmsShellReport(Locale.ENGLISH));
-        assertTrue("should have used update mechanism", result.usedUpdater());
+        assertTrue(result.usedUpdater(), "should have used update mechanism");
         // assertTrue("New updater should have been used", info.usedUpdater());
         CmsResource testJsp = cms.readResource("/system/modules/org.test.foo/test.jsp");
         List<CmsRelation> relations = cms.readRelations(
             CmsRelationFilter.relationsFromStructureId(testJsp.getStructureId()));
-        assertEquals("Should have one relation", 1, relations.size());
+        assertEquals(1, relations.size(), "Should have one relation");
         CmsRelation relation = relations.get(0);
         assertEquals("/system/modules/org.test.foo/test.txt", relation.getTargetPath());
 
@@ -551,6 +550,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    @Test
     public void testProperties() throws Exception {
 
         CmsObject cms = cms();
@@ -589,7 +589,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             cms,
             export.getAbsolutePath(),
             new CmsShellReport(Locale.ENGLISH));
-        assertTrue("should have used update mechanism", result.usedUpdater());
+        assertTrue(result.usedUpdater(), "should have used update mechanism");
         OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
         filter.disableProjectLastModifiedTest();
         filter.disableDateContentTest();
@@ -604,7 +604,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             System.out.println("Comparing " + resource.getRootPath());
             assertFilter(cms, resource.getRootPath(), filter);
         }
-        assertEquals("Resource count doesn't match", m_currentResourceStrorage.size(), resources.size());
+        assertEquals(getCurrentResourceStorageSize(), resources.size(), "Resource count doesn't match");
 
     }
 
@@ -612,6 +612,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    @Test
     public void testRelations() throws Exception {
 
         CmsObject cms = cms();
@@ -657,7 +658,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             cms,
             export.getAbsolutePath(),
             new CmsShellReport(Locale.ENGLISH));
-        assertTrue("should have used update mechanism", result.usedUpdater());
+        assertTrue(result.usedUpdater(), "should have used update mechanism");
         OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
         filter.disableProjectLastModifiedTest();
         filter.disableDateContentTest();
@@ -672,7 +673,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             System.out.println("Comparing " + resource.getRootPath());
             assertFilter(cms, resource.getRootPath(), filter);
         }
-        assertEquals("Resource count doesn't match", m_currentResourceStrorage.size(), resources.size());
+        assertEquals(getCurrentResourceStorageSize(), resources.size(), "Resource count doesn't match");
 
     }
 
@@ -681,6 +682,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testRelationsToImmutable() throws Exception {
 
         CmsObject cms = cms();
@@ -722,6 +724,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testRelationsToImmutable2() throws Exception {
 
         CmsObject cms = cms();
@@ -761,6 +764,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    @Test
     public void testSiblings() throws Exception {
 
         CmsObject cms = cms();
@@ -784,13 +788,13 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             builder.addTextFile("file2.txt", null);
             builder.publish();
             assertEquals(
-                "file content doesn't match",
                 "content1",
-                new String(cms.readFile(MODULE_PATH + "/file1.txt").getContents(), "UTF-8"));
+                new String(cms.readFile(MODULE_PATH + "/file1.txt").getContents(), "UTF-8"),
+                "file content doesn't match");
             assertEquals(
-                "file content doesn't match",
                 "content1",
-                new String(cms.readFile(MODULE_PATH + "/file2.txt").getContents(), "UTF-8"));
+                new String(cms.readFile(MODULE_PATH + "/file2.txt").getContents(), "UTF-8"),
+                "file content doesn't match");
 
             export = tempExport();
             builder.export(export.getAbsolutePath());
@@ -807,13 +811,13 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             builder.setNextResourceId(resId);
             builder.addTextFile("file2.txt", null);
             assertEquals(
-                "file content doesn't match",
                 "content2",
-                new String(cms.readFile(MODULE_PATH + "/file1.txt").getContents(), "UTF-8"));
+                new String(cms.readFile(MODULE_PATH + "/file1.txt").getContents(), "UTF-8"),
+                "file content doesn't match");
             assertEquals(
-                "file content doesn't match",
                 "content2",
-                new String(cms.readFile(MODULE_PATH + "/file2.txt").getContents(), "UTF-8"));
+                new String(cms.readFile(MODULE_PATH + "/file2.txt").getContents(), "UTF-8"),
+                "file content doesn't match");
 
             builder.publish();
         }
@@ -826,7 +830,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             cms,
             export.getAbsolutePath(),
             new CmsShellReport(Locale.ENGLISH));
-        assertTrue("should have used update mechanism", result.usedUpdater());
+        assertTrue(result.usedUpdater(), "should have used update mechanism");
         List<CmsResource> resources = new ArrayList<>();
         resources.add(cms.readResource(MODULE_PATH, CmsResourceFilter.ALL));
         resources.addAll(cms.readResources(MODULE_PATH, CmsResourceFilter.ALL, true));
@@ -836,13 +840,14 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             System.out.println("Comparing " + resource.getRootPath());
             assertFilter(cms, resource.getRootPath(), filter);
         }
-        assertEquals("Resource count doesn't match", m_currentResourceStrorage.size(), resources.size());
+        assertEquals(getCurrentResourceStorageSize(), resources.size(), "Resource count doesn't match");
     }
 
     /**
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    @Test
     public void testUnlockedAndUnchanged() throws Exception {
 
         CmsObject cms = cms();
@@ -880,19 +885,20 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             cms,
             export.getAbsolutePath(),
             new CmsShellReport(Locale.ENGLISH));
-        assertTrue("should have used update mechanism", result.usedUpdater());
+        assertTrue(result.usedUpdater(), "should have used update mechanism");
         CmsResource mainFolder = cms.readResource(MODULE_PATH);
         assertEquals(CmsResource.STATE_UNCHANGED, mainFolder.getState());
         assertEquals(CmsResource.STATE_UNCHANGED, cms.readResource(MODULE_PATH + "/bar.txt").getState());
         assertTrue(
-            "there are locked resources in the main folder",
-            cms.getLockedResources(mainFolder, CmsLockFilter.FILTER_ALL).isEmpty());
+            cms.getLockedResources(mainFolder, CmsLockFilter.FILTER_ALL).isEmpty(),
+            "there are locked resources in the main folder");
     }
 
     /**
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    @Test
     public void testUpdateContent() throws Exception {
 
         CmsObject cms = cms();
@@ -932,7 +938,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             cms,
             export.getAbsolutePath(),
             new CmsShellReport(Locale.ENGLISH));
-        assertTrue("Should have used new module updater", info.usedUpdater());
+        assertTrue(info.usedUpdater(), "Should have used new module updater");
 
         List<CmsResource> resources = new ArrayList<>();
         resources.add(cms.readResource(MODULE_PATH, CmsResourceFilter.ALL));
@@ -943,7 +949,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             System.out.println("Comparing " + resource.getRootPath());
             assertFilter(cms, resource.getRootPath(), filter);
         }
-        assertEquals("Resource count doesn't match", m_currentResourceStrorage.size(), resources.size());
+        assertEquals(getCurrentResourceStorageSize(), resources.size(), "Resource count doesn't match");
 
     }
 
@@ -951,6 +957,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    @Test
     public void testUpdateModuleWithModifiedResource() throws Exception {
 
         CmsObject cms = cms();
@@ -983,6 +990,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    @Test
     public void testUpdateTypes() throws Exception {
 
         CmsObject cms = cms();
@@ -1010,17 +1018,17 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             cms,
             export.getAbsolutePath(),
             new CmsShellReport(Locale.ENGLISH));
-        assertTrue("should have used update mechanism", result.usedUpdater());
+        assertTrue(result.usedUpdater(), "should have used update mechanism");
         assertNull(
-            "explorer type secondtype should have been removed",
-            OpenCms.getWorkplaceManager().getExplorerTypeSetting("secondtype"));
+            OpenCms.getWorkplaceManager().getExplorerTypeSetting("secondtype"),
+            "explorer type secondtype should have been removed");
 
         assertNotNull(
-            "explorer type firsttype is missing",
-            OpenCms.getWorkplaceManager().getExplorerTypeSetting("firsttype"));
+            OpenCms.getWorkplaceManager().getExplorerTypeSetting("firsttype"),
+            "explorer type firsttype is missing");
 
-        assertTrue("missing type firsttype", OpenCms.getResourceManager().hasResourceType("firsttype"));
-        assertFalse("shouldn't have type secondttype", OpenCms.getResourceManager().hasResourceType("secondtype"));
+        assertTrue(OpenCms.getResourceManager().hasResourceType("firsttype"), "missing type firsttype");
+        assertFalse(OpenCms.getResourceManager().hasResourceType("secondtype"), "shouldn't have type secondttype");
 
     }
 
@@ -1028,6 +1036,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    @Test
     public void testUpdateWithSimpleFileIdConflict() throws Exception {
 
         CmsObject cms = cms();
@@ -1067,7 +1076,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             cms,
             export.getAbsolutePath(),
             new CmsShellReport(Locale.ENGLISH));
-        assertTrue("Should have used new module updater", info.usedUpdater());
+        assertTrue(info.usedUpdater(), "Should have used new module updater");
 
         List<CmsResource> resources = new ArrayList<>();
         resources.add(cms.readResource(MODULE_PATH, CmsResourceFilter.ALL));
@@ -1078,7 +1087,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             System.out.println("Comparing " + resource.getRootPath());
             assertFilter(cms, resource.getRootPath(), filter);
         }
-        assertEquals("Resource count doesn't match", m_currentResourceStrorage.size(), resources.size());
+        assertEquals(getCurrentResourceStorageSize(), resources.size(), "Resource count doesn't match");
 
     }
 
@@ -1086,6 +1095,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    @Test
     public void testUpdateWithSimpleFileIdConflict2() throws Exception {
 
         CmsObject cms = cms();
@@ -1155,7 +1165,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
                 + "</export>\n"
                 + "";
 
-            CmsZipBuilder zipBuilder = new CmsZipBuilder();
+            CmsTestZipBuilder zipBuilder = new CmsTestZipBuilder();
             zipBuilder.addFile("manifest.xml", manifest);
             zipBuilder.addFile("system/test1234", "test1234");
             File importZip = zipBuilder.writeZip();
@@ -1168,7 +1178,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
                 importZip.getCanonicalPath(),
                 report);
             if (i == 1) {
-                assertFalse("Should have not used new module update", info.usedUpdater());
+                assertFalse(info.usedUpdater(), "Should have not used new module update");
             }
         }
     }
@@ -1177,6 +1187,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    @Test
     public void testUseOldModuleReplaceWhenIdsCollide() throws Exception {
 
         CmsObject cms = cms();
@@ -1222,7 +1233,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             cms,
             export.getAbsolutePath(),
             new CmsShellReport(Locale.ENGLISH));
-        assertFalse("new module update mechanism should not have been used", replaceInfo.usedUpdater());
+        assertFalse(replaceInfo.usedUpdater(), "new module update mechanism should not have been used");
 
     }
 
@@ -1230,6 +1241,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    @Test
     public void testUseOldReplaceIfModuleResourcesHaveNoStructureId() throws Exception {
 
         String manifest = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1281,7 +1293,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             + "   </files>\n"
             + "</export>\n"
             + "";
-        CmsZipBuilder zipBuilder = new CmsZipBuilder();
+        CmsTestZipBuilder zipBuilder = new CmsTestZipBuilder();
         zipBuilder.addFile("manifest.xml", manifest);
         zipBuilder.addFile("system/test123", "test123");
         File importZip = zipBuilder.writeZip();
@@ -1292,7 +1304,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
         OpenCms.getImportExportManager().importData(cms, report, params);
 
         CmsReplaceModuleInfo info = OpenCms.getModuleManager().replaceModule(cms, importZip.getCanonicalPath(), report);
-        assertFalse("Should have not used new module update", info.usedUpdater());
+        assertFalse(info.usedUpdater(), "Should have not used new module update");
 
     }
 
@@ -1300,6 +1312,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
      * Test case.<p>
      * @throws Exception if an error happens
      */
+    @Test
     public void testUseOldReplaceIfSiblingStructureIsDifferent() throws Exception {
 
         CmsObject cms = cms();
@@ -1348,7 +1361,7 @@ public class TestModuleUpdate extends OpenCmsTestCase {
             cms,
             export.getAbsolutePath(),
             new CmsShellReport(Locale.ENGLISH));
-        assertFalse("should have used old replace mechanism", result.usedUpdater());
+        assertFalse(result.usedUpdater(), "should have used old replace mechanism");
     }
 
     /**

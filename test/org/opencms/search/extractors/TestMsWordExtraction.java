@@ -27,22 +27,25 @@
 
 package org.opencms.search.extractors;
 
-import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestRunner;
 
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * Tests the text extraction form a Word file.<p>
  */
-public class TestMsWordExtraction extends OpenCmsTestCase {
+public class TestMsWordExtraction extends OpenCmsTestRunner {
 
     /**
      * Tests the Word text extraction for old OLE2 documents.<p>
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testWordExtractionOLE2() throws Exception {
 
         // open an input stream for the test file
@@ -94,6 +97,7 @@ public class TestMsWordExtraction extends OpenCmsTestCase {
      *
      * @throws Exception if the test fails
      */
+    @Test
     public void testWordExtractionOOXML() throws Exception {
 
         // open an input stream for the test file
