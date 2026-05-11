@@ -40,7 +40,7 @@ nexusPublishing {
 
 // use the same properties file as the OpenCms core does for the version information
 // please note that in a Jenkins CI build, this properties file should be dynamically generated
-def externalVersionProps = layout.buildDirectory.file("../version.properties").get().asFile
+def externalVersionProps = [layout.buildDirectory.file("version.properties").get().asFile, layout.buildDirectory.file("../version.properties").get().asFile].find { it.exists() } ?: layout.buildDirectory.file("../version.properties").get().asFile
 def propFile;
 if (externalVersionProps.exists()){
     println "Using external version properties file: $externalVersionProps"
@@ -367,7 +367,7 @@ jar {
 
     if (externalVersionProps.exists()){
         exclude 'org/opencms/main/version.properties'
-        from (layout.buildDirectory.dir("..")){
+        from (externalVersionProps.parentFile){
             include 'version.properties'
             into 'org/opencms/main'
         }
