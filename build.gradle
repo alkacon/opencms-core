@@ -1277,10 +1277,8 @@ tasks.register('testGwt', Test) {
     classpath += files("${projectDir}/src-gwt")
     classpath += files("${projectDir}/test-gwt")
     useJUnit()
-    filter {
-        includeTestsMatching 'org.opencms.client.test.AllTests'
-    }
-    scanForTestClasses = false
+    includes = ['org/opencms/client/test/AllTestsBridge.class']
+    scanForTestClasses = true
     testClassesDirs = files(sourceSets.testGwt.java.classesDirectory)
     systemProperties['gwt.args'] = "-logLevel WARN -setProperty locale=en"
     systemProperties['java.awt.headless'] = "true"
