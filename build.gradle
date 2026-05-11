@@ -1247,11 +1247,13 @@ def coreTestConfig = {
     systemProperties['test.webapp.path'] = "${projectDir}/webapp"
     systemProperties['test.project.path'] = "${projectDir}"
     systemProperties['test.build.folder'] = sourceSets.test.output.resourcesDir
+    systemProperties['opencms.test.verbose'] = providers.systemProperty('opencms.test.verbose')
+        .orElse(providers.environmentVariable('OPENCMS_TEST_VERBOSE'))
+        .orElse('false')
+        .get()
     inputs.dir "${projectDir}/test/data"
     inputs.dir "${projectDir}/webapp"
 }
-
-def legacyTestCaseToRun = providers.gradleProperty('testCaseToRun')
 
 test {
     configure coreTestConfig
@@ -1263,34 +1265,21 @@ test {
 }
 
 tasks.register('testSingle', Test) {
-    description = "Runs a specified test case. Equivalent to standard 'test' task. \n" +
-        "NOTE: Usage of legacy '-PtestCaseToRun' property is DEPRECATED. Use standard '--tests' filtering instead. \n" +
-        "Conflict Resolution: If both '-PtestCaseToRun' and '--tests' are defined, standard '--tests' takes precedence. \n" +
-        "Default: Runs TestCmsSystemInfo test case if no filters are provided."
+    description = "Runs a specified test case. Equivalent to standard 'test' task.\n Default: Runs TestCmsSystemInfo test case if no filters are provided."
     group = 'verification'
     configure coreTestConfig
     classpath = sourceSets.test.runtimeClasspath
     testClassesDirs = files(sourceSets.test.java.classesDirectory)
     useJUnitPlatform()
     doNotTrackState("Single-test execution uses ad hoc filters and generated result paths.")
+    outputs.upToDateWhen { false } // makes --rerun the default
 
     doFirst{
+        delete reports.html.outputLocation.get().asFile
+        delete reports.junitXml.outputLocation.get().asFile
         logger.info("Test filter configuration - commandLineIncludePatterns: ${filter.commandLineIncludePatterns}, includePatterns: ${filter.includePatterns}")
 
         boolean hasExplicit = !filter.commandLineIncludePatterns.empty || !filter.includePatterns.empty
-
-        // Backward compatibility: Check for -PtestCaseToRun property
-        if (legacyTestCaseToRun.present) {
-             if (hasExplicit) {
-                 logger.warn("WARNING: Both -PtestCaseToRun and --tests filters are present. Using standard Gradle filters and ignoring legacy property.")
-             } else {
-                 def legacyTestInfo = legacyTestCaseToRun.get()
-                 logger.warn("DEPRECATION WARNING: The 'testCaseToRun' property is deprecated. Please use standard Gradle filtering: ./gradlew testSingle --tests ${legacyTestInfo}")
-                 filter.includeTestsMatching "${legacyTestInfo}*"
-                 hasExplicit = true
-             }
-        }
-
         logger.debug("hasExplicitTestSelection: ${hasExplicit}")
 
         if (!hasExplicit) {

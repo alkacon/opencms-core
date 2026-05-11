@@ -34,7 +34,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.security.AccessControlException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -388,7 +387,7 @@ public final class CmsResourceBundleLoader {
                 } catch (IOException ex) {
                     // this will happen if the resource is contained for example in a .jar file
                     is = CmsResourceBundleLoader.class.getClassLoader().getResourceAsStream(resourceName);
-                } catch (AccessControlException acex) {
+                } catch (SecurityException acex) {
                     // fixed bug #1550
                     // this will happen if the resource is contained for example in a .jar file
                     // and security manager is turned on.

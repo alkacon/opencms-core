@@ -74,6 +74,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -88,7 +90,9 @@ import java.util.Set;
 
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.appender.OpenCmsTestLogAppender;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -274,6 +278,7 @@ public class OpenCmsTestRunner extends Assertions {
      */
     public OpenCmsTestRunner() {
 
+        // NOOP
     }
 
     /**
@@ -3956,6 +3961,18 @@ public class OpenCmsTestRunner extends Assertions {
         boolean publish) {
 
         printTestClassStartBox(testInfo, "Importing from: " + importFolder, "Importing to  : " + targetFolder);
+
+        boolean verbose = Boolean.getBoolean("opencms.test.verbose");
+
+        if (!verbose) {
+            // set global log level to ERROR to avoid warning in the configuration
+            Configurator.setRootLevel(Level.ERROR);
+            // some (expected) missing defaults result in ERRORS being logged, which does not look so nice on a test case
+            Configurator.setLevel("org.opencms.search.A_CmsSearchIndex", Level.OFF);
+            Configurator.setLevel("org.opencms.workplace.editors.CmsWorkplaceEditorManager", Level.OFF);
+            Configurator.setLevel("org.opencms.workplace.CmsWorkplaceManager", Level.OFF);
+        }
+
         initConfiguration();
 
         // set default values, if parameters are null
@@ -3999,6 +4016,8 @@ public class OpenCmsTestRunner extends Assertions {
         // create a new database first
         setupDatabase();
 
+        PrintStream out = verbose ? System.out : new PrintStream(OutputStream.nullOutputStream());
+
         // create a shell instance
         m_shell = new CmsShell(
             getTestDataPath("WEB-INF" + File.separator),
@@ -4006,9 +4025,17 @@ public class OpenCmsTestRunner extends Assertions {
             defaultWebAppName,
             "${user}@${project}>",
             null,
-            System.out,
+            out,
             System.err,
             false);
+
+        if (!verbose) {
+            // set global log level to WARN
+            Configurator.setRootLevel(Level.WARN);
+            Configurator.setLevel("org.opencms.search.A_CmsSearchIndex", Level.WARN);
+            Configurator.setLevel("org.opencms.workplace.editors.CmsWorkplaceEditorManager", Level.WARN);
+            Configurator.setLevel("org.opencms.workplace.CmsWorkplaceManager", Level.WARN);
+        }
 
         // open the test script
         File script;
