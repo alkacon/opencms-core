@@ -12,17 +12,18 @@ dependencies {
     testGwtCompile sourceSets.modules.output
     testGwtCompile sourceSets.gwt.output
 
-    usedApis group: 'javax.servlet.jsp', name: 'javax.servlet.jsp-api', version: '2.3.1', transitive: false
-    usedApis group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.0', transitive: false
-    gwtCompile group: 'ant', name: 'ant', version: '1.6.5', transitive: false
-    gwtCompile group: 'colt', name: 'colt', version: '1.2.0', transitive: false
-    gwtCompile group: 'com.google.code.gson', name: 'gson', version: '2.10.1', transitive: false
+    usedApis('javax.servlet.jsp:javax.servlet.jsp-api:2.3.1') { transitive = false }
+    usedApis('javax.servlet:javax.servlet-api:4.0.0') { transitive = false }
+    gwtCompile('ant:ant:1.6.5') { transitive = false }
+    gwtCompile('colt:colt:1.2.0') { transitive = false }
+    gwtCompile('com.google.code.gson:gson:2.10.1') { transitive = false }
     gwtCompile('org.gwtproject:gwt-dev:2.13.0') {
-    	exclude group: 'xml-apis', module: 'xml-apis'
+        exclude group: 'xml-apis', module: 'xml-apis'
     }
-    gwtCompile group: 'org.gwtproject', name: 'gwt-user', version: '2.13.0', transitive: true
-    gwtCompile group: 'com.google.jsinterop', name: 'jsinterop-annotations', version: '2.0.2', transitive: false
-    gwtCompile(group: 'com.google.jsinterop', name: 'jsinterop-annotations', version: '1.0.2', transitive: false){
+    gwtCompile('org.gwtproject:gwt-user:2.13.0')
+    gwtCompile('com.google.jsinterop:jsinterop-annotations:2.0.2') { transitive = false }
+    gwtCompile('com.google.jsinterop:jsinterop-annotations:1.0.2') {
+        transitive = false
         artifact {
             name = 'jsinterop-annotations'
             type = 'jar'
@@ -33,13 +34,14 @@ dependencies {
             classifier = 'sources'
         }
     }
-    gwtCompile group: 'com.vaadin', name: 'vaadin-compatibility-client', version: '8.14.3', transitive: false
-    gwtCompile group: 'com.vaadin', name: 'vaadin-client', version: '8.14.3', transitive: false
-    gwtCompile group: 'com.vaadin', name: 'vaadin-client-compiler', version: '8.14.3', transitive: false
-    gwtCompile group: 'com.vaadin', name: 'vaadin-sass-compiler', version: '0.9.13', transitive: false
-    gwtCompile group: 'com.vaadin.external.flute', name: 'flute', version: '1.3.0.gg2', transitive: false
-    gwtCompile group: 'com.yahoo.platform.yui', name: 'yuicompressor', version: '2.4.8', transitive: false
-    gwtCompile(group: 'javax.validation', name: 'validation-api', version: '1.0.0.GA', transitive: false){
+    gwtCompile('com.vaadin:vaadin-compatibility-client:8.14.3') { transitive = false }
+    gwtCompile('com.vaadin:vaadin-client:8.14.3') { transitive = false }
+    gwtCompile('com.vaadin:vaadin-client-compiler:8.14.3') { transitive = false }
+    gwtCompile('com.vaadin:vaadin-sass-compiler:0.9.13') { transitive = false }
+    gwtCompile('com.vaadin.external.flute:flute:1.3.0.gg2') { transitive = false }
+    gwtCompile('com.yahoo.platform.yui:yuicompressor:2.4.8') { transitive = false }
+    gwtCompile('javax.validation:validation-api:1.0.0.GA') {
+        transitive = false
         artifact {
             name = 'validation-api'
             type = 'jar'
@@ -50,96 +52,96 @@ dependencies {
             classifier = 'sources'
         }
     }
-    gwtCompile group: 'org.ow2.asm', name: 'asm-commons', version: '9.3', transitive: false
-    gwtCompile group: 'org.ow2.asm', name: 'asm-util', version: '9.3', transitive: false
-    gwtCompile group: 'org.ow2.asm', name: 'asm-tree', version: '9.3', transitive: false
-    gwtCompile group: 'org.timepedia.exporter', name: 'gwtexporter', version: '2.5.1', transitive: false
-    gwtCompile group: 'org.w3c.css', name: 'sac', version: '1.3', transitive: false
-    gwtCompile group: 'tapestry', name: 'tapestry', version: '4.0.2', transitive: false
-    distribution group: 'antlr', name: 'antlr', version: '2.7.7', transitive: false
-    distribution group: 'com.adobe.xmp', name: 'xmpcore', version: '6.1.11', transitive: false
-    distribution group: 'com.alkacon', name: 'alkacon-simapi', version: '1.0.4', transitive: false
-    distribution group: 'com.alkacon', name: 'alkacon-diff', version: '0.9.2', transitive: false
-    distribution group: 'com.cybozu.labs', name: 'langdetect', version: '1.1-20120112', transitive: false
-    distribution group: 'com.drewnoakes', name: 'metadata-extractor', version: '2.18.0', transitive: false
-    distribution group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.18.0', transitive: false
-    distribution group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.18.0', transitive: false
-    distribution group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.18.0', transitive: false
-    distribution group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: '2.18.0', transitive: false
-    distribution group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.1.8', transitive: false
-    distribution group: 'com.github.jai-imageio', name: 'jai-imageio-core', version: '1.4.0', transitive: false
-    distribution group: 'com.github.jai-imageio', name: 'jai-imageio-jpeg2000', version: '1.3.0', transitive: false
-    distribution group: 'com.github.librepdf', name: 'openpdf', version: '1.3.20', transitive: false
-    distribution group: 'com.google.guava', name: 'guava', version: '33.5.0-jre', transitive: true
-    distribution group: 'com.google.guava', name: 'guava-gwt', version: '33.5.0-jre', transitive: true
-    distribution group: 'com.google.jsinterop', name: 'base', version: '1.0.3', transitive: false
-    distribution group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2', transitive: false
-    distribution group: 'org.jspecify', name: 'jspecify', version: '0.3.0', transitive: false
-    distribution group: 'com.google.elemental2', name: 'elemental2-promise', version: '1.2.3', transitive: false
-    distribution group: 'com.google.elemental2', name: 'elemental2-core', version: '1.2.3', transitive: false
-    distribution group: 'com.google.elemental2', name: 'elemental2-dom', version: '1.2.3', transitive: false
-    distribution group: 'com.google.elemental2', name: 'elemental2-webstorage', version: '1.2.3', transitive: false
-    distribution group: 'org.gwtproject', name: 'gwt-servlet', version: '2.13.0', transitive: false
-    distribution group: 'com.google.gwt', name: 'gwt-elemental', version: '2.9.0', transitive: false
-    distribution group: 'com.google.code.gson', name: 'gson', version: '2.10.1', transitive: false
-    distribution group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1', transitive: false
-    distribution group: 'com.ibm.icu', name: 'icu4j', version: '77.1', transitive: false //for solr-analysis-extras
-    distribution group: 'org.json', name: 'json', version: '20240303', transitive: false
-    distribution group: 'com.lambdaworks', name: 'scrypt', version: '1.4.0', transitive: false
-    distribution group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2', transitive: false
-    distribution group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.2.11', transitive: false
-    distribution group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.2.11', transitive: false
-    distribution group: 'com.sun.xml.messaging.saaj', name: 'saaj-impl', version: '1.3.28', transitive: false
-    distribution group: 'com.sun.xml.stream.buffer', name: 'streambuffer', version:'2.0.0-M2', transitive: false
-    distribution group: 'com.vaadin', name: 'vaadin-compatibility-server', version: '8.14.3', transitive: false
-    distribution group: 'com.vaadin', name: 'vaadin-compatibility-shared', version: '8.14.3', transitive: false
-    distribution group: 'com.vaadin', name: 'vaadin-push', version:'8.14.3', transitive: false
-    distribution group: 'com.vaadin', name: 'vaadin-server', version: '8.14.3', transitive: false
-    distribution group: 'com.vaadin', name: 'vaadin-shared', version: '8.14.3', transitive: false
-    distribution group: 'com.vaadin', name: 'vaadin-themes', version: '8.14.3', transitive: false
-    distribution group: 'com.vaadin.external', name: 'gentyref', version: '1.2.0.vaadin1', transitive: false
-    distribution group: 'com.zaxxer', name: 'HikariCP', version: '6.2.1', transitive: false
+    gwtCompile('org.ow2.asm:asm-commons:9.3') { transitive = false }
+    gwtCompile('org.ow2.asm:asm-util:9.3') { transitive = false }
+    gwtCompile('org.ow2.asm:asm-tree:9.3') { transitive = false }
+    gwtCompile('org.timepedia.exporter:gwtexporter:2.5.1') { transitive = false }
+    gwtCompile('org.w3c.css:sac:1.3') { transitive = false }
+    gwtCompile('tapestry:tapestry:4.0.2') { transitive = false }
+    distribution('antlr:antlr:2.7.7') { transitive = false }
+    distribution('com.adobe.xmp:xmpcore:6.1.11') { transitive = false }
+    distribution('com.alkacon:alkacon-simapi:1.0.4') { transitive = false }
+    distribution('com.alkacon:alkacon-diff:0.9.2') { transitive = false }
+    distribution('com.cybozu.labs:langdetect:1.1-20120112') { transitive = false }
+    distribution('com.drewnoakes:metadata-extractor:2.18.0') { transitive = false }
+    distribution('com.fasterxml.jackson.core:jackson-core:2.18.0') { transitive = false }
+    distribution('com.fasterxml.jackson.core:jackson-annotations:2.18.0') { transitive = false }
+    distribution('com.fasterxml.jackson.core:jackson-databind:2.18.0') { transitive = false }
+    distribution('com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.18.0') { transitive = false }
+    distribution('com.github.ben-manes.caffeine:caffeine:3.1.8') { transitive = false }
+    distribution('com.github.jai-imageio:jai-imageio-core:1.4.0') { transitive = false }
+    distribution('com.github.jai-imageio:jai-imageio-jpeg2000:1.3.0') { transitive = false }
+    distribution('com.github.librepdf:openpdf:1.3.20') { transitive = false }
+    distribution('com.google.guava:guava:33.5.0-jre')
+    distribution('com.google.guava:guava-gwt:33.5.0-jre')
+    distribution('com.google.jsinterop:base:1.0.3') { transitive = false }
+    distribution('com.google.code.findbugs:jsr305:3.0.2') { transitive = false }
+    distribution('org.jspecify:jspecify:0.3.0') { transitive = false }
+    distribution('com.google.elemental2:elemental2-promise:1.2.3') { transitive = false }
+    distribution('com.google.elemental2:elemental2-core:1.2.3') { transitive = false }
+    distribution('com.google.elemental2:elemental2-dom:1.2.3') { transitive = false }
+    distribution('com.google.elemental2:elemental2-webstorage:1.2.3') { transitive = false }
+    distribution('org.gwtproject:gwt-servlet:2.13.0') { transitive = false }
+    distribution('com.google.gwt:gwt-elemental:2.9.0') { transitive = false }
+    distribution('com.google.code.gson:gson:2.10.1') { transitive = false }
+    distribution('com.googlecode.json-simple:json-simple:1.1.1') { transitive = false }
+    distribution('com.ibm.icu:icu4j:77.1') { transitive = false } //for solr-analysis-extras
+    distribution('org.json:json:20240303') { transitive = false }
+    distribution('com.lambdaworks:scrypt:1.4.0') { transitive = false }
+    distribution('com.sun.mail:javax.mail:1.6.2') { transitive = false }
+    distribution('com.sun.xml.bind:jaxb-impl:2.2.11') { transitive = false }
+    distribution('com.sun.xml.bind:jaxb-core:2.2.11') { transitive = false }
+    distribution('com.sun.xml.messaging.saaj:saaj-impl:1.3.28') { transitive = false }
+    distribution('com.sun.xml.stream.buffer:streambuffer:2.0.0-M2') { transitive = false }
+    distribution('com.vaadin:vaadin-compatibility-server:8.14.3') { transitive = false }
+    distribution('com.vaadin:vaadin-compatibility-shared:8.14.3') { transitive = false }
+    distribution('com.vaadin:vaadin-push:8.14.3') { transitive = false }
+    distribution('com.vaadin:vaadin-server:8.14.3') { transitive = false }
+    distribution('com.vaadin:vaadin-shared:8.14.3') { transitive = false }
+    distribution('com.vaadin:vaadin-themes:8.14.3') { transitive = false }
+    distribution('com.vaadin.external:gentyref:1.2.0.vaadin1') { transitive = false }
+    distribution('com.zaxxer:HikariCP:6.2.1') { transitive = false }
     // used by Apache POI
-    distribution group: 'com.zaxxer', name: 'SparseBitSet', version: '1.2', transitive: false
-    distribution group: 'commons-logging', name: 'commons-logging', version: '1.3.6', transitive: false
-    distribution group: 'commons-beanutils', name: 'commons-beanutils', version: '1.11.0', transitive: false
-    distribution group: 'commons-codec', name: 'commons-codec', version: '1.21.0', transitive: false
-    distribution group: 'commons-collections', name: 'commons-collections', version: '3.2.2', transitive: false
-    distribution group: 'commons-fileupload', name: 'commons-fileupload', version: '1.6.0', transitive: false
-    distribution group: 'commons-io', name: 'commons-io', version: '2.21.0', transitive: false
-    //distribution group: 'cryptix.jce', name: 'crytix-jce-provider', version: '20050328', transitive: false
-    distribution group: 'de.malkusch.whois-server-list', name: 'public-suffix-list', version: '2.2.0', transitive: false
-    distribution group: 'dev.langchain4j', name: 'langchain4j-open-ai', version: '1.9.1', transitive: true
-    distribution group: 'com.deepl.api', name: 'deepl-java', version: '1.14.0', transitive: true
+    distribution('com.zaxxer:SparseBitSet:1.2') { transitive = false }
+    distribution('commons-logging:commons-logging:1.3.6') { transitive = false }
+    distribution('commons-beanutils:commons-beanutils:1.11.0') { transitive = false }
+    distribution('commons-codec:commons-codec:1.21.0') { transitive = false }
+    distribution('commons-collections:commons-collections:3.2.2') { transitive = false }
+    distribution('commons-fileupload:commons-fileupload:1.6.0') { transitive = false }
+    distribution('commons-io:commons-io:2.21.0') { transitive = false }
+    //distribution('cryptix.jce:crytix-jce-provider:20050328') { transitive = false }
+    distribution('de.malkusch.whois-server-list:public-suffix-list:2.2.0') { transitive = false }
+    distribution('dev.langchain4j:langchain4j-open-ai:1.9.1')
+    distribution('com.deepl.api:deepl-java:1.14.0')
     //for Solr
-    distribution group: 'jakarta.activation', name: 'jakarta.activation-api', version: '2.1.3', transitive: false
-    distribution group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.0.2', transitive: false
-    distribution group: 'javax.validation', name: 'validation-api', version: '1.0.0.GA', transitive: false
-    distribution group: 'javax.activation', name: 'activation', version: '1.1.1', transitive: false
-    distribution group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2', transitive: false
-    distribution group: 'javax.jws', name: 'jsr181-api', version: '1.0-MR1', transitive: false
-    distribution group: 'javax.servlet.jsp.jstl', name: 'jstl-api', version: '1.2', transitive: false
-    distribution group: 'javax.xml.bind', name: 'jaxb-api', version:'2.1', transitive: false
-    distribution group: 'javax.xml.ws', name: 'jaxws-api', version: '2.2.6', transitive: false
-    distribution group: 'javax.xml.soap', name: 'saaj-api', version: '1.3', transitive: false
-    distribution group: 'jaxen', name: 'jaxen', version: '1.2.0', transitive: false
-    distribution group: 'joda-time', name: 'joda-time', version: '2.10.6', transitive: false
-    distribution group: 'net.arnx', name: 'jsonic', version: '1.3.10', transitive: false
-    distribution group: 'net.sf.opencsv', name: 'opencsv', version: '2.3', transitive: false
-    distribution group: 'net.sourceforge.nekohtml', name: 'nekohtml', version: '1.9.22', transitive: false
-    distribution group: 'net.sourceforge.serp', name: 'serp', version: '1.13.1', transitive: false
-    distribution group: 'org.antlr', name: 'antlr-runtime', version: '3.5.2', transitive: false
-    distribution group: 'org.antlr', name: 'stringtemplate', version: '3.2.1', transitive: false
-    distribution group: 'org.antlr', name: 'ST4', version: '4.0.8', transitive: false
-    distribution group: 'org.apache.bval', name: 'org.apache.bval.bundle', version:'0.4', transitive: false
-    distribution group: 'org.apache.chemistry.opencmis', name: 'chemistry-opencmis-commons-api', version: '1.1.0', transitive: true
-    distribution group: 'org.apache.chemistry.opencmis', name: 'chemistry-opencmis-commons-impl', version: '1.1.0', transitive: true
-    distribution group: 'org.apache.chemistry.opencmis', name: 'chemistry-opencmis-server-bindings', version: '1.1.0', transitive: true
-    distribution group: 'org.apache.chemistry.opencmis', name: 'chemistry-opencmis-server-support', version: '1.1.0', transitive: true
+    distribution('jakarta.activation:jakarta.activation-api:2.1.3') { transitive = false }
+    distribution('jakarta.validation:jakarta.validation-api:3.0.2') { transitive = false }
+    distribution('javax.validation:validation-api:1.0.0.GA') { transitive = false }
+    distribution('javax.activation:activation:1.1.1') { transitive = false }
+    distribution('javax.annotation:javax.annotation-api:1.3.2') { transitive = false }
+    distribution('javax.jws:jsr181-api:1.0-MR1') { transitive = false }
+    distribution('javax.servlet.jsp.jstl:jstl-api:1.2') { transitive = false }
+    distribution('javax.xml.bind:jaxb-api:2.1') { transitive = false }
+    distribution('javax.xml.ws:jaxws-api:2.2.6') { transitive = false }
+    distribution('javax.xml.soap:saaj-api:1.3') { transitive = false }
+    distribution('jaxen:jaxen:1.2.0') { transitive = false }
+    distribution('joda-time:joda-time:2.10.6') { transitive = false }
+    distribution('net.arnx:jsonic:1.3.10') { transitive = false }
+    distribution('net.sf.opencsv:opencsv:2.3') { transitive = false }
+    distribution('net.sourceforge.nekohtml:nekohtml:1.9.22') { transitive = false }
+    distribution('net.sourceforge.serp:serp:1.13.1') { transitive = false }
+    distribution('org.antlr:antlr-runtime:3.5.2') { transitive = false }
+    distribution('org.antlr:stringtemplate:3.2.1') { transitive = false }
+    distribution('org.antlr:ST4:4.0.8') { transitive = false }
+    distribution('org.apache.bval:org.apache.bval.bundle:0.4') { transitive = false }
+    distribution('org.apache.chemistry.opencmis:chemistry-opencmis-commons-api:1.1.0')
+    distribution('org.apache.chemistry.opencmis:chemistry-opencmis-commons-impl:1.1.0')
+    distribution('org.apache.chemistry.opencmis:chemistry-opencmis-server-bindings:1.1.0')
+    distribution('org.apache.chemistry.opencmis:chemistry-opencmis-server-support:1.1.0')
     constraints {
-        distribution("org.apache.cxf:cxf-core:3.5.11")
-        distribution("org.apache.cxf:cxf-rt-bindings-soap:3.5.11")
-        distribution("org.apache.cxf:cxf-rt-bindings-xml:3.5.11")
+        distribution('org.apache.cxf:cxf-core:3.5.11')
+        distribution('org.apache.cxf:cxf-rt-bindings-soap:3.5.11')
+        distribution('org.apache.cxf:cxf-rt-bindings-xml:3.5.11')
         distribution('org.apache.cxf:cxf-rt-databinding-jaxb:3.5.11')
         distribution('org.apache.cxf:cxf-rt-frontend-jaxws:3.5.11')
         distribution('org.apache.cxf:cxf-rt-frontend-simple:3.5.11')
@@ -149,95 +151,98 @@ dependencies {
         distribution('org.apache.cxf:cxf-rt-wsdl:3.5.11')
     }
 
-    distribution group: 'org.apache.commons', name: 'commons-email', version: '1.5', transitive: false
-    distribution group: 'org.apache.commons', name: 'commons-exec', version: '1.4.0', transitive: false
-    distribution group: 'org.apache.commons', name: 'commons-compress', version:'1.28.0', transitive: false
-    distribution group: 'org.apache.commons', name: 'commons-collections4', version: '4.5.0', transitive: false
-    distribution group: 'org.apache.commons', name: 'commons-digester3', version:'3.2', transitive: false
-    distribution group: 'org.apache.commons', name: 'commons-lang3', version: '3.20.0', transitive: false
-    distribution group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1', transitive: false
-    distribution group: 'org.apache.commons', name: 'commons-pool2', version: '2.8.1', transitive: false
-    distribution group: 'org.apache.commons', name: 'commons-text', version: '1.10.0', transitive: false
-    distribution group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14', transitive: false
-    distribution group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.16', transitive: false
-    distribution group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.14', transitive: false
-    distribution group: 'org.apache.jackrabbit', name: 'jackrabbit-webdav', version: '2.22.2', transitive: true
-    distribution group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.25.3', transitive: false
-    distribution group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.25.3', transitive: false
-    distribution group: 'org.apache.logging.log4j', name: 'log4j-slf4j2-impl', version: '2.25.3', transitive: false
-    distribution group: 'org.apache.logging.log4j', name: 'log4j-jcl', version: '2.25.3', transitive: false
-    distribution group: 'org.apache.logging.log4j', name: 'log4j-web', version: '2.25.3', transitive: false
-//    distribution group: 'org.apache.lucene', name: 'lucene-analysis-common', version: '10.3.2', transitive: true
-    distribution group: 'org.apache.lucene', name: 'lucene-core', version: '10.3.2', transitive: true
-    distribution group: 'org.apache.lucene', name: 'lucene-highlighter', version: '10.3.2', transitive: true
-    distribution group: 'org.apache.lucene', name: 'lucene-queryparser', version: '10.3.2', transitive: true
-    distribution group: 'org.apache.solr', name: 'solr-analysis-extras', version:'10.0.0', transitive: true
-    distribution group: 'org.apache.solr', name: 'solr-core', version:'10.0.0', transitive: true
-    distribution group: 'org.apache.solr', name: 'solr-solrj', version:'10.0.0', transitive: true
-    distribution group: 'org.apache.solr', name: 'solr-solrj-jetty', version:'10.0.0', transitive: true // for solr http client
-    distribution group: 'org.apache.pdfbox', name: 'fontbox', version: '2.0.32', transitive: false
-    distribution group: 'org.apache.pdfbox', name: 'jempbox', version: '1.8.17', transitive: false
-    distribution group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.32', transitive: false
-    distribution group: 'org.apache.pdfbox', name: 'pdfbox-tools', version: '2.0.32', transitive: false
-    distribution group: 'org.apache.tika', name: 'tika-core', version: '3.2.3', transitive: true
-    distribution group: 'org.apache.tika', name: 'tika-parser-microsoft-module', version: '3.2.3', transitive: true
-    distribution group: 'org.apache.tika', name: 'tika-parser-pdf-module', version: '3.2.3', transitive: true
-    distribution group: 'org.apache.xbean', name: 'xbean-asm5-shaded', version: '4.5', transitive: false
-    distribution group: 'org.apache.xmlbeans', name: 'xmlbeans', version:'5.1.1', transitive: false
-    distribution group: 'org.apache.xmlgraphics', name: 'batik-constants', version: '1.16', transitive: false
-    distribution group: 'org.apache.xmlgraphics', name: 'batik-css', version:'1.16', transitive: false
-    distribution group: 'org.apache.xmlgraphics', name: 'batik-i18n', version:'1.16', transitive: false
-    distribution group: 'org.apache.xmlgraphics', name: 'batik-util', version:'1.16', transitive: false
-    distribution group: 'org.bouncycastle', name: 'bcpkix-jdk18on', version: '1.79', transitive: false
-    distribution group: 'org.bouncycastle', name: 'bcprov-jdk18on', version: '1.79', transitive: false
-    distribution group: 'org.bouncycastle', name: 'bcutil-jdk18on', version: '1.79', transitive: false
-    distribution group: 'org.codehaus.mojo', name: 'animal-sniffer-annotations', version: '1.19', transitive: false
-    distribution group: 'org.dom4j', name: 'dom4j', version: '2.1.4', transitive: false
-    distribution group: 'org.glassfish.web', name: 'javax.servlet.jsp.jstl', version: '1.2.5-b03', transitive: false
-    distribution group: 'org.hibernate', name: 'jtidy', version: 'r8-20060801', transitive: false
-    distribution group: 'org.htmlparser', name: 'htmlparser', version: '2.1', transitive: false
-    distribution group: 'org.htmlparser', name: 'htmllexer', version: '2.1', transitive: false
-    distribution group: 'org.htmlunit', name: 'neko-htmlunit', version: '4.6.0', transitive: false
-    distribution group: 'com.github.kwart.jsign', name: 'jsign-jpedal', version: '4.92.13', transitive: false
-    distribution group: 'org.javassist', name: 'javassist', version: '3.30.2-GA', transitive: false
-    distribution group: 'org.jsoup', name: 'jsoup', version: '1.15.3', transitive: false
-    distribution group: 'org.jvnet.mimepull', name: 'mimepull', version: '1.9.13', transitive: false
-    distribution group: 'org.locationtech.spatial4j', name: 'spatial4j', version: '0.8', transitive: false
-    distribution group: 'org.ow2.asm', name: 'asm', version: '9.3', transitive: false
-    distribution group: 'org.owasp.antisamy', name: 'antisamy', version: '1.7.7', transitive: false
-    distribution group: 'org.quartz-scheduler', name: 'quartz', version:'2.3.2', transitive: false
-    distribution group: 'org.safehaus.jug', name: 'jug', version: '2.0.0', classifier: 'lgpl', transitive: false
-    distribution group: 'org.restlet.jee', name: 'org.restlet', version: '2.3.12', transitive: false
-    distribution group: 'org.rrd4j', name: 'rrd4j', version: '3.7', transitive: false
-    distribution group: 'org.slf4j', name: 'slf4j-api', version: '2.0.13', transitive: false
-    distribution group: 'org.slf4j', name: 'jul-to-slf4j', version: '2.0.13', transitive: false
-    distribution group: 'org.tepi.filtertable', name: 'filteringtable', version: '1.0.1.v8', transitive: false
-    distribution group: 'org.vaadin.addons', name: 'popupbutton', version: '3.0.0', transitive: false
-    distribution group: 'org.xhtmlrenderer', name: 'flying-saucer-core', version: '9.1.20', transitive: false
-    distribution group: 'org.xhtmlrenderer', name: 'flying-saucer-pdf-openpdf', version: '9.1.20', transitive: false
-    distribution group: 'oro', name: 'oro', version: '2.0.8', transitive: false
-    distribution group: 'wsdl4j', name: 'wsdl4j', version: '1.6.3', transitive: false
-    distribution group: 'org.apache.servicemix.bundles', name: 'org.apache.servicemix.bundles.xalan', version: '2.7.2_3', transitive: false
-    distribution group: 'xerces', name: 'xercesImpl', version: '2.12.2', transitive: false
-    //distribution group: 'xml-apis', name: 'xml-apis', version: '1.4.01', transitive: false
-    distribution group: 'dev.samstevens.totp', name:'totp', version:'1.7.1', transitive: true
+    distribution('org.apache.commons:commons-email:1.5') { transitive = false }
+    distribution('org.apache.commons:commons-exec:1.4.0') { transitive = false }
+    distribution('org.apache.commons:commons-compress:1.28.0') { transitive = false }
+    distribution('org.apache.commons:commons-collections4:4.5.0') { transitive = false }
+    distribution('org.apache.commons:commons-digester3:3.2') { transitive = false }
+    distribution('org.apache.commons:commons-lang3:3.20.0') { transitive = false }
+    distribution('org.apache.commons:commons-math3:3.6.1') { transitive = false }
+    distribution('org.apache.commons:commons-pool2:2.8.1') { transitive = false }
+    distribution('org.apache.commons:commons-text:1.10.0') { transitive = false }
+    distribution('org.apache.httpcomponents:httpclient:4.5.14') { transitive = false }
+    distribution('org.apache.httpcomponents:httpcore:4.4.16') { transitive = false }
+    distribution('org.apache.httpcomponents:httpmime:4.5.14') { transitive = false }
+    distribution('org.apache.jackrabbit:jackrabbit-webdav:2.22.2')
+    distribution('org.apache.logging.log4j:log4j-api:2.25.3') { transitive = false }
+    distribution('org.apache.logging.log4j:log4j-core:2.25.3') { transitive = false }
+    distribution('org.apache.logging.log4j:log4j-slf4j2-impl:2.25.3') { transitive = false }
+    distribution('org.apache.logging.log4j:log4j-jcl:2.25.3') { transitive = false }
+    distribution('org.apache.logging.log4j:log4j-web:2.25.3') { transitive = false }
+//    distribution('org.apache.lucene:lucene-analysis-common:10.3.2')
+    distribution('org.apache.lucene:lucene-core:10.3.2')
+    distribution('org.apache.lucene:lucene-highlighter:10.3.2')
+    distribution('org.apache.lucene:lucene-queryparser:10.3.2')
+    distribution('org.apache.solr:solr-analysis-extras:10.0.0')
+    distribution('org.apache.solr:solr-core:10.0.0')
+    distribution('org.apache.solr:solr-solrj:10.0.0')
+    distribution('org.apache.solr:solr-solrj-jetty:10.0.0') // for solr http client
+    distribution('org.apache.pdfbox:fontbox:2.0.32') { transitive = false }
+    distribution('org.apache.pdfbox:jempbox:1.8.17') { transitive = false }
+    distribution('org.apache.pdfbox:pdfbox:2.0.32') { transitive = false }
+    distribution('org.apache.pdfbox:pdfbox-tools:2.0.32') { transitive = false }
+    distribution('org.apache.tika:tika-core:3.2.3')
+    distribution('org.apache.tika:tika-parser-microsoft-module:3.2.3')
+    distribution('org.apache.tika:tika-parser-pdf-module:3.2.3')
+    distribution('org.apache.xbean:xbean-asm5-shaded:4.5') { transitive = false }
+    distribution('org.apache.xmlbeans:xmlbeans:5.1.1') { transitive = false }
+    distribution('org.apache.xmlgraphics:batik-constants:1.16') { transitive = false }
+    distribution('org.apache.xmlgraphics:batik-css:1.16') { transitive = false }
+    distribution('org.apache.xmlgraphics:batik-i18n:1.16') { transitive = false }
+    distribution('org.apache.xmlgraphics:batik-util:1.16') { transitive = false }
+    distribution('org.bouncycastle:bcpkix-jdk18on:1.79') { transitive = false }
+    distribution('org.bouncycastle:bcprov-jdk18on:1.79') { transitive = false }
+    distribution('org.bouncycastle:bcutil-jdk18on:1.79') { transitive = false }
+    distribution('org.codehaus.mojo:animal-sniffer-annotations:1.19') { transitive = false }
+    distribution('org.dom4j:dom4j:2.1.4') { transitive = false }
+    distribution('org.glassfish.web:javax.servlet.jsp.jstl:1.2.5-b03') { transitive = false }
+    distribution('org.hibernate:jtidy:r8-20060801') { transitive = false }
+    distribution('org.htmlparser:htmlparser:2.1') { transitive = false }
+    distribution('org.htmlparser:htmllexer:2.1') { transitive = false }
+    distribution('org.htmlunit:neko-htmlunit:4.6.0') { transitive = false }
+    distribution('com.github.kwart.jsign:jsign-jpedal:4.92.13') { transitive = false }
+    distribution('org.javassist:javassist:3.30.2-GA') { transitive = false }
+    distribution('org.jsoup:jsoup:1.15.3') { transitive = false }
+    distribution('org.jvnet.mimepull:mimepull:1.9.13') { transitive = false }
+    distribution('org.locationtech.spatial4j:spatial4j:0.8') { transitive = false }
+    distribution('org.ow2.asm:asm:9.3') { transitive = false }
+    distribution('org.owasp.antisamy:antisamy:1.7.7') { transitive = false }
+    distribution('org.quartz-scheduler:quartz:2.3.2') { transitive = false }
+    distribution('org.safehaus.jug:jug:2.0.0:lgpl') { transitive = false }
+    distribution('org.restlet.jee:org.restlet:2.3.12') { transitive = false }
+    distribution('org.rrd4j:rrd4j:3.7') { transitive = false }
+    distribution('org.slf4j:slf4j-api:2.0.13') { transitive = false }
+    distribution('org.slf4j:jul-to-slf4j:2.0.13') { transitive = false }
+    distribution('org.tepi.filtertable:filteringtable:1.0.1.v8') { transitive = false }
+    distribution('org.vaadin.addons:popupbutton:3.0.0') { transitive = false }
+    distribution('org.xhtmlrenderer:flying-saucer-core:9.1.20') { transitive = false }
+    distribution('org.xhtmlrenderer:flying-saucer-pdf-openpdf:9.1.20') { transitive = false }
+    distribution('oro:oro:2.0.8') { transitive = false }
+    distribution('wsdl4j:wsdl4j:1.6.3') { transitive = false }
+    distribution('org.apache.servicemix.bundles:org.apache.servicemix.bundles.xalan:2.7.2_3') { transitive = false }
+    distribution('xerces:xercesImpl:2.12.2') { transitive = false }
+    //distribution('xml-apis:xml-apis:1.4.01') { transitive = false }
+    distribution('dev.samstevens.totp:totp:1.7.1')
     // http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD/root/projects/alfresco-jlan/
     // Revision r55007
     distribution files('lib/runtime/jlan.jar')
 
-    testCompile group: 'dumbster', name: 'dumbster', version: '1.6', transitive: false
-    testCompile group: 'junit', name: 'junit', version: '4.13.1', transitive: false
-    testCompile group: 'org.hamcrest', name: 'hamcrest-core', version: '1.3', transitive: false
-    testCompile group: 'org.hsqldb', name: 'hsqldb', version: '2.7.2', classifier: 'jdk8', transitive: false
-    testGwtCompile group: 'junit', name: 'junit', version: '4.13.1', transitive: false
-    testGwtCompile group: 'net.sourceforge.htmlunit', name: 'htmlunit-cssparser',  version: '1.13.0', transitive: false
-    testGwtCompile group: 'org.brotli', name: 'dec', version: '0.1.2', transitive: false
-    testGwtCompile group: 'net.sourceforge.htmlunit', name: 'neko-htmlunit', version: '2.69.0', transitive: false
-    testGwtCompile group: 'net.sourceforge.htmlunit', name: 'htmlunit', version: '2.69.0', transitive: false
-    testGwtCompile group: 'net.sourceforge.htmlunit', name: 'htmlunit-xpath', version: '2.69.0', transitive: false
-    testGwtCompile group: 'net.sourceforge.htmlunit', name: 'htmlunit-core-js', version: '2.69.0', transitive: false
-    testGwtCompile group: 'org.eclipse.jetty', name: 'apache-jsp', version: '9.4.50.v20221201', transitive: false
-    testGwtCompile(group: 'org.eclipse.jetty', name: 'jetty-annotations', version: '9.4.50.v20221201', transitive: false){
+    tlddocTool('taglibrarydoc:tlddoc:1.3') { transitive = false }
+
+    testCompile('dumbster:dumbster:1.6') { transitive = false }
+    testCompile('junit:junit:4.13.1') { transitive = false }
+    testCompile('org.hamcrest:hamcrest-core:1.3') { transitive = false }
+    testCompile('org.hsqldb:hsqldb:2.7.2:jdk8') { transitive = false }
+    testGwtCompile('junit:junit:4.13.1') { transitive = false }
+    testGwtCompile('net.sourceforge.htmlunit:htmlunit-cssparser:1.13.0') { transitive = false }
+    testGwtCompile('org.brotli:dec:0.1.2') { transitive = false }
+    testGwtCompile('net.sourceforge.htmlunit:neko-htmlunit:2.69.0') { transitive = false }
+    testGwtCompile('net.sourceforge.htmlunit:htmlunit:2.69.0') { transitive = false }
+    testGwtCompile('net.sourceforge.htmlunit:htmlunit-xpath:2.69.0') { transitive = false }
+    testGwtCompile('net.sourceforge.htmlunit:htmlunit-core-js:2.69.0') { transitive = false }
+    testGwtCompile('org.eclipse.jetty:apache-jsp:9.4.50.v20221201') { transitive = false }
+    testGwtCompile('org.eclipse.jetty:jetty-annotations:9.4.50.v20221201') {
+        transitive = false
 
         artifact {
             name = 'jetty-annotations'
@@ -249,9 +254,10 @@ dependencies {
             classifier = 'sources'
         }
     }
-    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-continuation', version: '9.4.50.v20221201', transitive: false
-    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-jndi', version: '9.4.50.v20221201', transitive: false
-    testGwtCompile(group: 'org.eclipse.jetty', name: 'jetty-plus', version: '9.4.50.v20221201', transitive: false){
+    testGwtCompile('org.eclipse.jetty:jetty-continuation:9.4.50.v20221201') { transitive = false }
+    testGwtCompile('org.eclipse.jetty:jetty-jndi:9.4.50.v20221201') { transitive = false }
+    testGwtCompile('org.eclipse.jetty:jetty-plus:9.4.50.v20221201') {
+        transitive = false
         artifact {
             name = 'jetty-plus'
             type = 'jar'
@@ -262,18 +268,18 @@ dependencies {
             classifier = 'sources'
         }
     }
-    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-security', version: '9.4.50.v20221201', transitive: false
-    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.4.50.v20221201', transitive: false
-    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.4.50.v20221201', transitive: false
-    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-servlets', version: '9.4.50.v20221201', transitive: false
-    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-webapp', version: '9.4.50.v20221201', transitive: false
-    testGwtCompile group: 'org.eclipse.jetty', name: 'jetty-xml', version: '9.4.50.v20221201', transitive: false
-    testGwtCompile group: 'org.eclipse.jetty.websocket', name: 'websocket-api', version: '9.4.50.v20221201', transitive: false
-    testGwtCompile group: 'org.eclipse.jetty.websocket', name: 'websocket-client', version: '9.4.50.v20221201', transitive: false
-    testGwtCompile group: 'org.eclipse.jetty.websocket', name: 'websocket-common', version: '9.4.50.v20221201', transitive: false
-    testGwtCompile group: 'org.eclipse.jetty.websocket', name: 'websocket-server', version: '9.4.50.v20221201', transitive: false
-    testGwtCompile group: 'org.eclipse.jetty.websocket', name: 'websocket-servlet', version: '9.4.50.v20221201', transitive: false
-    testGwtCompile group: 'org.mortbay.jasper', name: 'apache-jsp', version: '8.0.33', transitive: false
+    testGwtCompile('org.eclipse.jetty:jetty-security:9.4.50.v20221201') { transitive = false }
+    testGwtCompile('org.eclipse.jetty:jetty-server:9.4.50.v20221201') { transitive = false }
+    testGwtCompile('org.eclipse.jetty:jetty-servlet:9.4.50.v20221201') { transitive = false }
+    testGwtCompile('org.eclipse.jetty:jetty-servlets:9.4.50.v20221201') { transitive = false }
+    testGwtCompile('org.eclipse.jetty:jetty-webapp:9.4.50.v20221201') { transitive = false }
+    testGwtCompile('org.eclipse.jetty:jetty-xml:9.4.50.v20221201') { transitive = false }
+    testGwtCompile('org.eclipse.jetty.websocket:websocket-api:9.4.50.v20221201') { transitive = false }
+    testGwtCompile('org.eclipse.jetty.websocket:websocket-client:9.4.50.v20221201') { transitive = false }
+    testGwtCompile('org.eclipse.jetty.websocket:websocket-common:9.4.50.v20221201') { transitive = false }
+    testGwtCompile('org.eclipse.jetty.websocket:websocket-server:9.4.50.v20221201') { transitive = false }
+    testGwtCompile('org.eclipse.jetty.websocket:websocket-servlet:9.4.50.v20221201') { transitive = false }
+    testGwtCompile('org.mortbay.jasper:apache-jsp:8.0.33') { transitive = false }
 }
 
 configurations.all {
@@ -287,6 +293,3 @@ configurations.all {
     exclude group: 'com.microsoft.onnxruntime', module: 'onnxruntime'
     exclude group: 'io.netty'
 }
-
-
-

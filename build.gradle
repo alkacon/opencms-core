@@ -1,4 +1,6 @@
+import groovy.xml.XmlParser
 import org.apache.tools.ant.filters.ReplaceTokens
+import org.gradle.api.plugins.JavaBasePlugin
 
 plugins {
     id 'java-library'
@@ -6,12 +8,12 @@ plugins {
     id 'signing'
     id 'eclipse'
     id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
-    id 'com.liferay.tlddoc.builder' version '2.0.1'
 }
 
 group = "org.opencms"
 
-layout.buildDirectory.set(file(build_directory))
+def configuredBuildDirectory = providers.gradleProperty('build_directory').get()
+layout.buildDirectory.set(file(configuredBuildDirectory))
 
 java {
     sourceCompatibility = JavaVersion.toVersion(java_target_version)
@@ -54,6 +56,10 @@ if (opencms_version) {
 
 // flag, indicating if javadoc should be skipped
 boolean addJavadoc = !(project.hasProperty('skip_javadoc') && skip_javadoc.toBoolean())
+def tomcatUpdateTarget = project.findProperty('tomcat_update_target')
+def hasTomcatUpdateTarget = tomcatUpdateTarget && file(tomcatUpdateTarget).exists()
+def moduleCopyTarget = project.findProperty('module_copy_target')
+def hasModuleCopyTarget = moduleCopyTarget && file(moduleCopyTarget).exists()
 
 // alternative variable name for the case where the version variable is used for something else, e.g. javadoc
 ext.ocmsVersion = vprops['version.number']
@@ -69,9 +75,9 @@ if (hasExtModules) {
 }
 
 repositories {
-    if (project.hasProperty('additional_repositories')){
-        additional_repositories.split(';').each{ repo ->
-            maven { url = repo }
+    if (project.hasProperty('additional_repositories') && additional_repositories?.trim()){
+        additional_repositories.split(';').findAll { it.trim() }.each { repo ->
+            maven { url = uri(repo) }
         }
     }
     mavenCentral()
@@ -238,6 +244,11 @@ configurations {
     setupImplementation {
         extendsFrom setupCompile
     }
+
+    tlddocTool {
+        description = 'Configures Tag Library Documentation Generator for this project.'
+        visible = false
+    }
 }
 
 // import dependencies
@@ -263,12 +274,12 @@ eclipse.classpath.file {
     }
 }
 
-eclipse.classpath.plusConfigurations = configurations.findAll { it.name.endsWith('Compile') }
+eclipse.classpath.plusConfigurations = configurations.matching { it.name.endsWith('Compile') }
 
 eclipse.classpath.downloadSources=true
 
 wrapper {
-    gradleVersion = '7.5.1'
+    gradleVersion = '9.4.1'
 }
 
 tasks.register('copyDeps', Copy) {
@@ -314,10 +325,10 @@ jar {
     }
 
     doLast {
-        if (project.hasProperty('tomcat_update_target') && file(tomcat_update_target).exists()){
-            println "copying ${layout.buildDirectory.dir("libs").get().file(archiveName).asFile} to ${tomcat_update_target}"
+        if (hasTomcatUpdateTarget) {
+            println "copying ${archiveFile.get().asFile} to ${tomcat_update_target}"
             copy {
-                from  layout.buildDirectory.dir("libs").get().file(archiveName).asFile
+                from archiveFile
                 into tomcat_update_target
             }
         }
@@ -581,10 +592,10 @@ tasks.register('resourcesJar', Jar) {
     }
 
     doLast {
-        if (project.hasProperty('tomcat_update_target') && file(tomcat_update_target).exists()){
-            println "copying ${layout.buildDirectory.dir("libs").get().file(archiveName).asFile} to ${tomcat_update_target}"
+        if (hasTomcatUpdateTarget) {
+            println "copying ${archiveFile.get().asFile} to ${tomcat_update_target}"
             copy {
-                from  layout.buildDirectory.dir("libs").get().file(archiveName).asFile
+                from archiveFile
                 into tomcat_update_target
             }
         }
@@ -736,8 +747,42 @@ tasks.register('sourcesJarSetup', Jar) {
     archiveBaseName = 'opencms-setup'
 }
 
-tlddoc {
-    source "${projectDir}/webapp/WEB-INF/opencms.tld"
+def tlddocSources = files("${projectDir}/webapp/WEB-INF/opencms.tld")
+
+tasks.register('validateTLD') {
+    description = 'Validates TLD files.'
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    inputs.files(tlddocSources)
+
+    doLast {
+        def parser = new XmlParser(false, true)
+
+        tlddocSources.files.each { file ->
+            parser.parse(file)
+        }
+    }
+}
+
+tasks.register('copyTLDDocResources', Copy) {
+    description = 'Copies tag library documentation resources.'
+    from('src/main/tlddoc')
+    into layout.buildDirectory.dir('docs/tlddoc')
+}
+
+tasks.register('tlddoc', JavaExec) {
+    dependsOn 'copyTLDDocResources', 'validateTLD'
+    description = 'Generates tag library documentation.'
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    classpath = configurations.tlddocTool
+    mainClass = 'com.sun.tlddoc.TLDDoc'
+    maxHeapSize = '256m'
+    inputs.files(tlddocSources)
+    outputs.dir(layout.buildDirectory.dir('docs/tlddoc'))
+
+    doFirst {
+        args = ['-d', layout.buildDirectory.dir('docs/tlddoc').get().asFile.absolutePath] +
+            tlddocSources.files.collect { it.absolutePath }
+    }
 }
 
 
@@ -809,10 +854,10 @@ allModuleNames.each{ moduleName ->
             println '======================================================'
         }
         doLast {
-            if (project.hasProperty('module_copy_target') && file(module_copy_target).exists()){
-                println "copying ${layout.buildDirectory.dir("modulesZip").get().file(archiveName).asFile} to ${module_copy_target}"
+            if (hasModuleCopyTarget) {
+                println "copying ${archiveFile.get().asFile} to ${module_copy_target}"
                 copy {
-                    from  layout.buildDirectory.dir("modulesZip").get().file(archiveName).asFile
+                    from archiveFile
                     into module_copy_target
                 }
             }
@@ -840,10 +885,10 @@ allModuleNames.each{ moduleName ->
             }
 
             doLast {
-                if (project.hasProperty('tomcat_update_target') && file(tomcat_update_target).exists()){
-                    println "copying ${layout.buildDirectory.dir("libs").get().file(archiveName).asFile} to ${tomcat_update_target}"
+                if (hasTomcatUpdateTarget) {
+                    println "copying ${archiveFile.get().asFile} to ${tomcat_update_target}"
                     copy {
-                        from  layout.buildDirectory.dir("libs").get().file(archiveName).asFile
+                        from archiveFile
                         into tomcat_update_target
                     }
                 }
@@ -1153,18 +1198,22 @@ def coreTestConfig = {
 
 test {
     configure coreTestConfig
-    description "Runs the complete test suite 'org.opencms.test.AllTests'."
+    description = "Runs the complete test suite 'org.opencms.test.AllTests'."
 
-    filter.includeTestsMatching("org.opencms.test.AllTests")
+    includes = ['org/opencms/test/AllTestsBridge.class']
+    scanForTestClasses = true
 }
 
 tasks.register('testSingle', Test) {
-    description "Runs a specified test case. Equivalent to standard 'test' task. \n" +
-                "NOTE: Usage of legacy '-PtestCaseToRun' property is DEPRECATED. Use standard '--tests' filtering instead. \n" +
-                "Conflict Resolution: If both '-PtestCaseToRun' and '--tests' are defined, standard '--tests' takes precedence. \n" +
-                "Default: Runs TestCmsSystemInfo test case if no filters are provided."
-    group 'verification'
+    description = "Runs a specified test case. Equivalent to standard 'test' task. \n" +
+        "NOTE: Usage of legacy '-PtestCaseToRun' property is DEPRECATED. Use standard '--tests' filtering instead. \n" +
+        "Conflict Resolution: If both '-PtestCaseToRun' and '--tests' are defined, standard '--tests' takes precedence. \n" +
+        "Default: Runs TestCmsSystemInfo test case if no filters are provided."
+    group = 'verification'
     configure coreTestConfig
+    classpath = sourceSets.test.runtimeClasspath
+    testClassesDirs = files(sourceSets.test.java.classesDirectory)
+    doNotTrackState("Single-test execution uses ad hoc filters and generated result paths.")
 
     doFirst{
         logger.info("Test filter configuration - commandLineIncludePatterns: ${filter.commandLineIncludePatterns}, includePatterns: ${filter.includePatterns}")
@@ -1240,52 +1289,57 @@ tasks.register('testGwt', Test) {
     ignoreFailures = true
 }
 
-artifacts {
-    archives sourcesJar
+def legacyArchiveTasks = [
+    sourcesJar,
+    setupJar,
+    sourcesJarSetup,
+    modulesJar,
+    sourcesJarModules,
+    gwtJar,
+    sourcesJarGwt,
+    testJar,
+    sourcesJarTest,
+]
 
-    if (gradle.startParameter.taskNames.contains("uploadArchives")) {
-        // do not include the war if only running the install task, it takes ages to build
-        archives war
-        archives resourcesJar
+if (gradle.startParameter.taskNames.contains('uploadArchives')) {
+    // do not include the war if only running the install task, it takes ages to build
+    legacyArchiveTasks.add(war)
+    legacyArchiveTasks.add(resourcesJar)
+}
+
+tasks.each { task ->
+    if (task.name.startsWith('jar_org.opencms.')) {
+        def moduleName = task.archiveBaseName.get()
+        legacyArchiveTasks.add(task)
+        def sourcesTask = tasks.findByName("sourcesJar_${moduleName}")
+        if (sourcesTask != null) {
+            legacyArchiveTasks.add(sourcesTask)
+        }
     }
+}
 
-    archives setupJar
-    archives sourcesJarSetup
-
-    archives modulesJar
-    archives sourcesJarModules
-
-    archives gwtJar
-    archives sourcesJarGwt
-
-    archives testJar
-    archives sourcesJarTest
-
+// in case the property 'skip_javadoc' is set to 'true', javadoc generation is skipped - this is supposed to speed up build time for CI
+if (addJavadoc) {
+    legacyArchiveTasks.addAll([
+        javadocJar,
+        javadocJarSetup,
+        javadocJarModules,
+        javadocJarGwt,
+        javadocJarTest,
+    ])
     tasks.each { task ->
-        if (task.name.startsWith("jar_org.opencms.")){
-            def moduleName=task.archiveBaseName
-            archives task
-            if (tasks.hasProperty("sourcesJar_$moduleName")) {
-                archives tasks["sourcesJar_$moduleName"]
+        if (task.name.startsWith('jar_org.opencms.')) {
+            def moduleName = task.archiveBaseName.get()
+            def javadocTask = tasks.findByName("javadocJar_${moduleName}")
+            if (javadocTask != null) {
+                legacyArchiveTasks.add(javadocTask)
             }
         }
     }
-    // in case the property 'skip_javadoc' is set to 'true', javadoc generation is skipped - this is supposed to speed up build time for CI
-    if (addJavadoc) {
-        archives javadocJar
-        archives javadocJarSetup
-        archives javadocJarModules
-        archives javadocJarGwt
-        archives javadocJarTest
-        tasks.each { task ->
-            if (task.name.startsWith("jar_org.opencms.")) {
-                def moduleName=task.archiveBaseName
-                if (tasks.hasProperty("javadocJar_$moduleName")) {
-                    archives tasks["javadocJar_$moduleName"]
-                }
-            }
-        }
-    }
+}
+
+tasks.named('assemble') {
+    dependsOn(legacyArchiveTasks.toSet())
 }
 
 
@@ -1530,13 +1584,13 @@ tasks.withType(Javadoc) {
         options.addBooleanOption("-allow-script-in-comments",true);
     }
     doLast {
-        def searchScript = new File(destinationDir.getAbsolutePath() + '/search.js')
+        def searchScript = new File(destinationDir, 'search.js')
         searchScript.append "getURLPrefix = function(ui) { return ''; };"
     }
 }
 // all tasks implementing the CopySpec (Copy,Jar,Zip,...) should fail, in case they generate duplicate files
-tasks.withType(CopySpec) {
-    duplicatesStrategy = 'fail'
+tasks.withType(org.gradle.api.tasks.AbstractCopyTask).configureEach {
+    duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.FAIL
 }
 
 
