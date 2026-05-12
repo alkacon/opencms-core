@@ -85,4 +85,50 @@ public class TestPdfExtraction extends OpenCmsTestRunner {
         assertEquals("Microsoft Excel", items.get(I_CmsExtractionResult.ITEM_CREATOR));
         assertEquals("Jaws PDF Creator v4.0.24", items.get(I_CmsExtractionResult.ITEM_PRODUCER));
     }
+
+    /**
+     * Tests the basic Pdf extraction.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void testBasicPdfExtractionWithoutMetaData() throws Exception {
+
+        // open an input stream for the test file
+        @SuppressWarnings("resource")
+        InputStream in = getClass().getClassLoader().getResourceAsStream("org/opencms/search/extractors/test1.pdf");
+
+        // extract the content
+        I_CmsExtractionResult extractionResult = CmsExtractorPdf.getExtractor(false).extractText(in);
+        Map<String, String> items = extractionResult.getContentItems();
+
+        System.out.println("\n\n---------------------------------------------------------------");
+        System.out.println("Extracted from PDF without metadata:");
+        Iterator<Map.Entry<String, String>> i = items.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry<String, String> e = i.next();
+            System.out.println("\nKey: " + e.getKey());
+            System.out.println("Value: " + e.getValue());
+        }
+
+        assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
+        assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
+        String result = extractionResult.getContent();
+        assertEquals(result, items.get(I_CmsExtractionResult.ITEM_CONTENT));
+
+        assertTrue(result.indexOf("Alkacon Software") > -1);
+        assertTrue(result.indexOf("The OpenCms experts") > -1);
+        assertTrue(result.indexOf("Some content here.") > -1);
+        assertTrue(result.indexOf("Some content there.") > -1);
+        assertTrue(result.indexOf("Some content on a second sheet.") > -1);
+        assertTrue(result.indexOf("Some content on the third sheet.") > -1);
+        assertTrue(result.indexOf("\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df\u20ac") > -1);
+
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_TITLE));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_SUBJECT));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_AUTHOR));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_KEYWORDS));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_CREATOR));
+        assertFalse(items.containsKey(I_CmsExtractionResult.ITEM_PRODUCER));
+    }
 }

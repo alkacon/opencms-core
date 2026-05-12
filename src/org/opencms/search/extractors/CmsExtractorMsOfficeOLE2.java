@@ -44,14 +44,22 @@ import org.apache.tika.parser.microsoft.OfficeParser;
 public final class CmsExtractorMsOfficeOLE2 extends A_CmsTextExtractor {
 
     /** Static member instance of the extractor. */
-    private static final CmsExtractorMsOfficeOLE2 INSTANCE = new CmsExtractorMsOfficeOLE2();
+    private static final CmsExtractorMsOfficeOLE2 INSTANCE_METADATA = new CmsExtractorMsOfficeOLE2(true);
+
+    /** Static member instance of the extractor. */
+    private static final CmsExtractorMsOfficeOLE2 INSTANCE_NO_METADATA = new CmsExtractorMsOfficeOLE2(false);
+
+    /** Flag, indicating if metadata should be extracted. */
+    private boolean m_extractMetaData;
 
     /**
      * Hide the public constructor.<p>
+     *
+     * @param extractMetaData flag, indicating if metadata should be extracted.
      */
-    private CmsExtractorMsOfficeOLE2() {
+    private CmsExtractorMsOfficeOLE2(boolean extractMetaData) {
 
-        // noop
+        m_extractMetaData = extractMetaData;
     }
 
     /**
@@ -61,7 +69,19 @@ public final class CmsExtractorMsOfficeOLE2 extends A_CmsTextExtractor {
      */
     public static I_CmsTextExtractor getExtractor() {
 
-        return INSTANCE;
+        return INSTANCE_METADATA;
+    }
+
+    /**
+     * Returns an instance of this text extractor.<p>
+     *
+     * @param extractMetaData flag, indicating if metadata should be extracted.
+     *
+     * @return an instance of this text extractor
+     */
+    public static I_CmsTextExtractor getExtractor(boolean extractMetaData) {
+
+        return extractMetaData ? INSTANCE_METADATA : INSTANCE_NO_METADATA;
     }
 
     /**
@@ -70,6 +90,6 @@ public final class CmsExtractorMsOfficeOLE2 extends A_CmsTextExtractor {
     @Override
     public I_CmsExtractionResult extractText(InputStream in) throws Exception {
 
-        return extractText(in, new OfficeParser());
+        return extractText(in, new OfficeParser(), m_extractMetaData);
     }
 }

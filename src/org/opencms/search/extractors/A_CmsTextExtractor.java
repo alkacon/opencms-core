@@ -125,10 +125,25 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
      *
      * @throws Exception in case something goes wrong
      */
-    @SuppressWarnings("deprecation")
     protected CmsExtractionResult extractText(InputStream in, Parser parser) throws Exception {
 
-        LinkedHashMap<String, String> contentItems = new LinkedHashMap<String, String>();
+        return extractText(in, parser, true);
+    }
+
+    /**
+     * Parses the given input stream with the provided parser and returns the result as a map of content items.<p>
+     *
+     * @param in the input stream for the content to parse
+     * @param parser the parser to use
+     * @param addMetaData flag, indicating if extracted meta data should be added to the extraction result.
+     *
+     * @return the result of the parsing as a map of content items
+     *
+     * @throws Exception in case something goes wrong
+     */
+    protected CmsExtractionResult extractText(InputStream in, Parser parser, boolean addMetaData) throws Exception {
+
+        LinkedHashMap<String, String> contentItems = new LinkedHashMap<>();
 
         StringWriter writer = new StringWriter();
         BodyContentHandler handler = new BodyContentHandler(writer);
@@ -146,72 +161,77 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
         }
 
         // appends all known document meta data as content items
-        combineContentItem(meta.get(DublinCore.TITLE), I_CmsExtractionResult.ITEM_TITLE, content, contentItems);
-        String keywords = meta.get(PDF.DOC_INFO_KEY_WORDS);
-        if (StringUtils.isBlank(keywords)) {
-            keywords = meta.get(Office.KEYWORDS);
-        }
-        combineContentItem(keywords, I_CmsExtractionResult.ITEM_KEYWORDS, content, contentItems);
-        String subject = null;
-        if (StringUtils.isBlank(subject)) {
-            subject = meta.get(PDF.DOC_INFO_SUBJECT);
-        }
-        if (StringUtils.isBlank(subject)) {
-            subject = meta.get(I_CmsExtractionResult.ITEM_SUBJECT);
-        }
-        if (StringUtils.isBlank(subject)) {
-            subject = meta.get(DublinCore.SUBJECT);
-        }
-        combineContentItem(subject, I_CmsExtractionResult.ITEM_SUBJECT, content, contentItems);
-        if (meta.get(Office.AUTHOR) != null) {
-            combineContentItem(meta.get(Office.AUTHOR), I_CmsExtractionResult.ITEM_AUTHOR, content, contentItems);
-        } else {
-            combineContentItem(meta.get(DublinCore.CREATOR), I_CmsExtractionResult.ITEM_AUTHOR, content, contentItems);
-        }
-        String creator = meta.get("xmp:CreatorTool");
-        if (StringUtils.isBlank(creator)) {
-            creator = meta.get(DublinCore.CREATOR);
-        }
-        if (StringUtils.isBlank(creator)) {
-            creator = meta.get(I_CmsExtractionResult.ITEM_CREATOR);
-        }
-        combineContentItem(creator, I_CmsExtractionResult.ITEM_CREATOR, content, contentItems);
-        //
-        combineContentItem(
-            meta.get(OfficeOpenXMLCore.CATEGORY),
-            I_CmsExtractionResult.ITEM_CATEGORY,
-            content,
-            contentItems);
-        //
-        if (meta.get(OfficeOpenXMLExtended.COMMENTS) != null) {
+        if (addMetaData) {
+            combineContentItem(meta.get(DublinCore.TITLE), I_CmsExtractionResult.ITEM_TITLE, content, contentItems);
+            String keywords = meta.get(PDF.DOC_INFO_KEY_WORDS);
+            if (StringUtils.isBlank(keywords)) {
+                keywords = meta.get(Office.KEYWORDS);
+            }
+            combineContentItem(keywords, I_CmsExtractionResult.ITEM_KEYWORDS, content, contentItems);
+            String subject = null;
+            if (StringUtils.isBlank(subject)) {
+                subject = meta.get(PDF.DOC_INFO_SUBJECT);
+            }
+            if (StringUtils.isBlank(subject)) {
+                subject = meta.get(I_CmsExtractionResult.ITEM_SUBJECT);
+            }
+            if (StringUtils.isBlank(subject)) {
+                subject = meta.get(DublinCore.SUBJECT);
+            }
+            combineContentItem(subject, I_CmsExtractionResult.ITEM_SUBJECT, content, contentItems);
+            if (meta.get(Office.AUTHOR) != null) {
+                combineContentItem(meta.get(Office.AUTHOR), I_CmsExtractionResult.ITEM_AUTHOR, content, contentItems);
+            } else {
+                combineContentItem(
+                    meta.get(DublinCore.CREATOR),
+                    I_CmsExtractionResult.ITEM_AUTHOR,
+                    content,
+                    contentItems);
+            }
+            String creator = meta.get("xmp:CreatorTool");
+            if (StringUtils.isBlank(creator)) {
+                creator = meta.get(DublinCore.CREATOR);
+            }
+            if (StringUtils.isBlank(creator)) {
+                creator = meta.get(I_CmsExtractionResult.ITEM_CREATOR);
+            }
+            combineContentItem(creator, I_CmsExtractionResult.ITEM_CREATOR, content, contentItems);
+            //
             combineContentItem(
-                meta.get(OfficeOpenXMLExtended.COMMENTS),
-                I_CmsExtractionResult.ITEM_COMMENTS,
+                meta.get(OfficeOpenXMLCore.CATEGORY),
+                I_CmsExtractionResult.ITEM_CATEGORY,
                 content,
                 contentItems);
-        } else {
+            //
+            if (meta.get(OfficeOpenXMLExtended.COMMENTS) != null) {
+                combineContentItem(
+                    meta.get(OfficeOpenXMLExtended.COMMENTS),
+                    I_CmsExtractionResult.ITEM_COMMENTS,
+                    content,
+                    contentItems);
+            } else {
+                combineContentItem(
+                    meta.get(DublinCore.DESCRIPTION),
+                    I_CmsExtractionResult.ITEM_COMMENTS,
+                    content,
+                    contentItems);
+
+            }
+            String company = meta.get(OfficeOpenXMLExtended.COMPANY);
+            combineContentItem(company, I_CmsExtractionResult.ITEM_COMPANY, content, contentItems);
+            //
             combineContentItem(
-                meta.get(DublinCore.DESCRIPTION),
-                I_CmsExtractionResult.ITEM_COMMENTS,
+                meta.get(OfficeOpenXMLExtended.MANAGER),
+                I_CmsExtractionResult.ITEM_MANAGER,
                 content,
                 contentItems);
 
+            String producer = meta.get(PDF.DOC_INFO_PRODUCER);
+            if (StringUtils.isBlank(producer)) {
+                producer = meta.get(I_CmsExtractionResult.ITEM_PRODUCER);
+            }
+            combineContentItem(producer, I_CmsExtractionResult.ITEM_PRODUCER, content, contentItems);
         }
-        String company = meta.get(OfficeOpenXMLExtended.COMPANY);
-        combineContentItem(company, I_CmsExtractionResult.ITEM_COMPANY, content, contentItems);
-        //
-        combineContentItem(
-            meta.get(OfficeOpenXMLExtended.MANAGER),
-            I_CmsExtractionResult.ITEM_MANAGER,
-            content,
-            contentItems);
-
-        String producer = meta.get(PDF.DOC_INFO_PRODUCER);
-        if (StringUtils.isBlank(producer)) {
-            producer = meta.get(I_CmsExtractionResult.ITEM_PRODUCER);
-        }
-        combineContentItem(producer, I_CmsExtractionResult.ITEM_PRODUCER, content, contentItems);
-
         // return the final result
         return new CmsExtractionResult(content.toString(), contentItems);
     }

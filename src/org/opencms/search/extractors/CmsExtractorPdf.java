@@ -39,14 +39,22 @@ import org.apache.tika.parser.pdf.PDFParser;
 public final class CmsExtractorPdf extends A_CmsTextExtractor {
 
     /** Static member instance of the extractor. */
-    private static final CmsExtractorPdf INSTANCE = new CmsExtractorPdf();
+    private static final CmsExtractorPdf INSTANCE_METADATA = new CmsExtractorPdf(true);
+
+    /** Static member instance of the extractor. */
+    private static final CmsExtractorPdf INSTANCE_NO_METADATA = new CmsExtractorPdf(false);
+
+    /** Flag, indicating if metadata should be extracted. */
+    private boolean m_extractMetaData;
 
     /**
      * Hide the public constructor.<p>
+     *
+     * @param extractMetaData flag, indicating if metadata should be extracted.
      */
-    private CmsExtractorPdf() {
+    private CmsExtractorPdf(boolean extractMetaData) {
 
-        // noop
+        m_extractMetaData = extractMetaData;
     }
 
     /**
@@ -56,7 +64,19 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
      */
     public static I_CmsTextExtractor getExtractor() {
 
-        return INSTANCE;
+        return INSTANCE_METADATA;
+    }
+
+    /**
+     * Returns an instance of this text extractor.<p>
+     *
+     * @param extractMetaData flag, indicating if metadata should be extracted.
+     *
+     * @return an instance of this text extractor
+     */
+    public static I_CmsTextExtractor getExtractor(boolean extractMetaData) {
+
+        return extractMetaData ? INSTANCE_METADATA : INSTANCE_NO_METADATA;
     }
 
     /**
@@ -65,6 +85,6 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
     @Override
     public I_CmsExtractionResult extractText(InputStream in) throws Exception {
 
-        return extractText(in, new PDFParser());
+        return extractText(in, new PDFParser(), m_extractMetaData);
     }
 }

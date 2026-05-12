@@ -7,39 +7,39 @@
 # In this node the global search options are configured.
 -->
 <!ELEMENT search (
-	solr?,
-	cache?,
-	directory,
-	timeout,
-	offlineUpdateFrequency?,
-	maxIndexWaitTime?,
-	forceunlock?,
-	excerpt,
-	extractionCacheMaxAge?,
-	maxModificationsBeforeCommit?,
-	highlighter,
-	documenttypes,
-	analyzers,
-	indexes,
-	indexsources,
-	fieldconfigurations?
+    solr?,
+    cache?,
+    directory,
+    timeout,
+    offlineUpdateFrequency?,
+    maxIndexWaitTime?,
+    forceunlock?,
+    excerpt,
+    extractionCacheMaxAge?,
+    maxModificationsBeforeCommit?,
+    highlighter,
+    documenttypes,
+    analyzers,
+    indexes,
+    indexsources,
+    fieldconfigurations?
 )>
 <!ATTLIST search
-	class CDATA #IMPLIED
+    class CDATA #IMPLIED
 >
 
 <!--
 # Configuration node for the Solr Server
 -->
 <!ELEMENT solr (
-	home?,
-	configfile?,
-	commitWithinMs?,
-	maxProcessedResults?
+    home?,
+    configfile?,
+    commitWithinMs?,
+    maxProcessedResults?
 )>
 <!ATTLIST solr
-	enabled (true|false|TRUE|FALSE) #REQUIRED
-	serverUrl CDATA #IMPLIED
+    enabled (true|false|TRUE|FALSE) #REQUIRED
+    serverUrl CDATA #IMPLIED
 >
 <!ELEMENT home (#PCDATA)>
 <!ELEMENT configfile (#PCDATA)>
@@ -107,10 +107,11 @@
 # and/or mimetype combination in a document factory node.
 -->
 <!ELEMENT documenttype (
-	name,
-	class,
-	mimetypes,
-	resourcetypes
+    name,
+    class,
+    param*,
+    mimetypes,
+    resourcetypes
 )>
 
 <!--
@@ -132,9 +133,9 @@
 # with trimmed endings etc.
 -->
 <!ELEMENT analyzer (
-	class,
-	stemmer*,
-	locale
+    class,
+    stemmer*,
+    locale
 )>
 
 <!--
@@ -148,13 +149,13 @@
 # Configuration of a search index definition.
 -->
 <!ELEMENT index (
-	name,
-	rebuild,
-	project,
-	locale,
-	configuration?,
-	sources,
-	param*
+    name,
+    rebuild,
+    project,
+    locale,
+    configuration?,
+    sources,
+    param*
 )>
 <!ATTLIST index class CDATA #IMPLIED>
 
@@ -189,10 +190,10 @@
 # Configuration of an search index content source in OpenCms
 -->
 <!ELEMENT indexsource (
-	name,
-	indexer,
-	resources,
-	documenttypes-indexed
+    name,
+    indexer,
+    resources,
+    documenttypes-indexed
 )>
 
 <!--
@@ -234,12 +235,12 @@
 # A field configuration, this can be used with many indexes by referencing the name.
 -->
 <!ELEMENT fieldconfiguration (
-	name,
-	description?,
-	fields?
+    name,
+    description?,
+    fields?
 )>
 <!ATTLIST fieldconfiguration
-	class CDATA #IMPLIED
+    class CDATA #IMPLIED
 >
 
 <!--
@@ -256,15 +257,15 @@
 -->
 <!ELEMENT field (mapping+) >
 <!ATTLIST field
-	name CDATA #REQUIRED
-	display CDATA #IMPLIED
-	store (true|false|TRUE|FALSE|yes|no|YES|NO|compress|COMPRESS) "true"
-	index (true|false|TRUE|FALSE|no|NO|tokenized|untokenized) "true"
-	excerpt (true|false|TRUE|FALSE) #IMPLIED
-	analyzer CDATA #IMPLIED
-	boost CDATA #IMPLIED
-	default CDATA #IMPLIED
-	type CDATA #IMPLIED
+    name CDATA #REQUIRED
+    display CDATA #IMPLIED
+    store (true|false|TRUE|FALSE|yes|no|YES|NO|compress|COMPRESS) "true"
+    index (true|false|TRUE|FALSE|no|NO|tokenized|untokenized) "true"
+    excerpt (true|false|TRUE|FALSE) #IMPLIED
+    analyzer CDATA #IMPLIED
+    boost CDATA #IMPLIED
+    default CDATA #IMPLIED
+    type CDATA #IMPLIED
 >
 
 <!--
@@ -272,9 +273,9 @@
 -->
 <!ELEMENT mapping (#PCDATA) >
 <!ATTLIST mapping
-	type (content|property|property-search|item|dynamic|attribute) #REQUIRED
-	default CDATA #IMPLIED
-	class CDATA #IMPLIED
+    type (content|property|property-search|item|dynamic|attribute) #REQUIRED
+    default CDATA #IMPLIED
+    class CDATA #IMPLIED
 >
 
 <!--

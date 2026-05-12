@@ -29,6 +29,7 @@ package org.opencms.search;
 
 import org.opencms.ade.containerpage.CmsDetailOnlyContainerUtil;
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsModificationContext;
 import org.opencms.db.CmsPublishedResource;
@@ -101,6 +102,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -3037,6 +3039,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         I_CmsDocumentFactory documentFactory = null;
         List<String> resourceTypes = null;
         List<String> mimeTypes = null;
+        CmsParameterConfiguration params = null;
         Class<?> c = null;
 
         m_documentTypes = new LinkedHashMap<String, Map<String, I_CmsDocumentFactory>>();
@@ -3050,6 +3053,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 className = documenttype.getClassName();
                 resourceTypes = documenttype.getResourceTypes();
                 mimeTypes = documenttype.getMimeTypes();
+                params = documenttype.getConfiguration();
 
                 if (name == null) {
                     throw new CmsIndexException(Messages.get().container(Messages.ERR_DOCTYPE_NO_NAME_0));
@@ -3071,6 +3075,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         exc);
                 } catch (Exception exc) {
                     throw new CmsIndexException(Messages.get().container(Messages.ERR_DOCCLASS_INIT_1, className), exc);
+                }
+                if (params != null) {
+                    for (Entry<String, String> param : params.entrySet()) {
+                        documentFactory.addConfigurationParameter(param.getKey(), param.getValue());
+                    }
                 }
 
                 if (documentFactory.isUsingCache()) {

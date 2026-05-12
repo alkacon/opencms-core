@@ -46,7 +46,7 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
  *
  * @since 8.0.1
  */
-public class CmsDocumentMsOfficeOLE2 extends A_CmsVfsDocument {
+public class CmsDocumentMsOfficeOLE2 extends A_CmsVfsDocumentWithMetaData {
 
     /**
      * Creates a new instance of this lucene document factory.<p>
@@ -69,7 +69,7 @@ public class CmsDocumentMsOfficeOLE2 extends A_CmsVfsDocument {
         logContentExtraction(resource, index);
         CmsFile file = readFile(cms, resource);
         try {
-            return CmsExtractorMsOfficeOLE2.getExtractor().extractText(file.getContents());
+            return CmsExtractorMsOfficeOLE2.getExtractor(isExtractMetaData()).extractText(file.getContents());
         } catch (Throwable e) {
             throw new CmsIndexException(
                 Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),

@@ -83,6 +83,7 @@
             <documenttype>
                 <name>pdf</name>
                 <class>org.opencms.search.documents.CmsDocumentPdf</class>
+                <param name="extract.metadata">false</param>
                 <mimetypes>
                     <mimetype>application/pdf</mimetype>
                 </mimetypes>

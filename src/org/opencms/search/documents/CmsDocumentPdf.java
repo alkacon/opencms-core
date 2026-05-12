@@ -44,7 +44,7 @@ import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
  *
  * @since 6.0.0
  */
-public class CmsDocumentPdf extends A_CmsVfsDocument {
+public class CmsDocumentPdf extends A_CmsVfsDocumentWithMetaData {
 
     /**
      * Creates a new instance of this lucene document factory.<p>
@@ -67,7 +67,7 @@ public class CmsDocumentPdf extends A_CmsVfsDocument {
         logContentExtraction(resource, index);
         CmsFile file = readFile(cms, resource);
         try {
-            return CmsExtractorPdf.getExtractor().extractText(file.getContents());
+            return CmsExtractorPdf.getExtractor(isExtractMetaData()).extractText(file.getContents());
         } catch (Exception e) {
             if (e.getClass().getSimpleName().equals("EncryptedDocumentException")) {
                 throw new CmsIndexException(
