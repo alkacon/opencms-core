@@ -28,15 +28,43 @@
                 <xmlbundle name="org.opencms.xml.adeconfig.llms_file.xml">
                 <bundle locale="en">
                     <resource key="label.LlmsFile.Date">Date</resource>
-                    <resource key="label.LlmsFile.Date.help">Bla (en).</resource>
+                    <resource key="label.LlmsFile.Date.help">The last update date of the summary file.</resource>
+                    <resource key="label.LlmsFile.Page">Page</resource>
+                    <resource key="label.LlmsFile.Page.help">Summary information of one page.</resource>
+                    <resource key="label.LlmsFile.Result">Result</resource>
+                    <resource key="label.LlmsFile.Result.help">The final summary text that is shown in the llms.txt file.</resource>
+                    <resource key="label.LlmsFilePage.URL">URL</resource>
+                    <resource key="label.LlmsFilePage.URL.help">The URL of the page.</resource>
+                    <resource key="label.LlmsFilePage.ID">ID</resource>
+                    <resource key="label.LlmsFilePage.ID.help">The internal ID of the page.</resource>
                     <resource key="label.LlmsFilePage.Date">Date</resource>
-                    <resource key="label.LlmsFilePage.Date.help">Bla (en).</resource>
+                    <resource key="label.LlmsFilePage.Date.help">The last modification date of the page.</resource>
+                    <resource key="label.LlmsFilePage.Title">Title</resource>
+                    <resource key="label.LlmsFilePage.Title.help">The page title.</resource>
+                    <resource key="label.LlmsFilePage.Summary">Summary</resource>
+                    <resource key="label.LlmsFilePage.Summary.help">The automatically generated summary of the page.</resource>
+                    <resource key="label.LlmsFilePage.OverrideSummary">Override summary</resource>
+                    <resource key="label.LlmsFilePage.URL.help">This optional individual text overrides the automatically generated summary if present.</resource>
                 </bundle>
                 <bundle locale="de">
-                    <resource key="label.LlmsFile.Date">Date</resource>
-                    <resource key="label.LlmsFile.Date.help">Bla (de).</resource>
-                    <resource key="label.LlmsFilePage.Date">Date</resource>
-                    <resource key="label.LlmsFilePage.Date.help">Bla (de).</resource>
+                    <resource key="label.LlmsFile.Date">Datum</resource>
+                    <resource key="label.LlmsFile.Date.help">Das Datum der letzten Aktualisierung der Zusammenfassungsdatei.</resource>
+                    <resource key="label.LlmsFile.Page">Seite</resource>
+                    <resource key="label.LlmsFile.Page.help">Zusammenfassungsinformationen einer Seite.</resource>
+                    <resource key="label.LlmsFile.Result">Ergebnis</resource>
+                    <resource key="label.LlmsFile.Result.help">Der endgültige Zusammenfassungstext, der in der llms.txt-Datei angezeigt wird.</resource>
+                    <resource key="label.LlmsFilePage.URL">URL</resource>
+                    <resource key="label.LlmsFilePage.URL.help">Die URL der Seite.</resource>
+                    <resource key="label.LlmsFilePage.ID">ID</resource>
+                    <resource key="label.LlmsFilePage.ID.help">Die interne ID der Seite.</resource>
+                    <resource key="label.LlmsFilePage.Date">Datum</resource>
+                    <resource key="label.LlmsFilePage.Date.help">Das Datum der letzten Änderung der Seite.</resource>
+                    <resource key="label.LlmsFilePage.Title">Titel</resource>
+                    <resource key="label.LlmsFilePage.Title.help">Der Seitentitel.</resource>
+                    <resource key="label.LlmsFilePage.Summary">Zusammenfassung</resource>
+                    <resource key="label.LlmsFilePage.Summary.help">Die automatisch generierte Zusammenfassung der Seite.</resource>
+                    <resource key="label.LlmsFilePage.OverrideSummary">EigeneZusammenfassung</resource>
+                    <resource key="label.LlmsFilePage.URL.help">Dieser optionale individuelle Text überschreibt die automatisch generierte Zusammenfassung, falls vorhanden.</resource>
                 </bundle>
                 </xmlbundle>
             </resourcebundles>
@@ -48,11 +76,11 @@
             </layouts>
             <FieldSettings>
                 <Setting>
-                    <PropertyName>Page/ID</PropertyName>
-                    
+                    <PropertyName>Page/Date</PropertyName>
+                    <Visibility>hidden</Visibility>
                 </Setting>
                 <Setting>
-                    <PropertyName>Page/Date</PropertyName>
+                    <PropertyName>Result</PropertyName>
                     <Visibility>hidden</Visibility>
                 </Setting>
             </FieldSettings>

@@ -195,6 +195,16 @@ public class CmsXmlSitemapUrlBean {
     }
 
     /**
+     * Sets the last modification date.<p>
+     *
+     * @param dateLastModified the last modification date
+     */
+    public void setDateLastModified(Date dateLastModified) {
+
+        m_lastModified = dateLastModified;
+    }
+
+    /**
      * Sets the detail page resource.<p>
      *
      * @param detailPageResource the detail page resource

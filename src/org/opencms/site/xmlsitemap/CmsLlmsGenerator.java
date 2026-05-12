@@ -215,7 +215,7 @@ public class CmsLlmsGenerator {
         }
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_config.getRobotsTxtText())) {
-            result = m_config.getRobotsTxtText() + "\n" + result;
+            result = m_config.getRobotsTxtText() + "\n\n" + result;
         }
         return result;
     }
@@ -250,6 +250,11 @@ public class CmsLlmsGenerator {
             List<CmsLlmsPage> resultPages = new ArrayList<CmsLlmsPage>(urls.size());
             boolean changed = false;
             for (CmsXmlSitemapUrlBean url : urls) {
+                if (url.getDateLastModified() == null) {
+                    // ensure that the URL has a last modification date set
+                    url.setDateLastModified(new Date());
+                    LOG.debug("URL " + url.getUrl() + " has no valid last modification date, set it to current date.");
+                }
                 CmsUUID resId = url.getOriginalResource().getStructureId();
                 CmsLlmsPage testPage = llmsBean.getPagesMap().get(resId);
                 if (testPage == null) {
@@ -257,8 +262,8 @@ public class CmsLlmsGenerator {
                     changed = true;
                     testPage = getSummaryForPage(url, null);
                     LOG.debug("Adding new URL " + url.getUrl() + " to page list.");
-                } else if (testPage.getDate() < url.getDateLastModified().getTime()) {
-                    // updated page
+                } else if (llmsBean.getDate() < url.getDateLastModified().getTime()) {
+                    // updated page after last summary creation
                     changed = true;
                     testPage = getSummaryForPage(url, testPage.getOverrideSummary());
                     llmsBean.getPagesMap().remove(resId);
@@ -295,16 +300,26 @@ public class CmsLlmsGenerator {
 
                 // check lock state
                 CmsLock lock = m_cms.getLock(llmsFile);
+                boolean locked = false;
                 if (lock.isUnlocked() && lock.isLockableBy(m_cms.getRequestContext().getCurrentUser())) {
                     m_cms.lockResource(llmsFile);
-                } else if (!lock.isOwnedBy(m_cms.getRequestContext().getCurrentUser())) {
-
+                    locked = true;
+                } else if (!lock.isOwnedBy(m_cms.getRequestContext().getCurrentUser()) && !lock.isInherited()) {
+                    m_cms.changeLock(llmsFile);
+                    locked = true;
                 }
 
-                // write file
-                m_cms.writeFile(llmsFile);
-                LOG.debug("XML file " + llmsFile.getRootPath() + " successfully updated.");
-                return new CmsLlmsFileContainer(llmsBean, llmsFile, true);
+                if (m_cms.getLock(llmsFile).isOwnedBy(m_cms.getRequestContext().getCurrentUser())) {
+                    // write file
+                    m_cms.writeFile(llmsFile);
+                    if (locked) {
+                        m_cms.unlockResource(llmsFile);
+                    }
+                    LOG.debug("XML file " + llmsFile.getRootPath() + " successfully updated.");
+                    return new CmsLlmsFileContainer(llmsBean, llmsFile, true);
+                } else {
+                    LOG.debug("XML file " + llmsFile.getRootPath() + " not locked by current user, not updated.");
+                }
             }
         }
         return new CmsLlmsFileContainer(null, null, false);
@@ -457,19 +472,26 @@ public class CmsLlmsGenerator {
                 result.setTitle(onlineResults.get(0).getField("Title_prop"));
                 String content = onlineResults.get(0).getField("content_" + contentLocale);
                 if (CmsStringUtil.isNotEmpty(content)) {
+                    String summary = "";
                     try {
                         ChatRequest q = ChatRequest.builder().messages(
                             SystemMessage.from(SYSTEM_PROMPT_SUMMARY(Locale.ENGLISH)),
                             UserMessage.from(getUserQuerySummary(result, content))).build();
                         LOG.info("Sending excerpt query for URL " + url.getUrl() + " to chatbot.");
-                        String answer = getChatModel().chat(q).aiMessage().text();
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(answer)) {
-                            content = answer;
-                        }
+                        summary = getChatModel().chat(q).aiMessage().text();
                     } catch (Exception e) {
-                        LOG.error("Failed to get answer for summary query for URL " + url.getUrl(), e);
+                        LOG.error(
+                            "Failed to get answer for summary query for URL " + url.getUrl() + ": " + e.getMessage());
+                    } finally {
+                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(summary)) {
+                            LOG.debug("No summary, use parts of SOLR content as fallback.");
+                            summary = CmsStringUtil.trimToSize(content, 200);
+                        }
                     }
-                    result.setSummary(content);
+                    result.setSummary(summary);
+                } else {
+                    LOG.debug("No SOLR content found for resource.");
+                    result.setSummary("");
                 }
             }
         } catch (CmsException e) {
