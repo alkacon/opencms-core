@@ -101,8 +101,10 @@ public class CmsLlmsFile {
             long date = Long.parseLong(content.getStringValue(cms, pathPrefix + CmsLlmsPage.NODE_DATE, LOCALE));
             String title = content.getStringValue(cms, pathPrefix + CmsLlmsPage.NODE_TITLE, LOCALE);
             String summary = content.getStringValue(cms, pathPrefix + CmsLlmsPage.NODE_SUMMARY, LOCALE);
+            boolean hide = Boolean.parseBoolean(
+                content.getStringValue(cms, pathPrefix + CmsLlmsPage.NODE_HIDE, LOCALE));
             String overrideSummary = content.getStringValue(cms, pathPrefix + CmsLlmsPage.NODE_OVERRIDESUMMARY, LOCALE);
-            pages.add(new CmsLlmsPage(url, id, date, title, summary, overrideSummary));
+            pages.add(new CmsLlmsPage(url, id, date, title, summary, hide, overrideSummary));
         }
         result.setPages(pages);
         result.setResult(content.getStringValue(cms, NODE_RESULT, LOCALE));
@@ -183,6 +185,9 @@ public class CmsLlmsFile {
             content.getValue(pageXmlPathPrefix + CmsLlmsPage.NODE_SUMMARY, LOCALE).setStringValue(
                 cms,
                 page.getSummary());
+            content.getValue(pageXmlPathPrefix + CmsLlmsPage.NODE_HIDE, LOCALE).setStringValue(
+                cms,
+                Boolean.toString(page.isHide()));
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(page.getOverrideSummary())) {
                 content.addValue(cms, pageXmlPathPrefix + CmsLlmsPage.NODE_OVERRIDESUMMARY, LOCALE, 0);
                 content.getValue(pageXmlPathPrefix + CmsLlmsPage.NODE_OVERRIDESUMMARY, LOCALE).setStringValue(

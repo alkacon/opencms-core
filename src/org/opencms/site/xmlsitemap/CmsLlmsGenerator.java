@@ -221,7 +221,7 @@ public class CmsLlmsGenerator {
     }
 
     /**
-     * Updates the llms summary file if necessary in offline mode.<p>
+     * Updates the llms.txt summary file if necessary in offline mode or when triggered by scheduled job.<p>
      *
      * @return the update results
      *
@@ -239,7 +239,7 @@ public class CmsLlmsGenerator {
                 m_cms);
 
             // check if overrides have to be updated due to a file modification
-            boolean updateOverrides = llmsFile.getDateLastModified() > llmsBean.getDate();
+            boolean updateOverridesOrHideFlag = llmsFile.getDateLastModified() > llmsBean.getDate();
 
             CmsXmlSitemapGenerator xmlSitemapGenerator = CmsXmlSitemapActionElement.prepareSitemapGenerator(
                 m_configRes,
@@ -262,6 +262,12 @@ public class CmsLlmsGenerator {
                     changed = true;
                     testPage = getSummaryForPage(url, null);
                     LOG.debug("Adding new URL " + url.getUrl() + " to page list.");
+                } else if (testPage.isHide()) {
+                    if (updateOverridesOrHideFlag) {
+                        // in case a hide option has been updated, we need to refresh the result
+                        changed = true;
+                    }
+                    llmsBean.getPagesMap().remove(resId);
                 } else if (llmsBean.getDate() < url.getDateLastModified().getTime()) {
                     // updated page after last summary creation
                     changed = true;
@@ -270,7 +276,8 @@ public class CmsLlmsGenerator {
                     LOG.debug("Updated URL " + url.getUrl() + " of page list.");
                 } else {
                     // unchanged page, check override
-                    if (updateOverrides && CmsStringUtil.isNotEmptyOrWhitespaceOnly(testPage.getOverrideSummary())) {
+                    if (updateOverridesOrHideFlag
+                        && CmsStringUtil.isNotEmptyOrWhitespaceOnly(testPage.getOverrideSummary())) {
                         // in case an override has been updated, we need to refresh the result
                         changed = true;
                     }
@@ -366,15 +373,17 @@ public class CmsLlmsGenerator {
         StringBuilder pagesList = new StringBuilder();
         for (CmsLlmsPage page : llmsBean.getPages()) {
 
-            pagesList.append("- [").append(page.getTitle()).append("]");
-            pagesList.append("(").append(page.getUrl()).append(")");
+            if (!page.isHide()) {
+                pagesList.append("- [").append(page.getTitle()).append("]");
+                pagesList.append("(").append(page.getUrl()).append(")");
 
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(page.getOverrideSummary())) {
-                pagesList.append(": ").append(page.getOverrideSummary());
-            } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(page.getSummary())) {
-                pagesList.append(": ").append(page.getSummary());
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(page.getOverrideSummary())) {
+                    pagesList.append(": ").append(page.getOverrideSummary());
+                } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(page.getSummary())) {
+                    pagesList.append(": ").append(page.getSummary());
+                }
+                pagesList.append("\n");
             }
-            pagesList.append("\n");
         }
 
         try {

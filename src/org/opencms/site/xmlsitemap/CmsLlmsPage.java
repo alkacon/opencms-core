@@ -43,6 +43,9 @@ public class CmsLlmsPage {
     /** The XML content node name for the date. */
     protected static final String NODE_DATE = "Date";
 
+    /** The XML content node name for the hide flag. */
+    protected static final String NODE_HIDE = "Hide";
+
     /** The XML content node name for the title. */
     protected static final String NODE_TITLE = "Title";
 
@@ -60,6 +63,9 @@ public class CmsLlmsPage {
 
     /** The last modification date of the page item. */
     private long m_date;
+
+    /** The hide flag of the page item. */
+    private boolean m_hide;
 
     /** The title of the page item. */
     private String m_title;
@@ -85,15 +91,24 @@ public class CmsLlmsPage {
      * @param date the last modification date of the page item
      * @param title the title of the page item
      * @param summary the summary text of the page item
+     * @param hide the hide flag of the page item
      * @param overrideSummary the optional override summary text of the page item
      */
-    public CmsLlmsPage(String url, CmsUUID id, long date, String title, String summary, String overrideSummary) {
+    public CmsLlmsPage(
+        String url,
+        CmsUUID id,
+        long date,
+        String title,
+        String summary,
+        boolean hide,
+        String overrideSummary) {
 
         m_url = url;
         m_id = id;
         m_date = date;
         m_title = title;
         m_summary = summary;
+        m_hide = hide;
         m_overrideSummary = overrideSummary;
     }
 
@@ -158,6 +173,16 @@ public class CmsLlmsPage {
     }
 
     /**
+     * Returns the hide flag of the page item.<p>
+     *
+     * @return the ID of the page item
+     */
+    public boolean isHide() {
+
+        return m_hide;
+    }
+
+    /**
      * Sets the last modification date of the page item.<p>
      *
      * @param date the last modification date of the page item
@@ -165,6 +190,16 @@ public class CmsLlmsPage {
     public void setDate(long date) {
 
         m_date = date;
+    }
+
+    /**
+     * Sets the hide flag of the page item.<p>
+     *
+     * @param id the hide flag of the page item
+     */
+    public void setHide(boolean hide) {
+
+        m_hide = hide;
     }
 
     /**

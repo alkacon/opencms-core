@@ -43,6 +43,8 @@
                     <resource key="label.LlmsFilePage.Title.help">The page title.</resource>
                     <resource key="label.LlmsFilePage.Summary">Summary</resource>
                     <resource key="label.LlmsFilePage.Summary.help">The automatically generated summary of the page.</resource>
+                    <resource key="label.LlmsFilePage.Hide">Hide page</resource>
+                    <resource key="label.LlmsFilePage.Hide.help">If checked, the page is not included in the llms.txt output.</resource>
                     <resource key="label.LlmsFilePage.OverrideSummary">Override summary</resource>
                     <resource key="label.LlmsFilePage.URL.help">This optional individual text overrides the automatically generated summary if present.</resource>
                 </bundle>
@@ -63,6 +65,8 @@
                     <resource key="label.LlmsFilePage.Title.help">Der Seitentitel.</resource>
                     <resource key="label.LlmsFilePage.Summary">Zusammenfassung</resource>
                     <resource key="label.LlmsFilePage.Summary.help">Die automatisch generierte Zusammenfassung der Seite.</resource>
+                    <resource key="label.LlmsFilePage.Hide">Seite verstecken</resource>
+                    <resource key="label.LlmsFilePage.Hide.help">Wenn angekreuzt, wird die Seite nicht in der llms.txt Ausgabe angezeigt.</resource>
                     <resource key="label.LlmsFilePage.OverrideSummary">EigeneZusammenfassung</resource>
                     <resource key="label.LlmsFilePage.URL.help">Dieser optionale individuelle Text überschreibt die automatisch generierte Zusammenfassung, falls vorhanden.</resource>
                 </bundle>
