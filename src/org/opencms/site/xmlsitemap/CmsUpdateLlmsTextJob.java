@@ -90,12 +90,16 @@ public class CmsUpdateLlmsTextJob implements I_CmsScheduledJob {
                 } else {
                     config.load(cms, res);
                 }
-                // get llms.txt generator
-                CmsLlmsGenerator llmsGenerator = new CmsLlmsGenerator(config, res, cms);
-                CmsLlmsFileContainer updateResult = llmsGenerator.updateLlmsFile();
-                if (updateResult.updated() && !res.getState().isNew()) {
-                    // add result file to publish list
-                    publishList.add(updateResult.llmsFile());
+                if (config.getMode().equals(CmsXmlSeoConfiguration.MODE_LLMS_TXT)) {
+                    // get llms.txt generator
+                    CmsLlmsGenerator llmsGenerator = new CmsLlmsGenerator(config, res, cms);
+                    CmsLlmsFileContainer updateResult = llmsGenerator.updateLlmsFile();
+                    if (updateResult.updated() && !res.getState().isNew()) {
+                        // add result file to publish list
+                        publishList.add(updateResult.llmsFile());
+                    }
+                } else {
+                    LOG.info("Ignoring file " + res.getRootPath());
                 }
             } catch (Exception e) {
                 LOG.error("Error processing file " + res.getRootPath() + ": " + e.getLocalizedMessage(), e);
