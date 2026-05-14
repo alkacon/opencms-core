@@ -53,7 +53,7 @@ public class TestGroupOperations extends OpenCmsTestRunner {
     @BeforeAll
     public void $openCmsSetUp(TestInfo testInfo) {
 
-        setupOpenCms(testInfo, null, null, false);
+        setupOpenCms(testInfo);
     }
 
     /**

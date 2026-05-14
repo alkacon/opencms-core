@@ -77,7 +77,7 @@ public class TestDefaultResourceCollectors extends OpenCmsTestRunner {
     @BeforeAll
     public void $openCmsSetUp(TestInfo testInfo) {
 
-        CmsObject cms = setupOpenCms(testInfo, null, null, false);
+        CmsObject cms = setupOpenCms(testInfo);
         try {
             initResources(cms);
         } catch (CmsException exc) {

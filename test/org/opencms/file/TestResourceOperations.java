@@ -58,7 +58,7 @@ public class TestResourceOperations extends OpenCmsTestRunner {
     @BeforeAll
     public void $openCmsSetUp(TestInfo testInfo) {
 
-        setupOpenCms(testInfo, null, null, true);
+        setupOpenCms(testInfo);
     }
 
     @Test

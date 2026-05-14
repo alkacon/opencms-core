@@ -60,7 +60,7 @@ public class TestCmsSystemInfo extends OpenCmsTestRunner {
     @BeforeAll
     public void $openCmsSetUp(TestInfo testInfo) {
 
-        setupOpenCms(testInfo, null, "/sites/default/");
+        setupOpenCms(testInfo);
     }
 
     /**

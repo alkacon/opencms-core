@@ -3505,8 +3505,8 @@ public class OpenCmsTestRunner extends Assertions {
                 getTestClassName(testInfo),
                 (importFolder != null ? "" : null),
                 (importFolder != null ? "Setting up OpenCms test database" : null),
-                importFolder,
-                targetFolder});
+                (importFolder != null ? "Importing from: " + importFolder : null),
+                (targetFolder != null ? "Importing to  : " + targetFolder : null)});
     }
 
     /**
@@ -3836,6 +3836,18 @@ public class OpenCmsTestRunner extends Assertions {
         }
     }
 
+   /**
+    * Sets up a complete OpenCms instance with configuration from the config-ori folder,
+    * creating the usual projects, but <i>without</i> importing a default database.<p>
+    * @param testInfo the JUnit test info object
+    *
+    * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/"
+    */
+    protected CmsObject setupOpenCms(TestInfo testInfo) {
+
+        return setupOpenCms(testInfo, null, null, null, null, true);
+    }
+
     /**
      * Sets up a complete OpenCms instance with configuration from the config-ori folder,
      * creating the usual projects, and importing a default database.<p>
@@ -3960,7 +3972,13 @@ public class OpenCmsTestRunner extends Assertions {
         String defaultWebAppName,
         boolean publish) {
 
-        printTestClassStartBox(testInfo, "Importing from: " + importFolder, "Importing to  : " + targetFolder);
+        if ((importFolder == null) || (targetFolder == null)) {
+            // target folder needs an import folder and vice versa
+            targetFolder = null;
+            importFolder = null;
+        }
+
+        printTestClassStartBox(testInfo, importFolder, targetFolder);
 
         boolean verbose = Boolean.getBoolean("opencms.test.verbose");
 

@@ -55,7 +55,7 @@ public class TestSiteConfiguration extends OpenCmsTestRunner {
     @BeforeAll
     public void $openCmsSetUp(TestInfo testInfo) {
 
-        setupOpenCms(testInfo, null, null);
+        setupOpenCms(testInfo);
     }
 
     /**

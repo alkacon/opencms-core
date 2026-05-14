@@ -154,7 +154,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestRunner {
     @BeforeAll
     public void $openCmsSetUp(TestInfo testInfo) {
 
-        setupOpenCms(testInfo, null, null, false);
+        setupOpenCms(testInfo);
         try {
             initResources(getCmsObject());
         } catch (Exception e) {

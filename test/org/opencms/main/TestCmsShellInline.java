@@ -66,7 +66,7 @@ public class TestCmsShellInline extends OpenCmsTestRunner {
     @BeforeAll
     public void $openCmsSetUp(TestInfo testInfo) {
 
-        setupOpenCms(testInfo, null, "/sites/default/");
+        setupOpenCms(testInfo);
     }
 
     /**

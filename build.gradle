@@ -1271,6 +1271,7 @@ tasks.register('testSingle', Test) {
     classpath = sourceSets.test.runtimeClasspath
     testClassesDirs = files(sourceSets.test.java.classesDirectory)
     useJUnitPlatform()
+    ignoreFailures = false
     doNotTrackState("Single-test execution uses ad hoc filters and generated result paths.")
     outputs.upToDateWhen { false } // makes --rerun the default
 
