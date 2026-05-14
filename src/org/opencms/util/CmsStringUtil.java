@@ -1972,7 +1972,7 @@ public final class CmsStringUtil {
      * This is the form of the String that had to be written into source code
      * using the unicode escape sequence for special characters. <p>
      *
-     * Example: "&Auml" would be transformed to "\\u00C4".<p>
+     * Example: "&amp;Auml" would be transformed to "\\u00C4".<p>
      *
      * @param s a string that may contain non-ascii characters
      *

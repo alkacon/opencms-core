@@ -136,7 +136,7 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
     }
 
     /**
-     * @see org.opencms.repository.I_CmsRepositorySession#copy(java.lang.String, java.lang.String, boolean)
+     * @see org.opencms.repository.I_CmsRepositorySession#copy(java.lang.String, java.lang.String, boolean, boolean)
      */
     public void copy(String src, String dest, boolean overwrite, boolean shallow) throws CmsException {
 

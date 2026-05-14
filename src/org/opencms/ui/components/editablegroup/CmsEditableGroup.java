@@ -201,7 +201,7 @@ public class CmsEditableGroup {
      *
      * @param container the container in which to render the individual rows
      * @param componentFactory the factory used to create new input fields
-     * @param placeholder the placeholder to display when there are no rows
+     * @param emptyHandler the handler to use when there are no rows
      */
     public CmsEditableGroup(
         AbstractOrderedLayout container,
@@ -405,7 +405,9 @@ public class CmsEditableGroup {
     }
 
     /**
-     * @see org.opencms.ui.components.editablegroup.I_CmsEditableGroup#setAddButtonVisible(boolean)
+     * Sets whether the add button is visible.<p>
+     *
+     * @param visible true if the add button should be visible
      */
     public void setAddButtonVisible(boolean visible) {
 

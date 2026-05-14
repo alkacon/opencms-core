@@ -81,7 +81,7 @@ public class CmsOUEditDialog extends CmsBasicDialog {
         private static final long serialVersionUID = 6830449175508751039L;
 
         /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         * @see com.vaadin.v7.data.Validator#validate(java.lang.Object)
          */
         public void validate(Object value) throws InvalidValueException {
 
@@ -106,7 +106,7 @@ public class CmsOUEditDialog extends CmsBasicDialog {
         private static final long serialVersionUID = -2325058988240648143L;
 
         /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         * @see com.vaadin.v7.data.Validator#validate(java.lang.Object)
          */
         public void validate(Object value) throws InvalidValueException {
 

@@ -205,7 +205,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
     }
 
     /**
-     * @see org.opencms.workplace.editors.directedit.A_CmsDirectEditProvider#getResourceInfo(java.lang.String)
+     * @see org.opencms.workplace.editors.directedit.A_CmsDirectEditProvider#getResourceInfo(CmsDirectEditParams, java.lang.String)
      *
      * Similar to the method in the superclass, but removes the write permission check, as this is handled differently.
      */

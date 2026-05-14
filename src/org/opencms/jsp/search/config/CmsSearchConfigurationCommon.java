@@ -79,7 +79,7 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
      * @param ignoreReleaseDate A flag, indicating if the release date should be ignored.
      * @param ignoreExpirationDate A flag, indicating if the expiration date should be ignored.
      * @param maxReturnedResults Number of results maximally to return.
-     *           <code><= 0</code> means that there is no limit.
+     *           <code>&lt;= 0</code> means that there is no limit.
      */
     public CmsSearchConfigurationCommon(
         final String queryParam,

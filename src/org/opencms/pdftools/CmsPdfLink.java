@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
 public class CmsPdfLink {
 
     /**
-     * Exception which is thrown when parsing a link as a PDF link fails.<p<
+     * Exception which is thrown when parsing a link as a PDF link fails.<p>
      */
     public static class CmsPdfLinkParseException extends Exception {
 

@@ -174,7 +174,7 @@ public final class CmsRequestUtil {
      * Appends a request parameter to the given URL.<p>
      *
      * This method takes care about the adding the parameter as an additional
-     * parameter (appending <code>&param=value</code>) or as the first parameter
+     * parameter (appending <code>&amp;param=value</code>) or as the first parameter
      * (appending <code>?param=value</code>).<p>
      *
      * @param url the URL where to append the parameter to
@@ -211,7 +211,7 @@ public final class CmsRequestUtil {
      * simple <code>String</code> values.<p>
      *
      * This method takes care about the adding the parameter as an additional
-     * parameter (appending <code>&param=value</code>) or as the first parameter
+     * parameter (appending <code>&amp;param=value</code>) or as the first parameter
      * (appending <code>?param=value</code>).<p>
      *
      * @param url the URL where to append the parameter to
@@ -436,7 +436,7 @@ public final class CmsRequestUtil {
 
     /**
      * Returns all parameters of the given request
-     * as a request parameter URL String, that is in the form <code>key1=value1&key2=value2</code> etc.
+     * as a request parameter URL String, that is in the form <code>key1=value1&amp;key2=value2</code> etc.
      *
      * The result will be encoded using the <code>{@link CmsEncoder#encode(String)}</code> function.<p>
      *

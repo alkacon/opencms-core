@@ -348,7 +348,7 @@ abstract class A_CmsJspValueWrapper extends AbstractCollection<String> {
      *
      * @return the String value of the wrapped content value
      *
-     * @deprecated use {@link #getToString()} instead
+     * @deprecated use <code>getToString()</code> instead
      */
     @Deprecated
     public String getStringValue() {

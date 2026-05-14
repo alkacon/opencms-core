@@ -195,7 +195,7 @@ public interface I_CmsXmlContentHandler {
      *
      * <p>This is meant to provide metadata about a field for tools that process the content (e.g. translation).
      *
-     * @param the path of a content field
+     * @param remainingPath path of a content field
      * @return the set of agent tags
      */
     public Set<String> getAgentTags(String remainingPath);

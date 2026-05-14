@@ -70,7 +70,6 @@ public interface I_CmsSearchConfigurationHighlighting {
 
     /**
      * Returns the value set for the configuration parameter.
-     * @param paramName the parameter name without the preceeding 'hl.'.
      * @return the value that is set, or <code>null</code> if the value is not set explicitly.
      */
     Map<String, String> getParams();

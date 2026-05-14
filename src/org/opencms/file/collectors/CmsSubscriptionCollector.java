@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  *     (not considered if the <code>resource</code> parameter is not used)</li>
  * <li><i>mode</i>: the subscription read mode, can be <code>all</code>, <code>visited</code> or <code>unvisited</code> (default)</li>
  * <li><i>resource</i>: the resource, i.e. the parent folder from which the subscribed or visited resources should be read from</li>
- * <li><i>user</i>:<the user to read subscribed or visited resources for/li>
+ * <li><i>user</i>: the user to read subscribed or visited resources for</li>
  * </ul>
  *
  * Example parameter String that can be used for the collector:<br/>

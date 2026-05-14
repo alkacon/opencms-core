@@ -156,7 +156,7 @@ public class CmsSiteSelectDialog extends CmsBasicDialog {
     }
 
     /**
-     * Sets the callback that should be called when the dialog finishes.<p<
+     * Sets the callback that should be called when the dialog finishes.<p>
      *
      * @param callback the callback to call when the dialog finishes
      */

@@ -258,12 +258,10 @@ public class CmsRelationSystemValidator {
 
     /**
      * Checks a link to a resource which has been deleted.<p>
-     * @param relation
+     * @param relation the relation
      *
      * @param link the URI of the resource which has a link to the deleted resource
      * @param fileLookup a lookup table of files to be published
-     * @param relationTargets
-     *
      * @return true if the resource which has a link to the deleted resource is also going to be deleted
      */
     protected boolean checkLinkForDeletedLinkTarget(

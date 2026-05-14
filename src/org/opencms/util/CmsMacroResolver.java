@@ -388,7 +388,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
      * @param resourceBundle property resource
      * @param descriptor resource
      * @param clonedCms cms instance
-     * @return Map <key, [value, descriptor]>
+     * @return Map &lt;key, [value, descriptor]&gt;
      * @throws CmsXmlException exception
      * @throws CmsException exception
      */

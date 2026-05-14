@@ -118,7 +118,7 @@ public class CmsSitemapTreeNode extends CssLayout {
     }
 
     /**
-     * Opens / closes the list of children.<p<
+     * Opens / closes the list of children.<p>
      *
      * @param isOpen true if the children should be opened, false if they should be closed
      */

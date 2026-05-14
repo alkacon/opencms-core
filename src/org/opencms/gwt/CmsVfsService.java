@@ -372,12 +372,12 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
-     * Returns a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget} including the lock state.<p>
+     * Returns a bean to display the <code>CmsListItemWidget</code> including the lock state.<p>
      *
      * @param cms the CMS context
      * @param resource the resource to get the page info for
      *
-     * @return a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
+     * @return a bean to display the <code>CmsListItemWidget</code>.<p>
      *
      * @throws CmsLoaderException if the resource type could not be found
      * @throws CmsException if something else goes wrong
@@ -1693,11 +1693,11 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
-     * Returns a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
+     * Returns a bean to display the <code>CmsListItemWidget</code>.<p>
      *
      * @param res the resource to get the page info for
      *
-     * @return a bean to display the {@link org.opencms.gwt.client.ui.CmsListItemWidget}.<p>
+     * @return a bean to display the <code>CmsListItemWidget</code>.<p>
      *
      * @throws CmsLoaderException if the resource type could not be found
      * @throws CmsException if something else goes wrong

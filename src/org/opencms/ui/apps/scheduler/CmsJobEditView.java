@@ -91,7 +91,7 @@ public class CmsJobEditView extends CmsBasicDialog {
         private static final long serialVersionUID = 1L;
 
         /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         * @see com.vaadin.v7.data.Validator#validate(java.lang.Object)
          */
         public void validate(Object value) throws InvalidValueException {
 
@@ -120,7 +120,7 @@ public class CmsJobEditView extends CmsBasicDialog {
         private static final long serialVersionUID = 1L;
 
         /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         * @see com.vaadin.v7.data.Validator#validate(java.lang.Object)
          */
         public void validate(Object value) throws InvalidValueException {
 
@@ -150,7 +150,7 @@ public class CmsJobEditView extends CmsBasicDialog {
         private static final long serialVersionUID = 1L;
 
         /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         * @see com.vaadin.v7.data.Validator#validate(java.lang.Object)
          */
         public void validate(Object value) throws InvalidValueException {
 

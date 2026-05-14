@@ -59,7 +59,7 @@ import org.apache.solr.common.params.CommonParams;
  * Reachable under: "/opencms/opencms/handleSolrSelect".<p>
  *
  * Usage example:<p>
- * <code>http://localhost:8080/opencms/opencms/handleSolrSelect?fq=parent-folders:/sites/+type=v8article&fl=path&rows=10&sort=path%20asc</code>
+ * <code>http://localhost:8080/opencms/opencms/handleSolrSelect?fq=parent-folders:/sites/+type=v8article&amp;fl=path&amp;rows=10&amp;sort=path%20asc</code>
  *
  * @since 8.5.0
  */

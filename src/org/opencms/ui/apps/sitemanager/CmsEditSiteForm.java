@@ -1091,7 +1091,7 @@ public class CmsEditSiteForm extends CmsBasicDialog {
      * Creates field for aliases.<p>
      *
      * @param alias url
-     * @param red redirect
+     * @param redirectMode redirect mode
      * @return component
      */
     protected FormLayout createAliasComponent(String alias, CmsSiteMatcher.RedirectMode redirectMode) {

@@ -2069,7 +2069,7 @@ public abstract class CmsWorkplace {
 
     /**
      * Returns all initialized parameters of the current workplace class
-     * as request parameters, i.e. in the form <code>key1=value1&key2=value2</code> etc.
+     * as request parameters, i.e. in the form <code>key1=value1&amp;key2=value2</code> etc.
      *
      * @return all initialized parameters of the current workplace class
      * as request parameters

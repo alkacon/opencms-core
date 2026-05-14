@@ -72,7 +72,7 @@ public class CmsPathSelectField extends A_CmsFileSelectField<String> {
     }
 
     /**
-     * @see com.vaadin.ui.AbstractField#getType()
+     * @see com.vaadin.v7.ui.AbstractField#getType()
      */
     @Override
     public Class<? extends String> getType() {
@@ -132,7 +132,7 @@ public class CmsPathSelectField extends A_CmsFileSelectField<String> {
     }
 
     /**
-     * @see com.vaadin.ui.AbstractField#setInternalValue(java.lang.Object)
+     * @see com.vaadin.v7.ui.AbstractField#setInternalValue(java.lang.Object)
      */
     @Override
     protected void setInternalValue(String newValue) {

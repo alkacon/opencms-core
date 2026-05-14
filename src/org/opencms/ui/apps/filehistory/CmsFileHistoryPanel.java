@@ -176,7 +176,6 @@ public class CmsFileHistoryPanel extends VerticalLayout {
 
      * public constructor.<p>
      *
-     * @param app instance of calling app
      */
     public CmsFileHistoryPanel() {
 

@@ -123,7 +123,7 @@ public interface I_CmsDirectEditProvider extends I_CmsConfigurationParameterHand
     /**
      * Returns <code>true</code> if this provider (currently) operates in manual mode.<p>
      *
-     * In manual mode the direct edit HTML is inserted with <code>&lt;cms:enditable mode="manual" /&gt</code>
+     * In manual mode the direct edit HTML is inserted with <code>&lt;cms:enditable mode="manual" /&gt;</code>
      * tags. Otherwise the direct edit HTML is automatically inserted in the current page.<p>
      *
      * Some providers may not be able to operate in manual mode. These will always return <code>false</code>.<p>

@@ -380,7 +380,8 @@ public class CmsImageScaler {
 
     /**
      * Gets image dimensions for given file
-     * @param imgFile image file
+     * @param path the image file path
+     * @param content the image file content
      * @return dimensions of image
      * @throws IOException if the file is not a known image
      */

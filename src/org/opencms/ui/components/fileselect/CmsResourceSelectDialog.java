@@ -246,7 +246,7 @@ public class CmsResourceSelectDialog extends CustomComponent {
      * public constructor.<p>
      *
      * @param filter resource filter
-     * @param cms CmsObject
+     * @param _cms CmsObject
      * @param options options
      * @throws CmsException exception
      */

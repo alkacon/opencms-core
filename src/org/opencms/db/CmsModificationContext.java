@@ -135,7 +135,7 @@ public class CmsModificationContext implements AutoCloseable {
      *
      * @param securityManager the security manager instance
      * @param adminCms a CmsObject with admin privileges
-     * @param onlineFolderPath the online folder path (nay be null)
+     * @param options the online folder options
      */
     public static void initialize(
         CmsSecurityManager securityManager,

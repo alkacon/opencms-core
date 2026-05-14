@@ -222,7 +222,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
     }
 
     /**
-     * Escapes all <code>&</code>, e.g. replaces them with a <code>&amp;</code>.<p>
+     * Escapes all <code>&amp;</code>, e.g. replaces them with a <code>&amp;amp;</code>.<p>
      *
      * @param source the String to escape
      * @return the escaped String
@@ -355,7 +355,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
     }
 
     /**
-     * Unescapes all <code>&amp;amp;</code>, that is replaces them with a <code>&</code>.<p>
+     * Unescapes all <code>&amp;amp;</code>, that is replaces them with a <code>&amp;</code>.<p>
      *
      * @param source the String to unescape
      * @return the unescaped String

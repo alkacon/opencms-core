@@ -70,7 +70,7 @@ public class CmsDialog extends CmsToolDialog {
     /** Value for the action: close popup window. */
     public static final int ACTION_CLOSEPOPUP = 6;
 
-    /** Value for the action: save & close popup window. */
+    /** Value for the action: save &amp; close popup window. */
     public static final int ACTION_CLOSEPOPUP_SAVE = 7;
 
     /** Value for the action: confirmed. */

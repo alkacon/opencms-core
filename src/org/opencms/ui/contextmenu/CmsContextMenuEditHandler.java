@@ -179,7 +179,7 @@ public class CmsContextMenuEditHandler implements I_CmsFilePropertyEditHandler {
     }
 
     /**
-     * @see com.vaadin.event.FieldEvents.TextChangeListener#textChange(com.vaadin.event.FieldEvents.TextChangeEvent)
+     * @see com.vaadin.v7.event.FieldEvents.TextChangeListener#textChange(com.vaadin.v7.event.FieldEvents.TextChangeEvent)
      */
     public void textChange(TextChangeEvent event) {
 
@@ -193,7 +193,7 @@ public class CmsContextMenuEditHandler implements I_CmsFilePropertyEditHandler {
     }
 
     /**
-     * @see com.vaadin.data.Validator#validate(java.lang.Object)
+     * @see com.vaadin.v7.data.Validator#validate(java.lang.Object)
      */
     public void validate(Object value) throws InvalidValueException {
 

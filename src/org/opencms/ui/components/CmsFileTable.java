@@ -158,7 +158,7 @@ public class CmsFileTable extends CmsResourceTable {
         private static final long serialVersionUID = 3079590603587933576L;
 
         /**
-         * @see com.vaadin.ui.DefaultFieldFactory#createField(com.vaadin.v7.data.Container, java.lang.Object, java.lang.Object, com.vaadin.ui.Component)
+         * @see com.vaadin.v7.ui.DefaultFieldFactory#createField(com.vaadin.v7.data.Container, java.lang.Object, java.lang.Object, com.vaadin.ui.Component)
          */
         @Override
         public Field<?> createField(Container container, Object itemId, Object propertyId, Component uiContext) {

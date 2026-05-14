@@ -67,7 +67,6 @@ public class CmsPageEditorFavoriteContext implements I_CmsFavoriteContext {
      * Creates a new instance.
      *
      * @param context the embedded dialog context
-     * @param req the current request
      */
     public CmsPageEditorFavoriteContext(CmsEmbeddedDialogContext context) {
 

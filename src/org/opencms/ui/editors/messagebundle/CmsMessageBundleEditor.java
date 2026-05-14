@@ -460,7 +460,12 @@ I_OptionListener, I_CmsHasShortcutActions {
     }
 
     /**
-     * @see org.opencms.ui.editors.I_CmsEditor#matchesResource(org.opencms.file.CmsResource, boolean)
+     * Checks if the resource type matches this editor.<p>
+     *
+     * @param type the resource type
+     * @param plainText true if plain text mode is requested
+     *
+     * @return true if the resource type matches this editor
      */
     public boolean matchesType(I_CmsResourceType type, boolean plainText) {
 

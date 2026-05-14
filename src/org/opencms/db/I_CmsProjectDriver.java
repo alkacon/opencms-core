@@ -179,18 +179,18 @@ public interface I_CmsProjectDriver {
     void deleteProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException;
 
     /**
-     * Deletes all publish history entries with publish tags >=0 and < the specified max. publish tag.<p>
+     * Deletes all publish history entries with publish tags &gt;=0 and &lt; the specified max. publish tag.<p>
      *
      * @param dbc the current database context
      * @param projectId the ID of the current project
-     * @param maxPublishTag entries with publish tags >=0 and < this max. publish tag get deleted
+     * @param maxPublishTag entries with publish tags &gt;=0 and &lt; this max. publish tag get deleted
      *
      * @throws CmsDataAccessException if something goes wrong
      */
     void deletePublishHistory(CmsDbContext dbc, CmsUUID projectId, int maxPublishTag) throws CmsDataAccessException;
 
     /**
-     * Deletes a publish history entry with publish tags >=0 and < the specified max. publish tag.<p>
+     * Deletes a publish history entry with publish tags &gt;=0 and &lt; the specified max. publish tag.<p>
      *
      * @param dbc the current database context
      * @param publishHistoryId the id of the history to delete the entry from
@@ -429,12 +429,12 @@ public interface I_CmsProjectDriver {
     throws CmsException;
 
     /**
-     * Reads the <code>{@link List}&lt{@link org.opencms.lock.CmsLock};&gt; </code>
+     * Reads the <code>{@link List}&lt;{@link org.opencms.lock.CmsLock}&gt;</code>
      * that were saved to the database in the previous run of OpenCms.<p>
      *
      * @param dbc the current database context
      *
-     * @return the <code>{@link List}&lt{@link org.opencms.lock.CmsLock};&gt; </code>
+     * @return the <code>{@link List}&lt;{@link org.opencms.lock.CmsLock}&gt;</code>
      *      that were saved to the database in the previous run of OpenCms.
      *
      * @throws CmsDataAccessException if something goes wrong
@@ -657,14 +657,14 @@ public interface I_CmsProjectDriver {
     void unmarkProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException;
 
     /**
-     * Writes the <code>{@link List}&lt{@link org.opencms.lock.CmsLock};&gt; </code>
+     * Writes the <code>{@link List}&lt;{@link org.opencms.lock.CmsLock}&gt;</code>
      * to the database for reuse in the next run of OpenCms.<p>
      *
      * This method must only be called at startup or the in-memory locking will overwritten.<p>
      *
      * @param dbc the current database context
      *
-     * @param locks the <code>{@link List}&lt{@link org.opencms.lock.CmsLock};&gt;</code> that
+     * @param locks the <code>{@link List}&lt;{@link org.opencms.lock.CmsLock}&gt;</code> that
      *      currently exist in OpenCms ({@link org.opencms.lock.CmsLockManager})
      *
      * @throws CmsDataAccessException if something goes wrong

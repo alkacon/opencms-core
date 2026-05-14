@@ -49,7 +49,7 @@ public interface I_CmsSearchConfigurationCommon {
     boolean getEscapeQueryChars();
 
     /** Returns the extra params given to Solr.
-     * @return The extra params given to Solr - in format "p1=v1&p2=v2".
+     * @return The extra params given to Solr - in format "p1=v1&amp;p2=v2".
      */
     String getExtraSolrParams();
 

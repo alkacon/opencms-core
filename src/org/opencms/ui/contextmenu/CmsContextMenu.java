@@ -1113,7 +1113,7 @@ public class CmsContextMenu extends AbstractExtension {
      * Opens the context menu to given coordinates. ContextMenu must extend
      * component before calling this method. This method is only intended for
      * opening the context menu from server side when using
-     * {@link #ContextMenuOpenedListener.ComponentListener}.<p>
+     * <code>ContextMenuOpenedListener.ComponentListener</code>.<p>
      *
      * @param x the client x position
      * @param y the client y position

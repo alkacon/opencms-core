@@ -35,8 +35,6 @@ import javax.servlet.http.HttpServletRequest;
  * Convenience interface to provide core server-side data to the client.<p>
  *
  * @since 8.0.0
- *
- * @see org.opencms.gwt.client.CmsCoreProvider
  */
 public interface I_CmsCoreProvider {
 

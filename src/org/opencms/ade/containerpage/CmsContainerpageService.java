@@ -2324,7 +2324,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * @param uri the page URI
      * @param detailContentId the detail content id
      * @param locale the content locale
-     * @param contextInfo the template context information
+     * @param templateContextInfo the template context information
      *
      * @return the type beans
      *

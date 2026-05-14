@@ -198,7 +198,7 @@ public class CmsJspResourceAccessBean {
      * obtained by {@link #getFile()}.<p>
      *
      * Usage example on a JSP with the JSTL:<pre>
-     * &&lt;cms:resourceload ... &gt;
+     * &lt;cms:resourceload ... &gt;
      *     &lt;cms:resourceaccess var="res" /&gt;
      *     Site path of the resource: "${res.filename}";
      * &lt;/cms:resourceload&gt;</pre>
@@ -343,7 +343,7 @@ public class CmsJspResourceAccessBean {
      * Returns the current resource.<p>
      *
      * Usage example on a JSP with the JSTL:<pre>
-     * &&lt;cms:resourceload ... &gt;
+     * &lt;cms:resourceload ... &gt;
      *     &lt;cms:resourceaccess var="res" /&gt;
      *     Root path of the resource: "${res.resource.rootPath}";
      * &lt;/cms:resourceload&gt;</pre>

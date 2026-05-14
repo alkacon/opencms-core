@@ -215,7 +215,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Validatable#addValidator(com.vaadin.data.Validator)
+     * @see com.vaadin.v7.data.Validatable#addValidator(com.vaadin.v7.data.Validator)
      */
     public void addValidator(Validator validator) {
 
@@ -296,7 +296,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Validatable#getValidators()
+     * @see com.vaadin.v7.data.Validatable#getValidators()
      */
     public Collection<Validator> getValidators() {
 
@@ -340,7 +340,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Validatable#isInvalidAllowed()
+     * @see com.vaadin.v7.data.Validatable#isInvalidAllowed()
      */
     public boolean isInvalidAllowed() {
 
@@ -377,7 +377,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Validatable#isValid()
+     * @see com.vaadin.v7.data.Validatable#isValid()
      */
     public boolean isValid() {
 
@@ -385,7 +385,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Validatable#removeAllValidators()
+     * @see com.vaadin.v7.data.Validatable#removeAllValidators()
      */
     public void removeAllValidators() {
 
@@ -402,7 +402,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Validatable#removeValidator(com.vaadin.data.Validator)
+     * @see com.vaadin.v7.data.Validatable#removeValidator(com.vaadin.v7.data.Validator)
      */
     public void removeValidator(Validator validator) {
 
@@ -436,7 +436,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Validatable#setInvalidAllowed(boolean)
+     * @see com.vaadin.v7.data.Validatable#setInvalidAllowed(boolean)
      */
     public void setInvalidAllowed(boolean invalidValueAllowed) throws UnsupportedOperationException {
 
@@ -444,7 +444,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.BufferedValidatable#setInvalidCommitted(boolean)
+     * @see com.vaadin.v7.data.BufferedValidatable#setInvalidCommitted(boolean)
      */
     public void setInvalidCommitted(boolean isCommitted) {
 
@@ -588,7 +588,7 @@ public class CmsPrincipalSelect extends CustomComponent implements Field<String>
     }
 
     /**
-     * @see com.vaadin.data.Validatable#validate()
+     * @see com.vaadin.v7.data.Validatable#validate()
      */
     public void validate() throws InvalidValueException {
 

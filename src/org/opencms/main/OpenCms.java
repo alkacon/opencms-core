@@ -317,7 +317,7 @@ public final class OpenCms {
     }
 
     /**
-     * Creates a string containing all current flex cache keys, for use in debugging.<p<
+     * Creates a string containing all current flex cache keys, for use in debugging.<p>
      *
      * @return a string containing all current flex cache keys
      */
@@ -329,7 +329,7 @@ public final class OpenCms {
     /**
      * Gets the folder size tracker for the Offline or Online project.
      *
-     * @param true if we want the Online folder size tracker, false for the Offline project one
+     * @param online if we want the Online folder size tracker, false for the Offline project one
      * @return the folder size tracker
      */
     public static CmsFolderSizeTracker getFolderSizeTracker(boolean online) {

@@ -176,7 +176,7 @@ public final class CmsJspStandardContextBean {
         /**
          * Constructor.<p>
          *
-         * @param element the element to wrap
+         * @param elementProvider the element provider
          */
         protected CmsContainerElementWrapper(Supplier<CmsContainerElementBean> elementProvider) {
 
@@ -1215,7 +1215,7 @@ public final class CmsJspStandardContextBean {
      *
      * @param messageKey the message key to open the bundle editor for.
      * @param backLinkAnchor the anchor id to add to the backlink to the page. If <code>null</code> no anchor is added to the backlink.
-     * @param backLinkParams request parameters to add to the backlink without leading '?', e.g. "param1=a&param2=b".
+     * @param backLinkParams request parameters to add to the backlink without leading '?', e.g. "param1=a&amp;param2=b".
      *
      * @return a link to the bundle editor for editing the provided key, or <code>null</code> if the bundle for the key could not be found.
      */
@@ -1232,7 +1232,7 @@ public final class CmsJspStandardContextBean {
      *
      * @param messageKey the message key to open the bundle editor for.
      * @param backLinkAnchor the anchor id to add to the backlink to the page. If <code>null</code> no anchor is added to the backlink.
-     * @param backLinkParams request parameters to add to the backlink without leading '?', e.g. "param1=a&param2=b".
+     * @param backLinkParams request parameters to add to the backlink without leading '?', e.g. "param1=a&amp;param2=b".
      * @param bundleFilters substrings of names of bundles to be preferred when multiple bundles contain the key.
      *
      * @return a link to the bundle editor for editing the provided key, or <code>null</code> if the bundle for the key could not be found.
@@ -1255,7 +1255,7 @@ public final class CmsJspStandardContextBean {
      *
      * @param messageKey the message key to open the bundle editor for.
      * @param backLinkAnchor the anchor id to add to the backlink to the page. If <code>null</code> no anchor is added to the backlink.
-     * @param backLinkParams request parameters to add to the backlink without leading '?', e.g. "param1=a&param2=b".
+     * @param backLinkParams request parameters to add to the backlink without leading '?', e.g. "param1=a&amp;param2=b".
      * @param bundleName the name of the bundle to search the key in. If <code>null</code> the bundle is detected automatically.
      *
      * @return a link to the bundle editor for editing the provided key, or <code>null</code> if the bundle for the key could not be found.
@@ -1691,7 +1691,7 @@ public final class CmsJspStandardContextBean {
      * The provided Map key is assumed to be a String that represents a named dynamic function.<p>
      *
      * Usage example on a JSP with the JSTL:<pre>
-     * &lt;a href=${cms.functionDetailPage['search']} /&gt
+     * &lt;a href=${cms.functionDetailPage['search']} /&gt;
      * </pre>
      *
      * @return a lazy initialized Map that provides the detail page link as a value when given the name of a
@@ -1715,7 +1715,7 @@ public final class CmsJspStandardContextBean {
      * The provided Map key is assumed to be a String that represents a named dynamic function.<p>
      *
      * Usage example on a JSP with the JSTL:<pre>
-     * &lt;a href=${cms.functionDetailPage['search']} /&gt
+     * &lt;a href=${cms.functionDetailPage['search']} /&gt;
      * </pre>
      *
      * @return a lazy initialized Map that provides the detail page link as a value when given the name of a
@@ -2536,7 +2536,7 @@ public final class CmsJspStandardContextBean {
      * The provided Map key is assumed to be the name of a resource type that has a detail page configured.<p>
      *
      * Usage example on a JSP with the JSTL:<pre>
-     * &lt;a href=${cms.typeDetailPage['bs-blog']} /&gt
+     * &lt;a href=${cms.typeDetailPage['bs-blog']} /&gt;
      * </pre>
      *
      * @return a lazy initialized Map that provides the detail page link as a value when given the name of a
@@ -2616,9 +2616,9 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
-     * Returns <code>true</code in case a detail page is available for the current element.<p>
+     * Returns <code>true</code> in case a detail page is available for the current element.<p>
      *
-     * @return <code>true</code in case a detail page is available for the current element
+     * @return <code>true</code> in case a detail page is available for the current element
      */
     public boolean isDetailPageAvailable() {
 

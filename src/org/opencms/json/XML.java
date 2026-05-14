@@ -62,7 +62,7 @@ import java.util.Iterator;
  */
 public final class XML {
 
-    /** The Character '&'. */
+    /** The Character '&amp;'. */
     public static final Character AMP = Character.valueOf('&');
 
     /** The Character '''. */
@@ -77,7 +77,7 @@ public final class XML {
     /** The Character '>'. */
     public static final Character GT = Character.valueOf('>');
 
-    /** The Character '<'. */
+    /** The Character '&lt;'. */
     public static final Character LT = Character.valueOf('<');
 
     /** The Character '?'. */

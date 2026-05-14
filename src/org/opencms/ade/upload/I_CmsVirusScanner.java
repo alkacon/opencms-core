@@ -40,7 +40,7 @@ public interface I_CmsVirusScanner extends I_CmsConfigurationParameterHandler {
     /**
      * Scans file data for viruses.
      *
-     * @param data the data to scan as a stream
+     * @param stream the data to scan as a stream
      *
      * @return a list of names of viruses found
      */

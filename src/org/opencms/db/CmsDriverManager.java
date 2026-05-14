@@ -5707,7 +5707,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * is a sibling in a "labeled" site folder.<p>
      *
      * This method is used when creating a new sibling
-     * (use the <code>newResource</code> parameter & <code>action = 1</code>)
+     * (use the <code>newResource</code> parameter &amp; <code>action = 1</code>)
      * or deleting/importing a resource (call with <code>action = 2</code>).<p>
      *
      * @param dbc the current database context
@@ -10042,7 +10042,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @throws CmsException if something goes wrong
      *
-     * @see CmsSecurityManager#updateRelationsForResource(CmsRequestContext, CmsResource, List)
+     * @see CmsSecurityManager#updateRelationsForResource(CmsRequestContext, CmsResource, List, boolean)
      */
     public void updateRelationsForResource(
         CmsDbContext dbc,

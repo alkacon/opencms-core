@@ -685,7 +685,7 @@ public class CmsModuleApp extends A_CmsAttributeAwareApp implements I_CmsCachabl
     }
 
     /**
-     * Changes to a new sub-view and stores a report to be displayed by that subview.<p<
+     * Changes to a new sub-view and stores a report to be displayed by that subview.<p>
      *
      * @param newState the new state
      * @param thread the report thread which should be displayed in the sub view

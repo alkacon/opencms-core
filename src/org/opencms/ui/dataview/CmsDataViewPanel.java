@@ -91,7 +91,7 @@ public class CmsDataViewPanel extends VerticalLayout {
         }
 
         /**
-         * @see com.vaadin.ui.Table#sort(java.lang.Object[], boolean[])
+         * @see com.vaadin.v7.ui.Table#sort(java.lang.Object[], boolean[])
          */
         @Override
         public void sort(Object[] propertyId, boolean[] ascending) throws UnsupportedOperationException {

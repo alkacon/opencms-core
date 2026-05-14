@@ -1131,7 +1131,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     }
 
     /**
-     * Purges the JSP repository.<p<
+     * Purges the JSP repository.<p>
      *
      * @param afterPurgeAction the action to execute after purging
      */

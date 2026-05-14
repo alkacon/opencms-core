@@ -240,7 +240,7 @@ public class CmsUriSplitter {
     }
 
     /**
-     * Returns the query part of the uri, for example <code>a=b&c=d</code>,
+     * Returns the query part of the uri, for example <code>a=b&amp;c=d</code>,
      * or <code>null</code> if no query is available.<p>
      *
      * @return the query part of the uri
@@ -252,7 +252,7 @@ public class CmsUriSplitter {
 
     /**
      * Returns the suffix part of the uri, a combination of query and anchor,
-     * for example <code>?a=b&c=d#someanchor</code>,
+     * for example <code>?a=b&amp;c=d#someanchor</code>,
      * or the empty String if no suffix is available.<p>
      *
      * @return the suffix part of the uri

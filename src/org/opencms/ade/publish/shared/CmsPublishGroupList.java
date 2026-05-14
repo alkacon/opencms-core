@@ -63,8 +63,8 @@ public class CmsPublishGroupList implements IsSerializable {
     }
 
     /**
-     * Constructs a new instance with a publish list token and an empty group list.<p<
-     *      *
+     * Constructs a new instance with a publish list token and an empty group list.<p>
+     *
      * @param token the publish list token to use
      */
     public CmsPublishGroupList(CmsPublishListToken token) {

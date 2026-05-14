@@ -426,7 +426,7 @@ public class CmsResourceTable extends CustomComponent {
         }
 
         /**
-         * Adds a new column.<p<
+         * Adds a new column.<p>
          *
          * @param prop the column
          * @param flags the flags for the column

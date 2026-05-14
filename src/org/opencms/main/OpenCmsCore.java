@@ -2130,7 +2130,7 @@ public final class OpenCmsCore {
      *
      * This is the final step that is called on the servlets "init()" method.
      * It registers the servlets request handler and also outputs the final
-     * startup message. The servlet should auto-load since the &ltload-on-startup&gt;
+     * startup message. The servlet should auto-load since the <code>&lt;load-on-startup&gt;</code>
      * parameter is set in the 'web.xml' by default.<p>
      *
      * @param servlet the OpenCms servlet

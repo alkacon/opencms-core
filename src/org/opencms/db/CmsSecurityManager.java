@@ -3127,7 +3127,7 @@ public final class CmsSecurityManager {
      *
      * @throws CmsException in case of i/o errors (NOT because of insufficient permissions)
      *
-     * @see #hasPermissions(CmsDbContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)
+     * @see #hasPermissions(CmsDbContext, CmsResource, CmsPermissionSet, LockCheck, CmsResourceFilter)
      */
     public I_CmsPermissionHandler.CmsPermissionCheckResult hasPermissions(
         CmsRequestContext context,
@@ -3175,7 +3175,7 @@ public final class CmsSecurityManager {
      *
      * @throws CmsException in case of i/o errors (NOT because of insufficient permissions)
      *
-     * @see #hasPermissions(CmsDbContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)
+     * @see #hasPermissions(CmsDbContext, CmsResource, CmsPermissionSet, LockCheck, CmsResourceFilter)
      */
     public I_CmsPermissionHandler.CmsPermissionCheckResult hasPermissions(
         CmsRequestContext context,
@@ -6915,7 +6915,7 @@ public final class CmsSecurityManager {
      *
      * @throws CmsException if something goes wrong
      *
-     * @see CmsDriverManager#updateRelationsForResource(CmsDbContext, CmsResource, List)
+     * @see CmsDriverManager#updateRelationsForResource(CmsDbContext, CmsResource, List, boolean)
      */
     public void updateRelationsForResource(
         CmsRequestContext context,

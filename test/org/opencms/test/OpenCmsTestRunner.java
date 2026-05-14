@@ -3836,13 +3836,13 @@ public class OpenCmsTestRunner extends Assertions {
         }
     }
 
-   /**
-    * Sets up a complete OpenCms instance with configuration from the config-ori folder,
-    * creating the usual projects, but <i>without</i> importing a default database.<p>
-    * @param testInfo the JUnit test info object
-    *
-    * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/"
-    */
+    /**
+     * Sets up a complete OpenCms instance with configuration from the config-ori folder,
+     * creating the usual projects, but <i>without</i> importing a default database.<p>
+     * @param testInfo the JUnit test info object
+     *
+     * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/"
+     */
     protected CmsObject setupOpenCms(TestInfo testInfo) {
 
         return setupOpenCms(testInfo, null, null, null, null, true);
