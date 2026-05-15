@@ -53,12 +53,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.fileupload2.core.DiskFileItem;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
-
-import org.apache.commons.fileupload.FileItem;
 
 /**
  * Dialog to import user data.<p>
@@ -108,9 +108,9 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
 
         // get the file item from the multipart request
         Iterator it = getMultiPartFileItems().iterator();
-        FileItem fi = null;
+        DiskFileItem fi = null;
         while (it.hasNext()) {
-            fi = (FileItem)it.next();
+            fi = (DiskFileItem)it.next();
             if (fi.getName() != null) {
                 // found the file object, leave iteration
                 break;

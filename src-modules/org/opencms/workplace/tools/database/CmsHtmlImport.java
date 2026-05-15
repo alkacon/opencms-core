@@ -80,7 +80,7 @@ import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload2.core.DiskFileItem;
 import org.apache.commons.logging.Log;
 
 /**
@@ -693,7 +693,7 @@ public class CmsHtmlImport {
      *
      * @throws CmsIllegalArgumentException if some parameters are not valid
      */
-    public void validate(FileItem fi, boolean isdefault) throws CmsIllegalArgumentException {
+    public void validate(DiskFileItem fi, boolean isdefault) throws CmsIllegalArgumentException {
 
         // check the input directory and the HTTP upload file
         if (fi == null) {
