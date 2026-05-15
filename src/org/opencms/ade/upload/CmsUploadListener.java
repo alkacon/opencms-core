@@ -34,7 +34,7 @@ import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
 
-import org.apache.commons.fileupload.ProgressListener;
+import org.apache.commons.fileupload2.core.ProgressListener;
 import org.apache.commons.logging.Log;
 
 /**

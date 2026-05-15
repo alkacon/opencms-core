@@ -58,11 +58,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.fileupload2.core.DiskFileItem;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
-
-import org.apache.commons.fileupload.FileItem;
 
 /**
  * Dialog to define an extended HTML import in the administration view.<p>
@@ -176,7 +176,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
 
             } else {
                 // advanced and standard mode the importing is starting
-                FileItem fi = getHttpImportFileItem();
+                DiskFileItem fi = getHttpImportFileItem();
 
                 m_htmlimport.validate(fi, false);
 
@@ -508,15 +508,15 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
      *
      * @return <code>true</code> if a multipart-request file exists
      */
-    private FileItem getHttpImportFileItem() {
+    private DiskFileItem getHttpImportFileItem() {
 
-        FileItem result = null;
+        DiskFileItem result = null;
         m_htmlimport.setHttpDir("");
         // get the file item from the multipart-request
         Iterator it = getMultiPartFileItems().iterator();
-        FileItem fi = null;
+        DiskFileItem fi = null;
         while (it.hasNext()) {
-            fi = (FileItem)it.next();
+            fi = (DiskFileItem)it.next();
             if (fi.getName() != null) {
                 // found the file object, leave iteration
                 break;
@@ -607,7 +607,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
      *
      * @throws CmsException if something goes wrong.
      */
-    private void writeHttpImportDir(FileItem fi) throws CmsException {
+    private void writeHttpImportDir(DiskFileItem fi) throws CmsException {
 
         try {
 

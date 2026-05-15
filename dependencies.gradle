@@ -107,7 +107,8 @@ dependencies {
     distribution('commons-beanutils:commons-beanutils:1.11.0') { transitive = false }
     distribution('commons-codec:commons-codec:1.21.0') { transitive = false }
     distribution('commons-collections:commons-collections:3.2.2') { transitive = false }
-    distribution('commons-fileupload:commons-fileupload:1.6.0') { transitive = false }
+    distribution('org.apache.commons:commons-fileupload2-core:2.0.0-M5') { transitive = false }
+    distribution('org.apache.commons:commons-fileupload2-javax:2.0.0-M5') { transitive = false }
     distribution('commons-io:commons-io:2.21.0') { transitive = false }
     //distribution('cryptix.jce:crytix-jce-provider:20050328') { transitive = false }
     distribution('de.malkusch.whois-server-list:public-suffix-list:2.2.0') { transitive = false }
