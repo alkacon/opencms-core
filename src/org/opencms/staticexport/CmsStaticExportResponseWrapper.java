@@ -100,13 +100,4 @@ public class CmsStaticExportResponseWrapper extends HttpServletResponseWrapper {
         super.setStatus(status);
     }
 
-    /**
-     * @see javax.servlet.http.HttpServletResponseWrapper#setStatus(int, java.lang.String)
-     */
-    @Override
-    public void setStatus(int status, String message) {
-
-        m_status = status;
-        super.setStatus(status, message);
-    }
 }
