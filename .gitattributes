@@ -1,0 +1,15 @@
+*.java text eol=lf
+*.sh text eol=lf
+
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+*.gif binary
+*.ico binary
+*.jar binary
+*.jpeg binary
+*.jpg binary
+*.pdf binary
+*.png binary
+*.war binary
+*.zip binary
