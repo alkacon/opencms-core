@@ -8,7 +8,7 @@ plugins {
     id 'signing'
     id 'eclipse'
     id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
-    id 'com.diffplug.spotless' version '8.4.0'
+    id 'com.diffplug.spotless' version '8.5.1'
 }
 
 group = "org.opencms"
@@ -47,7 +47,7 @@ if (externalVersionProps.exists()){
     propFile=externalVersionProps
 }else{
     println 'Using internal version properties file'
-    propFile=file("$projectDir/src/org/opencms/main/version.properties")
+    propFile=file("${projectDir}/src/org/opencms/main/version.properties")
 }
 
 Properties vprops = new Properties()
@@ -146,8 +146,8 @@ sourceSets{
     }
 }
 
-def spotlessImportOrderFile = file('/Users/alex/workspace/ak-work/agents/config/OrganizeImports_OpenCms.importorder')
-def spotlessFormatterConfigFile = file('/Users/alex/workspace/ak-work/agents/config/Formatter_OpenCms.xml')
+def spotlessImportOrderFile = file("${projectDir}/.settings/opencms_rules.importorder")
+def spotlessFormatterConfigFile = file("${projectDir}/.settings/formatter_opencms_rules.xml")
 def spotlessEclipseVersion = '4.39'
 def hasSpotlessFilesProperty = project.hasProperty('spotlessFiles')
 def spotlessFilePaths = hasSpotlessFilesProperty
@@ -566,7 +566,7 @@ tasks.register('workplaceTheme', JavaExec) {
 
 
     args = [
-        "$projectDir/webapp/workplaceThemes/VAADIN/themes/opencms/styles.scss",
+        "${projectDir}/webapp/workplaceThemes/VAADIN/themes/opencms/styles.scss",
         layout.buildDirectory.file("workplaceThemes/opencms/styles.css").get().asFile
     ]
     maxHeapSize = max_heap_size
@@ -595,7 +595,7 @@ tasks.register('opencmsFonts', JavaExec) {
     // opencmsFonts are generated into a different directory than the /opencms/styles.css
     // to avoid conflicts or dependencies between the build tasks 'workplaceTheme' and 'opencmsFonts'
     args = [
-        "$projectDir/webapp/workplaceThemes/VAADIN/themes/opencms/opencmsFonts.scss",
+        "${projectDir}/webapp/workplaceThemes/VAADIN/themes/opencms/opencmsFonts.scss",
         layout.buildDirectory.file("workplaceThemes/opencmsFonts/opencmsFonts.css").get().asFile
     ]
     maxHeapSize = max_heap_size
@@ -603,7 +603,7 @@ tasks.register('opencmsFonts', JavaExec) {
 
 
 Properties gwtProps = new Properties()
-gwtProps.load(new FileInputStream("$projectDir/src-gwt/gwt-modules.properties"))
+gwtProps.load(new FileInputStream("${projectDir}/src-gwt/gwt-modules.properties"))
 project.ext.gwtModuleNames = gwtProps['gwtmodules']
 
 tasks.register('resourcesJar', Jar) {
