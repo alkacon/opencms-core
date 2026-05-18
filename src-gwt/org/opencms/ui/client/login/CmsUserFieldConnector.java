@@ -29,8 +29,8 @@ package org.opencms.ui.client.login;
 
 import org.opencms.ui.login.CmsLoginUserField;
 
-import com.vaadin.v7.client.ui.textfield.TextFieldConnector;
 import com.vaadin.shared.ui.Connect;
+import com.vaadin.v7.client.ui.textfield.TextFieldConnector;
 
 /**
  * Connector for the user field.<p>

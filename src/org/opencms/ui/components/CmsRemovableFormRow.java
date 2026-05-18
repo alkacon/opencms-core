@@ -62,6 +62,7 @@ public class CmsRemovableFormRow<T extends Component> extends HorizontalLayout {
      * @param removeLabel the remove button label
      */
     public CmsRemovableFormRow(T input, String removeLabel) {
+
         setWidth("100%");
         m_input = input;
         setSpacing(true);

@@ -90,14 +90,14 @@ public class CmsUgcConfigurationReader {
     /** XML content value name. */
     public static final String N_PROJECT_GROUP = "ProjectGroup";
 
+    /** The separator used for separating the configured valid file name extensions for uploaded files. */
+    public static final String EXTENSIONS_SEPARATOR = ";";
+
     /** The CMS context used by this configuration reader. */
     private CmsObject m_cms;
 
     /** The XML content from which the configuration is read. */
     private CmsXmlContent m_content;
-
-    /** The separator used for separating the configured valid file name extensions for uploaded files. */
-    public static final String EXTENSIONS_SEPARATOR = ";";
 
     /**
      * Creates a new instance.<p>

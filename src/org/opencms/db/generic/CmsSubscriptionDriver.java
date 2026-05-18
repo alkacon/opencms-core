@@ -323,11 +323,8 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
         try {
             // path filter
             if (CmsStringUtil.isNotEmpty(filter.getParentPath())) {
-                CmsResource parent = m_driverManager.getVfsDriver(dbc).readResource(
-                    dbc,
-                    dbc.currentProject().getUuid(),
-                    filter.getParentPath(),
-                    false);
+                CmsResource parent = m_driverManager.getVfsDriver(
+                    dbc).readResource(dbc, dbc.currentProject().getUuid(), filter.getParentPath(), false);
                 conditions.append(BEGIN_INCLUDE_CONDITION);
                 if (filter.isIncludeSubFolders()) {
                     conditions.append(
@@ -383,7 +380,8 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
         List<CmsGroup> groups,
         CmsResource parent,
         boolean includeSubFolders,
-        long deletedFrom) throws CmsDataAccessException {
+        long deletedFrom)
+    throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -545,11 +543,8 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
 
         // path filter
         if (CmsStringUtil.isNotEmpty(filter.getParentPath())) {
-            CmsResource parent = m_driverManager.getVfsDriver(dbc).readResource(
-                dbc,
-                dbc.currentProject().getUuid(),
-                filter.getParentPath(),
-                false);
+            CmsResource parent = m_driverManager.getVfsDriver(
+                dbc).readResource(dbc, dbc.currentProject().getUuid(), filter.getParentPath(), false);
             conditions.append(BEGIN_INCLUDE_CONDITION);
             if (filter.isIncludeSubFolders()) {
                 conditions.append(m_sqlManager.readQuery(dbc.currentProject(), "C_RESOURCES_SELECT_BY_PATH_PREFIX"));

@@ -435,15 +435,14 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
             && !lock.isOwnedInProjectBy(
                 cms.getRequestContext().getCurrentUser(),
                 cms.getRequestContext().getCurrentProject())) {
-                    // prove is current lock from current user but not in current project
-                    // file is locked by current user but not in current project
-                    // change the lock
-                    cms.changeLock(cms.getSitePath(cmsResource));
-                } else
-            if ((lock != null) && lock.isUnlocked()) {
-                // lock resource from current user in current project
-                cms.lockResource(cms.getSitePath(cmsResource));
-            }
+            // prove is current lock from current user but not in current project
+            // file is locked by current user but not in current project
+            // change the lock
+            cms.changeLock(cms.getSitePath(cmsResource));
+        } else if ((lock != null) && lock.isUnlocked()) {
+            // lock resource from current user in current project
+            cms.lockResource(cms.getSitePath(cmsResource));
+        }
         lock = cms.getLock(cms.getSitePath(cmsResource));
         if ((lock != null)
             && lock.isOwnedBy(cms.getRequestContext().getCurrentUser())

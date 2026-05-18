@@ -101,16 +101,6 @@ public class CmsExtendedNotificationCause implements Comparable<CmsExtendedNotif
     }
 
     /**
-     *
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-
-        return m_cause + m_resource.getStructureId().hashCode();
-    }
-
-    /**
      * Returns the cause.<p>
      *
      * @return the cause
@@ -138,6 +128,16 @@ public class CmsExtendedNotificationCause implements Comparable<CmsExtendedNotif
     public CmsResource getResource() {
 
         return m_resource;
+    }
+
+    /**
+     *
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        return m_cause + m_resource.getStructureId().hashCode();
     }
 
     /**

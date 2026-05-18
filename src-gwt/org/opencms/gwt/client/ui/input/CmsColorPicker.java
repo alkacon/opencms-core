@@ -197,7 +197,7 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
      * Returns the color value textbox.<p>
      *
      * @return the color value textbox
-     * */
+     */
     public TextBox getColorValueBox() {
 
         return m_textboxColorValue;
@@ -322,7 +322,7 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
      * Sets the name of the input field.<p>
      *
      * @param name of the input field
-     * */
+     */
     public void setName(String name) {
 
         m_textboxColorValue.setName(name);

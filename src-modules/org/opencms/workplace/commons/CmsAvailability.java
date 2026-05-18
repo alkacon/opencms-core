@@ -179,7 +179,8 @@ public class CmsAvailability extends CmsMultiDialog {
         String resName,
         boolean enableNotification,
         int notificationInterval,
-        boolean modifySiblings) throws CmsException {
+        boolean modifySiblings)
+    throws CmsException {
 
         List<CmsResource> resources = new ArrayList<CmsResource>();
         if (modifySiblings) {
@@ -974,7 +975,8 @@ public class CmsAvailability extends CmsMultiDialog {
         long expireDate,
         boolean leaveRelease,
         boolean leaveExpire,
-        boolean modifyRecursive) throws CmsException {
+        boolean modifyRecursive)
+    throws CmsException {
 
         CmsResource resource = getCms().readResource(resName, CmsResourceFilter.IGNORE_EXPIRATION);
         if (leaveRelease) {

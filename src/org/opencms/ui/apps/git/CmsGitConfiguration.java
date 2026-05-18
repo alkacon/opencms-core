@@ -123,6 +123,7 @@ public class CmsGitConfiguration {
      * @param configFile the configuration file.
      */
     CmsGitConfiguration(final File configFile) {
+
         m_configFile = configFile;
         readConfigFile();
     }

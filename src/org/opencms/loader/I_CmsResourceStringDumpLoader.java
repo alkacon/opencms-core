@@ -73,5 +73,6 @@ public interface I_CmsResourceStringDumpLoader {
         String element,
         Locale locale,
         ServletRequest req,
-        ServletResponse res) throws ServletException, IOException, CmsException;
+        ServletResponse res)
+    throws ServletException, IOException, CmsException;
 }

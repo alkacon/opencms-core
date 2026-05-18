@@ -39,10 +39,10 @@ import org.opencms.ui.CmsVaadinUtils.PropertyId;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.v7.data.util.IndexedContainer;
 import com.vaadin.ui.Button;
-import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.ui.Panel;
+import com.vaadin.v7.data.util.IndexedContainer;
+import com.vaadin.v7.ui.ComboBox;
 import com.vaadin.v7.ui.VerticalLayout;
 
 /**
@@ -81,6 +81,7 @@ public class CmsResourceTypeStatsView extends VerticalLayout {
      * public constructor.<p>
      */
     public CmsResourceTypeStatsView() {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         results = CmsResourceTypeStatResultList.init(results);
         results.setVerticalLayout(m_resLayout, true);

@@ -140,8 +140,9 @@ public class CmsConvertXmlDialog extends CmsWidgetDialog {
         result.append(createWidgetErrorHeader());
 
         // create export file name block
-        result.append(createWidgetBlockStart(
-            Messages.get().getBundle(getLocale()).key(Messages.GUI_CONVERTXML_DIALOG_BLOCK_SETTINGS_0)));
+        result.append(
+            createWidgetBlockStart(
+                Messages.get().getBundle(getLocale()).key(Messages.GUI_CONVERTXML_DIALOG_BLOCK_SETTINGS_0)));
         result.append(createDialogRowsHtml(0, 4));
         result.append(createWidgetBlockEnd());
 
@@ -163,20 +164,22 @@ public class CmsConvertXmlDialog extends CmsWidgetDialog {
         // set localized key prefix
         setKeyPrefix(KEY_PREFIX);
         // add the widgets to show
-        addWidget(new CmsWidgetDialogParameter(
-            m_settings,
-            "resourceType",
-            PAGES[0],
-            new CmsSelectWidget(buildResourceTypeSelectWidgetList())));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_settings,
+                "resourceType",
+                PAGES[0],
+                new CmsSelectWidget(buildResourceTypeSelectWidgetList())));
 
-        addWidget(new CmsWidgetDialogParameter(
-            m_settings,
-            "vfsFolder",
-            "/",
-            PAGES[0],
-            new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot()),
-            1,
-            1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_settings,
+                "vfsFolder",
+                "/",
+                PAGES[0],
+                new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot()),
+                1,
+                1));
 
         addWidget(new CmsWidgetDialogParameter(m_settings, "includeSubFolders", PAGES[0], new CmsCheckboxWidget("")));
 

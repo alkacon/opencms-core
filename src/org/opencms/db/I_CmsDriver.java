@@ -71,7 +71,8 @@ public interface I_CmsDriver {
         CmsDbContext dbc,
         CmsConfigurationManager configurationManager,
         List<String> successiveDrivers,
-        CmsDriverManager driverManager) throws CmsException;
+        CmsDriverManager driverManager)
+    throws CmsException;
 
     /**
      * Returns information about the driver.<p>

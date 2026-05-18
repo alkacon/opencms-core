@@ -57,6 +57,7 @@ public class CmsSitemapTreeNode extends CssLayout {
 
     /** Creates a new instance. */
     public CmsSitemapTreeNode() {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         setOpen(false);
         setContent(new Label("[content not set]"));

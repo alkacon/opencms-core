@@ -158,9 +158,9 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                 && ((target.getChildren().getWidgetCount() > 0)
                     && (((CmsSitemapTreeItem)target.getChild(
                         0)).getLoadState() == CmsLazyTreeItem.LoadState.UNLOADED))) {
-                            // load grand children in advance
-                            getController().getChildren(target.getEntryId(), false, null);
-                        }
+                // load grand children in advance
+                getController().getChildren(target.getEntryId(), false, null);
+            }
         }
 
         /**
@@ -1554,7 +1554,8 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                     galleryFolder.setStructureId(change.getEntryId());
                     galleryFolder.setOwnProperties(change.getOwnProperties());
                     galleryFolder.setIconClasses(
-                        m_controller.getGalleryType(Integer.valueOf(change.getNewResourceTypeId())).getBigIconClasses());
+                        m_controller.getGalleryType(
+                            Integer.valueOf(change.getNewResourceTypeId())).getBigIconClasses());
                     CmsGalleryTreeItem folderItem = new CmsGalleryTreeItem(galleryFolder);
                     CmsSitemapHoverbar.installOn(m_controller, folderItem, galleryFolder.getStructureId());
                     m_galleryTypeItems.get(typeName).addChild(folderItem);

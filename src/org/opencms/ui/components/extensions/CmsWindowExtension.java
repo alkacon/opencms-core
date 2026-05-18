@@ -59,6 +59,7 @@ public class CmsWindowExtension extends AbstractExtension {
      * @param ui the UI
      */
     public CmsWindowExtension(UI ui) {
+
         super(ui);
         registerRpc(new I_CmsWindowServerRpc() {
 
@@ -93,6 +94,7 @@ public class CmsWindowExtension extends AbstractExtension {
         m_callbackMap.put(id, new FutureCallback<Boolean>() {
 
             public void onFailure(Throwable t) {
+
                 //
             }
 

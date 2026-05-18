@@ -66,6 +66,7 @@ public class CmsBlockingLockCheck implements I_CmsContextMenuAction {
      *
      */
     public CmsBlockingLockCheck(I_CmsContextMenuAction nextAction) {
+
         m_nextAction = nextAction;
     }
 

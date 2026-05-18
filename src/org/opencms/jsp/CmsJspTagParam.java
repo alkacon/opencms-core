@@ -137,9 +137,10 @@ public class CmsJspTagParam extends BodyTagSupport {
 
         Tag t = findAncestorWithClass(this, I_CmsJspTagParamParent.class);
         if (t == null) {
-            throw new JspTagException(Messages.get().getBundle(pageContext.getRequest().getLocale()).key(
-                Messages.ERR_PARENTLESS_TAG_1,
-                new Object[] {"param"}));
+            throw new JspTagException(
+                Messages.get().getBundle(pageContext.getRequest().getLocale()).key(
+                    Messages.ERR_PARENTLESS_TAG_1,
+                    new Object[] {"param"}));
         }
         // take no action for null or empty names
         if (CmsStringUtil.isEmpty(m_name)) {

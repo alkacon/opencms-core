@@ -50,6 +50,7 @@ public class CmsDataViewResult {
      * @param hitCount the total hit count
      */
     public CmsDataViewResult(List<I_CmsDataViewItem> items, int hitCount) {
+
         m_resultItems = new ArrayList<I_CmsDataViewItem>(items);
         m_hitCount = hitCount;
     }

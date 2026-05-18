@@ -587,7 +587,8 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
         String column,
         String newvalue,
         String oldid,
-        String tempValue) throws SQLException {
+        String tempValue)
+    throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
         if (dbCon.hasTableOrColumn(tablename, column)) {

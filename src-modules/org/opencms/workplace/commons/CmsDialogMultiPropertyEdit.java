@@ -320,7 +320,8 @@ public class CmsDialogMultiPropertyEdit extends CmsDialog {
         final CmsResource res,
         final String propName,
         final String propValue,
-        final CmsProperty currentProperty) throws CmsException {
+        final CmsProperty currentProperty)
+    throws CmsException {
 
         CmsProperty prop = currentProperty;
         // check if current property is not the null property

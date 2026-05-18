@@ -137,6 +137,7 @@ public class CmsModuleImportForm extends A_CmsModuleImportForm {
                         }
 
                         public void onProgress(StreamingProgressEvent evt) {
+
                             // do nothing
                         }
 

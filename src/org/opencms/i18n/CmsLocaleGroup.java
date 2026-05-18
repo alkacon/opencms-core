@@ -87,6 +87,7 @@ public class CmsLocaleGroup {
      * @param secondaryResources the secondary resources
      */
     public CmsLocaleGroup(CmsObject cms, CmsResource primaryResource, List<CmsResource> secondaryResources) {
+
         m_primaryResource = primaryResource;
         m_secondaryResources = Sets.newHashSet(secondaryResources);
         m_cms = cms;

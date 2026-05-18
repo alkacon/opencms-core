@@ -212,7 +212,7 @@ public class CmsXmlSitemapGenerator {
      *
      * @param link the link to change
      * @param server the server URI string
-    
+     *
      * @return the changed link
      */
     public static String replaceServerUri(String link, String server) {

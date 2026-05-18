@@ -44,6 +44,7 @@ public class CmsShellCommandException extends RuntimeException {
      * @param fromReport true if this exception is being created because of a report error
      */
     public CmsShellCommandException(boolean fromReport) {
+
         super("Shell command exception caused by report error");
         m_fromReport = fromReport;
     }
@@ -54,6 +55,7 @@ public class CmsShellCommandException extends RuntimeException {
      * @param t the cause of this exception
      */
     public CmsShellCommandException(Throwable t) {
+
         super("Shell command exception caused by different exception", t);
     }
 

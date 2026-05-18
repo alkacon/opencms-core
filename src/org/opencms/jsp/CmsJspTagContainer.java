@@ -165,7 +165,7 @@ public class CmsJspTagContainer extends BodyTagSupport implements TryCatchFinall
     /**
      * The container name prefix to use for nested container names.
      * If empty the element instance id of the parent element will be used.
-     **/
+     */
     private String m_namePrefix;
 
     /** The optional container parameter. */

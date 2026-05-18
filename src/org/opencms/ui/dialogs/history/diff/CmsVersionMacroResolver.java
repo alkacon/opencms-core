@@ -34,6 +34,7 @@ import org.opencms.util.CmsMacroResolver;
 public class CmsVersionMacroResolver extends CmsMacroResolver {
 
     public CmsVersionMacroResolver(CmsHistoryResourceBean v1, CmsHistoryResourceBean v2) {
+
         String v1Text = CmsHistoryRow.formatVersion(v1);
         String v2Text = CmsHistoryRow.formatVersion(v2);
         addMacro("v1", v1Text);

@@ -76,7 +76,7 @@ import com.google.common.collect.Maps;
  * operation is needed.<p>
  *
  * Two instances of this cache are needed, one for the Online project and one for Offline projects.<p>
- **/
+ */
 public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationCache {
 
     /** Node name for the FormatterKey node. */

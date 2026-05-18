@@ -59,10 +59,10 @@ import org.apache.commons.logging.Log;
 import com.vaadin.server.AbstractExtension;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.UI;
-import com.vaadin.v7.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
+import com.vaadin.v7.ui.VerticalLayout;
 
 /**
  * Extension used for the Vaadin dialogs in the sitemap editor.<p>
@@ -90,6 +90,7 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
          * @param resources the resources
          */
         public DialogContext(ContextType contextType, List<CmsResource> resources) {
+
             m_contextType = contextType;
             m_resources = resources != null ? resources : Collections.<CmsResource> emptyList();
         }
@@ -116,6 +117,7 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
             CmsErrorDialog.showErrorDialog(error, new Runnable() {
 
                 public void run() {
+
                     // empty
                 }
             });
@@ -266,6 +268,7 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
          * Handles the window close event.<p>
          */
         void handleWindowClose() {
+
             // empty
         }
 
@@ -292,6 +295,7 @@ public class CmsSitemapExtension extends AbstractExtension implements I_CmsSitem
      * @param ui the component to attach to
      */
     public CmsSitemapExtension(CmsSitemapUI ui) {
+
         extend(ui);
         m_ui = ui;
         registerRpc(this, I_CmsSitemapServerRpc.class);

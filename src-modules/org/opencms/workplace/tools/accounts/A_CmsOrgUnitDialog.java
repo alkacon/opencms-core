@@ -181,11 +181,8 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
                 } else {
                     m_orgUnitBean.setParentOu(orgunit.getName());
                     m_orgUnitBean.setParentOuDesc(
-                        orgunit.getDescription(getLocale())
-                            + " ("
-                            + CmsOrganizationalUnit.SEPARATOR
-                            + orgunit.getName()
-                            + ")");
+                        orgunit.getDescription(
+                            getLocale()) + " (" + CmsOrganizationalUnit.SEPARATOR + orgunit.getName() + ")");
                 }
                 List<CmsResource> resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
                     getCms(),

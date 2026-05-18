@@ -64,6 +64,7 @@ public final class CmsCollectionsGenericWrapper {
          * @param map the map to wrap
          */
         MapWrapper(Map<K, V> map) {
+
             m_map = map;
         }
 

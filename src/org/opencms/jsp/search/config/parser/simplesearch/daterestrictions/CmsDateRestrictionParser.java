@@ -80,6 +80,7 @@ public class CmsDateRestrictionParser {
      * @param cms the CMS context to use
      */
     public CmsDateRestrictionParser(CmsObject cms) {
+
         m_cms = cms;
     }
 

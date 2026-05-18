@@ -291,7 +291,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
          * Gets the current driver manager.
          *
          * @return the driver manager to use
-         **/
+         */
         public CmsDriverManager getDriverManager() {
 
             return m_driverManager;

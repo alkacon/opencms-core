@@ -56,6 +56,7 @@ public class CmsPoint implements IsSerializable {
      * Empty default constructor for serialization.<p>
      */
     protected CmsPoint() {
+
         // empty default constructor for serialization
     }
 

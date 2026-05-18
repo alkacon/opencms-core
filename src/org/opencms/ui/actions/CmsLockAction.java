@@ -94,6 +94,7 @@ public class CmsLockAction extends A_CmsWorkplaceAction {
          * @param context the dialog context
          */
         public Context(I_CmsDialogContext context) {
+
             m_context = context;
         }
 

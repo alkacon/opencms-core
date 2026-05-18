@@ -64,6 +64,7 @@ public class CmsScriptCallbackHelper {
      * This method is called by the callback created by createCallback().<p>
      */
     public void run() {
+
         // override this method to put actual logic here
     }
 

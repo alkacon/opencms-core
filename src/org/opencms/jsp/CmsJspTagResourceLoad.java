@@ -123,7 +123,7 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
         PageContext context,
         String collectorName,
         String collectorParam)
-        throws JspException {
+    throws JspException {
 
         this(container, context, collectorName, collectorParam, null, null);
     }
@@ -147,7 +147,7 @@ public class CmsJspTagResourceLoad extends CmsJspScopedVarBodyTagSuport implemen
         String collectorParam,
         String pageIndex,
         String pageSize)
-        throws JspException {
+    throws JspException {
 
         setCollector(collectorName);
         setParam(collectorParam);

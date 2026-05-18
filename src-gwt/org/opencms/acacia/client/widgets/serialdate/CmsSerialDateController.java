@@ -94,6 +94,7 @@ implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
          */
         @SuppressWarnings("deprecation")
         protected PatternDefaultValues(Date startDate) {
+
             m_date = startDate;
             m_month = null == startDate ? Month.JANUARY : Month.values()[startDate.getMonth()];
             m_dayOfMonth = null == startDate ? 1 : startDate.getDate();
@@ -187,6 +188,7 @@ implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
          * @param handler the handler to call for the status update.
          */
         StatusUpdateTimer(I_StatusUpdateHandler handler) {
+
             m_handler = handler;
         }
 
@@ -231,6 +233,7 @@ implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
          * @param value the value where the exceptions should be reset.
          */
         CmsExceptionsDeleteConfirmDialog(final CmsSerialDateValue value) {
+
             m_value = value;
             m_dialog = new CmsConfirmDialog(
                 Messages.get().key(Messages.GUI_SERIALDATE_CONFIRM_EXCEPTION_DIALOG_CAPTION_0),
@@ -299,6 +302,7 @@ implements I_CmsEditWidget, I_ChangeHandler, I_StatusUpdateHandler {
          * @param value the value where the exceptions should be reset.
          */
         CmsRemoveSeriesBindingConfirmDialog(final CmsSerialDateValue value) {
+
             m_value = value;
             m_dialog = new CmsConfirmDialog(
                 Messages.get().key(Messages.GUI_SERIALDATE_CONFIRM_SERIES_BINDING_DIALOG_CAPTION_0),

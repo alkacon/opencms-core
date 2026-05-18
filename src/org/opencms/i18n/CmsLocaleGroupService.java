@@ -106,6 +106,7 @@ public class CmsLocaleGroupService {
      * @param cms the CMS context to use
      */
     public CmsLocaleGroupService(CmsObject cms) {
+
         m_cms = cms;
     }
 

@@ -39,11 +39,6 @@ import java.util.List;
 public interface I_CmsSessionStorageProvider {
 
     /**
-     * Validates all session info objects removing any session that have became invalidated.<p>
-     */
-    void validate();
-
-    /**
      * Returns the stored session info object with the given id.<p>
      *
      * @param sessionId the id to lookup
@@ -106,4 +101,9 @@ public interface I_CmsSessionStorageProvider {
      * @throws Exception if something goes wrong
      */
     void shutdown() throws Exception;
+
+    /**
+     * Validates all session info objects removing any session that have became invalidated.<p>
+     */
+    void validate();
 }

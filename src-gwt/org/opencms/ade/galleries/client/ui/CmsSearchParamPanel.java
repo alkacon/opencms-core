@@ -78,7 +78,7 @@ public class CmsSearchParamPanel extends Composite {
     /** The parameter key. */
     private String m_paramKey;
 
-    /** The element containing the actual search parameter text. */ 
+    /** The element containing the actual search parameter text. */
     private elemental2.dom.Element m_bElement;
 
     /**

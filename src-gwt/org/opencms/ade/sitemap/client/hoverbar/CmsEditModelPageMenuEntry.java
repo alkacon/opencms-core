@@ -138,8 +138,10 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
         CmsUUID id = entry.getId();
-        editModelPage(entry.getSitePath(), !CmsSitemapView.getInstance().isModelPageEntry(id)
-            && !CmsSitemapView.getInstance().isParentModelPageEntry(id));
+        editModelPage(
+            entry.getSitePath(),
+            !CmsSitemapView.getInstance().isModelPageEntry(id)
+                && !CmsSitemapView.getInstance().isParentModelPageEntry(id));
     }
 
     /**

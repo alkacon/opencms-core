@@ -60,7 +60,7 @@ public class CmsRpcContext {
      * @param context the context to set
      */
     private static native void installContext(JavaScriptObject context) /*-{
-		$wnd.ocmsRpcContext = context;
+        $wnd.ocmsRpcContext = context;
     }-*/;
 
 }

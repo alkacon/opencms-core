@@ -107,7 +107,7 @@ import java.util.Map;
  * <li>Comments written in the slashshlash, slashstar, and hash conventions
  *     will be ignored.</li>
  * </ul>
-
+ *
  */
 public class JSONArray {
 
@@ -264,8 +264,8 @@ public class JSONArray {
 
     /**
      * Appends values from another JSON array.
-     * 
-     * @param array the array whose values should be appended 
+     *
+     * @param array the array whose values should be appended
      */
     public void append(JSONArray array) {
 

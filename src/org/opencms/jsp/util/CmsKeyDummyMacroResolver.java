@@ -118,8 +118,8 @@ public class CmsKeyDummyMacroResolver extends CmsMacroResolver {
 
     /**
      * Gets the localization keys from a string consisting solely of localization key macros (only whitespace is allowed between them).
-     * 
-     * @param s the string to extract the localization keys from 
+     *
+     * @param s the string to extract the localization keys from
      * @param delegate the macro resolver to use for non-localization macros
      */
     public static List<String> getKeys(String s, CmsMacroResolver delegate) {

@@ -290,22 +290,24 @@ public class CmsPropertyviewDialog extends CmsWidgetDialog {
 
         setKeyPrefix(KEY_PREFIX);
 
-        addWidget(new CmsWidgetDialogParameter(
-            m_settings,
-            "message",
-            key(Messages.GUI_MODULES_DETAIL_DIALOG_MESSAGE_0),
-            PAGES[0],
-            new CmsDisplayWidget(),
-            1,
-            1));
-        addWidget(new CmsWidgetDialogParameter(
-            m_settings,
-            "paths",
-            "/",
-            PAGES[0],
-            new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot()),
-            1,
-            CmsWidgetDialogParameter.MAX_OCCURENCES));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_settings,
+                "message",
+                key(Messages.GUI_MODULES_DETAIL_DIALOG_MESSAGE_0),
+                PAGES[0],
+                new CmsDisplayWidget(),
+                1,
+                1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_settings,
+                "paths",
+                "/",
+                PAGES[0],
+                new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot()),
+                1,
+                CmsWidgetDialogParameter.MAX_OCCURENCES));
         addWidget(
             new CmsWidgetDialogParameter(
                 m_settings,
@@ -315,14 +317,15 @@ public class CmsPropertyviewDialog extends CmsWidgetDialog {
                 new CmsSelectWidget(getPropertySelectWidgetConfiguration()),
                 1,
                 CmsWidgetDialogParameter.MAX_OCCURENCES));
-        addWidget(new CmsWidgetDialogParameter(
-            m_settings,
-            "showSiblings",
-            String.valueOf(false),
-            PAGES[0],
-            new CmsCheckboxWidget(),
-            1,
-            1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_settings,
+                "showSiblings",
+                String.valueOf(false),
+                PAGES[0],
+                new CmsCheckboxWidget(),
+                1,
+                1));
         addWidget(new CmsWidgetDialogParameter(m_settings, "propValue", PAGES[0], new CmsInputWidget()));
     }
 

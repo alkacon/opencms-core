@@ -49,6 +49,7 @@ public class CmsLoadingAnimation extends Composite {
      * Constructor.<p>
      */
     public CmsLoadingAnimation() {
+
         initWidget(uiBinder.createAndBindUi(this));
     }
 }

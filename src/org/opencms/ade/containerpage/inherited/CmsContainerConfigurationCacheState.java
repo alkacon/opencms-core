@@ -66,6 +66,7 @@ public class CmsContainerConfigurationCacheState {
      * @param groups the inheritance group configurations.<p>
      */
     public CmsContainerConfigurationCacheState(Collection<CmsContainerConfigurationGroup> groups) {
+
         for (CmsContainerConfigurationGroup group : groups) {
             if (group != null) {
                 m_configurationsByPath.put(getBasePath(group.getRootPath()), group);

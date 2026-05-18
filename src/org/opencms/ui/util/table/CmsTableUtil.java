@@ -42,6 +42,7 @@ public final class CmsTableUtil {
      * Hidden default constructor.<p>
      */
     private CmsTableUtil() {
+
         // do nothing
     }
 

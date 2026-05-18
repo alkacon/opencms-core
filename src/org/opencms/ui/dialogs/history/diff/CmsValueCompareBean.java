@@ -66,6 +66,7 @@ public class CmsValueCompareBean {
      * @param elemComp the element comparison bean
      */
     public CmsValueCompareBean(CmsObject cms, CmsElementComparison elemComp) {
+
         m_cms = cms;
         m_elemComp = elemComp;
 

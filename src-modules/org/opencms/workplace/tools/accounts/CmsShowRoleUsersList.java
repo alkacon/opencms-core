@@ -72,28 +72,6 @@ public class CmsShowRoleUsersList extends A_CmsRoleUsersList {
     }
 
     /**
-     * Public constructor with JSP variables.<p>
-     *
-     * @param context the JSP page context
-     * @param req the JSP request
-     * @param res the JSP response
-     */
-    public CmsShowRoleUsersList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-
-        this(new CmsJspActionElement(context, req, res));
-    }
-
-    /**
-     * Protected constructor.<p>
-     * @param jsp an initialized JSP action element
-     * @param listId the id of the specialized list
-     */
-    protected CmsShowRoleUsersList(CmsJspActionElement jsp, String listId) {
-
-        super(jsp, listId, Messages.get().container(Messages.GUI_ROLEUSERS_LIST_NAME_0), true);
-    }
-
-    /**
      * Public constructor.<p>
      *
      * @param jsp an initialized JSP action element
@@ -110,11 +88,33 @@ public class CmsShowRoleUsersList extends A_CmsRoleUsersList {
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
+     */
+    public CmsShowRoleUsersList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
+        this(new CmsJspActionElement(context, req, res));
+    }
+
+    /**
+     * Public constructor with JSP variables.<p>
+     *
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
      * @param lazy the lazy flag
      */
     public CmsShowRoleUsersList(PageContext context, HttpServletRequest req, HttpServletResponse res, boolean lazy) {
 
         this(new CmsJspActionElement(context, req, res), lazy);
+    }
+
+    /**
+     * Protected constructor.<p>
+     * @param jsp an initialized JSP action element
+     * @param listId the id of the specialized list
+     */
+    protected CmsShowRoleUsersList(CmsJspActionElement jsp, String listId) {
+
+        super(jsp, listId, Messages.get().container(Messages.GUI_ROLEUSERS_LIST_NAME_0), true);
     }
 
     /**
@@ -165,28 +165,6 @@ public class CmsShowRoleUsersList extends A_CmsRoleUsersList {
             meta.setSelfManaged(true);
         }
         super.setColumns(meta);
-    }
-
-    /**
-     * @see org.opencms.workplace.tools.accounts.A_CmsRoleUsersList#getUsers(boolean)
-     */
-    @Override
-    protected List<CmsUser> getUsers(boolean withOtherOus) throws CmsException {
-
-        return OpenCms.getRoleManager().getUsersOfRole(
-            getCms(),
-            CmsRole.valueOf(getCms().readGroup(getParamRole())),
-            withOtherOus,
-            false);
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
-     */
-    @Override
-    protected void setMultiActions(CmsListMetadata metadata) {
-
-        // noop
     }
 
     /**
@@ -256,6 +234,28 @@ public class CmsShowRoleUsersList extends A_CmsRoleUsersList {
             return SortKey.orgUnit;
         }
         return null;
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsRoleUsersList#getUsers(boolean)
+     */
+    @Override
+    protected List<CmsUser> getUsers(boolean withOtherOus) throws CmsException {
+
+        return OpenCms.getRoleManager().getUsersOfRole(
+            getCms(),
+            CmsRole.valueOf(getCms().readGroup(getParamRole())),
+            withOtherOus,
+            false);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    @Override
+    protected void setMultiActions(CmsListMetadata metadata) {
+
+        // noop
     }
 
 }

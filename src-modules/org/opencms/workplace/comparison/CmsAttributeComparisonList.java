@@ -205,9 +205,10 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
             Messages.get().container(
                 Messages.GUI_COMPARE_VERSION_1,
                 CmsHistoryListUtil.getDisplayVersion(getParamVersion1(), getLocale())));
-        getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_2).setName(Messages.get().container(
-            Messages.GUI_COMPARE_VERSION_1,
-            CmsHistoryListUtil.getDisplayVersion(getParamVersion2(), getLocale())));
+        getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_2).setName(
+            Messages.get().container(
+                Messages.GUI_COMPARE_VERSION_1,
+                CmsHistoryListUtil.getDisplayVersion(getParamVersion2(), getLocale())));
 
         return ret;
     }

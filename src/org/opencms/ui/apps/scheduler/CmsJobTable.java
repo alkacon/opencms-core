@@ -172,6 +172,7 @@ public class CmsJobTable extends Table {
      * Enum representing the actions for which buttons exist in the table rows.<p>
      */
     enum Action {
+
         /** Enable / disable. */
         activation(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_MACTIVATE_NAME_0,
         org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_MDEACTIVATE_NAME_0),

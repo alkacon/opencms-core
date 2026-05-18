@@ -444,7 +444,7 @@ I_CmsHasResizeOnShow, I_CmsHasGhostValue {
      *
      * @param name of the input field
      *
-     * */
+     */
     public void setName(String name) {
 
         m_textArea.setName(name);

@@ -69,11 +69,11 @@ public class CmsModuleXmlHandler {
      * opencms-modules.xml.
      */
     public enum XmlWriteMode {
-    /** Generating XML for the configuration. */
-    config,
+        /** Generating XML for the configuration. */
+        config,
 
-    /** Generating XML for a manifest. */
-    manifest
+        /** Generating XML for a manifest. */
+        manifest
     }
 
     /** The "name" attribute. */

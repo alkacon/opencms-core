@@ -52,7 +52,7 @@ import jsinterop.base.JsPropertyMap;
 /**
  * Provides a display only widget, for use on a widget dialog.<p>
  *
- * */
+ */
 public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, HasResizeHandlers, I_CmsHasResizeOnShow {
 
     /** The monospace style key. */

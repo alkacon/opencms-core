@@ -179,17 +179,6 @@ public abstract class A_CmsImportFromHttp extends CmsDialog {
     }
 
     /**
-     * Html code for the additional parameters.<p>
-     *
-     * @return html code
-     */
-    protected String getAdditionalParameters() {
-
-        // do nothing
-        return "";
-    }
-
-    /**
      * Gets a database import file from the client and copies it to the server.<p>
      *
      * @param destination the destination of the file on the server
@@ -331,6 +320,17 @@ public abstract class A_CmsImportFromHttp extends CmsDialog {
         result.append(bodyEnd());
         result.append(htmlEnd());
         return result.toString();
+    }
+
+    /**
+     * Html code for the additional parameters.<p>
+     *
+     * @return html code
+     */
+    protected String getAdditionalParameters() {
+
+        // do nothing
+        return "";
     }
 
     /**

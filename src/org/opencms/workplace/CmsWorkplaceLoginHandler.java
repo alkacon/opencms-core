@@ -64,7 +64,8 @@ public class CmsWorkplaceLoginHandler implements I_CmsResourceInit {
         CmsResource resource,
         CmsObject cms,
         HttpServletRequest req,
-        HttpServletResponse res) throws CmsResourceInitException {
+        HttpServletResponse res)
+    throws CmsResourceInitException {
 
         if (resource != null) {
             return resource;

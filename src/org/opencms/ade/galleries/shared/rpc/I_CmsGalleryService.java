@@ -169,7 +169,7 @@ public interface I_CmsGalleryService extends RemoteService {
      * @return the root VFS entry bean for the given site root
      *
      *  @throws CmsRpcException if something goes wrong
-     * */
+     */
     CmsVfsEntryBean loadVfsEntryBean(String path, String filter) throws CmsRpcException;
 
     /**

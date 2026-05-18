@@ -241,7 +241,8 @@ public class CmsSubscriptionManager {
         boolean includeGroups,
         String folderPath,
         boolean includeSubFolders,
-        long deletedFrom) throws CmsException {
+        long deletedFrom)
+    throws CmsException {
 
         List<CmsGroup> groups = null;
         if (includeGroups) {

@@ -64,7 +64,7 @@ public class CmsContainer implements IsSerializable {
     /**
      * Indicates whether this container not nested,
      * or in case of a detail only container page the starting point of a detail only container hierarchy.
-     **/
+     */
     private boolean m_isRootContainer;
 
     /** The maximum number of elements. */

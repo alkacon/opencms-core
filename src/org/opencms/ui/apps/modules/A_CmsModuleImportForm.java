@@ -181,7 +181,7 @@ public abstract class A_CmsModuleImportForm extends CssLayout {
      * Returns the site selector for the module import.<p>
      *
      * @return the site selector
-     **/
+     */
     protected abstract CmsAutoItemCreatingComboBox getSiteSelector();
 
     /**

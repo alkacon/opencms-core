@@ -144,9 +144,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /** Serialization id. */
     private static final long serialVersionUID = -383483666952834348L;
 
-    /** A helper object containing the implementations of the alias-related service methods. */
-    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
-
     /** Initialize the preview mime types. */
     static {
         CollectionUtils.addAll(
@@ -158,6 +155,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 "application/mspowerpoint",
                 "application/zip"}));
     }
+
+    /** A helper object containing the implementations of the alias-related service methods. */
+    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
 
     /**
      * Adds the lock state information to the resource info bean.<p>

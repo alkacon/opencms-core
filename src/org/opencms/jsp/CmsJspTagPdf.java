@@ -151,7 +151,7 @@ public class CmsJspTagPdf extends BodyTagSupport implements I_CmsJspTagParamPare
 
         try {
             pageContext.getOut().print(
-               pdfTagAction(
+                pdfTagAction(
                     pageContext.getRequest(),
                     m_format,
                     m_content,

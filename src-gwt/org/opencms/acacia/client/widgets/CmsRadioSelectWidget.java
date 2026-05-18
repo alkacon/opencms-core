@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * Provides a widget for a standard HTML form for a group of radio buttons.<p>
  *
  * Regarding widget configuration, see <code>{@link org.opencms.acacia.client.widgets.CmsSelectConfigurationParser}</code>.<p>
- * */
+ */
 public class CmsRadioSelectWidget extends Composite implements I_CmsEditWidget {
 
     /** Default value of rows to be shown. */
@@ -269,7 +269,7 @@ public class CmsRadioSelectWidget extends Composite implements I_CmsEditWidget {
      *
      * @param config the configuration string.
      * @return List of CmsRadioButtons
-     * */
+     */
     private List<CmsRadioButton> parseConfiguration(String config) {
 
         // generate an empty list off radio button.

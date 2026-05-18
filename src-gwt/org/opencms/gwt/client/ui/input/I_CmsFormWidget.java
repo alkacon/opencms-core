@@ -42,10 +42,14 @@ public interface I_CmsFormWidget {
      */
     public enum FieldType {
         /** Field type constant for booleans (Java type: Boolean). */
-        BOOLEAN, /** Field type constant for dates (Java type: Date). */
-        DATE, /** Field type constant for numbers (Java type: Double). */
-        NUMBER, /** Field type constant for strings (Java type: String). */
-        STRING, /** Field type constant for lists of strings (Java type: List<String>). */
+        BOOLEAN,
+        /** Field type constant for dates (Java type: Date). */
+        DATE,
+        /** Field type constant for numbers (Java type: Double). */
+        NUMBER,
+        /** Field type constant for strings (Java type: String). */
+        STRING,
+        /** Field type constant for lists of strings (Java type: List<String>). */
         STRING_LIST
     }
 

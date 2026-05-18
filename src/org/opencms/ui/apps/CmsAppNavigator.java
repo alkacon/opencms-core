@@ -50,6 +50,7 @@ public class CmsAppNavigator extends Navigator {
      * @param display the display
      */
     public CmsAppNavigator(UI ui, NavigationStateManager stateManager, ViewDisplay display) {
+
         super(ui, stateManager, display);
     }
 

@@ -54,7 +54,8 @@ public class CmsResourceWrapperReplaceDeleted extends A_CmsResourceWrapper {
         String resourcename,
         int type,
         byte[] content,
-        List<CmsProperty> properties) throws CmsException, CmsIllegalArgumentException {
+        List<CmsProperty> properties)
+    throws CmsException, CmsIllegalArgumentException {
 
         try {
             CmsResource resource = cms.readResource(resourcename, CmsResourceFilter.ALL);

@@ -51,6 +51,7 @@ public class CmsFavoriteEntry {
      * Represents the type of the favorite.
      */
     public enum Type {
+
         /** Container page editor favorite. */
         explorerFolder("f"),
 

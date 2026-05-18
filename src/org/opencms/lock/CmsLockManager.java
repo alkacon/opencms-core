@@ -171,7 +171,7 @@ public final class CmsLockManager {
      * @param resource the resource
      *
      * @return the lock state of the given resource
-    
+     *
      * @throws CmsException if something goes wrong
      */
     public CmsLock getLock(CmsDbContext dbc, CmsResource resource) throws CmsException {
@@ -190,7 +190,7 @@ public final class CmsLockManager {
      * @param includeSiblings if siblings (shared locks) should be included in the search
      *
      * @return the lock state of the given resource
-    
+     *
      * @throws CmsException if something goes wrong
      */
     public CmsLock getLock(CmsDbContext dbc, CmsResource resource, boolean includeSiblings) throws CmsException {

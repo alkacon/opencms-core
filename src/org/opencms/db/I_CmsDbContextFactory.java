@@ -37,11 +37,11 @@ import org.opencms.file.CmsRequestContext;
 public interface I_CmsDbContextFactory {
 
     /**
-     * Initializes the runtime info factory with the OpenCms driver manager.<p>
+     * Returns a new database context.<p>
      *
-     * @param driverManager the initialized OpenCms driver manager
+     * @return a new database context
      */
-    void initialize(CmsDriverManager driverManager);
+    CmsDbContext getDbContext();
 
     /**
      * Returns a new database context based on the given user request context.<p>
@@ -53,9 +53,9 @@ public interface I_CmsDbContextFactory {
     CmsDbContext getDbContext(CmsRequestContext context);
 
     /**
-     * Returns a new database context.<p>
+     * Initializes the runtime info factory with the OpenCms driver manager.<p>
      *
-     * @return a new database context
+     * @param driverManager the initialized OpenCms driver manager
      */
-    CmsDbContext getDbContext();
+    void initialize(CmsDriverManager driverManager);
 }

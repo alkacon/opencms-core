@@ -79,6 +79,7 @@ public class CmsCategoryTree extends TreeTable {
      * Constructor.<p>
      */
     public CmsCategoryTree() {
+
         m_checkboxes = new HashMap<CmsCategory, CheckBox>();
         m_container = new HierarchicalContainer();
         setContainerDataSource(m_container);
@@ -118,6 +119,7 @@ public class CmsCategoryTree extends TreeTable {
      * @param contextPath the context path
      */
     public CmsCategoryTree(CmsObject cms, String contextPath) {
+
         this();
         loadCategories(cms, contextPath);
     }

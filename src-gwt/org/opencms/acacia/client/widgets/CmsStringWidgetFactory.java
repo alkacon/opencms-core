@@ -36,7 +36,6 @@ import org.opencms.gwt.shared.CmsGwtConstants;
 import com.google.gwt.dom.client.Element;
 
 import elemental2.core.Global;
-import elemental2.dom.DomGlobal;
 import jsinterop.base.Any;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;

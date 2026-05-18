@@ -289,7 +289,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     /**
      * Indicates if the current user has view permissions on the element resource.
      * Without view permissions, the element can neither be edited, nor moved.
-     **/
+     */
     private boolean m_viewPermission;
 
     /** The former copy model status. */
@@ -298,7 +298,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     /**
      * Indicates if the current user has write permissions on the element resource.
      * Without write permissions, the element can not be edited.
-     **/
+     */
     private boolean m_writePermission;
 
     /** The availability information. */

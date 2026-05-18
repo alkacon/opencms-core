@@ -232,14 +232,15 @@ public class CmsElementChangeLocaleDialog extends CmsWidgetDialog {
         // set localized key prefix
         setKeyPrefix(KEY_PREFIX);
 
-        addWidget(new CmsWidgetDialogParameter(
-            m_settings,
-            "vfsFolder",
-            "/",
-            PAGES[0],
-            new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot()),
-            1,
-            1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_settings,
+                "vfsFolder",
+                "/",
+                PAGES[0],
+                new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot()),
+                1,
+                1));
 
         addWidget(new CmsWidgetDialogParameter(m_settings, "includeSubFolders", PAGES[0], new CmsCheckboxWidget()));
         addWidget(

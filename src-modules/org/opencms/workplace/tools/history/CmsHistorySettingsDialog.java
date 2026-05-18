@@ -224,14 +224,16 @@ public class CmsHistorySettingsDialog extends CmsWidgetDialog {
                 String.valueOf(CmsHistorySettings.MODE_DELETED_HISTORY_DISABLED),
                 m_historySettings.getMode() == CmsHistorySettings.MODE_DELETED_HISTORY_DISABLED,
                 key(Messages.GUI_HISTORY_SETTINGS_MODE_DISABLED_0)));
-        ret.add(new CmsSelectWidgetOption(
-            String.valueOf(CmsHistorySettings.MODE_DELETED_HISTORY_KEEP_NO_VERSIONS),
-            m_historySettings.getMode() == CmsHistorySettings.MODE_DELETED_HISTORY_KEEP_NO_VERSIONS,
-            key(Messages.GUI_HISTORY_SETTINGS_MODE_KEEP_NO_VERSIONS_0)));
-        ret.add(new CmsSelectWidgetOption(
-            String.valueOf(CmsHistorySettings.MODE_DELETED_HISTORY_KEEP_WITH_VERSIONS),
-            m_historySettings.getMode() == CmsHistorySettings.MODE_DELETED_HISTORY_KEEP_WITH_VERSIONS,
-            key(Messages.GUI_HISTORY_SETTINGS_MODE_KEEP_WITH_VERSIONS_0)));
+        ret.add(
+            new CmsSelectWidgetOption(
+                String.valueOf(CmsHistorySettings.MODE_DELETED_HISTORY_KEEP_NO_VERSIONS),
+                m_historySettings.getMode() == CmsHistorySettings.MODE_DELETED_HISTORY_KEEP_NO_VERSIONS,
+                key(Messages.GUI_HISTORY_SETTINGS_MODE_KEEP_NO_VERSIONS_0)));
+        ret.add(
+            new CmsSelectWidgetOption(
+                String.valueOf(CmsHistorySettings.MODE_DELETED_HISTORY_KEEP_WITH_VERSIONS),
+                m_historySettings.getMode() == CmsHistorySettings.MODE_DELETED_HISTORY_KEEP_WITH_VERSIONS,
+                key(Messages.GUI_HISTORY_SETTINGS_MODE_KEEP_WITH_VERSIONS_0)));
 
         return ret;
     }

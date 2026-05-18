@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Composite;
 
 /**
  *
- * */
+ */
 public class CmsGalleryWidget extends Composite implements I_CmsEditWidget, HasResizeHandlers {
 
     /** Value of the activation. */

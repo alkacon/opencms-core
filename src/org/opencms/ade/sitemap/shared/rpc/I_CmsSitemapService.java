@@ -180,7 +180,7 @@ public interface I_CmsSitemapService extends RemoteService {
      * @return the category data
      *
      * @throws CmsRpcException if something goes wrong
-     **/
+     */
     CmsSitemapCategoryData getCategoryData(String entryPoint) throws CmsRpcException;
 
     /**

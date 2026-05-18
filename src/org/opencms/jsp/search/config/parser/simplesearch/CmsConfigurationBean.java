@@ -126,9 +126,9 @@ public class CmsConfigurationBean {
 
     /**
      * Extracts the resource type name from a display type string.
-     * 
+     *
      * @param displayType the display type
-     * @return the resource type name 
+     * @return the resource type name
      */
     public static String getResourceTypeForDisplayType(String displayType) {
 

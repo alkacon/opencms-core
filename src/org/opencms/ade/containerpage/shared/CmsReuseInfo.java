@@ -114,7 +114,6 @@ public class CmsReuseInfo implements IsSerializable {
         return m_message;
     }
 
-
     /**
      * Gets the dialog title.
      *

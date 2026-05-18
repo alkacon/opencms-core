@@ -58,6 +58,7 @@ public class CmsDataViewColumn {
          * @param valueClass the value class
          */
         private Type(Class<?> valueClass) {
+
             m_class = valueClass;
         }
 
@@ -100,6 +101,7 @@ public class CmsDataViewColumn {
      * @param preferredWidth the preferred width of the column
      */
     public CmsDataViewColumn(String id, Type type, String niceName, boolean sortable, int preferredWidth) {
+
         m_type = type;
         m_id = id;
         m_sortable = sortable;

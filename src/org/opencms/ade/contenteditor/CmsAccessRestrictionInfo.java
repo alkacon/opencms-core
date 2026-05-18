@@ -122,7 +122,12 @@ public class CmsAccessRestrictionInfo {
             I_CmsXmlSchemaType type = entry.getValue();
             try {
                 if (type instanceof CmsXmlAccessRestrictionValue) {
-                    WidgetInfo widgetInfo = CmsWidgetUtil.collectWidgetInfo(cms, contentDef, entry.getKey(), null, null);
+                    WidgetInfo widgetInfo = CmsWidgetUtil.collectWidgetInfo(
+                        cms,
+                        contentDef,
+                        entry.getKey(),
+                        null,
+                        null);
                     String widgetConfig = widgetInfo.getWidget().getConfiguration();
                     if (widgetConfig != null) {
                         JSONObject json = new JSONObject(widgetConfig);

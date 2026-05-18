@@ -83,6 +83,7 @@ public class CmsJspTagScaleImage extends CmsJspImageScalerTagSupport {
      * Creates a new image scaling tag instance.<p>
      */
     public CmsJspTagScaleImage() {
+
         super();
     }
 

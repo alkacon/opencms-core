@@ -59,7 +59,6 @@ import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsEmbeddedDialogHandler;
-import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -472,7 +471,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      * Sets the has image flag.<p>
      *
      * @param hasImage the has image flag
-     **/
+     */
     public void setHasImage(boolean hasImage) {
 
         m_hasImage = hasImage;
@@ -482,7 +481,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      * Sets the name of the input field.<p>
      *
      * @param name of the input field
-     * */
+     */
     public void setName(String name) {
 
         m_textbox.setName(name);
@@ -958,14 +957,13 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         return uploadButton;
     }
 
-    /** 
+    /**
      * Gets the default scaling parameters for the preview.
-     * 
+     *
      * @param highRes true if we want the high-res version
      * @param the scaling parameters
      */
     private String getScalingParams(boolean highRes) {
-
 
         if (highRes) {
             return "?__scale=w:400,h:340,t:9,q:85";

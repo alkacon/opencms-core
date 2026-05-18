@@ -218,7 +218,8 @@ public class CmsResourceComparison {
         CmsResource resource1,
         String version1,
         CmsResource resource2,
-        String version2) throws CmsException {
+        String version2)
+    throws CmsException {
 
         List<CmsProperty> properties1;
         if (resource1 instanceof I_CmsHistoryResource) {

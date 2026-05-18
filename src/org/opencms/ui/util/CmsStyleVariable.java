@@ -48,6 +48,7 @@ public class CmsStyleVariable {
      * @param component the component
      */
     public CmsStyleVariable(Component component) {
+
         m_component = component;
     }
 

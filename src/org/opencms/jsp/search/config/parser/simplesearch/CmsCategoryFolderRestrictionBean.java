@@ -50,7 +50,10 @@ public class CmsCategoryFolderRestrictionBean {
      * @param folders the folders to filter
      * @param categoryMode the combination mode for categories
      */
-    public CmsCategoryFolderRestrictionBean(List<String> categories, List<String> folders, CombinationMode categoryMode) {
+    public CmsCategoryFolderRestrictionBean(
+        List<String> categories,
+        List<String> folders,
+        CombinationMode categoryMode) {
 
         m_categories = categories == null ? Collections.<String> emptyList() : categories;
         m_folders = folders == null ? Collections.<String> emptyList() : folders;

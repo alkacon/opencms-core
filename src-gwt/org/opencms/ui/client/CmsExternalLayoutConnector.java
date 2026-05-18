@@ -62,6 +62,7 @@ public class CmsExternalLayoutConnector extends AbstractHasComponentsConnector {
      */
     @Override
     public void updateCaption(ComponentConnector connector) {
+
         // Captions not supported
     }
 

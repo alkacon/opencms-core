@@ -226,7 +226,8 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
         String param,
         boolean tree,
         boolean asc,
-        int numResults) throws CmsException {
+        int numResults)
+    throws CmsException {
 
         CmsCollectorData data = new CmsCollectorData(param);
         String foldername = CmsResource.getFolderPath(data.getFileName());

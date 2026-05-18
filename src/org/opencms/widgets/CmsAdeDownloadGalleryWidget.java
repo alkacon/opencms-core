@@ -98,7 +98,8 @@ public class CmsAdeDownloadGalleryWidget extends A_CmsAdeGalleryWidget {
         CmsObject cms,
         String resource,
         CmsMessages messages,
-        I_CmsWidgetParameter param) throws JSONException {
+        I_CmsWidgetParameter param)
+    throws JSONException {
 
         JSONObject result = new JSONObject();
         result.put(I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG, "selectDoc");

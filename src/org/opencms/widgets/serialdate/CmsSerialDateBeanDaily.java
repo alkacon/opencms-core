@@ -63,6 +63,7 @@ public class CmsSerialDateBeanDaily extends A_CmsSerialDateBean {
         int occurrences,
         SortedSet<Date> exceptions,
         int interval) {
+
         super(startDate, endDate, isWholeDay, endType, serialEndDate, occurrences, exceptions);
         m_interval = interval;
 

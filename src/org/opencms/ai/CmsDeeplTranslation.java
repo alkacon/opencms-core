@@ -62,7 +62,6 @@ import com.deepl.api.DeepLClientOptions;
 import com.deepl.api.Language;
 import com.deepl.api.TextResult;
 import com.deepl.api.TextTranslationOptions;
-import org.opencms.ai.*;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 

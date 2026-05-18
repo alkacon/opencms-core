@@ -83,16 +83,6 @@ public class CmsHistoryClearReport extends A_CmsListReport {
     }
 
     /**
-     * Sets the request parameter value for the class name to get the dialog object from.<p>
-     *
-     * @param className the request parameter value for the class name to get the dialog object from
-     */
-    public void setParamClassname(String className) {
-
-        m_paramClassname = className;
-    }
-
-    /**
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
     @Override
@@ -103,6 +93,16 @@ public class CmsHistoryClearReport extends A_CmsListReport {
         I_CmsReportThread clearHistoryThread = new CmsHistoryClearThread(getCms(), historyClear);
 
         return clearHistoryThread;
+    }
+
+    /**
+     * Sets the request parameter value for the class name to get the dialog object from.<p>
+     *
+     * @param className the request parameter value for the class name to get the dialog object from
+     */
+    public void setParamClassname(String className) {
+
+        m_paramClassname = className;
     }
 
 }

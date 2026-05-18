@@ -37,7 +37,8 @@ public class CmsContainerpageEvent extends Event<I_CmsContainerpageEventHandler>
     /** Enum for the event type. */
     public enum EventType {
         /** Fired when an element has been edited. */
-        elementEdited, /** Fired when the page has been saved. */
+        elementEdited,
+        /** Fired when the page has been saved. */
         pageSaved;
     }
 

@@ -45,6 +45,7 @@ public class CmsDefaultProfilingHandler implements I_CmsProfilingHandler {
      * Hidden default constructor.<p>
      */
     protected CmsDefaultProfilingHandler() {
+
         // do nothing
     }
 

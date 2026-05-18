@@ -50,6 +50,7 @@ public abstract class CmsJspImageScalerTagSupport extends BodyTagSupport {
      * every time {@link #release()} is called.
      */
     public CmsJspImageScalerTagSupport() {
+
         // initialize the image scaler parameter container
         m_scaler = new CmsImageScaler();
     }

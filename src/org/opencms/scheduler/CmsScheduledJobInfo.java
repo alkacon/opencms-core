@@ -540,8 +540,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler, 
      *
      * @return the context information for the user executing this job
      */
-    @Valid
-    public CmsContextInfo getContextInfo() {
+    @Valid public CmsContextInfo getContextInfo() {
 
         return m_context;
     }

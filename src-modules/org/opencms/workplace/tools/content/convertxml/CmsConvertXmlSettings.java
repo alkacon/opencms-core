@@ -77,16 +77,6 @@ public final class CmsConvertXmlSettings {
     }
 
     /**
-     * Gets resource type to transform.<p>
-     *
-     * @return Resource type to transform.
-     */
-    public int getResourceType() {
-
-        return m_resourceType;
-    }
-
-    /**
      * Gets if also files in sub folders shall become processed.<p>
      *
      * @return if also files in sub folders shall become processed.
@@ -104,6 +94,16 @@ public final class CmsConvertXmlSettings {
     public boolean getOnlyCountFiles() {
 
         return m_onlyCountFiles;
+    }
+
+    /**
+     * Gets resource type to transform.<p>
+     *
+     * @return Resource type to transform.
+     */
+    public int getResourceType() {
+
+        return m_resourceType;
     }
 
     /**
@@ -128,18 +128,6 @@ public final class CmsConvertXmlSettings {
     }
 
     /**
-     * Sets resource type to transform.<p>
-     *
-     * @param resourceType File format to transform
-     *
-     * @throws CmsIllegalArgumentException if the argument is not valid.
-     */
-    public void setResourceType(int resourceType) throws CmsIllegalArgumentException {
-
-        m_resourceType = resourceType;
-    }
-
-    /**
      * Sets value if also process files in sub folders.<p>
      *
      * @param subFolders True if process sub folders, too
@@ -161,6 +149,18 @@ public final class CmsConvertXmlSettings {
     public void setOnlyCountFiles(boolean countFiles) throws CmsIllegalArgumentException {
 
         m_onlyCountFiles = countFiles;
+    }
+
+    /**
+     * Sets resource type to transform.<p>
+     *
+     * @param resourceType File format to transform
+     *
+     * @throws CmsIllegalArgumentException if the argument is not valid.
+     */
+    public void setResourceType(int resourceType) throws CmsIllegalArgumentException {
+
+        m_resourceType = resourceType;
     }
 
     /**

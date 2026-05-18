@@ -1024,7 +1024,11 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      *
      * @throws CmsException if something goes wrong
      */
-    protected CmsResource createRelations(CmsObject cms, CmsSecurityManager securityManager, String resourceName, boolean updateSiblingState)
+    protected CmsResource createRelations(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        String resourceName,
+        boolean updateSiblingState)
     throws CmsException {
 
         CmsResource resource = securityManager.readResource(

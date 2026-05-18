@@ -41,6 +41,9 @@ import org.opencms.util.CmsUUID;
  */
 class CmsPublishItemSelectionController {
 
+    /** The CSS bundle used for this widget. */
+    private static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
+
     /** True if there are problems with the given resource. */
     private final boolean m_hasProblems;
 
@@ -52,9 +55,6 @@ class CmsPublishItemSelectionController {
 
     /** The checkbox for selecting the resource for publishing. */
     private final CmsCheckBox m_selectedCheckBox;
-
-    /** The CSS bundle used for this widget. */
-    private static final I_CmsPublishCss CSS = I_CmsPublishLayoutBundle.INSTANCE.publishCss();
 
     /** A style variable which is changed depending on the "removed" state of the corresponding publish item. */
     private final CmsStyleVariable m_removeStyle;

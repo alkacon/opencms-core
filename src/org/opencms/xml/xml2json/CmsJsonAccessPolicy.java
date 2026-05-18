@@ -151,7 +151,6 @@ public class CmsJsonAccessPolicy {
      * @return the access policy
      *
      * @throws DocumentException if parsing fails
-    
      */
     public static CmsJsonAccessPolicy parse(InputStream stream) throws DocumentException {
 

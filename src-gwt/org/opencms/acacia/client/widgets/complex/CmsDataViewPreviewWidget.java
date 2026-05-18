@@ -88,6 +88,7 @@ public class CmsDataViewPreviewWidget extends Composite {
          * @param url the URL of the image to load
          */
         public SimpleImageLoader(String url) {
+
             m_url = url;
         }
 
@@ -139,6 +140,7 @@ public class CmsDataViewPreviewWidget extends Composite {
      * @param provider the image provider
      */
     public CmsDataViewPreviewWidget(String config, CmsDataViewValueAccessor accessor, I_ImageProvider provider) {
+
         I_CmsPreviewUiBinder binder = GWT.create(I_CmsPreviewUiBinder.class);
         initWidget(binder.createAndBindUi(this));
         m_config = config;

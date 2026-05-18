@@ -341,11 +341,12 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
         // create NavPos select box row
         result.append(buildTableRowStart(key(Messages.GUI_CHNAV_INSERT_AFTER_0)));
-        result.append(CmsChnav.buildNavPosSelector(
-            getCms(),
-            getParamResource(),
-            disabled + " id=\"navpos\" class=\"maxwidth noborder\"",
-            getMessages()));
+        result.append(
+            CmsChnav.buildNavPosSelector(
+                getCms(),
+                getParamResource(),
+                disabled + " id=\"navpos\" class=\"maxwidth noborder\"",
+                getMessages()));
         // get the old NavPos value and store it in hidden field
         String navPos = null;
         try {

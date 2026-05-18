@@ -282,7 +282,7 @@ public final class CmsContainerpageController {
 
         /**
          * Called after all other onReload calls for the current operation.
-         * */
+         */
         void finish();
 
         /**
@@ -549,7 +549,7 @@ public final class CmsContainerpageController {
         private Set<String> m_clientIds;
 
         /**
-        "         * Constructor.<p>
+         * Constructor.<p>
          *
          * @param clientIds the client id's
          * @param callback the call-back

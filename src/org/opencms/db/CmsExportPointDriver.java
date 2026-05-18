@@ -78,6 +78,7 @@ public class CmsExportPointDriver implements I_CmsExportPointDriver {
      * Empty default constructor, necessary for subclasses which may need to do initialization differently.<p>
      */
     protected CmsExportPointDriver() {
+
         // do nothing; this constructor is only needed for subclasses
     }
 

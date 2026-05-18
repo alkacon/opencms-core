@@ -52,7 +52,7 @@ public class CmsListMetadata {
          * Generates the CSV header.
          *
          * @return the CSV header line
-         **/
+         */
         String csvHeader();
 
         /**
@@ -60,7 +60,7 @@ public class CmsListMetadata {
          *
          * @param item the list item to format
          * @return the formatted text line for the list item
-         * */
+         */
         String csvItem(CmsListItem item);
     }
 

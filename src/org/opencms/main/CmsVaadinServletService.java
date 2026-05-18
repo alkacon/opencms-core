@@ -55,6 +55,7 @@ public class CmsVaadinServletService extends VaadinServletService {
      */
     public CmsVaadinServletService(VaadinServlet servlet, DeploymentConfiguration deploymentConfiguration)
     throws ServiceException {
+
         super(servlet, deploymentConfiguration);
 
     }

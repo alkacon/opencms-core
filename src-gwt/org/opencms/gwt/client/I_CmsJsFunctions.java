@@ -35,6 +35,7 @@ import jsinterop.annotations.JsType;
  */
 @JsType(isNative = true)
 public interface I_CmsJsFunctions {
+
     /**
      * Error handle for preview images in dialogs.
      *

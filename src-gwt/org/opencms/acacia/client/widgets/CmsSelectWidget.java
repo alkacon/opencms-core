@@ -237,7 +237,7 @@ public class CmsSelectWidget extends Composite implements I_CmsEditWidget, I_Cms
      * Helper class for parsing the configuration of the select-box. <p>
      *
      * @param config the configuration string
-     * */
+     */
     private void parseConfiguration(String config) {
 
         CmsSelectConfigurationParser parser = new CmsSelectConfigurationParser(config);

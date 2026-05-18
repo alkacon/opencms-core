@@ -153,7 +153,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasFoc
      * Returns a list of all checkboxes.<p>
      *
      * @return a list of checkboxes
-     * */
+     */
     public List<CmsCheckBox> getCheckboxes() {
 
         return m_checkboxes;

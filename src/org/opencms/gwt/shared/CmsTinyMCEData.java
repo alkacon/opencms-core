@@ -41,6 +41,7 @@ public class CmsTinyMCEData implements IsSerializable {
      * Creates a new instance.<p>
      */
     public CmsTinyMCEData() {
+
         // do nothing
     }
 

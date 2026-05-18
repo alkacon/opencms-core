@@ -61,11 +61,11 @@ public class CmsRebuildReport extends A_CmsListReport {
     /** Indexes parameter: Value is a list of comma separated search index name. */
     public static final String PARAM_INDEXES = "indexes";
 
-    /** The request parameter value for search indexes: comma-separated names. **/
-    private String m_paramIndexes;
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsRebuildReport.class);
+
+    /** The request parameter value for search indexes: comma-separated names. **/
+    private String m_paramIndexes;
 
     /**
      * Public constructor with JSP action element.<p>

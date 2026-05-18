@@ -89,7 +89,7 @@ public class CmsPublishResource extends CmsListInfoBean {
      * @param removable to indicate if the resource can be removed from the user's publish list
      * @param info the additional information, if any
      * @param related the related resources
-     **/
+     */
     public CmsPublishResource(
         CmsUUID id,
         String name,

@@ -59,7 +59,10 @@ public class CmsCreateGalleryMenuEntry extends A_CmsSitemapMenuEntry {
 
         final CmsSitemapController controller = getHoverbar().getController();
         final CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        CmsCreateGalleryDialog dialog = new CmsCreateGalleryDialog(controller, entry.getResourceTypeId(), entry.getId());
+        CmsCreateGalleryDialog dialog = new CmsCreateGalleryDialog(
+            controller,
+            entry.getResourceTypeId(),
+            entry.getId());
         dialog.center();
     }
 

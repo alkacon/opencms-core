@@ -221,7 +221,7 @@ public class CmsBrokenLinksPanel extends Composite {
 
     /**
      * Updates the dialog title.<p>
-     **/
+     */
     public void updateTitle() {
 
         m_publishDialog.setCaption(

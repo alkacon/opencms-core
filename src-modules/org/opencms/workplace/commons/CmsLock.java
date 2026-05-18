@@ -224,7 +224,8 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
         CmsLockFilter nonBlockingFilter,
         CmsLockFilter blockingFilter,
         int hiddenTimeout,
-        boolean includeRelated) throws CmsException {
+        boolean includeRelated)
+    throws CmsException {
 
         dialog.setParamAction(CmsDialog.DIALOG_LOCKS_CONFIRMED);
         CmsLock lockwp = new CmsLock(dialog.getJsp());

@@ -93,6 +93,7 @@ public class CmsTextDiffPanel extends VerticalLayout {
      * @param selectDiffMode true if the option to select between showing only the changed lines or all the lines should be displayed
      */
     public CmsTextDiffPanel(String text1, String text2, boolean selectTextOrHtml, boolean selectDiffMode) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_text1 = text1;
         m_text2 = text2;

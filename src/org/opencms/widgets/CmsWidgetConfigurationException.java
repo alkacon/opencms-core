@@ -41,6 +41,7 @@ public class CmsWidgetConfigurationException extends RuntimeException {
      * @param message the error message
      */
     public CmsWidgetConfigurationException(String message) {
+
         super(message);
     }
 
@@ -51,6 +52,7 @@ public class CmsWidgetConfigurationException extends RuntimeException {
      * @param cause the cause
      */
     public CmsWidgetConfigurationException(String message, Throwable cause) {
+
         super(message, cause);
     }
 
@@ -60,6 +62,7 @@ public class CmsWidgetConfigurationException extends RuntimeException {
      * @param cause the cause
      */
     public CmsWidgetConfigurationException(Throwable cause) {
+
         super(cause);
     }
 

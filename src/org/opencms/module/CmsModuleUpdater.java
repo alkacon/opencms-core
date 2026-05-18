@@ -560,21 +560,21 @@ public class CmsModuleUpdater {
                 } else if (oldRes.getState().isUnchanged()
                     && !needToUpdateResourceFields(oldRes, resData.getResource(), reducedExport)) {
 
-                        // if resource is changed or new, we don't want to go into this code block
-                        // because even if the content / metaadata are the same, we still want the file to be published at the end,
-                        // so we import it to add it to the current working project
+                    // if resource is changed or new, we don't want to go into this code block
+                    // because even if the content / metaadata are the same, we still want the file to be published at the end,
+                    // so we import it to add it to the current working project
 
-                        if (oldRes.isFile() && (content != null)) {
-                            CmsFile file = cms.readFile(oldRes);
-                            if (Arrays.equals(file.getContents(), content)) {
-                                needsImport = false;
-                            } else {
-                                LOG.debug("Content mismatch for " + file.getRootPath());
-                            }
-                        } else {
+                    if (oldRes.isFile() && (content != null)) {
+                        CmsFile file = cms.readFile(oldRes);
+                        if (Arrays.equals(file.getContents(), content)) {
                             needsImport = false;
+                        } else {
+                            LOG.debug("Content mismatch for " + file.getRootPath());
                         }
+                    } else {
+                        needsImport = false;
                     }
+                }
             }
             if (needsImport || (oldRes == null)) { // oldRes null check is redundant, we just do it to remove the warning in Eclipse
                 currentRes = cms.importResource(

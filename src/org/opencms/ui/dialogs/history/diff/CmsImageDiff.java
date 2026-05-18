@@ -40,9 +40,9 @@ import org.opencms.workplace.comparison.CmsHistoryListUtil;
 import com.google.common.base.Optional;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Component;
-import com.vaadin.v7.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Panel;
+import com.vaadin.v7.ui.HorizontalLayout;
 
 /**
  * Displays two image versions side by side, scaled.<p>

@@ -100,9 +100,6 @@ public class CmsDefaultAppButtonProvider implements I_CmsAppButtonProvider {
      * @param locale the locale
      *
      * @return the button component
-     *
-     *                         (I_CmsFolderAppCategory)childNode.getCategory(),
-                        childNode.getAppConfigurations())
      */
     public static Component createAppFolderButton(CmsObject cms, final CmsAppCategoryNode node, final Locale locale) {
 

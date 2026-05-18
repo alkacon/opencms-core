@@ -1362,7 +1362,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * Flushes the user group cache for the user with the given id.
      *
      * @param id the user id
-     **/
+     */
     public void flushUserGroups(CmsUUID id) {
 
         m_cacheUserGroups.clearUser(id);
@@ -1881,13 +1881,17 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             CmsLog.INIT.info(
                 Messages.get().getBundle().key(Messages.LOG_MM_INTERVAL_LOG_1, Integer.valueOf(m_intervalLog / 1000)));
             CmsLog.INIT.info(
-                Messages.get().getBundle().key(Messages.LOG_MM_INTERVAL_EMAIL_1, Integer.valueOf(m_intervalEmail / 1000)));
+                Messages.get().getBundle().key(
+                    Messages.LOG_MM_INTERVAL_EMAIL_1,
+                    Integer.valueOf(m_intervalEmail / 1000)));
             CmsLog.INIT.info(
                 Messages.get().getBundle().key(
                     Messages.LOG_MM_INTERVAL_WARNING_1,
                     Integer.valueOf(m_intervalWarning / 1000)));
             CmsLog.INIT.info(
-                Messages.get().getBundle().key(Messages.LOG_MM_INTERVAL_MAX_USAGE_1, Integer.valueOf(m_maxUsagePercent)));
+                Messages.get().getBundle().key(
+                    Messages.LOG_MM_INTERVAL_MAX_USAGE_1,
+                    Integer.valueOf(m_maxUsagePercent)));
 
             if ((m_configuration.getEmailReceiver() == null) || (m_configuration.getEmailSender() == null)) {
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.LOG_MM_EMAIL_DISABLED_0));
@@ -1898,7 +1902,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 int n = 0;
                 while (i.hasNext()) {
                     CmsLog.INIT.info(
-                        Messages.get().getBundle().key(Messages.LOG_MM_EMAIL_RECEIVER_2, Integer.valueOf(n + 1), i.next()));
+                        Messages.get().getBundle().key(
+                            Messages.LOG_MM_EMAIL_RECEIVER_2,
+                            Integer.valueOf(n + 1),
+                            i.next()));
                     n++;
                 }
             }

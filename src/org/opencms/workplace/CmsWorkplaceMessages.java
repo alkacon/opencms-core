@@ -217,7 +217,7 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
         // create a new list and add the base bundle
         ArrayList<CmsMessages> result = new ArrayList<CmsMessages>();
 
-        //////////// iterate over all registered modules ////////////////
+        //////////// iterate over all registered modules
         Set<String> names = new HashSet<String>();
         Set<String> modules = OpenCms.getModuleManager().getModuleNames();
         if (modules != null) {
@@ -237,7 +237,7 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
 
         // iterate all module names
         for (String baseName : names) {
-            //////////// collect the workplace.properties ////////////////
+            //////////// collect the workplace.properties
             // this should result in a name like "my.module.name.workplace"
             String bundleName = baseName + PREFIX_BUNDLE_WORKPLACE;
             // try to load a bundle with the module names
@@ -246,7 +246,7 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
             if (msg.isInitialized()) {
                 result.add(msg);
             }
-            //////////// collect the messages.properties ////////////////
+            //////////// collect the messages.properties
             // this should result in a name like "my.module.name.messages"
             bundleName = baseName + PREFIX_BUNDLE_MESSAGES;
             // try to load a bundle with the module names
@@ -257,14 +257,14 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
             }
         }
 
-        //////////// collect additional core packages ////////////////
+        //////////// collect additional core packages
         I_CmsMessageBundle[] coreMsgs = A_CmsMessageBundle.getOpenCmsMessageBundles();
         for (int i = 0; i < coreMsgs.length; i++) {
             I_CmsMessageBundle bundle = coreMsgs[i];
             result.add(bundle.getBundle(locale));
         }
 
-        /////////// collect bundles configured in module configurations ////////
+        /////////// collect bundles configured in module configurations
         if (OpenCms.getADEManager().isInitialized()) {
             Set<String> bundleNames = OpenCms.getADEManager().getConfiguredWorkplaceBundles();
             for (String bundleName : bundleNames) {

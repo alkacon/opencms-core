@@ -46,15 +46,15 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.data.Validator;
 import com.vaadin.v7.ui.AbstractField;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.v7.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.FormLayout;
 import com.vaadin.v7.ui.TextField;
 import com.vaadin.v7.ui.VerticalLayout;
 
@@ -161,6 +161,7 @@ public class CmsDbSynchronizationView extends VerticalLayout {
      * @param app instance of calling app
      */
     public CmsDbSynchronizationView(CmsDbSynchronizationApp app) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_app = app;
         m_componentsToValidate.add(m_target);

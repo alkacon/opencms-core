@@ -130,6 +130,25 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
     }
 
     /**
+     * Returns the values as a parameter string.<p>
+     *
+     * @return the values as a parameter string
+     */
+    @Override
+    public String getConfigString() {
+
+        String result = "";
+        if (m_startup != null) {
+            result += "&startup=" + m_startup;
+        }
+        if (m_type != null) {
+            result += "&type=" + m_type;
+        }
+
+        return result;
+    }
+
+    /**
      * Returns the list of image format values matching the options for the format select box.<p>
      *
      * @return the list of image format values matching the options for the format select box
@@ -318,25 +337,6 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
     private void setShowFormat(boolean showFormat) {
 
         m_showFormat = showFormat;
-    }
-
-    /**
-     * Returns the values as a parameter string.<p>
-     *
-     * @return the values as a parameter string
-     * */
-    @Override
-    public String getConfigString() {
-
-        String result = "";
-        if (m_startup != null) {
-            result += "&startup=" + m_startup;
-        }
-        if (m_type != null) {
-            result += "&type=" + m_type;
-        }
-
-        return result;
     }
 
 }

@@ -56,6 +56,7 @@ public class CmsImageCacheInput extends VerticalLayout {
      * @param table to be updated after user input
      */
     public CmsImageCacheInput(final CmsImageCacheTable table) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
 
         String siteRoot = A_CmsUI.getCmsObject().getRequestContext().getSiteRoot();

@@ -165,7 +165,7 @@ public interface I_CmsSitemapServiceAsync {
      *
      * @param entryPoint the entry point
      * @param resultCallback the callback for the result
-     **/
+     */
     void getCategoryData(String entryPoint, AsyncCallback<CmsSitemapCategoryData> resultCallback);
 
     /**

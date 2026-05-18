@@ -297,7 +297,7 @@ I_CmsContextProvider, CmsFileTable.I_FolderSelectHandler, CmsResourceTable.Colum
         /**
          * The path fragment being opened.
          * Will override folder visibility in case the the target path is visible to the user.
-         **/
+         */
         private String m_openPathFragment;
 
         /**

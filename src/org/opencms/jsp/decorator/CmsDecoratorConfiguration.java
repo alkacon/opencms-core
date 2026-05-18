@@ -242,8 +242,9 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
     public CmsDecorationDefintion getDecorationDefinition(CmsXmlContent configuration, int i) {
 
         CmsDecorationDefintion decDef = new CmsDecorationDefintion();
-        String name = configuration.getValue(XPATH_DECORATION + "[" + i + "]/" + XPATH_NAME, m_configurationLocale).getStringValue(
-            m_cms);
+        String name = configuration.getValue(
+            XPATH_DECORATION + "[" + i + "]/" + XPATH_NAME,
+            m_configurationLocale).getStringValue(m_cms);
         String markfirst = configuration.getValue(
             XPATH_DECORATION + "[" + i + "]/" + XPATH_MARKFIRST,
             m_configurationLocale).getStringValue(m_cms);
@@ -421,7 +422,7 @@ public class CmsDecoratorConfiguration implements I_CmsDecoratorConfiguration {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.jsp.decorator.I_CmsDecoratorConfiguration#isExcludedAttr(org.htmlparser.Tag)
      */
     public boolean isExcludedAttr(Tag tag) {

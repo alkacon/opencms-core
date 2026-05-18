@@ -50,7 +50,7 @@ import org.opencms.lock.CmsLockType;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
-import org.opencms.ui.apps.Messages; //TODO move messages
+import org.opencms.ui.apps.Messages;
 
 import java.util.ArrayList;
 import java.util.Iterator;

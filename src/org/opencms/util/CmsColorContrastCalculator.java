@@ -405,6 +405,33 @@ public final class CmsColorContrastCalculator {
     }
 
     /**
+     * Converts a CSS color to its corresponding RGB representation as a comma separated String.<p>
+     * For example, the color "red" will be converted to "255, 0, 0".<p>
+     *
+     * @param color the color name or hex color code (e.g. "white", "#ffffff" or "#fff")
+     *
+     * @return the RGB representation as a comma separated String, or {@code null} if the input is invalid
+     *
+     * @see #toRgbArray(String)
+     */
+    public String toRgb(String color) {
+
+        String result = null;
+        int[] rgb = toRgbArray(color, true, true);
+        if (rgb != null) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < rgb.length; i++) {
+                if (i > 0) {
+                    sb.append(", ");
+                }
+                sb.append(rgb[i]);
+            }
+            result = sb.toString();
+        }
+        return result;
+    }
+
+    /**
      * Converts a CSS color to its corresponding RGB values.<p>
      *
      * Accepts a hex colors in the format "#rrggbb", "#rgb" or "#rrggbbaa".
@@ -461,33 +488,6 @@ public final class CmsColorContrastCalculator {
             } else if (supportNames) {
                 result = NAMED_COLORS.get(color);
             }
-        }
-        return result;
-    }
-
-    /**
-     * Converts a CSS color to its corresponding RGB representation as a comma separated String.<p>
-     * For example, the color "red" will be converted to "255, 0, 0".<p>
-     *
-     * @param color the color name or hex color code (e.g. "white", "#ffffff" or "#fff")
-     *
-     * @return the RGB representation as a comma separated String, or {@code null} if the input is invalid
-     *
-     * @see #toRgbArray(String)
-     */
-    public String toRgb(String color) {
-
-        String result = null;
-        int[] rgb = toRgbArray(color, true, true);
-        if (rgb != null) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < rgb.length; i++) {
-                if (i > 0) {
-                    sb.append(", ");
-                }
-                sb.append(rgb[i]);
-            }
-            result = sb.toString();
         }
         return result;
     }

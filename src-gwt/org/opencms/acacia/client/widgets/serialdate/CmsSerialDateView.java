@@ -533,7 +533,7 @@ implements I_CmsSerialDateValueChangeObserver, CloseHandler<CmsFieldSet> {
     /**
      * Sets the radio buttons active or inactive.<p>
      * @param active true or false to activate or deactivate
-     * */
+     */
     void setActive(boolean active) {
 
         m_deactivationPanel.setVisible(!active);

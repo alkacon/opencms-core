@@ -73,6 +73,7 @@ public class CmsImportExportManager {
 
     /** Time modes to specify how time stamps should be handled. */
     public static enum TimestampMode {
+
         /** Use the timestamp of the imported file. */
         FILETIME,
         /** Use the time of import for the timestamp. */

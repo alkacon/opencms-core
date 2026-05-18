@@ -54,6 +54,7 @@ public class CmsScrollPositionCss extends AbstractExtension {
         int scrollBarrier,
         int barrierMargin,
         String styleName) {
+
         super.extend(componentContainer);
         getState().setScrollBarrier(scrollBarrier);
         getState().setBarrierMargin(barrierMargin);

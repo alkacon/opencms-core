@@ -45,6 +45,7 @@ public class CmsPatternPanelYearlyController extends A_CmsPatternPanelController
      * @param changeHandler the value change handler.
      */
     CmsPatternPanelYearlyController(CmsSerialDateValue model, I_ChangeHandler changeHandler) {
+
         super(model, changeHandler);
         m_view = new CmsPatternPanelYearlyView(this, m_model);
     }

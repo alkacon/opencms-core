@@ -104,13 +104,13 @@ public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyD
 
     /**
      * Property for configuring background color for a category in the explorer's category column.
-     **/
+     */
     public static final String PROPERTY_CATEGORY_BACKGROUND = "category.background";
 
     /** Property used to hide categories from the category widgets in the page/content editor.
      *
      * <p>If this property is set to 'true' on a category, it should never be set to 'false' on one of its subcategory.
-     * */
+     */
     public static final String PROPERTY_CATEGORY_HIDDEN = "category.hidden";
 
     /** The property to read an additional category folder from.  */

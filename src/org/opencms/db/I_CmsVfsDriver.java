@@ -653,7 +653,7 @@ public interface I_CmsVfsDriver {
      * @param dbc the current database context
      * @param project the to read the entries from
      * @param principalId the id of the principal
-    
+     *
      * @return a list of <code>{@link org.opencms.file.CmsResource}</code> objects
      *
      * @throws CmsDataAccessException if something goes wrong
@@ -672,7 +672,7 @@ public interface I_CmsVfsDriver {
      * @param dbc the current database context
      * @param project the to read the entries from
      * @param principalId the id of the principal
-    
+     *
      * @return a list of <code>{@link org.opencms.file.CmsResource}</code> objects
      *
      * @throws CmsDataAccessException if something goes wrong

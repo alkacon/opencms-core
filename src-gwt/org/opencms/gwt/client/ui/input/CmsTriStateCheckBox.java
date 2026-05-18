@@ -50,8 +50,10 @@ public class CmsTriStateCheckBox extends Composite implements HasValueChangeHand
      */
     public enum State {
         /** neither on nor off. */
-        middle, /** off. **/
-        off, /** on. **/
+        middle,
+        /** off. **/
+        off,
+        /** on. **/
         on;
     }
 

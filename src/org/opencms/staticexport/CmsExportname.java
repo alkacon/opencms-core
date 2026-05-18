@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: https://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -79,7 +79,7 @@ public class CmsExportname {
 
     /**
      * Constructor with parameters.<p>
-     * 
+     *
      * @param exportname the export name
      * @param site the site object
      */
@@ -124,7 +124,7 @@ public class CmsExportname {
 
     /**
      * Returns the value of the 'exportname' property.<p>
-     * 
+     *
      * @return the value of the 'exportname' property
      */
     public String getExportname() {
@@ -134,7 +134,7 @@ public class CmsExportname {
 
     /**
      * Returns the site.<p>
-     * 
+     *
      * @return the site
      */
     public CmsSite getSite() {
@@ -157,7 +157,7 @@ public class CmsExportname {
 
     /**
      * Sets the export name.<p>
-     * 
+     *
      * @param exportname the value to set the export name to
      */
     public void setExportname(String exportname) {
@@ -167,7 +167,7 @@ public class CmsExportname {
 
     /**
      * Sets the site.<p>
-     * 
+     *
      * @param site the site to set
      */
     public void setSite(CmsSite site) {

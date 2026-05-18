@@ -167,9 +167,10 @@ public class CmsUndoChanges extends CmsMultiDialog {
                 }
 
             } catch (CmsException e) {
-                LOG.error(Messages.get().getBundle(getLocale()).key(
-                    Messages.ERR_UNDO_CHANGES_1,
-                    new String[] {resourcePath}));
+                LOG.error(
+                    Messages.get().getBundle(getLocale()).key(
+                        Messages.ERR_UNDO_CHANGES_1,
+                        new String[] {resourcePath}));
             }
 
         }
@@ -235,14 +236,16 @@ public class CmsUndoChanges extends CmsMultiDialog {
         boolean isMoved = isOperationOnMovedResource();
         if (!isMultiOperation()) {
             result.append(dialogSpacer());
-            result.append(key(
-                Messages.GUI_UNDO_LASTMODIFIED_INFO_3,
-                new Object[] {getFileName(), getLastModifiedDate(), getLastModifiedUser()}));
+            result.append(
+                key(
+                    Messages.GUI_UNDO_LASTMODIFIED_INFO_3,
+                    new Object[] {getFileName(), getLastModifiedDate(), getLastModifiedUser()}));
             if (isMoved) {
                 result.append(dialogSpacer());
-                result.append(key(
-                    Messages.GUI_UNDO_MOVE_OPERATION_INFO_2,
-                    new Object[] {getFileName(), resourceOriginalPath(getCms(), getParamResource())}));
+                result.append(
+                    key(
+                        Messages.GUI_UNDO_MOVE_OPERATION_INFO_2,
+                        new Object[] {getFileName(), resourceOriginalPath(getCms(), getParamResource())}));
             }
         }
         result.append(dialogSpacer());

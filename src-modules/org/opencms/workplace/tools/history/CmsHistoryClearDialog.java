@@ -67,12 +67,6 @@ public class CmsHistoryClearDialog extends CmsWidgetDialog {
     /** The import JSP report workplace URI. */
     protected static final String CLEAR_ACTION_REPORT = PATH_WORKPLACE + "admin/history/reports/clearhistory.jsp";
 
-    /** The history clear object that is edited on this dialog. */
-    protected CmsHistoryClear m_historyClear;
-
-    /** Widget value. */
-    private String m_clearDeletedMode = MODE_CLEANDELETED_KEEP_RESTORE_VERSION;
-
     /** Cleanup deleted history files setting. */
     public static final String MODE_CLEANDELETED_KEEP_RESTORE_VERSION = "keeprestore";
 
@@ -81,6 +75,12 @@ public class CmsHistoryClearDialog extends CmsWidgetDialog {
 
     /** Cleanup deleted history files setting. */
     public static final String MODE_CLEANDELETED_DELETE_NONE = "deletenone";
+
+    /** The history clear object that is edited on this dialog. */
+    protected CmsHistoryClear m_historyClear;
+
+    /** Widget value. */
+    private String m_clearDeletedMode = MODE_CLEANDELETED_KEEP_RESTORE_VERSION;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -206,11 +206,12 @@ public class CmsHistoryClearDialog extends CmsWidgetDialog {
 
         addWidget(
             new CmsWidgetDialogParameter(m_historyClear, "keepVersions", PAGES[0], new CmsSelectWidget(getVersions())));
-        addWidget(new CmsWidgetDialogParameter(
-            m_historyClear,
-            "clearDeletedMode",
-            PAGES[0],
-            new CmsRadioSelectWidget(getClearDeletedModes())));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_historyClear,
+                "clearDeletedMode",
+                PAGES[0],
+                new CmsRadioSelectWidget(getClearDeletedModes())));
         addWidget(new CmsWidgetDialogParameter(m_historyClear, "clearOlderThan", PAGES[0], new CmsCalendarWidget()));
     }
 
@@ -275,14 +276,16 @@ public class CmsHistoryClearDialog extends CmsWidgetDialog {
                 MODE_CLEANDELETED_KEEP_RESTORE_VERSION,
                 getClearDeletedMode().equals(MODE_CLEANDELETED_KEEP_RESTORE_VERSION),
                 key(Messages.GUI_HISTORY_CLEAR_DELETED_KEEPRESTORE_0)));
-        ret.add(new CmsSelectWidgetOption(
-            MODE_CLEANDELETED_DELETE_ALL,
-            getClearDeletedMode().equals(MODE_CLEANDELETED_DELETE_ALL),
-            key(Messages.GUI_HISTORY_CLEAR_DELETED_DELETEALL_0)));
-        ret.add(new CmsSelectWidgetOption(
-            MODE_CLEANDELETED_DELETE_NONE,
-            getClearDeletedMode().equals(MODE_CLEANDELETED_DELETE_NONE),
-            key(Messages.GUI_HISTORY_CLEAR_DELETED_DELETENONE_0)));
+        ret.add(
+            new CmsSelectWidgetOption(
+                MODE_CLEANDELETED_DELETE_ALL,
+                getClearDeletedMode().equals(MODE_CLEANDELETED_DELETE_ALL),
+                key(Messages.GUI_HISTORY_CLEAR_DELETED_DELETEALL_0)));
+        ret.add(
+            new CmsSelectWidgetOption(
+                MODE_CLEANDELETED_DELETE_NONE,
+                getClearDeletedMode().equals(MODE_CLEANDELETED_DELETE_NONE),
+                key(Messages.GUI_HISTORY_CLEAR_DELETED_DELETENONE_0)));
 
         return ret;
     }

@@ -52,6 +52,7 @@ public class CmsLetsEncryptUpdater implements I_CmsLetsEncryptUpdater {
      * @param config the configuration
      */
     public CmsLetsEncryptUpdater(CmsLetsEncryptConfiguration config) {
+
         m_config = config;
     }
 

@@ -50,6 +50,7 @@ public class CmsRemoteShellProvider implements I_CmsRemoteShellProvider {
      * @param port the port to use for created CmsRemoteShell instances
      */
     public CmsRemoteShellProvider(int port) {
+
         m_port = port;
     }
 
@@ -58,6 +59,7 @@ public class CmsRemoteShellProvider implements I_CmsRemoteShellProvider {
      */
     @Override
     public I_CmsRemoteShell createShell(String additionalCommandsNames) throws RemoteException {
+
         try {
             CmsRemoteShell shell = new CmsRemoteShell(additionalCommandsNames, m_port);
             return shell;

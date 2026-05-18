@@ -45,6 +45,7 @@ public class FixedHeightPanel extends Panel {
      * @param height height
      */
     public FixedHeightPanel(Component c, String height) {
+
         super(c);
         setHeight(height);
     }

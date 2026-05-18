@@ -43,7 +43,8 @@ public class CmsReturnLinkInfo implements IsSerializable {
      */
     public enum Status {
         /** The link was successfully looked up. */
-        ok, /** The resource(s) was not found. */
+        ok,
+        /** The resource(s) was not found. */
         notfound
     }
 

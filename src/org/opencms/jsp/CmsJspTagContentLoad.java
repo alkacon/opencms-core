@@ -133,7 +133,7 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
         String collectorParam,
         Locale locale,
         boolean editable)
-        throws JspException {
+    throws JspException {
 
         this(container, context, collectorName, collectorParam, null, null, locale, editable);
     }
@@ -161,7 +161,7 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
         String pageSize,
         Locale locale,
         boolean editable)
-        throws JspException {
+    throws JspException {
 
         this(
             container,
@@ -197,7 +197,7 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
         String pageSize,
         Locale locale,
         CmsDirectEditMode editMode)
-        throws JspException {
+    throws JspException {
 
         setCollector(collectorName);
         setParam(collectorParam);

@@ -80,27 +80,27 @@ public abstract class A_CmsLinkValidator implements I_ResourcePropertyProvider {
      *  Get fail message for resource.
      * @param resource to get message for
      * @return Message
-     * */
+     */
     public abstract String failMessage(CmsResource resource);
 
     /** Get click listener
      * @return ItemClickListener or null
-     * */
+     */
     public abstract ItemClickListener getClickListener();
 
     /** Get property Name.
      * @return Name of property
-     * */
+     */
     public abstract String getPropertyName();
 
     /** Get all properties.
      * @return Map of table properties
-     * */
+     */
     public abstract Map<CmsResourceTableProperty, Integer> getTableProperties();
 
     /**Get  table property.
      * @return property
-     * */
+     */
     public CmsResourceTableProperty getTableProperty() {
 
         return property;

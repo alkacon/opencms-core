@@ -1699,10 +1699,12 @@ public class CmsImportVersion7 implements I_CmsImport {
             if (checkImmutable(resourcePath)) {
                 continue;
             }
-            getReport().print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_SUCCESSION_2,
-                String.valueOf(i + 1),
-                String.valueOf(m_relations.size())), I_CmsReport.FORMAT_NOTE);
+            getReport().print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    String.valueOf(i + 1),
+                    String.valueOf(m_relations.size())),
+                I_CmsReport.FORMAT_NOTE);
 
             getReport().print(
                 Messages.get().container(

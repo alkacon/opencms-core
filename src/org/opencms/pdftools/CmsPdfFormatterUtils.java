@@ -69,7 +69,8 @@ public final class CmsPdfFormatterUtils {
         HttpServletRequest request,
         HttpServletResponse response,
         CmsResource jsp,
-        CmsResource content) throws Exception {
+        CmsResource content)
+    throws Exception {
 
         CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(
             OpenCms.getResourceManager().getLoader(jsp),

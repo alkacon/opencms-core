@@ -64,6 +64,7 @@ public class CmsDialogOptions implements Serializable {
          * @param disabled if disabled
          */
         public Option(String value, String label, String description, boolean disabled) {
+
             m_value = value;
             m_label = label;
             m_description = description;
@@ -74,6 +75,7 @@ public class CmsDialogOptions implements Serializable {
          * Constructor used for serialization.<p>
          */
         protected Option() {
+
             // nothing to do
         }
 
@@ -142,6 +144,7 @@ public class CmsDialogOptions implements Serializable {
      * @param options the options
      */
     public CmsDialogOptions(String title, String info, List<Option> options) {
+
         m_title = title;
         m_info = info;
         m_options = options;
@@ -151,6 +154,7 @@ public class CmsDialogOptions implements Serializable {
      * Constructor used for serialization.<p>
      */
     protected CmsDialogOptions() {
+
         // nothing to do
     }
 

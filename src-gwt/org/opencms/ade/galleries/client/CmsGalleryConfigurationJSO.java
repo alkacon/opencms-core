@@ -34,7 +34,6 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMod
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsGwtConstants;
-import org.opencms.gwt.shared.CmsGwtLog;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Arrays;
@@ -78,7 +77,7 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
             Window prevWindow = null;
             while ((window != null) && (window != prevWindow)) {
                 JsPropertyMap<Object> windowProps = Js.cast(window);
-                String locale = (String) windowProps.get(CmsGwtConstants.ATTR_CONTENT_EDITOR_LOCALE);
+                String locale = (String)windowProps.get(CmsGwtConstants.ATTR_CONTENT_EDITOR_LOCALE);
                 if (locale != null) {
                     result.setLocale(locale);
                     break;
@@ -148,22 +147,22 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getImageFormatNames()
      */
     public native String getImageFormatNames()/*-{
-		if (typeof this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_IMAGE_FORMAT_NAMES] != 'undefined') {
-			return this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_IMAGE_FORMAT_NAMES]
-					.toString();
-		}
-		return null;
+        if (typeof this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_IMAGE_FORMAT_NAMES] != 'undefined') {
+            return this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_IMAGE_FORMAT_NAMES]
+                    .toString();
+        }
+        return null;
     }-*/;
 
     /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getImageFormats()
      */
     public native String getImageFormats()/*-{
-		if (typeof this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_IMAGE_FORMATS] != 'undefined') {
-			return this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_IMAGE_FORMATS]
-					.toString();
-		}
-		return null;
+        if (typeof this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_IMAGE_FORMATS] != 'undefined') {
+            return this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_IMAGE_FORMATS]
+                    .toString();
+        }
+        return null;
     }-*/;
 
     /**
@@ -224,10 +223,10 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#getStartSite()
      */
     public native String getStartSite()/*-{
-		if (typeof this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_START_SITE] != 'undefined') {
-			return this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_START_SITE];
-		}
-		return null;
+        if (typeof this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_START_SITE] != 'undefined') {
+            return this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_START_SITE];
+        }
+        return null;
     }-*/;
 
     /**
@@ -287,25 +286,25 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#isShowSiteSelector()
      */
     public native boolean isShowSiteSelector()/*-{
-		// defaults to true
-		return 'false' != ''
-				+ this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_SHOW_SITE_SELECTOR]
+        // defaults to true
+        return 'false' != ''
+                + this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_SHOW_SITE_SELECTOR]
     }-*/;
 
     /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#isUseFormats()
      */
     public native boolean isUseFormats()/*-{
-		// defaults to false
-		return 'true' == ''
-				+ this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_USE_FORMATS]
+        // defaults to false
+        return 'true' == ''
+                + this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_USE_FORMATS]
     }-*/;
 
     /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#setCurrentElement(java.lang.String)
      */
     public native void setCurrentElement(String currentElement)/*-{
-		this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_CURRENT_ELEMENT] = currentElement;
+        this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_CURRENT_ELEMENT] = currentElement;
     }-*/;
 
     /**
@@ -313,7 +312,7 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
      */
     public native void setStartFolder(String startFolder)/*-{
 
-		this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_START_FOLDER] = startFolder;
+        this[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::CONFIG_START_FOLDER] = startFolder;
     }-*/;
 
     /**
@@ -324,10 +323,10 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
      * @return the value of the attribute
      */
     private native String getString(String key) /*-{
-		if (typeof this[key] != 'undefined') {
-			return this[key];
-		}
-		return null;
+        if (typeof this[key] != 'undefined') {
+            return this[key];
+        }
+        return null;
     }-*/;
 
     /**
@@ -381,6 +380,7 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
     }
 
     private void setLocale(String locale) {
+
         JsPropertyMap<Object> props = Js.cast(this);
         props.set(I_CmsGalleryProviderConstants.CONFIG_LOCALE, locale);
     }

@@ -785,7 +785,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
      * Sets the default file id.
      *
      * @param defaultFileId the new default file id
-     **/
+     */
     public void setDefaultFileId(CmsUUID defaultFileId) {
 
         m_defaultFileId = defaultFileId;

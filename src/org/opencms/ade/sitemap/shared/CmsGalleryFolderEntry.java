@@ -81,7 +81,7 @@ public class CmsGalleryFolderEntry implements IsSerializable {
      * Returns the resource icon style classes.<p>
      *
      * @return the resource icon style classes
-     **/
+     */
     public String getIconClasses() {
 
         return m_iconClasses;
@@ -141,7 +141,7 @@ public class CmsGalleryFolderEntry implements IsSerializable {
      * Sets the resource icon style classes.<p>
      *
      * @param iconClasses the resource icon style classes
-     **/
+     */
     public void setIconClasses(String iconClasses) {
 
         m_iconClasses = iconClasses;

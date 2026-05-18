@@ -53,7 +53,7 @@ public class CmsWidthConstants {
      *
      * @return a CSS width value
      *
-     * */
+     */
     public static String largeLow() {
 
         return LARGE_LOW + PX;
@@ -63,7 +63,7 @@ public class CmsWidthConstants {
      * Upper bound for medium.
      *
      * @return a CSS width value
-     * */
+     */
     public static String mediumHigh() {
 
         return MEDIUM_HIGH + PX;
@@ -73,7 +73,7 @@ public class CmsWidthConstants {
      * Lower bound for 'medium'.
      *
      * @return a CSS width value
-     * */
+     */
     public static String mediumLow() {
 
         return MEDIUM_LOW + PX;
@@ -83,7 +83,7 @@ public class CmsWidthConstants {
      * Upper bound for 'small'.
      *
      * @return a CSS width value
-     * */
+     */
     public static String smallHigh() {
 
         return SMALL_HIGH + PX;

@@ -43,6 +43,7 @@ public class CmsVerticalMenu extends CssLayout {
      * Constructor.<p>
      */
     public CmsVerticalMenu() {
+
         setSizeFull();
         setPrimaryStyleName(OpenCmsTheme.VERTICAL_MENU);
     }

@@ -100,7 +100,8 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
         String element,
         Locale locale,
         HttpServletRequest req,
-        HttpServletResponse res) throws CmsException {
+        HttpServletResponse res)
+    throws CmsException {
 
         return cms.readFile(resource).getContents();
     }

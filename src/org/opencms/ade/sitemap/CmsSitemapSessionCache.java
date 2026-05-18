@@ -40,11 +40,11 @@ import java.util.List;
  */
 public final class CmsSitemapSessionCache {
 
-    /** The sitemap recent list. */
-    private List<CmsClientSitemapEntry> m_recentList;
-
     /** Session attribute name constant. */
     public static final String SESSION_ATTR_SITEMAP_CACHE = "__OCMS_SITEMAP_CACHE__";
+
+    /** The sitemap recent list. */
+    private List<CmsClientSitemapEntry> m_recentList;
 
     /**
      * Initializes the session cache.<p>

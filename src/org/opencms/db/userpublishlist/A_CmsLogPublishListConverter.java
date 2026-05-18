@@ -53,7 +53,7 @@ public abstract class A_CmsLogPublishListConverter {
      * Processes a log entry.
      *
      * @param entry the entry to process
-     * */
+     */
     public abstract void add(CmsLogEntry entry);
 
     /**

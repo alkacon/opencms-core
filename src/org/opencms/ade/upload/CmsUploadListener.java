@@ -168,7 +168,7 @@ public class CmsUploadListener implements ProgressListener, Serializable {
      * <li>0 = no item so far
      * <li>1 = first item is being read, ...
      * </ul>
-
+     *
      * @return the number of the field, which is currently being read.
      */
     public int getItem() {

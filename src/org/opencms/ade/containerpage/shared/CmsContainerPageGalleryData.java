@@ -47,6 +47,7 @@ public class CmsContainerPageGalleryData implements IsSerializable {
      * Default constructor.<p>
      */
     public CmsContainerPageGalleryData() {
+
         // do nothing
     }
 

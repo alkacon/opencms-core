@@ -127,6 +127,20 @@ public final class CmsBurstEventManager {
     }
 
     /**
+     * Removes the event from the manager.<p>
+     *
+     * @param eventName the name of the event that we need to remove
+     */
+    public void cancel(final String eventName) {
+
+        BurstEvent oe = m_memory.remove(eventName);
+        if (oe != null) {
+            // disable the old event.
+            oe.getTimer().cancel();
+        }
+    }
+
+    /**
      * Adds an 'burst' event to the manager.<p>
      *
      * @param name the unique name, which identifies the event
@@ -144,19 +158,5 @@ public final class CmsBurstEventManager {
         e = new BurstEvent(name, command);
         m_memory.put(name, e);
         e.getTimer().schedule(delayMsec);
-    }
-
-    /**
-     * Removes the event from the manager.<p>
-     *
-     * @param eventName the name of the event that we need to remove
-     */
-    public void cancel(final String eventName) {
-
-        BurstEvent oe = m_memory.remove(eventName);
-        if (oe != null) {
-            // disable the old event.
-            oe.getTimer().cancel();
-        }
     }
 }

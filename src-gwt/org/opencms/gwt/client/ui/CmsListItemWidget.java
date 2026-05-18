@@ -326,7 +326,6 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         init(infoBean);
     }
 
-
     /**
      * Adds an additional info item to the list.<p>
      *
@@ -531,6 +530,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     }
 
     public CmsPushButton getOpenClose() {
+
         return m_openClose;
     }
 

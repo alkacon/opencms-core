@@ -112,7 +112,11 @@ public class CmsHistoryClearThread extends A_CmsReportThread {
 
         // delete the historical files
         try {
-            getCms().deleteHistoricalVersions(m_keepVersions, m_keepDeletedVersions, m_dateClearDeletedOlder, getReport());
+            getCms().deleteHistoricalVersions(
+                m_keepVersions,
+                m_keepDeletedVersions,
+                m_dateClearDeletedOlder,
+                getReport());
             LOG.info("Delete history thread successfully finished.");
         } catch (CmsException e) {
             getReport().println(e);

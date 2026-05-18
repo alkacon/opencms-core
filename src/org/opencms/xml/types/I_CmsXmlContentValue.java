@@ -56,9 +56,7 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
             SearchContentType.CONTENT,
             null);
         /** Configuration for triggering re-indexing if the resource linked by the value to the content fields changes. */
-        public static final CmsSearchContentConfig UPDATE = new CmsSearchContentConfig(
-            SearchContentType.UPDATE,
-            null);
+        public static final CmsSearchContentConfig UPDATE = new CmsSearchContentConfig(SearchContentType.UPDATE, null);
         /** Configuration for adding the value unchanged to the content fields. */
         public static final CmsSearchContentConfig TRUE = new CmsSearchContentConfig(SearchContentType.TRUE, null);
         /** The search content type. */

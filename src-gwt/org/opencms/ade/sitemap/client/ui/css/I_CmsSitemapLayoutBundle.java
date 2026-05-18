@@ -109,7 +109,7 @@ public interface I_CmsSitemapLayoutBundle extends org.opencms.gwt.client.ui.css.
      * Access method.<p>
      *
      * @return the root CSS
-     **/
+     */
     @Source("clipboard.gss")
     I_CmsClipboardCss clipboardCss();
 
@@ -132,7 +132,7 @@ public interface I_CmsSitemapLayoutBundle extends org.opencms.gwt.client.ui.css.
      * Access method.<p>
      *
      * @return the root CSS
-     **/
+     */
     @Source("sitemapItem.gss")
     @Import(value = {I_CmsLayoutBundle.I_CmsListItemWidgetCss.class, I_CmsButtonCss.class})
     I_CmsSitemapItemCss sitemapItemCss();

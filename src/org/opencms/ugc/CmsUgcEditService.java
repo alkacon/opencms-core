@@ -162,7 +162,8 @@ public class CmsUgcEditService extends CmsGwtService implements I_CmsUgcEditServ
     public Map<String, String> uploadFiles(
         final CmsUUID sessionId,
         final Set<String> fieldNames,
-        final String formDataId) throws CmsRpcException {
+        final String formDataId)
+    throws CmsRpcException {
 
         try {
             final CmsUgcSession session = getFormSession(sessionId);

@@ -91,7 +91,7 @@ public class CmsTextareaWidget extends A_CmsWidget implements I_CmsADEWidget {
      * @param contentLocale the locale
      * @return the locale for Typograf
      */
-    public static  String getTypografLocale(Locale contentLocale) {
+    public static String getTypografLocale(Locale contentLocale) {
 
         String localeStr = contentLocale.toString();
         if (contentLocale.getLanguage().equals("en")) {

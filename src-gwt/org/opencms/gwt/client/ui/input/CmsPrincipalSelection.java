@@ -335,7 +335,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
      * Sets the name of the input field.<p>
      *
      * @param name of the input field
-     * */
+     */
     public void setName(String name) {
 
         m_selectionInput.m_textbox.setName(name);
@@ -363,7 +363,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     /**
      * Close the popup of this widget.<p>
-     * */
+     */
     protected void close() {
 
         m_popup.hideDelayed();
@@ -373,7 +373,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String> {
 
     /**
      * Opens the popup of this widget.<p>
-     * */
+     */
     protected void open() {
 
         m_oldValue = m_selectionInput.m_textbox.getValue();

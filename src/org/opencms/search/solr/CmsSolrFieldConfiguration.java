@@ -289,16 +289,16 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
                     extractionResult,
                     properties,
                     propertiesSearched) != null) {
-                        String value = mapping.getStringValue(
-                            cms,
-                            resource,
-                            extractionResult,
-                            properties,
-                            propertiesSearched);
-                        if (value != null) {
-                            document.addSearchField(field, value);
-                        }
+                    String value = mapping.getStringValue(
+                        cms,
+                        resource,
+                        extractionResult,
+                        properties,
+                        propertiesSearched);
+                    if (value != null) {
+                        document.addSearchField(field, value);
                     }
+                }
             }
             if ((text.length() <= 0) && (field.getDefaultValue() != null)) {
                 text.append(field.getDefaultValue());

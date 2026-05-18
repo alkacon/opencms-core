@@ -35,7 +35,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsLog;
 import org.opencms.relations.CmsExternalLinksValidator;
 import org.opencms.report.A_CmsReportThread;
-import org.opencms.workplace.threads.Messages;
 
 import org.apache.commons.logging.Log;
 

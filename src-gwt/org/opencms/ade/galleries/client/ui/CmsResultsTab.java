@@ -422,7 +422,7 @@ public class CmsResultsTab extends A_CmsListTab {
      * @param galleryHandler the gallery handler
      * @param scope the initial scope
      * @param defaultScope the default scope
-     **/
+     */
     public CmsResultsTab(
         CmsResultsTabHandler tabHandler,
         CmsDNDHandler dndHandler,

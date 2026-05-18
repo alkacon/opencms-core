@@ -2000,19 +2000,19 @@ public class CmsSetupBean implements I_CmsShellCommands {
                     || provider.equals(DB2_PROVIDER)
                     || provider.equals(MSSQL_PROVIDER)
                     || provider.equals(POSTGRESQL_PROVIDER)) {
-                        if (!conStr.endsWith("/")) {
-                            conStr += "/";
-                        }
-                        conStr += database;
-                    } else if (provider.equals(AS400_PROVIDER)) {
-                        if (conStr.endsWith("/")) {
-                            conStr = conStr.substring(0, conStr.length() - 1);
-                        }
-                        if (!conStr.endsWith(";")) {
-                            conStr += ";";
-                        }
-                        conStr += "libraries='" + database + "'";
+                    if (!conStr.endsWith("/")) {
+                        conStr += "/";
                     }
+                    conStr += database;
+                } else if (provider.equals(AS400_PROVIDER)) {
+                    if (conStr.endsWith("/")) {
+                        conStr = conStr.substring(0, conStr.length() - 1);
+                    }
+                    if (!conStr.endsWith(";")) {
+                        conStr += ";";
+                    }
+                    conStr += "libraries='" + database + "'";
+                }
                 setDbWorkConStr(conStr);
                 if (provider.equals(POSTGRESQL_PROVIDER)) {
                     setDb(database);

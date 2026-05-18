@@ -123,7 +123,7 @@ public class CmsListElementCreationDialogData implements IsSerializable {
 
     /**
      * Gets the upload folder.
-     * 
+     *
      * @return the upload folder
      */
     public String getUploadFolder() {
@@ -131,10 +131,10 @@ public class CmsListElementCreationDialogData implements IsSerializable {
         return m_uploadFolder;
     }
 
-    /** 
+    /**
      * Checks if adding to the list should trigger upload mode.
-     * 
-     * @return true if this requires upload mode 
+     *
+     * @return true if this requires upload mode
      */
     public boolean isUpload() {
 
@@ -183,7 +183,7 @@ public class CmsListElementCreationDialogData implements IsSerializable {
 
     /**
      * Sets the upload folder.
-     * 
+     *
      * @param uploadFolder the upload folder
      */
     public void setUploadFolder(String uploadFolder) {

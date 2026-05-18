@@ -39,6 +39,7 @@ public final class CmsShowClassicWorkplace implements I_CmsHasContextMenuCommand
      * Hidden default constructor.<p>
      */
     private CmsShowClassicWorkplace() {
+
         // do nothing
     }
 

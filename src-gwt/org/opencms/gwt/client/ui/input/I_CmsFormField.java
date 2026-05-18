@@ -57,8 +57,10 @@ public interface I_CmsFormField {
      */
     enum ValidationStatus {
         /** The field's content is invalid. */
-        invalid, /** It is unknown whether the field's content is valid. */
-        unknown, /** The field's content is valid. */
+        invalid,
+        /** It is unknown whether the field's content is valid. */
+        unknown,
+        /** The field's content is valid. */
         valid
     }
 

@@ -2332,7 +2332,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      * @param fileViewSettings the system-wide file view settings for the workplace to set
      *
      * @throws CmsRoleViolationException if the current user does not own the administrator role ({@link CmsRole#ROOT_ADMIN})
-     * */
+     */
     public void setFileViewSettings(CmsObject cms, CmsRfsFileViewer fileViewSettings) throws CmsRoleViolationException {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {

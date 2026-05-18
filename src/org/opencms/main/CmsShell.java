@@ -524,7 +524,6 @@ public class CmsShell {
             false);
     }
 
-
     /**
      * Creates a new CmsShell.<p>
      *
@@ -913,7 +912,6 @@ public class CmsShell {
         if (null == command) {
             return;
         }
-
 
         if (m_echo) {
             // echo the command to STDOUT

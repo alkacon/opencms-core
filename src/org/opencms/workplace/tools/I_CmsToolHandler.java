@@ -43,6 +43,13 @@ import java.util.Map;
 public interface I_CmsToolHandler {
 
     /**
+     * Returns an optional confirmation message, displayed in a js confirm dialog.<p>
+     *
+     * @return the confirmation message
+     */
+    String getConfirmationMessage();
+
+    /**
      * Returns the help text if disabled.<p>
      *
      * @return the help text if disabled
@@ -115,13 +122,6 @@ public interface I_CmsToolHandler {
     String getShortName();
 
     /**
-     * Returns an optional confirmation message, displayed in a js confirm dialog.<p>
-     *
-     * @return the confirmation message
-     */
-    String getConfirmationMessage();
-
-    /**
      * Returns the path to an optional small(16x16) icon.<p>
      *
      * @return the path to an optional small(16x16) icon
@@ -138,15 +138,6 @@ public interface I_CmsToolHandler {
     boolean isEnabled(CmsObject cms);
 
     /**
-     * Returns the visibility flag for a given cms context.<p>
-     *
-     * @param cms the cms context
-     *
-     * @return <code>true</code> if visible
-     */
-    boolean isVisible(CmsObject cms);
-
-    /**
      * Returns the state of the admin tool for a given workplace context.<p>
      *
      * @param wp the workplace context
@@ -154,6 +145,15 @@ public interface I_CmsToolHandler {
      * @return <code>true</code> if enabled
      */
     boolean isEnabled(CmsWorkplace wp);
+
+    /**
+     * Returns the visibility flag for a given cms context.<p>
+     *
+     * @param cms the cms context
+     *
+     * @return <code>true</code> if visible
+     */
+    boolean isVisible(CmsObject cms);
 
     /**
      * Returns the visibility flag for a given workplace context.<p>

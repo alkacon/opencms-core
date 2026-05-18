@@ -163,6 +163,7 @@ public final class CmsJspValueTransformers {
 
     /** Hide the default constructor. */
     private CmsJspValueTransformers() {
+
         // just hide the default constructor
     }
 

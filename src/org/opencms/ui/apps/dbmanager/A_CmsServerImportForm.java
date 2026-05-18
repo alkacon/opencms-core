@@ -53,6 +53,7 @@ public abstract class A_CmsServerImportForm extends A_CmsImportForm {
      * @param validate indicates if file gets validated (only possible for modules)
      */
     public A_CmsServerImportForm(I_CmsReportApp app, String pathToServer, final boolean validate) {
+
         super(app);
         IndexedContainer options = new IndexedContainer();
         options.addContainerProperty("label", String.class, "");

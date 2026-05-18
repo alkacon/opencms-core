@@ -49,6 +49,7 @@ public class CmsEditorStateExtension extends AbstractExtension implements I_CmsE
      * @param component the component to extend
      */
     public CmsEditorStateExtension(AbstractComponent component) {
+
         extend(component);
         registerRpc(this);
     }

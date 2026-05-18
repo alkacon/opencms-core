@@ -259,7 +259,8 @@ public class CmsModelGroupHelper {
                 }
 
                 if (resources.isEmpty()) {
-                    response.getWriter().println("No model group resources found at " + CmsEncoder.escapeXml(basePath) + "<br />");
+                    response.getWriter().println(
+                        "No model group resources found at " + CmsEncoder.escapeXml(basePath) + "<br />");
                 } else {
                     for (CmsResource group : resources) {
                         boolean updated = updateModelGroupResource(cms, group, baseContainerName);

@@ -111,7 +111,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NOTIFICATION_SEND_ERROR_0 = "LOG_NOTIFICATION_SEND_ERROR_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NOTIFICATIONS_SENT_TO_0 = "LOG_NOTIFICATIONS_SENT_TO_0";
 

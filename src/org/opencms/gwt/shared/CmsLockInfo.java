@@ -41,9 +41,12 @@ public class CmsLockInfo implements IsSerializable {
      */
     public enum State {
         /** The resource was already locked by another user. */
-        locked, /** The resource has changed in the meantime. */
-        changed, /** The resource was successfully locked. */
-        success, /** Some other error occurred. */
+        locked,
+        /** The resource has changed in the meantime. */
+        changed,
+        /** The resource was successfully locked. */
+        success,
+        /** Some other error occurred. */
         other;
     }
 

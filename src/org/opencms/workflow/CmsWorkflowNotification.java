@@ -86,7 +86,7 @@ public class CmsWorkflowNotification extends A_CmsNotification {
         CmsProject project,
         List<CmsResource> resources,
         String link)
-        throws EmailException {
+    throws EmailException {
 
         super(userCms, receiver);
         m_notificationContent = notificationContent;

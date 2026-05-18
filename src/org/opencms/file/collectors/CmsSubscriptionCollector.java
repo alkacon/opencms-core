@@ -424,7 +424,8 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
         CmsVisitedByFilter filter,
         CmsObject cms,
         Map<String, String> params,
-        boolean forceSetUser) throws CmsException {
+        boolean forceSetUser)
+    throws CmsException {
 
         // determine the user to set in the filter
         if (params.containsKey(PARAM_KEY_USER)) {

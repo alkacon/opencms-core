@@ -115,7 +115,7 @@ public class CmsContainerElementBean implements Cloneable {
      * @param inMemoryOnly the in memory flag
      * @param editorHash the editor hash to use
      * @param createNew <code>true</code> if a new element should be created replacing the given one on first edit of a container-page
-     **/
+     */
     public CmsContainerElementBean(
         CmsFile file,
         CmsUUID formatterId,
@@ -137,7 +137,7 @@ public class CmsContainerElementBean implements Cloneable {
      * @param formatterId the formatter's structure id, could be <code>null</code>
      * @param individualSettings the element settings as a map of name/value pairs
      * @param createNew <code>true</code> if a new element should be created replacing the given one on first edit of a container-page
-     **/
+     */
     public CmsContainerElementBean(
         CmsUUID elementId,
         CmsUUID formatterId,

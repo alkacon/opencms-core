@@ -60,7 +60,7 @@ import com.vaadin.ui.ComboBox;
 
 /**
  * Site selector widget which also optionally offers subsite options.
- **/
+ */
 public class CmsExtendedSiteSelector extends ComboBox<SiteSelectorOption> {
 
     /**

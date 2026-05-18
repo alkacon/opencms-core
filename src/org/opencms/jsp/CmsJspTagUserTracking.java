@@ -139,7 +139,8 @@ public class CmsJspTagUserTracking extends TagSupport {
         String userName,
         boolean includeGroups,
         String groupName,
-        HttpServletRequest req) throws JspException {
+        HttpServletRequest req)
+    throws JspException {
 
         String result = "";
 
@@ -278,7 +279,8 @@ public class CmsJspTagUserTracking extends TagSupport {
         boolean subFolder,
         CmsUser user,
         List<CmsGroup> groups,
-        HttpServletRequest req) throws CmsException {
+        HttpServletRequest req)
+    throws CmsException {
 
         CmsResource checkResource = cms.readResource(fileName);
 
@@ -319,7 +321,8 @@ public class CmsJspTagUserTracking extends TagSupport {
         String fileName,
         boolean subFolder,
         CmsUser user,
-        HttpServletRequest req) throws CmsException {
+        HttpServletRequest req)
+    throws CmsException {
 
         CmsResource checkResource = cms.readResource(fileName);
 

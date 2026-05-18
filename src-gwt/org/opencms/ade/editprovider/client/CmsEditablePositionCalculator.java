@@ -66,17 +66,17 @@ public class CmsEditablePositionCalculator {
         }
     }
 
-    /** A map of positions by element id. */
-    private Map<String, CmsPositionBean> m_positionMap = new HashMap<String, CmsPositionBean>();
-
-    /** The internal list of positions. */
-    private List<CmsPositionBean> m_positions = new ArrayList<CmsPositionBean>();
-
     /** The assumed width of a direct edit button bar. */
     private static int WIDTH = 65;
 
     /** The assumed height of a direct edit button bar. */
     private static int HEIGHT = 24;
+
+    /** A map of positions by element id. */
+    private Map<String, CmsPositionBean> m_positionMap = new HashMap<String, CmsPositionBean>();
+
+    /** The internal list of positions. */
+    private List<CmsPositionBean> m_positions = new ArrayList<CmsPositionBean>();
 
     /**
      * Creates a new instance.<p>

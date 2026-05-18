@@ -406,11 +406,7 @@ public final class CmsPreviewUtil {
      * @param linkPath the link path
      * @param target the link target attribute
      */
-    private static native void nativeSetImageLink(
-        String path,
-        CmsJSONMap attributes,
-        String linkPath,
-        String target)/*-{
+    private static native void nativeSetImageLink(String path, CmsJSONMap attributes, String linkPath, String target)/*-{
         $wnd[@org.opencms.ade.galleries.client.preview.CmsPreviewUtil::KEY_SET_IMAGE_LINK_FUNCTION]
                 (path, attributes, linkPath, target);
     }-*/;

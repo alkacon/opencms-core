@@ -54,16 +54,16 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.v7.data.Property.ValueChangeEvent;
-import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.v7.data.Property.ValueChangeEvent;
+import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.ui.CheckBox;
 import com.vaadin.v7.ui.Label;
 import com.vaadin.v7.ui.OptionGroup;
 import com.vaadin.v7.ui.TextField;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Dialog used to change resource modification times.<p>
@@ -112,6 +112,7 @@ public class CmsSecureExportDialog extends CmsBasicDialog {
      * @param context the dialog context
      */
     public CmsSecureExportDialog(I_CmsDialogContext context) {
+
         m_context = context;
         CmsObject cms = context.getCms();
 

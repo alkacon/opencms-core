@@ -83,7 +83,8 @@ public class CmsPdfThumbnailGenerator {
         int boxWidth,
         int boxHeight,
         String imageFormat,
-        int pageIndex) throws Exception {
+        int pageIndex)
+    throws Exception {
 
         org.jpedal.io.ObjectStore.temp_dir = CmsFileUtil.normalizePath(
             OpenCms.getSystemInfo().getWebInfRfsPath() + CmsPdfThumbnailCache.PDF_CACHE_FOLDER + File.separatorChar);

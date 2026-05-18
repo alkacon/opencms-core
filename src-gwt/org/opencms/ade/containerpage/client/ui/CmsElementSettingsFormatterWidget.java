@@ -60,6 +60,7 @@ public class CmsElementSettingsFormatterWidget extends Composite {
      * Creates a new instance.<p>
      */
     public CmsElementSettingsFormatterWidget() {
+
         initWidget(uiBinder.createAndBindUi(this));
     }
 

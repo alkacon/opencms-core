@@ -379,7 +379,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
      * @param tabInfos the tab informations
      * @param context the context element
      * @param scrollParent the scroll element to be used for automatic scrolling during drag and drop
-
+     *
      */
     public void renderEntityForm(String entityId, List<CmsTabInfo> tabInfos, Panel context, Element scrollParent) {
 

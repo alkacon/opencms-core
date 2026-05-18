@@ -395,7 +395,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
          * Gets the wait handle used for signalling when the worker thread has finished.
          *
          * @return the wait handle
-         **/
+         */
         public CmsWaitHandle getWaitHandle() {
 
             return m_waitHandle;

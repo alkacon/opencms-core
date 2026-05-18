@@ -633,7 +633,7 @@ public final class CmsCntPageData implements IsSerializable {
 
     /**
      * Sets the detail container page id.
-     * 
+     *
      * @param pageId the detail container page id
      */
     public void setDetailContainerPageId(CmsUUID pageId) {

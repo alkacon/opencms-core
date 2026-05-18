@@ -41,6 +41,7 @@ public class CmsDatePastFutureRestriction implements I_CmsDateRestriction {
      * @param direction the time direction
      */
     public CmsDatePastFutureRestriction(TimeDirection direction) {
+
         m_direction = direction;
     }
 

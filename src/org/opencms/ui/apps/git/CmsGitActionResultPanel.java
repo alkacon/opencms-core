@@ -33,10 +33,10 @@ import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.List;
 
-import com.vaadin.v7.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
-import com.vaadin.v7.ui.Label;
 import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.v7.shared.ui.label.ContentMode;
+import com.vaadin.v7.ui.Label;
 
 /** Dialog that prints the result of the execution of a git action. */
 public class CmsGitActionResultPanel extends CmsBasicDialog {
@@ -57,6 +57,7 @@ public class CmsGitActionResultPanel extends CmsBasicDialog {
      * @param buttons the buttons to show at the bottom of the dialog.
      */
     public CmsGitActionResultPanel(String message, String log, boolean isError, List<Button> buttons) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_logLabel.setContentMode(ContentMode.PREFORMATTED);
         if (isError) {

@@ -281,9 +281,10 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
             addWidget(getDialogParameter("httpDir", new CmsHttpUploadWidget()));
         }
         if (!isDisplayMode(MODE_ADVANCED)) {
-            addWidget(getDialogParameter(
-                "destinationDir",
-                new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot())));
+            addWidget(
+                getDialogParameter(
+                    "destinationDir",
+                    new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot())));
         }
 
         addWidget(
@@ -503,6 +504,35 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Checks if a multipart-request file item exists and returns it.<p>
+     *
+     * @return <code>true</code> if a multipart-request file exists
+     */
+    private FileItem getHttpImportFileItem() {
+
+        FileItem result = null;
+        m_htmlimport.setHttpDir("");
+        // get the file item from the multipart-request
+        Iterator it = getMultiPartFileItems().iterator();
+        FileItem fi = null;
+        while (it.hasNext()) {
+            fi = (FileItem)it.next();
+            if (fi.getName() != null) {
+                // found the file object, leave iteration
+                break;
+            } else {
+                // this is no file object, check next item
+                continue;
+            }
+        }
+
+        if ((fi != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(fi.getName())) {
+            result = fi;
+        }
+        return result;
+    }
+
+    /**
      * Returns a list with all available local's.<p>
      *
      * @return a list with all available local's
@@ -595,34 +625,5 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
         } catch (Exception e) {
             throw new CmsException(Messages.get().container(Messages.ERR_ACTION_ZIPFILE_UPLOAD_0));
         }
-    }
-
-    /**
-     * Checks if a multipart-request file item exists and returns it.<p>
-     *
-     * @return <code>true</code> if a multipart-request file exists
-     */
-    private FileItem getHttpImportFileItem() {
-
-        FileItem result = null;
-        m_htmlimport.setHttpDir("");
-        // get the file item from the multipart-request
-        Iterator it = getMultiPartFileItems().iterator();
-        FileItem fi = null;
-        while (it.hasNext()) {
-            fi = (FileItem)it.next();
-            if (fi.getName() != null) {
-                // found the file object, leave iteration
-                break;
-            } else {
-                // this is no file object, check next item
-                continue;
-            }
-        }
-
-        if ((fi != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(fi.getName())) {
-            result = fi;
-        }
-        return result;
     }
 }

@@ -74,7 +74,9 @@ public class CmsExportExpiresFilter implements Filter {
             Duration year = Duration.of(365, ChronoUnit.DAYS);
             Duration duration = null;
             if (type != null) {
-                if (type.contains("application/javascript") || type.contains("text/css") || type.contains("text/javascript")) {
+                if (type.contains("application/javascript")
+                    || type.contains("text/css")
+                    || type.contains("text/javascript")) {
                     duration = day;
                 } else {
                     duration = year;
@@ -107,6 +109,7 @@ public class CmsExportExpiresFilter implements Filter {
      * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
      */
     public void init(FilterConfig filterConfig) {
+
         // does nothing
     }
 

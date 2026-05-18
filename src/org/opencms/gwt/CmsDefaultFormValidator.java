@@ -48,7 +48,8 @@ public class CmsDefaultFormValidator implements I_CmsFormValidator {
         CmsObject cms,
         Map<String, CmsValidationQuery> queries,
         Map<String, String> values,
-        String config) throws Exception {
+        String config)
+    throws Exception {
 
         Map<String, CmsValidationResult> result = new HashMap<String, CmsValidationResult>();
         for (Map.Entry<String, CmsValidationQuery> queryEntry : queries.entrySet()) {

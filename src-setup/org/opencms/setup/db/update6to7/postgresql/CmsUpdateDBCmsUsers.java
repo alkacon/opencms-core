@@ -96,6 +96,37 @@ public class CmsUpdateDBCmsUsers extends org.opencms.setup.db.update6to7.CmsUpda
     }
 
     /**
+     * @see org.opencms.setup.db.update6to7.CmsUpdateDBCmsUsers#createUserDataTable(org.opencms.setup.CmsSetupDb)
+     */
+    @Override
+    protected void createUserDataTable(CmsSetupDb dbCon) throws SQLException {
+
+        String indexTablespace = m_poolData.get("indexTablespace");
+
+        Map<String, String> replacer = new HashMap<String, String>();
+        replacer.put(REPLACEMENT_TABLEINDEX_SPACE, indexTablespace);
+
+        String createStatement = readQuery(QUERY_CREATE_TABLE_USERDATA);
+        dbCon.updateSqlStatement(createStatement, replacer, null);
+
+        // create indices
+        List<String> indexElements = new ArrayList<String>();
+        indexElements.add("CMS_USERDATA_01_IDX_INDEX");
+        indexElements.add("CMS_USERDATA_02_IDX_INDEX");
+
+        Iterator<String> iter = indexElements.iterator();
+        while (iter.hasNext()) {
+            String stmt = readQuery(iter.next());
+            try {
+                // Create the index
+                dbCon.updateSqlStatement(stmt, replacer, null);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
      * @see org.opencms.setup.db.A_CmsUpdateDBPart#internalExecute(org.opencms.setup.CmsSetupDb)
      */
     @Override
@@ -169,37 +200,6 @@ public class CmsUpdateDBCmsUsers extends org.opencms.setup.db.update6to7.CmsUpda
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-    }
-
-    /**
-     * @see org.opencms.setup.db.update6to7.CmsUpdateDBCmsUsers#createUserDataTable(org.opencms.setup.CmsSetupDb)
-     */
-    @Override
-    protected void createUserDataTable(CmsSetupDb dbCon) throws SQLException {
-
-        String indexTablespace = m_poolData.get("indexTablespace");
-
-        Map<String, String> replacer = new HashMap<String, String>();
-        replacer.put(REPLACEMENT_TABLEINDEX_SPACE, indexTablespace);
-
-        String createStatement = readQuery(QUERY_CREATE_TABLE_USERDATA);
-        dbCon.updateSqlStatement(createStatement, replacer, null);
-
-        // create indices
-        List<String> indexElements = new ArrayList<String>();
-        indexElements.add("CMS_USERDATA_01_IDX_INDEX");
-        indexElements.add("CMS_USERDATA_02_IDX_INDEX");
-
-        Iterator<String> iter = indexElements.iterator();
-        while (iter.hasNext()) {
-            String stmt = readQuery(iter.next());
-            try {
-                // Create the index
-                dbCon.updateSqlStatement(stmt, replacer, null);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 

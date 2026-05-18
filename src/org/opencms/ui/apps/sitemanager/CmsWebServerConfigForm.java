@@ -100,6 +100,7 @@ public class CmsWebServerConfigForm extends CmsBasicDialog {
      * @param manager sitemanager instance
      */
     public CmsWebServerConfigForm(CmsSiteManager manager) {
+
         m_manager = manager;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_report.setVisible(false);

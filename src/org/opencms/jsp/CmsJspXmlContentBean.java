@@ -104,7 +104,8 @@ public class CmsJspXmlContentBean extends CmsJspActionElement {
         String collectorName,
         String collectorParam,
         Locale locale,
-        boolean editable) throws JspException {
+        boolean editable)
+    throws JspException {
 
         return new CmsJspTagContentLoad(null, getJspContext(), collectorName, collectorParam, locale, editable);
     }
@@ -130,7 +131,8 @@ public class CmsJspXmlContentBean extends CmsJspActionElement {
         String pageIndex,
         String pageSize,
         Locale locale,
-        boolean editable) throws JspException {
+        boolean editable)
+    throws JspException {
 
         return new CmsJspTagContentLoad(
             null,

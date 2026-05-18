@@ -147,7 +147,7 @@ public class CmsRewriteAliasTable extends CellTable<CmsRewriteAliasTableRow> {
      * Gets the controller instance for the alias view.<p>
      *
      * @return the controller instance for the alias view
-     **/
+     */
     CmsAliasTableController getController() {
 
         return m_controller;

@@ -66,6 +66,7 @@ public class CmsSubmenu implements I_CmsContextMenuItem {
      * @param priority the priority
      */
     public CmsSubmenu(String id, String parentId, String title, float order, int priority) {
+
         m_id = id;
         m_parentId = parentId;
         m_title = title;
@@ -78,6 +79,7 @@ public class CmsSubmenu implements I_CmsContextMenuItem {
      */
     @Override
     public void executeAction(I_CmsDialogContext context) {
+
         // do nothing
     }
 

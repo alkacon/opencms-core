@@ -76,7 +76,9 @@ public class CmsDataViewParams {
 
         if (context.getParameters().get(CmsDataViewConstants.PARAM_CONFIG) != null) {
             try {
-                JSONObject json = new JSONObject(CmsDataViewParamEncoder.decodeString(context.getParameters().get(CmsDataViewConstants.PARAM_CONFIG)));
+                JSONObject json = new JSONObject(
+                    CmsDataViewParamEncoder.decodeString(
+                        context.getParameters().get(CmsDataViewConstants.PARAM_CONFIG)));
                 m_callback = json.optString(CmsDataViewConstants.PARAM_CALLBACK);
                 m_callbackArg = json.optString(CmsDataViewConstants.PARAM_CALLBACK_ARG);
                 m_viewClass = json.optString(CmsDataViewConstants.CONFIG_VIEW_CLASS);

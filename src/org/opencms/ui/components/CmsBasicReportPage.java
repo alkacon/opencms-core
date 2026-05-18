@@ -65,6 +65,7 @@ public class CmsBasicReportPage extends VerticalLayout {
      * @param callback the callback to call when the user clicks OK
      */
     public CmsBasicReportPage(String label, final A_CmsReportThread reportThread, final Runnable callback) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_panel.setCaption(label);
         CmsReportWidget reportWidget = new CmsReportWidget(reportThread);

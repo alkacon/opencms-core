@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 
 /**
  * The monthly pattern panel.<p>
- * */
+ */
 public class CmsPatternPanelMonthlyView extends Composite implements I_CmsSerialDatePatternView {
 
     /** The UI binder interface. */
@@ -336,7 +336,7 @@ public class CmsPatternPanelMonthlyView extends Composite implements I_CmsSerial
 
     /**
      * Creates the 'at' selection view.<p>
-     * */
+     */
     private void initSelectBoxes() {
 
         m_atDay.getOpener().setStyleName(

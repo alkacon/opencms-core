@@ -27,9 +27,9 @@
 
 package org.opencms.loader;
 
+import com.alkacon.simapi.CmykJpegReader.ByteArrayImageInputStream;
 import com.alkacon.simapi.RenderSettings;
 import com.alkacon.simapi.Simapi;
-import com.alkacon.simapi.CmykJpegReader.ByteArrayImageInputStream;
 import com.alkacon.simapi.filter.GrayscaleFilter;
 import com.alkacon.simapi.filter.ShadowFilter;
 

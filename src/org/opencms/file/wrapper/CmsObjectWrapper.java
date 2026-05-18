@@ -323,7 +323,7 @@ public class CmsObjectWrapper {
      * Delegate method for {@link CmsObject#getRequestContext()}.<p>
      *
      * @see CmsObject#getRequestContext()
-    
+     *
      * @return the current users request context
      */
     public CmsRequestContext getRequestContext() {

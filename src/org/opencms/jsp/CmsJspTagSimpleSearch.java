@@ -99,7 +99,7 @@ public class CmsJspTagSimpleSearch extends CmsJspScopedVarBodyTagSuport implemen
 
     /** The search index that should be used .
      *  It will either be the configured index, or "Solr Offline" / "Solr Online" depending on the project.
-     * */
+     */
     private CmsSolrIndex m_index;
 
     /** Search controller keeping all the config and state from the search. */

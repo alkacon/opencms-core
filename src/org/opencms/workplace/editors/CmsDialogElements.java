@@ -306,9 +306,10 @@ public class CmsDialogElements extends CmsDialog {
             "\t<td class=\"textbold\" unselectable=\"on\">"
                 + key(Messages.GUI_EDITOR_DIALOG_ELEMENTS_PAGEELEMENT_0)
                 + "</td>\n");
-        retValue.append("\t<td class=\"textbold\" unselectable=\"on\">&nbsp;&nbsp;"
-            + key(Messages.GUI_EDITOR_DIALOG_ELEMENTS_ENABLED_0)
-            + "&nbsp;&nbsp;</td>\n");
+        retValue.append(
+            "\t<td class=\"textbold\" unselectable=\"on\">&nbsp;&nbsp;"
+                + key(Messages.GUI_EDITOR_DIALOG_ELEMENTS_ENABLED_0)
+                + "&nbsp;&nbsp;</td>\n");
         retValue.append("</tr>\n");
         retValue.append("<tr><td colspan=\"2\"><span style=\"height: 6px;\"></span></td></tr>\n");
 
@@ -477,9 +478,10 @@ public class CmsDialogElements extends CmsDialog {
         } else {
             setAction(ACTION_DEFAULT);
             // build title for delete dialog
-            setParamTitle(key(
-                Messages.GUI_EDITOR_DIALOG_ELEMENTS_TITLE_1,
-                new Object[] {CmsResource.getName(getParamResource())}));
+            setParamTitle(
+                key(
+                    Messages.GUI_EDITOR_DIALOG_ELEMENTS_TITLE_1,
+                    new Object[] {CmsResource.getName(getParamResource())}));
         }
     }
 }

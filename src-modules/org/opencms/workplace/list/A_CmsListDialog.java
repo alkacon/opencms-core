@@ -373,7 +373,10 @@ public abstract class A_CmsListDialog extends CmsDialog {
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug(
-                Messages.get().getBundle().key(Messages.LOG_END_ACTION_LIST_2, getListId(), Integer.valueOf(getAction())));
+                Messages.get().getBundle().key(
+                    Messages.LOG_END_ACTION_LIST_2,
+                    getListId(),
+                    Integer.valueOf(getAction())));
         }
         refreshList();
     }

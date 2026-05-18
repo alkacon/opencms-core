@@ -80,7 +80,7 @@ import com.google.common.collect.Sets;
  *  Which modules are exported to and checked in to which git repository is configured in the file
  *  <code>/WEB-INF/git-scripts/module-checkin.sh</code>.
  *   */
-public class CmsGitCheckin { 
+public class CmsGitCheckin {
 
     /** The log file for the git check in. */
     private static final String DEFAULT_LOGFILE_PATH = OpenCms.getSystemInfo().getWebInfRfsPath() + "logs/git.log";

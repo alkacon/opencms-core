@@ -72,6 +72,29 @@ public class CmsEditMappingDialog extends A_CmsMappingDialog {
     }
 
     /**
+     * Returns the String value of the mapping type.<p>
+     *
+     * @return String value of the mapping type
+     */
+    public String getType() {
+
+        if ((m_mapping != null) && (m_mapping.getType() != null)) {
+            return m_mapping.getType().toString();
+        }
+        return "";
+    }
+
+    /**
+     * Sets the mapping type of the mapping.<p>
+     *
+     * @param type String value of the mapping type
+     */
+    public void setType(String type) {
+
+        m_mapping.setType(type);
+    }
+
+    /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
      *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
@@ -115,29 +138,6 @@ public class CmsEditMappingDialog extends A_CmsMappingDialog {
             new CmsWidgetDialogParameter(this, "type", PAGES[0], new CmsSelectWidget(getTypeWidgetConfiguration())));
         addWidget(new CmsWidgetDialogParameter(m_mapping, "param", "", PAGES[0], new CmsInputWidget(), 0, 1));
         addWidget(new CmsWidgetDialogParameter(m_mapping, "defaultValue", "", PAGES[0], new CmsInputWidget(), 0, 1));
-    }
-
-    /**
-     * Sets the mapping type of the mapping.<p>
-     *
-     * @param type String value of the mapping type
-     */
-    public void setType(String type) {
-
-        m_mapping.setType(type);
-    }
-
-    /**
-     * Returns the String value of the mapping type.<p>
-     *
-     * @return String value of the mapping type
-     */
-    public String getType() {
-
-        if ((m_mapping != null) && (m_mapping.getType() != null)) {
-            return m_mapping.getType().toString();
-        }
-        return "";
     }
 
     /**

@@ -169,20 +169,6 @@ public class CmsUpdateDBAlterTables extends org.opencms.setup.db.update6to7.CmsU
     }
 
     /**
-     * Initializes the replacer.<p>
-     *
-     * @param replacer the replacer
-     * @param tableName the table name
-     * @param fieldName the field name
-     */
-    private void initReplacer(Map<String, String> replacer, String tableName, String fieldName) {
-
-        replacer.clear();
-        replacer.put(REPLACEMENT_TABLENAME, tableName);
-        replacer.put(REPLACEMENT_FIELD_NAME, fieldName);
-    }
-
-    /**
      * Fixes the database schema.<p>
      *
      * @param dbCon database connection
@@ -238,6 +224,20 @@ public class CmsUpdateDBAlterTables extends org.opencms.setup.db.update6to7.CmsU
 
         }
 
+    }
+
+    /**
+     * Initializes the replacer.<p>
+     *
+     * @param replacer the replacer
+     * @param tableName the table name
+     * @param fieldName the field name
+     */
+    private void initReplacer(Map<String, String> replacer, String tableName, String fieldName) {
+
+        replacer.clear();
+        replacer.put(REPLACEMENT_TABLENAME, tableName);
+        replacer.put(REPLACEMENT_FIELD_NAME, fieldName);
     }
 
 }

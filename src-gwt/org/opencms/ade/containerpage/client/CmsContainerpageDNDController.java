@@ -1714,7 +1714,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     }
 
     /**
-
+     *
      * Checks and sets if the place holder should be visible.<p>
      *
      * @param target the target container

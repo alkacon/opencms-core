@@ -126,7 +126,6 @@ public class CmsTypeFilterWidget extends CmsFilterSelectWidget {
         return true;
     }
 
-
     /**
      * @see org.opencms.widgets.I_CmsWidget#newInstance()
      */

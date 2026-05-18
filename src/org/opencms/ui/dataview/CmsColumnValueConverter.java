@@ -43,6 +43,7 @@ public final class CmsColumnValueConverter {
      * Hidden default constructor.<p>
      */
     private CmsColumnValueConverter() {
+
         // do nothing
     }
 

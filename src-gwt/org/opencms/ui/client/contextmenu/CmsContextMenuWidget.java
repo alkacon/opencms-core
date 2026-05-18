@@ -60,6 +60,7 @@ public class CmsContextMenuWidget extends Widget {
      * Constructor.<p>
      */
     public CmsContextMenuWidget() {
+
         Element element = DOM.createDiv();
         setElement(element);
 
