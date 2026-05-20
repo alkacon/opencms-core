@@ -40,12 +40,12 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.Iterator;
 
-import org.apache.commons.fileupload2.core.DiskFileItem;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.fileupload2.core.DiskFileItem;
 
 /**
  * The replace resource dialog handles the replacement of a single VFS file.<p>

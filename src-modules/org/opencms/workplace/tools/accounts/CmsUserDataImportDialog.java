@@ -53,12 +53,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.fileupload2.core.DiskFileItem;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.fileupload2.core.DiskFileItem;
 
 /**
  * Dialog to import user data.<p>
