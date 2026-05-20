@@ -1617,6 +1617,10 @@ tasks.register('uploadArchives') { // dependency tasks are set dynamically via a
     }
 }
 
+// fail in case the source is badly formatted
+tasks.named('compileJava') {
+    dependsOn spotlessCheck
+}
 
 // fixed issue with libraries containing both .java and .class files
 tasks.withType(JavaCompile) {
