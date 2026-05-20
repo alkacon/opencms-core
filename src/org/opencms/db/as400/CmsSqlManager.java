@@ -27,6 +27,9 @@
 
 package org.opencms.db.as400;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * AS400 implementation of the SQL Manager.<p>
  *
@@ -44,7 +47,15 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
      */
     public CmsSqlManager() {
 
-        super();
+        this(Collections.<String> emptyList());
+    }
+
+    /**
+     * @see org.opencms.db.generic.CmsSqlManager#CmsSqlManager(java.util.List)
+     */
+    public CmsSqlManager(List<String> additionalQueryProperties) {
+
+        super(additionalQueryProperties);
         loadQueryProperties(QUERY_PROPERTIES);
     }
 }

@@ -225,6 +225,9 @@ public class OpenCmsTestRunner extends Assertions {
     /** Key for tests on Oracle database. */
     public static final String DB_ORACLE = "oracle";
 
+    /** Property / environment name for selecting an alternative test configuration folder. */
+    public static final String PROP_TEST_CONFIG_FOLDER = "test.config.folder";
+
     /** Additional connection data. */
     private ConnectionData m_additionalConnection;
 
@@ -3994,7 +3997,14 @@ public class OpenCmsTestRunner extends Assertions {
         initConfiguration();
 
         // set default values, if parameters are null
-        configFolder = configFolder == null ? getTestDataPath("WEB-INF/config." + m_dbProduct + "/") : configFolder;
+        if (configFolder == null) {
+            String testConfigFolder = System.getProperty(PROP_TEST_CONFIG_FOLDER);
+            if (testConfigFolder == null) {
+                testConfigFolder = m_configuration.get(PROP_TEST_CONFIG_FOLDER);
+            }
+            configFolder = getTestDataPath(
+                "WEB-INF/" + (testConfigFolder == null ? "config." + m_dbProduct : testConfigFolder) + "/");
+        }
         specialConfigFolder = specialConfigFolder != null ? getTestDataPath(specialConfigFolder) : null;
 
         // intialize a new resource storage

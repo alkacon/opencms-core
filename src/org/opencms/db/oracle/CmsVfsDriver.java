@@ -35,6 +35,7 @@ import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.db.generic.Messages;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
@@ -53,10 +54,10 @@ import java.sql.SQLException;
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#createContent(CmsDbContext, CmsUUID, CmsUUID, byte[])
+     * @see org.opencms.db.I_CmsVfsDriver#createContent(CmsDbContext, CmsUUID, CmsResource, byte[])
      */
     @Override
-    public void createContent(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId, byte[] content)
+    public void createContent(CmsDbContext dbc, CmsUUID projectId, CmsResource resource, byte[] content)
     throws CmsDataAccessException {
 
         Connection conn = null;
@@ -68,7 +69,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 
             // first insert new file without file_content, then update the file_content
             // these two steps are necessary because of using BLOBs in the Oracle DB
-            stmt.setString(1, resourceId.toString());
+            stmt.setString(1, resource.getResourceId().toString());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -80,7 +81,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         }
 
         // now update the file content
-        internalWriteContent(dbc, projectId, resourceId, content, -1);
+        internalWriteContent(dbc, projectId, resource.getResourceId(), content, -1);
     }
 
     /**
@@ -163,12 +164,23 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#writeContent(CmsDbContext, CmsUUID, byte[])
+     * @see org.opencms.db.generic.CmsVfsDriver#initSqlManager(String, java.util.List)
      */
     @Override
-    public void writeContent(CmsDbContext dbc, CmsUUID resourceId, byte[] content) throws CmsDataAccessException {
+    public org.opencms.db.generic.CmsSqlManager initSqlManager(
+        String classname,
+        java.util.List<String> additionalQueryProperties) {
 
-        internalWriteContent(dbc, dbc.currentProject().getUuid(), resourceId, content, -1);
+        return CmsSqlManager.getInstance(classname, additionalQueryProperties);
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#writeContent(CmsDbContext, CmsResource, byte[])
+     */
+    @Override
+    public void writeContent(CmsDbContext dbc, CmsResource resource, byte[] content) throws CmsDataAccessException {
+
+        internalWriteContent(dbc, dbc.currentProject().getUuid(), resource.getResourceId(), content, -1);
     }
 
     /**

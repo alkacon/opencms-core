@@ -19,6 +19,7 @@
 <!ELEMENT resources (
 	resourceloaders, 
 	resourcetypes,
+	storage-policy?,
 	collectors?,
 	namegenerator?,
 	mimetypes?,
@@ -31,6 +32,15 @@
 
 <!ELEMENT param (#PCDATA)>
 <!ATTLIST param name CDATA #REQUIRED>
+
+<!--
+# Storage policy for VFS file contents.
+#
+# This policy decides whether file contents remain in the content table or are
+# offloaded to the configured storage backend.
+-->
+<!ELEMENT storage-policy (param*)>
+<!ATTLIST storage-policy class CDATA #REQUIRED>
 
 <!--
 # Relation types configuration.

@@ -136,9 +136,15 @@ dependencies {
     distribution('org.antlr:ST4:4.0.8') { transitive = false }
     distribution('org.apache.bval:org.apache.bval.bundle:0.4') { transitive = false }
     distribution('org.apache.chemistry.opencmis:chemistry-opencmis-commons-api:1.1.0')
-    distribution('org.apache.chemistry.opencmis:chemistry-opencmis-commons-impl:1.1.0')
-    distribution('org.apache.chemistry.opencmis:chemistry-opencmis-server-bindings:1.1.0')
-    distribution('org.apache.chemistry.opencmis:chemistry-opencmis-server-support:1.1.0')
+    distribution('org.apache.chemistry.opencmis:chemistry-opencmis-commons-impl:1.1.0') {
+        exclude group: 'org.codehaus.woodstox', module: 'woodstox-core-asl'
+    }
+    distribution('org.apache.chemistry.opencmis:chemistry-opencmis-server-bindings:1.1.0') {
+        exclude group: 'org.codehaus.woodstox', module: 'woodstox-core-asl'
+    }
+    distribution('org.apache.chemistry.opencmis:chemistry-opencmis-server-support:1.1.0') {
+        exclude group: 'org.codehaus.woodstox', module: 'woodstox-core-asl'
+    }
     constraints {
         distribution('org.apache.cxf:cxf-core:3.5.11')
         distribution('org.apache.cxf:cxf-rt-bindings-soap:3.5.11')
@@ -224,6 +230,8 @@ dependencies {
     distribution('xerces:xercesImpl:2.12.2') { transitive = false }
     //distribution('xml-apis:xml-apis:1.4.01') { transitive = false }
     distribution('dev.samstevens.totp:totp:1.7.1')
+    distribution('software.amazon.awssdk:apache-client:2.42.29') { transitive = true }
+    distribution('software.amazon.awssdk:s3:2.42.29') { transitive = true }
     // http://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD/root/projects/alfresco-jlan/
     // Revision r55007
     distribution files('lib/runtime/jlan.jar')
@@ -234,6 +242,8 @@ dependencies {
     testCompile('junit:junit:4.13.1') { transitive = false }
     testCompile('org.hamcrest:hamcrest-core:1.3') { transitive = false }
     testCompile('org.hsqldb:hsqldb:2.7.2:jdk8') { transitive = false }
+    testCompile('com.oracle.database.jdbc:ojdbc11:23.26.1.0.0') { transitive = false }
+    testCompile fileTree(dir: 'webapp/WEB-INF/setupdata/database', include: ['**/*.jar'], exclude: ['oracle/ojdbc14-10.2.0.3.jar'])
     // JUnit 6 Jupiter support
     testCompile platform('org.junit:junit-bom:6.0.0')
     testCompile 'org.junit.jupiter:junit-jupiter-api'
@@ -241,7 +251,6 @@ dependencies {
     testCompile 'org.junit.vintage:junit-vintage-engine'
     testCompile 'org.junit.platform:junit-platform-launcher'
     testCompile 'org.junit.platform:junit-platform-suite'
-
     testGwtCompile('junit:junit:4.13.1') { transitive = false }
     testGwtCompile('net.sourceforge.htmlunit:htmlunit-cssparser:1.13.0') { transitive = false }
     testGwtCompile('org.brotli:dec:0.1.2') { transitive = false }

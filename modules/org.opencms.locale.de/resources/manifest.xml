@@ -494,6 +494,33 @@ writeProperty '/system/workplace/locales/de/' 'locale' 'de'
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/locales/de/messages/org/opencms/db/storage</destination>
+			<type>folder</type>
+			<uuidstructure>10e9ac15-8d07-459e-84d2-4ef24eea1cf9</uuidstructure>
+			<datecreated>Tue, 12 May 2026 17:36:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/db/storage/messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/db/storage/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidstructure>a2508550-0603-44e8-a56d-0c3cd951a52b</uuidstructure>
+			<uuidresource>e87ad0ea-40ae-4036-aec8-9625727c4177</uuidresource>
+			<datecreated>Tue, 12 May 2026 17:36:00 GMT</datecreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/locales/de/messages/org/opencms/db/log</destination>
 			<type>folder</type>
 			<uuidstructure>919889f8-7710-11e0-a36e-4dcd2ca9d6dc</uuidstructure>

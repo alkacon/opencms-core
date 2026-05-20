@@ -290,10 +290,8 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
             res = stmt.executeQuery();
 
             while (res.next()) {
-                currentResource = m_driverManager.getVfsDriver(dbc).createFile(
-                    res,
-                    dbc.currentProject().getUuid(),
-                    false);
+                currentResource = m_driverManager.getVfsDriver(
+                    dbc).createFile(dbc, res, dbc.currentProject().getUuid(), false);
                 resources.add(currentResource);
             }
         } catch (SQLException e) {
@@ -354,10 +352,8 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
             res = stmt.executeQuery();
 
             while (res.next()) {
-                currentResource = m_driverManager.getVfsDriver(dbc).createFile(
-                    res,
-                    dbc.currentProject().getUuid(),
-                    false);
+                currentResource = m_driverManager.getVfsDriver(
+                    dbc).createFile(dbc, res, dbc.currentProject().getUuid(), false);
                 resources.add(currentResource);
             }
         } catch (SQLException e) {
@@ -584,10 +580,8 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
             res = stmt.executeQuery();
 
             while (res.next()) {
-                currentResource = m_driverManager.getVfsDriver(dbc).createFile(
-                    res,
-                    dbc.currentProject().getUuid(),
-                    false);
+                currentResource = m_driverManager.getVfsDriver(
+                    dbc).createFile(dbc, res, dbc.currentProject().getUuid(), false);
                 resources.add(currentResource);
             }
         } catch (SQLException e) {

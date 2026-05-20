@@ -110,6 +110,9 @@
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxLinkGallery</param>
 				</type>
 			</resourcetypes>
+			<storage-policy class="org.opencms.db.storage.policy.CmsDefaultStoragePolicy">
+				<param name="threshold">0</param>
+			</storage-policy>
 			<collectors>
 				<collector class="org.opencms.file.collectors.CmsPriorityResourceCollector" order="100" />
 				<collector class="org.opencms.file.collectors.CmsDefaultResourceCollector" order="110" />
