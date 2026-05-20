@@ -230,7 +230,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
      *
      * @param withOtherOus if not set only groups of the current ou should be returned
      *
-     * @return a list of <code><{@link CmsGroup}</code>s
+     * @return a list of {@link CmsGroup}s
      *
      * @throws CmsException if something goes wrong
      */

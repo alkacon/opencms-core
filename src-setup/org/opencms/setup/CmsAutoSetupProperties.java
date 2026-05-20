@@ -89,7 +89,7 @@ public final class CmsAutoSetupProperties {
     public static final String PROP_DB_INDEX_TABLESPACE = "db.index.tablespace";
 
     /** The property key <code>db.jdbc.driver</code> for specifying the fully qualified name of the Java class implementing the JDBC driver to use for the connection.<P>
-     * Hint: The names can be found in the <code>database.properties</code> file in the webapp' folders <code>setup/database/<db.product>/</code>.
+     * Hint: The names can be found in the <code>database.properties</code> file in the webapp' folders <code>setup/database/&lt;db.product&gt;/</code>.
      */
     public static final String PROP_DB_JDBC_DRIVER = "db.jdbc.driver";
 

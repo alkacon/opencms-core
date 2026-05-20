@@ -252,7 +252,7 @@ public class CmsUploadListener implements ProgressListener, Serializable {
      * <li> stops the watcher if the upload has reached more than 100 percent
      * </ul>
      *
-     * @see org.apache.commons.fileupload.ProgressListener#update(long, long, int)
+     * This method implements the Commons FileUpload progress listener update callback.
      */
     public void update(long done, long total, int item) {
 

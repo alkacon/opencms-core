@@ -37,7 +37,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface I_CmsPropertySaver {
 
     /**
-     * Saves the given property changes.<<p>
+     * Saves the given property changes.<p>
      *
      * @param changes the property changes
      * @param callback the callback to call when done

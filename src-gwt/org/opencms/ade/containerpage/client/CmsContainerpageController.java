@@ -3153,7 +3153,7 @@ public final class CmsContainerpageController {
      *
      * @param elementWidget the element to replace
      * @param elementId the id of the replacing content
-     * @param callback  the callback to execute after the element is replaced
+     * @param handler the handler to execute after the element is replaced
      */
     public void replaceElement(
         final CmsContainerPageElementPanel elementWidget,

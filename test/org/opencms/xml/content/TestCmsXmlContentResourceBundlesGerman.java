@@ -47,7 +47,7 @@ import org.junit.jupiter.api.TestInfo;
 public class TestCmsXmlContentResourceBundlesGerman extends OpenCmsTestRunner {
 
     /**
-     * @see org.opencms.test.OpenCmsJunitTestCase#openCmsSetUp()
+     * Overrides the OpenCms test setup.
      */
     @Override
     @BeforeAll

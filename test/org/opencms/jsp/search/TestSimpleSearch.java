@@ -60,7 +60,7 @@ public class TestSimpleSearch extends OpenCmsTestRunner {
     private static final String LIST_BASE_FOLDER = "/system/modules/org.opencms.test.modules.listtype/resources/lists/";
 
     /**
-     * @see org.opencms.test.OpenCmsJunitTestCase#openCmsSetUp()
+     * Overrides the OpenCms test setup.
      */
     @Override
     @BeforeAll

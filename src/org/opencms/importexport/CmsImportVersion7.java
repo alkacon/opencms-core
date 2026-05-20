@@ -3296,7 +3296,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * the relation corresponding to that link to be present for some functionality (e.g. the page_title macro in gallery name
      * mappings), so we need to parse the links for A first to create the relation before B is processed.
      *
-     * @parameter parseables the list of parseable resources which should be sorted in place
+     * @param parseables the list of parseable resources which should be sorted in place
      *
      */
     protected void sortParseableResources(List<CmsResource> parseables) {

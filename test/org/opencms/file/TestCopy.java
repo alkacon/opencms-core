@@ -54,7 +54,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 public class TestCopy extends OpenCmsTestRunner {
 
     /**
-     * @see org.opencms.test.OpenCmsJunitTestCase#openCmsSetUp()
+     * Overrides the OpenCms test setup.
      */
     @Override
     @BeforeAll

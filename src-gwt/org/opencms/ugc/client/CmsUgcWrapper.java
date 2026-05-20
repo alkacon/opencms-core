@@ -90,7 +90,7 @@ public class CmsUgcWrapper extends FormPanel {
     }
 
     /**
-     * Uploads files from the given file input fields.<p<
+     * Uploads files from the given file input fields.<p>
      *
      * @param fields the set of names of fields containing the files to upload
      * @param filenameCallback the callback to call with the resulting map from field names to file paths

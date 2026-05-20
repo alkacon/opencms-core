@@ -54,7 +54,7 @@ public class A_CmsLoginField extends VTextField {
     }
 
     /**
-     * @see com.vaadin.client.ui.VTextField#updateFieldContent(java.lang.String)
+     * Overrides the Vaadin text field content update method.
      *
      * We have to override this method to prevent its value being overwritten by Vaadin and to make
      * sure that the real value is sent to the server.

@@ -3616,7 +3616,7 @@ public class OpenCmsTestRunner extends Assertions {
     /**
      * Removes the initialized OpenCms database and all temporary files created during the test run.<p>
      *
-     * @param testName the name of the test class (for writing it to the console)
+     * @param testInfo the test information
      */
     protected void removeOpenCms(TestInfo testInfo) {
 

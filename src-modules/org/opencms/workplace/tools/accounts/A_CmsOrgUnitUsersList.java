@@ -236,7 +236,7 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
     /**
      * Returns a list of users to display.<p>
      *
-     * @return a list of <code><{@link CmsUser}</code>s
+     * @return a list of {@link CmsUser}s
      *
      * @throws CmsException if something goes wrong
      */

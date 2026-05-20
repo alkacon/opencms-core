@@ -131,7 +131,7 @@ public class CmsDbSettingsPanel extends VerticalLayout {
     /**
      * Initializes fields with data from setup bean.
      *
-     * @param the webapp name (null for root webapp)
+     * @param webapp the webapp name (null for root webapp)
      */
     public void initFromSetupBean(String webapp) {
 

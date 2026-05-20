@@ -55,7 +55,7 @@ public class TestSubscriptionManager extends OpenCmsTestRunner {
     private static final long WAIT_FOR_DB_MILLIS = 300;
 
     /**
-     * @see org.opencms.test.OpenCmsJunitTestCase#openCmsSetUp()
+     * Overrides the OpenCms test setup.
      */
     @Override
     @BeforeAll
