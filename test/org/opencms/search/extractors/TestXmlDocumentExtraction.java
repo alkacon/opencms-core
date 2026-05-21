@@ -93,6 +93,17 @@ public class TestXmlDocumentExtraction extends OpenCmsTestRunner {
         assertTrue(items.containsKey("Teaser[3]"));
         assertTrue(items.containsKey("Text[1]"));
         assertTrue(items.containsKey("Author[1]"));
+
+        //check the order of the content items in the content field
+        checkContentOrder(
+            items.get(I_CmsExtractionResult.ITEM_CONTENT),
+            items.get("Title[1]"),
+            items.get("Teaser[1]"),
+            items.get("Teaser[2]"),
+            items.get("Teaser[3]"),
+            items.get("Text[1]"),
+            items.get("Author[1]"));
+
     }
 
     /**
@@ -116,5 +127,19 @@ public class TestXmlDocumentExtraction extends OpenCmsTestRunner {
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
         assertTrue(items.containsKey("body"));
         assertTrue(items.containsKey("special"));
+    }
+
+    /**
+     * Checks if the snippets appear in the content in the provided order.
+     * @param content the content
+     * @param snippets the snippets to check.
+     */
+    private void checkContentOrder(String content, String... snippets) {
+
+        for (int i = 0; i < snippets.length; i++) {
+            int idx = content.indexOf(snippets[i]);
+            assertTrue(idx >= 0, "Did not find snippet " + i + " (" + snippets[i] + ").");
+            content = content.substring(i);
+        }
     }
 }
