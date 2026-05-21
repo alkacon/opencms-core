@@ -64,6 +64,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -1068,7 +1069,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         m_contentDefinition = definition;
         m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);
         m_elementLocales = new HashMap<String, Set<Locale>>();
-        m_elementNames = new HashMap<Locale, Set<String>>();
+        m_elementNames = new HashMap<Locale, LinkedHashSet<String>>();
         m_locales = new HashSet<Locale>();
         clearBookmarks();
 
@@ -1100,9 +1101,10 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     protected void processSchemaNode(Element root, String rootPath, Locale locale, CmsXmlContentDefinition definition) {
 
         // iterate all XML nodes
-        List<Node> content = CmsXmlGenericWrapper.content(root);
-        for (int i = content.size() - 1; i >= 0; i--) {
-            Node node = content.get(i);
+        // We need a copy of the list, since we may delete elements of the original list during iteration.
+        // iterating backwards is not a good option, since we want the correct order
+        List<Node> content = new ArrayList<>(CmsXmlGenericWrapper.content(root));
+        for (Node node : content) {
             if (!(node instanceof Element)) {
                 // this node is not an element, so it must be a white space text node, remove it
                 node.detach();

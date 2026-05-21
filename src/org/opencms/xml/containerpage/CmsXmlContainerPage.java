@@ -70,6 +70,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -530,7 +531,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         m_contentDefinition = definition;
         m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);
         m_elementLocales = new HashMap<String, Set<Locale>>();
-        m_elementNames = new HashMap<Locale, Set<String>>();
+        m_elementNames = new HashMap<Locale, LinkedHashSet<String>>();
         m_locales = new HashSet<Locale>();
         m_cntPages = new LinkedHashMap<Locale, CmsContainerPageBean>();
         clearBookmarks();
