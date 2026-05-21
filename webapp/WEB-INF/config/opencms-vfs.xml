@@ -135,7 +135,7 @@
                 </type>
             </resourcetypes>
             <storage-policy class="org.opencms.db.storage.policy.CmsDefaultStoragePolicy">
-                <param name="threshold">512000</param>
+                <param name="threshold">0</param>
             </storage-policy>
             <collectors>
                 <collector class="org.opencms.file.collectors.CmsPriorityResourceCollector" order="100" />
