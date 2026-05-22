@@ -9,7 +9,11 @@ plugins {
     id 'eclipse'
     id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
     id 'com.diffplug.spotless' version '8.4.0'
+    id 'org.openrewrite.rewrite' version '7.+'
+    id("com.netflix.nebula.jakartaee-migration") version "2.0.2"
 }
+
+
 
 group = "org.opencms"
 
@@ -17,6 +21,10 @@ def configuredBuildDirectory = providers.gradleProperty('opencms_build_directory
     .orElse(providers.environmentVariable('OPENCMS_BUILD_DIR'))
     .orElse(providers.gradleProperty('build_directory'))
     .get()
+def eeTarget = providers.gradleProperty("eeTarget").get()
+
+
+
 layout.buildDirectory.set(file(configuredBuildDirectory))
 
 java {
@@ -32,6 +40,25 @@ nexusPublishing {
         sonatype {
             nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
             snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
+        }
+    }
+}
+
+rewrite {
+	
+    configFile = file("rewrite.yml")
+    exportDatatables = true
+    exclusion("src-gwt/**")
+    exclusion("modules/**")
+
+}
+
+if (eeTarget == "jakarta") { 
+    jakartaeeMigration {
+        includeTransform('com.vaadin:vaadin-compatibility-server')
+        includeTransform('com.vaadin:vaadin-server')
+        configurations.all { config ->
+            transform(config)
         }
     }
 }
@@ -91,6 +118,11 @@ repositories {
     maven {
         url = 'https://maven.vaadin.com/vaadin-addons'
     }
+    maven {
+        url = 'https://logicaldoc.sourceforge.net/maven/'
+    }
+    
+    
 }
 
 if (!project.hasProperty('max_heap_size')){
@@ -306,6 +338,7 @@ configurations {
 
 // import dependencies
 apply from: 'dependencies.gradle'
+apply from: "dependencies_${eeTarget}.gradle"
 if (project.hasProperty('external_directories')){
     dependencies{
         moduleDeps fileTree(dir: external_directories).matching { include '**/lib/*.jar' }
@@ -1433,7 +1466,9 @@ publishing {
                         asNode().dependencies.'*'.each() { dep ->
                             if (dep.scope.text() == 'runtime' && dep.artifactId.text() in [
                                         'javax.servlet-api',
-                                        'javax.servlet.jsp-api'
+                                        'javax.servlet.jsp-api',
+                                        'jakarta.servlet-api',
+                                        'jakarta.servlet.jsp-api'
                                     ]) {
                                 println("Correcting scope for dependency ${dep.artifactId.text()}")
                                 dep.scope.first().setValue('compile')

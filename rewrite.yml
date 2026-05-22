@@ -1,0 +1,104 @@
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: SetEETargetJakarta
+preconditions:
+  - org.openrewrite.FindSourceFiles:
+      filePattern: "gradle.properties"
+recipeList:
+  - org.openrewrite.properties.ChangePropertyValue:
+      propertyKey: "eeTarget"
+      newValue: "jakarta"
+
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: SetEETargetJavax
+preconditions:
+  - org.openrewrite.FindSourceFiles:
+      filePattern: "gradle.properties"
+recipeList:
+  - org.openrewrite.properties.ChangePropertyValue:
+      propertyKey: "eeTarget"
+      newValue: "javax"
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: JavaxToJakarta
+displayName: Migrate servlet and JSP Java references to Jakarta
+preconditions:
+  - org.openrewrite.FindSourceFiles:
+      filePattern: "src/**/*.java;src-modules/**/*.java;src-setup/**/*.java;test/**/*.java"
+recipeList:
+  - org.openrewrite.java.ChangePackage:
+      oldPackageName: javax.servlet
+      newPackageName: jakarta.servlet
+      recursive: true
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: org.apache.commons.fileupload2.javax.JavaxServletDiskFileUpload
+      newFullyQualifiedTypeName: org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletDiskFileUpload
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: org.apache.commons.fileupload2.javax.JavaxServletFileUpload
+      newFullyQualifiedTypeName: org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletFileUpload
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: org.apache.commons.fileupload2.javax.JavaxServletRequestContext
+      newFullyQualifiedTypeName: org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletRequestContext
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: com.google.gwt.user.server.rpc.RPC
+      newFullyQualifiedTypeName: com.google.gwt.user.server.rpc.jakarta.RPC
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: com.google.gwt.user.server.rpc.RemoteServiceServlet
+      newFullyQualifiedTypeName: com.google.gwt.user.server.rpc.jakarta.RemoteServiceServlet
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: javax.validation.Valid
+      newFullyQualifiedTypeName: jakarta.validation.Valid
+
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: JakartaToJavax
+displayName: Migrate Jakarta references to Javax
+preconditions:
+  - org.openrewrite.FindSourceFiles:
+      filePattern: "src/**/*.java;src-modules/**/*.java;src-setup/**/*.java;test/**/*.java"
+recipeList:
+  - org.openrewrite.java.ChangePackage:
+      oldPackageName: jakarta.servlet
+      newPackageName: javax.servlet
+      recursive: true
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletDiskFileUpload
+      newFullyQualifiedTypeName: org.apache.commons.fileupload2.javax.JavaxServletDiskFileUpload
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletFileUpload
+      newFullyQualifiedTypeName: org.apache.commons.fileupload2.javax.JavaxServletFileUpload
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: org.apache.commons.fileupload2.jakarta.servlet5.JakartaServletRequestContext
+      newFullyQualifiedTypeName: org.apache.commons.fileupload2.javax.JavaxServletRequestContext
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: com.google.gwt.user.server.rpc.jakarta.RPC
+      newFullyQualifiedTypeName: com.google.gwt.user.server.rpc.RPC
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: com.google.gwt.user.server.rpc.jakarta.RemoteServiceServlet
+      newFullyQualifiedTypeName: com.google.gwt.user.server.rpc.RemoteServiceServlet
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: jakarta.validation.Valid
+      newFullyQualifiedTypeName: javax.validation.Valid
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: JavaxToJakartaAll
+displayName: Migrate servlet and JSP Java references to Jakarta, also sets eeTarget.txt to jakarta
+recipeList:
+  - JavaxToJakarta
+  - SetEETargetJakarta
+
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: JakartaToJavaxAll
+displayName: Migrate servlet and JSP Jakarta references to javax, also sets eeTarget.txt to javax
+recipeList:
+  - JakartaToJavax
+  - SetEETargetJavax
+
+
+
+
+
+
+
